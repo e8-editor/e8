@@ -882,9 +882,11 @@ pub(crate) fn install(ed: &mut Editor) {
         ),
         Variable::new(
             "default-directory",
-            "Where the buffer looks up relative file names, as a directory name ending in /. Nil means the directory of its file, or else the directory E8 started in. Dired sets it to the directory it lists.",
+            "Where the buffer looks up relative file names, as a directory name ending in /. Each buffer has its own, as in Emacs: a new buffer takes the current buffer's, a buffer visiting a file has its file's directory unless it sets another, and nil means the directory E8 started in. Dired sets it to the directory it lists.",
             Value::Bool(false),
-        ),
+        )
+        .local()
+        .permanent(),
         Variable::new(
             "read-file-name-completion-ignore-case",
             "Whether completing file names ignores the case of letters: on where the file system does, as on macOS and Windows.",

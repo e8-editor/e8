@@ -7907,7 +7907,7 @@ declare global {
        */
       "deactivate-mark": Value;
       /**
-       * Where the buffer looks up relative file names, as a directory name ending in /. Nil means the directory of its file, or else the directory E8 started in. Dired sets it to the directory it lists.
+       * Where the buffer looks up relative file names, as a directory name ending in /. Each buffer has its own, as in Emacs: a new buffer takes the current buffer's, a buffer visiting a file has its file's directory unless it sets another, and nil means the directory E8 started in. Dired sets it to the directory it lists.
        */
       "default-directory": Value;
       /**

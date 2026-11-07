@@ -60,6 +60,14 @@ pub fn abbreviate_path(path: &Path) -> String {
     }
 }
 
+/// Gives a buffer visiting PATH the file's directory as its own
+/// `default-directory`, as Emacs's find-file and set-visited-file-name do.
+pub(crate) fn set_file_default_directory(buffer: &mut crate::buffer::Buffer, path: &Path) {
+    if let Some(dir) = path.parent() {
+        buffer.locals.insert("default-directory".to_string(), crate::variables::Value::Str(abbreviate_dir(dir)));
+    }
+}
+
 /// Writes a directory the way the minibuffer shows it: home as `~`, with a trailing slash.
 pub fn abbreviate_dir(dir: &Path) -> String {
     let s = abbreviate_path(dir);
