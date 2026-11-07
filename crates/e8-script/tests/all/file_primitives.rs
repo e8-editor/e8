@@ -179,7 +179,7 @@ fn names_and_predicates_as_emacs_gives_them() {
 }
 
 #[test]
-fn a_buffer_visiting_a_file_has_its_directory_as_default_directory() {
+fn default_directory_is_each_buffers_and_a_visited_files_directory() {
     let (mut ed, s, dir) = setup();
     let sub = dir.path().join("sub");
     std::fs::create_dir(&sub).unwrap();
@@ -195,9 +195,12 @@ fn a_buffer_visiting_a_file_has_its_directory_as_default_directory() {
     // A buffer may set its own, as Dired and shell do.
     eval(&mut ed, &s, &format!("e8.withCurrentBuffer({b}, () => e8.setVariable(\"default-directory\", \"/tmp/\"))"));
     assert_eq!(eval(&mut ed, &s, &format!("e8.withCurrentBuffer({b}, () => e8.variable(\"default-directory\"))")), r#""/tmp/""#);
-    // Each buffer has its own, as in Emacs: setting it in one leaves the others.
+    // Each buffer has its own, as in Emacs: a new buffer takes the current
+    // buffer's, and setting it in one leaves the others.
     eval(&mut ed, &s, r#"e8.call("switch-to-buffer", "*other*")"#);
     eval(&mut ed, &s, r#"e8.setVariable("default-directory", "/var/")"#);
     eval(&mut ed, &s, r#"e8.call("switch-to-buffer", "*third*")"#);
-    assert_ne!(eval(&mut ed, &s, r#"e8.variable("default-directory")"#), r#""/var/""#);
+    assert_eq!(eval(&mut ed, &s, r#"e8.variable("default-directory")"#), r#""/var/""#);
+    eval(&mut ed, &s, r#"e8.setVariable("default-directory", "/usr/")"#);
+    assert_eq!(eval(&mut ed, &s, r#"e8.withCurrentBuffer("*other*", () => e8.variable("default-directory"))"#), r#""/var/""#);
 }

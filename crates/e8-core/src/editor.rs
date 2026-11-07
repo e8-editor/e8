@@ -1929,9 +1929,20 @@ impl Editor {
     /// `get-buffer-create`. It is not shown.
     pub fn get_buffer_create(&mut self, name: &str) -> usize {
         self.find_buffer(name).unwrap_or_else(|| {
-            self.buffers.push(Buffer::new(name));
+            let buffer = self.new_buffer(name);
+            self.buffers.push(buffer);
             self.buffers.len() - 1
         })
+    }
+
+    /// A new buffer, with the current buffer's `default-directory` as its
+    /// own, as Emacs's `get-buffer-create` gives a buffer it makes.
+    fn new_buffer(&self, name: &str) -> Buffer {
+        let mut buffer = Buffer::new(name);
+        if let Some(dir @ Value::Str(_)) = self.variable("default-directory") {
+            buffer.locals.insert("default-directory".to_string(), dir);
+        }
+        buffer
     }
 
     /// The index of the live buffer with an id, as a buffer object refers to it.
@@ -1978,7 +1989,8 @@ impl Editor {
     /// point there, as `switch-to-buffer-preserve-window-point` says.
     pub fn switch_to_buffer(&mut self, name: &str) {
         let index = self.find_buffer(name).unwrap_or_else(|| {
-            self.buffers.push(Buffer::new(name));
+            let buffer = self.new_buffer(name);
+            self.buffers.push(buffer);
             self.buffers.len() - 1
         });
         let selected = self.selected_window;
@@ -2142,6 +2154,7 @@ impl Editor {
             let base = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_else(|| name.clone());
             let mut buffer = Buffer::new(self.unique_buffer_name(&base));
             buffer.path = Some(path.to_path_buf());
+            crate::files::set_file_default_directory(&mut buffer, path);
             self.buffers.push(buffer);
             self.select(self.buffers.len() - 1);
             if !is_new {
