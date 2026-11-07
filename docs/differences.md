@@ -107,6 +107,7 @@ E8 reorders text as Emacs 30.2 does, and `tests/emacs/bidi/` compares the two on
 
 ## Files and the clipboard
 
+- **`default-directory`** (not yet): a new buffer that visits no file does not take the current buffer's, as Emacs's `get-buffer-create` gives it; until something sets its own, relative names go from the directory E8 started in. A buffer visiting a file has its file's directory, as in Emacs.
 - **Auto-revert** (not yet) polls every `auto-revert-interval` seconds rather than being told by the system ([ADR 0018](adr/0018-files-and-saving.md)).
 - **The clipboard** (not yet): X11's primary selection is not used, and the terminal does not write the clipboard ([ADR 0031](adr/0031-the-system-clipboard.md)).
 - **Dired** (not yet): `M-DEL` and `* c` read their mark as text and RET, where Emacs reads a key ([ADR 0022](adr/0022-dired-and-projects.md)).

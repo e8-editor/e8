@@ -2239,8 +2239,7 @@ impl Editor {
         if let Some(Value::Str(dir)) = b.locals.get("default-directory") {
             return expand_file_name(dir);
         }
-        self.window_buffer()
-            .path
+        b.path
             .as_deref()
             .and_then(Path::parent)
             .map(Path::to_path_buf)

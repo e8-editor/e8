@@ -343,6 +343,13 @@ impl Editor {
         if let Some(value) = b.locals.get(name) {
             return Some(value.clone());
         }
+        // A buffer visiting a file looks up names in its file's directory,
+        // as Emacs sets default-directory when it visits one.
+        if name == "default-directory"
+            && let Some(dir) = b.path.as_deref().and_then(std::path::Path::parent)
+        {
+            return Some(Value::Str(crate::files::abbreviate_dir(dir)));
+        }
         let var = self.var(name)?;
         if var.hook {
             return Some(Value::List(self.hook_value_in(b, name)));
@@ -882,9 +889,10 @@ pub(crate) fn install(ed: &mut Editor) {
         ),
         Variable::new(
             "default-directory",
-            "Where the buffer looks up relative file names, as a directory name ending in /. Nil means the directory of its file, or else the directory E8 started in. Dired sets it to the directory it lists.",
+            "Where the buffer looks up relative file names, as a directory name ending in /. Each buffer has its own, as in Emacs: a buffer visiting a file has its file's directory unless it sets another, and nil elsewhere means the directory E8 started in. Dired sets it to the directory it lists.",
             Value::Bool(false),
-        ),
+        )
+        .local(),
         Variable::new(
             "read-file-name-completion-ignore-case",
             "Whether completing file names ignores the case of letters: on where the file system does, as on macOS and Windows.",
