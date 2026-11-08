@@ -1410,7 +1410,7 @@ dependencies = [
 
 [[package]]
 name = "e8-web"
-version = "0.4.1"
+version = "0.5.0"
 dependencies = [
  "e8-core",
  "e8-gui",

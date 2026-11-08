@@ -84,6 +84,9 @@ section, which `wasm-opt` or `--strip-debug` would drop.
 
 - **Your computer's files**: those in the page are only the browser's.
   There are no symbolic or hard links, and no trash: deleting is final.
+  Dired shows every file as `-rw-rw-rw-` or `drwxrwxrwx` with no owner,
+  as `file_attributes` gives them where there is no Unix; the tree keeps
+  modes it could give instead.
 - **Processes, the agent, the system clipboard**: none, gated off.
 - **Browser keys**: `C-w`, `C-n` and `C-t` belong to the browser. Alt
   works as Meta.
