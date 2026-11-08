@@ -343,13 +343,35 @@ declare global {
       /**
        * The mode of a conversation with a coding agent, started with M-x agent-shell.
        *
-       * Type a request under the last * You heading and send it with C-c RET. The agent's reply streams in under * Agent, its Markdown made Org; each tool call is a line, with its output or diff folded into it as it comes (TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. The agent asks before its tools act. C-c C-k stops the turn. The mode line shows whether the agent is working and how much of its context the conversation fills.
+       * Type a request under the last * You heading and send it with C-c RET. The agent's reply streams in under * Agent, its Markdown made Org; each tool call is a line, with its output or diff folded into it as it comes (TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. M-p and M-n bring the requests sent before back to the prompt, as in a shell, and M-r picks one of them. In the transcript, where nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode line shows whether the agent is working and how much of its context the conversation fills.
        *
        * The header line shows the session's model, mode and thought level. C-c TAB, or C-<tab> as in Emacs's agent-shell where tab-bar-mode does not take it, moves to the next mode, C-c C-v picks the model, C-c C-t the thought level, and C-c C-s any setting the agent offers. Picking a mode is M-x agent-shell-set-session-mode, as C-c C-m is C-c RET.
        *
        * Defined in packages/agent-shell.ts.
        */
       "agent-shell-mode": [];
+      /**
+       * Put the request sent after the one shown at the prompt, or what was being typed after the newest. With a prefix argument, that many forward.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-next-input": [n?: number];
+      /**
+       * Put the request sent before back at the prompt; again, the one before that. With a prefix argument, that many back.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-previous-input": [n?: number];
+      /**
+       * Pick one of the requests sent before, with completion, and put it at the prompt.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-search-history": [];
       /**
        * Send the request under the last * You heading to the agent.
        *
@@ -10069,7 +10091,7 @@ declare global {
        */
       "org-use-fast-todo-selection": Value;
       /**
-       * Whether single keys at the start of a heading run org-speed-commands' commands rather than typing.
+       * Whether single keys at the start of a heading run org-speed-commands' commands rather than typing. A function is asked, with point where the key was typed, whether they run there too: agent-shell has them run anywhere in the transcript, as Org's manual has them run on any of a heading's stars.
        *
        * Defined in packages/org.ts.
        */

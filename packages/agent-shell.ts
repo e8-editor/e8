@@ -148,6 +148,12 @@ interface Shell {
   waiting: { ready: () => void; failed: (error: acp.RpcError) => void }[];
   /** The end of what the agent wrote to standard error, for when it fails. */
   stderrTail: string;
+  /** The requests sent, newest first, for M-p and M-n. */
+  history: string[];
+  /** Where M-p and M-n are in the history, or undefined at the request being typed. */
+  historyIndex: number | undefined;
+  /** What was typed before M-p, put back when M-n comes past the newest. */
+  historyStored: string | undefined;
 }
 
 const shells = new Map<string, Shell>();
@@ -185,7 +191,10 @@ e8.defineMajorMode({
     "* Agent, its Markdown made Org; each tool call is a line, with its output or diff folded into it as it comes " +
     "(TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. " +
     "The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is " +
-    "read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. The agent asks before its tools act. C-c C-k stops the turn. The mode " +
+    "read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. M-p and M-n bring " +
+    "the requests sent before back to the prompt, as in a shell, and M-r picks one of them. In the transcript, where " +
+    "nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b " +
+    "to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode " +
     "line shows whether the agent is working and how much of its context the conversation fills.\n\n" +
     "The header line shows the session's model, mode and thought level. C-c TAB, or C-<tab> as in Emacs's " +
     "agent-shell where tab-bar-mode does not take it, moves to the next mode, C-c C-v " +
@@ -199,6 +208,11 @@ e8.defineMajorMode({
     "C-c C-v": "agent-shell-set-session-model",
     "C-c C-t": "agent-shell-set-session-thought-level",
     "C-c C-s": "agent-shell-set-session-config-option",
+    "M-p": "agent-shell-previous-input",
+    "M-n": "agent-shell-next-input",
+    "M-r": "agent-shell-search-history",
+    "C-<up>": "agent-shell-previous-input",
+    "C-<down>": "agent-shell-next-input",
   },
   setup: () => {
     e8.call("visual-line-mode");
@@ -209,11 +223,40 @@ e8.defineMajorMode({
     e8.makeLocalVariable("org-hide-emphasis-markers");
     e8.setVariable("org-hide-emphasis-markers", true);
     e8.addHook("org-cycle-tab-first-hook", toggleBlockBelow, { local: true });
+    // Letters in the transcript, where typing is refused, move about it instead.
+    e8.makeLocalVariable("org-use-speed-commands");
+    e8.setVariable("org-use-speed-commands", inTranscript);
+    e8.makeLocalVariable("org-speed-commands");
+    e8.setVariable("org-speed-commands", SPEED_COMMANDS);
   },
 });
 
+/** Whether point is in the transcript, the read-only text above the request being typed. */
+function inTranscript(): boolean {
+  return e8.point() < e8.bufferSize() && e8.getTextProperty(e8.point(), "read-only") === true;
+}
+
+/**
+ * The speed commands of the transcript: Org's that move about and fold,
+ * not those that edit, which the transcript refuses.
+ */
+const SPEED_COMMANDS: e8.Value = [
+  ["Outline Navigation"],
+  ["n", ["org-speed-move-safe", "org-next-visible-heading"]],
+  ["p", ["org-speed-move-safe", "org-previous-visible-heading"]],
+  ["f", ["org-speed-move-safe", "org-forward-heading-same-level"]],
+  ["b", ["org-speed-move-safe", "org-backward-heading-same-level"]],
+  ["u", ["org-speed-move-safe", "outline-up-heading"]],
+  ["Outline Visibility"],
+  ["c", "org-cycle"],
+  ["C", "org-shifttab"],
+  ["Misc"],
+  ["o", "org-open-at-point"],
+  ["?", "org-speed-command-help"],
+];
+
 /** What the header line says of the keys, after the session's settings. */
-const KEYS = "C-c RET send · C-c C-k stop · C-c TAB mode · C-c C-v model · C-c C-s settings · TAB on → output";
+const KEYS = "C-c RET send · C-c C-k stop · M-p history · C-c TAB mode · C-c C-v model · C-c C-s settings · TAB on → output";
 
 /** The header line: the session's model, mode and thought level, then the keys. */
 function showSettings(shell: Shell): void {
@@ -1384,6 +1427,9 @@ export function start(name: string): string {
       permissions: [],
       asking: false,
       stderrTail: "",
+      history: [],
+      historyIndex: undefined,
+      historyStored: undefined,
       options: [],
       starting: false,
       waiting: [],
@@ -1430,23 +1476,95 @@ function currentShell(): Shell {
   return shell!;
 }
 
+/** Where the request being typed starts: after the last * You heading, or an error without one. */
+function requestStart(): number {
+  const text = e8.bufferText(0, e8.bufferSize());
+  // The heading, at a line's start, not text in a line or a deeper heading.
+  const after = text.lastIndexOf("\n* You\n");
+  const at = after >= 0 ? after + 1 : text.startsWith("* You\n") ? 0 : -1;
+  if (at < 0) e8.userError("Type a request under a * You heading");
+  return [...text.slice(0, at + "* You\n".length)].length;
+}
+
+/** Puts `text` at the prompt in place of the request being typed, point after it. */
+function replaceRequest(start: number, text: string): void {
+  e8.deleteRegion(start, e8.bufferSize());
+  e8.gotoChar(start);
+  e8.insert(text);
+}
+
+/** Puts the request `arg` back in the history at the prompt, forward for a negative `arg`, as comint-previous-input. */
+function historyMove(shell: Shell, arg: number): void {
+  if (shell.history.length === 0) e8.userError("No history");
+  const start = requestStart();
+  if (shell.historyIndex === undefined) {
+    if (arg < 0) e8.userError("End of history; no default available");
+    shell.historyStored = e8.bufferText(start, e8.bufferSize());
+  }
+  const next = (shell.historyIndex ?? -1) + arg;
+  if (next >= shell.history.length) e8.userError("Beginning of history; no preceding item");
+  if (next < 0) {
+    replaceRequest(start, shell.historyStored ?? "");
+    shell.historyIndex = undefined;
+    e8.message("Input restored");
+    return;
+  }
+  shell.historyIndex = next;
+  replaceRequest(start, shell.history[next]!);
+  e8.message(`History item: ${next + 1}`);
+}
+
+e8.defineCommand({
+  name: "agent-shell-previous-input",
+  doc: "Put the request sent before back at the prompt; again, the one before that. With a prefix argument, that many back.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => historyMove(currentShell(), n),
+});
+
+e8.defineCommand({
+  name: "agent-shell-next-input",
+  doc: "Put the request sent after the one shown at the prompt, or what was being typed after the newest. With a prefix argument, that many forward.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => historyMove(currentShell(), -n),
+});
+
+e8.defineCommand({
+  name: "agent-shell-search-history",
+  doc: "Pick one of the requests sent before, with completion, and put it at the prompt.",
+  run: async () => {
+    const shell = currentShell();
+    if (shell.history.length === 0) e8.userError("No history");
+    const start = requestStart();
+    // Each request on one line to pick from, the request itself put back whole.
+    const shown = new Map<string, string>();
+    for (const request of shell.history) {
+      const line = request.replace(/\s*\n\s*/g, " ⏎ ");
+      if (!shown.has(line)) shown.set(line, request);
+    }
+    const picked = await e8.completingRead("History: ", [...shown.keys()], { requireMatch: true });
+    const request = shown.get(picked);
+    if (request === undefined) return;
+    replaceRequest(start, request);
+    shell.historyIndex = undefined;
+  },
+});
+
 e8.defineCommand({
   name: "agent-shell-send",
   doc: "Send the request under the last * You heading to the agent.",
   run: () => {
     const shell = currentShell();
-    const text = e8.bufferText(0, e8.bufferSize());
-    // The heading, at a line's start, not text in a line or a deeper heading.
-    const after = text.lastIndexOf("\n* You\n");
-    const at = after >= 0 ? after + 1 : text.startsWith("* You\n") ? 0 : -1;
-    if (at < 0) e8.userError("Type a request under a * You heading");
-    const request = text.slice(at + "* You\n".length).trim();
+    const start = requestStart();
+    const request = e8.bufferText(start, e8.bufferSize()).trim();
     if (request === "") e8.userError("Type a request under the last * You heading first");
     if (shell.busy) e8.userError("The agent is still working; C-c C-k stops it");
+    // Kept for M-p, once, however often it is sent.
+    if (shell.history[0] !== request) shell.history.unshift(request);
+    shell.historyIndex = undefined;
+    shell.historyStored = undefined;
     // Sent, the request is the transcript's: read-only as the agent's turns, and
     // with no undo history, as nothing above it can change any more.
-    const requestStart = [...text.slice(0, at + "* You\n".length)].length;
-    writing(shell, () => lock(requestStart, e8.bufferSize()));
+    writing(shell, () => lock(start, e8.bufferSize()));
     e8.setVariable("buffer-undo-list", null);
     shell.busy = true;
     shell.cancelled = false;
