@@ -831,6 +831,97 @@ fn an_agent_with_only_modes_cycles_them_with_c_c_tab_or_c_tab() {
 
 /// Whether the character at `at` in the shell's buffer is hidden.
 /// Whether the character `at` bytes into `text`, the shell's buffer's text, is hidden.
+/// Two turns, as [`the_transcript_is_read_only_and_undo_reaches_only_the_request`] has them.
+fn two_turns() -> Vec<Value> {
+    let mut steps = opening("hi");
+    steps.extend([
+        chunk("Hello"),
+        end_turn("end_turn"),
+        json!({"expect": {"method": "session/prompt", "id": 4, "params": {"prompt": [{"type": "text", "text": "second one"}]}}}),
+        chunk("Again"),
+        json!({"send": {"id": 4, "result": {"stopReason": "end_turn"}}}),
+    ]);
+    steps
+}
+
+#[test]
+fn m_p_and_m_n_bring_earlier_requests_back_to_the_prompt_and_m_r_picks_one() {
+    let Some(s) = setup(two_turns(), "hi") else { return };
+    s.d.press("C-c RET");
+    s.finished();
+    s.d.type_text("second one");
+    s.d.press("C-c RET");
+    s.d.until(|t| t.matches("* You\n").count() == 3);
+    let text = s.d.text();
+    assert!(text.ends_with("* You\nsecond one\n\n* Agent\nAgain\n\n* You\n"), "{text}");
+    s.d.type_text("typed so far");
+    // Back through the requests sent, newest first, as a shell's M-p.
+    s.d.press("M-p");
+    assert!(s.d.text().ends_with("* You\nsecond one"), "{}", s.d.text());
+    assert_eq!(s.d.message().as_deref(), Some("History item: 1"));
+    s.d.press("M-p");
+    assert!(s.d.text().ends_with("* You\nhi"), "{}", s.d.text());
+    s.d.press("M-p");
+    assert!(s.d.message().is_some_and(|m| m.contains("Beginning of history")), "{:?}", s.d.message());
+    assert!(s.d.text().ends_with("* You\nhi"), "{}", s.d.text());
+    // Forward again, to what was being typed.
+    s.d.press("M-n");
+    assert!(s.d.text().ends_with("* You\nsecond one"), "{}", s.d.text());
+    s.d.press("M-n");
+    assert!(s.d.text().ends_with("* You\ntyped so far"), "{}", s.d.text());
+    assert_eq!(s.d.message().as_deref(), Some("Input restored"));
+    s.d.press("M-n");
+    assert!(s.d.message().is_some_and(|m| m.contains("End of history")), "{:?}", s.d.message());
+    // M-r picks one with completion.
+    s.d.press("M-r");
+    assert!(s.d.prompt().is_some_and(|p| p.starts_with("History")), "{:?}", s.d.prompt());
+    s.d.type_text("hi");
+    s.d.press("RET");
+    assert!(s.d.text().ends_with("* You\nhi"), "{}", s.d.text());
+    // The transcript above is as it was throughout.
+    assert!(s.d.text().starts_with(&text), "{}", s.d.text());
+}
+
+#[test]
+fn letters_in_the_transcript_move_about_it_and_type_at_the_prompt() {
+    let Some(s) = setup(two_turns(), "hi") else { return };
+    s.d.press("C-c RET");
+    let text = s.finished();
+    assert_eq!(text, "* You\nhi\n\n* Agent\nHello\n\n* You\n");
+    let agent = text.find("* Agent").unwrap();
+    let prompt = text.rfind("* You").unwrap();
+    // In the transcript, Org's speed commands run anywhere, not only at a heading's start.
+    s.d.eval(&format!("e8.gotoChar({})", text.find("Hello").unwrap() + 2));
+    s.d.press("p");
+    assert_eq!(s.d.point(), agent);
+    s.d.press("p");
+    assert_eq!(s.d.point(), 0);
+    s.d.press("n");
+    assert_eq!(s.d.point(), agent);
+    s.d.press("n");
+    assert_eq!(s.d.point(), prompt);
+    s.d.press("n");
+    assert!(s.d.message().is_some_and(|m| m.contains("Boundary reached")), "{:?}", s.d.message());
+    assert_eq!(s.d.point(), prompt);
+    s.d.press("p");
+    assert_eq!(s.d.point(), agent);
+    // c folds the agent's turn, and opens it again.
+    let hello = text.find("Hello").unwrap();
+    s.d.press("c");
+    assert!(hidden_at(&s.d, hello), "folded");
+    s.d.press("c");
+    assert!(!hidden_at(&s.d, hello), "shown again");
+    // Letters that edit stay refused, and the transcript stands.
+    s.d.eval(&format!("e8.gotoChar({hello})"));
+    s.d.press("t");
+    assert!(s.d.message().is_some_and(|m| m.contains("read-only")), "{:?}", s.d.message());
+    assert_eq!(s.d.text(), text);
+    // At the prompt, letters type.
+    s.d.eval("e8.gotoChar(e8.bufferSize())");
+    s.d.type_text("np");
+    assert!(s.d.text().ends_with("* You\nnp"), "{}", s.d.text());
+}
+
 fn hidden_in(d: &Driven, text: &str, at: usize) -> bool {
     hidden_at(d, text[..at].chars().count())
 }
