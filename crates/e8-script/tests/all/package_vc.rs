@@ -61,6 +61,16 @@ fn lock(config: &Path) -> serde_json::Value {
     serde_json::from_str(&fs::read_to_string(config.join("e8-lock.json")).unwrap()).unwrap()
 }
 
+/// Waits for an upgrade's fetching in the background to end, as its
+/// result replaces the "Fetching" message.
+fn upgraded(ed: &mut Editor) -> String {
+    let until = std::time::Instant::now() + std::time::Duration::from_secs(20);
+    while ed.echo().is_none_or(|e| e.starts_with("Fetching")) && std::time::Instant::now() < until {
+        ed.accept_process_output(std::time::Duration::from_millis(20));
+    }
+    ed.echo().unwrap_or_default().to_string()
+}
+
 fn use_package(name: &str, url: &Path, rev: Option<&str>) -> String {
     let rev = rev.map(|r| format!(", rev: \"{r}\"")).unwrap_or_default();
     format!("e8.usePackage(\"{name}\", {{ url: {:?}{rev} }})", url.display().to_string())
@@ -105,11 +115,13 @@ fn the_lock_file_reproduces_the_commit_until_an_upgrade() {
     assert_eq!(ed.variable("alpha-version"), Some(Value::Str("0.1.0".into())));
 
     ed.call("package-vc-upgrade", vec![Arg::Str("alpha".into())]).unwrap();
-    let echo = ed.echo().unwrap().to_string();
+    // Fetched in the background: the command returns at once, saying so.
+    assert!(ed.echo().is_some_and(|e| e.starts_with("Fetching 1 package")), "{:?}", ed.echo());
+    let echo = upgraded(&mut ed);
     assert!(echo.contains("alpha: v0.1.0 -> v0.2.0 (1 commit)"), "{echo}");
     assert_eq!(lock(&config)["packages"]["alpha"]["tag"], "v0.2.0");
     ed.call("package-vc-upgrade", vec![Arg::Str("alpha".into())]).unwrap();
-    assert_eq!(ed.echo(), Some("alpha is up to date"));
+    assert_eq!(upgraded(&mut ed), "alpha is up to date");
 }
 
 /// On a machine with the lock file but not the packages, the first package
@@ -180,7 +192,7 @@ fn a_rev_pins_a_tag_and_a_branch_is_followed() {
     eval(&mut ed, &s, &use_package("alpha", &alpha, Some("v0.1.0"))).unwrap();
     assert_eq!(ed.variable("alpha-version"), Some(Value::Str("0.1.0".into())));
     ed.call("package-vc-upgrade", vec![Arg::Str("alpha".into())]).unwrap();
-    assert_eq!(ed.echo(), Some("alpha is pinned to v0.1.0"));
+    assert_eq!(upgraded(&mut ed), "alpha is pinned to v0.1.0");
 
     // The configuration now follows main: the checkout moves to it.
     let (mut ed, s) = editor(&config);
@@ -191,6 +203,7 @@ fn a_rev_pins_a_tag_and_a_branch_is_followed() {
     fs::write(alpha.join("alpha.ts"), "e8.setVariable(\"alpha-version\", \"head\");\n").unwrap();
     git(&alpha, &["commit", "--quiet", "-am", "head"]);
     ed.call("package-vc-upgrade", vec![Arg::Str("alpha".into())]).unwrap();
+    upgraded(&mut ed);
     assert_eq!(lock(&config)["packages"]["alpha"]["commit"], git(&alpha, &["rev-parse", "main"]));
 }
 
@@ -306,4 +319,38 @@ fn a_manifest_cannot_pass_git_an_option_or_name_a_path() {
     assert!(e.to_string().contains("has no usable \"name\""), "{e}");
     let e = eval(&mut ed, &s, &use_package("sneaky", &sneaky, Some("--orphan=x"))).unwrap_err();
     assert!(e.to_string().contains("Not a usable revision"), "{e}");
+}
+
+/// A package whose new version needs a newer version of what it requires
+/// upgrades that too, as Emacs's package manager does; upgrading all the
+/// packages fetches them at once and upgrades a requirement first.
+#[test]
+fn upgrading_upgrades_a_requirement_that_is_too_old() {
+    let root = tempfile::tempdir().unwrap();
+    let config = root.path().join("config");
+    let alpha = repository(root.path(), "e8-alpha", "alpha", &["0.1.0"], simple("alpha"));
+    let alpha_path = alpha.display().to_string();
+    let requiring = |version: &str| format!("{{ \"name\": \"beta\", \"requires\": {{ \"alpha\": \"{alpha_path}@{version}\" }} }}");
+    let beta = repository(root.path(), "e8-beta", "beta", &["1.0.0"], |_| requiring("0.1.0"));
+    let (mut ed, s) = editor(&config);
+    eval(&mut ed, &s, &use_package("beta", &beta, None)).unwrap();
+    assert_eq!(lock(&config)["packages"]["alpha"]["tag"], "v0.1.0");
+
+    // beta 2.0.0 needs alpha 0.2.0, which is out too.
+    tag(&alpha, "alpha", "0.2.0", "{ \"name\": \"alpha\" }");
+    tag(&beta, "beta", "2.0.0", &requiring("0.2.0"));
+    ed.call("package-vc-upgrade", vec![Arg::Str("beta".into())]).unwrap();
+    let echo = upgraded(&mut ed);
+    assert!(echo.contains("beta: v1.0.0 -> v2.0.0"), "{echo}");
+    assert_eq!(lock(&config)["packages"]["alpha"]["tag"], "v0.2.0");
+    assert_eq!(lock(&config)["packages"]["beta"]["tag"], "v2.0.0");
+
+    // Again with both newer: alpha, which beta requires, comes first, though
+    // "alpha" sorts before "beta" either way; each says what it did.
+    tag(&alpha, "alpha", "0.3.0", "{ \"name\": \"alpha\" }");
+    tag(&beta, "beta", "3.0.0", &requiring("0.3.0"));
+    ed.call("package-vc-upgrade-all", vec![]).unwrap();
+    assert!(ed.echo().is_some_and(|e| e.starts_with("Fetching 2 packages")), "{:?}", ed.echo());
+    let echo = upgraded(&mut ed);
+    assert!(echo.contains("alpha: v0.2.0 -> v0.3.0") && echo.contains("beta: v2.0.0 -> v3.0.0"), "{echo}");
 }
