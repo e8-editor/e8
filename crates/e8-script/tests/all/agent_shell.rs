@@ -637,10 +637,11 @@ fn live_claude_code_s_tool_calls_fold_as_they_come() {
     while d.text().matches("* You\n").count() < 2 {
         assert!(start.elapsed() < std::time::Duration::from_secs(180), "{}", d.text());
         let t = d.text();
-        if let Some(i) = t.find("#+begin_src ") {
-            if t.matches("* You\n").count() < 2 && hidden_in(&d, &t, i) {
-                seen_folded = true;
-            }
+        if let Some(i) = t.find("#+begin_src ")
+            && t.matches("* You\n").count() < 2
+            && hidden_in(&d, &t, i)
+        {
+            seen_folded = true;
         }
         std::thread::sleep(std::time::Duration::from_millis(50));
     }
@@ -656,6 +657,30 @@ fn live_claude_code_s_tool_calls_fold_as_they_come() {
 /// test -- --ignored live`. Its adapter writes with its own tools, asking
 /// as Claude Code's permission settings say, rather than through the
 /// editor's fs/write_text_file; the traffic it printed shows which.
+/// The real Claude Code's slash commands completing at the prompt, nothing
+/// sent: `cargo test -- --ignored live`.
+#[test]
+#[ignore]
+fn live_claude_code_s_slash_commands_complete() {
+    let d = Driven::new(
+        r#"e8.setVariable("agent-shell-agents", [["claude", ["npx", "-y", "@agentclientprotocol/claude-agent-acp"]]]);
+        e8.setVariable("agent-shell-default-agent", "claude");
+        e8.setVariable("agent-shell-session-strategy", "new");"#,
+    );
+    d.mx("agent-shell");
+    d.type_text("/conte");
+    let capf = r#"JSON.stringify(e8.runHookWithArgsUntilSuccess("completion-at-point-functions") ?? null)"#;
+    let start = std::time::Instant::now();
+    while d.eval_expression(capf) == r#""null""# {
+        assert!(start.elapsed() < std::time::Duration::from_secs(120), "no commands: {}", d.text());
+        std::thread::sleep(std::time::Duration::from_millis(200));
+    }
+    d.press("TAB");
+    eprintln!("{}\n{:?}", d.text(), d.message());
+    assert!(d.text().ends_with("* You\n/context"), "{}", d.text());
+    assert!(d.message().is_some_and(|m| m.starts_with("/context: ")), "{:?}", d.message());
+}
+
 /// The real Claude Code resuming a session another editor had, and
 /// remembering what was said in it: `cargo test -- --ignored live`.
 #[test]
@@ -1050,8 +1075,16 @@ fn an_earlier_session_is_resumed_its_conversation_replayed_and_the_agent_carries
         "{text}"
     );
     assert_eq!(s.d.message().as_deref(), Some("Resumed Fix the tests"));
-    // The replayed tool output is folded, as a finished call's is.
+    // The replayed tool output is folded, as a finished call's is, and every
+    // reply but the last, which shows where the session was left.
     assert!(hidden_in(&s.d, &text, text.find("ok\n").unwrap()), "folded");
+    assert!(hidden_in(&s.d, &text, text.find("They").unwrap()), "an earlier reply is folded");
+    assert!(!hidden_in(&s.d, &text, text.find("You're welcome").unwrap()), "the last reply shows");
+    assert!(!hidden_in(&s.d, &text, text.find("Thanks").unwrap()), "the requests show");
+    // TAB on its heading opens an earlier reply, as on any Org heading.
+    s.d.eval(&format!("e8.gotoChar({})", text.find("* Agent").unwrap()));
+    s.d.press("TAB");
+    assert!(!hidden_in(&s.d, &text, text.find("They").unwrap()), "opened");
     // The replay is the transcript: read-only, and not undone.
     s.d.eval(&format!("e8.gotoChar({})", text.find("Thanks").unwrap()));
     s.d.press("DEL");
@@ -1132,6 +1165,47 @@ fn an_agent_that_stops_is_started_again_in_the_same_session() {
     s.d.press("C-c RET");
     s.d.until(|t| t.contains("Still here."));
     assert!(s.d.text().contains("[Starting fake again, in the same session.]\nStill here."), "{}", s.d.text());
+}
+
+#[test]
+fn slash_commands_complete_at_the_start_of_a_request_and_say_what_they_do() {
+    let mut steps = session_opening(json!({}));
+    steps.push(update(json!({"sessionUpdate": "available_commands_update", "availableCommands": [
+        {"name": "compact", "description": "Clear the conversation but keep a summary of it in context", "input": null},
+        {"name": "context", "description": "Show what fills the context", "input": null},
+        {"name": "code-review:code-review", "description": "(code-review) Code review a pull request", "input": {"hint": "PR number"}},
+    ]})));
+    let Some(s) = open(vec![steps], "") else { return };
+    // As a completion-at-point function, once the agent has said its commands.
+    s.d.type_text("/co");
+    let capf = r#"JSON.stringify(e8.runHookWithArgsUntilSuccess("completion-at-point-functions") ?? null)"#;
+    wait_for("the commands", || s.d.eval_expression(capf) != r#""null""#);
+    assert_eq!(
+        js_string(&s.d, capf),
+        json!([6, 9, ["/compact", "/context", "/code-review:code-review"]]).to_string()
+    );
+    // TAB completes one, and says what it does.
+    s.d.type_text("nt");
+    s.d.press("TAB");
+    assert_eq!(s.d.text(), "* You\n/context");
+    assert_eq!(s.d.message().as_deref(), Some("/context: Show what fills the context"));
+    // With several, the minibuffer asks which, and what one takes is said too.
+    s.d.press("C-a");
+    s.d.press("C-k");
+    s.d.type_text("/co");
+    s.d.press("TAB");
+    assert!(s.d.prompt().is_some_and(|p| p.starts_with("Complete")), "{:?}", s.d.prompt());
+    s.d.type_text("de-review:code-review");
+    s.d.press("RET");
+    assert_eq!(s.d.text(), "* You\n/code-review:code-review");
+    assert_eq!(s.d.message().as_deref(), Some("/code-review:code-review: (code-review) Code review a pull request (takes PR number)"));
+    // Only at the start of the request: a / later in it is text, and TAB is Org's.
+    s.d.press("C-a");
+    s.d.press("C-k");
+    s.d.type_text("see /co");
+    assert_eq!(s.d.eval_expression(capf), r#""null""#);
+    s.d.press("TAB");
+    assert_eq!(s.d.text(), "* You\nsee /co");
 }
 
 fn hidden_in(d: &Driven, text: &str, at: usize) -> bool {

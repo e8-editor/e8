@@ -35,9 +35,10 @@
 
 import * as acp from "acp";
 import { findBufferVisiting } from "files";
+import { completionInRegion } from "minibuffer";
 import { BLOCK_BEGIN, BLOCK_END, flag, folded, toggleDrawerOrBlock, withoutFoldChecks } from "org-fold";
 import { current as projectRoot } from "project";
-import { executableFind, truthy } from "subr";
+import { allMatches, charCount, executableFind, truthy } from "subr";
 
 e8.defineVariable({
   name: "agent-shell-agents",
@@ -185,6 +186,8 @@ interface Shell {
   lastSessionId?: string;
   /** Whether a session being loaded is replaying its conversation into the buffer. */
   loading: boolean;
+  /** The agent's slash commands, as its available_commands_update gives them. */
+  commands: SlashCommand[];
   /** Where M-p and M-n are in the history, or undefined at the request being typed. */
   historyIndex: number | undefined;
   /** What was typed before M-p, put back when M-n comes past the newest. */
@@ -227,7 +230,8 @@ e8.defineMajorMode({
     "(TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. " +
     "The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is " +
     "read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. M-p and M-n bring " +
-    "the requests sent before back to the prompt, as in a shell, and M-r picks one of them. In the transcript, where " +
+    "the requests sent before back to the prompt, as in a shell, and M-r picks one of them. A request starting " +
+    "with / is one of the agent's slash commands, which TAB or C-M-i completes, its description shown once it is whole. In the transcript, where " +
     "nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b " +
     "to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode " +
     "line shows whether the agent is working and how much of its context the conversation fills.\n\n" +
@@ -258,6 +262,9 @@ e8.defineMajorMode({
     e8.makeLocalVariable("org-hide-emphasis-markers");
     e8.setVariable("org-hide-emphasis-markers", true);
     e8.addHook("org-cycle-tab-first-hook", toggleBlockBelow, { local: true });
+    // TAB after a / at the start of the request completes the agent's slash commands, as C-M-i does.
+    e8.addHook("org-cycle-tab-first-hook", completeSlashCommand, { local: true });
+    e8.addHook("completion-at-point-functions", slashCompletions, { local: true });
     // Letters in the transcript, where typing is refused, move about it instead.
     e8.makeLocalVariable("org-use-speed-commands");
     e8.setVariable("org-use-speed-commands", inTranscript);
@@ -871,8 +878,19 @@ function onUpdate(shell: Shell, notification: acp.Json): void {
     case "config_option_update":
       takeOptions(shell, update.configOptions);
       break;
+    case "available_commands_update":
+      if (Array.isArray(update.availableCommands)) {
+        shell.commands = update.availableCommands
+          .filter((c: any) => typeof c?.name === "string" && c.name !== "")
+          .map((c: any) => ({
+            name: String(c.name),
+            description: typeof c.description === "string" ? c.description : "",
+            hint: typeof c.input?.hint === "string" ? c.input.hint : undefined,
+          }));
+      }
+      break;
     default:
-      // available_commands_update, session_info_update and the rest.
+      // session_info_update and the rest.
       break;
   }
 }
@@ -1540,6 +1558,8 @@ function loadSession(
     closeOpen(shell);
     forgetTurn(shell);
     startLine(shell);
+    // The earlier turns folded, as Org shows a heading's children, so the last is where it opens.
+    inBuffer(shell, foldEarlierReplies);
     putPrompt(shell, inBuffer(shell, () => e8.bufferSize()) ? "\n" : "");
     inBuffer(shell, () => {
       e8.gotoChar(e8.bufferSize());
@@ -1632,6 +1652,7 @@ export function start(name: string): string {
       canList: false,
       canResume: false,
       loading: false,
+      commands: [],
       historyIndex: undefined,
       historyStored: undefined,
       options: [],
@@ -1681,14 +1702,85 @@ function currentShell(): Shell {
   return shell!;
 }
 
-/** Where the request being typed starts: after the last * You heading, or an error without one. */
-function requestStart(): number {
+/** Where the request being typed starts: after the last * You heading, or undefined without one. */
+function promptStart(): number | undefined {
   const text = e8.bufferText(0, e8.bufferSize());
   // The heading, at a line's start, not text in a line or a deeper heading.
   const after = text.lastIndexOf("\n* You\n");
   const at = after >= 0 ? after + 1 : text.startsWith("* You\n") ? 0 : -1;
-  if (at < 0) e8.userError("Type a request under a * You heading");
-  return [...text.slice(0, at + "* You\n".length)].length;
+  return at < 0 ? undefined : [...text.slice(0, at + "* You\n".length)].length;
+}
+
+/** Where the request being typed starts, or an error without a * You heading. */
+function requestStart(): number {
+  const start = promptStart();
+  if (start === undefined) e8.userError("Type a request under a * You heading");
+  return start!;
+}
+
+/** Folds each * Agent heading's reply but the last, as the replay of a long session leaves them. */
+function foldEarlierReplies(): void {
+  const text = e8.bufferText(0, e8.bufferSize());
+  const headings: number[] = [];
+  for (const m of allMatches(/^\* /gm, text)) headings.push(m.index);
+  const replies = headings.filter((at) => text.startsWith("* Agent\n", at));
+  const toChars = (i: number) => charCount(text.slice(0, i));
+  for (const at of replies.slice(0, -1)) {
+    const next = headings.find((h) => h > at);
+    const lineEnd = text.indexOf("\n", at);
+    // From the heading's end to the newline before the next heading, as outline hides a subtree.
+    if (next !== undefined && next - 1 > lineEnd) flag(toChars(lineEnd), toChars(next - 1), true, "outline");
+  }
+}
+
+// --- Slash commands -------------------------------------------------------------
+
+/** One of the agent's slash commands, as its available_commands_update gives them. */
+interface SlashCommand {
+  name: string;
+  description: string;
+  /** What the command takes after its name, when it takes something. */
+  hint?: string;
+}
+
+/** The / and the command name typed so far, when the request being typed is that and point is after it. */
+function slashAtPoint(): { shell: Shell; start: number; end: number } | undefined {
+  const shell = shellHere();
+  const start = promptStart();
+  if (shell === undefined || start === undefined || e8.point() < start) return undefined;
+  const before = e8.bufferText(start, e8.point());
+  const typed = /^\s*(\/\S*)$/.exec(before);
+  if (!typed) return undefined;
+  return { shell, start: e8.point() - charCount(typed[1]), end: e8.point() };
+}
+
+/** The agent's slash commands as completions of the / typed at point, as a completion-at-point function. */
+function slashCompletions(): e8.Value {
+  const at = slashAtPoint();
+  if (at === undefined || at.shell.commands.length === 0) return null;
+  return [at.start, at.end, at.shell.commands.map((c) => `/${c.name}`)];
+}
+
+/** Says what the slash command typed does, once it is whole: its description, and what it takes. */
+function describeSlashCommand(shell: Shell, start: number): void {
+  const typed = e8.bufferText(start, e8.point());
+  const command = shell.commands.find((c) => `/${c.name}` === typed);
+  if (command === undefined) return;
+  const description = command.description.replace(/\s+/g, " ").trim();
+  e8.message(`${typed}${description ? `: ${description}` : ""}${command.hint ? ` (takes ${command.hint})` : ""}`.replace(/%/g, "%%"));
+}
+
+/** TAB after a / at the start of the request: completes the agent's slash commands. */
+function completeSlashCommand(): boolean {
+  const at = slashAtPoint();
+  if (at === undefined) return false;
+  if (at.shell.commands.length === 0) {
+    e8.message(`${at.shell.agent} has given no slash commands${at.shell.sessionId === undefined ? " yet" : ""}`);
+    return true;
+  }
+  completionInRegion(at.start, at.end, at.shell.commands.map((c) => `/${c.name}`));
+  describeSlashCommand(at.shell, at.start);
+  return true;
 }
 
 /** Puts `text` at the prompt in place of the request being typed, point after it. */
