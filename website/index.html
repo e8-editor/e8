@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E8 — an editor that works the way Emacs works</title>
+<meta name="description" content="E8 is an editor that works the way Emacs works, in Rust and TypeScript. Try it in your browser.">
+<meta property="og:title" content="E8">
+<meta property="og:description" content="An editor that works the way Emacs works, in Rust and TypeScript.">
+<meta property="og:image" content="assets/social-dark.png">
+<link rel="icon" href="assets/icon-512.png">
+<style>
+  :root {
+    --bg: #f7f3ee;
+    --raised: #fbf8f4;
+    --ink: #1a1a1a;
+    --muted: #6b655c;
+    --line: #e3ddd3;
+    --sun: #f2541b;
+    --code: #efe9e0;
+    --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141312;
+      --raised: #1b1a18;
+      --ink: #ece8e1;
+      --muted: #9b958b;
+      --line: #2e2c29;
+      --sun: #ff7a3d;
+      --code: #22201d;
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration-color: var(--sun); text-underline-offset: 3px; }
+  a:hover { color: var(--sun); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+
+  header { border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; gap: 24px; height: 64px; }
+  .mark { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; letter-spacing: -0.01em; }
+  .mark img { width: 36px; height: 36px; }
+  .mark .reverse { display: none; }
+  @media (prefers-color-scheme: dark) { .mark .plain { display: none; } .mark .reverse { display: block; } }
+  nav { margin-left: auto; display: flex; gap: 20px; font-size: 15px; }
+  nav a { text-decoration: none; color: var(--muted); }
+  nav a:hover { color: var(--ink); }
+
+  .hero { padding-top: 40px; }
+  h1 { font-size: clamp(28px, 4.2vw, 46px); line-height: 1.1; letter-spacing: -0.025em; margin: 0 0 12px; font-weight: 650; max-width: 18em; }
+  .lede { color: var(--muted); font-size: clamp(16px, 1.6vw, 18px); margin: 0 0 24px; max-width: 42em; }
+
+  .editor { position: relative; height: clamp(420px, 70vh, 760px); border: 1px solid var(--line); background: var(--raised); }
+  .editor canvas { display: block; width: 100%; height: 100%; outline: none; }
+  .status { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); font: 14px/1.6 var(--mono); }
+  .status[hidden] { display: none; }
+  .keys { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 12px 0 0; color: var(--muted); font-size: 14px; }
+  kbd, code { font: 0.92em var(--mono); }
+  kbd { color: var(--ink); }
+  .phone { display: none; color: var(--muted); font-size: 14px; padding-top: 8px; }
+  @media (max-width: 700px) { .phone { display: block; } .editor { height: 60vh; } }
+
+  section.wrap { margin-top: 64px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 600; margin: 0 0 20px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px 40px; }
+  .cols h3 { font-size: 16px; margin: 0 0 4px; font-weight: 600; }
+  .cols p { margin: 0; color: var(--muted); font-size: 15px; }
+  pre { margin: 8px 0 16px; padding: 12px 14px; background: var(--code); border: 1px solid var(--line); overflow-x: auto; font: 14px/1.5 var(--mono); }
+  .install p { margin: 0 0 4px; max-width: 46em; }
+  .made p { max-width: 46em; margin: 0 0 14px; }
+
+  footer { margin-top: 72px; border-top: 1px solid var(--line); }
+  footer picture img { display: block; width: 100%; max-width: 900px; height: auto; margin: 24px auto 0; opacity: 0.95; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; padding-top: 16px; padding-bottom: 40px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="mark" href="./">
+      <img class="plain" src="assets/logo.svg" alt="">
+      <img class="reverse" src="assets/logo-reverse.svg" alt="">
+      <span>E8</span>
+    </a>
+    <nav>
+      <a href="#install">Install</a>
+      <a href="https://github.com/e8-editor/e8/blob/main/docs/features.md">Features</a>
+      <a href="https://github.com/e8-editor/e8">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <h1>An editor that works the way Emacs works.</h1>
+    <p class="lede">The same buffers, windows, keys and commands, with a Rust core and its commands in TypeScript. This is E8 itself, compiled to WebAssembly and running in your browser: click in it and type.</p>
+    <div class="editor">
+      <canvas id="e8"></canvas>
+      <div class="status" id="status">Loading E8…</div>
+    </div>
+    <div class="keys">
+      <span><kbd>C-x C-f</kbd> opens a file</span>
+      <span><kbd>M-x</kbd> runs a command</span>
+      <span><kbd>C-x d</kbd> lists a directory</span>
+      <span><kbd>C-x 3</kbd> splits the window</span>
+      <span><kbd>M-:</kbd> evaluates TypeScript</span>
+    </div>
+    <p class="phone">E8 needs a keyboard: on a phone you can look, but not type much.</p>
+  </div>
+
+  <section class="wrap install" id="install">
+    <h2>Install</h2>
+    <p>With Homebrew, on Apple silicon Macs and on Linux:</p>
+    <pre>brew install e8-editor/tap/e8</pre>
+    <p>That gives <code>e8</code>, the editor in a terminal, and on a Mac <code>E8.app</code>, the editor in a window. To open the app from Launchpad and Spotlight:</p>
+    <pre>ln -sf "$(brew --prefix)/opt/e8/E8.app" /Applications/E8.app</pre>
+    <p>There is also a <a href="https://github.com/e8-editor/nix">Nix flake</a>. Your configuration goes in <code>~/.config/e8/init.ts</code>.</p>
+  </section>
+
+  <section class="wrap" id="features">
+    <h2>What it does</h2>
+    <div class="cols">
+      <div><h3>Files and Dired</h3><p>Visiting, saving, backups and auto-saving, Dired to manage directories, projects to find your way around them.</p></div>
+      <div><h3>Windows and frames</h3><p>Splitting, resizing and switching, several frames, and the keys your fingers already know.</p></div>
+      <div><h3>Search and replace</h3><p>Isearch and query-replace with Emacs's own regexps, completion in the minibuffer, compiling and grepping.</p></div>
+      <div><h3>Org mode</h3><p>Headings, folding, tables, the agenda and capture, following Org's behaviour.</p></div>
+      <div><h3>Modes and faces</h3><p>Tree-sitter modes, faces and themes, images and bidirectional text, a shell.</p></div>
+      <div><h3>An agent</h3><p>An agent that calls E8's commands as tools, asking before it writes files or runs code. E8 is also an MCP server.</p></div>
+    </div>
+    <p style="margin-top:24px"><a href="https://github.com/e8-editor/e8/blob/main/docs/features.md">Everything that works, with the keys</a> · <a href="https://github.com/e8-editor/e8/blob/main/docs/differences.md">Where it differs from Emacs</a></p>
+  </section>
+
+  <section class="wrap made">
+    <h2>How it is made</h2>
+    <p>What Emacs writes in C, E8 writes in Rust; what Emacs writes in Lisp, E8 writes in TypeScript, which is also how you configure and extend it. The app runs its TypeScript on V8; this page runs it on QuickJS, with the editor on a Web Worker and your files kept in this browser's storage.</p>
+    <p>E8 is built by one person for daily use, and is open so that it is not hidden. It is free software, under the GPL.</p>
+  </section>
+</main>
+
+<footer>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
+    <img src="assets/banner-light.png" alt="" width="1800" height="600" loading="lazy">
+  </picture>
+  <div class="wrap">
+    <span>E8 is GPL-3.0-or-later</span>
+    <a href="https://github.com/e8-editor/e8">github.com/e8-editor/e8</a>
+  </div>
+</footer>
+
+<script type="module">
+  const status = document.getElementById("status");
+  const KEY = "e8-isolating";
+
+  // Shared memory needs a cross-origin isolated page. Where the host cannot
+  // send the headers, sw.js adds them: registered once, then the page
+  // reloads to be served through it. The flag stops a loop where that fails.
+  async function isolated() {
+    if (crossOriginIsolated) {
+      sessionStorage.removeItem(KEY);
+      return true;
+    }
+    if (!("serviceWorker" in navigator) || sessionStorage.getItem(KEY)) return false;
+    sessionStorage.setItem(KEY, "1");
+    await navigator.serviceWorker.register("./sw.js");
+    await navigator.serviceWorker.ready;
+    location.reload();
+    return new Promise(() => {});
+  }
+
+  try {
+    if (!(await isolated())) {
+      status.textContent = "This browser cannot give E8 the shared memory it needs. Try a recent Chrome, Edge, Firefox or Safari.";
+    } else {
+      const [{ default: init, start }, storage] = await Promise.all([import("./pkg/e8_web.js"), import("./storage.js")]);
+      if (new URLSearchParams(location.search).has("fresh")) await storage.clear();
+      const [files] = await Promise.all([storage.load(), init()]);
+      const canvas = document.getElementById("e8");
+      await start(canvas, files, storage.change);
+      status.hidden = true;
+    }
+  } catch (e) {
+    status.textContent = "E8 failed to start: " + e;
+    console.error(e);
+  }
+</script>
+</body>
+</html>
