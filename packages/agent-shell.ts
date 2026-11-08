@@ -74,6 +74,35 @@ e8.defineVariable({
   doc: "The agent M-x agent-shell starts without asking, by its name in agent-shell-agents; null to ask.",
 });
 
+e8.defineVariable({
+  name: "agent-shell-session-strategy",
+  value: "prompt",
+  doc:
+    "What M-x agent-shell does about the agent's earlier sessions in the project, when it can list and load them: " +
+    '"prompt" asks whether to resume one or start a new session, "latest" resumes the most recent one, and "new" ' +
+    "always starts a new session. A resumed session's conversation is replayed into the buffer, and the agent " +
+    "remembers it.",
+});
+e8.defineVariable({
+  name: "agent-shell-history",
+  value: [],
+  doc:
+    "The requests sent to agents, newest first, for M-p, M-n and M-r in every agent-shell buffer. Savehist mode " +
+    "saves it between sessions, as it does the minibuffer's histories.",
+});
+e8.defineVariable({
+  name: "agent-shell-history-size",
+  value: 500,
+  doc: "How many requests agent-shell-history keeps.",
+});
+// Kept between sessions with the minibuffer's histories, when savehist-mode is on.
+{
+  const saved = e8.variable("savehist-additional-variables");
+  if (Array.isArray(saved) && !saved.includes("agent-shell-history")) {
+    e8.setDefault("savehist-additional-variables", [...saved, "agent-shell-history"]);
+  }
+}
+
 /** The most of a tool call's output the buffer shows. */
 const SHOWN_OUTPUT = 4000;
 
@@ -127,7 +156,7 @@ interface Shell {
   /** Whether C-c C-k stopped the turn while it was starting. */
   cancelled: boolean;
   /** What is open at the buffer's end: the agent's text, its thinking in a block, or nothing. */
-  open: "text" | "thought" | undefined;
+  open: "text" | "thought" | "request" | undefined;
   /** The agent's text since its last full line, shown as it came, and where it starts. */
   partial: string;
   partialAt?: e8.Marker;
@@ -148,6 +177,18 @@ interface Shell {
   waiting: { ready: () => void; failed: (error: acp.RpcError) => void }[];
   /** The end of what the agent wrote to standard error, for when it fails. */
   stderrTail: string;
+  /** What the agent can do with its earlier sessions, as its initialize answer says. */
+  canLoad: boolean;
+  canList: boolean;
+  canResume: boolean;
+  /** The session the agent had when it stopped, resumed when it starts again if it can. */
+  lastSessionId?: string;
+  /** Whether a session being loaded is replaying its conversation into the buffer. */
+  loading: boolean;
+  /** Where M-p and M-n are in the history, or undefined at the request being typed. */
+  historyIndex: number | undefined;
+  /** What was typed before M-p, put back when M-n comes past the newest. */
+  historyStored: string | undefined;
 }
 
 const shells = new Map<string, Shell>();
@@ -185,7 +226,10 @@ e8.defineMajorMode({
     "* Agent, its Markdown made Org; each tool call is a line, with its output or diff folded into it as it comes " +
     "(TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. " +
     "The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is " +
-    "read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. The agent asks before its tools act. C-c C-k stops the turn. The mode " +
+    "read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. M-p and M-n bring " +
+    "the requests sent before back to the prompt, as in a shell, and M-r picks one of them. In the transcript, where " +
+    "nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b " +
+    "to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode " +
     "line shows whether the agent is working and how much of its context the conversation fills.\n\n" +
     "The header line shows the session's model, mode and thought level. C-c TAB, or C-<tab> as in Emacs's " +
     "agent-shell where tab-bar-mode does not take it, moves to the next mode, C-c C-v " +
@@ -199,6 +243,11 @@ e8.defineMajorMode({
     "C-c C-v": "agent-shell-set-session-model",
     "C-c C-t": "agent-shell-set-session-thought-level",
     "C-c C-s": "agent-shell-set-session-config-option",
+    "M-p": "agent-shell-previous-input",
+    "M-n": "agent-shell-next-input",
+    "M-r": "agent-shell-search-history",
+    "C-<up>": "agent-shell-previous-input",
+    "C-<down>": "agent-shell-next-input",
   },
   setup: () => {
     e8.call("visual-line-mode");
@@ -209,11 +258,40 @@ e8.defineMajorMode({
     e8.makeLocalVariable("org-hide-emphasis-markers");
     e8.setVariable("org-hide-emphasis-markers", true);
     e8.addHook("org-cycle-tab-first-hook", toggleBlockBelow, { local: true });
+    // Letters in the transcript, where typing is refused, move about it instead.
+    e8.makeLocalVariable("org-use-speed-commands");
+    e8.setVariable("org-use-speed-commands", inTranscript);
+    e8.makeLocalVariable("org-speed-commands");
+    e8.setVariable("org-speed-commands", SPEED_COMMANDS);
   },
 });
 
+/** Whether point is in the transcript, the read-only text above the request being typed. */
+function inTranscript(): boolean {
+  return e8.point() < e8.bufferSize() && e8.getTextProperty(e8.point(), "read-only") === true;
+}
+
+/**
+ * The speed commands of the transcript: Org's that move about and fold,
+ * not those that edit, which the transcript refuses.
+ */
+const SPEED_COMMANDS: e8.Value = [
+  ["Outline Navigation"],
+  ["n", ["org-speed-move-safe", "org-next-visible-heading"]],
+  ["p", ["org-speed-move-safe", "org-previous-visible-heading"]],
+  ["f", ["org-speed-move-safe", "org-forward-heading-same-level"]],
+  ["b", ["org-speed-move-safe", "org-backward-heading-same-level"]],
+  ["u", ["org-speed-move-safe", "outline-up-heading"]],
+  ["Outline Visibility"],
+  ["c", "org-cycle"],
+  ["C", "org-shifttab"],
+  ["Misc"],
+  ["o", "org-open-at-point"],
+  ["?", "org-speed-command-help"],
+];
+
 /** What the header line says of the keys, after the session's settings. */
-const KEYS = "C-c RET send · C-c C-k stop · C-c TAB mode · C-c C-v model · C-c C-s settings · TAB on → output";
+const KEYS = "C-c RET send · C-c C-k stop · M-p history · C-c TAB mode · C-c C-v model · C-c C-s settings · TAB on → output";
 
 /** The header line: the session's model, mode and thought level, then the keys. */
 function showSettings(shell: Shell): void {
@@ -506,6 +584,9 @@ function closeOpen(shell: Shell): void {
   } else if (shell.open === "text") {
     flushReply(shell);
     startLine(shell);
+  } else if (shell.open === "request") {
+    startLine(shell);
+    put(shell, "\n* Agent\n");
   }
   shell.open = undefined;
 }
@@ -719,7 +800,21 @@ function onUpdate(shell: Shell, notification: acp.Json): void {
   const params = notification.params ?? {};
   if (shell.sessionId !== undefined && params.sessionId !== shell.sessionId) return;
   const update = params.update ?? {};
+  // A replayed request is followed by what the agent did with it, under its own heading.
+  if (shell.open === "request" && REPLIED.includes(update.sessionUpdate)) closeOpen(shell);
   switch (update.sessionUpdate) {
+    case "user_message_chunk":
+      // A request of a session being loaded, replayed; otherwise the echo of one sent here.
+      if (shell.loading && update.content?.type === "text") {
+        if (shell.open !== "request") {
+          closeOpen(shell);
+          startLine(shell);
+          put(shell, `${inBuffer(shell, () => e8.bufferSize()) ? "\n" : ""}* You\n`);
+          shell.open = "request";
+        }
+        put(shell, String(update.content.text ?? ""));
+      }
+      break;
     case "agent_message_chunk":
       if (update.content?.type === "text") {
         if (shell.open === "thought") closeOpen(shell);
@@ -777,10 +872,13 @@ function onUpdate(shell: Shell, notification: acp.Json): void {
       takeOptions(shell, update.configOptions);
       break;
     default:
-      // user_message_chunk (a session replayed), available_commands_update and the rest.
+      // available_commands_update, session_info_update and the rest.
       break;
   }
 }
+
+/** The updates that are the agent's reply to a request. */
+const REPLIED = ["agent_message_chunk", "agent_thought_chunk", "tool_call", "tool_call_update", "plan"];
 
 // --- What the agent asks -------------------------------------------------------------
 
@@ -1014,6 +1112,11 @@ function finish(shell: Shell, text?: string): void {
   if (text) note(shell, text);
   startLine(shell);
   putPrompt(shell, "\n");
+  forgetTurn(shell);
+}
+
+/** Lets go of what a turn kept track of: its tool calls and its plan. */
+function forgetTurn(shell: Shell): void {
   for (const call of shell.toolCalls.values()) {
     e8.deleteMarker(call.start);
     e8.deleteMarker(call.end);
@@ -1270,9 +1373,9 @@ function startSession(shell: Shell, ready: () => void, failed: (error: acp.RpcEr
   if (shell.sessionId !== undefined) {
     acp.shutdown({ client: shell.client });
     shell.client = makeShellClient(shell);
+    shell.lastSessionId = shell.sessionId;
     shell.sessionId = undefined;
     shell.options = [];
-    note(shell, `Starting ${shell.agent} again, in a new session.`);
   }
   shell.starting = true;
   shell.stderrTail = "";
@@ -1294,20 +1397,12 @@ function startSession(shell: Shell, ready: () => void, failed: (error: acp.RpcEr
         readTextFileCapability: true,
         writeTextFileCapability: true,
       }),
-      onSuccess: () => {
-        const server = e8McpServer();
-        acp.sendRequest({
-          client: shell.client,
-          request: server
-            ? acp.makeSessionNewRequest({ cwd: shell.directory, mcpServers: [server], meta: { systemPrompt: { append: E8_TOOLS_PROMPT } } })
-            : acp.makeSessionNewRequest({ cwd: shell.directory }),
-          onSuccess: (result: any) => {
-            shell.sessionId = String(result?.sessionId ?? "");
-            shell.options = sessionOptions(result);
-            done();
-          },
-          onFailure: done,
-        });
+      onSuccess: (result: any) => {
+        const capabilities = result?.agentCapabilities ?? {};
+        shell.canLoad = capabilities.loadSession === true;
+        shell.canList = typeof capabilities.sessionCapabilities?.list === "object";
+        shell.canResume = typeof capabilities.sessionCapabilities?.resume === "object";
+        openSession(shell, done);
       },
       onFailure: done,
     });
@@ -1317,6 +1412,155 @@ function startSession(shell: Shell, ready: () => void, failed: (error: acp.RpcEr
     const hint = shell.command.some((p) => p.includes("claude-agent-acp")) ? "; npm install -g @agentclientprotocol/claude-agent-acp installs it" : "";
     done({ code: -32603, message: `${message}${hint}` } as acp.RpcError);
   }
+}
+
+/**
+ * Opens the shell's session once its agent has started: the one it had, if
+ * the agent stopped and can resume it; else one of its earlier sessions in
+ * the project, as agent-shell-session-strategy says, its conversation
+ * replayed into the buffer; else a new one.
+ */
+function openSession(shell: Shell, done: (error?: acp.RpcError) => void): void {
+  const server = e8McpServer();
+  const mcpServers = server ? [server] : [];
+  const meta = server ? { systemPrompt: { append: E8_TOOLS_PROMPT } } : undefined;
+  const opened = (result: any, sessionId: string) => {
+    shell.sessionId = sessionId;
+    shell.options = sessionOptions(result);
+    done();
+  };
+  const fresh = (): void => {
+    acp.sendRequest({
+      client: shell.client,
+      request: acp.makeSessionNewRequest({ cwd: shell.directory, mcpServers, ...(meta ? { meta } : {}) }),
+      onSuccess: (result: any) => opened(result, String(result?.sessionId ?? "")),
+      onFailure: done,
+    });
+  };
+  const previous = shell.lastSessionId;
+  shell.lastSessionId = undefined;
+  if (previous !== undefined) {
+    if (!shell.canResume) {
+      note(shell, `Starting ${shell.agent} again, in a new session.`);
+      return fresh();
+    }
+    note(shell, `Starting ${shell.agent} again, in the same session.`);
+    acp.sendRequest({
+      client: shell.client,
+      request: acp.makeSessionResumeRequest({ sessionId: previous, cwd: shell.directory, mcpServers, ...(meta ? { meta } : {}) }),
+      onSuccess: (result: any) => opened(result, previous),
+      onFailure: () => {
+        note(shell, `${shell.agent} could not resume it; a new session.`);
+        fresh();
+      },
+    });
+    return;
+  }
+  const strategy = e8.variable("agent-shell-session-strategy");
+  if (strategy === "new" || !shell.canLoad || !shell.canList) return fresh();
+  acp.sendRequest({
+    client: shell.client,
+    request: acp.makeSessionListRequest({ cwd: shell.directory }),
+    onSuccess: (result: any) => {
+      const sessions: EarlierSession[] = (Array.isArray(result?.sessions) ? result.sessions : [])
+        .filter((s: any) => typeof s?.sessionId === "string")
+        .map((s: any) => ({ sessionId: s.sessionId, title: typeof s.title === "string" ? s.title : "", updatedAt: typeof s.updatedAt === "string" ? s.updatedAt : "" }));
+      if (sessions.length === 0) return fresh();
+      if (strategy === "latest") return loadSession(shell, sessions[0], mcpServers, meta, opened, done);
+      chooseSession(shell, sessions, (chosen) => (chosen ? loadSession(shell, chosen, mcpServers, meta, opened, done) : fresh()));
+    },
+    onFailure: () => fresh(),
+  });
+}
+
+/** One of the agent's earlier sessions, as session/list gives them. */
+interface EarlierSession {
+  sessionId: string;
+  title: string;
+  updatedAt: string;
+}
+
+/** When a session was last used, as "2026-11-08 12:58", in local time. */
+function when(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  const two = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${two(date.getMonth() + 1)}-${two(date.getDate())} ${two(date.getHours())}:${two(date.getMinutes())}`;
+}
+
+/** The choice that starts a new session rather than resuming one. */
+const NEW_SESSION = "New session";
+
+/**
+ * Asks which earlier session to resume, or a new one, once nothing else
+ * waits for keys, as permission questions are asked; C-g starts a new one.
+ */
+function chooseSession(shell: Shell, sessions: EarlierSession[], then: (chosen: EarlierSession | undefined) => void): void {
+  if (e8.waitingForInput() !== undefined || shell.asking) {
+    e8.runWithTimer(0.1, null, () => chooseSession(shell, sessions, then));
+    return;
+  }
+  const labels = new Map<string, EarlierSession>();
+  for (const session of sessions) {
+    const base = [session.title.replace(/\s+/g, " ").trim() || session.sessionId, when(session.updatedAt)].filter((x) => x !== "").join(" · ");
+    let label = base;
+    for (let n = 2; labels.has(label); n++) label = `${base} (${n})`;
+    labels.set(label, session);
+  }
+  let answer: string | undefined;
+  shell.asking = true;
+  try {
+    answer = e8.completingRead(`Resume a session of ${shell.agent}: `, [NEW_SESSION, ...labels.keys()], { requireMatch: true });
+  } catch {
+    answer = undefined;
+  } finally {
+    shell.asking = false;
+  }
+  then(answer === undefined ? undefined : labels.get(answer));
+}
+
+/**
+ * Loads an earlier session: the agent replays its conversation, which goes
+ * in as the transcript, its requests under * You and its replies under
+ * * Agent, above the request being typed, which waits meanwhile.
+ */
+function loadSession(
+  shell: Shell,
+  session: EarlierSession,
+  mcpServers: acp.Json[],
+  meta: acp.Json | undefined,
+  opened: (result: any, sessionId: string) => void,
+  done: (error?: acp.RpcError) => void,
+): void {
+  const typed = inBuffer(shell, () => e8.bufferText(requestStart(), e8.bufferSize())) ?? "";
+  writing(shell, () => e8.deleteRegion(0, e8.bufferSize()));
+  shell.loading = true;
+  const ended = () => {
+    shell.loading = false;
+    closeOpen(shell);
+    forgetTurn(shell);
+    startLine(shell);
+    putPrompt(shell, inBuffer(shell, () => e8.bufferSize()) ? "\n" : "");
+    inBuffer(shell, () => {
+      e8.gotoChar(e8.bufferSize());
+      e8.insert(typed);
+      e8.setVariable("buffer-undo-list", null);
+    });
+  };
+  acp.sendRequest({
+    client: shell.client,
+    request: acp.makeSessionLoadRequest({ sessionId: session.sessionId, cwd: shell.directory, mcpServers, ...(meta ? { meta } : {}) }),
+    onSuccess: (result: any) => {
+      ended();
+      e8.message(`Resumed ${session.title || session.sessionId}`);
+      opened(result, session.sessionId);
+    },
+    onFailure: (error: acp.RpcError) => {
+      ended();
+      note(shell, `Could not resume ${session.title || session.sessionId}: ${describe(shell, error)}`);
+      done(error);
+    },
+  });
 }
 
 /** Sends the prompt, starting the agent and its session first if need be. */
@@ -1384,6 +1628,12 @@ export function start(name: string): string {
       permissions: [],
       asking: false,
       stderrTail: "",
+      canLoad: false,
+      canList: false,
+      canResume: false,
+      loading: false,
+      historyIndex: undefined,
+      historyStored: undefined,
       options: [],
       starting: false,
       waiting: [],
@@ -1404,7 +1654,8 @@ e8.defineCommand({
   doc:
     "Talk to a coding agent in a buffer of its own, in another window: one of agent-shell-agents, asked for unless " +
     "agent-shell-default-agent names one. Type a request under * You and send it with C-c RET. The agent works in " +
-    "the current project, and asks before its tools act.",
+    "the current project, and asks before its tools act. When the agent has earlier sessions in the project, it " +
+    "asks whether to resume one, its conversation replayed into the buffer, as agent-shell-session-strategy says.",
   run: async () => {
     const preset = e8.variable("agent-shell-default-agent");
     const name =
@@ -1430,23 +1681,110 @@ function currentShell(): Shell {
   return shell!;
 }
 
+/** Where the request being typed starts: after the last * You heading, or an error without one. */
+function requestStart(): number {
+  const text = e8.bufferText(0, e8.bufferSize());
+  // The heading, at a line's start, not text in a line or a deeper heading.
+  const after = text.lastIndexOf("\n* You\n");
+  const at = after >= 0 ? after + 1 : text.startsWith("* You\n") ? 0 : -1;
+  if (at < 0) e8.userError("Type a request under a * You heading");
+  return [...text.slice(0, at + "* You\n".length)].length;
+}
+
+/** Puts `text` at the prompt in place of the request being typed, point after it. */
+function replaceRequest(start: number, text: string): void {
+  e8.deleteRegion(start, e8.bufferSize());
+  e8.gotoChar(start);
+  e8.insert(text);
+}
+
+/** The requests sent, newest first, from every agent-shell buffer. */
+function history(): string[] {
+  const list = e8.variable("agent-shell-history");
+  return Array.isArray(list) ? list.filter((r): r is string => typeof r === "string") : [];
+}
+
+/** Puts a request sent at the front of the history, once: an earlier copy goes, as history-delete-duplicates. */
+function addToHistory(request: string): void {
+  const size = Number(e8.variable("agent-shell-history-size") ?? 500);
+  e8.setDefault("agent-shell-history", [request, ...history().filter((r) => r !== request)].slice(0, Math.max(0, size)));
+}
+
+/** Puts the request `arg` back in the history at the prompt, forward for a negative `arg`, as comint-previous-input. */
+function historyMove(shell: Shell, arg: number): void {
+  const ring = history();
+  if (ring.length === 0) e8.userError("No history");
+  const start = requestStart();
+  if (shell.historyIndex === undefined) {
+    if (arg < 0) e8.userError("End of history; no default available");
+    shell.historyStored = e8.bufferText(start, e8.bufferSize());
+  }
+  const next = (shell.historyIndex ?? -1) + arg;
+  if (next >= ring.length) e8.userError("Beginning of history; no preceding item");
+  if (next < 0) {
+    replaceRequest(start, shell.historyStored ?? "");
+    shell.historyIndex = undefined;
+    e8.message("Input restored");
+    return;
+  }
+  shell.historyIndex = next;
+  replaceRequest(start, ring[next]!);
+  e8.message(`History item: ${next + 1}`);
+}
+
+e8.defineCommand({
+  name: "agent-shell-previous-input",
+  doc: "Put the request sent before back at the prompt; again, the one before that. With a prefix argument, that many back.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => historyMove(currentShell(), n),
+});
+
+e8.defineCommand({
+  name: "agent-shell-next-input",
+  doc: "Put the request sent after the one shown at the prompt, or what was being typed after the newest. With a prefix argument, that many forward.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => historyMove(currentShell(), -n),
+});
+
+e8.defineCommand({
+  name: "agent-shell-search-history",
+  doc: "Pick one of the requests sent before, with completion, and put it at the prompt.",
+  run: async () => {
+    const shell = currentShell();
+    const ring = history();
+    if (ring.length === 0) e8.userError("No history");
+    const start = requestStart();
+    // Each request on one line to pick from, the request itself put back whole.
+    const shown = new Map<string, string>();
+    for (const request of ring) {
+      const line = request.replace(/\s*\n\s*/g, " ⏎ ");
+      if (!shown.has(line)) shown.set(line, request);
+    }
+    const picked = await e8.completingRead("History: ", [...shown.keys()], { requireMatch: true });
+    const request = shown.get(picked);
+    if (request === undefined) return;
+    replaceRequest(start, request);
+    shell.historyIndex = undefined;
+  },
+});
+
 e8.defineCommand({
   name: "agent-shell-send",
   doc: "Send the request under the last * You heading to the agent.",
   run: () => {
     const shell = currentShell();
-    const text = e8.bufferText(0, e8.bufferSize());
-    // The heading, at a line's start, not text in a line or a deeper heading.
-    const after = text.lastIndexOf("\n* You\n");
-    const at = after >= 0 ? after + 1 : text.startsWith("* You\n") ? 0 : -1;
-    if (at < 0) e8.userError("Type a request under a * You heading");
-    const request = text.slice(at + "* You\n".length).trim();
+    const start = requestStart();
+    const request = e8.bufferText(start, e8.bufferSize()).trim();
     if (request === "") e8.userError("Type a request under the last * You heading first");
     if (shell.busy) e8.userError("The agent is still working; C-c C-k stops it");
+    if (shell.loading) e8.userError("The session is still loading");
+    // Kept for M-p, in every agent-shell buffer, and between sessions with savehist-mode.
+    addToHistory(request);
+    shell.historyIndex = undefined;
+    shell.historyStored = undefined;
     // Sent, the request is the transcript's: read-only as the agent's turns, and
     // with no undo history, as nothing above it can change any more.
-    const requestStart = [...text.slice(0, at + "* You\n".length)].length;
-    writing(shell, () => lock(requestStart, e8.bufferSize()));
+    writing(shell, () => lock(start, e8.bufferSize()));
     e8.setVariable("buffer-undo-list", null);
     shell.busy = true;
     shell.cancelled = false;

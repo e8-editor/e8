@@ -64,26 +64,34 @@ fn setup(steps: Vec<Value>, request: &str) -> Option<Shell> {
 
 /// As [`setup`], running `source` first.
 fn setup_with(steps: Vec<Value>, request: &str, source: &str) -> Option<Shell> {
+    let s = open(vec![steps], source)?;
+    s.d.type_text(request);
+    Some(s)
+}
+
+/// An editor with the fake as the agent `fake`, its shell just opened: the
+/// fake plays the first script, and the next when it is started again.
+fn open(scripts: Vec<Vec<Value>>, source: &str) -> Option<Shell> {
     let python = python()?;
     let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
-    let script = dir.path().join("script.json");
-    std::fs::write(&script, Value::Array(steps).to_string()).unwrap();
-    let fake = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/data/fake_acp_agent.py");
+    let mut command = vec![json!(python), json!(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/data/fake_acp_agent.py"))];
+    for (i, steps) in scripts.into_iter().enumerate() {
+        let script = dir.path().join(format!("script{i}.json"));
+        std::fs::write(&script, Value::Array(steps).to_string()).unwrap();
+        command.push(json!(script.display().to_string()));
+    }
     let log = dir.path().join("received.jsonl");
     let d = Driven::new(&format!(
-        r#"e8.setVariable("agent-shell-agents", [["fake", [{}, {}, {}], [{}]]]);
+        r#"e8.setVariable("agent-shell-agents", [["fake", {}, [{}]]]);
         e8.setVariable("agent-shell-default-agent", "fake");
         {}"#,
-        json!(python),
-        json!(fake),
-        json!(script.display().to_string()),
+        Value::Array(command),
         json!(format!("FAKE_ACP_LOG={}", log.display())),
         source,
     ));
     d.mx("agent-shell");
     assert_eq!(d.buffer_name(), "*agent-shell: fake*");
     assert_eq!(d.text(), "* You\n");
-    d.type_text(request);
     Some(Shell { d, dir })
 }
 
@@ -491,7 +499,8 @@ fn an_agent_that_needs_a_login_says_so() {
 fn an_agent_that_is_not_installed_says_so() {
     let d = Driven::new(
         r#"e8.setVariable("agent-shell-agents", [["claude", ["no-such-claude-agent-acp"]]]);
-        e8.setVariable("agent-shell-default-agent", "claude");"#,
+        e8.setVariable("agent-shell-default-agent", "claude");
+        e8.setVariable("agent-shell-session-strategy", "new");"#,
     );
     d.mx("agent-shell");
     d.type_text("hi");
@@ -526,7 +535,8 @@ fn killing_the_buffer_stops_the_agent() {
 fn live_claude_code_answers() {
     let d = Driven::new(
         r#"e8.setVariable("agent-shell-agents", [["claude", ["npx", "-y", "@agentclientprotocol/claude-agent-acp"]]]);
-        e8.setVariable("agent-shell-default-agent", "claude");"#,
+        e8.setVariable("agent-shell-default-agent", "claude");
+        e8.setVariable("agent-shell-session-strategy", "new");"#,
     );
     d.mx("agent-shell");
     d.type_text("Reply with just the word pong, and use no tools.");
@@ -549,7 +559,8 @@ fn live_claude_code_answers() {
 fn live_claude_code_s_markdown_becomes_org() {
     let d = Driven::new(
         r#"e8.setVariable("agent-shell-agents", [["claude", ["npx", "-y", "@agentclientprotocol/claude-agent-acp"]]]);
-        e8.setVariable("agent-shell-default-agent", "claude");"#,
+        e8.setVariable("agent-shell-default-agent", "claude");
+        e8.setVariable("agent-shell-session-strategy", "new");"#,
     );
     d.mx("agent-shell");
     d.type_text(
@@ -577,7 +588,8 @@ fn live_claude_code_s_markdown_becomes_org() {
 fn live_claude_code_s_model_is_picked_before_the_first_request() {
     let d = Driven::new(
         r#"e8.setVariable("agent-shell-agents", [["claude", ["npx", "-y", "@agentclientprotocol/claude-agent-acp"]]]);
-        e8.setVariable("agent-shell-default-agent", "claude");"#,
+        e8.setVariable("agent-shell-default-agent", "claude");
+        e8.setVariable("agent-shell-session-strategy", "new");"#,
     );
     d.mx("agent-shell");
     let start = std::time::Instant::now();
@@ -613,7 +625,8 @@ fn live_claude_code_s_model_is_picked_before_the_first_request() {
 fn live_claude_code_s_tool_calls_fold_as_they_come() {
     let d = Driven::new(
         r#"e8.setVariable("agent-shell-agents", [["claude", ["npx", "-y", "@agentclientprotocol/claude-agent-acp"]]]);
-        e8.setVariable("agent-shell-default-agent", "claude");"#,
+        e8.setVariable("agent-shell-default-agent", "claude");
+        e8.setVariable("agent-shell-session-strategy", "new");"#,
     );
     d.mx("agent-shell");
     d.type_text("Run `ls crates` with your Bash tool, then read Cargo.toml's first five lines with your Read tool, then reply in one short sentence.");
@@ -643,6 +656,50 @@ fn live_claude_code_s_tool_calls_fold_as_they_come() {
 /// test -- --ignored live`. Its adapter writes with its own tools, asking
 /// as Claude Code's permission settings say, rather than through the
 /// editor's fs/write_text_file; the traffic it printed shows which.
+/// The real Claude Code resuming a session another editor had, and
+/// remembering what was said in it: `cargo test -- --ignored live`.
+#[test]
+#[ignore]
+fn live_claude_code_resumes_a_session_and_remembers_it() {
+    let dir = tempfile::tempdir().unwrap();
+    let dir_name = std::fs::canonicalize(dir.path()).unwrap().display().to_string();
+    std::fs::write(dir.path().join("notes.txt"), "notes\n").unwrap();
+    let editor = |strategy: &str| {
+        let d = Driven::new(&format!(
+            r#"e8.setVariable("agent-shell-agents", [["claude", ["npx", "-y", "@agentclientprotocol/claude-agent-acp"]]]);
+            e8.setVariable("agent-shell-default-agent", "claude");
+            e8.setVariable("agent-shell-e8-tools", false);
+            e8.setVariable("agent-shell-session-strategy", "{strategy}");"#
+        ));
+        let notes = format!("{dir_name}/notes.txt");
+        d.with(move |ed| ed.call("find-file", vec![e8_core::Arg::Str(notes)]).unwrap());
+        d.mx("agent-shell");
+        d
+    };
+    let wait = |d: &Driven, f: &dyn Fn(&str) -> bool| {
+        let start = std::time::Instant::now();
+        while !f(&d.text()) {
+            assert!(start.elapsed() < std::time::Duration::from_secs(180), "{}", d.text());
+            std::thread::sleep(std::time::Duration::from_millis(200));
+        }
+    };
+    let first = editor("new");
+    first.type_text("Remember the word heliotrope for later. Reply with just: noted. Use no tools.");
+    first.press("C-c RET");
+    wait(&first, &|t| t.matches("* You\n").count() == 2);
+    drop(first);
+    // Another editor, as after quitting E8, resumes the latest session there.
+    let second = editor("latest");
+    wait(&second, &|t| t.contains("Remember the word heliotrope") && t.ends_with("* You\n"));
+    second.type_text("What word did I ask you to remember? Reply with just that word, and use no tools.");
+    second.press("C-c RET");
+    wait(&second, &|t| t.matches("* You\n").count() == 3);
+    let text = second.text();
+    eprintln!("{text}");
+    let reply = &text[text.rfind("* Agent\n").unwrap()..];
+    assert!(reply.to_lowercase().contains("heliotrope") && !reply.contains("[Error"), "{text}");
+}
+
 #[test]
 #[ignore]
 fn live_claude_code_asks_then_writes_a_file() {
@@ -653,6 +710,7 @@ fn live_claude_code_asks_then_writes_a_file() {
     let d = Driven::new(
         r#"e8.setVariable("agent-shell-agents", [["claude", ["npx", "-y", "@agentclientprotocol/claude-agent-acp"]]]);
         e8.setVariable("agent-shell-default-agent", "claude");
+        e8.setVariable("agent-shell-session-strategy", "new");
         e8.setVariable("acp-logging-enabled", true);"#,
     );
     // Started from a file there, as a user would, so the session is in that directory.
@@ -831,6 +889,251 @@ fn an_agent_with_only_modes_cycles_them_with_c_c_tab_or_c_tab() {
 
 /// Whether the character at `at` in the shell's buffer is hidden.
 /// Whether the character `at` bytes into `text`, the shell's buffer's text, is hidden.
+/// Two turns, as [`the_transcript_is_read_only_and_undo_reaches_only_the_request`] has them.
+fn two_turns() -> Vec<Value> {
+    let mut steps = opening("hi");
+    steps.extend([
+        chunk("Hello"),
+        end_turn("end_turn"),
+        json!({"expect": {"method": "session/prompt", "id": 4, "params": {"prompt": [{"type": "text", "text": "second one"}]}}}),
+        chunk("Again"),
+        json!({"send": {"id": 4, "result": {"stopReason": "end_turn"}}}),
+    ]);
+    steps
+}
+
+#[test]
+fn m_p_and_m_n_bring_earlier_requests_back_to_the_prompt_and_m_r_picks_one() {
+    let Some(s) = setup(two_turns(), "hi") else { return };
+    s.d.press("C-c RET");
+    s.finished();
+    s.d.type_text("second one");
+    s.d.press("C-c RET");
+    s.d.until(|t| t.matches("* You\n").count() == 3);
+    let text = s.d.text();
+    assert!(text.ends_with("* You\nsecond one\n\n* Agent\nAgain\n\n* You\n"), "{text}");
+    s.d.type_text("typed so far");
+    // Back through the requests sent, newest first, as a shell's M-p.
+    s.d.press("M-p");
+    assert!(s.d.text().ends_with("* You\nsecond one"), "{}", s.d.text());
+    assert_eq!(s.d.message().as_deref(), Some("History item: 1"));
+    s.d.press("M-p");
+    assert!(s.d.text().ends_with("* You\nhi"), "{}", s.d.text());
+    s.d.press("M-p");
+    assert!(s.d.message().is_some_and(|m| m.contains("Beginning of history")), "{:?}", s.d.message());
+    assert!(s.d.text().ends_with("* You\nhi"), "{}", s.d.text());
+    // Forward again, to what was being typed.
+    s.d.press("M-n");
+    assert!(s.d.text().ends_with("* You\nsecond one"), "{}", s.d.text());
+    s.d.press("M-n");
+    assert!(s.d.text().ends_with("* You\ntyped so far"), "{}", s.d.text());
+    assert_eq!(s.d.message().as_deref(), Some("Input restored"));
+    s.d.press("M-n");
+    assert!(s.d.message().is_some_and(|m| m.contains("End of history")), "{:?}", s.d.message());
+    // M-r picks one with completion.
+    s.d.press("M-r");
+    assert!(s.d.prompt().is_some_and(|p| p.starts_with("History")), "{:?}", s.d.prompt());
+    s.d.type_text("hi");
+    s.d.press("RET");
+    assert!(s.d.text().ends_with("* You\nhi"), "{}", s.d.text());
+    // The transcript above is as it was throughout.
+    assert!(s.d.text().starts_with(&text), "{}", s.d.text());
+    // The history is every buffer's, kept between sessions by savehist-mode.
+    assert_eq!(s.d.eval_expression(r#"JSON.stringify(e8.variable("agent-shell-history"))"#), r#""[\"second one\",\"hi\"]""#);
+    assert_eq!(
+        s.d.eval_expression(r#"(e8.variable("savehist-additional-variables") as string[]).includes("agent-shell-history")"#),
+        "true"
+    );
+}
+
+#[test]
+fn letters_in_the_transcript_move_about_it_and_type_at_the_prompt() {
+    let Some(s) = setup(two_turns(), "hi") else { return };
+    s.d.press("C-c RET");
+    let text = s.finished();
+    assert_eq!(text, "* You\nhi\n\n* Agent\nHello\n\n* You\n");
+    let agent = text.find("* Agent").unwrap();
+    let prompt = text.rfind("* You").unwrap();
+    // In the transcript, Org's speed commands run anywhere, not only at a heading's start.
+    s.d.eval(&format!("e8.gotoChar({})", text.find("Hello").unwrap() + 2));
+    s.d.press("p");
+    assert_eq!(s.d.point(), agent);
+    s.d.press("p");
+    assert_eq!(s.d.point(), 0);
+    s.d.press("n");
+    assert_eq!(s.d.point(), agent);
+    s.d.press("n");
+    assert_eq!(s.d.point(), prompt);
+    s.d.press("n");
+    assert!(s.d.message().is_some_and(|m| m.contains("Boundary reached")), "{:?}", s.d.message());
+    assert_eq!(s.d.point(), prompt);
+    s.d.press("p");
+    assert_eq!(s.d.point(), agent);
+    // c folds the agent's turn, and opens it again.
+    let hello = text.find("Hello").unwrap();
+    s.d.press("c");
+    assert!(hidden_at(&s.d, hello), "folded");
+    s.d.press("c");
+    assert!(!hidden_at(&s.d, hello), "shown again");
+    // Letters that edit stay refused, and the transcript stands.
+    s.d.eval(&format!("e8.gotoChar({hello})"));
+    s.d.press("t");
+    assert!(s.d.message().is_some_and(|m| m.contains("read-only")), "{:?}", s.d.message());
+    assert_eq!(s.d.text(), text);
+    // At the prompt, letters type.
+    s.d.eval("e8.gotoChar(e8.bufferSize())");
+    s.d.type_text("np");
+    assert!(s.d.text().ends_with("* You\nnp"), "{}", s.d.text());
+}
+
+/// The answer to initialize of an agent that can list, load and resume its sessions.
+fn initialized_with_sessions() -> Vec<Value> {
+    vec![
+        json!({"expect": {"method": "initialize", "id": 1}}),
+        json!({"send": {"id": 1, "result": {"protocolVersion": 1, "authMethods": [],
+            "agentCapabilities": {"loadSession": true, "sessionCapabilities": {"list": {}, "resume": {}}}}}}),
+    ]
+}
+
+fn update_in(session: &str, update: Value) -> Value {
+    json!({"send": {"method": "session/update", "params": {"sessionId": session, "update": update}}})
+}
+
+/// Waits for the prompt that asks which session to resume.
+fn wait_prompt(d: &Driven, starts: &str) -> String {
+    let start = std::time::Instant::now();
+    loop {
+        if let Some(p) = d.prompt().filter(|p| p.starts_with(starts)) {
+            return p;
+        }
+        assert!(start.elapsed() < std::time::Duration::from_secs(10), "never asked {starts:?}: {:?}", d.text());
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    }
+}
+
+#[test]
+fn an_earlier_session_is_resumed_its_conversation_replayed_and_the_agent_carries_on() {
+    let mut steps = initialized_with_sessions();
+    steps.extend([
+        json!({"expect": {"method": "session/list", "id": 2, "params": {}}}),
+        json!({"send": {"id": 2, "result": {"sessions": [
+            {"sessionId": "old", "title": "Fix the tests", "updatedAt": "2026-11-07T10:00:00Z"},
+            {"sessionId": "older", "title": "Something else", "updatedAt": "2026-11-01T10:00:00Z"},
+        ]}}}),
+        json!({"expect": {"method": "session/load", "id": 3, "params": {"sessionId": "old", "mcpServers": []}}}),
+        update_in("old", json!({"sessionUpdate": "user_message_chunk", "content": {"type": "text", "text": "Run the tests"}})),
+        update_in("old", json!({"sessionUpdate": "tool_call", "toolCallId": "t1", "title": "cargo test", "kind": "execute",
+            "status": "pending", "rawInput": {"command": "cargo test"}})),
+        update_in("old", json!({"sessionUpdate": "tool_call_update", "toolCallId": "t1", "status": "completed",
+            "content": [{"type": "content", "content": {"type": "text", "text": "```console\nok\n```"}}]})),
+        update_in("old", json!({"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "They **pass**."}})),
+        update_in("old", json!({"sessionUpdate": "user_message_chunk", "content": {"type": "text", "text": "Thanks"}})),
+        update_in("old", json!({"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "You're welcome."}})),
+        json!({"send": {"id": 3, "result": {}}}),
+        json!({"expect": {"method": "session/prompt", "id": 4, "params": {"sessionId": "old", "prompt": [{"type": "text", "text": "And now?"}]}}}),
+        update_in("old", json!({"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "Carrying on."}})),
+        json!({"send": {"id": 4, "result": {"stopReason": "end_turn"}}}),
+    ]);
+    let Some(s) = open(vec![steps], "") else { return };
+    // Typed while the agent starts, the request waits below the replayed conversation.
+    s.d.type_text("And now?");
+    let asked = wait_prompt(&s.d, "Resume a session of fake: ");
+    assert_eq!(asked, "Resume a session of fake: ");
+    s.d.type_text("Fix");
+    s.d.press("TAB");
+    assert!(s.d.minibuffer_input().starts_with("Fix the tests · 2026-11-07"), "{}", s.d.minibuffer_input());
+    s.d.press("RET");
+    s.d.until(|t| t.contains("You're welcome.") && t.ends_with("* You\nAnd now?"));
+    let text = s.d.text();
+    assert!(
+        text.starts_with("* You\nRun the tests\n\n* Agent\n→ ~cargo test~\n#+begin_src console\nok\n#+end_src\nThey *pass*.\n\n* You\nThanks\n\n* Agent\nYou're welcome.\n\n* You\nAnd now?"),
+        "{text}"
+    );
+    assert_eq!(s.d.message().as_deref(), Some("Resumed Fix the tests"));
+    // The replayed tool output is folded, as a finished call's is.
+    assert!(hidden_in(&s.d, &text, text.find("ok\n").unwrap()), "folded");
+    // The replay is the transcript: read-only, and not undone.
+    s.d.eval(&format!("e8.gotoChar({})", text.find("Thanks").unwrap()));
+    s.d.press("DEL");
+    assert_eq!(s.d.text(), text);
+    s.d.eval("e8.gotoChar(e8.bufferSize())");
+    // The agent carries on in the session it had.
+    s.d.press("C-c RET");
+    s.d.until(|t| t.contains("Carrying on.") && t.ends_with("* You\n"));
+    assert!(s.d.text().ends_with("* You\nAnd now?\n\n* Agent\nCarrying on.\n\n* You\n"), "{}", s.d.text());
+}
+
+#[test]
+fn a_new_session_can_be_chosen_instead_and_none_is_asked_without_earlier_ones() {
+    let mut steps = initialized_with_sessions();
+    steps.extend([
+        json!({"expect": {"method": "session/list", "id": 2}}),
+        json!({"send": {"id": 2, "result": {"sessions": [{"sessionId": "old", "title": "Fix the tests"}]}}}),
+        json!({"expect": {"method": "session/new", "id": 3}}),
+        json!({"send": {"id": 3, "result": {"sessionId": "s1"}}}),
+    ]);
+    let Some(s) = open(vec![steps], "") else { return };
+    wait_prompt(&s.d, "Resume a session of fake: ");
+    s.d.type_text("New session");
+    s.d.press("RET");
+    wait_for("the new session", || s.received().iter().any(|m| m["method"] == "session/new"));
+    assert_eq!(s.d.text(), "* You\n");
+
+    // With no earlier sessions, nothing is asked.
+    let mut steps = initialized_with_sessions();
+    steps.extend([
+        json!({"expect": {"method": "session/list", "id": 2}}),
+        json!({"send": {"id": 2, "result": {"sessions": []}}}),
+        json!({"expect": {"method": "session/new", "id": 3}}),
+        json!({"send": {"id": 3, "result": {"sessionId": "s1"}}}),
+    ]);
+    let Some(s) = open(vec![steps], "") else { return };
+    wait_for("the new session", || s.received().iter().any(|m| m["method"] == "session/new"));
+    assert!(s.d.prompt().is_none(), "{:?}", s.d.prompt());
+
+    // Nor with agent-shell-session-strategy "new", which does not list them.
+    let mut steps = initialized_with_sessions();
+    steps.extend([
+        json!({"expect": {"method": "session/new", "id": 2}}),
+        json!({"send": {"id": 2, "result": {"sessionId": "s1"}}}),
+    ]);
+    let Some(s) = open(vec![steps], r#"e8.setVariable("agent-shell-session-strategy", "new");"#) else { return };
+    wait_for("the new session", || s.received().iter().any(|m| m["method"] == "session/new"));
+    assert!(s.received().iter().all(|m| m["method"] != "session/list"));
+}
+
+#[test]
+fn an_agent_that_stops_is_started_again_in_the_same_session() {
+    let mut first = vec![
+        json!({"expect": {"method": "initialize", "id": 1}}),
+        json!({"send": {"id": 1, "result": {"protocolVersion": 1, "authMethods": [],
+            "agentCapabilities": {"sessionCapabilities": {"resume": {}}}}}}),
+        json!({"expect": {"method": "session/new", "id": 2}}),
+        json!({"send": {"id": 2, "result": {"sessionId": "s1"}}}),
+        json!({"expect": {"method": "session/prompt", "id": 3}}),
+    ];
+    first.extend([json!({"sleep": 0.2}), json!({"exit": 1})]);
+    let second = vec![
+        json!({"expect": {"method": "initialize", "id": 1}}),
+        json!({"send": {"id": 1, "result": {"protocolVersion": 1, "authMethods": [],
+            "agentCapabilities": {"sessionCapabilities": {"resume": {}}}}}}),
+        json!({"expect": {"method": "session/resume", "id": 2, "params": {"sessionId": "s1"}}}),
+        json!({"send": {"id": 2, "result": {}}}),
+        json!({"expect": {"method": "session/prompt", "id": 3, "params": {"sessionId": "s1", "prompt": [{"type": "text", "text": "again"}]}}}),
+        update(json!({"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "Still here."}})),
+        json!({"send": {"id": 3, "result": {"stopReason": "end_turn"}}}),
+    ];
+    let Some(s) = open(vec![first, second], "") else { return };
+    s.d.type_text("go");
+    s.d.press("C-c RET");
+    s.finished();
+    s.d.press("M->");
+    s.d.type_text("again");
+    s.d.press("C-c RET");
+    s.d.until(|t| t.contains("Still here."));
+    assert!(s.d.text().contains("[Starting fake again, in the same session.]\nStill here."), "{}", s.d.text());
+}
+
 fn hidden_in(d: &Driven, text: &str, at: usize) -> bool {
     hidden_at(d, text[..at].chars().count())
 }

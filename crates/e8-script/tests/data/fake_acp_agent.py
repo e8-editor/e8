@@ -13,6 +13,11 @@ Each step is one of:
   {"sleep": seconds}
   {"exit": status}
 
+Given more than one script, the first run plays the first, the next run
+the second, and so on, the last played again after that: an agent started
+again, as when one stops, can play a script of its own. The runs are
+counted in a file beside the first script.
+
 Once the steps are done it waits for its input to close. Every message it
 reads is written to the file $FAKE_ACP_LOG names, one to a line, if set.
 """
@@ -45,8 +50,17 @@ def holds(actual, expected):
     return actual == expected
 
 
+def script():
+    scripts = sys.argv[1:]
+    runs = scripts[0] + ".runs"
+    run = int(open(runs).read()) if os.path.exists(runs) else 0
+    with open(runs, "w") as f:
+        f.write(str(run + 1))
+    return scripts[min(run, len(scripts) - 1)]
+
+
 def main():
-    with open(sys.argv[1]) as f:
+    with open(script()) as f:
         steps = json.load(f)
     for step in steps:
         if "send" in step:

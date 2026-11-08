@@ -11,8 +11,8 @@ quickjs = ["e8-script/quickjs", "e8-agent/quickjs", "e8-mcp/quickjs"]
 v8 = ["e8-script/v8", "e8-agent/v8", "e8-mcp/v8"]
 
 [dependencies]
-e8-agent = { version = "0.4.1", path = "../e8-agent", default-features = false }
-e8-core = { version = "0.4.1", path = "../e8-core" }
-e8-mcp = { version = "0.4.1", path = "../e8-mcp", default-features = false }
-e8-script = { version = "0.4.1", path = "../e8-script", default-features = false }
+e8-agent = { version = "0.5.0", path = "../e8-agent", default-features = false }
+e8-core = { version = "0.5.0", path = "../e8-core" }
+e8-mcp = { version = "0.5.0", path = "../e8-mcp", default-features = false }
+e8-script = { version = "0.5.0", path = "../e8-script", default-features = false }
 ratatui = "0.30"

@@ -168,6 +168,8 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/flyspell.ts", include_str!("../../../packages/flyspell.ts")),
     ("packages/view.ts", include_str!("../../../packages/view.ts")),
     ("packages/diff.ts", include_str!("../../../packages/diff.ts")),
+    // Ediff's entry commands, which load ediff.ts, as Emacs autoloads it.
+    ("packages/ediff-hook.ts", include_str!("../../../packages/ediff-hook.ts")),
     ("packages/abbrev.ts", include_str!("../../../packages/abbrev.ts")),
     ("packages/org-macs.ts", include_str!("../../../packages/org-macs.ts")),
     ("packages/org-table.ts", include_str!("../../../packages/org-table.ts")),
@@ -195,6 +197,7 @@ const PACKAGES: &[(&str, &str)] = &[
 /// requires them (`e8.require("org-tempo")`), as Emacs's Lisp that is
 /// not preloaded and that loading turns on.
 const LIBRARY: &[(&str, &str)] = &[
+    ("packages/ediff.ts", include_str!("../../../packages/ediff.ts")),
     ("packages/ert.ts", include_str!("../../../packages/ert.ts")),
     ("packages/org-tempo.ts", include_str!("../../../packages/org-tempo.ts")),
     ("packages/transient.ts", include_str!("../../../packages/transient.ts")),

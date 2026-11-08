@@ -73,6 +73,19 @@ fn marks_and_kinds_of_file_have_faces() {
 }
 
 #[test]
+fn a_new_listing_shows_its_details() {
+    let (mut ed, _scripting) = setup();
+    let dir = sample();
+    dired(&mut ed, dir.path());
+    ed.redisplay();
+    let b = ed.window_buffer();
+    let visible: String = (0..b.len()).filter(|&p| ed.invisible_in(b, p).is_none()).filter_map(|p| b.char_at(p)).collect();
+    assert!(visible.contains("-rw"), "{visible}");
+    // As Emacs 30.2's, less its dired-filename-hide.
+    assert_eq!(ed.variable("buffer-invisibility-spec"), Some(Value::List(vec![Value::Bool(true), Value::List(vec![Value::Str("dired".into()), Value::Bool(true)])])));
+}
+
+#[test]
 fn hiding_details_leaves_the_names() {
     let (mut ed, _scripting) = setup();
     let dir = sample();

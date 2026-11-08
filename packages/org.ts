@@ -4605,7 +4605,10 @@ e8.defineCommand({
 
 e8.defineVariable({
   name: "org-use-speed-commands",
-  doc: "Whether single keys at the start of a heading run org-speed-commands' commands rather than typing.",
+  doc:
+    "Whether single keys at the start of a heading run org-speed-commands' commands rather than typing. A function " +
+    "is asked, with point where the key was typed, whether they run there too: agent-shell has them run anywhere " +
+    "in the transcript, as Org's manual has them run on any of a heading's stars.",
   value: false,
 });
 e8.defineVariable({
@@ -4688,8 +4691,10 @@ e8.defun("org-speed-priority", (letter: e8.Value) => e8.call("org-priority", Str
  * did.
  */
 function speedCommand(): boolean {
-  if (e8.variable("org-use-speed-commands") !== true) return false;
-  if (!(e8.point() === e8.lineStart(lineAt()) && /^\*+ /.test(e8.lineText(lineAt())))) return false;
+  const use = e8.variable("org-use-speed-commands");
+  if (!truthy(use)) return false;
+  const atHeading = e8.point() === e8.lineStart(lineAt()) && /^\*+ /.test(e8.lineText(lineAt()));
+  if (!(atHeading || (typeof use === "function" && truthy(e8.funcall(use))))) return false;
   const keys = e8.thisCommandKeys();
   const key = keys === "SPC" ? " " : keys;
   const commands = e8.variable("org-speed-commands");
@@ -4710,7 +4715,7 @@ e8.defineCommand({
   name: "org-speed-command-help",
   doc: "Show the speed commands, the keys that run commands at the start of a heading.",
   run: () => {
-    if (e8.variable("org-use-speed-commands") !== true) e8.userError("Speed commands are not activated, customize `org-use-speed-commands'");
+    if (!truthy(e8.variable("org-use-speed-commands"))) e8.userError("Speed commands are not activated, customize `org-use-speed-commands'");
     const commands = e8.variable("org-speed-commands");
     let text = "Speed commands\n==============\n";
     for (const e of Array.isArray(commands) ? commands : []) {

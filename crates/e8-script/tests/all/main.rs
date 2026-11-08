@@ -24,6 +24,7 @@ mod compile;
 mod dabbrev;
 mod desktop;
 mod diff;
+mod ediff;
 mod dired;
 mod editorconfig;
 mod elisp;

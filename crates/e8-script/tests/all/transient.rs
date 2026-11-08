@@ -28,7 +28,20 @@ transientDefinePrefix("tm-main", {
     },
   ],
 });
-const show = e8.defineCommand({ name: "show-args", run: () => e8.message(JSON.stringify(transientArgs("args-menu"))) });
+const show = e8.defineCommand({ name: "show-args", run: () => e8.message(JSON.stringify(transientArgs(String(e8.variable("transient-current-command"))))) });
+const back = e8.defineCommand({ name: "tm-back", run: () => e8.message("back") });
+transientDefinePrefix("tm-levels", {
+  incompatible: [["--one", "--two"]],
+  groups: [
+    { description: "Shown", items: [["-1", "One", "--one"], ["-2", "Two", "--two"], ["-t", "Tag", "--tag=", { multiValue: "repeat" }]] },
+    { description: "Deep", level: 5, items: [["d", "Deep", hello]] },
+    { description: "Actions", items: [["s", "Show", show], ["r", "Return", back, { transient: "return" }], ["x", "Rare", hello, { level: 6 }]] },
+  ],
+});
+transientDefinePrefix("tm-outer", { groups: [{ description: "Outer", items: [["l", "Levels", "tm-levels"]] }] });
+transientDefinePrefix("tm-tall", {
+  groups: [{ description: "Tall", items: Array.from({ length: 30 }, (_, i) => [String.fromCharCode(i < 26 ? 97 + i : 65 + i - 26), `Item ${i}`, hello] as [string, string, typeof hello]) }],
+});
 transientDefinePrefix("args-menu", {
   value: ["--all"],
   groups: [{ description: "Arguments", items: [["-a", "All", "--all"], ["-v", "Verbose", "--verbose"], ["=a", "Author", "--author="]] },
@@ -39,6 +52,10 @@ transientDefinePrefix("args-menu", {
 fn setup() -> (Editor, Scripting, tempfile::TempDir) {
     let mut ed = Editor::new();
     ed.set_frame_size(100, 40);
+    // Levels and values are kept in user-emacs-directory: a fresh one.
+    let home = tempfile::tempdir().unwrap();
+    ed.set_variable("user-emacs-directory", Value::Str(format!("{}/", home.path().display())));
+    std::mem::forget(home);
     let s = Scripting::new(&mut ed).unwrap();
     let pkgs = tempfile::tempdir().unwrap();
     std::fs::write(pkgs.path().join("tm-menus.ts"), MENUS).unwrap();
@@ -110,4 +127,94 @@ fn switches_and_options_are_the_arguments_a_suffix_reads() {
     ed.press("- v - a = a M i n a RET s").unwrap();
     assert_eq!(ed.echo(), Some(r#"["--verbose","--author=Mina"]"#));
     assert_eq!(menu(&ed), None);
+}
+
+#[test]
+fn suffixes_and_groups_above_the_prefixs_level_do_not_show() {
+    let (mut ed, _s, _pkgs) = setup();
+    ed.call("tm-levels", vec![]).unwrap();
+    let m = menu(&ed).unwrap();
+    assert!(!m.contains("Deep") && !m.contains("Rare"), "{m}");
+    // C-x a shows them all, with their levels.
+    ed.press("C-x a").unwrap();
+    let m = menu(&ed).unwrap();
+    assert!(m.contains(" d 1 Deep") && m.contains(" x 6 Rare"), "{m}");
+    ed.press("C-x a").unwrap();
+    // C-x l RET raises the menu's level, kept in transient/levels.json.
+    ed.press("C-x l RET C-a C-k 6 RET").unwrap();
+    let m = menu(&ed).unwrap();
+    assert!(m.contains("Deep") && m.contains("Rare"), "{m}");
+    let dir = ed.variable("user-emacs-directory").and_then(|v| v.as_str().map(str::to_string)).unwrap();
+    let saved = std::fs::read_to_string(format!("{dir}transient/levels.json")).unwrap();
+    assert!(saved.contains("\"tm-levels\"") && saved.contains("\"level\": 6"), "{saved}");
+    // C-x l and a suffix's key sets that suffix's level: 7 hides x again.
+    ed.press("C-x l x C-a C-k 7 RET").unwrap();
+    assert!(!menu(&ed).unwrap().contains("Rare"));
+}
+
+#[test]
+fn values_are_set_saved_reset_and_remembered() {
+    let (mut ed, _s, _pkgs) = setup();
+    ed.call("args-menu", vec![]).unwrap();
+    // Set for the session: the menu starts with it next time.
+    ed.press("- v C-x s C-g").unwrap();
+    assert_eq!(ed.echo(), None.or(ed.echo()));
+    ed.call("args-menu", vec![]).unwrap();
+    ed.press("s").unwrap();
+    assert_eq!(ed.echo(), Some(r#"["--all","--verbose"]"#));
+    // Saved: written to transient/values.json.
+    ed.call("args-menu", vec![]).unwrap();
+    ed.press("- a C-x C-s C-g").unwrap();
+    let dir = ed.variable("user-emacs-directory").and_then(|v| v.as_str().map(str::to_string)).unwrap();
+    let saved = std::fs::read_to_string(format!("{dir}transient/values.json")).unwrap();
+    assert!(saved.contains("\"args-menu\"") && saved.contains("--verbose") && !saved.contains("--all"), "{saved}");
+    // Reset: back to the prefix's own value.
+    ed.call("args-menu", vec![]).unwrap();
+    ed.press("C-x C-k s").unwrap();
+    assert_eq!(ed.echo(), Some(r#"["--all"]"#));
+    // C-x p goes back to the values used before.
+    ed.call("args-menu", vec![]).unwrap();
+    ed.press("C-x p s").unwrap();
+    assert_eq!(ed.echo(), Some(r#"["--all"]"#));
+}
+
+#[test]
+fn incompatible_arguments_turn_each_other_off_and_repeated_ones_repeat() {
+    let (mut ed, _s, _pkgs) = setup();
+    ed.call("tm-levels", vec![]).unwrap();
+    ed.press("- 1 - 2 - t a , b RET s").unwrap();
+    assert_eq!(ed.echo(), Some(r#"["--two","--tag=a","--tag=b"]"#));
+}
+
+#[test]
+fn a_suffix_can_return_to_the_menu_before() {
+    let (mut ed, _s, _pkgs) = setup();
+    ed.call("tm-outer", vec![]).unwrap();
+    ed.press("l r").unwrap();
+    assert_eq!(ed.echo(), Some("back"));
+    assert!(menu(&ed).unwrap().starts_with("Outer"));
+}
+
+#[test]
+fn a_menu_taller_than_the_frame_is_cut_to_fit() {
+    let (mut ed, _s, _pkgs) = setup();
+    ed.set_frame_size(80, 20);
+    ed.call("tm-tall", vec![]).unwrap();
+    assert!(menu(&ed).unwrap().contains("Item 29"));
+    ed.press("b").unwrap();
+    assert_eq!(ed.echo(), Some("Hello"));
+}
+
+#[test]
+fn without_a_popup_the_menu_shows_on_c_h_and_c_h_describes_a_suffix() {
+    let (mut ed, s, _pkgs) = setup();
+    s.eval_expression(&mut ed, r#"e8.setVariable("transient-show-popup", false)"#).unwrap();
+    ed.call("tm-main", vec![]).unwrap();
+    assert_eq!(menu(&ed), None);
+    ed.press("C-h").unwrap();
+    assert!(menu(&ed).is_some());
+    s.eval_expression(&mut ed, r#"e8.setVariable("transient-show-popup", true)"#).unwrap();
+    ed.press("C-h h").unwrap();
+    assert_eq!(menu(&ed), None);
+    assert!(ed.find_buffer("*Help*").is_some());
 }

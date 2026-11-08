@@ -177,3 +177,30 @@ fn names_and_predicates_as_emacs_gives_them() {
     let err = s.eval_expression(&mut ed, r#"e8.writeRegion("x", null, "a.txt", { mustbenew: true })"#).unwrap_err();
     assert!(err.to_string().contains("File exists"), "{err}");
 }
+
+#[test]
+fn default_directory_is_each_buffers_and_a_visited_files_directory() {
+    let (mut ed, s, dir) = setup();
+    let sub = dir.path().join("sub");
+    std::fs::create_dir(&sub).unwrap();
+    std::fs::write(sub.join("one.txt"), "one\n").unwrap();
+    let file = sub.join("one.txt").display().to_string();
+    let want = eval(&mut ed, &s, &format!("e8.fileNameAsDirectory(e8.abbreviateFileName({:?}))", sub.display().to_string()));
+    // Visited without being shown, from a buffer whose own directory is
+    // another: its default-directory is its file's, as Emacs's find-file
+    // sets it, and relative names expand there.
+    let b = eval(&mut ed, &s, &format!("e8.findFileNoselect({file:?})"));
+    assert_eq!(eval(&mut ed, &s, &format!("e8.withCurrentBuffer({b}, () => e8.variable(\"default-directory\"))")), want);
+    assert_eq!(eval(&mut ed, &s, &format!("e8.withCurrentBuffer({b}, () => e8.expandFileName(\"two.txt\"))")), format!("{:?}", sub.join("two.txt").display().to_string()));
+    // A buffer may set its own, as Dired and shell do.
+    eval(&mut ed, &s, &format!("e8.withCurrentBuffer({b}, () => e8.setVariable(\"default-directory\", \"/tmp/\"))"));
+    assert_eq!(eval(&mut ed, &s, &format!("e8.withCurrentBuffer({b}, () => e8.variable(\"default-directory\"))")), r#""/tmp/""#);
+    // Each buffer has its own, as in Emacs: a new buffer takes the current
+    // buffer's, and setting it in one leaves the others.
+    eval(&mut ed, &s, r#"e8.call("switch-to-buffer", "*other*")"#);
+    eval(&mut ed, &s, r#"e8.setVariable("default-directory", "/var/")"#);
+    eval(&mut ed, &s, r#"e8.call("switch-to-buffer", "*third*")"#);
+    assert_eq!(eval(&mut ed, &s, r#"e8.variable("default-directory")"#), r#""/var/""#);
+    eval(&mut ed, &s, r#"e8.setVariable("default-directory", "/usr/")"#);
+    assert_eq!(eval(&mut ed, &s, r#"e8.withCurrentBuffer("*other*", () => e8.variable("default-directory"))"#), r#""/var/""#);
+}

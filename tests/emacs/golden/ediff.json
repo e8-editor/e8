@@ -1,0 +1,734 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "ediff-copy-a-to-b-and-save-b",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n a w b",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\nfour\nfive\n",
+          "b.txt": "one\nTWO 2\nthree\nfive\nsix\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\nfour\nfive\n",
+        "b.txt": "one\ntwo\nthree\nfive\nsix\n",
+        "b.txt~": "one\nTWO 2\nthree\nfive\nsix\n"
+      }
+    },
+    {
+      "name": "ediff-copy-b-to-a-and-save-a",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n n b n b w a",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\nfour\nfive\n",
+          "b.txt": "one\nTWO 2\nthree\nfive\nsix\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\nfive\nsix\n",
+        "a.txt~": "one\ntwo\nthree\nfour\nfive\n",
+        "b.txt": "one\nTWO 2\nthree\nfive\nsix\n"
+      }
+    },
+    {
+      "name": "ediff-copy-empty-region",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n n a w b",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\nfour\nfive\n",
+          "b.txt": "one\nTWO 2\nthree\nfive\nsix\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\nfour\nfive\n",
+        "b.txt": "one\nTWO 2\nthree\nfour\nfive\nsix\n",
+        "b.txt~": "one\nTWO 2\nthree\nfive\nsix\n"
+      }
+    },
+    {
+      "name": "ediff-jump-with-prefix",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "3 j a w b",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\nfour\nfive\n",
+          "b.txt": "one\nTWO 2\nthree\nfive\nsix\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\nfour\nfive\n",
+        "b.txt": "one\nTWO 2\nthree\nfive\n",
+        "b.txt~": "one\nTWO 2\nthree\nfive\nsix\n"
+      }
+    },
+    {
+      "name": "ediff-previous-from-the-end",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n n n n p p b w a",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\nfour\nfive\n",
+          "b.txt": "one\nTWO 2\nthree\nfive\nsix\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\nfive\n",
+        "a.txt~": "one\ntwo\nthree\nfour\nfive\n",
+        "b.txt": "one\nTWO 2\nthree\nfive\nsix\n"
+      }
+    },
+    {
+      "name": "ediff-restore-after-copy",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n a r b w b",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n",
+        "b.txt~": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff-restore-message",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n a r b",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt",
+        "message": true
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n"
+      },
+      "message": "Diff region 1 in buffer B restored"
+    },
+    {
+      "name": "ediff-restore-nothing-saved",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n r a",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing saved for diff 1 in buffer A",
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff-copy-before-first-difference",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "a",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "ediff-copy-A-to-B: Bad diff region number, 0.  Valid numbers are 1 to 1",
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff-next-past-the-end",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n n n",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "At end of the difference list",
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff-previous-at-the-start",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "p",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "At beginning of the difference list",
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff-copy-twice-confirmed",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n a b a w b w a",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "answers": [
+          "yes"
+        ],
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\ntwo\nthree\n",
+        "b.txt~": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff-update-after-editing",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x o C-x o M-> x C-x o ! n n b w a",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\nx\n",
+        "a.txt~": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff-quit",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n a q",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "answers": [
+          "y"
+        ],
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "one\ntwo\nthree\n",
+      "visible": "one\ntwo\nthree\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff-quit-declined",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n q",
+        "modes": [],
+        "call": [
+          "ediff-files",
+          "a.txt",
+          "b.txt"
+        ],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "files": {
+          "a.txt": "one\ntwo\nthree\n",
+          "b.txt": "one\nTWO\nthree\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nthree\n",
+        "b.txt": "one\nTWO\nthree\n"
+      }
+    },
+    {
+      "name": "ediff3-copy-and-save",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n a b n c a r b w b w a",
+        "modes": [],
+        "call": [
+          "ediff-files3",
+          "base.txt",
+          "mine.txt",
+          "theirs.txt"
+        ],
+        "platform": null,
+        "files": {
+          "base.txt": "one\ntwo\nthree\nfour\nfive\n",
+          "mine.txt": "one\nTWO\nthree\nfour\nfive\n",
+          "theirs.txt": "one\ntwo\nthree\nFOUR\nfive\nsix\n"
+        },
+        "find": "base.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing saved for diff 2 in buffer B",
+      "files": {
+        "base.txt": "one\ntwo\nthree\nFOUR\nfive\n",
+        "base.txt~": "one\ntwo\nthree\nfour\nfive\n",
+        "mine.txt": "one\ntwo\nthree\nfour\nfive\n",
+        "mine.txt~": "one\nTWO\nthree\nfour\nfive\n",
+        "theirs.txt": "one\ntwo\nthree\nFOUR\nfive\nsix\n"
+      }
+    },
+    {
+      "name": "ediff-merge-with-ancestor-saved",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "w c",
+        "modes": [],
+        "call": [
+          "ediff-merge-files-with-ancestor",
+          "mine.txt",
+          "theirs.txt",
+          "base.txt"
+        ],
+        "platform": null,
+        "answers": [
+          "merged.txt"
+        ],
+        "files": {
+          "base.txt": "one\ntwo\nthree\nfour\nfive\n",
+          "mine.txt": "one\nTWO\nthree\nfour\nfive\n",
+          "theirs.txt": "one\ntwo\nthree\nFOUR\nfive\nsix\n"
+        },
+        "find": "base.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "base.txt": "one\ntwo\nthree\nfour\nfive\n",
+        "merged.txt": "one\nTWO\nthree\nFOUR\nfive\nsix\n",
+        "mine.txt": "one\nTWO\nthree\nfour\nfive\n",
+        "theirs.txt": "one\ntwo\nthree\nFOUR\nfive\nsix\n"
+      }
+    },
+    {
+      "name": "ediff-merge-with-ancestor-choices",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n b n a n + w c",
+        "modes": [],
+        "call": [
+          "ediff-merge-files-with-ancestor",
+          "mine.txt",
+          "theirs.txt",
+          "base.txt"
+        ],
+        "platform": null,
+        "answers": [
+          "merged.txt"
+        ],
+        "files": {
+          "base.txt": "one\ntwo\nthree\nfour\nfive\n",
+          "mine.txt": "one\nTWO\nthree\nfour\nfive\n",
+          "theirs.txt": "one\ntwo\nthree\nFOUR\nfive\nsix\n"
+        },
+        "find": "base.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "base.txt": "one\ntwo\nthree\nfour\nfive\n",
+        "merged.txt": "one\ntwo\nthree\nfour\nfive\n<<<<<<< variant A\n>>>>>>> variant B\nsix\n####### Ancestor\n======= end\n",
+        "mine.txt": "one\nTWO\nthree\nfour\nfive\n",
+        "theirs.txt": "one\ntwo\nthree\nFOUR\nfive\nsix\n"
+      }
+    },
+    {
+      "name": "ediff-merge-clash-combined",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "w c",
+        "modes": [],
+        "call": [
+          "ediff-merge-files-with-ancestor",
+          "mine.txt",
+          "theirs.txt",
+          "base.txt"
+        ],
+        "platform": null,
+        "answers": [
+          "merged.txt"
+        ],
+        "files": {
+          "base.txt": "a\nb\nc\n",
+          "mine.txt": "a\nB1\nc\n",
+          "theirs.txt": "a\nB2\nc\n"
+        },
+        "find": "base.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "base.txt": "a\nb\nc\n",
+        "merged.txt": "a\n<<<<<<< variant A\nB1\n>>>>>>> variant B\nB2\n####### Ancestor\nb\n======= end\nc\n",
+        "mine.txt": "a\nB1\nc\n",
+        "theirs.txt": "a\nB2\nc\n"
+      }
+    },
+    {
+      "name": "ediff-merge-clash-take-b-then-restore",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n b r w c",
+        "modes": [],
+        "call": [
+          "ediff-merge-files-with-ancestor",
+          "mine.txt",
+          "theirs.txt",
+          "base.txt"
+        ],
+        "platform": null,
+        "answers": [
+          "merged.txt"
+        ],
+        "files": {
+          "base.txt": "a\nb\nc\n",
+          "mine.txt": "a\nB1\nc\n",
+          "theirs.txt": "a\nB2\nc\n"
+        },
+        "find": "base.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "base.txt": "a\nb\nc\n",
+        "merged.txt": "a\n<<<<<<< variant A\nB1\n>>>>>>> variant B\nB2\n####### Ancestor\nb\n======= end\nc\n",
+        "mine.txt": "a\nB1\nc\n",
+        "theirs.txt": "a\nB2\nc\n"
+      }
+    },
+    {
+      "name": "ediff-merge-two-way",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "n a n b w c",
+        "modes": [],
+        "call": [
+          "ediff-merge-files",
+          "x.txt",
+          "y.txt"
+        ],
+        "platform": null,
+        "answers": [
+          "merged.txt"
+        ],
+        "files": {
+          "x.txt": "a\nb\nc\nd\n",
+          "y.txt": "a\nB\nc\nD\n"
+        },
+        "find": "x.txt"
+      },
+      "text": "                                 Type ? for help",
+      "visible": "                                 Type ? for help",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "merged.txt": "a\nb\nc\nD\n",
+        "x.txt": "a\nb\nc\nd\n",
+        "y.txt": "a\nB\nc\nD\n"
+      }
+    }
+  ]
+}

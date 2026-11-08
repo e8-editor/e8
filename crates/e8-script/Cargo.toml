@@ -5,7 +5,7 @@ version.workspace = true
 license.workspace = true
 
 [dependencies]
-e8-core = { version = "0.4.1", path = "../e8-core" }
+e8-core = { version = "0.5.0", path = "../e8-core" }
 rquickjs = { version = "0.14", features = ["loader"], optional = true }
 v8 = { version = "152.2", optional = true }
 swc_common = "26"

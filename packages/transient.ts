@@ -16,6 +16,16 @@
 // [key, description, command or argument, options], or the name of a suffix
 // defined with transientDefineSuffix, which carries its own key and
 // description.
+//
+// As transient.el does: suffixes and groups have levels, and a prefix shows
+// those at or under its level (transient-default-level, 4); C-x l changes
+// a prefix's or a suffix's level, kept in transient-levels-file. C-x s sets
+// a prefix's arguments for the session and C-x C-s saves them in
+// transient-values-file, C-x C-k resets them; C-x p and C-x n go through
+// the arguments used before. C-h then a key describes that suffix, C-h C-h
+// the prefix. Arguments a prefix says are incompatible turn each other
+// off. C-x t shows the common commands. A menu taller than the frame is
+// cut to fit; with transient-show-popup nil it does not show until C-h.
 
 import { truthy } from "subr";
 
@@ -51,6 +61,12 @@ e8.defineVariable({
 e8.defineVariable({ name: "transient-force-single-column", doc: "Whether to show the suffixes in one column, rather than side by side.", value: false });
 e8.defineVariable({ name: "transient-current-command", doc: "The transient prefix command from which the running suffix was invoked.", value: null });
 e8.defineVariable({ name: "transient-current-prefix", doc: "The name of the prefix whose menu is showing, or from which the running suffix was invoked.", value: null });
+e8.defineVariable({ name: "transient-default-level", doc: "The level of a prefix whose level was not changed: suffixes and groups of higher levels do not show.", value: 4 });
+e8.defineVariable({ name: "transient-show-popup", doc: "Whether to show the menu's window at once: t, or nil to show it only on C-h.", value: true });
+e8.defineVariable({ name: "transient-show-common-commands", doc: "Whether to show the common commands, C-x s, C-x l and the rest, below each menu.", value: false });
+e8.defineVariable({ name: "transient-levels-file", doc: "The file in which the levels of prefixes and suffixes are kept; transient/levels.json in user-emacs-directory when nil.", value: null });
+e8.defineVariable({ name: "transient-values-file", doc: "The file in which the saved values of prefixes are kept; transient/values.json in user-emacs-directory when nil.", value: null });
+e8.defineVariable({ name: "transient-history-limit", doc: "How many earlier values of each prefix to keep.", value: 10 });
 
 /** Text, its faces with it. */
 type Text = string | e8.PropertizedString;
@@ -62,8 +78,14 @@ type Predicate = () => unknown;
 /** What a suffix can say beside its key, description and command or argument, as transient's slots. */
 export interface SuffixOptions {
   description?: Description;
-  /** Whether running it leaves the menu: true stays, false exits; for a prefix, true returns to this menu after it. */
-  transient?: boolean;
+  /**
+   * Whether running it leaves the menu: true stays, false exits; for a
+   * prefix, true returns to this menu after it. Or one of transient's
+   * behaviours by name: "call" or "stay" stays, "exit" exits, "return"
+   * goes back to the menu before, "recurse" enters a sub-menu that comes
+   * back here.
+   */
+  transient?: boolean | "call" | "stay" | "exit" | "return" | "recurse";
   if?: Predicate;
   ifNot?: Predicate;
   ifMode?: string | string[];
@@ -89,6 +111,14 @@ export interface SuffixOptions {
   face?: string;
   level?: number;
   key?: string;
+  /** For an option, whether it takes several values, comma-separated when read: "repeat" puts the argument before each, "rest" once before them all. */
+  multiValue?: "repeat" | "rest";
+  /** For an option, whether pressing it while set reads a new value rather than unsetting it. */
+  alwaysRead?: boolean;
+  /** For an option, whether an empty answer sets it to empty rather than unsetting it. */
+  allowEmpty?: boolean;
+  /** Its documentation, as C-h shows it. */
+  doc?: string;
 }
 
 /** A suffix in a layout: [key, description, command or argument, options], or a suffix defined by name. */
@@ -103,6 +133,8 @@ export interface Group {
   hide?: Predicate;
   if?: Predicate;
   ifNot?: Predicate;
+  /** Its level: the group shows only in a prefix of that level or higher. */
+  level?: number;
   items: (SuffixSpec | Group | null)[];
 }
 
@@ -114,6 +146,10 @@ export interface PrefixDefinition {
   transientSuffix?: boolean;
   /** Whether keys that are no suffix's run their commands and stay, rather than being refused. */
   transientNonSuffix?: boolean;
+  /** Arguments that cannot be used together, each list of them: setting one unsets the others, as :incompatible. */
+  incompatible?: string[][];
+  /** The man page C-h C-h shows, as :man-page. */
+  manPage?: string;
   groups: Group[];
 }
 
@@ -129,6 +165,8 @@ interface Suffix {
   /** For an infix: its value, true for a switch that is on, the string for an option. */
   value?: string | boolean;
   inapt?: boolean;
+  /** Its level: it shows only if the prefix's level is as high. */
+  level: number;
 }
 
 interface Layout {
@@ -154,6 +192,49 @@ let active: Active | undefined;
 const stack: { prefix: string; values: Map<string, string | boolean | undefined>; returnHere: boolean }[] = [];
 /** The values infixes had when the menu last showed, kept across a suffix that stays. */
 let values = new Map<string, string | boolean | undefined>();
+
+// Levels, values and history, as transient-levels, transient-values and transient-history.
+
+/** Where transient keeps FILE: VARIABLE's file, or transient/FILE in user-emacs-directory. */
+function stateFile(variable: string, file: string): string {
+  const set = e8.variable(variable);
+  if (typeof set === "string") return e8.expandFileName(set);
+  const dir = String(e8.variable("user-emacs-directory") ?? "~/.config/e8/");
+  return e8.expandFileName(`transient/${file}`, dir);
+}
+function readState<T>(variable: string, file: string): T | undefined {
+  try {
+    const f = stateFile(variable, file);
+    return e8.fileExistsP(f) ? (JSON.parse(e8.readTextFile(f)) as T) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+function writeState(variable: string, file: string, value: unknown): void {
+  const f = stateFile(variable, file);
+  e8.makeDirectory(e8.fileNameDirectory(f) ?? ".", { parents: true });
+  e8.writeTextFile(f, `${JSON.stringify(value, null, 1)}\n`);
+}
+
+/** Each prefix's level, and its suffixes' levels by command, as transient-levels. */
+let levels: { [prefix: string]: { level?: number; suffixes?: { [command: string]: number } } } | undefined;
+const getLevels = () => (levels ??= readState("transient-levels-file", "levels.json") ?? {});
+/** The level of PREFIX: what C-x l set, or transient-default-level. */
+export function transientPrefixLevel(prefix: string): number {
+  return getLevels()[prefix]?.level ?? Number(e8.variable("transient-default-level") ?? 4);
+}
+/** The level of a suffix of PREFIX: what C-x l set, or its own, or 1. */
+function suffixLevel(prefix: string, command: string, own: number | undefined): number {
+  return getLevels()[prefix]?.suffixes?.[command] ?? own ?? 1;
+}
+
+/** Each prefix's value set for the session, and saved, as transient-values. */
+const setValues = new Map<string, string[]>();
+let savedValues: { [prefix: string]: string[] } | undefined;
+const getSaved = () => (savedValues ??= readState("transient-values-file", "values.json") ?? {});
+/** Each prefix's earlier values, the latest first, as transient-history. */
+const history = new Map<string, string[][]>();
+let historyAt = -1;
 
 const BUFFER = " *transient*";
 const MAP = "transient--map";
@@ -202,19 +283,21 @@ function makeSuffix(prefix: string, spec: SuffixSpec): Suffix | undefined {
   let options: SuffixOptions;
   if (typeof spec === "string") {
     const defined = definedSuffixes.get(spec);
-    if (!defined) return { key: "", command: spec, kind: prefixes.has(spec) ? "prefix" : "suffix", options: {} };
+    if (!defined) return { key: "", command: spec, kind: prefixes.has(spec) ? "prefix" : "suffix", options: {}, level: 1 };
     ({ key = "", description } = defined);
     target = spec;
     options = defined;
   } else if (spec.length === 2) {
     [key, options] = spec;
     description = options.info;
-    return { key, description, command: "", kind: "information", options };
+    return { key, description, command: "", kind: "information", options, level: options.level ?? 1 };
   } else {
     [key, description, target, options = {}] = spec;
   }
   if (options.description !== undefined) description = options.description;
   if (!shows(options)) return undefined;
+  const level = suffixLevel(prefix, typeof target === "string" ? target : key, options.level);
+  if (!editingLevels && (level === 0 || level > transientPrefixLevel(prefix))) return undefined;
   const isArgument =
     typeof target === "string" && (/^-/.test(target) || options.class === "switch" || options.class === "option" || options.class === "switches") && options.class !== "suffix";
   const suffix: Suffix = isArgument
@@ -231,8 +314,9 @@ function makeSuffix(prefix: string, spec: SuffixSpec): Suffix | undefined {
               ? "option"
               : "switch",
         options,
+        level,
       }
-    : { key, description, command: commandName(prefix, key, target!), kind: prefixes.has(target as string) ? "prefix" : "suffix", options };
+    : { key, description, command: commandName(prefix, key, target!), kind: prefixes.has(target as string) ? "prefix" : "suffix", options, level };
   suffix.inapt = inapt(options);
   return suffix;
 }
@@ -240,6 +324,7 @@ function makeSuffix(prefix: string, spec: SuffixSpec): Suffix | undefined {
 /** The layout of a group, its children set up, as transient--init-child. */
 function makeLayout(prefix: string, group: Group): Layout | undefined {
   if (!shows(group)) return undefined;
+  if (!editingLevels && (group.level ?? 1) > transientPrefixLevel(prefix)) return undefined;
   const children: (Layout | Suffix | string)[] = [];
   for (const item of group.items) {
     if (item === null) continue;
@@ -267,6 +352,13 @@ function flatten(layouts: Layout[]): Suffix[] {
 
 /** The value a prefix starts with, as its :value says. */
 function initialValue(prefix: string): string[] {
+  const set = setValues.get(prefix) ?? getSaved()[prefix];
+  if (set) return [...set];
+  return defaultValue(prefix);
+}
+
+/** The value a prefix's definition gives it, as its :value. */
+function defaultValue(prefix: string): string[] {
   const value = prefixes.get(prefix)?.value;
   if (value === undefined) return [];
   if (typeof value === "function") return value();
@@ -288,6 +380,9 @@ function initValues(suffixes: Suffix[], value: string[]): Map<string, string | b
     } else if (s.infixClass === "switches") {
       const format = s.options.argumentFormat ?? `${arg}%s`;
       map.set(s.command, value.find((a) => (s.options.choices ?? []).some((c) => format.replace("%s", c) === a)));
+    } else if (s.options.multiValue === "repeat") {
+      const found = value.filter((a) => a.startsWith(arg)).map((a) => a.slice(arg.length));
+      map.set(s.command, found.length > 0 ? found.join(",") : undefined);
     } else {
       const found = value.find((a) => a.startsWith(arg));
       map.set(s.command, found === undefined ? undefined : found.slice(arg.length));
@@ -308,12 +403,17 @@ function formatKey(s: Suffix, pad: number | undefined): Text {
 function keyFace(s: Suffix): string {
   if (!truthy(e8.variable("transient-semantic-coloring"))) return s.command ? "transient-key" : "transient-key-noop";
   const kind = behaviour(s);
-  return kind === "stay" || kind === "infix" ? "transient-key-stay" : kind === "stack" ? "transient-key-stack" : kind === "recurse" ? "transient-key-recurse" : "transient-key-exit";
+  return kind === "stay" || kind === "infix" ? "transient-key-stay" : kind === "stack" ? "transient-key-stack" : kind === "recurse" ? "transient-key-recurse" : kind === "return" ? "transient-key-return" : "transient-key-exit";
 }
 
 /** What running a suffix does, as transient--make-predicate-map works it out. */
-function behaviour(s: Suffix): "exit" | "stay" | "stack" | "recurse" | "infix" {
+function behaviour(s: Suffix): "exit" | "stay" | "stack" | "recurse" | "infix" | "return" {
   if (s.kind === "infix") return "infix";
+  const named = s.options.transient;
+  if (named === "call" || named === "stay") return "stay";
+  if (named === "exit") return "exit";
+  if (named === "return") return "return";
+  if (named === "recurse") return s.kind === "prefix" ? "recurse" : "stay";
   const transient = s.options.transient ?? (s.kind === "suffix" ? prefixes.get(active?.prefix ?? "")?.transientSuffix : undefined);
   if (s.kind === "prefix") return transient === true ? "recurse" : "stack";
   return transient ? "stay" : "exit";
@@ -351,6 +451,10 @@ function formatSuffix(s: Suffix, pad: number | undefined): Text {
   desc = desc === undefined ? face("(BUG: no description)", "error") : s.options.face ? face(desc, s.options.face) : desc;
   if (s.inapt) desc = face(desc, "transient-inapt-suffix");
   const key = s.kind === "information" ? (s.key || " ") : formatKey(s, pad);
+  if (editingLevels && s.kind !== "information") {
+    const shown = s.level !== 0 && s.level <= transientPrefixLevel(active?.prefix ?? "");
+    desc = e8.concat(face(`${s.level} `, shown ? "transient-value" : "transient-inactive-value"), shown ? desc! : face(desc!, "transient-inactive-argument"));
+  }
   const parts = format.split(/(%[kdv%])/).map((p) => (p === "%k" ? key : p === "%d" ? desc! : p === "%v" ? formatValue(s) : p === "%%" ? "%" : p));
   return e8.concat(...parts);
 }
@@ -430,6 +534,10 @@ function insertGroup(layout: Layout, parent?: Layout): void {
 /** Shows the menu, in a window along the bottom of the frame, as transient--show. */
 function show(): void {
   if (!active) return;
+  if (!truthy(e8.variable("transient-show-popup")) && !popupForced) {
+    e8.message(`${active.prefix}-  [C-h for help]`);
+    return;
+  }
   e8.getBufferCreate(BUFFER);
   e8.withCurrentBuffer(BUFFER, () => {
     e8.letBind({ "inhibit-read-only": true }, () => {
@@ -439,6 +547,7 @@ function show(): void {
         insertGroup(layout);
         if (i < groups.length - 1) e8.insert("\n");
       });
+      if (truthy(e8.variable("transient-show-common-commands"))) insertCommonCommands();
       e8.gotoChar(e8.pointMin());
     });
     for (const [name, value] of [
@@ -451,7 +560,10 @@ function show(): void {
     }
     e8.setBufferModified(false);
   });
-  const lines = e8.withCurrentBuffer(BUFFER, () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()).replace(/\n$/, "").split("\n").length);
+  // A menu taller than the frame allows is cut to fit, the window above
+  // keeping a few lines, as display-buffer-in-side-window fits the window.
+  const wanted = e8.withCurrentBuffer(BUFFER, () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()).replace(/\n$/, "").split("\n").length);
+  const lines = Math.max(1, Math.min(wanted, e8.frameHeight() - 6));
   const live = active.window !== 0 && e8.windowList().includes(active.window);
   if (live && e8.windowSize(active.window)?.totalHeight !== lines) {
     e8.deleteWindow(active.window);
@@ -498,6 +610,15 @@ function bindKeys(): void {
     ["C-g", quitOne],
     ["C-q", quitAll],
     ["ESC ESC ESC", quitAll],
+    ["C-h", transientHelp],
+    ["C-x s", transientSet],
+    ["C-x C-s", transientSave],
+    ["C-x C-k", transientReset],
+    ["C-x p", transientHistoryPrev],
+    ["C-x n", transientHistoryNext],
+    ["C-x l", transientSetLevel],
+    ["C-x t", transientToggleCommon],
+    ["C-x a", transientToggleLevelLimit],
   ] as const) {
     if (e8.lookupKey(map, key) === undefined) e8.defineKey(map, key, command);
   }
@@ -534,7 +655,8 @@ function currentArgs(): string[] {
     if (s.kind !== "infix") continue;
     const value = values.get(s.command);
     if (value === undefined || value === false) continue;
-    args.push(s.infixClass === "switch" ? s.argument! : s.infixClass === "switches" ? String(value) : `${s.argument}${value}`);
+    if (s.infixClass === "option" && s.options.multiValue === "repeat") args.push(...String(value).split(",").map((v) => `${s.argument}${v}`));
+    else args.push(s.infixClass === "switch" ? s.argument! : s.infixClass === "switches" ? String(value) : `${s.argument}${value}`);
   }
   return args;
 }
@@ -586,10 +708,29 @@ function runSuffix(s: Suffix): void {
     return;
   }
   if (kind === "stay") {
+    pushHistory(active!.prefix, currentArgs());
     try {
       callSuffix(s.command);
     } finally {
       if (active) refresh();
+    }
+    return;
+  }
+  if (kind === "return") {
+    // Runs, then goes back to the menu this one was entered from.
+    const prefix = active!.prefix;
+    const args = currentArgs();
+    const parent = stack.pop();
+    const buffer = active!.buffer;
+    exit(false);
+    lastArgs = { prefix, args };
+    try {
+      e8.letBind({ "transient-current-command": prefix, "transient-current-prefix": prefix }, () => e8.callInteractively(s.command as e8.CommandName));
+    } finally {
+      if (parent && !active) {
+        values = parent.values;
+        setup(parent.prefix, buffer, true);
+      }
     }
     return;
   }
@@ -599,6 +740,7 @@ function runSuffix(s: Suffix): void {
   // entered to return to the one before.
   const prefix = active!.prefix;
   const args = currentArgs();
+  pushHistory(prefix, args);
   const parent = stack.length > 0 && stack[stack.length - 1].returnHere ? stack.pop() : undefined;
   exit(false);
   lastArgs = { prefix, args };
@@ -633,6 +775,7 @@ function readInfix(s: Suffix): void {
   const now = values.get(s.command);
   if (s.infixClass === "switch") {
     values.set(s.command, now ? undefined : true);
+    if (!now) unsetIncompatible(s);
     return;
   }
   if (s.infixClass === "switches") {
@@ -643,21 +786,36 @@ function readInfix(s: Suffix): void {
     values.set(s.command, at + 1 < args.length ? args[at + 1] : undefined);
     return;
   }
-  if (now !== undefined) {
+  if (now !== undefined && !s.options.alwaysRead) {
     values.set(s.command, undefined);
     return;
   }
   const prompt = s.options.prompt ?? `${s.argument}`;
   e8.setOverridingMap(null);
   try {
+    const initial = typeof now === "string" ? now : undefined;
     const value = s.options.reader
-      ? s.options.reader(prompt, undefined)
+      ? s.options.reader(prompt, initial)
       : s.options.choices
-        ? e8.completingRead(prompt, s.options.choices, { requireMatch: true })
-        : e8.readString(prompt);
-    values.set(s.command, value === "" ? undefined : value);
+        ? e8.completingRead(prompt, s.options.choices, { requireMatch: true, history: `transient-history:${s.command}` })
+        : e8.readString(prompt, { initial, history: `transient-history:${s.command}` });
+    values.set(s.command, value === "" && !s.options.allowEmpty ? undefined : value);
+    if (values.get(s.command) !== undefined) unsetIncompatible(s);
   } finally {
     e8.setOverridingMap(MAP);
+  }
+}
+
+/** Unsets the arguments the prefix says cannot go with S's, as transient--set-incompatible. */
+function unsetIncompatible(s: Suffix): void {
+  const groups = prefixes.get(active?.prefix ?? "")?.incompatible ?? [];
+  const mine = s.argument ?? "";
+  for (const group of groups) {
+    if (!group.some((a) => mine === a || mine.startsWith(a) || a.startsWith(mine))) continue;
+    for (const other of active!.suffixes) {
+      if (other === s || other.kind !== "infix") continue;
+      if (group.some((a) => other.argument === a || (other.argument ?? "").startsWith(a) || a.startsWith(other.argument ?? "\0"))) values.set(other.command, undefined);
+    }
   }
 }
 
@@ -676,6 +834,8 @@ function setup(prefix: string, buffer: e8.Buffer, keepValues = false): void {
   });
   active.suffixes = flatten(active.layout);
   if (!keepValues) values = initValues(active.suffixes, e8.withCurrentBuffer(buffer, () => initialValue(prefix)));
+  historyAt = -1;
+  popupForced = false;
   e8.setVariable("transient-current-prefix", prefix);
   show();
   bindKeys();
@@ -683,6 +843,7 @@ function setup(prefix: string, buffer: e8.Buffer, keepValues = false): void {
 
 /** Leaves the menu, and with ALL every menu it was entered from. */
 function exit(all: boolean): void {
+  editingLevels = false;
   hide();
   e8.setOverridingMap(null);
   active = undefined;
@@ -752,3 +913,217 @@ export function transientDefineSuffix(
 
 /** The suffix spec for transient-quit-one and transient-quit-all, for a layout to name. */
 transientDefineSuffix("transient-quit-one-suffix", { key: "C-g", description: "Quit", run: () => e8.call(quitOne) });
+
+// The common commands, as transient-common-commands.
+
+let editingLevels = false;
+let popupForced = false;
+
+/** Remembers ARGS as PREFIX's latest value, as transient--history-push. */
+function pushHistory(prefix: string, args: string[]): void {
+  const list = history.get(prefix) ?? [];
+  const key = JSON.stringify(args);
+  const rest = list.filter((a) => JSON.stringify(a) !== key);
+  history.set(prefix, [args, ...rest].slice(0, Number(e8.variable("transient-history-limit") ?? 10)));
+}
+
+/** Puts the menu's infixes to ARGS. */
+function setArgs(args: string[]): void {
+  if (!active) return;
+  values = initValues(active.suffixes, args);
+  refresh();
+}
+
+/** Inserts the common commands below the menu, as transient shows them with C-x t. */
+function insertCommonCommands(): void {
+  const k = (key: string) => face(key, "transient-key-stay");
+  e8.insert("\n");
+  const rows: [string, string][][] = [
+    [["C-x s  ", "Set"], ["C-x C-s", "Save"], ["C-x C-k", "Reset"]],
+    [["C-x p  ", "Previous value"], ["C-x n  ", "Next value"], ["C-x l  ", "Show/hide suffixes"]],
+    [["C-x t  ", "Hide common commands"], ["C-x a  ", "Show all"], ["C-h    ", "Help"]],
+  ];
+  for (const row of rows) {
+    row.forEach(([key, desc], i) => {
+      e8.insert(" ");
+      e8.insert(k(key));
+      e8.insert(` ${desc.padEnd(i < row.length - 1 ? 20 : 0)}`);
+    });
+    e8.insert("\n");
+  }
+}
+
+const transientSet = e8.defineCommand({
+  name: "transient-set",
+  doc: "Set the value of the active transient for this session.",
+  run: () => {
+    if (!active) return;
+    setValues.set(active.prefix, currentArgs());
+    e8.message(`Set value of ${active.prefix}`);
+  },
+});
+const transientSave = e8.defineCommand({
+  name: "transient-save",
+  doc: "Save the value of the active transient persistently, in transient-values-file.",
+  run: () => {
+    if (!active) return;
+    const args = currentArgs();
+    setValues.set(active.prefix, args);
+    getSaved()[active.prefix] = args;
+    writeState("transient-values-file", "values.json", getSaved());
+    e8.message(`Saved value of ${active.prefix}`);
+  },
+});
+const transientReset = e8.defineCommand({
+  name: "transient-reset",
+  doc: "Clear the set and saved values of the active transient, going back to its own.",
+  run: () => {
+    if (!active) return;
+    setValues.delete(active.prefix);
+    if (getSaved()[active.prefix]) {
+      delete getSaved()[active.prefix];
+      writeState("transient-values-file", "values.json", getSaved());
+    }
+    setArgs(defaultValue(active.prefix));
+  },
+});
+const transientHistoryPrev = e8.defineCommand({
+  name: "transient-history-prev",
+  doc: "Switch to the previous value used for the active transient.",
+  run: () => {
+    if (!active) return;
+    const list = history.get(active.prefix) ?? [];
+    if (historyAt + 1 >= list.length) return void e8.message("No previous value");
+    historyAt++;
+    setArgs(list[historyAt]);
+  },
+});
+const transientHistoryNext = e8.defineCommand({
+  name: "transient-history-next",
+  doc: "Switch to the next value used for the active transient.",
+  run: () => {
+    if (!active) return;
+    const list = history.get(active.prefix) ?? [];
+    if (historyAt <= 0) return void e8.message("No next value");
+    historyAt--;
+    setArgs(list[historyAt]);
+  },
+});
+const transientToggleCommon = e8.defineCommand({
+  name: "transient-toggle-common",
+  doc: "Toggle whether common commands are permanently shown.",
+  run: () => {
+    e8.setVariable("transient-show-common-commands", !truthy(e8.variable("transient-show-common-commands")));
+    refresh();
+  },
+});
+const transientToggleLevelLimit = e8.defineCommand({
+  name: "transient-toggle-level-limit",
+  doc: "Toggle whether to show the suffixes of every level, with their levels.",
+  run: () => {
+    editingLevels = !editingLevels;
+    refresh();
+  },
+});
+const transientSetLevel = e8.defineCommand({
+  name: "transient-set-level",
+  doc: "Set the level of the menu, or of a suffix: press RET for the menu's own, or a suffix's key, then the level.",
+  run: () => {
+    if (!active) return;
+    const was = editingLevels;
+    editingLevels = true;
+    refresh();
+    e8.setOverridingMap(null);
+    try {
+      const key = e8.readKeySequence("Set level of (RET for this menu, or a suffix's key): ");
+      const prefix = active.prefix;
+      const entry = (getLevels()[prefix] ??= {});
+      if (key === "RET" || key === "C-m") {
+        const n = Number(e8.readString(`Set level for ${prefix} (1-7): `, { initial: String(transientPrefixLevel(prefix)) }));
+        if (n >= 1 && n <= 7) entry.level = n;
+      } else {
+        const s = active.suffixes.find((x) => kbdKeys(x.key) === key);
+        if (!s) return void e8.message(`No suffix is bound to ${key}`);
+        const n = Number(e8.readString(`Set level for ${s.command} (0-7): `, { initial: String(s.level) }));
+        if (n >= 0 && n <= 7) (entry.suffixes ??= {})[s.command] = n;
+      }
+      writeState("transient-levels-file", "levels.json", getLevels());
+    } finally {
+      editingLevels = was;
+      if (active) refresh();
+    }
+  },
+});
+const transientHelp = e8.defineCommand({
+  name: "transient-help",
+  doc: "Show help for the suffix of the key pressed next, or with C-h again for the menu itself.",
+  run: () => {
+    if (!active) return;
+    if (!truthy(e8.variable("transient-show-popup")) && !popupForced) {
+      popupForced = true;
+      return refresh();
+    }
+    e8.setOverridingMap(null);
+    let key: string;
+    try {
+      key = e8.readKeySequence("Help for (key, or C-h for this menu): ");
+    } finally {
+      e8.setOverridingMap(MAP);
+    }
+    const prefix = active.prefix;
+    const defs = prefixes.get(prefix);
+    let target: string | undefined;
+    let doc: string | undefined;
+    if (key === "C-h") {
+      target = prefix;
+      if (defs?.manPage) doc = `${defs.doc ?? ""}\n\nSee the man page ${defs.manPage}.`;
+    } else {
+      const s = active.suffixes.find((x) => kbdKeys(x.key) === key);
+      if (!s) return void e8.message(`No suffix is bound to ${key}`);
+      if (s.kind === "infix") doc = `${String(describe(s.description) ?? s.argument)} (${s.argument})\n\n${s.options.doc ?? `An argument of ${prefix}.`}`;
+      else target = s.command;
+    }
+    exit(true);
+    if (doc !== undefined) {
+      e8.getBufferCreate("*Help*");
+      e8.withCurrentBuffer("*Help*", () =>
+        e8.letBind({ "inhibit-read-only": true }, () => {
+          e8.deleteRegion(e8.pointMin(), e8.pointMax());
+          e8.insert(`${target ?? ""}${target ? "\n\n" : ""}${doc}\n`);
+        }),
+      );
+      e8.call("display-buffer", "*Help*");
+    } else if (target) e8.call("describe-function" as e8.CommandName, target);
+  },
+});
+
+// Readers, as transient's.
+
+/** Reads a number of at least 1, as transient-read-number-N+. */
+export function transientReadNumberNPlus(prompt: string, initial?: string): string {
+  for (;;) {
+    const s = e8.readString(prompt, { initial });
+    if (s === "" || /^[1-9][0-9]*$/.test(s)) return s;
+    e8.message("Please enter a natural number (excluding zero).");
+  }
+}
+/** Reads a number of at least 0, as transient-read-number-N0. */
+export function transientReadNumberN0(prompt: string, initial?: string): string {
+  for (;;) {
+    const s = e8.readString(prompt, { initial });
+    if (s === "" || /^[0-9]+$/.test(s)) return s;
+    e8.message("Please enter a natural number (including zero).");
+  }
+}
+/** Reads a date, as transient-read-date: anything git takes, so as typed. */
+export const transientReadDate = (prompt: string, initial?: string): string => e8.readString(prompt, { initial });
+/** Reads a file, as transient-read-file. */
+export function transientReadFile(prompt: string, initial?: string): string {
+  const file = e8.expandFileName(e8.readFileName(prompt, { initial }));
+  const dir = e8.fileNameAsDirectory(e8.expandFileName(String(e8.variable("default-directory") ?? ".")));
+  return file.startsWith(dir) ? file.slice(dir.length) : file;
+}
+/** Reads an existing file, as transient-read-existing-file. */
+export const transientReadExistingFile = (prompt: string, initial?: string): string => e8.readFileName(prompt, { initial, mustMatch: true });
+/** Reads a directory, as transient-read-directory. */
+export const transientReadDirectory = (prompt: string, initial?: string): string => e8.readFileName(prompt, { initial, mustMatch: true });

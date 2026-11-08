@@ -229,6 +229,7 @@ impl Editor {
         let mut buffer = Buffer::new(name);
         buffer.set_text(&text);
         buffer.path = Some(path.to_path_buf());
+        crate::files::set_file_default_directory(&mut buffer, path);
         if let Some(coding) = coding {
             buffer.set_coding(coding);
         }
@@ -419,6 +420,7 @@ impl Editor {
         let b = &mut self.buffers[self.current];
         b.name = name;
         b.path = Some(path.to_path_buf());
+        crate::files::set_file_default_directory(b, path);
         if !along_with_file {
             b.file.modtime_known = false;
             b.file.backed_up = false;

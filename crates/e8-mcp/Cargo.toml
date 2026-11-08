@@ -11,8 +11,8 @@ quickjs = ["e8-script/quickjs"]
 v8 = ["e8-script/v8"]
 
 [dependencies]
-e8-core = { version = "0.4.1", path = "../e8-core" }
-e8-script = { version = "0.4.1", path = "../e8-script", default-features = false }
+e8-core = { version = "0.5.0", path = "../e8-core" }
+e8-script = { version = "0.5.0", path = "../e8-script", default-features = false }
 libc = "0.2"
 serde_json = "1"
 
