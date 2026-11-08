@@ -1386,11 +1386,12 @@
       const entries = Array.isArray(spec) ? spec.filter((e) => (Array.isArray(e) ? e[0] : e) !== name) : [true];
       native.setVariable("buffer-invisibility-spec", [...entries, ellipsis ? [String(name), true] : String(name)]);
     },
+    // As Emacs's remove-from-invisibility-spec: a spec of true becomes a
+    // list, which hides only text whose invisible property is true.
     removeFromInvisibilitySpec(name) {
       const spec = native.variable("buffer-invisibility-spec");
-      if (Array.isArray(spec)) {
-        native.setVariable("buffer-invisibility-spec", spec.filter((e) => (Array.isArray(e) ? e[0] : e) !== name));
-      }
+      const entries = Array.isArray(spec) ? spec.filter((e) => (Array.isArray(e) ? e[0] : e) !== name) : [true];
+      native.setVariable("buffer-invisibility-spec", entries);
     },
     defineFace({ name, doc = "", attributes = {}, dark = {}, light = {} }) {
       native.defineFace(String(name), String(doc), attributes, dark, light);

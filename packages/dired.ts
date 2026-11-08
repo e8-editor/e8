@@ -1294,6 +1294,11 @@ e8.defineMajorMode({
     e8.makeLocalVariable("revert-buffer-function");
     e8.setVariable("revert-buffer-function", "dired-revert");
     e8.addHook("jit-lock-functions", fontify, { local: true });
+    // As dired-mode does: the spec becomes a list, so the details, whose
+    // invisible property names dired-hide-details-detail, show until
+    // dired-hide-details-mode adds that name. (dired . t) is what hides
+    // a subdirectory with an ellipsis.
+    e8.addToInvisibilitySpec("dired", { ellipsis: true });
   },
 });
 

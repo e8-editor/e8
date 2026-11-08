@@ -221,3 +221,13 @@ fn buffer_local_values_and_the_undo_list() {
     ed.type_text("f");
     assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.bufferUndoList())"), "[[2,3]]");
 }
+
+#[test]
+fn the_invisibility_spec_becomes_a_list_as_emacs_makes_it() {
+    // As Emacs 30.2: adding to or removing from a spec of t makes a list
+    // that still holds t, which hides only text whose invisible property is t.
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, r#"(e8.removeFromInvisibilitySpec("foo"), JSON.stringify(e8.variable("buffer-invisibility-spec")))"#), "[true]");
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, r#"(e8.addToInvisibilitySpec("foo", { ellipsis: true }), JSON.stringify(e8.variable("buffer-invisibility-spec")))"#), r#"[true,["foo",true]]"#);
+}
