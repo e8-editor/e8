@@ -11,6 +11,7 @@ pub use bidi_display::is_bidi_control;
 mod bidi_data;
 mod buffer;
 pub mod casefiddle;
+pub mod clock;
 pub mod charset;
 pub mod chartab;
 pub mod clicks;
@@ -71,6 +72,7 @@ mod timers;
 pub mod treesitfns;
 mod window;
 mod variables;
+pub mod vfs;
 
 pub use buffer::{Buffer, UndoStep};
 pub use command::{Arg, Command, Param, ParamKind};

@@ -2,7 +2,7 @@
 //! `tsconfig.json` that let editors and `tsc` check it.
 
 use std::env;
-use std::fs;
+use e8_core::vfs as fs;
 use std::io;
 use std::path::{Path, PathBuf};
 
@@ -16,7 +16,7 @@ pub fn config_dir() -> PathBuf {
     }
     let base = env::var_os("XDG_CONFIG_HOME")
         .map(PathBuf::from)
-        .unwrap_or_else(|| PathBuf::from(env::var_os("HOME").unwrap_or_default()).join(".config"));
+        .unwrap_or_else(|| e8_core::vfs::home_dir().unwrap_or_default().join(".config"));
     base.join("e8")
 }
 
@@ -100,7 +100,7 @@ fn start_in(
 /// Emacs reports a broken init file, and the editor starts anyway.
 pub fn load_init(ed: &mut Editor, scripting: &Scripting, dir: &Path) {
     let init = dir.join("init.ts");
-    if init.exists()
+    if fs::path_exists(&init)
         && let Err(e) = scripting.load_file(ed, &init)
     {
         // The error already starts with the file and line.
@@ -132,12 +132,12 @@ const TSCONFIG: &str = r#"{
 /// Writes the declarations and `tsconfig.json` if there is none. Does
 /// nothing if the configuration directory does not exist.
 pub fn write_type_files(ed: &Editor, dir: &Path) -> io::Result<()> {
-    if !dir.is_dir() {
+    if !fs::path_is_dir(dir) {
         return Ok(());
     }
     write_declarations(ed, dir)?;
     let tsconfig = dir.join("tsconfig.json");
-    if !tsconfig.exists() {
+    if !fs::path_exists(&tsconfig) {
         fs::write(tsconfig, TSCONFIG)?;
     }
     Ok(())

@@ -1,0 +1,23 @@
+[package]
+name = "e8-web"
+description = "E8 in a browser: the egui front end on a canvas, the editor on a Web Worker, scripts on QuickJS."
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# Built only for the web, by build.sh; natively the crate is empty, so the
+# workspace's builds and tests pass over it.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+e8-core = { version = "0.5.0", path = "../e8-core" }
+e8-script = { version = "0.5.0", path = "../e8-script", default-features = false, features = ["quickjs"] }
+e8-gui = { version = "0.5.0", path = "../e8-gui", default-features = false, features = ["quickjs"] }
+eframe = "0.37"
+egui = "0.37"
+js-sys = "0.3"
+wasm-bindgen = "0.2.129"
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["console", "DedicatedWorkerGlobalScope", "HtmlCanvasElement", "MessageEvent", "Worker", "WorkerOptions", "WorkerType"] }

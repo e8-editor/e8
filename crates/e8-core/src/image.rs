@@ -163,7 +163,7 @@ enum Source {
 impl Source {
     fn bytes(&self) -> Option<Arc<[u8]>> {
         match self {
-            Source::File(path) => std::fs::read(path).ok().map(Arc::from),
+            Source::File(path) => crate::vfs::read(path).ok().map(Arc::from),
             Source::Data(data) => Some(data.clone()),
         }
     }
@@ -555,7 +555,7 @@ impl Editor {
     fn find_image_file(&self, name: &str) -> Option<PathBuf> {
         if name.starts_with('/') || name.starts_with('~') {
             let path = crate::files::expand_file_name_in(name, Path::new("/"));
-            return path.is_file().then_some(path);
+            return crate::vfs::path_is_file(&path).then_some(path);
         }
         let mut dirs: Vec<PathBuf> = Vec::new();
         if let Some(dir) = self.variable("data-directory").as_ref().and_then(Value::as_str) {
@@ -564,7 +564,7 @@ impl Editor {
         if let Some(Value::List(path)) = self.variable("x-bitmap-file-path") {
             dirs.extend(path.iter().filter_map(Value::as_str).map(PathBuf::from));
         }
-        dirs.into_iter().map(|dir| dir.join(name)).find(|p| p.is_file())
+        dirs.into_iter().map(|dir| dir.join(name)).find(|p| crate::vfs::path_is_file(p))
     }
 
     /// The size a spec shows an image of natural size `width` by `height`

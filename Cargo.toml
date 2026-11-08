@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/e8-core", "crates/e8", "crates/e8-script", "crates/e8-gui", "crates/e8-mcp", "crates/e8-agent"]
+members = ["crates/e8-core", "crates/e8", "crates/e8-script", "crates/e8-gui", "crates/e8-mcp", "crates/e8-agent", "crates/e8-web"]
 resolver = "3"
 
 [workspace.package]

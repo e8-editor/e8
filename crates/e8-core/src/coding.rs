@@ -1158,7 +1158,7 @@ mod tests {
         assert_eq!(save("a€", "japanese-shift-jis").1, "utf-8");
         assert_eq!(save("あ€", "iso-2022-jp").1, "utf-8");
         assert_eq!(save("é", "us-ascii").1, "utf-8");
-        let started = std::time::Instant::now();
+        let started = crate::clock::Instant::now();
         let polish = "zażółć gęślą jaźń\n".repeat(50_000);
         assert_eq!(Coding::named("iso-latin-2").encode(&polish).1.name(), "iso-latin-2");
         let japanese = "日本語のテキスト\n".repeat(50_000);

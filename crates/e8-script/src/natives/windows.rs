@@ -60,7 +60,7 @@ natives! {
 
     /// E8's process id, as emacs-pid.
     pub fn emacsPid(ed) -> u32 {
-        Ok(std::process::id())
+        Ok(e8_core::clock::process_id())
     }
 
     /// Whether a process of this machine is running, as process-attributes finds it.

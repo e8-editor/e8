@@ -31,12 +31,14 @@ pub use strip::{strip_module_types, strip_types};
 pub use types::type_definitions;
 
 use std::cell::{Cell, RefCell};
-use std::fs;
+use e8_core::vfs as fs;
 use std::borrow::Cow;
 use std::path::{Path, PathBuf};
 use std::ptr::NonNull;
 use std::thread::LocalKey;
-use std::time::{Duration, Instant};
+use std::time::Duration;
+
+use e8_core::clock::Instant;
 
 use std::rc::Rc;
 
@@ -57,10 +59,10 @@ fn package_source(name: &str) -> Option<(String, Cow<'static, str>)> {
     {
         return Some((file.to_string(), Cow::Borrowed(source)));
     }
-    let path = if Path::new(name).is_absolute() {
+    let path = if fs::is_absolute(name) {
         Some(PathBuf::from(name))
     } else {
-        LOAD_PATH.with_borrow(|dirs| dirs.iter().map(|d| d.join(format!("{feature}.ts"))).find(|p| p.is_file()))
+        LOAD_PATH.with_borrow(|dirs| dirs.iter().map(|d| d.join(format!("{feature}.ts"))).find(|p| fs::path_is_file(p)))
     }?;
     let source = fs::read_to_string(&path).ok()?;
     Some((path.display().to_string(), Cow::Owned(source)))
@@ -292,8 +294,8 @@ impl Scripting {
     /// "ert"`) and they it, along `load-path` as it is now. A file already
     /// imported is not run again.
     pub fn load_module(&self, ed: &mut Editor, path: &Path) -> Result<()> {
-        let path = if path.is_absolute() { path.to_path_buf() } else { std::env::current_dir().unwrap_or_default().join(path) };
-        if !path.is_file() {
+        let path = if fs::is_absolute(path) { path.to_path_buf() } else { fs::current_dir().unwrap_or_default().join(path) };
+        if !fs::path_is_file(&path) {
             return Err(Error::signal(
                 "file-missing",
                 format!("Cannot open load file: No such file or directory, {}", path.display()),

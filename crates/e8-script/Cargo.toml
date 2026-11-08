@@ -19,6 +19,8 @@ default = ["v8"]
 # The script engine: V8 (the v8 crate) or QuickJS (rquickjs), exactly one (ADR 0054).
 quickjs = ["dep:rquickjs"]
 v8 = ["dep:v8"]
+# Files in memory, as on the web, for tests (e8-core's vfs.rs).
+memory-fs = ["e8-core/memory-fs"]
 
 [build-dependencies]
 swc_common = "26"

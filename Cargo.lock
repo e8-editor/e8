@@ -1359,6 +1359,7 @@ dependencies = [
  "tree-sitter-python",
  "tree-sitter-rust",
  "unicode-width",
+ "web-time",
 ]
 
 [[package]]
@@ -1405,6 +1406,21 @@ dependencies = [
  "swc_ts_fast_strip",
  "tempfile",
  "v8",
+]
+
+[[package]]
+name = "e8-web"
+version = "0.5.0"
+dependencies = [
+ "e8-core",
+ "e8-gui",
+ "e8-script",
+ "eframe",
+ "egui",
+ "js-sys",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]

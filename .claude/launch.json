@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "e8-web",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["crates/e8-web/serve.py", "8008"],
+      "port": 8008
+    }
+  ]
+}

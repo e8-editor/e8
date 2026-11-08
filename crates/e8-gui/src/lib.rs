@@ -1,6 +1,7 @@
 //! E8's graphical front end, built on egui.
 
 mod app;
+#[cfg(not(target_arch = "wasm32"))]
 pub mod clipboard;
 mod fringe;
 mod image;

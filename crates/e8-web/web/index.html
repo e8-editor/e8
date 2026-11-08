@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E8 in a browser</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f4f1ea; --ink: #1d1c1a; --muted: #6b675f; --line: #d8d3c8; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #141414; --ink: #ecebe7; --muted: #9a968e; --line: #2c2b29; } }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font: 15px/1.5 Inter, system-ui, sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 16px; box-sizing: border-box; }
+  h1 { font-size: 28px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  p { margin: 0 0 20px; color: var(--muted); }
+  #frame { position: relative; height: min(70vh, 640px); border: 1px solid var(--line); }
+  #e8 { width: 100%; height: 100%; display: block; }
+  #status { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); pointer-events: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>E8</h1>
+  <p>An editor that works the way Emacs works. This is the real thing, running in your browser: click in it and type.</p>
+  <div id="frame">
+    <canvas id="e8"></canvas>
+    <div id="status">Loading E8…</div>
+  </div>
+</main>
+<script type="module">
+  import init, { start } from "./pkg/e8_web.js";
+  import * as storage from "./storage.js";
+  const status = document.getElementById("status");
+  if (!crossOriginIsolated) {
+    status.textContent = "E8 needs a page served with cross-origin isolation (see crates/e8-web/serve.py).";
+  } else {
+    try {
+      // ?fresh forgets the files kept from earlier visits.
+      if (new URLSearchParams(location.search).has("fresh")) await storage.clear();
+      const [files] = await Promise.all([storage.load(), init()]);
+      const canvas = document.getElementById("e8");
+      await start(canvas, files, storage.change);
+      status.remove();
+      canvas.focus();
+    } catch (e) {
+      status.textContent = "E8 failed to start: " + e;
+      console.error(e);
+    }
+  }
+</script>
+</body>
+</html>

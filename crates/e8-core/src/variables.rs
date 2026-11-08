@@ -688,7 +688,7 @@ pub(crate) fn install(ed: &mut Editor) {
         Variable::new(
             "temporary-file-directory",
             "Where temporary files are made.",
-            Value::Str(format!("{}/", std::env::temp_dir().display().to_string().trim_end_matches('/'))),
+            Value::Str(format!("{}/", crate::clock::temp_dir().display().to_string().trim_end_matches('/'))),
         ),
         Variable::new(
             "case-symbols-as-words",

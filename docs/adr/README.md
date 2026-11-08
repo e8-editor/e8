@@ -67,3 +67,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0063](0063-the-name-e8.md) The name E8
 - [0064](0064-the-help-system.md) The help system
 - [0065](0065-packages-emacs-autoloads.md) Packages Emacs autoloads
+- [0066](0066-e8-in-a-browser.md) E8 in a browser

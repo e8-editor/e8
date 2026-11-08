@@ -2,7 +2,7 @@
 //! files.el that touch the disk: decoding and encoding, backups, the
 //! visited file's modification time, auto-saving, and reverting.
 
-use std::fs;
+use crate::vfs as fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
@@ -68,7 +68,7 @@ pub fn backup_file_name(path: &Path) -> PathBuf {
 /// Whether files there are backed up, as Emacs's
 /// `normal-backup-enable-predicate`: not in the temporary directory.
 fn backup_enabled(path: &Path) -> bool {
-    let temp = std::env::temp_dir();
+    let temp = crate::clock::temp_dir();
     let real_temp = fs::canonicalize(&temp).unwrap_or_else(|_| temp.clone());
     let real = path.parent().and_then(|p| fs::canonicalize(p).ok()).unwrap_or_else(|| path.to_path_buf());
     !(path.starts_with(&temp) || real.starts_with(&real_temp))
@@ -269,9 +269,12 @@ impl Editor {
             && !b.file.backed_up
             && backup_enabled(&real)
         {
-            use std::os::unix::fs::MetadataExt;
+            #[cfg(unix)]
+            let linked = std::os::unix::fs::MetadataExt::nlink(meta) > 1;
+            #[cfg(not(unix))]
+            let linked = { let _ = meta; false };
             let backup = backup_file_name(&real);
-            let result = if by_copying || precious || meta.nlink() > 1 {
+            let result = if by_copying || precious || linked {
                 fs::copy(&real, &backup).map(drop)
             } else {
                 renamed = true;
@@ -282,7 +285,7 @@ impl Editor {
         }
         let written = if precious {
             let name = real.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
-            let temp = real.with_file_name(format!(".{name}.e8-{}", std::process::id()));
+            let temp = real.with_file_name(format!(".{name}.e8-{}", crate::clock::process_id()));
             write_synced(&temp, &bytes, old.as_ref()).and_then(|()| fs::rename(&temp, &real)).inspect_err(|_| {
                 let _ = fs::remove_file(&temp);
             })
@@ -330,7 +333,7 @@ impl Editor {
     pub fn revert_to_visited_file(&mut self) -> Result<()> {
         let b = &self.buffers[self.current];
         let path = b.path.clone().ok_or_else(|| Error::new("Buffer does not seem to be associated with any file"))?;
-        if !path.exists() {
+        if !fs::path_exists(&path) {
             return Err(Error::new(format!("File {} no longer exists!", path.display())));
         }
         // Reverting leaves the region as it was, as in Emacs.
@@ -427,8 +430,8 @@ impl Editor {
         // set-visited-file-name renames it.
         if let Some(old) = b.file.auto_save.take() {
             let new = auto_save_file_name(path);
-            if old != new && old.exists() {
-                let _ = std::fs::rename(&old, &new);
+            if old != new && fs::path_exists(&old) {
+                let _ = fs::rename(&old, &new);
             }
             b.file.auto_save = Some(new);
         }

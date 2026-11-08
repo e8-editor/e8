@@ -8,7 +8,9 @@
 //! tests, runs them when told. Tests move the clock with
 //! [`Editor::advance_clock`].
 
-use std::time::{Duration, Instant};
+use std::time::Duration;
+
+use crate::clock::Instant;
 
 use crate::editor::Editor;
 use crate::variables::HookFn;

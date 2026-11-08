@@ -18,3 +18,6 @@ spikes/*/target/
 *.new.png
 *.diff.png
 *.old.png
+
+# What crates/e8-web/build.sh builds.
+/crates/e8-web/web/pkg/
