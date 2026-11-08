@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["crates/e8-web/serve.py", "8008"],
       "port": 8008
+    },
+    {
+      "name": "e8-site",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["crates/e8-web/serve.py", "8009", "--dir", "target/site", "--no-isolation"],
+      "port": 8009
     }
   ]
 }

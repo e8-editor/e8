@@ -19,8 +19,28 @@ python3 crates/e8-web/serve.py
 Then open <http://localhost:8008>. `serve.py` sends the headers that make
 the page cross-origin isolated; shared memory needs them, so any host that
 serves the page must send them too (`Cross-Origin-Opener-Policy:
-same-origin`, `Cross-Origin-Embedder-Policy: require-corp`). Opening
-`index.html` as a file does not work.
+same-origin`, `Cross-Origin-Embedder-Policy: require-corp`), or add them
+with a service worker, as the website does. Opening `index.html` as a file
+does not work.
+
+## The website
+
+`website/` is E8's website, <https://e8-editor.github.io/e8/>, with E8
+running in it: `index.html`, and `sw.js`, a service worker that adds the
+isolation headers GitHub Pages cannot send (the page registers it and
+reloads once, on a first visit). `.github/workflows/website.yml` builds and
+publishes it after a merge that changes it or the web build, or when run by
+hand. To see it as Pages serves it:
+
+```bash
+STRIP=1 crates/e8-web/build.sh
+website/assemble.sh
+python3 crates/e8-web/serve.py 8009 --dir target/site --no-isolation
+```
+
+`STRIP=1` leaves out functions' names, 4.5 MB of the module, which a
+panic's stack then lacks; stripped, it is 28 MB, 8.3 MB with gzip.
+`WASM_TOOLCHAIN` pins the nightly, as the workflow does.
 
 `build.sh` needs:
 
@@ -32,7 +52,8 @@ same-origin`, `Cross-Origin-Embedder-Policy: require-corp`). Opening
   with `CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/cc` on a Mac whose
   PATH has Nix's `cc`);
 - an LLVM clang that targets wasm, for QuickJS and tree-sitter. Apple's
-  does not; the script takes LLVM 20 from Nix, or `WASM_CC`, `WASM_AR` and
+  does not; the script takes LLVM 20 from Nix where there is Nix, else
+  `clang` and `llvm-ar` on PATH, as on Linux, or `WASM_CC`, `WASM_AR` and
   `WASM_RESOURCE_DIR`.
 
 It builds in `target/wasm`, so it never rebuilds the native workspace. A
