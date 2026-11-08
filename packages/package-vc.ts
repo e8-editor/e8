@@ -331,16 +331,30 @@ function installedVersion(name: string): number[] | undefined {
   return tag === undefined ? undefined : parseVersion(tag);
 }
 
-/** Installs what a manifest requires and checks the versions installed. */
-function installRequirements(manifest: Manifest, seen: Set<string>): void {
+/**
+ * Installs what a manifest requires and checks the versions installed. A
+ * requirement installed at an older version than the manifest needs is
+ * upgraded first, as Emacs's package manager upgrades a dependency, its
+ * repository fetched unless FETCHED says it already is.
+ */
+function installRequirements(manifest: Manifest, seen: Set<string>, fetched = new Set<string>()): void {
   for (const [name, requirement] of Object.entries(manifest.requires ?? {})) {
     const { source, version } = parseRequirement(requirement);
     if (!e8.fileDirectoryP(packageDir(name))) installPackage(source, { seen });
     else packageActivate(name);
-    const have = installedVersion(name);
-    if (version !== undefined && have !== undefined && compareVersions(have, version) < 0) {
-      fail(`${manifest.name} needs ${name} ${version.join(".")} or newer; ${have.join(".")} is installed (M-x package-vc-upgrade)`);
+    const tooOld = (): number[] | undefined => {
+      const have = installedVersion(name);
+      return version !== undefined && have !== undefined && compareVersions(have, version) < 0 ? have : undefined;
+    };
+    if (tooOld() !== undefined && readLock().packages[name]?.rev === undefined) {
+      if (!fetched.has(name)) {
+        git(["fetch", "--quiet", "--tags", "origin"], packageDir(name));
+        fetched.add(name);
+      }
+      upgradeFetched(name, fetched);
     }
+    const have = tooOld();
+    if (have !== undefined) fail(`${manifest.name} needs ${name} ${version!.join(".")} or newer; ${have.join(".")} is installed (M-x package-vc-upgrade)`);
   }
 }
 
@@ -494,14 +508,27 @@ export function ensurePackage(source: string, options: { rev?: string; name?: st
  * Brings an installed package up to date, as package-vc-upgrade: to the
  * newest version tag, or the head of the branch it follows. A package
  * pinned to a tag or commit stays. Gives a description of the change.
+ * It fetches with git while E8 waits; the commands fetch in the background
+ * with fetchPackages, then call upgradeFetched.
  */
 export function upgradePackage(name: string): string {
+  const entry = readLock().packages[name];
+  if (entry === undefined || !e8.fileDirectoryP(packageDir(name))) fail(`${name} is not installed`);
+  git(["fetch", "--quiet", "--tags", "origin"], packageDir(name));
+  return upgradeFetched(name, new Set([name]));
+}
+
+/**
+ * Brings an installed package whose repository is fetched up to date, as
+ * upgradePackage does after fetching, upgrading what it requires that is
+ * too old; FETCHED names the packages already fetched.
+ */
+export function upgradeFetched(name: string, fetched: Set<string>): string {
   const entry = readLock().packages[name];
   const dir = packageDir(name);
   if (entry === undefined || !e8.fileDirectoryP(dir)) fail(`${name} is not installed`);
   const old = entry.commit;
   const oldLabel = versionLabel(name).trim();
-  git(["fetch", "--quiet", "--tags", "origin"], dir);
   if (entry.rev !== undefined && !isRemoteBranch(dir, entry.rev)) return `${name} is pinned to ${entry.rev}`;
   if (entry.rev !== undefined) checkOut(dir, entry.rev, undefined);
   else if (newestTag(dir) !== undefined) checkOut(dir, undefined, undefined);
@@ -514,14 +541,76 @@ export function upgradePackage(name: string): string {
     throw e;
   }
   setLockEntry(name, describe(dir, entry.source, entry.url, entry.rev));
-  installRequirements(manifest, new Set([entry.url]));
+  installRequirements(manifest, new Set([entry.url]), fetched);
   const now = readLock().packages[name].commit;
   if (now === old) return `${name} is up to date`;
   const commits = git(["rev-list", "--count", `${old}..${now}`], dir);
   return `${name}: ${oldLabel} -> ${versionLabel(name).trim()} (${commits} commit${commits === "1" ? "" : "s"}); restart E8 to load it`;
 }
 
-/** The installed packages whose manifests require a package. */
+/**
+ * Fetches the repositories of the installed packages NAMES in the
+ * background, all at once, saying how many are done, then calls DONE with
+ * those whose fetch failed and why, so the editor does not wait on the
+ * network, as startup clones the lock file's packages all at once.
+ */
+export function fetchPackages(names: string[], done: (failed: Map<string, string>) => void): void {
+  const failed = new Map<string, string>();
+  let left = names.length;
+  const progress = () => e8.message(`Fetching ${names.length} package${names.length === 1 ? "" : "s"}...${left < names.length ? ` ${names.length - left}/${names.length}` : ""}`);
+  const finish = (name: string, error?: string) => {
+    if (error !== undefined) failed.set(name, error);
+    left--;
+    if (left > 0) return progress();
+    done(failed);
+  };
+  if (names.length === 0) return done(failed);
+  progress();
+  for (const name of names) {
+    let output = "";
+    try {
+      e8.makeProcess({
+        name: `git fetch ${name}`,
+        command: ["env", "GIT_TERMINAL_PROMPT=0", gitProgram(), "-C", packageDir(name), "fetch", "--quiet", "--tags", "origin"],
+        connectionType: "pipe",
+        filter: (_process, text) => {
+          output += text;
+        },
+        sentinel: (_process, event) => finish(name, event === "finished\n" ? undefined : output.trim() || event.trim()),
+      });
+    } catch (e) {
+      finish(name, String(e));
+    }
+  }
+}
+
+/** NAMES ordered so that what a package requires comes before it, for upgrading. */
+function requirementsFirst(names: string[]): string[] {
+  const ordered: string[] = [];
+  const visit = (name: string, path: Set<string>) => {
+    if (ordered.includes(name) || path.has(name) || !names.includes(name)) return;
+    path.add(name);
+    const entry = readLock().packages[name];
+    for (const required of Object.keys(entry === undefined ? {} : (readManifest(packageDir(name), entry.url).requires ?? {}))) visit(required, path);
+    ordered.push(name);
+  };
+  for (const name of names) visit(name, new Set());
+  return ordered;
+}
+
+/** Upgrades the fetched packages NAMES, giving a line for each, an error's for one that failed. */
+function upgradeEach(names: string[], failed: Map<string, string>): string[] {
+  const fetched = new Set(names.filter((n) => !failed.has(n)));
+  return requirementsFirst(names).map((name) => {
+    if (failed.has(name)) return `${name}: fetching failed: ${failed.get(name)}`;
+    try {
+      return upgradeFetched(name, fetched);
+    } catch (e) {
+      return `${name}: ${e instanceof Error ? e.message : String(e)}`;
+    }
+  });
+}
+
 function dependents(name: string): string[] {
   const packages = readLock().packages;
   return packageInstalledList().filter((other) => other !== name && Object.keys(readManifest(packageDir(other), packages[other].url).requires ?? {}).includes(name));
@@ -557,17 +646,24 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "package-vc-upgrade",
-  doc: "Upgrade an installed package to its newest version tag, or the head of the branch it follows, as the lock file records.",
+  doc: "Upgrade an installed package to its newest version tag, or the head of the branch it follows, as the lock file records, and what it requires that is too old. Its repository is fetched in the background, so E8 does not wait on the network; the result is said when it is done.",
   params: [{ name: "name", prompt: "Upgrade package: ", collection: () => packageInstalledList(), requireMatch: true }],
-  run: (name: string) => e8.message(upgradePackage(name)),
+  run: (name: string) => {
+    if (readLock().packages[name] === undefined || !e8.fileDirectoryP(packageDir(name))) fail(`${name} is not installed`);
+    // Fetched in the background; the upgrade itself is quick.
+    fetchPackages([name], (failed) => e8.message(upgradeEach([name], failed).join("\n")));
+  },
 });
 
 e8.defineCommand({
   name: "package-vc-upgrade-all",
-  doc: "Upgrade every installed package, as package-vc-upgrade does each.",
+  doc: "Upgrade every installed package, as package-vc-upgrade does each: their repositories fetched in the background all at once, then each upgraded, what a package requires before it.",
   run: () => {
-    const lines = packageInstalledList().map((name) => upgradePackage(name));
-    e8.message(lines.length === 0 ? "No packages are installed" : lines.join("\n"));
+    const names = packageInstalledList();
+    if (names.length === 0) return void e8.message("No packages are installed");
+    // All fetched at once in the background, then upgraded, what a
+    // package requires before it.
+    fetchPackages(names, (failed) => e8.message(upgradeEach(names, failed).join("\n")));
   },
 });
 

@@ -5416,7 +5416,7 @@ declare global {
        */
       "package-vc-install": [source: string, arg?: PrefixArg | boolean];
       /**
-       * Upgrade an installed package to its newest version tag, or the head of the branch it follows, as the lock file records.
+       * Upgrade an installed package to its newest version tag, or the head of the branch it follows, as the lock file records, and what it requires that is too old. Its repository is fetched in the background, so E8 does not wait on the network; the result is said when it is done.
        *
        * @param name text
        *
@@ -5424,7 +5424,7 @@ declare global {
        */
       "package-vc-upgrade": [name: string];
       /**
-       * Upgrade every installed package, as package-vc-upgrade does each.
+       * Upgrade every installed package, as package-vc-upgrade does each: their repositories fetched in the background all at once, then each upgraded, what a package requires before it.
        *
        * Defined in packages/package-vc.ts.
        */
