@@ -1,6 +1,5 @@
 use std::collections::BTreeMap;
-use std::env;
-use std::fs;
+use crate::vfs as fs;
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
@@ -2135,7 +2134,7 @@ impl Editor {
         }
         let name = path.display().to_string();
         let handled = self.find_file_name_handler(&name, "insert-file-contents").is_some();
-        let is_new = if handled { !self.file_exists_p(&name)? } else { !path.exists() };
+        let is_new = if handled { !self.file_exists_p(&name)? } else { !fs::path_exists(path) };
         if handled {
             // A file a handler serves is read through it, as find-file reads
             // with insert-file-contents.
@@ -2153,7 +2152,7 @@ impl Editor {
                 read?;
             }
         } else {
-            if path.is_dir() {
+            if fs::path_is_dir(path) {
                 return Err(Error::new(format!("{} is a directory", path.display())));
             }
             let mut buffer = Self::read_visited_file(path, self.coding_for_read())?;
@@ -2244,7 +2243,7 @@ impl Editor {
             .as_deref()
             .and_then(Path::parent)
             .map(Path::to_path_buf)
-            .or_else(|| env::current_dir().ok())
+            .or_else(|| fs::current_dir().ok())
             .unwrap_or_default()
     }
 

@@ -4,6 +4,10 @@ edition.workspace = true
 version.workspace = true
 license.workspace = true
 
+[features]
+# The file system in memory that the web build uses, natively, for tests (vfs.rs).
+memory-fs = []
+
 [dev-dependencies]
 tempfile = "3.27.0"
 

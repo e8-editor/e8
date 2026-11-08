@@ -1389,7 +1389,7 @@ fn files_and_buffers(ed: &mut Editor) {
             |ed, args| {
                 let path = ed.expand_file_name(args[0].as_str()?);
                 // A directory is listed in Dired, as find-file-run-dired has it.
-                if path.is_dir() && ed.command("dired").is_some() {
+                if crate::vfs::path_is_dir(&path) && ed.command("dired").is_some() {
                     return ed.call("dired", vec![Arg::Str(format!("{}/", path.display()))]);
                 }
                 ed.visit_file(&path)

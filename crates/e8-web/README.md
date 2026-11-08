@@ -44,8 +44,37 @@ Typing, the minibuffer and every prompt (each runs its nested command loop
 on the worker, as natively: ADR 0053), `M-x` with completion, `C-x b`,
 windows (`C-x 2`, `C-x 3`, `C-x o`), isearch, undo, `M-:` evaluating
 TypeScript on QuickJS, Org mode with folding and tables, tree-sitter
-highlighting (the Python buffer), mouse clicks. The page offers
-`welcome.org`, `example.py` and `*scratch*`.
+highlighting (the Python buffer), mouse clicks. Files: visiting, saving,
+Dired, renaming and deleting, `M-x load-file`, and `~/.config/e8/init.ts`
+if one is written.
+
+## Files
+
+The editor's file system is e8-core's `vfs`: `std::fs` natively, and on
+the web a tree in memory with the same interface, which every file
+primitive goes through. The person's files are in `/home/e8`, which is
+`~` and the starting directory; a first visit puts `welcome.org`,
+`example.py`, `notes/ideas.org` and `scripts/hello.ts` there.
+
+`storage.js` keeps the tree in the browser's Origin Private File System:
+the page reads it all before the editor starts and fills the tree from
+it, and each change the editor makes is posted from its worker to the
+page, which applies them in order. Nothing waits on storage, so the
+editor's file calls stay as fast and synchronous as natively. `/tmp`
+and the type files E8 writes beside `init.ts` are not kept.
+`?fresh` in the address forgets every file kept.
+
+The `memory-fs` feature makes a native build use the tree too, which
+`crates/e8-script/tests/all/memory_fs.rs` tests with:
+
+```bash
+cargo nextest run -p e8-script --features memory-fs memory_fs
+```
+
+This layer suits files that fit in memory. A folder on disk picked with
+the File System Access API, or a remote one such as Dropbox, would need
+the editor's worker to block while another thread does the browser's
+asynchronous work, and file name handlers for remote names, as TRAMP's.
 
 From localhost the editor is up about two seconds after the page loads.
 The module is 32 MB, 5 MB with brotli; 4.5 MB of that is the names
@@ -53,10 +82,8 @@ section, which `wasm-opt` or `--strip-debug` would drop.
 
 ## What it cannot do yet
 
-- **Files.** std has no file system on the web, so visiting fails and
-  nothing is saved. The demo's buffers are made in `seed`. A virtual file
-  system, behind the editor's file primitives, would give Dired and
-  `find-file` something to show.
+- **Your computer's files**: those in the page are only the browser's.
+  There are no symbolic or hard links, and no trash: deleting is final.
 - **Processes, the agent, the system clipboard**: none, gated off.
 - **Browser keys**: `C-w`, `C-n` and `C-t` belong to the browser. Alt
   works as Meta.
@@ -88,6 +115,8 @@ section, which `wasm-opt` or `--strip-debug` would drop.
   atomics, which shared memory otherwise refuses (`--no-check-features`).
   Only the worker runs C, so its `malloc` never runs on two threads at
   once. A real build would build one libc, with atomics.
+- **Absolute paths.** std says no path is absolute on this target, as it
+  is not Unix, so the editor asks `vfs::is_absolute` instead.
 - **Alt chords.** In a browser egui gives a key's text before its key
   event rather than after, so `keys.rs` takes back text that comes just
   before an Alt chord, on the web only.

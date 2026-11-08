@@ -72,6 +72,7 @@ mod timers;
 pub mod treesitfns;
 mod window;
 mod variables;
+pub mod vfs;
 
 pub use buffer::{Buffer, UndoStep};
 pub use command::{Arg, Command, Param, ParamKind};

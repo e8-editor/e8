@@ -1,15 +1,14 @@
-use std::env;
 use std::path::{Path, PathBuf};
 
 fn home_dir() -> Option<PathBuf> {
-    env::var_os("HOME").map(PathBuf::from)
+    crate::vfs::home_dir()
 }
 
 /// Turns minibuffer input into an absolute path the Emacs way: `~` means the
 /// home directory, and typing `//` or `/~/` after the default directory starts
 /// over from the root or from home.
 pub fn expand_file_name(input: &str) -> PathBuf {
-    expand_file_name_in(input, &env::current_dir().unwrap_or_default())
+    expand_file_name_in(input, &crate::vfs::current_dir().unwrap_or_default())
 }
 
 /// As [`expand_file_name`], with relative names in `dir`, as Emacs's
@@ -31,7 +30,7 @@ pub fn expand_file_name_in(input: &str, dir: &Path) -> PathBuf {
     } else {
         PathBuf::from(s)
     };
-    let path = if path.is_absolute() { path } else { dir.join(path) };
+    let path = if crate::vfs::is_absolute(&path) { path } else { dir.join(path) };
     let mut out = PathBuf::new();
     for part in path.components() {
         match part {

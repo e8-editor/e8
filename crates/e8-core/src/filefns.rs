@@ -10,7 +10,7 @@
 //! `inhibit-file-name-handlers` to a list with itself and
 //! `inhibit-file-name-operation` to the operation, as in Emacs.
 
-use std::fs;
+use crate::vfs as fs;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, UNIX_EPOCH};
 
@@ -43,11 +43,18 @@ fn s(text: &str) -> Value {
 }
 
 /// Whether the system lets this process at a file in a way, as access(2) says.
-#[cfg(unix)]
+#[cfg(all(unix, not(feature = "memory-fs")))]
 fn access(path: &Path, mode: libc::c_int) -> bool {
     use std::os::unix::ffi::OsStrExt;
     let Ok(c) = std::ffi::CString::new(path.as_os_str().as_bytes()) else { return false };
     unsafe { libc::access(c.as_ptr(), mode) == 0 }
+}
+
+/// As access(2) would say of a file in memory: anything there can be read,
+/// what is not read-only written, and only directories gone into.
+#[cfg(all(unix, feature = "memory-fs"))]
+fn access(path: &Path, mode: libc::c_int) -> bool {
+    fs::metadata(path).is_ok_and(|m| (mode & libc::W_OK == 0 || !m.permissions().readonly()) && (mode & libc::X_OK == 0 || m.is_dir()))
 }
 
 impl Editor {
@@ -111,7 +118,7 @@ impl Editor {
 
     /// Whether a file exists, through symbolic links, as `file-exists-p`.
     pub fn file_exists_p(&mut self, file: &str) -> Result<bool> {
-        self.predicate("file-exists-p", file, |p| p.exists())
+        self.predicate("file-exists-p", file, |p| fs::path_exists(p))
     }
 
     /// Whether this process can read a file, as `file-readable-p`.
@@ -128,15 +135,15 @@ impl Editor {
         self.predicate("file-writable-p", file, |p| {
             #[cfg(unix)]
             {
-                if p.exists() {
+                if fs::path_exists(p) {
                     access(p, libc::W_OK)
                 } else {
-                    p.parent().is_some_and(|d| d.is_dir() && access(d, libc::W_OK))
+                    p.parent().is_some_and(|d| fs::path_is_dir(d) && access(d, libc::W_OK))
                 }
             }
             #[cfg(not(unix))]
             {
-                fs::metadata(p).map_or_else(|_| p.parent().is_some_and(Path::is_dir), |m| !m.permissions().readonly())
+                fs::metadata(p).map_or_else(|_| p.parent().is_some_and(|d| fs::path_is_dir(d)), |m| !m.permissions().readonly())
             }
         })
     }
@@ -146,25 +153,25 @@ impl Editor {
         #[cfg(unix)]
         return self.predicate("file-executable-p", file, |p| access(p, libc::X_OK));
         #[cfg(not(unix))]
-        return self.predicate("file-executable-p", file, |p| p.is_dir());
+        return self.predicate("file-executable-p", file, |p| fs::path_is_dir(p));
     }
 
     /// Whether a file is a directory, through symbolic links, as `file-directory-p`.
     pub fn file_directory_p(&mut self, file: &str) -> Result<bool> {
-        self.predicate("file-directory-p", file, Path::is_dir)
+        self.predicate("file-directory-p", file, |p| fs::path_is_dir(p))
     }
 
     /// Whether a file is a regular file, through symbolic links, as `file-regular-p`.
     pub fn file_regular_p(&mut self, file: &str) -> Result<bool> {
-        self.predicate("file-regular-p", file, Path::is_file)
+        self.predicate("file-regular-p", file, |p| fs::path_is_file(p))
     }
 
     /// Whether a directory can be listed and entered, as `file-accessible-directory-p`.
     pub fn file_accessible_directory_p(&mut self, file: &str) -> Result<bool> {
         #[cfg(unix)]
-        return self.predicate("file-accessible-directory-p", file, |p| p.is_dir() && access(p, libc::X_OK));
+        return self.predicate("file-accessible-directory-p", file, |p| fs::path_is_dir(p) && access(p, libc::X_OK));
         #[cfg(not(unix))]
-        return self.predicate("file-accessible-directory-p", file, Path::is_dir);
+        return self.predicate("file-accessible-directory-p", file, |p| fs::path_is_dir(p));
     }
 
     /// What a symbolic link points to, as `file-symlink-p`, or `None` if
@@ -182,7 +189,7 @@ impl Editor {
     /// exists, on macOS by pathconf, as Emacs asks; elsewhere case counts.
     pub fn file_name_case_insensitive_p(&mut self, file: &str) -> bool {
         let mut path = PathBuf::from(self.absolute(file));
-        while !path.exists() {
+        while !fs::path_exists(&path) {
             if !path.pop() {
                 return false;
             }
@@ -273,7 +280,7 @@ impl Editor {
         let path = PathBuf::from(&file);
         let mut existing = path.clone();
         let mut rest = Vec::new();
-        while !existing.exists() {
+        while !fs::path_exists(&existing) {
             let Some(name) = existing.file_name().map(|n| n.to_os_string()) else { break };
             rest.push(name);
             if !existing.pop() {
@@ -333,7 +340,7 @@ impl Editor {
             Some(t) => PathBuf::from(t),
             None => crate::clock::temp_dir(),
         };
-        let base = if Path::new(prefix).is_absolute() { PathBuf::new() } else { base };
+        let base = if fs::is_absolute(prefix) { PathBuf::new() } else { base };
         // Making a file is writing one, which waits for the user's approval
         // while an agent acts, wherever it is.
         let place = base.join(prefix);
@@ -508,7 +515,7 @@ pub fn file_name_absolute_p(name: &str) -> bool {
     }
     let Some(rest) = name.strip_prefix('~') else { return false };
     let user = rest.split('/').next().unwrap_or_default();
-    user.is_empty() || Path::new("/Users").join(user).is_dir() || Path::new("/home").join(user).is_dir()
+    user.is_empty() || fs::path_is_dir(Path::new("/Users").join(user)) || fs::path_is_dir(Path::new("/home").join(user))
 }
 
 /// Joins a directory and file names with one slash between each, as

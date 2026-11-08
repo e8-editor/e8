@@ -367,7 +367,7 @@ impl crate::editor::Editor {
         for dir in dirs {
             for ext in ["dylib", "so"] {
                 let path = dir.join(format!("{library}.{ext}"));
-                if !path.is_file() {
+                if !crate::vfs::path_is_file(&path) {
                     continue;
                 }
                 match Grammar::load(&path, &symbol) {

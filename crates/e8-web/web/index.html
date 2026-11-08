@@ -27,14 +27,17 @@
 </main>
 <script type="module">
   import init, { start } from "./pkg/e8_web.js";
+  import * as storage from "./storage.js";
   const status = document.getElementById("status");
   if (!crossOriginIsolated) {
     status.textContent = "E8 needs a page served with cross-origin isolation (see crates/e8-web/serve.py).";
   } else {
     try {
-      await init();
+      // ?fresh forgets the files kept from earlier visits.
+      if (new URLSearchParams(location.search).has("fresh")) await storage.clear();
+      const [files] = await Promise.all([storage.load(), init()]);
       const canvas = document.getElementById("e8");
-      await start(canvas);
+      await start(canvas, files, storage.change);
       status.remove();
       canvas.focus();
     } catch (e) {

@@ -5,7 +5,7 @@
 //! A lock left by a process no longer running on this machine is taken
 //! over without asking, as Emacs does.
 
-use std::fs;
+use crate::vfs as fs;
 use std::path::{Path, PathBuf};
 
 use crate::editor::Editor;

@@ -43,6 +43,7 @@ mod keyboard;
 mod keymaps;
 mod layout;
 mod line_numbers;
+mod memory_fs;
 mod minibuffer;
 mod modes;
 mod mouse;

@@ -9,12 +9,17 @@ Click here to focus it, then try some keys. =TAB= on a heading folds
 it, =S-TAB= folds them all.
 
 * Things to try
+- =C-x C-f= visits a file and =C-x C-s= saves it: your files are kept
+  in this browser, in =~=, and are there when you come back
+- =C-x d= opens Dired on a directory; try =~/notes/= and =~/scripts/=
 - =C-x b= switches buffers: there is a Python one and =*scratch*=
 - =M-x= runs any command by name, with completion
 - =C-s= searches as you type, =M-%= replaces
 - =C-x 2= and =C-x 3= split the window, =C-x o= moves between them
 - =C-x u= or =C-/= undoes
-- =M-:= evaluates TypeScript: try =e8.message("hello")=
+- =M-:= evaluates TypeScript: try =[1, 2, 3].map(n => n * n)=
+- =M-x load-file= runs a script: =~/scripts/hello.ts= defines =M-x hello=
+- =~/.config/e8/init.ts=, if you write one, runs each time E8 starts
 
 * An Org list
 ** TODO Try E8 in a browser
@@ -30,6 +35,7 @@ it, =S-TAB= folds them all.
 Put point in the table and press =TAB= to move between cells.
 
 * What this page cannot do yet
-There are no files to visit or save, no shell or compiling, no agent,
-and the system clipboard is not shared. Some keys belong to the
-browser: =C-w=, =C-n= and =C-t= may close or open tabs instead.
+Files live only in this browser: they are not your computer's. There
+is no shell or compiling, no agent, and the system clipboard is not
+shared. Some keys belong to the browser: =C-w=, =C-n= and =C-t= may
+close or open tabs instead.

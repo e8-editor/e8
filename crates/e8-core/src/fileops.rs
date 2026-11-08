@@ -4,7 +4,7 @@
 //! Each change asks [`Editor::check_permission`] first, so an agent needs
 //! the user's approval.
 
-use std::fs;
+use crate::vfs as fs;
 use std::io;
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
@@ -218,7 +218,7 @@ pub fn vc_files(root: &Path) -> Option<Vec<PathBuf>> {
         .split(|&b| b == 0)
         .filter(|name| !name.is_empty())
         .map(|name| root.join(String::from_utf8_lossy(name).as_ref()))
-        .filter(|path| path.exists())
+        .filter(|path| fs::path_exists(path))
         .collect();
     files.sort();
     files.dedup();
@@ -255,14 +255,14 @@ impl Editor {
     /// replaced only if `ok_if_exists`.
     pub fn copy_file(&mut self, from: &Path, to: &Path, to_is_dir_name: bool, ok_if_exists: bool, keep_time: bool) -> Result<PathBuf> {
         let to = target(from, to, to_is_dir_name);
-        if !from.exists() {
+        if !fs::path_exists(from) {
             return Err(file_error("Opening input file", &io::Error::from(io::ErrorKind::NotFound), &[from]));
         }
         // As Emacs's copy-file, which copies only regular files.
-        if from.is_dir() {
+        if fs::path_is_dir(from) {
             return Err(file_error("Non-regular file", &io::Error::other("Is a directory"), &[from]));
         }
-        if to.exists() && !ok_if_exists {
+        if fs::path_exists(&to) && !ok_if_exists {
             return Err(Error::new(format!("File already exists: {}", to.display())));
         }
         self.check_permission(&format!("copy {} to {}", abbreviate_path(from), abbreviate_path(&to)))?;
@@ -277,7 +277,7 @@ impl Editor {
     /// Copies a directory and what it holds, as Emacs's `copy-directory`:
     /// into `to` if that is a directory already, else as `to`.
     pub fn copy_directory(&mut self, from: &Path, to: &Path, keep_time: bool) -> Result<PathBuf> {
-        let to = if to.is_dir() { to.join(from.file_name().unwrap_or_default()) } else { to.to_path_buf() };
+        let to = if fs::path_is_dir(to) { to.join(from.file_name().unwrap_or_default()) } else { to.to_path_buf() };
         self.check_permission(&format!("copy {} to {}", abbreviate_path(from), abbreviate_path(&to)))?;
         fn copy_tree(from: &Path, to: &Path, keep_time: bool) -> io::Result<()> {
             fs::create_dir_all(to)?;
@@ -308,13 +308,13 @@ impl Editor {
         if fs::symlink_metadata(from).is_err() {
             return Err(file_error("Renaming", &io::Error::from(io::ErrorKind::NotFound), &[from, &to]));
         }
-        if to.exists() && !ok_if_exists {
+        if fs::path_exists(&to) && !ok_if_exists {
             return Err(Error::new(format!("File already exists: {}", to.display())));
         }
         self.check_permission(&format!("rename {} to {}", abbreviate_path(from), abbreviate_path(&to)))?;
         if let Err(e) = fs::rename(from, &to) {
             // Across file systems, copy and delete, as Emacs does.
-            if e.raw_os_error() != Some(18) || from.is_dir() {
+            if e.raw_os_error() != Some(18) || fs::path_is_dir(from) {
                 return Err(file_error("Renaming", &e, &[from, &to]));
             }
             fs::copy(from, &to).map_err(|e| file_error("Renaming", &e, &[from, &to]))?;
@@ -365,7 +365,7 @@ impl Editor {
         if fs::symlink_metadata(file).is_err() {
             return Ok(());
         }
-        if file.is_dir() && !file.is_symlink() {
+        if fs::path_is_dir(file) && !fs::path_is_symlink(file) {
             return Err(Error::new(format!("Removing old name: Is a directory, {}", file.display())));
         }
         self.remove(file, trash, false)
@@ -374,7 +374,7 @@ impl Editor {
     /// Makes a directory, as Emacs's `make-directory`, with any missing
     /// parents if `parents`. Without, a directory already there is an error.
     pub fn make_directory(&mut self, dir: &Path, parents: bool) -> Result<()> {
-        if parents && dir.is_dir() {
+        if parents && fs::path_is_dir(dir) {
             return Ok(());
         }
         self.check_permission(&format!("make directory {}", abbreviate_path(dir)))?;
@@ -418,11 +418,8 @@ impl Editor {
         let to_trash = trash && self.variable("delete-by-moving-to-trash").is_some_and(|v| v.is_true());
         let what = if to_trash { "move to the trash" } else { "delete" };
         self.check_permission(&format!("{what} {}", abbreviate_path(path)))?;
-        #[cfg(target_arch = "wasm32")]
-        if to_trash {
-            return Err(Error::new(format!("Moving to trash: no trash in a browser, {}", path.display())));
-        }
-        #[cfg(not(target_arch = "wasm32"))]
+        // Files in memory have no trash: deleting them is final.
+        #[cfg(not(any(target_arch = "wasm32", feature = "memory-fs")))]
         if to_trash {
             return trash::delete(path).map_err(|e| Error::new(format!("Moving to trash: {e}, {}", path.display())));
         }

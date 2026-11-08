@@ -2,7 +2,7 @@
 //! files.el that touch the disk: decoding and encoding, backups, the
 //! visited file's modification time, auto-saving, and reverting.
 
-use std::fs;
+use crate::vfs as fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
@@ -332,7 +332,7 @@ impl Editor {
     pub fn revert_to_visited_file(&mut self) -> Result<()> {
         let b = &self.buffers[self.current];
         let path = b.path.clone().ok_or_else(|| Error::new("Buffer does not seem to be associated with any file"))?;
-        if !path.exists() {
+        if !fs::path_exists(&path) {
             return Err(Error::new(format!("File {} no longer exists!", path.display())));
         }
         // Reverting leaves the region as it was, as in Emacs.
@@ -428,8 +428,8 @@ impl Editor {
         // set-visited-file-name renames it.
         if let Some(old) = b.file.auto_save.take() {
             let new = auto_save_file_name(path);
-            if old != new && old.exists() {
-                let _ = std::fs::rename(&old, &new);
+            if old != new && fs::path_exists(&old) {
+                let _ = fs::rename(&old, &new);
             }
             b.file.auto_save = Some(new);
         }

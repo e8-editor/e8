@@ -7,7 +7,7 @@
 //! As with questions, the command waits for the answer, which the prompt
 //! returns, the command loop running meanwhile (ADR 0053).
 
-use std::fs;
+use crate::vfs as fs;
 use std::path::Path;
 
 use crate::command::{Arg, ParamKind};
@@ -511,7 +511,7 @@ impl Editor {
     pub(crate) fn is_completion_match(&self, input: &str) -> bool {
         let Some(prompt) = &self.prompt else { return false };
         if prompt.kind == ParamKind::File && prompt.collection.is_none() {
-            return expand_file_name(input).exists();
+            return fs::path_exists(expand_file_name(input));
         }
         let field = self.completion_table(prompt, input, input.chars().count());
         let fold = self.completion_ignore_case();
@@ -830,7 +830,7 @@ pub fn file_name_all_completions(dir: &Path) -> Vec<String> {
         .filter_map(|e| e.ok())
         .map(|e| {
             let name = e.file_name().to_string_lossy().into_owned();
-            if e.path().is_dir() { format!("{name}/") } else { name }
+            if fs::path_is_dir(e.path()) { format!("{name}/") } else { name }
         })
         .collect();
     out.reverse();
