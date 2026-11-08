@@ -38,6 +38,16 @@ website/assemble.sh
 python3 crates/e8-web/serve.py 8009 --dir target/site --no-isolation
 ```
 
+The editor on the website starts with a configuration, as
+`~/.config/e8` would hold it: `website/init.ts`, and the ports
+`website/packages.txt` lists, each at its newest tag when the site is
+built. `website/config.sh` fetches them into the site's `config/`, checked
+out as `e8.usePackage` installs them, with `.git/HEAD` and `e8-lock.json`,
+so `usePackage` finds them installed and runs no git. The page puts them in
+`~/.config/e8` before E8 starts, each time, so a new build replaces them,
+except `init.ts` once the visitor has saved their own. `?plain` starts
+without any of it. Only ports that need no programs can go in the list.
+
 `STRIP=1` leaves out functions' names, 4.5 MB of the module, which a
 panic's stack then lacks; stripped, it is 28 MB, 8.3 MB with gzip.
 `WASM_TOOLCHAIN` pins the nightly, as the workflow does.

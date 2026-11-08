@@ -59,7 +59,15 @@
   .editor canvas { display: block; width: 100%; height: 100%; outline: none; }
   .status { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); font: 14px/1.6 var(--mono); }
   .status[hidden] { display: none; }
-  .keys { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 12px 0 0; color: var(--muted); font-size: 14px; }
+  .keys { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 22px; padding: 12px 0 0; color: var(--muted); font-size: 14px; }
+  .keys button, .fullbar button { margin-left: auto; font: 14px var(--sans); color: var(--ink); background: none; border: 1px solid var(--line); padding: 4px 10px; cursor: pointer; }
+  .keys button:hover, .fullbar button:hover { border-color: var(--sun); color: var(--sun); }
+  /* Full window: the editor fills the browser's window under a slim bar. */
+  .fullbar { display: none; }
+  body.full { overflow: hidden; }
+  body.full .fullbar { display: flex; align-items: center; gap: 12px; position: fixed; inset: 0 0 auto 0; height: 36px; padding: 0 12px; z-index: 11; background: var(--bg); border-bottom: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+  body.full .fullbar img { width: 22px; height: 22px; }
+  body.full .editor { position: fixed; inset: 36px 0 0 0; height: auto; z-index: 10; border: 0; }
   kbd, code { font: 0.92em var(--mono); }
   kbd { color: var(--ink); }
   .phone { display: none; color: var(--muted); font-size: 14px; padding-top: 8px; }
@@ -99,6 +107,11 @@
   <div class="hero wrap">
     <h1>An editor that works the way Emacs works.</h1>
     <p class="lede">The same buffers, windows, keys and commands, with a Rust core and its commands in TypeScript. This is E8 itself, compiled to WebAssembly and running in your browser: click in it and type.</p>
+    <div class="fullbar">
+      <img src="assets/logo.svg" alt="">
+      <span>E8, in your browser</span>
+      <button id="leave" type="button">Back to the page</button>
+    </div>
     <div class="editor">
       <canvas id="e8"></canvas>
       <div class="status" id="status">Loading E8…</div>
@@ -108,7 +121,9 @@
       <span><kbd>M-x</kbd> runs a command</span>
       <span><kbd>C-x d</kbd> lists a directory</span>
       <span><kbd>C-x 3</kbd> splits the window</span>
+      <span><kbd>M-s l</kbd> searches the lines</span>
       <span><kbd>M-:</kbd> evaluates TypeScript</span>
+      <button id="enter" type="button">Full window</button>
     </div>
     <p class="phone">E8 needs a keyboard: on a phone you can look, but not type much.</p>
   </div>
@@ -138,6 +153,7 @@
   <section class="wrap made">
     <h2>How it is made</h2>
     <p>What Emacs writes in C, E8 writes in Rust; what Emacs writes in Lisp, E8 writes in TypeScript, which is also how you configure and extend it. The app runs its TypeScript on V8; this page runs it on QuickJS, with the editor on a Web Worker and your files kept in this browser's storage.</p>
+    <p>The editor above starts with a configuration as yours would be: <code>~/.config/e8/init.ts</code>, which sets up the ports of Vertico, Orderless, Marginalia, Consult, Vundo, Casual and persistent-scratch, each a repository of its own. Open it with <kbd>C-x C-f</kbd>, change it and save it: from then on it is yours. <a href="?plain">Without it</a>, E8 starts as it ships.</p>
     <p>E8 is built by one person for daily use, and is open so that it is not hidden. It is free software, under the GPL.</p>
   </section>
 </main>
@@ -155,6 +171,29 @@
 
 <script type="module">
   const status = document.getElementById("status");
+  const canvas = document.getElementById("e8");
+
+  // Full window: E8 takes the whole browser window, and the page comes back
+  // with the button, not Escape, which is E8's Meta key.
+  function full(on) {
+    document.body.classList.toggle("full", on);
+    canvas.focus();
+  }
+  document.getElementById("enter").addEventListener("click", () => full(true));
+  document.getElementById("leave").addEventListener("click", () => full(false));
+
+  // The configuration E8 starts with, as ~/.config/e8 holds it: init.ts and
+  // the packages it uses, with their lock file. The packages come from the
+  // site each time, so a new release replaces them; init.ts only until you
+  // save your own. ?plain starts E8 with none of it.
+  const CONFIG = "/home/e8/.config/e8/";
+  async function configuration(kept) {
+    if (new URLSearchParams(location.search).has("plain")) return [];
+    const have = new Set(kept.map(([path]) => path));
+    const where = await (await fetch("config/files.json")).json();
+    const files = Object.entries(where).filter(([, to]) => !(to === "init.ts" && have.has(CONFIG + to)));
+    return Promise.all(files.map(async ([from, to]) => [CONFIG + to, new Uint8Array(await (await fetch("config/" + from)).arrayBuffer())]));
+  }
   const KEY = "e8-isolating";
 
   // Shared memory needs a cross-origin isolated page. Where the host cannot
@@ -179,8 +218,8 @@
     } else {
       const [{ default: init, start }, storage] = await Promise.all([import("./pkg/e8_web.js"), import("./storage.js")]);
       if (new URLSearchParams(location.search).has("fresh")) await storage.clear();
-      const [files] = await Promise.all([storage.load(), init()]);
-      const canvas = document.getElementById("e8");
+      const [kept] = await Promise.all([storage.load(), init()]);
+      const files = [...kept, ...(await configuration(kept))];
       await start(canvas, files, storage.change);
       status.hidden = true;
     }
