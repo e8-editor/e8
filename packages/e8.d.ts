@@ -317,7 +317,7 @@ declare global {
        */
       "add-mode-abbrev": [arg?: PrefixArg | boolean];
       /**
-       * Talk to a coding agent in a buffer of its own, in another window: one of agent-shell-agents, asked for unless agent-shell-default-agent names one. Type a request under * You and send it with C-c RET. The agent works in the current project, and asks before its tools act.
+       * Talk to a coding agent in a buffer of its own, in another window: one of agent-shell-agents, asked for unless agent-shell-default-agent names one. Type a request under * You and send it with C-c RET. The agent works in the current project, and asks before its tools act. When the agent has earlier sessions in the project, it asks whether to resume one, its conversation replayed into the buffer, as agent-shell-session-strategy says.
        *
        * Defined in packages/agent-shell.ts.
        */
@@ -7339,9 +7339,27 @@ declare global {
        */
       "agent-shell-hidden-tools": Value;
       /**
+       * The requests sent to agents, newest first, for M-p, M-n and M-r in every agent-shell buffer. Savehist mode saves it between sessions, as it does the minibuffer's histories.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-history": Value;
+      /**
+       * How many requests agent-shell-history keeps.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-history-size": Value;
+      /**
        * Keymap agent-shell-mode-map.
        */
       "agent-shell-mode-map": Value;
+      /**
+       * What M-x agent-shell does about the agent's earlier sessions in the project, when it can list and load them: "prompt" asks whether to resume one or start a new session, "latest" resumes the most recent one, and "new" always starts a new session. A resumed session's conversation is replayed into the buffer, and the agent remembers it.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-session-strategy": Value;
       /**
        * What comint does with ANSI escape sequences in output: t colours the text, filter removes them, nil leaves them.
        *
