@@ -87,6 +87,10 @@ impl QuitState {
 pub struct QuitHandle(Arc<QuitState>);
 
 impl QuitHandle {
+    pub(crate) fn new(state: Arc<QuitState>) -> QuitHandle {
+        QuitHandle(state)
+    }
+
     /// Asks the editor to quit, as `C-g` sets `quit-flag`, and gives how
     /// many quits had stopped code when it was asked.
     pub fn request(&self) -> u32 {

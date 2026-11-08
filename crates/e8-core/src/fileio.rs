@@ -68,7 +68,7 @@ pub fn backup_file_name(path: &Path) -> PathBuf {
 /// Whether files there are backed up, as Emacs's
 /// `normal-backup-enable-predicate`: not in the temporary directory.
 fn backup_enabled(path: &Path) -> bool {
-    let temp = std::env::temp_dir();
+    let temp = crate::clock::temp_dir();
     let real_temp = fs::canonicalize(&temp).unwrap_or_else(|_| temp.clone());
     let real = path.parent().and_then(|p| fs::canonicalize(p).ok()).unwrap_or_else(|| path.to_path_buf());
     !(path.starts_with(&temp) || real.starts_with(&real_temp))
@@ -268,9 +268,12 @@ impl Editor {
             && !b.file.backed_up
             && backup_enabled(&real)
         {
-            use std::os::unix::fs::MetadataExt;
+            #[cfg(unix)]
+            let linked = std::os::unix::fs::MetadataExt::nlink(meta) > 1;
+            #[cfg(not(unix))]
+            let linked = { let _ = meta; false };
             let backup = backup_file_name(&real);
-            let result = if by_copying || precious || meta.nlink() > 1 {
+            let result = if by_copying || precious || linked {
                 fs::copy(&real, &backup).map(drop)
             } else {
                 renamed = true;
@@ -281,7 +284,7 @@ impl Editor {
         }
         let written = if precious {
             let name = real.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
-            let temp = real.with_file_name(format!(".{name}.e8-{}", std::process::id()));
+            let temp = real.with_file_name(format!(".{name}.e8-{}", crate::clock::process_id()));
             write_synced(&temp, &bytes, old.as_ref()).and_then(|()| fs::rename(&temp, &real)).inspect_err(|_| {
                 let _ = fs::remove_file(&temp);
             })

@@ -56,9 +56,11 @@ pub struct E8App {
     scroll: Arc<Mutex<Scroll>>,
     mouse: Arc<Mutex<Mouse>>,
     /// Messages from an agent through e8-mcp, answered between frames.
+    #[cfg(not(target_arch = "wasm32"))]
     agent: Option<std::sync::mpsc::Receiver<e8_mcp::socket::Request>>,
     /// What the editor remembers of the socket's client, so it cannot answer
     /// a question it did not ask.
+    #[cfg(not(target_arch = "wasm32"))]
     agent_client: std::sync::Arc<std::sync::Mutex<e8_mcp::Client>>,
     /// The frame this native window shows; the others get windows of their own.
     main_frame: FrameId,
@@ -155,9 +157,21 @@ impl E8App {
     /// `setup`, which returns the script runtime the editor keeps. `ctx` is
     /// woken when the editor has something new to draw.
     pub fn threaded(ctx: &egui::Context, setup: impl FnOnce(&mut Editor) -> Option<e8_script::Scripting> + Send + 'static) -> E8App {
+        let wake = ctx.clone();
+        E8App::threaded_waking(ctx, move || wake.request_repaint(), setup)
+    }
+
+    /// As [`E8App::threaded`], the editor's thread calling `wake` when it
+    /// has something new to draw. A web build wakes the window by a message
+    /// rather than through egui's context, whose lock the browser's main
+    /// thread could find taken and may not wait for.
+    pub fn threaded_waking(
+        ctx: &egui::Context,
+        wake: impl Fn() + Send + 'static,
+        setup: impl FnOnce(&mut Editor) -> Option<e8_script::Scripting> + Send + 'static,
+    ) -> E8App {
         let look = Arc::new(Mutex::new((true, ctx.pixels_per_point())));
         let described = look.clone();
-        let wake = ctx.clone();
         let driver = Driver::spawn(
             move |editor| {
                 crate::modeline::install(editor);
@@ -175,7 +189,7 @@ impl E8App {
                 editor.redisplay();
                 editor.frame_list().into_iter().map(|f| editor.describe_frame(f, scale)).collect()
             },
-            move || wake.request_repaint(),
+            wake,
         );
         E8App::with_backend(Backend::Thread { driver, look })
     }
@@ -191,7 +205,9 @@ impl E8App {
             mac: cfg!(target_os = "macos"),
             scroll: Default::default(),
             mouse: Default::default(),
+            #[cfg(not(target_arch = "wasm32"))]
             agent: None,
+            #[cfg(not(target_arch = "wasm32"))]
             agent_client: Default::default(),
             main_frame: 1,
             titles: std::collections::HashMap::new(),
@@ -252,6 +268,7 @@ impl E8App {
     /// Answers an agent's messages from `requests`, as e8-mcp passes them
     /// on, with the editor this window shows. An editor on this thread
     /// keeps `scripting` too, which commands that scripts define need alive.
+    #[cfg(not(target_arch = "wasm32"))]
     pub fn with_agent(
         mut self,
         requests: Option<std::sync::mpsc::Receiver<e8_mcp::socket::Request>>,
@@ -290,6 +307,7 @@ impl E8App {
 
     /// Answers the agent's waiting messages, each as one call of its own,
     /// with the editor and its script runtime.
+    #[cfg(not(target_arch = "wasm32"))]
     fn answer_agent(&mut self) {
         let Some(requests) = &self.agent else { return };
         let waiting: Vec<_> = requests.try_iter().collect();
@@ -320,8 +338,19 @@ impl E8App {
                 self.exit = editor.should_quit();
             }
             Backend::Thread { driver, look } => {
-                *look.lock().unwrap_or_else(|e| e.into_inner()) = (dark, ctx.pixels_per_point());
-                let mut published = driver.published();
+                // A browser's main thread may not wait for a lock, so there
+                // the window only tries, and looks again next frame.
+                #[cfg(target_arch = "wasm32")]
+                let (look, published) = (look.try_lock().ok(), driver.try_published());
+                #[cfg(not(target_arch = "wasm32"))]
+                let (look, published) = (Some(look.lock().unwrap_or_else(|e| e.into_inner())), Some(driver.published()));
+                if let Some(mut look) = look {
+                    *look = (dark, ctx.pixels_per_point());
+                }
+                let Some(mut published) = published else {
+                    ctx.request_repaint();
+                    return;
+                };
                 if published.generation != self.generation {
                     self.generation = published.generation;
                     self.frames = published.frames.clone();
@@ -363,6 +392,7 @@ impl E8App {
             ctx.request_repaint();
         }
         self.handle_close(&ctx);
+        #[cfg(not(target_arch = "wasm32"))]
         self.answer_agent();
         self.refresh(&ctx, Tokens::get(&ctx).dark);
         self.flash(ui);

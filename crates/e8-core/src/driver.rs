@@ -26,7 +26,9 @@ use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender, TryRecvError, channel}
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
 use std::thread::JoinHandle;
-use std::time::{Duration, Instant};
+use std::time::Duration;
+
+use crate::clock::Instant;
 
 use crate::Result;
 use crate::editor::Editor;
@@ -97,9 +99,25 @@ impl Idle {
     }
 }
 
+/// How a web build starts the editor's thread: std cannot start threads
+/// in a browser, so the front end starts a worker that shares the memory.
+#[cfg(target_arch = "wasm32")]
+pub type Spawner = fn(Box<dyn FnOnce() + Send>);
+
+#[cfg(target_arch = "wasm32")]
+static SPAWNER: std::sync::OnceLock<Spawner> = std::sync::OnceLock::new();
+
+/// Sets how a web build starts the editor's thread, before the first
+/// [`Driver::spawn`].
+#[cfg(target_arch = "wasm32")]
+pub fn set_spawner(spawn: Spawner) {
+    let _ = SPAWNER.set(spawn);
+}
+
 /// How big the editor thread's stack is: Lisp-like code recurses deeply,
 /// and spawned threads get 2 MB by default on macOS, a quarter of the main
 /// thread's.
+#[cfg(not(target_arch = "wasm32"))]
 const STACK: usize = 64 << 20;
 
 impl Driver {
@@ -117,27 +135,34 @@ impl Driver {
     ) -> Driver {
         let (input, rx) = channel();
         let published = Arc::new(Mutex::new(Published::default()));
-        let (quit_tx, quit_rx) = channel();
+        // The quit flag is made here and given to the editor, rather than
+        // sent back once the thread has made the editor: a browser's main
+        // thread may not wait, and a worker starts only once it has returned.
+        let quitting = Arc::new(crate::quit::QuitState::default());
+        let quit = crate::quit::QuitHandle::new(quitting.clone());
         let shared = published.clone();
         let idle = Arc::new(Idle::default());
         let loop_idle = idle.clone();
         let waker = input.clone();
-        let thread = std::thread::Builder::new()
-            .name("editor".into())
-            .stack_size(STACK)
-            .spawn(move || {
-                let mut ed = Editor::new();
-                // Process output wakes the loop, rather than waiting for its next timer.
-                let waker = Mutex::new(waker);
-                ed.set_process_waker(Arc::new(move || {
-                    let _ = waker.lock().unwrap_or_else(|e| e.into_inner()).send(Input::Wake);
-                }));
-                let _ = quit_tx.send(ed.quit_handle());
-                run(ed, setup, rx, describe, wake, shared, loop_idle);
-            })
-            .expect("the editor's thread starts");
-        let quit = quit_rx.recv().expect("the editor's thread sends its quit flag");
-        Driver { input, quit, published, thread: Some(thread), sent: AtomicU64::new(0), idle }
+        let body = move || {
+            let mut ed = Editor::new();
+            ed.quitting = quitting;
+            // Process output wakes the loop, rather than waiting for its next timer.
+            let waker = Mutex::new(waker);
+            ed.set_process_waker(Arc::new(move || {
+                let _ = waker.lock().unwrap_or_else(|e| e.into_inner()).send(Input::Wake);
+            }));
+            run(ed, setup, rx, describe, wake, shared, loop_idle);
+        };
+        #[cfg(not(target_arch = "wasm32"))]
+        let thread = Some(std::thread::Builder::new().name("editor".into()).stack_size(STACK).spawn(body).expect("the editor's thread starts"));
+        #[cfg(target_arch = "wasm32")]
+        let thread = {
+            let spawn = SPAWNER.get().expect("a web build sets a spawner before starting the editor");
+            spawn(Box::new(body));
+            None
+        };
+        Driver { input, quit, published, thread, sent: AtomicU64::new(0), idle }
     }
 
     /// Sends input to the editor's thread.
@@ -167,10 +192,10 @@ impl Driver {
     /// input, at whatever depth of prompt, as tests do between keys.
     pub fn settle(&self) {
         let seq = self.sent.load(Ordering::SeqCst);
-        let until = std::time::Instant::now() + Duration::from_secs(30);
+        let until = Instant::now() + Duration::from_secs(30);
         let mut state = self.idle.state.lock().unwrap_or_else(|e| e.into_inner());
         while !(state.0 >= seq && state.1) {
-            let left = until.saturating_duration_since(std::time::Instant::now());
+            let left = until.saturating_duration_since(Instant::now());
             assert!(!left.is_zero(), "the editor did not settle");
             state = self.idle.changed.wait_timeout(state, left).unwrap_or_else(|e| e.into_inner()).0;
         }
@@ -208,6 +233,16 @@ impl Driver {
         self.published.lock().unwrap_or_else(|e| e.into_inner())
     }
 
+    /// What the editor last published, unless its thread is publishing
+    /// now, for a browser's main thread, which may not wait.
+    pub fn try_published(&self) -> Option<std::sync::MutexGuard<'_, Published>> {
+        match self.published.try_lock() {
+            Ok(guard) => Some(guard),
+            Err(std::sync::TryLockError::Poisoned(e)) => Some(e.into_inner()),
+            Err(std::sync::TryLockError::WouldBlock) => None,
+        }
+    }
+
     /// The editor's quit flag, which `C-g` sets.
     pub fn quit_handle(&self) -> &QuitHandle {
         &self.quit
@@ -238,6 +273,31 @@ pub trait NestedLoop {
     /// command, or init.ts installing packages, says what it is doing.
     /// Code that has run only briefly shows it when it finishes, as usual.
     fn message_shown(&self, ed: &mut Editor);
+}
+
+/// Waits up to `timeout` for input, as `Receiver::recv_timeout`. On the web
+/// std's channels cannot time out, as they read std's clock, which panics
+/// there; the editor's worker polls instead, sleeping a few milliseconds at
+/// a time, as std's sleep needs no clock.
+fn recv_timeout(rx: &Receiver<Input>, timeout: Duration) -> std::result::Result<Input, RecvTimeoutError> {
+    #[cfg(not(target_arch = "wasm32"))]
+    return rx.recv_timeout(timeout);
+    #[cfg(target_arch = "wasm32")]
+    {
+        let until = Instant::now().checked_add(timeout);
+        loop {
+            match rx.try_recv() {
+                Ok(input) => return Ok(input),
+                Err(TryRecvError::Disconnected) => return Err(RecvTimeoutError::Disconnected),
+                Err(TryRecvError::Empty) => {}
+            }
+            let left = until.map_or(Duration::MAX, |until| until.saturating_duration_since(Instant::now()));
+            if left.is_zero() {
+                return Err(RecvTimeoutError::Timeout);
+            }
+            std::thread::sleep(left.min(Duration::from_millis(4)));
+        }
+    }
 }
 
 /// How long code runs before a message it shows is drawn at once.
@@ -353,7 +413,7 @@ impl<D: FnMut(&mut Editor) -> Vec<FrameDescription>> NestedLoop for CommandLoop<
                     self.publish(ed);
                     let timeout = ed.next_timer_in().unwrap_or(Duration::from_secs(3600));
                     self.idle.set(|s| s.1 = true);
-                    let input = self.rx.recv_timeout(timeout);
+                    let input = recv_timeout(&self.rx, timeout);
                     self.busy_since.set(Instant::now());
                     self.idle.set(|s| {
                         s.1 = false;

@@ -268,7 +268,7 @@ impl Editor {
         self.check_permission(&format!("copy {} to {}", abbreviate_path(from), abbreviate_path(&to)))?;
         fs::copy(from, &to).map_err(|e| file_error("Copying file", &e, &[from, &to]))?;
         if keep_time && let Ok(meta) = fs::metadata(from) {
-            let times = fs::FileTimes::new().set_modified(meta.modified().unwrap_or(SystemTime::now()));
+            let times = fs::FileTimes::new().set_modified(meta.modified().unwrap_or(crate::clock::system_now()));
             let _ = fs::File::options().write(true).open(&to).and_then(|f| f.set_times(times));
         }
         Ok(to)
@@ -418,6 +418,11 @@ impl Editor {
         let to_trash = trash && self.variable("delete-by-moving-to-trash").is_some_and(|v| v.is_true());
         let what = if to_trash { "move to the trash" } else { "delete" };
         self.check_permission(&format!("{what} {}", abbreviate_path(path)))?;
+        #[cfg(target_arch = "wasm32")]
+        if to_trash {
+            return Err(Error::new(format!("Moving to trash: no trash in a browser, {}", path.display())));
+        }
+        #[cfg(not(target_arch = "wasm32"))]
         if to_trash {
             return trash::delete(path).map_err(|e| Error::new(format!("Moving to trash: {e}, {}", path.display())));
         }

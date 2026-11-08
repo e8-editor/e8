@@ -36,7 +36,9 @@ use std::borrow::Cow;
 use std::path::{Path, PathBuf};
 use std::ptr::NonNull;
 use std::thread::LocalKey;
-use std::time::{Duration, Instant};
+use std::time::Duration;
+
+use e8_core::clock::Instant;
 
 use std::rc::Rc;
 

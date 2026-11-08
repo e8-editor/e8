@@ -36,7 +36,7 @@ pub(crate) struct KeyReader {
     /// Where the key goes, for the command waiting on it.
     answer: AnswerSlot,
     /// When to stop waiting and answer nil, as `read-event`'s SECONDS.
-    deadline: Option<std::time::Instant>,
+    deadline: Option<crate::clock::Instant>,
 }
 
 pub(crate) struct RecursiveEdit {
@@ -148,7 +148,7 @@ impl Editor {
     }
 
     /// When code reading a key with a timeout stops waiting, if it does.
-    pub(crate) fn key_read_deadline(&self) -> Option<std::time::Instant> {
+    pub(crate) fn key_read_deadline(&self) -> Option<crate::clock::Instant> {
         self.keyboard.reader.as_ref().and_then(|r| r.deadline)
     }
 

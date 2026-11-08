@@ -12,7 +12,7 @@
 
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::{Duration, UNIX_EPOCH};
 
 use crate::editor::Editor;
 use crate::error::{Error, Result};
@@ -258,7 +258,7 @@ impl Editor {
             return r.map(drop);
         }
         self.check_permission(&format!("change the times of {}", crate::files::abbreviate_path(Path::new(&file))))?;
-        let when = time.map_or_else(SystemTime::now, |ms| UNIX_EPOCH + Duration::from_millis(ms.max(0.0) as u64));
+        let when = time.map_or_else(crate::clock::system_now, |ms| UNIX_EPOCH + Duration::from_millis(ms.max(0.0) as u64));
         let f = fs::File::options().write(true).open(&file).or_else(|_| fs::File::open(&file)).map_err(|e| file_error("Setting file times", &e, &[Path::new(&file)]))?;
         f.set_times(fs::FileTimes::new().set_accessed(when).set_modified(when)).map_err(|e| file_error("Setting file times", &e, &[Path::new(&file)]))
     }
@@ -331,7 +331,7 @@ impl Editor {
     pub fn make_temp_file(&mut self, prefix: &str, dir: bool, suffix: &str, text: Option<&str>) -> Result<String> {
         let base = match self.variable("temporary-file-directory").and_then(|v| v.as_str().map(str::to_string)) {
             Some(t) => PathBuf::from(t),
-            None => std::env::temp_dir(),
+            None => crate::clock::temp_dir(),
         };
         let base = if Path::new(prefix).is_absolute() { PathBuf::new() } else { base };
         // Making a file is writing one, which waits for the user's approval
@@ -339,7 +339,7 @@ impl Editor {
         let place = base.join(prefix);
         self.check_permission(&format!("make a temporary file at {}", place.display()))?;
         const LETTERS: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let mut seed = SystemTime::now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_nanos() as u64) ^ ((std::process::id() as u64) << 32);
+        let mut seed = crate::clock::system_now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_nanos() as u64) ^ ((crate::clock::process_id() as u64) << 32);
         for _ in 0..100 {
             let mut name = String::from(prefix);
             for _ in 0..6 {

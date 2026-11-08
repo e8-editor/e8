@@ -21,18 +21,31 @@ pub(crate) struct Grammar {
     highlights: OnceCell<Rc<Query>>,
     /// The shared library a grammar loaded at run time is in, kept open
     /// while the language is used.
+    #[cfg(not(target_arch = "wasm32"))]
     _library: Option<libloading::Library>,
 }
 
 impl Grammar {
     fn new(language: Language, highlights_source: &'static str) -> Grammar {
-        Grammar { language, highlights_source, highlights: OnceCell::new(), _library: None }
+        Grammar {
+            language,
+            highlights_source,
+            highlights: OnceCell::new(),
+            #[cfg(not(target_arch = "wasm32"))]
+            _library: None,
+        }
     }
 
     /// The grammar in a shared library built from a grammar's sources, such
     /// as libtree-sitter-go.dylib, by the function `symbol` that gives its
     /// language, as Emacs's treesit loads one. It has no highlighting query
     /// of its own: a mode gives its font-lock rules.
+    #[cfg(target_arch = "wasm32")]
+    pub(crate) fn load(_path: &std::path::Path, _symbol: &str) -> std::result::Result<Grammar, String> {
+        Err("a browser cannot load grammars from shared libraries".into())
+    }
+
+    #[cfg(not(target_arch = "wasm32"))]
     pub(crate) fn load(path: &std::path::Path, symbol: &str) -> std::result::Result<Grammar, String> {
         // SAFETY: as Emacs does, the library is trusted to be a tree-sitter
         // grammar whose function returns its language; the library stays

@@ -25,18 +25,28 @@ pub fn translate(events: &[Event], mac: bool) -> Vec<Input> {
     let mut out = Vec::new();
     // The text event that follows an Option or Alt chord on macOS.
     let mut skip_text = false;
+    // In a browser the text comes before the chord's key event instead:
+    // where the text just before began, to take it back.
+    let mut text_from: Option<usize> = None;
     for event in events {
         match event {
             Event::Key { key, pressed: true, modifiers, .. } => {
                 if let Some(k) = key_event(*key, *modifiers) {
+                    if cfg!(target_arch = "wasm32") && modifiers.alt
+                        && let Some(from) = text_from
+                    {
+                        out.truncate(from);
+                    }
                     out.push(Input::Key(k));
-                    skip_text = modifiers.alt;
+                    skip_text = modifiers.alt && !cfg!(target_arch = "wasm32");
                 }
+                text_from = None;
             }
             Event::Text(text) => {
                 if std::mem::take(&mut skip_text) {
                     continue;
                 }
+                text_from = Some(out.len());
                 out.extend(text.chars().map(|c| Input::Key(Key::char(c))));
             }
             Event::Cut if !mac => out.push(Input::Key(Key::char('x').ctrl())),

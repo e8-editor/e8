@@ -16,17 +16,22 @@ tree-sitter-javascript = "0.25"
 tree-sitter-json = "0.24"
 tree-sitter-python = "0.25"
 tree-sitter-rust = "0.24"
-# Loading grammars built as shared libraries, as Emacs's treesit-language-available-p finds them (ADR 0056).
-libloading = "0.8"
 tree-sitter-language = "0.1"
 unicode-width = "0.2"
-# Moving deleted files to the system's trash, as Finder or a desktop's file manager does.
-trash = "5"
 encoding_rs = "0.8"
+# The clock: std's natively, the browser's on the web, where std's panics.
+web-time = "1"
 # Decoding PNG, JPEG and GIF images shown by display specs (ADR 0046).
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif"] }
 # Reading and drawing SVG images (ADR 0046).
 resvg = { version = "0.49", default-features = false, features = ["svgz"] }
+
+# Neither has a web build: the browser has no shared libraries or trash.
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+# Loading grammars built as shared libraries, as Emacs's treesit-language-available-p finds them (ADR 0056).
+libloading = "0.8"
+# Moving deleted files to the system's trash, as Finder or a desktop's file manager does.
+trash = "5"
 
 [target.'cfg(unix)'.dependencies]
 # Owner and group names for file listings.

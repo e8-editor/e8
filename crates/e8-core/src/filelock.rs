@@ -70,7 +70,7 @@ fn boot_time() -> Option<i64> {
 
 /// What this process writes in its locks.
 fn lock_info() -> String {
-    let base = format!("{}@{}.{}", user_login_name(), system_name(), std::process::id());
+    let base = format!("{}@{}.{}", user_login_name(), system_name(), crate::clock::process_id());
     match boot_time() {
         Some(boot) => format!("{base}:{boot}"),
         None => base,
@@ -117,7 +117,7 @@ pub fn current_lock_owner(lock: &Path) -> LockOwner {
     if host != system_name() {
         return LockOwner::Other(shown);
     }
-    if pid == std::process::id() as i64 {
+    if pid == crate::clock::process_id() as i64 {
         return LockOwner::Me;
     }
     let same_boot = boot.is_none_or(|b| b == 0 || boot_time().is_none_or(|now| (b - now).abs() <= 1));

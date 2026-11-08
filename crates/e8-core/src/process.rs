@@ -18,7 +18,9 @@ use std::process::{Child, Command, Stdio};
 use std::sync::{Arc, Mutex};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::{Receiver, Sender, SyncSender, channel, sync_channel};
-use std::time::{Duration, Instant};
+use std::time::Duration;
+
+use crate::clock::Instant;
 
 use crate::coding::{Coding, Eol};
 use crate::editor::Editor;
@@ -1325,7 +1327,7 @@ impl Editor {
             Some(name) => Some(self.process(name)?.id),
             None => None,
         };
-        let deadline = secs.map(|s| std::time::Instant::now() + Duration::from_secs_f64(s.max(0.0)));
+        let deadline = secs.map(|s| Instant::now() + Duration::from_secs_f64(s.max(0.0)));
         loop {
             let before = self.processes.outputs_seen;
             self.processes.watching = id;
@@ -1337,7 +1339,7 @@ impl Editor {
             if id.is_some_and(|id| !self.processes.list.iter().any(|p| p.id == id && matches!(p.status, Status::Run))) {
                 return Ok(false);
             }
-            if deadline.is_some_and(|d| std::time::Instant::now() >= d) {
+            if deadline.is_some_and(|d| Instant::now() >= d) {
                 return Ok(false);
             }
             self.maybe_quit()?;

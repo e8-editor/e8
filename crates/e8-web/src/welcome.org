@@ -1,0 +1,35 @@
+#+TITLE: E8 in your browser
+
+* Welcome
+E8 is an editor that works the way Emacs works, written in Rust, with
+its commands in TypeScript. This is the real editor, compiled to
+WebAssembly, running in this page.
+
+Click here to focus it, then try some keys. =TAB= on a heading folds
+it, =S-TAB= folds them all.
+
+* Things to try
+- =C-x b= switches buffers: there is a Python one and =*scratch*=
+- =M-x= runs any command by name, with completion
+- =C-s= searches as you type, =M-%= replaces
+- =C-x 2= and =C-x 3= split the window, =C-x o= moves between them
+- =C-x u= or =C-/= undoes
+- =M-:= evaluates TypeScript: try =e8.message("hello")=
+
+* An Org list
+** TODO Try E8 in a browser
+** TODO Fold this heading with TAB
+** DONE Compile the editor to WebAssembly
+
+* An Org table
+| Engine  | Where it runs     | Speed       |
+|---------+-------------------+-------------|
+| V8      | the desktop app   | JIT         |
+| QuickJS | this page         | interpreted |
+
+Put point in the table and press =TAB= to move between cells.
+
+* What this page cannot do yet
+There are no files to visit or save, no shell or compiling, no agent,
+and the system clipboard is not shared. Some keys belong to the
+browser: =C-w=, =C-n= and =C-t= may close or open tabs instead.
