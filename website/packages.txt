@@ -1,0 +1,10 @@
+# The ports the website's E8 has, installed as e8.usePackage installs them,
+# each at its newest tag when the site is built. website/init.ts uses them.
+# Only ports that need no programs: the page cannot run any.
+e8-editor/e8-vertico
+e8-editor/e8-orderless
+e8-editor/e8-marginalia
+e8-editor/e8-consult
+e8-editor/e8-vundo
+e8-editor/e8-casual
+e8-editor/e8-persistent-scratch

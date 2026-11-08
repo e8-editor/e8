@@ -151,11 +151,13 @@ fn keep(change: Change) {
     let _ = scope.post_message(&message);
 }
 
-/// Files to try things in, on a first visit: once the home directory
-/// exists, what is there is the person's.
+/// Files to try things in, on a first visit: once the home directory holds
+/// anything but the configuration the page puts in ~/.config each time,
+/// what is there is the person's.
 fn seed() {
     let home = std::path::Path::new(vfs::HOME);
-    if vfs::path_exists(home) {
+    let first = vfs::read_dir(home).map_or(true, |entries| entries.flatten().all(|e| e.file_name() == ".config"));
+    if !first {
         return;
     }
     let files: [(&str, &str); 4] = [
