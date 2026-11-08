@@ -637,10 +637,11 @@ fn live_claude_code_s_tool_calls_fold_as_they_come() {
     while d.text().matches("* You\n").count() < 2 {
         assert!(start.elapsed() < std::time::Duration::from_secs(180), "{}", d.text());
         let t = d.text();
-        if let Some(i) = t.find("#+begin_src ") {
-            if t.matches("* You\n").count() < 2 && hidden_in(&d, &t, i) {
-                seen_folded = true;
-            }
+        if let Some(i) = t.find("#+begin_src ")
+            && t.matches("* You\n").count() < 2
+            && hidden_in(&d, &t, i)
+        {
+            seen_folded = true;
         }
         std::thread::sleep(std::time::Duration::from_millis(50));
     }
@@ -670,7 +671,7 @@ fn live_claude_code_s_slash_commands_complete() {
     d.type_text("/conte");
     let capf = r#"JSON.stringify(e8.runHookWithArgsUntilSuccess("completion-at-point-functions") ?? null)"#;
     let start = std::time::Instant::now();
-    while d.eval_expression(capf) == json!("null").to_string() {
+    while d.eval_expression(capf) == r#""null""# {
         assert!(start.elapsed() < std::time::Duration::from_secs(120), "no commands: {}", d.text());
         std::thread::sleep(std::time::Duration::from_millis(200));
     }
@@ -1178,7 +1179,7 @@ fn slash_commands_complete_at_the_start_of_a_request_and_say_what_they_do() {
     // As a completion-at-point function, once the agent has said its commands.
     s.d.type_text("/co");
     let capf = r#"JSON.stringify(e8.runHookWithArgsUntilSuccess("completion-at-point-functions") ?? null)"#;
-    wait_for("the commands", || s.d.eval_expression(capf) != json!("null").to_string());
+    wait_for("the commands", || s.d.eval_expression(capf) != r#""null""#);
     assert_eq!(
         js_string(&s.d, capf),
         json!([6, 9, ["/compact", "/context", "/code-review:code-review"]]).to_string()
@@ -1202,7 +1203,7 @@ fn slash_commands_complete_at_the_start_of_a_request_and_say_what_they_do() {
     s.d.press("C-a");
     s.d.press("C-k");
     s.d.type_text("see /co");
-    assert_eq!(s.d.eval_expression(capf), json!("null").to_string());
+    assert_eq!(s.d.eval_expression(capf), r#""null""#);
     s.d.press("TAB");
     assert_eq!(s.d.text(), "* You\nsee /co");
 }
