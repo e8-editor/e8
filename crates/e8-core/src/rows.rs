@@ -488,18 +488,23 @@ impl Editor {
     }
 
     /// How a window showing a buffer wraps lines, or `None` if it truncates
-    /// them: when `truncate-lines` is on, or when the window is narrower than
-    /// `truncate-partial-width-windows` and shares the frame's width with
-    /// others, as in Emacs. Lines wrap one column short of the window's
-    /// width, leaving the last column for the continuation mark.
+    /// them: when `truncate-lines` is on, or when the window shares the
+    /// frame's width with others and `truncate-partial-width-windows` says
+    /// so, as in Emacs: a number when the window is narrower than it, nil
+    /// never, and any other value always. Lines wrap one column short of the
+    /// window's width, leaving the last column for the continuation mark.
     pub(crate) fn wrap_in(&self, window: crate::window::WindowId, b: &Buffer) -> Option<Wrap> {
         if self.variable_in(b, "truncate-lines").is_some_and(|v| v.is_true()) {
             return None;
         }
         let width = self.window(window).map_or(80, |w| w.width);
         let partial = self.window_tree.is_partial_width(window);
-        let limit = self.number_in(b, "truncate-partial-width-windows", 50.0);
-        if partial && (width as f64) < limit {
+        let partial_truncates = match self.variable_in(b, "truncate-partial-width-windows") {
+            Some(Value::Number(limit)) => (width as f64) < limit,
+            Some(v) => v.is_true(),
+            None => width < 50,
+        };
+        if partial && partial_truncates {
             return None;
         }
         let words = self.variable_in(b, "word-wrap").is_some_and(|v| v.is_true());

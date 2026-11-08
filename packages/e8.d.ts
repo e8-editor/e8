@@ -6966,7 +6966,7 @@ declare global {
       /**
        * Continue long lines at word boundaries, and make C-a, C-e and C-k work on screen lines.
        *
-       * It turns word-wrap on in the buffer and turns truncate-lines off.
+       * It turns word-wrap on in the buffer and turns truncate-lines off, and lets windows that share the frame's width wrap too (truncate-partial-width-windows).
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
        *
@@ -11066,7 +11066,7 @@ declare global {
       /**
        * Windows narrower than this many columns that share the frame's width with others truncate lines, whatever truncate-lines says.
        *
-       * Set it to 0 to let narrow windows continue lines too.
+       * nil leaves it to truncate-lines, as visual-line-mode makes it in its buffer, and any other non-nil value truncates lines in every window that shares the frame's width.
        */
       "truncate-partial-width-windows": Value;
       /**

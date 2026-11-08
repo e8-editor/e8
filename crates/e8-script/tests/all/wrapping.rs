@@ -91,6 +91,35 @@ fn narrow_side_by_side_windows_truncate() {
     assert_eq!(rows(&ed), [LONG, "short"], "narrower than truncate-partial-width-windows");
     ed.set_variable("truncate-partial-width-windows", Value::Number(0.0));
     assert_eq!(rows(&ed).len(), 3);
+    // As Emacs reads it: nil leaves it to truncate-lines, and any other
+    // non-nil value truncates every window that shares the frame's width.
+    ed.set_variable("truncate-partial-width-windows", Value::Null);
+    assert_eq!(rows(&ed).len(), 3, "nil wraps");
+    ed.set_variable("truncate-partial-width-windows", Value::Bool(true));
+    for window in ed.window_list() {
+        ed.set_window_size(window, 60, 6);
+    }
+    assert_eq!(rows(&ed), [LONG, "short"], "t truncates however wide");
+}
+
+#[test]
+fn visual_line_mode_wraps_narrow_side_by_side_windows() {
+    // As Emacs 30.2's visual-line-mode: truncate-partial-width-windows
+    // becomes nil in the buffer, so narrow windows wrap too.
+    let (mut ed, _scripting) = setup(&format!("{LONG}\nshort"));
+    ed.press("C-x 3").unwrap();
+    for window in ed.window_list() {
+        ed.set_window_size(window, 30, 6);
+    }
+    ed.call("visual-line-mode", vec![]).unwrap();
+    assert_eq!(ed.variable("truncate-partial-width-windows"), Some(Value::Null));
+    assert!(ed.is_local_variable("truncate-partial-width-windows"));
+    assert_eq!(rows(&ed).len(), 3, "{:?}", rows(&ed));
+    // Turned off, the buffer goes back to the default, and truncates again.
+    ed.run_interactive("visual-line-mode");
+    assert!(!ed.is_local_variable("truncate-partial-width-windows"));
+    assert_eq!(ed.variable("truncate-partial-width-windows"), Some(Value::Number(50.0)));
+    assert_eq!(rows(&ed), [LONG, "short"]);
 }
 
 #[test]

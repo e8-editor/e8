@@ -283,7 +283,7 @@ e8.defineMinorMode({
   lighter: " Wrap",
   doc:
     "Continue long lines at word boundaries, and make C-a, C-e and C-k work on screen lines.\n\n" +
-    "It turns word-wrap on in the buffer and turns truncate-lines off.",
+    "It turns word-wrap on in the buffer and turns truncate-lines off, and lets windows that share the frame's width wrap too (truncate-partial-width-windows).",
   bindings: {
     "C-a": beginningOfVisualLine,
     "C-e": endOfVisualLine,
@@ -293,9 +293,13 @@ e8.defineMinorMode({
     if (on) {
       e8.setVariable("word-wrap", true);
       e8.setVariable("truncate-lines", false);
+      // As Emacs's visual-line-mode: narrow side-by-side windows wrap too.
+      e8.makeLocalVariable("truncate-partial-width-windows");
+      e8.setVariable("truncate-partial-width-windows", null);
     } else {
       e8.killLocalVariable("word-wrap");
       e8.killLocalVariable("truncate-lines");
+      e8.killLocalVariable("truncate-partial-width-windows");
     }
   },
 });

@@ -1086,7 +1086,7 @@ pub(crate) fn install(ed: &mut Editor) {
         ),
         Variable::new(
             "truncate-partial-width-windows",
-            "Windows narrower than this many columns that share the frame's width with others truncate lines, whatever truncate-lines says.\n\nSet it to 0 to let narrow windows continue lines too.",
+            "Windows narrower than this many columns that share the frame's width with others truncate lines, whatever truncate-lines says.\n\nnil leaves it to truncate-lines, as visual-line-mode makes it in its buffer, and any other non-nil value truncates lines in every window that shares the frame's width.",
             50.0,
         ),
     ] {
