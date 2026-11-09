@@ -68,3 +68,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0064](0064-the-help-system.md) The help system
 - [0065](0065-packages-emacs-autoloads.md) Packages Emacs autoloads
 - [0066](0066-e8-in-a-browser.md) E8 in a browser
+- [0067](0067-themes-are-one-collection.md) Themes are one collection, with a chooser

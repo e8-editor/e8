@@ -132,7 +132,7 @@ jobs:
         run: |
           e8="$PWD/target/debug/e8"
           failed=""
-          for port in e8-vundo e8-nord-theme e8-persistent-scratch e8-popper e8-casual \
+          for port in e8-vundo e8-themes e8-persistent-scratch e8-popper e8-casual \
             e8-vertico e8-orderless e8-marginalia e8-consult e8-magit-section \
             e8-with-editor e8-magit e8-org-roam e8-consult-org-roam; do
             echo "::group::$port"

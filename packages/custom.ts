@@ -73,6 +73,30 @@ export function provideTheme(name: string): void {
   theme(name).provided = true;
 }
 
+/**
+ * The documentation, faces and variables a loaded theme gives, as its
+ * theme-documentation and theme-settings properties hold them in Emacs,
+ * or undefined if it is not loaded: for showing a theme without enabling
+ * it, as a theme chooser does.
+ */
+export function customThemeSettings(
+  name: string,
+): { doc: string; faces: [string, e8.FaceAttributes][]; variables: [string, e8.Value][] } | undefined {
+  const t = themes.get(name);
+  return t?.provided ? { doc: t.doc, faces: t.faces.map(([f, a]) => [f, { ...a }]), variables: [...t.variables] } : undefined;
+}
+
+/** The themes there are to load, sorted: each NAME-theme.ts along load-path, and those loaded, as custom-available-themes. */
+export function customAvailableThemes(): string[] {
+  const names = new Set([...themes.keys()].filter((t) => themes.get(t)!.provided));
+  const dirs = e8.variable("load-path");
+  for (const dir of Array.isArray(dirs) ? dirs.map((d) => e8.expandFileName(String(d))) : []) {
+    if (!e8.fileDirectoryP(dir)) continue;
+    for (const file of e8.directoryFiles(dir, { match: "-theme\\.ts\\'" })) names.add(file.replace(/-theme\.ts$/, ""));
+  }
+  return [...names].sort();
+}
+
 const enabled = (): string[] => (Array.isArray(e8.variable("custom-enabled-themes")) ? (e8.variable("custom-enabled-themes") as string[]) : []);
 
 /** Gives each face of the enabled themes the attributes of the last one to give it, the face's own where none does, as custom-theme-recalc-face. */
@@ -149,7 +173,7 @@ e8.defineCommand({
   name: "load-theme",
   doc: "Load a theme, NAME-theme along load-path, and enable it. A theme's code runs, so E8 asks first unless custom-safe-themes names it.",
   params: [
-    { name: "theme", prompt: "Load custom theme: ", collection: () => [...themes.keys()] },
+    { name: "theme", prompt: "Load custom theme: ", collection: () => customAvailableThemes() },
     { name: "noConfirm", kind: "prefix" },
   ],
   run: (name, noConfirm) => loadTheme(name, truthy(noConfirm as e8.Value)),
@@ -171,3 +195,4 @@ e8.defun("deftheme", (name: string, doc?: string) => deftheme(name, doc));
 e8.defun("custom-theme-set-faces", (name: string, specs: [string, e8.FaceAttributes][]) => customThemeSetFaces(name, specs));
 e8.defun("custom-theme-set-variables", (name: string, specs: [string, e8.Value][]) => customThemeSetVariables(name, specs));
 e8.defun("provide-theme", (name: string) => provideTheme(name));
+e8.defun("custom-available-themes", () => customAvailableThemes());
