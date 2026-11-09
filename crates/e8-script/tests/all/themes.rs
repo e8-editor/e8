@@ -65,3 +65,39 @@ fn init_ts_loads_a_theme_from_the_config_directory() {
 }
 
 
+
+#[test]
+fn load_theme_completes_over_the_themes_along_load_path() {
+    let (mut ed, s) = setup();
+    // None is loaded yet, as Emacs's custom-available-themes finds them.
+    assert_eq!(s.eval_expression(&mut ed, r#"JSON.stringify(e8.funcall("custom-available-themes"))"#).unwrap(), r#""[\"example\"]""#);
+    ed.press("M-x").unwrap();
+    ed.type_text("load-theme");
+    ed.press("RET").unwrap();
+    ed.type_text("exa");
+    ed.press("TAB").unwrap();
+    assert_eq!(ed.minibuffer_input(), "example");
+}
+
+#[test]
+fn a_theme_is_read_without_being_enabled() {
+    // As a theme chooser reads one, from a package importing custom.
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    std::fs::write(
+        dir.path().join("reader.ts"),
+        r##"import { customThemeSettings, loadTheme } from "custom";
+e8.defun("read-theme", (name: string) => {
+  loadTheme(name, true, true);
+  const t = customThemeSettings(name);
+  return JSON.stringify([t?.doc, t?.faces.find(([f]) => f === "default")?.[1].background]);
+});
+"##,
+    )
+    .unwrap();
+    ed.set_variable("load-path", Value::List(vec![Value::Str(dir.path().display().to_string()), Value::Str(EXAMPLES.into())]));
+    let read = s.eval_expression(&mut ed, r#"e8.require("reader"), e8.funcall("read-theme", "example")"#).unwrap();
+    assert_eq!(read, r##""[\"A dusk of slate and amber, as an example of a theme\",\"#232B36\"]""##);
+    assert_eq!(ed.variable("custom-enabled-themes"), Some(Value::List(vec![])));
+    assert_eq!(attribute(&ed, "default", "background"), Value::Str("unspecified".into()));
+}
