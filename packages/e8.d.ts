@@ -6966,7 +6966,7 @@ declare global {
       /**
        * Continue long lines at word boundaries, and make C-a, C-e and C-k work on screen lines.
        *
-       * It turns word-wrap on in the buffer and turns truncate-lines off, and lets windows that share the frame's width wrap too (truncate-partial-width-windows).
+       * It turns word-wrap on in the buffer and turns truncate-lines off, lets windows that share the frame's width wrap too (truncate-partial-width-windows), and shows visual-line-fringe-indicators, none by default, where lines continue.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
        *
@@ -11101,6 +11101,14 @@ declare global {
        * Whether the bell flashes the frame rather than sounding.
        */
       "visible-bell": Value;
+      /**
+       * The fringe indicators visual-line-mode shows where it continues a line: [LEFT, RIGHT], each a fringe bitmap's name or nil for none.
+       *
+       * Both nil by default, as in Emacs, so lines wrapped at words show no curly arrows; ["left-curly-arrow", "right-curly-arrow"] shows the arrows continued lines have outside the mode.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "visual-line-fringe-indicators": Value;
       /**
        * Whether Visual-Line mode is on in this buffer. Use the command visual-line-mode to change it.
        *
