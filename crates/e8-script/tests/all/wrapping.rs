@@ -193,3 +193,25 @@ fn global_visual_line_mode_wraps_every_buffer_and_new_ones() {
     ed.press("M-x g l o b a l - v i s u a l - l i n e - m o d e RET").unwrap();
     assert_eq!(ed.variable("visual-line-mode"), Some(Value::Bool(false)));
 }
+
+#[test]
+fn visual_line_mode_shows_no_curly_arrows() {
+    // As Emacs 30.2's visual-line-mode: visual-line-fringe-indicators,
+    // (nil nil) by default, is the continuation indicator in the buffer.
+    let (mut ed, _scripting) = setup(&format!("{LONG}\nshort"));
+    let continued = |ed: &Editor| ed.logical_fringe_bitmap(ed.window_buffer(), "continuation", true, false);
+    assert_eq!(continued(&ed).as_deref(), Some("right-curly-arrow"));
+    ed.call("visual-line-mode", vec![]).unwrap();
+    assert!(ed.is_local_variable("fringe-indicator-alist"));
+    assert_eq!(continued(&ed), None);
+    ed.redisplay();
+    assert_eq!(ed.fringe_bitmaps_at_pos(ed.selected_window(), 0), Some([None, None]), "no arrow on a wrapped row");
+    // Turned off, the buffer goes back to the default's arrows.
+    ed.run_interactive("visual-line-mode");
+    assert!(!ed.is_local_variable("fringe-indicator-alist"));
+    assert_eq!(continued(&ed).as_deref(), Some("right-curly-arrow"));
+    // Indicators of one's own show instead.
+    ed.set_variable("visual-line-fringe-indicators", Value::List(vec![Value::Str("left-curly-arrow".into()), Value::Str("right-curly-arrow".into())]));
+    ed.call("visual-line-mode", vec![]).unwrap();
+    assert_eq!(continued(&ed).as_deref(), Some("right-curly-arrow"));
+}

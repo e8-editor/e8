@@ -278,12 +278,21 @@ const killVisualLine = e8.defineCommand({
   },
 });
 
+e8.defineVariable({
+  name: "visual-line-fringe-indicators",
+  doc:
+    "The fringe indicators visual-line-mode shows where it continues a line: [LEFT, RIGHT], each a fringe bitmap's name or nil for none.\n\n" +
+    "Both nil by default, as in Emacs, so lines wrapped at words show no curly arrows; [\"left-curly-arrow\", \"right-curly-arrow\"] shows the arrows continued lines have outside the mode.",
+  value: [null, null],
+});
+
 e8.defineMinorMode({
   name: "visual-line-mode",
   lighter: " Wrap",
   doc:
     "Continue long lines at word boundaries, and make C-a, C-e and C-k work on screen lines.\n\n" +
-    "It turns word-wrap on in the buffer and turns truncate-lines off, and lets windows that share the frame's width wrap too (truncate-partial-width-windows).",
+    "It turns word-wrap on in the buffer and turns truncate-lines off, lets windows that share the frame's width wrap too (truncate-partial-width-windows), " +
+    "and shows visual-line-fringe-indicators, none by default, where lines continue.",
   bindings: {
     "C-a": beginningOfVisualLine,
     "C-e": endOfVisualLine,
@@ -296,10 +305,20 @@ e8.defineMinorMode({
       // As Emacs's visual-line-mode: narrow side-by-side windows wrap too.
       e8.makeLocalVariable("truncate-partial-width-windows");
       e8.setVariable("truncate-partial-width-windows", null);
+      // As Emacs's: the continuation indicator is the buffer's own, from
+      // visual-line-fringe-indicators, ahead of the alist's.
+      const indicators = e8.variable("visual-line-fringe-indicators");
+      const alist = e8.variable("fringe-indicator-alist");
+      e8.makeLocalVariable("fringe-indicator-alist");
+      e8.setVariable("fringe-indicator-alist", [
+        [e8.intern("continuation"), ...(Array.isArray(indicators) ? indicators : [indicators ?? null])],
+        ...(Array.isArray(alist) ? alist : []),
+      ]);
     } else {
       e8.killLocalVariable("word-wrap");
       e8.killLocalVariable("truncate-lines");
       e8.killLocalVariable("truncate-partial-width-windows");
+      e8.killLocalVariable("fringe-indicator-alist");
     }
   },
 });
