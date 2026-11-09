@@ -21,7 +21,8 @@ it, =S-TAB= folds them all.
 - =M-x load-file= runs a script: =~/scripts/hello.ts= defines =M-x hello=
 - =~/.config/e8/init.ts= runs each time E8 starts. On the website it
   sets up vertico, orderless, marginalia and consult: try =M-s l= to
-  search the lines, =M-g o= for the headings, =C-z= for the undo tree
+  search the lines, =M-g o= for the headings, =C-z= for the undo tree,
+  and =C-c t= to choose a theme, each shown as you move to it
 
 * An Org list
 ** TODO Try E8 in a browser
