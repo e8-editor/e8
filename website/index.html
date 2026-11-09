@@ -123,6 +123,7 @@
       <span><kbd>C-x 3</kbd> splits the window</span>
       <span><kbd>M-s l</kbd> searches the lines</span>
       <span><kbd>M-:</kbd> evaluates TypeScript</span>
+      <span><kbd>C-c t</kbd> chooses a theme</span>
       <button id="enter" type="button">Full window</button>
     </div>
     <p class="phone">E8 needs a keyboard: on a phone you can look, but not type much.</p>
@@ -153,7 +154,7 @@
   <section class="wrap made">
     <h2>How it is made</h2>
     <p>What Emacs writes in C, E8 writes in Rust; what Emacs writes in Lisp, E8 writes in TypeScript, which is also how you configure and extend it. The app runs its TypeScript on V8; this page runs it on QuickJS, with the editor on a Web Worker and your files kept in this browser's storage.</p>
-    <p>The editor above starts with a configuration as yours would be: <code>~/.config/e8/init.ts</code>, which sets up the ports of Vertico, Orderless, Marginalia, Consult, Vundo, Casual and persistent-scratch, each a repository of its own. Open it with <kbd>C-x C-f</kbd>, change it and save it: from then on it is yours. <a href="?plain">Without it</a>, E8 starts as it ships.</p>
+    <p>The editor above starts with a configuration as yours would be: <code>~/.config/e8/init.ts</code>, which sets up the ports of Vertico, Orderless, Marginalia, Consult, Vundo, Casual and persistent-scratch, each a repository of its own, and twenty themes in one. Open it with <kbd>C-x C-f</kbd>, change it and save it: from then on it is yours. <a href="?plain">Without it</a>, E8 starts as it ships.</p>
     <p>E8 is built by one person for daily use, and is open so that it is not hidden. It is free software, under the GPL.</p>
   </section>
 </main>

@@ -60,6 +60,12 @@ e8.bindKey("C-z", "vundo" as e8.CommandName);
 e8.usePackage("e8-editor/e8-casual");
 e8.defineKey("dired-mode-map", "?", "casual-dired-tmenu" as e8.CommandName);
 
+// Twenty themes, and a chooser that shows each as you move through them:
+// C-c t, then n and p, RET to keep one and q to go back. To start in one,
+// add e8.call("load-theme", "modus-vivendi", true).
+e8.usePackage("e8-editor/e8-themes");
+e8.bindKey("C-c t", "e8-themes-select" as e8.CommandName);
+
 // *scratch* is kept from one visit to the next.
 e8.usePackage("e8-editor/e8-persistent-scratch");
 e8.funcall("persistent-scratch-setup-default");
