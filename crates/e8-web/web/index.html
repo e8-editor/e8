@@ -38,6 +38,7 @@
       if (new URLSearchParams(location.search).has("fresh")) await storage.clear();
       const [files] = await Promise.all([storage.load(), e8.default()]);
       const canvas = document.getElementById("e8");
+      touchkeys.fingersAsTouches(canvas);
       await e8.start(canvas, files, storage.change);
       status.remove();
       if (touchkeys.isTouch()) touchkeys.install(canvas.parentElement, canvas, e8);

@@ -55,7 +55,9 @@
   h1 { font-size: clamp(28px, 4.2vw, 46px); line-height: 1.1; letter-spacing: -0.025em; margin: 0 0 12px; font-weight: 650; max-width: 18em; }
   .lede { color: var(--muted); font-size: clamp(16px, 1.6vw, 18px); margin: 0 0 24px; max-width: 42em; }
 
-  .editor { position: relative; height: clamp(420px, 70vh, 760px); border: 1px solid var(--line); background: var(--raised); }
+  /* Never taller than the screen, so a phone on its side still shows the
+     mode line and the keys under the text. */
+  .editor { position: relative; height: clamp(420px, 70vh, 760px); max-height: calc(100svh - 16px); border: 1px solid var(--line); background: var(--raised); }
   .editor canvas { display: block; width: 100%; height: 100%; outline: none; }
   .status { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); font: 14px/1.6 var(--mono); }
   .status[hidden] { display: none; }
@@ -86,7 +88,7 @@
   body.full .zoom .out { display: block; }
   /* The page hidden behind, where Safari's toolbar floats over it. */
   body.full main::before { content: ""; position: fixed; inset: 0; z-index: 8; background: var(--bg); }
-  body.full .editor { position: fixed; inset: auto 0 auto 0; top: calc(var(--e8-view-top, 0px) + 36px); height: calc(var(--e8-view-height, 100dvh) - 36px); z-index: 10; border: 0; }
+  body.full .editor { position: fixed; inset: auto 0 auto 0; top: calc(var(--e8-view-top, 0px) + 36px); height: calc(var(--e8-view-height, 100dvh) - 36px); max-height: none; z-index: 10; border: 0; }
   kbd, code { font: 0.92em var(--mono); }
   kbd { color: var(--ink); }
   .phone { display: none; color: var(--muted); font-size: 14px; padding-top: 8px; }
@@ -245,6 +247,7 @@
       if (new URLSearchParams(location.search).has("fresh")) await storage.clear();
       const [kept] = await Promise.all([storage.load(), e8.default()]);
       const files = [...kept, ...(await configuration(kept))];
+      touchkeys.fingersAsTouches(canvas);
       await e8.start(canvas, files, storage.change);
       status.hidden = true;
       // On a phone the keyboard comes up in full window, which keeps the

@@ -15,6 +15,19 @@ export function isTouch() {
   return matchMedia("(pointer: coarse)").matches;
 }
 
+/// Lets the canvas hear a finger only as touch events. Browsers send a
+/// finger as touches and as pointer events, and egui makes a press of each,
+/// sometimes in different frames, so a tap counted as a double click;
+/// e8-web turns the touches into scrolling and clicks itself. A mouse's
+/// pointer events, and those on the page's own buttons, are left alone.
+export function fingersAsTouches(canvas) {
+  for (const type of ["pointerdown", "pointerup", "pointercancel"]) {
+    window.addEventListener(type, (event) => {
+      if (event.pointerType !== "mouse" && event.pointerType !== "pen" && event.target === canvas) event.stopImmediatePropagation();
+    }, { capture: true });
+  }
+}
+
 // What the field holds between keys, so that Backspace has something to
 // delete, and with nothing deleted no event comes.
 const BASE = "  ";

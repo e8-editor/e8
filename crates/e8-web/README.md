@@ -92,10 +92,12 @@ its own: what the keyboard types there goes to the editor through
 and the field is emptied again, so deletions arrive as Backspace and
 corrections as deletions and text. A tap in the text gives the canvas
 the focus, and the field takes it back in the same tap, so the keyboard
-stays up. A Bluetooth keyboard types into the field too, its chords
-passed on as keys. On the website the keyboard comes up in full window,
-sized to the part of the window the keyboard leaves. Desktops get none
-of this.
+stays up. A finger on the text works as on a phone rather than as a
+mouse: a drag scrolls, with the momentum a flick gives it, a tap moves
+point, and a drag after resting half a second selects. A Bluetooth
+keyboard types into the field too, its chords passed on as keys. On the
+website the keyboard comes up in full window, sized to the part of the
+window the keyboard leaves. Desktops get no keys or field.
 
 Tried in the iOS Simulator's Safari; not yet on Android.
 

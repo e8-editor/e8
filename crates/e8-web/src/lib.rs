@@ -10,8 +10,10 @@
 #![cfg(target_arch = "wasm32")]
 
 use std::cell::{Cell, RefCell};
+use std::time::Duration;
 
 use e8_core::vfs::{self, Change};
+use e8_core::clock::Instant;
 use e8_core::{Arg, Key, KeyCode};
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
@@ -67,9 +69,13 @@ pub async fn start(canvas: web_sys::HtmlCanvasElement, files: js_sys::Array, sto
                     for file in ["example.py", "welcome.org"] {
                         let _ = editor.call("find-file", vec![Arg::Str(format!("{}/{file}", vfs::HOME))]);
                     }
+                    // What the echo area first says, as Emacs's startup
+                    // message, rather than what loading the configuration
+                    // last said.
+                    editor.message("Welcome to E8. M-x runs any command.");
                     scripting
                 });
-                Ok(Box::new(Web(app)))
+                Ok(Box::new(Web(app, Touch::default())))
             }),
         )
         .await
@@ -78,7 +84,7 @@ pub async fn start(canvas: web_sys::HtmlCanvasElement, files: js_sys::Array, sto
 /// The window, with the keys the page sends: on a touch screen the page
 /// has keys of its own (touchkeys.js), and its own text field for the
 /// phone's keyboard, as egui's would come up only for text egui edits.
-struct Web(e8_gui::E8App);
+struct Web(e8_gui::E8App, Touch);
 
 impl eframe::App for Web {
     fn ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
@@ -88,12 +94,140 @@ impl eframe::App for Web {
         self.0.ui(ui, frame);
     }
 
-    fn raw_input_hook(&mut self, _ctx: &egui::Context, raw_input: &mut egui::RawInput) {
+    fn raw_input_hook(&mut self, ctx: &egui::Context, raw_input: &mut egui::RawInput) {
         // So the cursor is drawn as in a focused window while the page's
         // field takes the typing.
         if TYPING.get() {
             raw_input.focused = true;
         }
+        self.1.translate(ctx, raw_input);
+    }
+}
+
+/// How far a finger moves before it is a drag rather than a tap, in points.
+const TAP_SLOP: f32 = 10.0;
+/// How long a finger rests before a drag selects rather than scrolls.
+const HOLD: Duration = Duration::from_millis(450);
+/// How much of a fling's speed is kept each second, and the speed in
+/// points a second below which it stops.
+const FLING_KEEP: f32 = 0.06;
+const FLING_STOP: f32 = 40.0;
+
+/// A finger on the canvas, as a touch screen is used: a drag scrolls, with
+/// the momentum a flick gives it, a tap clicks where the finger came down,
+/// and a drag after resting selects, as the mouse's drag does. egui gives a
+/// finger as the mouse's button, so a drag would select rather than scroll.
+/// A mouse is left as it is: its events come without touches. (The page
+/// keeps a finger's pointer events from egui, which made a second press of
+/// each tap: touchkeys.js's fingersAsTouches.)
+#[derive(Default)]
+struct Touch {
+    finger: Option<Finger>,
+    /// A fling's speed, in points a second, and when it last moved.
+    fling: Option<(f32, Instant)>,
+}
+
+struct Finger {
+    start: egui::Pos2,
+    last: egui::Pos2,
+    down: Instant,
+    mode: Gesture,
+    /// The speed of the last moves, for a fling.
+    speed: f32,
+    moved: Instant,
+}
+
+#[derive(PartialEq)]
+enum Gesture {
+    Undecided,
+    Scrolling,
+    Selecting,
+}
+
+impl Touch {
+    fn translate(&mut self, ctx: &egui::Context, raw: &mut egui::RawInput) {
+        // A finger has no modifier keys.
+        let modifiers = egui::Modifiers::NONE;
+        let touched = raw.events.iter().any(|e| matches!(e, egui::Event::Touch { .. }));
+        if !touched && self.finger.is_none() && self.fling.is_none() {
+            return;
+        }
+        let button = |pos, pressed| egui::Event::PointerButton { pos, button: egui::PointerButton::Primary, pressed, modifiers };
+        let wheel = |dy: f32| egui::Event::MouseWheel {
+            unit: egui::MouseWheelUnit::Point,
+            delta: egui::vec2(0.0, dy),
+            phase: egui::TouchPhase::Move,
+            source: egui::MouseWheelSource::Unknown,
+            modifiers,
+        };
+        let mut out = Vec::with_capacity(raw.events.len());
+        for event in std::mem::take(&mut raw.events) {
+            match event {
+                // The button egui makes of a finger; this makes its own.
+                egui::Event::PointerButton { .. } if touched || self.finger.is_some() => {}
+                egui::Event::Touch { phase: egui::TouchPhase::Start, pos, .. } => {
+                    self.fling = None;
+                    if self.finger.is_none() {
+                        let now = Instant::now();
+                        self.finger = Some(Finger { start: pos, last: pos, down: now, mode: Gesture::Undecided, speed: 0.0, moved: now });
+                    }
+                }
+                egui::Event::Touch { phase: egui::TouchPhase::Move, pos, .. } => {
+                    let Some(f) = &mut self.finger else { continue };
+                    if f.mode == Gesture::Undecided && (pos - f.start).length() > TAP_SLOP {
+                        if f.down.elapsed() >= HOLD {
+                            f.mode = Gesture::Selecting;
+                            out.push(egui::Event::PointerMoved(f.start));
+                            out.push(button(f.start, true));
+                        } else {
+                            f.mode = Gesture::Scrolling;
+                            f.last = f.start;
+                        }
+                    }
+                    match f.mode {
+                        Gesture::Scrolling => {
+                            let dy = pos.y - f.last.y;
+                            let dt = f.moved.elapsed().as_secs_f32().max(0.001);
+                            f.speed = 0.5 * f.speed + 0.5 * dy / dt;
+                            f.moved = Instant::now();
+                            out.push(wheel(dy));
+                        }
+                        Gesture::Selecting => out.push(egui::Event::PointerMoved(pos)),
+                        Gesture::Undecided => {}
+                    }
+                    f.last = pos;
+                }
+                egui::Event::Touch { phase: egui::TouchPhase::End | egui::TouchPhase::Cancel, .. } => {
+                    let Some(f) = self.finger.take() else { continue };
+                    match f.mode {
+                        Gesture::Undecided => {
+                            out.push(egui::Event::PointerMoved(f.start));
+                            out.push(button(f.start, true));
+                            out.push(button(f.start, false));
+                        }
+                        Gesture::Selecting => out.push(button(f.last, false)),
+                        // A finger that stopped before lifting does not fling.
+                        Gesture::Scrolling if f.moved.elapsed() < Duration::from_millis(80) && f.speed.abs() > FLING_STOP => {
+                            self.fling = Some((f.speed, Instant::now()));
+                        }
+                        Gesture::Scrolling => {}
+                    }
+                }
+                event => out.push(event),
+            }
+        }
+        if let Some((speed, at)) = self.fling {
+            let dt = at.elapsed().as_secs_f32();
+            let speed = speed * FLING_KEEP.powf(dt);
+            if speed.abs() < FLING_STOP {
+                self.fling = None;
+            } else {
+                out.push(wheel(speed * dt));
+                self.fling = Some((speed, Instant::now()));
+                ctx.request_repaint();
+            }
+        }
+        raw.events = out;
     }
 }
 
