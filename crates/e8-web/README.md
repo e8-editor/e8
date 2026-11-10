@@ -43,7 +43,8 @@ The editor on the website starts with a configuration, as
 `website/packages.txt` lists, each at its newest tag when the site is
 built. `website/config.sh` fetches them into the site's `config/`, checked
 out as `e8.usePackage` installs them, with `.git/HEAD` and `e8-lock.json`,
-so `usePackage` finds them installed and runs no git. The page puts them in
+so `usePackage` finds them installed and runs no git, and puts every file
+in `bundle.json`, which the page fetches in one request. The page puts them in
 `~/.config/e8` before E8 starts, each time, so a new build replaces them,
 except `init.ts` once the visitor has saved their own. `?plain` starts
 without any of it. Only ports that need no programs can go in the list.

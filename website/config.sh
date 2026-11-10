@@ -3,9 +3,11 @@
 # after e8.usePackage installed the ports in packages.txt: init.ts, each
 # port checked out in repos/NAME at its newest tag, with .git/HEAD naming the
 # commit, and e8-lock.json pinning them, so usePackage finds them installed
-# and runs no git, which a page cannot. files.json maps each file here to
-# where it goes in ~/.config/e8, for the page to fetch: .git/HEAD is kept as
-# git-head, as Pages leaves out .git directories. Needs git and python3.
+# and runs no git, which a page cannot. bundle.json holds every file's text
+# by where it goes in ~/.config/e8, for the page to fetch in one request,
+# which Pages compresses: e8-themes alone is some 180 files. files.json maps
+# each file here to its place, .git/HEAD kept as git-head, as Pages leaves
+# out .git directories. Needs git and python3.
 set -eu
 rm -rf "$1"
 mkdir -p "$1/repos"
@@ -49,4 +51,10 @@ files = sorted(os.path.relpath(os.path.join(d, n), out) for d, _, ns in os.walk(
 where = {f: f[: -len("git-head")] + ".git/HEAD" if f.endswith("/git-head") else f for f in files}
 with open(os.path.join(out, "files.json"), "w") as f:
     json.dump(where, f, indent=1)
+bundle = {}
+for here, there in where.items():
+    with open(os.path.join(out, here), encoding="utf-8") as f:
+        bundle[there] = f.read()
+with open(os.path.join(out, "bundle.json"), "w", encoding="utf-8") as f:
+    json.dump(bundle, f, ensure_ascii=False, separators=(",", ":"))
 EOF

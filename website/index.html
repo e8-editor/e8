@@ -154,7 +154,7 @@
   <section class="wrap made">
     <h2>How it is made</h2>
     <p>What Emacs writes in C, E8 writes in Rust; what Emacs writes in Lisp, E8 writes in TypeScript, which is also how you configure and extend it. The app runs its TypeScript on V8; this page runs it on QuickJS, with the editor on a Web Worker and your files kept in this browser's storage.</p>
-    <p>The editor above starts with a configuration as yours would be: <code>~/.config/e8/init.ts</code>, which sets up the ports of Vertico, Orderless, Marginalia, Consult, Vundo, Casual and persistent-scratch, each a repository of its own, and twenty themes in one. Open it with <kbd>C-x C-f</kbd>, change it and save it: from then on it is yours. <a href="?plain">Without it</a>, E8 starts as it ships.</p>
+    <p>The editor above starts with a configuration as yours would be: <code>~/.config/e8/init.ts</code>, which sets up the ports of Vertico, Orderless, Marginalia, Consult, Vundo, Casual and persistent-scratch, each a repository of its own, and 168 themes in one. Open it with <kbd>C-x C-f</kbd>, change it and save it: from then on it is yours. <a href="?plain">Without it</a>, E8 starts as it ships.</p>
     <p>E8 is built by one person for daily use, and is open so that it is not hidden. It is free software, under the GPL.</p>
   </section>
 </main>
@@ -191,9 +191,12 @@
   async function configuration(kept) {
     if (new URLSearchParams(location.search).has("plain")) return [];
     const have = new Set(kept.map(([path]) => path));
-    const where = await (await fetch("config/files.json")).json();
-    const files = Object.entries(where).filter(([, to]) => !(to === "init.ts" && have.has(CONFIG + to)));
-    return Promise.all(files.map(async ([from, to]) => [CONFIG + to, new Uint8Array(await (await fetch("config/" + from)).arrayBuffer())]));
+    // Every file in one request, by where it goes.
+    const bundle = await (await fetch("config/bundle.json")).json();
+    const encoder = new TextEncoder();
+    return Object.entries(bundle)
+      .filter(([to]) => !(to === "init.ts" && have.has(CONFIG + to)))
+      .map(([to, text]) => [CONFIG + to, encoder.encode(text)]);
   }
   const KEY = "e8-isolating";
 
