@@ -722,6 +722,11 @@ pub(crate) fn install(ed: &mut Editor) {
             Value::Null,
         ),
         Variable::new(
+            "face-near-same-color-threshold",
+            "How close a face's foreground may come to its background, by color-distance, before its distant-foreground is drawn in its place, as in Emacs.\n\nA theme's lazy-highlight or region that gives only a background keeps its text readable this way.",
+            Value::Number(30000.0),
+        ),
+        Variable::new(
             "overwrite-mode",
             "Whether typed characters replace the text after point rather than being inserted.\n\nThe command overwrite-mode, on <insert>, turns it on and off.",
             false,

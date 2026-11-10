@@ -186,9 +186,28 @@ impl FaceHeight {
     /// A height as Emacs reads a number: a whole number is absolute, in
     /// tenths of a point, and one with a fraction is a factor. Lisp keeps
     /// `2.0` apart from `2`; a number from a script cannot, so a factor
-    /// that is a whole number reads as absolute.
+    /// that is a whole number comes as `(:factor 2)`, from a script's
+    /// `{ factor: 2 }`: see [`FaceHeight::from_value`].
     pub fn from_number(n: f64) -> FaceHeight {
         if n.fract() == 0.0 { FaceHeight::Absolute(n) } else { FaceHeight::Relative(n) }
+    }
+
+    /// A height from a face attribute's value: a number, or `(:factor N)`
+    /// for a factor, whole or not.
+    pub fn from_value(value: &Value) -> Option<FaceHeight> {
+        if let Value::List(items) = value {
+            return plist_get(items, ":factor").and_then(Value::as_number).map(FaceHeight::Relative);
+        }
+        value.as_number().map(FaceHeight::from_number)
+    }
+
+    /// The height as a face attribute's value: a number, or `(:factor N)`
+    /// for a factor that is a whole number, which a number would make absolute.
+    pub fn to_value(self) -> Value {
+        match self {
+            FaceHeight::Relative(f) if f.fract() == 0.0 => Value::List(vec![Value::Symbol(":factor".into()), Value::Number(f)]),
+            h => Value::Number(h.as_number()),
+        }
     }
 
     pub fn as_number(self) -> f64 {
@@ -445,7 +464,7 @@ impl FaceAttrs {
             ":family" => self.family = text(),
             ":foundry" => self.foundry = text(),
             ":width" => self.width = text(),
-            ":height" => self.height = if unspecified { None } else { value.as_number().map(FaceHeight::from_number) },
+            ":height" => self.height = if unspecified { None } else { FaceHeight::from_value(value) },
             ":weight" => self.weight = text(),
             ":slant" => self.slant = text(),
             ":foreground" => self.foreground = text(),
@@ -487,7 +506,7 @@ impl FaceAttrs {
             ":family" => text(&self.family),
             ":foundry" => text(&self.foundry),
             ":width" => symbol(&self.width),
-            ":height" => self.height.map_or_else(unspecified, |h| Value::Number(h.as_number())),
+            ":height" => self.height.map_or_else(unspecified, FaceHeight::to_value),
             ":weight" => symbol(&self.weight),
             ":slant" => symbol(&self.slant),
             ":foreground" => text(&self.foreground),
@@ -728,6 +747,21 @@ impl Editor {
     pub fn set_face_attribute(&mut self, name: &str, key: &str, value: &Value, background: Background) -> bool {
         self.style_cache.borrow_mut().clear();
         let face = self.faces.entry(name.to_string()).or_insert_with(|| Face::new(name, "", FaceAttrs::default()));
+        if background == Background::Both {
+            // For both backgrounds, as Emacs's for every frame, the value
+            // replaces what the face's definition gives either background:
+            // a theme's diff-header background wins over the dark one
+            // diff-mode defines.
+            // A shorthand clears the attribute it sets.
+            let cleared = match key {
+                ":bold" => ":weight",
+                ":italic" => ":slant",
+                other => other,
+            };
+            let unspecified = Value::Str("unspecified".into());
+            face.dark.set(cleared, &unspecified);
+            face.light.set(cleared, &unspecified);
+        }
         let target = match background {
             Background::Both => &mut face.attrs,
             Background::Dark => &mut face.dark,
@@ -940,6 +974,22 @@ impl Editor {
             None => 1.0,
         };
         let (mut foreground, mut background) = (color(&attrs.foreground), color(&attrs.background));
+        // As Emacs's xfaces.c: a foreground too near the background, by
+        // color-distance and face-near-same-color-threshold, gives way to
+        // the distant foreground, the default face's standing in for either
+        // not set.
+        if let Some(distant) = color(&attrs.distant_foreground) {
+            let default = self.faces.get("default").map(|f| f.attrs_for(dark)).unwrap_or_default();
+            let fg = foreground.or_else(|| color(&default.foreground)).or_else(|| palette("ink", dark));
+            let bg = background.or_else(|| color(&default.background)).or_else(|| palette("bg", dark));
+            let threshold = self.variable("face-near-same-color-threshold").and_then(|v| v.as_number()).unwrap_or(30000.0);
+            if let (Some(fg), Some(bg)) = (fg, bg) {
+                let wide = |c: Color| [c.r, c.g, c.b].map(|v| u16::from(v) * 257);
+                if (color_distance(wide(fg), wide(bg)) as f64) < threshold {
+                    foreground = Some(distant);
+                }
+            }
+        }
         // Inverse video swaps them, the default face's standing in for one not set.
         if attrs.inverse == Some(true) {
             let default = self.faces.get("default").map(|f| f.attrs_for(dark)).unwrap_or_default();

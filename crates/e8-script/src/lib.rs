@@ -53,6 +53,14 @@ const PRELUDE: &str = include_str!("prelude.js");
 /// the loader names it, "packages/subr.ts"; else NAME.ts in a directory of
 /// `load-path`, a package of the user's, named by its path.
 fn package_source(name: &str) -> Option<(String, Cow<'static, str>)> {
+    // A package loaded again, as Emacs's load runs a file again, is a
+    // module of its own, NAME#N, so each engine compiles and runs it anew.
+    if let Some((base, again)) = name.rsplit_once('#')
+        && !again.is_empty()
+        && again.bytes().all(|b| b.is_ascii_digit())
+    {
+        return package_source(base).map(|(file, source)| (format!("{file}#{again}"), source));
+    }
     let feature = name.trim_start_matches("packages/").trim_end_matches(".ts");
     if let Some((file, source)) =
         PACKAGES.iter().chain(LIBRARY).find(|(file, _)| file.trim_start_matches("packages/").trim_end_matches(".ts") == feature)

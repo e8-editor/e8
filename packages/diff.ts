@@ -12,15 +12,17 @@ for (const [name, doc, value] of [
   e8.defineVariable({ name, doc, value });
 }
 
-for (const [name, doc, attributes] of [
-  ["diff-header", "Hunk headers in diff-mode.", { background: "#d9d9d9" }],
-  ["diff-file-header", "The lines naming the files in diff-mode.", { bold: true, background: "#bfbfbf" }],
-  ["diff-hunk-header", "The @@ line starting each hunk in diff-mode.", { background: "#d9d9d9" }],
-  ["diff-removed", "Lines a diff takes away.", { background: "#ffdddd" }],
-  ["diff-added", "Lines a diff adds.", { background: "#ddffdd" }],
-  ["diff-context", "Lines a diff leaves as they are.", {}],
+// As diff-mode.el's, a background for light frames and one for dark: on a
+// dark theme's background the light ones leave the text unreadable.
+for (const [name, doc, attributes, light, dark] of [
+  ["diff-header", "Hunk headers in diff-mode.", { extend: true }, { background: "#d9d9d9" }, { background: "#737373" }],
+  ["diff-file-header", "The lines naming the files in diff-mode.", { bold: true, extend: true }, { background: "#bfbfbf" }, { background: "#999999" }],
+  ["diff-hunk-header", "The @@ line starting each hunk in diff-mode.", { inherit: "diff-header" }, {}, {}],
+  ["diff-removed", "Lines a diff takes away.", { extend: true }, { background: "#ffdddd" }, { background: "#553333" }],
+  ["diff-added", "Lines a diff adds.", { extend: true }, { background: "#ddffdd" }, { background: "#335533" }],
+  ["diff-context", "Lines a diff leaves as they are.", {}, {}, {}],
 ] as const) {
-  e8.defineFace({ name, doc, attributes: attributes as e8.FaceAttributes });
+  e8.defineFace({ name, doc, attributes: attributes as e8.FaceAttributes, light, dark });
 }
 e8.defineFace({ name: "diff-indicator-removed", doc: "The - starting a line a diff takes away.", attributes: { inherit: "diff-removed" } as e8.FaceAttributes });
 e8.defineFace({ name: "diff-indicator-added", doc: "The + starting a line a diff adds.", attributes: { inherit: "diff-added" } as e8.FaceAttributes });
