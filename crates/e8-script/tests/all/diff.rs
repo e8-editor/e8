@@ -60,3 +60,19 @@ fn diff_buffer_with_file_shows_what_saving_would_change() {
     assert!(out.contains("+++ notes.txt"), "{out}");
     assert!(out.contains("\n+two\n"), "{out}");
 }
+
+#[test]
+fn diff_faces_have_a_background_for_dark_frames_too() {
+    // As diff-mode.el's: on a dark theme's background, the light ones would
+    // leave the lines' text unreadable.
+    let (mut ed, s) = setup();
+    let bg = |ed: &mut Editor, face: &str| s.eval_expression(ed, &format!("String(e8.faceAttribute({face:?}, \":background\", true))")).unwrap();
+    s.eval_expression(&mut ed, r##"e8.setFaceAttribute("default", { background: "#ffffff" })"##).unwrap();
+    assert_eq!(bg(&mut ed, "diff-added"), "\"#ddffdd\"");
+    assert_eq!(bg(&mut ed, "diff-hunk-header"), "\"#d9d9d9\"");
+    s.eval_expression(&mut ed, r##"e8.setFaceAttribute("default", { background: "#202020" })"##).unwrap();
+    assert_eq!(bg(&mut ed, "diff-added"), "\"#335533\"");
+    assert_eq!(bg(&mut ed, "diff-removed"), "\"#553333\"");
+    assert_eq!(bg(&mut ed, "diff-hunk-header"), "\"#737373\"");
+    assert_eq!(bg(&mut ed, "diff-file-header"), "\"#999999\"");
+}

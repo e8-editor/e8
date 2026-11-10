@@ -1183,7 +1183,7 @@ fn draw_buffer(
         draw_apart(&clipped, rows[i], laid_out[i].1, galley, pos2(x, y), default_style, m, t);
         // Where the text's background starts, egui drawing it over each glyph's logical rectangle.
         let text_top = y + galley.rows.first().and_then(|r| r.row.glyphs.first().map(|g| g.logical_rect().top() + r.pos.y)).unwrap_or(0.0);
-        draw_decorations(&clipped, rows[i], laid_out[i].1, galley, x, row_top(i), text_top, heights[i], default_style, t);
+        draw_decorations(&clipped, rows[i], laid_out[i].1, galley, x, row_top(i), text_top, y, heights[i], default_style, t);
         if let Some(bold) = &emboldened[i] {
             clipped.galley(pos2(area.left() - hscroll + offsets[i] + FAUX_BOLD_OFFSET, y), bold.clone(), t.ink);
         }
@@ -1439,9 +1439,8 @@ fn face_format(style: &Style, default_style: &Style, m: &Metrics, t: Tokens) -> 
     if style.underline && !style.underline_wave {
         format.underline = Stroke::new(1.0, style.underline_color.map(color32).unwrap_or(color));
     }
-    if style.strike {
-        format.strikethrough = Stroke::new(1.0, style.strike_color.map(color32).unwrap_or(color));
-    }
+    // A strike-through is drawn after the row, by `draw_decorations`, at
+    // the glyphs' middle rather than the row's.
     format
 }
 
@@ -1464,17 +1463,45 @@ fn segment_spans(glyphs: &[Glyph], galley: &Galley) -> Vec<(usize, f32, f32)> {
 }
 
 /// Draws what egui's text formats cannot, as Emacs draws its faces: an
-/// overline, a wavy underline and a box, each in its colour or the text's,
-/// over a row laid out at `left`, `top`, `height` high, its text at
-/// `text_top`, where the text's background starts and the overline goes.
+/// overline, a wavy underline, a strike-through and a box, each in its
+/// colour or the text's, over a row laid out at `left`, `top`, `height`
+/// high, its text at `text_top`, where the text's background starts and the
+/// overline goes, its galley at `galley_y`.
 #[allow(clippy::too_many_arguments)]
-fn draw_decorations(painter: &Painter, row: &Row, glyphs: &[Glyph], galley: &Galley, left: f32, top: f32, text_top: f32, height: f32, default_style: &Style, t: Tokens) {
+fn draw_decorations(
+    painter: &Painter,
+    row: &Row,
+    glyphs: &[Glyph],
+    galley: &Galley,
+    left: f32,
+    top: f32,
+    text_top: f32,
+    galley_y: f32,
+    height: f32,
+    default_style: &Style,
+    t: Tokens,
+) {
     for (segment, x0, x1) in segment_spans(glyphs, galley) {
         let style = &row.segments[segment].style;
-        if !(style.overline || style.underline_wave || style.box_line.is_some()) || x1 <= x0 {
+        if !(style.overline || style.underline_wave || style.strike || style.box_line.is_some()) || x1 <= x0 {
             continue;
         }
         let ink = style.foreground.or(default_style.foreground).map(color32).unwrap_or(t.ink);
+        if style.strike {
+            // As Emacs's xterm.c: through the middle of the glyphs' own
+            // font, ascent and descent, not of the row, which a taller
+            // face or the line spacing can make higher; egui's own goes
+            // through the row's.
+            let glyph = galley.rows.iter().find_map(|r| {
+                r.row.glyphs.iter().find(|g| g.pos.x >= x0 - 0.5 && g.pos.x < x1).map(|g| (r.pos.y + g.pos.y, g.font_ascent, g.font_height))
+            });
+            if let Some((baseline, ascent, font_height)) = glyph {
+                let stroke = Stroke::new(1.0, style.strike_color.map(color32).unwrap_or(ink));
+                let mut y = galley_y + baseline - ascent + font_height / 2.0;
+                stroke.round_center_to_pixel(painter.pixels_per_point(), &mut y);
+                painter.hline((left + x0)..=(left + x1), y, stroke);
+            }
+        }
         let (x0, x1) = (left + x0, left + x1);
         if style.overline {
             painter.hline(x0..=x1, text_top + 0.5, Stroke::new(1.0, style.overline_color.map(color32).unwrap_or(ink)));

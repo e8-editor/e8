@@ -732,9 +732,10 @@ const API: &str = r##"
     /**
      * Its size, as Emacs's :height: a whole number is absolute, in tenths
      * of a point (120 is 12 points), and one with a fraction a factor of
-     * the size below (1.2 is a fifth larger).
+     * the size below (1.2 is a fifth larger). A factor that is a whole
+     * number, which Lisp writes 2.0, is { factor: 2 }.
      */
-    height?: number;
+    height?: number | { factor: number };
     /** Its font family, as Emacs's :family: "Monospace", "Sans Serif" for a proportional font, or a font's name. */
     family?: string;
     foundry?: string;
@@ -1547,6 +1548,13 @@ const API: &str = r##"
    * file-missing if there is none. Gives the feature's name.
    */
   function require(feature: string): string;
+  /**
+   * Load a package even if it is loaded, as Emacs's load runs a file
+   * again: its code runs anew, as a module of its own, its imports shared
+   * with the modules loaded before. Signals file-missing if there is none.
+   * Gives the feature's name.
+   */
+  function load(feature: string): string;
 
   /**
    * Use a package from its git repository, as Emacs's use-package with

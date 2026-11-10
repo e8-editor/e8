@@ -11,6 +11,8 @@
 
   // Major modes by name, for building a mode on its parent.
   const majorModes = new Map();
+  // How many times e8.load has loaded a package again, for each a module name of its own.
+  let loads = 0;
   const isTrue = (value) => value !== null && value !== undefined && value !== false;
   // "delete-selection-mode" is called "Delete-Selection mode" in messages, as in Emacs.
   const prettyName = (name) =>
@@ -924,6 +926,13 @@
     userError: (message) => e8.signal("user-error", message),
     require(feature) {
       if (!native.require(String(feature))) {
+        e8.signal("file-missing", `Cannot open load file: No such file or directory, ${feature}`, ["Cannot open load file", "No such file or directory", String(feature)]);
+      }
+      return String(feature);
+    },
+    load(feature) {
+      // A module of its own each time, so its code runs anew.
+      if (!native.require(`${feature}#${++loads}`)) {
         e8.signal("file-missing", `Cannot open load file: No such file or directory, ${feature}`, ["Cannot open load file", "No such file or directory", String(feature)]);
       }
       return String(feature);

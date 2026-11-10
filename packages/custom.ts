@@ -156,16 +156,31 @@ function safe(name: string): boolean {
 }
 
 /**
- * Loads a theme's package, NAME-theme, unless it is loaded, and enables it
- * unless `noEnable`, as load-theme. Unless `noConfirm` or the theme is in
- * custom-safe-themes, asks first, as loading it runs its code.
+ * Loads a theme's package, NAME-theme, and enables it unless `noEnable`,
+ * as load-theme. A theme loaded before is loaded again, its code run anew,
+ * as Emacs's load-theme does, so options read when it loads take effect.
+ * Unless `noConfirm` or the theme is in custom-safe-themes, asks first, as
+ * loading it runs its code.
  */
 export function loadTheme(name: string, noConfirm = false, noEnable = false): void {
-  if (!themes.get(name)?.provided) {
-    if (!noConfirm && !safe(name) && !e8.yOrNP("Loading a theme can run Lisp code.  Really load? ")) e8.userError("Theme not loaded");
+  if (!noConfirm && !safe(name) && !e8.yOrNP("Loading a theme can run Lisp code.  Really load? ")) e8.userError("Theme not loaded");
+  const loaded = themes.get(name);
+  if (loaded?.provided) {
+    // As Emacs's: the theme is disabled and forgets what it gave, then
+    // loads again. One a configuration defines with no file of its own is
+    // kept as it is.
+    if (enabled().includes(name)) disableTheme(name);
+    themes.delete(name);
+    e8.conditionCase(() => e8.load(`${name}-theme`), {
+      "file-missing": () => {
+        themes.set(name, loaded);
+        return name;
+      },
+    });
+  } else {
     e8.require(`${name}-theme`);
-    if (!themes.get(name)?.provided) e8.signal("error", `Unable to find theme file for '${name}'`);
   }
+  if (!themes.get(name)?.provided) e8.signal("error", `Unable to find theme file for '${name}'`);
   if (!noEnable) enableTheme(name);
 }
 
