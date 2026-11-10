@@ -16,6 +16,9 @@ egui = "0.37"
 e8-core = { version = "0.5.3", path = "../e8-core" }
 e8-script = { version = "0.5.3", path = "../e8-script", default-features = false }
 fontique = "0.11"
+# Each font's underline position and thickness, which egui does not give;
+# egui reads its fonts with it already.
+skrifa = { version = "0.44", default-features = false, features = ["std"] }
 
 # The system clipboard, the agent and E8 as an MCP server, none of which a
 # browser has.

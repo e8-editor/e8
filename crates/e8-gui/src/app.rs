@@ -1147,11 +1147,10 @@ fn draw_buffer(
                 clipped.hline(from..=to, top + 0.5, Stroke::new(1.0, style.overline_color.map(color32).unwrap_or(ink)));
             }
             if style.underline && !style.underline_wave {
-                // Where egui draws the text's own: at the glyphs' bottom, on a pixel's centre.
-                let stroke = Stroke::new(1.0, style.underline_color.map(color32).unwrap_or(ink));
-                let mut y = bottom;
-                stroke.round_center_to_pixel(clipped.pixels_per_point(), &mut y);
-                clipped.hline(from..=to, y, stroke);
+                // Where the text's own is drawn, below the last glyph's baseline.
+                let baseline = galley.rows.first().and_then(|r| r.row.glyphs.last().map(|g| y + r.pos.y + g.pos.y)).unwrap_or(bottom);
+                let (centre, thickness) = underline_line(style, baseline, row_top(i) + heights[i], clipped.pixels_per_point());
+                clipped.hline(from..=to, centre, Stroke::new(thickness, style.underline_color.map(color32).unwrap_or(ink)));
             }
         }
         if let Some(r) = &region
@@ -1435,12 +1434,9 @@ fn face_format(style: &Style, default_style: &Style, m: &Metrics, t: Tokens) -> 
         format.background = color32(bg);
     }
     format.italics = style.italic;
-    // A wavy underline is drawn after the row, by `draw_decorations`.
-    if style.underline && !style.underline_wave {
-        format.underline = Stroke::new(1.0, style.underline_color.map(color32).unwrap_or(color));
-    }
-    // A strike-through is drawn after the row, by `draw_decorations`, at
-    // the glyphs' middle rather than the row's.
+    // Underlines and strike-throughs are drawn after the row, by
+    // `draw_decorations`, where Emacs draws them: egui's go at the bottom
+    // and the middle of the row, which line spacing makes the wrong places.
     format
 }
 
@@ -1462,8 +1458,23 @@ fn segment_spans(glyphs: &[Glyph], galley: &Galley) -> Vec<(usize, f32, f32)> {
     spans
 }
 
+/// Where Emacs's xterm.c draws an underline under text in `style` whose
+/// baseline is at `baseline`: the font's own underline position below it,
+/// at least `underline-minimum-offset`'s one pixel, its top on a pixel and
+/// no lower than the row's bottom allows. Gives the line's centre and
+/// thickness, in points.
+fn underline_line(style: &Style, baseline: f32, row_bottom: f32, pixels_per_point: f32) -> (f32, f32) {
+    let font = font_id(&FontSpec::of(style));
+    let (position, thickness) = theme::underline_metrics(&font.family, font.size);
+    let pixel = 1.0 / pixels_per_point;
+    let thickness = (thickness * pixels_per_point).round().max(1.0) * pixel;
+    let top = (baseline + position.max(pixel)).min(row_bottom - thickness);
+    let top = (top * pixels_per_point).round() * pixel;
+    (top + thickness / 2.0, thickness)
+}
+
 /// Draws what egui's text formats cannot, as Emacs draws its faces: an
-/// overline, a wavy underline, a strike-through and a box, each in its
+/// underline, an overline, a wavy underline, a strike-through and a box, each in its
 /// colour or the text's, over a row laid out at `left`, `top`, `height`
 /// high, its text at `text_top`, where the text's background starts and the
 /// overline goes, its galley at `galley_y`.
@@ -1483,24 +1494,29 @@ fn draw_decorations(
 ) {
     for (segment, x0, x1) in segment_spans(glyphs, galley) {
         let style = &row.segments[segment].style;
-        if !(style.overline || style.underline_wave || style.strike || style.box_line.is_some()) || x1 <= x0 {
+        let underline = style.underline && !style.underline_wave;
+        if !(underline || style.overline || style.underline_wave || style.strike || style.box_line.is_some()) || x1 <= x0 {
             continue;
         }
         let ink = style.foreground.or(default_style.foreground).map(color32).unwrap_or(t.ink);
-        if style.strike {
+        // The baseline, ascent and height of the segment's own font.
+        let glyph = galley.rows.iter().find_map(|r| {
+            r.row.glyphs.iter().find(|g| g.pos.x >= x0 - 0.5 && g.pos.x < x1).map(|g| (galley_y + r.pos.y + g.pos.y, g.font_ascent, g.font_height))
+        });
+        if style.strike
+            && let Some((baseline, ascent, font_height)) = glyph
+        {
             // As Emacs's xterm.c: through the middle of the glyphs' own
             // font, ascent and descent, not of the row, which a taller
-            // face or the line spacing can make higher; egui's own goes
-            // through the row's.
-            let glyph = galley.rows.iter().find_map(|r| {
-                r.row.glyphs.iter().find(|g| g.pos.x >= x0 - 0.5 && g.pos.x < x1).map(|g| (r.pos.y + g.pos.y, g.font_ascent, g.font_height))
-            });
-            if let Some((baseline, ascent, font_height)) = glyph {
-                let stroke = Stroke::new(1.0, style.strike_color.map(color32).unwrap_or(ink));
-                let mut y = galley_y + baseline - ascent + font_height / 2.0;
-                stroke.round_center_to_pixel(painter.pixels_per_point(), &mut y);
-                painter.hline((left + x0)..=(left + x1), y, stroke);
-            }
+            // face or the line spacing can make higher.
+            let stroke = Stroke::new(1.0, style.strike_color.map(color32).unwrap_or(ink));
+            let mut y = baseline - ascent + font_height / 2.0;
+            stroke.round_center_to_pixel(painter.pixels_per_point(), &mut y);
+            painter.hline((left + x0)..=(left + x1), y, stroke);
+        }
+        if underline && let Some((baseline, _, _)) = glyph {
+            let (centre, thickness) = underline_line(style, baseline, top + height, painter.pixels_per_point());
+            painter.hline((left + x0)..=(left + x1), centre, Stroke::new(thickness, style.underline_color.map(color32).unwrap_or(ink)));
         }
         let (x0, x1) = (left + x0, left + x1);
         if style.overline {

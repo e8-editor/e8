@@ -7,7 +7,8 @@
 //! and which faces use too. Drawing code reads [`Tokens`] or faces and never
 //! hard-codes a colour.
 
-use std::sync::Arc;
+use std::collections::BTreeMap;
+use std::sync::{Arc, Mutex};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use e8_core::{Color, palette};
@@ -179,6 +180,7 @@ pub fn install_fonts(ctx: &egui::Context, system_fonts: bool) -> Vec<&'static st
     // Whatever bold face there is comes first, then the regular monospace fonts.
     let mono = fonts.families.get(&FontFamily::Monospace).cloned().unwrap_or_default();
     fonts.families.entry(bold_mono()).or_default().extend(mono);
+    record_underlines(&fonts);
     ctx.set_fonts(fonts);
     found
 }
@@ -219,9 +221,37 @@ pub fn load_wanted_families(ctx: &egui::Context) -> bool {
         }
     });
     if loaded {
+        record_underlines(&fonts);
         ctx.set_fonts(fonts);
     }
     loaded
+}
+
+/// Where each family's own font draws its underline: the top of the line
+/// below the baseline and its thickness, as fractions of the font size,
+/// from the font's `post` table, as Emacs takes them from the font.
+static UNDERLINES: Mutex<BTreeMap<FontFamily, (f32, f32)>> = Mutex::new(BTreeMap::new());
+
+fn record_underlines(fonts: &FontDefinitions) {
+    let mut underlines = UNDERLINES.lock().unwrap_or_else(|e| e.into_inner());
+    for (family, names) in &fonts.families {
+        let Some(data) = names.first().and_then(|name| fonts.font_data.get(name)) else { continue };
+        let Ok(font) = skrifa::FontRef::from_index((*data.font).as_ref(), data.index) else { continue };
+        let metrics = skrifa::metrics::Metrics::new(&font, skrifa::instance::Size::unscaled(), skrifa::instance::LocationRef::default());
+        if let Some(underline) = metrics.underline.filter(|_| metrics.units_per_em > 0) {
+            let em = f32::from(metrics.units_per_em);
+            underlines.insert(family.clone(), (-underline.offset / em, underline.thickness / em));
+        }
+    }
+}
+
+/// Where text in `family` at `size` points is underlined: how far below
+/// the baseline the line's top is, and how thick it is, in points. A font
+/// that says nothing is underlined a tenth of its size below the baseline.
+pub fn underline_metrics(family: &FontFamily, size: f32) -> (f32, f32) {
+    let underlines = UNDERLINES.lock().unwrap_or_else(|e| e.into_inner());
+    let (position, thickness) = underlines.get(family).copied().unwrap_or((0.1, 0.05));
+    (position * size, thickness * size)
 }
 
 thread_local! {
