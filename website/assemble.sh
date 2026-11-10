@@ -15,7 +15,7 @@ fi
 rm -rf "$out"
 mkdir -p "$out/pkg" "$out/assets"
 cp website/index.html website/sw.js "$out/"
-cp crates/e8-web/web/worker.js crates/e8-web/web/storage.js "$out/"
+cp crates/e8-web/web/worker.js crates/e8-web/web/storage.js crates/e8-web/web/touchkeys.js "$out/"
 cp crates/e8-web/web/pkg/e8_web.js crates/e8-web/web/pkg/e8_web_bg.wasm "$out/pkg/"
 cp docs/assets/logo.svg docs/assets/logo-reverse.svg docs/assets/icon-512.png docs/assets/social-dark.png \
   docs/assets/banner-light.png docs/assets/banner-dark.png "$out/assets/"

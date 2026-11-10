@@ -26,8 +26,9 @@
   </div>
 </main>
 <script type="module">
-  import init, { start } from "./pkg/e8_web.js";
+  import * as e8 from "./pkg/e8_web.js";
   import * as storage from "./storage.js";
+  import * as touchkeys from "./touchkeys.js";
   const status = document.getElementById("status");
   if (!crossOriginIsolated) {
     status.textContent = "E8 needs a page served with cross-origin isolation (see crates/e8-web/serve.py).";
@@ -35,10 +36,11 @@
     try {
       // ?fresh forgets the files kept from earlier visits.
       if (new URLSearchParams(location.search).has("fresh")) await storage.clear();
-      const [files] = await Promise.all([storage.load(), init()]);
+      const [files] = await Promise.all([storage.load(), e8.default()]);
       const canvas = document.getElementById("e8");
-      await start(canvas, files, storage.change);
+      await e8.start(canvas, files, storage.change);
       status.remove();
+      if (touchkeys.isTouch()) touchkeys.install(canvas.parentElement, canvas, e8);
       canvas.focus();
     } catch (e) {
       status.textContent = "E8 failed to start: " + e;

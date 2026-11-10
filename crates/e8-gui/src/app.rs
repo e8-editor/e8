@@ -236,6 +236,12 @@ impl E8App {
         self.backend.run(move |editor, _| f(editor));
     }
 
+    /// Types a key, as one from the keyboard is, for keys that come from
+    /// elsewhere: the web page's own keys on a touch screen.
+    pub fn key(&mut self, key: Key) {
+        self.backend.key(key);
+    }
+
     /// Shows a message in the echo area, as the editor's `message` does.
     pub fn message(&mut self, text: String) {
         self.backend.run(move |editor, _| editor.message(text));

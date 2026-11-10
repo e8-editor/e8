@@ -79,6 +79,26 @@ highlighting (the Python buffer), mouse clicks. Files: visiting, saving,
 Dired, renaming and deleting, `M-x load-file`, and `~/.config/e8/init.ts`
 if one is written.
 
+## On a phone or tablet
+
+Where the main pointer is a finger, `touchkeys.js` puts a row of keys
+under the editor, as Termux has: Esc, Ctrl, Alt, Tab, the arrows, and a
+button that brings the phone's keyboard up or puts it away. Ctrl and Alt
+work as Shift does on a phone: a tap applies it to the next key, a
+second tap at once keeps it on. egui's own text field comes up only for
+text egui edits, which E8's window is not, so the page has a field of
+its own: what the keyboard types there goes to the editor through
+`send_key` and `send_text`, which the window types at its next frame,
+and the field is emptied again, so deletions arrive as Backspace and
+corrections as deletions and text. A tap in the text gives the canvas
+the focus, and the field takes it back in the same tap, so the keyboard
+stays up. A Bluetooth keyboard types into the field too, its chords
+passed on as keys. On the website the keyboard comes up in full window,
+sized to the part of the window the keyboard leaves. Desktops get none
+of this.
+
+Tried in the iOS Simulator's Safari; not yet on Android.
+
 ## Files
 
 The editor's file system is e8-core's `vfs`: `std::fs` natively, and on

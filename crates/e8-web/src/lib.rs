@@ -9,10 +9,10 @@
 
 #![cfg(target_arch = "wasm32")]
 
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 
 use e8_core::vfs::{self, Change};
-use e8_core::Arg;
+use e8_core::{Arg, Key, KeyCode};
 use wasm_bindgen::JsCast;
 use wasm_bindgen::prelude::*;
 
@@ -24,6 +24,12 @@ thread_local! {
     static WORKERS: RefCell<Vec<web_sys::Worker>> = const { RefCell::new(Vec::new()) };
     /// storage.js's `change`, which keeps a change to the files. Main thread only.
     static STORE: RefCell<Option<js_sys::Function>> = const { RefCell::new(None) };
+    /// Keys the page sent, for the window to type at its next frame. Main
+    /// thread only.
+    static KEYS: RefCell<Vec<Key>> = const { RefCell::new(Vec::new()) };
+    /// Whether the page's own text field has the focus, which the window
+    /// then counts as its own.
+    static TYPING: Cell<bool> = const { Cell::new(false) };
 }
 
 /// How big the editor worker's stack is, in the shared memory. Natively it
@@ -63,10 +69,92 @@ pub async fn start(canvas: web_sys::HtmlCanvasElement, files: js_sys::Array, sto
                     }
                     scripting
                 });
-                Ok(Box::new(app))
+                Ok(Box::new(Web(app)))
             }),
         )
         .await
+}
+
+/// The window, with the keys the page sends: on a touch screen the page
+/// has keys of its own (touchkeys.js), and its own text field for the
+/// phone's keyboard, as egui's would come up only for text egui edits.
+struct Web(e8_gui::E8App);
+
+impl eframe::App for Web {
+    fn ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
+        for key in KEYS.take() {
+            self.0.key(key);
+        }
+        self.0.ui(ui, frame);
+    }
+
+    fn raw_input_hook(&mut self, _ctx: &egui::Context, raw_input: &mut egui::RawInput) {
+        // So the cursor is drawn as in a focused window while the page's
+        // field takes the typing.
+        if TYPING.get() {
+            raw_input.focused = true;
+        }
+    }
+}
+
+/// Types a key the page sent: `key` as the DOM names it (`Escape`, `Tab`,
+/// `ArrowUp`, `Enter`, `Backspace`, or the character), with Control and
+/// Meta (Alt) as `ctrl` and `meta`. A letter in a chord typed with Shift
+/// keeps Shift, as Emacs writes C-S-f. Keys E8 has no name for are dropped.
+#[wasm_bindgen]
+pub fn send_key(key: &str, ctrl: bool, meta: bool) {
+    let code = match key {
+        "Escape" => KeyCode::Esc,
+        "Tab" => KeyCode::Tab,
+        "Enter" => KeyCode::Enter,
+        "Backspace" => KeyCode::Backspace,
+        "Delete" => KeyCode::Delete,
+        "ArrowLeft" => KeyCode::Left,
+        "ArrowRight" => KeyCode::Right,
+        "ArrowUp" => KeyCode::Up,
+        "ArrowDown" => KeyCode::Down,
+        "Home" => KeyCode::Home,
+        "End" => KeyCode::End,
+        "PageUp" => KeyCode::PageUp,
+        "PageDown" => KeyCode::PageDown,
+        _ => {
+            let mut chars = key.chars();
+            match (chars.next(), chars.next()) {
+                (Some(c), None) => KeyCode::Char(c),
+                _ => return,
+            }
+        }
+    };
+    let key = match code {
+        KeyCode::Char(c) if (ctrl || meta) && c.is_ascii_uppercase() => Key { code: KeyCode::Char(c.to_ascii_lowercase()), ctrl, meta, shift: true },
+        code => Key { code, ctrl, meta, shift: false },
+    };
+    KEYS.with_borrow_mut(|keys| keys.push(key));
+    repaint();
+}
+
+/// Types text the page's field took from a phone's keyboard, a newline as
+/// RET.
+#[wasm_bindgen]
+pub fn send_text(text: &str) {
+    KEYS.with_borrow_mut(|keys| keys.extend(text.chars().map(|c| if c == '\n' { Key::new(KeyCode::Enter) } else { Key::char(c) })));
+    repaint();
+}
+
+/// Tells the window whether the page's text field has the focus.
+#[wasm_bindgen]
+pub fn set_typing(on: bool) {
+    TYPING.set(on);
+    repaint();
+}
+
+/// Asks the window for a frame. Main thread only.
+fn repaint() {
+    CONTEXT.with_borrow(|c| {
+        if let Some(c) = c {
+            c.request_repaint();
+        }
+    });
 }
 
 /// Runs on the editor's worker: tells the window there is something new to
@@ -87,11 +175,7 @@ fn spawn_worker(body: Box<dyn FnOnce() + Send>) {
     let onmessage = Closure::<dyn Fn(web_sys::MessageEvent)>::new(|event: web_sys::MessageEvent| {
         let data = event.data();
         if data.is_null() {
-            CONTEXT.with_borrow(|c| {
-                if let Some(c) = c {
-                    c.request_repaint();
-                }
-            });
+            repaint();
         } else {
             STORE.with_borrow(|s| {
                 if let Some(store) = s {
