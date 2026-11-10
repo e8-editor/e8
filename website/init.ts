@@ -99,6 +99,11 @@ e8.setVariable("org-log-done", "time");
 e8.setVariable("org-fontify-done-headline", true);
 e8.setVariable("org-return-follows-link", true);
 e8.require("org-tempo");
+// At the start of a heading single keys are commands, as with Org's speed
+// keys: n and p move, u goes up, f and b go to siblings, t cycles TODO, s
+// narrows to the subtree and w widens again, ? lists them all.
+e8.setVariable("org-use-speed-commands", true);
+e8.setVariable("org-speed-commands", [["w", "widen"], ...(e8.variable("org-speed-commands") as e8.Value[])]);
 
 // A command of your own: C-c d inserts today's date.
 const insertDate = e8.defineCommand({
