@@ -197,10 +197,18 @@ fn a_suffix_can_return_to_the_menu_before() {
 
 #[test]
 fn a_menu_taller_than_the_frame_is_cut_to_fit() {
-    let (mut ed, _s, _pkgs) = setup();
+    let (mut ed, s, _pkgs) = setup();
     ed.set_frame_size(80, 20);
     ed.call("tm-tall", vec![]).unwrap();
     assert!(menu(&ed).unwrap().contains("Item 29"));
+    // As fit-window-to-buffer: the window above keeps window-min-height
+    // lines, 4, and the menu takes the rest of the frame's.
+    let heights = s
+        .eval_expression(&mut ed, "JSON.stringify(e8.windowList().map((w) => e8.windowSize(w)?.totalHeight))")
+        .unwrap();
+    let frame = s.eval_expression(&mut ed, "e8.frameHeight()").unwrap();
+    let frame: usize = frame.parse().unwrap();
+    assert_eq!(heights, format!("\"[4,{}]\"", frame - 4));
     ed.press("b").unwrap();
     assert_eq!(ed.echo(), Some("Hello"));
 }

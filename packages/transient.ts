@@ -560,10 +560,13 @@ function show(): void {
     }
     e8.setBufferModified(false);
   });
-  // A menu taller than the frame allows is cut to fit, the window above
-  // keeping a few lines, as display-buffer-in-side-window fits the window.
+  // A menu taller than the frame allows is cut to fit, as
+  // fit-window-to-buffer fits transient's side window: the window above
+  // keeps window-min-height lines, its mode line among them, and the menu,
+  // with no mode line of its own, takes the rest.
   const wanted = e8.withCurrentBuffer(BUFFER, () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()).replace(/\n$/, "").split("\n").length);
-  const lines = Math.max(1, Math.min(wanted, e8.frameHeight() - 6));
+  const minHeight = Number(e8.variable("window-min-height") ?? 4) || 4;
+  const lines = Math.max(1, Math.min(wanted, e8.frameHeight() - minHeight));
   const live = active.window !== 0 && e8.windowList().includes(active.window);
   if (live && e8.windowSize(active.window)?.totalHeight !== lines) {
     e8.deleteWindow(active.window);
