@@ -25,6 +25,9 @@ it, =S-TAB= folds them all.
   and =C-c t= to choose a theme, each shown as you move to it
 
 * An Org list
+On the website, with point at the start of a heading, single keys are
+commands: =n= and =p= move, =u= goes up, =f= and =b= go to siblings,
+=t= cycles TODO and =?= lists them all.
 ** TODO Try E8 in a browser
 ** TODO Fold this heading with TAB
 ** DONE Compile the editor to WebAssembly
