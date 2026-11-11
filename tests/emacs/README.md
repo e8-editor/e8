@@ -122,3 +122,7 @@ cd tests/emacs/icomplete && script -q /dev/null emacs -Q -nw -l $PWD/record.el
 ## Ports of packages Emacs does not ship
 
 The oracles for vertico, orderless, marginalia and Magit moved with the ports, into the `test/` of [e8-vertico](https://github.com/e8-editor/e8-vertico), [e8-orderless](https://github.com/e8-editor/e8-orderless), [e8-marginalia](https://github.com/e8-editor/e8-marginalia) and [e8-magit](https://github.com/e8-editor/e8-magit): each has its recorder, `record.el` or `annotations.el`, its recorded JSON, and ERT tests that replay the cases in E8. The `Ports` job in `.github/workflows/test.yml` runs them against `main`.
+
+## Parity and demand
+
+`parity.py` counts the primitives Emacs writes in C that E8 has by name. `demand.py` weighs the missing ones by how much Emacs Lisp calls them: it reads a corpus (Emacs's own Lisp, MELPA's most downloaded packages fetched with `demand.py fetch`, and a configuration's packages) as forms with batch Emacs and `demand.el`, and joins the counts with what E8 has, by name and through `demand-other-names.json`, grouping the missing ones as `demand-groups.json` says. Its docstring says how to run it; [docs/parity/demand.md](../../docs/parity/demand.md) is the result. Keep the corpus outside the repository.

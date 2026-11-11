@@ -21,3 +21,4 @@ spikes/*/target/
 
 # What crates/e8-web/build.sh builds.
 /crates/e8-web/web/pkg/
+__pycache__/
