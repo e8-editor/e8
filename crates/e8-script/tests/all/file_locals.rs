@@ -238,7 +238,8 @@ fn a_notes_directory_chooses_its_spelling_dictionary() {
 #[test]
 fn unsafe_directory_values_are_asked_about_with_plus_to_trust_the_directory() {
     let t = setup();
-    let dir = format!("{}/", t.dir.path().canonicalize().unwrap().display());
+    // Named as the file was visited, its symbolic links not followed, as Emacs's dir-locals-find-file names it.
+    let dir = format!("{}/", t.dir.path().display());
     t.file(".dir-locals.el", "((nil . ((my-setting . 3))))\n");
     let path = t.file("a.txt", "x\n");
     let d = crate::driven::Driven::new("");
@@ -272,7 +273,8 @@ fn a_changed_dir_locals_file_is_read_again() {
 #[test]
 fn a_class_can_be_given_to_a_directory_by_code() {
     let mut t = setup();
-    let dir = t.dir.path().canonicalize().unwrap().display().to_string();
+    // The directory as files in it are visited: Emacs matches a class's directory by its expanded name, not its truename.
+    let dir = t.dir.path().display().to_string();
     t.eval(&format!(
         "(e8.funcall('dir-locals-set-class-variables', e8.intern('notes'), [[null, [e8.intern('fill-column'), 25]]]), \
          e8.funcall('dir-locals-set-directory-class', {dir:?}, e8.intern('notes')))"
@@ -313,4 +315,23 @@ fn a_trusted_directory_may_be_written_without_its_slash() {
     t.visit("a.txt", "x\n", "");
     assert_eq!(t.ed.window_buffer().name, "a.txt", "not asked");
     assert_eq!(t.local("my-setting"), "\"3\"");
+}
+
+#[test]
+fn a_trusted_directory_is_trusted_through_a_link_to_it() {
+    // As Emacs compares safe-local-variable-directories with file-equal-p, which follows symbolic links.
+    let t = setup();
+    let real = t.dir.path().join("real");
+    fs::create_dir(&real).unwrap();
+    fs::write(real.join(".dir-locals.el"), "((nil . ((my-setting . 3))))\n").unwrap();
+    fs::write(real.join("a.txt"), "x\n").unwrap();
+    let link = t.dir.path().join("link");
+    std::os::unix::fs::symlink(&real, &link).unwrap();
+    let d = crate::driven::Driven::new(&format!(
+        "e8.setVariable('safe-local-variable-directories', [{:?}])",
+        format!("{}/", real.canonicalize().unwrap().display())
+    ));
+    visit_driven(&d, &link.join("a.txt"));
+    assert_eq!(d.buffer_name(), "a.txt", "not asked");
+    assert_eq!(d.variable("my-setting").as_deref(), Some("3"));
 }
