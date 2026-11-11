@@ -288,6 +288,61 @@ natives! {
         Ok(())
     }
 
+    /// The standard syntax table, which every other inherits from in the end, as standard-syntax-table.
+    pub fn standardSyntaxTable(ed) -> String {
+        Ok(e8_core::syntax_table::STANDARD.to_string())
+    }
+
+    /// A new syntax table holding a copy of a table's own entries, the
+    /// standard table's by default, with its parent, as copy-syntax-table.
+    /// Syntax tables are named: the copy's name is returned.
+    #[ts = "(table?: string): string"]
+    pub fn copySyntaxTable(ed, table: Opt<String>) -> String {
+        let from = table.0.unwrap_or_else(|| e8_core::syntax_table::STANDARD.to_string());
+        if !ed.syntax_tables.exists(&from) {
+            return Err(Error::signal("wrong-type-argument", format!("Not a syntax table: {from}"), vec![EditorValue::Symbol("syntax-table-p".into()), EditorValue::Str(from)]));
+        }
+        let base = from.strip_suffix("-syntax-table").unwrap_or(&from).to_string();
+        let name = loop {
+            ed.syntax_tables.copies += 1;
+            let name = format!("{base}-copy-{}-syntax-table", ed.syntax_tables.copies);
+            if !ed.syntax_tables.exists(&name) {
+                break name;
+            }
+        };
+        ed.syntax_tables.copy(&from, &name);
+        Ok(name)
+    }
+
+    /// Whether a value names a syntax table, as syntax-table-p.
+    #[ts = "(value: unknown): boolean"]
+    pub fn syntaxTableP(ed, value: EditorValue) -> bool {
+        Ok(matches!(&value, EditorValue::Str(s) | EditorValue::Symbol(s) if ed.syntax_tables.exists(s)))
+    }
+
+    /// The raw syntax descriptor a descriptor such as "()" or ". 124b"
+    /// stands for, as string-to-syntax: the class's number with the flags
+    /// above it, and the matching character; undefined for "@", inherit.
+    /// A syntax-table text property may hold it.
+    #[ts = "(descriptor: string): [number, string | null] | undefined"]
+    pub fn stringToSyntax(ed, descriptor: String) -> Option<EditorValue> {
+        let entry = e8_core::syntax_table::Entry::parse(&descriptor)?;
+        if entry.class == e8_core::syntax_table::Class::Inherit {
+            return Ok(None);
+        }
+        let matching = entry.matching.map(|c| EditorValue::Str(c.to_string())).unwrap_or(EditorValue::Null);
+        Ok(Some(EditorValue::List(vec![EditorValue::Number(f64::from(entry.raw_code())), matching])))
+    }
+
+    /// The designator of a syntax class by its number, as syntax-class-to-char.
+    pub fn syntaxClassToChar(ed, code: f64) -> String {
+        let c = Some(code)
+            .filter(|n| *n >= 0.0 && n.fract() == 0.0)
+            .and_then(|n| e8_core::syntax_table::Class::ALL.get(n as usize))
+            .ok_or_else(|| Error::signal("args-out-of-range", format!("No syntax class {code}"), vec![EditorValue::Number(code)]))?;
+        Ok(c.designator().to_string())
+    }
+
     /// A character's entry in the current syntax table, as modify-syntax-entry writes it.
     #[ts = "(char: string): string | undefined"]
     pub fn syntaxEntry(ed, c: String) -> Option<String> {

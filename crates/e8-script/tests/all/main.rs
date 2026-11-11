@@ -66,6 +66,7 @@ mod search;
 mod sessions;
 mod subr;
 mod symbols;
+mod syntax_tables;
 mod tab_bar;
 mod tabulated_list;
 mod textprop;
