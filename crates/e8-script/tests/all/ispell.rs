@@ -206,3 +206,19 @@ fn c_g_suspends_as_x_does() {
     t.ed.press("C-u M-$ 0 0").unwrap();
     assert_eq!(t.text(), "A spelling mistake and a word.\n", "C-u M-$ goes on from the word it stopped at");
 }
+
+#[test]
+fn one_checker_is_kept_running_for_every_check() {
+    let Some(mut t) = speller("Hej hello world and more words here.\n") else { return };
+    t.eval("e8.setVariable('ispell-dictionary', 'en_US,sv_SE')");
+    t.ed.press("M-f M-$ M-f M-$ M-f M-$").unwrap();
+    t.ed.call("flyspell-buffer", vec![]).unwrap();
+    let runs = t.args().lines().filter(|l| l.starts_with("-a ")).count();
+    assert_eq!(runs, 1, "started once, as ispell.el keeps ispell-process: {}", t.args());
+    t.ed.press("M-x").unwrap();
+    t.ed.type_text("ispell-kill-ispell");
+    t.ed.press("RET").unwrap();
+    assert_eq!(t.ed.echo(), Some("Ispell process killed"));
+    t.ed.press("M-$").unwrap();
+    assert_eq!(t.args().lines().filter(|l| l.starts_with("-a ")).count(), 2, "and started again when needed");
+}
