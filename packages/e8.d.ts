@@ -9712,7 +9712,7 @@ declare global {
        */
       "ispell-aspell-dictionary-alist": Value;
       /**
-       * Whether the checker keeps running between checks; in E8 it is run afresh for each.
+       * Whether the checker keeps running between checks, as it does in E8.
        *
        * Defined in packages/ispell.ts.
        */
