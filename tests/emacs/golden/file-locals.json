@@ -1,0 +1,797 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "prop-line-fill-column",
+      "input": {
+        "text": "-*- fill-column: 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+        "point": 0,
+        "keys": "M-> C-p M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "-*- fill-column: 20 -*-\n\nOne two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "-*- fill-column: 20 -*-\n\nOne two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 81,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- fill-column: 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "prop-line-mode-and-fill-column",
+      "input": {
+        "text": "-*- mode: text; fill-column: 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+        "point": 0,
+        "keys": "M-> C-p M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.notes"
+      },
+      "text": "-*- mode: text; fill-column: 20 -*-\n\nOne two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "-*- mode: text; fill-column: 20 -*-\n\nOne two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 93,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.notes": "-*- mode: text; fill-column: 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "prop-line-simple-mode",
+      "input": {
+        "text": "-*- text -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+        "point": 0,
+        "keys": "M-> C-p M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.notes"
+      },
+      "text": "-*- text -*-\n\nOne two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "visible": "-*- text -*-\n\nOne two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "point": 70,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.notes": "-*- text -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "prop-line-on-second-line-after-man-page-magic",
+      "input": {
+        "text": "'\\\" comment\n.\\\" -*- fill-column: 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+        "point": 0,
+        "keys": "M-> C-p M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "'\\\" comment\n.\\\" -*- fill-column: 20 -*-\n\nOne two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "'\\\" comment\n.\\\" -*- fill-column: 20 -*-\n\nOne two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 97,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "'\\\" comment\n.\\\" -*- fill-column: 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "prop-line-not-on-third-line",
+      "input": {
+        "text": "One\n\n-*- fill-column: 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+        "point": 0,
+        "keys": "M-> C-p M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "One\n\n-*- fill-column: 20 -*-\n\nOne two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "visible": "One\n\n-*- fill-column: 20 -*-\n\nOne two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "point": 86,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One\n\n-*- fill-column: 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "local-variables-list",
+      "input": {
+        "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n"
+      }
+    },
+    {
+      "name": "local-variables-list-with-prefix-and-suffix",
+      "input": {
+        "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\n/* Local Variables: */\n/* fill-column: 25 */\n/* End: */\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "One two three four five\nsix seven eight nine ten\neleven twelve thirteen\nfourteen.\n\n/* Local Variables: */\n/* fill-column: 25 */\n/* End: */\n",
+      "visible": "One two three four five\nsix seven eight nine ten\neleven twelve thirteen\nfourteen.\n\n/* Local Variables: */\n/* fill-column: 25 */\n/* End: */\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\n/* Local Variables: */\n/* fill-column: 25 */\n/* End: */\n"
+      }
+    },
+    {
+      "name": "local-variables-list-case-of-keyword",
+      "input": {
+        "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\n# local variables:\n# fill-column: 20\n# end:\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n\n# local variables:\n# fill-column: 20\n# end:\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n\n# local variables:\n# fill-column: 20\n# end:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\n# local variables:\n# fill-column: 20\n# end:\n"
+      }
+    },
+    {
+      "name": "local-variables-list-overrides-prop-line",
+      "input": {
+        "text": "-*- fill-column: 30 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 15\nEnd:\n",
+        "point": 0,
+        "keys": "C-n C-n M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "-*- fill-column: 30 -*-\n\nOne two three\nfour five six\nseven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n\nLocal Variables:\nfill-column: 15\nEnd:\n",
+      "visible": "-*- fill-column: 30 -*-\n\nOne two three\nfour five six\nseven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n\nLocal Variables:\nfill-column: 15\nEnd:\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- fill-column: 30 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 15\nEnd:\n"
+      }
+    },
+    {
+      "name": "local-variables-list-eval-minor-mode",
+      "input": {
+        "text": "\n\nLocal Variables:\nfill-column: 20\neval: (auto-fill-mode)\nEnd:\n",
+        "point": 0,
+        "keys": "O n e SPC t w o SPC t h r e e SPC f o u r SPC f i v e SPC s i x SPC s e v e n SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "One two three four\nfive six seven \n\nLocal Variables:\nfill-column: 20\neval: (auto-fill-mode)\nEnd:\n",
+      "visible": "One two three four\nfive six seven \n\nLocal Variables:\nfill-column: 20\neval: (auto-fill-mode)\nEnd:\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "\n\nLocal Variables:\nfill-column: 20\neval: (auto-fill-mode)\nEnd:\n"
+      }
+    },
+    {
+      "name": "local-variables-list-not-terminated",
+      "input": {
+        "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 20\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt",
+        "message": true
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n\nLocal Variables:\nfill-column: 20\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n\nLocal Variables:\nfill-column: 20\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 20\n"
+      },
+      "message": null
+    },
+    {
+      "name": "local-variables-list-too-far-from-end",
+      "input": {
+        "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n\f\nAnother page.\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n\f\nAnother page.\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n\f\nAnother page.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n\f\nAnother page.\n"
+      }
+    },
+    {
+      "name": "unsafe-value-keeps-the-rest-out-in-batch",
+      "input": {
+        "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nmy-own-setting: 3\nEnd:\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nmy-own-setting: 3\nEnd:\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nmy-own-setting: 3\nEnd:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 20\nmy-own-setting: 3\nEnd:\n"
+      }
+    },
+    {
+      "name": "unsafe-type-for-a-safe-variable",
+      "input": {
+        "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: \"twenty\"\nEnd:\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt"
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n\nLocal Variables:\nfill-column: \"twenty\"\nEnd:\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n\nLocal Variables:\nfill-column: \"twenty\"\nEnd:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: \"twenty\"\nEnd:\n"
+      }
+    },
+    {
+      "name": "normal-mode-takes-up-a-new-list",
+      "input": {
+        "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+        "point": 0,
+        "keys": "M-> RET L o c a l SPC V a r i a b l e s : RET f i l l - c o l u m n : SPC 2 0 RET E n d : RET M-x M-< M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "normal-mode"
+        ],
+        "find": "a.txt"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n\nLocal Variables:\nfill-column: 20\nEnd:\n",
+      "point": 0,
+      "mark": 121,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "tab-width-and-indent-tabs-mode",
+      "input": {
+        "text": "-*- tab-width: 4; indent-tabs-mode: t -*-\nx\n",
+        "point": 0,
+        "keys": "C-n C-a C-u 9 SPC C-e C-SPC C-a M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "tabify"
+        ],
+        "find": "a.txt"
+      },
+      "text": "-*- tab-width: 4; indent-tabs-mode: t -*-\n\t\t x\n",
+      "visible": "-*- tab-width: 4; indent-tabs-mode: t -*-\n\t\t x\n",
+      "point": 42,
+      "mark": 46,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- tab-width: 4; indent-tabs-mode: t -*-\nx\n"
+      }
+    },
+    {
+      "name": "malformed-prop-line",
+      "input": {
+        "text": "-*- fill-column 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+        "point": 0,
+        "keys": "M-> C-p M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "find": "a.txt",
+        "message": true
+      },
+      "text": "-*- fill-column 20 -*-\n\nOne two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "visible": "-*- fill-column 20 -*-\n\nOne two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "point": 80,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- fill-column 20 -*-\n\nOne two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      },
+      "message": "Mark set"
+    },
+    {
+      "name": "add-file-local-variable-makes-the-list",
+      "input": {
+        "text": "Hello.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable",
+          "fill-column",
+          "60"
+        ],
+        "find": "a.txt"
+      },
+      "text": "Hello.\n\n;; Local Variables:\n;; fill-column: 60\n;; End:\n",
+      "visible": "Hello.\n\n;; Local Variables:\n;; fill-column: 60\n;; End:\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
+    },
+    {
+      "name": "add-file-local-variable-replaces",
+      "input": {
+        "text": "Hello.\n\n;; Local Variables:\n;; fill-column: 60\n;; tab-width: 4\n;; End:\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable",
+          "fill-column",
+          "40"
+        ],
+        "find": "a.txt"
+      },
+      "text": "Hello.\n\n;; Local Variables:\n;; fill-column: 40\n;; tab-width: 4\n;; End:\n",
+      "visible": "Hello.\n\n;; Local Variables:\n;; fill-column: 40\n;; tab-width: 4\n;; End:\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n\n;; Local Variables:\n;; fill-column: 60\n;; tab-width: 4\n;; End:\n"
+      }
+    },
+    {
+      "name": "add-file-local-variable-string",
+      "input": {
+        "text": "Hej.\n\n# Local Variables:\n# End:\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable",
+          "ispell-local-dictionary",
+          "\"sv_SE\""
+        ],
+        "find": "a.txt"
+      },
+      "text": "Hej.\n\n# Local Variables:\n# ispell-local-dictionary: \"sv_SE\"\n# End:\n",
+      "visible": "Hej.\n\n# Local Variables:\n# ispell-local-dictionary: \"sv_SE\"\n# End:\n",
+      "point": 60,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hej.\n\n# Local Variables:\n# End:\n"
+      }
+    },
+    {
+      "name": "add-file-local-variable-in-lisp",
+      "input": {
+        "text": "(setq x 1)\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable",
+          "fill-column",
+          "60"
+        ],
+        "find": "a.el"
+      },
+      "text": "(setq x 1)\n\n;; Local Variables:\n;; fill-column: 60\n;; End:\n",
+      "visible": "(setq x 1)\n\n;; Local Variables:\n;; fill-column: 60\n;; End:\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.el": "(setq x 1)\n"
+      }
+    },
+    {
+      "name": "add-file-local-variable-mode-goes-first",
+      "input": {
+        "text": "Hello.\n\n;; Local Variables:\n;; fill-column: 60\n;; End:\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable",
+          "mode",
+          "org"
+        ],
+        "find": "a.txt"
+      },
+      "text": "Hello.\n\n;; Local Variables:\n;; mode: org\n;; fill-column: 60\n;; End:\n",
+      "visible": "Hello.\n\n;; Local Variables:\n;; mode: org\n;; fill-column: 60\n;; End:\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n\n;; Local Variables:\n;; fill-column: 60\n;; End:\n"
+      }
+    },
+    {
+      "name": "delete-file-local-variable",
+      "input": {
+        "text": "Hello.\n\n;; Local Variables:\n;; fill-column: 60\n;; tab-width: 4\n;; End:\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-file-local-variable",
+          "fill-column"
+        ],
+        "find": "a.txt"
+      },
+      "text": "Hello.\n\n;; Local Variables:\n;; tab-width: 4\n;; End:\n",
+      "visible": "Hello.\n\n;; Local Variables:\n;; tab-width: 4\n;; End:\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n\n;; Local Variables:\n;; fill-column: 60\n;; tab-width: 4\n;; End:\n"
+      }
+    },
+    {
+      "name": "delete-file-local-variable-without-a-list",
+      "input": {
+        "text": "Hello.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-file-local-variable",
+          "fill-column"
+        ],
+        "find": "a.txt",
+        "message": true
+      },
+      "text": "Hello.\n",
+      "visible": "Hello.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      },
+      "message": "Local Variables not found"
+    },
+    {
+      "name": "add-file-local-variable-prop-line-makes-the-line",
+      "input": {
+        "text": "Hello.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable-prop-line",
+          "fill-column",
+          "60"
+        ],
+        "find": "a.txt"
+      },
+      "text": ";;; -*- fill-column: 60; -*-\nHello.\n",
+      "visible": ";;; -*- fill-column: 60; -*-\nHello.\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
+    },
+    {
+      "name": "add-file-local-variable-prop-line-to-a-simple-one",
+      "input": {
+        "text": "-*- text -*-\nHello.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable-prop-line",
+          "fill-column",
+          "60"
+        ],
+        "find": "a.txt"
+      },
+      "text": "-*-  mode: text; fill-column: 60;  -*-\nHello.\n",
+      "visible": "-*-  mode: text; fill-column: 60;  -*-\nHello.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- text -*-\nHello.\n"
+      }
+    },
+    {
+      "name": "add-file-local-variable-prop-line-replaces",
+      "input": {
+        "text": "-*- mode: text; fill-column: 50; tab-width: 4 -*-\nHello.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable-prop-line",
+          "fill-column",
+          "60"
+        ],
+        "find": "a.txt"
+      },
+      "text": "-*- mode: text; fill-column: 60; tab-width: 4 -*-\nHello.\n",
+      "visible": "-*- mode: text; fill-column: 60; tab-width: 4 -*-\nHello.\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- mode: text; fill-column: 50; tab-width: 4 -*-\nHello.\n"
+      }
+    },
+    {
+      "name": "add-file-local-variable-prop-line-mode",
+      "input": {
+        "text": "-*- fill-column: 50 -*-\nHello.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable-prop-line",
+          "mode",
+          "org"
+        ],
+        "find": "a.txt"
+      },
+      "text": "-*- mode: org; fill-column: 50 -*-\nHello.\n",
+      "visible": "-*- mode: org; fill-column: 50 -*-\nHello.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- fill-column: 50 -*-\nHello.\n"
+      }
+    },
+    {
+      "name": "add-file-local-variable-prop-line-in-lisp",
+      "input": {
+        "text": "(setq x 1)\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-file-local-variable-prop-line",
+          "lexical-binding",
+          "t"
+        ],
+        "find": "a.el"
+      },
+      "text": ";; -*- lexical-binding: t; -*-\n(setq x 1)\n",
+      "visible": ";; -*- lexical-binding: t; -*-\n(setq x 1)\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.el": "(setq x 1)\n"
+      }
+    },
+    {
+      "name": "delete-file-local-variable-prop-line",
+      "input": {
+        "text": "-*- mode: text; fill-column: 50; tab-width: 4 -*-\nHello.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-file-local-variable-prop-line",
+          "fill-column"
+        ],
+        "find": "a.txt"
+      },
+      "text": "-*- mode: text; tab-width: 4 -*-\nHello.\n",
+      "visible": "-*- mode: text; tab-width: 4 -*-\nHello.\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- mode: text; fill-column: 50; tab-width: 4 -*-\nHello.\n"
+      }
+    },
+    {
+      "name": "delete-file-local-variable-prop-line-mode-of-simple",
+      "input": {
+        "text": "-*- text -*-\nHello.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-file-local-variable-prop-line",
+          "mode"
+        ],
+        "find": "a.txt"
+      },
+      "text": "-*-  -*-\nHello.\n",
+      "visible": "-*-  -*-\nHello.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "-*- text -*-\nHello.\n"
+      }
+    }
+  ]
+}

@@ -141,7 +141,7 @@ function regionLines(beg: number, end: number): [number, number] {
 }
 
 /** Comments each line of the region at its least indentation, as comment-region with the indent style. */
-function commentRegion(begIn: number, endIn: number, arg: number): void {
+export function commentRegion(begIn: number, endIn: number, arg: number): void {
   if (arg < 0) return uncommentRegion(begIn, endIn, -arg);
   // The region without the blank lines around it, as comment-region-default-1 sanitizes it.
   let b = begIn;

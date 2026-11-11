@@ -1,0 +1,1027 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "ispell-word-choose",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake.\n",
+      "visible": "A spelling mistake.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checking spelling of SPELING..."
+    },
+    {
+      "name": "ispell-word-second-choice",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ],
+        "message": true
+      },
+      "text": "A spewing mistake.\n",
+      "visible": "A spewing mistake.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checking spelling of SPELING..."
+    },
+    {
+      "name": "ispell-word-leave",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " "
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Checking spelling of SPELING..."
+    },
+    {
+      "name": "ispell-word-accept-for-session",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$ M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "SPELING is correct"
+    },
+    {
+      "name": "ispell-word-accept-in-file",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "A"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n\nLocalWords:  speling\n",
+      "visible": "A speling mistake.\n\nLocalWords:  speling\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checking spelling of SPELING..."
+    },
+    {
+      "name": "ispell-word-accept-in-file-twice",
+      "input": {
+        "text": "A speling mistake, a wrod.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$ M-f M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "A",
+          "A"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake, a wrod.\n\nLocalWords:  speling wrod\n",
+      "visible": "A speling mistake, a wrod.\n\nLocalWords:  speling wrod\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checking spelling of WROD..."
+    },
+    {
+      "name": "ispell-word-accept-in-lisp-file",
+      "input": {
+        "text": ";; A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "A"
+        ],
+        "message": true
+      },
+      "text": ";; A speling mistake.\n\n; LocalWords:  speling\n",
+      "visible": ";; A speling mistake.\n\n; LocalWords:  speling\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checking spelling of SPELING..."
+    },
+    {
+      "name": "ispell-word-replace",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "spelling"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake.\n",
+      "visible": "A spelling mistake.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking region using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-word-replace-with-misspelling",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "speeling",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A peeling mistake.\n",
+      "visible": "A peeling mistake.\n",
+      "point": 10,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking region using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-word-exit",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "x"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Exited spell-checking"
+    },
+    {
+      "name": "ispell-word-suspend",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "X"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Spell-checking suspended; use C-u M-$ to resume"
+    },
+    {
+      "name": "ispell-word-bad-key-then-choice",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "!",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake.\n",
+      "visible": "A spelling mistake.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checking spelling of SPELING..."
+    },
+    {
+      "name": "ispell-word-following",
+      "input": {
+        "text": "A  speling mistake.\n",
+        "point": 2,
+        "keys": "M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A  speling mistake.\n",
+      "visible": "A  speling mistake.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "A is correct"
+    },
+    {
+      "name": "ispell-word-apostrophe",
+      "input": {
+        "text": "They don't know.\n",
+        "point": 0,
+        "keys": "M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "They don't know.\n",
+      "visible": "They don't know.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "DON'T is correct"
+    },
+    {
+      "name": "ispell-word-no-word",
+      "input": {
+        "text": "123 456\n",
+        "point": 0,
+        "keys": "M-$",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "123 456\n",
+      "visible": "123 456\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No word found to check!"
+    },
+    {
+      "name": "ispell-word-buffer-local-words",
+      "input": {
+        "text": "Speling here.\n\nLocalWords: Speling\n",
+        "point": 0,
+        "keys": "M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Speling here.\n\nLocalWords: Speling\n",
+      "visible": "Speling here.\n\nLocalWords: Speling\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "SPELING is correct"
+    },
+    {
+      "name": "ispell-buffer-two",
+      "input": {
+        "text": "A speling mistake and a wrod.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "0",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake and a prod.\n",
+      "visible": "A spelling mistake and a prod.\n",
+      "point": 0,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-buffer-same-word-twice-accepted-on-line",
+      "input": {
+        "text": "speling and speling again.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          " "
+        ],
+        "message": true
+      },
+      "text": "speling and speling again.\n",
+      "visible": "speling and speling again.\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-buffer-two-lines",
+      "input": {
+        "text": "A speling mistake.\nAnd a wrod.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "0",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake.\nAnd a prod.\n",
+      "visible": "A spelling mistake.\nAnd a prod.\n",
+      "point": 0,
+      "mark": 26,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-buffer-exit",
+      "input": {
+        "text": "A speling mistake and a wrod.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "x"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake and a wrod.\n",
+      "visible": "A speling mistake and a wrod.\n",
+      "point": 0,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Exited spell-checking"
+    },
+    {
+      "name": "ispell-buffer-suspend",
+      "input": {
+        "text": "A speling mistake and a wrod.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "X"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake and a wrod.\n",
+      "visible": "A speling mistake and a wrod.\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Spell-checking suspended; use C-u M-$ to resume"
+    },
+    {
+      "name": "ispell-buffer-suspend-and-continue",
+      "input": {
+        "text": "A speling mistake and a wrod.\n",
+        "point": 0,
+        "keys": "M-x C-u M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "X",
+          "0",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake and a prod.\n",
+      "visible": "A spelling mistake and a prod.\n",
+      "point": 2,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking region using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-continue-nothing",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-continue"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No session to continue.  Use ‘X’ command when checking!"
+    },
+    {
+      "name": "ispell-buffer-replace-changes-length",
+      "input": {
+        "text": "A speling mistake and a wrod.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "r",
+          "spelling",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake and a prod.\n",
+      "visible": "A spelling mistake and a prod.\n",
+      "point": 0,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-buffer-skips-urls",
+      "input": {
+        "text": "See http://exampel.com/fo for speling.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "See http://exampel.com/fo for spelling.\n",
+      "visible": "See http://exampel.com/fo for spelling.\n",
+      "point": 0,
+      "mark": 30,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-buffer-skips-local-words-lines",
+      "input": {
+        "text": "A speling mistake.\n\nLocalWords: Wrod\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "A"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n\nLocalWords: Wrod speling\n",
+      "visible": "A speling mistake.\n\nLocalWords: Wrod speling\n",
+      "point": 0,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-buffer-nothing-wrong",
+      "input": {
+        "text": "Nothing is wrong here.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer"
+        ],
+        "message": true
+      },
+      "text": "Nothing is wrong here.\n",
+      "visible": "Nothing is wrong here.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-region",
+      "input": {
+        "text": "A speling mistake and a wrod.\n",
+        "point": 0,
+        "keys": "C-SPC M-f M-f M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-region",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake and a wrod.\n",
+      "visible": "A spelling mistake and a wrod.\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking region using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-word-with-active-region",
+      "input": {
+        "text": "A speling mistake and a wrod.\n",
+        "point": 0,
+        "keys": "C-SPC M-f M-f M-$",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake and a wrod.\n",
+      "visible": "A spelling mistake and a wrod.\n",
+      "point": 2,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking region using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-dictionary-keyword",
+      "input": {
+        "text": "A speling mistake.\n\nLocal IspellDict: english\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake.\n\nLocal IspellDict: english\n",
+      "visible": "A spelling mistake.\n\nLocal IspellDict: english\n",
+      "point": 0,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with english dictionary...done"
+    },
+    {
+      "name": "ispell-change-dictionary-locally",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-change-dictionary",
+          "american"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local Ispell dictionary set to american"
+    },
+    {
+      "name": "ispell-change-dictionary-then-buffer",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-x M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-change-dictionary",
+          "american",
+          "ispell-buffer",
+          "0"
+        ],
+        "message": true
+      },
+      "text": "A spelling mistake.\n",
+      "visible": "A spelling mistake.\n",
+      "point": 0,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with american dictionary...done"
+    },
+    {
+      "name": "ispell-change-dictionary-same",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-change-dictionary",
+          "default"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local Ispell dictionary set to nil"
+    },
+    {
+      "name": "ispell-change-dictionary-current",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-change-dictionary",
+          ""
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Using default dictionary"
+    },
+    {
+      "name": "ispell-kill-ispell-none",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-kill-ispell"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "There is no Ispell process running!",
+      "message": null
+    },
+    {
+      "name": "ispell-kill-ispell-after-check",
+      "input": {
+        "text": "A speling mistake.\n",
+        "point": 0,
+        "keys": "M-$ M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-kill-ispell"
+        ],
+        "message": true
+      },
+      "text": "A speling mistake.\n",
+      "visible": "A speling mistake.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Ispell process killed"
+    },
+    {
+      "name": "ispell-comments-and-strings",
+      "input": {
+        "text": ";; A speling mistake.\n(setq x \"a wrod\")\n(setq speling 1)\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-comments-and-strings",
+          "0",
+          "0"
+        ],
+        "message": true
+      },
+      "text": ";; A spelling mistake.\n(setq x \"a prod\")\n(setq speling 1)\n",
+      "visible": ";; A spelling mistake.\n(setq x \"a prod\")\n(setq speling 1)\n",
+      "point": 57,
+      "mark": 34,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking region using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-comment-or-string-at-point",
+      "input": {
+        "text": ";; A speling mistake.\n(setq x \"a wrod\")\n",
+        "point": 33,
+        "keys": "M-x",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-comment-or-string-at-point",
+          "0"
+        ],
+        "message": true
+      },
+      "text": ";; A speling mistake.\n(setq x \"a prod\")\n",
+      "visible": ";; A speling mistake.\n(setq x \"a prod\")\n",
+      "point": 33,
+      "mark": 33,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking region using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-buffer-skips-comments-when-told",
+      "input": {
+        "text": ";; A speling mistake.\n(setq wrod 1)\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          " ",
+          "0"
+        ],
+        "message": true,
+        "vars": {
+          "ispell-check-comments": false
+        }
+      },
+      "text": ";; A speling mistake.\n(setq prod 1)\n",
+      "visible": ";; A speling mistake.\n(setq prod 1)\n",
+      "point": 0,
+      "mark": 28,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-buffer-skips-html",
+      "input": {
+        "text": "<p class=\"speling\">A wrod</p>\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-buffer",
+          "0"
+        ],
+        "message": true,
+        "vars": {
+          "ispell-skip-html": true
+        }
+      },
+      "text": "<p class=\"speling\">A prod</p>\n",
+      "visible": "<p class=\"speling\">A prod</p>\n",
+      "point": 0,
+      "mark": 21,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Spell-checking *e8-oracle* using ispell with default dictionary...done"
+    },
+    {
+      "name": "ispell-minor-mode-space",
+      "input": {
+        "text": "A speling\n",
+        "point": 0,
+        "keys": "M-x C-e SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ispell-minor-mode"
+        ],
+        "message": true
+      },
+      "text": "A speling \n",
+      "visible": "A speling \n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "SPELING is incorrect"
+    }
+  ]
+}

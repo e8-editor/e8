@@ -45,6 +45,16 @@
       if (mode.setup) mode.setup();
     }
     for (const mode of chain) native.runHooks(`${mode.name}-hook`);
+    // As run-mode-hooks: a file's buffer takes up its local variables
+    // once the mode's hooks have run (files.ts defines how).
+    if (native.bufferFileName() !== undefined && native.fboundp("hack-local-variables")) {
+      try {
+        globalThis.e8.funcall("hack-local-variables", Symbol.for("no-mode"));
+      } catch (e) {
+        if (e?.symbol === "quit") throw e;
+        native.message(`File local-variables error: ${e?.message ?? String(e)}`);
+      }
+    }
     native.runHooks("after-change-major-mode-hook");
   }
 

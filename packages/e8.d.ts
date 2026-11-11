@@ -301,6 +301,35 @@ declare global {
        */
       "abort-recursive-edit": [];
       /**
+       * Add a directory-local variable with its value, read as Lisp, for a mode or subdirectory, to the .dir-locals.el of the visited file's directory or the one above it, making it in this directory if there is none. With a prefix argument, ask which file.
+       *
+       * @param mode text
+       * @param variable text
+       * @param value text
+       * @param file raw prefix argument
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "add-dir-local-variable": [mode: string, variable: string, value: string, file?: PrefixArg | boolean];
+      /**
+       * Add a file-local variable with its value, read as Lisp, to the Local Variables list at the end of the file, adding the list if there is none and taking out the variable's other settings. For the -*- line, use add-file-local-variable-prop-line.
+       *
+       * @param variable text
+       * @param value text
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "add-file-local-variable": [variable: string, value: string];
+      /**
+       * Add a file-local variable with its value, read as Lisp, to the -*- line at the start of the file, adding the line if there is none.
+       *
+       * @param variable text
+       * @param value text
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "add-file-local-variable-prop-line": [variable: string, value: string];
+      /**
        * Define a global abbrev for the word before point, or that many words, or the region with 0, asking for its name.
        *
        * @param arg raw prefix argument
@@ -836,6 +865,12 @@ declare global {
        */
       "center-region": [from: number, to: number];
       /**
+       * Say which spell checker ispell-program-name is and its version.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "check-ispell-version": [];
+      /**
        * Check the buffer for unbalanced parens and quotes, leaving point at the first one unbalanced.
        *
        * Defined in packages/lisp.ts.
@@ -1146,6 +1181,18 @@ declare global {
        */
       "completion-at-point": [];
       /**
+       * Copy the directory-local variables to the file's Local Variables list.
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "copy-dir-locals-to-file-locals": [];
+      /**
+       * Copy the directory-local variables to the file's -*- line.
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "copy-dir-locals-to-file-locals-prop-line": [];
+      /**
        * Copy a directory and what it holds: into the new name if that is a directory already, else as it.
        *
        * @param directory file name
@@ -1165,6 +1212,14 @@ declare global {
        * Defined in packages/files.ts.
        */
       "copy-file": [file: string, newname: string];
+      /**
+       * Copy the file's local variables, for its major mode, to the .dir-locals.el. With a prefix argument, ask which file.
+       *
+       * @param file raw prefix argument
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "copy-file-locals-to-dir-locals": [file?: PrefixArg | boolean];
       /**
        * Copy the rest of the line above, from the column point is at, after point; with a prefix argument, only that many characters.
        *
@@ -1321,6 +1376,16 @@ declare global {
        */
       "delete-char": [n?: number];
       /**
+       * Delete every setting of a directory-local variable for a mode or subdirectory from the .dir-locals.el. With a prefix argument, ask which file.
+       *
+       * @param mode text
+       * @param variable text
+       * @param file raw prefix argument
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "delete-dir-local-variable": [mode: string, variable: string, file?: PrefixArg | boolean];
+      /**
        * Delete a directory, asking first if it has files in it. With delete-by-moving-to-trash, on in E8, it goes to the trash.
        *
        * With a prefix argument, delete it for good instead.
@@ -1352,6 +1417,22 @@ declare global {
        * Defined in packages/files.ts.
        */
       "delete-file": [file: string];
+      /**
+       * Delete every setting of a file-local variable from the Local Variables list.
+       *
+       * @param variable text
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "delete-file-local-variable": [variable: string];
+      /**
+       * Delete every setting of a file-local variable from the -*- line.
+       *
+       * @param variable text
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "delete-file-local-variable-prop-line": [variable: string];
       /**
        * Delete the character after point, or as many as the prefix argument says.
        *
@@ -3428,13 +3509,152 @@ declare global {
        */
       "isearch-yank-word-or-char": [n?: number];
       /**
-       * Check the spelling of the word at point, or before it, and offer corrections in *Choices* if it is wrong: a character picks one, SPC leaves the word, i adds it to your dictionary, a accepts it for this session, A in this file's LocalWords, and r types a replacement.
-       *
-       * @param following raw prefix argument
+       * Check the spelling of the region if it is active, else the buffer.
        *
        * Defined in packages/ispell.ts.
        */
-      "ispell-word": [following?: PrefixArg | boolean];
+      "ispell": [];
+      /**
+       * Check the spelling of the buffer, asking about each misspelling in turn; the mark is left at the last one asked about.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-buffer": [];
+      /**
+       * Check the spelling of the buffer, as ispell-buffer does.
+       *
+       * @param append raw prefix argument
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-buffer-with-debug": [append?: PrefixArg | boolean];
+      /**
+       * Change the dictionary spelling is checked with, for this buffer, or for all with a prefix argument. RET says which it is. Hunspell takes several at once, as en_US,sv_SE, after ispell-hunspell-add-multi-dic.
+       *
+       * @param dict text
+       * @param global raw prefix argument
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-change-dictionary": [dict: string, global?: PrefixArg | boolean];
+      /**
+       * Say which spell checker ispell-program-name is and its version.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-check-version": [];
+      /**
+       * Check the spelling of the comment or string point is in.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-comment-or-string-at-point": [];
+      /**
+       * Check the spelling of the comments and strings in the buffer, or in the region if it is active.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-comments-and-strings": [];
+      /**
+       * Complete the word before point from the plain word list, ispell-complete-word-dict or ispell-alternate-dictionary, offering the completions as for a misspelling. With a prefix argument, the word may be part of a longer one.
+       *
+       * @param interior-frag raw prefix argument
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-complete-word": [interiorFrag?: PrefixArg | boolean];
+      /**
+       * Complete the characters before point as part of a word from the plain word list.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-complete-word-interior-frag": [];
+      /**
+       * Continue a spelling session X stopped, from the word at point.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-continue": [];
+      /**
+       * Selections are:
+       *
+       * 0..9  Replace the word with a digit offered in the *Choices* buffer.
+       * SPC   Accept word this time.
+       * i     Accept word and insert into personal dictionary.
+       * a     Accept word for this session.
+       * A     Accept word and place in `buffer-local dictionary'.
+       * r     Replace word with typed-in value.  Rechecked.
+       * R     Replace word with typed-in value.  Query-replaced in buffer.  Rechecked.
+       * ?     Show these commands.
+       * x     Exit spelling buffer.  Move cursor to original point.
+       * X     Exit spelling buffer.  Leaves cursor at the current point, and permits
+       *         the aborted check to be completed later.
+       * q     Quit spelling session (Kills ispell process).
+       * l     Look up typed-in replacement in alternate dictionary.  Wildcards okay.
+       * u     Like i, but the word is lower-cased first.
+       * m     Place typed-in value in personal dictionary, then recheck current word.
+       * C-l   Redraw screen.
+       * C-r   Recursive edit.
+       * C-z   Suspend Emacs or iconify frame.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-help": [];
+      /**
+       * Make a combination of Hunspell dictionaries, as en_US,sv_SE, one to choose with ispell-change-dictionary or ispell-dictionary.
+       *
+       * @param dict text
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-hunspell-add-multi-dic": [dict: string];
+      /**
+       * End the spelling session, forgetting the words accepted in this buffer, so the next check starts afresh.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-kill-ispell": [];
+      /**
+       * Check the word before point, then do what the key does without ispell-minor-mode.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-minor-check": [];
+      /**
+       * Check the word before point when SPC or RET is typed, warning if it is wrong.
+       *
+       * The buffer's own dictionary and words are not read: M-$ SPC reads them. To check as you type, use flyspell-mode.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-minor-mode": [];
+      /**
+       * Save the personal dictionary, asking first unless ispell-silently-savep.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-pdict-save": [];
+      /**
+       * Check the spelling of the region, asking about each misspelling in turn; the mark is left at the last one asked about.
+       *
+       * @param start region start
+       * @param end region end
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-region": [start: number, end: number];
+      /**
+       * Check the spelling of the word at point, or before it, and offer corrections in *Choices* if it is wrong.
+       *
+       * A character picks a correction, SPC leaves the word, i adds it to your personal dictionary, a accepts it for this session, A in this file's LocalWords, r types a replacement and R replaces it throughout, l looks words up in a word list, x and X stop, and ? says more. With a prefix argument, continue a session X stopped; with the region active, check the region.
+       *
+       * @param resume raw prefix argument
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-word": [resume?: PrefixArg | boolean];
       /**
        * Edit JavaScript, in js-ts-mode, as js-mode does.
        *
@@ -4029,13 +4249,15 @@ declare global {
        */
       "next-line": [n?: number];
       /**
-       * Choose the current buffer's major mode, as when its file is visited.
+       * Choose the current buffer's major mode, as when its file is visited, and set the file's local variables.
        *
-       * A mode named on the first line, as in -*- text -*-, comes first; then auto-mode-alist, matched against the file name; otherwise Fundamental mode.
+       * A mode named on the first line, as in -*- text -*-, or in the Local Variables list comes first; then auto-mode-alist, matched against the file name; otherwise Fundamental mode. Run as a command, it sets the local variables whatever enable-local-variables says, asking about unsafe ones; visiting a file obeys it.
+       *
+       * @param find-file raw prefix argument
        *
        * Defined in packages/files.ts.
        */
-      "normal-mode": [];
+      "normal-mode": [findFile?: PrefixArg | boolean];
       /**
        * Mark the current buffer as unmodified, not needing to be saved.
        *
@@ -8175,6 +8397,30 @@ declare global {
        */
       "diff-switches": Value;
       /**
+       * The pairs (VAR . VALUE) this buffer's directory set, from .dir-locals.el.
+       *
+       * Defined in packages/files.ts.
+       */
+      "dir-local-variables-alist": Value;
+      /**
+       * Each class of directory-local variables and its variables, as (CLASS . VARIABLES).
+       *
+       * Defined in packages/files.ts.
+       */
+      "dir-locals-class-alist": Value;
+      /**
+       * Each directory with a class of directory-local variables: (DIR CLASS MTIME), MTIME that of its files when read.
+       *
+       * Defined in packages/files.ts.
+       */
+      "dir-locals-directory-cache": Value;
+      /**
+       * The file that holds a directory's local variables; NAME-2.el beside it overrides it.
+       *
+       * Defined in packages/files.ts.
+       */
+      "dir-locals-file": Value;
+      /**
        * The switches this Dired buffer lists with, which s changes.
        *
        * Defined in packages/dired.ts.
@@ -8547,9 +8793,33 @@ declare global {
        */
       "emacs-lisp-mode-map": Value;
       /**
+       * Whether directory-local variables are used, as modes may turn off for their buffers.
+       *
+       * Defined in packages/files.ts.
+       */
+      "enable-dir-local-variables": Value;
+      /**
+       * Whether a file's `eval:' entries are run: t runs them, nil ignores them, anything else asks.
+       *
+       * Defined in packages/files.ts.
+       */
+      "enable-local-eval": Value;
+      /**
+       * Whether files' local variables are set: t sets them when all are safe and asks once about the rest; :safe sets only the safe ones; :all sets them all; nil none; anything else asks every time. It also says whether a -*- line's mode is used.
+       *
+       * Defined in packages/files.ts.
+       */
+      "enable-local-variables": Value;
+      /**
        * Whether a command can use the minibuffer while it is open, as M-x does run from the minibuffer: the new prompt opens inside the open one, which waits until it is done.
        */
       "enable-recursive-minibuffers": Value;
+      /**
+       * Whether directory-local variables apply to remote files.
+       *
+       * Defined in packages/files.ts.
+       */
+      "enable-remote-dir-locals": Value;
       /**
        * If non-nil, the function end-of-defun calls to move from a defun's start to after its end; nil moves over a sexp.
        *
@@ -8615,6 +8885,18 @@ declare global {
        */
       "fido-vertical-mode-map": Value;
       /**
+       * A first line after which the -*- line is looked for on the second, as #! lines.
+       *
+       * Defined in packages/files.ts.
+       */
+      "file-auto-mode-skip": Value;
+      /**
+       * The pairs (VAR . VALUE) this buffer's file set as its local variables.
+       *
+       * Defined in packages/files.ts.
+       */
+      "file-local-variables-alist": Value;
+      /**
        * Functions that handle file names of their own, as [regexp, handler] pairs: a file primitive on a name the regexp matches calls the handler with the operation's name and its arguments instead, as TRAMP's remote names are handled.
        *
        * Of several that match, the one matching furthest along the name is called.
@@ -8656,6 +8938,12 @@ declare global {
        * Defined in packages/flyspell.ts.
        */
       "flyspell-case-fold-duplications": Value;
+      /**
+       * The dictionary flyspell-mode starts with when neither ispell-local-dictionary nor ispell-dictionary names one.
+       *
+       * Defined in packages/flyspell.ts.
+       */
+      "flyspell-default-dictionary": Value;
       /**
        * How many seconds of quiet after typing in a word before it is checked, rather than when you leave it.
        *
@@ -8839,6 +9127,12 @@ declare global {
        */
       "grep-mode-map": Value;
       /**
+       * Functions that give the directory-local variables for the buffer, as (DIR . ALIST) or a list of them.
+       *
+       * Defined in packages/files.ts.
+       */
+      "hack-dir-local-get-variables-functions": Value;
+      /**
        * What a window's header line shows, a mode line construct as `mode-line-format` is; nil, the default, for no header line. A window's `header-line-format` parameter takes its place, and `none` there hides it.
        */
       "header-line-format": Value;
@@ -9009,6 +9303,18 @@ declare global {
        */
       "icomplete-vertical-mode-minibuffer-map": Value;
       /**
+       * Pairs (VAR . VAL) a file's local variables never set, as answering i adds them.
+       *
+       * Defined in packages/files.ts.
+       */
+      "ignored-local-variable-values": Value;
+      /**
+       * Variables a file's local variables never set.
+       *
+       * Defined in packages/files.ts.
+       */
+      "ignored-local-variables": Value;
+      /**
        * Maximum time after which images are removed from the cache.
        * The value can also be nil, meaning the cache is never cleared.
        *
@@ -9151,6 +9457,24 @@ declare global {
        * The operation inhibit-file-name-handlers applies to.
        */
       "inhibit-file-name-operation": Value;
+      /**
+       * Whether inhibit-local-variables-regexps ignores case.
+       *
+       * Defined in packages/files.ts.
+       */
+      "inhibit-local-variables-ignore-case": Value;
+      /**
+       * File names whose files are not looked in for local variables, mostly binary formats.
+       *
+       * Defined in packages/files.ts.
+       */
+      "inhibit-local-variables-regexps": Value;
+      /**
+       * Suffixes taken off file names before inhibit-local-variables-regexps is matched.
+       *
+       * Defined in packages/files.ts.
+       */
+      "inhibit-local-variables-suffixes": Value;
       /**
        * Whether changes to the text run no before-change-functions or after-change-functions. Those functions run with it on.
        */
@@ -9330,41 +9654,441 @@ declare global {
        */
       "isearch-yank-flag": Value;
       /**
-       * The dictionary to check with, nil for the checker's default.
+       * A plain list of words, for looking words up with `l' and ispell-complete-word.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-alternate-dictionary": Value;
+      /**
+       * Aspell's data directory.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-aspell-data-dir": Value;
+      /**
+       * Aspell's dictionary directory.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-aspell-dict-dir": Value;
+      /**
+       * Aspell's dictionaries, as found.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-aspell-dictionary-alist": Value;
+      /**
+       * Whether the checker keeps running between checks; in E8 it is run afresh for each.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-async-processp": Value;
+      /**
+       * Entries ispell-initialize-spellchecker-hook may give to override ispell.el's own.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-base-dicts-override-alist": Value;
+      /**
+       * The buffer whose local words the session has.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-buffer-local-name": Value;
+      /**
+       * The words accepted for the session in this buffer.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-buffer-session-localwords": Value;
+      /**
+       * Whether comments are checked: t, nil, or `exclusive' to check only comments.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-check-comments": Value;
+      /**
+       * Whether ispell-word only says a word is wrong, rather than offering corrections.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-check-only": Value;
+      /**
+       * Whether a mail message is being checked.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-checking-message": Value;
+      /**
+       * The *Choices* window's height to start with, including its mode line.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-choices-win-default-height": Value;
+      /**
+       * A plain list of words for ispell-complete-word, when it differs from ispell-alternate-dictionary.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-complete-word-dict": Value;
+      /**
+       * The dictionary the session checks with, nil for the default.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-current-dictionary": Value;
+      /**
+       * The personal dictionary the session uses, nil for the default.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-current-personal-dictionary": Value;
+      /**
+       * The dictionary to check with when a buffer names none; nil for the checker's default.
        *
        * Defined in packages/ispell.ts.
        */
       "ispell-dictionary": Value;
       /**
-       * More arguments to give the spell checker.
+       * Each dictionary and how to check with it: (NAME CASECHARS NOT-CASECHARS OTHERCHARS MANY-OTHERCHARS-P ISPELL-ARGS EXTENDED-CHARACTER-MODE CHARACTER-SET). CASECHARS is a regexp of the characters words are made of; OTHERCHARS of those that join them, as the apostrophe in "they're", once in a word unless MANY-OTHERCHARS-P.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-dictionary-alist": Value;
+      /**
+       * The dictionaries ispell.el knows, before the checker's own are found.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-dictionary-base-alist": Value;
+      /**
+       * The keyword before the dictionary a file is checked with; the last one counts.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-dictionary-keyword": Value;
+      /**
+       * The locale each of ispell.el's dictionary names stands for, as Hunspell and Enchant name them.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-dicts-name2locale-equivs-alist": Value;
+      /**
+       * Enchant's dictionaries, as found.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-enchant-dictionary-alist": Value;
+      /**
+       * The checker's option choosing the text's encoding: --encoding= for Aspell, -i for Hunspell.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-encoding8-command": Value;
+      /**
+       * More arguments for the checker, as ("-W" "3").
        *
        * Defined in packages/ispell.ts.
        */
       "ispell-extra-args": Value;
       /**
-       * This buffer's dictionary, overriding ispell-dictionary.
+       * The checker's last output, a line each.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-filter": Value;
+      /**
+       * Whether M-$ checks the word after point, rather than before it, when point is not on one.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-following-word": Value;
+      /**
+       * The function a word is shown with in messages.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-format-word-function": Value;
+      /**
+       * The grep program that looks words up.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-grep-command": Value;
+      /**
+       * The options ispell-grep-command is given.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-grep-options": Value;
+      /**
+       * Whether look takes the -r option.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-have-new-look": Value;
+      /**
+       * Where `?' shows help: nil in the echo area, t in a buffer for a while, `electric' in a buffer until a key.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-help-in-bufferp": Value;
+      /**
+       * How many seconds `?' shows its help.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-help-timeout": Value;
+      /**
+       * The face the misspelled word is highlighted with.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-highlight-face": Value;
+      /**
+       * Whether spelling errors are highlighted; `block' on a terminal with a block cursor.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-highlight-p": Value;
+      /**
+       * The regions HTML buffers skip, as ispell-skip-region-alist.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-html-skip-alists": Value;
+      /**
+       * Each Hunspell dictionary found and its affix file.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-hunspell-dict-paths-alist": Value;
+      /**
+       * Hunspell's dictionaries, as found, filled in when first used.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-hunspell-dictionary-alist": Value;
+      /**
+       * Whether the *Choices* window stays for the whole spelling session.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-keep-choices-win": Value;
+      /**
+       * The checker the dictionaries were last found for.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-last-program-name": Value;
+      /**
+       * Whether other occurrences of the misspelled word are highlighted too, as isearch highlights matches.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-lazy-highlight": Value;
+      /**
+       * Where the checker keeps its dictionaries, when it says.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-library-directory": Value;
+      /**
+       * This buffer's dictionary, overriding ispell-dictionary; nil for that.
        *
        * Defined in packages/ispell.ts.
        */
       "ispell-local-dictionary": Value;
       /**
-       * The file of words you accept, nil for the checker's own.
+       * Your own dictionary entries, in the form of ispell-dictionary-alist, overriding its.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-local-dictionary-alist": Value;
+      /**
+       * Whether this buffer's dictionary was set with ispell-change-dictionary.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-local-dictionary-overridden": Value;
+      /**
+       * This buffer's personal dictionary.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-local-pdict": Value;
+      /**
+       * The look program that looks words up, as an absolute file name.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-look-command": Value;
+      /**
+       * The options ispell-look-command is given.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-look-options": Value;
+      /**
+       * Whether look is used rather than grep.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-look-p": Value;
+      /**
+       * Pairs (REGEXP . DICTIONARY) choosing a message's dictionary from its headers.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-message-dictionary-alist": Value;
+      /**
+       * Whether Ispell-Minor mode is on in this buffer. Use the command ispell-minor-mode to change it.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-minor-mode": Value;
+      /**
+       * Keymap ispell-minor-mode-map.
+       */
+      "ispell-minor-mode-map": Value;
+      /**
+       * How text is parsed: `tex', or `use-mode-name' to use TeX for modes named so; otherwise nroff.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-parser": Value;
+      /**
+       * The keyword before how a file is parsed: latex-mode, nroff-mode, or ~ and an extended character mode.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-parsing-keyword": Value;
+      /**
+       * The keyword before the personal dictionary a file is checked with; the last one counts.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-pdict-keyword": Value;
+      /**
+       * Whether the personal dictionary has changes to save; a list while only the session's words changed.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-pdict-modified-p": Value;
+      /**
+       * Your personal dictionary's file, or nil for the checker's own.
        *
        * Defined in packages/ispell.ts.
        */
       "ispell-personal-dictionary": Value;
       /**
-       * The spell checker to run: aspell, ispell, hunspell or enchant-2, the first of them found.
+       * Whether a spelling session is running: t while one is.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-process": Value;
+      /**
+       * The directory the checker runs in.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-process-directory": Value;
+      /**
+       * The spell checker M-$ and ispell-region run: aspell, ispell, hunspell or enchant-2, the first of them found.
        *
        * Defined in packages/ispell.ts.
        */
       "ispell-program-name": Value;
       /**
-       * Whether adding words to your personal dictionary saves it without asking.
+       * Whether a correction is made throughout the region with query-replace.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-query-replace-choices": Value;
+      /**
+       * Whether M-$ says nothing when the word is right.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-quietly": Value;
+      /**
+       * Aspell's version, when the checker is Aspell.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-really-aspell": Value;
+      /**
+       * Enchant's version, when the checker is Enchant.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-really-enchant": Value;
+      /**
+       * Hunspell's version, when the checker is Hunspell.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-really-hunspell": Value;
+      /**
+       * Whether the personal dictionary is saved without asking.
        *
        * Defined in packages/ispell.ts.
        */
       "ispell-silently-savep": Value;
+      /**
+       * Whether HTML and SGML markup is skipped: t, nil, or `use-mode-name' to tell by the major mode.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-skip-html": Value;
+      /**
+       * Where regions not to check start and end: (KEY) skips the key, (KEY REGEXP) to the end of REGEXP, and (KEY FUNCTION ARGS...) to where FUNCTION leaves point. A key or REGEXP may be a variable holding the regexp.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-skip-region-alist": Value;
+      /**
+       * Whether `tib' bibliography references, [. to .], are skipped.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-skip-tib": Value;
+      /**
+       * The regions TeX mode skips: the first list as they are, the second with each key inside \begin{}.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-tex-skip-alists": Value;
+      /**
+       * Regexp matching the beginning of a Tib reference.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-tib-ref-beginning": Value;
+      /**
+       * Regexp matching the end of a Tib reference.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-tib-ref-end": Value;
+      /**
+       * Whether the choices show in a frame of their own; E8 always shows them in a window.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-use-framepop-p": Value;
+      /**
+       * Whether the checker talks through a pseudo-terminal; E8 always uses pipes.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-use-ptys-p": Value;
+      /**
+       * The keyword before the words a file accepts.
+       *
+       * Defined in packages/ispell.ts.
+       */
+      "ispell-words-keyword": Value;
       /**
        * How far JavaScript indents each level.
        *
@@ -9459,6 +10183,12 @@ declare global {
        * The directories `e8.require` looks in for a package that does not ship with E8, NAME.ts for the feature NAME, as Emacs's require looks along load-path: the packages directory of user-emacs-directory.
        */
       "load-path": Value;
+      /**
+       * Like enable-local-variables, but a -*- line's mode is still used; set it buffer-locally.
+       *
+       * Defined in packages/files.ts.
+       */
+      "local-enable-local-variables": Value;
       /**
        * The current buffer's major mode, as the name of the command that turns it on.
        */
@@ -10268,6 +10998,12 @@ declare global {
        */
       "parse-sexp-lookup-properties": Value;
       /**
+       * Local variables set even when local variables are not.
+       *
+       * Defined in packages/files.ts.
+       */
+      "permanently-enabled-local-variables": Value;
+      /**
        * Whether programs started with make-process talk through a pseudo-terminal, t, or pipes, nil.
        */
       "process-connection-type": Value;
@@ -10481,6 +11217,24 @@ declare global {
        * Keymap rust-ts-mode-map.
        */
       "rust-ts-mode-map": Value;
+      /**
+       * Expressions a file's `eval:' may run without asking.
+       *
+       * Defined in packages/files.ts.
+       */
+      "safe-local-eval-forms": Value;
+      /**
+       * Directories whose .dir-locals.el is trusted, risky or not, each absolute and ending in a slash.
+       *
+       * Defined in packages/files.ts.
+       */
+      "safe-local-variable-directories": Value;
+      /**
+       * Pairs (VAR . VAL) of values that are safe for those variables, as answering ! adds them.
+       *
+       * Defined in packages/files.ts.
+       */
+      "safe-local-variable-values": Value;
       /**
        * The file places are saved in: places in user-emacs-directory if nil.
        *
@@ -11005,6 +11759,12 @@ declare global {
        * Where temporary files are made.
        */
       "temporary-file-directory": Value;
+      /**
+       * How Text mode completes words from the plain word list ispell uses: `completion-at-point' offers them to C-M-i through completion-at-point-functions; t binds C-M-i to ispell-complete-word instead; nil does neither.
+       *
+       * Defined in packages/text-mode.ts.
+       */
+      "text-mode-ispell-word-completion": Value;
       /**
        * Keymap text-mode-map.
        */
@@ -12630,6 +13390,10 @@ declare global {
        */
       "before-change-functions": Value;
       /**
+       * Run before a file's local variables are set, when there are any, with file-local-variables-alist made.
+       */
+      "before-hack-local-variables-hook": Value;
+      /**
        * Run before revert-buffer replaces the text with the file's.
        */
       "before-revert-hook": Value;
@@ -12958,7 +13722,7 @@ declare global {
        */
       "grep-mode-hook": Value;
       /**
-       * Run after normal-mode chooses a buffer's major mode, as where Emacs applies its local variables.
+       * Run once a file's local variables are set, as major modes and editorconfig use to look at them.
        */
       "hack-local-variables-hook": Value;
       /**
@@ -13066,7 +13830,31 @@ declare global {
        */
       "isearch-update-post-hook": Value;
       /**
-       * Functions called after ispell changes or accepts a word, as flyspell uses to take its highlight off.
+       * Run after the dictionary changes.
+       */
+      "ispell-change-dictionary-hook": Value;
+      /**
+       * Run when a checker is first used, before ispell-dictionary-alist is made.
+       */
+      "ispell-initialize-spellchecker-hook": Value;
+      /**
+       * Run when the spelling session ends, as flyspell does to forget what it was told.
+       */
+      "ispell-kill-ispell-hook": Value;
+      /**
+       * Run after Ispell-Minor mode is turned on or off.
+       */
+      "ispell-minor-mode-hook": Value;
+      /**
+       * Run after Ispell-Minor mode is turned off.
+       */
+      "ispell-minor-mode-off-hook": Value;
+      /**
+       * Run after Ispell-Minor mode is turned on.
+       */
+      "ispell-minor-mode-on-hook": Value;
+      /**
+       * Run in the command loop before asking about a misspelling.
        */
       "ispell-update-post-hook": Value;
       /**
@@ -13911,6 +14699,19 @@ declare global {
     function capitalize(s: string): string;
     /** A string with each word's first character in title case and the rest as it is, as upcase-initials. */
     function upcaseInitials(s: string): string;
+    /**
+     * Read one Lisp datum from a string, from index `start`, as Emacs's
+     * read-from-string: the value, with nil as null, t as true, symbols as
+     * symbols and lists as arrays (a dotted end joining the list), and the
+     * index after it. Indexes count as JavaScript's do, so `string.slice`
+     * takes them. Signals end-of-file or invalid-read-syntax.
+     */
+    function readFromString(string: string, start?: number): [Value, number];
+    /**
+     * A value written as Lisp would read it back, as prin1-to-string; with
+     * `noescape`, strings and symbols as their text, as princ writes them.
+     */
+    function prin1ToString(value: Value, noescape?: boolean): string;
     /**
      * Move point to the character on its right on display, or its left for a
      * negative direction, wherever that is in the buffer, as

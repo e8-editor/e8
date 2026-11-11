@@ -1,4 +1,5 @@
 import { selectSafeCodingSystem } from "mule";
+import { regexpQuote } from "subr";
 
 // Choosing a major mode for a file, after Emacs's files.el.
 
@@ -11,23 +12,874 @@ e8.defineVariable({
   value: [["\\.te?xt\\'", "text-mode"]],
 });
 
-/**
- * The mode a file's first line asks for, as Emacs reads "-*- text -*-" or
- * "-*- mode: text -*-": the name with "-mode" added.
- */
-function modeFromFirstLine(): string | undefined {
-  const firstLine = e8.saveRestriction(() => {
-    e8.widen();
-    return e8.lineText(0);
-  });
-  const inside = /-\*-(.*?)-\*-/.exec(firstLine)?.[1]?.trim();
-  if (!inside) {
-    return undefined;
-  }
-  const mode = /(?:^|;)\s*mode:\s*([\w-]+)/i.exec(inside)?.[1] ?? (inside.includes(":") ? undefined : inside);
-  return mode === undefined ? undefined : `${mode.toLowerCase()}-mode`;
+// File-local variables, after files.el: a file sets variables for its own
+// buffer in its first line, -*- mode: org; fill-column: 60 -*-, or in a
+// list near its end, between "Local Variables:" and "End:". Values are
+// Lisp data, read as Lisp reads them. Safe values are set at once; for
+// others E8 asks first, as enable-local-variables says.
+
+const sym = (name: string): symbol => e8.intern(name);
+const v = (name: string): e8.Value | undefined => e8.variable(name);
+const list = (value: e8.Value | undefined): e8.Value[] => (Array.isArray(value) ? value : []);
+const nameOf = (s: e8.Value): string => (typeof s === "symbol" ? e8.symbolName(s) : String(s));
+const isSym = (value: e8.Value | undefined, name: string): boolean =>
+  typeof value === "symbol" ? e8.symbolName(value) === name : value === name;
+/** Lisp's truth: anything but nil. */
+const truthy = (value: e8.Value | undefined): boolean => value !== undefined && value !== null && value !== false;
+
+/** Whether two Lisp values are equal, as `equal` compares them. */
+function equal(a: e8.Value | undefined, b: e8.Value | undefined): boolean {
+  if (a === b) return true;
+  if (Array.isArray(a) && Array.isArray(b)) return a.length === b.length && a.every((x, i) => equal(x, b[i]));
+  if ((a === null || a === false || a === undefined) && (b === null || b === false || b === undefined)) return true;
+  return false;
 }
 
+/** A variable-value pair, as (VAR . VAL) in the alists below. */
+type Pair = [symbol, e8.Value];
+
+const defvar = (name: string, value: e8.Value, doc: string, local = false) => e8.defineVariable({ name, value, doc, local });
+defvar(
+  "enable-local-variables",
+  true,
+  "Whether files' local variables are set: t sets them when all are safe and asks once about the rest; :safe sets " +
+    "only the safe ones; :all sets them all; nil none; anything else asks every time. It also says whether a -*- line's mode is used.",
+);
+defvar("local-enable-local-variables", true, "Like enable-local-variables, but a -*- line's mode is still used; set it buffer-locally.", true);
+defvar("enable-local-eval", sym("maybe"), "Whether a file's `eval:' entries are run: t runs them, nil ignores them, anything else asks.");
+defvar("safe-local-variable-values", [], "Pairs (VAR . VAL) of values that are safe for those variables, as answering ! adds them.");
+defvar("ignored-local-variable-values", [], "Pairs (VAR . VAL) a file's local variables never set, as answering i adds them.");
+defvar(
+  "ignored-local-variables",
+  [sym("ignored-local-variables"), sym("safe-local-variable-values"), sym("file-local-variables-alist"), sym("dir-local-variables-alist")],
+  "Variables a file's local variables never set.",
+);
+defvar(
+  "safe-local-eval-forms",
+  [
+    [sym("add-hook"), [sym("quote"), sym("write-file-hooks")], [sym("quote"), sym("time-stamp")]],
+    [sym("add-hook"), [sym("quote"), sym("write-file-functions")], [sym("quote"), sym("time-stamp")]],
+    [sym("add-hook"), [sym("quote"), sym("before-save-hook")], [sym("quote"), sym("time-stamp")], null, true],
+    [sym("add-hook"), [sym("quote"), sym("before-save-hook")], [sym("quote"), sym("delete-trailing-whitespace")], null, true],
+  ],
+  "Expressions a file's `eval:' may run without asking.",
+);
+defvar("permanently-enabled-local-variables", [sym("lexical-binding"), sym("read-symbol-shorthands")], "Local variables set even when local variables are not.");
+defvar("file-local-variables-alist", [], "The pairs (VAR . VALUE) this buffer's file set as its local variables.", true);
+defvar("dir-local-variables-alist", [], "The pairs (VAR . VALUE) this buffer's directory set, from .dir-locals.el.", true);
+defvar(
+  "inhibit-local-variables-regexps",
+  ["\\.tar\\'", "\\.t[bg]z\\'", "\\.arc\\'", "\\.zip\\'", "\\.lzh\\'", "\\.lha\\'", "\\.zoo\\'", "\\.[jew]ar\\'", "\\.xpi\\'", "\\.rar\\'", "\\.7z\\'",
+    "\\.sx[dmicw]\\'", "\\.odt\\'", "\\.diff\\'", "\\.patch\\'", "\\.tiff?\\'", "\\.gif\\'", "\\.png\\'", "\\.jpe?g\\'"],
+  "File names whose files are not looked in for local variables, mostly binary formats.",
+);
+defvar("inhibit-local-variables-suffixes", [], "Suffixes taken off file names before inhibit-local-variables-regexps is matched.");
+defvar("inhibit-local-variables-ignore-case", true, "Whether inhibit-local-variables-regexps ignores case.");
+defvar("file-auto-mode-skip", "^\\(#!\\|'\\\\\"\\)", "A first line after which the -*- line is looked for on the second, as #! lines.");
+e8.defineHook("before-hack-local-variables-hook", "Run before a file's local variables are set, when there are any, with file-local-variables-alist made.");
+
+// Which variables are safe, as files.el marks those Emacs defines in C.
+for (const [name, predicate] of [
+  ["buffer-read-only", "booleanp"],
+  ["default-directory", "stringp"],
+  ["fill-column", "integerp"],
+  ["indent-tabs-mode", "booleanp"],
+  ["left-margin", "integerp"],
+  ["inhibit-compacting-font-caches", "booleanp"],
+  ["no-update-autoloads", "booleanp"],
+  ["lexical-binding", "booleanp"],
+  ["tab-width", "integerp"],
+  ["truncate-lines", "booleanp"],
+  ["word-wrap", "booleanp"],
+  ["bidi-display-reordering", "booleanp"],
+]) e8.put(name, "safe-local-variable", sym(predicate));
+e8.put("bidi-paragraph-direction", "safe-local-variable", (value: e8.Value) => [null, sym("right-to-left"), sym("left-to-right")].some((x) => equal(x, value)));
+for (const name of [
+  "after-load-alist", "buffer-auto-save-file-name", "buffer-file-name", "buffer-file-truename", "buffer-undo-list", "debugger",
+  "default-text-properties", "eval", "exec-directory", "exec-path", "file-name-handler-alist", "frame-title-format", "global-mode-string",
+  "header-line-format", "icon-title-format", "inhibit-quit", "load-path", "max-lisp-eval-depth", "minor-mode-map-alist",
+  "minor-mode-overriding-map-alist", "mode-line-format", "mode-name", "overriding-local-map", "overriding-terminal-local-map",
+  "process-environment", "standard-input", "standard-output", "unread-command-events", "ignored-local-variables",
+  "enable-local-variables", "enable-local-eval", "safe-local-variable-values", "ignored-local-variable-values", "safe-local-eval-forms",
+]) e8.put(name, "risky-local-variable", true);
+
+/** The predicates `safe-local-variable` properties name, as Lisp has them. */
+const PREDICATES: Record<string, (x: e8.Value) => boolean> = {
+  stringp: (x) => typeof x === "string",
+  integerp: (x) => typeof x === "number" && Number.isInteger(x),
+  natnump: (x) => typeof x === "number" && Number.isInteger(x) && x >= 0,
+  fixnump: (x) => typeof x === "number" && Number.isInteger(x),
+  numberp: (x) => typeof x === "number",
+  floatp: (x) => typeof x === "number",
+  booleanp: (x) => x === true || x === null || x === false,
+  symbolp: (x) => typeof x === "symbol" || x === null || x === true || x === false,
+  keywordp: (x) => typeof x === "symbol" && e8.symbolName(x).startsWith(":"),
+  characterp: (x) => typeof x === "number" && Number.isInteger(x) && x >= 0 && x <= 0x3fffff,
+  null: (x) => x === null || x === false,
+  "string-or-null-p": (x) => typeof x === "string" || x === null || x === false,
+  "list-of-strings-p": (x) => x === null || (Array.isArray(x) && x.every((s) => typeof s === "string")),
+  listp: (x) => x === null || Array.isArray(x),
+  consp: (x) => Array.isArray(x) && x.length > 0,
+};
+
+/** Calls a predicate a property names: a function, or the name of one. */
+function callPredicate(predicate: e8.Value, value: e8.Value): boolean {
+  if (typeof predicate === "function") return truthy(predicate(value) as e8.Value);
+  const name = nameOf(predicate);
+  if (PREDICATES[name] !== undefined) return PREDICATES[name](value);
+  if (e8.fboundp(name)) return truthy(e8.funcall(name, value) as e8.Value);
+  return false;
+}
+
+/** Whether a value is safe for a variable from a file, as safe-local-variable-p. */
+export function safeLocalVariableP(variable: symbol, value: e8.Value): boolean {
+  if (list(v("safe-local-variable-values")).some((pair) => equal(pair, [variable, value]))) return true;
+  const predicate = e8.get(variable, "safe-local-variable");
+  if (predicate === undefined || predicate === null || predicate === true) return false;
+  return e8.conditionCase(() => callPredicate(predicate, value), {
+    error: (e) => {
+      e8.message(`Local variable error: ${e.message}`);
+      return false;
+    },
+  });
+}
+
+/** Whether a variable could do harm when a file sets it, as risky-local-variable-p. */
+export function riskyLocalVariableP(variable: symbol): boolean {
+  return (
+    truthy(e8.get(variable, "risky-local-variable")) ||
+    /-hooks?$|-functions?$|-forms?$|-program$|-commands?$|-predicates?$|font-lock-keywords$|font-lock-keywords-[0-9]+$|font-lock-syntactic-keywords$|-frame-alist$|-mode-alist$|-map$|-map-alist$|-bindat-spec$/.test(
+      e8.symbolName(variable),
+    )
+  );
+}
+
+/** Whether this buffer's file is one not looked in for local variables, as inhibit-local-variables-p. */
+function inhibitLocalVariablesP(): boolean {
+  const caseFold = truthy(v("inhibit-local-variables-ignore-case"));
+  let name = e8.bufferFileName() ?? e8.bufferName();
+  for (;;) {
+    const suffix = list(v("inhibit-local-variables-suffixes")).map(String).find((re) => e8.stringMatch(re, name, { caseFold }) !== undefined);
+    if (suffix === undefined) break;
+    name = name.slice(0, e8.stringMatch(suffix, name, { caseFold }));
+  }
+  return list(v("inhibit-local-variables-regexps")).some((re) => e8.stringMatch(String(re), name, { caseFold }) !== undefined);
+}
+
+/** Where the -*- line's settings are, between its -*- marks, as set-auto-mode-1 finds them. */
+export function propLineBounds(): [number, number] | undefined {
+  if (inhibitLocalVariablesP()) return undefined;
+  return e8.saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    // After a #! line, the second line, as a script's first line is its interpreter's.
+    const first = e8.lineEndPosition(e8.pointMin());
+    const skip = e8.lookingAt(String(v("file-auto-mode-skip") ?? "^#!"));
+    const limit = skip && first < e8.pointMax() ? e8.lineEndPosition(first + 1) : first;
+    const open = e8.search("-*-", { from: e8.pointMin(), bound: limit });
+    if (open === undefined) return undefined;
+    e8.gotoChar(open.end);
+    e8.skipCharsForward(" \t");
+    const beg = e8.point();
+    const close = e8.search("-*-", { from: beg, bound: e8.lineEndPosition(beg) });
+    if (close === undefined) return undefined;
+    e8.gotoChar(close.start);
+    e8.skipCharsBackward(" \t", beg);
+    return [beg, e8.point()];
+  });
+}
+
+const LOCAL_VARIABLE = /^[ \t]*([^\][;"'?()\\ \t\n]+)[ \t]*:[ \t]*/;
+
+/** A mode named in a file as the major mode's command, as Emacs adds -mode. */
+const modeCommand = (value: e8.Value, downcase: boolean): string => {
+  const name = nameOf(value);
+  return `${downcase ? name.toLowerCase() : name}-mode`;
+};
+
+/**
+ * The -*- line's settings, as hack-local-variables-prop-line: with
+ * `handleMode` true, the major mode it names; otherwise the variables it
+ * sets, without `coding:`, and without `mode:` unless `handleMode` is nil.
+ */
+function propLineVariables(handleMode: boolean | "no-mode" | null): Pair[] | string | undefined {
+  const bounds = propLineBounds();
+  if (bounds === undefined) return handleMode === true ? undefined : [];
+  const [beg, end] = bounds;
+  const text = e8.bufferSubstringNoProperties(beg, end);
+  // The simple form, -*- MODENAME -*-.
+  const simple = /^[ \t]*([^ \t\n\r:;]+)[ \t]*-\*-/.exec(e8.bufferSubstringNoProperties(beg, e8.lineEndPosition(beg)));
+  if (simple) return handleMode === true ? `${simple[1]}-mode` : [];
+  const result: Pair[] = [];
+  let i = 0;
+  while (i < text.length) {
+    if (handleMode === true && result.length > 0) break;
+    const m = LOCAL_VARIABLE.exec(text.slice(i));
+    if (!m) {
+      e8.message(`Malformed mode-line: ${e8.prin1ToString(text.slice(i))} in buffer ${e8.prin1ToString(e8.bufferName())}`);
+      return handleMode === true ? undefined : [];
+    }
+    i += m[0].length;
+    const [value, after] = e8.readFromString(text, i);
+    i = after;
+    const keyname = m[1].toLowerCase();
+    if (handleMode === true) {
+      if (keyname === "mode") return modeCommand(value, true);
+    } else if (keyname !== "coding" && (handleMode === null || keyname !== "mode")) {
+      result.unshift([keyname === "mode" ? sym("mode") : sym(m[1]), value]);
+    }
+    while (i < text.length && " \t;".includes(text[i])) i++;
+  }
+  return handleMode === true ? undefined : result;
+}
+
+/**
+ * The variables in the Local Variables list near the end of the buffer, as
+ * hack-local-variables--find-variables: with `handleMode` true, the major
+ * mode it names.
+ */
+function listVariables(handleMode: boolean | "no-mode" | null): Pair[] | string | undefined {
+  return e8.saveExcursion(() => {
+    const result: Pair[] = [];
+    const max = e8.pointMax();
+    const from = Math.max(max - 3000, e8.pointMin());
+    const page = e8.search("\n\f", { from: max, backward: true, bound: from });
+    const start = page === undefined ? from : page.start;
+    const found = e8.search("Local Variables:", { from: start, caseFold: true });
+    if (found === undefined) return handleMode === true ? undefined : result;
+    e8.gotoChar(found.end);
+    e8.skipCharsForward(" \t");
+    const suffix = e8.bufferSubstringNoProperties(e8.point(), e8.lineEndPosition());
+    const prefix = e8.bufferSubstringNoProperties(e8.lineBeginningPosition(found.start), found.start);
+    const startpos = e8.lineEndPosition() + 1;
+    if (startpos > max) return handleMode === true ? undefined : result;
+    // The list ends at a line of the prefix, "End:" and the suffix.
+    const endRe = `^${regexpQuote(prefix)}[ \t]*End:[ \t]*${regexpQuote(suffix)}$`;
+    e8.gotoChar(startpos);
+    let endpos: number;
+    // Without an End: line it is not a list after all, and nothing is read.
+    if (e8.reSearchForward(endRe, { noerror: true, caseFold: true }) === undefined) {
+      e8.message("Local variables list is not properly terminated");
+      endpos = startpos;
+    } else endpos = e8.lineBeginningPosition(e8.point());
+    // Each line without its prefix and suffix.
+    const lines = e8.bufferSubstringNoProperties(startpos, Math.max(startpos, endpos)).split("\n");
+    if (lines[lines.length - 1] === "") lines.pop();
+    const body = lines
+      .map((line) => {
+        if (!line.startsWith(prefix)) e8.userError("Local variables entry is missing the prefix");
+        let rest = line.slice(prefix.length);
+        if (!rest.endsWith(suffix)) e8.userError("Local variables entry is missing the suffix");
+        if (suffix !== "") rest = rest.slice(0, rest.length - suffix.length);
+        return rest;
+      })
+      .join("\n");
+    let i = 0;
+    while (i < body.length) {
+      const eol = body.indexOf("\n", i);
+      const lineEnd = eol < 0 ? body.length : eol;
+      const m = LOCAL_VARIABLE.exec(body.slice(i, lineEnd + 1));
+      if (!m) e8.userError(`Malformed local variable line: ${e8.prin1ToString(body.slice(i, lineEnd))}`);
+      let variable = sym(m[1]);
+      if (m[1].toLowerCase() === "mode") variable = sym("mode");
+      i += m[0].length;
+      const [value, after] = e8.readFromString(body, i);
+      i = after;
+      const name = e8.symbolName(variable);
+      if (handleMode === true) {
+        if (name === "mode") {
+          const mode = nameOf(value).toLowerCase();
+          if (!/-minor$/.test(mode) && e8.commandExists(`${mode}-mode`)) return `${mode}-mode`;
+        }
+      } else if (name === "coding") {
+        // Used when the file was read, as set-auto-coding does.
+      } else if (name === "mode" && handleMode !== null) {
+        // The mode was chosen already.
+      } else {
+        result.unshift([variable, value]);
+      }
+      // On to the next line.
+      const next = body.indexOf("\n", i);
+      i = next < 0 ? body.length : next + 1;
+    }
+    return handleMode === true ? undefined : result;
+  });
+}
+
+/** Whether a quoted form, (quote X). */
+const quotep = (exp: e8.Value): exp is e8.Value[] => Array.isArray(exp) && exp.length === 2 && isSym(exp[0], "quote");
+
+/** Whether an `eval:` form is safe to run without asking, as hack-one-local-variable-eval-safep. */
+function evalSafeP(exp: e8.Value): boolean {
+  if (!Array.isArray(exp) || exp.length === 0) return true;
+  const [head, ...args] = exp;
+  if (isSym(head, "put") && quotep(args[0]) && quotep(args[1])) {
+    const prop = nameOf(args[1][1]);
+    const value = args[2];
+    if (["lisp-indent-hook", "lisp-indent-function", "scheme-indent-function"].includes(prop)) {
+      return typeof value === "number" || (quotep(value) && isSym(value[1], "defun"));
+    }
+  }
+  if (list(v("safe-local-eval-forms")).some((form) => equal(form, exp))) return true;
+  if (typeof head !== "symbol") return false;
+  const name = e8.symbolName(head);
+  if (/-mode$/.test(name) && (args.length === 0 || (args.length === 1 && [1, 0, -1].includes(args[0] as number)))) return true;
+  const prop = e8.get(head, "safe-local-eval-function");
+  if (prop === true) return args.every((a) => !Array.isArray(a) || quotep(a));
+  if (typeof prop === "function" || typeof prop === "symbol") return callPredicate(prop, exp);
+  if (Array.isArray(prop)) return prop.some((p) => callPredicate(p, exp));
+  return false;
+}
+
+/** The function a hook is given for a name, the same one each time, so adding it again adds nothing and removing it removes it, as with a symbol in Lisp. */
+const hookFunctions = new Map<string, (...args: e8.Value[]) => unknown>();
+function hookFunction(name: string): (...args: e8.Value[]) => unknown {
+  let fn = hookFunctions.get(name);
+  if (fn === undefined) {
+    fn = (...args: e8.Value[]) => e8.funcall(name, ...args);
+    hookFunctions.set(name, fn);
+  }
+  return fn;
+}
+
+/**
+ * Runs an `eval:` form. E8 has no Lisp, so it runs what a file's local
+ * variables usually do: setting variables, adding a function to a hook,
+ * and calling a function or command, with constant or quoted arguments.
+ */
+function evalForm(exp: e8.Value): e8.Value {
+  if (typeof exp === "symbol") {
+    const name = e8.symbolName(exp);
+    return name.startsWith(":") ? exp : (v(name) ?? null);
+  }
+  if (!Array.isArray(exp) || exp.length === 0) return exp;
+  const [head, ...args] = exp;
+  const name = nameOf(head);
+  if (name === "quote" || name === "function") return args[0] ?? null;
+  if (name === "progn") return args.reduce<e8.Value>((_, a) => evalForm(a), null);
+  if (name === "setq" || name === "setq-local") {
+    let last: e8.Value = null;
+    for (let k = 0; k + 1 < args.length; k += 2) {
+      const variable = nameOf(args[k]);
+      last = evalForm(args[k + 1]);
+      if (name === "setq-local") e8.makeLocalVariable(variable);
+      e8.setVariable(variable, last);
+    }
+    return last;
+  }
+  const values = args.map(evalForm);
+  if (name === "add-hook" || name === "remove-hook") {
+    const hook = nameOf(values[0]);
+    const fn = values[1];
+    const run = typeof fn === "function" ? fn : hookFunction(nameOf(fn));
+    const local = truthy(values[name === "add-hook" ? 3 : 2]);
+    if (name === "add-hook") e8.addHook(hook, run, { local, ...(truthy(values[2]) ? { append: true } : {}) });
+    else e8.removeHook(hook, run, { local });
+    return null;
+  }
+  if (e8.fboundp(name)) return e8.funcall(name, ...values) as e8.Value;
+  if (e8.commandExists(name)) {
+    if (/-mode$/.test(name)) e8.callWithPrefix(values.length === 0 ? 1 : (values[0] as e8.PrefixArg), name as e8.CommandName);
+    else (e8.call as (command: string, ...rest: e8.Value[]) => void)(name, ...values);
+    return null;
+  }
+  return e8.signal("void-function", `Symbol’s function definition is void: ${name}`, [head]);
+}
+
+/**
+ * Asks whether to set a file's local variables, showing them in *Local
+ * Variables*, as hack-local-variables-confirm: true to set them.
+ */
+function confirm(all: Pair[], unsafe: Pair[], risky: Pair[], dirName?: string): boolean {
+  if (truthy(v("noninteractive"))) return false;
+  const file = e8.bufferFileName();
+  const name = dirName ?? (file !== undefined ? e8.fileNameNondirectory(file) : `buffer ${e8.bufferName()}`);
+  const offerSave = v("enable-local-variables") === true && unsafe.length > 0;
+  const buffer = "*Local Variables*";
+  e8.withCurrentBuffer(e8.getBufferCreate(buffer), () => {
+    e8.letBind({ "inhibit-read-only": true }, () => e8.deleteRegion(e8.pointMin(), e8.pointMax()));
+    if (unsafe.length > 0) {
+      e8.insert(`The local variables list in ${name}\nor .dir-locals.el contains values that may not be safe (*)${risky.length > 0 ? ", and variables that are risky (**)." : "."}`);
+    } else if (risky.length > 0) {
+      e8.insert(`The local variables list in ${name}\ncontains variables that are risky (**).`);
+    } else e8.insert(`A local variables list is specified in ${name}.`);
+    e8.insert("\n\nDo you want to apply it?  You can type\ny  -- to apply the local variables list.\nn  -- to ignore the local variables list.");
+    if (offerSave) {
+      e8.insert(
+        "\n!  -- to apply the local variables list, and permanently mark these\n      values (*) as safe (in the future, they will be set automatically.)" +
+          "\ni  -- to ignore the local variables list, and permanently mark these\n      values (*) as ignored" +
+          (dirName !== undefined
+            ? "\n+  -- to apply the local variables list, and trust all directory-local\n      variables in this directory\n\n"
+            : "\n\n"),
+      );
+    } else e8.insert("\n\n");
+    for (const pair of all) {
+      const mark = unsafe.includes(pair) ? "  * " : risky.includes(pair) ? " ** " : "    ";
+      e8.insert(`${mark}${e8.symbolName(pair[0])} : ${e8.prin1ToString(pair[1]).replace(/\n/g, "\\n")}\n`);
+    }
+    e8.setBufferModified(false);
+    e8.gotoChar(e8.pointMin());
+  });
+  const exits = offerSave ? `yn !i${dirName !== undefined ? "+" : ""}` : "yn ";
+  const prompt = `Please type ${offerSave ? (dirName !== undefined ? "y, n, !, i, +" : "y, n, !, i") : "y or n"}: `;
+  const answer = e8.saveWindowExcursion(() => {
+    e8.call("pop-to-buffer", buffer);
+    return e8.readCharChoice(prompt, exits);
+  });
+  if (offerSave && dirName !== undefined && answer === "+") {
+    e8.setDefault("safe-local-variable-directories", [dirName, ...list(e8.defaultValue("safe-local-variable-directories"))]);
+  }
+  if (offerSave && (answer === "!" || answer === "i")) {
+    // Emacs saves the choice with customize-push-and-save; E8 keeps it for the session.
+    const variable = answer === "!" ? "safe-local-variable-values" : "ignored-local-variable-values";
+    e8.setDefault(variable, [...unsafe, ...list(e8.defaultValue(variable))]);
+  }
+  e8.call("kill-buffer", buffer);
+  return ["!", " ", "y", "+"].includes(answer);
+}
+
+/** Whether two names are the same directory, with or without a trailing slash, as file-equal-p tells. */
+function sameDirectory(a: string, b: string): boolean {
+  return e8.directoryFileName(e8.expandFileName(a)) === e8.directoryFileName(e8.expandFileName(b));
+}
+
+/** Runs `fn`, an error in it only a message, as with-demoted-errors: `fallback` then; a quit still quits. */
+function withDemotedErrors<T>(what: string, fn: () => T, fallback: T): T {
+  return e8.conditionCase(fn, {
+    error: (e) => {
+      e8.message(`${what}: ${e.message}`);
+      return fallback;
+    },
+  });
+}
+
+/**
+ * Decides which of a file's variables to set, asking if need be, into
+ * file-local-variables-alist, as hack-local-variables-filter: `dirName`
+ * when they come from that directory's .dir-locals.el.
+ */
+function filterVariables(variables: Pair[], dirName?: string): void {
+  const all: Pair[] = [];
+  const risky: Pair[] = [];
+  const unsafe: Pair[] = [];
+  const enable = v("enable-local-variables");
+  const safeOnly = isSym(enable, ":safe");
+  for (const pair of variables) {
+    const [variable, value] = pair;
+    const name = e8.symbolName(variable);
+    if (list(v("ignored-local-variables")).some((x) => isSym(x, name))) continue;
+    if (list(v("ignored-local-variable-values")).some((x) => equal(x, pair))) continue;
+    if (name === "eval") {
+      const localEval = v("enable-local-eval");
+      if (truthy(localEval)) {
+        const safe = evalSafeP(value) || safeLocalVariableP(variable, value);
+        if (safe || !safeOnly) {
+          all.unshift(pair);
+          if (localEval !== true && !safe) unsafe.unshift(pair);
+        }
+      }
+    } else if (all.some((p) => p[0] === variable) && name !== "mode") {
+      continue;
+    } else if (["mode", "unibyte", "coding"].includes(name) || safeLocalVariableP(variable, value)) {
+      all.unshift(pair);
+    } else if (!safeOnly) {
+      all.unshift(pair);
+      if (riskyLocalVariableP(variable)) risky.unshift(pair);
+      else unsafe.unshift(pair);
+    }
+  }
+  if (all.length === 0) return;
+  const trusted =
+    dirName !== undefined &&
+    list(v("safe-local-variable-directories")).some((d) => typeof d === "string" && sameDirectory(d, dirName));
+  const ok =
+    (enable === true && unsafe.length === 0 && risky.length === 0) ||
+    isSym(enable, ":all") ||
+    safeOnly ||
+    trusted ||
+    confirm(all, unsafe, risky, dirName);
+  if (!ok) return;
+  let alist = list(v("file-local-variables-alist")) as Pair[];
+  for (const pair of all) {
+    const name = e8.symbolName(pair[0]);
+    if (name !== "eval" && name !== "mode") {
+      if (dirName === undefined) {
+        e8.setVariable("dir-local-variables-alist", (list(v("dir-local-variables-alist")) as Pair[]).filter((p) => p[0] !== pair[0]));
+      }
+      alist = alist.filter((p) => p[0] !== pair[0]);
+    }
+    alist = [pair, ...alist];
+  }
+  e8.setVariable("file-local-variables-alist", alist);
+}
+
+/** Sets one variable a file names, as hack-one-local-variable: `mode` turns its mode on, `eval` runs. */
+function hackOneLocalVariable(variable: symbol, value: e8.Value): void {
+  const name = e8.symbolName(variable);
+  if (name === "mode") {
+    const mode = modeCommand(value, true);
+    if (mode === v("major-mode")) return;
+    if (!e8.commandExists(mode)) {
+      e8.message(`Ignoring unknown mode ‘${mode}’`);
+      return;
+    }
+    e8.callWithPrefix(1, mode as e8.CommandName);
+  } else if (name === "eval") {
+    e8.saveExcursion(() => evalForm(value));
+  } else {
+    e8.makeLocalVariable(name);
+    e8.setVariable(name, value);
+  }
+}
+
+/** Sets the variables in file-local-variables-alist, then runs hack-local-variables-hook, as hack-local-variables-apply. */
+function applyVariables(): void {
+  const alist = list(v("file-local-variables-alist")) as Pair[];
+  if (alist.length > 0) {
+    const ordered = [...alist].reverse();
+    e8.setVariable("file-local-variables-alist", ordered);
+    e8.runHooks("before-hack-local-variables-hook");
+    for (const [variable, value] of list(v("file-local-variables-alist")) as Pair[]) hackOneLocalVariable(variable, value);
+  }
+  e8.runHooks("hack-local-variables-hook");
+}
+
+/**
+ * Sets this buffer's file-local variables, as hack-local-variables: with
+ * `handleMode` true, only returns the major mode the file names; with
+ * `no-mode`, leaves out `mode:`.
+ */
+export function hackLocalVariables(handleMode: boolean | "no-mode" | null = null, inhibitLocals = false): string | undefined {
+  const enable = !inhibitLocals && truthy(v("local-enable-local-variables")) ? (v("enable-local-variables") ?? null) : null;
+  return e8.letBind({ "enable-local-variables": enable }, () => {
+    const enabled = truthy(v("enable-local-variables"));
+    if (handleMode === true) {
+      if (!enabled || inhibitLocalVariablesP()) return undefined;
+      return (propLineVariables(true) as string | undefined) ?? (listVariables(true) as string | undefined);
+    }
+    e8.setVariable("file-local-variables-alist", []);
+    withDemotedErrors("Directory-local variables error", hackDirLocalVariables, undefined);
+    const result = [...(listVariables(handleMode) as Pair[]), ...(propLineVariables(handleMode) as Pair[])];
+    if (enabled && !inhibitLocalVariablesP()) filterVariables(result);
+    else {
+      const always = list(v("permanently-enabled-local-variables"));
+      const kept = result.filter((p) => always.some((x) => isSym(x, e8.symbolName(p[0]))));
+      e8.setVariable("file-local-variables-alist", [...kept, ...(list(v("file-local-variables-alist")) as Pair[])]);
+    }
+    applyVariables();
+    return undefined;
+  });
+}
+
+// Directory-local variables, after files.el: a .dir-locals.el file in a
+// directory, or one above it, sets variables for the files under it, by
+// major mode and by subdirectory, as ((org-mode . ((fill-column . 60)))).
+// .dir-locals-2.el beside it overrides it. They are read with the file's
+// own local variables, and asked about the same way.
+
+defvar("dir-locals-file", ".dir-locals.el", "The file that holds a directory's local variables; NAME-2.el beside it overrides it.");
+defvar("enable-dir-local-variables", true, "Whether directory-local variables are used, as modes may turn off for their buffers.", true);
+defvar("enable-remote-dir-locals", false, "Whether directory-local variables apply to remote files.");
+defvar("safe-local-variable-directories", [], "Directories whose .dir-locals.el is trusted, risky or not, each absolute and ending in a slash.");
+defvar("dir-locals-class-alist", [], "Each class of directory-local variables and its variables, as (CLASS . VARIABLES).");
+defvar("dir-locals-directory-cache", [], "Each directory with a class of directory-local variables: (DIR CLASS MTIME), MTIME that of its files when read.");
+defvar(
+  "hack-dir-local-get-variables-functions",
+  [sym("hack-dir-local--get-variables")],
+  "Functions that give the directory-local variables for the buffer, as (DIR . ALIST) or a list of them.",
+);
+for (const name of ["safe-local-variable-directories", "enable-dir-local-variables", "dir-locals-class-alist", "dir-locals-directory-cache"]) {
+  e8.put(name, "risky-local-variable", true);
+}
+
+/**
+ * A (VAR . VALUE) entry of an alist as E8 reads it, its dotted end joining
+ * the list: the value is the one element after the variable, or the rest
+ * when there are more, and for `eval` always the rest, the form.
+ */
+function pairOf(entry: e8.Value): Pair | undefined {
+  if (!Array.isArray(entry) || entry.length === 0 || typeof entry[0] !== "symbol") return undefined;
+  const rest = entry.slice(1);
+  if (e8.symbolName(entry[0]) === "eval") return [entry[0], rest.length === 0 ? null : rest];
+  return [entry[0], rest.length === 0 ? null : rest.length === 1 ? rest[0] : rest];
+}
+
+/** A class's entries: a mode, nil or a subdirectory, each with what follows it. */
+type DirEntry = [e8.Value, ...e8.Value[]];
+
+/** The dir-locals files in a directory, lowest priority first, as dir-locals--all-files. */
+function dirLocalsAllFiles(directory: string): string[] {
+  if (!e8.fileReadableP(directory)) return [];
+  const file1 = e8.expandFileName(String(v("dir-locals-file") ?? ".dir-locals.el"), directory);
+  const file2 = /\.el$/.test(file1) ? file1.replace(/\.el$/, "-2.el") : undefined;
+  const out: string[] = [];
+  for (const f of [file2, file1]) {
+    if (f !== undefined && e8.fileReadableP(f) && e8.fileAttributes(f)?.type !== "directory") out.unshift(f);
+  }
+  return out;
+}
+
+/** The latest modification time of a directory's dir-locals files. */
+function latestTime(files: string[]): number {
+  return files.reduce((latest, f) => Math.max(latest, e8.fileAttributes(f)?.modified ?? 0), 0);
+}
+
+/** The directory, with a slash, of a file or directory name. */
+const asDirectory = (name: string): string => (name.endsWith("/") ? name : `${name}/`);
+
+/**
+ * Where a file's directory-local variables come from, as
+ * dir-locals-find-file: a valid cache entry, the directory holding a
+ * dir-locals file, or undefined.
+ */
+function dirLocalsFindFile(fileIn: string): e8.Value[] | string | undefined {
+  // A directory name keeps its slash, so it is looked for in itself.
+  const file = e8.expandFileName(fileIn);
+  let localsDir: string | undefined;
+  for (let dir = e8.fileNameDirectory(file); dir !== undefined; ) {
+    if (dirLocalsAllFiles(dir).length > 0) {
+      localsDir = asDirectory(e8.expandFileName(dir));
+      break;
+    }
+    const parent = e8.fileNameDirectory(dir.replace(/\/$/, ""));
+    if (parent === undefined || parent === dir) break;
+    dir = parent;
+  }
+  let best: e8.Value[] | undefined;
+  for (const elt of list(v("dir-locals-directory-cache"))) {
+    if (!Array.isArray(elt) || typeof elt[0] !== "string") continue;
+    if (file.startsWith(elt[0]) && elt[0].length > String(best?.[0] ?? "").length) best = elt;
+  }
+  if (best !== undefined && (localsDir === undefined || localsDir.length <= String(best[0]).length)) {
+    const mtime = best[2];
+    if (mtime === null || mtime === undefined || mtime === false) return best;
+    const files = dirLocalsAllFiles(String(best[0]));
+    if (files.length > 0 && latestTime(files) === mtime) return best;
+    const stale = best;
+    e8.setDefault("dir-locals-directory-cache", list(v("dir-locals-directory-cache")).filter((e) => e !== stale));
+    return localsDir;
+  }
+  return localsDir;
+}
+
+/** The depth of a mode, how many parents it has, as dir-locals sorts by it. */
+function sortScore(entry: e8.Value[]): number {
+  const key = entry[0];
+  if (key === null || key === false) return -1;
+  if (typeof key === "symbol") return e8.derivedModeAllParents(e8.symbolName(key)).length;
+  if (typeof key === "string") return 1000 + key.length;
+  return -2;
+}
+
+/** Sorts a class's entries so later ones are more specific, as dir-locals--sort-variables. */
+function sortVariables(variables: e8.Value[][]): e8.Value[][] {
+  const sorted = variables.map((e, i) => [e, i] as const).sort((a, b) => sortScore(a[0]) - sortScore(b[0]) || a[1] - b[1]).map((x) => x[0]);
+  return sorted.map((n) => (typeof n[0] === "string" ? [n[0], ...sortVariables(n.slice(1).filter(Array.isArray) as e8.Value[][])] : n));
+}
+
+/** Merges two files' entries for one key, the second's settings winning and every `eval` kept, as map-merge-with does. */
+function mergeEntryValues(a: e8.Value[], b: e8.Value[]): e8.Value[] {
+  const isEval = (e: e8.Value) => Array.isArray(e) && isSym(e[0], "eval");
+  const merged: e8.Value[] = [];
+  for (const e of [...a.filter((x) => !isEval(x)), ...b.filter((x) => !isEval(x))]) {
+    const key = Array.isArray(e) ? e[0] : e;
+    const at = merged.findIndex((m) => equal(Array.isArray(m) ? m[0] : m, key));
+    if (at >= 0) merged[at] = e;
+    else merged.push(e);
+  }
+  return [...merged, ...a.filter(isEval), ...b.filter(isEval)];
+}
+
+/** Reads a directory's dir-locals files into a class named after it, as dir-locals-read-from-dir. */
+function dirLocalsReadFromDir(dir: string): symbol {
+  const className = sym(dir);
+  const files = dirLocalsAllFiles(dir);
+  let variables: e8.Value[][] = [];
+  let latest = 0;
+  // The values the files gave are kept if one fails, but then the cache is not to be trusted.
+  const success = withDemotedErrors("Error reading dir-locals", () => {
+    for (const file of files) {
+      latest = Math.max(latest, e8.fileAttributes(file)?.modified ?? 0);
+      const text = e8.readTextFile(file);
+      // An empty file, or one cut short, gives nothing.
+      let newvars = e8.conditionCase<e8.Value>(() => e8.readFromString(text)[0], { "end-of-file": () => null });
+      if (newvars !== null && !Array.isArray(newvars)) {
+        e8.message(`Invalid data in ${file}: ${e8.prin1ToString(newvars)}`);
+        newvars = null;
+      }
+      const fresh = (newvars ?? []).filter(Array.isArray) as e8.Value[][];
+      if (variables.length === 0 || fresh.length === 0) variables = variables.length === 0 ? fresh : variables;
+      else {
+        const out = variables.map((e) => [...e]);
+        for (const entry of fresh) {
+          const at = out.findIndex((o) => equal(o[0], entry[0]));
+          if (at >= 0) out[at] = [entry[0], ...mergeEntryValues(out[at].slice(1), entry.slice(1))];
+          else out.push(entry);
+        }
+        variables = out;
+      }
+    }
+    return latest;
+  }, 0);
+  setClassVariables(className, sortVariables(variables));
+  setDirectoryClass(dir, className, success);
+  return className;
+}
+
+/** Maps a class to its variables, as dir-locals-set-class-variables. */
+export function setClassVariables(className: e8.Value, variables: e8.Value[]): void {
+  const alist = list(e8.defaultValue("dir-locals-class-alist")).filter((e) => !(Array.isArray(e) && equal(e[0], className)));
+  e8.setDefault("dir-locals-class-alist", [[className, ...variables], ...alist]);
+}
+
+/** Declares a directory an instance of a class, as dir-locals-set-directory-class. */
+export function setDirectoryClass(directory: string, className: e8.Value, mtime: number | null = null): void {
+  const dir = asDirectory(e8.expandFileName(directory));
+  if (!list(e8.defaultValue("dir-locals-class-alist")).some((e) => Array.isArray(e) && equal(e[0], className))) {
+    e8.signal("error", `No such class ‘${nameOf(className)}’`);
+  }
+  e8.setDefault("dir-locals-directory-cache", [[dir, className, mtime], ...list(e8.defaultValue("dir-locals-directory-cache"))]);
+}
+
+function classVariables(className: e8.Value): e8.Value[][] {
+  const entry = list(v("dir-locals-class-alist")).find((e) => Array.isArray(e) && equal(e[0], className));
+  return Array.isArray(entry) ? (entry.slice(1).filter(Array.isArray) as e8.Value[][]) : [];
+}
+
+/** Adds a mode's settings to the variables, the last setting of each winning, as dir-locals-collect-mode-variables. */
+function collectModeVariables(modeVariables: e8.Value[], variables: Pair[]): Pair[] {
+  let out = variables;
+  for (const entry of modeVariables) {
+    const pair = pairOf(entry);
+    if (pair === undefined) continue;
+    const at = out.findIndex((p) => p[0] === pair[0]);
+    if (at >= 0 && !["mode", "eval"].includes(e8.symbolName(pair[0]))) {
+      out = out.slice();
+      out[at] = pair;
+    } else out = [pair, ...out];
+  }
+  return out;
+}
+
+/** The variables of a class that apply to this buffer, as dir-locals-collect-variables. */
+function collectVariables(classVars: e8.Value[][], root: string, variablesIn: Pair[], predicate?: (key: e8.Value) => boolean): Pair[] {
+  const fileName = e8.bufferFileName() ?? e8.expandFileName(String(v("default-directory") ?? "~/"));
+  const sub = e8.fileNameAbsoluteP(fileName) ? fileName.slice(root.length) : undefined;
+  let variables = variablesIn;
+  // The file may hold anything, a merge conflict say; that should not stop the file being visited.
+  return withDemotedErrors(`${String(v("dir-locals-file"))} error`, () => {
+    for (const entry of classVars) {
+      const key = entry[0];
+      if (typeof key === "string") {
+        if (sub !== undefined && sub.length >= key.length && sub.startsWith(key)) {
+          variables = collectVariables(entry.slice(1).filter(Array.isArray) as e8.Value[][], root, variables, predicate);
+        }
+      } else if (predicate ? predicate(key) : key === null || key === false || (typeof key === "symbol" && e8.derivedModeP(e8.symbolName(key)))) {
+        let alist = entry.slice(1);
+        const subdirs = alist.find((e) => Array.isArray(e) && isSym(e[0], "subdirs"));
+        if (subdirs !== undefined) alist = alist.filter((e) => e !== subdirs);
+        const subdirsValue = subdirs === undefined ? undefined : pairOf(subdirs)?.[1];
+        if (subdirs === undefined || truthy(subdirsValue) || root === asDirectory(e8.expandFileName(String(v("default-directory") ?? "")))) {
+          variables = collectModeVariables(alist, variables);
+        }
+      }
+    }
+    return variables;
+  }, [] as Pair[]);
+}
+
+/** This buffer's directory-local variables, as (DIR . ALIST), as hack-dir-local--get-variables. */
+function getDirLocalVariables(predicate?: (key: e8.Value) => boolean): [string, Pair[]] | undefined {
+  if (!truthy(v("enable-local-variables")) || !truthy(v("enable-dir-local-variables"))) return undefined;
+  const found = dirLocalsFindFile(e8.bufferFileName() ?? String(v("default-directory") ?? "~/"));
+  let className: e8.Value | undefined;
+  let dirName: string | undefined;
+  if (typeof found === "string") {
+    dirName = found;
+    className = dirLocalsReadFromDir(found);
+  } else if (Array.isArray(found)) {
+    dirName = String(found[0]);
+    className = found[1];
+  }
+  if (className === undefined || dirName === undefined) return undefined;
+  return [dirName, collectVariables(classVariables(className), dirName, [], predicate)];
+}
+e8.defun("hack-dir-local--get-variables", () => {
+  const got = getDirLocalVariables();
+  return got === undefined ? null : [got[0], ...got[1]];
+});
+
+/**
+ * Takes up this buffer's directory-local variables into
+ * dir-local-variables-alist and file-local-variables-alist, asking about
+ * unsafe ones, without setting them, as hack-dir-local-variables.
+ */
+export function hackDirLocalVariables(): void {
+  let items: [string, Pair[]][] = [];
+  if (truthy(v("enable-local-variables")) && truthy(v("enable-dir-local-variables"))) {
+    // (DIR . ALIST) as E8 reads it: the directory, then the pairs.
+    const item = (r: e8.Value[]): [string, Pair[]] => [String(r[0]), r.slice(1).map(pairOf).filter((p): p is Pair => p !== undefined)];
+    for (const fn of list(v("hack-dir-local-get-variables-functions"))) {
+      if (fn === sym("hack-dir-local--get-variables")) {
+        const got = getDirLocalVariables();
+        if (got !== undefined) items = [got, ...items];
+        continue;
+      }
+      const result = (typeof fn === "function" ? fn() : e8.funcall(nameOf(fn))) as e8.Value;
+      if (!Array.isArray(result) || result.length === 0) continue;
+      if (typeof result[0] === "string") items = [item(result), ...items];
+      else for (const r of result) if (Array.isArray(r) && typeof r[0] === "string") items = [item(r), ...items];
+    }
+  }
+  // Nearest directory first, and a variable it sets left out of those further up.
+  items = items.reverse().sort((a, b) => b[0].length - a[0].length);
+  let seen: symbol[] = [];
+  for (const item of items) {
+    if (seen.length > 0) item[1] = item[1].filter((p) => !seen.includes(p[0]));
+    seen = [...item[1].map((p) => p[0]).filter((s) => !["eval", "mode"].includes(e8.symbolName(s))), ...seen];
+  }
+  for (const [dirName, variables] of items) {
+    if (variables.length === 0) continue;
+    let dirAlist = list(v("dir-local-variables-alist")) as Pair[];
+    for (const pair of variables) {
+      if (e8.symbolName(pair[0]) === "coding") {
+        e8.message("Coding cannot be specified by dir-locals");
+        continue;
+      }
+      if (!["eval", "mode"].includes(e8.symbolName(pair[0]))) dirAlist = dirAlist.filter((p) => p[0] !== pair[0]);
+      dirAlist = [pair, ...dirAlist];
+    }
+    e8.setVariable("dir-local-variables-alist", dirAlist);
+    filterVariables(variables, dirName);
+  }
+}
+
+/** Sets directory-local variables in a buffer with no file, from default-directory, as Dired's do, as hack-dir-local-variables-non-file-buffer. */
+export function hackDirLocalVariablesNonFileBuffer(): void {
+  withDemotedErrors("Directory-local variables error", hackDirLocalVariables, undefined);
+  applyVariables();
+}
+
+/** The dir-locals file a buffer's directory-local variables come from, or undefined, for files-x.ts. */
+export function dirLocalsFileFor(file: string): string | e8.Value[] | undefined {
+  return dirLocalsFindFile(file);
+}
+export { dirLocalsAllFiles };
+
+e8.defun("hack-dir-local-variables", () => hackDirLocalVariables());
+e8.defun("hack-dir-local-variables-non-file-buffer", () => hackDirLocalVariablesNonFileBuffer());
+e8.defun("dir-locals-set-class-variables", (className: e8.Value, variables: e8.Value) => setClassVariables(className, list(variables)));
+e8.defun("dir-locals-set-directory-class", (directory: string, className: e8.Value, mtime?: number) => setDirectoryClass(directory, className, mtime ?? null));
+e8.defun("dir-locals-find-file", (file: string) => dirLocalsFindFile(file) ?? null);
+
+e8.defun("hack-local-variables", (handleMode?: e8.Value, inhibitLocals?: e8.Value) =>
+  hackLocalVariables(handleMode === undefined || handleMode === null ? null : handleMode === true ? true : "no-mode", truthy(inhibitLocals ?? null)) ?? null,
+);
+e8.defun("safe-local-variable-p", (variable: e8.Value, value: e8.Value) => safeLocalVariableP(sym(nameOf(variable)), value));
+e8.defun("risky-local-variable-p", (variable: e8.Value) => riskyLocalVariableP(sym(nameOf(variable))));
+e8.defun("hack-local-variables-apply", () => applyVariables());
+
+
+/** The mode the file's name asks for, through auto-mode-alist. */
 function modeFromFileName(): string | undefined {
   const file = e8.bufferFileName();
   const alist = e8.variable("auto-mode-alist");
@@ -44,23 +896,33 @@ function modeFromFileName(): string | undefined {
   return undefined;
 }
 
+e8.defineHook("hack-local-variables-hook", "Run once a file's local variables are set, as major modes and editorconfig use to look at them.");
+
 e8.defineCommand({
   name: "normal-mode",
   doc:
-    "Choose the current buffer's major mode, as when its file is visited.\n\n" +
-    "A mode named on the first line, as in -*- text -*-, comes first; then auto-mode-alist, " +
-    "matched against the file name; otherwise Fundamental mode.",
-  run: () => {
-    const mode = [modeFromFirstLine(), modeFromFileName()].find(
-      (mode) => mode !== undefined && e8.commandExists(mode),
-    );
-    e8.call((mode ?? "fundamental-mode") as e8.CommandName);
-    // As hack-local-variables ends, once the mode is set; editorconfig applies its settings here.
-    e8.runHooks("hack-local-variables-hook");
+    "Choose the current buffer's major mode, as when its file is visited, and set the file's local variables.\n\n" +
+    "A mode named on the first line, as in -*- text -*-, or in the Local Variables list comes first; then " +
+    "auto-mode-alist, matched against the file name; otherwise Fundamental mode. Run as a command, it sets the " +
+    "local variables whatever enable-local-variables says, asking about unsafe ones; visiting a file obeys it.",
+  params: [{ name: "find-file", kind: "prefix" }],
+  run: (findFile: e8.PrefixArg) => {
+    const enable = findFile === null ? true : (v("enable-local-variables") ?? null);
+    e8.letBind({ "enable-local-variables": enable }, () => {
+      const mode = e8.conditionCase(
+        () => [hackLocalVariables(true), modeFromFileName()].find((m) => m !== undefined && e8.commandExists(m)),
+        {
+          error: (e) => {
+            e8.message(`File mode specification error: ${e.message}`);
+            return undefined;
+          },
+        },
+      );
+      // The mode runs its hooks, and then, for a file, hack-local-variables, as run-mode-hooks does.
+      e8.call((mode ?? "fundamental-mode") as e8.CommandName);
+    });
   },
 });
-
-e8.defineHook("hack-local-variables-hook", "Run after normal-mode chooses a buffer's major mode, as where Emacs applies its local variables.");
 
 // Saving, reverting and recovering files, after files.el. What touches the
 // disk is native, as Emacs's fileio.c is: writing with a backup, reading
@@ -194,7 +1056,7 @@ e8.defineCommand({
 function revertNow(): void {
   e8.runHooks("before-revert-hook");
   e8.revertToVisitedFile();
-  e8.call("normal-mode");
+  e8.callWithPrefix(1, "normal-mode");
   e8.runHooks("after-revert-hook");
 }
 

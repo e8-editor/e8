@@ -241,6 +241,11 @@ export class PerBuffer<T> {
     const id = PerBuffer.id(buffer);
     if (id !== undefined) this.values.delete(id);
   }
+
+  /** Forgets every buffer's value. */
+  clear(): void {
+    this.values.clear();
+  }
 }
 
 const perBufferValues: Map<number, unknown>[] = [];
