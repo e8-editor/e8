@@ -64,6 +64,178 @@ export function forwardLine(n: number): number {
   return shortfall;
 }
 
+// Emacs's names for what a line of E8's API does, so a port reads as the
+// Lisp it follows. Each returns undefined where Emacs returns nil.
+
+/** Whether point is at the end of the accessible text, as eobp. */
+export const eobp = (): boolean => e8.point() === e8.pointMax();
+/** Whether point is at the start of the accessible text, as bobp. */
+export const bobp = (): boolean => e8.point() === e8.pointMin();
+/** Whether point is at the start of a line, as bolp. */
+export const bolp = (): boolean => e8.point() === e8.lineBeginningPosition();
+/** Whether point is at the end of a line, as eolp. */
+export const eolp = (): boolean => e8.point() === e8.lineEndPosition();
+
+/** The accessible text of the current buffer, with its properties, as buffer-string. */
+export const bufferString = (): e8.PropertizedString => e8.bufferSubstring(e8.pointMin(), e8.pointMax());
+
+/** Delete the whole of the current buffer's text, narrowed or not, as erase-buffer. */
+export function eraseBuffer(): void {
+  e8.widen();
+  e8.deleteRegion(e8.pointMin(), e8.pointMax());
+}
+
+function region(): [number, number] {
+  const mark = e8.mark();
+  if (mark === undefined) e8.signal("error", "The mark is not set now, so there is no region");
+  return [Math.min(e8.point(), mark), Math.max(e8.point(), mark)];
+}
+/** Where the region starts, as region-beginning: an error when there is no mark. */
+export const regionBeginning = (): number => region()[0];
+/** Where the region ends, as region-end: an error when there is no mark. */
+export const regionEnd = (): number => region()[1];
+
+/** A new marker at point, as point-marker. */
+export const pointMarker = (): e8.Marker => e8.makeMarker(e8.point());
+/** A new marker at the start of the accessible text, as point-min-marker. */
+export const pointMinMarker = (): e8.Marker => e8.makeMarker(e8.pointMin());
+/** A new marker at the end of the accessible text, as point-max-marker. */
+export const pointMaxMarker = (): e8.Marker => e8.makeMarker(e8.pointMax());
+/**
+ * A new marker where a marker or position is, advancing on insertion there
+ * if `type`, as copy-marker; undefined for a marker that points nowhere.
+ */
+export function copyMarker(marker: e8.MarkerLike, type = false): e8.Marker | undefined {
+  const pos = typeof marker === "number" ? marker : e8.markerPosition(marker);
+  if (pos === undefined) return undefined;
+  const at = Math.max(0, Math.min(pos, e8.bufferSize()));
+  return e8.makeMarker(at, { advances: type });
+}
+
+/** Insert `count` copies of a character, inheriting properties if `inherit`, as insert-char. */
+export function insertChar(char: string | number, count = 1, inherit = false): void {
+  if (count <= 0) return;
+  const text = (typeof char === "number" ? String.fromCodePoint(char) : char).repeat(count);
+  if (inherit) e8.insertAndInherit(text);
+  else e8.insert(text);
+}
+
+/** The names of the text properties anywhere from start to end. */
+function propertyNames(start: number, end: number): Set<string> {
+  const names = new Set<string>();
+  for (let p: number | undefined = start; p !== undefined && p < end; p = e8.nextPropertyChange(p, end)) {
+    for (const name of Object.keys(e8.textPropertiesAt(p))) names.add(name);
+  }
+  return names;
+}
+
+/**
+ * Give the text from start to end each of `properties`, as
+ * add-text-properties; whether any changed.
+ */
+export function addTextProperties(start: number, end: number, properties: { [name: string]: e8.Value }): boolean {
+  let changed = false;
+  for (const [name, value] of Object.entries(properties)) {
+    if (e8.textPropertyNotAll(start, end, name, value) === undefined) continue;
+    e8.putTextProperty(start, end, name, value);
+    changed = true;
+  }
+  return changed;
+}
+
+/** Remove the named text properties from start to end, as remove-text-properties; whether any were there. */
+export function removeTextProperties(start: number, end: number, names: string[] | { [name: string]: unknown }): boolean {
+  const there = propertyNames(start, end);
+  let changed = false;
+  for (const name of Array.isArray(names) ? names : Object.keys(names)) {
+    if (!there.has(name)) continue;
+    e8.removeTextProperty(start, end, name);
+    changed = true;
+  }
+  return changed;
+}
+
+/** Remove the text properties a list names from start to end, as remove-list-of-text-properties. */
+export const removeListOfTextProperties = (start: number, end: number, names: string[]): boolean =>
+  removeTextProperties(start, end, names);
+
+/**
+ * Make `properties` the only text properties from start to end, none if
+ * undefined, as set-text-properties, which returns t.
+ */
+export function setTextProperties(start: number, end: number, properties?: { [name: string]: e8.Value }): boolean {
+  removeTextProperties(start, end, [...propertyNames(start, end)]);
+  if (properties) addTextProperties(start, end, properties);
+  return true;
+}
+
+/**
+ * The value of a property at a position, as get-char-property: from the
+ * overlay there with the highest priority that has it, among equals the
+ * one starting later, then the one ending sooner, else the text property.
+ */
+export function getCharProperty(position: number, name: string): e8.Value | undefined {
+  let best: number | undefined;
+  let bestPriority = -Infinity;
+  for (const ov of e8.overlaysAt(position)) {
+    if (e8.overlayGet(ov, name) === undefined) continue;
+    const p = e8.overlayGet(ov, "priority");
+    const priority = typeof p === "number" ? p : 0;
+    const start = e8.overlayStart(ov) ?? 0, bestStart = best === undefined ? 0 : (e8.overlayStart(best) ?? 0);
+    const narrower = best !== undefined && (start > bestStart || (start === bestStart && (e8.overlayEnd(ov) ?? 0) < (e8.overlayEnd(best) ?? 0)));
+    if (best === undefined || priority > bestPriority || (priority === bestPriority && narrower)) {
+      best = ov;
+      bestPriority = priority;
+    }
+  }
+  return best !== undefined ? e8.overlayGet(best, name) : e8.getTextProperty(position, name);
+}
+
+/** Whether a window is live, showing a buffer, as window-live-p. */
+export const windowLiveP = (window: unknown): boolean =>
+  typeof window === "number" && (window === e8.minibufferWindow() || e8.windowList().includes(window));
+/** Whether a frame is live, as frame-live-p. */
+export const frameLiveP = (frame: unknown): boolean => typeof frame === "number" && e8.frameList().includes(frame);
+/** A window showing a buffer, the current one by default, as get-buffer-window: the selected window first. */
+export function getBufferWindow(buffer?: e8.BufferLike): number | undefined {
+  const name = buffer === undefined ? e8.bufferName(e8.currentBuffer()) : e8.bufferName(buffer);
+  if (name === undefined) return undefined;
+  const selected = e8.selectedWindow();
+  if (e8.windowBuffer(selected) === name) return selected;
+  return e8.windowList().find((w) => e8.windowBuffer(w) === name);
+}
+/** The minibuffer's window while a minibuffer is open, as active-minibuffer-window. */
+export const activeMinibufferWindow = (): number | undefined => (e8.minibufferDepth() > 0 ? e8.minibufferWindow() : undefined);
+/** Whether a window, the selected one by default, is the minibuffer's, as window-minibuffer-p. */
+export const windowMinibufferP = (window?: number): boolean => (window ?? e8.selectedWindow()) === e8.minibufferWindow();
+
+/** The process with a name, as get-process: E8 names processes by their names. */
+export const getProcess = (name: string): string | undefined => (e8.processList().includes(name) ? name : undefined);
+/** Whether a value is a process E8 knows, as processp. */
+export const processp = (process: unknown): boolean => typeof process === "string" && e8.processStatus(process) !== undefined;
+/** A process's name, as process-name: the name is the process. */
+export const processName = (process: string): string => process;
+
+/** Whether a file name names a directory, ending in a slash, as directory-name-p. */
+export const directoryNameP = (name: string): boolean => name.endsWith("/");
+
+/**
+ * Signal buffer-read-only if the current buffer is read-only and
+ * inhibit-read-only is not set, or if the text at `position` is read-only,
+ * as barf-if-buffer-read-only.
+ */
+export function barfIfBufferReadOnly(position?: number): void {
+  const inhibit = e8.variable("inhibit-read-only");
+  if (truthy(inhibit)) return;
+  const textReadOnly = position !== undefined && truthy(e8.getTextProperty(position, "read-only"));
+  if (e8.bufferReadOnly() || textReadOnly) {
+    e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName(e8.currentBuffer())}`);
+  }
+}
+
+/** Whether the first element of `a` is less than the first of `b`, as car-less-than-car, for sorting. */
+export const carLessThanCar = (a: [number, ...unknown[]], b: [number, ...unknown[]]): boolean => a[0] < b[0];
+
 e8.defineCommand({
   name: "delete-minibuffer-contents",
   doc: "Delete all the input in the minibuffer, leaving the prompt.",
