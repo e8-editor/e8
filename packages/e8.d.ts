@@ -2247,7 +2247,7 @@ declare global {
       /**
        * Show a buffer in some window without selecting it, as display-buffer-alist and the other actions say.
        *
-       * With a prefix argument, another window than the selected one. By default a window that already shows it is used, else a new window split off a large enough one, else the least recently used window.
+       * With a prefix argument, another window than the selected one. By default a window that already shows it is used, else a new window split off a large enough one, else the least recently used window. Code passing an action calls window.ts's displayBuffer.
        *
        * @param buffer buffer name
        * @param action raw prefix argument
@@ -14968,6 +14968,19 @@ declare global {
      * `size` is as splitWindow's. Returns the new window.
      */
     function splitRootWindow(side?: "below" | "right" | "above" | "left", size?: number): Window;
+    /**
+     * Splits the smallest part of the selected frame's windows that holds
+     * all of `windows`, as Emacs splits an internal window, such as the
+     * main window beside side windows: the new window takes the part's
+     * whole bottom, right, top or left. `size` is as splitWindow's.
+     */
+    function splitWindowsEnclosing(windows: WindowLike[], side?: "below" | "right" | "above" | "left", size?: number): Window;
+    /**
+     * Marks a window the second most recently used, after the selected
+     * one, as window-bump-use-time; gives its use time, or undefined for
+     * the selected window.
+     */
+    function windowBumpUseTime(window: WindowLike | undefined): number | undefined;
     /**
      * The keys that can follow a prefix, such as "C-x", in the keymaps active
      * now, in key order: each with the command it runs, or undefined for

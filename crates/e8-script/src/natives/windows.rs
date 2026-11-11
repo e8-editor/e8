@@ -18,6 +18,24 @@ natives! {
         ed.split_root_window_toward(matches!(side, "right" | "left"), matches!(side, "left" | "above"), size).map(Win)
     }
 
+    /// Splits the smallest part of the selected frame's windows that holds
+    /// all of `windows`, as Emacs splits an internal window, such as the
+    /// main window beside side windows: the new window takes the part's
+    /// whole bottom, right, top or left. `size` is as splitWindow's.
+    #[ts = "(windows: WindowLike[], side?: \"below\" | \"right\" | \"above\" | \"left\", size?: number): Window"]
+    pub fn splitWindowsEnclosing(ed, windows: Vec<Win>, side: Option<String>, size: Option<i64>) -> Win {
+        let side = side.as_deref().unwrap_or("below");
+        let ids: Vec<u64> = windows.iter().map(|w| w.0).collect();
+        ed.split_windows_toward(&ids, matches!(side, "right" | "left"), matches!(side, "left" | "above"), size).map(Win)
+    }
+
+    /// Marks a window the second most recently used, after the selected
+    /// one, as window-bump-use-time; gives its use time, or undefined for
+    /// the selected window.
+    pub fn windowBumpUseTime(ed, window: Option<Win>) -> Option<u64> {
+        Ok(window.and_then(|w| ed.window_bump_use_time(w.0)))
+    }
+
     /// The keys that can follow a prefix, such as "C-x", in the keymaps active
     /// now, in key order: each with the command it runs, or undefined for
     /// another prefix. What which-key lists.

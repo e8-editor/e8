@@ -123,6 +123,11 @@ function recordWindow(type: "reuse" | "window" | "frame", window: e8.Window, buf
 // FUNCTIONS . ALIST) is [CONDITION, FUNCTIONS, ...ALIST]. Symbols may be
 // strings or Symbol.for(name): `["side", "right"]` and `["side",
 // Symbol.for("right")]` are the same entry.
+//
+// E8's windows have no internal windows yet (ADR 0069, stage 3). Where
+// window.el takes an internal window, such as the frame's main window
+// beside its side windows, this takes the live windows it holds, a part,
+// and splits the smallest part of the tree that holds them.
 
 /** Lisp's nil: null, undefined, false or an empty list. */
 const isNil = (v: unknown): boolean => v === undefined || v === null || v === false || (Array.isArray(v) && v.length === 0);
@@ -153,27 +158,35 @@ export function alistGet(alist: Alist, key: string): e8.Value | undefined {
 /** Whether an alist's entry for `key` is there and not nil. */
 const alistTrue = (alist: Alist, key: string): boolean => !isNil(alistGet(alist, key));
 
-/** The windows on the frames a `reusable-frames` or ALL-FRAMES value says, as window-list-1 takes them: nil the selected frame, t every frame, `visible` and 0 those shown, a frame that one. */
-function windowsOnFrames(frames: e8.Value | undefined, minibuffer = false): e8.Window[] {
-  const all = e8.windowList1(undefined, minibuffer, true);
-  if (isNil(frames)) return all.filter((w) => e8.windowFrame(w) === e8.selectedFrame());
+/**
+ * The windows on the frames an ALL-FRAMES value says, in window-list-1's
+ * order from `start` (the selected window by default): t every frame,
+ * `visible` and 0 those shown, iconified ones too for 0, a frame that
+ * one, and anything else the selected frame.
+ */
+function windowsOnFrames(frames: e8.Value | undefined, start?: e8.Window, minibuffer = false): e8.Window[] {
+  const all = e8.windowList1(start, minibuffer, true);
   if (frames === true) return all;
   if (e8.framep(frames)) return all.filter((w) => e8.windowFrame(w) === frames);
-  // visible and 0: frames that are shown, iconified ones too for 0.
-  return all.filter((w) => {
-    const visible = e8.frameVisibleP(e8.windowFrame(w));
-    return visible === true || (frames === 0 && visible === "icon");
-  });
+  if (symName(frames) === "visible" || frames === 0) {
+    return all.filter((w) => {
+      const visible = e8.frameVisibleP(e8.windowFrame(w));
+      return visible === true || (frames === 0 && visible === "icon");
+    });
+  }
+  return all.filter((w) => e8.windowFrame(w) === e8.selectedFrame());
 }
 
 /** The windows showing a buffer, the selected one first, as get-buffer-window-list. */
 export function getBufferWindowList(buffer: e8.BufferLike, minibuffer = false, allFrames?: e8.Value): e8.Window[] {
   const name = e8.bufferName(buffer);
-  return windowsOnFrames(allFrames, minibuffer).filter((w) => e8.windowBuffer(w) === name);
+  return windowsOnFrames(allFrames, undefined, minibuffer).filter((w) => e8.windowBuffer(w) === name);
 }
 
 /** Whether a window is dedicated to its buffer, which display-buffer does not take for another. */
 const dedicated = (window: e8.Window): boolean => !isNil(e8.windowDedicatedP(window));
+/** Whether a window is a side window, as its window-side parameter says. */
+const isSide = (window: e8.Window): boolean => !isNil(e8.windowParameter(window, "window-side"));
 
 function size(window: e8.Window) {
   return e8.windowSize(window) ?? { width: 0, height: 0, totalWidth: 0, totalHeight: 0, fullWidth: true };
@@ -181,12 +194,12 @@ function size(window: e8.Window) {
 
 /**
  * The least recently used window, as get-lru-window: on the frames
- * `allFrames` says, one that spans its frame's width if there is any;
- * the selected window only last, and not at all with `notSelected`; a
- * dedicated one only with `dedicatedOk`; never a side window or one with a
- * no-other-window parameter.
+ * `allFrames` says, one that spans its frame's width if there is any; the
+ * selected window only last, and not at all with `notSelected`; a
+ * dedicated one only with `dedicatedOk`; one with a no-other-window
+ * parameter not with `noOther`.
  */
-export function getLruWindow(allFrames?: e8.Value, dedicatedOk = false, notSelected = false): e8.Window | undefined {
+export function getLruWindow(allFrames?: e8.Value, dedicatedOk = false, notSelected = false, noOther = false): e8.Window | undefined {
   const selected = e8.selectedWindow();
   let best: e8.Window | undefined;
   let bestTime = Infinity;
@@ -194,7 +207,7 @@ export function getLruWindow(allFrames?: e8.Value, dedicatedOk = false, notSelec
   let secondTime = Infinity;
   for (const window of windowsOnFrames(allFrames)) {
     if ((notSelected && window === selected) || (!dedicatedOk && dedicated(window))) continue;
-    if (!isNil(e8.windowParameter(window, "no-other-window")) || !isNil(e8.windowParameter(window, "window-side"))) continue;
+    if (noOther && !isNil(e8.windowParameter(window, "no-other-window"))) continue;
     const time = e8.windowUseTime(window) ?? 0;
     if (window === selected || !size(window).fullWidth) {
       if (time < secondTime) [second, secondTime] = [window, time];
@@ -205,14 +218,14 @@ export function getLruWindow(allFrames?: e8.Value, dedicatedOk = false, notSelec
   return best ?? second;
 }
 
-/** The most recently used window other than the selected one, unless only it is left, as get-mru-window. */
-export function getMruWindow(allFrames?: e8.Value, dedicatedOk = false, notSelected = false): e8.Window | undefined {
+/** The most recently used window, as get-mru-window, with get-lru-window's conditions. */
+export function getMruWindow(allFrames?: e8.Value, dedicatedOk = false, notSelected = false, noOther = false): e8.Window | undefined {
   const selected = e8.selectedWindow();
   let best: e8.Window | undefined;
   let bestTime = -Infinity;
   for (const window of windowsOnFrames(allFrames)) {
     if ((notSelected && window === selected) || (!dedicatedOk && dedicated(window))) continue;
-    if (!isNil(e8.windowParameter(window, "no-other-window"))) continue;
+    if (noOther && !isNil(e8.windowParameter(window, "no-other-window"))) continue;
     const time = e8.windowUseTime(window) ?? 0;
     if (time > bestTime) [best, bestTime] = [window, time];
   }
@@ -220,12 +233,12 @@ export function getMruWindow(allFrames?: e8.Value, dedicatedOk = false, notSelec
 }
 
 /** The largest window by area, as get-largest-window, with get-lru-window's conditions. */
-export function getLargestWindow(allFrames?: e8.Value, dedicatedOk = false, notSelected = false): e8.Window | undefined {
+export function getLargestWindow(allFrames?: e8.Value, dedicatedOk = false, notSelected = false, noOther = false): e8.Window | undefined {
   let best: e8.Window | undefined;
   let bestArea = -1;
   for (const window of windowsOnFrames(allFrames)) {
     if ((notSelected && window === e8.selectedWindow()) || (!dedicatedOk && dedicated(window))) continue;
-    if (!isNil(e8.windowParameter(window, "no-other-window")) || !isNil(e8.windowParameter(window, "window-side"))) continue;
+    if (noOther && !isNil(e8.windowParameter(window, "no-other-window"))) continue;
     const s = size(window);
     const area = s.totalWidth * s.totalHeight;
     if (area > bestArea) [best, bestArea] = [window, area];
@@ -233,61 +246,97 @@ export function getLargestWindow(allFrames?: e8.Value, dedicatedOk = false, notS
   return best;
 }
 
-/** The split above a window in its frame's tree, and whether the window is its first part. */
-function parentSplit(window: e8.Window): { sideBySide: boolean; first: boolean } | undefined {
-  const walk = (t: e8.WindowTreeNode): { sideBySide: boolean; first: boolean } | undefined => {
-    if (!Array.isArray(t)) return undefined;
-    const [sideBySide, , first, second] = t;
-    if (first === window) return { sideBySide, first: true };
-    if (second === window) return { sideBySide, first: false };
-    return walk(first) ?? walk(second);
+/** The smallest part of the frame's window tree that holds all of `windows`. */
+function enclosing(windows: e8.Window[], tree: e8.WindowTreeNode = e8.windowTree()): e8.WindowTreeNode | undefined {
+  const holds = (t: e8.WindowTreeNode) => {
+    const leaves = treeLeaves(t);
+    return windows.every((w) => leaves.includes(w));
   };
-  return walk(e8.windowTree());
+  if (!holds(tree)) return undefined;
+  if (Array.isArray(tree)) return enclosing(windows, tree[2]) ?? enclosing(windows, tree[3]) ?? tree;
+  return tree;
+}
+
+/** The live windows in a part of the window tree, in order. */
+function treeLeaves(t: e8.WindowTreeNode): e8.Window[] {
+  return Array.isArray(t) ? [...treeLeaves(t[2]), ...treeLeaves(t[3])] : [t];
+}
+
+/** The split holding a part of the tree, and whether the part is its first. */
+type Split = Extract<e8.WindowTreeNode, unknown[]>;
+function parentOf(part: e8.WindowTreeNode, tree: e8.WindowTreeNode = e8.windowTree()): { split: Split; first: boolean } | undefined {
+  if (!Array.isArray(tree)) return undefined;
+  const same = (a: e8.WindowTreeNode, b: e8.WindowTreeNode) => a === b || (Array.isArray(a) && Array.isArray(b) && treeLeaves(a).join() === treeLeaves(b).join());
+  if (same(tree[2], part)) return { split: tree, first: true };
+  if (same(tree[3], part)) return { split: tree, first: false };
+  return parentOf(part, tree[2]) ?? parentOf(part, tree[3]);
 }
 
 /** Whether a window is part of a combination one above another, or side by side with `horizontal`, as window-combined-p. */
 export function windowCombinedP(window: e8.Window, horizontal = false): boolean {
-  const parent = parentSplit(window);
-  return parent !== undefined && parent.sideBySide === horizontal;
+  const parent = parentOf(window);
+  return parent !== undefined && parent.split[0] === horizontal;
 }
 
-/** A window's edges, as window-edges. */
-const edges = (window: e8.Window): [number, number, number, number] => e8.windowEdges(window);
+/** The edges of the part of the frame a set of windows covers, as window-edges gives an internal window's. */
+function partEdges(windows: e8.Window[]): [number, number, number, number] {
+  const all = windows.map((w) => e8.windowEdges(w));
+  return [Math.min(...all.map((e) => e[0])), Math.min(...all.map((e) => e[1])), Math.max(...all.map((e) => e[2])), Math.max(...all.map((e) => e[3]))];
+}
+
+/** Splits a part of the frame: a live window as split-window does, several as their internal window would be. */
+function splitPart(part: e8.Window[], side: "below" | "right" | "above" | "left", size?: number): e8.Window {
+  return part.length === 1 ? e8.splitWindow(part[0], side, size) : e8.splitWindowsEnclosing(part, side, size);
+}
+
+/** Splits a part as split-window-no-error does: undefined where it cannot be. */
+const splitPartNoError = (part: e8.Window[], side: "below" | "right" | "above" | "left", size?: number): e8.Window | undefined =>
+  e8.conditionCase<e8.Window | undefined>(() => splitPart(part, side, size), { error: () => undefined });
 
 /**
  * The window next to one in a direction, as window-in-direction: above,
- * below, left or right of it, along the line or column its point is on;
- * none at the frame's edge. The minibuffer's window and windows with a
- * no-other-window parameter, unless `ignore`, are not taken.
+ * below, left or right of it, the nearest along the line or column its
+ * point is on, else the nearest one that direction; none at the frame's
+ * edge. The minibuffer's window, and windows with a no-other-window
+ * parameter unless `ignore`, are not taken.
  */
 export function windowInDirection(direction: string, window: e8.Window = e8.selectedWindow(), ignore = false): e8.Window | undefined {
   const dir = direction === "up" ? "above" : direction === "down" ? "below" : direction;
   if (!["above", "below", "left", "right"].includes(dir)) e8.signal("error", `Wrong direction ${direction}`);
-  const [l, t, r, b] = edges(window);
+  const [l, t, r, b] = e8.windowEdges(window);
   const hor = dir === "left" || dir === "right";
   // Along the row or column point is on, as Emacs's posn-at-point gives it.
   const posn = e8.posnAtPoint(e8.windowPoint(window), window);
   const along = hor ? t + (posn?.row ?? 0) : l + (posn?.col ?? 0);
   let best: e8.Window | undefined;
-  let bestEdge = dir === "below" || dir === "right" ? Infinity : -Infinity;
-  for (const w of e8.windowList1(window, false, false)) {
+  let bestDistance = Infinity;
+  let second: e8.Window | undefined;
+  let secondDistance: [number, number] = [Infinity, Infinity];
+  for (const w of e8.windowList1(e8.frameFirstWindow(e8.windowFrame(window)), false, false)) {
     if (w === window || (!ignore && !isNil(e8.windowParameter(w, "no-other-window")))) continue;
-    const [wl, wt, wr, wb] = edges(w);
-    if (hor ? !(wt <= along && along < wb) : !(wl <= along && along < wr)) continue;
-    if (dir === "left" && wr <= l && wl > bestEdge) [best, bestEdge] = [w, wl];
-    else if (dir === "right" && wl >= r && wl < bestEdge) [best, bestEdge] = [w, wl];
-    else if (dir === "above" && wb <= t && wt > bestEdge) [best, bestEdge] = [w, wt];
-    else if (dir === "below" && wt >= b && wt < bestEdge) [best, bestEdge] = [w, wt];
+    const [wl, wt, wr, wb] = e8.windowEdges(w);
+    const distance =
+      dir === "left" ? l - wr : dir === "right" ? wl - r : dir === "above" ? t - wb : wt - b;
+    // Only windows beyond the edge, and that overlap the window along it.
+    const overlaps = hor ? wt < b && wb > t : wl < r && wr > l;
+    if (distance < 0 || !overlaps) continue;
+    const covers = hor ? wt <= along && along < wb : wl <= along && along < wr;
+    if (covers) {
+      if (distance < bestDistance) [best, bestDistance] = [w, distance];
+    } else {
+      const off = hor ? Math.min(Math.abs(wt - along), Math.abs(wb - 1 - along)) : Math.min(Math.abs(wl - along), Math.abs(wr - 1 - along));
+      if (distance < secondDistance[0] || (distance === secondDistance[0] && off < secondDistance[1])) [second, secondDistance] = [w, [distance, off]];
+    }
   }
-  return best;
+  return best ?? second;
 }
 
-/** The windows along an edge of `window`, in a direction, as windows-sharing-edge: those whose opposite edge touches it. */
-function windowsSharingEdge(window: e8.Window, direction: string): e8.Window[] {
-  const [l, t, r, b] = edges(window);
-  return e8.windowList1(window, false, false).filter((w) => {
-    if (w === window) return false;
-    const [wl, wt, wr, wb] = edges(w);
+/** The windows along an edge of a part of the frame, in a direction, as windows-sharing-edge: those whose opposite edge touches it. */
+function windowsSharingEdge(part: e8.Window[], direction: string): e8.Window[] {
+  const [l, t, r, b] = partEdges(part);
+  return e8.windowList1(e8.frameFirstWindow(), false, false).filter((w) => {
+    if (part.includes(w)) return false;
+    const [wl, wt, wr, wb] = e8.windowEdges(w);
     if (direction === "left") return wr === l && wt < b && wb > t;
     if (direction === "right") return wl === r && wt < b && wb > t;
     if (direction === "above") return wb === t && wl < r && wr > l;
@@ -295,14 +344,18 @@ function windowsSharingEdge(window: e8.Window, direction: string): e8.Window[] {
   });
 }
 
+/** The live windows that make up the frame's main window, as window-main-window: all but its side windows and the minibuffer's. */
+function mainWindows(): e8.Window[] {
+  return e8.windowList().filter((w) => w !== e8.minibufferWindow() && !isSide(w));
+}
+
 /**
- * The frame's main window, as window-main-window: the window that is not
- * a side window next to the side windows, the frame's only part not a side
- * window. E8 has no internal windows yet (ADR 0069, stage 3): with several
- * windows besides the side windows, the selected one stands for them.
+ * The frame's main window, as window-main-window: its only window not a
+ * side window. E8 has no internal windows yet (ADR 0069, stage 3): with
+ * several such windows, the selected one stands for them.
  */
 export function windowMainWindow(): e8.Window {
-  const others = e8.windowList().filter((w) => w !== e8.minibufferWindow() && isNil(e8.windowParameter(w, "window-side")));
+  const others = mainWindows();
   if (others.length === 1) return others[0];
   const selected = e8.selectedWindow();
   return others.includes(selected) ? selected : (others[0] ?? selected);
@@ -386,13 +439,19 @@ e8.defineVariable({
 });
 e8.defineVariable({ name: "window-sides-vertical", doc: "Whether side windows on the left and right take the frame's whole height.", value: null });
 
-/** The fewest lines and columns a window may have, as window-min-height and window-min-width. */
-const minHeight = (): number => Math.max(1, Number(e8.variable("window-min-height") ?? 4) || 4);
-const minWidth = (): number => Math.max(2, Number(e8.variable("window-min-width") ?? 10) || 10);
+/** The fewest lines and columns a window may have, as window-min-height and window-min-width, and window-safe-min-height and -width below them. */
+const minHeight = (): number => {
+  const v = e8.variable("window-min-height");
+  return typeof v === "number" ? Math.max(v, 1) : 4;
+};
+const minWidth = (): number => {
+  const v = e8.variable("window-min-width");
+  return typeof v === "number" ? Math.max(v, 2) : 10;
+};
 
 /** Whether a window is big enough to split, as window-splittable-p: never a side window, and a threshold of nil never is. */
 export function windowSplittableP(window: e8.Window, horizontal = false): boolean {
-  if (!e8.windowLiveP(window) || !isNil(e8.windowParameter(window, "window-side"))) return false;
+  if (!e8.windowLiveP(window) || isSide(window)) return false;
   const s = size(window);
   if (horizontal) {
     const threshold = e8.variable("split-width-threshold");
@@ -410,7 +469,7 @@ export function windowSplittableP(window: e8.Window, horizontal = false): boolea
  * others are dedicated. Returns the new window.
  */
 export function splitWindowSensibly(window: e8.Window = e8.selectedWindow()): e8.Window | undefined {
-  const split = (side: "below" | "right") => e8.conditionCase<e8.Window | undefined>(() => e8.splitWindow(window, side), { error: () => undefined });
+  const split = (side: "below" | "right") => splitPartNoError([window], side);
   if (windowSplittableP(window)) return split("below");
   if (windowSplittableP(window, true)) return split("right");
   const others = windowsOnFrames(e8.windowFrame(window)).filter((w) => w !== window && !dedicated(w));
@@ -426,22 +485,26 @@ function tryToSplitWindow(window: e8.Window | undefined): e8.Window | undefined 
   if (window === undefined || !e8.windowLiveP(window) || !isNil(e8.frameParameter(e8.windowFrame(window), "unsplittable"))) return undefined;
   const fn = e8.variable("split-window-preferred-function") ?? "split-window-sensibly";
   const made = e8.conditionCase<e8.Value | undefined>(() => fcall(fn, window), { error: () => undefined });
-  return e8.windowp(made) && e8.windowLiveP(made) ? (made as e8.Window) : undefined;
+  return e8.windowp(made) && e8.windowLiveP(made) ? made : undefined;
 }
 
-/** Evens two windows side by side or one above the other, as window--even-window-sizes. */
+/**
+ * Evens a window and the selected one, as window--even-window-sizes, when
+ * they are the two windows of one split: the selected one gives the other
+ * half of what it has more.
+ */
 function evenWindowSizes(window: e8.Window): void {
   const how = e8.variable("even-window-sizes");
   const selected = e8.selectedWindow();
-  const parent = parentSplit(window);
-  if (isNil(how) || parent === undefined) return;
-  const other = parentSplit(selected);
-  if (other === undefined || other.sideBySide !== parent.sideBySide || e8.windowList().length !== 2) return;
+  if (isNil(how) || window === selected) return;
+  const parent = parentOf(window);
+  if (parent === undefined || !(parent.split[2] === selected || parent.split[3] === selected)) return;
+  const sideBySide = parent.split[0] === true;
   const [s, w] = [size(selected), size(window)];
-  if (parent.sideBySide && symName(how) !== "height-only" && s.totalWidth > w.totalWidth) {
-    e8.conditionCase(() => e8.resizeWindow(selected, -Math.trunc((s.totalWidth - w.totalWidth) / 2), true), { error: () => 0 });
-  } else if (!parent.sideBySide && symName(how) !== "width-only" && s.totalHeight > w.totalHeight) {
-    e8.conditionCase(() => e8.resizeWindow(selected, -Math.trunc((s.totalHeight - w.totalHeight) / 2), false), { error: () => 0 });
+  if (sideBySide && symName(how) !== "height-only" && s.totalWidth > w.totalWidth) {
+    e8.conditionCase(() => e8.resizeWindow(window, Math.trunc((s.totalWidth - w.totalWidth) / 2), true), { error: () => 0 });
+  } else if (!sideBySide && symName(how) !== "width-only" && s.totalHeight > w.totalHeight) {
+    e8.conditionCase(() => e8.resizeWindow(window, Math.trunc((s.totalHeight - w.totalHeight) / 2), false), { error: () => 0 });
   }
 }
 
@@ -477,7 +540,8 @@ function popUpFrames(alist: Alist): boolean {
  * quit-restore parameter, shows the buffer, marks the window dedicated as
  * the alist or display-buffer-mark-dedicated says, gives a new window no
  * previous buffers, calls the alist's body-function, sizes a new window by
- * its window-height and window-width, and sets its window-parameters.
+ * its window-height and window-width, sets its window-parameters, and
+ * with bump-use-time makes it the most recently used after the selected one.
  */
 export function windowDisplayBuffer(buffer: e8.BufferLike, window: e8.Window | undefined, type: "reuse" | "window" | "frame", alist: Alist = []): e8.Window | undefined {
   const name = e8.bufferName(buffer);
@@ -496,8 +560,9 @@ export function windowDisplayBuffer(buffer: e8.BufferLike, window: e8.Window | u
     e8.setWindowDedicatedP(window, e8.variable("display-buffer-mark-dedicated") ?? null);
   }
   if (type !== "reuse") e8.setWindowPrevBuffers(window, []);
+  if (alistTrue(alist, "bump-use-time")) e8.windowBumpUseTime(window);
   const body = alistGet(alist, "body-function");
-  if (typeof body === "function" || (typeof body === "string" && body !== "")) {
+  if (typeof body === "function" || (typeof body === "string" && body !== "") || typeof body === "symbol") {
     e8.letBind({ "inhibit-read-only": true, "inhibit-modification-hooks": true }, () => fcall(body, window));
   }
   const restore = quitRestore(window);
@@ -509,7 +574,7 @@ export function windowDisplayBuffer(buffer: e8.BufferLike, window: e8.Window | u
     if (Array.isArray(preserve)) e8.setWindowParameter(window, "window-preserved-size", preserve);
   }
   const parameters = alistGet(alist, "window-parameters");
-  const pairs = Array.isArray(parameters) && parameters.every(Array.isArray) ? parameters : assq(alist, "window-parameters")?.slice(1) ?? [];
+  const pairs = Array.isArray(parameters) && parameters.every(Array.isArray) ? parameters : (assq(alist, "window-parameters")?.slice(1) ?? []);
   for (const p of pairs) {
     if (Array.isArray(p) && p.length >= 1) e8.setWindowParameter(window, symName(p[0]) ?? String(p[0]), p.length === 2 ? (p[1] ?? null) : p.slice(1));
   }
@@ -519,7 +584,7 @@ export function windowDisplayBuffer(buffer: e8.BufferLike, window: e8.Window | u
 /** Sizes a window display-buffer made, as window--display-buffer does with window-height or window-width: lines or columns, a fraction of the frame, [body-lines, N], or a function given the window. */
 function applySize(window: e8.Window, value: e8.Value | undefined, horizontal: boolean): void {
   if (isNil(value)) return;
-  if (typeof value === "function" || typeof value === "string") {
+  if (typeof value === "function" || typeof value === "string" || typeof value === "symbol") {
     e8.conditionCase(() => fcall(value, window), { error: () => null });
     return;
   }
@@ -538,6 +603,31 @@ function applySize(window: e8.Window, value: e8.Value | undefined, horizontal: b
   e8.conditionCase(() => e8.resizeWindow(window, delta, horizontal), { error: () => 0 });
 }
 
+/**
+ * Makes a window as tall as its buffer's lines, as fit-window-to-buffer:
+ * no fewer than `minHeight` lines (window-min-height) and no more than
+ * `maxHeight` or the windows around can give, its mode line and header
+ * line counted. A window not one above another is left as it is. Lines
+ * are the buffer's, not the screen lines wrapping makes (ADR 0069, stage 4).
+ */
+export function fitWindowToBuffer(window: e8.Window = e8.selectedWindow(), maxHeight?: number, minHeight_?: number): void {
+  if (!e8.windowLiveP(window) || !windowCombinedP(window, false)) return;
+  const buffer = e8.windowBuffer(window);
+  if (buffer === undefined) return;
+  const lines = e8.withCurrentBuffer(buffer, () => e8.lineCount() - (e8.bufferSize() > 0 && e8.charBefore(e8.pointMax()) === "\n" ? 1 : 0));
+  const s = size(window);
+  let wanted = Math.max(lines + s.totalHeight - s.height, typeof minHeight_ === "number" ? minHeight_ : minHeight());
+  if (typeof maxHeight === "number") wanted = Math.min(wanted, maxHeight);
+  const delta = wanted - s.totalHeight;
+  if (delta === 0) return;
+  const possible = e8.conditionCase(() => e8.resizeWindow(window, delta, false, false), { error: () => 0 });
+  if (possible !== 0) e8.conditionCase(() => e8.resizeWindow(window, possible, false), { error: () => 0 });
+}
+e8.defun("fit-window-to-buffer", (window?: e8.Window, maxHeight?: number, minHeight?: number) => {
+  fitWindowToBuffer(window ?? e8.selectedWindow(), maxHeight ?? undefined, minHeight ?? undefined);
+  return null;
+});
+
 /** Whether display-buffer should show a buffer in the selected window, as same-window-p: its name is in same-window-buffer-names, or matches same-window-regexps. */
 export function sameWindowP(bufferName: string): boolean {
   const names = e8.variable("same-window-buffer-names");
@@ -553,17 +643,27 @@ export function sameWindowP(bufferName: string): boolean {
 }
 
 // The action functions, as window.el has them, each given the buffer and
-// the alist, giving the window it used or nil.
+// the alist, giving the window it used or nil. Each is a function under
+// Emacs's name, and display-buffer and the actions that use others call
+// them by name, so advice and redefinitions take, as in Emacs.
 
-type ActionFunction = (buffer: e8.Buffer, alist: Alist) => e8.Window | symbol | undefined;
-const actions = new Map<string, ActionFunction>();
+type ActionResult = e8.Window | symbol | undefined;
+type ActionFunction = (buffer: e8.Buffer, alist: Alist) => ActionResult;
 
-/** Defines an action function under Emacs's name, for display-buffer-alist and code to name. */
-function defineAction(name: string, fn: ActionFunction): ActionFunction {
-  actions.set(name, fn);
-  e8.defun(name, (buffer: e8.Value, alist: e8.Value) => fn(e8.getBuffer(buffer as e8.BufferLike)!, Array.isArray(alist) ? alist : []) ?? null);
-  return fn;
+/** What an action function gave: its window, the symbol fail, or undefined. */
+function actionResult(got: unknown): ActionResult {
+  if (e8.windowp(got)) return got;
+  return typeof got === "symbol" && got.description === "fail" ? got : undefined;
 }
+
+/** Defines an action function under Emacs's name, and gives a function calling it by that name. */
+function defineAction(name: string, fn: ActionFunction): ActionFunction {
+  e8.defun(name, (buffer: e8.Value, alist: e8.Value) => fn(e8.getBuffer(buffer as e8.BufferLike)!, Array.isArray(alist) ? alist : []) ?? null);
+  return (buffer, alist) => actionResult(fcall(name, buffer, alist));
+}
+
+/** The window an action gave, if it gave one. */
+const windowOf = (r: ActionResult): e8.Window | undefined => (e8.windowp(r) ? r : undefined);
 
 const sameWindow = defineAction("display-buffer-same-window", (buffer, alist) => {
   if (alistTrue(alist, "inhibit-same-window") || e8.selectedWindow() === e8.minibufferWindow() || dedicated(e8.selectedWindow())) return undefined;
@@ -596,6 +696,7 @@ defineAction("display-buffer-reuse-mode-window", (buffer, alist) => {
   const bufferMode = symName(e8.withCurrentBuffer(buffer, () => e8.variable("major-mode")));
   const raw = modeEntry !== undefined ? alistGet(alist, "mode") : bufferMode;
   const allowed = (Array.isArray(raw) ? raw : [raw]).map(symName).filter((m): m is string => m !== undefined);
+  // As window.el pushes each window onto its group, the last of a group comes first.
   const groups: e8.Window[][] = [[], [], [], []];
   for (const window of windowsOnFrames(frames)) {
     if (inhibitSame && window === e8.selectedWindow()) continue;
@@ -605,7 +706,7 @@ defineAction("display-buffer-reuse-mode-window", (buffer, alist) => {
       return e8.derivedModeP(...allowed) ? 2 : -1;
     });
     if (kind < 0) continue;
-    groups[kind + (e8.windowFrame(window) === e8.selectedFrame() ? 0 : 1)].push(window);
+    groups[kind + (e8.windowFrame(window) === e8.selectedFrame() ? 0 : 1)].unshift(window);
   }
   const window = groups.flat()[0];
   if (window === undefined) return undefined;
@@ -645,7 +746,7 @@ defineAction("display-buffer-in-previous-window", (buffer, alist) => {
   const selected = e8.selectedWindow();
   let best: e8.Window | undefined;
   let second: e8.Window | undefined;
-  for (const window of windowsOnFrames(reusableFrames(alist))) {
+  for (const window of windowsOnFrames(reusableFrames(alist), e8.frameFirstWindow())) {
     if (dedicated(window) || !e8.windowPrevBuffers(window).some(([b]) => b === buffer.name)) continue;
     if (window === selected) {
       if (!inhibitSame) second = window;
@@ -656,11 +757,11 @@ defineAction("display-buffer-in-previous-window", (buffer, alist) => {
   }
   let previous = alistGet(alist, "previous-window");
   if (typeof previous === "string" || typeof previous === "symbol") previous = e8.variable(symName(previous)!);
-  if (e8.windowp(previous) && e8.windowLiveP(previous) && (e8.windowBuffer(previous) === buffer.name || !dedicated(previous as e8.Window))) {
+  if (e8.windowp(previous) && e8.windowLiveP(previous) && (e8.windowBuffer(previous) === buffer.name || !dedicated(previous))) {
     if (previous === selected) {
-      if (!inhibitSame) second = previous as e8.Window;
+      if (!inhibitSame) second = previous;
     } else {
-      best = previous as e8.Window;
+      best = previous;
     }
   }
   const window = best ?? second;
@@ -679,14 +780,16 @@ function lruWindowFor(alist: Alist): e8.Window | undefined {
   let second: e8.Window | undefined;
   let secondTime = Infinity;
   for (const window of windowsOnFrames(alistGet(alist, "lru-frames"))) {
-    if (dedicated(window) || (notThis && window === selected) || !isNil(e8.windowParameter(window, "window-side"))) continue;
+    if (dedicated(window) || (notThis && window === selected) || isSide(window)) continue;
     const time = e8.windowUseTime(window) ?? 0;
     if (typeof lruTime === "number" && time > lruTime) continue;
     const s = size(window);
+    const [, top, , bottom] = e8.windowEdges(window);
     const small =
-      (typeof minW === "number" && s.width < minW) ||
+      (typeof minW === "number" && s.totalWidth < minW) ||
       (symName(minW) === "full-width" && !s.fullWidth) ||
-      (typeof minH === "number" && s.height < minH);
+      (typeof minH === "number" && s.totalHeight < minH) ||
+      (symName(minH) === "full-height" && !(top === 0 && bottom === partEdges(e8.windowList().filter((w) => w !== e8.minibufferWindow()))[3]));
     if (window === selected || small) {
       if (time < secondTime) [second, secondTime] = [window, time];
     } else if (time < bestTime) {
@@ -714,9 +817,9 @@ const useSomeWindow = defineAction("display-buffer-use-some-window", (buffer, al
   let window: e8.Window | undefined;
   if (isNil(method) || symName(method) === "lru") window = lruWindowFor([...alist, ["lru-frames", frame], ["window-min-width", "full-width"]]);
   else if (symName(method) === "mru") window = getMruWindow(undefined, false, true);
-  else if (typeof method === "function" || typeof method === "string") {
+  else if (typeof method === "function" || typeof method === "string" || typeof method === "symbol") {
     const got = fcall(method, buffer, alist);
-    window = e8.windowp(got) ? (got as e8.Window) : undefined;
+    window = e8.windowp(got) ? got : undefined;
   }
   window ??=
     notSelected(getBufferWindowList(buffer, false, "visible")[0]) ??
@@ -733,7 +836,7 @@ const useSomeWindow = defineAction("display-buffer-use-some-window", (buffer, al
 
 defineAction("display-buffer-use-least-recent-window", (buffer, alist) => {
   const a: Alist = [["inhibit-same-window", true], ...alist];
-  let window = reuseWindow(buffer, a) as e8.Window | undefined;
+  let window = windowOf(reuseWindow(buffer, a));
   if (window === undefined) {
     const lru = lruWindowFor(a);
     if (lru !== undefined && e8.windowLiveP(lru)) {
@@ -743,12 +846,15 @@ defineAction("display-buffer-use-least-recent-window", (buffer, alist) => {
       if (!alistTrue(a, "inhibit-switch-frame")) maybeRaiseFrame(e8.windowFrame(lru));
     }
   }
-  return window ?? (popUpWindow(buffer, a) as e8.Window | undefined);
+  window ??= windowOf(popUpWindow(buffer, a));
+  // So the next call takes another window, as Emacs bumps the one it used.
+  if (window !== undefined) e8.windowBumpUseTime(window);
+  return window;
 });
 
 defineAction("display-buffer-below-selected", (buffer, alist) => {
   const minH = alistGet(alist, "window-min-height");
-  const tallEnough = (w: e8.Window) => typeof minH !== "number" || size(w).height >= minH;
+  const tallEnough = (w: e8.Window) => typeof minH !== "number" || size(w).totalHeight >= minH;
   const below = windowInDirection("below");
   if (below !== undefined && e8.windowBuffer(below) === buffer.name && tallEnough(below)) return windowDisplayBuffer(buffer, below, "reuse", alist);
   if (isNil(e8.frameParameter(undefined, "unsplittable")) && (typeof minH !== "number" || size(e8.selectedWindow()).totalHeight - minH >= minHeight())) {
@@ -763,7 +869,7 @@ const atBottom = defineAction("display-buffer-at-bottom", (buffer, alist) => {
   let bottom: e8.Window | undefined;
   let showsBuffer = false;
   for (const window of e8.windowList1(e8.frameFirstWindow(), false, false)) {
-    if (windowInDirection("below", window, true) !== undefined) continue;
+    if (windowInDirection("below", window) !== undefined) continue;
     if (!showsBuffer && e8.windowBuffer(window) === buffer.name) {
       showsBuffer = true;
       bottom = window;
@@ -773,18 +879,12 @@ const atBottom = defineAction("display-buffer-at-bottom", (buffer, alist) => {
   }
   if (showsBuffer && bottom !== undefined) return windowDisplayBuffer(buffer, bottom, "reuse", alist);
   if (isNil(e8.frameParameter(undefined, "unsplittable"))) {
-    const made = e8.conditionCase<e8.Window | undefined>(() => splitBelowMain(), { error: () => undefined });
+    const made = splitPartNoError(mainWindows(), "below");
     if (made !== undefined) return windowDisplayBuffer(buffer, made, "window", alist);
   }
   if (bottom !== undefined && !dedicated(bottom)) return windowDisplayBuffer(buffer, bottom, "reuse", alist);
   return undefined;
 });
-
-/** Splits the frame's main window at its bottom, as (split-window (window-main-window)): the whole frame's width when there are no side windows. */
-function splitBelowMain(): e8.Window {
-  const sides = e8.windowList().some((w) => !isNil(e8.windowParameter(w, "window-side")));
-  return sides || e8.windowList().length === 1 ? e8.splitWindow(windowMainWindow(), "below") : e8.splitRootWindow("below");
-}
 
 defineAction("display-buffer--maybe-at-bottom", (buffer, alist) => {
   const a: Alist = [...alist, ["window-height", "fit-window-to-buffer"]];
@@ -795,20 +895,20 @@ defineAction("display-buffer-in-direction", (buffer, alist) => {
   const direction0 = symName(alistGet(alist, "direction"));
   if (direction0 === undefined) return undefined;
   const whichWindow = alistGet(alist, "window");
-  let window: e8.Window;
-  if (symName(whichWindow) === "main" || ["top", "bottom", "leftmost", "rightmost"].includes(direction0)) window = windowMainWindow();
-  else if (e8.windowp(whichWindow) && e8.windowLiveP(whichWindow)) window = whichWindow as e8.Window;
-  else window = e8.selectedWindow();
-  const direction =
-    ["left", "above", "right", "below"].includes(direction0) ? direction0
-    : direction0 === "leftmost" ? "left"
-    : direction0 === "top" || direction0 === "up" ? "above"
-    : direction0 === "rightmost" ? "right"
+  let part: e8.Window[];
+  if (symName(whichWindow) === "main" || ["top", "bottom", "leftmost", "rightmost"].includes(direction0)) part = mainWindows();
+  else if (symName(whichWindow) === "root") part = e8.windowList().filter((w) => w !== e8.minibufferWindow());
+  else if (e8.windowp(whichWindow) && e8.windowLiveP(whichWindow)) part = [whichWindow];
+  else part = [e8.selectedWindow()];
+  const direction: "below" | "right" | "above" | "left" =
+    direction0 === "left" || direction0 === "leftmost" ? "left"
+    : direction0 === "above" || direction0 === "top" || direction0 === "up" ? "above"
+    : direction0 === "right" || direction0 === "rightmost" ? "right"
     : "below";
   const a: Alist = [...alist, ["window-height", "fit-window-to-buffer"]];
   let other: e8.Window | undefined;
   let otherShows = false;
-  for (const w of windowsSharingEdge(window, direction)) {
+  for (const w of windowsSharingEdge(part, direction)) {
     if (!otherShows && e8.windowBuffer(w) === buffer.name) {
       otherShows = true;
       other = w;
@@ -817,21 +917,16 @@ defineAction("display-buffer-in-direction", (buffer, alist) => {
     }
   }
   if (otherShows && other !== undefined) return windowDisplayBuffer(buffer, other, "reuse", a);
-  // The whole frame's edge for a direction beyond the windows, as Emacs splits the main window.
-  const made = e8.conditionCase<e8.Window | undefined>(
-    () =>
-      ["top", "bottom", "leftmost", "rightmost"].includes(direction0) && e8.windowList().length > 1
-        ? e8.splitRootWindow(direction as "below" | "right" | "above" | "left")
-        : e8.splitWindow(window, direction as "below" | "right" | "above" | "left"),
-    { error: () => undefined },
-  );
-  if (made !== undefined && isNil(e8.frameParameter(undefined, "unsplittable"))) return windowDisplayBuffer(buffer, made, "window", a);
+  if (isNil(e8.frameParameter(undefined, "unsplittable"))) {
+    const made = splitPartNoError(part, direction);
+    if (made !== undefined) return windowDisplayBuffer(buffer, made, "window", a);
+  }
   if (other !== undefined && !dedicated(other) && other !== e8.minibufferWindow()) return windowDisplayBuffer(buffer, other, "reuse", a);
   return undefined;
 });
 
 defineAction("display-buffer-full-frame", (buffer, alist) => {
-  const window = (reuseWindow(buffer, alist) ?? sameWindow(buffer, alist) ?? popUpWindow(buffer, alist) ?? useSomeWindow(buffer, alist)) as e8.Window | undefined;
+  const window = windowOf(reuseWindow(buffer, alist) ?? sameWindow(buffer, alist) ?? popUpWindow(buffer, alist) ?? useSomeWindow(buffer, alist));
   if (window === undefined) return undefined;
   for (const w of e8.windowList()) if (w !== window && w !== e8.minibufferWindow()) e8.deleteWindow(w);
   return window;
@@ -839,10 +934,11 @@ defineAction("display-buffer-full-frame", (buffer, alist) => {
 
 defineAction("display-buffer-use-some-frame", (buffer, alist) => {
   const predicate = alistGet(alist, "frame-predicate");
+  const notThis = alistTrue(alist, "inhibit-same-window");
   const frame = e8
     .frameList()
-    .find((f) => (isNil(predicate) ? f !== e8.selectedFrame() : !isNil(fcall(predicate, f))));
-  const window = frame === undefined ? undefined : getLruWindow(frame, false, alistTrue(alist, "inhibit-same-window"));
+    .find((f) => (isNil(predicate) ? f !== e8.selectedFrame() && getLruWindow(f) !== undefined : !isNil(fcall(predicate, f))));
+  const window = frame === undefined ? undefined : getLruWindow(frame, false, notThis);
   if (window === undefined) return undefined;
   const shown = windowDisplayBuffer(buffer, window, "reuse", alist);
   if (!alistTrue(alist, "inhibit-switch-frame")) maybeRaiseFrame(frame);
@@ -853,78 +949,125 @@ defineAction("display-buffer-no-window", (_buffer, alist) => (alistTrue(alist, "
 
 // Side windows, as window.el makes them: windows along a side of the
 // frame, each with window-side and window-slot parameters, dedicated to
-// their buffers as `side`, which delete-other-windows leaves.
+// their buffers as `side`.
 
-/** The side windows on a side, in slot order. */
+const SIDES = ["left", "top", "right", "bottom"] as const;
+
+/** The side windows on a side, in the frame's order, which is their order along it. */
 function sideWindows(side: string): e8.Window[] {
-  return e8
-    .windowList()
-    .filter((w) => symName(e8.windowParameter(w, "window-side")) === side)
-    .sort((a, b) => Number(e8.windowParameter(a, "window-slot") ?? 0) - Number(e8.windowParameter(b, "window-slot") ?? 0));
+  return e8.windowList1(e8.frameFirstWindow(), false, false).filter((w) => symName(e8.windowParameter(w, "window-side")) === side);
+}
+
+/** The windows of the part of the frame next to the side or sides `side` is split off, as window--make-major-side-window-next-to. */
+function sideNextTo(side: string): e8.Window[] {
+  const all = e8.windowList().filter((w) => w !== e8.minibufferWindow());
+  const vertical = !isNil(e8.variable("window-sides-vertical"));
+  /** The other part of the split that holds the side windows on `other`: what is beside them. */
+  const besides = (other: string): e8.Window[] | undefined => {
+    const windows = sideWindows(other);
+    if (windows.length === 0) return undefined;
+    const part = enclosing(windows);
+    const parent = part === undefined ? undefined : parentOf(part);
+    return parent === undefined ? undefined : treeLeaves(parent.split[parent.first ? 3 : 2]);
+  };
+  const opposite = { left: "right", right: "left", top: "bottom", bottom: "top" }[side]!;
+  const across = side === "left" || side === "right" ? ["top", "bottom"] : ["left", "right"];
+  const leftOrRight = side === "left" || side === "right";
+  return (
+    besides(opposite) ??
+    // Left and right windows go beside top and bottom ones unless window-sides-vertical, top and bottom ones beside left and right ones only with it.
+    (leftOrRight !== vertical ? (besides(across[0]) ?? besides(across[1])) : undefined) ??
+    all
+  );
 }
 
 /**
  * Shows a buffer in a window along a side of the frame, as
  * display-buffer-in-side-window: the alist's `side` (bottom by default)
  * and `slot` (0) say which. A window already in that slot is reused; a
- * side with no window gets one along the frame's whole edge; a new slot
- * splits the side's windows, slots in order along the side.
+ * side with no window gets one along the frame's edge, a quarter of the
+ * frame; a new slot goes before the side's window with the next higher
+ * slot, or after the one with the next lower, sharing the side evenly;
+ * when the side has all the slots window-sides-slots allows, the window
+ * with the nearest slot is reused and takes the slot.
  */
-const inSideWindow = defineAction("display-buffer-in-side-window", (buffer, alist0) => {
+defineAction("display-buffer-in-side-window", (buffer, alist0) => {
   const side = symName(alistGet(alist0, "side")) ?? "bottom";
   const slot = alistGet(alist0, "slot") ?? 0;
-  if (!["top", "bottom", "left", "right"].includes(side)) e8.signal("error", `Invalid side ${side} specified`);
+  if (!(SIDES as readonly string[]).includes(side)) e8.signal("error", `Invalid side ${side} specified`);
   if (typeof slot !== "number") e8.signal("error", `Invalid slot ${String(slot)} specified`);
   const leftOrRight = side === "left" || side === "right";
   const slots = e8.variable("window-sides-slots");
-  const maxSlots = Array.isArray(slots) ? slots[["left", "top", "right", "bottom"].indexOf(side)] : null;
+  const maxSlots = Array.isArray(slots) ? slots[(SIDES as readonly string[]).indexOf(side)] : null;
   if (typeof maxSlots === "number" && maxSlots <= 0) return undefined;
   const alist: Alist = assq(alist0, "dedicated") ? alist0 : [["dedicated", e8.variable("display-buffer-mark-dedicated") ?? "side"], ...alist0];
   const windows = sideWindows(side);
-  const mark = (window: e8.Window) => {
+  const along = (before: boolean) => (leftOrRight ? (before ? "above" : "below") : before ? "left" : "right");
+  if (windows.length === 0) {
+    // A major side window, beside the main window, a quarter of the frame by default.
+    const total = leftOrRight ? e8.frameWidth() : e8.frameHeight();
+    const sized = !isNil(alistGet(alist, leftOrRight ? "window-width" : "window-height"));
+    const rootSide = side === "top" ? "above" : side === "bottom" ? "below" : (side as "left" | "right");
+    const window = splitPartNoError(sideNextTo(side), rootSide, sized ? undefined : -Math.max(2, Math.trunc(total / 4)));
+    if (window === undefined) return undefined;
     e8.setWindowParameter(window, "window-side", side);
     e8.setWindowParameter(window, "window-slot", slot);
-  };
-  if (windows.length === 0) {
-    // A major side window, along the frame's whole edge.
-    const total = leftOrRight ? e8.frameWidth() : e8.frameHeight();
-    const sized = alistGet(alist, leftOrRight ? "window-width" : "window-height") !== undefined;
-    const rootSide = side === "top" ? "above" : side === "bottom" ? "below" : side;
-    const window = e8.conditionCase<e8.Window | undefined>(
-      () => e8.splitRootWindow(rootSide as "below" | "right" | "above" | "left", sized ? undefined : -Math.max(2, Math.trunc(total / 4))),
-      { error: () => undefined },
-    );
-    if (window === undefined) return undefined;
-    mark(window);
     return windowDisplayBuffer(buffer, window, "window", alist);
   }
-  const same = windows.find((w) => e8.windowParameter(w, "window-slot") === slot);
-  if (same !== undefined) return windowDisplayBuffer(buffer, same, "reuse", alist);
-  if (typeof maxSlots === "number" && windows.length >= maxSlots) {
-    // No new slot: the window with the nearest slot shows it.
-    const nearest = windows.reduce((a, b) =>
-      Math.abs(Number(e8.windowParameter(a, "window-slot")) - slot) <= Math.abs(Number(e8.windowParameter(b, "window-slot")) - slot) ? a : b,
-    );
-    return windowDisplayBuffer(buffer, nearest, "reuse", alist);
+  let thisWindow: e8.Window | undefined;
+  let prevWindow: e8.Window | undefined;
+  let nextWindow: e8.Window | undefined;
+  let bestWindow: e8.Window | undefined;
+  let bestSlot: number | undefined;
+  for (const window of windows) {
+    const thisSlot = e8.windowParameter(window, "window-slot");
+    if (typeof thisSlot !== "number") continue;
+    if (thisSlot === slot) {
+      thisWindow = window;
+      break;
+    }
+    const absSlot = (thisSlot > 0 && slot > 0) || (thisSlot < 0 && slot < 0) ? Math.abs(slot - thisSlot) : Math.abs(slot) + Math.abs(thisSlot);
+    if (bestSlot === undefined || absSlot < bestSlot) [bestWindow, bestSlot] = [window, absSlot];
+    if (thisSlot <= slot) prevWindow = window;
+    else nextWindow ??= window;
   }
-  // A new slot, before or after the side window with the nearest slot, along the side.
-  const after = windows.filter((w) => Number(e8.windowParameter(w, "window-slot")) < slot).pop();
-  const next = after ?? windows[0];
-  const before = after === undefined;
-  const along = leftOrRight ? (before ? "above" : "below") : before ? "left" : "right";
-  const window = e8.conditionCase<e8.Window | undefined>(() => e8.splitWindow(next, along as "below" | "right" | "above" | "left"), { error: () => undefined });
-  if (window === undefined) return windowDisplayBuffer(buffer, next, "reuse", alist);
-  mark(window);
-  return windowDisplayBuffer(buffer, window, "window", alist);
+  if (thisWindow !== undefined) return windowDisplayBuffer(buffer, thisWindow, "reuse", alist);
+  if (typeof maxSlots !== "number" || windows.length < maxSlots) {
+    const made =
+      (nextWindow !== undefined ? splitPartNoError([nextWindow], along(true)) : undefined) ??
+      (prevWindow !== undefined ? splitPartNoError([prevWindow], along(false)) : undefined);
+    if (made !== undefined) {
+      e8.setWindowParameter(made, "window-side", side);
+      e8.setWindowParameter(made, "window-slot", slot);
+      shareEvenly(sideWindows(side), leftOrRight);
+      return windowDisplayBuffer(buffer, made, "window", alist);
+    }
+  }
+  if (bestWindow === undefined) return undefined;
+  e8.setWindowParameter(bestWindow, "window-slot", slot);
+  return windowDisplayBuffer(buffer, bestWindow, "reuse", alist);
 });
-void inSideWindow;
+
+/** Gives the windows along a side the same share of it, as window.el's splits with window-combination-resize `side` leave them. */
+function shareEvenly(windows: e8.Window[], leftOrRight: boolean): void {
+  const total = windows.reduce((n, w) => n + (leftOrRight ? size(w).totalHeight : size(w).totalWidth), 0);
+  const each = Math.floor(total / windows.length);
+  // What does not divide evenly goes to the outer windows first, as Emacs's proportional resize leaves it.
+  const extras = new Set<number>();
+  for (let i = 0, n = total - each * windows.length; i < n; i++) extras.add(i % 2 === 0 ? i / 2 : windows.length - 1 - (i - 1) / 2);
+  for (const [i, w] of windows.slice(0, -1).entries()) {
+    const wanted = each + (extras.has(i) ? 1 : 0);
+    const now = leftOrRight ? size(w).totalHeight : size(w).totalWidth;
+    if (wanted !== now) e8.conditionCase(() => e8.resizeWindow(w, wanted - now, !leftOrRight), { error: () => 0 });
+  }
+}
 
 /**
  * Whether a buffer matches a condition of display-buffer-alist's, as
- * buffer-match-p: a regexp its name matches, a function given the buffer
- * name and `args`, t, or [category, NAME] for display-buffer's action
- * naming that category, [major-mode, MODE], [derived-mode, MODE], [not,
- * ...], [or, ...] and [and, ...].
+ * buffer-match-p: a regexp its name matches, a function or a symbol naming
+ * one given the buffer and `args`, t, or [category, NAME] for
+ * display-buffer's action naming that category, [major-mode, MODE],
+ * [derived-mode, MODE], [not, ...], [or, ...] and [and, ...].
  */
 export function bufferMatchP(condition: e8.Value, bufferOrName: e8.BufferLike, ...args: e8.Value[]): boolean {
   const buffer = e8.getBuffer(bufferOrName);
@@ -932,7 +1075,7 @@ export function bufferMatchP(condition: e8.Value, bufferOrName: e8.BufferLike, .
   const one = (c: e8.Value): boolean => {
     if (c === true) return true;
     if (typeof c === "string") return e8.stringMatch(c, name) !== undefined;
-    if (typeof c === "function") return !isNil(fcall(c, bufferOrName, ...args));
+    if (typeof c === "function" || typeof c === "symbol") return !isNil(fcall(c, bufferOrName, ...args));
     if (!Array.isArray(c) || c.length === 0) return false;
     const [head, ...rest] = c;
     switch (symName(head)) {
@@ -946,18 +1089,15 @@ export function bufferMatchP(condition: e8.Value, bufferOrName: e8.BufferLike, .
       case "derived-mode":
         return buffer !== undefined && e8.withCurrentBuffer(buffer, () => e8.derivedModeP(...rest.map((m) => symName(m) ?? "")));
       case "not":
-        return !any(rest);
+        return !rest.some(one);
       case "or":
-        return any(rest);
+        return rest.some(one);
       case "and":
-        return rest.every((x) => any([x]));
+        return rest.every(one);
       default:
-        // A function given by name, as a symbol in Lisp.
-        return typeof head === "symbol" || typeof head === "string" ? false : false;
+        return false;
     }
   };
-  const any = (cs: e8.Value[]): boolean => cs.some(one);
-  if (typeof condition === "symbol") return !isNil(fcall(condition.description ?? "", bufferOrName, ...args));
   return one(condition);
 }
 
@@ -972,8 +1112,9 @@ export function bufferMatchP(condition: e8.Value, bufferOrName: e8.BufferLike, .
  * [reusable-frames, FRAME].
  */
 export function displayBuffer(bufferOrName: e8.BufferLike, action?: e8.Value, frame?: e8.Value): e8.Window | undefined {
-  const buffer = typeof bufferOrName === "string" ? e8.getBuffer(bufferOrName) : bufferOrName;
-  const name = typeof bufferOrName === "string" ? bufferOrName : bufferOrName.name ?? "";
+  const buffer = e8.getBuffer(bufferOrName);
+  if (buffer === undefined || !e8.bufferLiveP(buffer)) e8.signal("error", "Invalid buffer");
+  const name = buffer.name ?? "";
   const inhibitSameWindow = !isNil(action) && !Array.isArray(action);
   const callerAction: e8.Value[] = Array.isArray(action) ? action : [null];
   const alistVar = e8.variable("display-buffer-alist");
@@ -996,20 +1137,18 @@ export function displayBuffer(bufferOrName: e8.BufferLike, action?: e8.Value, fr
   ];
   const functions = all.flatMap((a) => (isNil(a[0]) ? [] : Array.isArray(a[0]) ? a[0] : [a[0]]));
   const alist: Alist = all.flatMap((a) => a.slice(1));
-  if (buffer === undefined || !e8.bufferLiveP(buffer)) e8.signal("error", "Invalid buffer");
-  let window: unknown;
+  let result: ActionResult;
   for (const fn of functions) {
-    const own = typeof fn === "string" || typeof fn === "symbol" ? actions.get(symName(fn) ?? "") : undefined;
-    window = own ? own(buffer, alist) : fcall(fn, buffer, alist);
-    if (!isNil(window)) break;
+    result = actionResult(fcall(fn, buffer, alist));
+    if (result !== undefined) break;
   }
+  const window = windowOf(result);
   const select = assq(alist, "post-command-select-window");
-  if (select !== undefined && e8.windowp(window)) {
+  if (select !== undefined && window !== undefined) {
     const oldSelected = e8.selectedWindow();
-    const shown = window as e8.Window;
     const postfun = () => {
       if (!isNil(select[1])) {
-        if (e8.windowLiveP(shown)) e8.selectWindow(shown);
+        if (e8.windowLiveP(window)) e8.selectWindow(window);
       } else if (e8.windowLiveP(oldSelected)) {
         e8.selectWindow(oldSelected);
       }
@@ -1017,13 +1156,14 @@ export function displayBuffer(bufferOrName: e8.BufferLike, action?: e8.Value, fr
     };
     e8.addHook("post-command-hook", postfun);
   }
-  return e8.windowp(window) ? (window as e8.Window) : undefined;
+  return window;
 }
 
 /**
  * Shows a buffer in some window, as display-buffer, and selects that
- * window and its frame, as pop-to-buffer; a buffer with no window used
- * becomes current. `norecord` leaves the buffer list as it is.
+ * window and its frame, as pop-to-buffer. `norecord` leaves the buffer
+ * list as it is. E8 scripts have no set-buffer, so a buffer with no
+ * window used does not become current.
  */
 export function popToBuffer(bufferOrName: e8.BufferLike, action?: e8.Value, norecord = false): e8.Buffer {
   const buffer = e8.getBufferCreate(bufferOrName === "" ? (e8.windowBuffer() ?? "*scratch*") : bufferOrName);
@@ -1053,7 +1193,8 @@ const displayBufferCommand = e8.defineCommand({
   doc:
     "Show a buffer in some window without selecting it, as display-buffer-alist and the other actions say.\n\n" +
     "With a prefix argument, another window than the selected one. By default a window that already shows it is used, " +
-    "else a new window split off a large enough one, else the least recently used window.",
+    "else a new window split off a large enough one, else the least recently used window. " +
+    "Code passing an action calls window.ts's displayBuffer.",
   params: [
     { name: "buffer", kind: "buffer", prompt: "Display buffer: " },
     { name: "action", kind: "prefix" },
@@ -1089,7 +1230,7 @@ const switchToBufferOtherWindow = e8.defineCommand({
   doc: "Show a buffer in another window and select it, creating the buffer if there is none.",
   params: [{ name: "buffer", kind: "buffer", prompt: "Switch to buffer in other window: " }],
   run: (buffer) => {
-    popToBuffer(buffer, true);
+    e8.letBind({ "pop-up-windows": true }, () => popToBuffer(buffer, true));
   },
 });
 

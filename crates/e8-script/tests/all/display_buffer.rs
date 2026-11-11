@@ -18,7 +18,10 @@ fn setup() -> (Editor, Scripting) {
         r#"(["a", "b", "c", "main"].forEach((b) => e8.getBufferCreate(b)), e8.call("switch-to-buffer", "main"),
           globalThis.show = () => JSON.stringify(e8.windowList().map((w) => [e8.windowBuffer(w), e8.windowEdges(w),
             e8.windowParameter(w, "window-side") ?? null, e8.windowParameter(w, "window-slot") ?? null,
-            e8.windowDedicatedP(w) ?? null, w === e8.selectedWindow()])), "")"#,
+            e8.windowDedicatedP(w) ?? null, w === e8.selectedWindow()])),
+          globalThis.layout = () => JSON.stringify(e8.windowList().map((w) => [e8.windowBuffer(w), e8.windowEdges(w),
+            e8.windowParameter(w, "window-side") ?? null, e8.windowParameter(w, "window-slot") ?? null])),
+          ["x"].forEach((b) => e8.getBufferCreate(b)), "")"#,
     );
     (ed, s)
 }
@@ -127,4 +130,96 @@ fn conditions_match_by_major_mode() {
         ),
         r#"[["a",[0,0,80,24],null,null,null,true]]"#
     );
+}
+
+/// Runs `code`, then gives each window's buffer, edges, side and slot.
+fn layout_after(code: &str) -> String {
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, &format!("({code}, layout())"))
+}
+
+#[test]
+fn the_bottom_of_the_main_window_stops_at_the_side_windows() {
+    // fit-window-to-buffer makes the new window window-min-height, four lines.
+    assert_eq!(
+        layout_after(
+            r#"(win.displayBuffer("a", ["display-buffer-in-side-window", ["side", "right"]]), e8.call("split-window-below"),
+              win.displayBuffer("x", ["display-buffer-in-direction", ["direction", "bottom"]]))"#
+        ),
+        r#"[["main",[0,0,60,10],null,null],["main",[0,10,60,20],null,null],["x",[0,20,60,24],null,null],["a",[60,0,80,24],"right",0]]"#
+    );
+}
+
+#[test]
+fn a_left_side_window_goes_above_a_bottom_one() {
+    assert_eq!(
+        layout_after(
+            r#"(win.displayBuffer("a", ["display-buffer-in-side-window", ["side", "bottom"]]),
+              win.displayBuffer("b", ["display-buffer-in-side-window", ["side", "left"]]))"#
+        ),
+        r#"[["b",[0,0,20,18],"left",0],["main",[20,0,80,18],null,null],["a",[0,18,80,24],"bottom",0]]"#
+    );
+}
+
+#[test]
+fn a_new_slot_goes_between_its_neighbours_and_the_side_is_shared() {
+    assert_eq!(
+        layout_after(
+            r#"(win.displayBuffer("a", ["display-buffer-in-side-window", ["side", "bottom"], ["slot", -1]]),
+              win.displayBuffer("b", ["display-buffer-in-side-window", ["side", "bottom"], ["slot", 1]]),
+              win.displayBuffer("c", ["display-buffer-in-side-window", ["side", "bottom"], ["slot", 0]]))"#
+        ),
+        r#"[["main",[0,0,80,18],null,null],["a",[0,18,27,24],"bottom",-1],["c",[27,18,53,24],"bottom",0],["b",[53,18,80,24],"bottom",1]]"#
+    );
+}
+
+#[test]
+fn reuse_mode_window_previous_window_and_least_recent_window_choose_as_emacs_does() {
+    // The last of the windows in that mode, as window.el pushes them.
+    assert_eq!(
+        layout_after(
+            r#"(e8.call("split-window-below"), e8.call("split-window-below"),
+              win.displayBuffer("x", ["display-buffer-reuse-mode-window", ["inhibit-same-window", true], ["mode", "fundamental-mode"]]))"#
+        ),
+        r#"[["main",[0,0,80,6],null,null],["main",[0,6,80,12],null,null],["x",[0,12,80,24],null,null]]"#
+    );
+    // The first window, from the frame's first, that showed the buffer before.
+    assert_eq!(
+        layout_after(
+            r#"(e8.call("split-window-below"), e8.call("split-window-below"),
+              ((ws) => { e8.setWindowBuffer(ws[0], "x"); e8.setWindowBuffer(ws[0], "a"); e8.setWindowBuffer(ws[2], "x"); e8.setWindowBuffer(ws[2], "c"); e8.selectWindow(ws[1]); })(e8.windowList()),
+              win.displayBuffer("x", ["display-buffer-in-previous-window"]))"#
+        ),
+        r#"[["x",[0,0,80,6],null,null],["main",[0,6,80,12],null,null],["c",[0,12,80,24],null,null]]"#
+    );
+    // Each use bumps the window's use time, so the next takes another.
+    assert_eq!(
+        layout_after(
+            r#"(e8.call("split-window-below"), e8.call("split-window-right"),
+              win.displayBuffer("a", ["display-buffer-use-least-recent-window"]),
+              win.displayBuffer("b", ["display-buffer-use-least-recent-window"]))"#
+        ),
+        r#"[["main",[0,0,40,12],null,null],["a",[40,0,80,12],null,null],["b",[0,12,80,24],null,null]]"#
+    );
+}
+
+#[test]
+fn split_above_leaves_the_odd_line_to_the_old_window() {
+    let (mut ed, s) = setup();
+    ed.set_frame_size(80, 25);
+    assert_eq!(
+        eval(&mut ed, &s, r#"(e8.splitWindow(undefined, "above"), layout())"#),
+        r#"[["main",[0,0,80,12],null,null],["main",[0,12,80,25],null,null]]"#
+    );
+}
+
+#[test]
+fn fit_window_to_buffer_fits_lines_between_its_limits() {
+    // The text as JavaScript writes it, its newlines escaped.
+    for (text, height) in [("", 4), ("one\\n", 4), ("1\\n2\\n3\\n4\\n5\\n6", 7), ("1\\n2\\n3\\n4\\n5\\n6\\n", 7), (&"x\\n".repeat(22), 20)] {
+        let got = layout_after(&format!(
+            r#"((w) => {{ e8.withCurrentBuffer(e8.getBufferCreate("f"), () => e8.insert("{text}")); e8.setWindowBuffer(w, "f"); win.fitWindowToBuffer(w); }})(e8.splitWindow())"#
+        ));
+        assert!(got.contains(&format!(r#"["f",[0,{},80,24],null,null]"#, 24 - height)), "{text:?}: {got}");
+    }
 }
