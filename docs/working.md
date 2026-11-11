@@ -1,17 +1,17 @@
 # How we work
 
-E8 was built in nine days, 27 October to 4 November 2026, in one long Claude Code session: 277 commits on `main`, from a terminal editor to Org mode, Dired, a shell, bidirectional text, images, the editor on its own thread, prompts that return their answer, and ports of the packages Mark's Emacs uses, until E8 could be Mark's daily editor. From then on the work is done differently: a session per feature, on a branch of its own, merged by pull request. This page says how, and what the first stretch taught, so that what follows goes better. [CLAUDE.md](../CLAUDE.md) holds the rules every change follows; this is the why and the how.
+E8 was built in nine days, 27 October to 4 November 2026, in one long Claude Code session: 277 commits on `main`, from a terminal editor to Org mode, Dired, a shell, bidirectional text, images, the editor on its own thread, prompts that return their answer, and ports of the packages an everyday Emacs uses, until E8 could be someone's daily editor. From then on the work is done differently: a session per feature, on a branch of its own, merged by pull request. This page says how, and what the first stretch taught, so that what follows goes better. [CLAUDE.md](../CLAUDE.md) holds the rules every change follows; this is the why and the how.
 
 ## A session per feature
 
 - **Each feature or fix has a session, a branch and a worktree of its own**, and ends in a pull request against `main` that Mark merges. The desktop app makes the worktree when a session starts in one; `claude --worktree NAME` does in a terminal. Worktrees live in `.claude/worktrees/`, branched from `origin/main`.
 - **A session knows only the repository.** Everything the first session learned that a later one needs is written down here, in CLAUDE.md, in the [ADRs](adr/) and in the docs they point to; a session that learns something a later one would need writes it down too, in the pull request that needed it.
 - **A worktree shares the main checkout's build directory** through a `target` symlink that `.claude/hooks/share-target.sh` makes: a target of its own means building V8, egui and tree-sitter again and tens of gigabytes per worktree (the main `target` reached 200 GB). Shared, a worktree's first test build compiles only E8's crates, about a minute. Builds in two worktrees take turns on cargo's lock rather than both running.
-- **Each worktree has an app of its own.** `make app` in a worktree builds `E8.app` in the worktree's folder, to open from there, and leaves `target/E8.app`, the app Mark uses every day, to the main checkout. The bundle holds a copy of the binary, so building another branch later does not change it; two worktrees running `make app` at once wait for each other on cargo's lock.
+- **Each worktree has an app of its own.** `make app` in a worktree builds `E8.app` in the worktree's folder, to open from there, and leaves `target/E8.app`, the app in daily use, to the main checkout. The bundle holds a copy of the binary, so building another branch later does not change it; two worktrees running `make app` at once wait for each other on cargo's lock.
 - **Parallel branches meet in a few files.** `packages/e8.d.ts` is generated: after a merge, make it again rather than resolving its conflicts. The GUI snapshots are recorded again and looked at. An ADR's number is the next free on `main`, and the later of two branches that took the same one renumbers. New entries in features.md and differences.md go at the end of their section.
 - **Long commands run in the background**: the full test suite, release builds, the fuzzers, the bench, recording oracle cases. Wait for them to finish rather than polling, and say what is happening when it has been quiet for a while.
 - **Wait on a file or a process id, never on `pgrep -f` with the command's text**: the waiting loop's own command line holds that text, so it matches itself and never ends. Stop waits that are no longer needed.
-- **Each turn ends with a message that stands on its own**: what changed, what was checked and how, what is not done or not verified. Mark often reads it on a phone, hours later, without the transcript.
+- **Each turn ends with a message that stands on its own**: what changed, what was checked and how, what is not done or not verified. It is often read on a phone, hours later, without the transcript.
 - **Files are staged by name.** `test.org` and other personal files are never committed.
 
 ## The repository is the memory
@@ -20,11 +20,12 @@ E8 was built in nine days, 27 October to 4 November 2026, in one long Claude Cod
 - **A plan of several steps gets a doc** with a table of its steps and each one's state, updated as each lands, with what was measured and what was decided. A later session resumes from the doc.
 - **CLAUDE.md is read at every turn.** It keeps what every change needs and points to the rest: what E8 does is in [features.md](features.md), what each file holds in [layout.md](layout.md), the decisions in the [ADR index](adr/README.md).
 
-## Mark's setup
+## Personal setups
 
-- **Mark's config is `~/.config/e8/init.ts`**, ported from Mark's Emacs config (`~/.emacs.d/init.el` and `config.org`). It installs the packages that do not ship, vertico, consult, magit, org-roam and the rest, from their repositories in `e8-editor` with `e8.usePackage`, into `~/.config/e8/repos/`, pinned by `e8-lock.json`; a change to one reaches Mark's E8 once it is tagged and `package-vc-upgrade` is run, or at once by working in that checkout. Ask before changing anything in `~/.config/e8`.
-- **Mark's Emacs is the reference for what is expected.** Its config says which packages and settings give the look and behaviour Mark is used to; the packages' sources are in `~/.emacs.d/elpaca/repos/` (marginalia, vertico, consult, magit, org-roam), and Emacs's own Lisp is where `(locate-library "org")` finds it in the Nix store. The block faces in init.el's `custom-set-faces` are an example: a look that seemed to be Emacs's own came from the config.
-- **Mark's org files are private.** Read them only for counts and timings, never print what they hold, and never commit them.
+- **A personal configuration is the user's.** Ask before changing anything in it. A config's packages from the `e8-editor` repositories, installed with `e8.usePackage` and pinned by `e8-lock.json`, take a change once it is tagged and `package-vc-upgrade` is run, or at once by working in that package's checkout.
+- **Emacs, as a user has configured it, is the reference for what is expected.** A look that seems to be Emacs's own can come from the configuration, as block faces set in `custom-set-faces` once did: compare with `emacs -Q` before calling something Emacs's behaviour.
+- **Personal Org files are private.** Read them only for counts and timings, never print what they hold, and never commit them.
+- **What is personal stays out of the repository**, which is public: paths under a home folder, account details, a user's configuration and habits. Sessions keep those in their own memory.
 
 ## Behaving like Emacs
 
@@ -44,7 +45,7 @@ E8 was built in nine days, 27 October to 4 November 2026, in one long Claude Cod
 
 - **Snapshots first.** A GUI change gets a snapshot in `crates/e8-gui/tests/`; record it with `UPDATE_SNAPSHOTS=1`, then look at the image, enlarged when the change is a pixel or two: a crop scaled up four times showed seams and lines a pixel apart that the full image hid.
 - **The snapshots are not in `make check`**, as each process spends a minute getting the GPU from Metal: run `cargo test -p e8-gui --test window --test images` after any change to drawing, and after a change to a shipped package a snapshot shows, such as icomplete or transient. One went stale for a day because only drawing changes were thought to need it.
-- **To see the real app**, start `target/E8.app/Contents/MacOS/e8-gui` with `E8_CONFIG_DIR` pointing at a copy of the config and a test file, never one of Mark's, and take a screenshot of its window alone, by id (`screencapture -x -o -l ID`, the id from `CGWindowListCopyWindowInfo`), never the whole screen. Delete the copy's `.e8.desktop.lock` first, or desktop asks whether to use a desktop another E8 holds. Close the app when done: it is open on Mark's screen. A second E8 cannot take the agent socket and says so in the echo area; that is harmless.
+- **To see the real app**, start `target/E8.app/Contents/MacOS/e8-gui` with `E8_CONFIG_DIR` pointing at a copy of the config and a test file, never a real one, and take a screenshot of its window alone, by id (`screencapture -x -o -l ID`, the id from `CGWindowListCopyWindowInfo`), never the whole screen. Delete the copy's `.e8.desktop.lock` first, or desktop asks whether to use a desktop another E8 holds. Close the app when done: it is open on the user's screen. A second E8 cannot take the agent socket and says so in the echo area; that is harmless.
 
 ## Measure before optimising
 
