@@ -1,6 +1,6 @@
 # 0069. Windows as Emacs has them: window.c's tree, window.el's policy, windows as objects
 
-Status: proposed · 2026-11-11
+Status: accepted · 2026-11-11
 
 ## Context
 
