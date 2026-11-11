@@ -19,7 +19,8 @@
 // agent does not remember.
 //
 // The session starts as the buffer opens, and the header line shows its
-// model, mode and thought level: C-c C-v picks the model, C-c C-t the
+// model, mode and thought level (agent-shell-header-style), which are also
+// in variables for a mode line of your own: C-c C-v picks the model, C-c C-t the
 // thought level, C-c TAB the next mode and C-c C-s any setting the agent
 // offers, from ACP's session config options or its older modes and models.
 //
@@ -70,6 +71,30 @@ e8.defineVariable({
     "The tools, by the name the agent gives them, whose calls the buffer leaves out: Claude Code's own bookkeeping, " +
     "finding its tools and keeping its to-do list, which shows as the plan.",
 });
+e8.defineVariable({
+  name: "agent-shell-header-style",
+  value: "text",
+  doc:
+    'What the header line of an agent\'s buffer shows: "text", the session\'s model, mode and thought level; ' +
+    '"graphical", the same, as E8 draws no icons in header lines yet; null, no header line, leaving ' +
+    "header-line-format to you. agent-shell-current-model, agent-shell-current-session-mode and " +
+    "agent-shell-current-thought-level hold the settings for a mode line or header line of your own.",
+});
+for (const [name, what] of [
+  ["agent-shell-current-model", "model"],
+  ["agent-shell-current-session-mode", "mode, such as Auto or Plan, which says what the agent may do without asking"],
+  ["agent-shell-current-thought-level", "thought level"],
+]) {
+  e8.defineVariable({
+    name,
+    value: "",
+    local: true,
+    doc:
+      `The session's ${what}, by its name, in an agent's buffer, and "" elsewhere or before the agent says. ` +
+      "To show it in every mode line: " +
+      `e8.setVariable("global-mode-string", ["", e8.intern("${name}")]), as Lisp's '("" ${name}).`,
+  });
+}
 e8.defineVariable({
   name: "agent-shell-default-agent",
   value: null,
@@ -273,7 +298,7 @@ e8.defineMajorMode({
     "nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b " +
     "to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode " +
     "line shows whether the agent is working and how much of its context the conversation fills.\n\n" +
-    "The header line shows the session's model, mode and thought level, and nothing else: the keys are listed below. " +
+    "The header line shows the session's model, mode and thought level, and nothing else: the keys are listed below. agent-shell-header-style null leaves the header line to you. " +
     "C-c TAB, or C-<tab> as in Emacs's " +
     "agent-shell where tab-bar-mode does not take it, moves to the next mode, C-c C-v " +
     "picks the model, C-c C-t the thought level, and C-c C-s any setting the agent offers. Picking a mode is " +
@@ -296,8 +321,6 @@ e8.defineMajorMode({
     e8.call("visual-line-mode");
     // Agents' tools, e8-mcp's included, act in other windows than this one.
     e8.setVariable("agent-buffer", true);
-    // The session's settings, once it has started; until then, an empty line, so the text does not move.
-    e8.setVariable("header-line-format", " ");
     // ~code~ and *bold* without their markers, as a chat shows them.
     e8.makeLocalVariable("org-hide-emphasis-markers");
     e8.setVariable("org-hide-emphasis-markers", true);
@@ -338,16 +361,27 @@ const SPEED_COMMANDS: e8.Value = [
 ];
 
 /**
- * The header line: the session's model, mode and thought level, as state,
+ * The session's model, mode and thought level, in the buffer's variables
+ * and, as agent-shell-header-style says, on the header line, as state,
  * never the keys, which C-h m lists, as a shell's header says nothing of its keys.
  */
 function showSettings(shell: Shell): void {
-  const shown = ["model", "mode", "thought_level"]
-    .map((category) => shell.options.find((o) => o.category === category))
-    .filter((o): o is SessionOption => o !== undefined)
-    .map((o) => valueName(o, o.current));
-  const head = shell.starting ? ` Starting ${shell.agent}…` : shown.length > 0 ? ` ${shown.join(" · ")}` : "";
-  inBuffer(shell, () => e8.setVariable("header-line-format", `${head === "" ? " " : head}`.replace(/%/g, "%%")));
+  const current = (category: string) => {
+    const option = shell.options.find((o) => o.category === category);
+    return option === undefined ? "" : valueName(option, option.current);
+  };
+  const [model, mode, thought] = ["model", "mode", "thought_level"].map(current);
+  inBuffer(shell, () => {
+    e8.setVariable("agent-shell-current-model", model);
+    e8.setVariable("agent-shell-current-session-mode", mode);
+    e8.setVariable("agent-shell-current-thought-level", thought);
+    // Read in the buffer, where agent-shell-mode-hook may have set its own.
+    const style = e8.variable("agent-shell-header-style");
+    if (style !== "text" && style !== "graphical") return;
+    const shown = [model, mode, thought].filter((v) => v !== "");
+    const head = shell.starting ? ` Starting ${shell.agent}…` : shown.length > 0 ? ` ${shown.join(" · ")}` : " ";
+    e8.setVariable("header-line-format", head.replace(/%/g, "%%"));
+  });
 }
 
 /** Positions as a line start and its end, and the line's text. */
