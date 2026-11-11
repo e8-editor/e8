@@ -48,11 +48,13 @@ impl Editor {
         Ok(())
     }
 
-    /// The current buffer's local map, the major mode's, as Emacs's
-    /// `current-local-map`: the one `use-local-map` gave it, behind any a
-    /// minor mode's composing put in front.
+    /// The current buffer's local map, as Emacs's `current-local-map`: the
+    /// one `use-local-map` gave it, the major mode's, or the one
+    /// `compose_local_map` last put in front of it, as Emacs's is then the
+    /// composed keymap, and in the minibuffer the must-match map when a
+    /// prompt has one.
     pub fn current_local_map(&self) -> Option<KeymapId> {
-        self.buffer().local_map.last().copied()
+        self.buffer().local_map.first().copied()
     }
 
     /// A copy of a keymap, as Emacs's `copy-keymap`: the prefix maps it
@@ -71,7 +73,10 @@ impl Editor {
     }
 
     fn minor_mode_maps(&self) -> Vec<(String, KeymapId)> {
-        let b = self.buffer();
+        self.minor_mode_maps_in(self.buffer())
+    }
+
+    fn minor_mode_maps_in(&self, b: &Buffer) -> Vec<(String, KeymapId)> {
         self.minor_modes
             .iter()
             .filter(|m| self.minor_mode_on(b, &m.name))
@@ -297,12 +302,7 @@ impl Editor {
         // stands in for the buffer's own, as Emacs's current-active-maps has them.
         let property = |name| if at_point { self.keymap_property_at_point(b, name) } else { None };
         let mut maps: Vec<KeymapId> = property("keymap").into_iter().collect();
-        maps.extend(
-            self.minor_modes
-                .iter()
-                .filter(|m| self.minor_mode_on(b, &m.name))
-                .filter_map(|m| m.keymap.as_deref().and_then(|k| self.keymap_named(k))),
-        );
+        maps.extend(self.minor_mode_maps_in(b).into_iter().map(|(_, m)| m));
         match property("local-map") {
             Some(map) => maps.push(map),
             None => maps.extend(b.local_map.iter().copied()),
