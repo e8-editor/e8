@@ -437,9 +437,14 @@ function confirm(all: Pair[], unsafe: Pair[], risky: Pair[], dirName?: string): 
   return ["!", " ", "y", "+"].includes(answer);
 }
 
-/** Whether two names are the same directory, with or without a trailing slash, as file-equal-p tells. */
+/**
+ * Whether two names are the same directory, as file-equal-p tells: with or
+ * without a trailing slash, and with the symbolic links in either followed,
+ * so a directory trusted by its real name is trusted through a link to it.
+ */
 function sameDirectory(a: string, b: string): boolean {
-  return e8.directoryFileName(e8.expandFileName(a)) === e8.directoryFileName(e8.expandFileName(b));
+  const real = (name: string) => e8.directoryFileName(e8.fileTruename(e8.expandFileName(name)));
+  return real(a) === real(b);
 }
 
 /** Runs `fn`, an error in it only a message, as with-demoted-errors: `fallback` then; a quit still quits. */
