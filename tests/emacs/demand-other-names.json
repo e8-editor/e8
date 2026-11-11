@@ -1,47 +1,19 @@
 {
- "active-minibuffer-window": {
-  "how": "derived",
-  "e8": "e8.minibufferDepth() > 0 ? e8.minibufferWindow() : undefined"
- },
- "add-text-properties": {
-  "how": "derived",
-  "e8": "e8.putTextProperty per property"
- },
  "assoc-string": {
   "how": "replaced",
   "e8": "Array.find"
- },
- "barf-if-buffer-read-only": {
-  "how": "derived",
-  "e8": "e8.bufferReadOnly() then e8.signal"
  },
  "beginning-of-line": {
   "how": "other",
   "e8": "command move-beginning-of-line, or e8.gotoChar(e8.lineBeginningPosition())"
  },
- "bobp": {
-  "how": "derived",
-  "e8": "e8.point() === e8.pointMin()"
- },
- "bolp": {
-  "how": "derived",
-  "e8": "e8.point() === e8.lineBeginningPosition()"
- },
  "buffer-modified-p": {
   "how": "other",
   "e8": "e8.bufferModified"
  },
- "buffer-string": {
-  "how": "derived",
-  "e8": "e8.bufferSubstring(e8.pointMin(), e8.pointMax())"
- },
  "byte-to-string": {
   "how": "replaced",
   "e8": "JavaScript"
- },
- "car-less-than-car": {
-  "how": "derived",
-  "e8": "a sort comparator"
  },
  "char-equal": {
   "how": "replaced",
@@ -59,29 +31,9 @@
   "how": "replaced",
   "e8": "typeof c === 'number'"
  },
- "copy-marker": {
-  "how": "derived",
-  "e8": "e8.makeMarker(pos)"
- },
- "directory-name-p": {
-  "how": "derived",
-  "e8": "name.endsWith('/')"
- },
  "end-of-line": {
   "how": "other",
   "e8": "e8.gotoChar(e8.lineEndPosition())"
- },
- "eobp": {
-  "how": "derived",
-  "e8": "e8.point() === e8.pointMax()"
- },
- "eolp": {
-  "how": "derived",
-  "e8": "e8.point() === e8.lineEndPosition()"
- },
- "erase-buffer": {
-  "how": "derived",
-  "e8": "e8.deleteRegion over the whole buffer, widened"
  },
  "error": {
   "how": "other",
@@ -107,10 +59,6 @@
   "how": "replaced",
   "e8": "JavaScript template strings"
  },
- "frame-live-p": {
-  "how": "derived",
-  "e8": "e8.frameList().includes(f)"
- },
  "frame-parameters": {
   "how": "other",
   "e8": "e8.frameParameter"
@@ -127,29 +75,13 @@
   "how": "replaced",
   "e8": "e8.call"
  },
- "get-buffer-window": {
-  "how": "derived",
-  "e8": "e8.windowList().find(w => e8.windowBuffer(w) === b)"
- },
- "get-char-property": {
-  "how": "derived",
-  "e8": "e8.overlaysAt with e8.overlayGet, then e8.getTextProperty"
- },
  "get-file-buffer": {
   "how": "other",
   "e8": "findBufferVisiting (files.ts)"
  },
- "get-process": {
-  "how": "derived",
-  "e8": "processes are named by strings: e8.processList"
- },
  "insert-before-markers-and-inherit": {
   "how": "other",
   "e8": "e8.insertBeforeMarkers"
- },
- "insert-char": {
-  "how": "derived",
-  "e8": "e8.insert(c.repeat(n))"
  },
  "interactive": {
   "how": "replaced",
@@ -215,18 +147,6 @@
   "how": "replaced",
   "e8": "JavaScript"
  },
- "point-marker": {
-  "how": "derived",
-  "e8": "e8.makeMarker(e8.point())"
- },
- "point-max-marker": {
-  "how": "derived",
-  "e8": "e8.makeMarker(e8.pointMax())"
- },
- "point-min-marker": {
-  "how": "derived",
-  "e8": "e8.makeMarker(e8.pointMin())"
- },
  "pos-bol": {
   "how": "other",
   "e8": "e8.lineBeginningPosition"
@@ -247,17 +167,9 @@
   "how": "derived",
   "e8": "a Map kept by the package"
  },
- "process-name": {
-  "how": "derived",
-  "e8": "processes are named by strings"
- },
  "process-put": {
   "how": "derived",
   "e8": "a Map kept by the package"
- },
- "processp": {
-  "how": "derived",
-  "e8": "e8.processList().includes(p)"
  },
  "read-buffer": {
   "how": "other",
@@ -266,26 +178,6 @@
  "read-command": {
   "how": "other",
   "e8": "e8.completingRead over commands"
- },
- "regexp-quote": {
-  "how": "derived",
-  "e8": "a line of JavaScript over Emacs's special characters"
- },
- "region-beginning": {
-  "how": "derived",
-  "e8": "Math.min(e8.point(), e8.mark()), or a region-beginning parameter"
- },
- "region-end": {
-  "how": "derived",
-  "e8": "Math.max(e8.point(), e8.mark()), or a region-end parameter"
- },
- "remove-list-of-text-properties": {
-  "how": "derived",
-  "e8": "e8.removeTextProperty per property"
- },
- "remove-text-properties": {
-  "how": "derived",
-  "e8": "e8.removeTextProperty per property"
  },
  "replace-regexp-in-string": {
   "how": "derived",
@@ -335,10 +227,6 @@
   "how": "other",
   "e8": "none; a process's buffer is fixed at e8.makeProcess"
  },
- "set-text-properties": {
-  "how": "derived",
-  "e8": "e8.removeTextProperty then e8.putTextProperty"
- },
  "single-key-description": {
   "how": "replaced",
   "e8": "E8 keys are already strings"
@@ -367,10 +255,6 @@
   "how": "replaced",
   "e8": "JavaScript strings of bytes"
  },
- "user-error": {
-  "how": "other",
-  "e8": "e8.userError"
- },
  "user-uid": {
   "how": "replaced",
   "e8": "process.getuid has no counterpart yet; rarely matters"
@@ -386,14 +270,6 @@
  "window-body-width": {
   "how": "other",
   "e8": "e8.windowSize"
- },
- "window-live-p": {
-  "how": "derived",
-  "e8": "e8.windowList().includes(w)"
- },
- "window-minibuffer-p": {
-  "how": "derived",
-  "e8": "w === e8.minibufferWindow()"
  },
  "window-text-height": {
   "how": "other",

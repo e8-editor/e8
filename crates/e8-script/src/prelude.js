@@ -1393,6 +1393,8 @@
     },
     markerPosition: (m) => native.markerPosition(markerId(m)) ?? undefined,
     markerBuffer: (m) => native.markerBuffer(markerId(m)) ?? undefined,
+    markerInsertionType: (m) => native.markerInsertionType(markerId(m)) ?? undefined,
+    setMarkerInsertionType: (m, advances) => native.setMarkerInsertionType(markerId(m), Boolean(advances)),
     setMarker: (m, pos, buffer) =>
       native.setMarker(markerId(m), pos === null || pos === undefined ? undefined : pos, buffer === undefined ? undefined : nameOf(buffer)),
     overlayStart: (id) => native.overlayRange(id)?.[0],

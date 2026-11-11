@@ -281,6 +281,105 @@ export function barfIfBufferReadOnly(position: number = e8.point()): void {
   e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName(e8.currentBuffer())}`);
 }
 
+/**
+ * Make the accessible text the same as `source`'s, changing only what
+ * differs between their starts and ends kept alike, so markers and point
+ * there stay put, as replace-buffer-contents does (Emacs finds every
+ * difference; this keeps the common start and end). Returns true.
+ */
+export function replaceBufferContents(source: e8.BufferLike): boolean {
+  const [srcMin, srcText] = e8.withCurrentBuffer(source, () => [e8.pointMin(), e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax())] as const);
+  const min = e8.pointMin(), max = e8.pointMax();
+  const old = e8.bufferSubstringNoProperties(min, max);
+  let pre = 0;
+  const most = Math.min(old.length, srcText.length);
+  while (pre < most && old.charCodeAt(pre) === srcText.charCodeAt(pre)) pre++;
+  if (pre > 0 && /[\uD800-\uDBFF]/.test(old[pre - 1])) pre--;
+  let suf = 0;
+  while (suf < most - pre && old.charCodeAt(old.length - 1 - suf) === srcText.charCodeAt(srcText.length - 1 - suf)) suf++;
+  if (suf > 0 && /[\uDC00-\uDFFF]/.test(old[old.length - suf])) suf--;
+  const prefix = charCount(old.slice(0, pre)), suffix = charCount(old.slice(old.length - suf));
+  const oldEnd = max - suffix, newLength = charCount(srcText) - prefix - suffix;
+  const start = min + prefix;
+  const point = e8.point();
+  e8.deleteRegion(start, oldEnd);
+  e8.gotoChar(start);
+  e8.insertBufferSubstring(source, srcMin + prefix, srcMin + prefix + newLength);
+  e8.gotoChar(point <= start ? point : point > oldEnd ? point + newLength - (oldEnd - start) : start);
+  return true;
+}
+
+/**
+ * Swap two regions that do not overlap, as transpose-regions, with their
+ * properties. Point moves with the text it was in, unless `leaveMarkers`;
+ * other markers inside the regions go to a region's start, and those at
+ * their edges stay with the text outside them.
+ */
+export function transposeRegions(start1: number, end1: number, start2: number, end2: number, leaveMarkers = false): void {
+  if (start1 > end1) [start1, end1] = [end1, start1];
+  if (start2 > end2) [start2, end2] = [end2, start2];
+  if (start2 < start1) [start1, end1, start2, end2] = [start2, end2, start1, end1];
+  if (end1 > start2) e8.signal("error", "Transposed regions overlap");
+  const len1 = end1 - start1, len2 = end2 - start2;
+  const text1 = e8.bufferSubstring(start1, end1), text2 = e8.bufferSubstring(start2, end2);
+  const p = e8.point();
+  // Each region's new text goes in before the old comes out, so markers at
+  // its edges stay with the text beside it, the later region first.
+  e8.gotoChar(start2);
+  e8.insert(text1);
+  e8.deleteRegion(start2 + len1, end2 + len1);
+  e8.gotoChar(start1);
+  e8.insert(text2);
+  e8.deleteRegion(start1 + len2, end1 + len2);
+  let to = p;
+  if (!leaveMarkers) {
+    if (p >= start1 && p < end1) to = p - start1 + start2 + len2 - len1;
+    else if (p >= start2 && p < end2) to = p - start2 + start1;
+    else if (p >= end1 && p < start2) to = p + len2 - len1;
+  }
+  e8.gotoChar(to);
+}
+
+/** Give a buffer the major mode new buffers get, major-mode's default, as set-buffer-major-mode. */
+export function setBufferMajorMode(buffer: e8.BufferLike): void {
+  e8.withCurrentBuffer(buffer, () => {
+    const mode = e8.defaultValue("major-mode");
+    e8.call(typeof mode === "string" && e8.commandExists(mode) ? (mode as e8.CommandName) : "fundamental-mode");
+  });
+}
+
+/**
+ * The byte the character at a position stands for, point by default, or
+ * a string's first character, as get-byte: an ASCII character's code, or
+ * a raw byte's; an error for any other character.
+ */
+export function getByte(position?: number, string?: string): number {
+  const c = string !== undefined ? Array.from(string)[position ?? 0]?.codePointAt(0) : e8.charAfter(position ?? e8.point())?.codePointAt(0);
+  if (c === undefined) e8.signal("args-out-of-range", `No character at ${position ?? e8.point()}`);
+  if (c < 0x80) return c;
+  if (c >= 0x10ff80 && c <= 0x10ffff) return c - 0x10ff00;
+  return e8.signal("error", `Not an ASCII nor an 8-bit character: ${c}`);
+}
+
+/** Insert `count` copies of a byte, as an ASCII character or a raw byte, as insert-byte. */
+export function insertByte(byte: number, count = 1, inherit = false): void {
+  if (byte < 0 || byte > 255) e8.signal("args-out-of-range", `Not a byte: ${byte}`);
+  insertChar(byte < 0x80 ? byte : 0x10ff00 + byte, count, inherit);
+}
+
+/** Run `body`, as combine-after-change-calls: E8 runs each change's after-change functions as it happens. */
+export const combineAfterChangeCalls = <T>(body: () => T): T => body();
+/** Nothing, as E8 has no combined changes waiting, as combine-after-change-execute. */
+export function combineAfterChangeExecute(): void {}
+
+/** The buffer visiting a file whose true name is `filename`, as get-truename-buffer. */
+export function getTruenameBuffer(filename: string): string | undefined {
+  return e8.bufferList().find((b) => {
+    const file = e8.withCurrentBuffer(b, () => e8.bufferFileName());
+    return file !== undefined && e8.fileTruename(file) === filename;
+  });
+}
+
 /** Whether the first element of `a` is less than the first of `b`, as car-less-than-car, for sorting. */
 export const carLessThanCar = (a: [number, ...unknown[]], b: [number, ...unknown[]]): boolean => a[0] < b[0];
 
