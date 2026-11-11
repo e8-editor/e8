@@ -34,6 +34,12 @@ E8 was built in nine days, 27 October to 4 November 2026, in one long Claude Cod
 - **Fix the fuzzer's seeds before a change that could alter behaviour.** Note how many differences fixed seeds show before (Org: seeds 7 and 11 at 1,000 cases, 7 and 1 differences on 2026-11-03) and check they are the same after.
 - **Port Emacs's Lisp closely**, its names, messages and structure too ([ADR 0013](adr/0013-following-org-closely.md)). Following Org's code is faster than rediscovering its behaviour, and its cache, markers and change hooks turned out to be what E8 needed as well. Reading Emacs, Org and the GPL packages is fine while E8 is GPL; ask before reading the source of anything under another licence ([licensing.md](licensing.md)).
 
+## Programs E8 talks to
+
+- **Record what the real program sends before designing for it.** For a protocol with someone else's program at the other end, an ACP adapter or a language server, a few lines of Python speaking the protocol over its standard input and output show what it actually does, which the specification does not say: Claude Code's adapter replays a loaded session as whole `user_message_chunk` messages, each followed by its tool calls, already complete, and the reply, all before `session/load` answers, and it lists 136 slash commands in one `available_commands_update`. Design from that, then play the same shapes from the fake (`crates/e8-script/tests/data/fake_acp_agent.py`, which can play a script of its own for each run, as for an agent started again), and keep one ignored live test against the real program.
+- **Never paste the real program's traffic** into a commit, a pull request or a test fixture, only its shape: Claude Code's adapter sends the account's email, plan and organisation (`_auth/status_update`).
+- **Live agent-shell tests start a new session** (`agent-shell-session-strategy` `"new"`) unless they test resuming: run in a directory with earlier Claude Code sessions, the default asks which to resume, and the test waits for an answer that never comes.
+
 ## Looking at the GUI
 
 - **Snapshots first.** A GUI change gets a snapshot in `crates/e8-gui/tests/`; record it with `UPDATE_SNAPSHOTS=1`, then look at the image, enlarged when the change is a pixel or two: a crop scaled up four times showed seams and lines a pixel apart that the full image hid.
