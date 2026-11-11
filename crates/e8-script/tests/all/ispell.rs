@@ -222,3 +222,15 @@ fn one_checker_is_kept_running_for_every_check() {
     t.ed.press("M-$").unwrap();
     assert_eq!(t.args().lines().filter(|l| l.starts_with("-a ")).count(), 2, "and started again when needed");
 }
+
+#[test]
+fn a_checker_that_ends_is_started_again_by_the_next_check() {
+    let Some(mut t) = speller("Hej hello\n") else { return };
+    t.eval("e8.setVariable('ispell-dictionary', 'en_US,sv_SE')");
+    t.ed.press("M-$").unwrap();
+    // The checker ends behind E8's back, as one that crashed would.
+    t.eval("e8.deleteProcess('ispell')");
+    t.ed.press("M-f M-f M-$").unwrap();
+    assert_eq!(t.ed.echo(), Some("HELLO is correct"));
+    assert_eq!(t.args().lines().filter(|l| l.starts_with("-a ")).count(), 2, "{}", t.args());
+}

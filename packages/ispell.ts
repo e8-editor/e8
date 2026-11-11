@@ -678,13 +678,24 @@ let session: Session | undefined;
 let filter: string[] = [];
 /** Output after the last whole line, waiting for the rest of it. */
 let partial = "";
+/** How many empty lines, each ending an answer, `filter` holds. */
+let answered = 0;
 
 /** Takes in what the checker writes, a whole line at a time, as ispell-filter. */
 function takeOutput(output: string): void {
   const lines = (partial + output).split("\n");
   partial = lines.pop() ?? "";
-  filter.push(...lines);
-  set("ispell-filter", [...filter].reverse());
+  for (const line of lines) {
+    filter.push(line);
+    if (line === "") answered++;
+  }
+}
+
+/** Starts collecting the checker's answers afresh. */
+function clearFilter(): void {
+  filter = [];
+  partial = "";
+  answered = 0;
 }
 
 /** Lines that only change the checker's state, which it answers with nothing. */
@@ -702,17 +713,14 @@ export function sendString(text: string): void {
   if (session === undefined) return;
   if (!running()) e8.signal("error", "No Ispell process to read output from!");
   const checks = text.split("\n").filter((line) => line !== "" && !SILENT.includes(line[0])).length;
-  if (checks > 0) {
-    filter = [];
-    partial = "";
-  }
+  if (checks > 0) clearFilter();
   e8.processSendString(session.process, text);
-  const blanks = () => filter.reduce((n, line) => (line === "" ? n + 1 : n), 0);
-  while (blanks() < checks) {
+  while (answered < checks) {
     if (!e8.acceptProcessOutput(session.process, 1) && !running()) {
       e8.signal("error", `${String(v("ispell-program-name"))} ended: ${filter.join("\n")}`);
     }
   }
+  if (checks > 0) set("ispell-filter", [...filter].reverse());
 }
 
 /** Starts the checker, as ispell-start-process, and waits for its version line. */
@@ -736,8 +744,7 @@ function startProcess(): void {
   set("ispell-buffer-local-name", null);
   const program = String(v("ispell-program-name"));
   if (executableFind(program) === undefined) e8.signal("file-missing", `Searching for program: No such file or directory, ${program}`);
-  filter = [];
-  partial = "";
+  clearFilter();
   const directory = String(v("ispell-process-directory"));
   const process = e8.makeProcess({
     name: "ispell",
@@ -770,7 +777,7 @@ export function initProcess(): void {
     directory = e8.expandFileName("~/");
   } else directory = e8.expandFileName(directory);
   if (running() && (truthy(v("ispell-local-pdict")) || truthy(v("ispell-personal-dictionary")) || v("ispell-process-directory") === directory)) {
-    filter = [];
+    clearFilter();
     return;
   }
   killIspell(true);
@@ -791,12 +798,12 @@ export function initProcess(): void {
   const versionLine = filter.find((l) => !/warning: /.test(l));
   if (versionLine === undefined || !/^@\(#\) /.test(versionLine)) {
     // Not the version line: an error, with whatever else it wrote.
-    e8.acceptProcessOutput(session?.process, 1);
+    if (session !== undefined) e8.acceptProcessOutput(session.process, 1);
     const said = filter.join("\n");
     killIspell(true);
     e8.signal("error", said);
   }
-  filter = [];
+  clearFilter();
   const mode = getExtendedCharacterMode();
   if (mode !== undefined) sendString(`${mode}\n`);
 }
@@ -865,7 +872,7 @@ export function runOnWord(word: string): Poss {
   sendString("%\n");
   sendString(`^${word}\n`);
   const lines = filter;
-  filter = [];
+  clearFilter();
   const answers = lines.filter((l, i) => !(l === "" && i === lines.length - 1));
   if (answers.length > 1) e8.signal("error", `Ispell and its process have different character maps: ${answers.join(" ")}`);
   return answers.length === 0 ? true : parseOutput(answers[0]);
@@ -888,14 +895,14 @@ export function checkWords(words: string[]): Poss[] {
       first = undefined;
     }
   }
-  filter = [];
+  clearFilter();
   return words.map((_, i) => answers[i] ?? true);
 }
 
 /** Whether the word at point is right, as ispell-correct-p. */
 export function correctP(following = false): boolean {
   return e8.saveExcursion(() => {
-    filter = [];
+    clearFilter();
     const found = getWord(following);
     const poss = runOnWord(found.word);
     if (poss === undefined) e8.signal("error", errorCheckingWord(found.word));
@@ -1716,7 +1723,7 @@ function processLine(text: string, shiftIn: number | undefined, bounds: { start:
   sendString(text);
   let pending = filter.slice();
   if (pending.length > 0 && pending[pending.length - 1] === "") pending.pop();
-  filter = [];
+  clearFilter();
   while (ispellQuit === false && pending.length > 0) {
     const line = pending.shift()!;
     const poss = parseOutput(line, acceptList, shift);
