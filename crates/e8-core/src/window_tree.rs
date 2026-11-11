@@ -43,11 +43,15 @@ pub struct Combination {
     pub limit: bool,
 }
 
-/// A child of a combination and its total size along the combination.
+/// A child of a combination: its total size along the combination, and
+/// its normal size, its share of the combination, as Emacs's
+/// `window-normal-size`, which a new frame size is shared by, so sizes
+/// come back when the frame does.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Part {
     pub tree: WindowTree,
     pub size: usize,
+    pub normal: f64,
 }
 
 /// Where a window goes, in whatever units a front end lays out in.
@@ -73,8 +77,9 @@ pub(crate) struct Split {
     pub before: bool,
     pub old_size: usize,
     pub new_size: usize,
-    /// Whether a new internal window is made whatever the parent, as a
-    /// non-nil `window-combination-limit` says.
+    /// Whether a new internal window is made whatever the parent, as
+    /// `window-combination-limit` t says; the new one keeps it as its
+    /// combination limit.
     pub limit: bool,
 }
 
@@ -271,7 +276,7 @@ impl WindowTree {
         let along = if c.horizontal { extent.0 } else { extent.1 };
         let total: usize = c.children.iter().map(|p| p.size).sum();
         if total != along {
-            let sizes = proportional(c.children.iter().map(|p| p.size).collect(), along);
+            let sizes = proportional(c.children.iter().map(|p| p.normal).collect(), along);
             for (p, size) in c.children.iter_mut().zip(sizes) {
                 p.size = size;
             }
@@ -289,20 +294,30 @@ impl WindowTree {
     /// with no change if the window is not here.
     pub(crate) fn split(&mut self, s: &Split) -> Option<bool> {
         let path = self.path(s.target)?;
-        let new = Part { tree: WindowTree::Leaf(s.new), size: s.new_size };
-        if let Some((&i, up)) = path.split_last() {
+        let new = Part { tree: WindowTree::Leaf(s.new), size: s.new_size, normal: 0.0 };
+        if !self.split_makes_parent(s.target, s.horizontal, s.limit) {
+            let (&i, up) = path.split_last().expect("a window with a parent");
             let parent = self.combination_mut(up);
-            if parent.horizontal == s.horizontal && !parent.limit && !s.limit {
-                parent.children[i].size = s.old_size;
-                parent.children.insert(if s.before { i } else { i + 1 }, new);
-                return Some(false);
-            }
+            parent.children[i].size = s.old_size;
+            parent.children.insert(if s.before { i } else { i + 1 }, new);
+            renormalize(parent);
+            return Some(false);
         }
         let node = self.at_mut(&path);
-        let old = Part { tree: std::mem::replace(node, WindowTree::Leaf(s.target)), size: s.old_size };
+        let old = Part { tree: std::mem::replace(node, WindowTree::Leaf(s.target)), size: s.old_size, normal: 0.0 };
         let children = if s.before { vec![new, old] } else { vec![old, new] };
-        *node = WindowTree::Combination(Combination { id: s.internal, horizontal: s.horizontal, children, limit: false });
+        let mut c = Combination { id: s.internal, horizontal: s.horizontal, children, limit: s.limit };
+        renormalize(&mut c);
+        *node = WindowTree::Combination(c);
         Some(true)
+    }
+
+    /// Whether splitting a window makes a new internal window rather than
+    /// a sibling: unless its parent combines windows the same way and the
+    /// combination limit is off. A parent's own limit only keeps it from
+    /// being merged away, as in Emacs.
+    pub(crate) fn split_makes_parent(&self, target: WindowId, horizontal: bool, limit: bool) -> bool {
+        limit || !matches!(self.parent(target), Some((p, _)) if p.horizontal == horizontal)
     }
 
     /// Removes a live window, giving its space to the sibling before it, or
@@ -317,6 +332,7 @@ impl WindowTree {
         let size = parent.children.remove(i).size;
         let to = if i > 0 { i - 1 } else { 0 };
         parent.children[to].size += size;
+        renormalize(parent);
         if parent.children.len() > 1 {
             return Vec::new();
         }
@@ -337,6 +353,7 @@ impl WindowTree {
                 for (j, p) in child.children.into_iter().enumerate() {
                     grand.children.insert(k + j, p);
                 }
+                renormalize(grand);
                 return vec![gone, child.id];
             }
         }
@@ -381,6 +398,7 @@ impl WindowTree {
         if apply {
             c.children[k].size = moved as usize;
             c.children[n].size = (other - (moved - size)) as usize;
+            renormalize(c);
             self.fit(extent);
         }
         Some(moved - size)
@@ -407,6 +425,7 @@ impl WindowTree {
             let child = if c.horizontal { (p.size, extent.1) } else { (extent.0, p.size) };
             p.tree.balance(child);
         }
+        renormalize(c);
     }
 
     /// Whether a window shares the frame's width with others, as Emacs's
@@ -447,7 +466,7 @@ fn share(sizes: impl Iterator<Item = usize>, along: f32, unit: f32) -> Vec<f32> 
         let edge = if i + 1 == sizes.len() {
             along
         } else if exact {
-            (sum as f32 * unit).min(along)
+            (sum as f32 * unit).round().min(along)
         } else if total == 0 {
             (along * (i + 1) as f32 / sizes.len() as f32).round()
         } else {
@@ -458,25 +477,43 @@ fn share(sizes: impl Iterator<Item = usize>, along: f32, unit: f32) -> Vec<f32> 
     edges
 }
 
-/// Sizes in the proportions of `sizes`, adding up to `total`: each its
-/// share rounded down, and what is left one each to the largest
-/// remainders, earlier ones first.
-fn proportional(sizes: Vec<usize>, total: usize) -> Vec<usize> {
-    let sum: usize = sizes.iter().sum();
-    if sum == 0 {
-        let n = sizes.len().max(1);
-        return (0..sizes.len()).map(|i| total / n + usize::from(i < total % n)).collect();
+/// Gives a combination's children their normal sizes, their shares of it.
+fn renormalize(c: &mut Combination) {
+    let total: usize = c.children.iter().map(|p| p.size).sum();
+    let n = c.children.len();
+    for p in &mut c.children {
+        p.normal = if total == 0 { 1.0 / n as f64 } else { p.size as f64 / total as f64 };
     }
-    let mut out: Vec<usize> = sizes.iter().map(|&s| s * total / sum).collect();
-    let mut left = total - out.iter().sum::<usize>();
-    let mut order: Vec<usize> = (0..sizes.len()).collect();
-    order.sort_by_key(|&i| std::cmp::Reverse(sizes[i] * total % sum));
+}
+
+/// Sizes in the proportions of `normals`, adding up to `total`: each its
+/// share rounded down, what is left one each to the largest remainders,
+/// earlier ones first, and none less than one while there is room.
+fn proportional(normals: Vec<f64>, total: usize) -> Vec<usize> {
+    let n = normals.len();
+    let sum: f64 = normals.iter().sum();
+    if n == 0 {
+        return Vec::new();
+    }
+    let shares: Vec<f64> = normals.iter().map(|w| if sum > 0.0 { w / sum * total as f64 } else { total as f64 / n as f64 }).collect();
+    let mut out: Vec<usize> = shares.iter().map(|s| s.floor() as usize).collect();
+    let mut left = total.saturating_sub(out.iter().sum::<usize>());
+    let mut order: Vec<usize> = (0..n).collect();
+    order.sort_by(|&a, &b| (shares[b] - shares[b].floor()).total_cmp(&(shares[a] - shares[a].floor())).then(a.cmp(&b)));
     for i in order {
         if left == 0 {
             break;
         }
         out[i] += 1;
         left -= 1;
+    }
+    // A window never shrinks to nothing while another can give it a line.
+    for i in 0..n {
+        while out[i] == 0 {
+            let Some(j) = (0..n).filter(|&j| out[j] > 1).max_by_key(|&j| out[j]) else { break };
+            out[j] -= 1;
+            out[i] += 1;
+        }
     }
     out
 }
@@ -562,8 +599,17 @@ mod tests {
         split(&mut tree, 1, 2, 10, false, (80, 24));
         split(&mut tree, 2, 3, 11, false, (80, 24));
         tree.fit((80, 48));
-        let WindowTree::Combination(c) = &tree else { panic!() };
-        assert_eq!(c.children.iter().map(|p| p.size).collect::<Vec<_>>(), [24, 12, 12]);
+        let sizes = |t: &WindowTree| match t {
+            WindowTree::Combination(c) => c.children.iter().map(|p| p.size).collect::<Vec<_>>(),
+            _ => vec![],
+        };
+        assert_eq!(sizes(&tree), [24, 12, 12]);
+        // Shrunk and grown back, the sizes are as they were, as Emacs's normal sizes keep them.
+        tree.fit((80, 14));
+        tree.fit((80, 24));
+        assert_eq!(sizes(&tree), [12, 6, 6]);
+        tree.fit((80, 3));
+        assert!(sizes(&tree).iter().all(|&n| n >= 1), "{:?}", sizes(&tree));
         assert_eq!(tree.enclosing(&[2, 3]), Some(10));
         assert_eq!(tree.enclosing(&[2]), Some(2));
     }

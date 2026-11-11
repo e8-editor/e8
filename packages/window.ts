@@ -246,36 +246,28 @@ export function getLargestWindow(allFrames?: e8.Value, dedicatedOk = false, notS
   return best;
 }
 
-/** The smallest part of the frame's window tree that holds all of `windows`. */
-function enclosing(windows: e8.Window[], tree: e8.WindowTreeNode = e8.windowTree()): e8.WindowTreeNode | undefined {
-  const holds = (t: e8.WindowTreeNode) => {
-    const leaves = treeLeaves(t);
-    return windows.every((w) => leaves.includes(w));
-  };
-  if (!holds(tree)) return undefined;
-  if (Array.isArray(tree)) return enclosing(windows, tree[2]) ?? enclosing(windows, tree[3]) ?? tree;
-  return tree;
+/** Whether a window is `ancestor` or inside it. */
+function within(window: e8.Window, ancestor: e8.Window): boolean {
+  for (let w: e8.Window | undefined = window; w !== undefined; w = e8.windowParent(w)) if (w === ancestor) return true;
+  return false;
 }
 
-/** The live windows in a part of the window tree, in order. */
-function treeLeaves(t: e8.WindowTreeNode): e8.Window[] {
-  return Array.isArray(t) ? [...treeLeaves(t[2]), ...treeLeaves(t[3])] : [t];
+/** The live windows a window holds: itself if it is live, else its children's. */
+function liveWindowsIn(window: e8.Window): e8.Window[] {
+  return e8.windowList().filter((w) => within(w, window));
 }
 
-/** The split holding a part of the tree, and whether the part is its first. */
-type Split = Extract<e8.WindowTreeNode, unknown[]>;
-function parentOf(part: e8.WindowTreeNode, tree: e8.WindowTreeNode = e8.windowTree()): { split: Split; first: boolean } | undefined {
-  if (!Array.isArray(tree)) return undefined;
-  const same = (a: e8.WindowTreeNode, b: e8.WindowTreeNode) => a === b || (Array.isArray(a) && Array.isArray(b) && treeLeaves(a).join() === treeLeaves(b).join());
-  if (same(tree[2], part)) return { split: tree, first: true };
-  if (same(tree[3], part)) return { split: tree, first: false };
-  return parentOf(part, tree[2]) ?? parentOf(part, tree[3]);
+/** How many children an internal window has, as window-child-count. */
+function windowChildCount(window: e8.Window): number {
+  let n = 0;
+  for (let c = e8.windowTopChild(window) ?? e8.windowLeftChild(window); c !== undefined; c = e8.windowNextSibling(c)) n++;
+  return n;
 }
 
 /** Whether a window is part of a combination one above another, or side by side with `horizontal`, as window-combined-p. */
 export function windowCombinedP(window: e8.Window, horizontal = false): boolean {
-  const parent = parentOf(window);
-  return parent !== undefined && parent.split[0] === horizontal;
+  const parent = e8.windowParent(window);
+  return parent !== undefined && (horizontal ? e8.windowLeftChild(parent) : e8.windowTopChild(parent)) !== undefined;
 }
 
 /** The edges of the part of the frame a set of windows covers, as window-edges gives an internal window's. */
@@ -364,6 +356,16 @@ export function windowMainWindow(): e8.Window {
 e8.defineVariable({
   name: "ignore-window-parameters",
   doc: "If non-nil, the window commands pay no attention to window parameters such as delete-other-windows and window-side.",
+  value: null,
+});
+e8.defineVariable({
+  name: "window-combination-limit",
+  doc: "If t, splitting a window makes a new internal window holding it and the new one, rather than a sibling in its parent.",
+  value: null,
+});
+e8.defineVariable({
+  name: "window-combination-resize",
+  doc: "How splitting and deleting windows resize the others; `side' lets display-buffer split side windows for their slots.",
   value: null,
 });
 e8.defineVariable({
@@ -497,9 +499,9 @@ function evenWindowSizes(window: e8.Window): void {
   const how = e8.variable("even-window-sizes");
   const selected = e8.selectedWindow();
   if (isNil(how) || window === selected) return;
-  const parent = parentOf(window);
-  if (parent === undefined || !(parent.split[2] === selected || parent.split[3] === selected)) return;
-  const sideBySide = parent.split[0] === true;
+  const parent = e8.windowParent(window);
+  if (parent === undefined || e8.windowParent(selected) !== parent || windowChildCount(parent) !== 2) return;
+  const sideBySide = e8.windowLeftChild(parent) !== undefined;
   const [s, w] = [size(selected), size(window)];
   if (sideBySide && symName(how) !== "height-only" && s.totalWidth > w.totalWidth) {
     e8.conditionCase(() => e8.resizeWindow(window, Math.trunc((s.totalWidth - w.totalWidth) / 2), true), { error: () => 0 });
@@ -962,13 +964,14 @@ function sideWindows(side: string): e8.Window[] {
 function sideNextTo(side: string): e8.Window[] {
   const all = e8.windowList().filter((w) => w !== e8.minibufferWindow());
   const vertical = !isNil(e8.variable("window-sides-vertical"));
-  /** The other part of the split that holds the side windows on `other`: what is beside them. */
+  /** The window beside the major side window on `other`, toward the frame's middle, as window--make-major-side-window-next-to takes its sibling: its live windows. */
   const besides = (other: string): e8.Window[] | undefined => {
     const windows = sideWindows(other);
     if (windows.length === 0) return undefined;
-    const part = enclosing(windows);
-    const parent = part === undefined ? undefined : parentOf(part);
-    return parent === undefined ? undefined : treeLeaves(parent.split[parent.first ? 3 : 2]);
+    const major = windows.length === 1 ? windows[0] : e8.windowParent(windows[0]);
+    if (major === undefined) return undefined;
+    const sibling = other === "left" || other === "top" ? e8.windowNextSibling(major) : e8.windowPrevSibling(major);
+    return sibling === undefined ? undefined : liveWindowsIn(sibling);
   };
   const opposite = { left: "right", right: "left", top: "bottom", bottom: "top" }[side]!;
   const across = side === "left" || side === "right" ? ["top", "bottom"] : ["left", "right"];
@@ -1034,8 +1037,10 @@ defineAction("display-buffer-in-side-window", (buffer, alist0) => {
   if (thisWindow !== undefined) return windowDisplayBuffer(buffer, thisWindow, "reuse", alist);
   if (typeof maxSlots !== "number" || windows.length < maxSlots) {
     const made =
-      (nextWindow !== undefined ? splitPartNoError([nextWindow], along(true)) : undefined) ??
-      (prevWindow !== undefined ? splitPartNoError([prevWindow], along(false)) : undefined);
+      e8.letBind({ "window-combination-resize": "side" }, () =>
+        (nextWindow !== undefined ? splitPartNoError([nextWindow], along(true)) : undefined) ??
+        (prevWindow !== undefined ? splitPartNoError([prevWindow], along(false)) : undefined),
+      );
     if (made !== undefined) {
       e8.setWindowParameter(made, "window-side", side);
       e8.setWindowParameter(made, "window-slot", slot);

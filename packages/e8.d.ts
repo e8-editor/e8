@@ -12224,6 +12224,18 @@ declare global {
        */
       "widen-automatically": Value;
       /**
+       * If t, splitting a window makes a new internal window holding it and the new one, rather than a sibling in its parent.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-combination-limit": Value;
+      /**
+       * How splitting and deleting windows resize the others; `side' lets display-buffer split side windows for their slots.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-combination-resize": Value;
+      /**
        * The fewest lines a window may have, its mode line included, when it is split or resized.
        *
        * Defined in packages/window.ts.

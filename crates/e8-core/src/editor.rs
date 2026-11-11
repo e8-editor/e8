@@ -316,10 +316,10 @@ pub struct Editor {
     /// The frame's size in columns and lines, mode lines included and the
     /// echo area not, once a front end has said; windows are laid out in it.
     pub(crate) frame_size: Option<(usize, usize)>,
-    /// The frame's size as the windows made it, where no front end has
-    /// said: set when a window is first split, as the tree's sizes need one,
-    /// and dropped when one window is left.
-    pub(crate) implied_frame: Option<(usize, usize)>,
+    /// Whether `frame_size` was only worked out from the windows when one
+    /// was first split, no front end having given it, so a lone window's
+    /// new size can still change it.
+    pub(crate) frame_size_implied: bool,
     /// Internal windows' parameters, as `window-parameter` keeps them;
     /// the window tree goes to front ends, so they are kept here.
     pub(crate) internal_window_parameters: std::collections::HashMap<crate::window::WindowId, std::collections::BTreeMap<String, crate::variables::Value>>,
@@ -478,7 +478,7 @@ impl Editor {
             selected_window: 1,
             next_window_id: 1,
             frame_size: None,
-            implied_frame: None,
+            frame_size_implied: false,
             internal_window_parameters: Default::default(),
             other_frames: Vec::new(),
             frame_order: vec![crate::window::FIRST_FRAME],

@@ -117,6 +117,7 @@ pub(crate) struct Frame {
     tree: WindowTree,
     selected_window: WindowId,
     frame_size: Option<(usize, usize)>,
+    frame_size_implied: bool,
 }
 
 pub type FrameId = u64;
@@ -238,7 +239,7 @@ impl Editor {
         self.buffers[index].set_window_point(window, point);
         self.next_frame_id += 1;
         let id = self.next_frame_id;
-        self.other_frames.push(Frame { id, tree: WindowTree::Leaf(window), selected_window: window, frame_size: self.frame_size });
+        self.other_frames.push(Frame { id, tree: WindowTree::Leaf(window), selected_window: window, frame_size: self.frame_size, frame_size_implied: self.frame_size_implied });
         self.frame_order.insert(0, id);
         self.select_frame(id)?;
         Ok(id)
@@ -264,6 +265,7 @@ impl Editor {
             tree: std::mem::replace(&mut self.window_tree, frame.tree),
             selected_window: std::mem::replace(&mut self.selected_window, frame.selected_window),
             frame_size: std::mem::replace(&mut self.frame_size, frame.frame_size),
+            frame_size_implied: std::mem::replace(&mut self.frame_size_implied, frame.frame_size_implied),
         });
         self.selected_frame = id;
         self.window_use += 1;
@@ -305,6 +307,7 @@ impl Editor {
         self.frame_parameters.remove(&id);
         self.frame_raises.remove(&id);
         self.tab_bars.remove(&id);
+        self.prune_internal_windows();
         Ok(())
     }
 
@@ -350,6 +353,7 @@ impl Editor {
     /// each with [`Editor::set_window_size`].
     pub fn set_frame_size(&mut self, cols: usize, lines: usize) {
         self.frame_size = Some((cols.max(1), lines.max(1)));
+        self.frame_size_implied = false;
         self.relayout();
     }
 
@@ -393,7 +397,7 @@ impl Editor {
     /// The frame in cells, without the echo area: as a front end said, or
     /// as the windows add up to.
     pub fn frame_cells(&self) -> (usize, usize) {
-        self.frame_size.or(self.implied_frame).unwrap_or_else(|| {
+        self.frame_size.unwrap_or_else(|| {
             let w = self.window(self.selected_window);
             (w.map_or(80, |w| w.width), w.map_or(24, |w| w.height + 1))
         })
@@ -401,10 +405,7 @@ impl Editor {
 
     /// Lays the windows out in the frame, as their sizes in the tree say.
     fn relayout(&mut self) {
-        if matches!(self.window_tree, WindowTree::Leaf(_)) {
-            self.implied_frame = None;
-        }
-        let Some((cols, lines)) = self.frame_size.or(self.implied_frame) else { return };
+        let Some((cols, lines)) = self.frame_size else { return };
         self.window_tree.fit((cols, lines));
         for r in self.window_tree.rects(0.0, 0.0, cols as f32, lines as f32, (1.0, 1.0)) {
             let divider = usize::from(r.divider);
@@ -641,10 +642,29 @@ impl Editor {
         };
         // Sizes are kept in the frame's cells, which a front end gives; until one has, the frame is as the windows are now.
         if self.frame_size.is_none() {
-            self.implied_frame = Some(extent);
+            self.frame_size = Some(extent);
+            self.frame_size_implied = true;
         }
+        // As split-window: a side window is split only for its side's slots
+        // (window-combination-resize `side'), and a window beside a side
+        // window gets an internal window of its own, so the side window
+        // stays along the whole side.
+        let resize_side = self.variable("window-combination-resize").is_some_and(|v| v.as_str() == Some("side"));
+        let has_side = |ed: &Editor, w: Option<WindowId>| w.is_some_and(|w| ed.window_parameter(w, "window-side").is_some_and(|v| v.is_true()));
+        if !resize_side && has_side(self, Some(id)) {
+            return Err(Error::new("Cannot split side window or parent of side window"));
+        }
+        let beside_side = !resize_side && (has_side(self, self.window_sibling(id, false)) || has_side(self, self.window_sibling(id, true)));
+        let limit = beside_side || self.variable("window-combination-limit") == Some(Value::Bool(true));
         let source = if live { id } else { self.selected_window };
         let view = self.windows().into_iter().find(|v| v.id == source).map(|v| (v.point, v.top_line, v.buffer.id)).ok_or_else(|| Error::new("No such window"))?;
+        // The internal window, if one is made, is numbered before the new window, as in Emacs.
+        let internal = if self.window_tree.split_makes_parent(id, side_by_side, limit) {
+            self.next_window_id += 1;
+            self.next_window_id
+        } else {
+            0
+        };
         self.next_window_id += 1;
         let new_id = self.next_window_id;
         // A new window has showed no buffers before, as in Emacs.
@@ -654,9 +674,6 @@ impl Editor {
         b.set_window_point(new_id, view.0);
         let start = b.line_start(view.1.min(b.line_count() - 1));
         b.set_window_start(new_id, start);
-        let limit = self.variable("window-combination-limit").is_some_and(|v| v.is_true());
-        self.next_window_id += 1;
-        let internal = self.next_window_id;
         self.window_tree.split(&crate::window_tree::Split {
             target: id,
             new: new_id,
@@ -676,33 +693,41 @@ impl Editor {
     /// left is selected.
     pub fn delete_window(&mut self, id: Option<WindowId>) -> Result<()> {
         let id = id.unwrap_or(self.selected_window);
-        if self.window(id).is_none() {
-            return Err(Error::new("No such window"));
-        }
-        // Only the selected frame's windows count.
+        // Only the selected frame's windows count; an internal window goes with all it holds, as in Emacs.
+        let inside = match self.window_tree.node(id) {
+            Some(node) if id != MINIBUFFER_WINDOW => node.leaves(),
+            _ => return Err(Error::new("No such window")),
+        };
         let leaves = self.window_tree.leaves();
-        if !leaves.contains(&id) {
-            return Err(Error::new("No such window"));
-        }
-        if leaves.len() == 1 {
+        if inside.len() == leaves.len() {
             return Err(Error::new("Attempt to delete minibuffer or sole ordinary window"));
         }
-        if id == self.selected_window {
+        if inside.contains(&self.selected_window) {
             let next = self
                 .windows
                 .iter()
-                .filter(|w| w.id != id && leaves.contains(&w.id))
+                .filter(|w| !inside.contains(&w.id) && leaves.contains(&w.id))
                 .max_by_key(|w| w.used)
                 .map(|w| w.id)
                 .expect("another window");
             self.select_window_norecord(next)?;
         }
-        self.forget_window(id);
-        for gone in self.window_tree.remove(id) {
+        for &w in &inside {
+            self.forget_window(w);
+        }
+        let internal: Vec<WindowId> = self.window_tree.node(id).map(|n| n.ids()).unwrap_or_default();
+        for gone in self.window_tree.remove(id).into_iter().chain(internal) {
             self.internal_window_parameters.remove(&gone);
         }
         self.relayout();
         Ok(())
+    }
+
+    /// Forgets the parameters of internal windows no frame has any more.
+    pub(crate) fn prune_internal_windows(&mut self) {
+        let mut ids: Vec<WindowId> = self.window_tree.ids();
+        ids.extend(self.other_frames.iter().flat_map(|f| f.tree.ids()));
+        self.internal_window_parameters.retain(|id, _| ids.contains(id));
     }
 
     /// Makes a window the selected one, whose buffer commands act on, and
@@ -1310,6 +1335,7 @@ impl Editor {
             self.buffers[self.current].set_point(point);
         }
         self.minibuffer_window_selected = minibuffer_selected && self.in_minibuffer();
+        self.prune_internal_windows();
         self.relayout();
         Ok(true)
     }
@@ -1608,6 +1634,11 @@ impl Editor {
     }
 
     pub(crate) fn set_selected_window_height(&mut self, lines: usize) {
+        // A lone window's size is the frame's, where no front end gave one.
+        if self.frame_size_implied && matches!(self.window_tree, WindowTree::Leaf(_)) {
+            self.frame_size = None;
+            self.frame_size_implied = false;
+        }
         let selected = self.selected_window;
         if let Some(w) = self.window_mut(selected) {
             w.height = lines.max(1);
@@ -1662,9 +1693,28 @@ mod tests {
         assert_eq!(ed.window_edges(root, false), Some((0, 0, 80, 24)));
         ed.set_window_parameter(root, "p", Value::Bool(true)).unwrap();
         assert_eq!(ed.window_parameter(root, "p"), Some(&Value::Bool(true)));
-        // A combination limit makes the next split a new internal window.
+        // A parent's combination limit keeps it from being merged away; splitting a child still makes a sibling.
         ed.set_window_combination_limit(root, true).unwrap();
         let fourth = ed.split_window(Some(1), false).unwrap();
-        assert_eq!(ed.window_parent(fourth).map(|p| p != root), Some(true));
+        assert_eq!(ed.window_parent(fourth), Some(root));
+        // Deleting an internal window deletes the windows it holds.
+        let right = ed.split_window(Some(third), true).unwrap();
+        let inner = ed.window_parent(right).unwrap();
+        assert_ne!(inner, root);
+        ed.delete_window(Some(inner)).unwrap();
+        assert!(!ed.window_list().contains(&right) && !ed.window_list().contains(&third));
+    }
+
+    #[test]
+    fn a_window_beside_a_side_window_splits_into_an_internal_window_of_its_own() {
+        let mut ed = Editor::new();
+        ed.set_frame_size(80, 24);
+        let side = ed.split_window(None, false).unwrap();
+        ed.set_window_parameter(side, "window-side", Value::Symbol("bottom".into())).unwrap();
+        let root = ed.frame_root_window(ed.selected_frame()).unwrap();
+        let made = ed.split_window(Some(1), false).unwrap();
+        assert_ne!(ed.window_parent(made), Some(root));
+        assert_eq!(ed.window_parent(side), Some(root));
+        assert!(ed.split_window(Some(side), true).is_err(), "a side window is not split");
     }
 }

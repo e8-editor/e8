@@ -135,7 +135,8 @@ fn scripts_split_and_select_windows() {
             .to_string(),
         )
         .unwrap();
-    assert_eq!(ed.echo(), Some("1,2 true *scratch*"));
+    // The internal window the split makes is numbered before the new window, as in Emacs.
+    assert_eq!(ed.echo(), Some("1,3 true *scratch*"));
 }
 
 /// Each window's total height, mode line included, in cyclic order.
