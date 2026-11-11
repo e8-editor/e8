@@ -214,7 +214,7 @@ const whereIs = e8.defineCommand({
 });
 
 /** The keymap a mode's map variable holds, if it has one. */
-function modeMap(mode: string): string | undefined {
+export function modeMap(mode: string): string | undefined {
   const name = `${mode}-map`;
   return e8.keymapp(e8.variable(name)) ? name : undefined;
 }
@@ -314,7 +314,7 @@ const describeVariable = e8.defineCommand({
 });
 
 /** "delete-selection-mode" is "Delete-Selection mode", as Emacs writes it. */
-function prettyModeName(name: string): string {
+export function prettyModeName(name: string): string {
   return (
     name
       .replace(/-mode$/, "")

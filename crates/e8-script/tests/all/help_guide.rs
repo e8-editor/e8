@@ -182,3 +182,48 @@ fn the_startup_line_names_the_keys_unless_something_else_was_said() {
     assert_eq!(ed2.echo(), None);
     drop(s);
 }
+
+#[test]
+fn a_users_own_binding_of_c_h_h_is_theirs() {
+    let (mut ed, s) = setup();
+    ts(&mut ed, &s, r#"e8.defineCommand({ name: "my-hello", run: () => e8.message("hello") }); e8.bindKey("C-h h", "my-hello");"#);
+    // Turned off, the mode leaves the user's key alone, and turned on again it does not take it.
+    ts(&mut ed, &s, r#"e8.callWithPrefix(-1, "help-guide-mode");"#);
+    ed.press("C-h h").unwrap();
+    assert_eq!(ed.echo(), Some("hello"));
+    ed.call("help-guide-mode", vec![]).unwrap();
+    ed.press("C-h h").unwrap();
+    assert_eq!(ed.echo(), Some("hello"));
+    // C-h 8, which the user left alone, is the mode's again.
+    ed.press("C-h 8").unwrap();
+    assert!(help(&ed).starts_with("Getting started with E8"), "{}", help(&ed));
+}
+
+#[test]
+fn a_guide_for_another_mode_has_the_keys_minor_modes_leave_it() {
+    let (mut ed, s) = setup();
+    ed.call("tab-bar-mode", vec![]).unwrap();
+    ts(&mut ed, &s, r#"e8.call("help-guide-for-mode", "agent-shell-mode");"#);
+    let card = help(&ed);
+    // tab-bar-mode takes C-<tab>, so the next mode is C-c TAB here.
+    assert!(card.contains("    C-c TAB  Next mode"), "{card}");
+    // Only a major mode has a guide.
+    let error = s.eval_expression(&mut ed, r#"e8.conditionCase(() => e8.call("help-guide-for-mode", "find-file"), { error: (e) => e.message })"#).unwrap();
+    assert_eq!(error, "\"find-file is not a major mode\"");
+}
+
+#[test]
+fn where_you_are_is_where_c_h_h_was_pressed_and_init_ts_where_e8_reads_it() {
+    let (mut ed, s) = setup();
+    ed.set_variable("user-emacs-directory", Value::Str("/tmp/my-e8-config/".into()));
+    ed.switch_to_buffer("notes.org");
+    ed.call("org-mode", vec![]).unwrap();
+    ed.press("C-h h").unwrap();
+    // A guide to another mode asked for by name is not where you are.
+    ts(&mut ed, &s, r#"e8.call("help-guide-for-mode", "dired-mode");"#);
+    point_at(&mut ed, &s, "Dired");
+    ed.press("C-h 8").unwrap();
+    let card = help(&ed);
+    assert!(card.contains("Guide to Org mode, where you are"), "{card}");
+    assert!(card.contains("Settings go in /tmp/my-e8-config/init.ts, written in TypeScript."), "{card}");
+}

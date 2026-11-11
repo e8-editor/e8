@@ -5,7 +5,7 @@
 // It is a step beyond Emacs, so it is a global minor mode, on by default;
 // turned off, the keys, the cards' hints and the startup line go with it.
 
-import { button, describeModeButton, withHelpWindow, type Xref } from "help";
+import { button, describeModeButton, modeMap, prettyModeName, withHelpWindow, type Xref } from "help";
 
 /**
  * A mode's guide, which a package gives with defineGuide. It names commands,
@@ -102,7 +102,12 @@ function keysHere(): KeyFinder {
   return (command) => bestKey(e8.whereIsInternal(command));
 }
 
-/** Keys in a major mode's keymap, and the global map's that it does not hide. */
+/**
+ * Keys as a buffer in a major mode would have them, for a guide shown for a
+ * mode other than the current buffer's: the keymaps of the minor modes on
+ * here, as global ones such as tab-bar-mode are on there too, then the
+ * mode's, then the global map's, each hiding the keys of those after it.
+ */
 function keysInMode(mode: string | undefined): KeyFinder {
   const byCommand = new Map<string, string[]>();
   const taken = new Set<string>();
@@ -115,16 +120,14 @@ function keysInMode(mode: string | undefined): KeyFinder {
       else list.push(keys);
     }
   };
+  for (const minor of e8.enabledMinorModes()) {
+    const minorMap = modeMap(minor);
+    if (minorMap !== undefined) add(e8.keymapBindings(minorMap), true);
+  }
   const map = mode === undefined ? undefined : modeMap(mode);
-  if (map !== undefined) add(e8.keymapBindings(map), false);
+  if (map !== undefined) add(e8.keymapBindings(map), true);
   add(e8.keymapBindings("global-map"), true);
   return (command) => bestKey(byCommand.get(command) ?? []);
-}
-
-/** A mode's keymap, NAME-map, if it has one. */
-function modeMap(mode: string): string | undefined {
-  const name = `${mode}-map`;
-  return e8.keymapp(e8.variable(name)) ? name : undefined;
 }
 
 /** How a card names a command's key: the key, or M-x and the command's name when nothing binds it. */
@@ -288,22 +291,14 @@ function insertCard(card: Card): void {
   e8.insert(`\n${e8.propertize("RET follows a link, l comes back here, q closes this window.", { face: "shadow" })}\n`);
 }
 
-/** A link: a button with a key after it, when one runs the same. */
-function link(label: string, xref: Xref, command?: string, find?: KeyFinder): e8.PropertizedString | string {
+/** A link: a button, given or made from a label and where it leads, with a key after it when one runs the same. */
+function link(target: e8.PropertizedString | [label: string, xref: Xref], command?: string, find?: KeyFinder): e8.PropertizedString {
+  const shown = Array.isArray(target) ? button(target[0], target[1]) : target;
   const key = command !== undefined && find !== undefined ? find(command) : undefined;
-  return key === undefined ? button(label, xref) : e8.concat(button(label, xref), " ", keyed(`(${key})`));
+  return key === undefined ? shown : e8.concat(shown, " ", keyed(`(${key})`));
 }
 
 // --- The cards -------------------------------------------------------------
-
-/** "org-mode" as "Org mode" and "agent-shell-mode" as "Agent-Shell mode", as Emacs writes a mode's name. */
-function prettyModeName(name: string): string {
-  return `${name
-    .replace(/-mode$/, "")
-    .split("-")
-    .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
-    .join("-")} mode`;
-}
 
 /** The first paragraph of a doc string, its summary. */
 function firstParagraph(doc: string | undefined): string {
@@ -368,8 +363,16 @@ function placeTitle(mode: string): string {
   return guides.get(mode)?.title ?? (typeof name === "string" && name !== "" ? `${name} mode` : prettyModeName(mode));
 }
 
-/** The mode the last guide to a place was about, which C-h 8 in *Help* takes as where you are. */
+/** The mode of the buffer C-h h was last pressed in, which C-h 8 in *Help* takes as where you are. */
 let lastPlace: { mode: string; name: string } | undefined;
+
+/**
+ * Whether a name is a major mode's: a command with the keymap and hook
+ * defineMajorMode makes, and no variable of its own, as a minor mode has.
+ */
+function isMajorMode(name: string): boolean {
+  return e8.commandExists(name) && modeMap(name) !== undefined && e8.isHook(`${name}-hook`) && e8.variable(name) === undefined;
+}
 
 /** The nearest mode a mode is built on that has a guide, if any. */
 function guidedParent(mode: string): string | undefined {
@@ -380,8 +383,8 @@ function guidedParent(mode: string): string | undefined {
 function modeCard(mode: string, title: string, find: KeyFinder, fullHelp: e8.PropertizedString | string): Card {
   const guide = guides.get(mode) ?? madeGuide(mode);
   const links: Card["links"] = [fullHelp];
-  links.push(link("Getting started with E8", ["call", "help-guide-e8"], "help-guide-e8", find));
-  links.push(link("All the help commands", ["call", "help-for-help"], "help-for-help", find));
+  links.push(link(["Getting started with E8", ["call", "help-guide-e8"]], "help-guide-e8", find));
+  links.push(link(["All the help commands", ["call", "help-for-help"]], "help-for-help", find));
   return makeCard(guide.title ?? title, guide, find, links);
 }
 
@@ -390,7 +393,7 @@ function checkOn(): void {
   if (e8.variable("help-guide-mode") !== true) e8.userError("help-guide-mode is off; M-x help-guide-mode turns it on");
 }
 
-const helpGuideHere = e8.defineCommand({
+e8.defineCommand({
   name: "help-guide-here",
   doc:
     "Show a short guide to the current buffer's major mode: what it is for, the keys that matter in it, " +
@@ -401,9 +404,7 @@ const helpGuideHere = e8.defineCommand({
     const find = keysHere();
     const title = placeTitle(mode);
     // Everything is worked out here, in the buffer the card is about, not in *Help*.
-    const key = find("describe-mode");
-    const label = describeModeButton(`Everything about ${title}`);
-    const fullHelp = key === undefined ? label : e8.concat(label, " ", keyed(`(${key})`));
+    const fullHelp = link(describeModeButton(`Everything about ${title}`), "describe-mode", find);
     const card = modeCard(mode, title, find, fullHelp);
     if (mode !== "help-mode") lastPlace = { mode, name: title };
     withHelpWindow(() => insertCard(card));
@@ -416,12 +417,11 @@ e8.defineCommand({
   params: [{ name: "mode", prompt: "Guide to mode: ", collection: () => guideModes().sort() }],
   run: (mode) => {
     checkOn();
-    if (!e8.commandExists(mode)) e8.userError(`No mode named ${mode}`);
+    if (!isMajorMode(mode)) e8.userError(`${mode} is not a major mode`);
     const find = keysInMode(mode);
     const title = guides.get(mode)?.title ?? prettyModeName(mode);
     const fullHelp = button(`Everything about ${title}`, ["modes", mode, prettyModeName(mode).replace(/ mode$/, "")]);
     const card = modeCard(mode, title, find, fullHelp);
-    lastPlace = { mode, name: guides.get(mode)?.title ?? title };
     withHelpWindow(() => insertCard(card));
   },
 });
@@ -476,12 +476,12 @@ const E8_GUIDE: Guide = {
   learnNext: [
     "\\[describe-key] and then a key says what that key does; \\[describe-function] describes a command.",
     "\\[describe-bindings] lists every key you can press where you are; \\[help-for-help] lists all the help.",
-    "Settings go in init.ts in ~/.config/e8, written in TypeScript.",
+    "Settings go in init.ts in your configuration directory, written in TypeScript.",
     "Know Emacs already? \\[help-guide-mode] turns these guides off; put e8.callWithPrefix(-1, \"help-guide-mode\") in init.ts to keep them off.",
   ],
 };
 
-const helpGuideE8 = e8.defineCommand({
+e8.defineCommand({
   name: "help-guide-e8",
   doc: "Show a short guide to getting started with E8: how keys and commands work, the keys to learn first, and where to go next.",
   run: () => {
@@ -492,10 +492,17 @@ const helpGuideE8 = e8.defineCommand({
     const here = { mode, name: placeTitle(mode) };
     const place = here.mode === "help-mode" && lastPlace !== undefined ? lastPlace : here;
     const links: Card["links"] = [
-      link(`Guide to ${place.name}, where you are`, ["call", "help-guide-for-mode", place.mode], place === here ? "help-guide-here" : undefined, find),
-      link("All the help commands", ["call", "help-for-help"], "help-for-help", find),
+      link([`Guide to ${place.name}, where you are`, ["call", "help-guide-for-mode", place.mode]], place === here ? "help-guide-here" : undefined, find),
+      link(["All the help commands", ["call", "help-for-help"]], "help-for-help", find),
     ];
-    const card = makeCard("Getting started with E8", E8_GUIDE, find, links);
+    // Where init.ts is, as E8 found it: E8_CONFIG_DIR, XDG_CONFIG_HOME/e8 or ~/.config/e8.
+    const dir = e8.variable("user-emacs-directory");
+    const init = typeof dir === "string" && dir !== "" ? e8.abbreviateFileName(`${dir.replace(/\/$/, "")}/init.ts`) : undefined;
+    const guide: Guide = {
+      ...E8_GUIDE,
+      learnNext: E8_GUIDE.learnNext?.map((s) => (init === undefined ? s : s.replace("init.ts in your configuration directory", init))),
+    };
+    const card = makeCard("Getting started with E8", guide, find, links);
     withHelpWindow(() => insertCard(card));
   },
 });
@@ -510,12 +517,11 @@ const helpGuideMode = e8.defineMinorMode({
     "getting started with E8, and E8 says so at startup. Turned off, the keys, the guides and the hints go, " +
     "leaving Emacs's help alone; put e8.callWithPrefix(-1, \"help-guide-mode\") in init.ts for that.",
   onChange: (enabled) => {
-    if (enabled) {
-      e8.defineKey("help-map", "h", helpGuideHere);
-      e8.defineKey("help-map", "8", helpGuideE8);
-    } else {
-      e8.keymapUnset("help-map", "h", true);
-      e8.keymapUnset("help-map", "8", true);
+    // A key the user bound to something else is theirs: the mode neither takes it nor, turned off, takes it away.
+    for (const [key, command] of [["h", "help-guide-here"], ["8", "help-guide-e8"]] as const) {
+      const bound = e8.lookupKey("help-map", key);
+      if (enabled && bound === undefined) e8.defineKey("help-map", key, command);
+      else if (!enabled && bound === command) e8.keymapUnset("help-map", key, true);
     }
   },
 });
