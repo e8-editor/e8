@@ -93,13 +93,22 @@ function bestKey(keys: string[]): string | undefined {
 /**
  * Finds the keys of commands: where is says in the current buffer, or,
  * for a guide shown for another mode, in that mode's keymap and then in the
- * global map, a key the mode binds hiding the global map's.
+ * global map, a key the mode binds hiding the global map's. `runs` says
+ * what a key runs there.
  */
-type KeyFinder = (command: string) => string | undefined;
+type KeyFinder = ((command: string) => string | undefined) & { runs: (keys: string) => string | undefined };
 
 /** Keys as where-is finds them in the selected window's buffer, with its minor modes. */
 function keysHere(): KeyFinder {
-  return (command) => bestKey(e8.whereIsInternal(command));
+  return Object.assign((command: string) => bestKey(e8.whereIsInternal(command)), {
+    runs: (keys: string) => {
+      for (const map of e8.currentActiveMaps()) {
+        const binding = e8.lookupKey(map, keys);
+        if (binding !== undefined) return typeof binding === "string" ? binding : undefined;
+      }
+      return undefined;
+    },
+  });
 }
 
 /**
@@ -110,11 +119,11 @@ function keysHere(): KeyFinder {
  */
 function keysInMode(mode: string | undefined): KeyFinder {
   const byCommand = new Map<string, string[]>();
-  const taken = new Set<string>();
-  const add = (bindings: [string, string][], shadowed: boolean) => {
+  const taken = new Map<string, string>();
+  const add = (bindings: [string, string][]) => {
     for (const [keys, command] of bindings) {
-      if (shadowed && taken.has(keys)) continue;
-      taken.add(keys);
+      if (taken.has(keys)) continue;
+      taken.set(keys, command);
       const list = byCommand.get(command);
       if (list === undefined) byCommand.set(command, [keys]);
       else list.push(keys);
@@ -122,17 +131,52 @@ function keysInMode(mode: string | undefined): KeyFinder {
   };
   for (const minor of e8.enabledMinorModes()) {
     const minorMap = modeMap(minor);
-    if (minorMap !== undefined) add(e8.keymapBindings(minorMap), true);
+    if (minorMap !== undefined) add(e8.keymapBindings(minorMap));
   }
   const map = mode === undefined ? undefined : modeMap(mode);
-  if (map !== undefined) add(e8.keymapBindings(map), true);
-  add(e8.keymapBindings("global-map"), true);
-  return (command) => bestKey(byCommand.get(command) ?? []);
+  if (map !== undefined) add(e8.keymapBindings(map));
+  add(e8.keymapBindings("global-map"));
+  return Object.assign((command: string) => bestKey(byCommand.get(command) ?? []), { runs: (keys: string) => taken.get(keys) });
 }
 
-/** How a card names a command's key: the key, or M-x and the command's name when nothing binds it. */
+/**
+ * The global map's keys for each command as E8's packages left them, before
+ * init.ts bound any to something else: taken in before-init-hook, as
+ * Emacs runs it before the init file, so a card can still name a key a
+ * config gave to another command.
+ */
+let defaultKeys: Map<string, string[]> | undefined;
+
+e8.addHook("before-init-hook", () => {
+  defaultKeys = new Map();
+  for (const [keys, command] of e8.keymapBindings("global-map")) {
+    if (!showable(keys)) continue;
+    const list = defaultKeys.get(command);
+    if (list === undefined) defaultKeys.set(command, [keys]);
+    else list.push(keys);
+  }
+});
+
+/**
+ * For a command nothing binds now, a key E8 bound it to that now runs
+ * another command, as a config gives C-x b to consult-buffer: the best such
+ * key, and what it runs.
+ */
+function rebound(command: string, find: KeyFinder): { key: string; runs: string } | undefined {
+  const keys = [...(defaultKeys?.get(command) ?? [])].sort((a, b) => keyCost(a) - keyCost(b));
+  for (const key of keys) {
+    const runs = find.runs(key);
+    if (runs !== undefined && runs !== command && runs !== "undefined") return { key, runs };
+  }
+  return undefined;
+}
+
+/**
+ * How a card names a command's key: the key; else a key E8 bound it to,
+ * which now runs something like it; else M-x and the command's name.
+ */
 function keyText(command: string, find: KeyFinder): string {
-  return find(command) ?? `M-x ${command}`;
+  return find(command) ?? rebound(command, find)?.key ?? `M-x ${command}`;
 }
 
 /**
@@ -151,8 +195,11 @@ export function substituteCommandKeys(text: string, mode?: string): string {
 /** How wide a card's text is filled, as fill-column is for prose. */
 const WIDTH = 70;
 
-/** A piece of a card's text: words, or a key, which is never broken across lines. */
-type Piece = { text: string; key?: boolean };
+/**
+ * A piece of a card's text: words, perhaps in a face, or a key or a note
+ * kept whole, which is never broken across lines.
+ */
+type Piece = { text: string; key?: boolean; face?: string; whole?: boolean };
 
 /** A sentence's pieces, its \\[command]s made keys. */
 function pieces(text: string, find: KeyFinder): Piece[] {
@@ -167,6 +214,9 @@ function pieces(text: string, find: KeyFinder): Piece[] {
   return out;
 }
 
+// Text with faces is inserted as it is or joined with e8.concat: a template
+// string would make it a plain string, and the faces would be lost.
+
 /** The face of a key on a card. */
 const keyed = (text: string) => e8.propertize(text, { face: "help-key-binding" });
 
@@ -176,11 +226,13 @@ const keyed = (text: string) => e8.propertize(text, { face: "help-key-binding" }
  */
 function insertFilled(parts: Piece[], column: number, indent: number): void {
   // Words, keys kept whole, each with whether a space comes before it.
-  const words: { text: string; key: boolean; space: boolean }[] = [];
+  const words: { text: string; key: boolean; space: boolean; face?: string }[] = [];
   let space = false;
   for (const part of parts) {
-    if (part.key) {
-      words.push({ text: part.text, key: true, space });
+    if (part.key || part.whole) {
+      // A whole piece starting with a space has one before it, as a note after a sentence.
+      const text = part.text.replace(/^\s+/, "");
+      words.push({ text, key: part.key === true, space: space || text !== part.text, face: part.face });
       space = false;
       continue;
     }
@@ -190,7 +242,7 @@ function insertFilled(parts: Piece[], column: number, indent: number): void {
       if (/^\s+$/.test(token)) space = true;
       else {
         // A word right after a key, as its full stop, has no space before it and so stays on its line.
-        words.push({ text: token, key: false, space });
+        words.push({ text: token, key: false, space, face: part.face });
         space = false;
       }
     }
@@ -206,7 +258,7 @@ function insertFilled(parts: Piece[], column: number, indent: number): void {
       e8.insert(" ");
       at += 1;
     }
-    e8.insert(word.key ? keyed(word.text) : word.text);
+    e8.insert(word.key ? keyed(word.text) : word.face !== undefined ? e8.propertize(word.text, { face: word.face }) : word.text);
     at += word.text.length;
     first = false;
   }
@@ -215,7 +267,7 @@ function insertFilled(parts: Piece[], column: number, indent: number): void {
 
 /** Inserts a section's heading, after a blank line. */
 function insertHeading(text: string): void {
-  e8.insert(`\n${e8.propertize(text, { face: "help-guide-heading" })}\n`);
+  e8.insert(e8.concat("\n", e8.propertize(text, { face: "help-guide-heading" }), "\n"));
 }
 
 /** Inserts sentences as a list, each filled under its bullet. */
@@ -246,7 +298,12 @@ function makeCard(title: string, guide: Guide, find: KeyFinder, links: Card["lin
     keys: guide.keys
       .map(([group, commands]): [string, [string, Piece[]][]] => [
         group,
-        commands.filter(([command]) => e8.commandExists(command)).map(([command, what]) => [keyText(command, find), pieces(what, find)]),
+        commands.filter(([command]) => e8.commandExists(command)).map(([command, what]): [string, Piece[]] => {
+          // A key a config gave to another command is named, with what it runs now.
+          const moved = find(command) === undefined ? rebound(command, find) : undefined;
+          if (moved === undefined) return [keyText(command, find), pieces(what, find)];
+          return [moved.key, [...pieces(what, find), { text: ` (now ${moved.runs})`, face: "shadow", whole: true }]];
+        }),
       ])
       .filter(([, rows]) => rows.length > 0),
     tryNow: (guide.tryNow ?? []).map((s) => pieces(s, find)),
@@ -257,7 +314,7 @@ function makeCard(title: string, guide: Guide, find: KeyFinder, links: Card["lin
 
 /** Inserts a card into *Help*. */
 function insertCard(card: Card): void {
-  e8.insert(`${e8.propertize(card.title, { face: "help-guide-title" })}\n`);
+  e8.insert(e8.concat(e8.propertize(card.title, { face: "help-guide-title" }), "\n"));
   insertFilled(card.summary, 0, 0);
   if (card.keys.length > 0) {
     insertHeading("Keys that matter here");
@@ -266,9 +323,9 @@ function insertCard(card: Card): void {
     // command's name, pushes its text along rather than everyone's.
     const keyWidth = Math.max(3, ...rows.map(([key]) => key.length).filter((n) => n <= 10));
     for (const [group, groupRows] of card.keys) {
-      e8.insert(`  ${e8.propertize(group, { face: "help-guide-group" })}\n`);
+      e8.insert(e8.concat("  ", e8.propertize(group, { face: "help-guide-group" }), "\n"));
       for (const [key, what] of groupRows) {
-        e8.insert(`    ${keyed(key)}${" ".repeat(Math.max(2, keyWidth + 2 - key.length))}`);
+        e8.insert(e8.concat("    ", keyed(key), " ".repeat(Math.max(2, keyWidth + 2 - key.length))));
         const column = 4 + Math.max(key.length + 2, keyWidth + 2);
         insertFilled(what, column, 6 + keyWidth);
       }
@@ -288,7 +345,7 @@ function insertCard(card: Card): void {
     e8.insert(link);
     e8.insert("\n");
   }
-  e8.insert(`\n${e8.propertize("RET follows a link, l comes back here, q closes this window.", { face: "shadow" })}\n`);
+  e8.insert(e8.concat("\n", e8.propertize("RET follows a link, l comes back here, q closes this window.", { face: "shadow" }), "\n"));
 }
 
 /** A link: a button, given or made from a label and where it leads, with a key after it when one runs the same. */

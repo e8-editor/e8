@@ -227,3 +227,50 @@ fn where_you_are_is_where_c_h_h_was_pressed_and_init_ts_where_e8_reads_it() {
     assert!(card.contains("Guide to Org mode, where you are"), "{card}");
     assert!(card.contains("Settings go in /tmp/my-e8-config/init.ts, written in TypeScript."), "{card}");
 }
+
+#[test]
+fn the_title_headings_groups_and_keys_have_their_faces() {
+    let (mut ed, s) = setup();
+    ed.press("C-h 8").unwrap();
+    // The face of the first character of the first `text` in *Help*.
+    let face = |ed: &mut Editor, text: &str| {
+        s.eval_expression(
+            ed,
+            &format!(
+                r#"e8.withCurrentBuffer("*Help*", () => e8.getTextProperty(e8.pointMin() + e8.bufferText(e8.pointMin(), e8.pointMax()).indexOf({text:?}), "face"))"#
+            ),
+        )
+        .unwrap()
+    };
+    assert_eq!(face(&mut ed, "Getting started with E8"), "\"help-guide-title\"");
+    assert_eq!(face(&mut ed, "Keys that matter here"), "\"help-guide-heading\"");
+    assert_eq!(face(&mut ed, "When you are stuck"), "\"help-guide-group\"");
+    assert_eq!(face(&mut ed, "C-g "), "\"help-key-binding\"");
+    assert_eq!(face(&mut ed, "RET follows a link"), "\"shadow\"");
+}
+
+#[test]
+fn a_key_a_config_gave_to_another_command_is_named_with_what_it_runs() {
+    let (mut ed, s) = setup();
+    // As E8 starts: the packages' keys are remembered, then init.ts binds some to commands of its own.
+    ed.run_hooks("before-init-hook").unwrap();
+    ts(
+        &mut ed,
+        &s,
+        r#"e8.defineCommand({ name: "my-buffers", run: () => {} });
+        e8.defineCommand({ name: "my-find", run: () => {} });
+        e8.bindKey("C-x b", "my-buffers");
+        e8.bindKey("C-x C-f", "my-find");"#,
+    );
+    ed.press("C-h 8").unwrap();
+    let card = help(&ed);
+    assert!(card.contains("    C-x b    Go to another buffer: an open file, or other text"), "{card}");
+    assert!(card.contains("(now my-buffers)"), "{card}");
+    assert!(card.contains("    C-x C-f  Open a file, or start a new one (now my-find)"), "{card}");
+    // In sentences, the key alone.
+    assert!(card.contains("• Open a file with C-x C-f, change something"), "{card}");
+    // A key bound to nothing is not named: M-x is.
+    ts(&mut ed, &s, r#"e8.keymapUnset("global-map", "C-x b");"#);
+    ed.press("C-h 8").unwrap();
+    assert!(help(&ed).contains("    M-x switch-to-buffer  Go to another buffer"), "{}", help(&ed));
+}
