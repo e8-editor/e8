@@ -91,7 +91,9 @@ e8.bindKey("C-c n", jotNotes);
 // ispell-change-dictionary picks another for a buffer, and a file can name
 // its own on its first line, as -*- ispell-local-dictionary: "sv_SE" -*-
 // (M-x add-file-local-variable-prop-line writes it), or a line
-// "Local IspellDict: sv_SE".
+// "Local IspellDict: sv_SE". A whole notes directory can, in a .dir-locals.el
+// there: ((org-mode . ((ispell-local-dictionary . "sv_SE")))), which
+// M-x add-dir-local-variable writes.
 // e8.setVariable("ispell-program-name", "hunspell");
 // e8.setVariable("ispell-dictionary", "en_US,sv_SE");
 

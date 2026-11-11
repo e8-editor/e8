@@ -1,0 +1,673 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "dir-locals-for-every-mode",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((fill-column . 20))))\n",
+          "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-for-the-mode",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((text-mode . ((fill-column . 20))))\n",
+          "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-for-another-mode",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((text-mode . ((fill-column . 20))))\n",
+          "a.notes": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.notes"
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.notes": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-for-a-parent-mode",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((text-mode . ((fill-column . 20))))\n",
+          "a.org": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.org"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.org": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-more-specific-mode-wins",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((org-mode . ((fill-column . 30)))\n (text-mode . ((fill-column . 20))))\n",
+          "a.org": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.org"
+      },
+      "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+      "visible": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-in-a-parent-directory",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((fill-column . 20))))\n",
+          "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "sub/a.txt"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "sub/": "",
+        "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-for-a-subdirectory",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((\"sub/\" . ((nil . ((fill-column . 20))))))\n",
+          "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "sub/a.txt"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "sub/": "",
+        "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-for-another-subdirectory",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((\"other/\" . ((nil . ((fill-column . 20))))))\n",
+          "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "sub/a.txt"
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "sub/": "",
+        "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-not-in-subdirs",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((subdirs . nil) (fill-column . 20))))\n",
+          "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "sub/a.txt"
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "sub/": "",
+        "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-not-in-subdirs-but-here",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((subdirs . nil) (fill-column . 20))))\n",
+          "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "visible": "One two three four\nfive six seven eight\nnine ten eleven\ntwelve thirteen\nfourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-2-overrides",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((fill-column . 20))))\n",
+          ".dir-locals-2.el": "((nil . ((fill-column . 30))))\n",
+          "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+      "visible": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-nearest-directory-wins",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((fill-column . 20))))\n",
+          "sub/.dir-locals.el": "((nil . ((fill-column . 30))))\n",
+          "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "sub/a.txt"
+      },
+      "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+      "visible": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "sub/": "",
+        "sub/a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "file-locals-override-dir-locals",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((fill-column . 20))))\n",
+          "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 30\nEnd:\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 30\nEnd:\n",
+      "visible": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 30\nEnd:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n\nLocal Variables:\nfill-column: 30\nEnd:\n"
+      }
+    },
+    {
+      "name": "dir-locals-unsafe-in-batch",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((fill-column . 20) (my-own-setting . 3))))\n",
+          "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "dir-locals-eval-minor-mode",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "O n e SPC t w o SPC t h r e e SPC f o u r SPC f i v e SPC s i x SPC s e v e n SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((fill-column . 20) (eval . (auto-fill-mode)))))\n",
+          "a.txt": "\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "One two three four\nfive six seven \n",
+      "visible": "One two three four\nfive six seven \n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "\n"
+      }
+    },
+    {
+      "name": "dir-locals-unreadable",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          ".dir-locals.el": "((nil . ((fill-column . 20)))\n",
+          "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "visible": "One two three four five six seven eight nine ten eleven twelve\nthirteen fourteen.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "One two three four five six\nseven eight nine ten eleven\ntwelve thirteen fourteen.\n"
+      }
+    },
+    {
+      "name": "add-dir-local-variable-makes-the-file",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-dir-local-variable",
+          "text-mode",
+          "fill-column",
+          "60"
+        ],
+        "files": {
+          "a.txt": "Hello.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((fill-column . 60))))\n",
+      "visible": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((fill-column . 60))))\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
+    },
+    {
+      "name": "add-dir-local-variable-to-existing",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-dir-local-variable",
+          "text-mode",
+          "fill-column",
+          "60"
+        ],
+        "files": {
+          ".dir-locals.el": "((nil . ((tab-width . 4))))\n",
+          "a.txt": "Hello.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((nil . ((tab-width . 4)))\n (text-mode . ((fill-column . 60))))\n",
+      "visible": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((nil . ((tab-width . 4)))\n (text-mode . ((fill-column . 60))))\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
+    },
+    {
+      "name": "add-dir-local-variable-replaces",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-dir-local-variable",
+          "text-mode",
+          "fill-column",
+          "60"
+        ],
+        "files": {
+          ".dir-locals.el": "((text-mode . ((fill-column . 50)\n               (tab-width . 4))))\n",
+          "a.txt": "Hello.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((fill-column . 60)\n\t       (tab-width . 4))))\n",
+      "visible": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((fill-column . 60)\n\t       (tab-width . 4))))\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
+    },
+    {
+      "name": "add-dir-local-variable-string",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-dir-local-variable",
+          "org-mode",
+          "ispell-local-dictionary",
+          "\"sv_SE\""
+        ],
+        "files": {
+          "a.org": "* Hej\n"
+        },
+        "find": "a.org"
+      },
+      "text": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((org-mode . ((ispell-local-dictionary . \"sv_SE\"))))\n",
+      "visible": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((org-mode . ((ispell-local-dictionary . \"sv_SE\"))))\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.org": "* Hej\n"
+      }
+    },
+    {
+      "name": "add-dir-local-variable-for-every-mode",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-dir-local-variable",
+          "nil",
+          "fill-column",
+          "60"
+        ],
+        "files": {
+          ".dir-locals.el": "((text-mode . ((tab-width . 4))))\n",
+          "a.txt": "Hello.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((nil . ((fill-column . 60)))\n (text-mode . ((tab-width . 4))))\n",
+      "visible": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((nil . ((fill-column . 60)))\n (text-mode . ((tab-width . 4))))\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
+    },
+    {
+      "name": "delete-dir-local-variable",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-dir-local-variable",
+          "text-mode",
+          "fill-column"
+        ],
+        "files": {
+          ".dir-locals.el": "((text-mode . ((fill-column . 50)\n               (tab-width . 4))))\n",
+          "a.txt": "Hello.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((tab-width . 4))))\n",
+      "visible": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((tab-width . 4))))\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
+    },
+    {
+      "name": "delete-dir-local-variable-without-a-file",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "delete-dir-local-variable",
+          "text-mode",
+          "fill-column"
+        ],
+        "files": {
+          "a.txt": "Hello.\n"
+        },
+        "find": "a.txt",
+        "message": true
+      },
+      "text": "Hello.\n",
+      "visible": "Hello.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      },
+      "message": "No .dir-locals.el file was found"
+    }
+  ]
+}
