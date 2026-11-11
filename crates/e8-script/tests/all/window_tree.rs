@@ -70,3 +70,15 @@ fn internal_windows_are_valid_windows_but_not_live() {
         "[true,false,true,null,[0,0,80,24],1,false]"
     );
 }
+
+#[test]
+fn enlarging_a_window_takes_from_the_one_after_it_or_the_last_from_the_one_before() {
+    let (mut ed, s) = setup();
+    let heights = |ed: &mut Editor| eval(ed, &s, "JSON.stringify(e8.windowList().map((w) => e8.windowTotalHeight(w)))");
+    ed.press("C-x 2 C-x 2 C-x o C-u 2 C-x ^").unwrap();
+    assert_eq!(heights(&mut ed), "[6,8,10]");
+    ed.press("C-u 5 C-x ^").unwrap();
+    assert_eq!(heights(&mut ed), "[6,13,5]");
+    ed.press("C-x o C-x ^").unwrap();
+    assert_eq!(heights(&mut ed), "[6,12,6]");
+}
