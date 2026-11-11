@@ -964,7 +964,7 @@ let lazyOverlays: number[] = [];
 /** Highlights the word from `start` to `end`, or takes the highlight off, as ispell-highlight-spelling-error-overlay. */
 function highlightSpellingError(start: number, end: number, highlight = false): void {
   if (highlight) {
-    if (highlightOverlay !== undefined && e8.overlayStart(highlightOverlay) !== undefined) e8.moveOverlay(highlightOverlay, start, end);
+    if (highlightOverlay !== undefined && e8.overlayBuffer(highlightOverlay) === e8.bufferName()) e8.moveOverlay(highlightOverlay, start, end);
     else highlightOverlay = e8.makeOverlay(start, end, { priority: 1001, face: v("ispell-highlight-face") ?? sym("isearch") });
   } else if (highlightOverlay !== undefined) {
     e8.deleteOverlay(highlightOverlay);

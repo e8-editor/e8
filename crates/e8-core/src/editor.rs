@@ -1772,6 +1772,22 @@ impl Editor {
         &self.buffers
     }
 
+    /// The buffer an overlay is in, by its index, as Emacs's `overlay-buffer`:
+    /// overlay numbers are unique among every buffer's. The current
+    /// buffer is looked in first.
+    pub fn overlay_buffer_index(&self, id: u64) -> Option<usize> {
+        if self.buffer().overlay(id).is_some() {
+            return Some(self.current);
+        }
+        self.buffers.iter().position(|b| b.overlay(id).is_some())
+    }
+
+    /// The buffer an overlay is in, to change the overlay there.
+    pub fn overlay_buffer_mut(&mut self, id: u64) -> Result<&mut Buffer> {
+        let i = self.overlay_buffer_index(id).ok_or_else(|| Error::new(format!("No such overlay: {id}")))?;
+        Ok(&mut self.buffers[i])
+    }
+
     /// Kills the text from `beg` to `end`, as Emacs's kill-region from code.
     pub fn kill_region(&mut self, beg: usize, end: usize) -> Result<()> {
         crate::commands::kill_region(self, beg, end)

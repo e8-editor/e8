@@ -263,7 +263,6 @@ pub struct Buffer {
     pub(crate) local_map: Vec<crate::keymap::KeymapId>,
     properties: TextProperties,
     overlays: crate::properties::OverlayList,
-    next_overlay_id: u64,
     markers: Vec<Marker>,
     /// The name of the syntax table the buffer uses, as its major mode sets it.
     pub syntax_table: String,
@@ -401,7 +400,6 @@ impl Buffer {
             local_map: Vec::new(),
             properties: TextProperties::default(),
             overlays: Default::default(),
-            next_overlay_id: 0,
             markers: Vec::new(),
             syntax_table: crate::syntax_table::STANDARD.to_string(),
             case_table: None,
@@ -451,8 +449,13 @@ impl Buffer {
             b.category_table = self.category_table;
             b.read_only = self.read_only;
             b.mark = self.mark;
-            b.overlays = self.overlays.clone();
-            b.next_overlay_id = self.next_overlay_id;
+            // Copies of the overlays, numbered afresh, as clone-indirect-buffer copies them.
+            for o in self.overlays.iter() {
+                let mut copy = o.clone();
+                copy.id = next_overlay_id();
+                b.overlays.push(copy);
+            }
+            b.overlays.hooks = self.overlays.hooks;
         }
         b
     }
@@ -1289,13 +1292,23 @@ impl Buffer {
     /// Makes an overlay whose ends advance past text inserted at them as
     /// Emacs's `make-overlay` FRONT-ADVANCE and REAR-ADVANCE say.
     pub fn make_overlay_advancing(&mut self, range: Range<usize>, front_advance: bool, rear_advance: bool) -> u64 {
-        self.next_overlay_id += 1;
+        let id = next_overlay_id();
         let (start, end) = (range.start.min(self.len()), range.end.min(self.len()));
-        let mut overlay = Overlay::new(self.next_overlay_id, start, end);
+        let mut overlay = Overlay::new(id, start, end);
         overlay.front_advance = front_advance;
         overlay.rear_advance = rear_advance;
         self.overlays.push(overlay);
-        self.next_overlay_id
+        id
+    }
+
+    /// Every live overlay, in the order made, as Emacs's `overlay-lists` gives them.
+    pub fn overlay_ids(&self) -> Vec<u64> {
+        self.overlays.iter().map(|o| o.id).collect()
+    }
+
+    /// Deletes every overlay, as Emacs's `delete-all-overlays`.
+    pub fn delete_all_overlays(&mut self) {
+        self.overlays.clear();
     }
 
     pub fn overlay(&self, id: u64) -> Option<&Overlay> {
@@ -1603,4 +1616,12 @@ mod tests {
         assert!(b.insert("y").is_err());
         assert!(b.delete(0..1).is_err());
     }
+}
+
+/// The number of a new overlay: unique among every buffer's, so an
+/// overlay's number alone says which buffer it is in, as an Emacs overlay
+/// knows its buffer, and always larger than the last.
+fn next_overlay_id() -> u64 {
+    static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+    NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
 }

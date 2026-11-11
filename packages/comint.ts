@@ -667,7 +667,7 @@ function historyIsearchMessage(cqHack?: e8.Value, ellipsis?: e8.Value): void {
   const start = promptLineStart();
   const end = lineBeginningPosition();
   let o = messageOverlays.get(buffer);
-  if (o !== undefined && e8.overlayStart(o) !== undefined) e8.moveOverlay(o, start, end);
+  if (o !== undefined && e8.overlayBuffer(o) === buffer) e8.moveOverlay(o, start, end);
   else {
     o = e8.makeOverlay(start, end);
     e8.overlayPut(o, "evaporate", true);

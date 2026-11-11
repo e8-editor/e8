@@ -54,6 +54,7 @@ mod mouse;
 mod org;
 mod org_select;
 mod org_src;
+mod overlays;
 mod package_vc;
 mod parens;
 mod processes;

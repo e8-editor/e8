@@ -177,6 +177,15 @@ export function setTextProperties(start: number, end: number, properties?: { [na
  * one starting later, then the one ending sooner, else the text property.
  */
 export function getCharProperty(position: number, name: string): e8.Value | undefined {
+  return getCharPropertyAndOverlay(position, name)[0];
+}
+
+/**
+ * The value of a property at a position and the overlay it came from, as
+ * get-char-property-and-overlay: undefined for the overlay when it is the
+ * text's property, or nobody's.
+ */
+export function getCharPropertyAndOverlay(position: number, name: string): [e8.Value | undefined, number | undefined] {
   let best: number | undefined;
   let bestPriority = -Infinity;
   for (const ov of e8.overlaysAt(position)) {
@@ -190,7 +199,48 @@ export function getCharProperty(position: number, name: string): e8.Value | unde
       bestPriority = priority;
     }
   }
-  return best !== undefined ? e8.overlayGet(best, name) : e8.getTextProperty(position, name);
+  return best !== undefined ? [e8.overlayGet(best, name), best] : [e8.getTextProperty(position, name), undefined];
+}
+
+/** Nothing: E8's overlays need no recentering, as Emacs's no longer do either. */
+export function overlayRecenter(_position: number): void {}
+
+/**
+ * A new overlay with the same buffer, place and properties as another, as
+ * copy-overlay; undefined for a deleted one, as E8 has no overlays in no buffer.
+ */
+export function copyOverlay(overlay: number): number | undefined {
+  const buffer = e8.overlayBuffer(overlay);
+  const props = e8.overlayProperties(overlay);
+  if (buffer === undefined || props === undefined) return undefined;
+  return e8.withCurrentBuffer(buffer, () => e8.makeOverlay(e8.overlayStart(overlay)!, e8.overlayEnd(overlay)!, props));
+}
+
+/**
+ * Clear from start to end, the accessible text by default, the overlays
+ * whose property `name` is `value`, every overlay without a name, as
+ * remove-overlays: one reaching outside the range is cut back to the part
+ * outside, split in two if it reaches out both ends.
+ */
+export function removeOverlays(start = e8.pointMin(), end = e8.pointMax(), name?: string, value?: e8.Value): void {
+  if (start > end) [start, end] = [end, start];
+  for (const o of e8.overlaysIn(start, end)) {
+    if (name !== undefined && (e8.overlayGet(o, name) ?? null) !== (value ?? null)) continue;
+    const os = e8.overlayStart(o)!, oe = e8.overlayEnd(o)!;
+    if (os < start) {
+      // The original keeps the part after, a copy the part before, as Emacs's.
+      if (oe > end) {
+        e8.moveOverlay(copyOverlay(o)!, os, start);
+        e8.moveOverlay(o, end, oe);
+      } else {
+        e8.moveOverlay(o, os, start);
+      }
+    } else if (oe > end) {
+      e8.moveOverlay(o, end, oe);
+    } else {
+      e8.deleteOverlay(o);
+    }
+  }
 }
 
 /** Whether a window is live, showing a buffer on any frame, as window-live-p. */

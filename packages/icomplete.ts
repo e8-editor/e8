@@ -110,7 +110,9 @@ let overlays: { count: number; list: number } | undefined;
 
 /** Shows `count` before the prompt and `list` after the input. */
 function showOverlays(count: e8.PropertizedString | string, list: e8.PropertizedString): void {
-  if (overlays === undefined || e8.overlayStart(overlays.count) === undefined || e8.overlayStart(overlays.list) === undefined) {
+  // The overlays of an outer minibuffer stay there: an inner one gets its own.
+  const here = e8.bufferName();
+  if (overlays === undefined || e8.overlayBuffer(overlays.count) !== here || e8.overlayBuffer(overlays.list) !== here) {
     overlays = { count: e8.makeOverlay(e8.pointMin(), e8.pointMin()), list: e8.makeOverlay(e8.pointMax(), e8.pointMax()) };
   }
   e8.moveOverlay(overlays.count, e8.pointMin(), e8.pointMin());
