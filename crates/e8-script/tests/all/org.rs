@@ -836,10 +836,10 @@ fn keywords_and_tags_take_their_own_faces() {
     s.eval_expression(
         &mut ed,
         r##"(e8.setVariable("org-todo-keyword-faces", [["TODO", [":foreground", "#b48ead", ":weight", "bold"]], ["DONE", "#8fbcbb"]]),
-            e8.setVariable("org-tag-faces", [["nitwit", "#D08770"]]), 1)"##,
+            e8.setVariable("org-tag-faces", [["novels", "#D08770"]]), 1)"##,
     )
     .unwrap();
-    ed.window_buffer_mut().set_text("* TODO Task :nitwit:other:\n* DONE Old\n");
+    ed.window_buffer_mut().set_text("* TODO Task :novels:other:\n* DONE Old\n");
     ed.call("org-mode", vec![]).unwrap();
     ed.set_window_size(ed.selected_window(), 80, 20);
     ed.redisplay();
@@ -849,7 +849,7 @@ fn keywords_and_tags_take_their_own_faces() {
     let todo = seg(0, "TODO");
     assert_eq!(rgb(todo.foreground), Some((0xb4, 0x8e, 0xad)));
     assert!(todo.bold);
-    assert_eq!(rgb(seg(0, "nitwit").foreground), Some((0xd0, 0x87, 0x70)));
+    assert_eq!(rgb(seg(0, "novels").foreground), Some((0xd0, 0x87, 0x70)));
     assert_ne!(rgb(seg(0, "other").foreground), Some((0xd0, 0x87, 0x70)));
     assert_eq!(rgb(seg(1, "DONE").foreground), Some((0x8f, 0xbc, 0xbb)));
 }
@@ -1028,21 +1028,21 @@ fn an_edit_fontifies_what_shows_not_the_folded_rest() {
 
 #[test]
 fn fast_tag_selection_keeps_one_tag_of_a_group_as_emacs_does() {
-    // config.org's org-tag-alist, and what Emacs 30 did with n e RET.
+    // An org-tag-alist with a group, and what Emacs 30 did with n e RET.
     let mut ed = Editor::new();
     let s = Scripting::new(&mut ed).unwrap();
     s.eval_expression(
         &mut ed,
-        r#"(e8.setVariable("org-tag-alist", [[":startgroup"], ["climateview", "c"], ["nitwit", "n"], ["private", "p"], [":endgroup"], ["other", "o"], ["emacs", "e"]]), 1)"#,
+        r#"(e8.setVariable("org-tag-alist", [[":startgroup"], ["contracting", "c"], ["novels", "n"], ["private", "p"], [":endgroup"], ["other", "o"], ["emacs", "e"]]), 1)"#,
     )
     .unwrap();
     ed.window_buffer_mut().set_text("* Parent :work:\n** Task :private:\n");
     ed.call("org-mode", vec![]).unwrap();
     ed.set_frame_size(80, 24);
     ed.press("C-n C-f C-f C-f C-c C-q n e RET").unwrap();
-    assert_eq!(text(&ed), "* Parent :work:\n** Task                                                        :nitwit:emacs:\n");
+    assert_eq!(text(&ed), "* Parent :work:\n** Task                                                        :novels:emacs:\n");
     let menu = ed.buffers().iter().find(|b| b.name == " *Org tags*").map(|b| b.slice(0..b.len())).unwrap();
-    assert_eq!(menu, "Inherited:  work\nCurrent:    nitwit emacs\n\n{ [c] climateview   [n] nitwit        [p] private       }\n  [o] other         [e] emacs         \n");
+    assert_eq!(menu, "Inherited:  work\nCurrent:    novels emacs\n\n{ [c] contracting   [n] novels        [p] private       }\n  [o] other         [e] emacs         \n");
     assert_eq!(ed.window_list().len(), 1);
 }
 
