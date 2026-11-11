@@ -23,6 +23,16 @@ use crate::modeline::ModeLineSegment;
 use crate::rows::{FringeSpec, LineNumbers, Margin, Row};
 use crate::window::{FrameId, WindowId};
 
+/// Whether a frame is shown, as its `visibility` parameter says: t, nil
+/// or `icon`, as Emacs's `frame-visible-p` gives it.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum Visibility {
+    #[default]
+    Visible,
+    Hidden,
+    Iconified,
+}
+
 /// One frame as a front end draws it.
 #[derive(Clone, Debug)]
 pub struct FrameDescription {
@@ -38,6 +48,11 @@ pub struct FrameDescription {
     pub echo_lines: usize,
     /// Whether it is the selected frame, whose echo area shows prompts.
     pub selected: bool,
+    /// Whether it is shown, hidden or iconified, from its `visibility` parameter.
+    pub visibility: Visibility,
+    /// How many times it has been raised: a front end brings it in front
+    /// when this grows.
+    pub raised: u64,
     /// Whether the minibuffer's window is selected, so it has the cursor.
     pub minibuffer_selected: bool,
     pub windows: Vec<WindowDescription>,
@@ -262,6 +277,12 @@ impl Editor {
             tree: self.frame_tree(frame).cloned().unwrap_or(crate::window::WindowTree::Leaf(0)),
             echo_lines: if selected { self.mini_window_lines() } else { 1 },
             selected,
+            visibility: match self.frame_visibility(frame) {
+                crate::variables::Value::Null | crate::variables::Value::Bool(false) => Visibility::Hidden,
+                v if v.as_str() == Some("icon") => Visibility::Iconified,
+                _ => Visibility::Visible,
+            },
+            raised: self.frame_raises(frame),
             minibuffer_selected: self.minibuffer_window_selected(),
             windows,
             echo,

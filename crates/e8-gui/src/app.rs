@@ -87,6 +87,9 @@ pub struct E8App {
     /// editor judges its background, so its title and buttons show against
     /// the background drawn under them.
     appearance: std::collections::HashMap<FrameId, bool>,
+    /// Each frame's visibility and raise count as last acted on, to act
+    /// again when `make-frame-visible`, `iconify-frame` or `raise-frame` change them.
+    frame_states: std::collections::HashMap<FrameId, (e8_core::frame_description::Visibility, u64)>,
 }
 
 /// Where the editor runs.
@@ -219,6 +222,7 @@ impl E8App {
             told: std::collections::HashMap::new(),
             title_bar: false,
             appearance: std::collections::HashMap::new(),
+            frame_states: std::collections::HashMap::new(),
         }
     }
 
@@ -369,6 +373,51 @@ impl E8App {
         }
     }
 
+    /// A frame's visibility and how many times it has been raised.
+    fn frame_state(&self, frame: FrameId) -> (e8_core::frame_description::Visibility, u64) {
+        use e8_core::frame_description::Visibility;
+        match &self.backend {
+            Backend::Inline { editor, .. } => {
+                let visibility = match editor.frame_visibility(frame) {
+                    e8_core::Value::Null | e8_core::Value::Bool(false) => Visibility::Hidden,
+                    v if v.as_str() == Some("icon") => Visibility::Iconified,
+                    _ => Visibility::Visible,
+                };
+                (visibility, editor.frame_raises(frame))
+            }
+            Backend::Thread { .. } => self.frames.iter().find(|f| f.frame == frame).map_or_else(Default::default, |f| (f.visibility, f.raised)),
+        }
+    }
+
+    /// Shows, hides, iconifies or raises each frame's native window as its
+    /// state changed since last time, as `make-frame-visible`,
+    /// `make-frame-invisible`, `iconify-frame` and `raise-frame` ask.
+    fn follow_frame_states(&mut self, ctx: &egui::Context, frames: &[FrameId]) {
+        use e8_core::frame_description::Visibility;
+        for &frame in frames {
+            let state = self.frame_state(frame);
+            let Some(old) = self.frame_states.insert(frame, state) else { continue };
+            if old == state {
+                continue;
+            }
+            let viewport = if frame == self.main_frame { egui::ViewportId::ROOT } else { frame_viewport(frame) };
+            if old.0 != state.0 {
+                match state.0 {
+                    Visibility::Visible => {
+                        ctx.send_viewport_cmd_to(viewport, ViewportCommand::Visible(true));
+                        ctx.send_viewport_cmd_to(viewport, ViewportCommand::Minimized(false));
+                    }
+                    Visibility::Hidden => ctx.send_viewport_cmd_to(viewport, ViewportCommand::Visible(false)),
+                    Visibility::Iconified => ctx.send_viewport_cmd_to(viewport, ViewportCommand::Minimized(true)),
+                }
+            }
+            if state.1 > old.1 {
+                ctx.send_viewport_cmd_to(viewport, ViewportCommand::Focus);
+            }
+        }
+        self.frame_states.retain(|f, _| frames.contains(f));
+    }
+
     /// The frames there are, and the one selected.
     fn frame_list(&self) -> (Vec<FrameId>, FrameId) {
         match &self.backend {
@@ -449,6 +498,8 @@ impl E8App {
                 egui::CentralPanel::default().frame(egui::Frame::NONE).show(ctx, |ui| self.show_frame(ui, frame));
             });
         }
+        let (all, _) = self.frame_list();
+        self.follow_frame_states(&ctx, &all);
         // A frame newly selected, as by C-x 5 o, gets the focus.
         let (_, selected) = self.frame_list();
         if selected != self.focused_frame {

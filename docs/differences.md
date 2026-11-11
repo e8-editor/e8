@@ -107,6 +107,7 @@ E8 reorders text as Emacs 30.2 does, and `tests/emacs/bidi/` compares the two on
 
 ## Windows and frames
 
+- **Frames' display** (not yet): `window-system` is `ns` for the window on macOS and `x` elsewhere, as packages test it, though E8 draws with egui, not Cocoa or X; a frame is never a child frame, so `frame-parent` is nil; `lower-frame` is missing; and hiding, iconifying and raising a frame (`make-frame-invisible`, `iconify-frame`, `raise-frame`) are its `visibility` parameter and a request the GUI follows, which a terminal ignores. `select-window` with NORECORD, as `with-selected-window` uses it, leaves the buffer list alone but still counts the window as used.
 - **Window starts** (not yet): a window always starts at the start of a line. So in the terminal, `C-v` over continued lines scrolls by lines of text rather than screen rows ([ADR 0029](adr/0029-redisplay-beyond-rows.md)), and an image taller than the window cannot be scrolled through part way, as Emacs's `vscroll` does.
 - **`posn-at-point`'s y** (not yet) is the top of the row, where Emacs gives the top of the glyph: below it for text beside a taller image, by the row's ascent less the font's. Emacs gives the row's top for some characters before or just after an image too.
 - **Quitting a window** (not yet): `quit-window` does not restore the window's old height, and does not hide a frame made for the buffer, where Emacs iconifies it ([ADR 0028](adr/0028-windows-as-objects.md)).

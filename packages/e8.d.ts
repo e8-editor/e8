@@ -14879,8 +14879,11 @@ declare global {
     function thisSingleCommandKeys(): string;
     /** Delete a window, the selected one by default, giving its space to its neighbour. */
     function deleteWindow(window?: number): void;
-    /** Make a window the selected one, whose buffer commands act on. */
-    function selectWindow(window: number): void;
+    /**
+     * Make a window the selected one, whose buffer commands act on; with
+     * `norecord`, leaving the buffer list as it is, as select-window's NORECORD.
+     */
+    function selectWindow(window: number, norecord?: boolean): void;
     function selectedWindow(): number;
     /** The window that was selected when the minibuffer was entered, while the minibuffer's window is selected, as minibuffer-selected-window. */
     function minibufferSelectedWindow(): number | undefined;
@@ -14919,7 +14922,66 @@ declare global {
     /**
      * Whether the display shows images and fonts of many sizes, as a graphical
      * one does, rather than a terminal's cells, as display-graphic-p.
+     * The frame a window is on, the selected window by default, as window-frame.
      */
+    function windowFrame(window?: number): number | undefined;
+    /** A frame's first window, its top left one, the selected frame's by default, as frame-first-window. */
+    function frameFirstWindow(frame?: number): number | undefined;
+    /** The frame after one, the selected frame by default, round the end of frame-list, as next-frame. */
+    function nextFrame(frame?: number): number | undefined;
+    /** The frame before one, the selected frame by default, as previous-frame. */
+    function previousFrame(frame?: number): number | undefined;
+    /**
+     * Windows in cyclic order starting with one, the selected window by
+     * default, as window-list-1: its frame's, or every frame's with
+     * `allFrames`, with the minibuffer's window last if `minibuffer`.
+     */
+    function windowList1(window?: number, minibuffer?: boolean, allFrames?: boolean): number[];
+    /**
+     * Whether a value is a window, live, as window-valid-p; E8 has no
+     * internal windows as values.
+     */
+    function windowValidP(window: unknown): boolean;
+    /**
+     * Whether a frame is shown: true, false when made invisible, or "icon"
+     * when iconified, as frame-visible-p.
+     */
+    function frameVisibleP(frame?: number): boolean | "icon";
+    /** The frames that are shown, as visible-frame-list. */
+    function visibleFrameList(): number[];
+    /** Show a frame, the selected one by default, as make-frame-visible. */
+    function makeFrameVisible(frame?: number): void;
+    /** Hide a frame, the selected one by default, as make-frame-invisible. */
+    function makeFrameInvisible(frame?: number): void;
+    /** Iconify a frame, the selected one by default, as iconify-frame. */
+    function iconifyFrame(frame?: number): void;
+    /**
+     * Bring a frame, the selected one by default, in front of the others,
+     * showing it if hidden or iconified, as raise-frame.
+     */
+    function raiseFrame(frame?: number): void;
+    /**
+     * The height of a line of the frame's default font, in the front end's
+     * units: pixels, or 1 on a terminal, as frame-char-height.
+     */
+    function frameCharHeight(frame?: number): number;
+    /**
+     * The kind of display a frame is on, as window-system: "ns" for the
+     * window on macOS, "x" elsewhere, "w32" on Windows, undefined on a terminal.
+     */
+    function windowSystem(frame?: number): "ns" | "x" | "w32" | undefined;
+    /**
+     * A window's total size, its mode line, header line and divider
+     * included, in the front end's units, the selected window's by
+     * default, as window-pixel-width.
+     */
+    function windowPixelWidth(window?: number): number;
+    /** A window's total height in the front end's units, as window-pixel-height. */
+    function windowPixelHeight(window?: number): number;
+    /** How tall a window's mode line is, 0 without one, as window-mode-line-height. */
+    function windowModeLineHeight(window?: number): number;
+    /** How tall a window's header line is, 0 without one, as window-header-line-height. */
+    function windowHeaderLineHeight(window?: number): number;
     function displayGraphicP(): boolean;
     /**
      * The width of a character of the frame's default font, in the front

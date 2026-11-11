@@ -245,6 +245,59 @@ export function removeOverlays(start = e8.pointMin(), end = e8.pointMax(), name?
 
 /** Whether a window is live, showing a buffer on any frame, as window-live-p. */
 export const windowLiveP = (window: unknown): boolean => typeof window === "number" && e8.windowBuffer(window) !== undefined;
+/** A frame's parent frame, as frame-parent: E8 has no child frames. */
+export const frameParent = (_frame?: number): number | undefined => undefined;
+/** The last frame that was not only a minibuffer, as last-nonminibuffer-frame: E8's frames all have windows. */
+export const lastNonminibufferFrame = (): number => e8.selectedFrame();
+/** A frame's text area's width in columns, as frame-text-cols. */
+export const frameTextCols = (frame?: number): number => e8.frameWidth(frame);
+/** The selected frame's text area's height in lines, as frame-text-lines. */
+export const frameTextLines = (): number => e8.frameHeight();
+/** Select a frame and bring it in front, as x-focus-frame. */
+export function xFocusFrame(frame: number): void {
+  e8.selectFrame(frame);
+  e8.raiseFrame(frame);
+}
+
+/**
+ * Run `body` with a window selected and its buffer current, then select
+ * again the frame and window that were, and make the buffer that was
+ * current current again, as with-selected-window, leaving the buffer
+ * list as it is.
+ */
+export function withSelectedWindow<T>(window: number, body: () => T): T {
+  const oldFrame = e8.selectedFrame(), oldWindow = e8.selectedWindow();
+  return e8.withCurrentBuffer(e8.currentBuffer(), () => {
+    const frame = e8.windowFrame(window);
+    if (frame !== undefined && frame !== oldFrame) e8.selectFrame(frame);
+    e8.selectWindow(window, true);
+    try {
+      return body();
+    } finally {
+      if (frameLiveP(oldFrame) && e8.selectedFrame() !== oldFrame) e8.selectFrame(oldFrame);
+      if (windowLiveP(oldWindow)) e8.selectWindow(oldWindow, true);
+    }
+  });
+}
+
+/** Run `body`, then select again the frame and window that were, and the buffer that was current, as save-selected-window. */
+export function saveSelectedWindow<T>(body: () => T): T {
+  return withSelectedWindow(e8.selectedWindow(), body);
+}
+
+/** Run `body` with a frame selected, then select the one that was, and the buffer that was current, as with-selected-frame. */
+export function withSelectedFrame<T>(frame: number, body: () => T): T {
+  const old = e8.selectedFrame();
+  return e8.withCurrentBuffer(e8.currentBuffer(), () => {
+    e8.selectFrame(frame);
+    try {
+      return body();
+    } finally {
+      if (frameLiveP(old)) e8.selectFrame(old);
+    }
+  });
+}
+
 /** Whether a frame is live, as frame-live-p. */
 export const frameLiveP = (frame: unknown): boolean => typeof frame === "number" && e8.frameList().includes(frame);
 /** A window showing a buffer, the current one by default, as get-buffer-window: the selected window first. */
