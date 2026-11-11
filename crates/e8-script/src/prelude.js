@@ -802,7 +802,8 @@
       }
     },
 
-    splitWindow: (window, side = "below", size) => native.splitWindow(window ?? null, side === "right", size ?? null),
+    splitWindow: (window, side = "below", size) =>
+      native.splitWindow(window ?? null, side === "right" || side === "left", size ?? null, side === "left" || side === "above"),
     lastMouseEvent() {
       const event = native.lastMouseEvent();
       if (event === null || event === undefined) return undefined;

@@ -848,7 +848,7 @@ const API: &str = r##"
    * that many lines or columns, or the new one does if it is negative, as
    * split-window's SIZE. Returns the new window.
    */
-  function splitWindow(window?: WindowLike, side?: "below" | "right", size?: number): Window;
+  function splitWindow(window?: WindowLike, side?: "below" | "right" | "above" | "left", size?: number): Window;
   /**
    * Where the last mouse event happened: its window, the buffer position
    * under the mouse if there is text there, and for a drag where it started.

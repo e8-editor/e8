@@ -1480,6 +1480,8 @@ declare global {
       /**
        * Make the selected window fill the frame, deleting the others.
        *
+       * As in Emacs, a window's delete-other-windows parameter can be a function to call instead, windows with a no-delete-other-windows parameter stay, and in a side window this is an error.
+       *
        * Defined in packages/window.ts.
        */
       "delete-other-windows": [];
@@ -2243,17 +2245,18 @@ declare global {
        */
       "disable-theme": [theme: string];
       /**
-       * Show a buffer in some window without selecting it.
+       * Show a buffer in some window without selecting it, as display-buffer-alist and the other actions say.
        *
-       * A window that already shows it is used, else a new window split off a large enough one, else the least recently used window.
+       * With a prefix argument, another window than the selected one. By default a window that already shows it is used, else a new window split off a large enough one, else the least recently used window.
        *
        * @param buffer buffer name
+       * @param action raw prefix argument
        *
        * Defined in packages/window.ts.
        */
-      "display-buffer": [buffer: string];
+      "display-buffer": [buffer: string, action?: PrefixArg | boolean];
       /**
-       * Show a buffer in a new frame, leaving the selected frame selected.
+       * Show a buffer in another frame, leaving the selected frame selected.
        *
        * @param buffer buffer name
        *
@@ -2668,7 +2671,7 @@ declare global {
        */
       "find-file-at-point": [file: string];
       /**
-       * Visit a file in a new frame and select it.
+       * Visit a file in another frame and select it.
        *
        * @param file file name
        *
@@ -5746,13 +5749,22 @@ declare global {
        */
       "pop-global-mark": [];
       /**
-       * Show a buffer in some window, as display-buffer does, and select that window.
+       * Show a buffer in some window, as display-buffer does, and select that window. With a prefix argument, another window than the selected one.
+       *
+       * @param buffer buffer name
+       * @param action raw prefix argument
+       *
+       * Defined in packages/window.ts.
+       */
+      "pop-to-buffer": [buffer: string, action?: PrefixArg | boolean];
+      /**
+       * Show a buffer in the selected window, unless display-buffer-alist says otherwise, and select its window.
        *
        * @param buffer buffer name
        *
        * Defined in packages/window.ts.
        */
-      "pop-to-buffer": [buffer: string];
+      "pop-to-buffer-same-window": [buffer: string];
       /**
        * Make a coding system the one files are read in when their bytes fit it, and the default for new files and processes.
        *
@@ -6639,7 +6651,7 @@ declare global {
        */
       "switch-to-buffer": [buffer: string];
       /**
-       * Show a buffer in a new frame and select it, creating the buffer if there is none.
+       * Show a buffer in another frame and select it, creating the buffer if there is none: a frame showing it already, else a new one.
        *
        * @param buffer buffer name
        *
@@ -8629,6 +8641,42 @@ declare global {
        */
       "dired-trivial-filenames": Value;
       /**
+       * How display-buffer shows buffers: a list of entries [CONDITION, FUNCTIONS, ...ALIST], as Emacs's (CONDITION . ACTION). CONDITION is matched by buffer-match-p: a regexp the buffer's name matches, a function, or ["major-mode", MODE], ["derived-mode", MODE], ["category", NAME], ["not", ...], ["or", ...] or ["and", ...]. FUNCTIONS is an action function or a list of them, tried in turn; each ALIST entry is [KEY, VALUE], such as ["side", "right"].
+       *
+       * Defined in packages/window.ts.
+       */
+      "display-buffer-alist": Value;
+      /**
+       * The action display-buffer tries after the caller's and display-buffer-alist's: [FUNCTIONS, ...ALIST].
+       *
+       * Defined in packages/window.ts.
+       */
+      "display-buffer-base-action": Value;
+      /**
+       * The action display-buffer tries when all others fail, as Emacs's; not to be changed.
+       *
+       * Defined in packages/window.ts.
+       */
+      "display-buffer-fallback-action": Value;
+      /**
+       * If non-nil, the windows display-buffer makes are dedicated, with this as the flag.
+       *
+       * Defined in packages/window.ts.
+       */
+      "display-buffer-mark-dedicated": Value;
+      /**
+       * The action display-buffer tries before all others, for code to bind: [FUNCTIONS, ...ALIST].
+       *
+       * Defined in packages/window.ts.
+       */
+      "display-buffer-overriding-action": Value;
+      /**
+       * Whether display-buffer reuses windows on other visible frames; obsolete in Emacs, kept as it reads it.
+       *
+       * Defined in packages/window.ts.
+       */
+      "display-buffer-reuse-frames": Value;
+      /**
        * Whether and how to number lines beside the text: nil for not at all, t for each line's number, relative for how far each is from point's line, visual for the same in screen lines. display-line-numbers-mode sets it.
        *
        * Defined in packages/display-line-numbers.ts.
@@ -8866,6 +8914,12 @@ declare global {
        * Defined in packages/lisp.ts.
        */
       "end-of-defun-moves-to-eol": Value;
+      /**
+       * Whether showing a buffer in another window evens the two windows' sizes: t, width-only, height-only or nil.
+       *
+       * Defined in packages/window.ts.
+       */
+      "even-window-sizes": Value;
       /**
        * What M-x shell gives bash: no line editing, and interactive.
        *
@@ -9336,6 +9390,12 @@ declare global {
        * Keymap icomplete-vertical-mode-minibuffer-map.
        */
       "icomplete-vertical-mode-minibuffer-map": Value;
+      /**
+       * If non-nil, the window commands pay no attention to window parameters such as delete-other-windows and window-side.
+       *
+       * Defined in packages/window.ts.
+       */
+      "ignore-window-parameters": Value;
       /**
        * Pairs (VAR . VAL) a file's local variables never set, as answering i adds them.
        *
@@ -11038,6 +11098,24 @@ declare global {
        */
       "permanently-enabled-local-variables": Value;
       /**
+       * The function display-buffer makes a new frame with, giving the frame.
+       *
+       * Defined in packages/window.ts.
+       */
+      "pop-up-frame-function": Value;
+      /**
+       * Whether display-buffer makes a new frame for a buffer rather than a window: t always, graphic-only on a graphical display.
+       *
+       * Defined in packages/window.ts.
+       */
+      "pop-up-frames": Value;
+      /**
+       * Whether display-buffer may split a window to show a buffer.
+       *
+       * Defined in packages/window.ts.
+       */
+      "pop-up-windows": Value;
+      /**
        * Whether programs started with make-process talk through a pseudo-terminal, t, or pipes, nil.
        */
       "process-connection-type": Value;
@@ -11269,6 +11347,18 @@ declare global {
        * Defined in packages/files.ts.
        */
       "safe-local-variable-values": Value;
+      /**
+       * Names of buffers display-buffer shows in the selected window.
+       *
+       * Defined in packages/window.ts.
+       */
+      "same-window-buffer-names": Value;
+      /**
+       * Regexps for names of buffers display-buffer shows in the selected window.
+       *
+       * Defined in packages/window.ts.
+       */
+      "same-window-regexps": Value;
       /**
        * The file places are saved in: places in user-emacs-directory if nil.
        *
@@ -11539,6 +11629,12 @@ declare global {
        * Defined in packages/window.ts.
        */
       "split-width-threshold": Value;
+      /**
+       * The function display-buffer splits a window with, given the window, giving the new window or nil.
+       *
+       * Defined in packages/window.ts.
+       */
+      "split-window-preferred-function": Value;
       /**
        * The display table of buffers without one of their own, or nil.
        */
@@ -12127,6 +12223,30 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "widen-automatically": Value;
+      /**
+       * The fewest lines a window may have, its mode line included, when it is split or resized.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-min-height": Value;
+      /**
+       * The fewest columns a window may have when it is split or resized.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-min-width": Value;
+      /**
+       * How many side windows each side may have: [LEFT, TOP, RIGHT, BOTTOM], each a number or nil for any.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-sides-slots": Value;
+      /**
+       * Whether side windows on the left and right take the frame's whole height.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-sides-vertical": Value;
       /**
        * Whether continued lines break at spaces and tabs rather than in the middle of a word.
        *
@@ -14847,7 +14967,7 @@ declare global {
      * the new window takes the whole bottom of the frame, or its right side.
      * `size` is as splitWindow's. Returns the new window.
      */
-    function splitRootWindow(side?: "below" | "right", size?: number): Window;
+    function splitRootWindow(side?: "below" | "right" | "above" | "left", size?: number): Window;
     /**
      * The keys that can follow a prefix, such as "C-x", in the keymaps active
      * now, in key order: each with the command it runs, or undefined for
@@ -14934,6 +15054,13 @@ declare global {
      * `allFrames`, with the minibuffer's window last if `minibuffer`.
      */
     function windowList1(window?: WindowLike, minibuffer?: boolean, allFrames?: boolean): Window[];
+    /**
+     * A window's edges in its frame, in columns and lines from the frame's
+     * top left, the selected window's by default, as window-edges: left,
+     * top, right and bottom, its mode line and divider included, or with
+     * `body` its text area only.
+     */
+    function windowEdges(window?: WindowLike, body?: boolean): [left: number, top: number, right: number, bottom: number];
     /**
      * Whether a value is a window that is live or internal, as
      * window-valid-p.
@@ -15930,7 +16057,7 @@ declare global {
      * that many lines or columns, or the new one does if it is negative, as
      * split-window's SIZE. Returns the new window.
      */
-    function splitWindow(window?: WindowLike, side?: "below" | "right", size?: number): Window;
+    function splitWindow(window?: WindowLike, side?: "below" | "right" | "above" | "left", size?: number): Window;
     /**
      * Where the last mouse event happened: its window, the buffer position
      * under the mouse if there is text there, and for a drag where it started.

@@ -281,20 +281,23 @@ impl WindowTree {
         }
     }
 
-    fn split(&mut self, id: WindowId, new: WindowId, side_by_side: bool, first_size: Option<usize>) -> bool {
+    /// Splits the leaf `id`, the new window after it, or before it, to its
+    /// left or above it, with `before`.
+    fn split(&mut self, id: WindowId, new: WindowId, side_by_side: bool, before: bool, first_size: Option<usize>) -> bool {
         match self {
             WindowTree::Leaf(leaf) if *leaf == id => {
+                let (a, b) = if before { (new, id) } else { (id, new) };
                 *self = WindowTree::Split {
                     side_by_side,
-                    first: Box::new(WindowTree::Leaf(id)),
-                    second: Box::new(WindowTree::Leaf(new)),
+                    first: Box::new(WindowTree::Leaf(a)),
+                    second: Box::new(WindowTree::Leaf(b)),
                     first_size,
                 };
                 true
             }
             WindowTree::Leaf(_) => false,
             WindowTree::Split { first, second, .. } => {
-                first.split(id, new, side_by_side, first_size) || second.split(id, new, side_by_side, first_size)
+                first.split(id, new, side_by_side, before, first_size) || second.split(id, new, side_by_side, before, first_size)
             }
         }
     }
@@ -568,6 +571,32 @@ impl Editor {
             .collect()
     }
 
+    /// A window's edges in its frame, in columns and lines from the frame's
+    /// top left, as Emacs's `window-edges`: left, top, right and bottom,
+    /// its mode line and divider included, or with `body` only its text
+    /// area. The minibuffer's window is below the frame's windows.
+    pub fn window_edges(&self, id: WindowId, body: bool) -> Option<(usize, usize, usize, usize)> {
+        let frame = self.window_frame(id)?;
+        let (cols, lines) = if frame == self.selected_frame {
+            self.frame_cells()
+        } else {
+            self.other_frames.iter().find(|f| f.id == frame).and_then(|f| f.frame_size).unwrap_or_else(|| self.frame_cells())
+        };
+        if id == MINIBUFFER_WINDOW {
+            return Some((0, lines, cols, lines + self.mini_window_lines()));
+        }
+        let rect = self.frame_tree(frame)?.rects(0.0, 0.0, cols as f32, lines as f32, (1.0, 1.0)).into_iter().find(|r| r.id == id)?;
+        let (left, top) = (rect.x as usize, rect.y as usize);
+        let (right, bottom) = (left + rect.width as usize, top + rect.height as usize);
+        if !body {
+            return Some((left, top, right, bottom));
+        }
+        let header = usize::from(self.window_wants_header_line(id, rect.height as usize));
+        let mode = usize::from(self.window_shows_mode_line(id));
+        let divider = usize::from(rect.divider);
+        Some((left, top + header, right.saturating_sub(divider).max(left), bottom.saturating_sub(mode).max(top + header)))
+    }
+
     /// The frame in cells, without the echo area: as a front end said, or
     /// as the windows add up to.
     pub fn frame_cells(&self) -> (usize, usize) {
@@ -721,6 +750,13 @@ impl Editor {
     /// columns for the window split, or for the new one if it is negative,
     /// as Emacs's `split-window` takes them; half each without.
     pub fn split_window_sized(&mut self, id: Option<WindowId>, side_by_side: bool, size: Option<i64>) -> Result<WindowId> {
+        self.split_window_toward(id, side_by_side, false, size)
+    }
+
+    /// Splits a window as [`Editor::split_window_sized`] does, the new
+    /// window to its left or above it with `before`, as `split-window`'s
+    /// SIDE `left` and `above`.
+    pub fn split_window_toward(&mut self, id: Option<WindowId>, side_by_side: bool, before: bool, size: Option<i64>) -> Result<WindowId> {
         let id = id.unwrap_or(self.selected_window);
         let view = self
             .windows()
@@ -759,7 +795,8 @@ impl Editor {
                 if old < safe {
                     return Err(Error::new("Size of window too small"));
                 }
-                Some(old as usize)
+                // The first part is the new window's when it goes before.
+                Some(if before { new } else { old } as usize)
             }
         };
         if too_small && first_size.is_none() {
@@ -774,6 +811,7 @@ impl Editor {
             let top = (height + 1).div_ceil(2);
             ((width, top - 1), (width, height + 1 - top - 1))
         };
+        let (old_size, new_size) = if before { (new_size, old_size) } else { (old_size, new_size) };
         let w = self.window_mut(id).expect("listed windows exist");
         (w.width, w.height) = old_size;
         // A new window has showed no buffers before, as in Emacs.
@@ -783,7 +821,7 @@ impl Editor {
         b.set_window_point(new, view.0);
         let start = b.line_start(view.1.min(b.line_count() - 1));
         b.set_window_start(new, start);
-        self.window_tree.split(id, new, side_by_side, first_size);
+        self.window_tree.split(id, new, side_by_side, before, first_size);
         self.relayout();
         Ok(new)
     }
@@ -794,6 +832,12 @@ impl Editor {
     /// split-window's: the old part's lines or columns, or the new window's
     /// if negative.
     pub fn split_root_window(&mut self, side_by_side: bool, size: Option<i64>) -> Result<WindowId> {
+        self.split_root_window_toward(side_by_side, false, size)
+    }
+
+    /// Splits the frame's root window as [`Editor::split_root_window`] does,
+    /// the new window along its left or top with `before`.
+    pub fn split_root_window_toward(&mut self, side_by_side: bool, before: bool, size: Option<i64>) -> Result<WindowId> {
         let (cols, lines) = self.frame_cells();
         let total = if side_by_side { cols } else { lines } as i64;
         let first_size = match size {
@@ -809,7 +853,7 @@ impl Editor {
                 if old < 2 {
                     return Err(Error::new("Size of window too small"));
                 }
-                Some(old as usize)
+                Some(if before { new } else { old } as usize)
             }
         };
         let selected = self.selected_window;
@@ -823,7 +867,8 @@ impl Editor {
         let start = b.line_start(view.1.min(b.line_count() - 1));
         b.set_window_start(new, start);
         let tree = std::mem::replace(&mut self.window_tree, WindowTree::Leaf(new));
-        self.window_tree = WindowTree::Split { side_by_side, first: Box::new(tree), second: Box::new(WindowTree::Leaf(new)), first_size };
+        let (first, second) = if before { (WindowTree::Leaf(new), tree) } else { (tree, WindowTree::Leaf(new)) };
+        self.window_tree = WindowTree::Split { side_by_side, first: Box::new(first), second: Box::new(second), first_size };
         self.relayout();
         Ok(new)
     }

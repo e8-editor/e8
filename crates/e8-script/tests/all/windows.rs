@@ -447,12 +447,14 @@ fn split_height_threshold_nil_splits_side_by_side() {
     // A frame tall enough to split below and wide enough to split beside.
     let (mut ed, s) = setup("x");
     ed.set_frame_size(200, 90);
+    ed.get_buffer_create("*other*");
     ed.call("display-buffer", vec![e8_core::Arg::Str("*other*".into())]).unwrap();
     let below = s.eval_expression(&mut ed, r#"String(e8.windowSize(e8.windowList()[1]).fullWidth)"#).unwrap();
     assert_eq!(below.trim_matches('"'), "true", "split below by default");
     let (mut ed, s) = setup("x");
     ed.set_frame_size(200, 90);
     s.eval_expression(&mut ed, r#"(e8.setVariable("split-height-threshold", null), 1)"#).unwrap();
+    ed.get_buffer_create("*other*");
     ed.call("display-buffer", vec![e8_core::Arg::Str("*other*".into())]).unwrap();
     let beside = s.eval_expression(&mut ed, r#"String(e8.windowSize(e8.windowList()[1]).fullWidth)"#).unwrap();
     assert_eq!(beside.trim_matches('"'), "false", "split beside when nil");

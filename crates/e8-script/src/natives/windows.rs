@@ -1,20 +1,21 @@
 //! Windows and frames.
 
 use crate::EditorValue;
-use crate::natives::{Frm, Record, Win, natives};
+use crate::natives::{Frm, Opt, Record, Win, natives};
 
 natives! {
-    fn splitWindow(ed, window: Option<Win>, side_by_side: bool, size: Option<i64>) -> Win {
+    fn splitWindow(ed, window: Option<Win>, side_by_side: bool, size: Option<i64>, before: Opt<bool>) -> Win {
         let window = window.map(|x| x.0);
-        ed.split_window_sized(window, side_by_side, size).map(Win)
+        ed.split_window_toward(window, side_by_side, before.0 == Some(true), size).map(Win)
     }
 
     /// Split the frame's root window, as split-root-window-below and -right:
     /// the new window takes the whole bottom of the frame, or its right side.
     /// `size` is as splitWindow's. Returns the new window.
-    #[ts = "(side?: \"below\" | \"right\", size?: number): Window"]
+    #[ts = "(side?: \"below\" | \"right\" | \"above\" | \"left\", size?: number): Window"]
     pub fn splitRootWindow(ed, side: Option<String>, size: Option<i64>) -> Win {
-        ed.split_root_window(side.as_deref() == Some("right"), size).map(Win)
+        let side = side.as_deref().unwrap_or("below");
+        ed.split_root_window_toward(matches!(side, "right" | "left"), matches!(side, "left" | "above"), size).map(Win)
     }
 
     /// The keys that can follow a prefix, such as "C-x", in the keymaps active
@@ -220,6 +221,17 @@ natives! {
     pub fn windowList1(ed, window: Option<Win>, minibuffer: Option<bool>, all_frames: Option<bool>) -> Vec<Win> {
         let window = window.map(|x| x.0);
         Ok(ed.window_list_1(window, minibuffer.unwrap_or(false), all_frames.unwrap_or(false)).into_iter().map(Win).collect())
+    }
+
+    /// A window's edges in its frame, in columns and lines from the frame's
+    /// top left, the selected window's by default, as window-edges: left,
+    /// top, right and bottom, its mode line and divider included, or with
+    /// `body` its text area only.
+    #[ts = "(window?: WindowLike, body?: boolean): [left: number, top: number, right: number, bottom: number]"]
+    pub fn windowEdges(ed, window: Option<Win>, body: Option<bool>) -> Vec<usize> {
+        let window = window.map_or(ed.selected_window(), |w| w.0);
+        let (l, t, r, b) = ed.window_edges(window, body.unwrap_or(false)).ok_or_else(|| e8_core::Error::new("No such window"))?;
+        Ok(vec![l, t, r, b])
     }
 
     /// Whether a value is a window that is live or internal, as
