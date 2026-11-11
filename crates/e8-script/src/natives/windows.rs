@@ -1,19 +1,20 @@
 //! Windows and frames.
 
 use crate::EditorValue;
-use crate::natives::{natives, Record};
+use crate::natives::{Frm, Record, Win, natives};
 
 natives! {
-    fn splitWindow(ed, window: Option<u64>, side_by_side: bool, size: Option<i64>) -> u64 {
-        ed.split_window_sized(window, side_by_side, size)
+    fn splitWindow(ed, window: Option<Win>, side_by_side: bool, size: Option<i64>) -> Win {
+        let window = window.map(|x| x.0);
+        ed.split_window_sized(window, side_by_side, size).map(Win)
     }
 
     /// Split the frame's root window, as split-root-window-below and -right:
     /// the new window takes the whole bottom of the frame, or its right side.
     /// `size` is as splitWindow's. Returns the new window.
-    #[ts = "(side?: \"below\" | \"right\", size?: number): number"]
-    pub fn splitRootWindow(ed, side: Option<String>, size: Option<i64>) -> u64 {
-        ed.split_root_window(side.as_deref() == Some("right"), size)
+    #[ts = "(side?: \"below\" | \"right\", size?: number): Window"]
+    pub fn splitRootWindow(ed, side: Option<String>, size: Option<i64>) -> Win {
+        ed.split_root_window(side.as_deref() == Some("right"), size).map(Win)
     }
 
     /// The keys that can follow a prefix, such as "C-x", in the keymaps active
@@ -32,7 +33,7 @@ natives! {
     pub fn windowTree(ed) -> EditorValue {
         fn node(t: &e8_core::WindowTree) -> EditorValue {
             match t {
-                e8_core::WindowTree::Leaf(id) => EditorValue::Number(*id as f64),
+                e8_core::WindowTree::Leaf(id) => EditorValue::Window(*id),
                 e8_core::WindowTree::Split { side_by_side, first, second, first_size } => EditorValue::List(vec![
                     EditorValue::Bool(*side_by_side),
                     first_size.map_or(EditorValue::Null, |n| EditorValue::Number(n as f64)),
@@ -76,25 +77,27 @@ natives! {
     }
 
     /// Delete a window, the selected one by default, giving its space to its neighbour.
-    #[ts = "(window?: number): void"]
-    pub fn deleteWindow(ed, window: Option<u64>) {
+    #[ts = "(window?: WindowLike): void"]
+    pub fn deleteWindow(ed, window: Option<Win>) {
+        let window = window.map(|x| x.0);
         ed.delete_window(window)
     }
 
     /// Make a window the selected one, whose buffer commands act on; with
     /// `norecord`, leaving the buffer list as it is, as select-window's NORECORD.
-    #[ts = "(window: number, norecord?: boolean): void"]
-    pub fn selectWindow(ed, window: u64, norecord: Option<bool>) {
+    #[ts = "(window: WindowLike, norecord?: boolean): void"]
+    pub fn selectWindow(ed, window: Win, norecord: Option<bool>) {
+        let window = window.0;
         if norecord == Some(true) { ed.select_window_norecord(window) } else { ed.select_window(window) }
     }
 
-    pub fn selectedWindow(ed) -> u64 {
-        Ok(if ed.minibuffer_window_selected() { e8_core::MINIBUFFER_WINDOW } else { ed.selected_window() })
+    pub fn selectedWindow(ed) -> Win {
+        Ok(Win(if ed.minibuffer_window_selected() { e8_core::MINIBUFFER_WINDOW } else { ed.selected_window() }))
     }
 
     /// The window that was selected when the minibuffer was entered, while the minibuffer's window is selected, as minibuffer-selected-window.
-    pub fn minibufferSelectedWindow(ed) -> Option<u64> {
-        Ok(ed.minibuffer_window_selected().then(|| ed.selected_window()))
+    pub fn minibufferSelectedWindow(ed) -> Option<Win> {
+        Ok(ed.minibuffer_window_selected().then(|| Win(ed.selected_window())))
     }
 
     /// How many minibuffers are open, one inside another, as minibuffer-depth.
@@ -111,7 +114,8 @@ natives! {
         Ok(ed.waiting_for_input())
     }
 
-    fn windowBuffer(ed, window: u64) -> Option<String> {
+    fn windowBuffer(ed, window: Win) -> Option<String> {
+        let window = window.0;
         if window == e8_core::MINIBUFFER_WINDOW {
             return Ok(Some(ed.minibuffer().name.clone()));
         }
@@ -143,83 +147,125 @@ natives! {
         ed.find_file_noselect(&ed.expand_file_name(&file))
     }
 
-    fn makeFrame(ed, buffer: Option<String>) -> u64 {
-        ed.make_frame(buffer.as_deref())
+    fn makeFrame(ed, buffer: Option<String>) -> Frm {
+        ed.make_frame(buffer.as_deref()).map(Frm)
     }
 
     /// Delete a frame, the selected one by default, and its windows, as delete-frame does.
-    #[ts = "(frame?: number): void"]
-    pub fn deleteFrame(ed, frame: Option<u64>) {
+    #[ts = "(frame?: FrameLike): void"]
+    pub fn deleteFrame(ed, frame: Option<Frm>) {
+        let frame = frame.map(|x| x.0);
         ed.delete_frame(frame)
     }
 
     /// Make a frame the selected one, as select-frame does.
-    pub fn selectFrame(ed, frame: u64) {
+    pub fn selectFrame(ed, frame: Frm) {
+        let frame = frame.0;
         ed.select_frame(frame)
     }
 
-    pub fn selectedFrame(ed) -> u64 {
-        Ok(ed.selected_frame())
+    pub fn selectedFrame(ed) -> Frm {
+        Ok(Frm(ed.selected_frame()))
     }
 
     /// A frame's parameter, the selected frame's by default, as frame-parameter:
     /// one set with setFrameParameter, or tab-bar-lines.
-    #[ts = "(frame: number | undefined, name: string): Value | undefined"]
-    pub fn frameParameter(ed, frame: Option<u64>, name: String) -> Option<EditorValue> {
+    #[ts = "(frame: FrameLike | undefined, name: string): Value | undefined"]
+    pub fn frameParameter(ed, frame: Option<Frm>, name: String) -> Option<EditorValue> {
+        let frame = frame.map(|x| x.0);
         Ok(ed.frame_parameter(frame.unwrap_or(ed.selected_frame()), &name))
     }
 
     /// Set a frame's parameter, the selected frame's by default, as
     /// set-frame-parameter. tab-bar-lines, 0 or 1, hides or shows its tab bar,
     /// which shows tab-bar-line, a mode line construct.
-    #[ts = "(frame: number | undefined, name: string, value: Value): void"]
-    pub fn setFrameParameter(ed, frame: Option<u64>, name: String, value: EditorValue) {
+    #[ts = "(frame: FrameLike | undefined, name: string, value: Value): void"]
+    pub fn setFrameParameter(ed, frame: Option<Frm>, name: String, value: EditorValue) {
+        let frame = frame.map(|x| x.0);
         ed.set_frame_parameter(frame.unwrap_or(ed.selected_frame()), &name, value)
     }
 
     /// The frame a window is on, the selected window by default, as window-frame.
-    #[ts = "(window?: number): number | undefined"]
-    pub fn windowFrame(ed, window: Option<u64>) -> Option<u64> {
-        Ok(ed.window_frame(window.unwrap_or(ed.selected_window())))
+    #[ts = "(window?: WindowLike): Frame | undefined"]
+    pub fn windowFrame(ed, window: Option<Win>) -> Option<Frm> {
+        let window = window.map(|x| x.0);
+        Ok(ed.window_frame(window.unwrap_or(ed.selected_window())).map(Frm))
     }
 
     /// A frame's first window, its top left one, the selected frame's by default, as frame-first-window.
-    #[ts = "(frame?: number): number | undefined"]
-    pub fn frameFirstWindow(ed, frame: Option<u64>) -> Option<u64> {
-        Ok(ed.frame_first_window(frame.unwrap_or(ed.selected_frame())))
+    #[ts = "(frame?: FrameLike): Window | undefined"]
+    pub fn frameFirstWindow(ed, frame: Option<Frm>) -> Option<Win> {
+        let frame = frame.map(|x| x.0);
+        Ok(ed.frame_first_window(frame.unwrap_or(ed.selected_frame())).map(Win))
     }
 
     /// The frame after one, the selected frame by default, round the end of frame-list, as next-frame.
-    #[ts = "(frame?: number): number | undefined"]
-    pub fn nextFrame(ed, frame: Option<u64>) -> Option<u64> {
-        Ok(ed.next_frame(frame.unwrap_or(ed.selected_frame()), true))
+    #[ts = "(frame?: FrameLike): Frame | undefined"]
+    pub fn nextFrame(ed, frame: Option<Frm>) -> Option<Frm> {
+        let frame = frame.map(|x| x.0);
+        Ok(ed.next_frame(frame.unwrap_or(ed.selected_frame()), true).map(Frm))
     }
 
     /// The frame before one, the selected frame by default, as previous-frame.
-    #[ts = "(frame?: number): number | undefined"]
-    pub fn previousFrame(ed, frame: Option<u64>) -> Option<u64> {
-        Ok(ed.next_frame(frame.unwrap_or(ed.selected_frame()), false))
+    #[ts = "(frame?: FrameLike): Frame | undefined"]
+    pub fn previousFrame(ed, frame: Option<Frm>) -> Option<Frm> {
+        let frame = frame.map(|x| x.0);
+        Ok(ed.next_frame(frame.unwrap_or(ed.selected_frame()), false).map(Frm))
     }
 
     /// Windows in cyclic order starting with one, the selected window by
     /// default, as window-list-1: its frame's, or every frame's with
     /// `allFrames`, with the minibuffer's window last if `minibuffer`.
-    #[ts = "(window?: number, minibuffer?: boolean, allFrames?: boolean): number[]"]
-    pub fn windowList1(ed, window: Option<u64>, minibuffer: Option<bool>, all_frames: Option<bool>) -> Vec<u64> {
-        Ok(ed.window_list_1(window, minibuffer.unwrap_or(false), all_frames.unwrap_or(false)))
+    #[ts = "(window?: WindowLike, minibuffer?: boolean, allFrames?: boolean): Window[]"]
+    pub fn windowList1(ed, window: Option<Win>, minibuffer: Option<bool>, all_frames: Option<bool>) -> Vec<Win> {
+        let window = window.map(|x| x.0);
+        Ok(ed.window_list_1(window, minibuffer.unwrap_or(false), all_frames.unwrap_or(false)).into_iter().map(Win).collect())
     }
 
-    /// Whether a value is a window, live, as window-valid-p; E8 has no
-    /// internal windows as values.
+    /// Whether a value is a window that is live or internal, as
+    /// window-valid-p.
     #[ts = "(window: unknown): boolean"]
     pub fn windowValidP(ed, window: EditorValue) -> bool {
-        Ok(matches!(window, EditorValue::Number(n) if n >= 0.0 && n.fract() == 0.0 && ed.window_frame(n as u64).is_some()))
+        Ok(Win::from_value(&window).is_some_and(|w| ed.window_frame(w.0).is_some()))
+    }
+
+    /// Whether a value is a window showing a buffer, as window-live-p.
+    #[ts = "(window: unknown): boolean"]
+    pub fn windowLiveP(ed, window: EditorValue) -> bool {
+        Ok(Win::from_value(&window).is_some_and(|w| ed.window_frame(w.0).is_some()))
+    }
+
+    /// Whether a value is a window, live or deleted, as windowp.
+    #[ts = "(value: unknown): value is Window"]
+    pub fn windowp(ed, value: EditorValue) -> bool {
+        Ok(matches!(value, EditorValue::Window(_)))
+    }
+
+    /// Whether a value is a frame that is live, as frame-live-p.
+    #[ts = "(frame: unknown): boolean"]
+    pub fn frameLiveP(ed, frame: EditorValue) -> bool {
+        Ok(Frm::from_value(&frame).is_some_and(|f| ed.frame_list().contains(&f.0)))
+    }
+
+    /// Whether a value is a frame, live or deleted, as framep: the kind of
+    /// display it is on, as window-system names it, or true on a terminal;
+    /// false for anything else.
+    #[ts = "(value: unknown): false | true | \"ns\" | \"x\" | \"w32\""]
+    pub fn framep(ed, value: EditorValue) -> EditorValue {
+        if !matches!(value, EditorValue::Frame(_)) {
+            return Ok(EditorValue::Bool(false));
+        }
+        if !ed.text_metrics().images() {
+            return Ok(EditorValue::Bool(true));
+        }
+        Ok(EditorValue::Str(if cfg!(target_os = "macos") { "ns" } else if cfg!(windows) { "w32" } else { "x" }.to_string()))
     }
 
     /// Whether a frame is shown: true, false when made invisible, or "icon"
     /// when iconified, as frame-visible-p.
-    #[ts = "(frame?: number): boolean | \"icon\""]
-    pub fn frameVisibleP(ed, frame: Option<u64>) -> EditorValue {
+    #[ts = "(frame?: FrameLike): boolean | \"icon\""]
+    pub fn frameVisibleP(ed, frame: Option<Frm>) -> EditorValue {
+        let frame = frame.map(|x| x.0);
         let frame = frame.unwrap_or(ed.selected_frame());
         if !ed.frame_list().contains(&frame) {
             return Err(e8_core::Error::signal("wrong-type-argument", "Not a live frame", vec![EditorValue::Symbol("frame-live-p".into()), EditorValue::Number(frame as f64)]));
@@ -231,47 +277,53 @@ natives! {
     }
 
     /// The frames that are shown, as visible-frame-list.
-    pub fn visibleFrameList(ed) -> Vec<u64> {
-        Ok(ed.frame_list().into_iter().filter(|f| ed.frame_visibility(*f) == EditorValue::Bool(true)).collect())
+    pub fn visibleFrameList(ed) -> Vec<Frm> {
+        Ok(ed.frame_list().into_iter().filter(|f| ed.frame_visibility(*f) == EditorValue::Bool(true)).map(Frm).collect())
     }
 
     /// Show a frame, the selected one by default, as make-frame-visible.
-    #[ts = "(frame?: number): void"]
-    pub fn makeFrameVisible(ed, frame: Option<u64>) {
+    #[ts = "(frame?: FrameLike): void"]
+    pub fn makeFrameVisible(ed, frame: Option<Frm>) {
+        let frame = frame.map(|x| x.0);
         ed.set_frame_visibility(frame.unwrap_or(ed.selected_frame()), EditorValue::Bool(true))
     }
 
     /// Hide a frame, the selected one by default, as make-frame-invisible.
-    #[ts = "(frame?: number): void"]
-    pub fn makeFrameInvisible(ed, frame: Option<u64>) {
+    #[ts = "(frame?: FrameLike): void"]
+    pub fn makeFrameInvisible(ed, frame: Option<Frm>) {
+        let frame = frame.map(|x| x.0);
         ed.set_frame_visibility(frame.unwrap_or(ed.selected_frame()), EditorValue::Bool(false))
     }
 
     /// Iconify a frame, the selected one by default, as iconify-frame.
-    #[ts = "(frame?: number): void"]
-    pub fn iconifyFrame(ed, frame: Option<u64>) {
+    #[ts = "(frame?: FrameLike): void"]
+    pub fn iconifyFrame(ed, frame: Option<Frm>) {
+        let frame = frame.map(|x| x.0);
         ed.set_frame_visibility(frame.unwrap_or(ed.selected_frame()), EditorValue::Str("icon".into()))
     }
 
     /// Bring a frame, the selected one by default, in front of the others,
     /// showing it if hidden or iconified, as raise-frame.
-    #[ts = "(frame?: number): void"]
-    pub fn raiseFrame(ed, frame: Option<u64>) {
+    #[ts = "(frame?: FrameLike): void"]
+    pub fn raiseFrame(ed, frame: Option<Frm>) {
+        let frame = frame.map(|x| x.0);
         ed.raise_frame(frame.unwrap_or(ed.selected_frame()))
     }
 
     /// The height of a line of the frame's default font, in the front end's
     /// units: pixels, or 1 on a terminal, as frame-char-height.
-    #[ts = "(frame?: number): number"]
-    pub fn frameCharHeight(ed, frame: Option<u64>) -> f64 {
+    #[ts = "(frame?: FrameLike): number"]
+    pub fn frameCharHeight(ed, frame: Option<Frm>) -> f64 {
+        let frame = frame.map(|x| x.0);
         let _ = frame;
         Ok(ed.text_metrics().char_height() as f64)
     }
 
     /// The kind of display a frame is on, as window-system: "ns" for the
     /// window on macOS, "x" elsewhere, "w32" on Windows, undefined on a terminal.
-    #[ts = "(frame?: number): \"ns\" | \"x\" | \"w32\" | undefined"]
-    pub fn windowSystem(ed, frame: Option<u64>) -> Option<String> {
+    #[ts = "(frame?: FrameLike): \"ns\" | \"x\" | \"w32\" | undefined"]
+    pub fn windowSystem(ed, frame: Option<Frm>) -> Option<String> {
+        let frame = frame.map(|x| x.0);
         let _ = frame;
         if !ed.text_metrics().images() {
             return Ok(None);
@@ -282,38 +334,43 @@ natives! {
     /// A window's total size, its mode line, header line and divider
     /// included, in the front end's units, the selected window's by
     /// default, as window-pixel-width.
-    #[ts = "(window?: number): number"]
-    pub fn windowPixelWidth(ed, window: Option<u64>) -> f64 {
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowPixelWidth(ed, window: Option<Win>) -> f64 {
+        let window = window.map(|x| x.0);
         let w = window.unwrap_or(ed.selected_window());
         Ok(ed.window_pixel_size(w).ok_or_else(|| e8_core::Error::new("No such window"))?.0 as f64)
     }
 
     /// A window's total height in the front end's units, as window-pixel-height.
-    #[ts = "(window?: number): number"]
-    pub fn windowPixelHeight(ed, window: Option<u64>) -> f64 {
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowPixelHeight(ed, window: Option<Win>) -> f64 {
+        let window = window.map(|x| x.0);
         let w = window.unwrap_or(ed.selected_window());
         Ok(ed.window_pixel_size(w).ok_or_else(|| e8_core::Error::new("No such window"))?.1 as f64)
     }
 
     /// How tall a window's mode line is, 0 without one, as window-mode-line-height.
-    #[ts = "(window?: number): number"]
-    pub fn windowModeLineHeight(ed, window: Option<u64>) -> f64 {
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowModeLineHeight(ed, window: Option<Win>) -> f64 {
+        let window = window.map(|x| x.0);
         let w = window.unwrap_or(ed.selected_window());
         Ok(if ed.window_shows_mode_line(w) { ed.text_metrics().char_height() as f64 } else { 0.0 })
     }
 
     /// How tall a window's header line is, 0 without one, as window-header-line-height.
-    #[ts = "(window?: number): number"]
-    pub fn windowHeaderLineHeight(ed, window: Option<u64>) -> f64 {
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowHeaderLineHeight(ed, window: Option<Win>) -> f64 {
+        let window = window.map(|x| x.0);
         let w = window.unwrap_or(ed.selected_window());
         let lines = ed.window_total_size(w).map_or(0, |s| s.1);
         Ok(if ed.window_wants_header_line(w, lines) { ed.text_metrics().char_height() as f64 } else { 0.0 })
     }
 
     /// A frame's selected window, the selected frame's by default, as frame-selected-window.
-    #[ts = "(frame?: number): number | undefined"]
-    pub fn frameSelectedWindow(ed, frame: Option<u64>) -> Option<u64> {
-        Ok(ed.frame_selected_window(frame.unwrap_or(ed.selected_frame())))
+    #[ts = "(frame?: FrameLike): Window | undefined"]
+    pub fn frameSelectedWindow(ed, frame: Option<Frm>) -> Option<Win> {
+        let frame = frame.map(|x| x.0);
+        Ok(ed.frame_selected_window(frame.unwrap_or(ed.selected_frame())).map(Win))
     }
 
     /// Whether the display shows images and fonts of many sizes, as a graphical
@@ -335,21 +392,24 @@ natives! {
     }
 
     /// A frame's width in columns, the selected frame's by default, as frame-width.
-    #[ts = "(frame?: number): number"]
-    pub fn frameWidth(ed, frame: Option<u64>) -> usize {
+    #[ts = "(frame?: FrameLike): number"]
+    pub fn frameWidth(ed, frame: Option<Frm>) -> usize {
+        let frame = frame.map(|x| x.0);
         Ok(ed.frame_width(frame.unwrap_or(ed.selected_frame())))
     }
 
     /// The frames, newest first, as frame-list orders them.
-    pub fn frameList(ed) -> Vec<u64> {
-        Ok(ed.frame_list())
+    pub fn frameList(ed) -> Vec<Frm> {
+        Ok(ed.frame_list().into_iter().map(Frm).collect())
     }
 
-    fn setWindowBuffer(ed, window: u64, buffer: String) {
+    fn setWindowBuffer(ed, window: Win, buffer: String) {
+        let window = window.0;
         ed.set_window_buffer(window, &buffer)
     }
 
-    fn windowSize(ed, window: u64) -> Option<Vec<usize>> {
+    fn windowSize(ed, window: Win) -> Option<Vec<usize>> {
+        let window = window.0;
         // The minibuffer's window spans the frame, as many lines as it shows.
         if window == e8_core::MINIBUFFER_WINDOW {
             let (width, lines) = (ed.frame_cells().0, ed.mini_window_lines());
@@ -360,11 +420,13 @@ natives! {
         Ok(ed.window_size(window).zip(total).map(|((w, h), (_, tw, th))| vec![w, h, tw, th, full]))
     }
 
-    fn windowUseTime(ed, window: u64) -> Option<u64> {
+    fn windowUseTime(ed, window: Win) -> Option<u64> {
+        let window = window.0;
         Ok(ed.window_use_time(window))
     }
 
-    fn resizeWindow(ed, window: Option<u64>, delta: i64, horizontal: bool, apply: bool) -> i64 {
+    fn resizeWindow(ed, window: Option<Win>, delta: i64, horizontal: bool, apply: bool) -> i64 {
+        let window = window.map(|x| x.0);
         ed.resize_window(window, delta, horizontal, apply)
     }
 
@@ -375,21 +437,24 @@ natives! {
     }
 
     /// The windows in cyclic order, left to right and top to bottom, as other-window visits them.
-    pub fn windowList(ed) -> Vec<u64> {
+    pub fn windowList(ed) -> Vec<Win> {
         // The minibuffer's window comes last while a prompt is open, as in Emacs's window-list.
         let mut windows = ed.window_list();
         if ed.prompt().is_some() {
             windows.push(e8_core::MINIBUFFER_WINDOW);
         }
-        Ok(windows)
+        Ok(windows.into_iter().map(Win).collect())
     }
 
     /// `{ window, position }`, with `start` for a drag's start.
     fn lastMouseEvent(ed) -> Option<Record> {
         Ok(ed.last_mouse_event().map(|event| {
-            let record = Record::new().with("window", event.window).with("position", event.position).with("tabBar", ed.last_mouse_tab_bar_column());
+            let record = Record::new()
+                .with("window", EditorValue::Window(event.window))
+                .with("position", event.position)
+                .with("tabBar", ed.last_mouse_tab_bar_column());
             match event.start {
-                Some((window, position)) => record.with("start", Record::new().with("window", window).with("position", position)),
+                Some((window, position)) => record.with("start", Record::new().with("window", EditorValue::Window(window)).with("position", position)),
                 None => record,
             }
         }))

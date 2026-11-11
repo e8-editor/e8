@@ -32,8 +32,8 @@ fn windows_know_their_frames_and_frames_their_order() {
             e8.frameFirstWindow(f1) === w1, e8.frameFirstWindow() === w3,
             e8.nextFrame() === f1, e8.nextFrame(f1) === f2, e8.previousFrame() === f1,
             e8.windowValidP(w1), e8.windowValidP(9999), e8.windowValidP("x"),
-            e8.windowList1(w2).map((w) => [w1, w2, w3, 0].indexOf(w)),
-            e8.windowList1(w2, true, true).map((w) => [w1, w2, w3, 0].indexOf(w)),
+            e8.windowList1(w2).map((w) => [w1, w2, w3, e8.minibufferWindow()].indexOf(w)),
+            e8.windowList1(w2, true, true).map((w) => [w1, w2, w3, e8.minibufferWindow()].indexOf(w)),
             subr.frameParent() ?? null, subr.lastNonminibufferFrame() === f2]))"#,
     );
     // Emacs: window-list-1 starts at the window and goes round its frame, or every frame's with ALL-FRAMES, the
@@ -53,7 +53,7 @@ fn frames_are_hidden_iconified_and_raised_for_the_front_end() {
             (e8.makeFrameInvisible(f2), e8.raiseFrame(f2), e8.frameVisibleP(f2))]))"#,
     );
     assert_eq!(got, r#"[true,false,1,"icon",true,true]"#);
-    let f2: u64 = eval(&mut ed, &s, "f2").parse().unwrap();
+    let f2: u64 = eval(&mut ed, &s, "f2.id").parse().unwrap();
     let d = ed.describe_frame(f2, 1.0);
     assert_eq!((d.visibility, d.raised), (Visibility::Visible, 1));
     eval(&mut ed, &s, "(e8.iconifyFrame(f2), subr.xFocusFrame(f2), e8.iconifyFrame(f2), true)");

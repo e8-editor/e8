@@ -36,6 +36,10 @@ pub enum Value {
     /// A marker, by its id, as Emacs's markers are values a variable such
     /// as `overlay-arrow-position` can hold.
     Marker(u64),
+    /// A window, by its id, live or deleted, as Emacs's window objects.
+    Window(u64),
+    /// A frame, by its id, live or deleted, as Emacs's frame objects.
+    Frame(u64),
     /// A font spec, entity or object, as Emacs's font vectors.
     Font(Box<crate::font::Font>),
     /// A script's own object, such as an org-roam node, which the editor
@@ -215,6 +219,8 @@ impl fmt::Display for Value {
             Value::Treesit(crate::treesitfns::TsObject::Parser { parser, .. }) => write!(f, "#<treesit-parser {parser}>"),
             Value::Treesit(crate::treesitfns::TsObject::Node(_)) => write!(f, "#<treesit-node>"),
             Value::Marker(id) => write!(f, "#<marker {id}>"),
+            Value::Window(id) => write!(f, "#<window {id}>"),
+            Value::Frame(id) => write!(f, "#<frame {}>", id - crate::window::FIRST_FRAME + 1),
             Value::Font(font) => write!(f, "#<{} {}>", font.kind.name(), font.xlfd_name(true)),
             Value::Object(object) => write!(f, "{object:?}"),
         }

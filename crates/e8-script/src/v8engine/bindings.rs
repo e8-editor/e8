@@ -5,7 +5,7 @@
 use e8_core::Value as EditorValue;
 
 use super::{Js, Thrown, number, string};
-use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Opt, PlistOrValue, Posn, Prefix, Record, Rest};
+use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Opt, PlistOrValue, Posn, Prefix, Record, Rest, Win};
 
 type Scope<'s, 'i> = v8::PinScope<'s, 'i>;
 type Value<'s> = v8::Local<'s, v8::Value>;
@@ -133,6 +133,40 @@ impl<T: Conv> Conv for Vec<T> {
 impl Conv for EditorValue {
     fn conv<'s>(scope: &mut Scope<'s, '_>, value: Value<'s>) -> Result<Self, Thrown> {
         super::value_from_js(scope, value)
+    }
+}
+
+/// A Window, or a window's number.
+impl Conv for Win {
+    fn conv<'s>(scope: &mut Scope<'s, '_>, value: Value<'s>) -> Result<Self, Thrown> {
+        let value = super::value_from_js(scope, value)?;
+        match Win::from_value(&value) {
+            Some(w) => Ok(w),
+            None => Err(type_error(scope, &format!("Not a window: {value}"))),
+        }
+    }
+}
+
+/// A Frame, or a frame's number.
+impl Conv for Frm {
+    fn conv<'s>(scope: &mut Scope<'s, '_>, value: Value<'s>) -> Result<Self, Thrown> {
+        let value = super::value_from_js(scope, value)?;
+        match Frm::from_value(&value) {
+            Some(f) => Ok(f),
+            None => Err(type_error(scope, &format!("Not a frame: {value}"))),
+        }
+    }
+}
+
+impl Ret for Win {
+    fn give<'s>(self, scope: &mut Scope<'s, '_>) -> Js<'s> {
+        super::value_to_js(scope, &EditorValue::Window(self.0))
+    }
+}
+
+impl Ret for Frm {
+    fn give<'s>(self, scope: &mut Scope<'s, '_>) -> Js<'s> {
+        super::value_to_js(scope, &EditorValue::Frame(self.0))
     }
 }
 

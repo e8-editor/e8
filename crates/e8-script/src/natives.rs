@@ -209,6 +209,40 @@ pub(crate) struct FaceAttrValues(pub Vec<(String, EditorValue)>);
 /// A face attribute's value, a plist given as an object: see `plist_or_value_to_js`.
 pub(crate) struct PlistOrValue(pub EditorValue);
 
+/// A window, as scripts give and get one: a `Window` object, or, while
+/// packages move to the objects, its number (ADR 0069).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct Win(pub u64);
+
+/// A frame, as scripts give and get one: a `Frame` object, or its number.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct Frm(pub u64);
+
+/// A whole number at least 0, as a window's or frame's number.
+fn id_of(n: f64) -> Option<u64> {
+    (n >= 0.0 && n.fract() == 0.0).then_some(n as u64)
+}
+
+impl Win {
+    pub fn from_value(value: &EditorValue) -> Option<Win> {
+        match value {
+            EditorValue::Window(id) => Some(Win(*id)),
+            EditorValue::Number(n) => id_of(*n).filter(|id| *id < e8_core::FIRST_FRAME).map(Win),
+            _ => None,
+        }
+    }
+}
+
+impl Frm {
+    pub fn from_value(value: &EditorValue) -> Option<Frm> {
+        match value {
+            EditorValue::Frame(id) => Some(Frm(*id)),
+            EditorValue::Number(n) => id_of(*n).filter(|id| *id >= e8_core::FIRST_FRAME).map(Frm),
+            _ => None,
+        }
+    }
+}
+
 /// A position in a window, or none: see `posn_to_js`.
 pub(crate) struct Posn(pub Option<e8_core::layout::Posn>);
 
@@ -358,12 +392,14 @@ fn signature(native: &Native) -> String {
         .iter()
         .map(|(name, ty)| {
             let ty = ty.replace(' ', "");
+            // A window or frame is taken as its number too, while packages move to the objects.
+            let like = |t: String| t.replace("Window", "WindowLike").replace("Frame", "FrameLike");
             if let Some(inner) = ty.strip_prefix("Opt<").and_then(|t| t.strip_suffix('>')) {
-                format!("{name}?: {}", ts_type(inner))
+                format!("{name}?: {}", like(ts_type(inner)))
             } else if let Some(inner) = ty.strip_prefix("Rest<").and_then(|t| t.strip_suffix('>')) {
-                format!("...{name}: {}[]", ts_type(inner))
+                format!("...{name}: {}[]", like(ts_type(inner)))
             } else {
-                format!("{name}: {}", ts_type(&ty))
+                format!("{name}: {}", like(ts_type(&ty)))
             }
         })
         .collect();
@@ -385,6 +421,8 @@ fn ts_type(ty: &str) -> String {
         "String" | "&'staticstr" | "char" => "string",
         "f64" | "i64" | "i32" | "u64" | "u32" | "u8" | "usize" => "number",
         "Prefix" => "PrefixArg",
+        "Win" => "Window",
+        "Frm" => "Frame",
         "Text" | "e8_core::Text" => "string | PropertizedString",
         _ => "Value",
     }

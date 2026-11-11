@@ -88,6 +88,72 @@
     }
   }
   /**
+   * A window as an object, as Emacs's window objects (ADR 0069): the same
+   * object each time, and still a window once deleted, though no longer
+   * live. Functions taking a window take its number too, while packages
+   * move to the objects.
+   */
+  const windows = new Map();
+  class Window {
+    constructor(id) {
+      Object.defineProperty(this, "__e8WindowId", { value: id });
+      Object.freeze(this);
+    }
+    get id() {
+      return this.__e8WindowId;
+    }
+    /** Whether it still shows a buffer, as window-live-p. */
+    get live() {
+      return native.windowLiveP(this);
+    }
+    /** As Emacs prints a window: #<window 3 on *scratch*>. */
+    toString() {
+      const buffer = this.live ? native.windowBuffer(this) : undefined;
+      return buffer === undefined || buffer === null ? `#<window ${this.__e8WindowId}>` : `#<window ${this.__e8WindowId} on ${buffer}>`;
+    }
+    toJSON() {
+      return this.toString();
+    }
+  }
+  globalThis.__e8Window = (id) => {
+    let w = windows.get(id);
+    if (w === undefined) {
+      w = new Window(id);
+      windows.set(id, w);
+    }
+    return w;
+  };
+  /** A frame as an object, as Emacs's frame objects: the same object each time, a frame still once deleted. */
+  const frames = new Map();
+  class Frame {
+    constructor(id) {
+      Object.defineProperty(this, "__e8FrameId", { value: id });
+      Object.freeze(this);
+    }
+    get id() {
+      return this.__e8FrameId;
+    }
+    /** Whether it is still there, as frame-live-p. */
+    get live() {
+      return native.frameLiveP(this);
+    }
+    /** As Emacs prints a frame, numbered from 1: #<frame F1>. */
+    toString() {
+      return `#<frame F${this.__e8FrameId - 2 ** 32 + 1}>`;
+    }
+    toJSON() {
+      return this.toString();
+    }
+  }
+  globalThis.__e8Frame = (id) => {
+    let f = frames.get(id);
+    if (f === undefined) {
+      f = new Frame(id);
+      frames.set(id, f);
+    }
+    return f;
+  };
+  /**
    * A keymap, as Emacs's keymaps are values: bound in a keymap, it is a
    * prefix map, and a variable or text property can hold one.
    */
@@ -1005,7 +1071,7 @@
     },
     adviceRemove: (symbol, fn) => native.adviceRemove(symbolName(symbol), typeof fn === "function" ? fn : symbolName(fn)),
     adviceMemberP: (fn, symbol) => native.adviceMemberP(typeof fn === "function" ? fn : symbolName(fn), symbolName(symbol)),
-    minibufferWindow: () => 0,
+    minibufferWindow: () => globalThis.__e8Window(0),
     formatModeLine: (format) => native.formatModeLine(format === undefined ? Symbol.for("mode-line-format") : format),
     fboundp: (name) => native.fboundp(symbolName(name)),
     intern: (name) => Symbol.for(String(name)),

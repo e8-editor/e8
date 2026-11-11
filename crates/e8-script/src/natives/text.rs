@@ -1,7 +1,7 @@
 //! Text, buffers, text properties, faces and display.
 
 use crate::*;
-use crate::natives::{natives, FaceAttrValues, Field, Opt, PlistOrValue, Posn, Record};
+use crate::natives::{FaceAttrValues, Field, Opt, PlistOrValue, Posn, Record, Win, natives};
 
 /// The font a value is.
 fn font_of(value: EditorValue) -> Result<e8_core::Font> {
@@ -97,24 +97,29 @@ natives! {
         Ok(())
     }
 
-    fn windowStart(ed, window: Opt<u64>) -> usize {
+    fn windowStart(ed, window: Opt<Win>) -> usize {
+        let window = Opt(window.0.map(|x| x.0));
         let id = window.0.unwrap_or(ed.selected_window());
         ed.window_start(id).ok_or_else(|| Error::new("No such window"))
     }
 
-    fn setWindowStart(ed, window: u64, pos: usize) {
+    fn setWindowStart(ed, window: Win, pos: usize) {
+        let window = window.0;
         ed.set_window_start(window, pos)
     }
 
-    fn windowEnd(ed, window: u64) -> usize {
+    fn windowEnd(ed, window: Win) -> usize {
+        let window = window.0;
         ed.window_end(window).ok_or_else(|| Error::new("No such window"))
     }
 
-    fn posVisibleInWindowP(ed, pos: usize, window: u64, partially: bool) -> bool {
+    fn posVisibleInWindowP(ed, pos: usize, window: Win, partially: bool) -> bool {
+        let window = window.0;
         Ok(ed.pos_visible_in_window_p(pos, window, partially))
     }
 
-    fn windowTextPixelSize(ed, window: u64, from: usize, to: usize) -> Vec<f64> {
+    fn windowTextPixelSize(ed, window: Win, from: usize, to: usize) -> Vec<f64> {
+        let window = window.0;
         let (w, h) = ed.window_text_pixel_size(window, from, to).ok_or_else(|| Error::new("No such window"))?;
         Ok(vec![w as f64, h as f64])
     }
@@ -139,11 +144,13 @@ natives! {
         Ok(())
     }
 
-    fn windowMargins(ed, window: u64) -> Vec<usize> {
+    fn windowMargins(ed, window: Win) -> Vec<usize> {
+        let window = window.0;
         Ok(<[usize; 2]>::from(ed.window_margins(window)).to_vec())
     }
 
-    fn setWindowMargins(ed, window: u64, left: usize, right: usize) -> bool {
+    fn setWindowMargins(ed, window: Win, left: usize, right: usize) -> bool {
+        let window = window.0;
         Ok(ed.set_window_margins(window, left, right))
     }
 
@@ -151,12 +158,14 @@ natives! {
         Ok(ed.text_metrics().fringes())
     }
 
-    fn showWindowCursor(ed, window: u64, shown: bool) {
+    fn showWindowCursor(ed, window: Win, shown: bool) {
+        let window = window.0;
         ed.show_window_cursor(window, shown);
         Ok(())
     }
 
-    fn windowCursorShown(ed, window: u64) -> bool {
+    fn windowCursorShown(ed, window: Win) -> bool {
+        let window = window.0;
         Ok(ed.window_cursor_shown(window))
     }
 
@@ -173,7 +182,8 @@ natives! {
         Ok(ed.fringe_bitmap_p(&name))
     }
 
-    fn fringeBitmapsAtPos(ed, pos: usize, window: u64) -> Option<Vec<String>> {
+    fn fringeBitmapsAtPos(ed, pos: usize, window: Win) -> Option<Vec<String>> {
+        let window = window.0;
         Ok(ed.fringe_bitmaps_at_pos(window, pos).map(|[l, r]| vec![l.unwrap_or_default(), r.unwrap_or_default()]))
     }
 
@@ -192,15 +202,18 @@ natives! {
         Ok(ed.default_font_height() as f64)
     }
 
-    fn windowPoint(ed, window: u64) -> usize {
+    fn windowPoint(ed, window: Win) -> usize {
+        let window = window.0;
         ed.window_point(window).ok_or_else(|| Error::new("No such window"))
     }
 
-    fn setWindowPoint(ed, window: u64, pos: usize) {
+    fn setWindowPoint(ed, window: Win, pos: usize) {
+        let window = window.0;
         ed.set_window_point(window, pos)
     }
 
-    fn switchToPrevBuffer(ed, window: u64, how: Opt<String>) -> Option<String> {
+    fn switchToPrevBuffer(ed, window: Win, how: Opt<String>) -> Option<String> {
+        let window = window.0;
         let how = match how.0.as_deref() {
             None => None,
             Some("bury") => Some(e8_core::BuryOrKill::Bury),
@@ -211,7 +224,8 @@ natives! {
         ed.switch_to_prev_buffer(window, how)
     }
 
-    fn switchToNextBuffer(ed, window: u64) -> Option<String> {
+    fn switchToNextBuffer(ed, window: Win) -> Option<String> {
+        let window = window.0;
         ed.switch_to_next_buffer(window)
     }
 
@@ -220,15 +234,18 @@ natives! {
         ed.bury_buffer_internal(&buffer)
     }
 
-    fn windowParameterNames(ed, window: u64) -> Vec<String> {
+    fn windowParameterNames(ed, window: Win) -> Vec<String> {
+        let window = window.0;
         Ok(ed.window_parameters(window).into_iter().map(|(k, _)| k).collect::<Vec<_>>())
     }
 
-    fn windowNextBuffers(ed, window: u64) -> Vec<String> {
+    fn windowNextBuffers(ed, window: Win) -> Vec<String> {
+        let window = window.0;
         Ok(ed.window_next_buffers(window))
     }
 
-    fn setWindowNextBuffers(ed, window: u64, buffers: Vec<String>) {
+    fn setWindowNextBuffers(ed, window: Win, buffers: Vec<String>) {
+        let window = window.0;
         ed.set_window_next_buffers(window, buffers)
     }
 
@@ -728,19 +745,23 @@ natives! {
         ed.define_fringe_bitmap(&name, bits.into_iter().map(|b| b as u16).collect(), width, align)
     }
 
-    fn setWindowParameter(ed, window: u64, name: String, value: EditorValue) {
+    fn setWindowParameter(ed, window: Win, name: String, value: EditorValue) {
+        let window = window.0;
         ed.set_window_parameter(window, &name, value)
     }
 
-    fn windowDedicatedP(ed, window: u64) -> EditorValue {
+    fn windowDedicatedP(ed, window: Win) -> EditorValue {
+        let window = window.0;
         Ok(ed.window_dedicated(window))
     }
 
-    fn setWindowDedicatedP(ed, window: u64, flag: EditorValue) {
+    fn setWindowDedicatedP(ed, window: Win, flag: EditorValue) {
+        let window = window.0;
         ed.set_window_dedicated(window, flag)
     }
 
-    fn windowPrevBuffers(ed, window: u64) -> EditorValue {
+    fn windowPrevBuffers(ed, window: Win) -> EditorValue {
+        let window = window.0;
         let entries = ed.window_prev_buffers(window);
         let list = entries.into_iter().map(|(b, s, p)| EditorValue::List(vec![EditorValue::Str(b), EditorValue::Number(s as f64), EditorValue::Number(p as f64)])).collect();
         Ok(EditorValue::List(list))
@@ -819,20 +840,24 @@ natives! {
         Ok(ed.overlay_buffer_index(id).and_then(|i| ed.buffers()[i].overlay(id)).and_then(|o| o.props.get(&name).cloned()))
     }
 
-    fn posnAtPoint(ed, pos: usize, window: u64) -> Posn {
+    fn posnAtPoint(ed, pos: usize, window: Win) -> Posn {
+        let window = window.0;
         Ok(Posn(ed.posn_at_point(pos, window)))
     }
 
-    fn posnAtXY(ed, x: f64, y: f64, window: u64) -> Posn {
+    fn posnAtXY(ed, x: f64, y: f64, window: Win) -> Posn {
+        let window = window.0;
         Ok(Posn(ed.posn_at_x_y(x as f32, y as f32, window)))
     }
 
-    fn windowParameter(ed, window: u64, name: String) -> Option<EditorValue> {
+    fn windowParameter(ed, window: Win, name: String) -> Option<EditorValue> {
+        let window = window.0;
         Ok(ed.window_parameter(window, &name).cloned())
     }
 
     /// Each entry `[buffer, start, point]`.
-    fn setWindowPrevBuffers(ed, window: u64, buffers: EditorValue) {
+    fn setWindowPrevBuffers(ed, window: Win, buffers: EditorValue) {
+        let window = window.0;
         let EditorValue::List(items) = buffers else {
             return Err(Error::signal("wrong-type-argument", "setWindowPrevBuffers takes [buffer, start, point] entries", Vec::new()));
         };

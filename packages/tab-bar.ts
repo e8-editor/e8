@@ -77,9 +77,9 @@ let nextId = 1;
 /** Counts tab changes, for ordering tabs by when they were last left, as their float-time does. */
 let clock = 0;
 /** Each frame's tabs, as the `tabs` frame parameter holds them. */
-const frameTabs = new Map<number, Tab[]>();
+const frameTabs = new Map<e8.Frame, Tab[]>();
 /** Closed tabs, newest first, for tab-undo, as tab-bar-closed-tabs. */
-const closedTabs: { frame: number; index: number; tab: Tab }[] = [];
+const closedTabs: { frame: e8.Frame; index: number; tab: Tab }[] = [];
 
 /** The name tab-bar-tab-name-function gives the current tab. */
 function autoName(): string {
@@ -158,7 +158,7 @@ interface Item {
 }
 
 /** Each frame's items as last shown, each with the columns it takes, for clicks. */
-const shownItems = new Map<number, { item: Item; from: number; to: number; closeFrom?: number }[]>();
+const shownItems = new Map<e8.Frame, { item: Item; from: number; to: number; closeFrom?: number }[]>();
 
 const separator = (): string => {
   const sep = e8.variable("tab-bar-separator");
@@ -174,7 +174,7 @@ function formatTabName(tab: Tab, i: number): { text: string; close: string } {
   return { text: `${hints ? `${i} ` : ""}${tab.name}`, close };
 }
 
-const formats: { [name: string]: (frame: number) => Item[] } = {
+const formats: { [name: string]: (frame: e8.Frame) => Item[] } = {
   "tab-bar-format-history": () =>
     historyMode()
       ? [
@@ -207,7 +207,7 @@ function autoWidthLimit(name: string): number | undefined {
  * what the frame leaves after the other items, shared out, within the
  * limits; spaces go before the close button, and a cut name ends shadowed.
  */
-function autoWidth(items: Item[], frame: number): { item: Item; shadowFrom?: number; closeLength: number }[] {
+function autoWidth(items: Item[], frame: e8.Frame): { item: Item; shadowFrom?: number; closeLength: number }[] {
   const tabItems = items.filter((i) => i.tab !== undefined);
   const others = items.filter((i) => i.tab === undefined).reduce((n, i) => n + e8.stringWidth(i.text), 0);
   let width = tabItems.length ? Math.floor((e8.frameWidth(frame) - others) / tabItems.length) : 0;
@@ -238,7 +238,7 @@ function autoWidth(items: Item[], frame: number): { item: Item; shadowFrom?: num
 }
 
 /** A frame's tab bar from tab-bar-format, as tab-bar-make-keymap-1 builds it at redisplay. */
-function tabBarLine(frame: number): string | e8.PropertizedString {
+function tabBarLine(frame: e8.Frame): string | e8.PropertizedString {
   const format = e8.variable("tab-bar-format");
   const items = (Array.isArray(format) ? format : []).flatMap((f) => {
     if (typeof f === "string" && formats[f]) return formats[f](frame);
@@ -273,7 +273,7 @@ function tabBarLine(frame: number): string | e8.PropertizedString {
 }
 
 /** Whether a frame shows the tab bar, as tab-bar--tab-bar-lines-for-frame decides. */
-function tabBarLinesFor(frame: number): number {
+function tabBarLinesFor(frame: e8.Frame): number {
   if (!truthy(e8.variable("tab-bar-mode"))) return 0;
   const show = e8.variable("tab-bar-show");
   if (!truthy(show)) return 0;
@@ -640,8 +640,8 @@ const undoCloseTab = e8.defineCommand({
 
 const historyMode = (): boolean => truthy(e8.variable("tab-bar-history-mode"));
 /** Each frame's current tab's history, as tab-bar-history-back and -forward. */
-const histories = new Map<number, { back: Saved[]; forward: Saved[] }>();
-function history(frame: number): { back: Saved[]; forward: Saved[] } {
+const histories = new Map<e8.Frame, { back: Saved[]; forward: Saved[] }>();
+function history(frame: e8.Frame): { back: Saved[]; forward: Saved[] } {
   let h = histories.get(frame);
   if (!h) histories.set(frame, (h = { back: [], forward: [] }));
   return h;

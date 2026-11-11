@@ -135,6 +135,15 @@ pub(crate) fn value_to_js<S: Scope>(s: &mut S, value: &EditorValue) -> Result<S:
             let kind = s.string(font.kind.name())?;
             s.call_global("__e8Font", vec![kind, plist])?
         }
+        // The prelude's Window and Frame for the id, the same object each time.
+        EditorValue::Window(id) => {
+            let id = s.number(*id as f64);
+            s.call_global("__e8Window", vec![id])?
+        }
+        EditorValue::Frame(id) => {
+            let id = s.number(*id as f64);
+            s.call_global("__e8Frame", vec![id])?
+        }
         // The prelude's Marker for the id, the one the value was made from.
         EditorValue::Marker(id) => {
             let id = s.number(*id as f64);
@@ -216,6 +225,12 @@ pub(crate) fn convert_from_js<S: Scope>(s: &mut S, value: S::Value) -> Result<Op
     let object = value;
     if let Some(id) = number_property(s, &object, "__e8BufferId")? {
         return Ok(Some(EditorValue::Buffer(id as u64)));
+    }
+    if let Some(id) = number_property(s, &object, "__e8WindowId")? {
+        return Ok(Some(EditorValue::Window(id as u64)));
+    }
+    if let Some(id) = number_property(s, &object, "__e8FrameId")? {
+        return Ok(Some(EditorValue::Frame(id as u64)));
     }
     if let Some(id) = number_property(s, &object, "__e8KeymapId")? {
         return Ok(Some(EditorValue::Keymap(id as usize)));
@@ -377,8 +392,9 @@ pub(crate) fn face_attr_values_from_js<S: Scope>(s: &mut S, object: &S::Value) -
 pub(crate) fn posn_to_js<S: Scope>(s: &mut S, posn: Option<e8_core::layout::Posn>) -> Result<S::Value, S::Error> {
     let Some(posn) = posn else { return Ok(s.undefined()) };
     let object = s.object()?;
+    let window = value_to_js(s, &EditorValue::Window(posn.window))?;
+    s.set(&object, "window", window)?;
     let fields = [
-        ("window", posn.window as f64),
         ("point", posn.point as f64),
         ("x", posn.x as f64),
         ("y", posn.y as f64),

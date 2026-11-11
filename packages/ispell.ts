@@ -1005,7 +1005,7 @@ function highlightSpellingError(start: number, end: number, highlight = false): 
  * Shows a buffer in a window above the selected one, fitted to its text, as
  * ispell-display-buffer, and returns the window that shows the text.
  */
-function displayBuffer(buffer: string): number {
+function displayBuffer(buffer: string): e8.Window {
   const text = e8.selectedWindow();
   const shown = e8.windowList().find((w) => e8.windowBuffer(w) === buffer);
   if (shown !== undefined) {
@@ -1016,7 +1016,7 @@ function displayBuffer(buffer: string): number {
   const point = e8.point();
   const start = e8.windowStart(text);
   // The top part keeps the old window, which shows the choices.
-  const below = e8.conditionCase<number | undefined>(() => e8.splitWindow(text, "below", height), { error: () => undefined });
+  const below = e8.conditionCase<e8.Window | undefined>(() => e8.splitWindow(text, "below", height), { error: () => undefined });
   if (below === undefined) {
     e8.call("display-buffer", buffer);
     return text;
@@ -1031,7 +1031,7 @@ function displayBuffer(buffer: string): number {
 }
 
 /** Fits a window's height to its buffer's lines and its mode line, as fit-window-to-buffer. */
-function fitWindow(window: number, buffer: string): void {
+function fitWindow(window: e8.Window, buffer: string): void {
   const lines = e8.withCurrentBuffer(buffer, () => {
     const text = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
     return Math.max(1, text.split("\n").length - (text.endsWith("\n") ? 1 : 0));
@@ -1043,7 +1043,7 @@ function fitWindow(window: number, buffer: string): void {
 }
 
 /** Shows the choices above the text, as ispell-show-choices, returning the window with the text. */
-function showChoices(): number {
+function showChoices(): e8.Window {
   e8.getBufferCreate(CHOICES);
   return displayBuffer(CHOICES);
 }

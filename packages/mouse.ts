@@ -11,7 +11,7 @@ function lastEvent() {
 }
 
 /** Selects the event's window and moves point to where the mouse is. */
-function goToEvent(event: { window: number; position?: number }) {
+function goToEvent(event: { window: e8.Window; position?: number }) {
   e8.selectWindow(event.window);
   if (event.position !== undefined) {
     e8.gotoChar(event.position);

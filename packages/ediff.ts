@@ -255,7 +255,7 @@ interface Session {
   killed: Map<number, Map<BufType, string>>;
   /** Each variant's mode line before Ediff changed it: its own value, or undefined if it had none. */
   modeLines: Map<e8.Buffer, e8.Value | undefined>;
-  windows: Partial<Record<BufType | "control", number>>;
+  windows: Partial<Record<BufType | "control", e8.Window>>;
   /** The window layout last set up, to tell whether it must be done again, as ediff-window-config-saved. */
   configSaved: string;
   syntaxTable: string;
@@ -273,7 +273,7 @@ interface Session {
 const sessions = new PerBuffer<Session>();
 
 const live = (b: e8.Buffer | undefined): b is e8.Buffer => b !== undefined && b.live;
-const windowLive = (w: number | undefined): w is number => w !== undefined && e8.windowList().includes(w);
+const windowLive = (w: e8.Window | undefined): w is e8.Window => w !== undefined && e8.windowList().includes(w);
 const verbose = () => e8.variable("ediff-verbose-p") !== null && e8.variable("ediff-verbose-p") !== false;
 const truthy = (v: e8.Value | undefined) => v !== undefined && v !== null && v !== false;
 /** A value as ediff's %S formats it: a symbol by its name, a buffer as #<buffer NAME>. */
@@ -328,7 +328,7 @@ function killBufferCarefully(buffer: e8.Buffer | string | undefined | null): voi
 }
 
 /** A window showing a buffer, as get-buffer-window. */
-function bufferWindow(buffer: e8.Buffer | undefined): number | undefined {
+function bufferWindow(buffer: e8.Buffer | undefined): e8.Window | undefined {
   if (!live(buffer)) return undefined;
   return e8.windowList().find((w) => e8.windowBuffer(w) === buffer.name);
 }
@@ -867,7 +867,7 @@ function setupWindows(s: Session): void {
 }
 
 /** Leave the minibuffer's window and make the selected one the only one, as the plain setups start. */
-function startLayout(): number {
+function startLayout(): e8.Window {
   if (e8.selectedWindow() === e8.minibufferWindow()) e8.selectWindow(e8.windowList()[0]);
   e8.call("delete-other-windows");
   e8.setWindowDedicatedP(undefined, false);
@@ -881,7 +881,7 @@ function setupWindowsPlainCompare(s: Session): void {
   e8.setWindowBuffer(windA, s.buffers.A!);
   const windB = e8.splitWindow(windA, side);
   e8.setWindowBuffer(windB, s.buffers.B!);
-  let windC: number | undefined;
+  let windC: e8.Window | undefined;
   if (s.is3wayComparison) {
     windC = e8.splitWindow(windB, side);
     e8.setWindowBuffer(windC, s.buffers.C!);
@@ -896,7 +896,7 @@ function setupWindowsPlainCompare(s: Session): void {
 }
 
 /** Share the lines of windows one above another equally, the lower ones taking any left over, as Emacs's splits do. */
-function equalizeHeights(windows: number[]): void {
+function equalizeHeights(windows: e8.Window[]): void {
   const total = windows.reduce((sum, w) => sum + e8.windowSize(w)!.totalHeight, 0);
   windows.slice(0, -1).forEach((w, i) => {
     const want = Math.floor(total / windows.length) + (i >= windows.length - (total % windows.length) ? 1 : 0);
@@ -916,7 +916,7 @@ function setupWindowsPlainMerge(s: Session): void {
   const windA = top;
   const windC = e8.splitWindow(windA, "below", Math.max(2, height - mergeLines));
   e8.setWindowBuffer(windC, s.buffers.C!);
-  let windAncestor: number | undefined;
+  let windAncestor: e8.Window | undefined;
   if (truthy(e8.variable("ediff-show-ancestor")) && s.isMergeWithAncestor && live(s.buffers.Ancestor)) {
     windAncestor = e8.splitWindow(windC, side);
     e8.setWindowBuffer(windAncestor, s.buffers.Ancestor);

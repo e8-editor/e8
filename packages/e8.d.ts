@@ -14847,7 +14847,7 @@ declare global {
      * the new window takes the whole bottom of the frame, or its right side.
      * `size` is as splitWindow's. Returns the new window.
      */
-    function splitRootWindow(side?: "below" | "right", size?: number): number;
+    function splitRootWindow(side?: "below" | "right", size?: number): Window;
     /**
      * The keys that can follow a prefix, such as "C-x", in the keymaps active
      * now, in key order: each with the command it runs, or undefined for
@@ -14879,15 +14879,15 @@ declare global {
      */
     function thisSingleCommandKeys(): string;
     /** Delete a window, the selected one by default, giving its space to its neighbour. */
-    function deleteWindow(window?: number): void;
+    function deleteWindow(window?: WindowLike): void;
     /**
      * Make a window the selected one, whose buffer commands act on; with
      * `norecord`, leaving the buffer list as it is, as select-window's NORECORD.
      */
-    function selectWindow(window: number, norecord?: boolean): void;
-    function selectedWindow(): number;
+    function selectWindow(window: WindowLike, norecord?: boolean): void;
+    function selectedWindow(): Window;
     /** The window that was selected when the minibuffer was entered, while the minibuffer's window is selected, as minibuffer-selected-window. */
-    function minibufferSelectedWindow(): number | undefined;
+    function minibufferSelectedWindow(): Window | undefined;
     /** How many minibuffers are open, one inside another, as minibuffer-depth. */
     function minibufferDepth(): number;
     /**
@@ -14905,82 +14905,94 @@ declare global {
     /** Visit a file without showing it, as find-file-noselect, and return its buffer's name. */
     function findFileNoselect(file: string): string;
     /** Delete a frame, the selected one by default, and its windows, as delete-frame does. */
-    function deleteFrame(frame?: number): void;
+    function deleteFrame(frame?: FrameLike): void;
     /** Make a frame the selected one, as select-frame does. */
-    function selectFrame(frame: number): void;
-    function selectedFrame(): number;
+    function selectFrame(frame: FrameLike): void;
+    function selectedFrame(): Frame;
     /**
      * A frame's parameter, the selected frame's by default, as frame-parameter:
      * one set with setFrameParameter, or tab-bar-lines.
      */
-    function frameParameter(frame: number | undefined, name: string): Value | undefined;
+    function frameParameter(frame: FrameLike | undefined, name: string): Value | undefined;
     /**
      * Set a frame's parameter, the selected frame's by default, as
      * set-frame-parameter. tab-bar-lines, 0 or 1, hides or shows its tab bar,
      * which shows tab-bar-line, a mode line construct.
      */
-    function setFrameParameter(frame: number | undefined, name: string, value: Value): void;
+    function setFrameParameter(frame: FrameLike | undefined, name: string, value: Value): void;
     /** The frame a window is on, the selected window by default, as window-frame. */
-    function windowFrame(window?: number): number | undefined;
+    function windowFrame(window?: WindowLike): Frame | undefined;
     /** A frame's first window, its top left one, the selected frame's by default, as frame-first-window. */
-    function frameFirstWindow(frame?: number): number | undefined;
+    function frameFirstWindow(frame?: FrameLike): Window | undefined;
     /** The frame after one, the selected frame by default, round the end of frame-list, as next-frame. */
-    function nextFrame(frame?: number): number | undefined;
+    function nextFrame(frame?: FrameLike): Frame | undefined;
     /** The frame before one, the selected frame by default, as previous-frame. */
-    function previousFrame(frame?: number): number | undefined;
+    function previousFrame(frame?: FrameLike): Frame | undefined;
     /**
      * Windows in cyclic order starting with one, the selected window by
      * default, as window-list-1: its frame's, or every frame's with
      * `allFrames`, with the minibuffer's window last if `minibuffer`.
      */
-    function windowList1(window?: number, minibuffer?: boolean, allFrames?: boolean): number[];
+    function windowList1(window?: WindowLike, minibuffer?: boolean, allFrames?: boolean): Window[];
     /**
-     * Whether a value is a window, live, as window-valid-p; E8 has no
-     * internal windows as values.
+     * Whether a value is a window that is live or internal, as
+     * window-valid-p.
      */
     function windowValidP(window: unknown): boolean;
+    /** Whether a value is a window showing a buffer, as window-live-p. */
+    function windowLiveP(window: unknown): boolean;
+    /** Whether a value is a window, live or deleted, as windowp. */
+    function windowp(value: unknown): value is Window;
+    /** Whether a value is a frame that is live, as frame-live-p. */
+    function frameLiveP(frame: unknown): boolean;
+    /**
+     * Whether a value is a frame, live or deleted, as framep: the kind of
+     * display it is on, as window-system names it, or true on a terminal;
+     * false for anything else.
+     */
+    function framep(value: unknown): false | true | "ns" | "x" | "w32";
     /**
      * Whether a frame is shown: true, false when made invisible, or "icon"
      * when iconified, as frame-visible-p.
      */
-    function frameVisibleP(frame?: number): boolean | "icon";
+    function frameVisibleP(frame?: FrameLike): boolean | "icon";
     /** The frames that are shown, as visible-frame-list. */
-    function visibleFrameList(): number[];
+    function visibleFrameList(): Frame[];
     /** Show a frame, the selected one by default, as make-frame-visible. */
-    function makeFrameVisible(frame?: number): void;
+    function makeFrameVisible(frame?: FrameLike): void;
     /** Hide a frame, the selected one by default, as make-frame-invisible. */
-    function makeFrameInvisible(frame?: number): void;
+    function makeFrameInvisible(frame?: FrameLike): void;
     /** Iconify a frame, the selected one by default, as iconify-frame. */
-    function iconifyFrame(frame?: number): void;
+    function iconifyFrame(frame?: FrameLike): void;
     /**
      * Bring a frame, the selected one by default, in front of the others,
      * showing it if hidden or iconified, as raise-frame.
      */
-    function raiseFrame(frame?: number): void;
+    function raiseFrame(frame?: FrameLike): void;
     /**
      * The height of a line of the frame's default font, in the front end's
      * units: pixels, or 1 on a terminal, as frame-char-height.
      */
-    function frameCharHeight(frame?: number): number;
+    function frameCharHeight(frame?: FrameLike): number;
     /**
      * The kind of display a frame is on, as window-system: "ns" for the
      * window on macOS, "x" elsewhere, "w32" on Windows, undefined on a terminal.
      */
-    function windowSystem(frame?: number): "ns" | "x" | "w32" | undefined;
+    function windowSystem(frame?: FrameLike): "ns" | "x" | "w32" | undefined;
     /**
      * A window's total size, its mode line, header line and divider
      * included, in the front end's units, the selected window's by
      * default, as window-pixel-width.
      */
-    function windowPixelWidth(window?: number): number;
+    function windowPixelWidth(window?: WindowLike): number;
     /** A window's total height in the front end's units, as window-pixel-height. */
-    function windowPixelHeight(window?: number): number;
+    function windowPixelHeight(window?: WindowLike): number;
     /** How tall a window's mode line is, 0 without one, as window-mode-line-height. */
-    function windowModeLineHeight(window?: number): number;
+    function windowModeLineHeight(window?: WindowLike): number;
     /** How tall a window's header line is, 0 without one, as window-header-line-height. */
-    function windowHeaderLineHeight(window?: number): number;
+    function windowHeaderLineHeight(window?: WindowLike): number;
     /** A frame's selected window, the selected frame's by default, as frame-selected-window. */
-    function frameSelectedWindow(frame?: number): number | undefined;
+    function frameSelectedWindow(frame?: FrameLike): Window | undefined;
     /**
      * Whether the display shows images and fonts of many sizes, as a graphical
      * one does, rather than a terminal's cells, as display-graphic-p.
@@ -14997,13 +15009,13 @@ declare global {
      */
     function frameHeight(): number;
     /** A frame's width in columns, the selected frame's by default, as frame-width. */
-    function frameWidth(frame?: number): number;
+    function frameWidth(frame?: FrameLike): number;
     /** The frames, newest first, as frame-list orders them. */
-    function frameList(): number[];
+    function frameList(): Frame[];
     /** Make windows the same size as their neighbours, as balance-windows does. */
     function balanceWindows(): void;
     /** The windows in cyclic order, left to right and top to bottom, as other-window visits them. */
-    function windowList(): number[];
+    function windowList(): Window[];
     /**
      * The screen line a position shows on in the selected window, where long
      * lines are continued: where it starts and ends, and whether its line of
@@ -15316,7 +15328,7 @@ declare global {
      * What variables, hooks and text properties hold, as Emacs's values: a
      * function too, as a lambda in a variable, kept as itself.
      */
-    type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | PropertizedString | Keymap | CharTable | Marker | Font;
+    type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | PropertizedString | Keymap | CharTable | Marker | Font;
     /**
      * A keymap, as Emacs's keymaps are values: bound to a prefix key in
      * another keymap it is that key's prefix map, shared wherever it is
@@ -15409,6 +15421,27 @@ declare global {
     }
     /** A buffer by name or as an object. */
     type BufferLike = string | Buffer;
+    /**
+     * A window as an object, as Emacs's window objects (ADR 0069): the same
+     * object each time, and a window still once deleted, though not live.
+     */
+    interface Window {
+      /** A number no other window has had. */
+      readonly id: number;
+      /** Whether it still shows a buffer, as window-live-p. */
+      readonly live: boolean;
+    }
+    /** A frame as an object, as Emacs's frame objects. */
+    interface Frame {
+      /** A number no other frame has had. */
+      readonly id: number;
+      /** Whether it is still there, as frame-live-p. */
+      readonly live: boolean;
+    }
+    /** A window, or its number while packages move to the objects. */
+    type WindowLike = Window | number;
+    /** A frame, or its number while packages move to the objects. */
+    type FrameLike = Frame | number;
     type VariableName = keyof Variables;
     type HookName = keyof Hooks;
 
@@ -15897,7 +15930,7 @@ declare global {
      * that many lines or columns, or the new one does if it is negative, as
      * split-window's SIZE. Returns the new window.
      */
-    function splitWindow(window?: number, side?: "below" | "right", size?: number): number;
+    function splitWindow(window?: WindowLike, side?: "below" | "right", size?: number): Window;
     /**
      * Where the last mouse event happened: its window, the buffer position
      * under the mouse if there is text there, and for a drag where it started.
@@ -15905,10 +15938,10 @@ declare global {
      * commands read their event.
      */
     function lastMouseEvent():
-      | { window: number; position?: number; start?: { window: number; position?: number }; tabBar?: number }
+      | { window: Window; position?: number; start?: { window: Window; position?: number }; tabBar?: number }
       | undefined;
     /** The name of the buffer a window shows, the selected one by default. */
-    function windowBuffer(window?: number): string | undefined;
+    function windowBuffer(window?: WindowLike): string | undefined;
     /**
      * Run `fn` with another buffer current, as Emacs's with-current-buffer:
      * point, text and the other buffer functions act on it, and windows keep
@@ -15920,31 +15953,31 @@ declare global {
      * it, as make-frame does. Returns the new frame. A graphical E8 shows
      * each frame in a window of its own; a terminal shows the selected one.
      */
-    function makeFrame(buffer?: BufferLike): number;
+    function makeFrame(buffer?: BufferLike): Frame;
     /** The buffer of this name, made if there is none, without showing it, as get-buffer-create. */
     function getBufferCreate(name: BufferLike): Buffer;
     /**
      * Show a buffer in a window, as Emacs's set-window-buffer: in the selected
      * window it becomes the current buffer; another shows it from its top.
      */
-    function setWindowBuffer(window: number | undefined, buffer: BufferLike): void;
+    function setWindowBuffer(window: WindowLike | undefined, buffer: BufferLike): void;
     /**
      * A window's size: columns and lines of text, its total size with its
      * divider and mode line, as window-total-width and -height count them,
      * and whether it spans the frame's width, as window-full-width-p.
      */
     function windowSize(
-      window?: number,
+      window?: WindowLike,
     ): { width: number; height: number; totalWidth: number; totalHeight: number; fullWidth: boolean } | undefined;
     /** When a window was last selected, as a count: higher is more recent. */
-    function windowUseTime(window?: number): number | undefined;
+    function windowUseTime(window?: WindowLike): number | undefined;
     /**
      * Grow a window by `delta` lines, or columns if `horizontal`, taking them
      * from its neighbour; a negative delta shrinks it. Goes as far as the
      * windows' smallest sizes allow, and returns how far; with `apply` false,
      * only says how far it could go, as window-resizable does.
      */
-    function resizeWindow(window: number | undefined, delta: number, horizontal?: boolean, apply?: boolean): number;
+    function resizeWindow(window: WindowLike | undefined, delta: number, horizontal?: boolean, apply?: boolean): number;
 
     /** A search match: where it starts and ends, and each group's range, group 0 being the whole match. */
     interface Match {
@@ -16284,9 +16317,9 @@ declare global {
      * start of its top line, as window-start. Another window's start moves
      * with edits, as a marker does.
      */
-    function windowStart(window?: number): number;
+    function windowStart(window?: WindowLike): number;
     /** Make a window start at the line holding `pos`, as set-window-start; a window always starts at a line's start. */
-    function setWindowStart(window: number | undefined, pos: number): void;
+    function setWindowStart(window: WindowLike | undefined, pos: number): void;
     /**
      * Make a char-table, as Emacs's make-char-table: every character's value
      * `init`, with as many extra slots as the subtype's
@@ -16332,7 +16365,7 @@ declare global {
      * terminal), and the column and row in characters of the default font.
      */
     interface Posn {
-      window: number;
+      window: Window;
       point: number;
       x: number;
       y: number;
@@ -16340,15 +16373,15 @@ declare global {
       row: number;
     }
     /** Where a window's text ends, as window-end: the position after the last character it shows, its last row counted even if partly in sight. */
-    function windowEnd(window?: number): number;
+    function windowEnd(window?: WindowLike): number;
     /** Whether a position, point by default, shows in a window, as pos-visible-in-window-p; with `partially`, a row partly in sight counts. */
-    function posVisibleInWindowP(pos?: number, window?: number, partially?: boolean): true | undefined;
+    function posVisibleInWindowP(pos?: number, window?: WindowLike, partially?: boolean): true | undefined;
     /** Where a position, point by default, shows in a window, as posn-at-point, or undefined if it is not in sight. */
-    function posnAtPoint(pos?: number, window?: number): Posn | undefined;
+    function posnAtPoint(pos?: number, window?: WindowLike): Posn | undefined;
     /** What is at a place in a window's text area, as posn-at-x-y: the position of the character drawn there, or the end of the row or text. */
-    function posnAtXY(x: number, y: number, window?: number): Posn | undefined;
+    function posnAtXY(x: number, y: number, window?: WindowLike): Posn | undefined;
     /** The width and height of text as a window shows it, as window-text-pixel-size: what it shows, by default. */
-    function windowTextPixelSize(window?: number, from?: number, to?: number): [number, number];
+    function windowTextPixelSize(window?: WindowLike, from?: number, to?: number): [number, number];
     /** The width and height of a buffer's text, its lines unwrapped, as buffer-text-pixel-size. */
     function bufferTextPixelSize(buffer?: string): [number, number];
     /** How wide a string shows, in its faces, as string-pixel-width. */
@@ -16404,15 +16437,15 @@ declare global {
     /** Whether redisplay is cutting corners for long lines, as long-line-optimizations-p: never. */
     function longLineOptimizationsP(): boolean;
     /** A window's left and right margins in columns, undefined for none, as window-margins. */
-    function windowMargins(window?: number): [number | undefined, number | undefined];
+    function windowMargins(window?: WindowLike): [number | undefined, number | undefined];
     /** Set a window's margins while it shows its buffer, as set-window-margins. Returns whether they changed. */
-    function setWindowMargins(window: number | undefined, left?: number, right?: number): boolean;
+    function setWindowMargins(window: WindowLike | undefined, left?: number, right?: number): boolean;
     /** A window's fringe widths and whether they are outside the margins, as window-fringes: 8 each in the GUI, none on a terminal. */
-    function windowFringes(window?: number): [number, number, boolean, boolean];
+    function windowFringes(window?: WindowLike): [number, number, boolean, boolean];
     /** Show or hide a window's cursor, as internal-show-cursor. */
-    function internalShowCursor(window: number | undefined, show: boolean): void;
+    function internalShowCursor(window: WindowLike | undefined, show: boolean): void;
     /** Whether a window's cursor shows, as internal-show-cursor-p. */
-    function internalShowCursorP(window?: number): boolean;
+    function internalShowCursorP(window?: WindowLike): boolean;
     /**
      * Define a fringe bitmap from rows of bits, the leftmost the most
      * significant of `width` (8 by default), as define-fringe-bitmap; `align`
@@ -16426,11 +16459,11 @@ declare global {
     /** Whether a fringe bitmap of this name is standard or defined, as fringe-bitmap-p. */
     function fringeBitmapP(bitmap: string): boolean;
     /** The bitmaps in the left and right fringes beside a position, as fringe-bitmaps-at-pos; undefined if it does not show. */
-    function fringeBitmapsAtPos(pos?: number, window?: number): [string | undefined, string | undefined] | undefined;
+    function fringeBitmapsAtPos(pos?: number, window?: WindowLike): [string | undefined, string | undefined] | undefined;
     /** A window's point, the selected window's by default, as window-point: in the selected window, its buffer's point. */
-    function windowPoint(window?: number): number;
+    function windowPoint(window?: WindowLike): number;
     /** Move a window's point, as set-window-point. */
-    function setWindowPoint(window: number | undefined, pos: number): void;
+    function setWindowPoint(window: WindowLike | undefined, pos: number): void;
     /**
      * Show in a window the buffer it showed before, as switch-to-prev-buffer:
      * one of its previous buffers, where it was, else one from the buffer
@@ -16438,30 +16471,30 @@ declare global {
      * window; with "append", it goes to the end of its previous buffers.
      * Returns the buffer shown, or undefined if there was none to show.
      */
-    function switchToPrevBuffer(window?: number, buryOrKill?: "bury" | "kill" | "append"): string | undefined;
+    function switchToPrevBuffer(window?: WindowLike, buryOrKill?: "bury" | "kill" | "append"): string | undefined;
     /** Show in a window the buffer previous-buffer left, as switch-to-next-buffer. Returns it, or undefined. */
-    function switchToNextBuffer(window?: number): string | undefined;
+    function switchToNextBuffer(window?: WindowLike): string | undefined;
     /** A window's parameter, as window-parameter, such as "quit-restore". */
-    function windowParameter(window: number | undefined, name: string | symbol): Value | undefined;
+    function windowParameter(window: WindowLike | undefined, name: string | symbol): Value | undefined;
     /** Set a window's parameter, or with null take it away, as set-window-parameter. */
-    function setWindowParameter(window: number | undefined, name: string | symbol, value: Value): void;
+    function setWindowParameter(window: WindowLike | undefined, name: string | symbol, value: Value): void;
     /** A window's parameters, as window-parameters. */
-    function windowParameters(window?: number): { [name: string]: Value };
+    function windowParameters(window?: WindowLike): { [name: string]: Value };
     /** Whether a window is dedicated to its buffer, as window-dedicated-p: true for strongly, or what it was set to. */
-    function windowDedicatedP(window?: number): Value | undefined;
+    function windowDedicatedP(window?: WindowLike): Value | undefined;
     /**
      * Dedicate a window to its buffer, or with null free it, as
      * set-window-dedicated-p: switch-to-buffer in a window dedicated with
      * true shows the buffer in another window, display-buffer passes it
      * over, and killing its buffer deletes it.
      */
-    function setWindowDedicatedP(window: number | undefined, flag: Value): void;
+    function setWindowDedicatedP(window: WindowLike | undefined, flag: Value): void;
     /** The buffers a window showed before, most recent first, each with where it started and its point, as window-prev-buffers. */
-    function windowPrevBuffers(window?: number): [string, number, number][];
-    function setWindowPrevBuffers(window: number | undefined, buffers: [string, number, number][]): void;
+    function windowPrevBuffers(window?: WindowLike): [string, number, number][];
+    function setWindowPrevBuffers(window: WindowLike | undefined, buffers: [string, number, number][]): void;
     /** The buffers previous-buffer went back from in a window, as window-next-buffers. */
-    function windowNextBuffers(window?: number): string[];
-    function setWindowNextBuffers(window: number | undefined, buffers: string[]): void;
+    function windowNextBuffers(window?: WindowLike): string[];
+    function setWindowNextBuffers(window: WindowLike | undefined, buffers: string[]): void;
     /** A frame's windows as they are, as current-window-configuration. */
     interface WindowConfiguration {
       readonly __e8WindowConfiguration: number;
@@ -16526,7 +16559,7 @@ declare global {
      * while a prompt is open, and selectedWindow while it is selected, as it
      * is when a prompt opens, until other-window selects another.
      */
-    function minibufferWindow(): number;
+    function minibufferWindow(): Window;
     /**
      * The text a mode line construct shows for the current buffer and the
      * selected window, as format-mode-line; `mode-line-format`'s by default.
@@ -16600,7 +16633,7 @@ declare global {
      */
     function matchString(n?: number, string?: string): string | undefined;
     /** How windows divide a frame: a window, or a split of two parts, side by side or one above the other, as windowTree gives it. */
-    type WindowTreeNode = number | [sideBySide: boolean, firstSize: number | null, first: WindowTreeNode, second: WindowTreeNode];
+    type WindowTreeNode = Window | [sideBySide: boolean, firstSize: number | null, first: WindowTreeNode, second: WindowTreeNode];
     /** An error as a handler of conditionCase sees it: its condition, its data, and its message. */
     interface SignalledError {
       symbol: string;

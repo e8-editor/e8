@@ -159,7 +159,7 @@ function page(all: Cell[], height: number, width: number): { lines: (string | e8
 // --- The window -------------------------------------------------------------
 
 const BUFFER = " *which-key*";
-let popup: number | undefined;
+let popup: e8.Window | undefined;
 /** The prefix the window shows the keys of. */
 let shownPrefix: string | undefined;
 

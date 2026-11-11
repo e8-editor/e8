@@ -345,7 +345,7 @@ fn c_x_o_leaves_the_minibuffer_and_comes_back() {
     let (mut ed, s) = setup();
     ed.press("M-x").unwrap();
     ed.type_text("end-of-b");
-    assert_eq!(s.eval_expression(&mut ed, "JSON.stringify([e8.windowList(), e8.selectedWindow()])").unwrap(), r#""[[1,0],0]""#);
+    assert_eq!(s.eval_expression(&mut ed, "JSON.stringify([e8.windowList().map((w) => w.id), e8.selectedWindow().id])").unwrap(), r#""[[1,0],0]""#);
     ed.press("C-x o").unwrap();
     // The prompt stays open while another window is selected; keys act there.
     assert_eq!(ed.prompt(), Some("M-x "));

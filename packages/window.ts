@@ -73,9 +73,9 @@ const deleteOtherWindows = e8.defineCommand({
  * and `"same"` first once BUFFER is shown in it again. SELECTED is the window
  * selected then.
  */
-type QuitRestore = [string, string | [string, number, number, number], number, string];
+type QuitRestore = [string, string | [string, number, number, number], e8.Window, string];
 
-function quitRestore(window: number): QuitRestore | undefined {
+function quitRestore(window: e8.Window): QuitRestore | undefined {
   const v = e8.windowParameter(window, "quit-restore");
   return Array.isArray(v) && v.length === 4 ? (v as unknown as QuitRestore) : undefined;
 }
@@ -85,7 +85,7 @@ function quitRestore(window: number): QuitRestore | undefined {
  * in it, as display-buffer-record-window: `type` is "reuse" for a window
  * that was there, else "window" or "frame" for one made for the buffer.
  */
-function recordWindow(type: "reuse" | "window" | "frame", window: number, buffer: string): void {
+function recordWindow(type: "reuse" | "window" | "frame", window: e8.Window, buffer: string): void {
   const selected = e8.selectedWindow();
   if (type !== "reuse") {
     e8.setWindowParameter(window, "quit-restore", [type, type, selected, buffer]);
@@ -107,7 +107,7 @@ function recordWindow(type: "reuse" | "window" | "frame", window: number, buffer
  * notes how to undo it, frees a reused window of a dedication, and gives a
  * new window no previous buffers.
  */
-function showInWindow(buffer: string, window: number, type: "reuse" | "window" | "frame"): number {
+function showInWindow(buffer: string, window: e8.Window, type: "reuse" | "window" | "frame"): e8.Window {
   recordWindow(type, window, buffer);
   if (e8.windowBuffer(window) !== buffer) {
     e8.setWindowDedicatedP(window, null);
@@ -118,9 +118,9 @@ function showInWindow(buffer: string, window: number, type: "reuse" | "window" |
 }
 
 /** Whether a window is dedicated to its buffer, which display-buffer does not take for another. */
-const dedicated = (window: number): boolean => e8.windowDedicatedP(window) !== undefined && e8.windowDedicatedP(window) !== false;
+const dedicated = (window: e8.Window): boolean => e8.windowDedicatedP(window) !== undefined && e8.windowDedicatedP(window) !== false;
 
-function size(window: number) {
+function size(window: e8.Window) {
   return e8.windowSize(window) ?? { width: 0, height: 0, totalWidth: 0, totalHeight: 0, fullWidth: true };
 }
 
@@ -130,11 +130,11 @@ function size(window: number) {
  * window only last, and not at all with `notSelected`; a dedicated one
  * only with `dedicatedOk`.
  */
-function lruWindow(notSelected: boolean, dedicatedOk = false): number | undefined {
+function lruWindow(notSelected: boolean, dedicatedOk = false): e8.Window | undefined {
   const selected = e8.selectedWindow();
-  let best: number | undefined;
+  let best: e8.Window | undefined;
   let bestTime = Infinity;
-  let second: number | undefined;
+  let second: e8.Window | undefined;
   let secondTime = Infinity;
   for (const window of e8.windowList()) {
     if ((notSelected && window === selected) || (!dedicatedOk && dedicated(window))) continue;
@@ -149,8 +149,8 @@ function lruWindow(notSelected: boolean, dedicatedOk = false): number | undefine
 }
 
 /** The largest window by area, as get-largest-window finds it. */
-function largestWindow(notSelected: boolean, dedicatedOk = false): number | undefined {
-  let best: number | undefined;
+function largestWindow(notSelected: boolean, dedicatedOk = false): e8.Window | undefined {
+  let best: e8.Window | undefined;
   let bestArea = -1;
   for (const window of e8.windowList()) {
     if ((notSelected && window === e8.selectedWindow()) || (!dedicatedOk && dedicated(window))) continue;
@@ -176,7 +176,7 @@ e8.defineVariable({
 });
 
 /** Whether a window is big enough to split, as window-splittable-p decides: a threshold of nil never is. */
-function splittable(window: number, horizontal: boolean, heightThreshold?: number): boolean {
+function splittable(window: e8.Window, horizontal: boolean, heightThreshold?: number): boolean {
   const s = size(window);
   if (horizontal) {
     const threshold = e8.variable("split-width-threshold");
@@ -193,7 +193,7 @@ function splittable(window: number, horizontal: boolean, heightThreshold?: numbe
  * below it if it is tall enough, else to its right if it is wide enough,
  * else below it anyway if it is the only window. Returns the new window.
  */
-function splitSensibly(window: number): number | undefined {
+function splitSensibly(window: e8.Window): e8.Window | undefined {
   if (splittable(window, false)) return e8.splitWindow(window, "below");
   if (splittable(window, true)) return e8.splitWindow(window, "right");
   if (e8.windowList().length === 1 && splittable(window, false, 0)) return e8.splitWindow(window, "below");
@@ -206,7 +206,7 @@ function splitSensibly(window: number): number | undefined {
  * unless `inhibitSameWindow`; else a new window split off the largest or
  * least recently used one; else the least recently used window.
  */
-function displayBuffer(buffer: string, inhibitSameWindow = false): number {
+function displayBuffer(buffer: string, inhibitSameWindow = false): e8.Window {
   e8.getBufferCreate(buffer);
   const selected = e8.selectedWindow();
   const showing = e8.windowList().filter((w) => e8.windowBuffer(w) === buffer && !(inhibitSameWindow && w === selected));
@@ -284,7 +284,7 @@ const killBufferAndWindow = e8.defineCommand({
  * the frame if there are others and its buffer is being killed; Emacs
  * would hide such a frame otherwise, which E8 cannot. Says whether it went.
  */
-function windowDelete(window: number, dedicatedOnly: boolean, kill: boolean): boolean {
+function windowDelete(window: e8.Window, dedicatedOnly: boolean, kill: boolean): boolean {
   if (dedicatedOnly && !dedicated(window)) return false;
   if (e8.windowList().length > 1) {
     e8.deleteWindow(window);
@@ -298,7 +298,7 @@ function windowDelete(window: number, dedicatedOnly: boolean, kill: boolean): bo
 }
 
 /** Selects the window selected when a quit window's buffer was shown, if it is still there. */
-function reselect(window: number | undefined): void {
+function reselect(window: e8.Window | undefined): void {
   if (window !== undefined && window !== e8.selectedWindow() && e8.windowList().includes(window)) e8.selectWindow(window);
 }
 
@@ -310,7 +310,7 @@ function reselect(window: number | undefined): void {
  * buffer list and forgets it in the window, and "append" moves it to the
  * end of the window's previous buffers.
  */
-function quitRestoreWindow(window: number, buryOrKill?: "bury" | "kill" | "append"): void {
+function quitRestoreWindow(window: e8.Window, buryOrKill?: "bury" | "kill" | "append"): void {
   const buffer = e8.windowBuffer(window) ?? "";
   const restore = quitRestore(window);
   const selectedThen = restore?.[2];
@@ -383,7 +383,7 @@ e8.defineCommand({
     const buffer = e8.bufferName();
     e8.buryBufferInternal(buffer);
     const window = e8.selectedWindow();
-    if (window === 0 || e8.windowBuffer(window) !== buffer) return;
+    if (window === e8.minibufferWindow() || e8.windowBuffer(window) !== buffer) return;
     if (windowDelete(window, true, false)) return;
     e8.setWindowDedicatedP(window, null);
     e8.switchToPrevBuffer(window, "bury");
@@ -391,7 +391,7 @@ e8.defineCommand({
 });
 
 /** The window C-M-v scrolls, as other-window-for-scrolling: the next one. */
-function otherWindowForScrolling(): number {
+function otherWindowForScrolling(): e8.Window {
   const windows = e8.windowList();
   if (windows.length === 1) throw new Error("There is no other window");
   return windows[(windows.indexOf(e8.selectedWindow()) + 1) % windows.length];
@@ -423,7 +423,7 @@ const scrollOtherWindowDown = e8.defineCommand({
 
 /** Why the selected window cannot switch buffers, if it cannot, as previous-buffer checks. */
 function cannotSwitch(): void {
-  if (e8.selectedWindow() === 0) e8.userError("Cannot switch buffers in minibuffer window");
+  if (e8.selectedWindow() === e8.minibufferWindow()) e8.userError("Cannot switch buffers in minibuffer window");
   if (e8.windowDedicatedP() === true) e8.userError("Window is strongly dedicated to its buffer");
 }
 
@@ -723,7 +723,7 @@ export type WindowState = WindowLeafState | { sideBySide: boolean; firstSize: nu
 export function windowStateGet(): WindowState {
   const selected = e8.selectedWindow();
   const node = (t: e8.WindowTreeNode): WindowState => {
-    if (typeof t === "number") {
+    if (!Array.isArray(t)) {
       const buffer = e8.windowBuffer(t) ?? "*scratch*";
       const file = e8.withCurrentBuffer(buffer, () => e8.bufferFileName());
       return { buffer, ...(file ? { file } : {}), point: e8.windowPoint(t), start: e8.windowStart(t), selected: t === selected };
@@ -741,8 +741,8 @@ export function windowStateGet(): WindowState {
  */
 export function windowStatePut(state: WindowState): void {
   e8.call("delete-other-windows");
-  let toSelect: number | undefined;
-  const fill = (window: number, s: WindowState): void => {
+  let toSelect: e8.Window | undefined;
+  const fill = (window: e8.Window, s: WindowState): void => {
     if ("buffer" in s) {
       const visiting = (file: string) => e8.bufferList().find((b) => e8.withCurrentBuffer(b, () => e8.bufferFileName()) === file);
       const byFile = s.file ? visiting(s.file) : undefined;
@@ -755,7 +755,7 @@ export function windowStatePut(state: WindowState): void {
       if (s.selected) toSelect = window;
       return;
     }
-    let other: number;
+    let other: e8.Window;
     try {
       other = e8.splitWindow(window, s.sideBySide ? "right" : "below", s.firstSize ?? undefined);
     } catch {

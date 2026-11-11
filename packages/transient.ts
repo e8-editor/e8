@@ -185,7 +185,7 @@ interface Active {
   layout: Layout[];
   suffixes: Suffix[];
   buffer: e8.Buffer;
-  window: number;
+  window: e8.Window | undefined;
 }
 let active: Active | undefined;
 /** The menus a sub-menu was entered from, to go back to: their prefix and infix values. */
@@ -567,12 +567,12 @@ function show(): void {
   const wanted = e8.withCurrentBuffer(BUFFER, () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()).replace(/\n$/, "").split("\n").length);
   const minHeight = Number(e8.variable("window-min-height") ?? 4) || 4;
   const lines = Math.max(1, Math.min(wanted, e8.frameHeight() - minHeight));
-  const live = active.window !== 0 && e8.windowList().includes(active.window);
+  const live = active.window !== undefined && e8.windowList().includes(active.window);
   if (live && e8.windowSize(active.window)?.totalHeight !== lines) {
     e8.deleteWindow(active.window);
-    active.window = 0;
+    active.window = undefined;
   }
-  if (!live || active.window === 0) {
+  if (active.window === undefined || !live) {
     const selected = e8.selectedWindow();
     active.window = e8.splitRootWindow("below", -Math.max(1, lines));
     e8.setWindowBuffer(active.window, BUFFER);
@@ -583,9 +583,9 @@ function show(): void {
 
 /** Takes the menu's window away, as transient--delete-window. */
 function hide(): void {
-  if (active && active.window !== 0 && e8.windowList().includes(active.window)) e8.deleteWindow(active.window);
+  if (active?.window !== undefined && e8.windowList().includes(active.window)) e8.deleteWindow(active.window);
   if (e8.bufferLiveP(e8.getBuffer(BUFFER))) e8.call("kill-buffer", BUFFER);
-  if (active) active.window = 0;
+  if (active) active.window = undefined;
 }
 
 /**
@@ -831,7 +831,7 @@ function invalid(message: string): void {
 function setup(prefix: string, buffer: e8.Buffer, keepValues = false): void {
   const defs = prefixes.get(prefix);
   if (!defs) e8.signal("error", `Not a transient prefix: ${prefix}`);
-  active = { prefix, layout: [], suffixes: [], buffer, window: 0 };
+  active = { prefix, layout: [], suffixes: [], buffer, window: undefined };
   e8.withCurrentBuffer(buffer, () => {
     active!.layout = defs.groups.map((g) => makeLayout(prefix, g)).filter((l): l is Layout => l !== undefined);
   });
