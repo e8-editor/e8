@@ -25,6 +25,7 @@ mod compile;
 mod dabbrev;
 mod desktop;
 mod diff;
+mod display_buffer;
 mod ediff;
 mod dired;
 mod editorconfig;
