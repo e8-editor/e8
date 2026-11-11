@@ -70,6 +70,6 @@ fn ispell_word_offers_corrections_in_choices() {
     ed.press("M-$ 0").unwrap();
     let b = ed.window_buffer();
     assert_eq!(b.slice(0..b.len()), "A spelling mistake.\n");
-    assert!(ed.buffers().iter().any(|b| b.name == "*Choices*" && b.slice(0..b.len()).starts_with("(0) spelling")));
+    assert!(!ed.buffers().iter().any(|b| b.name == "*Choices*"), "killed afterwards, as ispell-word does");
     assert_eq!(ed.window_list().len(), 1, "the choices window goes");
 }

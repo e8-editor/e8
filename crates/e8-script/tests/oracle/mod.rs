@@ -333,6 +333,8 @@ fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answe
             let dir = &input[..input.rfind('/').map_or(0, |i| i + 1)];
             let absolute = answer.starts_with('/') || answer.starts_with('~');
             ed.set_minibuffer_input(if absolute { "" } else { dir });
+        } else if !input.is_empty() && !input.contains('/') {
+            ed.set_minibuffer_input("");
         }
         ed.type_text(&answer);
         ed.handle_key(Key::parse("RET").expect("RET parses"));

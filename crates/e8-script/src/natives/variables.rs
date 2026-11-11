@@ -304,10 +304,11 @@ natives! {
     }
 
     fn expandFileName(ed, file: String, dir: Opt<String>) -> String {
-        Ok(match dir.0 {
-            Some(dir) => e8_core::expand_file_name_in(&file, &ed.expand_file_name(&dir)).display().to_string(),
-            None => ed.expand_file_name(&file).display().to_string(),
-        })
+        let dir = match dir.0 {
+            Some(dir) => ed.expand_file_name(&dir),
+            None => ed.default_directory(),
+        };
+        Ok(e8_core::expand_file_name_string(&file, &dir))
     }
 
     fn directoryFiles(ed, dir: String, full: Opt<bool>, pattern: Opt<Option<String>>, nosort: Opt<bool>, count: Opt<Option<usize>>) -> Vec<String> {

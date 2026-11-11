@@ -44,6 +44,14 @@ pub fn expand_file_name_in(input: &str, dir: &Path) -> PathBuf {
     out
 }
 
+/// A file name made absolute as Lisp's `expand-file-name` gives it: as
+/// [`expand_file_name_in`], keeping a trailing slash when the name ends in
+/// one, as a directory name does, `"foo/"` giving `"/tmp/foo/"`.
+pub fn expand_file_name_string(input: &str, dir: &Path) -> String {
+    let out = expand_file_name_in(input, dir).display().to_string();
+    if input.ends_with('/') && !out.ends_with('/') { out + "/" } else { out }
+}
+
 /// Writes a path with the home directory as `~`.
 pub fn abbreviate_path(path: &Path) -> String {
     match home_dir() {
@@ -83,6 +91,34 @@ mod tests {
         let home = home_dir().unwrap();
         assert_eq!(expand_file_name("/a/b/~/notes.org"), home.join("notes.org"));
         assert_eq!(expand_file_name("~"), home);
+    }
+
+    #[test]
+    fn a_directory_name_keeps_its_slash_as_in_emacs() {
+        // What Emacs 30's expand-file-name gives for each.
+        let tmp = Path::new("/tmp/");
+        let home = home_dir().unwrap().display().to_string();
+        for (name, dir, expanded) in [
+            ("/tmp/", tmp, "/tmp/".to_string()),
+            ("foo/", tmp, "/tmp/foo/".to_string()),
+            ("foo/", Path::new("/tmp"), "/tmp/foo/".to_string()),
+            ("foo", Path::new("/tmp"), "/tmp/foo".to_string()),
+            ("~/", tmp, format!("{home}/")),
+            ("~", tmp, home.clone()),
+            ("~/a/", Path::new("/x/"), format!("{home}/a/")),
+            ("", tmp, "/tmp".to_string()),
+            (".", tmp, "/tmp".to_string()),
+            ("./", tmp, "/tmp/".to_string()),
+            ("foo/.", tmp, "/tmp/foo".to_string()),
+            ("foo/./", tmp, "/tmp/foo/".to_string()),
+            ("foo/..", tmp, "/tmp".to_string()),
+            ("foo/../", tmp, "/tmp/".to_string()),
+            ("..", Path::new("/tmp/a/"), "/tmp".to_string()),
+            ("../", Path::new("/tmp/a/"), "/tmp/".to_string()),
+            ("/", tmp, "/".to_string()),
+        ] {
+            assert_eq!(expand_file_name_string(name, dir), expanded, "{name:?} in {dir:?}");
+        }
     }
 
     #[test]

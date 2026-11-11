@@ -86,6 +86,17 @@ const jotNotes = e8.defineCommand({
 });
 e8.bindKey("C-c n", jotNotes);
 
+// Spell checking in English and Swedish at once: Hunspell takes several
+// dictionaries, and words either knows are right. M-x
+// ispell-change-dictionary picks another for a buffer, and a file can name
+// its own on its first line, as -*- ispell-local-dictionary: "sv_SE" -*-
+// (M-x add-file-local-variable-prop-line writes it), or a line
+// "Local IspellDict: sv_SE". A whole notes directory can, in a .dir-locals.el
+// there: ((org-mode . ((ispell-local-dictionary . "sv_SE")))), which
+// M-x add-dir-local-variable writes.
+// e8.setVariable("ispell-program-name", "hunspell");
+// e8.setVariable("ispell-dictionary", "en_US,sv_SE");
+
 // Org's agenda and capture, on the keys Org's manual suggests. Emacs leaves
 // them unbound, as E8 does.
 e8.setVariable("org-agenda-files", ["~/org/notes.org"]);

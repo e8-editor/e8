@@ -272,6 +272,8 @@ export function readin(keepState: boolean): void {
     insertListing(dir);
   });
   e8.runHooks("dired-after-readin-hook");
+  // As dired-revert does once the listing is back.
+  e8.funcall("hack-dir-local-variables-non-file-buffer");
   // As dired-readin, the new listing is unmodified; restoring marks
   // modifies it again, as dired-mark-remembered does.
   e8.setBufferModified(false);
@@ -340,6 +342,8 @@ function diredNoselect(input: string): string {
     e8.setVariable("default-directory", dir);
     e8.makeLocalVariable("dired-directory");
     e8.setVariable("dired-directory", short);
+    // As dired-mode does before listing: the directory's .dir-locals.el applies.
+    e8.funcall("hack-dir-local-variables-non-file-buffer");
     writable(() => insertListing(dir));
     e8.runHooks("dired-after-readin-hook");
     e8.setBufferModified(false);

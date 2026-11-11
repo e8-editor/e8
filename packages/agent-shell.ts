@@ -41,6 +41,7 @@ import { completionInRegion } from "minibuffer";
 import { BLOCK_BEGIN, BLOCK_END, flag, folded, toggleDrawerOrBlock, withoutFoldChecks } from "org-fold";
 import { current as projectRoot } from "project";
 import { allMatches, charCount, executableFind, truthy } from "subr";
+import { ispellWordCompletion } from "text-mode";
 
 e8.defineVariable({
   name: "agent-shell-agents",
@@ -328,6 +329,8 @@ e8.defineMajorMode({
     // TAB after a / at the start of the request completes the agent's slash commands, as C-M-i does.
     e8.addHook("org-cycle-tab-first-hook", completeSlashCommand, { local: true });
     e8.addHook("completion-at-point-functions", slashCompletions, { local: true });
+    // A request is to the agent, not prose: words from Text mode's word list would only get in the way of its commands.
+    e8.removeHook("completion-at-point-functions", ispellWordCompletion, { local: true });
     // Letters in the transcript, where typing is refused, move about it instead.
     e8.makeLocalVariable("org-use-speed-commands");
     e8.setVariable("org-use-speed-commands", inTranscript);

@@ -50,6 +50,7 @@ mod key;
 pub mod keyboard;
 mod kill_ring;
 mod keymap;
+pub mod lread;
 pub mod layout;
 mod minibuffer;
 mod modeline;
@@ -83,7 +84,7 @@ pub use faces::{
     color_names, color_values, color_values_from_spec, face_names, is_fixed_family, palette, palette_names,
 };
 pub use fileio::{auto_save_file_name, backup_file_name};
-pub use files::{abbreviate_dir, abbreviate_path, expand_file_name, expand_file_name_in};
+pub use files::{abbreviate_dir, abbreviate_path, expand_file_name, expand_file_name_in, expand_file_name_string};
 pub use key::{Key, KeyCode, MouseKind, format_keys};
 pub use keymap::{Binding, KeymapId, Keymaps, Lookup};
 pub use minibuffer::{MinibufferInfo, Reading, file_name_all_completions};

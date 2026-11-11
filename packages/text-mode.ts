@@ -1,5 +1,18 @@
 // Text mode, for writing prose, after Emacs's text-mode.el.
 
+e8.defineVariable({
+  name: "text-mode-ispell-word-completion",
+  value: e8.intern("completion-at-point"),
+  doc:
+    "How Text mode completes words from the plain word list ispell uses: `completion-at-point' offers them to " +
+    "C-M-i through completion-at-point-functions; t binds C-M-i to ispell-complete-word instead; nil does neither.",
+});
+
+/** Words from the word list for the word at point, as Text mode asks ispell-completion-at-point. */
+export function ispellWordCompletion(): unknown {
+  return e8.fboundp("ispell-completion-at-point") ? e8.funcall("ispell-completion-at-point") : null;
+}
+
 e8.defineMajorMode({
   name: "text-mode",
   modeName: "Text",
@@ -13,6 +26,10 @@ e8.defineMajorMode({
   // As text-mode.el: files of prose end in a newline.
   setup: () => {
     e8.setVariable("require-final-newline", e8.variable("mode-require-final-newline") ?? true);
+    const completion = e8.variable("text-mode-ispell-word-completion");
+    if (completion === e8.intern("completion-at-point") || completion === "completion-at-point") {
+      e8.addHook("completion-at-point-functions", ispellWordCompletion, { local: true, depth: 10 });
+    } else if (completion === true) e8.bindKey("C-M-i", "ispell-complete-word" as e8.CommandName, "text-mode-map");
   },
 });
 
