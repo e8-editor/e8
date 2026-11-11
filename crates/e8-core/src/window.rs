@@ -502,6 +502,7 @@ impl Editor {
         }
         self.frame_order.retain(|f| *f != id);
         self.frame_parameters.remove(&id);
+        self.frame_raises.remove(&id);
         self.tab_bars.remove(&id);
         Ok(())
     }
@@ -867,7 +868,7 @@ impl Editor {
 
     /// Selects a window, leaving the buffer list as it is, as
     /// `select-window` does with NORECORD.
-    pub(crate) fn select_window_norecord(&mut self, id: WindowId) -> Result<()> {
+    pub fn select_window_norecord(&mut self, id: WindowId) -> Result<()> {
         if id == MINIBUFFER_WINDOW {
             return self.select_minibuffer_window();
         }
@@ -1515,6 +1516,120 @@ impl Editor {
     /// `tab-bar-line` parameter, a mode line construct, if it shows one.
     pub fn tab_bar(&self, frame: FrameId) -> Option<&[crate::modeline::ModeLineSegment]> {
         self.tab_bars.get(&frame).map(Vec::as_slice)
+    }
+
+    /// The frame a window is on, as Emacs's `window-frame`: the minibuffer's
+    /// window is the selected frame's. None for no such window.
+    pub fn window_frame(&self, window: WindowId) -> Option<FrameId> {
+        if window == MINIBUFFER_WINDOW || self.window_tree.leaves().contains(&window) {
+            return Some(self.selected_frame);
+        }
+        self.other_frames.iter().find(|f| f.tree.leaves().contains(&window)).map(|f| f.id)
+    }
+
+    /// A frame's first window, its top left one, as Emacs's `frame-first-window`.
+    pub fn frame_first_window(&self, frame: FrameId) -> Option<WindowId> {
+        self.frame_tree(frame).and_then(|t| t.leaves().first().copied())
+    }
+
+    /// The frames after and before one in `frame-list`'s order, round the
+    /// end, as Emacs's `next-frame` and `previous-frame`.
+    pub fn next_frame(&self, frame: FrameId, forward: bool) -> Option<FrameId> {
+        let k = self.frame_order.iter().position(|f| *f == frame)?;
+        let n = self.frame_order.len();
+        Some(self.frame_order[if forward { (k + 1) % n } else { (k + n - 1) % n }])
+    }
+
+    /// Windows in cyclic order starting with one, the selected window by
+    /// default, as Emacs's `window-list-1`: those of its frame, or of every
+    /// frame with `all_frames`, the minibuffer's window after them with
+    /// `minibuffer`.
+    pub fn window_list_1(&self, window: Option<WindowId>, minibuffer: bool, all_frames: bool) -> Vec<WindowId> {
+        let start = window.unwrap_or(self.selected_window);
+        let frame = self.window_frame(start).unwrap_or(self.selected_frame);
+        let frames: Vec<FrameId> = if all_frames {
+            // The window's frame first, then the others in frame-list order after it.
+            let k = self.frame_order.iter().position(|f| *f == frame).unwrap_or(0);
+            self.frame_order[k..].iter().chain(&self.frame_order[..k]).copied().collect()
+        } else {
+            vec![frame]
+        };
+        let mut list: Vec<WindowId> = frames.iter().filter_map(|f| self.frame_tree(*f)).flat_map(WindowTree::leaves).collect();
+        // The minibuffer's window comes after the selected frame's windows,
+        // as each Emacs frame's after its own.
+        if minibuffer {
+            let selected = self.frame_tree(self.selected_frame).map_or(0, |t| t.leaves().len());
+            let before: usize = frames.iter().take_while(|f| **f != self.selected_frame).filter_map(|f| self.frame_tree(*f)).map(|t| t.leaves().len()).sum();
+            let at = if frames.contains(&self.selected_frame) { before + selected } else { list.len() };
+            list.insert(at, MINIBUFFER_WINDOW);
+        }
+        if let Some(k) = list.iter().position(|w| *w == start) {
+            list.rotate_left(k);
+        }
+        list
+    }
+
+    /// A frame's visibility, as Emacs's `frame-visible-p`: its `visibility`
+    /// parameter, t unless made invisible (nil) or iconified (`icon`).
+    pub fn frame_visibility(&self, frame: FrameId) -> Value {
+        self.frame_parameter(frame, "visibility").unwrap_or(Value::Bool(true))
+    }
+
+    /// Shows a frame, hides it, or iconifies it, as Emacs's
+    /// `make-frame-visible`, `make-frame-invisible` and `iconify-frame`:
+    /// its `visibility` parameter, which a front end follows.
+    /// The only frame shown or iconified cannot be hidden, as in Emacs.
+    pub fn set_frame_visibility(&mut self, frame: FrameId, visibility: Value) -> Result<()> {
+        if !visibility.is_true() && self.frame_order.iter().all(|f| *f == frame || !self.frame_visibility(*f).is_true()) {
+            return Err(Error::new("Attempt to make invisible the sole visible or iconified frame"));
+        }
+        self.set_frame_parameter(frame, "visibility", visibility)
+    }
+
+    /// Asks the front end to bring a frame in front of the others, as
+    /// Emacs's `raise-frame`, showing it if it was hidden or iconified.
+    pub fn raise_frame(&mut self, frame: FrameId) -> Result<()> {
+        self.set_frame_visibility(frame, Value::Bool(true))?;
+        *self.frame_raises.entry(frame).or_insert(0) += 1;
+        Ok(())
+    }
+
+    /// How many times a frame has been raised, for a front end to see a new request.
+    pub fn frame_raises(&self, frame: FrameId) -> u64 {
+        self.frame_raises.get(&frame).copied().unwrap_or(0)
+    }
+
+    /// Whether a window shows a mode line: its buffer's `mode-line-format`
+    /// is not nil, and it is not the minibuffer's.
+    pub fn window_shows_mode_line(&self, id: WindowId) -> bool {
+        let Some(w) = self.window(id) else { return false };
+        let b = &self.buffers[self.buffer_index(w.buffer)];
+        self.variable_in(b, "mode-line-format").is_some_and(|v| v.is_true())
+    }
+
+    /// A window's total size in lines and columns, its mode line, header
+    /// line and divider included, as `window-total-height` and `-width`
+    /// count them.
+    pub fn window_total_size(&self, id: WindowId) -> Option<(usize, usize)> {
+        if let Some(&(_, cols, lines)) = self.window_total_sizes().iter().find(|(w, ..)| *w == id) {
+            return Some((cols, lines));
+        }
+        let w = self.window(id)?;
+        let lines = w.height + usize::from(self.window_shows_mode_line(id)) + usize::from(self.window_wants_header_line(id, w.height + 2));
+        Some((w.width, lines))
+    }
+
+    /// A window's total size in the front end's units, pixels or cells, as
+    /// `window-pixel-width` and `window-pixel-height`: its total columns and
+    /// lines at the default font's size.
+    pub fn window_pixel_size(&self, id: WindowId) -> Option<(f32, f32)> {
+        if id == MINIBUFFER_WINDOW {
+            let m = self.text_metrics();
+            return Some((self.frame_cells().0 as f32 * m.char_width(), self.mini_window_lines() as f32 * m.char_height()));
+        }
+        let (cols, lines) = self.window_total_size(id)?;
+        let m = self.text_metrics();
+        Some((cols as f32 * m.char_width(), lines as f32 * m.char_height()))
     }
 
     /// A frame's selected window.

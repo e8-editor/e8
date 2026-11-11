@@ -38,6 +38,7 @@ mod file_locals;
 mod files;
 mod flyspell;
 mod fonts;
+mod frame_accessors;
 mod help;
 mod help_guide;
 mod hi_lock;

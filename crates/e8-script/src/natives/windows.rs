@@ -81,9 +81,11 @@ natives! {
         ed.delete_window(window)
     }
 
-    /// Make a window the selected one, whose buffer commands act on.
-    pub fn selectWindow(ed, window: u64) {
-        ed.select_window(window)
+    /// Make a window the selected one, whose buffer commands act on; with
+    /// `norecord`, leaving the buffer list as it is, as select-window's NORECORD.
+    #[ts = "(window: number, norecord?: boolean): void"]
+    pub fn selectWindow(ed, window: u64, norecord: Option<bool>) {
+        if norecord == Some(true) { ed.select_window_norecord(window) } else { ed.select_window(window) }
     }
 
     pub fn selectedWindow(ed) -> u64 {
@@ -173,6 +175,145 @@ natives! {
     #[ts = "(frame: number | undefined, name: string, value: Value): void"]
     pub fn setFrameParameter(ed, frame: Option<u64>, name: String, value: EditorValue) {
         ed.set_frame_parameter(frame.unwrap_or(ed.selected_frame()), &name, value)
+    }
+
+    /// The frame a window is on, the selected window by default, as window-frame.
+    #[ts = "(window?: number): number | undefined"]
+    pub fn windowFrame(ed, window: Option<u64>) -> Option<u64> {
+        Ok(ed.window_frame(window.unwrap_or(ed.selected_window())))
+    }
+
+    /// A frame's first window, its top left one, the selected frame's by default, as frame-first-window.
+    #[ts = "(frame?: number): number | undefined"]
+    pub fn frameFirstWindow(ed, frame: Option<u64>) -> Option<u64> {
+        Ok(ed.frame_first_window(frame.unwrap_or(ed.selected_frame())))
+    }
+
+    /// The frame after one, the selected frame by default, round the end of frame-list, as next-frame.
+    #[ts = "(frame?: number): number | undefined"]
+    pub fn nextFrame(ed, frame: Option<u64>) -> Option<u64> {
+        Ok(ed.next_frame(frame.unwrap_or(ed.selected_frame()), true))
+    }
+
+    /// The frame before one, the selected frame by default, as previous-frame.
+    #[ts = "(frame?: number): number | undefined"]
+    pub fn previousFrame(ed, frame: Option<u64>) -> Option<u64> {
+        Ok(ed.next_frame(frame.unwrap_or(ed.selected_frame()), false))
+    }
+
+    /// Windows in cyclic order starting with one, the selected window by
+    /// default, as window-list-1: its frame's, or every frame's with
+    /// `allFrames`, with the minibuffer's window last if `minibuffer`.
+    #[ts = "(window?: number, minibuffer?: boolean, allFrames?: boolean): number[]"]
+    pub fn windowList1(ed, window: Option<u64>, minibuffer: Option<bool>, all_frames: Option<bool>) -> Vec<u64> {
+        Ok(ed.window_list_1(window, minibuffer.unwrap_or(false), all_frames.unwrap_or(false)))
+    }
+
+    /// Whether a value is a window, live, as window-valid-p; E8 has no
+    /// internal windows as values.
+    #[ts = "(window: unknown): boolean"]
+    pub fn windowValidP(ed, window: EditorValue) -> bool {
+        Ok(matches!(window, EditorValue::Number(n) if n >= 0.0 && n.fract() == 0.0 && ed.window_frame(n as u64).is_some()))
+    }
+
+    /// Whether a frame is shown: true, false when made invisible, or "icon"
+    /// when iconified, as frame-visible-p.
+    #[ts = "(frame?: number): boolean | \"icon\""]
+    pub fn frameVisibleP(ed, frame: Option<u64>) -> EditorValue {
+        let frame = frame.unwrap_or(ed.selected_frame());
+        if !ed.frame_list().contains(&frame) {
+            return Err(e8_core::Error::signal("wrong-type-argument", "Not a live frame", vec![EditorValue::Symbol("frame-live-p".into()), EditorValue::Number(frame as f64)]));
+        }
+        Ok(match ed.frame_visibility(frame) {
+            EditorValue::Null => EditorValue::Bool(false),
+            v => v,
+        })
+    }
+
+    /// The frames that are shown, as visible-frame-list.
+    pub fn visibleFrameList(ed) -> Vec<u64> {
+        Ok(ed.frame_list().into_iter().filter(|f| ed.frame_visibility(*f) == EditorValue::Bool(true)).collect())
+    }
+
+    /// Show a frame, the selected one by default, as make-frame-visible.
+    #[ts = "(frame?: number): void"]
+    pub fn makeFrameVisible(ed, frame: Option<u64>) {
+        ed.set_frame_visibility(frame.unwrap_or(ed.selected_frame()), EditorValue::Bool(true))
+    }
+
+    /// Hide a frame, the selected one by default, as make-frame-invisible.
+    #[ts = "(frame?: number): void"]
+    pub fn makeFrameInvisible(ed, frame: Option<u64>) {
+        ed.set_frame_visibility(frame.unwrap_or(ed.selected_frame()), EditorValue::Bool(false))
+    }
+
+    /// Iconify a frame, the selected one by default, as iconify-frame.
+    #[ts = "(frame?: number): void"]
+    pub fn iconifyFrame(ed, frame: Option<u64>) {
+        ed.set_frame_visibility(frame.unwrap_or(ed.selected_frame()), EditorValue::Str("icon".into()))
+    }
+
+    /// Bring a frame, the selected one by default, in front of the others,
+    /// showing it if hidden or iconified, as raise-frame.
+    #[ts = "(frame?: number): void"]
+    pub fn raiseFrame(ed, frame: Option<u64>) {
+        ed.raise_frame(frame.unwrap_or(ed.selected_frame()))
+    }
+
+    /// The height of a line of the frame's default font, in the front end's
+    /// units: pixels, or 1 on a terminal, as frame-char-height.
+    #[ts = "(frame?: number): number"]
+    pub fn frameCharHeight(ed, frame: Option<u64>) -> f64 {
+        let _ = frame;
+        Ok(ed.text_metrics().char_height() as f64)
+    }
+
+    /// The kind of display a frame is on, as window-system: "ns" for the
+    /// window on macOS, "x" elsewhere, "w32" on Windows, undefined on a terminal.
+    #[ts = "(frame?: number): \"ns\" | \"x\" | \"w32\" | undefined"]
+    pub fn windowSystem(ed, frame: Option<u64>) -> Option<String> {
+        let _ = frame;
+        if !ed.text_metrics().images() {
+            return Ok(None);
+        }
+        Ok(Some(if cfg!(target_os = "macos") { "ns" } else if cfg!(windows) { "w32" } else { "x" }.to_string()))
+    }
+
+    /// A window's total size, its mode line, header line and divider
+    /// included, in the front end's units, the selected window's by
+    /// default, as window-pixel-width.
+    #[ts = "(window?: number): number"]
+    pub fn windowPixelWidth(ed, window: Option<u64>) -> f64 {
+        let w = window.unwrap_or(ed.selected_window());
+        Ok(ed.window_pixel_size(w).ok_or_else(|| e8_core::Error::new("No such window"))?.0 as f64)
+    }
+
+    /// A window's total height in the front end's units, as window-pixel-height.
+    #[ts = "(window?: number): number"]
+    pub fn windowPixelHeight(ed, window: Option<u64>) -> f64 {
+        let w = window.unwrap_or(ed.selected_window());
+        Ok(ed.window_pixel_size(w).ok_or_else(|| e8_core::Error::new("No such window"))?.1 as f64)
+    }
+
+    /// How tall a window's mode line is, 0 without one, as window-mode-line-height.
+    #[ts = "(window?: number): number"]
+    pub fn windowModeLineHeight(ed, window: Option<u64>) -> f64 {
+        let w = window.unwrap_or(ed.selected_window());
+        Ok(if ed.window_shows_mode_line(w) { ed.text_metrics().char_height() as f64 } else { 0.0 })
+    }
+
+    /// How tall a window's header line is, 0 without one, as window-header-line-height.
+    #[ts = "(window?: number): number"]
+    pub fn windowHeaderLineHeight(ed, window: Option<u64>) -> f64 {
+        let w = window.unwrap_or(ed.selected_window());
+        let lines = ed.window_total_size(w).map_or(0, |s| s.1);
+        Ok(if ed.window_wants_header_line(w, lines) { ed.text_metrics().char_height() as f64 } else { 0.0 })
+    }
+
+    /// A frame's selected window, the selected frame's by default, as frame-selected-window.
+    #[ts = "(frame?: number): number | undefined"]
+    pub fn frameSelectedWindow(ed, frame: Option<u64>) -> Option<u64> {
+        Ok(ed.frame_selected_window(frame.unwrap_or(ed.selected_frame())))
     }
 
     /// Whether the display shows images and fonts of many sizes, as a graphical
