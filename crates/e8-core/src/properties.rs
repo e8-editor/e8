@@ -539,6 +539,21 @@ impl OverlayList {
         self.deleted = 0;
         self.hooks = false;
     }
+
+    /// Puts an overlay back as it was, in its place by id, whether it is
+    /// still there, was deleted, or is gone.
+    pub(crate) fn restore(&mut self, overlay: Overlay) {
+        self.changed();
+        match self.items.binary_search_by_key(&overlay.id, |o| o.id) {
+            Ok(i) => {
+                if self.items[i].deleted {
+                    self.deleted -= 1;
+                }
+                self.items[i] = overlay;
+            }
+            Err(i) => self.items.insert(i, overlay),
+        }
+    }
 }
 
 impl Overlay {

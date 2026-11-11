@@ -469,3 +469,112 @@ fn text_read_only(value: &Value) -> Error {
         _ => Error::signal("text-read-only", "Text is read-only", Vec::new()),
     }
 }
+
+impl Editor {
+    /// Swaps two stretches of the current buffer's text that do not
+    /// overlap, with their properties, as Emacs's `transpose-regions`.
+    /// Point and the positions the buffer keeps move with the text they
+    /// were in, a position between the stretches with that text, unless
+    /// `leave_markers`, when they stay where they were; overlays stay where
+    /// they were, as in Emacs. The change hooks see the whole stretch once.
+    pub fn transpose_regions(&mut self, first: (usize, usize), second: (usize, usize), leave_markers: bool) -> Result<()> {
+        let (min, max) = (self.buffer().point_min(), self.buffer().point_max());
+        let order = |(a, b): (usize, usize)| (a.min(b), a.max(b));
+        let (mut r1, mut r2) = (order(first), order(second));
+        if r1.0 < min || r2.0 < min || r1.1 > max || r2.1 > max {
+            return Err(Error::signal("args-out-of-range", "Position outside the accessible text", vec![Value::Number(r1.0 as f64), Value::Number(r2.1 as f64)]));
+        }
+        if r2.0 < r1.0 {
+            std::mem::swap(&mut r1, &mut r2);
+        }
+        let ((s1, e1), (s2, e2)) = (r1, r2);
+        if e1 > s2 {
+            return Err(Error::new("Transposed regions overlap"));
+        }
+        if s1 == e1 && s2 == e2 {
+            return Ok(());
+        }
+        let (len1, len2) = (e1 - s1, e2 - s2);
+        let b = self.buffer();
+        let swapped = b.substring(s2..e2).concat(b.substring(e1..s2)).concat(b.substring(s1..e1));
+        let point = b.point();
+        let kept = b.kept_positions_in(s1, e2);
+        self.modify(s1, e2, |b, start, end| {
+            let overlays = b.overlays_touching(start, end);
+            let pending = b.pending_changes.len();
+            b.delete(start..end)?;
+            b.insert_text_at(start, &swapped, false)?;
+            b.restore_overlays(overlays);
+            b.pending_changes.truncate(pending);
+            b.pending_changes.push((start, end, end - start));
+            Ok(())
+        })?;
+        let to = |p: usize| {
+            if leave_markers || p >= e2 || p < s1 {
+                p
+            } else if p < e1 {
+                p + len2 + (s2 - e1)
+            } else if p < s2 {
+                p + len2 - len1
+            } else {
+                p - s2 + s1
+            }
+        };
+        let b = self.buffer_mut();
+        for (which, p) in kept {
+            b.set_kept_position(which, to(p));
+        }
+        if (s1..=e2).contains(&point) {
+            b.set_point(to(point));
+        }
+        Ok(())
+    }
+
+    /// Makes the current buffer's accessible text the same as `source`'s,
+    /// changing only what differs, so point, markers and properties in the
+    /// text kept stay where they are, as Emacs's `replace-buffer-contents`.
+    /// Past `max_costs` deletions and insertions it replaces the part that
+    /// differs whole, and returns false, as Emacs's does past its limits.
+    pub fn replace_buffer_contents(&mut self, source: &str, max_costs: usize) -> Result<bool> {
+        let index = self.find_buffer(source).ok_or_else(|| Error::new(format!("No such buffer {source}")))?;
+        let src = &self.buffers()[index];
+        let (src_min, src_max) = (src.point_min(), src.point_max());
+        let new: Vec<char> = src.slice(src_min..src_max).chars().collect();
+        let b = self.buffer();
+        let (min, max) = (b.point_min(), b.point_max());
+        let old: Vec<char> = b.slice(min..max).chars().collect();
+        let (hunks, exact) = match crate::diff::hunks(&old, &new, max_costs) {
+            Some(h) => (h, true),
+            None => (crate::diff::ends(&old, &new).into_iter().collect(), false),
+        };
+        if hunks.is_empty() {
+            return Ok(true);
+        }
+        // The source's text for each hunk, read before any hook can run.
+        let texts: Vec<crate::properties::Text> =
+            hunks.iter().map(|h| self.buffers()[index].substring(src_min + h.new.start..src_min + h.new.end)).collect();
+        // One change for the hooks, over the accessible text, as Emacs's.
+        self.modify(min, max, |b, start, end| {
+            let pending = b.pending_changes.len();
+            // The last first, so earlier positions stay right.
+            for (h, text) in hunks.iter().zip(&texts).rev() {
+                let at = start + h.old.start;
+                b.delete(at..start + h.old.end)?;
+                if !text.string.is_empty() {
+                    // Point where the text goes stays before it, as in Emacs.
+                    let stays = b.point() == at;
+                    b.insert_text_at(at, text, false)?;
+                    if stays {
+                        b.set_point(at);
+                    }
+                }
+            }
+            let new_end = end + new.len() - old.len();
+            b.pending_changes.truncate(pending);
+            b.pending_changes.push((start, new_end, end - start));
+            Ok(())
+        })?;
+        Ok(exact)
+    }
+}
+

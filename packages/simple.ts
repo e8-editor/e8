@@ -940,7 +940,8 @@ e8.defineCommand({
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => {
     if (arg !== null) forwardLine(1);
-    e8.gotoChar(e8.lineBeginningPosition());
+    // The line's own start, a prompt or not, as Emacs's forward-line 0.
+    e8.gotoChar(e8.posBol());
     if (e8.point() <= e8.pointMin()) return;
     const prefix = e8.variable("fill-prefix");
     e8.deleteRegion(e8.point() - 1, e8.point());

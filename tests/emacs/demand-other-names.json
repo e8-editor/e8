@@ -147,14 +147,6 @@
   "how": "replaced",
   "e8": "JavaScript"
  },
- "pos-bol": {
-  "how": "other",
-  "e8": "e8.lineBeginningPosition"
- },
- "pos-eol": {
-  "how": "other",
-  "e8": "e8.lineEndPosition"
- },
  "preceding-char": {
   "how": "other",
   "e8": "e8.charBefore"

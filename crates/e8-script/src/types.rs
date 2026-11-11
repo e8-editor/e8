@@ -1593,10 +1593,31 @@ const API: &str = r##"
   function charAfter(position?: number): string | undefined;
   /** The character before a position, point by default, or undefined at the start, as char-before. */
   function charBefore(position?: number): string | undefined;
-  /** Where the line a position, point by default, is on starts, as line-beginning-position. */
+  /**
+   * Where the line a position, point by default, is on starts, as
+   * line-beginning-position: at point, a field's edge on the line, as after
+   * a prompt, stops it, as in Emacs; given a position, it does not.
+   */
   function lineBeginningPosition(position?: number): number;
-  /** Where the line a position, point by default, is on ends, before its newline, as line-end-position. */
+  /** Where the line a position, point by default, is on ends, before its newline, as line-end-position: at point, a field's edge on the line stops it. */
   function lineEndPosition(position?: number): number;
+  /**
+   * Make the accessible text the same as `source`'s, changing only what
+   * differs, so point, markers and properties in the text kept stay put, as
+   * replace-buffer-contents. Past `maxCosts` deletions and insertions, 2000
+   * at most, the part that differs is replaced whole and false returned.
+   */
+  function replaceBufferContents(source: BufferLike, maxSecs?: number, maxCosts?: number): boolean;
+  /**
+   * Swap two stretches of text that do not overlap, with their properties,
+   * as transpose-regions: point and markers move with their text, unless
+   * `leaveMarkers`.
+   */
+  function transposeRegions(start1: number, end1: number, start2: number, end2: number, leaveMarkers?: boolean): void;
+  /** Where the line a position, point by default, is on starts, fields or not, as pos-bol. */
+  function posBol(position?: number): number;
+  /** Where the line a position, point by default, is on ends, before its newline, fields or not, as pos-eol. */
+  function posEol(position?: number): number;
   /** The column the text of the line a position, point by default, is on starts at, as current-indentation. */
   function currentIndentation(position?: number): number;
   /**

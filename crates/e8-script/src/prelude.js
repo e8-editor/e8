@@ -1030,8 +1030,25 @@
       const p = (pos ?? native.point()) - 1;
       return p >= native.pointMin() && p < native.pointMax() ? native.bufferText(p, p + 1) : undefined;
     },
-    lineBeginningPosition: (pos) => native.lineStart(native.lineOf(pos ?? native.point())),
-    lineEndPosition: (pos) => native.lineEnd(native.lineOf(pos ?? native.point())),
+    // At point, as Emacs's, a field's edge on the same line stops them, as
+    // after a shell's prompt. Given a position, which Emacs's do not take,
+    // and as posBol and posEol, they do not stop there.
+    lineBeginningPosition: (pos) => {
+      const bol = native.lineStart(native.lineOf(pos ?? native.point()));
+      return pos === undefined || pos === null ? native.constrainToField(bol, native.point(), false, true, undefined) : bol;
+    },
+    lineEndPosition: (pos) => {
+      const eol = native.lineEnd(native.lineOf(pos ?? native.point()));
+      return pos === undefined || pos === null ? native.constrainToField(eol, native.point(), false, true, undefined) : eol;
+    },
+    // Emacs's own limit, MAX-COSTS, counts differently; past 2000
+    // deletions and insertions the part that differs is replaced whole.
+    replaceBufferContents: (source, maxSecs, maxCosts) =>
+      native.replaceBufferContents(nameOf(source), Math.min(typeof maxCosts === "number" ? maxCosts : 2000, 2000)),
+    transposeRegions: (start1, end1, start2, end2, leaveMarkers = false) =>
+      native.transposeRegions(start1, end1, start2, end2, Boolean(leaveMarkers)),
+    posBol: (pos) => native.lineStart(native.lineOf(pos ?? native.point())),
+    posEol: (pos) => native.lineEnd(native.lineOf(pos ?? native.point())),
     currentIndentation: (pos) => {
       const tab = Number(native.variable("tab-width") ?? 8) || 8;
       let col = 0;

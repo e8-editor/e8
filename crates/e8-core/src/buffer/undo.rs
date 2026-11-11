@@ -876,6 +876,8 @@ impl Buffer {
         }
         let first = old[0].0.start;
         self.record(Edit::property(first, name, old));
+        // buffer-modified-tick counts it, as Emacs's does.
+        self.property_ticks += 1;
         true
     }
 

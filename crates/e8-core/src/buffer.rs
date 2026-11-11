@@ -59,7 +59,7 @@ impl Edit {
 
 /// A marker that undo puts back into text it reinserts.
 #[derive(Clone, Copy, Debug, PartialEq)]
-enum MarkRef {
+pub(crate) enum MarkRef {
     Mark,
     Ring(usize),
     /// Another window's point, by the window.
@@ -282,6 +282,9 @@ pub struct Buffer {
     pub(crate) fontified: Vec<Range<usize>>,
     /// Counts changes to the text, as Emacs's `buffer-modified-tick`.
     tick: u64,
+    /// How many times a script's text property changes have changed the
+    /// text, which `buffer-modified-tick` counts and `buffer-chars-modified-tick` does not.
+    property_ticks: u64,
     /// Changes not yet passed to `after-change-functions`: where the new
     /// text starts and ends, and how long the old text was.
     pub(crate) pending_changes: Vec<(usize, usize, usize)>,
@@ -409,6 +412,7 @@ impl Buffer {
             parsers: Vec::new(),
             fontified: Vec::new(),
             tick: 0,
+            property_ticks: 0,
             pending_changes: Vec::new(),
             file: Default::default(),
             base: None,
@@ -760,9 +764,16 @@ impl Buffer {
         pos - self.line_start(self.line_of(pos))
     }
 
-    /// How many times the text has changed, as Emacs's `buffer-modified-tick`.
+    /// How many times the characters have changed, as Emacs's
+    /// `buffer-chars-modified-tick`, which the editor's own caches follow.
     pub fn modified_tick(&self) -> u64 {
         self.tick
+    }
+
+    /// How many times the text or its properties have changed, as Emacs's
+    /// `buffer-modified-tick`: text property changes that modify the buffer count too.
+    pub fn modified_tick_with_properties(&self) -> u64 {
+        self.tick + self.property_ticks
     }
 
     /// Inserts text at point, leaving point after it.
@@ -1218,6 +1229,40 @@ impl Buffer {
     /// The last position before `pos` where text properties change.
     pub fn previous_property_change(&self, pos: usize) -> Option<usize> {
         self.properties.previous_change(pos)
+    }
+
+    /// The overlays touching `start..=end`, as they are, to put back after
+    /// the text there is rewritten in place.
+    pub(crate) fn overlays_touching(&self, start: usize, end: usize) -> Vec<crate::properties::Overlay> {
+        self.overlays.iter().filter(|o| o.start <= end && o.end >= start).cloned().collect()
+    }
+
+    /// Puts overlays back as they were, as Emacs's `transpose-regions`
+    /// leaves them where they are.
+    pub(crate) fn restore_overlays(&mut self, saved: Vec<crate::properties::Overlay>) {
+        for o in saved {
+            self.overlays.restore(o);
+        }
+    }
+
+    /// Every position the buffer keeps besides point from `start` to `end`,
+    /// both included: the mark, the mark ring, other windows' points and
+    /// starts, and markers, for putting back where their text goes.
+    pub(crate) fn kept_positions_in(&self, start: usize, end: usize) -> Vec<(MarkRef, usize)> {
+        let inside = |m: usize| (start <= m && m <= end).then_some(m);
+        let mut out: Vec<(MarkRef, usize)> = self.mark.and_then(inside).map(|m| (MarkRef::Mark, m)).into_iter().collect();
+        out.extend(self.mark_ring.iter().enumerate().filter_map(|(i, &m)| inside(m).map(|m| (MarkRef::Ring(i), m))));
+        out.extend(self.window_points.iter().filter_map(|&(w, m)| inside(m).map(|m| (MarkRef::Window(w), m))));
+        out.extend(self.markers.iter().filter_map(|m| inside(m.pos).map(|p| (MarkRef::Marker(m.id), p))));
+        out
+    }
+
+    /// Puts a kept position somewhere, within the buffer.
+    pub(crate) fn set_kept_position(&mut self, which: MarkRef, pos: usize) {
+        let len = self.len();
+        if let Some(p) = self.mark_ref_mut(which) {
+            *p = pos.min(len);
+        }
     }
 
     /// Where a mark undo keeps track of is now.

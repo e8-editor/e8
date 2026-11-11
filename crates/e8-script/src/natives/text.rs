@@ -570,10 +570,11 @@ natives! {
         Ok(())
     }
 
-    /// A count of the changes to the current buffer's text, as Emacs's
-    /// buffer-modified-tick: it is larger after any edit.
+    /// A count of the changes to the current buffer's text and its
+    /// properties, as Emacs's buffer-modified-tick: it is larger after any
+    /// edit, and after a text property change that modifies the buffer.
     pub fn bufferModifiedTick(ed) -> f64 {
-        Ok(ed.buffer().modified_tick() as f64)
+        Ok(ed.buffer().modified_tick_with_properties() as f64)
     }
 
     /// A count of the changes to a buffer's text, the current one's by
@@ -626,6 +627,14 @@ natives! {
     #[ts = "(byte: number): number | undefined"]
     pub fn byteToPosition(ed, byte: usize) -> Option<usize> {
         Ok(ed.buffer().byte_to_position(byte))
+    }
+
+    fn replaceBufferContents(ed, source: String, max_costs: f64) -> bool {
+        ed.replace_buffer_contents(&source, max_costs.max(0.0) as usize)
+    }
+
+    fn transposeRegions(ed, start1: usize, end1: usize, start2: usize, end2: usize, leave_markers: bool) {
+        ed.transpose_regions((start1, end1), (start2, end2), leave_markers)
     }
 
     /// Whether the character at a position is hidden.

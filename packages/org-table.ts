@@ -184,12 +184,12 @@ function tableToLisp(line = lineAt()): Row[] {
 
 export function needsAlign(): boolean {
   const state = e8.variable("org-table--aligned");
-  return !Array.isArray(state) || state[0] !== e8.bufferModifiedTick();
+  return !Array.isArray(state) || state[0] !== e8.bufferCharsModifiedTick();
 }
 
 /** Records that the table at point is aligned, as setting org-table-may-need-update to nil does. */
 export function markAligned(line = lineAt()): void {
-  e8.setVariable("org-table--aligned", [e8.bufferModifiedTick(), e8.lineStart(firstLine(line)), lineStartOrEnd(lastLine(line) + 1)]);
+  e8.setVariable("org-table--aligned", [e8.bufferCharsModifiedTick(), e8.lineStart(firstLine(line)), lineStartOrEnd(lastLine(line) + 1)]);
 }
 
 /** Pads a field to a width, as org-table--align-field does. */
