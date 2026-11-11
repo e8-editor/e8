@@ -12630,6 +12630,10 @@ declare global {
        */
       "before-change-functions": Value;
       /**
+       * Run once E8 has loaded its packages, before it loads init.ts, even with -q.
+       */
+      "before-init-hook": Value;
+      /**
        * Run before revert-buffer replaces the text with the file's.
        */
       "before-revert-hook": Value;

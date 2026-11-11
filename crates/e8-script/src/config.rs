@@ -81,6 +81,10 @@ fn start_in(
     if let Err(e) = extensions(ed, &scripting) {
         ed.message(format!("An extension failed to load: {e}"));
     }
+    // As Emacs runs it before its init file, with -q too: what the packages set up, before init.ts changes it.
+    if let Err(e) = ed.run_hooks("before-init-hook") {
+        ed.message(format!("Error in before-init-hook: {e}"));
+    }
     if load_init {
         // The window shows the editor while init.ts runs, which can take a
         // while, as when it installs packages, and its messages as they come.

@@ -1121,6 +1121,7 @@ pub(crate) fn install(ed: &mut Editor) {
         ("find-file-hook", "Run after visiting a file, once its major mode is chosen."),
         ("kill-buffer-hook", "Run in a buffer just before it is killed."),
         ("kill-emacs-hook", "Run when E8 exits, as C-x C-c does."),
+        ("before-init-hook", "Run once E8 has loaded its packages, before it loads init.ts, even with -q."),
         ("after-init-hook", "Run once E8 has started and loaded init.ts, before it visits the files it was given."),
         ("emacs-startup-hook", "Run after after-init-hook, once E8 has started and loaded init.ts."),
         ("before-save-hook", "Run before saving a buffer to its file."),
