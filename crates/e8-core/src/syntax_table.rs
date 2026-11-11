@@ -169,10 +169,11 @@ impl Entry {
     }
 
     /// The entry from Emacs's raw syntax descriptor, the cons
-    /// `string-to-syntax` returns: the class's number in the low 16 bits,
-    /// the flags above, and the matching character.
+    /// `string-to-syntax` returns: the class's number in the low 8 bits, as
+    /// Emacs's syntax_property reads it, the flags from bit 16, and the
+    /// matching character.
     pub fn from_raw(code: u32, matching: Option<char>) -> Option<Entry> {
-        let class = *Class::ALL.get((code & 0xffff) as usize)?;
+        let class = *Class::ALL.get((code & 0xff) as usize)?;
         Some(Entry { class, matching, flags: (code >> 16) as u8 })
     }
 
@@ -186,11 +187,15 @@ impl Entry {
     /// or the name of a syntax table to look the character up in.
     pub fn from_property(value: &crate::Value, tables: &SyntaxTables, c: char) -> Option<Entry> {
         match value {
-            crate::Value::Str(s) if tables.exists(s) => Some(tables.entry(s, c)),
+            crate::Value::Str(s) | crate::Value::Symbol(s) if tables.exists(s) => Some(tables.entry(s, c)),
             crate::Value::Str(s) => Entry::parse(s).ok(),
             crate::Value::List(items) => {
-                let code = items.first()?.as_number()?;
-                let matching = items.get(1).and_then(|m| m.as_str()).and_then(|m| m.chars().next());
+                let code = items.first()?.as_number().filter(|n| *n >= 0.0)?;
+                // The matching character, as a string or a character code.
+                let matching = items.get(1).and_then(|m| match m {
+                    crate::Value::Number(n) => char::from_u32(*n as u32),
+                    m => m.as_str().and_then(|m| m.chars().next()),
+                });
                 Entry::from_raw(code as u32, matching)
             }
             _ => None,
@@ -259,6 +264,8 @@ pub fn standard_entry(c: char) -> Entry {
 #[derive(Clone, Debug, Default)]
 pub struct SyntaxTables {
     tables: HashMap<String, SyntaxTable>,
+    /// How many copies `copy-syntax-table` has made, to name the next.
+    pub copies: usize,
 }
 
 impl SyntaxTables {

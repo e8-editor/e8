@@ -24,10 +24,11 @@ fn descriptors_become_emacs_s_raw_syntax() {
         &s,
         r#"JSON.stringify([e8.stringToSyntax("()"), e8.stringToSyntax(". 124b"), e8.stringToSyntax("w"), e8.stringToSyntax("@") ?? null,
           e8.stringToSyntax("\""), e8.stringToSyntax("< b"), e8.stringToSyntax("_ p"), e8.syntaxClassToChar(4),
-          e8.conditionCase(() => e8.stringToSyntax("z"), { error: () => "error" })])"#,
+          e8.conditionCase(() => e8.stringToSyntax("z"), { error: () => "error" }),
+          e8.conditionCase(() => e8.syntaxClassToChar(-1), { "args-out-of-range": () => "out of range" })])"#,
     );
     // Emacs: (4 . 41) (2818049) (2) nil (7) (2097163) (1048579) 40
-    assert_eq!(got, r#"[[4,")"],[2818049,null],[2,null],null,[7,null],[2097163,null],[1048579,null],"(","error"]"#);
+    assert_eq!(got, r#"[[4,")"],[2818049,null],[2,null],null,[7,null],[2097163,null],[1048579,null],"(","error","out of range"]"#);
 }
 
 #[test]
@@ -60,8 +61,9 @@ fn a_syntax_table_property_can_be_raw_syntax_or_a_table() {
           JSON.stringify([sexp(),
             (e8.putTextProperty(1, 2, "syntax-table", e8.stringToSyntax("w")), sexp()),
             (e8.putTextProperty(1, 2, "syntax-table", table), sexp()),
-            (e8.putTextProperty(1, 2, "syntax-table", "."), sexp())]))"#,
+            (e8.putTextProperty(1, 2, "syntax-table", "."), sexp()),
+            (e8.putTextProperty(1, 2, "syntax-table", [258]), sexp())]))"#,
     );
-    // Emacs: 2, then 4 with raw word syntax or a table that makes it a word
-    assert_eq!(got, "[2,4,4,2]");
+    // Emacs: 2, then 4 with raw word syntax or a table that makes it a word, and 258's class is word, its bits 8 to 15 ignored
+    assert_eq!(got, "[2,4,4,2,4]");
 }

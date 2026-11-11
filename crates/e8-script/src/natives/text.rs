@@ -300,10 +300,16 @@ natives! {
     pub fn copySyntaxTable(ed, table: Opt<String>) -> String {
         let from = table.0.unwrap_or_else(|| e8_core::syntax_table::STANDARD.to_string());
         if !ed.syntax_tables.exists(&from) {
-            return Err(Error::signal("wrong-type-argument", format!("Not a syntax table: {from}"), vec![EditorValue::Str(from)]));
+            return Err(Error::signal("wrong-type-argument", format!("Not a syntax table: {from}"), vec![EditorValue::Symbol("syntax-table-p".into()), EditorValue::Str(from)]));
         }
         let base = from.strip_suffix("-syntax-table").unwrap_or(&from).to_string();
-        let name = (1..).map(|n| format!("{base}-copy-{n}-syntax-table")).find(|n| !ed.syntax_tables.exists(n)).unwrap_or_default();
+        let name = loop {
+            ed.syntax_tables.copies += 1;
+            let name = format!("{base}-copy-{}-syntax-table", ed.syntax_tables.copies);
+            if !ed.syntax_tables.exists(&name) {
+                break name;
+            }
+        };
         ed.syntax_tables.copy(&from, &name);
         Ok(name)
     }
@@ -311,7 +317,7 @@ natives! {
     /// Whether a value names a syntax table, as syntax-table-p.
     #[ts = "(value: unknown): boolean"]
     pub fn syntaxTableP(ed, value: EditorValue) -> bool {
-        Ok(matches!(&value, EditorValue::Str(s) if ed.syntax_tables.exists(s)))
+        Ok(matches!(&value, EditorValue::Str(s) | EditorValue::Symbol(s) if ed.syntax_tables.exists(s)))
     }
 
     /// The raw syntax descriptor a descriptor such as "()" or ". 124b"
@@ -330,8 +336,9 @@ natives! {
 
     /// The designator of a syntax class by its number, as syntax-class-to-char.
     pub fn syntaxClassToChar(ed, code: f64) -> String {
-        let c = e8_core::syntax_table::Class::ALL
-            .get(code as usize)
+        let c = Some(code)
+            .filter(|n| *n >= 0.0 && n.fract() == 0.0)
+            .and_then(|n| e8_core::syntax_table::Class::ALL.get(n as usize))
             .ok_or_else(|| Error::signal("args-out-of-range", format!("No syntax class {code}"), vec![EditorValue::Number(code)]))?;
         Ok(c.designator().to_string())
     }
