@@ -1316,7 +1316,7 @@ checksum = "fd8e701084c37e7ef62d3f9e453b618130cbc0ef3573847785952a3ac3f746bf"
 
 [[package]]
 name = "e8"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "e8-agent",
  "e8-core",
@@ -1327,7 +1327,7 @@ dependencies = [
 
 [[package]]
 name = "e8-agent"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "e8-core",
  "e8-mcp",
@@ -1340,7 +1340,7 @@ dependencies = [
 
 [[package]]
 name = "e8-core"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "encoding_rs",
  "image",
@@ -1364,7 +1364,7 @@ dependencies = [
 
 [[package]]
 name = "e8-gui"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "arboard",
  "e8-agent",
@@ -1382,7 +1382,7 @@ dependencies = [
 
 [[package]]
 name = "e8-mcp"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "e8-core",
  "e8-script",
@@ -1393,7 +1393,7 @@ dependencies = [
 
 [[package]]
 name = "e8-script"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "e8-core",
  "regex",
@@ -1411,7 +1411,7 @@ dependencies = [
 
 [[package]]
 name = "e8-web"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "e8-core",
  "e8-gui",
