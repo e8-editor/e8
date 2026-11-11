@@ -14617,10 +14617,11 @@ declare global {
     /** A string with each word's first character in title case and the rest as it is, as upcase-initials. */
     function upcaseInitials(s: string): string;
     /**
-     * Read one Lisp datum from a string, from character `start`, as Emacs's
+     * Read one Lisp datum from a string, from index `start`, as Emacs's
      * read-from-string: the value, with nil as null, t as true, symbols as
      * symbols and lists as arrays (a dotted end joining the list), and the
-     * position after it. Signals end-of-file or invalid-read-syntax.
+     * index after it. Indexes count as JavaScript's do, so `string.slice`
+     * takes them. Signals end-of-file or invalid-read-syntax.
      */
     function readFromString(string: string, start?: number): [Value, number];
     /**

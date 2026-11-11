@@ -1,4 +1,5 @@
 import { selectSafeCodingSystem } from "mule";
+import { regexpQuote } from "subr";
 
 // Choosing a major mode for a file, after Emacs's files.el.
 
@@ -135,12 +136,12 @@ export function safeLocalVariableP(variable: symbol, value: e8.Value): boolean {
   if (list(v("safe-local-variable-values")).some((pair) => equal(pair, [variable, value]))) return true;
   const predicate = e8.get(variable, "safe-local-variable");
   if (predicate === undefined || predicate === null || predicate === true) return false;
-  try {
-    return callPredicate(predicate, value);
-  } catch (e) {
-    e8.message(`Local variable error: ${e instanceof Error ? e.message : String(e)}`);
-    return false;
-  }
+  return e8.conditionCase(() => callPredicate(predicate, value), {
+    error: (e) => {
+      e8.message(`Local variable error: ${e.message}`);
+      return false;
+    },
+  });
 }
 
 /** Whether a variable could do harm when a file sets it, as risky-local-variable-p. */
@@ -252,7 +253,7 @@ function listVariables(handleMode: boolean | "no-mode" | null): Pair[] | string 
     const startpos = e8.lineEndPosition() + 1;
     if (startpos > max) return handleMode === true ? undefined : result;
     // The list ends at a line of the prefix, "End:" and the suffix.
-    const endRe = `^${regexpQuoteLisp(prefix)}[ \t]*End:[ \t]*${regexpQuoteLisp(suffix)}$`;
+    const endRe = `^${regexpQuote(prefix)}[ \t]*End:[ \t]*${regexpQuote(suffix)}$`;
     e8.gotoChar(startpos);
     let endpos: number;
     // Without an End: line it is not a list after all, and nothing is read.
@@ -304,11 +305,6 @@ function listVariables(handleMode: boolean | "no-mode" | null): Pair[] | string 
   });
 }
 
-/** A string as a regexp matching it literally, as regexp-quote. */
-function regexpQuoteLisp(s: string): string {
-  return s.replace(/[[*.\\?+^$]/g, (c) => `\\${c}`);
-}
-
 /** Whether a quoted form, (quote X). */
 const quotep = (exp: e8.Value): exp is e8.Value[] => Array.isArray(exp) && exp.length === 2 && isSym(exp[0], "quote");
 
@@ -332,6 +328,17 @@ function evalSafeP(exp: e8.Value): boolean {
   if (typeof prop === "function" || typeof prop === "symbol") return callPredicate(prop, exp);
   if (Array.isArray(prop)) return prop.some((p) => callPredicate(p, exp));
   return false;
+}
+
+/** The function a hook is given for a name, the same one each time, so adding it again adds nothing and removing it removes it, as with a symbol in Lisp. */
+const hookFunctions = new Map<string, (...args: e8.Value[]) => unknown>();
+function hookFunction(name: string): (...args: e8.Value[]) => unknown {
+  let fn = hookFunctions.get(name);
+  if (fn === undefined) {
+    fn = (...args: e8.Value[]) => e8.funcall(name, ...args);
+    hookFunctions.set(name, fn);
+  }
+  return fn;
 }
 
 /**
@@ -363,7 +370,7 @@ function evalForm(exp: e8.Value): e8.Value {
   if (name === "add-hook" || name === "remove-hook") {
     const hook = nameOf(values[0]);
     const fn = values[1];
-    const run = typeof fn === "function" ? fn : e8.symbolFunction(nameOf(fn)) ?? ((...a: e8.Value[]) => e8.funcall(nameOf(fn), ...a));
+    const run = typeof fn === "function" ? fn : hookFunction(nameOf(fn));
     const local = truthy(values[name === "add-hook" ? 3 : 2]);
     if (name === "add-hook") e8.addHook(hook, run, { local, ...(truthy(values[2]) ? { append: true } : {}) });
     else e8.removeHook(hook, run, { local });
@@ -409,20 +416,11 @@ function confirm(all: Pair[], unsafe: Pair[], risky: Pair[]): boolean {
     e8.setBufferModified(false);
     e8.gotoChar(e8.pointMin());
   });
-  const exits = offerSave ? ["y", "n", " ", "!", "i"] : ["y", "n", " "];
+  const exits = offerSave ? "yn !i" : "yn ";
   const prompt = `Please type ${offerSave ? "y, n, !, i" : "y or n"}: `;
   const answer = e8.saveWindowExcursion(() => {
     e8.call("pop-to-buffer", buffer);
-    for (;;) {
-      const key = e8.readKey(prompt);
-      const char = key === "SPC" ? " " : key;
-      if (key === "C-g") e8.signal("quit", "Quit");
-      if (key === "C-v" || key === "M-v") {
-        e8.call(key === "C-v" ? "scroll-up-command" : "scroll-down-command");
-        continue;
-      }
-      if (exits.includes(char)) return char;
-    }
+    return e8.readCharChoice(prompt, exits);
   });
   if (offerSave && (answer === "!" || answer === "i")) {
     // Emacs saves the choice with customize-push-and-save; E8 keeps it for the session.
@@ -572,12 +570,15 @@ e8.defineCommand({
   run: (findFile: e8.PrefixArg) => {
     const enable = findFile === null ? true : (v("enable-local-variables") ?? null);
     e8.letBind({ "enable-local-variables": enable }, () => {
-      let mode: string | undefined;
-      try {
-        mode = [hackLocalVariables(true), modeFromFileName()].find((m) => m !== undefined && e8.commandExists(m));
-      } catch (e) {
-        e8.message(`File mode specification error: ${e instanceof Error ? e.message : String(e)}`);
-      }
+      const mode = e8.conditionCase(
+        () => [hackLocalVariables(true), modeFromFileName()].find((m) => m !== undefined && e8.commandExists(m)),
+        {
+          error: (e) => {
+            e8.message(`File mode specification error: ${e.message}`);
+            return undefined;
+          },
+        },
+      );
       // The mode runs its hooks, and then, for a file, hack-local-variables, as run-mode-hooks does.
       e8.call((mode ?? "fundamental-mode") as e8.CommandName);
     });
