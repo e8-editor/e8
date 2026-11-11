@@ -182,3 +182,27 @@ fn the_word_list_completes_at_point() {
     t.ed.press("C-e").unwrap();
     assert_eq!(t.eval("e8.funcall('ispell-completion-at-point')"), "[5,9,[\"spell\",\"spelling\"]]");
 }
+
+#[test]
+fn answers_stay_with_their_words_when_one_has_none() {
+    let Some(mut t) = speller("x\n") else { return };
+    // The checker finds no word in "123", so its answer is only the empty line.
+    t.s.eval_typescript(
+        &mut t.ed,
+        "answers.ts",
+        r#"import("ispell").then(({ checkWords }) =>
+          e8.setVariable("ispell-test-answers", checkWords(["hello", "123", "speling"]).map((p) => (Array.isArray(p) ? p[0] : String(p)))));"#
+            .to_string(),
+    )
+    .unwrap();
+    assert_eq!(t.eval("e8.variable('ispell-test-answers')"), r#"["true","true","speling"]"#);
+}
+
+#[test]
+fn c_g_suspends_as_x_does() {
+    let Some(mut t) = speller("A speling mistake and a wrod.\n") else { return };
+    t.ed.press(&format!("{} C-g", mx("ispell-buffer"))).unwrap();
+    assert_eq!(t.ed.echo(), Some("Spell-checking suspended; use C-u M-$ to resume"));
+    t.ed.press("C-u M-$ 0 0").unwrap();
+    assert_eq!(t.text(), "A spelling mistake and a word.\n", "C-u M-$ goes on from the word it stopped at");
+}
