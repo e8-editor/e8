@@ -318,7 +318,7 @@ export function packageActivate(name: string): void {
   const dir = packageDir(name);
   const path = e8.variable("load-path");
   const dirs = Array.isArray(path) ? path.filter((d): d is string => typeof d === "string") : [];
-  if (!dirs.some((d) => e8.expandFileName(d) === dir)) e8.setVariable("load-path", [dir, ...dirs]);
+  if (!dirs.some((d) => e8.directoryFileName(e8.expandFileName(d)) === dir)) e8.setVariable("load-path", [dir, ...dirs]);
 }
 
 /** The packages installed, by name. */
