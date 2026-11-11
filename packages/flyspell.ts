@@ -13,13 +13,26 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { type Poss, acceptForSession, acceptInBuffer, addPerFileWord, checkWords, getWord, insertPersonal, ispellWord } from "ispell";
+import {
+  type Poss,
+  acceptBufferLocalDefs,
+  acceptForSession,
+  acceptInBuffer,
+  addPerFileWordList,
+  changeDictionary,
+  checkWords,
+  insertPersonal,
+  ispellWord,
+  setSpellcheckerParams,
+  wordAt as getWord,
+} from "ispell";
 import { PerBuffer, regexpQuote } from "subr";
 
 e8.defineFace({ name: "flyspell-incorrect", doc: "Misspelled words.", attributes: { underline: { style: "wave", color: "Red1" } } });
 e8.defineFace({ name: "flyspell-duplicate", doc: "Words written twice in a row.", attributes: { underline: { style: "wave", color: "DarkOrange" } } });
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
+defvar("flyspell-default-dictionary", null, "The dictionary flyspell-mode starts with when neither ispell-local-dictionary nor ispell-dictionary names one.");
 defvar("flyspell-delay", 3, "How many seconds of quiet after typing in a word before it is checked, rather than when you leave it.");
 defvar("flyspell-mark-duplications-flag", true, "Whether a word written twice in a row is marked.");
 defvar("flyspell-case-fold-duplications", true, "Whether words written twice count when their case differs.");
@@ -47,6 +60,19 @@ const isFlyspell = (o: number): boolean => e8.overlayGet(o, "flyspell-overlay") 
 /** Takes flyspell's marks off a position, as flyspell-unhighlight-at. */
 function unhighlightAt(pos: number): void {
   for (const o of e8.overlaysAt(pos)) if (isFlyspell(o)) e8.deleteOverlay(o);
+}
+e8.defun("flyspell-unhighlight-at", (pos: number) => unhighlightAt(pos));
+
+/** The buffer whose dictionary and words the spelling session last took up. */
+let lastBuffer: number | undefined;
+
+/** Takes up the buffer's dictionary and words when it is not the last one checked, as flyspell-accept-buffer-local-defs. */
+function acceptLocalDefs(force = false): void {
+  const id = e8.currentBuffer().id;
+  if (force || lastBuffer !== id) {
+    lastBuffer = id;
+    acceptBufferLocalDefs();
+  }
 }
 
 /** Marks a word as misspelled or doubled, as flyspell-highlight-incorrect-region. */
@@ -104,6 +130,7 @@ const cache = new PerBuffer<{ start: number; end: number; word: string; result: 
  * known answer from the checker, `given`, saves asking it again.
  */
 export function flyspellWord(following = false, given?: Poss): boolean {
+  if (given === undefined) acceptLocalDefs();
   return e8.saveExcursion(() => {
     const found = getWord(following);
     if (found === undefined) return true;
@@ -298,6 +325,20 @@ export const flyspellMode = e8.defineMinorMode({
   },
   onChange: (enabled) => {
     if (enabled) {
+      e8.conditionCase(
+        () => {
+          setSpellcheckerParams();
+          e8.setVariable("ispell-highlight-face", e8.intern("flyspell-incorrect"));
+          const fallback = e8.variable("flyspell-default-dictionary");
+          if (!truthy(e8.variable("ispell-local-dictionary")) && !truthy(e8.variable("ispell-dictionary")) && typeof fallback === "string") {
+            changeDictionary(fallback);
+          }
+          // Taken up now, or a dictionary the buffer names could be missed.
+          acceptLocalDefs(true);
+        },
+        { error: (e) => e8.message(`Error enabling Flyspell mode:\n${e.message}`) },
+      );
+      e8.addHook("hack-local-variables-hook", hackLocalVariables, { local: true, depth: 90 });
       e8.addHook("pre-command-hook", preCommand, { local: true });
       e8.addHook("post-command-hook", postCommand, { local: true });
       e8.addHook("after-change-functions", afterChange, { local: true });
@@ -305,6 +346,7 @@ export const flyspellMode = e8.defineMinorMode({
         e8.message("Welcome to Flyspell. Use ‘C-M-i’ or ‘Mouse-2’ to correct words.");
       }
     } else {
+      e8.removeHook("hack-local-variables-hook", hackLocalVariables, { local: true });
       e8.removeHook("pre-command-hook", preCommand, { local: true });
       e8.removeHook("post-command-hook", postCommand, { local: true });
       e8.removeHook("after-change-functions", afterChange, { local: true });
@@ -313,6 +355,11 @@ export const flyspellMode = e8.defineMinorMode({
     }
   },
 });
+
+/** Takes up the buffer's dictionary again once its local variables are set, as flyspell-hack-local-variables-hook. */
+function hackLocalVariables(): void {
+  acceptLocalDefs(true);
+}
 
 e8.defun("turn-on-flyspell", () => e8.callWithPrefix(1, flyspellMode));
 e8.defun("turn-off-flyspell", () => e8.callWithPrefix(-1, flyspellMode));
@@ -348,6 +395,7 @@ e8.defineCommand({
 function flyspellRegion(beg: number, end: number): void {
   if (beg === end) return;
   [beg, end] = [Math.min(beg, end), Math.max(beg, end)];
+  acceptLocalDefs();
   const verbose = truthy(e8.variable("flyspell-issue-message-flag"));
   if (verbose) e8.message("Checking region...");
   e8.saveExcursion(() => {
@@ -435,6 +483,7 @@ function adjustCursor(save: number, cursor: number, oldMax: number): void {
 
 /** Replaces the word at point with its first correction, or the next if called again, as flyspell-auto-correct-word. */
 function autoCorrectWord(following = false): void {
+  acceptLocalDefs();
   const pos = e8.point();
   const oldMax = e8.pointMax();
   const last = e8.lastCommand();
@@ -510,6 +559,7 @@ e8.defineCommand({
     "Offer corrections for the misspelled word before point to choose from, with Save word to add it to your " +
     "dictionary, Accept (session) to accept it until E8 quits, and Accept (buffer) to accept it in this file.",
   run: () => {
+    acceptLocalDefs();
     const opoint = e8.point();
     const found = getWord();
     if (found === undefined) return;
@@ -526,7 +576,7 @@ e8.defineCommand({
       acceptForSession(word);
       acceptInBuffer(word);
       unhighlightAt(opoint);
-      if (answer === "Accept (buffer)") addPerFileWord(word);
+      if (answer === "Accept (buffer)") addPerFileWordList(word);
     } else if (answer !== "" && answer !== poss[0]) {
       const oldMax = e8.pointMax();
       unhighlightAt(opoint);
@@ -553,9 +603,8 @@ e8.defineCommand({
   },
 });
 
-// Words ispell accepts or corrects lose their marks.
-e8.addHook("ispell-update-post-hook", () => {
-  if (!truthy(e8.variable("flyspell-mode"))) return;
-  cache.delete(e8.currentBuffer());
-  flyspellWord();
+// A session ended forgets what the checker said, as flyspell-kill-ispell-hook.
+e8.addHook("ispell-kill-ispell-hook", () => {
+  lastBuffer = undefined;
+  cache.clear();
 });

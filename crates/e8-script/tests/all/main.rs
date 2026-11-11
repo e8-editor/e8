@@ -41,6 +41,7 @@ mod help_guide;
 mod hi_lock;
 mod images;
 mod indirect;
+mod ispell;
 mod keyboard;
 mod keymaps;
 mod layout;

@@ -9,6 +9,8 @@
 // and stops, "," replaces and stays, ^ goes back to the last match, and q or
 // RET stops. Any other key stops and then runs.
 
+import { regexpQuote } from "subr";
+
 e8.defineFace({
   name: "query-replace",
   doc: "The match query-replace is asking about.",
@@ -33,6 +35,10 @@ interface Replace {
   from: string;
   to: string;
   regexp: boolean;
+  /** Whether the replacement is taken as it is, rather than with \\& and \\N. */
+  literal: boolean;
+  /** How the messages name what is replaced. */
+  shown: string;
   caseFold: boolean;
   /** Whether the match asked about was already replaced, by ",". */
   replaced: boolean;
@@ -50,10 +56,10 @@ interface Replace {
 let replacing: Replace | undefined;
 
 /** The range to work on: the active region from a key or M-x, else point to the end. */
-function scope(): { start: number; endMarker: number } {
+function scope(fromPoint = false): { start: number; endMarker: number } {
   let start = e8.point();
   let end = e8.bufferSize();
-  if (e8.calledInteractively() && e8.regionActive()) {
+  if (!fromPoint && e8.calledInteractively() && e8.regionActive()) {
     const mark = e8.mark() ?? start;
     end = Math.max(mark, start);
     start = Math.min(mark, start);
@@ -82,7 +88,7 @@ function findFrom(r: Replace, from: number, end: number, lastEnd: number | undef
 
 function replaceCurrent(r: Replace): number {
   const fixedCase = !(r.caseFold && e8.variable("case-replace") === true);
-  const replaced = e8.replaceMatch(r.to, { literal: !r.regexp, fixedCase });
+  const replaced = e8.replaceMatch(r.to, { literal: r.literal, fixedCase });
   r.count += 1;
   return replaced.end;
 }
@@ -143,7 +149,7 @@ function askNext(r: Replace) {
   r.replaced = false;
   e8.gotoChar(m.end);
   highlight(r, endMarker);
-  e8.message(`Query replacing ${r.from} with ${r.to}: (? for help) `);
+  e8.message(`Query replacing ${r.shown} with ${r.to}: (? for help) `);
 }
 
 function finish(r: Replace) {
@@ -152,14 +158,33 @@ function finish(r: Replace) {
   e8.setOverridingMap(null);
   replacing = undefined;
   e8.message(occurrences(r.count));
+  if (r === waiting) {
+    waiting = undefined;
+    e8.call("exit-recursive-edit");
+  }
 }
 
-function start(from: string, to: string, regexp: boolean, query: boolean) {
+/** The query-replace that queryReplace waits for, in a recursive edit. */
+let waiting: Replace | undefined;
+
+function start(from: string, to: string, regexp: boolean, query: boolean, options: { literal?: boolean; shown?: string; fromPoint?: boolean } = {}) {
   if (from === "") throw new Error("Empty search string");
   const caseFold = e8.foldCaseFor(from, true);
-  const { start, endMarker: marker } = scope();
+  const { start, endMarker: marker } = scope(options.fromPoint);
   e8.pushMark(start);
-  const r: Replace = { from, to, regexp, caseFold, replaced: false, next: start, count: 0, history: [], others: [] };
+  const r: Replace = {
+    from,
+    to,
+    regexp,
+    literal: options.literal ?? !regexp,
+    shown: options.shown ?? from,
+    caseFold,
+    replaced: false,
+    next: start,
+    count: 0,
+    history: [],
+    others: [],
+  };
   if (!query) {
     replaceAll(r, start, marker);
     e8.deleteOverlay(marker);
@@ -170,6 +195,29 @@ function start(from: string, to: string, regexp: boolean, query: boolean) {
   replacing = r;
   e8.setOverridingMap("query-replace-map");
   askNext(r);
+}
+
+/**
+ * Query-replaces from point to the end of the buffer and returns once it is
+ * done, as query-replace does called from Lisp; `delimited` replaces only
+ * whole words. ispell's R uses it.
+ */
+export function queryReplaceUntilDone(from: string, to: string, delimited = false): void {
+  start(delimited ? `\\b${regexpQuote(from)}\\b` : from, to, delimited, true, {
+    literal: true,
+    shown: delimited ? `word ${from}` : from,
+    fromPoint: true,
+  });
+  if (replacing === undefined) return;
+  waiting = replacing;
+  try {
+    e8.recursiveEdit();
+  } finally {
+    if (waiting !== undefined) {
+      waiting = undefined;
+      if (replacing !== undefined) finish(replacing);
+    }
+  }
 }
 
 function asking(): Replace {
@@ -215,7 +263,7 @@ const actions: [string[], string, string, (r: Replace) => void][] = [
     r.replaced = true;
     clearHighlights(r);
     e8.gotoChar(r.next);
-    e8.message(`Query replacing ${r.from} with ${r.to}: (? for help) `);
+    e8.message(`Query replacing ${r.shown} with ${r.to}: (? for help) `);
   }],
   [["^"], "query-replace-backup", "Go back to the last match asked about.", (r) => {
     const back = r.history.pop();
