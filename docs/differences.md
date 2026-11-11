@@ -17,6 +17,7 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
 
 ## Keys and the command loop
 
+- **Keymaps as values** (not yet): a keymap has no prompt string (`keymap-prompt`) and binds its keys in key order, so `accessibleKeymaps` and `keymapBindings` list them that way where Emacs lists the latest bound first. `currentLocalMap` is the major mode's map, behind any a minor mode composed in front with `composeLocalMap`, where Emacs's is the composed keymap itself.
 - **`max-mini-window-height`** of 1 lets the minibuffer take the whole frame, as 1.0 does in Emacs, where an integer 1 means one line: E8's numbers do not tell integers from floats, and vertico's 1.0 must mean the frame.
 - **`read-key-sequence` and ESC** (not yet): ESC then x reads as `M-x`, where Emacs's gives the two keys `ESC x`. `read-key` takes ESC alone, as Emacs does.
 - **Abbrevs** (not yet) are not saved to `abbrev_defs` between sessions, a mode's table does not inherit its parent mode's, and `list-abbrevs` shows only the tables that have been used, where Emacs shows every mode's ([ADR 0040](adr/0040-everyday-editing-commands.md)).

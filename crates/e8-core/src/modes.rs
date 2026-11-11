@@ -42,6 +42,56 @@ impl Editor {
         self.global_map
     }
 
+    /// Makes a keymap the global one, as Emacs's `use-global-map`.
+    pub fn use_global_map(&mut self, keymap: &Value) -> Result<()> {
+        self.global_map = self.keymap_of(keymap)?;
+        Ok(())
+    }
+
+    /// The current buffer's local map, the major mode's, as Emacs's
+    /// `current-local-map`: the one `use-local-map` gave it, behind any a
+    /// minor mode's composing put in front.
+    pub fn current_local_map(&self) -> Option<KeymapId> {
+        self.buffer().local_map.last().copied()
+    }
+
+    /// A copy of a keymap, as Emacs's `copy-keymap`: the prefix maps it
+    /// binds are copied too, but for those a variable names, as Emacs keeps
+    /// a prefix command's, so `C-x 4` stays `ctl-x-4-map`.
+    pub fn copy_keymap(&mut self, keymap: &Value) -> Result<KeymapId> {
+        let map = self.keymap_of(keymap)?;
+        let named: Vec<KeymapId> = self.keymap_names().iter().filter_map(|n| self.keymap_named(n)).collect();
+        Ok(self.keymaps.copy(map, &|m| named.contains(&m)))
+    }
+
+    /// The keymaps of the minor modes on in the current buffer, in the order
+    /// keys are looked up in them, as Emacs's `current-minor-mode-maps`.
+    pub fn current_minor_mode_maps(&self) -> Vec<KeymapId> {
+        self.minor_mode_maps().into_iter().map(|(_, m)| m).collect()
+    }
+
+    fn minor_mode_maps(&self) -> Vec<(String, KeymapId)> {
+        let b = self.buffer();
+        self.minor_modes
+            .iter()
+            .filter(|m| self.minor_mode_on(b, &m.name))
+            .filter_map(|m| m.keymap.as_deref().and_then(|k| self.keymap_named(k)).map(|k| (m.name.clone(), k)))
+            .collect()
+    }
+
+    /// The minor modes on whose keymaps bind a key sequence, each with what
+    /// it is bound to there, in the order keys are looked up, as Emacs's
+    /// `minor-mode-key-binding`.
+    pub fn minor_mode_key_binding(&self, keys: &[Key]) -> Vec<(String, Binding)> {
+        self.minor_mode_maps()
+            .into_iter()
+            .filter_map(|(mode, map)| match self.keymaps.binding_of(map, keys) {
+                Some(Binding::Nil) | None => None,
+                Some(b) => Some((mode, b)),
+            })
+            .collect()
+    }
+
     /// The keymap a name holds: the global value of the variable of that
     /// name, as `org-mode-map` holds Org's.
     pub fn keymap_named(&self, name: &str) -> Option<KeymapId> {

@@ -137,3 +137,102 @@ fn emacs_s_prefix_maps_have_their_names() {
     assert_eq!(seen(&mut ed, &s), "one");
     assert_eq!(eval(&mut ed, &s, r#"e8.lookupKey("project-prefix-map", "f")"#), "project-find-file");
 }
+
+#[test]
+fn the_current_local_and_global_maps_are_keymaps() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.currentLocalMap() === undefined,
+          (e8.call("emacs-lisp-mode"), e8.currentLocalMap() === e8.variable("emacs-lisp-mode-map")),
+          e8.currentGlobalMap() === e8.variable("global-map"),
+        ])"#,
+    );
+    // Emacs: nil in fundamental-mode, then emacs-lisp-mode-map, and global-map
+    assert_eq!(got, "[true,true,true]");
+}
+
+#[test]
+fn local_set_key_as_lisp_writes_it_binds_in_the_mode_s_map() {
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"(e8.call("emacs-lisp-mode"), e8.defineKey(e8.currentLocalMap(), "C-c z", "test-one"), true)"#);
+    ed.press("C-c z");
+    assert_eq!(seen(&mut ed, &s), "one");
+}
+
+#[test]
+fn a_global_map_can_be_put_in_place_of_another() {
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.copy = e8.copyKeymap(e8.currentGlobalMap()), e8.defineKey(copy, "C-c y", "test-two"), e8.useGlobalMap(copy), true)"#,
+    );
+    ed.press("C-c y");
+    assert_eq!(seen(&mut ed, &s), "two");
+    let got = eval(&mut ed, &s, r#"JSON.stringify([e8.lookupKey("global-map", "C-c y") ?? null, e8.lookupKey(copy, "C-x C-f")])"#);
+    assert_eq!(got, r#"[null,"find-file"]"#);
+}
+
+#[test]
+fn a_copied_keymap_has_its_own_prefix_maps_but_shares_named_ones() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.m = e8.makeSparseKeymap(), e8.defineKey(m, "C-c a", "foo"), e8.defineKey(m, "C-c b c", "bar"),
+          e8.defineKey(m, "C-x 4", e8.variable("ctl-x-4-map")),
+          globalThis.c = e8.copyKeymap(m), e8.defineKey(c, "C-c a", "changed"),
+          JSON.stringify([e8.lookupKey(m, "C-c a"), e8.lookupKey(c, "C-c a"), e8.lookupKey(c, "C-c b c"),
+            e8.lookupKey(c, "C-x 4") === e8.variable("ctl-x-4-map")]))"#,
+    );
+    // Emacs: (foo changed bar), and a prefix command's keymap is not copied
+    assert_eq!(got, r#"["foo","changed","bar",true]"#);
+}
+
+#[test]
+fn accessible_keymaps_are_found_through_prefix_keys() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.m = e8.makeSparseKeymap(), e8.defineKey(m, "C-c a", "foo"), e8.defineKey(m, "C-c b c", "bar"),
+          e8.defineKey(m, "C-x 4 z", "baz"),
+          JSON.stringify([e8.accessibleKeymaps(m).map(([k]) => k).sort(), e8.accessibleKeymaps(m, "C-c").map(([k]) => k),
+            e8.accessibleKeymaps(m)[0][1] === m, e8.accessibleKeymaps(m, "C-c a")]))"#,
+    );
+    // Emacs: ("" "C-x" "C-c" "C-x 4" "C-c b"), most recent first where E8 has key order, and ("C-c" "C-c b")
+    assert_eq!(got, r#"[["","C-c","C-c b","C-x","C-x 4"],["C-c","C-c b"],true,[]]"#);
+}
+
+#[test]
+fn minor_modes_keymaps_and_their_bindings() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.defineMinorMode({ name: "test-minor-mode", bindings: { "C-c q": "test-three" } }), e8.call("test-minor-mode"),
+          JSON.stringify([e8.minorModeKeyBinding("C-c q"), e8.minorModeKeyBinding("C-c w"),
+            e8.currentMinorModeMaps().includes(e8.variable("test-minor-mode-map")),
+            (e8.callWithPrefix(-1, "test-minor-mode"), e8.minorModeKeyBinding("C-c q"))]))"#,
+    );
+    assert_eq!(got, r#"[[["test-minor-mode","test-three"]],[],true,[]]"#);
+}
+
+#[test]
+fn keys_set_and_unset_globally_and_locally() {
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"(e8.call("global-set-key", "C-c y", "test-one"), e8.call("local-set-key", "C-c u", "test-two"), true)"#);
+    ed.press("C-c y C-c u");
+    assert_eq!(seen(&mut ed, &s), "one two");
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.call("global-unset-key", "C-c y"), e8.call("local-unset-key", "C-c u"),
+          JSON.stringify([e8.lookupKey(e8.currentGlobalMap(), "C-c y") ?? null, e8.lookupKey(e8.currentLocalMap(), "C-c u") ?? null]))"#,
+    );
+    // Emacs: a local-set-key in a buffer with no local map gives it one
+    assert_eq!(got, "[null,null]");
+}

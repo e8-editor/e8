@@ -69,6 +69,63 @@ impl Keymaps {
         self.maps[map].parent
     }
 
+    /// A copy of a keymap, as Emacs's `copy-keymap`: its bindings, default,
+    /// remappings and parent, with the prefix maps it binds copied in turn,
+    /// but for those `shared` says to keep, as Emacs keeps a prefix command's.
+    pub fn copy(&mut self, map: KeymapId, shared: &dyn Fn(KeymapId) -> bool) -> KeymapId {
+        let mut copied = Vec::new();
+        self.copy_into(map, shared, &mut copied)
+    }
+
+    fn copy_into(&mut self, map: KeymapId, shared: &dyn Fn(KeymapId) -> bool, copied: &mut Vec<(KeymapId, KeymapId)>) -> KeymapId {
+        if let Some(&(_, new)) = copied.iter().find(|(old, _)| *old == map) {
+            return new;
+        }
+        let original = self.maps[map].clone();
+        self.maps.push(Map { bindings: BTreeMap::new(), ..original.clone() });
+        let new = self.maps.len() - 1;
+        copied.push((map, new));
+        for (key, binding) in original.bindings {
+            let binding = match binding {
+                Binding::Keymap(sub) if !shared(sub) && copied.len() < DEPTH * DEPTH => Binding::Keymap(self.copy_into(sub, shared, copied)),
+                other => other,
+            };
+            self.maps[new].bindings.insert(key, binding);
+        }
+        new
+    }
+
+    /// The keymaps reachable from a keymap through its prefix keys, with the
+    /// keys that reach each, the keymap itself first under no keys, in the
+    /// order a breadth-first walk finds them, as Emacs's `accessible-keymaps`;
+    /// with a prefix, only those under it.
+    pub fn accessible(&self, map: KeymapId, prefix: &[Key]) -> Vec<(Vec<Key>, KeymapId)> {
+        let start = if prefix.is_empty() {
+            map
+        } else {
+            match self.binding_of(map, prefix) {
+                Some(Binding::Keymap(m)) => m,
+                _ => return Vec::new(),
+            }
+        };
+        let mut out = vec![(prefix.to_vec(), start)];
+        let mut i = 0;
+        while i < out.len() && out.len() < 4096 {
+            let (keys, m) = out[i].clone();
+            for (key, binding) in self.direct_bindings(m) {
+                if let Binding::Keymap(sub) = binding
+                    && !out.iter().any(|(_, seen)| *seen == sub)
+                {
+                    let mut k = keys.clone();
+                    k.push(key);
+                    out.push((k, sub));
+                }
+            }
+            i += 1;
+        }
+        out
+    }
+
     /// Makes `map` inherit `parent`'s bindings, as `set-keymap-parent`.
     pub fn set_parent(&mut self, map: KeymapId, parent: Option<KeymapId>) {
         self.maps[map].parent = parent;

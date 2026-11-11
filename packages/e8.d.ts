@@ -2891,6 +2891,15 @@ declare global {
        */
       "global-display-line-numbers-mode": [];
       /**
+       * Bind a key sequence to a command in the global keymap, as Emacs's global-set-key: every buffer sees it unless a local binding shadows it.
+       *
+       * @param key key sequence
+       * @param command command name
+       *
+       * Defined in packages/subr.ts.
+       */
+      "global-set-key": [key: string, command: string];
+      /**
        * Turn subword-mode on in every buffer.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
@@ -2906,6 +2915,14 @@ declare global {
        * Defined in packages/subword.ts.
        */
       "global-superword-mode": [];
+      /**
+       * Take a key sequence's binding out of the global keymap, as Emacs's global-unset-key.
+       *
+       * @param key key sequence
+       *
+       * Defined in packages/subr.ts.
+       */
+      "global-unset-key": [key: string];
       /**
        * Turn visual-line-mode on in every buffer: long lines continue at word boundaries everywhere.
        *
@@ -3968,6 +3985,23 @@ declare global {
        * Defined in packages/custom.ts.
        */
       "load-theme": [theme: string, noConfirm?: PrefixArg | boolean];
+      /**
+       * Bind a key sequence to a command in the current buffer's local map, as Emacs's local-set-key: the major mode's keymap, so every buffer in that mode sees it.
+       *
+       * @param key key sequence
+       * @param command command name
+       *
+       * Defined in packages/subr.ts.
+       */
+      "local-set-key": [key: string, command: string];
+      /**
+       * Take a key sequence's binding out of the current buffer's local map, as Emacs's local-unset-key.
+       *
+       * @param key key sequence
+       *
+       * Defined in packages/subr.ts.
+       */
+      "local-unset-key": [key: string];
       /**
        * Make a directory, and any directories above it that are missing.
        *
@@ -14477,6 +14511,33 @@ declare global {
     function currentActiveMaps(): Keymap[];
     /** The text from start to end with its properties, as Emacs's buffer-substring. */
     function bufferSubstring(start: number, end: number): PropertizedString;
+    /** The current buffer's local map, the major mode's, as current-local-map. */
+    function currentLocalMap(): Keymap | undefined;
+    /** The global keymap now, as current-global-map: global-map unless useGlobalMap changed it. */
+    function currentGlobalMap(): Keymap;
+    /** Make a keymap the global one, as use-global-map. */
+    function useGlobalMap(keymap: Keymap | (string & {})): void;
+    /**
+     * A copy of a keymap, as copy-keymap: the prefix maps it binds are
+     * copied too, but for those a variable names, such as ctl-x-4-map.
+     */
+    function copyKeymap(keymap: Keymap | (string & {})): Keymap;
+    /**
+     * The keymaps reachable from a keymap through prefix keys, each with
+     * the keys that reach it, the keymap itself first, as accessible-keymaps;
+     * with a prefix, only those under it.
+     */
+    function accessibleKeymaps(keymap: Keymap | (string & {}), prefix?: string): [string, Keymap][];
+    /**
+     * The minor modes on whose keymaps bind keys, each with the binding,
+     * in the order keys are looked up, as minor-mode-key-binding.
+     */
+    function minorModeKeyBinding(keys: string): [string, string | Keymap | string[]][];
+    /**
+     * The keymaps of the minor modes on in the current buffer, in the order
+     * keys are looked up in them, as current-minor-mode-maps.
+     */
+    function currentMinorModeMaps(): Keymap[];
     /**
      * Edit recursively, as Emacs's recursive-edit: the editor goes on taking
      * commands, with [ ] around the modes in the mode line, until C-M-c

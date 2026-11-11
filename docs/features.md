@@ -47,7 +47,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Repeat (`C-x z`).
 - Documented variables with buffer-local values (`C-h v`).
 - Hooks.
-- Major and minor modes with their own keymaps (`C-h m`).
+- Major and minor modes with their own keymaps (`C-h m`), and `global-set-key`, `local-set-key`, `global-unset-key` and `local-unset-key`. Scripts reach the current keymaps as values (`currentLocalMap`, `currentGlobalMap`, `useGlobalMap`, `copyKeymap`, `accessibleKeymaps`, `currentMinorModeMaps`, `minorModeKeyBinding`).
 - Choosing the major mode from the file name.
 - `text-mode`.
 - `overwrite-mode` and `delete-selection-mode`.
