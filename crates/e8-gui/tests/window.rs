@@ -690,7 +690,7 @@ fn the_selected_frame_shows_where_windows_cannot_open() {
     h.event(Event::Text("5".into()));
     h.event(Event::Text("o".into()));
     h.run();
-    assert_eq!(h.state().editor().selected_frame(), 1);
+    assert_eq!(h.state().editor().selected_frame(), e8_core::FIRST_FRAME);
     assert_eq!(h.state().editor().window_list().len(), 1, "the first frame has one window");
 }
 

@@ -220,7 +220,7 @@ impl fmt::Display for Value {
             Value::Treesit(crate::treesitfns::TsObject::Node(_)) => write!(f, "#<treesit-node>"),
             Value::Marker(id) => write!(f, "#<marker {id}>"),
             Value::Window(id) => write!(f, "#<window {id}>"),
-            Value::Frame(id) => write!(f, "#<frame {}>", id - crate::window::FIRST_FRAME + 1),
+            Value::Frame(id) => write!(f, "#<frame F{}>", id.saturating_sub(crate::window::FIRST_FRAME) + 1),
             Value::Font(font) => write!(f, "#<{} {}>", font.kind.name(), font.xlfd_name(true)),
             Value::Object(object) => write!(f, "{object:?}"),
         }

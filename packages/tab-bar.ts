@@ -816,7 +816,7 @@ e8.defineCommand({
     const dir = e8.variable("default-directory");
     e8.letBind({ "tab-bar-new-tab-choice": true, "tab-bar-show": null }, () => newTabTo());
     const others = recentTabs(tabs());
-    const buffer = e8.getBufferCreate(` *Tabs*<${e8.selectedFrame()}>`);
+    const buffer = e8.getBufferCreate(` *Tabs*<${e8.frameList().length - e8.frameList().indexOf(e8.selectedFrame())}>`);
     e8.call("switch-to-buffer", buffer.name!);
     e8.setReadOnly(false);
     e8.deleteRegion(e8.pointMin(), e8.pointMax());

@@ -268,7 +268,7 @@ natives! {
         let frame = frame.map(|x| x.0);
         let frame = frame.unwrap_or(ed.selected_frame());
         if !ed.frame_list().contains(&frame) {
-            return Err(e8_core::Error::signal("wrong-type-argument", "Not a live frame", vec![EditorValue::Symbol("frame-live-p".into()), EditorValue::Number(frame as f64)]));
+            return Err(e8_core::Error::signal("wrong-type-argument", "Not a live frame", vec![EditorValue::Symbol("frame-live-p".into()), EditorValue::Frame(frame)]));
         }
         Ok(match ed.frame_visibility(frame) {
             EditorValue::Null => EditorValue::Bool(false),
