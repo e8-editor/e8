@@ -1256,6 +1256,71 @@ impl Buffer {
         self.markers.iter().find(|m| m.id == id).map(|m| m.pos)
     }
 
+    /// The buffer's own variables and their values, as Emacs's `buffer-local-variables`.
+    pub fn local_variables(&self) -> impl Iterator<Item = (&str, &Value)> {
+        self.locals.iter().map(|(k, v)| (k.as_str(), v))
+    }
+
+    /// Whether a marker of this buffer advances past text inserted where it
+    /// is, as Emacs's `marker-insertion-type`.
+    pub fn marker_advances(&self, id: u64) -> Option<bool> {
+        self.markers.iter().find(|m| m.id == id).map(|m| m.advances)
+    }
+
+    /// Makes a marker of this buffer advance past text inserted where it
+    /// is, or stay before it, as Emacs's `set-marker-insertion-type`.
+    /// Whether it is this buffer's.
+    pub fn set_marker_advances(&mut self, id: u64, advances: bool) -> bool {
+        self.markers.iter_mut().find(|m| m.id == id).map(|m| m.advances = advances).is_some()
+    }
+
+    /// How many bytes come before a position, as Emacs's `position-bytes`
+    /// counts them from 0: UTF-8's, a raw byte counting 2, as in Emacs's
+    /// own encoding of text. None past the end.
+    pub fn position_bytes(&self, pos: usize) -> Option<usize> {
+        if pos > self.len() {
+            return None;
+        }
+        Some(self.text.char_to_byte(pos) - 2 * self.raw_bytes_before(self.text.char_to_byte(pos)))
+    }
+
+    /// The position of the character a byte offset falls in, as Emacs's
+    /// `byte-to-position`, the inverse of [`Buffer::position_bytes`]. None
+    /// past the end.
+    pub fn byte_to_position(&self, byte: usize) -> Option<usize> {
+        if self.raw_bytes_before(self.text.len_bytes()) == 0 {
+            return (byte <= self.text.len_bytes()).then(|| self.text.byte_to_char(byte));
+        }
+        // Raw bytes are 2 in Emacs's count, 4 in UTF-8: count along.
+        let mut at = 0;
+        for (i, c) in self.text.chars().enumerate() {
+            let n = if crate::coding::char_raw_byte(c).is_some() { 2 } else { c.len_utf8() };
+            if byte < at + n {
+                return Some(i);
+            }
+            at += n;
+        }
+        (byte == at).then(|| self.len())
+    }
+
+    /// How many raw bytes, U+10FF80 to U+10FFFF, the text holds before a byte offset.
+    fn raw_bytes_before(&self, byte: usize) -> usize {
+        let mut n = 0;
+        let mut seen = 0;
+        for chunk in self.text.chunks() {
+            if seen >= byte {
+                break;
+            }
+            let part = &chunk[..chunk.len().min(byte - seen)];
+            // Every raw byte's UTF-8 starts with 0xF4.
+            if part.as_bytes().contains(&0xF4) {
+                n += part.chars().filter(|c| crate::coding::char_raw_byte(*c).is_some()).count();
+            }
+            seen += chunk.len();
+        }
+        n
+    }
+
     /// Moves a marker of this buffer.
     pub fn set_marker(&mut self, id: u64, pos: usize) {
         let len = self.len();
