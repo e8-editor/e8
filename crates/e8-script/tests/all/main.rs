@@ -81,5 +81,6 @@ mod undo_list;
 mod view;
 mod which_key;
 mod windows;
+mod window_tree;
 mod windows_as_objects;
 mod wrapping;
