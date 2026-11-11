@@ -192,7 +192,8 @@ fn a_reply_streams_in_with_its_thinking_tool_calls_and_plan() {
     assert!(!hidden_in(&s.d, &text, text.find("Looking at").unwrap()), "TAB opens the thinking");
     // How much of its context the conversation fills shows on the mode line, not in the conversation.
     assert_eq!(js_string(&s.d, "e8.variable(\"mode-line-process\")"), " 1k/200k");
-    assert!(js_string(&s.d, "e8.variable(\"header-line-format\")").contains("C-c RET"));
+    // The header line is the session's state; the keys are C-h m's.
+    assert!(!js_string(&s.d, "e8.variable(\"header-line-format\")").contains("C-c RET"));
 }
 
 #[test]
@@ -853,6 +854,24 @@ fn header(d: &Driven) -> String {
 }
 
 #[test]
+fn the_settings_are_variables_and_the_header_line_can_be_left_alone() {
+    let mut steps = session_opening(json!({"configOptions": claude_options("opus", "high")}));
+    steps.push(json!({"sleep": 5}));
+    // As Emacs's agent-shell-header-style nil: no header line, the settings still in variables for one's own.
+    let Some(s) = setup_with(steps, "", r#"e8.setVariable("agent-shell-header-style", null);"#) else { return };
+    wait_for("the model is known", || js_string(&s.d, r#"e8.variable("agent-shell-current-model")"#) == "Opus 5.5");
+    assert_eq!(js_string(&s.d, r#"e8.variable("agent-shell-current-session-mode")"#), "Auto");
+    assert_eq!(js_string(&s.d, r#"e8.variable("agent-shell-current-thought-level")"#), "High");
+    assert_eq!(s.d.eval_expression(r#"e8.variable("header-line-format") ?? null"#), "null");
+    // A mode line of one's own shows them, through the variable's name.
+    s.d.eval(r#"e8.setVariable("global-mode-string", ["", e8.intern("agent-shell-current-session-mode")])"#);
+    let line = js_string(&s.d, "e8.formatModeLine(e8.variable(\"mode-line-format\"))");
+    assert!(line.contains("Auto"), "{line}");
+    // Elsewhere they are empty.
+    assert_eq!(js_string(&s.d, r#"e8.withCurrentBuffer(e8.getBufferCreate("other"), () => e8.variable("agent-shell-current-model"))"#), "");
+}
+
+#[test]
 fn the_session_starts_with_the_buffer_and_its_model_is_picked_with_c_c_c_v() {
     let mut steps = session_opening(json!({"configOptions": claude_options("opus", "high")}));
     steps.extend([
@@ -868,7 +887,7 @@ fn the_session_starts_with_the_buffer_and_its_model_is_picked_with_c_c_c_v() {
     ]);
     let Some(s) = setup(steps, "") else { return };
     // Before any request, the session is there and its settings show.
-    wait_for("the settings show", || header(&s.d).starts_with(" Opus 5.5 · Auto · High  C-c RET send"));
+    wait_for("the settings show", || header(&s.d) == " Opus 5.5 · Auto · High");
     s.d.press("C-c C-v");
     assert_eq!(s.d.prompt().as_deref(), Some("Model (Opus 5.5): "));
     s.d.type_text("Sonnet 5.5");
@@ -900,13 +919,13 @@ fn an_agent_with_only_modes_cycles_them_with_c_c_tab_or_c_tab() {
         json!({"sleep": 5}),
     ]);
     let Some(s) = setup(steps, "") else { return };
-    wait_for("the mode shows", || header(&s.d).starts_with(" Ask  C-c RET"));
+    wait_for("the mode shows", || header(&s.d) == " Ask");
     s.d.press("C-c TAB");
-    wait_for("the mode moves on", || header(&s.d).starts_with(" Plan  "));
+    wait_for("the mode moves on", || header(&s.d) == " Plan");
     assert_eq!(s.d.message().as_deref(), Some("Mode: Plan"));
-    wait_for("the agent's own mode change shows", || header(&s.d).starts_with(" Ask  "));
+    wait_for("the agent's own mode change shows", || header(&s.d) == " Ask");
     s.d.press("C-<tab>");
-    wait_for("C-<tab> moves it on too", || header(&s.d).starts_with(" Plan  "));
+    wait_for("C-<tab> moves it on too", || header(&s.d) == " Plan");
     // It offers no model, and says so.
     s.d.press("C-c C-v");
     assert_eq!(s.d.message().as_deref(), Some("fake offers no model to pick"));

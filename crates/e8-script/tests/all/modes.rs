@@ -214,7 +214,7 @@ fn describe_mode_lists_the_major_and_minor_modes() {
     ed.press("C-h m C-x o").unwrap();
     let help = text(&ed);
     assert!(help.starts_with("The major mode is Text mode (text-mode), defined in packages/text-mode.ts:"), "{help}");
-    assert!(help.contains("Minor modes that are on: Icomplete mode, Show-Paren mode, Overwrite mode."), "{help}");
+    assert!(help.contains("Minor modes that are on: Icomplete mode, Help-Guide mode, Show-Paren mode, Overwrite mode."), "{help}");
     assert!(help.contains("Replace text rather than insert it"), "{help}");
 }
 

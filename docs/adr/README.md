@@ -69,3 +69,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0065](0065-packages-emacs-autoloads.md) Packages Emacs autoloads
 - [0066](0066-e8-in-a-browser.md) E8 in a browser
 - [0067](0067-themes-are-one-collection.md) Themes are one collection, with a chooser
+- [0068](0068-quick-help-for-newcomers.md) Quick help for newcomers, a layer that can be turned off
