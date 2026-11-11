@@ -345,7 +345,7 @@ declare global {
        *
        * Type a request under the last * You heading and send it with C-c RET. The agent's reply streams in under * Agent, its Markdown made Org; each tool call is a line, with its output or diff folded into it as it comes (TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. M-p and M-n bring the requests sent before back to the prompt, as in a shell, and M-r picks one of them. A request starting with / is one of the agent's slash commands, which TAB or C-M-i completes, its description shown once it is whole. In the transcript, where nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode line shows whether the agent is working and how much of its context the conversation fills.
        *
-       * The header line shows the session's model, mode and thought level. C-c TAB, or C-<tab> as in Emacs's agent-shell where tab-bar-mode does not take it, moves to the next mode, C-c C-v picks the model, C-c C-t the thought level, and C-c C-s any setting the agent offers. Picking a mode is M-x agent-shell-set-session-mode, as C-c C-m is C-c RET.
+       * The header line shows the session's model, mode and thought level, and nothing else: the keys are listed below. agent-shell-header-style null leaves the header line to you. C-c TAB, or C-<tab> as in Emacs's agent-shell where tab-bar-mode does not take it, moves to the next mode, C-c C-v picks the model, C-c C-t the thought level, and C-c C-s any setting the agent offers. Picking a mode is M-x agent-shell-set-session-mode, as C-c C-m is C-c RET.
        *
        * Defined in packages/agent-shell.ts.
        */
@@ -2917,6 +2917,34 @@ declare global {
        * Defined in packages/help.ts.
        */
       "help-go-forward": [];
+      /**
+       * Show a short guide to getting started with E8: how keys and commands work, the keys to learn first, and where to go next.
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-guide-e8": [];
+      /**
+       * Show the short guide to a major mode, as C-h h shows it in the mode's buffers.
+       *
+       * @param mode text
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-guide-for-mode": [mode: string];
+      /**
+       * Show a short guide to the current buffer's major mode: what it is for, the keys that matter in it, what to try now and what to learn next, with a link to its full help (C-h m).
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-guide-here": [];
+      /**
+       * Quick help for newcomers, on top of Emacs's: C-h h shows a short guide to where you are and C-h 8 one to getting started with E8, and E8 says so at startup. Turned off, the keys, the guides and the hints go, leaving Emacs's help alone; put e8.callWithPrefix(-1, "help-guide-mode") in init.ts for that.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-guide-mode": [];
       /**
        * The major mode of the *Help* buffer. RET follows the name at point to its description, TAB and S-TAB move between the names, l and r go back and forward through what was shown, and q goes back to the buffer before it.
        *
@@ -7321,6 +7349,24 @@ declare global {
        */
       "agent-shell-agents": Value;
       /**
+       * The session's model, by its name, in an agent's buffer, and "" elsewhere or before the agent says. To show it in every mode line: e8.setVariable("global-mode-string", ["", e8.intern("agent-shell-current-model")]), as Lisp's '("" agent-shell-current-model).
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-current-model": Value;
+      /**
+       * The session's mode, such as Auto or Plan, which says what the agent may do without asking, by its name, in an agent's buffer, and "" elsewhere or before the agent says. To show it in every mode line: e8.setVariable("global-mode-string", ["", e8.intern("agent-shell-current-session-mode")]), as Lisp's '("" agent-shell-current-session-mode).
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-current-session-mode": Value;
+      /**
+       * The session's thought level, by its name, in an agent's buffer, and "" elsewhere or before the agent says. To show it in every mode line: e8.setVariable("global-mode-string", ["", e8.intern("agent-shell-current-thought-level")]), as Lisp's '("" agent-shell-current-thought-level).
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-current-thought-level": Value;
+      /**
        * The agent M-x agent-shell starts without asking, by its name in agent-shell-agents; null to ask.
        *
        * Defined in packages/agent-shell.ts.
@@ -7332,6 +7378,12 @@ declare global {
        * Defined in packages/agent-shell.ts.
        */
       "agent-shell-e8-tools": Value;
+      /**
+       * What the header line of an agent's buffer shows: "text", the session's model, mode and thought level; "graphical", the same, as E8 draws no icons in header lines yet; null, no header line, leaving header-line-format to you. agent-shell-current-model, agent-shell-current-session-mode and agent-shell-current-thought-level hold the settings for a mode line or header line of your own.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-header-style": Value;
       /**
        * The tools, by the name the agent gives them, whose calls the buffer leaves out: Claude Code's own bookkeeping, finding its tools and keeping its to-do list, which shows as the plan.
        *
@@ -8810,6 +8862,16 @@ declare global {
        * How many columns the line numbers take left of the text, which a header line's `:align-to` positions can add to line titles up with the text, as header-line-indent-mode keeps it.
        */
       "header-line-indent-width": Value;
+      /**
+       * Whether Help-Guide mode is on. Use the command help-guide-mode to change it.
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-guide-mode": Value;
+      /**
+       * Keymap help-guide-mode-map.
+       */
+      "help-guide-mode-map": Value;
       /**
        * Keymap help-map.
        */
@@ -11852,6 +11914,30 @@ declare global {
        */
       "header-line-highlight": FaceAttributes;
       /**
+       * The name of a group of keys on a help-guide card.
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-guide-group": FaceAttributes;
+      /**
+       * A section of a help-guide card, such as Keys that matter here.
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-guide-heading": FaceAttributes;
+      /**
+       * The title of a help-guide card, such as Org mode.
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-guide-title": FaceAttributes;
+      /**
+       * A key in help text, such as C-x C-f on a help-guide card.
+       *
+       * Defined in packages/help-guide.ts.
+       */
+      "help-key-binding": FaceAttributes;
+      /**
        * A face for highlighting with hi-lock: aquamarine.
        *
        * Defined in packages/hi-lock.ts.
@@ -12887,6 +12973,18 @@ declare global {
        * Run after Header-Line-Indent mode is turned on.
        */
       "header-line-indent-mode-on-hook": Value;
+      /**
+       * Run after Help-Guide mode is turned on or off.
+       */
+      "help-guide-mode-hook": Value;
+      /**
+       * Run after Help-Guide mode is turned off.
+       */
+      "help-guide-mode-off-hook": Value;
+      /**
+       * Run after Help-Guide mode is turned on.
+       */
+      "help-guide-mode-on-hook": Value;
       /**
        * Run after entering Help mode, after the hooks of the modes it is built on.
        */

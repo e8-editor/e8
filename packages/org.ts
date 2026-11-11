@@ -97,6 +97,7 @@ import {
   orgRegionActive,
   placeMarkers,
 } from "org-macs";
+import { defineGuide } from "help-guide";
 import { refileCommand, refileCopyCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
 import { allMatches, charCount, escapeRegExp, forwardLine, truthy } from "subr";
@@ -5879,6 +5880,59 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c C-x C-y": "org-paste-special",
   "<mouse-1>": mouseFollow,
 };
+
+// What C-h h shows in an Org buffer (ADR 0068).
+defineGuide("org-mode", {
+  title: "Org mode",
+  summary:
+    "Org keeps notes, tasks and plans in plain text. A line starting with stars is a heading, and what is under " +
+    "it folds away, so a long file reads as an outline.",
+  keys: [
+    [
+      "Folding",
+      [
+        ["org-cycle", "Fold or unfold the heading point is on"],
+        ["org-shifttab", "Fold or unfold them all: outline, contents, everything"],
+      ],
+    ],
+    [
+      "Headings",
+      [
+        ["org-meta-return", "A new heading, or list item, after this one"],
+        ["org-metaleft", "Promote: one star fewer"],
+        ["org-metaright", "Demote: one star more"],
+        ["org-metaup", "Move the heading, and all under it, up"],
+        ["org-metadown", "Move it down"],
+      ],
+    ],
+    [
+      "Tasks",
+      [
+        ["org-todo", "TODO, then DONE, then neither"],
+        ["org-schedule", "Schedule it for a day"],
+        ["org-deadline", "Give it a deadline"],
+      ],
+    ],
+    [
+      "Links and the rest",
+      [
+        ["org-insert-link", "Insert a link, or change the one at point"],
+        ["org-open-at-point", "Follow the link at point"],
+        ["org-ctrl-c-ctrl-c", "Do what fits here: tick a box, align a table, set tags"],
+      ],
+    ],
+  ],
+  tryNow: [
+    "Write a heading: a star, a space and a title. \\[org-meta-return] starts the next one.",
+    "Press \\[org-todo] on a heading to make it a task, and again to mark it done.",
+    "Press \\[org-shifttab] a few times to see the file as an outline.",
+  ],
+  learnNext: [
+    "Tables: start a line with |, type the cells separated by |, and \\[org-cycle] aligns them.",
+    "\\[org-agenda] gathers the tasks and dates from your Org files into one view.",
+    "\\[describe-mode] lists every key of Org mode.",
+  ],
+});
 
 e8.defineMajorMode({
   name: "org-mode",
