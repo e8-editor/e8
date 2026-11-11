@@ -269,11 +269,18 @@ export function withSelectedWindow<T>(window: number, body: () => T): T {
   const oldFrame = e8.selectedFrame(), oldWindow = e8.selectedWindow();
   return e8.withCurrentBuffer(e8.currentBuffer(), () => {
     const frame = e8.windowFrame(window);
-    if (frame !== undefined && frame !== oldFrame) e8.selectFrame(frame);
+    // Another frame's own selected window is put back too.
+    const otherFrame = frame !== undefined && frame !== oldFrame ? frame : undefined;
+    const otherSelected = otherFrame === undefined ? undefined : e8.frameSelectedWindow(otherFrame);
+    if (otherFrame !== undefined) e8.selectFrame(otherFrame);
     e8.selectWindow(window, true);
     try {
       return body();
     } finally {
+      if (otherFrame !== undefined && frameLiveP(otherFrame) && otherSelected !== undefined && windowLiveP(otherSelected)) {
+        if (e8.selectedFrame() !== otherFrame) e8.selectFrame(otherFrame);
+        e8.selectWindow(otherSelected, true);
+      }
       if (frameLiveP(oldFrame) && e8.selectedFrame() !== oldFrame) e8.selectFrame(oldFrame);
       if (windowLiveP(oldWindow)) e8.selectWindow(oldWindow, true);
     }

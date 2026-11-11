@@ -1578,7 +1578,11 @@ impl Editor {
     /// Shows a frame, hides it, or iconifies it, as Emacs's
     /// `make-frame-visible`, `make-frame-invisible` and `iconify-frame`:
     /// its `visibility` parameter, which a front end follows.
+    /// The only frame shown or iconified cannot be hidden, as in Emacs.
     pub fn set_frame_visibility(&mut self, frame: FrameId, visibility: Value) -> Result<()> {
+        if !visibility.is_true() && self.frame_order.iter().all(|f| *f == frame || !self.frame_visibility(*f).is_true()) {
+            return Err(Error::new("Attempt to make invisible the sole visible or iconified frame"));
+        }
         self.set_frame_parameter(frame, "visibility", visibility)
     }
 

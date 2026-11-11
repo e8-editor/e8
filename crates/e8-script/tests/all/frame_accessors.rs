@@ -59,6 +59,30 @@ fn frames_are_hidden_iconified_and_raised_for_the_front_end() {
     eval(&mut ed, &s, "(e8.iconifyFrame(f2), subr.xFocusFrame(f2), e8.iconifyFrame(f2), true)");
     let d = ed.describe_frame(f2, 1.0);
     assert_eq!((d.visibility, d.raised), (Visibility::Iconified, 2));
+    // The only frame shown cannot be hidden; a dead frame has no visibility.
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.deleteFrame(f2), JSON.stringify([e8.conditionCase(() => (e8.makeFrameInvisible(), "hidden"), { error: (e) => e.message }),
+          e8.conditionCase(() => e8.frameVisibleP(f2), { "wrong-type-argument": () => "dead" })]))"#,
+    );
+    // Emacs: (error "Attempt to make invisible the sole visible or iconified frame")
+    assert_eq!(got, r#"["Attempt to make invisible the sole visible or iconified frame","dead"]"#);
+}
+
+#[test]
+fn another_frame_s_selected_window_is_put_back_too() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.f1 = e8.selectedFrame(), globalThis.f2 = e8.makeFrame(), globalThis.a = e8.selectedWindow(),
+          globalThis.b = e8.splitWindow(), e8.selectFrame(f1),
+          JSON.stringify([subr.withSelectedWindow(b, () => e8.selectedWindow() === b && e8.selectedFrame() === f2),
+            e8.selectedFrame() === f1, e8.frameSelectedWindow(f2) === a]))"#,
+    );
+    // Emacs: frame-selected-window of the other frame is the one it had
+    assert_eq!(got, "[true,true,true]");
 }
 
 #[test]

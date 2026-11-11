@@ -396,7 +396,9 @@ impl E8App {
         use e8_core::frame_description::Visibility;
         for &frame in frames {
             let state = self.frame_state(frame);
-            let Some(old) = self.frame_states.insert(frame, state) else { continue };
+            // A frame not seen before, or newly drawn in the main window,
+            // gets its visibility whatever it is.
+            let old = self.frame_states.insert(frame, state).unwrap_or((Visibility::Hidden, state.1));
             if old == state {
                 continue;
             }
@@ -475,6 +477,8 @@ impl E8App {
         }
         if !frames.contains(&self.main_frame) {
             self.main_frame = *frames.last().expect("there is always a frame");
+            // The main window may be hidden or minimized from the frame it showed.
+            self.frame_states.remove(&self.main_frame);
         }
         let main = self.main_frame;
         self.show_frame(ui, main);

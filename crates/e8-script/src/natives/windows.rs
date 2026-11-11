@@ -177,8 +177,6 @@ natives! {
         ed.set_frame_parameter(frame.unwrap_or(ed.selected_frame()), &name, value)
     }
 
-    /// Whether the display shows images and fonts of many sizes, as a graphical
-    /// one does, rather than a terminal's cells, as display-graphic-p.
     /// The frame a window is on, the selected window by default, as window-frame.
     #[ts = "(window?: number): number | undefined"]
     pub fn windowFrame(ed, window: Option<u64>) -> Option<u64> {
@@ -222,7 +220,11 @@ natives! {
     /// when iconified, as frame-visible-p.
     #[ts = "(frame?: number): boolean | \"icon\""]
     pub fn frameVisibleP(ed, frame: Option<u64>) -> EditorValue {
-        Ok(match ed.frame_visibility(frame.unwrap_or(ed.selected_frame())) {
+        let frame = frame.unwrap_or(ed.selected_frame());
+        if !ed.frame_list().contains(&frame) {
+            return Err(e8_core::Error::signal("wrong-type-argument", "Not a live frame", vec![EditorValue::Symbol("frame-live-p".into()), EditorValue::Number(frame as f64)]));
+        }
+        Ok(match ed.frame_visibility(frame) {
             EditorValue::Null => EditorValue::Bool(false),
             v => v,
         })
@@ -308,6 +310,14 @@ natives! {
         Ok(if ed.window_wants_header_line(w, lines) { ed.text_metrics().char_height() as f64 } else { 0.0 })
     }
 
+    /// A frame's selected window, the selected frame's by default, as frame-selected-window.
+    #[ts = "(frame?: number): number | undefined"]
+    pub fn frameSelectedWindow(ed, frame: Option<u64>) -> Option<u64> {
+        Ok(ed.frame_selected_window(frame.unwrap_or(ed.selected_frame())))
+    }
+
+    /// Whether the display shows images and fonts of many sizes, as a graphical
+    /// one does, rather than a terminal's cells, as display-graphic-p.
     pub fn displayGraphicP(ed) -> bool {
         Ok(ed.text_metrics().images())
     }

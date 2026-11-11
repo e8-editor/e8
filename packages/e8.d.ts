@@ -14919,11 +14919,7 @@ declare global {
      * which shows tab-bar-line, a mode line construct.
      */
     function setFrameParameter(frame: number | undefined, name: string, value: Value): void;
-    /**
-     * Whether the display shows images and fonts of many sizes, as a graphical
-     * one does, rather than a terminal's cells, as display-graphic-p.
-     * The frame a window is on, the selected window by default, as window-frame.
-     */
+    /** The frame a window is on, the selected window by default, as window-frame. */
     function windowFrame(window?: number): number | undefined;
     /** A frame's first window, its top left one, the selected frame's by default, as frame-first-window. */
     function frameFirstWindow(frame?: number): number | undefined;
@@ -14982,6 +14978,12 @@ declare global {
     function windowModeLineHeight(window?: number): number;
     /** How tall a window's header line is, 0 without one, as window-header-line-height. */
     function windowHeaderLineHeight(window?: number): number;
+    /** A frame's selected window, the selected frame's by default, as frame-selected-window. */
+    function frameSelectedWindow(frame?: number): number | undefined;
+    /**
+     * Whether the display shows images and fonts of many sizes, as a graphical
+     * one does, rather than a terminal's cells, as display-graphic-p.
+     */
     function displayGraphicP(): boolean;
     /**
      * The width of a character of the frame's default font, in the front
