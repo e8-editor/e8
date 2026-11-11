@@ -13,8 +13,8 @@ v8 = ["e8-script/v8", "e8-agent/v8", "e8-mcp/v8"]
 [dependencies]
 eframe = "0.37"
 egui = "0.37"
-e8-core = { version = "0.5.4", path = "../e8-core" }
-e8-script = { version = "0.5.4", path = "../e8-script", default-features = false }
+e8-core = { version = "0.5.5", path = "../e8-core" }
+e8-script = { version = "0.5.5", path = "../e8-script", default-features = false }
 fontique = "0.11"
 # Each font's underline position and thickness, which egui does not give;
 # egui reads its fonts with it already.
@@ -24,8 +24,8 @@ skrifa = { version = "0.44", default-features = false, features = ["std"] }
 # browser has.
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 arboard = "3.7"
-e8-agent = { version = "0.5.4", path = "../e8-agent", default-features = false }
-e8-mcp = { version = "0.5.4", path = "../e8-mcp", default-features = false }
+e8-agent = { version = "0.5.5", path = "../e8-agent", default-features = false }
+e8-mcp = { version = "0.5.5", path = "../e8-mcp", default-features = false }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSGraphics"] }
