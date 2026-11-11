@@ -167,6 +167,9 @@ function pieces(text: string, find: KeyFinder): Piece[] {
   return out;
 }
 
+// Text with faces is inserted as it is or joined with e8.concat: a template
+// string would make it a plain string, and the faces would be lost.
+
 /** The face of a key on a card. */
 const keyed = (text: string) => e8.propertize(text, { face: "help-key-binding" });
 
@@ -215,7 +218,7 @@ function insertFilled(parts: Piece[], column: number, indent: number): void {
 
 /** Inserts a section's heading, after a blank line. */
 function insertHeading(text: string): void {
-  e8.insert(`\n${e8.propertize(text, { face: "help-guide-heading" })}\n`);
+  e8.insert(e8.concat("\n", e8.propertize(text, { face: "help-guide-heading" }), "\n"));
 }
 
 /** Inserts sentences as a list, each filled under its bullet. */
@@ -257,7 +260,7 @@ function makeCard(title: string, guide: Guide, find: KeyFinder, links: Card["lin
 
 /** Inserts a card into *Help*. */
 function insertCard(card: Card): void {
-  e8.insert(`${e8.propertize(card.title, { face: "help-guide-title" })}\n`);
+  e8.insert(e8.concat(e8.propertize(card.title, { face: "help-guide-title" }), "\n"));
   insertFilled(card.summary, 0, 0);
   if (card.keys.length > 0) {
     insertHeading("Keys that matter here");
@@ -266,9 +269,9 @@ function insertCard(card: Card): void {
     // command's name, pushes its text along rather than everyone's.
     const keyWidth = Math.max(3, ...rows.map(([key]) => key.length).filter((n) => n <= 10));
     for (const [group, groupRows] of card.keys) {
-      e8.insert(`  ${e8.propertize(group, { face: "help-guide-group" })}\n`);
+      e8.insert(e8.concat("  ", e8.propertize(group, { face: "help-guide-group" }), "\n"));
       for (const [key, what] of groupRows) {
-        e8.insert(`    ${keyed(key)}${" ".repeat(Math.max(2, keyWidth + 2 - key.length))}`);
+        e8.insert(e8.concat("    ", keyed(key), " ".repeat(Math.max(2, keyWidth + 2 - key.length))));
         const column = 4 + Math.max(key.length + 2, keyWidth + 2);
         insertFilled(what, column, 6 + keyWidth);
       }
@@ -288,7 +291,7 @@ function insertCard(card: Card): void {
     e8.insert(link);
     e8.insert("\n");
   }
-  e8.insert(`\n${e8.propertize("RET follows a link, l comes back here, q closes this window.", { face: "shadow" })}\n`);
+  e8.insert(e8.concat("\n", e8.propertize("RET follows a link, l comes back here, q closes this window.", { face: "shadow" }), "\n"));
 }
 
 /** A link: a button, given or made from a label and where it leads, with a key after it when one runs the same. */
