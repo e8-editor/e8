@@ -39,6 +39,26 @@ pub enum Class {
 }
 
 impl Class {
+    /// The classes in Emacs's order, as `enum syntaxcode` numbers them.
+    pub const ALL: [Class; 16] = [
+        Class::Whitespace,
+        Class::Punct,
+        Class::Word,
+        Class::Symbol,
+        Class::Open,
+        Class::Close,
+        Class::Quote,
+        Class::String,
+        Class::Math,
+        Class::Escape,
+        Class::CharQuote,
+        Class::Comment,
+        Class::EndComment,
+        Class::Inherit,
+        Class::CommentFence,
+        Class::StringFence,
+    ];
+
     pub(crate) fn from_char(c: char) -> Option<Class> {
         Some(match c {
             ' ' | '-' => Class::Whitespace,
@@ -148,6 +168,35 @@ impl Entry {
         Ok(Entry { class, matching, flags })
     }
 
+    /// The entry from Emacs's raw syntax descriptor, the cons
+    /// `string-to-syntax` returns: the class's number in the low 16 bits,
+    /// the flags above, and the matching character.
+    pub fn from_raw(code: u32, matching: Option<char>) -> Option<Entry> {
+        let class = *Class::ALL.get((code & 0xffff) as usize)?;
+        Some(Entry { class, matching, flags: (code >> 16) as u8 })
+    }
+
+    /// The entry as Emacs's raw syntax descriptor's code, as `string-to-syntax` gives it.
+    pub fn raw_code(&self) -> u32 {
+        Class::ALL.iter().position(|c| *c == self.class).unwrap_or(0) as u32 | (u32::from(self.flags) << 16)
+    }
+
+    /// The entry a `syntax-table` text property gives: a descriptor such as
+    /// ".", a raw descriptor as `string-to-syntax` returns, `[code, matching]`,
+    /// or the name of a syntax table to look the character up in.
+    pub fn from_property(value: &crate::Value, tables: &SyntaxTables, c: char) -> Option<Entry> {
+        match value {
+            crate::Value::Str(s) if tables.exists(s) => Some(tables.entry(s, c)),
+            crate::Value::Str(s) => Entry::parse(s).ok(),
+            crate::Value::List(items) => {
+                let code = items.first()?.as_number()?;
+                let matching = items.get(1).and_then(|m| m.as_str()).and_then(|m| m.chars().next());
+                Entry::from_raw(code as u32, matching)
+            }
+            _ => None,
+        }
+    }
+
     /// The entry written back as a descriptor, as `modify-syntax-entry` takes it.
     pub fn descriptor(&self) -> String {
         let mut s = String::new();
@@ -226,6 +275,15 @@ impl SyntaxTables {
     pub fn make(&mut self, name: &str, parent: Option<&str>) {
         let parent = parent.filter(|p| *p != name).unwrap_or(STANDARD).to_string();
         self.tables.insert(name.to_string(), SyntaxTable { entries: HashMap::new(), parent: Some(parent) });
+    }
+
+    /// A new table named `name` holding a copy of `from`'s own entries, with
+    /// its parent, as Emacs's `copy-syntax-table`; a copy of the standard
+    /// table inherits from it.
+    pub fn copy(&mut self, from: &str, name: &str) {
+        let original = self.tables.get(from).cloned().unwrap_or_default();
+        let parent = if from == STANDARD { None } else { original.parent };
+        self.tables.insert(name.to_string(), SyntaxTable { entries: original.entries, parent: Some(parent.unwrap_or_else(|| STANDARD.to_string())) });
     }
 
     /// Sets a character's entry in a table, as `modify-syntax-entry`.
@@ -351,8 +409,8 @@ impl<'a> Scanner<'a> {
     /// property's, if properties are looked up and it has one, else the table's.
     fn entry_for(&self, pos: usize, c: char) -> Entry {
         if self.lookup_properties
-            && let Some(crate::Value::Str(descriptor)) = self.buffer.text_property(pos, "syntax-table")
-            && let Ok(entry) = Entry::parse(descriptor)
+            && let Some(value) = self.buffer.text_property(pos, "syntax-table")
+            && let Some(entry) = Entry::from_property(value, self.tables, c)
         {
             return entry;
         }

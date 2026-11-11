@@ -343,8 +343,8 @@ impl Editor {
         let ascii: Vec<Class> = (0..128u8).map(|c| self.syntax_tables.entry(&b.syntax_table, c as char).class).collect();
         let class = move |pos, c: char| {
             if properties
-                && let Some(crate::Value::Str(descriptor)) = b.text_property(pos, "syntax-table")
-                && let Ok(entry) = crate::syntax_table::Entry::parse(descriptor)
+                && let Some(value) = b.text_property(pos, "syntax-table")
+                && let Some(entry) = crate::syntax_table::Entry::from_property(value, &self.syntax_tables, c)
             {
                 return entry.class;
             }

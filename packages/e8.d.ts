@@ -14632,6 +14632,25 @@ declare global {
     /** The current buffer's syntax table. */
     function syntaxTable(): string;
     function setSyntaxTable(name: string): void;
+    /** The standard syntax table, which every other inherits from in the end, as standard-syntax-table. */
+    function standardSyntaxTable(): string;
+    /**
+     * A new syntax table holding a copy of a table's own entries, the
+     * standard table's by default, with its parent, as copy-syntax-table.
+     * Syntax tables are named: the copy's name is returned.
+     */
+    function copySyntaxTable(table?: string): string;
+    /** Whether a value names a syntax table, as syntax-table-p. */
+    function syntaxTableP(value: unknown): boolean;
+    /**
+     * The raw syntax descriptor a descriptor such as "()" or ". 124b"
+     * stands for, as string-to-syntax: the class's number with the flags
+     * above it, and the matching character; undefined for "@", inherit.
+     * A syntax-table text property may hold it.
+     */
+    function stringToSyntax(descriptor: string): [number, string | null] | undefined;
+    /** The designator of a syntax class by its number, as syntax-class-to-char. */
+    function syntaxClassToChar(code: number): string;
     /** A character's entry in the current syntax table, as modify-syntax-entry writes it. */
     function syntaxEntry(char: string): string | undefined;
     /** Move back over expression prefixes, as Emacs's backward-prefix-chars. */
