@@ -35,6 +35,7 @@
 
 import * as acp from "acp";
 import { findBufferVisiting } from "files";
+import { defineGuide, substituteCommandKeys } from "help-guide";
 import { completionInRegion } from "minibuffer";
 import { BLOCK_BEGIN, BLOCK_END, flag, folded, toggleDrawerOrBlock, withoutFoldChecks } from "org-fold";
 import { current as projectRoot } from "project";
@@ -219,6 +220,43 @@ interface SessionOption {
   via?: "set_mode" | "set_model";
 }
 
+// What C-h h shows in an agent's buffer (ADR 0068).
+defineGuide("agent-shell-mode", {
+  title: "Agent shell",
+  summary:
+    "A conversation with a coding agent, kept as Org. Type a request under the last * You heading and send it; " +
+    "the reply streams in below, and the agent asks before its tools change anything.",
+  keys: [
+    [
+      "Talking",
+      [
+        ["agent-shell-send", "Send the request you typed"],
+        ["agent-shell-interrupt", "Stop the agent's turn"],
+        ["agent-shell-previous-input", "Bring back the request before; again for older ones"],
+        ["agent-shell-search-history", "Pick an earlier request by searching"],
+      ],
+    ],
+    [
+      "The session",
+      [
+        ["agent-shell-cycle-session-mode", "Next mode, such as asking before edits or planning"],
+        ["agent-shell-set-session-model", "Choose the model"],
+        ["agent-shell-set-session-thought-level", "Choose how hard it thinks"],
+      ],
+    ],
+    ["Reading the reply", [["org-cycle", "On a tool call or thinking: show or fold what it holds"]]],
+  ],
+  tryNow: [
+    "Ask about the project you are in, such as \"What does this project do?\", and press \\[agent-shell-send].",
+    "Type / at the start of a request and \\[completion-at-point] for the agent's slash commands.",
+  ],
+  learnNext: [
+    "The header line shows the model, mode and thought level; the mode line, how full the context is.",
+    "In the conversation above the prompt, n and p move between headings, as Org's speed keys.",
+    "\\[describe-mode] lists every key of the agent shell.",
+  ],
+});
+
 e8.defineMajorMode({
   name: "agent-shell-mode",
   modeName: "Agent Shell",
@@ -235,7 +273,8 @@ e8.defineMajorMode({
     "nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b " +
     "to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode " +
     "line shows whether the agent is working and how much of its context the conversation fills.\n\n" +
-    "The header line shows the session's model, mode and thought level. C-c TAB, or C-<tab> as in Emacs's " +
+    "The header line shows the session's model, mode and thought level, and nothing else: the keys are listed below. " +
+    "C-c TAB, or C-<tab> as in Emacs's " +
     "agent-shell where tab-bar-mode does not take it, moves to the next mode, C-c C-v " +
     "picks the model, C-c C-t the thought level, and C-c C-s any setting the agent offers. Picking a mode is " +
     "M-x agent-shell-set-session-mode, as C-c C-m is C-c RET.",
@@ -257,7 +296,8 @@ e8.defineMajorMode({
     e8.call("visual-line-mode");
     // Agents' tools, e8-mcp's included, act in other windows than this one.
     e8.setVariable("agent-buffer", true);
-    e8.setVariable("header-line-format", ` ${KEYS}`);
+    // The session's settings, once it has started; until then, an empty line, so the text does not move.
+    e8.setVariable("header-line-format", " ");
     // ~code~ and *bold* without their markers, as a chat shows them.
     e8.makeLocalVariable("org-hide-emphasis-markers");
     e8.setVariable("org-hide-emphasis-markers", true);
@@ -297,17 +337,17 @@ const SPEED_COMMANDS: e8.Value = [
   ["?", "org-speed-command-help"],
 ];
 
-/** What the header line says of the keys, after the session's settings. */
-const KEYS = "C-c RET send · C-c C-k stop · M-p history · C-c TAB mode · C-c C-v model · C-c C-s settings · TAB on → output";
-
-/** The header line: the session's model, mode and thought level, then the keys. */
+/**
+ * The header line: the session's model, mode and thought level, as state,
+ * never the keys, which C-h m lists, as a shell's header says nothing of its keys.
+ */
 function showSettings(shell: Shell): void {
   const shown = ["model", "mode", "thought_level"]
     .map((category) => shell.options.find((o) => o.category === category))
     .filter((o): o is SessionOption => o !== undefined)
     .map((o) => valueName(o, o.current));
   const head = shell.starting ? ` Starting ${shell.agent}…` : shown.length > 0 ? ` ${shown.join(" · ")}` : "";
-  inBuffer(shell, () => e8.setVariable("header-line-format", `${head === "" ? " " : `${head}  `}${KEYS}`.replace(/%/g, "%%")));
+  inBuffer(shell, () => e8.setVariable("header-line-format", `${head === "" ? " " : head}`.replace(/%/g, "%%")));
 }
 
 /** Positions as a line start and its end, and the line's text. */
@@ -1663,6 +1703,10 @@ export function start(name: string): string {
     e8.setBufferModified(false);
     shell.client = makeShellClient(shell);
     shells.set(buffer, shell);
+    // Once, in the echo area, as with-editor's "Type C-c C-c to finish", while help-guide-mode is on (ADR 0068): the header line keeps to the settings.
+    if (e8.variable("help-guide-mode") === true) {
+      e8.message(substituteCommandKeys("Type a request under * You and send it with \\[agent-shell-send]; \\[help-guide-here] for help here", "agent-shell-mode"));
+    }
     // Started now, so its settings can be picked before the first request;
     // if it fails, the first request says why, starting it again.
     startSession(shell, () => {}, (error) => e8.message(`${name}: ${describe(shell, error)}`));

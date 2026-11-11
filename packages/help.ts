@@ -8,8 +8,15 @@
 
 e8.defineFace({ name: "button", doc: "A button, such as a name in *Help* that RET follows.", attributes: { inherit: "link" } });
 
-/** What a help button leads to, held in the text's help-xref property. */
-type Xref = ["command" | "variable" | "face" | "key" | "symbol", string];
+/**
+ * What a help button leads to, held in the text's help-xref property: a name
+ * to describe; the major mode and minor modes whose description C-h m would
+ * show; or a command to call, with an argument or none.
+ */
+export type Xref =
+  | ["command" | "variable" | "face" | "key" | "symbol", string]
+  | ["modes", string, ...string[]]
+  | ["call", string, ...string[]];
 
 /** One thing shown in *Help*: a function that inserts it, so l and r can show it again. */
 interface HelpItem {
@@ -44,7 +51,7 @@ export function withHelpWindow(render: () => void): void {
 }
 
 /** A name RET follows and TAB finds, as help-mode's buttons. */
-function button(label: string, xref: Xref): e8.PropertizedString {
+export function button(label: string, xref: Xref): e8.PropertizedString {
   return e8.propertize(label, { face: "button", button: true, "help-xref": xref });
 }
 
@@ -331,6 +338,27 @@ function insertMode(title: string, name: string): void {
   insertBindings(bindings);
 }
 
+/** Inserts what describe-mode shows: the major mode, then each minor mode that is on. */
+function insertModes(major: string, modeName: string, minors: string[]): void {
+  insertMode(`The major mode is ${modeName} mode`, major);
+  if (minors.length > 0) {
+    e8.insert(`\nMinor modes that are on: ${minors.map(prettyModeName).join(", ")}.\n`);
+    for (const minor of minors) {
+      e8.insert("\n");
+      insertMode(prettyModeName(minor), minor);
+    }
+  }
+}
+
+/**
+ * A button to what C-h m shows in the current buffer, for help shown about
+ * it from elsewhere, as help-guide's cards link to it.
+ */
+export function describeModeButton(label: string): e8.PropertizedString {
+  const xref: Xref = ["modes", String(e8.variable("major-mode")), String(e8.variable("mode-name")), ...e8.enabledMinorModes()];
+  return button(label, xref);
+}
+
 const describeMode = e8.defineCommand({
   name: "describe-mode",
   doc: "Show the documentation of the current buffer's major mode and of the minor modes that are on, with their keys.",
@@ -338,16 +366,7 @@ const describeMode = e8.defineCommand({
     const major = String(e8.variable("major-mode"));
     const modeName = String(e8.variable("mode-name"));
     const minors = e8.enabledMinorModes();
-    withHelpWindow(() => {
-      insertMode(`The major mode is ${modeName} mode`, major);
-      if (minors.length > 0) {
-        e8.insert(`\nMinor modes that are on: ${minors.map(prettyModeName).join(", ")}.\n`);
-        for (const minor of minors) {
-          e8.insert("\n");
-          insertMode(prettyModeName(minor), minor);
-        }
-      }
-    });
+    withHelpWindow(() => insertModes(major, modeName, minors));
   },
 });
 
@@ -434,8 +453,17 @@ const describeSymbol = e8.defineCommand({
 // --- Following links in *Help*, after help-mode.el and button.el ------------
 
 /** Shows what a button leads to. */
-function followXref([kind, name]: Xref): void {
+function followXref(xref: Xref): void {
+  const [kind, name] = xref;
   switch (kind) {
+    case "modes": {
+      const [, major, modeName, ...minors] = xref;
+      withHelpWindow(() => insertModes(major, modeName ?? major, minors));
+      break;
+    }
+    case "call":
+      (e8.call as (command: string, ...args: string[]) => unknown)(name, ...xref.slice(2));
+      break;
     case "command":
       e8.call("describe-command", name);
       break;
@@ -457,7 +485,7 @@ function followXref([kind, name]: Xref): void {
 /** The link of the button at point, if point is on one. */
 function xrefAt(position: number): Xref | undefined {
   const xref = e8.getTextProperty(position, "help-xref");
-  return Array.isArray(xref) && xref.length === 2 ? ([String(xref[0]), String(xref[1])] as Xref) : undefined;
+  return Array.isArray(xref) && xref.length >= 2 ? (xref.map(String) as Xref) : undefined;
 }
 
 const helpFollowSymbol = e8.defineCommand({
