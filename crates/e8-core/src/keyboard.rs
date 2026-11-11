@@ -209,7 +209,9 @@ impl Editor {
                 wait = wait.min(timer);
             }
             if self.processes_running() {
-                wait = wait.min(std::time::Duration::from_millis(5));
+                // Woken by their output as it comes, as accept-process-output is.
+                self.processes.wait_for_event(wait.min(std::time::Duration::from_millis(5)));
+                continue;
             }
             std::thread::sleep(wait.max(std::time::Duration::from_micros(100)));
         }

@@ -336,12 +336,20 @@ impl Default for Processes {
 impl Processes {
     /// Waits up to `limit` for a process's next event, keeping it to be
     /// handled first by the next poll, as a sleep that ends when output comes.
-    fn wait_for_event(&mut self, limit: Duration) {
+    pub(crate) fn wait_for_event(&mut self, limit: Duration) {
         if !self.held.is_empty() {
             return;
         }
+        // A timed wait needs a clock, which a browser's worker lacks, as
+        // driver.rs says; there it sleeps and looks, as before.
+        #[cfg(not(target_arch = "wasm32"))]
         if let Ok(event) = self.rx.recv_timeout(limit) {
             self.held.push_back(event);
+        }
+        #[cfg(target_arch = "wasm32")]
+        match self.rx.try_recv() {
+            Ok(event) => self.held.push_back(event),
+            Err(_) => std::thread::sleep(limit),
         }
     }
 
