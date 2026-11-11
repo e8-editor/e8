@@ -135,7 +135,7 @@ function keysInMode(mode: string | undefined): KeyFinder {
   }
   const map = mode === undefined ? undefined : modeMap(mode);
   if (map !== undefined) add(e8.keymapBindings(map));
-  add(e8.keymapBindings("global-map"));
+  add(e8.keymapBindings(e8.currentGlobalMap()));
   return Object.assign((command: string) => bestKey(byCommand.get(command) ?? []), { runs: (keys: string) => taken.get(keys) });
 }
 
@@ -149,7 +149,7 @@ let defaultKeys: Map<string, string[]> | undefined;
 
 e8.addHook("before-init-hook", () => {
   defaultKeys = new Map();
-  for (const [keys, command] of e8.keymapBindings("global-map")) {
+  for (const [keys, command] of e8.keymapBindings(e8.currentGlobalMap())) {
     if (!showable(keys)) continue;
     const list = defaultKeys.get(command);
     if (list === undefined) defaultKeys.set(command, [keys]);

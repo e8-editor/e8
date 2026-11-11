@@ -235,6 +235,54 @@ export function barfIfBufferReadOnly(position: number = e8.point()): void {
 export const carLessThanCar = (a: [number, ...unknown[]], b: [number, ...unknown[]]): boolean => a[0] < b[0];
 
 e8.defineCommand({
+  name: "global-set-key",
+  doc: "Bind a key sequence to a command in the global keymap, as Emacs's global-set-key: every buffer sees it unless a local binding shadows it.",
+  params: [
+    { name: "key", kind: "keys", prompt: "Set key globally: " },
+    { name: "command", kind: "command", prompt: (key) => `Set key ${key} to command: ` },
+  ],
+  run: (key, command) => {
+    e8.defineKey(e8.currentGlobalMap(), key, command);
+  },
+});
+
+e8.defineCommand({
+  name: "local-set-key",
+  doc: "Bind a key sequence to a command in the current buffer's local map, as Emacs's local-set-key: the major mode's keymap, so every buffer in that mode sees it.",
+  params: [
+    { name: "key", kind: "keys", prompt: "Set key locally: " },
+    { name: "command", kind: "command", prompt: (key) => `Set key ${key} locally to command: ` },
+  ],
+  run: (key, command) => {
+    let map = e8.currentLocalMap();
+    if (map === undefined) {
+      map = e8.makeSparseKeymap();
+      e8.useLocalMap(map);
+    }
+    e8.defineKey(map, key, command);
+  },
+});
+
+e8.defineCommand({
+  name: "global-unset-key",
+  doc: "Take a key sequence's binding out of the global keymap, as Emacs's global-unset-key.",
+  params: [{ name: "key", kind: "keys", prompt: "Unset key globally: " }],
+  run: (key) => {
+    e8.defineKey(e8.currentGlobalMap(), key, null);
+  },
+});
+
+e8.defineCommand({
+  name: "local-unset-key",
+  doc: "Take a key sequence's binding out of the current buffer's local map, as Emacs's local-unset-key.",
+  params: [{ name: "key", kind: "keys", prompt: "Unset key locally: " }],
+  run: (key) => {
+    const map = e8.currentLocalMap();
+    if (map !== undefined) e8.defineKey(map, key, null);
+  },
+});
+
+e8.defineCommand({
   name: "delete-minibuffer-contents",
   doc: "Delete all the input in the minibuffer, leaving the prompt.",
   run: () => {

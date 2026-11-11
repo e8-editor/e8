@@ -42,6 +42,69 @@ impl Editor {
         self.global_map
     }
 
+    /// Makes a keymap the global one, as Emacs's `use-global-map`.
+    pub fn use_global_map(&mut self, keymap: &Value) -> Result<()> {
+        self.global_map = self.keymap_of(keymap)?;
+        Ok(())
+    }
+
+    /// The current buffer's local map, as Emacs's `current-local-map`: the
+    /// one `use-local-map` gave it, the major mode's, or the one
+    /// `compose_local_map` last put in front of it, as Emacs's is then the
+    /// composed keymap, and in the minibuffer the must-match map when a
+    /// prompt has one.
+    pub fn current_local_map(&self) -> Option<KeymapId> {
+        self.buffer().local_map.first().copied()
+    }
+
+    /// A copy of a keymap, as Emacs's `copy-keymap`: the prefix maps it
+    /// binds are copied too, but for those a variable names, as Emacs keeps
+    /// a prefix command's, so `C-x 4` stays `ctl-x-4-map`.
+    pub fn copy_keymap(&mut self, keymap: &Value) -> Result<KeymapId> {
+        let map = self.keymap_of(keymap)?;
+        let named: Vec<KeymapId> = self.keymap_names().iter().filter_map(|n| self.keymap_named(n)).collect();
+        Ok(self.keymaps.copy(map, &|m| named.contains(&m)))
+    }
+
+    /// The keymaps of the minor modes on in the current buffer, in the order
+    /// keys are looked up in them, as Emacs's `current-minor-mode-maps`.
+    pub fn current_minor_mode_maps(&self) -> Vec<KeymapId> {
+        self.minor_mode_maps().into_iter().map(|(_, m)| m).collect()
+    }
+
+    fn minor_mode_maps(&self) -> Vec<(String, KeymapId)> {
+        self.minor_mode_maps_in(self.buffer())
+    }
+
+    fn minor_mode_maps_in(&self, b: &Buffer) -> Vec<(String, KeymapId)> {
+        self.minor_modes
+            .iter()
+            .filter(|m| self.minor_mode_on(b, &m.name))
+            .filter_map(|m| m.keymap.as_deref().and_then(|k| self.keymap_named(k)).map(|k| (m.name.clone(), k)))
+            .collect()
+    }
+
+    /// The minor modes whose keymaps bind a key sequence, each with what it
+    /// is bound to there, as Emacs's `minor-mode-key-binding`: the first
+    /// that binds it to a command, or those that bind it as a prefix key up
+    /// to the first that does not.
+    pub fn minor_mode_key_binding(&self, keys: &[Key]) -> Vec<(String, Binding)> {
+        let mut out = Vec::new();
+        for (mode, map) in self.minor_mode_maps() {
+            match self.keymaps.binding_of(map, keys) {
+                Some(Binding::Nil) | None => {}
+                Some(b @ Binding::Keymap(_)) => out.push((mode, b)),
+                Some(b) => {
+                    if out.is_empty() {
+                        out.push((mode, b));
+                    }
+                    break;
+                }
+            }
+        }
+        out
+    }
+
     /// The keymap a name holds: the global value of the variable of that
     /// name, as `org-mode-map` holds Org's.
     pub fn keymap_named(&self, name: &str) -> Option<KeymapId> {
@@ -247,12 +310,7 @@ impl Editor {
         // stands in for the buffer's own, as Emacs's current-active-maps has them.
         let property = |name| if at_point { self.keymap_property_at_point(b, name) } else { None };
         let mut maps: Vec<KeymapId> = property("keymap").into_iter().collect();
-        maps.extend(
-            self.minor_modes
-                .iter()
-                .filter(|m| self.minor_mode_on(b, &m.name))
-                .filter_map(|m| m.keymap.as_deref().and_then(|k| self.keymap_named(k))),
-        );
+        maps.extend(self.minor_mode_maps_in(b).into_iter().map(|(_, m)| m));
         match property("local-map") {
             Some(map) => maps.push(map),
             None => maps.extend(b.local_map.iter().copied()),

@@ -554,6 +554,70 @@ natives! {
         }
     }
 
+    /// The current buffer's local map, the major mode's, as current-local-map.
+    #[ts = "(): Keymap | undefined"]
+    pub fn currentLocalMap(ed) -> Option<EditorValue> {
+        Ok(ed.current_local_map().map(EditorValue::Keymap))
+    }
+
+    /// The global keymap now, as current-global-map: global-map unless useGlobalMap changed it.
+    #[ts = "(): Keymap"]
+    pub fn currentGlobalMap(ed) -> EditorValue {
+        Ok(EditorValue::Keymap(ed.global_map()))
+    }
+
+    /// Make a keymap the global one, as use-global-map.
+    #[ts = "(keymap: Keymap | (string & {})): void"]
+    pub fn useGlobalMap(ed, keymap: EditorValue) {
+        ed.use_global_map(&keymap)
+    }
+
+    /// A copy of a keymap, as copy-keymap: the prefix maps it binds are
+    /// copied too, but for those a variable names, such as ctl-x-4-map.
+    #[ts = "(keymap: Keymap | (string & {})): Keymap"]
+    pub fn copyKeymap(ed, keymap: EditorValue) -> EditorValue {
+        Ok(EditorValue::Keymap(ed.copy_keymap(&keymap)?))
+    }
+
+    /// The keymaps reachable from a keymap through prefix keys, each with
+    /// the keys that reach it, the keymap itself first, as accessible-keymaps;
+    /// with a prefix, only those under it.
+    #[ts = "(keymap: Keymap | (string & {}), prefix?: string): [string, Keymap][]"]
+    pub fn accessibleKeymaps(ed, keymap: EditorValue, prefix: Opt<String>) -> EditorValue {
+        let map = ed.keymap_of(&keymap)?;
+        let prefix = match prefix.0 {
+            Some(p) if !p.is_empty() => Key::parse_seq(&p).ok_or_else(|| Error::new(format!("Invalid key sequence: {p:?}")))?,
+            _ => Vec::new(),
+        };
+        let found = ed.keymaps().accessible(map, &prefix);
+        Ok(EditorValue::List(
+            found
+                .into_iter()
+                .map(|(keys, m)| EditorValue::List(vec![EditorValue::Str(e8_core::format_keys(&keys)), EditorValue::Keymap(m)]))
+                .collect(),
+        ))
+    }
+
+    /// The minor modes on whose keymaps bind keys, each with the binding,
+    /// in the order keys are looked up, as minor-mode-key-binding.
+    #[ts = "(keys: string): [string, string | Keymap | string[]][]"]
+    pub fn minorModeKeyBinding(ed, keys: String) -> EditorValue {
+        let parsed = Key::parse_seq(&keys).ok_or_else(|| Error::new(format!("Invalid key sequence: {keys:?}")))?;
+        Ok(EditorValue::List(
+            ed.minor_mode_key_binding(&parsed)
+                .into_iter()
+                .filter_map(|(mode, b)| binding_value(b).map(|v| EditorValue::List(vec![EditorValue::Str(mode), v])))
+                .collect(),
+        ))
+    }
+
+    /// The keymaps of the minor modes on in the current buffer, in the order
+    /// keys are looked up in them, as current-minor-mode-maps.
+    #[ts = "(): Keymap[]"]
+    pub fn currentMinorModeMaps(ed) -> EditorValue {
+        Ok(EditorValue::List(ed.current_minor_mode_maps().into_iter().map(EditorValue::Keymap).collect()))
+    }
+
     fn makeSparseKeymap(ed, parent: EditorValue) -> EditorValue {
         let parent = keymap_or_none(ed, &parent)?;
         Ok(EditorValue::Keymap(ed.keymaps_mut().make(parent)))
@@ -572,12 +636,7 @@ natives! {
 
     fn lookupKey(ed, keymap: EditorValue, keys: String) -> Option<EditorValue> {
         let parsed = Key::parse_seq(&keys).ok_or_else(|| Error::new(format!("Invalid key sequence: {keys:?}")))?;
-        Ok(match ed.keymaps().binding_of(ed.keymap_of(&keymap)?, &parsed) {
-            Some(e8_core::Binding::Command(c)) => Some(EditorValue::Str(c)),
-            Some(e8_core::Binding::Keymap(m)) => Some(EditorValue::Keymap(m)),
-            Some(e8_core::Binding::Keys(k)) => Some(EditorValue::List(k.iter().map(|k| EditorValue::Str(k.to_string())).collect())),
-            Some(e8_core::Binding::Nil) | None => None,
-        })
+        Ok(ed.keymaps().binding_of(ed.keymap_of(&keymap)?, &parsed).and_then(binding_value))
     }
 
     fn useLocalMap(ed, keymap: EditorValue) {
@@ -897,5 +956,16 @@ natives! {
     /// Whether a file's auto-save file is newer than the file.
     pub fn hasNewerAutoSave(ed, file: String) -> bool {
         Ok(Editor::has_newer_auto_save(Path::new(&file)))
+    }
+}
+
+/// A binding as scripts see it: a command's name, a prefix keymap, or the
+/// keys of a keyboard macro; none for nil.
+fn binding_value(binding: e8_core::Binding) -> Option<EditorValue> {
+    match binding {
+        e8_core::Binding::Command(c) => Some(EditorValue::Str(c)),
+        e8_core::Binding::Keymap(m) => Some(EditorValue::Keymap(m)),
+        e8_core::Binding::Keys(k) => Some(EditorValue::List(k.iter().map(|k| EditorValue::Str(k.to_string())).collect())),
+        e8_core::Binding::Nil => None,
     }
 }
