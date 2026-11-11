@@ -29,7 +29,7 @@ Releases were made by pushing a tag until 0.3.1. The workflow built again on the
 
 A Homebrew tap, [`e8-editor/homebrew-tap`](https://github.com/e8-editor/homebrew-tap), installs a release: `brew install e8-editor/tap/e8` gives `e8` and `e8-mcp` on Apple silicon and Linux, and `E8.app` on macOS. A workflow in the tap rewrites the formula from the newest release each day, with the tap's own token, so a release needs nothing more here. Homebrew downloads with `curl`, so macOS does not quarantine the app, and it opens without a Developer ID: confirmed on 2026-11-06 on a Mac that did not build it.
 
-To release: bump `version` in the workspace `Cargo.toml` in a pull request and merge it. The version is what `e8-version` reports and what a package's manifest compares with ([ADR 0059](0059-packages-are-git-repositories.md)), so it changes when the script API changes in a way a package would notice, as well as at each release.
+To release: bump `version` in the workspace `Cargo.toml` in a pull request and merge it. The same pull request changes each crate's version of the others in `crates/*/Cargo.toml`, `Cargo.lock` (`cargo update -w`) and the version `packages/e8.d.ts` names at its top (`UPDATE_TYPES=1 cargo test -p e8-script`). If the workflow fails at making the GitHub Release, as 0.5.3's did with an HTTP 500 from GitHub, `gh run rerun --failed` finishes it from the builds already made. The version is what `e8-version` reports and what a package's manifest compares with ([ADR 0059](0059-packages-are-git-repositories.md)), so it changes when the script API changes in a way a package would notice, as well as at each release.
 
 Left for later, each when it is wanted:
 
