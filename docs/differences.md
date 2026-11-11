@@ -49,6 +49,7 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
 
 ## Text and search
 
+- **`lineBeginningPosition` and `lineEndPosition`** (not yet) ignore fields, where Emacs's `line-beginning-position` and `line-end-position` stop at a field's edge on the same line, as after a shell's prompt.
 - **Source blocks' faces** (not yet): `org-src-block-faces` is not read, and a block in a language with no mode in E8, such as shell, has only `org-block`. Python blocks have python-ts-mode's faces, which differ in detail from python.el's.
 - **`window-configuration-change-hook`** (not yet) runs after a command that changed the selected frame's windows or the buffers they show, not when a window's size changes, nor buffer-locally in each window's buffer, as Emacs runs it at redisplay.
 - **Shell scripts** (not yet): `sh-mode` runs `bash-ts-mode` whatever the shell, where Emacs's turns to its own mode for shells other than Bash and sh, and there is no `sh-mode` without the Bash grammar: a bash block in Org then has only `org-block`. Indenting is by tree-sitter rules that put a block's lines `sh-basic-offset` in, where Emacs indents with SMIE, and `sh-mode`'s keys and skeletons are not there.

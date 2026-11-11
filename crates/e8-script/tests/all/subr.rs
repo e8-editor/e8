@@ -114,12 +114,46 @@ fn read_only_buffers_signal_unless_inhibited() {
     let got = eval(
         &mut ed,
         &s,
-        r#"(e8.insert("abc"), e8.setReadOnly(true), JSON.stringify([
-          e8.conditionCase(() => (subr.barfIfBufferReadOnly(), "fine"), { "buffer-read-only": () => "signalled" }),
-          e8.letBind({ "inhibit-read-only": true }, () => (subr.barfIfBufferReadOnly(), "fine")),
-        ]))"#,
+        r#"(e8.insert("$ ls"), e8.setReadOnly(true),
+          e8.letBind({ "inhibit-read-only": true }, () => e8.putTextProperty(0, 1, "inhibit-read-only", true)),
+          JSON.stringify([
+            e8.conditionCase(() => (subr.barfIfBufferReadOnly(0), "fine"), { "buffer-read-only": () => "signalled" }),
+            e8.conditionCase(() => (subr.barfIfBufferReadOnly(1), "fine"), { "buffer-read-only": () => "signalled" }),
+            e8.letBind({ "inhibit-read-only": true }, () => (subr.barfIfBufferReadOnly(1), "fine")),
+            (e8.setReadOnly(false), e8.letBind({ "inhibit-read-only": true }, () => e8.putTextProperty(2, 3, "read-only", true)),
+              subr.barfIfBufferReadOnly(2), "fine"),
+          ]))"#,
     );
-    assert_eq!(got, r#"["signalled","fine"]"#);
+    // Emacs: nil, then buffer-read-only, and nil for read-only text in a writable buffer
+    assert_eq!(got, r#"["fine","signalled","fine","fine"]"#);
+}
+
+#[test]
+fn line_starts_and_ends_ignore_fields() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.insert(e8.concat(e8.propertize("$ ", { field: Symbol.for("output"), "rear-nonsticky": true }), "ls")),
+          e8.gotoChar(2), JSON.stringify([subr.bolp(), (e8.gotoChar(0), subr.bolp())]))"#,
+    );
+    // Emacs: bolp is nil after the prompt, though line-beginning-position, which follows fields, is 3 there
+    assert_eq!(got, "[false,true]");
+}
+
+#[test]
+fn a_copied_marker_is_in_the_buffer_of_the_marker_it_copies() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.insert("abcdef"), globalThis.m = e8.makeMarker(4),
+          e8.withCurrentBuffer(e8.getBufferCreate("other"), () => {
+            const copy = subr.copyMarker(m);
+            return JSON.stringify([e8.markerBuffer(copy) === e8.markerBuffer(m), e8.markerPosition(copy)]);
+          }))"#,
+    );
+    assert_eq!(got, "[true,4]");
 }
 
 #[test]
@@ -130,6 +164,7 @@ fn windows_frames_and_processes_by_emacs_s_names() {
         &s,
         r#"JSON.stringify([
           subr.windowLiveP(e8.selectedWindow()), subr.windowLiveP(9999), subr.windowLiveP("x"),
+          subr.windowLiveP(e8.minibufferWindow()),
           subr.frameLiveP(e8.selectedFrame()), subr.frameLiveP(9999),
           subr.getBufferWindow() === e8.selectedWindow(), subr.getBufferWindow("no such buffer"),
           subr.activeMinibufferWindow(), subr.windowMinibufferP(), subr.windowMinibufferP(e8.minibufferWindow()),
@@ -138,5 +173,5 @@ fn windows_frames_and_processes_by_emacs_s_names() {
           [[3, "c"], [1, "a"], [2, "b"]].sort((x, y) => (subr.carLessThanCar(x, y) ? -1 : 1)).map((x) => x[1]).join(""),
         ])"#,
     );
-    assert_eq!(got, r#"[true,false,false,true,false,true,null,null,false,true,null,false,"p",true,false,"abc"]"#);
+    assert_eq!(got, r#"[true,false,false,true,true,false,true,null,null,false,true,null,false,"p",true,false,"abc"]"#);
 }

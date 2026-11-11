@@ -71,10 +71,10 @@ export function forwardLine(n: number): number {
 export const eobp = (): boolean => e8.point() === e8.pointMax();
 /** Whether point is at the start of the accessible text, as bobp. */
 export const bobp = (): boolean => e8.point() === e8.pointMin();
-/** Whether point is at the start of a line, as bolp. */
-export const bolp = (): boolean => e8.point() === e8.lineBeginningPosition();
-/** Whether point is at the end of a line, as eolp. */
-export const eolp = (): boolean => e8.point() === e8.lineEndPosition();
+/** Whether point is at the start of a line or of the accessible text, as bolp, fields or not. */
+export const bolp = (): boolean => e8.point() === e8.pointMin() || e8.point() === e8.lineStart(e8.lineOf(e8.point()));
+/** Whether point is at the end of a line or of the accessible text, as eolp, fields or not. */
+export const eolp = (): boolean => e8.point() === e8.pointMax() || e8.point() === e8.lineEnd(e8.lineOf(e8.point()));
 
 /** The accessible text of the current buffer, with its properties, as buffer-string. */
 export const bufferString = (): e8.PropertizedString => e8.bufferSubstring(e8.pointMin(), e8.pointMax());
@@ -108,8 +108,10 @@ export const pointMaxMarker = (): e8.Marker => e8.makeMarker(e8.pointMax());
 export function copyMarker(marker: e8.MarkerLike, type = false): e8.Marker | undefined {
   const pos = typeof marker === "number" ? marker : e8.markerPosition(marker);
   if (pos === undefined) return undefined;
-  const at = Math.max(0, Math.min(pos, e8.bufferSize()));
-  return e8.makeMarker(at, { advances: type });
+  const buffer = typeof marker === "number" ? e8.currentBuffer() : e8.markerBuffer(marker);
+  if (buffer === undefined) return undefined;
+  const at = Math.max(0, Math.min(pos, e8.withCurrentBuffer(buffer, () => e8.bufferSize())));
+  return e8.makeMarker(at, { buffer, advances: type });
 }
 
 /** Insert `count` copies of a character, inheriting properties if `inherit`, as insert-char. */
@@ -164,7 +166,7 @@ export const removeListOfTextProperties = (start: number, end: number, names: st
  * undefined, as set-text-properties, which returns t.
  */
 export function setTextProperties(start: number, end: number, properties?: { [name: string]: e8.Value }): boolean {
-  removeTextProperties(start, end, [...propertyNames(start, end)]);
+  for (const name of propertyNames(start, end)) e8.removeTextProperty(start, end, name);
   if (properties) addTextProperties(start, end, properties);
   return true;
 }
@@ -191,9 +193,8 @@ export function getCharProperty(position: number, name: string): e8.Value | unde
   return best !== undefined ? e8.overlayGet(best, name) : e8.getTextProperty(position, name);
 }
 
-/** Whether a window is live, showing a buffer, as window-live-p. */
-export const windowLiveP = (window: unknown): boolean =>
-  typeof window === "number" && (window === e8.minibufferWindow() || e8.windowList().includes(window));
+/** Whether a window is live, showing a buffer on any frame, as window-live-p. */
+export const windowLiveP = (window: unknown): boolean => typeof window === "number" && e8.windowBuffer(window) !== undefined;
 /** Whether a frame is live, as frame-live-p. */
 export const frameLiveP = (frame: unknown): boolean => typeof frame === "number" && e8.frameList().includes(frame);
 /** A window showing a buffer, the current one by default, as get-buffer-window: the selected window first. */
@@ -220,17 +221,14 @@ export const processName = (process: string): string => process;
 export const directoryNameP = (name: string): boolean => name.endsWith("/");
 
 /**
- * Signal buffer-read-only if the current buffer is read-only and
- * inhibit-read-only is not set, or if the text at `position` is read-only,
- * as barf-if-buffer-read-only.
+ * Signal buffer-read-only if the current buffer is read-only, unless
+ * inhibit-read-only is set or the text at `position` has an
+ * inhibit-read-only property, as barf-if-buffer-read-only.
  */
-export function barfIfBufferReadOnly(position?: number): void {
-  const inhibit = e8.variable("inhibit-read-only");
-  if (truthy(inhibit)) return;
-  const textReadOnly = position !== undefined && truthy(e8.getTextProperty(position, "read-only"));
-  if (e8.bufferReadOnly() || textReadOnly) {
-    e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName(e8.currentBuffer())}`);
-  }
+export function barfIfBufferReadOnly(position: number = e8.point()): void {
+  if (!e8.bufferReadOnly() || truthy(e8.variable("inhibit-read-only"))) return;
+  if (truthy(e8.getTextProperty(position, "inhibit-read-only"))) return;
+  e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName(e8.currentBuffer())}`);
 }
 
 /** Whether the first element of `a` is less than the first of `b`, as car-less-than-car, for sorting. */
