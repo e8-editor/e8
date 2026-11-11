@@ -49,17 +49,17 @@ fn remove_overlays_cuts_back_and_splits_as_emacs_does() {
           subr.removeOverlays(3, 6, "face", "bold"),
           JSON.stringify([e8.overlaysIn(0, 10).map((o) => [e8.overlayStart(o) + 1, e8.overlayEnd(o) + 1, e8.overlayGet(o, "face")])
               .sort((x, y) => x[0] - y[0] || x[1] - y[1]),
-            [e8.overlayStart(b) + 1, e8.overlayEnd(b) + 1],
+            [e8.overlayStart(b) + 1, e8.overlayEnd(b) + 1], [e8.overlayStart(a) + 1, e8.overlayEnd(a) + 1],
             (() => { const d = subr.copyOverlay(c); return [e8.overlayStart(d) + 1, e8.overlayEnd(d) + 1, e8.overlayProperties(d)]; })(),
             (() => { const [v, o] = subr.getCharPropertyAndOverlay(6, "face"); return [v, e8.overlayStart(o) + 1]; })(),
             subr.getCharPropertyAndOverlay(0, "face").map((x) => x ?? null),
             (subr.removeOverlays(), e8.overlaysIn(0, 10))]))"#,
     );
-    // Emacs: ((2 4 bold) (3 4 bold) (6 8 italic) (7 9 bold)), b at 3 to 4, its copy (6 8 (face italic)),
+    // Emacs: ((2 4 bold) (3 4 bold) (6 8 italic) (7 9 bold)), b at 3 to 4, a itself the part after, 7 to 9, c's copy (6 8 (face italic)),
     // (bold . the overlay from 7), (nil), and none left
     assert_eq!(
         got,
-        r#"[[[2,4,"bold"],[3,4,"bold"],[6,8,"italic"],[7,9,"bold"]],[3,4],[6,8,{"face":"italic"}],["bold",7],[null,null],[]]"#
+        r#"[[[2,4,"bold"],[3,4,"bold"],[6,8,"italic"],[7,9,"bold"]],[3,4],[7,9],[6,8,{"face":"italic"}],["bold",7],[null,null],[]]"#
     );
 }
 

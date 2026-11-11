@@ -247,7 +247,7 @@ function printFakeHeader(): void {
   e8.insert(header as string);
   e8.insert("\n");
   const old = headerOverlays.get(e8.bufferName());
-  if (old !== undefined && e8.overlayStart(old) !== undefined) e8.moveOverlay(old, e8.pointMin(), e8.point());
+  if (old !== undefined && e8.overlayBuffer(old) === e8.bufferName()) e8.moveOverlay(old, e8.pointMin(), e8.point());
   else {
     const o = e8.makeOverlay(e8.pointMin(), e8.point());
     e8.overlayPut(o, "fake-header", true);

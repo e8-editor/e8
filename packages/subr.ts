@@ -228,8 +228,13 @@ export function removeOverlays(start = e8.pointMin(), end = e8.pointMax(), name?
     if (name !== undefined && (e8.overlayGet(o, name) ?? null) !== (value ?? null)) continue;
     const os = e8.overlayStart(o)!, oe = e8.overlayEnd(o)!;
     if (os < start) {
-      if (oe > end) e8.moveOverlay(copyOverlay(o)!, end, oe);
-      e8.moveOverlay(o, os, start);
+      // The original keeps the part after, a copy the part before, as Emacs's.
+      if (oe > end) {
+        e8.moveOverlay(copyOverlay(o)!, os, start);
+        e8.moveOverlay(o, end, oe);
+      } else {
+        e8.moveOverlay(o, os, start);
+      }
     } else if (oe > end) {
       e8.moveOverlay(o, end, oe);
     } else {
