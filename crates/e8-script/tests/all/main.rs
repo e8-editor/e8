@@ -33,6 +33,7 @@ mod face_attributes;
 mod faces;
 mod file_management;
 mod file_primitives;
+mod file_locals;
 mod files;
 mod flyspell;
 mod fonts;

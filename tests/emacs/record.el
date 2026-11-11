@@ -177,8 +177,10 @@ while the case's keys are queued would read those instead."
         (if (consp default) (car default) default)
       answer)))
 
-(defun e8-oracle--read-from-minibuffer (_prompt &optional _initial _keymap _read _hist default &rest _)
-  (e8-oracle--answer default))
+(defun e8-oracle--read-from-minibuffer (_prompt &optional _initial _keymap read _hist default &rest _)
+  "Answer from the case, read as Lisp when READ asks, as typing it would be."
+  (let ((answer (e8-oracle--answer default)))
+    (if read (car (read-from-string answer)) answer)))
 (defun e8-oracle--read-string (_prompt &optional _initial _hist default &rest _)
   (e8-oracle--answer default))
 (defun e8-oracle--completing-read (_prompt _collection &optional _pred _match _initial _hist default &rest _)

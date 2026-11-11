@@ -50,6 +50,7 @@ mod key;
 pub mod keyboard;
 mod kill_ring;
 mod keymap;
+pub mod lread;
 pub mod layout;
 mod minibuffer;
 mod modeline;

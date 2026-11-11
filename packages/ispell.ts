@@ -89,6 +89,9 @@ defvar("ispell-extra-args", [], "More arguments for the checker, as (\"-W\" \"3\
 defvar("ispell-skip-html", sym("use-mode-name"), "Whether HTML and SGML markup is skipped: t, nil, or `use-mode-name' to tell by the major mode.", true);
 defvar("ispell-local-dictionary-alist", [], "Your own dictionary entries, in the form of ispell-dictionary-alist, overriding its.");
 defvar("ispell-help-timeout", 5, "How many seconds `?' shows its help.");
+// Safe for a file to set, as ispell.el declares them.
+e8.put("ispell-check-comments", "safe-local-variable", (value: e8.Value) => value === null || value === false || value === true || isSym(value, "exclusive"));
+e8.put("ispell-local-dictionary", "safe-local-variable", sym("string-or-null-p"));
 
 // The dictionaries ispell.el knows, before those the checker has are found.
 const BASE: Dict[] = ([
@@ -222,8 +225,10 @@ defvar(
   "The regions HTML buffers skip, as ispell-skip-region-alist.",
 );
 defvar("ispell-local-pdict", v("ispell-personal-dictionary") ?? null, "This buffer's personal dictionary.", true);
+e8.put("ispell-local-pdict", "safe-local-variable", sym("stringp"));
 defvar("ispell-buffer-local-name", null, "The buffer whose local words the session has.");
 defvar("ispell-buffer-session-localwords", [], "The words accepted for the session in this buffer.", true);
+e8.put("ispell-buffer-session-localwords", "safe-local-variable", sym("list-of-strings-p"));
 defvar("ispell-parser", sym("use-mode-name"), "How text is parsed: `tex', or `use-mode-name' to use TeX for modes named so; otherwise nroff.");
 defvar("ispell-check-only", false, "Whether ispell-word only says a word is wrong, rather than offering corrections.");
 e8.defineHook("ispell-update-post-hook", "Run in the command loop before asking about a misspelling.");

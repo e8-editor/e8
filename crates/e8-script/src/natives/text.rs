@@ -900,4 +900,29 @@ natives! {
     pub fn upcaseInitials(ed, s: String) -> String {
         Ok(ed.casify_string(e8_core::casefiddle::Case::UpcaseInitials, &s))
     }
+
+    /// Read one Lisp datum from a string, from index `start`, as Emacs's
+    /// read-from-string: the value, with nil as null, t as true, symbols as
+    /// symbols and lists as arrays (a dotted end joining the list), and the
+    /// index after it. Indexes count as JavaScript's do, so `string.slice`
+    /// takes them. Signals end-of-file or invalid-read-syntax.
+    #[ts = "(string: string, start?: number): [Value, number]"]
+    pub fn readFromString(ed, string: String, start: Opt<usize>) -> (e8_core::Value, usize) {
+        // JavaScript counts UTF-16 units; the reader counts characters.
+        let start = start.0.unwrap_or(0);
+        let mut units = 0;
+        let from = string.chars().take_while(|c| {
+            let before = units;
+            units += c.len_utf16();
+            before < start
+        }).count();
+        let (value, end) = e8_core::lread::read_from_string(&string, from)?;
+        Ok((value, string.chars().take(end).map(char::len_utf16).sum()))
+    }
+
+    /// A value written as Lisp would read it back, as prin1-to-string; with
+    /// `noescape`, strings and symbols as their text, as princ writes them.
+    pub fn prin1ToString(ed, value: e8_core::Value, noescape: Opt<bool>) -> String {
+        Ok(e8_core::lread::prin1_to_string(&value, noescape.0.unwrap_or(false)))
+    }
 }
