@@ -712,7 +712,9 @@ impl Editor {
             let mut row = Row { line, start, end, segments, continued: false, broken: false, in_string: false, extend, margins, fringes, right_to_left: false };
             // Reordered for display where the line has bidirectional text.
             let reordered = bidi.as_mut().and_then(|lines| lines.reorder(self, b, &mut row, prefix_len));
-            for row in split_at_string_newlines(row) {
+            // The line prefix is no place to break a line, as in Emacs.
+            let prefix_chars: usize = row.segments[..prefix_len.min(row.segments.len())].iter().map(|s| s.text.chars().count()).sum();
+            for (n, row) in split_at_string_newlines(row).into_iter().enumerate() {
                 if rows.len() >= count {
                     break;
                 }
@@ -722,7 +724,7 @@ impl Editor {
                         // Continued rows start with the wrap prefix, which takes room from them.
                         let prefix = self.prefix_segments(b, start, "wrap-prefix", dark, &mut styles);
                         let indent: usize = prefix.iter().map(|s| crate::display::display_width(&s.text, tab_width)).sum();
-                        let wrapped = wrap_row(self, row, wrap, tab_width, indent);
+                        let wrapped = wrap_row(self, row, wrap, tab_width, indent, if n == 0 { prefix_chars } else { 0 });
                         let room = count - rows.len();
                         rows.extend(wrapped.into_iter().take(room).enumerate().map(|(i, mut r)| {
                             r.line = b.line_of(r.start);
@@ -1078,8 +1080,10 @@ fn split_at_string_newlines(row: Row) -> Vec<Row> {
 /// Breaks a row into screen rows `wrap.width` default columns wide. A row
 /// on the grid is measured in cells; another, glyph by glyph as the
 /// metrics measure its fonts, so text of other sizes and proportional
-/// text wrap where they would pass the window's edge.
-fn wrap_row(ed: &Editor, row: Row, wrap: Wrap, tab_width: usize, indent: usize) -> Vec<Row> {
+/// text wrap where they would pass the window's edge. The first
+/// `prefix` characters, the line prefix, are no place to break between
+/// words, so a word too long for the row breaks where the row is full.
+fn wrap_row(ed: &Editor, row: Row, wrap: Wrap, tab_width: usize, indent: usize, prefix: usize) -> Vec<Row> {
     // Every character of the row, as (segment, index in the segment).
     let items: Vec<(usize, usize)> = row
         .segments
@@ -1108,7 +1112,7 @@ fn wrap_row(ed: &Editor, row: Row, wrap: Wrap, tab_width: usize, indent: usize) 
         let w = width_of(k, col);
         if col + w > width && k > row_start {
             let mut at = match last_space {
-                Some(space) if wrap.words && space > row_start => space,
+                Some(space) if wrap.words && space > row_start.max(prefix) => space,
                 _ => k,
             };
             // Back to the start of an ellipsis, or past it if it starts the row.
