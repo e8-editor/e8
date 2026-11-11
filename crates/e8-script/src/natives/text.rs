@@ -423,17 +423,55 @@ natives! {
     }
 
     fn overlayRange(ed, id: f64) -> Option<Vec<usize>> {
-        Ok(ed.buffer().overlay(id as u64).map(|o| vec![o.start, o.end]))
+        let id = id as u64;
+        Ok(ed.overlay_buffer_index(id).and_then(|i| ed.buffers()[i].overlay(id)).map(|o| vec![o.start, o.end]))
+    }
+
+    /// The buffer an overlay is in, or undefined once it is deleted, as overlay-buffer.
+    #[ts = "(overlay: number): string | undefined"]
+    pub fn overlayBuffer(ed, id: f64) -> Option<String> {
+        Ok(ed.overlay_buffer_index(id as u64).map(|i| ed.buffers()[i].name.clone()))
+    }
+
+    /// An overlay's properties, as overlay-properties; undefined once it is deleted.
+    #[ts = "(overlay: number): { [name: string]: Value } | undefined"]
+    pub fn overlayProperties(ed, id: f64) -> Option<e8_core::Props> {
+        let id = id as u64;
+        Ok(ed.overlay_buffer_index(id).and_then(|i| ed.buffers()[i].overlay(id)).map(|o| o.props.clone()))
+    }
+
+    /// Whether a value is a live overlay, as overlayp; Emacs's is true of deleted ones too.
+    #[ts = "(value: unknown): boolean"]
+    pub fn overlayp(ed, value: EditorValue) -> bool {
+        Ok(matches!(value, EditorValue::Number(n) if n >= 1.0 && n.fract() == 0.0 && ed.overlay_buffer_index(n as u64).is_some()))
+    }
+
+    /// The current buffer's overlays, in the order made, as overlay-lists gives them in one list.
+    #[ts = "(): number[]"]
+    pub fn overlayLists(ed) -> Vec<f64> {
+        Ok(ed.buffer().overlay_ids().into_iter().map(|id| id as f64).collect())
+    }
+
+    /// Delete every overlay of a buffer, the current one by default, as delete-all-overlays.
+    #[ts = "(buffer?: string): void"]
+    pub fn deleteAllOverlays(ed, buffer: Opt<String>) {
+        match buffer.0 {
+            Some(name) => ed.buffer_named_mut(&name).ok_or_else(|| Error::new(format!("No such buffer: {name}")))?.delete_all_overlays(),
+            None => ed.buffer_mut().delete_all_overlays(),
+        }
+        Ok(())
     }
 
     #[ts = "(overlay: number, start: number, end: number): void"]
     pub fn moveOverlay(ed, id: f64, start: usize, end: usize) {
-        ed.buffer_mut().move_overlay(id as u64, start..end)
+        ed.overlay_buffer_mut(id as u64)?.move_overlay(id as u64, start..end)
     }
 
     #[ts = "(overlay: number): void"]
     pub fn deleteOverlay(ed, id: f64) {
-        ed.buffer_mut().delete_overlay(id as u64);
+        if let Ok(b) = ed.overlay_buffer_mut(id as u64) {
+            b.delete_overlay(id as u64);
+        }
         Ok(())
     }
 
@@ -613,7 +651,7 @@ natives! {
 
     #[ts = "(overlay: number, name: string, value: Value): void"]
     pub fn overlayPut(ed, id: f64, name: String, value: EditorValue) {
-        ed.buffer_mut().overlay_put(id as u64, &name, value)
+        ed.overlay_buffer_mut(id as u64)?.overlay_put(id as u64, &name, value)
     }
 
     fn invisibleValue(ed, value: EditorValue) -> Option<i32> {
@@ -716,7 +754,8 @@ natives! {
 
     #[ts = "(overlay: number, name: string): Value | undefined"]
     pub fn overlayGet(ed, id: f64, name: String) -> Option<EditorValue> {
-        Ok(ed.buffer().overlay(id as u64).and_then(|o| o.props.get(&name).cloned()))
+        let id = id as u64;
+        Ok(ed.overlay_buffer_index(id).and_then(|i| ed.buffers()[i].overlay(id)).and_then(|o| o.props.get(&name).cloned()))
     }
 
     fn posnAtPoint(ed, pos: usize, window: u64) -> Posn {

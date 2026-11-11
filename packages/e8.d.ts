@@ -14660,6 +14660,16 @@ declare global {
      * refers to any more are freed by the time the code running finishes.
      */
     function garbageCollect(): void;
+    /** The buffer an overlay is in, or undefined once it is deleted, as overlay-buffer. */
+    function overlayBuffer(overlay: number): string | undefined;
+    /** An overlay's properties, as overlay-properties; undefined once it is deleted. */
+    function overlayProperties(overlay: number): { [name: string]: Value } | undefined;
+    /** Whether a value is a live overlay, as overlayp; Emacs's is true of deleted ones too. */
+    function overlayp(value: unknown): boolean;
+    /** The current buffer's overlays, in the order made, as overlay-lists gives them in one list. */
+    function overlayLists(): number[];
+    /** Delete every overlay of a buffer, the current one by default, as delete-all-overlays. */
+    function deleteAllOverlays(buffer?: string): void;
     function moveOverlay(overlay: number, start: number, end: number): void;
     function deleteOverlay(overlay: number): void;
     /** Overlays overlapping the range, and empty ones inside it. */

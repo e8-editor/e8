@@ -52,6 +52,7 @@ mod minibuffer;
 mod modes;
 mod mouse;
 mod org;
+mod overlays;
 mod org_select;
 mod org_src;
 mod package_vc;
