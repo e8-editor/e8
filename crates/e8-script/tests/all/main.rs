@@ -64,6 +64,7 @@ mod registers;
 mod scripts;
 mod search;
 mod sessions;
+mod subr;
 mod symbols;
 mod tab_bar;
 mod tabulated_list;

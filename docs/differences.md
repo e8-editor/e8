@@ -11,6 +11,7 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
 - **Waiting for input** (deliberate): Emacs's Lisp waits inside `read-key`, `yes-or-no-p`, `read-from-minibuffer` and `recursive-edit` until the answer comes. E8's commands return, and the answer runs code given with the request, which scripts write as `await` ([ADR 0030](adr/0030-the-command-loops-primitives.md)). What the user sees is the same; code after the question runs later rather than in the same call.
 - **Keys and events** (deliberate, for now): events are key descriptions, `"C-x"` or `"<mouse-1>"`, not Lisp values carrying their positions. A mouse event's place is the last mouse event's, from `lastMouseEvent` ([ADR 0030](adr/0030-the-command-loops-primitives.md)).
 - **Strings** (deliberate): JavaScript strings have no unibyte form. So `downcase` of an ASCII-only string follows a buffer's own case table, where Emacs's ignores it ([ADR 0032](adr/0032-character-tables.md)).
+- **Windows, frames and processes in scripts** (deliberate, for now): a window or frame is a number and a process its name, not an object of its own. So `windowLiveP`, `frameLiveP` and `processp` in `subr` answer whether one is live, and `windowp` and `framep`, which in Emacs are true of dead ones too, have no counterpart; `getProcess` gives back the name.
 - **Positions in scripts** count characters, not JavaScript string indices, which differ for emoji ([ADR 0007](adr/0007-text-properties-faces-and-display-rows.md)).
 - **Face heights** (deliberate): a whole number is an absolute height and a number with a fraction a factor, as Emacs reads them, but a script cannot write the factor 2.0 apart from 2 ([ADR 0029](adr/0029-redisplay-beyond-rows.md)).
 
@@ -48,6 +49,7 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
 
 ## Text and search
 
+- **`lineBeginningPosition` and `lineEndPosition`** (not yet) ignore fields, where Emacs's `line-beginning-position` and `line-end-position` stop at a field's edge on the same line, as after a shell's prompt.
 - **Source blocks' faces** (not yet): `org-src-block-faces` is not read, and a block in a language with no mode in E8, such as shell, has only `org-block`. Python blocks have python-ts-mode's faces, which differ in detail from python.el's.
 - **`window-configuration-change-hook`** (not yet) runs after a command that changed the selected frame's windows or the buffers they show, not when a window's size changes, nor buffer-locally in each window's buffer, as Emacs runs it at redisplay.
 - **Shell scripts** (not yet): `sh-mode` runs `bash-ts-mode` whatever the shell, where Emacs's turns to its own mode for shells other than Bash and sh, and there is no `sh-mode` without the Bash grammar: a bash block in Org then has only `org-block`. Indenting is by tree-sitter rules that put a block's lines `sh-basic-offset` in, where Emacs indents with SMIE, and `sh-mode`'s keys and skeletons are not there.
