@@ -43,7 +43,7 @@ def e8_names():
     for path in glob.glob("packages/*.ts"):
         text = open(path).read()
         names |= set(re.findall(r'e8\.defun\("([^"]+)"', text))
-        names |= {kebab(f) for f in re.findall(r"^export (?:async )?function (\w+)", text, re.M)}
+        names |= {kebab(f) for f in re.findall(r"^export (?:(?:async )?function|const) (\w+)", text, re.M)}
     return names
 
 

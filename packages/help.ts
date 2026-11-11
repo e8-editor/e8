@@ -224,14 +224,14 @@ const describeBindings = e8.defineCommand({
   doc: "List the keys and the commands they run in the current buffer: the major mode's, each minor mode's that is on, and the global ones.",
   run: () => {
     const major = String(e8.variable("major-mode"));
-    const sections: [string, string][] = [];
+    const sections: [string, string | e8.Keymap][] = [];
     const majorMap = modeMap(major);
     if (majorMap !== undefined) sections.push(["Major Mode Bindings", majorMap]);
     for (const minor of e8.enabledMinorModes()) {
       const map = modeMap(minor);
       if (map !== undefined) sections.push([`${minor} Minor Mode Bindings`, map]);
     }
-    sections.push(["Global Bindings", "global-map"]);
+    sections.push(["Global Bindings", e8.currentGlobalMap()]);
     withHelpWindow(() => {
       for (const [title, map] of sections) {
         const bindings = e8.keymapBindings(map).sort(([a], [b]) => keyLess(a, b));

@@ -84,17 +84,25 @@ impl Editor {
             .collect()
     }
 
-    /// The minor modes on whose keymaps bind a key sequence, each with what
-    /// it is bound to there, in the order keys are looked up, as Emacs's
-    /// `minor-mode-key-binding`.
+    /// The minor modes whose keymaps bind a key sequence, each with what it
+    /// is bound to there, as Emacs's `minor-mode-key-binding`: the first
+    /// that binds it to a command, or those that bind it as a prefix key up
+    /// to the first that does not.
     pub fn minor_mode_key_binding(&self, keys: &[Key]) -> Vec<(String, Binding)> {
-        self.minor_mode_maps()
-            .into_iter()
-            .filter_map(|(mode, map)| match self.keymaps.binding_of(map, keys) {
-                Some(Binding::Nil) | None => None,
-                Some(b) => Some((mode, b)),
-            })
-            .collect()
+        let mut out = Vec::new();
+        for (mode, map) in self.minor_mode_maps() {
+            match self.keymaps.binding_of(map, keys) {
+                Some(Binding::Nil) | None => {}
+                Some(b @ Binding::Keymap(_)) => out.push((mode, b)),
+                Some(b) => {
+                    if out.is_empty() {
+                        out.push((mode, b));
+                    }
+                    break;
+                }
+            }
+        }
+        out
     }
 
     /// The keymap a name holds: the global value of the variable of that
