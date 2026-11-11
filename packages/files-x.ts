@@ -2,7 +2,8 @@
 // add-file-local-variable and delete-file-local-variable change the Local
 // Variables list at the end of the file, adding it if need be, and
 // add-file-local-variable-prop-line and delete-file-local-variable-prop-line
-// change the -*- line at its start.
+// change the -*- line at its start; add-dir-local-variable and
+// delete-dir-local-variable change a directory's .dir-locals.el.
 //
 // Copyright (C) 2009-2025 Free Software Foundation, Inc.
 // Ported to E8 in 2026.
@@ -12,7 +13,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { propLineBounds } from "files";
+import { dirLocalsAllFiles, dirLocalsFileFor, propLineBounds } from "files";
 import { commentRegion } from "newcomment";
 import { forwardLine, regexpQuote } from "subr";
 
@@ -258,4 +259,191 @@ e8.defineCommand({
   doc: "Delete every setting of a file-local variable from the -*- line.",
   params: [variableParam("Delete -*- file-local variable")],
   run: (variable: string) => modifyFileLocalVariablePropLine(variable, null, "delete", true),
+});
+
+// Directory-local variables.
+
+const sym = (name: string): symbol => e8.intern(name);
+const nameOf = (s: e8.Value): string => (typeof s === "symbol" ? e8.symbolName(s) : String(s));
+
+/**
+ * A dir-locals entry as E8 reads it: a mode (a symbol), nil, or a
+ * subdirectory, then what it holds, kept as read so what is not changed is
+ * written back as it was: a mode's (VAR . VALUE) settings, each a list of
+ * the variable and the rest, or a subdirectory's own entries.
+ */
+type DirEntry = e8.Value[];
+
+const isEval = (x: e8.Value): boolean => typeof x === "symbol" && e8.symbolName(x) === "eval";
+
+/** A (VAR . VALUE) setting as E8 reads it, its dotted end joining the list: `eval`'s rest is the form. */
+function settingValue(item: e8.Value[]): e8.Value {
+  const rest = item.slice(1);
+  return isEval(item[0]) ? rest : rest.length === 0 ? null : rest.length === 1 ? rest[0] : rest;
+}
+
+/** A setting as E8 reads it, from the variable and its value. */
+function settingOf(variable: symbol, value: e8.Value): e8.Value[] {
+  if (isEval(variable) && Array.isArray(value)) return [variable, ...value];
+  return Array.isArray(value) && value.length !== 1 ? [variable, ...value] : [variable, value];
+}
+
+/** An entry written as Lisp, in dotted pair notation, as dir-locals-to-string writes it. */
+function entryToString(entry: DirEntry): string {
+  const prin1 = (x: e8.Value) => e8.prin1ToString(x);
+  const key = entry[0] ?? null;
+  const items = entry.slice(1);
+  const inner =
+    typeof key === "string"
+      ? items.map((i) => (Array.isArray(i) ? entryToString(i) : prin1(i)))
+      : items.map((i) => (Array.isArray(i) && typeof i[0] === "symbol" ? `(${prin1(i[0])} . ${prin1(settingValue(i))})` : prin1(i)));
+  return `(${prin1(key)} . (${inner.join("\n")}))`;
+}
+
+/** The dir-locals entries written as Lisp, as dir-locals-to-string. */
+function dirLocalsToString(entries: DirEntry[]): string {
+  return `(${entries.map(entryToString).join("\n")})`;
+}
+
+/** The mode or subdirectory a directory-local variable is for, as read-file-local-variable-mode reads it. */
+function modeOrSubdirectory(text: string): e8.Value {
+  if (text === "nil" || text === "") return null;
+  return e8.commandExists(text) ? sym(text) : text;
+}
+
+/** Changes a variable in the directory's .dir-locals.el, visiting it, as modify-dir-local-variable. */
+export function modifyDirLocalVariable(mode: e8.Value, variable: string, value: e8.Value, op: Op, fileIn?: string): void {
+  if (!truthy(v("enable-local-variables"))) {
+    e8.message("Directory-local variables are disabled");
+    return;
+  }
+  let file = fileIn;
+  if (file === undefined) {
+    const visited = e8.bufferFileName();
+    const found = visited === undefined ? undefined : dirLocalsFileFor(visited);
+    if (typeof found === "string") file = dirLocalsAllFiles(found).pop();
+    else if (Array.isArray(found)) {
+      const mtime = found[2];
+      if (mtime !== null && mtime !== undefined && mtime !== false) file = dirLocalsAllFiles(String(found[0])).pop();
+      else {
+        e8.message("Directory locals were not set from a file");
+        return;
+      }
+    } else file = e8.expandFileName(String(v("dir-locals-file") ?? ".dir-locals.el"));
+  }
+  if (op === "delete" && (file === undefined || !e8.fileExistsP(file))) {
+    e8.message("No .dir-locals.el file was found");
+    return;
+  }
+  e8.call("find-file", file!);
+  e8.widen();
+  e8.gotoChar(e8.pointMin());
+  let entries: DirEntry[] = [];
+  e8.conditionCase(
+    () => {
+      const text = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
+      const [data, end] = e8.readFromString(text);
+      entries = Array.isArray(data) ? (data.filter(Array.isArray) as DirEntry[]) : [];
+      e8.deleteRegion(e8.pointMin(), e8.pointMin() + end);
+    },
+    // An empty or unreadable file is started afresh.
+    { error: () => undefined },
+  );
+  const variableSym = sym(variable);
+  const sameKey = (k: e8.Value | undefined) => (k ?? null) === mode;
+  const at = entries.findIndex((e) => sameKey(e[0]));
+  if (at >= 0) {
+    const [key, ...items] = entries[at];
+    const others = entries.filter((_, i) => i !== at);
+    const isSetting = (i: e8.Value) => Array.isArray(i) && i[0] === variableSym;
+    const rest = op === "delete" || !["mode", "eval"].includes(variable) ? items.filter((i) => !isSetting(i)) : items;
+    entries = [[key ?? null, ...(op === "delete" ? rest : [settingOf(variableSym, value), ...rest])], ...others];
+  } else entries = [[mode, settingOf(variableSym, value)], ...entries];
+  // Forget the cached reading, as the file may be saved within the same second.
+  const directory = e8.fileNameDirectory(file!);
+  e8.setDefault("dir-locals-directory-cache", (e8.defaultValue("dir-locals-directory-cache") as e8.Value[] ?? []).filter((e) => !(Array.isArray(e) && e[0] === directory)));
+  const rank = (k: e8.Value) => (k === null ? 0 : typeof k === "symbol" ? 1 : 2);
+  const keyName = (e: DirEntry) => nameOf(e[0] ?? "");
+  entries.sort((a, b) => rank(a[0] ?? null) - rank(b[0] ?? null) || (keyName(a) < keyName(b) ? -1 : keyName(a) > keyName(b) ? 1 : 0));
+  e8.insert(";;; Directory Local Variables            -*- no-byte-compile: t -*-\n");
+  e8.insert(";;; For more information see (info \"(emacs) Directory Variables\")\n\n");
+  e8.insert(dirLocalsToString(entries));
+  if (e8.point() === e8.pointMax()) e8.insert("\n");
+  // indent-sexp from the list, past the comments before it.
+  e8.gotoChar(e8.pointMin());
+  e8.forwardComment(Number.MAX_SAFE_INTEGER);
+  e8.call("indent-sexp");
+  e8.gotoChar(e8.pointMin());
+}
+
+const modeParam: e8.Param = {
+  name: "mode",
+  prompt: () => `Mode or subdirectory (default ${String(v("major-mode") ?? "nil")}): `,
+  collection: () => e8.commandNames().filter((c) => /-mode$/.test(c) && !/-minor-mode$/.test(c)),
+};
+
+/** The dir-locals file to change: asked for with a prefix argument, as read-dir-locals-file. */
+function dirLocalsFileParam(prefix: e8.PrefixArg): string | undefined {
+  if (prefix === null) return undefined;
+  return e8.expandFileName(e8.readFileName("File: ", { initial: String(v("dir-locals-file") ?? ".dir-locals.el") }));
+}
+
+e8.defineCommand({
+  name: "add-dir-local-variable",
+  doc:
+    "Add a directory-local variable with its value, read as Lisp, for a mode or subdirectory, to the .dir-locals.el " +
+    "of the visited file's directory or the one above it, making it in this directory if there is none. With a prefix " +
+    "argument, ask which file.",
+  params: [modeParam, { name: "variable", prompt: "Add directory-local variable: ", collection: variableNames }, valueParam, { name: "file", kind: "prefix" }],
+  run: (mode: string, variable: string, value: string, prefix: e8.PrefixArg) => {
+    const m = modeOrSubdirectory(mode === "" ? String(v("major-mode") ?? "nil") : mode);
+    modifyDirLocalVariable(m, variable, readValue(variable, value), "add-or-replace", dirLocalsFileParam(prefix));
+  },
+});
+
+e8.defineCommand({
+  name: "delete-dir-local-variable",
+  doc: "Delete every setting of a directory-local variable for a mode or subdirectory from the .dir-locals.el. With a prefix argument, ask which file.",
+  params: [modeParam, { name: "variable", prompt: "Delete directory-local variable: ", collection: variableNames }, { name: "file", kind: "prefix" }],
+  run: (mode: string, variable: string, prefix: e8.PrefixArg) => {
+    const m = modeOrSubdirectory(mode === "" ? String(v("major-mode") ?? "nil") : mode);
+    modifyDirLocalVariable(m, variable, null, "delete", dirLocalsFileParam(prefix));
+  },
+});
+
+e8.defineCommand({
+  name: "copy-file-locals-to-dir-locals",
+  doc: "Copy the file's local variables, for its major mode, to the .dir-locals.el. With a prefix argument, ask which file.",
+  params: [{ name: "file", kind: "prefix" }],
+  run: (prefix: e8.PrefixArg) => {
+    const file = dirLocalsFileParam(prefix);
+    const mode = sym(String(v("major-mode")));
+    const pairs = (v("file-local-variables-alist") as [symbol, e8.Value][] | null) ?? [];
+    const dirPairs = (v("dir-local-variables-alist") as [symbol, e8.Value][] | null) ?? [];
+    const source = e8.currentBuffer();
+    for (const [variable, value] of pairs) {
+      if (dirPairs.some((p) => p[0] === variable)) continue;
+      e8.withCurrentBuffer(source, () => modifyDirLocalVariable(mode, e8.symbolName(variable), value, "add-or-replace", file));
+    }
+  },
+});
+
+e8.defineCommand({
+  name: "copy-dir-locals-to-file-locals",
+  doc: "Copy the directory-local variables to the file's Local Variables list.",
+  run: () => {
+    for (const [variable, value] of (v("dir-local-variables-alist") as [symbol, e8.Value][] | null) ?? []) {
+      modifyFileLocalVariable(e8.symbolName(variable), value, "add-or-replace");
+    }
+  },
+});
+
+e8.defineCommand({
+  name: "copy-dir-locals-to-file-locals-prop-line",
+  doc: "Copy the directory-local variables to the file's -*- line.",
+  run: () => {
+    for (const [variable, value] of (v("dir-local-variables-alist") as [symbol, e8.Value][] | null) ?? []) {
+      modifyFileLocalVariablePropLine(e8.symbolName(variable), value, "add-or-replace");
+    }
+  },
 });

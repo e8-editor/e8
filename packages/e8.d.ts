@@ -301,6 +301,17 @@ declare global {
        */
       "abort-recursive-edit": [];
       /**
+       * Add a directory-local variable with its value, read as Lisp, for a mode or subdirectory, to the .dir-locals.el of the visited file's directory or the one above it, making it in this directory if there is none. With a prefix argument, ask which file.
+       *
+       * @param mode text
+       * @param variable text
+       * @param value text
+       * @param file raw prefix argument
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "add-dir-local-variable": [mode: string, variable: string, value: string, file?: PrefixArg | boolean];
+      /**
        * Add a file-local variable with its value, read as Lisp, to the Local Variables list at the end of the file, adding the list if there is none and taking out the variable's other settings. For the -*- line, use add-file-local-variable-prop-line.
        *
        * @param variable text
@@ -1170,6 +1181,18 @@ declare global {
        */
       "completion-at-point": [];
       /**
+       * Copy the directory-local variables to the file's Local Variables list.
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "copy-dir-locals-to-file-locals": [];
+      /**
+       * Copy the directory-local variables to the file's -*- line.
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "copy-dir-locals-to-file-locals-prop-line": [];
+      /**
        * Copy a directory and what it holds: into the new name if that is a directory already, else as it.
        *
        * @param directory file name
@@ -1189,6 +1212,14 @@ declare global {
        * Defined in packages/files.ts.
        */
       "copy-file": [file: string, newname: string];
+      /**
+       * Copy the file's local variables, for its major mode, to the .dir-locals.el. With a prefix argument, ask which file.
+       *
+       * @param file raw prefix argument
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "copy-file-locals-to-dir-locals": [file?: PrefixArg | boolean];
       /**
        * Copy the rest of the line above, from the column point is at, after point; with a prefix argument, only that many characters.
        *
@@ -1344,6 +1375,16 @@ declare global {
        * @param n prefix count
        */
       "delete-char": [n?: number];
+      /**
+       * Delete every setting of a directory-local variable for a mode or subdirectory from the .dir-locals.el. With a prefix argument, ask which file.
+       *
+       * @param mode text
+       * @param variable text
+       * @param file raw prefix argument
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "delete-dir-local-variable": [mode: string, variable: string, file?: PrefixArg | boolean];
       /**
        * Delete a directory, asking first if it has files in it. With delete-by-moving-to-trash, on in E8, it goes to the trash.
        *
@@ -8356,11 +8397,29 @@ declare global {
        */
       "diff-switches": Value;
       /**
-       * The pairs (VAR . VALUE) set from the directory's .dir-locals.el; E8 does not read it yet.
+       * The pairs (VAR . VALUE) this buffer's directory set, from .dir-locals.el.
        *
        * Defined in packages/files.ts.
        */
       "dir-local-variables-alist": Value;
+      /**
+       * Each class of directory-local variables and its variables, as (CLASS . VARIABLES).
+       *
+       * Defined in packages/files.ts.
+       */
+      "dir-locals-class-alist": Value;
+      /**
+       * Each directory with a class of directory-local variables: (DIR CLASS MTIME), MTIME that of its files when read.
+       *
+       * Defined in packages/files.ts.
+       */
+      "dir-locals-directory-cache": Value;
+      /**
+       * The file that holds a directory's local variables; NAME-2.el beside it overrides it.
+       *
+       * Defined in packages/files.ts.
+       */
+      "dir-locals-file": Value;
       /**
        * The switches this Dired buffer lists with, which s changes.
        *
@@ -8734,6 +8793,12 @@ declare global {
        */
       "emacs-lisp-mode-map": Value;
       /**
+       * Whether directory-local variables are used, as modes may turn off for their buffers.
+       *
+       * Defined in packages/files.ts.
+       */
+      "enable-dir-local-variables": Value;
+      /**
        * Whether a file's `eval:' entries are run: t runs them, nil ignores them, anything else asks.
        *
        * Defined in packages/files.ts.
@@ -8749,6 +8814,12 @@ declare global {
        * Whether a command can use the minibuffer while it is open, as M-x does run from the minibuffer: the new prompt opens inside the open one, which waits until it is done.
        */
       "enable-recursive-minibuffers": Value;
+      /**
+       * Whether directory-local variables apply to remote files.
+       *
+       * Defined in packages/files.ts.
+       */
+      "enable-remote-dir-locals": Value;
       /**
        * If non-nil, the function end-of-defun calls to move from a defun's start to after its end; nil moves over a sexp.
        *
@@ -9055,6 +9126,12 @@ declare global {
        * Keymap grep-mode-map.
        */
       "grep-mode-map": Value;
+      /**
+       * Functions that give the directory-local variables for the buffer, as (DIR . ALIST) or a list of them.
+       *
+       * Defined in packages/files.ts.
+       */
+      "hack-dir-local-get-variables-functions": Value;
       /**
        * What a window's header line shows, a mode line construct as `mode-line-format` is; nil, the default, for no header line. A window's `header-line-format` parameter takes its place, and `none` there hides it.
        */
@@ -11146,6 +11223,12 @@ declare global {
        * Defined in packages/files.ts.
        */
       "safe-local-eval-forms": Value;
+      /**
+       * Directories whose .dir-locals.el is trusted, risky or not, each absolute and ending in a slash.
+       *
+       * Defined in packages/files.ts.
+       */
+      "safe-local-variable-directories": Value;
       /**
        * Pairs (VAR . VAL) of values that are safe for those variables, as answering ! adds them.
        *

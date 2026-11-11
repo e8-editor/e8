@@ -220,3 +220,97 @@ fn a_value_after_characters_beyond_the_bmp_is_read_where_it_is() {
     assert_eq!(t.local("fill-column"), "\"20\"");
     assert_eq!(t.local("my-title"), "\"\\\"\u{1F600}\\\"\"");
 }
+
+// Directory-local variables, from .dir-locals.el.
+
+#[test]
+fn a_notes_directory_chooses_its_spelling_dictionary() {
+    let mut t = setup();
+    t.file(".dir-locals.el", "((org-mode . ((ispell-local-dictionary . \"sv_SE\"))))\n");
+    t.visit("notes.org", "* Hej\n", "");
+    assert_eq!(t.ed.window_buffer().name, "notes.org", "safe, not asked");
+    assert_eq!(t.local("ispell-local-dictionary"), "\"\\\"sv_SE\\\"\"");
+    assert_eq!(t.eval("e8.prin1ToString(e8.variable('dir-local-variables-alist'))"), "\"((ispell-local-dictionary \\\"sv_SE\\\"))\"");
+    t.visit("notes.txt", "Hello\n", "");
+    assert_eq!(t.local("ispell-local-dictionary"), "\"nil\"", "only Org files");
+}
+
+#[test]
+fn unsafe_directory_values_are_asked_about_with_plus_to_trust_the_directory() {
+    let t = setup();
+    let dir = format!("{}/", t.dir.path().canonicalize().unwrap().display());
+    t.file(".dir-locals.el", "((nil . ((my-setting . 3))))\n");
+    let path = t.file("a.txt", "x\n");
+    let d = crate::driven::Driven::new("");
+    visit_driven(&d, &path);
+    let shown = buffer_text(&d, "*Local Variables*");
+    assert!(shown.starts_with(&format!("The local variables list in {dir}\nor .dir-locals.el contains values that may not be safe (*).")), "{shown}");
+    assert!(shown.contains("+  -- to apply the local variables list, and trust all directory-local\n      variables in this directory"), "{shown}");
+    assert_eq!(d.prompt().as_deref(), Some("Please type y, n, !, i, +: "));
+    d.press("+");
+    assert_eq!(d.variable("my-setting").as_deref(), Some("3"));
+    // The directory is trusted from now on: another file there is not asked about.
+    let other = t.file("b.txt", "y\n");
+    visit_driven(&d, &other);
+    assert_eq!(d.buffer_name(), "b.txt");
+    assert_eq!(d.variable("my-setting").as_deref(), Some("3"));
+}
+
+#[test]
+fn a_changed_dir_locals_file_is_read_again() {
+    let mut t = setup();
+    let locals = t.file(".dir-locals.el", "((nil . ((fill-column . 20))))\n");
+    t.visit("a.txt", "x\n", "");
+    assert_eq!(t.local("fill-column"), "\"20\"");
+    fs::write(&locals, "((nil . ((fill-column . 30))))\n").unwrap();
+    let later = std::time::SystemTime::now() + std::time::Duration::from_secs(5);
+    fs::File::options().write(true).open(&locals).unwrap().set_modified(later).unwrap();
+    t.visit("b.txt", "y\n", "");
+    assert_eq!(t.local("fill-column"), "\"30\"");
+}
+
+#[test]
+fn a_class_can_be_given_to_a_directory_by_code() {
+    let mut t = setup();
+    let dir = t.dir.path().canonicalize().unwrap().display().to_string();
+    t.eval(&format!(
+        "(e8.funcall('dir-locals-set-class-variables', e8.intern('notes'), [[null, [e8.intern('fill-column'), 25]]]), \
+         e8.funcall('dir-locals-set-directory-class', {dir:?}, e8.intern('notes')))"
+    ));
+    t.visit("a.txt", "x\n", "");
+    assert_eq!(t.local("fill-column"), "\"25\"");
+}
+
+#[test]
+fn dired_takes_up_the_directory_s_variables() {
+    let mut t = setup();
+    t.file(".dir-locals.el", "((dired-mode . ((fill-column . 33))))\n");
+    t.file("a.txt", "x\n");
+    let dir = t.dir.path().canonicalize().unwrap().display().to_string();
+    t.ed.call("dired", vec![e8_core::Arg::Str(dir)]).unwrap();
+    assert_eq!(t.local("major-mode"), "\"\\\"dired-mode\\\"\"");
+    assert_eq!(t.local("fill-column"), "\"33\"");
+}
+
+#[test]
+fn file_and_directory_variables_are_copied_between_them() {
+    let mut t = setup();
+    t.file(".dir-locals.el", "((nil . ((fill-column . 20))))\n");
+    t.visit("a.txt", "Hello\n", "");
+    t.ed.press("M-x").unwrap();
+    t.ed.type_text("copy-dir-locals-to-file-locals");
+    t.ed.press("RET").unwrap();
+    let b = t.ed.window_buffer();
+    assert_eq!(b.slice(0..b.len()), "Hello\n\n;; Local Variables:\n;; fill-column: 20\n;; End:\n");
+}
+
+#[test]
+fn a_trusted_directory_may_be_written_without_its_slash() {
+    let mut t = setup();
+    let dir = t.dir.path().canonicalize().unwrap().display().to_string();
+    t.eval(&format!("e8.setVariable('safe-local-variable-directories', [{dir:?}])"));
+    t.file(".dir-locals.el", "((nil . ((my-setting . 3))))\n");
+    t.visit("a.txt", "x\n", "");
+    assert_eq!(t.ed.window_buffer().name, "a.txt", "not asked");
+    assert_eq!(t.local("my-setting"), "\"3\"");
+}
