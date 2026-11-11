@@ -334,6 +334,17 @@ impl Default for Processes {
 }
 
 impl Processes {
+    /// Waits up to `limit` for a process's next event, keeping it to be
+    /// handled first by the next poll, as a sleep that ends when output comes.
+    fn wait_for_event(&mut self, limit: Duration) {
+        if !self.held.is_empty() {
+            return;
+        }
+        if let Ok(event) = self.rx.recv_timeout(limit) {
+            self.held.push_back(event);
+        }
+    }
+
     /// Waits for a killed child to end, taking its output off the queue
     /// meanwhile, as a program on a terminal ends only once what it wrote is
     /// read; others' output is kept. Gives up after a few seconds.
@@ -1343,7 +1354,10 @@ impl Editor {
                 return Ok(false);
             }
             self.maybe_quit()?;
-            std::thread::sleep(Duration::from_millis(2));
+            // Woken by the next output rather than sleeping a fixed time, so
+            // a program that answers at once, as a spell checker does, is
+            // read at once; timers and C-g are still looked at as often.
+            self.processes.wait_for_event(Duration::from_millis(2));
         }
     }
 
@@ -1410,7 +1424,7 @@ impl Editor {
             if !self.processes_running() || Instant::now() >= until {
                 return;
             }
-            std::thread::sleep(Duration::from_millis(5));
+            self.processes.wait_for_event(Duration::from_millis(5).min(until.saturating_duration_since(Instant::now())));
         }
     }
 

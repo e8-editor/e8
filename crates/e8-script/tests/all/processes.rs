@@ -343,3 +343,28 @@ fn an_agent_needs_approval_to_connect() {
     assert!(ed.permission_requested());
     assert!(ed.process_list().is_empty());
 }
+
+#[test]
+fn accept_process_output_returns_as_soon_as_a_reply_comes() {
+    let (mut ed, s) = setup();
+    // A conversation with cat, a line at a time, as with a spell checker:
+    // each wait ends when the reply comes, rather than after a pause.
+    eval(
+        &mut ed,
+        &s,
+        r#"let got = "";
+        const p = e8.makeProcess({ name: "cat", command: ["cat"], connectionType: "pipe", filter: (_p, o) => { got += o; } });
+        const t0 = Date.now();
+        for (let i = 0; i < 200; i++) {
+          got = "";
+          e8.processSendString(p, `line ${i}\n`);
+          while (!got.endsWith("\n")) e8.acceptProcessOutput(p, 1);
+        }
+        e8.setVariable("test-took", Date.now() - t0);
+        e8.deleteProcess(p);"#,
+    );
+    let took: f64 = s.eval_expression(&mut ed, "e8.variable('test-took')").unwrap().parse().unwrap();
+    // Sleeping 2 ms between looks took 400 ms or more for these.
+    let limit = if std::env::var_os("CI").is_some() { 900.0 } else { 300.0 };
+    assert!(took < limit, "200 replies took {took} ms");
+}
