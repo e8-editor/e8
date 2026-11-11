@@ -130,7 +130,7 @@ fn scripts_split_and_select_windows() {
             const first = e8.selectedWindow();
             const second = e8.splitWindow(undefined, "right");
             e8.selectWindow(second);
-            e8.message(`${e8.windowList().join(",")} ${e8.selectedWindow() === second} ${e8.windowBuffer(first)}`);
+            e8.message(`${e8.windowList().map((w) => w.id).join(",")} ${e8.selectedWindow() === second} ${e8.windowBuffer(first)}`);
             "#
             .to_string(),
         )
@@ -320,8 +320,11 @@ fn quitting_a_window_uses_its_quit_restore_parameter() {
     ed.press("C-h f").unwrap();
     ed.type_text("forward-char");
     ed.press("RET").unwrap();
-    let help = eval(&mut ed, &s, r#"e8.windowList().find((w) => e8.windowBuffer(w) === "*Help*")"#);
-    assert_eq!(eval(&mut ed, &s, &format!(r#"JSON.stringify(e8.windowParameter({help}, "quit-restore"))"#)), r#""[\"window\",\"window\",1,\"*Help*\"]""#);
+    // The window selected then is the window itself, as Emacs's quit-restore holds it.
+    assert_eq!(
+        eval(&mut ed, &s, r#"(() => { const help = e8.windowList().find((w) => e8.windowBuffer(w) === "*Help*"); const [a, b, selected, buffer] = e8.windowParameter(help, "quit-restore"); return JSON.stringify([a, b, selected.id, buffer]); })()"#),
+        r#""[\"window\",\"window\",1,\"*Help*\"]""#
+    );
     ed.press("C-x o q").unwrap();
     assert_eq!(windows(&ed).len(), 1, "the window made for help went");
 }

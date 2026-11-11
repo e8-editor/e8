@@ -325,6 +325,11 @@ pub(crate) struct Frame {
 
 pub type FrameId = u64;
 
+/// The first frame's id. Frames' ids start here, far above any window's,
+/// so a number names a window or a frame, never both, as Emacs's window
+/// and frame objects are never the same.
+pub const FIRST_FRAME: FrameId = 1 << 32;
+
 /// Where a mouse event happened, as the position part of an Emacs mouse
 /// event: the window, and the buffer position under the mouse if there is
 /// text there. A drag also has where it started.

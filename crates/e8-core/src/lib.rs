@@ -101,4 +101,4 @@ pub use symbols::{AdviceHow, Definition};
 pub use search::{BufferHaystack, Match, SearchOptions, expand_replacement, fold_case_for as search_fold_case};
 pub use variables::{Function, HookFn, ScriptObject, Value, Variable};
 pub use filefns::{Visit, WriteSource, file_name_absolute_p, file_name_concat, substitute_in_file_name};
-pub use window::{BuryOrKill, MINIBUFFER_WINDOW, FrameId, MouseEvent, WindowId, WindowRect, WindowTree, WindowView};
+pub use window::{BuryOrKill, FIRST_FRAME, MINIBUFFER_WINDOW, FrameId, MouseEvent, WindowId, WindowRect, WindowTree, WindowView};

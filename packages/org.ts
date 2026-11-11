@@ -988,7 +988,7 @@ const narrowToSubtree = e8.defineCommand({
 /** The buffer the last C-c C-x b made, which the next one kills, as org-last-indirect-buffer. */
 let lastIndirectBuffer: e8.Buffer | undefined;
 /** The frame "dedicated-frame" shows indirect buffers in, as org-indirect-dedicated-frame. */
-let indirectDedicatedFrame: number | undefined;
+let indirectDedicatedFrame: e8.Frame | undefined;
 
 /** An indirect buffer of `buffer`'s base, named after it and `heading`, as org-get-indirect-buffer. */
 function getIndirectBuffer(buffer: e8.Buffer, heading?: string): e8.Buffer {
@@ -998,7 +998,7 @@ function getIndirectBuffer(buffer: e8.Buffer, heading?: string): e8.Buffer {
 }
 
 /** The window showing `buffer`, if one does. */
-function bufferWindow(buffer: e8.Buffer): number | undefined {
+function bufferWindow(buffer: e8.Buffer): e8.Window | undefined {
   return buffer.live ? e8.windowList().find((w) => e8.windowBuffer(w) === buffer.name) : undefined;
 }
 

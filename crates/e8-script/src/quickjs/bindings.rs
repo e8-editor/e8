@@ -4,7 +4,7 @@
 use e8_core::Value as EditorValue;
 use rquickjs::{Coerced, Ctx, FromJs, IntoJs, Value};
 
-use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Opt, PlistOrValue, Posn, Prefix, Record, Rest};
+use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Opt, PlistOrValue, Posn, Prefix, Record, Rest, Win};
 
 /// A value a native takes, converted from the script's.
 pub(crate) trait Conv: Sized {
@@ -88,6 +88,36 @@ impl Conv for EditorValue {
     type Js<'js> = Value<'js>;
     fn conv<'js>(ctx: &Ctx<'js>, js: Self::Js<'js>) -> rquickjs::Result<Self> {
         super::value_from_js(ctx, js)
+    }
+}
+
+/// A Window, or a window's number.
+impl Conv for Win {
+    type Js<'js> = Value<'js>;
+    fn conv<'js>(ctx: &Ctx<'js>, js: Self::Js<'js>) -> rquickjs::Result<Self> {
+        let value = super::value_from_js(ctx, js)?;
+        Win::from_value(&value).ok_or_else(|| rquickjs::Exception::throw_type(ctx, &format!("Not a window: {value}")))
+    }
+}
+
+/// A Frame, or a frame's number.
+impl Conv for Frm {
+    type Js<'js> = Value<'js>;
+    fn conv<'js>(ctx: &Ctx<'js>, js: Self::Js<'js>) -> rquickjs::Result<Self> {
+        let value = super::value_from_js(ctx, js)?;
+        Frm::from_value(&value).ok_or_else(|| rquickjs::Exception::throw_type(ctx, &format!("Not a frame: {value}")))
+    }
+}
+
+impl Ret for Win {
+    fn give<'js>(self, ctx: &Ctx<'js>) -> rquickjs::Result<Value<'js>> {
+        super::value_to_js(ctx, &EditorValue::Window(self.0))
+    }
+}
+
+impl Ret for Frm {
+    fn give<'js>(self, ctx: &Ctx<'js>) -> rquickjs::Result<Value<'js>> {
+        super::value_to_js(ctx, &EditorValue::Frame(self.0))
     }
 }
 

@@ -244,17 +244,17 @@ export function removeOverlays(start = e8.pointMin(), end = e8.pointMax(), name?
 }
 
 /** Whether a window is live, showing a buffer on any frame, as window-live-p. */
-export const windowLiveP = (window: unknown): boolean => typeof window === "number" && e8.windowBuffer(window) !== undefined;
+export const windowLiveP = (window: unknown): boolean => e8.windowLiveP(window);
 /** A frame's parent frame, as frame-parent: E8 has no child frames. */
-export const frameParent = (_frame?: number): number | undefined => undefined;
+export const frameParent = (_frame?: e8.FrameLike): e8.Frame | undefined => undefined;
 /** The last frame that was not only a minibuffer, as last-nonminibuffer-frame: E8's frames all have windows. */
-export const lastNonminibufferFrame = (): number => e8.selectedFrame();
+export const lastNonminibufferFrame = (): e8.Frame => e8.selectedFrame();
 /** A frame's text area's width in columns, as frame-text-cols. */
-export const frameTextCols = (frame?: number): number => e8.frameWidth(frame);
+export const frameTextCols = (frame?: e8.FrameLike): number => e8.frameWidth(frame);
 /** The selected frame's text area's height in lines, as frame-text-lines. */
 export const frameTextLines = (): number => e8.frameHeight();
 /** Select a frame and bring it in front, as x-focus-frame. */
-export function xFocusFrame(frame: number): void {
+export function xFocusFrame(frame: e8.FrameLike): void {
   e8.selectFrame(frame);
   e8.raiseFrame(frame);
 }
@@ -265,7 +265,7 @@ export function xFocusFrame(frame: number): void {
  * current current again, as with-selected-window, leaving the buffer
  * list as it is.
  */
-export function withSelectedWindow<T>(window: number, body: () => T): T {
+export function withSelectedWindow<T>(window: e8.WindowLike, body: () => T): T {
   const oldFrame = e8.selectedFrame(), oldWindow = e8.selectedWindow();
   return e8.withCurrentBuffer(e8.currentBuffer(), () => {
     const frame = e8.windowFrame(window);
@@ -293,7 +293,7 @@ export function saveSelectedWindow<T>(body: () => T): T {
 }
 
 /** Run `body` with a frame selected, then select the one that was, and the buffer that was current, as with-selected-frame. */
-export function withSelectedFrame<T>(frame: number, body: () => T): T {
+export function withSelectedFrame<T>(frame: e8.FrameLike, body: () => T): T {
   const old = e8.selectedFrame();
   return e8.withCurrentBuffer(e8.currentBuffer(), () => {
     e8.selectFrame(frame);
@@ -306,9 +306,9 @@ export function withSelectedFrame<T>(frame: number, body: () => T): T {
 }
 
 /** Whether a frame is live, as frame-live-p. */
-export const frameLiveP = (frame: unknown): boolean => typeof frame === "number" && e8.frameList().includes(frame);
+export const frameLiveP = (frame: unknown): boolean => e8.frameLiveP(frame);
 /** A window showing a buffer, the current one by default, as get-buffer-window: the selected window first. */
-export function getBufferWindow(buffer?: e8.BufferLike): number | undefined {
+export function getBufferWindow(buffer?: e8.BufferLike): e8.Window | undefined {
   const name = buffer === undefined ? e8.bufferName(e8.currentBuffer()) : e8.bufferName(buffer);
   if (name === undefined) return undefined;
   const selected = e8.selectedWindow();
@@ -316,9 +316,12 @@ export function getBufferWindow(buffer?: e8.BufferLike): number | undefined {
   return e8.windowList().find((w) => e8.windowBuffer(w) === name);
 }
 /** The minibuffer's window while a minibuffer is open, as active-minibuffer-window. */
-export const activeMinibufferWindow = (): number | undefined => (e8.minibufferDepth() > 0 ? e8.minibufferWindow() : undefined);
+export const activeMinibufferWindow = (): e8.Window | undefined => (e8.minibufferDepth() > 0 ? e8.minibufferWindow() : undefined);
 /** Whether a window, the selected one by default, is the minibuffer's, as window-minibuffer-p. */
-export const windowMinibufferP = (window?: number): boolean => (window ?? e8.selectedWindow()) === e8.minibufferWindow();
+export function windowMinibufferP(window?: e8.WindowLike): boolean {
+  const w = window ?? e8.selectedWindow();
+  return w === e8.minibufferWindow() || w === 0;
+}
 
 /** The process with a name, as get-process: E8 names processes by their names. */
 export const getProcess = (name: string): string | undefined => (e8.processList().includes(name) ? name : undefined);

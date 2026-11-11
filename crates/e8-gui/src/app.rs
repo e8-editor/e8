@@ -212,9 +212,9 @@ impl E8App {
             agent: None,
             #[cfg(not(target_arch = "wasm32"))]
             agent_client: Default::default(),
-            main_frame: 1,
+            main_frame: e8_core::FIRST_FRAME,
             titles: std::collections::HashMap::new(),
-            focused_frame: 1,
+            focused_frame: e8_core::FIRST_FRAME,
             flash_until: None,
             audible_bell: true,
             button_down: false,

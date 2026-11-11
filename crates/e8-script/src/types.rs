@@ -246,7 +246,7 @@ const API: &str = r##"
    * What variables, hooks and text properties hold, as Emacs's values: a
    * function too, as a lambda in a variable, kept as itself.
    */
-  type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | PropertizedString | Keymap | CharTable | Marker | Font;
+  type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | PropertizedString | Keymap | CharTable | Marker | Font;
   /**
    * A keymap, as Emacs's keymaps are values: bound to a prefix key in
    * another keymap it is that key's prefix map, shared wherever it is
@@ -339,6 +339,27 @@ const API: &str = r##"
   }
   /** A buffer by name or as an object. */
   type BufferLike = string | Buffer;
+  /**
+   * A window as an object, as Emacs's window objects (ADR 0069): the same
+   * object each time, and a window still once deleted, though not live.
+   */
+  interface Window {
+    /** A number no other window has had. */
+    readonly id: number;
+    /** Whether it still shows a buffer, as window-live-p. */
+    readonly live: boolean;
+  }
+  /** A frame as an object, as Emacs's frame objects. */
+  interface Frame {
+    /** A number no other frame has had. */
+    readonly id: number;
+    /** Whether it is still there, as frame-live-p. */
+    readonly live: boolean;
+  }
+  /** A window, or its number while packages move to the objects. */
+  type WindowLike = Window | number;
+  /** A frame, or its number while packages move to the objects. */
+  type FrameLike = Frame | number;
   type VariableName = keyof Variables;
   type HookName = keyof Hooks;
 
@@ -827,7 +848,7 @@ const API: &str = r##"
    * that many lines or columns, or the new one does if it is negative, as
    * split-window's SIZE. Returns the new window.
    */
-  function splitWindow(window?: number, side?: "below" | "right", size?: number): number;
+  function splitWindow(window?: WindowLike, side?: "below" | "right", size?: number): Window;
   /**
    * Where the last mouse event happened: its window, the buffer position
    * under the mouse if there is text there, and for a drag where it started.
@@ -835,10 +856,10 @@ const API: &str = r##"
    * commands read their event.
    */
   function lastMouseEvent():
-    | { window: number; position?: number; start?: { window: number; position?: number }; tabBar?: number }
+    | { window: Window; position?: number; start?: { window: Window; position?: number }; tabBar?: number }
     | undefined;
   /** The name of the buffer a window shows, the selected one by default. */
-  function windowBuffer(window?: number): string | undefined;
+  function windowBuffer(window?: WindowLike): string | undefined;
   /**
    * Run `fn` with another buffer current, as Emacs's with-current-buffer:
    * point, text and the other buffer functions act on it, and windows keep
@@ -850,31 +871,31 @@ const API: &str = r##"
    * it, as make-frame does. Returns the new frame. A graphical E8 shows
    * each frame in a window of its own; a terminal shows the selected one.
    */
-  function makeFrame(buffer?: BufferLike): number;
+  function makeFrame(buffer?: BufferLike): Frame;
   /** The buffer of this name, made if there is none, without showing it, as get-buffer-create. */
   function getBufferCreate(name: BufferLike): Buffer;
   /**
    * Show a buffer in a window, as Emacs's set-window-buffer: in the selected
    * window it becomes the current buffer; another shows it from its top.
    */
-  function setWindowBuffer(window: number | undefined, buffer: BufferLike): void;
+  function setWindowBuffer(window: WindowLike | undefined, buffer: BufferLike): void;
   /**
    * A window's size: columns and lines of text, its total size with its
    * divider and mode line, as window-total-width and -height count them,
    * and whether it spans the frame's width, as window-full-width-p.
    */
   function windowSize(
-    window?: number,
+    window?: WindowLike,
   ): { width: number; height: number; totalWidth: number; totalHeight: number; fullWidth: boolean } | undefined;
   /** When a window was last selected, as a count: higher is more recent. */
-  function windowUseTime(window?: number): number | undefined;
+  function windowUseTime(window?: WindowLike): number | undefined;
   /**
    * Grow a window by `delta` lines, or columns if `horizontal`, taking them
    * from its neighbour; a negative delta shrinks it. Goes as far as the
    * windows' smallest sizes allow, and returns how far; with `apply` false,
    * only says how far it could go, as window-resizable does.
    */
-  function resizeWindow(window: number | undefined, delta: number, horizontal?: boolean, apply?: boolean): number;
+  function resizeWindow(window: WindowLike | undefined, delta: number, horizontal?: boolean, apply?: boolean): number;
 
   /** A search match: where it starts and ends, and each group's range, group 0 being the whole match. */
   interface Match {
@@ -1214,9 +1235,9 @@ const API: &str = r##"
    * start of its top line, as window-start. Another window's start moves
    * with edits, as a marker does.
    */
-  function windowStart(window?: number): number;
+  function windowStart(window?: WindowLike): number;
   /** Make a window start at the line holding `pos`, as set-window-start; a window always starts at a line's start. */
-  function setWindowStart(window: number | undefined, pos: number): void;
+  function setWindowStart(window: WindowLike | undefined, pos: number): void;
   /**
    * Make a char-table, as Emacs's make-char-table: every character's value
    * `init`, with as many extra slots as the subtype's
@@ -1262,7 +1283,7 @@ const API: &str = r##"
    * terminal), and the column and row in characters of the default font.
    */
   interface Posn {
-    window: number;
+    window: Window;
     point: number;
     x: number;
     y: number;
@@ -1270,15 +1291,15 @@ const API: &str = r##"
     row: number;
   }
   /** Where a window's text ends, as window-end: the position after the last character it shows, its last row counted even if partly in sight. */
-  function windowEnd(window?: number): number;
+  function windowEnd(window?: WindowLike): number;
   /** Whether a position, point by default, shows in a window, as pos-visible-in-window-p; with `partially`, a row partly in sight counts. */
-  function posVisibleInWindowP(pos?: number, window?: number, partially?: boolean): true | undefined;
+  function posVisibleInWindowP(pos?: number, window?: WindowLike, partially?: boolean): true | undefined;
   /** Where a position, point by default, shows in a window, as posn-at-point, or undefined if it is not in sight. */
-  function posnAtPoint(pos?: number, window?: number): Posn | undefined;
+  function posnAtPoint(pos?: number, window?: WindowLike): Posn | undefined;
   /** What is at a place in a window's text area, as posn-at-x-y: the position of the character drawn there, or the end of the row or text. */
-  function posnAtXY(x: number, y: number, window?: number): Posn | undefined;
+  function posnAtXY(x: number, y: number, window?: WindowLike): Posn | undefined;
   /** The width and height of text as a window shows it, as window-text-pixel-size: what it shows, by default. */
-  function windowTextPixelSize(window?: number, from?: number, to?: number): [number, number];
+  function windowTextPixelSize(window?: WindowLike, from?: number, to?: number): [number, number];
   /** The width and height of a buffer's text, its lines unwrapped, as buffer-text-pixel-size. */
   function bufferTextPixelSize(buffer?: string): [number, number];
   /** How wide a string shows, in its faces, as string-pixel-width. */
@@ -1334,15 +1355,15 @@ const API: &str = r##"
   /** Whether redisplay is cutting corners for long lines, as long-line-optimizations-p: never. */
   function longLineOptimizationsP(): boolean;
   /** A window's left and right margins in columns, undefined for none, as window-margins. */
-  function windowMargins(window?: number): [number | undefined, number | undefined];
+  function windowMargins(window?: WindowLike): [number | undefined, number | undefined];
   /** Set a window's margins while it shows its buffer, as set-window-margins. Returns whether they changed. */
-  function setWindowMargins(window: number | undefined, left?: number, right?: number): boolean;
+  function setWindowMargins(window: WindowLike | undefined, left?: number, right?: number): boolean;
   /** A window's fringe widths and whether they are outside the margins, as window-fringes: 8 each in the GUI, none on a terminal. */
-  function windowFringes(window?: number): [number, number, boolean, boolean];
+  function windowFringes(window?: WindowLike): [number, number, boolean, boolean];
   /** Show or hide a window's cursor, as internal-show-cursor. */
-  function internalShowCursor(window: number | undefined, show: boolean): void;
+  function internalShowCursor(window: WindowLike | undefined, show: boolean): void;
   /** Whether a window's cursor shows, as internal-show-cursor-p. */
-  function internalShowCursorP(window?: number): boolean;
+  function internalShowCursorP(window?: WindowLike): boolean;
   /**
    * Define a fringe bitmap from rows of bits, the leftmost the most
    * significant of `width` (8 by default), as define-fringe-bitmap; `align`
@@ -1356,11 +1377,11 @@ const API: &str = r##"
   /** Whether a fringe bitmap of this name is standard or defined, as fringe-bitmap-p. */
   function fringeBitmapP(bitmap: string): boolean;
   /** The bitmaps in the left and right fringes beside a position, as fringe-bitmaps-at-pos; undefined if it does not show. */
-  function fringeBitmapsAtPos(pos?: number, window?: number): [string | undefined, string | undefined] | undefined;
+  function fringeBitmapsAtPos(pos?: number, window?: WindowLike): [string | undefined, string | undefined] | undefined;
   /** A window's point, the selected window's by default, as window-point: in the selected window, its buffer's point. */
-  function windowPoint(window?: number): number;
+  function windowPoint(window?: WindowLike): number;
   /** Move a window's point, as set-window-point. */
-  function setWindowPoint(window: number | undefined, pos: number): void;
+  function setWindowPoint(window: WindowLike | undefined, pos: number): void;
   /**
    * Show in a window the buffer it showed before, as switch-to-prev-buffer:
    * one of its previous buffers, where it was, else one from the buffer
@@ -1368,30 +1389,30 @@ const API: &str = r##"
    * window; with "append", it goes to the end of its previous buffers.
    * Returns the buffer shown, or undefined if there was none to show.
    */
-  function switchToPrevBuffer(window?: number, buryOrKill?: "bury" | "kill" | "append"): string | undefined;
+  function switchToPrevBuffer(window?: WindowLike, buryOrKill?: "bury" | "kill" | "append"): string | undefined;
   /** Show in a window the buffer previous-buffer left, as switch-to-next-buffer. Returns it, or undefined. */
-  function switchToNextBuffer(window?: number): string | undefined;
+  function switchToNextBuffer(window?: WindowLike): string | undefined;
   /** A window's parameter, as window-parameter, such as "quit-restore". */
-  function windowParameter(window: number | undefined, name: string | symbol): Value | undefined;
+  function windowParameter(window: WindowLike | undefined, name: string | symbol): Value | undefined;
   /** Set a window's parameter, or with null take it away, as set-window-parameter. */
-  function setWindowParameter(window: number | undefined, name: string | symbol, value: Value): void;
+  function setWindowParameter(window: WindowLike | undefined, name: string | symbol, value: Value): void;
   /** A window's parameters, as window-parameters. */
-  function windowParameters(window?: number): { [name: string]: Value };
+  function windowParameters(window?: WindowLike): { [name: string]: Value };
   /** Whether a window is dedicated to its buffer, as window-dedicated-p: true for strongly, or what it was set to. */
-  function windowDedicatedP(window?: number): Value | undefined;
+  function windowDedicatedP(window?: WindowLike): Value | undefined;
   /**
    * Dedicate a window to its buffer, or with null free it, as
    * set-window-dedicated-p: switch-to-buffer in a window dedicated with
    * true shows the buffer in another window, display-buffer passes it
    * over, and killing its buffer deletes it.
    */
-  function setWindowDedicatedP(window: number | undefined, flag: Value): void;
+  function setWindowDedicatedP(window: WindowLike | undefined, flag: Value): void;
   /** The buffers a window showed before, most recent first, each with where it started and its point, as window-prev-buffers. */
-  function windowPrevBuffers(window?: number): [string, number, number][];
-  function setWindowPrevBuffers(window: number | undefined, buffers: [string, number, number][]): void;
+  function windowPrevBuffers(window?: WindowLike): [string, number, number][];
+  function setWindowPrevBuffers(window: WindowLike | undefined, buffers: [string, number, number][]): void;
   /** The buffers previous-buffer went back from in a window, as window-next-buffers. */
-  function windowNextBuffers(window?: number): string[];
-  function setWindowNextBuffers(window: number | undefined, buffers: string[]): void;
+  function windowNextBuffers(window?: WindowLike): string[];
+  function setWindowNextBuffers(window: WindowLike | undefined, buffers: string[]): void;
   /** A frame's windows as they are, as current-window-configuration. */
   interface WindowConfiguration {
     readonly __e8WindowConfiguration: number;
@@ -1456,7 +1477,7 @@ const API: &str = r##"
    * while a prompt is open, and selectedWindow while it is selected, as it
    * is when a prompt opens, until other-window selects another.
    */
-  function minibufferWindow(): number;
+  function minibufferWindow(): Window;
   /**
    * The text a mode line construct shows for the current buffer and the
    * selected window, as format-mode-line; `mode-line-format`'s by default.
@@ -1530,7 +1551,7 @@ const API: &str = r##"
    */
   function matchString(n?: number, string?: string): string | undefined;
   /** How windows divide a frame: a window, or a split of two parts, side by side or one above the other, as windowTree gives it. */
-  type WindowTreeNode = number | [sideBySide: boolean, firstSize: number | null, first: WindowTreeNode, second: WindowTreeNode];
+  type WindowTreeNode = Window | [sideBySide: boolean, firstSize: number | null, first: WindowTreeNode, second: WindowTreeNode];
   /** An error as a handler of conditionCase sees it: its condition, its data, and its message. */
   interface SignalledError {
     symbol: string;
