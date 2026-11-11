@@ -21,5 +21,7 @@
   {"name": "add-dir-local-variable-string", "text": "", "files": {"a.org": "* Hej\n"}, "find": "a.org", "keys": "M-x", "answers": ["add-dir-local-variable", "org-mode", "ispell-local-dictionary", "\"sv_SE\""]},
   {"name": "add-dir-local-variable-for-every-mode", "text": "", "files": {".dir-locals.el": "((text-mode . ((tab-width . 4))))\n", "a.txt": "Hello.\n"}, "find": "a.txt", "keys": "M-x", "answers": ["add-dir-local-variable", "nil", "fill-column", "60"]},
   {"name": "delete-dir-local-variable", "text": "", "files": {".dir-locals.el": "((text-mode . ((fill-column . 50)\n               (tab-width . 4))))\n", "a.txt": "Hello.\n"}, "find": "a.txt", "keys": "M-x", "answers": ["delete-dir-local-variable", "text-mode", "fill-column"]},
-  {"name": "delete-dir-local-variable-without-a-file", "text": "", "files": {"a.txt": "Hello.\n"}, "find": "a.txt", "keys": "M-x", "answers": ["delete-dir-local-variable", "text-mode", "fill-column"], "message": true}
+  {"name": "delete-dir-local-variable-without-a-file", "text": "", "files": {"a.txt": "Hello.\n"}, "find": "a.txt", "keys": "M-x", "answers": ["delete-dir-local-variable", "text-mode", "fill-column"], "message": true},
+  {"name": "add-dir-local-variable-keeps-a-subdirectory-entry", "text": "", "files": {".dir-locals.el": "((\"notes/\" . ((org-mode . ((ispell-local-dictionary . \"sv_SE\")))))\n (text-mode . ((tab-width . 4))))\n", "a.txt": "Hello.\n"}, "find": "a.txt", "keys": "M-x", "answers": ["add-dir-local-variable", "text-mode", "fill-column", "60"]},
+  {"name": "add-dir-local-variable-list-value", "text": "", "files": {"a.txt": "Hello.\n"}, "find": "a.txt", "keys": "M-x", "answers": ["add-dir-local-variable", "text-mode", "my-words", "(\"one\" \"two\")"]}
 ]

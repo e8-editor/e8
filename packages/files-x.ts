@@ -266,29 +266,43 @@ e8.defineCommand({
 const sym = (name: string): symbol => e8.intern(name);
 const nameOf = (s: e8.Value): string => (typeof s === "symbol" ? e8.symbolName(s) : String(s));
 
-/** A dir-locals entry: a mode (a symbol), nil, or a subdirectory, and its (VAR . VALUE) settings. */
-type DirEntry = { key: e8.Value; pairs: [symbol, e8.Value][] };
+/**
+ * A dir-locals entry as E8 reads it: a mode (a symbol), nil, or a
+ * subdirectory, then what it holds, kept as read so what is not changed is
+ * written back as it was: a mode's (VAR . VALUE) settings, each a list of
+ * the variable and the rest, or a subdirectory's own entries.
+ */
+type DirEntry = e8.Value[];
 
 const isEval = (x: e8.Value): boolean => typeof x === "symbol" && e8.symbolName(x) === "eval";
 
-/** The entries of a .dir-locals.el as E8 reads it, (VAR . VALUE) pairs being lists of the variable and the rest. */
-function entriesOf(data: e8.Value): DirEntry[] {
-  if (!Array.isArray(data)) return [];
-  return data.filter(Array.isArray).map((e) => ({
-    key: e[0] ?? null,
-    pairs: e
-      .slice(1)
-      .filter((p): p is e8.Value[] => Array.isArray(p) && typeof p[0] === "symbol")
-      .map((p) => [p[0] as symbol, isEval(p[0]) ? p.slice(1) : p.length === 2 ? p[1] : p.length === 1 ? null : p.slice(1)]),
-  }));
+/** A (VAR . VALUE) setting as E8 reads it, its dotted end joining the list: `eval`'s rest is the form. */
+function settingValue(item: e8.Value[]): e8.Value {
+  const rest = item.slice(1);
+  return isEval(item[0]) ? rest : rest.length === 0 ? null : rest.length === 1 ? rest[0] : rest;
 }
 
-/** The dir-locals entries written as Lisp, in dotted pair notation, as dir-locals-to-string. */
-function dirLocalsToString(entries: DirEntry[]): string {
+/** A setting as E8 reads it, from the variable and its value. */
+function settingOf(variable: symbol, value: e8.Value): e8.Value[] {
+  if (isEval(variable) && Array.isArray(value)) return [variable, ...value];
+  return Array.isArray(value) && value.length !== 1 ? [variable, ...value] : [variable, value];
+}
+
+/** An entry written as Lisp, in dotted pair notation, as dir-locals-to-string writes it. */
+function entryToString(entry: DirEntry): string {
   const prin1 = (x: e8.Value) => e8.prin1ToString(x);
-  return `(${entries
-    .map((e) => `(${prin1(e.key)} . (${e.pairs.map(([variable, value]) => `(${prin1(variable)} . ${prin1(value)})`).join("\n")}))`)
-    .join("\n")})`;
+  const key = entry[0] ?? null;
+  const items = entry.slice(1);
+  const inner =
+    typeof key === "string"
+      ? items.map((i) => (Array.isArray(i) ? entryToString(i) : prin1(i)))
+      : items.map((i) => (Array.isArray(i) && typeof i[0] === "symbol" ? `(${prin1(i[0])} . ${prin1(settingValue(i))})` : prin1(i)));
+  return `(${prin1(key)} . (${inner.join("\n")}))`;
+}
+
+/** The dir-locals entries written as Lisp, as dir-locals-to-string. */
+function dirLocalsToString(entries: DirEntry[]): string {
+  return `(${entries.map(entryToString).join("\n")})`;
 }
 
 /** The mode or subdirectory a directory-local variable is for, as read-file-local-variable-mode reads it. */
@@ -325,27 +339,32 @@ export function modifyDirLocalVariable(mode: e8.Value, variable: string, value: 
   e8.widen();
   e8.gotoChar(e8.pointMin());
   let entries: DirEntry[] = [];
-  try {
-    const text = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
-    const [data, end] = e8.readFromString(text);
-    entries = entriesOf(data);
-    e8.deleteRegion(e8.pointMin(), e8.pointMin() + end);
-  } catch {
+  e8.conditionCase(
+    () => {
+      const text = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
+      const [data, end] = e8.readFromString(text);
+      entries = Array.isArray(data) ? (data.filter(Array.isArray) as DirEntry[]) : [];
+      e8.deleteRegion(e8.pointMin(), e8.pointMin() + end);
+    },
     // An empty or unreadable file is started afresh.
-  }
+    { error: () => undefined },
+  );
   const variableSym = sym(variable);
-  const at = entries.findIndex((e) => (e.key === null ? mode === null : typeof e.key === "string" ? e.key === mode : e.key === mode));
+  const sameKey = (k: e8.Value | undefined) => (k ?? null) === mode;
+  const at = entries.findIndex((e) => sameKey(e[0]));
   if (at >= 0) {
-    const entry = entries[at];
+    const [key, ...items] = entries[at];
     const others = entries.filter((_, i) => i !== at);
-    const rest = op === "delete" || !["mode", "eval"].includes(variable) ? entry.pairs.filter((p) => p[0] !== variableSym) : entry.pairs;
-    entries = [{ key: entry.key, pairs: op === "delete" ? rest : [[variableSym, value], ...rest] }, ...others];
-  } else entries = [{ key: mode, pairs: [[variableSym, value]] }, ...entries];
+    const isSetting = (i: e8.Value) => Array.isArray(i) && i[0] === variableSym;
+    const rest = op === "delete" || !["mode", "eval"].includes(variable) ? items.filter((i) => !isSetting(i)) : items;
+    entries = [[key ?? null, ...(op === "delete" ? rest : [settingOf(variableSym, value), ...rest])], ...others];
+  } else entries = [[mode, settingOf(variableSym, value)], ...entries];
   // Forget the cached reading, as the file may be saved within the same second.
   const directory = e8.fileNameDirectory(file!);
   e8.setDefault("dir-locals-directory-cache", (e8.defaultValue("dir-locals-directory-cache") as e8.Value[] ?? []).filter((e) => !(Array.isArray(e) && e[0] === directory)));
   const rank = (k: e8.Value) => (k === null ? 0 : typeof k === "symbol" ? 1 : 2);
-  entries.sort((a, b) => rank(a.key) - rank(b.key) || (nameOf(a.key ?? "") < nameOf(b.key ?? "") ? -1 : nameOf(a.key ?? "") > nameOf(b.key ?? "") ? 1 : 0));
+  const keyName = (e: DirEntry) => nameOf(e[0] ?? "");
+  entries.sort((a, b) => rank(a[0] ?? null) - rank(b[0] ?? null) || (keyName(a) < keyName(b) ? -1 : keyName(a) > keyName(b) ? 1 : 0));
   e8.insert(";;; Directory Local Variables            -*- no-byte-compile: t -*-\n");
   e8.insert(";;; For more information see (info \"(emacs) Directory Variables\")\n\n");
   e8.insert(dirLocalsToString(entries));

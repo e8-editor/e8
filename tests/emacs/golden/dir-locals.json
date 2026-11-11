@@ -668,6 +668,71 @@
         "a.txt": "Hello.\n"
       },
       "message": "No .dir-locals.el file was found"
+    },
+    {
+      "name": "add-dir-local-variable-keeps-a-subdirectory-entry",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-dir-local-variable",
+          "text-mode",
+          "fill-column",
+          "60"
+        ],
+        "files": {
+          ".dir-locals.el": "((\"notes/\" . ((org-mode . ((ispell-local-dictionary . \"sv_SE\")))))\n (text-mode . ((tab-width . 4))))\n",
+          "a.txt": "Hello.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((fill-column . 60)\n\t       (tab-width . 4)))\n (\"notes/\" . ((org-mode . ((ispell-local-dictionary . \"sv_SE\"))))))\n",
+      "visible": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((fill-column . 60)\n\t       (tab-width . 4)))\n (\"notes/\" . ((org-mode . ((ispell-local-dictionary . \"sv_SE\"))))))\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
+    },
+    {
+      "name": "add-dir-local-variable-list-value",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "add-dir-local-variable",
+          "text-mode",
+          "my-words",
+          "(\"one\" \"two\")"
+        ],
+        "files": {
+          "a.txt": "Hello.\n"
+        },
+        "find": "a.txt"
+      },
+      "text": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((my-words . (\"one\" \"two\")))))\n",
+      "visible": ";;; Directory Local Variables            -*- no-byte-compile: t -*-\n;;; For more information see (info \"(emacs) Directory Variables\")\n\n((text-mode . ((my-words . (\"one\" \"two\")))))\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "Hello.\n"
+      }
     }
   ]
 }

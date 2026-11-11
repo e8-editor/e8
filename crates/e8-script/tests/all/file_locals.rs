@@ -69,7 +69,7 @@ fn unsafe_values_are_asked_about_and_set_on_y() {
     let d = crate::driven::Driven::new("");
     visit_driven(&d, &path);
     assert_eq!(d.buffer_name(), "*Local Variables*", "the question shows them");
-    assert_eq!(d.message().as_deref(), Some("Please type y, n, !, i: "));
+    assert_eq!(d.prompt().as_deref(), Some("Please type y, n, !, i: "));
     let shown = buffer_text(&d, "*Local Variables*");
     assert!(shown.starts_with("The local variables list in a.txt\nor .dir-locals.el contains values that may not be safe (*)."), "{shown}");
     assert!(shown.contains("\n    fill-column : 20\n  * my-setting : 3\n"), "{shown}");
@@ -115,9 +115,9 @@ fn risky_variables_cannot_be_marked_safe() {
     let shown = buffer_text(&d, "*Local Variables*");
     assert!(shown.contains("contains variables that are risky (**)."), "{shown}");
     assert!(shown.contains(" ** my-hook : ignore\n") && !shown.contains("!  --"), "{shown}");
-    assert_eq!(d.message().as_deref(), Some("Please type y or n: "));
+    assert_eq!(d.prompt().as_deref(), Some("Please type y or n: "));
     d.press("!");
-    assert_eq!(d.message().as_deref(), Some("Please type y or n: "), "! is not an answer here");
+    assert_eq!(d.prompt().as_deref(), Some("Please type y or n: "), "! is not an answer here");
     d.press("n");
     assert_eq!(d.buffer_name(), "a.txt");
     assert_eq!(d.variable("my-hook"), None);
@@ -198,6 +198,29 @@ fn values_are_read_and_written_as_lisp() {
     assert_eq!(t.eval("e8.prin1ToString([e8.intern('quote'), [e8.intern('a'), 1.5, null, true]])"), r#""'(a 1.5 nil t)""#);
 }
 
+#[test]
+fn an_eval_add_hook_is_not_added_again_when_the_mode_changes() {
+    let mut t = setup();
+    t.eval("(e8.defineVariable({ name: 'test-saves', value: 0 }), e8.defun('test-count-save', () => e8.setVariable('test-saves', Number(e8.variable('test-saves')) + 1)))");
+    t.eval("e8.setVariable('safe-local-eval-forms', [[e8.intern('add-hook'), [e8.intern('quote'), e8.intern('before-save-hook')], [e8.intern('quote'), e8.intern('test-count-save')], null, true]])");
+    t.visit("a.txt", "x\n\nLocal Variables:\neval: (add-hook 'before-save-hook 'test-count-save nil t)\nEnd:\n", "");
+    for _ in 0..2 {
+        t.ed.press("M-x").unwrap();
+        t.ed.type_text("text-mode");
+        t.ed.press("RET").unwrap();
+    }
+    t.eval("e8.runHooks('before-save-hook')");
+    assert_eq!(t.local("test-saves"), "\"1\"", "once, however often the variables are set");
+}
+
+#[test]
+fn a_value_after_characters_beyond_the_bmp_is_read_where_it_is() {
+    let mut t = setup();
+    t.visit("a.txt", "-*- my-title: \"\u{1F600}\"; fill-column: 20 -*-\n", "y");
+    assert_eq!(t.local("fill-column"), "\"20\"");
+    assert_eq!(t.local("my-title"), "\"\\\"\u{1F600}\\\"\"");
+}
+
 // Directory-local variables, from .dir-locals.el.
 
 #[test]
@@ -223,7 +246,7 @@ fn unsafe_directory_values_are_asked_about_with_plus_to_trust_the_directory() {
     let shown = buffer_text(&d, "*Local Variables*");
     assert!(shown.starts_with(&format!("The local variables list in {dir}\nor .dir-locals.el contains values that may not be safe (*).")), "{shown}");
     assert!(shown.contains("+  -- to apply the local variables list, and trust all directory-local\n      variables in this directory"), "{shown}");
-    assert_eq!(d.message().as_deref(), Some("Please type y, n, !, i, +: "));
+    assert_eq!(d.prompt().as_deref(), Some("Please type y, n, !, i, +: "));
     d.press("+");
     assert_eq!(d.variable("my-setting").as_deref(), Some("3"));
     // The directory is trusted from now on: another file there is not asked about.
@@ -279,4 +302,15 @@ fn file_and_directory_variables_are_copied_between_them() {
     t.ed.press("RET").unwrap();
     let b = t.ed.window_buffer();
     assert_eq!(b.slice(0..b.len()), "Hello\n\n;; Local Variables:\n;; fill-column: 20\n;; End:\n");
+}
+
+#[test]
+fn a_trusted_directory_may_be_written_without_its_slash() {
+    let mut t = setup();
+    let dir = t.dir.path().canonicalize().unwrap().display().to_string();
+    t.eval(&format!("e8.setVariable('safe-local-variable-directories', [{dir:?}])"));
+    t.file(".dir-locals.el", "((nil . ((my-setting . 3))))\n");
+    t.visit("a.txt", "x\n", "");
+    assert_eq!(t.ed.window_buffer().name, "a.txt", "not asked");
+    assert_eq!(t.local("my-setting"), "\"3\"");
 }

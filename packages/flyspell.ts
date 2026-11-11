@@ -325,18 +325,19 @@ export const flyspellMode = e8.defineMinorMode({
   },
   onChange: (enabled) => {
     if (enabled) {
-      try {
-        setSpellcheckerParams();
-        e8.setVariable("ispell-highlight-face", e8.intern("flyspell-incorrect"));
-        const fallback = e8.variable("flyspell-default-dictionary");
-        if (!truthy(e8.variable("ispell-local-dictionary")) && !truthy(e8.variable("ispell-dictionary")) && typeof fallback === "string") {
-          changeDictionary(fallback);
-        }
-        // Taken up now, or a dictionary the buffer names could be missed.
-        acceptLocalDefs(true);
-      } catch (e) {
-        e8.message(`Error enabling Flyspell mode:\n${e instanceof Error ? e.message : String(e)}`);
-      }
+      e8.conditionCase(
+        () => {
+          setSpellcheckerParams();
+          e8.setVariable("ispell-highlight-face", e8.intern("flyspell-incorrect"));
+          const fallback = e8.variable("flyspell-default-dictionary");
+          if (!truthy(e8.variable("ispell-local-dictionary")) && !truthy(e8.variable("ispell-dictionary")) && typeof fallback === "string") {
+            changeDictionary(fallback);
+          }
+          // Taken up now, or a dictionary the buffer names could be missed.
+          acceptLocalDefs(true);
+        },
+        { error: (e) => e8.message(`Error enabling Flyspell mode:\n${e.message}`) },
+      );
       e8.addHook("hack-local-variables-hook", hackLocalVariables, { local: true, depth: 90 });
       e8.addHook("pre-command-hook", preCommand, { local: true });
       e8.addHook("post-command-hook", postCommand, { local: true });

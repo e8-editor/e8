@@ -1,4 +1,5 @@
 import { selectSafeCodingSystem } from "mule";
+import { regexpQuote } from "subr";
 
 // Choosing a major mode for a file, after Emacs's files.el.
 
@@ -135,12 +136,12 @@ export function safeLocalVariableP(variable: symbol, value: e8.Value): boolean {
   if (list(v("safe-local-variable-values")).some((pair) => equal(pair, [variable, value]))) return true;
   const predicate = e8.get(variable, "safe-local-variable");
   if (predicate === undefined || predicate === null || predicate === true) return false;
-  try {
-    return callPredicate(predicate, value);
-  } catch (e) {
-    e8.message(`Local variable error: ${e instanceof Error ? e.message : String(e)}`);
-    return false;
-  }
+  return e8.conditionCase(() => callPredicate(predicate, value), {
+    error: (e) => {
+      e8.message(`Local variable error: ${e.message}`);
+      return false;
+    },
+  });
 }
 
 /** Whether a variable could do harm when a file sets it, as risky-local-variable-p. */
@@ -252,7 +253,7 @@ function listVariables(handleMode: boolean | "no-mode" | null): Pair[] | string 
     const startpos = e8.lineEndPosition() + 1;
     if (startpos > max) return handleMode === true ? undefined : result;
     // The list ends at a line of the prefix, "End:" and the suffix.
-    const endRe = `^${regexpQuoteLisp(prefix)}[ \t]*End:[ \t]*${regexpQuoteLisp(suffix)}$`;
+    const endRe = `^${regexpQuote(prefix)}[ \t]*End:[ \t]*${regexpQuote(suffix)}$`;
     e8.gotoChar(startpos);
     let endpos: number;
     // Without an End: line it is not a list after all, and nothing is read.
@@ -304,11 +305,6 @@ function listVariables(handleMode: boolean | "no-mode" | null): Pair[] | string 
   });
 }
 
-/** A string as a regexp matching it literally, as regexp-quote. */
-function regexpQuoteLisp(s: string): string {
-  return s.replace(/[[*.\\?+^$]/g, (c) => `\\${c}`);
-}
-
 /** Whether a quoted form, (quote X). */
 const quotep = (exp: e8.Value): exp is e8.Value[] => Array.isArray(exp) && exp.length === 2 && isSym(exp[0], "quote");
 
@@ -332,6 +328,17 @@ function evalSafeP(exp: e8.Value): boolean {
   if (typeof prop === "function" || typeof prop === "symbol") return callPredicate(prop, exp);
   if (Array.isArray(prop)) return prop.some((p) => callPredicate(p, exp));
   return false;
+}
+
+/** The function a hook is given for a name, the same one each time, so adding it again adds nothing and removing it removes it, as with a symbol in Lisp. */
+const hookFunctions = new Map<string, (...args: e8.Value[]) => unknown>();
+function hookFunction(name: string): (...args: e8.Value[]) => unknown {
+  let fn = hookFunctions.get(name);
+  if (fn === undefined) {
+    fn = (...args: e8.Value[]) => e8.funcall(name, ...args);
+    hookFunctions.set(name, fn);
+  }
+  return fn;
 }
 
 /**
@@ -363,7 +370,7 @@ function evalForm(exp: e8.Value): e8.Value {
   if (name === "add-hook" || name === "remove-hook") {
     const hook = nameOf(values[0]);
     const fn = values[1];
-    const run = typeof fn === "function" ? fn : e8.symbolFunction(nameOf(fn)) ?? ((...a: e8.Value[]) => e8.funcall(nameOf(fn), ...a));
+    const run = typeof fn === "function" ? fn : hookFunction(nameOf(fn));
     const local = truthy(values[name === "add-hook" ? 3 : 2]);
     if (name === "add-hook") e8.addHook(hook, run, { local, ...(truthy(values[2]) ? { append: true } : {}) });
     else e8.removeHook(hook, run, { local });
@@ -412,20 +419,11 @@ function confirm(all: Pair[], unsafe: Pair[], risky: Pair[], dirName?: string): 
     e8.setBufferModified(false);
     e8.gotoChar(e8.pointMin());
   });
-  const exits = offerSave ? ["y", "n", " ", "!", "i", ...(dirName !== undefined ? ["+"] : [])] : ["y", "n", " "];
+  const exits = offerSave ? `yn !i${dirName !== undefined ? "+" : ""}` : "yn ";
   const prompt = `Please type ${offerSave ? (dirName !== undefined ? "y, n, !, i, +" : "y, n, !, i") : "y or n"}: `;
   const answer = e8.saveWindowExcursion(() => {
     e8.call("pop-to-buffer", buffer);
-    for (;;) {
-      const key = e8.readKey(prompt);
-      const char = key === "SPC" ? " " : key;
-      if (key === "C-g") e8.signal("quit", "Quit");
-      if (key === "C-v" || key === "M-v") {
-        e8.call(key === "C-v" ? "scroll-up-command" : "scroll-down-command");
-        continue;
-      }
-      if (exits.includes(char)) return char;
-    }
+    return e8.readCharChoice(prompt, exits);
   });
   if (offerSave && dirName !== undefined && answer === "+") {
     e8.setDefault("safe-local-variable-directories", [dirName, ...list(e8.defaultValue("safe-local-variable-directories"))]);
@@ -437,6 +435,21 @@ function confirm(all: Pair[], unsafe: Pair[], risky: Pair[], dirName?: string): 
   }
   e8.call("kill-buffer", buffer);
   return ["!", " ", "y", "+"].includes(answer);
+}
+
+/** Whether two names are the same directory, with or without a trailing slash, as file-equal-p tells. */
+function sameDirectory(a: string, b: string): boolean {
+  return e8.directoryFileName(e8.expandFileName(a)) === e8.directoryFileName(e8.expandFileName(b));
+}
+
+/** Runs `fn`, an error in it only a message, as with-demoted-errors: `fallback` then; a quit still quits. */
+function withDemotedErrors<T>(what: string, fn: () => T, fallback: T): T {
+  return e8.conditionCase(fn, {
+    error: (e) => {
+      e8.message(`${what}: ${e.message}`);
+      return fallback;
+    },
+  });
 }
 
 /**
@@ -477,7 +490,7 @@ function filterVariables(variables: Pair[], dirName?: string): void {
   if (all.length === 0) return;
   const trusted =
     dirName !== undefined &&
-    list(v("safe-local-variable-directories")).some((d) => typeof d === "string" && e8.expandFileName(d) === e8.expandFileName(dirName));
+    list(v("safe-local-variable-directories")).some((d) => typeof d === "string" && sameDirectory(d, dirName));
   const ok =
     (enable === true && unsafe.length === 0 && risky.length === 0) ||
     isSym(enable, ":all") ||
@@ -544,11 +557,7 @@ export function hackLocalVariables(handleMode: boolean | "no-mode" | null = null
       return (propLineVariables(true) as string | undefined) ?? (listVariables(true) as string | undefined);
     }
     e8.setVariable("file-local-variables-alist", []);
-    try {
-      hackDirLocalVariables();
-    } catch (e) {
-      e8.message(`Directory-local variables error: ${e instanceof Error ? e.message : String(e)}`);
-    }
+    withDemotedErrors("Directory-local variables error", hackDirLocalVariables, undefined);
     const result = [...(listVariables(handleMode) as Pair[]), ...(propLineVariables(handleMode) as Pair[])];
     if (enabled && !inhibitLocalVariablesP()) filterVariables(result);
     else {
@@ -686,17 +695,13 @@ function dirLocalsReadFromDir(dir: string): symbol {
   const files = dirLocalsAllFiles(dir);
   let variables: e8.Value[][] = [];
   let latest = 0;
-  let success: number | null = 0;
-  try {
+  // The values the files gave are kept if one fails, but then the cache is not to be trusted.
+  const success = withDemotedErrors("Error reading dir-locals", () => {
     for (const file of files) {
       latest = Math.max(latest, e8.fileAttributes(file)?.modified ?? 0);
-      const text = readFileText(file);
-      let newvars: e8.Value = null;
-      try {
-        newvars = e8.readFromString(text)[0];
-      } catch (e) {
-        if (!(e instanceof Error && (e as { symbol?: string }).symbol === "end-of-file")) throw e;
-      }
+      const text = e8.readTextFile(file);
+      // An empty file, or one cut short, gives nothing.
+      let newvars = e8.conditionCase<e8.Value>(() => e8.readFromString(text)[0], { "end-of-file": () => null });
       if (newvars !== null && !Array.isArray(newvars)) {
         e8.message(`Invalid data in ${file}: ${e8.prin1ToString(newvars)}`);
         newvars = null;
@@ -713,26 +718,11 @@ function dirLocalsReadFromDir(dir: string): symbol {
         variables = out;
       }
     }
-    success = latest;
-  } catch (e) {
-    e8.message(`Error reading dir-locals: ${e instanceof Error ? e.message : String(e)}`);
-    success = 0;
-  }
+    return latest;
+  }, 0);
   setClassVariables(className, sortVariables(variables));
   setDirectoryClass(dir, className, success);
   return className;
-}
-
-/** A file's text. */
-function readFileText(file: string): string {
-  const buffer = e8.getBufferCreate(" *dir-locals*");
-  return e8.withCurrentBuffer(buffer, () => {
-    e8.deleteRegion(e8.pointMin(), e8.pointMax());
-    e8.insertFileContents(file);
-    const text = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
-    e8.deleteRegion(e8.pointMin(), e8.pointMax());
-    return text;
-  });
 }
 
 /** Maps a class to its variables, as dir-locals-set-class-variables. */
@@ -775,7 +765,8 @@ function collectVariables(classVars: e8.Value[][], root: string, variablesIn: Pa
   const fileName = e8.bufferFileName() ?? e8.expandFileName(String(v("default-directory") ?? "~/"));
   const sub = e8.fileNameAbsoluteP(fileName) ? fileName.slice(root.length) : undefined;
   let variables = variablesIn;
-  try {
+  // The file may hold anything, a merge conflict say; that should not stop the file being visited.
+  return withDemotedErrors(`${String(v("dir-locals-file"))} error`, () => {
     for (const entry of classVars) {
       const key = entry[0];
       if (typeof key === "string") {
@@ -792,11 +783,8 @@ function collectVariables(classVars: e8.Value[][], root: string, variablesIn: Pa
         }
       }
     }
-  } catch (e) {
-    e8.message(`${String(v("dir-locals-file"))} error: ${e instanceof Error ? e.message : String(e)}`);
-    return [];
-  }
-  return variables;
+    return variables;
+  }, [] as Pair[]);
 }
 
 /** This buffer's directory-local variables, as (DIR . ALIST), as hack-dir-local--get-variables. */
@@ -867,11 +855,7 @@ export function hackDirLocalVariables(): void {
 
 /** Sets directory-local variables in a buffer with no file, from default-directory, as Dired's do, as hack-dir-local-variables-non-file-buffer. */
 export function hackDirLocalVariablesNonFileBuffer(): void {
-  try {
-    hackDirLocalVariables();
-  } catch (e) {
-    e8.message(`Directory-local variables error: ${e instanceof Error ? e.message : String(e)}`);
-  }
+  withDemotedErrors("Directory-local variables error", hackDirLocalVariables, undefined);
   applyVariables();
 }
 
@@ -925,12 +909,15 @@ e8.defineCommand({
   run: (findFile: e8.PrefixArg) => {
     const enable = findFile === null ? true : (v("enable-local-variables") ?? null);
     e8.letBind({ "enable-local-variables": enable }, () => {
-      let mode: string | undefined;
-      try {
-        mode = [hackLocalVariables(true), modeFromFileName()].find((m) => m !== undefined && e8.commandExists(m));
-      } catch (e) {
-        e8.message(`File mode specification error: ${e instanceof Error ? e.message : String(e)}`);
-      }
+      const mode = e8.conditionCase(
+        () => [hackLocalVariables(true), modeFromFileName()].find((m) => m !== undefined && e8.commandExists(m)),
+        {
+          error: (e) => {
+            e8.message(`File mode specification error: ${e.message}`);
+            return undefined;
+          },
+        },
+      );
       // The mode runs its hooks, and then, for a file, hack-local-variables, as run-mode-hooks does.
       e8.call((mode ?? "fundamental-mode") as e8.CommandName);
     });
