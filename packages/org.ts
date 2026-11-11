@@ -807,7 +807,7 @@ function currentIndex(): HeadingIndex {
     parsedFor = keywordsKey;
   }
   const name = indexKey();
-  const tick = e8.bufferModifiedTick();
+  const tick = e8.bufferCharsModifiedTick();
   let index = headingIndexes.get(name);
   if (!index || index.keywords !== keywordsKey || index.tick !== tick) {
     const sorted = [...keywords].sort((a, b) => b.length - a.length);

@@ -375,7 +375,7 @@ fn m_r_searches_the_history_with_isearch() {
     let shown = s
         .eval_expression(
             &mut ed,
-            "(() => { const at = e8.lineBeginningPosition(); return String(e8.overlaysAt(at).map((o) => e8.overlayGet(o, 'display')).find((d) => d !== undefined)); })()",
+            "(() => { const at = e8.posBol(); return String(e8.overlaysAt(at).map((o) => e8.overlayGet(o, 'display')).find((d) => d !== undefined)); })()",
         )
         .unwrap();
     assert_eq!(shown, "\"Regexp history I-search backward: \"");

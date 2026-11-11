@@ -413,7 +413,7 @@ function parseFor(pos: number): Elem {
   const all = headingsAsRead();
   const branch = headingIndex(all, lineAt(pos));
   const key = `${e8.bufferName()}\n${allKeywords().join(" ")}\n${branch ?? -1}`;
-  const tick = e8.bufferModifiedTick();
+  const tick = e8.bufferCharsModifiedTick();
   const [min, max] = [e8.pointMin(), e8.pointMax()];
   if (parseCache?.key === key && parseCache.tick !== tick && parseShifts && parseCache.shifted <= parseShifts.changes.length) {
     const cache = parseCache;

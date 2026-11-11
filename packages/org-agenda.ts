@@ -132,7 +132,7 @@ let inheritedCache: { buffer: number; tick: number; map: Map<number, string[]> }
 /** The tags a heading inherits, as org-get-tags gives them with inheritance: the file's, then each ancestor's. */
 function inheritedTags(h: Heading): string[] {
   const buffer = e8.currentBuffer().id;
-  const tick = e8.bufferModifiedTick();
+  const tick = e8.bufferCharsModifiedTick();
   if (!inheritedCache || inheritedCache.buffer !== buffer || inheritedCache.tick !== tick) {
     const map = new Map<number, string[]>();
     const file: string[] = [];

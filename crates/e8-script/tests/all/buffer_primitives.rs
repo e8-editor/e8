@@ -115,3 +115,20 @@ fn current_message_and_the_default_major_mode() {
     );
     assert_eq!(got, r#"["hello","fundamental-mode",7,null]"#);
 }
+
+#[test]
+fn markers_move_with_the_text_they_were_in() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.insert("abc-de-fghij"), globalThis.ms = [1, 9, 4, 3].map((p) => e8.makeMarker(p)),
+          e8.transposeRegions(0, 3, 8, 12),
+          globalThis.swapped = [e8.bufferSubstringNoProperties(0, 12), ...ms.map((m) => e8.markerPosition(m) + 1)],
+          e8.withCurrentBuffer(e8.getBufferCreate("src"), () => e8.insert("1 two 3")),
+          e8.deleteRegion(0, e8.pointMax()), e8.insert("one two three"), globalThis.w = e8.makeMarker(5),
+          JSON.stringify([swapped, e8.replaceBufferContents("src"), e8.bufferSubstringNoProperties(0, e8.pointMax()), e8.markerPosition(w) + 1]))"#,
+    );
+    // Emacs: ("ghij-de-fabc" 11 2 6 5), and (t "1 two 3" 4): a marker in "two" stays on its w
+    assert_eq!(got, r#"[["ghij-de-fabc",11,2,6,5],true,"1 two 3",4]"#);
+}
