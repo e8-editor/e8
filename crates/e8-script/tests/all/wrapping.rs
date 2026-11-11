@@ -215,3 +215,42 @@ fn visual_line_mode_shows_no_curly_arrows() {
     ed.call("visual-line-mode", vec![]).unwrap();
     assert_eq!(continued(&ed).as_deref(), Some("right-curly-arrow"));
 }
+
+#[test]
+fn a_word_too_long_for_its_row_starts_after_the_line_prefix() {
+    // As Emacs 30.2 shows it with org-indent-mode and visual-line-mode: the
+    // spaces of the line prefix are no place to break, so the link starts
+    // on its line's first row, and C-n goes into it a row at a time.
+    let url = "https://example.com/portal/69c0fa40b252f3c7bcf5caae/agent/6abbb02427c85dafb482ec0e";
+    let text = format!("* Testing\n** Heading 1\n\n{url}\n\n** Heading 2\n");
+    let (mut ed, _scripting) = setup(&text);
+    let window = ed.selected_window();
+    ed.set_window_size(window, 40, 12);
+    ed.call("org-mode", vec![]).unwrap();
+    ed.call("org-indent-mode", vec![]).unwrap();
+    ed.call("visual-line-mode", vec![]).unwrap();
+    ed.redisplay();
+    let shown: Vec<String> =
+        ed.window_rows(8, true).iter().map(|r| r.segments.iter().map(|s| s.text.as_str()).collect()).collect();
+    assert_eq!(
+        shown,
+        [
+            "* Testing",
+            "*** Heading 1",
+            "    ",
+            "    https://example.com/portal/69c0fa40",
+            "    b252f3c7bcf5caae/agent/6abbb02427c8",
+            "    5dafb482ec0e",
+            "    ",
+            "*** Heading 2",
+        ]
+    );
+    let blank = text.find("\n\n").unwrap() + 1;
+    ed.window_buffer_mut().set_point(blank);
+    let mut points = Vec::new();
+    for _ in 0..4 {
+        ed.press("C-n").unwrap();
+        points.push(point(&ed));
+    }
+    assert_eq!(points, [24, 59, 94, 107]);
+}

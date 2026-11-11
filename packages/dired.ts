@@ -6,6 +6,8 @@
 // directory again, keeping the marks. Deleting goes to the trash, as
 // delete-by-moving-to-trash says.
 
+import { defineGuide } from "help-guide";
+
 // Faces.
 
 e8.defineFace({ name: "dired-header", doc: "The directory's name at the top of a listing.", attributes: { inherit: "font-lock-type-face" } });
@@ -1261,6 +1263,50 @@ e8.defineCommand({
 });
 
 // The mode.
+
+// What C-h h shows in a Dired buffer (ADR 0068).
+defineGuide("dired-mode", {
+  title: "Dired",
+  summary:
+    "Dired lists a directory's files, one to a line, and acts on them: opens, copies, renames and deletes them. " +
+    "Mark several files and a command acts on them all; with none marked, it acts on the file point is on.",
+  keys: [
+    [
+      "Moving about",
+      [
+        ["dired-find-file", "Open the file or directory point is on"],
+        ["dired-up-directory", "Go up to the parent directory"],
+        ["revert-buffer", "Read the directory again"],
+      ],
+    ],
+    [
+      "Marking",
+      [
+        ["dired-mark", "Mark the file"],
+        ["dired-unmark", "Unmark it"],
+        ["dired-flag-file-deletion", "Flag it for deletion"],
+        ["dired-do-flagged-delete", "Delete the files flagged, after asking"],
+      ],
+    ],
+    [
+      "Acting on files",
+      [
+        ["dired-do-copy", "Copy the marked files, or this one"],
+        ["dired-do-rename", "Rename or move them"],
+        ["dired-create-directory", "Make a new directory"],
+        ["wdired-change-to-wdired-mode", "Edit the names as text, to rename many at once"],
+      ],
+    ],
+  ],
+  tryNow: [
+    "Move to a file and press \\[dired-find-file] to open it; \\[dired-jump] in that file comes back here.",
+    "Press \\[dired-flag-file-deletion] on a file, then \\[dired-unmark] to change your mind.",
+  ],
+  learnNext: [
+    "\\[dired-do-rename] with several files marked moves them all into a directory.",
+    "\\[describe-mode] lists every key of Dired.",
+  ],
+});
 
 e8.defineMajorMode({
   name: "dired-mode",

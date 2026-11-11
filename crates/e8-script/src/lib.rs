@@ -120,6 +120,9 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/face-remap.ts", include_str!("../../../packages/face-remap.ts")),
     ("packages/case-table.ts", include_str!("../../../packages/case-table.ts")),
     ("packages/outline.ts", include_str!("../../../packages/outline.ts")),
+    // Before the modes that give help-guide their guides, which import it.
+    ("packages/help.ts", include_str!("../../../packages/help.ts")),
+    ("packages/help-guide.ts", include_str!("../../../packages/help-guide.ts")),
     ("packages/prog-mode.ts", include_str!("../../../packages/prog-mode.ts")),
     ("packages/lisp-mode.ts", include_str!("../../../packages/lisp-mode.ts")),
     ("packages/elisp-mode.ts", include_str!("../../../packages/elisp-mode.ts")),
@@ -130,7 +133,6 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/treesit-modes.ts", include_str!("../../../packages/treesit-modes.ts")),
     ("packages/delsel.ts", include_str!("../../../packages/delsel.ts")),
     ("packages/elec-pair.ts", include_str!("../../../packages/elec-pair.ts")),
-    ("packages/help.ts", include_str!("../../../packages/help.ts")),
     ("packages/faces.ts", include_str!("../../../packages/faces.ts")),
     ("packages/custom.ts", include_str!("../../../packages/custom.ts")),
     ("packages/image.ts", include_str!("../../../packages/image.ts")),
