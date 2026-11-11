@@ -900,4 +900,19 @@ natives! {
     pub fn upcaseInitials(ed, s: String) -> String {
         Ok(ed.casify_string(e8_core::casefiddle::Case::UpcaseInitials, &s))
     }
+
+    /// Read one Lisp datum from a string, from character `start`, as Emacs's
+    /// read-from-string: the value, with nil as null, t as true, symbols as
+    /// symbols and lists as arrays (a dotted end joining the list), and the
+    /// position after it. Signals end-of-file or invalid-read-syntax.
+    #[ts = "(string: string, start?: number): [Value, number]"]
+    pub fn readFromString(ed, string: String, start: Opt<usize>) -> (e8_core::Value, usize) {
+        Ok(e8_core::lread::read_from_string(&string, start.0.unwrap_or(0))?)
+    }
+
+    /// A value written as Lisp would read it back, as prin1-to-string; with
+    /// `noescape`, strings and symbols as their text, as princ writes them.
+    pub fn prin1ToString(ed, value: e8_core::Value, noescape: Opt<bool>) -> String {
+        Ok(e8_core::lread::prin1_to_string(&value, noescape.0.unwrap_or(false)))
+    }
 }

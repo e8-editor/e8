@@ -990,7 +990,7 @@ impl Editor {
                 "r" => {
                     let old = ed.set_current_buffer(&ed.buffers[index].name.clone())?;
                     let reverted = ed.revert_to_visited_file().and_then(|()| match ed.command("normal-mode") {
-                        Some(_) => ed.call("normal-mode", Vec::new()),
+                        Some(_) => ed.call("normal-mode", vec![Arg::Prefix(Some(PrefixArg::Number(1)))]),
                         None => Ok(()),
                     });
                     let _ = ed.set_current_buffer(&old);
@@ -2191,7 +2191,8 @@ impl Editor {
         }
         // As Emacs's after-find-file does: choose the major mode, then run the hook.
         if self.command("normal-mode").is_some()
-            && let Err(e) = self.call("normal-mode", Vec::new())
+            // As after-find-file calls (normal-mode t): enable-local-variables is obeyed.
+            && let Err(e) = self.call("normal-mode", vec![Arg::Prefix(Some(PrefixArg::Number(1)))])
         {
             self.message(format!("File mode specification error: {e}"));
         }

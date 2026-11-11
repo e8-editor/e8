@@ -301,6 +301,24 @@ declare global {
        */
       "abort-recursive-edit": [];
       /**
+       * Add a file-local variable with its value, read as Lisp, to the Local Variables list at the end of the file, adding the list if there is none and taking out the variable's other settings. For the -*- line, use add-file-local-variable-prop-line.
+       *
+       * @param variable text
+       * @param value text
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "add-file-local-variable": [variable: string, value: string];
+      /**
+       * Add a file-local variable with its value, read as Lisp, to the -*- line at the start of the file, adding the line if there is none.
+       *
+       * @param variable text
+       * @param value text
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "add-file-local-variable-prop-line": [variable: string, value: string];
+      /**
        * Define a global abbrev for the word before point, or that many words, or the region with 0, asking for its name.
        *
        * @param arg raw prefix argument
@@ -1358,6 +1376,22 @@ declare global {
        * Defined in packages/files.ts.
        */
       "delete-file": [file: string];
+      /**
+       * Delete every setting of a file-local variable from the Local Variables list.
+       *
+       * @param variable text
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "delete-file-local-variable": [variable: string];
+      /**
+       * Delete every setting of a file-local variable from the -*- line.
+       *
+       * @param variable text
+       *
+       * Defined in packages/files-x.ts.
+       */
+      "delete-file-local-variable-prop-line": [variable: string];
       /**
        * Delete the character after point, or as many as the prefix argument says.
        *
@@ -4146,13 +4180,15 @@ declare global {
        */
       "next-line": [n?: number];
       /**
-       * Choose the current buffer's major mode, as when its file is visited.
+       * Choose the current buffer's major mode, as when its file is visited, and set the file's local variables.
        *
-       * A mode named on the first line, as in -*- text -*-, comes first; then auto-mode-alist, matched against the file name; otherwise Fundamental mode.
+       * A mode named on the first line, as in -*- text -*-, or in the Local Variables list comes first; then auto-mode-alist, matched against the file name; otherwise Fundamental mode. Run as a command, it sets the local variables whatever enable-local-variables says, asking about unsafe ones; visiting a file obeys it.
+       *
+       * @param find-file raw prefix argument
        *
        * Defined in packages/files.ts.
        */
-      "normal-mode": [];
+      "normal-mode": [findFile?: PrefixArg | boolean];
       /**
        * Mark the current buffer as unmodified, not needing to be saved.
        *
@@ -8268,6 +8304,12 @@ declare global {
        */
       "diff-switches": Value;
       /**
+       * The pairs (VAR . VALUE) set from the directory's .dir-locals.el; E8 does not read it yet.
+       *
+       * Defined in packages/files.ts.
+       */
+      "dir-local-variables-alist": Value;
+      /**
        * The switches this Dired buffer lists with, which s changes.
        *
        * Defined in packages/dired.ts.
@@ -8640,6 +8682,18 @@ declare global {
        */
       "emacs-lisp-mode-map": Value;
       /**
+       * Whether a file's `eval:' entries are run: t runs them, nil ignores them, anything else asks.
+       *
+       * Defined in packages/files.ts.
+       */
+      "enable-local-eval": Value;
+      /**
+       * Whether files' local variables are set: t sets them when all are safe and asks once about the rest; :safe sets only the safe ones; :all sets them all; nil none; anything else asks every time. It also says whether a -*- line's mode is used.
+       *
+       * Defined in packages/files.ts.
+       */
+      "enable-local-variables": Value;
+      /**
        * Whether a command can use the minibuffer while it is open, as M-x does run from the minibuffer: the new prompt opens inside the open one, which waits until it is done.
        */
       "enable-recursive-minibuffers": Value;
@@ -8707,6 +8761,18 @@ declare global {
        * Keymap fido-vertical-mode-map.
        */
       "fido-vertical-mode-map": Value;
+      /**
+       * A first line after which the -*- line is looked for on the second, as #! lines.
+       *
+       * Defined in packages/files.ts.
+       */
+      "file-auto-mode-skip": Value;
+      /**
+       * The pairs (VAR . VALUE) this buffer's file set as its local variables.
+       *
+       * Defined in packages/files.ts.
+       */
+      "file-local-variables-alist": Value;
       /**
        * Functions that handle file names of their own, as [regexp, handler] pairs: a file primitive on a name the regexp matches calls the handler with the operation's name and its arguments instead, as TRAMP's remote names are handled.
        *
@@ -9098,6 +9164,18 @@ declare global {
        */
       "icomplete-vertical-mode-minibuffer-map": Value;
       /**
+       * Pairs (VAR . VAL) a file's local variables never set, as answering i adds them.
+       *
+       * Defined in packages/files.ts.
+       */
+      "ignored-local-variable-values": Value;
+      /**
+       * Variables a file's local variables never set.
+       *
+       * Defined in packages/files.ts.
+       */
+      "ignored-local-variables": Value;
+      /**
        * Maximum time after which images are removed from the cache.
        * The value can also be nil, meaning the cache is never cleared.
        *
@@ -9240,6 +9318,24 @@ declare global {
        * The operation inhibit-file-name-handlers applies to.
        */
       "inhibit-file-name-operation": Value;
+      /**
+       * Whether inhibit-local-variables-regexps ignores case.
+       *
+       * Defined in packages/files.ts.
+       */
+      "inhibit-local-variables-ignore-case": Value;
+      /**
+       * File names whose files are not looked in for local variables, mostly binary formats.
+       *
+       * Defined in packages/files.ts.
+       */
+      "inhibit-local-variables-regexps": Value;
+      /**
+       * Suffixes taken off file names before inhibit-local-variables-regexps is matched.
+       *
+       * Defined in packages/files.ts.
+       */
+      "inhibit-local-variables-suffixes": Value;
       /**
        * Whether changes to the text run no before-change-functions or after-change-functions. Those functions run with it on.
        */
@@ -9948,6 +10044,12 @@ declare global {
        * The directories `e8.require` looks in for a package that does not ship with E8, NAME.ts for the feature NAME, as Emacs's require looks along load-path: the packages directory of user-emacs-directory.
        */
       "load-path": Value;
+      /**
+       * Like enable-local-variables, but a -*- line's mode is still used; set it buffer-locally.
+       *
+       * Defined in packages/files.ts.
+       */
+      "local-enable-local-variables": Value;
       /**
        * The current buffer's major mode, as the name of the command that turns it on.
        */
@@ -10757,6 +10859,12 @@ declare global {
        */
       "parse-sexp-lookup-properties": Value;
       /**
+       * Local variables set even when local variables are not.
+       *
+       * Defined in packages/files.ts.
+       */
+      "permanently-enabled-local-variables": Value;
+      /**
        * Whether programs started with make-process talk through a pseudo-terminal, t, or pipes, nil.
        */
       "process-connection-type": Value;
@@ -10970,6 +11078,18 @@ declare global {
        * Keymap rust-ts-mode-map.
        */
       "rust-ts-mode-map": Value;
+      /**
+       * Expressions a file's `eval:' may run without asking.
+       *
+       * Defined in packages/files.ts.
+       */
+      "safe-local-eval-forms": Value;
+      /**
+       * Pairs (VAR . VAL) of values that are safe for those variables, as answering ! adds them.
+       *
+       * Defined in packages/files.ts.
+       */
+      "safe-local-variable-values": Value;
       /**
        * The file places are saved in: places in user-emacs-directory if nil.
        *
@@ -13101,6 +13221,10 @@ declare global {
        */
       "before-change-functions": Value;
       /**
+       * Run before a file's local variables are set, when there are any, with file-local-variables-alist made.
+       */
+      "before-hack-local-variables-hook": Value;
+      /**
        * Run before revert-buffer replaces the text with the file's.
        */
       "before-revert-hook": Value;
@@ -13429,7 +13553,7 @@ declare global {
        */
       "grep-mode-hook": Value;
       /**
-       * Run after normal-mode chooses a buffer's major mode, as where Emacs applies its local variables.
+       * Run once a file's local variables are set, as major modes and editorconfig use to look at them.
        */
       "hack-local-variables-hook": Value;
       /**
@@ -14394,6 +14518,18 @@ declare global {
     function capitalize(s: string): string;
     /** A string with each word's first character in title case and the rest as it is, as upcase-initials. */
     function upcaseInitials(s: string): string;
+    /**
+     * Read one Lisp datum from a string, from character `start`, as Emacs's
+     * read-from-string: the value, with nil as null, t as true, symbols as
+     * symbols and lists as arrays (a dotted end joining the list), and the
+     * position after it. Signals end-of-file or invalid-read-syntax.
+     */
+    function readFromString(string: string, start?: number): [Value, number];
+    /**
+     * A value written as Lisp would read it back, as prin1-to-string; with
+     * `noescape`, strings and symbols as their text, as princ writes them.
+     */
+    function prin1ToString(value: Value, noescape?: boolean): string;
     /**
      * Move point to the character on its right on display, or its left for a
      * negative direction, wherever that is in the buffer, as

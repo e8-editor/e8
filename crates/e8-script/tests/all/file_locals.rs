@@ -1,0 +1,199 @@
+//! File-local variables where the oracle cannot look, as batch Emacs never
+//! asks about a value that is not safe: the question in *Local Variables*
+//! and its answers, enable-local-variables and enable-local-eval, risky
+//! variables, `eval:`, `mode:`, and M-x normal-mode. The oracle
+//! (tests/emacs/cases/file-locals.json) compares reading them with Emacs.
+
+use std::fs;
+use std::path::PathBuf;
+
+use e8_core::Editor;
+use e8_script::Scripting;
+
+struct Visit {
+    ed: Editor,
+    s: Scripting,
+    dir: tempfile::TempDir,
+}
+
+fn setup() -> Visit {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    Visit { ed, s, dir }
+}
+
+impl Visit {
+    fn eval(&mut self, expression: &str) -> String {
+        self.s.eval_expression(&mut self.ed, expression).unwrap()
+    }
+
+    fn file(&self, name: &str, text: &str) -> PathBuf {
+        let path = self.dir.path().join(name);
+        fs::write(&path, text).unwrap();
+        path
+    }
+
+    /// Visits a file with C-x C-f, then types `answer`, which answers what visiting asks.
+    fn visit(&mut self, name: &str, text: &str, answer: &str) {
+        let path = self.file(name, text);
+        self.ed.press("C-x C-f").unwrap();
+        self.ed.type_text(&format!("/{}", path.display()));
+        self.ed.press(format!("RET {answer}").trim_end()).unwrap();
+    }
+
+    fn local(&mut self, variable: &str) -> String {
+        self.eval(&format!("e8.prin1ToString(e8.variable('{variable}') ?? null)"))
+    }
+}
+
+const UNSAFE: &str = "x\n\nLocal Variables:\nfill-column: 20\nmy-setting: 3\nEnd:\n";
+
+/// Visits a file with C-x C-f on a driven editor, leaving it to ask.
+fn visit_driven(d: &crate::driven::Driven, path: &std::path::Path) {
+    d.press("C-x C-f");
+    d.type_text(&format!("/{}", path.display()));
+    d.press("RET");
+}
+
+/// The text of a buffer on a driven editor.
+fn buffer_text(d: &crate::driven::Driven, name: &str) -> String {
+    let name = name.to_string();
+    d.with(move |ed| ed.buffers().iter().find(|b| b.name == name).map(|b| b.slice(0..b.len())).unwrap_or_default())
+}
+
+#[test]
+fn unsafe_values_are_asked_about_and_set_on_y() {
+    let t = setup();
+    let path = t.file("a.txt", UNSAFE);
+    let d = crate::driven::Driven::new("");
+    visit_driven(&d, &path);
+    assert_eq!(d.buffer_name(), "*Local Variables*", "the question shows them");
+    assert_eq!(d.message().as_deref(), Some("Please type y, n, !, i: "));
+    let shown = buffer_text(&d, "*Local Variables*");
+    assert!(shown.starts_with("The local variables list in a.txt\nor .dir-locals.el contains values that may not be safe (*)."), "{shown}");
+    assert!(shown.contains("\n    fill-column : 20\n  * my-setting : 3\n"), "{shown}");
+    d.press("y");
+    assert_eq!(d.buffer_name(), "a.txt");
+    assert_eq!(d.variable("fill-column").as_deref(), Some("20"));
+    assert_eq!(d.variable("my-setting").as_deref(), Some("3"));
+    assert_eq!(buffer_text(&d, "*Local Variables*"), "", "killed");
+}
+
+#[test]
+fn n_sets_none_of_them() {
+    let mut t = setup();
+    t.visit("a.txt", UNSAFE, "n");
+    assert_eq!(t.local("fill-column"), "\"70\"", "safe ones are not set either");
+    assert_eq!(t.local("my-setting"), "\"nil\"");
+}
+
+#[test]
+fn bang_remembers_the_values_as_safe_and_i_as_ignored() {
+    let mut t = setup();
+    t.visit("a.txt", UNSAFE, "!");
+    assert_eq!(t.local("my-setting"), "\"3\"");
+    assert_eq!(t.eval("e8.prin1ToString(e8.variable('safe-local-variable-values'))"), "\"((my-setting 3))\"");
+    // Not asked again.
+    t.visit("b.txt", UNSAFE, "");
+    assert_eq!(t.ed.window_buffer().name, "b.txt");
+    assert_eq!(t.local("my-setting"), "\"3\"");
+    // Ignored values are left out without asking.
+    t.visit("c.txt", "x\n\nLocal Variables:\nother-setting: 4\nEnd:\n", "i");
+    assert_eq!(t.local("other-setting"), "\"nil\"");
+    t.visit("d.txt", "x\n\nLocal Variables:\nother-setting: 4\nfill-column: 30\nEnd:\n", "");
+    assert_eq!(t.ed.window_buffer().name, "d.txt");
+    assert_eq!(t.local("fill-column"), "\"30\"");
+}
+
+#[test]
+fn risky_variables_cannot_be_marked_safe() {
+    let t = setup();
+    let path = t.file("a.txt", "x\n\nLocal Variables:\nmy-hook: ignore\nEnd:\n");
+    let d = crate::driven::Driven::new("");
+    visit_driven(&d, &path);
+    let shown = buffer_text(&d, "*Local Variables*");
+    assert!(shown.contains("contains variables that are risky (**)."), "{shown}");
+    assert!(shown.contains(" ** my-hook : ignore\n") && !shown.contains("!  --"), "{shown}");
+    assert_eq!(d.message().as_deref(), Some("Please type y or n: "));
+    d.press("!");
+    assert_eq!(d.message().as_deref(), Some("Please type y or n: "), "! is not an answer here");
+    d.press("n");
+    assert_eq!(d.buffer_name(), "a.txt");
+    assert_eq!(d.variable("my-hook"), None);
+}
+
+#[test]
+fn enable_local_variables_says_what_is_set() {
+    let mut t = setup();
+    t.eval("e8.setVariable('enable-local-variables', e8.intern(':safe'))");
+    t.visit("a.txt", UNSAFE, "");
+    assert_eq!((t.local("fill-column"), t.local("my-setting")), ("\"20\"".into(), "\"nil\"".into()), "only the safe ones, without asking");
+    t.eval("e8.setVariable('enable-local-variables', e8.intern(':all'))");
+    t.visit("b.txt", UNSAFE, "");
+    assert_eq!(t.local("my-setting"), "\"3\"", "all of them");
+    t.eval("e8.setVariable('enable-local-variables', null)");
+    t.visit("c.txt", "x\n\nLocal Variables:\nfill-column: 25\nEnd:\n", "");
+    assert_eq!(t.local("fill-column"), "\"70\"", "none");
+    // M-x normal-mode sets them whatever it says.
+    t.ed.press("M-x").unwrap();
+    t.ed.type_text("normal-mode");
+    t.ed.press("RET").unwrap();
+    assert_eq!(t.local("fill-column"), "\"25\"");
+}
+
+#[test]
+fn eval_runs_what_it_can_once_allowed() {
+    let mut t = setup();
+    t.visit("a.txt", "x\n\nLocal Variables:\neval: (setq-local fill-column 33)\neval: (visual-line-mode)\nEnd:\n", "y");
+    assert_eq!(t.local("fill-column"), "\"33\"");
+    assert_eq!(t.local("visual-line-mode"), "\"t\"");
+    t.eval("e8.setVariable('enable-local-eval', null)");
+    t.visit("b.txt", "x\n\nLocal Variables:\neval: (setq-local fill-column 44)\nEnd:\n", "");
+    assert_eq!(t.ed.window_buffer().name, "b.txt", "not asked");
+    assert_eq!(t.local("fill-column"), "\"70\"");
+}
+
+#[test]
+fn a_minor_mode_call_is_safe_to_eval() {
+    let mut t = setup();
+    t.visit("a.txt", "x\n\nLocal Variables:\neval: (auto-fill-mode 1)\nEnd:\n", "");
+    assert_eq!(t.ed.window_buffer().name, "a.txt", "not asked");
+    assert_eq!(t.eval("String(e8.variable('auto-fill-function') !== null)"), "\"true\"");
+}
+
+#[test]
+fn mode_in_the_list_chooses_the_major_mode() {
+    let mut t = setup();
+    t.visit("a.notes", "* A heading\n\nLocal Variables:\nmode: org\nfill-column: 50\nEnd:\n", "");
+    assert_eq!(t.local("major-mode"), "\"\\\"org-mode\\\"\"");
+    assert_eq!(t.local("fill-column"), "\"50\"");
+    assert_eq!(t.eval("e8.prin1ToString(e8.variable('file-local-variables-alist'))"), "\"((fill-column 50))\"");
+}
+
+#[test]
+fn a_file_chooses_its_spelling_dictionary() {
+    let mut t = setup();
+    t.visit("notes.org", "# -*- ispell-local-dictionary: \"sv_SE\" -*-\nHej\n", "");
+    assert_eq!(t.ed.window_buffer().name, "notes.org", "safe, not asked");
+    assert_eq!(t.local("ispell-local-dictionary"), "\"\\\"sv_SE\\\"\"");
+    assert_eq!(t.eval("e8.prin1ToString(e8.defaultValue('ispell-local-dictionary') ?? null)"), "\"nil\"", "only this buffer's");
+}
+
+#[test]
+fn changing_the_major_mode_keeps_the_files_variables() {
+    let mut t = setup();
+    t.visit("a.txt", "x\n\nLocal Variables:\nfill-column: 20\nEnd:\n", "");
+    t.ed.press("M-x").unwrap();
+    t.ed.type_text("fundamental-mode");
+    t.ed.press("RET").unwrap();
+    assert_eq!(t.local("fill-column"), "\"20\"", "set again after the mode's hooks, as run-mode-hooks does");
+}
+
+#[test]
+fn values_are_read_and_written_as_lisp() {
+    let mut t = setup();
+    assert_eq!(t.eval("e8.prin1ToString(e8.readFromString('fill-column: (a \\\"b\\\" 3) ; x', 13)[0])"), r#""(a \"b\" 3)""#);
+    assert_eq!(t.eval("e8.readFromString('fill-column: (a \\\"b\\\" 3) ; x', 13)[1]"), "22");
+    assert_eq!(t.eval("e8.prin1ToString([e8.intern('quote'), [e8.intern('a'), 1.5, null, true]])"), r#""'(a 1.5 nil t)""#);
+}

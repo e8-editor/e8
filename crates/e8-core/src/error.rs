@@ -35,6 +35,7 @@ const ERRORS: &[(&str, &str)] = &[
     ("invalid-function", "error"),
     ("void-variable", "error"),
     ("end-of-file", "error"),
+    ("invalid-read-syntax", "error"),
     ("file-error", "error"),
     ("file-missing", "file-error"),
     ("file-already-exists", "file-error"),

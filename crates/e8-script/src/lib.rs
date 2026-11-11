@@ -172,6 +172,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/bookmark.ts", include_str!("../../../packages/bookmark.ts")),
     ("packages/misc.ts", include_str!("../../../packages/misc.ts")),
     ("packages/whitespace.ts", include_str!("../../../packages/whitespace.ts")),
+    ("packages/files-x.ts", include_str!("../../../packages/files-x.ts")),
     ("packages/ispell.ts", include_str!("../../../packages/ispell.ts")),
     ("packages/flyspell.ts", include_str!("../../../packages/flyspell.ts")),
     ("packages/view.ts", include_str!("../../../packages/view.ts")),
