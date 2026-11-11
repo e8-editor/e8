@@ -39,9 +39,20 @@ jobs:
       - name: Install Rust
         run: rustup toolchain install "$WASM_TOOLCHAIN" --profile minimal --component rust-src --target wasm32-unknown-unknown
 
-      # Linux's clang targets wasm, for QuickJS and tree-sitter.
-      - name: Install clang
-        run: sudo apt-get install -y --no-install-recommends clang llvm
+      # Linux's clang targets wasm, for QuickJS and tree-sitter. The runner's
+      # image has clang-18 and llvm-ar-18, which build.sh takes from WASM_CC
+      # and WASM_AR; apt only when it does not, as Ubuntu's mirror cannot
+      # always be reached (on 2026-11-11 for over an hour).
+      - name: Find clang
+        run: |
+          if command -v clang-18 >/dev/null && command -v llvm-ar-18 >/dev/null; then
+            echo "WASM_CC=clang-18" >> "$GITHUB_ENV"
+            echo "WASM_AR=llvm-ar-18" >> "$GITHUB_ENV"
+            clang-18 --version | head -1
+          else
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends clang llvm
+          fi
 
       - uses: actions/cache@v6
         with:
