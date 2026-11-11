@@ -308,15 +308,7 @@ export function checkVersion(interactive = false): string | null {
 
 /** A file's text, or undefined if it cannot be read. */
 function readText(file: string): string | undefined {
-  if (!e8.fileReadableP(file)) return undefined;
-  const buffer = e8.getBufferCreate(" *ispell-file*");
-  return e8.withCurrentBuffer(buffer, () => {
-    e8.letBind({ "inhibit-read-only": true }, () => e8.deleteRegion(e8.pointMin(), e8.pointMax()));
-    e8.insertFileContents(file);
-    const text = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
-    e8.deleteRegion(e8.pointMin(), e8.pointMax());
-    return text;
-  });
+  return e8.fileReadableP(file) ? e8.readTextFile(file) : undefined;
 }
 
 /** A regexp matching any of some characters, as regexp-opt makes for single characters. */
@@ -462,7 +454,7 @@ function findHunspellDictionaries(dictionary?: string): string {
     }
   }
   // An alias goes when a dictionary of its own name is found.
-  let equivs = (list(v("ispell-dicts-name2locale-equivs-alist")) as [string, string][]).filter((e) => !paths.some((p) => p[0] === e[0]));
+  const equivs = (list(v("ispell-dicts-name2locale-equivs-alist")) as [string, string][]).filter((e) => !paths.some((p) => p[0] === e[0]));
   set("ispell-dicts-name2locale-equivs-alist", equivs);
   const excluded = ["esperanto-tex", "francais7", "francais-tex", "norsk7-tex"];
   for (const [key, value] of equivs) {
@@ -479,7 +471,6 @@ function findHunspellDictionaries(dictionary?: string): string {
   const alist: Dict[] = [[null, ...defaultEntry.slice(1)]];
   for (const [name] of paths) if (!assoc(name, alist)) alist.unshift(name === defaultName ? defaultEntry : [name]);
   set("ispell-hunspell-dictionary-alist", alist);
-  equivs = [];
   return defaultName;
 }
 
@@ -523,13 +514,14 @@ function findEnchantDictionaries(): void {
 export function setSpellcheckerParams(): void {
   if (v("ispell-last-program-name") === v("ispell-program-name")) return;
   killIspell(true);
-  let known = false;
-  try {
-    set("ispell-library-directory", checkVersion());
-    known = true;
-  } catch {
-    known = false;
-  }
+  // An error learning it leaves the dictionaries unknown, as condition-case does; a quit still quits.
+  const known = e8.conditionCase(
+    () => {
+      set("ispell-library-directory", checkVersion());
+      return true;
+    },
+    { error: () => false },
+  );
   const aspell = v("ispell-really-aspell") !== null;
   const hunspell = v("ispell-really-hunspell") !== null;
   const enchant = v("ispell-really-enchant") !== null;
@@ -679,7 +671,12 @@ interface Session {
   commands: string[];
   /** Words put in the personal dictionary and not yet saved: accepted for the session until `#` saves them. */
   inserted: string[];
+  /** What corrections taught Aspell or Enchant, $$ra lines, the latest MAX_LESSONS of them. */
+  lessons: string[];
 }
+
+/** How many correction lessons a session replays; a running checker would keep them all. */
+const MAX_LESSONS = 50;
 let session: Session | undefined;
 
 /** The checker's output from the last check, a line each. */
@@ -691,6 +688,11 @@ function remember(line: string): void {
   const c = line[0];
   if (c === "*") {
     if (!session.inserted.includes(line.slice(1))) session.inserted.push(line.slice(1));
+    return;
+  }
+  if (line.startsWith("$$ra ")) {
+    // The latest lessons only, as each is sent again before every check.
+    session.lessons = [...session.lessons.filter((l) => l !== line), line].slice(-MAX_LESSONS);
     return;
   }
   const overrides = c === "!" || c === "%" ? "!%" : c === "+" || c === "-" ? "+-" : c === "~" ? "~" : "";
@@ -708,7 +710,7 @@ export function sendString(text: string): void {
     return;
   }
   const saving = text.startsWith("#");
-  const before = [...session.commands, ...session.inserted.map((w) => (saving ? "*" : "@") + w)];
+  const before = [...session.commands, ...session.lessons, ...session.inserted.map((w) => (saving ? "*" : "@") + w)];
   const program = String(v("ispell-program-name"));
   const hunspell = v("ispell-really-hunspell") !== null;
   const { exit, output } = callChecker(
@@ -742,7 +744,7 @@ function startProcess(): void {
     ...list(v("ispell-extra-args")).map(String),
   ];
   set("ispell-buffer-local-name", null);
-  session = { args, directory: String(v("ispell-process-directory")), commands: [], inserted: [] };
+  session = { args, directory: String(v("ispell-process-directory")), commands: [], inserted: [], lessons: [] };
   set("ispell-process", true);
   sendString("\x1a\n");
 }
@@ -864,12 +866,19 @@ export function checkWords(words: string[]): Poss[] {
   if (session === undefined) acceptBufferLocalDefs();
   sendString("%\n");
   sendString(words.map((w) => `^${w}\n`).join(""));
-  const blocks = filter.join("\n").split("\n\n");
+  // Each ^ line's answers end with an empty line, which is all there is
+  // when the checker finds no word in it.
+  const answers: Poss[] = [];
+  let first: string | undefined;
+  for (const line of filter) {
+    if (line !== "") first ??= line;
+    else {
+      answers.push(first === undefined ? true : parseOutput(first));
+      first = undefined;
+    }
+  }
   filter = [];
-  return words.map((_, i) => {
-    const line = blocks[i]?.split("\n").find((l) => l !== "");
-    return line === undefined ? true : parseOutput(line);
-  });
+  return words.map((_, i) => answers[i] ?? true);
 }
 
 /** Whether the word at point is right, as ispell-correct-p. */
@@ -988,11 +997,9 @@ function displayBuffer(buffer: string): number {
   const height = Number(v("ispell-choices-win-default-height") ?? 2);
   const point = e8.point();
   const start = e8.windowStart(text);
-  let below: number;
-  try {
-    // The top part keeps the old window, which shows the choices.
-    below = e8.splitWindow(text, "below", height);
-  } catch {
+  // The top part keeps the old window, which shows the choices.
+  const below = e8.conditionCase<number | undefined>(() => e8.splitWindow(text, "below", height), { error: () => undefined });
+  if (below === undefined) {
     e8.call("display-buffer", buffer);
     return text;
   }
@@ -1084,9 +1091,11 @@ export function commandLoop(miss: string[], guess: string[], word: string, start
     if (truthy(v("ispell-highlight-p"))) highlightSpellingError(start, end, true);
     do {
       e8.message("C-h or ? for more options; SPC to leave unchanged, Character to replace word", { log: false });
-      let char = e8.readKey();
+      // C-g stops as X does, read as a key rather than quitting, as with inhibit-quit.
+      let char = e8.conditionCase(() => e8.readKey(), { quit: () => "C-g" });
       if (char === "C-g") char = "X";
       if (char === "SPC") char = " ";
+      if (char === "DEL") char = "\x7f";
       const code = [...char].length === 1 ? char.codePointAt(0)! : -1;
       let skip = 0;
       for (const c of COMMAND_CHARS) if (c.codePointAt(0)! > 0x30 && c.codePointAt(0)! < code) skip++;
@@ -1581,16 +1590,21 @@ function skipRegionList(): e8.Value[][] {
 
 /** Moves over a TeX command's arguments, as ispell-tex-arg-end. */
 function texArgEnd(arg = 1): void {
-  try {
-    while (e8.lookingAt("[ \t\n]*\\[")) {
-      const to = e8.scanSexps(e8.point(), 1);
-      if (to === null) throw new Error("no sexp");
+  const moved = e8.conditionCase(
+    () => {
+      while (e8.lookingAt("[ \t\n]*\\[")) {
+        const to = e8.scanSexps(e8.point(), 1);
+        if (to === null) return false;
+        e8.gotoChar(to);
+      }
+      const to = e8.scanSexps(e8.point(), arg);
+      if (to === null) return false;
       e8.gotoChar(to);
-    }
-    const to = e8.scanSexps(e8.point(), arg);
-    if (to === null) throw new Error("no sexp");
-    e8.gotoChar(to);
-  } catch {
+      return true;
+    },
+    { error: () => false },
+  );
+  if (!moved) {
     e8.message(`Error skipping s-expressions at point ${e8.point()}.`);
     e8.beep();
     e8.sitFor(2);
