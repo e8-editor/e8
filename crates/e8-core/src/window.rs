@@ -1734,8 +1734,8 @@ mod tests {
     #[test]
     fn splits_halve_and_odd_sizes_go_first() {
         let mut tree = WindowTree::Leaf(1);
-        tree.split(1, 2, false, None);
-        tree.split(1, 3, true, None);
+        tree.split(1, 2, false, false, None);
+        tree.split(1, 3, true, false, None);
         assert_eq!(tree.leaves(), [1, 3, 2]);
         let rects = tree.rects(0.0, 0.0, 81.0, 25.0, (1.0, 1.0));
         let size = |r: &WindowRect| (r.id, r.x, r.y, r.width, r.height, r.divider);
@@ -1747,5 +1747,15 @@ mod tests {
         assert_eq!(tree.leaves(), [3, 2]);
         tree.remove(2);
         assert_eq!(tree, WindowTree::Leaf(3));
+    }
+
+    #[test]
+    fn a_split_before_puts_the_new_window_first_at_its_size() {
+        let mut tree = WindowTree::Leaf(1);
+        tree.split(1, 2, true, true, Some(30));
+        assert_eq!(tree.leaves(), [2, 1]);
+        let rects = tree.rects(0.0, 0.0, 80.0, 24.0, (1.0, 1.0));
+        let size = |r: &WindowRect| (r.id, r.x, r.width);
+        assert_eq!(rects.iter().map(size).collect::<Vec<_>>(), [(2, 0.0, 30.0), (1, 30.0, 50.0)]);
     }
 }
