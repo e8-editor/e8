@@ -475,11 +475,15 @@ impl Editor {
     /// overlap, with their properties, as Emacs's `transpose-regions`.
     /// Point and the positions the buffer keeps move with the text they
     /// were in, a position between the stretches with that text, unless
-    /// `leave_markers`, when they stay where they were.
+    /// `leave_markers`, when they stay where they were; overlays stay where
+    /// they were, as in Emacs. The change hooks see the whole stretch once.
     pub fn transpose_regions(&mut self, first: (usize, usize), second: (usize, usize), leave_markers: bool) -> Result<()> {
-        let len = self.buffer().len();
-        let order = |(a, b): (usize, usize)| (a.min(b).min(len), a.max(b).min(len));
+        let (min, max) = (self.buffer().point_min(), self.buffer().point_max());
+        let order = |(a, b): (usize, usize)| (a.min(b), a.max(b));
         let (mut r1, mut r2) = (order(first), order(second));
+        if r1.0 < min || r2.0 < min || r1.1 > max || r2.1 > max {
+            return Err(Error::signal("args-out-of-range", "Position outside the accessible text", vec![Value::Number(r1.0 as f64), Value::Number(r2.1 as f64)]));
+        }
         if r2.0 < r1.0 {
             std::mem::swap(&mut r1, &mut r2);
         }
@@ -487,18 +491,29 @@ impl Editor {
         if e1 > s2 {
             return Err(Error::new("Transposed regions overlap"));
         }
+        if s1 == e1 && s2 == e2 {
+            return Ok(());
+        }
         let (len1, len2) = (e1 - s1, e2 - s2);
         let b = self.buffer();
         let swapped = b.substring(s2..e2).concat(b.substring(e1..s2)).concat(b.substring(s1..e1));
         let point = b.point();
         let kept = b.kept_positions_in(s1, e2);
-        self.delete_region(s1, e2)?;
-        self.insert_text_at(s1, &swapped)?;
+        self.modify(s1, e2, |b, start, end| {
+            let overlays = b.overlays_touching(start, end);
+            let pending = b.pending_changes.len();
+            b.delete(start..end)?;
+            b.insert_text_at(start, &swapped, false)?;
+            b.restore_overlays(overlays);
+            b.pending_changes.truncate(pending);
+            b.pending_changes.push((start, end, end - start));
+            Ok(())
+        })?;
         let to = |p: usize| {
             if leave_markers || p >= e2 || p < s1 {
                 p
             } else if p < e1 {
-                p - s1 + s1 + len2 + (s2 - e1)
+                p + len2 + (s2 - e1)
             } else if p < s2 {
                 p + len2 - len1
             } else {
@@ -532,20 +547,33 @@ impl Editor {
             Some(h) => (h, true),
             None => (crate::diff::ends(&old, &new).into_iter().collect(), false),
         };
-        // The last first, so earlier positions stay right.
-        for h in hunks.iter().rev() {
-            let text = self.buffers()[index].substring(src_min + h.new.start..src_min + h.new.end);
-            let at = min + h.old.start;
-            self.delete_region(at, min + h.old.end)?;
-            if !text.string.is_empty() {
-                // Point where the text goes stays before it, as in Emacs.
-                let stays = self.buffer().point() == at;
-                self.insert_text_at(at, &text)?;
-                if stays {
-                    self.buffer_mut().set_point(at);
+        if hunks.is_empty() {
+            return Ok(true);
+        }
+        // The source's text for each hunk, read before any hook can run.
+        let texts: Vec<crate::properties::Text> =
+            hunks.iter().map(|h| self.buffers()[index].substring(src_min + h.new.start..src_min + h.new.end)).collect();
+        // One change for the hooks, over the accessible text, as Emacs's.
+        self.modify(min, max, |b, start, end| {
+            let pending = b.pending_changes.len();
+            // The last first, so earlier positions stay right.
+            for (h, text) in hunks.iter().zip(&texts).rev() {
+                let at = start + h.old.start;
+                b.delete(at..start + h.old.end)?;
+                if !text.string.is_empty() {
+                    // Point where the text goes stays before it, as in Emacs.
+                    let stays = b.point() == at;
+                    b.insert_text_at(at, text, false)?;
+                    if stays {
+                        b.set_point(at);
+                    }
                 }
             }
-        }
+            let new_end = end + new.len() - old.len();
+            b.pending_changes.truncate(pending);
+            b.pending_changes.push((start, new_end, end - start));
+            Ok(())
+        })?;
         Ok(exact)
     }
 }

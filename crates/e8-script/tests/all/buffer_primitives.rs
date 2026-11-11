@@ -132,3 +132,50 @@ fn markers_move_with_the_text_they_were_in() {
     // Emacs: ("ghij-de-fabc" 11 2 6 5), and (t "1 two 3" 4): a marker in "two" stays on its w
     assert_eq!(got, r#"[["ghij-de-fabc",11,2,6,5],true,"1 two 3",4]"#);
 }
+
+#[test]
+fn overlays_hooks_and_narrowing_around_swaps_and_replacements() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.insert("abcdefgh"), globalThis.o = e8.makeOverlay(0, 2, { evaporate: true }), e8.transposeRegions(0, 2, 5, 7),
+          globalThis.first = [e8.bufferSubstringNoProperties(0, 8), e8.overlayStart(o) + 1, e8.overlayEnd(o) + 1],
+          e8.narrowToRegion(1, 6),
+          first.push(e8.conditionCase(() => e8.transposeRegions(0, 1, 4, 5), { "args-out-of-range": () => "out of range" })),
+          e8.widen(), e8.deleteRegion(0, 8), e8.insert("abcde"),
+          e8.withCurrentBuffer(e8.getBufferCreate("src"), () => e8.insert("a1c2e")),
+          globalThis.n = 0, e8.addHook("after-change-functions", () => { n++; }, { local: true }),
+          JSON.stringify([first, e8.replaceBufferContents("src"), e8.bufferSubstringNoProperties(0, 5), n]))"#,
+    );
+    // Emacs: ("fgcdeabh" 1 3): the overlay stays, even one that would evaporate; args-out-of-range outside the narrowing;
+    // and (a1c2e 1): the change hooks run once
+    assert_eq!(got, r#"[["fgcdeabh",1,3,"out of range"],true,"a1c2e",1]"#);
+}
+
+#[test]
+fn delete_indentation_joins_a_line_with_a_prompt() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.insert(e8.concat("out\n", e8.propertize("$ ", { field: Symbol.for("output"), "rear-nonsticky": true }), "  cmd")),
+          e8.call("delete-indentation"), e8.bufferSubstringNoProperties(0, e8.pointMax()))"#,
+    );
+    // Emacs: "out $   cmd"
+    assert_eq!(got, "out $   cmd");
+}
+
+#[test]
+fn property_changes_count_in_the_modified_tick_not_the_chars_tick() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.insert("ab"), globalThis.t0 = e8.bufferModifiedTick(), globalThis.c0 = e8.bufferCharsModifiedTick(),
+          e8.addFaceTextProperty(0, 1, "bold"),
+          JSON.stringify([e8.bufferModifiedTick() > t0, e8.bufferCharsModifiedTick() === c0]))"#,
+    );
+    // Emacs: add-face-text-property makes buffer-modified-tick larger, not buffer-chars-modified-tick
+    assert_eq!(got, "[true,true]");
+}

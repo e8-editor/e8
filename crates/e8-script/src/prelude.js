@@ -1035,11 +1035,11 @@
     // and as posBol and posEol, they do not stop there.
     lineBeginningPosition: (pos) => {
       const bol = native.lineStart(native.lineOf(pos ?? native.point()));
-      return pos === undefined ? native.constrainToField(bol, native.point(), false, true, undefined) : bol;
+      return pos === undefined || pos === null ? native.constrainToField(bol, native.point(), false, true, undefined) : bol;
     },
     lineEndPosition: (pos) => {
       const eol = native.lineEnd(native.lineOf(pos ?? native.point()));
-      return pos === undefined ? native.constrainToField(eol, native.point(), false, true, undefined) : eol;
+      return pos === undefined || pos === null ? native.constrainToField(eol, native.point(), false, true, undefined) : eol;
     },
     // Emacs's own limit, MAX-COSTS, counts differently; past 2000
     // deletions and insertions the part that differs is replaced whole.

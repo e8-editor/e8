@@ -1167,7 +1167,6 @@ impl Buffer {
         if !self.record_property_change(range.start, range.end, name, |old| old != value.as_ref()) {
             return;
         }
-        self.property_ticks += 1;
         match value {
             Some(v) => self.put_text_property(range, name, v),
             None => self.remove_text_property(range, name),
@@ -1230,6 +1229,20 @@ impl Buffer {
     /// The last position before `pos` where text properties change.
     pub fn previous_property_change(&self, pos: usize) -> Option<usize> {
         self.properties.previous_change(pos)
+    }
+
+    /// The overlays touching `start..=end`, as they are, to put back after
+    /// the text there is rewritten in place.
+    pub(crate) fn overlays_touching(&self, start: usize, end: usize) -> Vec<crate::properties::Overlay> {
+        self.overlays.iter().filter(|o| o.start <= end && o.end >= start).cloned().collect()
+    }
+
+    /// Puts overlays back as they were, as Emacs's `transpose-regions`
+    /// leaves them where they are.
+    pub(crate) fn restore_overlays(&mut self, saved: Vec<crate::properties::Overlay>) {
+        for o in saved {
+            self.overlays.restore(o);
+        }
     }
 
     /// Every position the buffer keeps besides point from `start` to `end`,
