@@ -576,6 +576,58 @@ natives! {
         Ok(ed.buffer().modified_tick() as f64)
     }
 
+    /// A count of the changes to a buffer's text, the current one's by
+    /// default, as buffer-chars-modified-tick: larger after any edit to its characters.
+    #[ts = "(buffer?: string): number"]
+    pub fn bufferCharsModifiedTick(ed, buffer: Opt<String>) -> f64 {
+        let b = match buffer.0 {
+            Some(name) => ed.buffers().iter().find(|b| b.name == name).ok_or_else(|| Error::new(format!("No such buffer: {name}")))?,
+            None => ed.buffer(),
+        };
+        Ok(b.modified_tick() as f64)
+    }
+
+    /// The message the echo area shows, as current-message; undefined if none.
+    pub fn currentMessage(ed) -> Option<String> {
+        Ok(ed.echo().map(str::to_string))
+    }
+
+    fn markerInsertionType(ed, marker: f64) -> Option<bool> {
+        Ok(ed.marker_insertion_type(marker as u64))
+    }
+
+    fn setMarkerInsertionType(ed, marker: f64, advances: bool) {
+        ed.set_marker_insertion_type(marker as u64, advances);
+        Ok(())
+    }
+
+    /// A buffer's own variables and their values, the current one's by
+    /// default, as buffer-local-variables.
+    #[ts = "(buffer?: string): [string, Value][]"]
+    pub fn bufferLocalVariables(ed, buffer: Opt<String>) -> EditorValue {
+        let b = match buffer.0 {
+            Some(name) => ed.buffers().iter().find(|b| b.name == name).ok_or_else(|| Error::new(format!("No such buffer: {name}")))?,
+            None => ed.buffer(),
+        };
+        Ok(EditorValue::List(
+            b.local_variables().map(|(name, value)| EditorValue::List(vec![EditorValue::Str(name.to_string()), value.clone()])).collect(),
+        ))
+    }
+
+    /// How many bytes of the current buffer come before a position, as
+    /// position-bytes counts them from 0: UTF-8's, a raw byte counting 2.
+    #[ts = "(position: number): number | undefined"]
+    pub fn positionBytes(ed, pos: usize) -> Option<usize> {
+        Ok(ed.buffer().position_bytes(pos))
+    }
+
+    /// The position of the character a byte offset of the current buffer
+    /// falls in, as byte-to-position, counting from 0.
+    #[ts = "(byte: number): number | undefined"]
+    pub fn byteToPosition(ed, byte: usize) -> Option<usize> {
+        Ok(ed.buffer().byte_to_position(byte))
+    }
+
     /// Whether the character at a position is hidden.
     #[ts = "(position: number): boolean"]
     pub fn invisibleAt(ed, pos: usize) -> bool {

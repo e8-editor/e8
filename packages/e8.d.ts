@@ -14710,6 +14710,28 @@ declare global {
      * buffer-modified-tick: it is larger after any edit.
      */
     function bufferModifiedTick(): number;
+    /**
+     * A count of the changes to a buffer's text, the current one's by
+     * default, as buffer-chars-modified-tick: larger after any edit to its characters.
+     */
+    function bufferCharsModifiedTick(buffer?: string): number;
+    /** The message the echo area shows, as current-message; undefined if none. */
+    function currentMessage(): string | undefined;
+    /**
+     * A buffer's own variables and their values, the current one's by
+     * default, as buffer-local-variables.
+     */
+    function bufferLocalVariables(buffer?: string): [string, Value][];
+    /**
+     * How many bytes of the current buffer come before a position, as
+     * position-bytes counts them from 0: UTF-8's, a raw byte counting 2.
+     */
+    function positionBytes(position: number): number | undefined;
+    /**
+     * The position of the character a byte offset of the current buffer
+     * falls in, as byte-to-position, counting from 0.
+     */
+    function byteToPosition(byte: number): number | undefined;
     /** Whether the character at a position is hidden. */
     function invisibleAt(position: number): boolean;
     /** The names of all faces, sorted, as face-list. */
@@ -16687,6 +16709,10 @@ declare global {
     function markerPosition(marker: MarkerLike): number | undefined;
     /** The buffer a marker is in, or undefined if it points nowhere. */
     function markerBuffer(marker: MarkerLike): string | undefined;
+    /** Whether a marker advances past text inserted where it is, as marker-insertion-type; undefined for one that points nowhere. */
+    function markerInsertionType(marker: MarkerLike): boolean | undefined;
+    /** Make a marker advance past text inserted where it is, or stay before it, as set-marker-insertion-type. */
+    function setMarkerInsertionType(marker: MarkerLike, advances: boolean): void;
     /**
      * Move a marker, as Emacs's set-marker: to a position in its buffer, or in
      * `buffer`. With no position it points nowhere until set again; a marker

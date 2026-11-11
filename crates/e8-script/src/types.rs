@@ -1704,6 +1704,10 @@ const API: &str = r##"
   function markerPosition(marker: MarkerLike): number | undefined;
   /** The buffer a marker is in, or undefined if it points nowhere. */
   function markerBuffer(marker: MarkerLike): string | undefined;
+  /** Whether a marker advances past text inserted where it is, as marker-insertion-type; undefined for one that points nowhere. */
+  function markerInsertionType(marker: MarkerLike): boolean | undefined;
+  /** Make a marker advance past text inserted where it is, or stay before it, as set-marker-insertion-type. */
+  function setMarkerInsertionType(marker: MarkerLike, advances: boolean): void;
   /**
    * Move a marker, as Emacs's set-marker: to a position in its buffer, or in
    * `buffer`. With no position it points nowhere until set again; a marker

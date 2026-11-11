@@ -1839,6 +1839,28 @@ impl Editor {
         self.global_mark_ring.iter().filter_map(|&m| self.marker_position(m).map(|(b, p)| (b.to_string(), p))).collect()
     }
 
+    /// Whether a marker advances past text inserted where it is, as Emacs's
+    /// `marker-insertion-type`, a marker pointing nowhere too; None for no such marker.
+    pub fn marker_insertion_type(&self, id: u64) -> Option<bool> {
+        self.buffers
+            .iter()
+            .find_map(|b| b.marker_advances(id))
+            .or_else(|| self.detached_markers.iter().find(|m| m.id == id).map(|m| m.advances))
+    }
+
+    /// Makes a marker advance past text inserted where it is, or not, as
+    /// Emacs's `set-marker-insertion-type`, a marker pointing nowhere too.
+    pub fn set_marker_insertion_type(&mut self, id: u64, advances: bool) {
+        for b in &mut self.buffers {
+            if b.set_marker_advances(id, advances) {
+                return;
+            }
+        }
+        if let Some(m) = self.detached_markers.iter_mut().find(|m| m.id == id) {
+            m.advances = advances;
+        }
+    }
+
     pub fn marker_position(&self, id: u64) -> Option<(&str, usize)> {
         self.buffers.iter().find_map(|b| b.marker(id).map(|p| (b.name.as_str(), p)))
     }
