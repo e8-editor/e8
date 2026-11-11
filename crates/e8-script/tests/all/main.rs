@@ -15,6 +15,7 @@ mod batch;
 mod blocking;
 mod bookmark;
 mod buff_menu;
+mod buffer_primitives;
 mod changes;
 mod chartab;
 mod codings;
