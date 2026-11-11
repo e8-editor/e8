@@ -312,7 +312,8 @@ export function replaceBufferContents(source: e8.BufferLike): boolean {
 /**
  * Swap two regions that do not overlap, as transpose-regions, with their
  * properties. Point moves with the text it was in, unless `leaveMarkers`;
- * other markers inside the regions go to a region's start.
+ * other markers inside the regions go to a region's start, and those at
+ * their edges stay with the text outside them.
  */
 export function transposeRegions(start1: number, end1: number, start2: number, end2: number, leaveMarkers = false): void {
   if (start1 > end1) [start1, end1] = [end1, start1];
@@ -322,12 +323,14 @@ export function transposeRegions(start1: number, end1: number, start2: number, e
   const len1 = end1 - start1, len2 = end2 - start2;
   const text1 = e8.bufferSubstring(start1, end1), text2 = e8.bufferSubstring(start2, end2);
   const p = e8.point();
-  e8.deleteRegion(start2, end2);
+  // Each region's new text goes in before the old comes out, so markers at
+  // its edges stay with the text beside it, the later region first.
   e8.gotoChar(start2);
   e8.insert(text1);
-  e8.deleteRegion(start1, end1);
+  e8.deleteRegion(start2 + len1, end2 + len1);
   e8.gotoChar(start1);
   e8.insert(text2);
+  e8.deleteRegion(start1 + len2, end1 + len2);
   let to = p;
   if (!leaveMarkers) {
     if (p >= start1 && p < end1) to = p - start1 + start2 + len2 - len1;
@@ -351,7 +354,7 @@ export function setBufferMajorMode(buffer: e8.BufferLike): void {
  * a raw byte's; an error for any other character.
  */
 export function getByte(position?: number, string?: string): number {
-  const c = string !== undefined ? string.codePointAt(position ?? 0) : e8.charAfter(position ?? e8.point())?.codePointAt(0);
+  const c = string !== undefined ? Array.from(string)[position ?? 0]?.codePointAt(0) : e8.charAfter(position ?? e8.point())?.codePointAt(0);
   if (c === undefined) e8.signal("args-out-of-range", `No character at ${position ?? e8.point()}`);
   if (c < 0x80) return c;
   if (c >= 0x10ff80 && c <= 0x10ffff) return c - 0x10ff00;

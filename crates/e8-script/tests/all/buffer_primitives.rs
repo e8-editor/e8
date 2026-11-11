@@ -27,10 +27,12 @@ fn markers_have_an_insertion_type_that_can_change() {
           e8.gotoChar(1), e8.insert("X"),
           JSON.stringify([e8.markerPosition(m) + 1, e8.markerPosition(n) + 1, e8.markerInsertionType(m), e8.markerInsertionType(n),
             (e8.setMarkerInsertionType(m, true), e8.gotoChar(1), e8.insert("Y"), e8.markerPosition(m) + 1),
-            (e8.deleteMarker(m), e8.markerInsertionType(m) ?? null)]))"#,
+            (e8.deleteMarker(m), e8.markerInsertionType(m) ?? null),
+            (() => { const d = e8.makeMarker(0); e8.setMarker(d, null); e8.setMarkerInsertionType(d, true); e8.setMarker(d, 1);
+                     e8.gotoChar(1); e8.insert("Z"); return [e8.markerInsertionType(d), e8.markerPosition(d) + 1]; })()]))"#,
     );
-    // Emacs: (2 3 nil t 3)
-    assert_eq!(got, "[2,3,false,true,3,null]");
+    // Emacs: (2 3 nil t 3), and a marker pointing nowhere keeps the type it is given
+    assert_eq!(got, "[2,3,false,true,3,null,[true,3]]");
 }
 
 #[test]
@@ -59,10 +61,11 @@ fn bytes_are_counted_as_emacs_counts_them() {
         r#"(e8.insert("a"), subr.insertByte(200), e8.insert("é"),
           JSON.stringify([subr.getByte(0), subr.getByte(1), e8.conditionCase(() => subr.getByte(2), { error: (e) => e.message }),
             e8.positionBytes(3) + 1, e8.byteToPosition(3) + 1, e8.byteToPosition(4) + 1, e8.positionBytes(99) ?? null,
-            (e8.gotoChar(3), subr.insertByte(65, 2), e8.bufferSubstringNoProperties(3, 5)), subr.getByte(0, "A")]))"#,
+            (e8.gotoChar(3), subr.insertByte(65, 2), e8.bufferSubstringNoProperties(3, 5)), subr.getByte(0, "A"),
+            subr.getByte(1, "\u{10FF80}\u{10FF81}"), subr.getByte(1, "😀a")]))"#,
     );
     // Emacs: 97 200, the error, then 6 3 3
-    assert_eq!(got, r#"[97,200,"Not an ASCII nor an 8-bit character: 233",6,3,3,null,"AA",65]"#);
+    assert_eq!(got, r#"[97,200,"Not an ASCII nor an 8-bit character: 233",6,3,3,null,"AA",65,129,97]"#);
 }
 
 #[test]
@@ -73,12 +76,15 @@ fn transposing_regions_moves_point_with_its_text_unless_told_not_to() {
         &s,
         r#"(e8.insert("abc-de-fgh"), e8.gotoChar(1), subr.transposeRegions(0, 3, 7, 10),
           globalThis.first = [e8.bufferSubstringNoProperties(0, 10), e8.point() + 1],
+          e8.deleteRegion(0, 10), e8.insert("AAA-mid-BB"), globalThis.edge = e8.makeMarker(3), subr.transposeRegions(0, 3, 8, 10),
+          first.push(e8.markerPosition(edge)),
           e8.deleteRegion(0, 10), e8.insert("abc"), e8.gotoChar(1), subr.transposeRegions(0, 1, 2, 3, true),
           JSON.stringify([first, [e8.bufferSubstringNoProperties(0, 3), e8.point() + 1],
             e8.conditionCase(() => subr.transposeRegions(0, 2, 1, 3), { error: (e) => e.message })]))"#,
     );
-    // Emacs: ("fgh-de-abc" 9), ("cba" 2), and an error for regions that overlap
-    assert_eq!(got, r#"[["fgh-de-abc",9],["cba",2],"Transposed regions overlap"]"#);
+    // Emacs: ("fgh-de-abc" 9), a marker at the first region's end stays with the text after it (0-based 2), ("cba" 2),
+    // and an error for regions that overlap
+    assert_eq!(got, r#"[["fgh-de-abc",9,2],["cba",2],"Transposed regions overlap"]"#);
 }
 
 #[test]
