@@ -100,7 +100,15 @@ keyboard types into the field too, its chords passed on as keys. On the
 website the keyboard comes up in full window, sized to the part of the
 window the keyboard leaves. Desktops get no keys or field.
 
-Tried in the iOS Simulator's Safari; not yet on Android.
+Tried in the iOS Simulator's Safari; not yet on a real phone or on
+Android. To try a change, open `serve.py`'s address in the Simulator's
+Safari, which reaches the Mac's `localhost`. A desktop browser told to
+act as a phone is no substitute: it brings up no keyboard, so focus and
+typing go untried, and its pointer events differ. In the Simulator, wait
+after a swipe before tapping, as the page may still be moving, and mind
+that Safari's toolbar covers the bottom of the page until it shrinks.
+`C-h l` shows the keys and mouse events the editor received, which is
+how a tap turned out to arrive as two presses.
 
 ## Files
 
@@ -174,6 +182,21 @@ section, which `wasm-opt` or `--strip-debug` would drop.
   once. A real build would build one libc, with atomics.
 - **Absolute paths.** std says no path is absolute on this target, as it
   is not Unix, so the editor asks `vfs::is_absolute` instead.
+- **The phone's keyboard.** iOS brings its keyboard up only for a field
+  focused within a tap, and eframe focuses its own hidden field only when
+  egui is editing text. So `touchkeys.js` has a field of its own, which
+  only the keyboard button focuses, and `set_typing` keeps egui's
+  `focused` set while that field has the focus.
+- **A finger is two pointers.** Browsers send a finger as touch events
+  and as pointer events, and eframe listens for `pointerdown` on the
+  canvas but `pointerup` on the document, so a tap became two presses, a
+  double click. `fingersAsTouches` keeps a finger's pointer events from
+  the canvas, and `Touch` in `lib.rs` makes scrolling and clicks from the
+  touches alone.
+- **Safari's floating toolbar.** With the keyboard up, the visual viewport
+  leaves out the strip where Safari 26 floats its toolbar, so the page
+  would show through below the key row; the website paints that strip in
+  full window.
 - **Alt chords.** In a browser egui gives a key's text before its key
   event rather than after, so `keys.rs` takes back text that comes just
   before an Alt chord, on the web only.
