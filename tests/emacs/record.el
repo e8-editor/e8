@@ -287,6 +287,15 @@ answers come, and then from its answers, as save-some-buffers' do."
     (bury-buffer "*scratch*")
     ;; Lock files only where a case asks for them.
     (setq create-lockfiles (eq (alist-get 'lockfiles case) t))
+    ;; A fresh spelling session, as E8 starts each case with: an earlier
+    ;; case's would still know the words it accepted.
+    (when (featurep 'ispell)
+      (ispell-kill-ispell t t)
+      (set-marker ispell-region-end nil)
+      (setq ispell-pdict-modified-p nil
+            ispell-buffer-local-name nil)
+      (setq-default ispell-dictionary nil
+                    ispell-local-dictionary nil))
     (with-current-buffer (e8-oracle--case-buffer case text)
       ;; The window as new, as E8's is, with no buffers shown before.
       (set-window-prev-buffers nil nil)
