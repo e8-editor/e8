@@ -6,11 +6,9 @@
 // ispell.el finds them, and Hunspell takes several at once, as
 // "en_US,sv_SE" (ispell-hunspell-add-multi-dic).
 //
-// ispell.el keeps one checker running where it can, and runs it afresh for
-// each check where it cannot, replaying the session's settings and accepted
-// words each time; E8 always does the latter, which takes a few
-// milliseconds a check. Words inserted into the personal dictionary are
-// kept for the session until it is saved, as with a running checker.
+// As ispell.el does where it can, one checker is kept running and told a
+// line at a time: Hunspell takes a tenth of a second to load two
+// dictionaries, and then a fraction of a millisecond a word.
 //
 // Copyright (C) 1994-2025 Free Software Foundation, Inc.
 // Ported to E8 in 2026.
@@ -156,7 +154,7 @@ defvar(
 );
 defvar("ispell-library-directory", null, "Where the checker keeps its dictionaries, when it says.");
 defvar("ispell-process", null, "Whether a spelling session is running: t while one is.");
-defvar("ispell-async-processp", false, "Whether the checker keeps running between checks; in E8 it is run afresh for each.");
+defvar("ispell-async-processp", true, "Whether the checker keeps running between checks, as it does in E8.");
 defvar("ispell-aspell-dictionary-alist", [], "Aspell's dictionaries, as found.");
 defvar("ispell-aspell-data-dir", null, "Aspell's data directory.");
 defvar("ispell-aspell-dict-dir", null, "Aspell's dictionary directory.");
@@ -666,72 +664,66 @@ function formatWord(word: string): string {
   return word;
 }
 
-// The session. Each check runs the checker afresh with what the session has
-// told it so far, as ispell-send-string does without a running process.
+// The session: one checker kept running, as ispell.el keeps ispell-process,
+// told each line with ispell-send-string and read as its filter reads.
 
 interface Session {
-  args: string[];
+  /** The checker's process. */
+  process: string;
   directory: string;
-  /** Commands that only change the checker's state, replayed before each check. */
-  commands: string[];
-  /** Words put in the personal dictionary and not yet saved: accepted for the session until `#` saves them. */
-  inserted: string[];
-  /** What corrections taught Aspell or Enchant, $$ra lines, the latest MAX_LESSONS of them. */
-  lessons: string[];
 }
-
-/** How many correction lessons a session replays; a running checker would keep them all. */
-const MAX_LESSONS = 50;
 let session: Session | undefined;
 
-/** The checker's output from the last check, a line each. */
+/** The checker's output, a line each, since the last check was sent. */
 let filter: string[] = [];
+/** Output after the last whole line, waiting for the rest of it. */
+let partial = "";
+/** How many empty lines, each ending an answer, `filter` holds. */
+let answered = 0;
 
-/** Keeps a command that changes the checker's state for the checks to come, dropping ones it overrides. */
-function remember(line: string): void {
-  if (session === undefined) return;
-  const c = line[0];
-  if (c === "*") {
-    if (!session.inserted.includes(line.slice(1))) session.inserted.push(line.slice(1));
-    return;
+/** Takes in what the checker writes, a whole line at a time, as ispell-filter. */
+function takeOutput(output: string): void {
+  const lines = (partial + output).split("\n");
+  partial = lines.pop() ?? "";
+  for (const line of lines) {
+    filter.push(line);
+    if (line === "") answered++;
   }
-  if (line.startsWith("$$ra ")) {
-    // The latest lessons only, as each is sent again before every check.
-    session.lessons = [...session.lessons.filter((l) => l !== line), line].slice(-MAX_LESSONS);
-    return;
-  }
-  const overrides = c === "!" || c === "%" ? "!%" : c === "+" || c === "-" ? "+-" : c === "~" ? "~" : "";
-  if (overrides !== "") session.commands = session.commands.filter((l) => !overrides.includes(l[0]));
-  else if (session.commands.includes(line)) return;
-  session.commands.push(line);
 }
 
-/** Sends a line to the checker, as ispell-send-string: one that checks runs it, others are kept for the next. */
+/** Starts collecting the checker's answers afresh. */
+function clearFilter(): void {
+  filter = [];
+  partial = "";
+  answered = 0;
+}
+
+/** Lines that only change the checker's state, which it answers with nothing. */
+const SILENT = "*@~+-!%#$";
+
+/** Whether the session's checker is running. */
+const running = (): boolean => session !== undefined && e8.processLiveP(session.process);
+
+/**
+ * Sends lines to the checker, as ispell-send-string, and for each line it
+ * answers, one to check, waits for that answer, which ends with an empty
+ * line, as ispell-accept-output does: the answers are then in `filter`.
+ */
 export function sendString(text: string): void {
   if (session === undefined) return;
-  // Lessons in corrections, $$ra, are kept too, as a running checker keeps them.
-  if ("*@~+-!%".includes(text[0]) || text.startsWith("$$ra ")) {
-    for (const line of text.split("\n")) if (line !== "") remember(line);
-    return;
+  if (!running()) e8.signal("error", "No Ispell process to read output from!");
+  const checks = text.split("\n").filter((line) => line !== "" && !SILENT.includes(line[0])).length;
+  if (checks > 0) clearFilter();
+  e8.processSendString(session.process, text);
+  while (answered < checks) {
+    if (!e8.acceptProcessOutput(session.process, 1) && !running()) {
+      e8.signal("error", `${String(v("ispell-program-name"))} ended: ${filter.join("\n")}`);
+    }
   }
-  const saving = text.startsWith("#");
-  const before = [...session.commands, ...session.lessons, ...session.inserted.map((w) => (saving ? "*" : "@") + w)];
-  const program = String(v("ispell-program-name"));
-  const hunspell = v("ispell-really-hunspell") !== null;
-  const { exit, output } = callChecker(
-    [program, "-a", ...(hunspell ? [] : ["-m"]), ...session.args],
-    before.map((l) => `${l}\n`).join("") + text,
-    session.directory,
-  );
-  if (!output.startsWith("@(#) ")) e8.signal("error", `Ispell error: ${output.split("\n")[0]}`);
-  const lines = output.split("\n");
-  if (output.endsWith("\n")) lines.pop();
-  filter = text === "\x1a\n" ? lines : lines.slice(1);
-  set("ispell-filter", [...filter].reverse());
-  if (saving && exit === 0) session.inserted = [];
+  if (checks > 0) set("ispell-filter", [...filter].reverse());
 }
 
-/** Starts the checker's session, as ispell-start-process. */
+/** Starts the checker, as ispell-start-process, and waits for its version line. */
 function startProcess(): void {
   const current = str("ispell-current-dictionary");
   if (v("ispell-really-hunspell") !== null) {
@@ -741,17 +733,33 @@ function startProcess(): void {
   const orig = getIspellArgs();
   const encoding = str("ispell-encoding8-command");
   const coding = getCodingSystem();
+  const hunspell = v("ispell-really-hunspell") !== null;
   const args = [
     ...(current !== undefined && !orig.includes("-d") ? ["-d", current] : []),
     ...orig,
     ...(str("ispell-current-personal-dictionary") !== undefined ? ["-p", str("ispell-current-personal-dictionary")!] : []),
-    ...(encoding === undefined ? [] : v("ispell-really-hunspell") !== null ? [encoding, coding.toUpperCase()] : [`${encoding}${coding}`]),
+    ...(encoding === undefined ? [] : hunspell ? [encoding, coding.toUpperCase()] : [`${encoding}${coding}`]),
     ...list(v("ispell-extra-args")).map(String),
   ];
   set("ispell-buffer-local-name", null);
-  session = { args, directory: String(v("ispell-process-directory")), commands: [], inserted: [], lessons: [] };
+  const program = String(v("ispell-program-name"));
+  if (executableFind(program) === undefined) e8.signal("file-missing", `Searching for program: No such file or directory, ${program}`);
+  clearFilter();
+  const directory = String(v("ispell-process-directory"));
+  const process = e8.makeProcess({
+    name: "ispell",
+    // hunspell's -m means something else; ispell's makes root and affix combinations it does not know.
+    command: [program, "-a", ...(hunspell ? [] : ["-m"]), ...args],
+    directory: e8.fileAccessibleDirectoryP(directory) ? directory : e8.expandFileName("~/"),
+    connectionType: "pipe",
+    coding: e8.codingSystemP(coding) ? coding : "utf-8",
+    filter: (_process: string, output: string) => takeOutput(output),
+  });
+  e8.setProcessQueryOnExitFlag(process, false);
+  session = { process, directory };
   set("ispell-process", true);
-  sendString("\x1a\n");
+  // Its version line, as ispell-init-process waits up to 3 seconds for it, twice.
+  for (let tries = 0; tries < 2 && filter.length === 0; tries++) e8.acceptProcessOutput(process, 3);
 }
 
 /** Makes sure the session is going, starting it if need be, as ispell-init-process. */
@@ -768,8 +776,8 @@ export function initProcess(): void {
   ) {
     directory = e8.expandFileName("~/");
   } else directory = e8.expandFileName(directory);
-  if (session !== undefined && (truthy(v("ispell-local-pdict")) || truthy(v("ispell-personal-dictionary")) || v("ispell-process-directory") === directory)) {
-    filter = [];
+  if (running() && (truthy(v("ispell-local-pdict")) || truthy(v("ispell-personal-dictionary")) || v("ispell-process-directory") === directory)) {
+    clearFilter();
     return;
   }
   killIspell(true);
@@ -779,40 +787,44 @@ export function initProcess(): void {
   e8.message(reporter);
   set("ispell-library-directory", checkVersion());
   set("ispell-process-directory", directory);
-  try {
-    startProcess();
-  } catch (e) {
-    session = undefined;
-    set("ispell-process", null);
-    throw e;
-  }
+  e8.unwindProtect(startProcess, () => {
+    if (!running()) forgetProcess();
+  });
   e8.message(`${reporter}done`);
   if (filter.length === 0) {
-    session = undefined;
-    set("ispell-process", null);
+    killIspell(true);
     e8.signal("error", `${program} did not output version line`);
   }
   const versionLine = filter.find((l) => !/warning: /.test(l));
   if (versionLine === undefined || !/^@\(#\) /.test(versionLine)) {
-    session = undefined;
-    set("ispell-process", null);
-    e8.signal("error", filter.join("\n"));
+    // Not the version line: an error, with whatever else it wrote.
+    if (session !== undefined) e8.acceptProcessOutput(session.process, 1);
+    const said = filter.join("\n");
+    killIspell(true);
+    e8.signal("error", said);
   }
-  filter = [];
+  clearFilter();
   const mode = getExtendedCharacterMode();
   if (mode !== undefined) sendString(`${mode}\n`);
+}
+
+/** Forgets the session, its checker ended. */
+function forgetProcess(): void {
+  session = undefined;
+  set("ispell-process", null);
 }
 
 /** Ends the session, as ispell-kill-ispell: true if there was none and `noError`. */
 export function killIspell(noError = false, clear = false): boolean | null {
   e8.runHooks("ispell-kill-ispell-hook");
   if (clear) set("ispell-buffer-session-localwords", []);
-  if (session === undefined) {
+  if (!running()) {
+    forgetProcess();
     if (!noError) e8.signal("error", "There is no Ispell process running!");
     return true;
   }
-  session = undefined;
-  set("ispell-process", null);
+  e8.deleteProcess(session!.process);
+  forgetProcess();
   e8.message("Ispell process killed");
   return null;
 }
@@ -822,7 +834,8 @@ export function pdictSave(noQuery = false, forceSave = false): void {
   let modified = v("ispell-pdict-modified-p");
   if (Array.isArray(modified) && modified.length > 0) modified = modified[0];
   if ((truthy(modified) || forceSave) && (noQuery || e8.yOrNP("Personal dictionary modified.  Save? "))) {
-    sendString("#\n");
+    // An empty line to check after it, answered once the checker has saved.
+    sendString("#\n^\n");
     e8.message("Personal dictionary saved.");
   }
   set("ispell-pdict-modified-p", null);
@@ -855,11 +868,11 @@ export function parseOutput(output: string, acceptList?: string[], shift?: numbe
 
 /** Checks a word, as ispell--run-on-word. */
 export function runOnWord(word: string): Poss {
-  if (session === undefined) acceptBufferLocalDefs();
+  if (!running()) acceptBufferLocalDefs();
   sendString("%\n");
   sendString(`^${word}\n`);
   const lines = filter;
-  filter = [];
+  clearFilter();
   const answers = lines.filter((l, i) => !(l === "" && i === lines.length - 1));
   if (answers.length > 1) e8.signal("error", `Ispell and its process have different character maps: ${answers.join(" ")}`);
   return answers.length === 0 ? true : parseOutput(answers[0]);
@@ -868,7 +881,7 @@ export function runOnWord(word: string): Poss {
 /** Checks words, each on its own, in one run of the checker, as flyspell checks a large region. */
 export function checkWords(words: string[]): Poss[] {
   if (words.length === 0) return [];
-  if (session === undefined) acceptBufferLocalDefs();
+  if (!running()) acceptBufferLocalDefs();
   sendString("%\n");
   sendString(words.map((w) => `^${w}\n`).join(""));
   // Each ^ line's answers end with an empty line, which is all there is
@@ -882,14 +895,14 @@ export function checkWords(words: string[]): Poss[] {
       first = undefined;
     }
   }
-  filter = [];
+  clearFilter();
   return words.map((_, i) => answers[i] ?? true);
 }
 
 /** Whether the word at point is right, as ispell-correct-p. */
 export function correctP(following = false): boolean {
   return e8.saveExcursion(() => {
-    filter = [];
+    clearFilter();
     const found = getWord(following);
     const poss = runOnWord(found.word);
     if (poss === undefined) e8.signal("error", errorCheckingWord(found.word));
@@ -1710,7 +1723,7 @@ function processLine(text: string, shiftIn: number | undefined, bounds: { start:
   sendString(text);
   let pending = filter.slice();
   if (pending.length > 0 && pending[pending.length - 1] === "") pending.pop();
-  filter = [];
+  clearFilter();
   while (ispellQuit === false && pending.length > 0) {
     const line = pending.shift()!;
     const poss = parseOutput(line, acceptList, shift);
@@ -2019,7 +2032,7 @@ export function acceptForSession(word: string): void {
 /** Puts a word in the personal dictionary and saves it, as flyspell's Save word does. */
 export function insertPersonal(word: string): void {
   sendString(`*${word}\n`);
-  sendString("#\n");
+  sendString("#\n^\n");
   set("ispell-pdict-modified-p", [true]);
 }
 
