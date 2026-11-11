@@ -484,3 +484,15 @@ fn scripts_can_ask_and_set_timers() {
     d.press("C-g");
     assert!(d.prompt().is_none());
 }
+
+#[test]
+fn expand_file_name_keeps_a_directory_name_s_slash() {
+    let (mut ed, s) = setup();
+    let value = s
+        .eval_expression(
+            &mut ed,
+            r#"[e8.expandFileName("foo/", "/tmp/"), e8.expandFileName("foo", "/tmp/"), e8.expandFileName("/tmp/"), e8.expandFileName("./", "/tmp/"), e8.expandFileName(".", "/tmp/")]"#,
+        )
+        .unwrap();
+    assert_eq!(value, r#"["/tmp/foo/","/tmp/foo","/tmp/","/tmp/","/tmp"]"#);
+}

@@ -15479,7 +15479,11 @@ declare global {
      * file was renamed with it, so the buffer stays as modified as it was.
      */
     function setVisitedFileName(file: string | null, options?: { alongWithFile?: boolean }): void;
-    /** A file name made absolute, from dir or default-directory, with ~ for the home directory, as Emacs's expand-file-name. */
+    /**
+     * A file name made absolute, from dir or default-directory, with ~ for the
+     * home directory and . and .. worked out, as Emacs's expand-file-name: a
+     * directory name keeps its slash, "foo/" giving "/tmp/foo/".
+     */
     function expandFileName(file: string, dir?: string): string;
     /** A file's attributes, as Emacs's file-attributes, for the file itself rather than what a link points to. */
     interface FileAttributes {

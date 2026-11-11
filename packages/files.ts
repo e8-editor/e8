@@ -633,7 +633,7 @@ const asDirectory = (name: string): string => (name.endsWith("/") ? name : `${na
  */
 function dirLocalsFindFile(fileIn: string): e8.Value[] | string | undefined {
   // A directory name keeps its slash, so it is looked for in itself.
-  const file = fileIn.endsWith("/") ? asDirectory(e8.expandFileName(fileIn)) : e8.expandFileName(fileIn);
+  const file = e8.expandFileName(fileIn);
   let localsDir: string | undefined;
   for (let dir = e8.fileNameDirectory(file); dir !== undefined; ) {
     if (dirLocalsAllFiles(dir).length > 0) {
