@@ -164,12 +164,21 @@ fn run(
         if suspend {
             // As Emacs's suspend-emacs: the terminal as the shell left it,
             // stopped until fg, then E8's screen again.
-            execute!(io::stdout(), DisableMouseCapture)?;
-            ratatui::restore();
+            // The same terminal kept: making it again would ask the
+            // terminal where its cursor is, which the input thread reads.
+            execute!(io::stdout(), DisableMouseCapture, ratatui::crossterm::terminal::LeaveAlternateScreen)?;
+            ratatui::crossterm::terminal::disable_raw_mode()?;
             e8_core::users::stop_self();
-            *terminal = ratatui::init();
-            execute!(io::stdout(), EnableMouseCapture)?;
-            terminal.clear()?;
+            ratatui::crossterm::terminal::enable_raw_mode()?;
+            execute!(
+                io::stdout(),
+                ratatui::crossterm::terminal::EnterAlternateScreen,
+                EnableMouseCapture,
+                ratatui::crossterm::terminal::Clear(ratatui::crossterm::terminal::ClearType::All)
+            )?;
+            // A blank frame, so the next is drawn whole: ratatui's own
+            // clear asks the terminal where its cursor is too.
+            let _ = terminal.draw(|frame| frame.render_widget(ratatui::widgets::Clear, frame.area()));
             driver.run(|editor| {
                 if let Err(e) = editor.run_hooks("suspend-resume-hook") {
                     editor.message(format!("Error in suspend-resume-hook: {e}"));

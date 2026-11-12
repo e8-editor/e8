@@ -43,7 +43,7 @@ Option 2, as one pull request behind `make check`, a review against editfns.c, e
 
 ## Carried out
 
-Landed on 2026-11-13 in e8-editor/e8's pull request after #116, behind `make check` on both engines, a review against Emacs's source and the ported packages' tests. The tests check users and groups against what the system's own `id` says. The terminal's stopping itself is not run by a test, as it would stop the test; it was tried by hand. What differs from Emacs is in [differences.md](../differences.md)'s entry for the user and the system. The group took E8 from 585 to 595 of Emacs's 877 editor primitives by name, and every primitive of it is there ([docs/parity/demand.md](../parity/demand.md)).
+Landed on 2026-11-13 in e8-editor/e8's pull request after #116, behind `make check` on both engines, a review against Emacs's source and the ported packages' tests. The tests check users and groups against what the system's own `id` says. The terminal's stopping itself is not run by a test, as it would stop the test; it was tried in a shell under tmux, `C-z` stopping E8 and `fg` bringing it back with its screen drawn again and typing going on. What differs from Emacs is in [differences.md](../differences.md)'s entry for the user and the system. The group took E8 from 585 to 595 of Emacs's 877 editor primitives by name, and every primitive of it is there ([docs/parity/demand.md](../parity/demand.md)).
 
 ## Dependencies introduced
 
