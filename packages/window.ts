@@ -264,8 +264,8 @@ function windowChildCount(window: e8.Window): number {
   return n;
 }
 
-/** Calls `fn` on every window of a frame's tree, parents before children, internal ones too unless `any` is false, as walk-window-tree. */
-export function walkWindowTree(fn: (window: e8.Window) => void, frame?: e8.Frame, any = true): void {
+/** Calls `fn` on a frame's live windows, or with `any` its internal ones too, parents before children, as walk-window-tree. */
+export function walkWindowTree(fn: (window: e8.Window) => void, frame?: e8.Frame, any = false): void {
   const walk = (w: e8.Window): void => {
     const first = e8.windowTopChild(w) ?? e8.windowLeftChild(w);
     if (first === undefined || any) fn(w);
@@ -284,7 +284,7 @@ export function windowResizeReset(frame?: e8.Frame, horizontal = false): void {
     e8.setWindowNewPixel(w, horizontal ? e8.windowPixelWidth(w) : e8.windowPixelHeight(w));
     e8.setWindowNewTotal(w, horizontal ? e8.windowTotalWidth(w) : e8.windowTotalHeight(w));
     e8.setWindowNewNormal(w);
-  }, frame);
+  }, frame, true);
 }
 e8.defun("window--resize-reset", (frame?: e8.Frame, horizontal?: boolean) => {
   windowResizeReset(frame ?? undefined, horizontal === true);

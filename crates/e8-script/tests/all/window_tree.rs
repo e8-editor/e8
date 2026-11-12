@@ -223,3 +223,22 @@ fn window_min_height_is_read_as_a_script_sets_it() {
     // Twelve lines each; with window-min-height 10 the window below cannot give six.
     assert_eq!(eval(&mut ed, &s, r#"(e8.setVariable("window-min-height", 10), String(e8.resizeWindow(undefined, 6)))"#), "2");
 }
+
+#[test]
+fn new_sizes_are_refused_below_a_line_and_normals_kept_where_none_is_given() {
+    // As Emacs 30 in batch: 12 and 12 lines.
+    let (mut ed, s) = setup();
+    ed.press("C-x 2").unwrap();
+    eval(&mut ed, &s, r#"(import("window").then((m) => { globalThis.win = m; }), globalThis.ws = e8.windowList(), "")"#);
+    assert_eq!(eval(&mut ed, &s, "(win.windowResizeReset(), e8.setWindowNewPixel(ws[0], 0), e8.setWindowNewPixel(ws[1], 24), String(e8.windowResizeApply()))"), "false");
+    assert_eq!(
+        eval(&mut ed, &s, r#"e8.conditionCase(() => String(e8.setWindowNewPixel(ws[0], -1)), { "args-out-of-range": () => "out of range" })"#),
+        "out of range"
+    );
+    // A new normal size for one window only: the other keeps its own.
+    assert_eq!(
+        eval(&mut ed, &s, "(win.windowResizeReset(), e8.setWindowNewPixel(ws[0], 8), e8.setWindowNewPixel(ws[1], 16), e8.setWindowNewNormal(ws[0], 0.1), String(e8.windowResizeApply()))"),
+        "true"
+    );
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(ws.map((w) => e8.windowNormalSize(w)))"), "[0.1,0.5]");
+}

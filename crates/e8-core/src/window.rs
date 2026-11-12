@@ -874,6 +874,9 @@ impl Editor {
     pub fn set_window_new_pixel(&mut self, id: WindowId, size: i64, add: bool) -> Result<i64> {
         let now = self.window_new_pixel(id).ok_or_else(|| Error::new("No such window"))?;
         let size = if add { now + size } else { size };
+        if size < 0 {
+            return Err(Error::signal("args-out-of-range", format!("Args out of range: {size}"), vec![Value::Number(size as f64)]));
+        }
         self.window_new.entry(id).or_default().pixel = Some(size);
         Ok(size)
     }
@@ -889,6 +892,9 @@ impl Editor {
     pub fn set_window_new_total(&mut self, id: WindowId, size: i64, add: bool) -> Result<i64> {
         let now = self.window_new_total(id).ok_or_else(|| Error::new("No such window"))?;
         let size = if add { now + size } else { size };
+        if size < 0 {
+            return Err(Error::signal("args-out-of-range", format!("Args out of range: {size}"), vec![Value::Number(size as f64)]));
+        }
         self.window_new.entry(id).or_default().total = Some(size);
         Ok(size)
     }
@@ -925,8 +931,10 @@ impl Editor {
             return false;
         }
         let normals: std::collections::HashMap<WindowId, f64> = self.window_new.iter().filter_map(|(&id, n)| Some((id, n.normal??))).collect();
+        let (cw, lh) = (self.cell().0, self.cell().1);
+        let least = if horizontal { (2.0 * cw).round() } else { lh.round() } as usize;
         let tree = if frame == self.selected_frame { &mut self.window_tree } else { &mut self.other_frames.iter_mut().find(|f| f.id == frame).expect("found").tree };
-        let applied = tree.apply_sizes(horizontal, current, &|id| new.get(&id).copied(), &|id| normals.get(&id).copied());
+        let applied = tree.apply_sizes(horizontal, current, least, &|id| new.get(&id).copied(), &|id| normals.get(&id).copied());
         if applied {
             self.relayout();
         }
@@ -1060,6 +1068,7 @@ impl Editor {
                         frame.selected_window = next.expect("another window");
                     }
                     self.forget_window(id);
+                    self.prune_internal_windows();
                     true
                 }
             }

@@ -1265,7 +1265,8 @@ export function ediffSetup(
     e8.setVariable("ediff-merge-with-ancestor-job", isMergeWithAncestor);
     e8.setVariable("ediff-3way-job", s.is3way);
     e8.setVariable("ediff-diff3-job", s.isDiff3);
-    for (const name of ["ediff-use-long-help-message", "ediff-split-window-function", "ediff-keep-variants", "ediff-merge-window-share"]) {
+    // window-min-height is the control buffer's own, as ediff-util's setq-local makes it.
+    for (const name of ["ediff-use-long-help-message", "ediff-split-window-function", "ediff-keep-variants", "ediff-merge-window-share", "window-min-height"]) {
       e8.makeLocalVariable(name);
     }
     e8.setVariable("window-min-height", 2);
