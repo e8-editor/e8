@@ -83,6 +83,7 @@ mod themes;
 mod transient;
 mod treesit;
 mod undo_list;
+mod user_system;
 mod view;
 mod which_key;
 mod windows;

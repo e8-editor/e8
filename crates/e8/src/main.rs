@@ -145,18 +145,54 @@ fn run(
     let mouse = Arc::new(Mutex::new(Mouse::default()));
     let client = Arc::new(Mutex::new(e8_mcp::Client::default()));
     let mut drawn = 0;
+    let mut suspended = 0;
     loop {
         // What the editor last published, whatever it is doing now.
-        let (description, bell) = {
+        let (description, bell, suspend) = {
             let mut published = driver.published();
             if published.exit {
                 return Ok(());
             }
-            let fresh = published.generation != drawn;
+            let suspend = published.suspends != suspended;
+            suspended = published.suspends;
+            // Drawn again in full once the shell continues E8.
+            let fresh = published.generation != drawn || suspend;
             drawn = published.generation;
             let bell = std::mem::take(&mut published.bell).then_some(published.visible_bell);
-            (published.frames.first().filter(|_| fresh).cloned(), bell)
+            (published.frames.first().filter(|_| fresh).cloned(), bell, suspend)
         };
+        if suspend {
+            // As Emacs's suspend-emacs: the terminal as the shell left it,
+            // stopped until fg, then E8's screen again.
+            // The same terminal kept: making it again would ask the
+            // terminal where its cursor is, which the input thread reads.
+            // Failures here are not fatal: losing unsaved work to one
+            // would be worse than a screen to redraw.
+            let _ = execute!(io::stdout(), DisableMouseCapture, ratatui::crossterm::terminal::LeaveAlternateScreen);
+            let _ = ratatui::crossterm::terminal::disable_raw_mode();
+            e8_core::users::stop_self();
+            let _ = ratatui::crossterm::terminal::enable_raw_mode();
+            let _ = execute!(
+                io::stdout(),
+                ratatui::crossterm::terminal::EnterAlternateScreen,
+                EnableMouseCapture,
+                ratatui::crossterm::terminal::Clear(ratatui::crossterm::terminal::ClearType::All)
+            );
+            // The terminal may have been resized meanwhile, which no
+            // signal says while stopped, as Emacs reads its size again.
+            if let Ok((width, height)) = ratatui::crossterm::terminal::size() {
+                *size.lock().unwrap_or_else(|e| e.into_inner()) = (width, height);
+                driver.send(Input::Wake);
+            }
+            // A blank frame, so the next is drawn whole: ratatui's own
+            // clear asks the terminal where its cursor is too.
+            let _ = terminal.draw(|frame| frame.render_widget(ratatui::widgets::Clear, frame.area()));
+            driver.run(|editor| {
+                if let Err(e) = editor.run_hooks("suspend-resume-hook") {
+                    editor.message(format!("Error in suspend-resume-hook: {e}"));
+                }
+            });
+        }
         if let Some(description) = description {
             terminal.draw(|frame| ui::draw(frame, &description))?;
         }

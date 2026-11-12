@@ -333,6 +333,9 @@ pub struct Editor {
     pub(crate) selected_frame: crate::window::FrameId,
     pub(crate) next_frame_id: crate::window::FrameId,
     pub(crate) quit: bool,
+    /// How many times `suspend-emacs` asked the front end to stop the
+    /// process, for a terminal to see each request once.
+    pub(crate) suspend_requests: u64,
     /// The status the program exits with once `quit` is set, as `kill-emacs`'s argument.
     pub(crate) exit_status: i32,
     /// Running without a frame, as `emacs --batch`: messages go to standard error.
@@ -491,6 +494,7 @@ impl Editor {
             next_frame_id: crate::window::FIRST_FRAME,
             window_use: 0,
             quit: false,
+            suspend_requests: 0,
             exit_status: 0,
             noninteractive: false,
             question: None,
@@ -2717,6 +2721,28 @@ impl Editor {
 
     pub fn should_quit(&self) -> bool {
         self.quit
+    }
+
+    /// How many times `suspend-emacs` asked the front end to stop the
+    /// process: a terminal stops it each time the count goes up, and runs
+    /// `suspend-resume-hook` once the shell continues it.
+    pub fn suspend_requests(&self) -> u64 {
+        self.suspend_requests
+    }
+
+    /// Asks the front end to stop the process, as Emacs's `suspend-emacs`:
+    /// runs `suspend-hook` first. A window has no shell to continue it, so
+    /// there it is an error.
+    pub fn suspend_emacs(&mut self) -> Result<()> {
+        // A front end that shows images is a window, as window-system says.
+        if self.text_metrics().images() {
+            return Err(Error::signal("user-error", "Cannot suspend E8 in a window; C-z iconifies it", Vec::new()));
+        }
+        // Stopping the editor while an agent acts would stop its requests too.
+        self.check_permission("suspend E8")?;
+        self.run_hooks("suspend-hook")?;
+        self.suspend_requests += 1;
+        Ok(())
     }
 
     /// The status the program should exit with, as `kill-emacs` was given.

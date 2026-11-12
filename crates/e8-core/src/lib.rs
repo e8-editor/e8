@@ -71,6 +71,7 @@ mod search;
 pub mod select;
 mod symbols;
 pub mod sysdep;
+pub mod users;
 mod syntax;
 mod textprop;
 pub mod syntax_table;

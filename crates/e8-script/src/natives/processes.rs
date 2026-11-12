@@ -7,6 +7,92 @@ use crate::*;
 use crate::natives::{natives, Fields, Proc, ProcObj, Record, Rest};
 
 natives! {
+    /// The login name E8 goes by, as user-login-name, or a user id's, or
+    /// undefined for an id no account has.
+    #[ts = "(uid?: number | null): string | undefined"]
+    pub fn userLoginName(ed, uid: Option<u32>) -> Option<String> {
+        Ok(match uid {
+            None => ed.variable("user-login-name").and_then(|v| v.as_str().map(str::to_string)),
+            Some(uid) => e8_core::users::account(uid).map(|a| a.login),
+        })
+    }
+
+    /// The login name of the user who started E8, as user-real-login-name.
+    pub fn userRealLoginName(ed) -> String {
+        Ok(ed.variable("user-real-login-name").and_then(|v| v.as_str().map(str::to_string)).unwrap_or_default())
+    }
+
+    /// The full name E8 goes by, as user-full-name: the variable's value,
+    /// or a user id's or login name's account's, undefined if none has one.
+    #[ts = "(user?: number | string | null): string | undefined"]
+    pub fn userFullName(ed, user: EditorValue) -> Option<String> {
+        Ok(match user {
+            EditorValue::Null => ed.variable("user-full-name").and_then(|v| v.as_str().map(str::to_string)),
+            EditorValue::Number(uid) if uid.fract() == 0.0 && (0.0..=u32::MAX as f64).contains(&uid) => e8_core::users::account(uid as u32).map(|a| a.full_name),
+            EditorValue::Str(login) => e8_core::users::account_named(&login).map(|a| a.full_name),
+            other => return Err(e8_core::Error::signal("error", "Invalid UID specification", vec![other])),
+        })
+    }
+
+    /// The user id E8 runs as, as user-uid.
+    pub fn userUid(ed) -> u32 {
+        Ok(e8_core::users::user_uid())
+    }
+
+    /// The user id that started E8, as user-real-uid.
+    pub fn userRealUid(ed) -> u32 {
+        Ok(e8_core::users::user_real_uid())
+    }
+
+    /// The group id E8 runs as, as group-gid.
+    pub fn groupGid(ed) -> u32 {
+        Ok(e8_core::users::group_gid())
+    }
+
+    /// The group id that started E8, as group-real-gid.
+    pub fn groupRealGid(ed) -> u32 {
+        Ok(e8_core::users::group_real_gid())
+    }
+
+    /// A group's name, as group-name, or undefined if there is no such group.
+    pub fn groupName(ed, gid: u32) -> Option<String> {
+        Ok(e8_core::users::group_name(gid))
+    }
+
+    /// The login names of the system's users, as system-users.
+    pub fn systemUsers(ed) -> Vec<String> {
+        Ok(e8_core::users::system_users())
+    }
+
+    /// The names of the system's groups, as system-groups.
+    pub fn systemGroups(ed) -> Vec<String> {
+        Ok(e8_core::users::system_groups())
+    }
+
+    /// The machine's name, as system-name.
+    pub fn systemName(ed) -> String {
+        Ok(e8_core::filelock::system_name())
+    }
+
+    /// Whether E8 runs as a server with no frames, as daemonp: undefined,
+    /// as E8 has no daemon.
+    pub fn daemonp(ed) -> Option<bool> {
+        Ok(None)
+    }
+
+    /// How many processors there are, as num-processors: those E8 may use,
+    /// less as OMP_NUM_THREADS or OMP_THREAD_LIMIT say; with "current", those
+    /// it may use; with "all", all the system has.
+    #[ts = "(query?: \"current\" | \"all\" | boolean | null): number"]
+    pub fn numProcessors(ed, query: EditorValue) -> usize {
+        let query = match &query {
+            EditorValue::Str(s) | EditorValue::Symbol(s) if s == "current" => e8_core::users::Processors::Current,
+            EditorValue::Str(s) | EditorValue::Symbol(s) if s == "all" => e8_core::users::Processors::All,
+            _ => e8_core::users::Processors::Overridable,
+        };
+        Ok(e8_core::users::num_processors(query))
+    }
+
     fn makeProcess(
         ed,
         name: String,
