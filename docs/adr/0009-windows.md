@@ -1,6 +1,6 @@
 # 0009. Windows
 
-Status: accepted · 2026-10-27
+Status: accepted · 2026-10-27 · its decisions on the tree, its sizes, resizing and display-buffer superseded by [0069](0069-windows-as-emacs-has-them.md)
 
 ## Context
 

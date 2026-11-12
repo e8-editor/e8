@@ -42,6 +42,17 @@ Frames' own minibuffer windows, where E8 has one minibuffer for all frames, are 
 - Watch for: window.el's code depending on frames each having their own minibuffer window, where E8 has one until the frames ADR; and the cost of sizes in the front end's units on the terminal, where they are cells and should cost nothing.
 - Superseded by this one once stage 3 lands: ADR 0009's decisions on the tree, its sizes, resizing and display-buffer; ADR 0028's decision that windows stay ids in scripts, and its note that internal windows have no ids. Their other decisions stand.
 
+## Carried out
+
+All four stages landed on 2026-11-11 and 12, each pull request after `make check`, a review against Emacs's source, and the ported packages' tests:
+
+1. Windows and frames as objects: e8-editor/e8 pull request 99.
+2. display-buffer as window.el has it: 100.
+3. window.c's tree and internal windows (101), sizes in the front end's units (102), and the resize protocol (103).
+4. window.el's resizing (104), balancing and fitting (105), splitting and deleting with atomic and side windows (106), window states and quit-restore (108), and windmove and winner (107).
+
+What is left, and where E8 still differs, is in [differences.md](../differences.md)'s window entries: frames' own minibuffer windows (an ADR of their own, as above), splitting on a frame other than the selected one, killing a buffer deleting its windows through the core's older path, and printing window states in a form Emacs reads back.
+
 ## Dependencies introduced
 
 None.
