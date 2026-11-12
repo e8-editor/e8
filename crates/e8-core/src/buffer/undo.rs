@@ -366,6 +366,10 @@ impl Buffer {
         self.cancelling = false;
         self.undo_groups.truncate(group.undo_groups);
         self.modified = group.modified;
+        // Unmodified, the buffer is as saved, as Emacs's SAVE_MODIFF says.
+        if !self.modified {
+            self.file.saved_tick = self.tick;
+        }
         self.open_group = group.open_group;
         self.open_point = group.open_point;
         self.open_unmodified_at = group.open_unmodified_at;
@@ -687,6 +691,10 @@ impl Buffer {
                     Selective::Unmodified(save) => {
                         if save == self.save_generation {
                             self.modified = false;
+                            // Unmodified, the buffer is as saved, as Emacs's SAVE_MODIFF says.
+                            if !self.modified {
+                                self.file.saved_tick = self.tick;
+                            }
                         }
                     }
                 }
@@ -802,6 +810,10 @@ impl Buffer {
         }
         if group.unmodified_at == Some(self.save_generation) {
             self.modified = false;
+            // Unmodified, the buffer is as saved, as Emacs's SAVE_MODIFF says.
+            if !self.modified {
+                self.file.saved_tick = self.tick;
+            }
         }
         Ok(())
     }

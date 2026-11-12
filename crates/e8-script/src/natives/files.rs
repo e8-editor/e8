@@ -223,7 +223,7 @@ natives! {
     /// delete-directory-internal.
     pub fn deleteDirectoryInternal(ed, dir: String) {
         let path = ed.expand_file_name(&dir);
-        ed.delete_directory(&path, false, false)
+        ed.delete_directory_internal(&path)
     }
 
     /// Makes a directory, asking no file name handler, as

@@ -392,6 +392,13 @@ impl Editor {
         self.remove(dir, trash, true)
     }
 
+    /// Deletes an empty directory, as Emacs's `delete-directory-internal`:
+    /// rmdir(2), which a directory with anything in it refuses.
+    pub fn delete_directory_internal(&mut self, dir: &Path) -> Result<()> {
+        self.check_permission(&format!("delete {}", abbreviate_path(dir)))?;
+        fs::remove_dir(dir).map_err(|e| file_error("Removing directory", &e, &[dir]))
+    }
+
     /// Moves a file or directory to the system's trash, as Emacs's
     /// `system-move-file-to-trash`. Files in memory have no trash; there
     /// it is deleted.

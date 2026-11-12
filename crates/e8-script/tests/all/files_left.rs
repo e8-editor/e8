@@ -216,3 +216,36 @@ fn the_system_and_what_e8_does_not_support() {
         "[null,true,null,[null,null,null,null],false,false]"
     );
 }
+
+#[test]
+fn unmodified_again_a_buffer_is_as_saved_and_explicit_locks_last() {
+    let (mut ed, s, dir) = setup();
+    let file = dir.path().join("beta").display().to_string();
+    ed.call("find-file", vec![Arg::Str(file.clone())]).unwrap();
+    // As Emacs 30: no longer modified, it was saved after its auto-save.
+    ed.type_text("y");
+    assert_eq!(eval(&mut ed, &s, "(e8.setBufferAutoSaved(), e8.setBufferModified(false), e8.recentAutoSaveP())"), "false");
+    ed.type_text("y");
+    assert_eq!(eval(&mut ed, &s, "(e8.setBufferAutoSaved(), e8.setBufferModified(false), e8.setBufferModified(true), e8.recentAutoSaveP())"), "false");
+    eval(&mut ed, &s, "e8.setBufferModified(false)");
+    // A lock taken on an unmodified buffer's file lasts past the command, until unlock-file.
+    let other = dir.path().join("alpha.txt").display().to_string();
+    ed.call("find-file", vec![Arg::Str(other.clone())]).unwrap();
+    eval(&mut ed, &s, &format!("e8.lockFile({other:?})"));
+    ed.press("C-f").unwrap();
+    assert_eq!(eval(&mut ed, &s, &format!("Boolean(e8.fileLockedP({other:?}))")), "true");
+    assert_eq!(eval(&mut ed, &s, &format!("(e8.unlockFile({other:?}), Boolean(e8.fileLockedP({other:?})))")), "false");
+}
+
+#[test]
+fn internal_primitives_answer_as_emacs_does_at_the_edges() {
+    let (mut ed, s, dir) = setup();
+    // As Emacs 30: no file system for a missing directory, names not expanded,
+    // a name only made nowhere, and rmdir refusing what is not empty.
+    assert_eq!(eval(&mut ed, &s, r#"e8.fileSystemInfo("/nonexistent/x") ?? null"#), "null");
+    assert_eq!(eval(&mut ed, &s, r#"[e8.unhandledFileNameDirectory("foo"), e8.unhandledFileNameDirectory("")]"#), r#"["foo/","./"]"#);
+    assert_eq!(eval(&mut ed, &s, r#"(globalThis.n = e8.makeTempFileInternal("/nonexistent-dir/x", 0, ".s"), [n.startsWith("/nonexistent-dir/x"), n.endsWith(".s"), n.length])"#), "[true,true,26]");
+    let busy = format!("{}/alphadir", dir.path().display());
+    std::fs::write(format!("{busy}/inside"), "x").unwrap();
+    assert_eq!(eval(&mut ed, &s, &format!("e8.conditionCase(() => e8.deleteDirectoryInternal({busy:?}), {{ error: (e) => e.data[1] }})")), r#""Directory not empty""#);
+}

@@ -230,29 +230,38 @@ impl Editor {
 
     /// Locks a file, as Emacs's `lock-file`: unless `create-lockfiles` is
     /// off, makes its lock file, `file-locked` signalled if another
-    /// process holds it, and counts buffers visiting it as holding it.
+    /// process holds it, a file name handler doing it for a name of its
+    /// own. The lock lasts until `unlock-file`, or until a modified buffer
+    /// visiting the file is saved or stops being modified.
     pub fn lock_file(&mut self, file: &str) -> Result<()> {
         let path = self.expand_file_name(file);
+        let name = path.display().to_string();
+        if let Some(r) = self.handled("lock-file", &name, vec![Value::Str(name.clone())]) {
+            return r.map(drop);
+        }
         if !self.lockfiles() {
             return Ok(());
         }
         let lock = lock_file_name(&path);
-        match create_lock(&lock, false) {
+        let held = match create_lock(&lock, false) {
+            Ok(()) => true,
             Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => match current_lock_owner(&lock) {
                 LockOwner::Other(owner) => {
-                    return Err(Error::signal("file-locked", format!("File is locked: {}, {owner}", path.display()), vec![Value::Str(path.display().to_string()), Value::Str(owner)]));
+                    return Err(Error::signal("file-locked", format!("File is locked: {name}, {owner}"), vec![Value::Str(name.clone()), Value::Str(owner)]));
                 }
                 LockOwner::None => {
                     let _ = fs::remove_file(&lock);
-                    let _ = create_lock(&lock, false);
+                    create_lock(&lock, false).is_ok()
                 }
-                LockOwner::Me => {}
+                LockOwner::Me => true,
             },
             // Where no lock can be made, editing goes on without one, as in Emacs.
-            _ => {}
-        }
+            Err(_) => false,
+        };
+        // Modified buffers hold it, to give it up when saved; an unmodified
+        // one would give it up after the command, where Emacs keeps it.
         for b in &mut self.buffers {
-            if b.path.as_deref() == Some(path.as_path()) {
+            if held && b.is_modified() && b.path.as_deref() == Some(path.as_path()) {
                 b.file.locked = true;
             }
         }
@@ -260,9 +269,14 @@ impl Editor {
     }
 
     /// Takes a file's lock away if this process holds it, as Emacs's
-    /// `unlock-file`, buffers visiting it no longer holding it.
+    /// `unlock-file`, buffers visiting it no longer holding it, a file name
+    /// handler doing it for a name of its own.
     pub fn unlock_file(&mut self, file: &str) {
         let path = self.expand_file_name(file);
+        let name = path.display().to_string();
+        if self.handled("unlock-file", &name, vec![Value::Str(name.clone())]).is_some() {
+            return;
+        }
         unlock(&path);
         for b in &mut self.buffers {
             if b.path.as_deref() == Some(path.as_path()) {
