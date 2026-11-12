@@ -16080,6 +16080,65 @@ declare global {
     function substituteInFileName(file: string): string;
     /** Whose lock a file has, as file-locked-p: true for E8's own, the other process's user@host (pid N), or undefined. */
     function fileLockedP(file: string): true | string | undefined;
+    /**
+     * The permissions new files may have, as default-file-modes: those
+     * the umask leaves, such as 0o755.
+     */
+    function defaultFileModes(): number;
+    /**
+     * Sets the permissions new files may have, as set-default-file-modes:
+     * the umask, for E8 and the programs it starts afterwards.
+     */
+    function setDefaultFileModes(modes: number): void;
+    /**
+     * When the current buffer's file was last modified as the buffer
+     * knows it, in milliseconds since 1970, as visited-file-modtime: 0 if
+     * it knows none, and -1 if the file did not exist when visited.
+     */
+    function visitedFileModtime(): number;
+    /**
+     * Takes the current buffer's file's modification time now, or `time`
+     * in milliseconds since 1970, as the one it was visited at, as
+     * set-visited-file-modtime.
+     */
+    function setVisitedFileModtime(time?: number | null): void;
+    /**
+     * Forgets when the current buffer's file was modified, as
+     * clear-visited-file-modtime, so it is taken as unchanged.
+     */
+    function clearVisitedFileModtime(): void;
+    /**
+     * Signals the error reading a file would, as access-file: file-missing
+     * or permission-denied, `string` saying what was being done.
+     */
+    function accessFile(file: string, string: string): void;
+    /**
+     * Completes a file name in a directory, as file-name-completion: the
+     * longest start the names beginning with `file` share, a directory's
+     * with a slash; true if `file` is the one name; undefined if none
+     * begins so. Names completion-ignored-extensions lists, and . and ..,
+     * count only when nothing else does; `predicate` is called with each
+     * name, default-directory being the directory.
+     */
+    function fileNameCompletion(file: string, directory: string, predicate?: ((name: string) => unknown) | string | null): string | true | undefined;
+    /**
+     * The names in a directory that start with `file`, as
+     * file-name-all-completions: . and .. among them, a directory's ending
+     * in a slash.
+     */
+    function fileNameAllCompletions(file: string, dir: string): string[];
+    /**
+     * A directory's names with their attributes, as
+     * directory-files-and-attributes: each `[name, attributes]`, as
+     * directoryFiles and fileAttributes give them. `idFormat` is accepted
+     * as in Emacs; the attributes give both ids and names.
+     */
+    function directoryFilesAndAttributes(dir: string, full?: boolean | null, match?: string | null, nosort?: boolean | null, idFormat?: unknown, count?: number | null): [string, FileAttributes | undefined][];
+    /**
+     * Whether one entry of directoryFilesAndAttributes comes before
+     * another by name, as file-attributes-lessp.
+     */
+    function fileAttributesLessp(a: [string, ...unknown[]], b: [string, ...unknown[]]): boolean;
     /** Whether a file exists, through symbolic links, as file-exists-p. A file name handler may answer. */
     function fileExistsP(file: string): boolean;
     /** Whether E8 can read a file, as file-readable-p. */
@@ -17473,6 +17532,13 @@ declare global {
     }
     /** Where a window's text ends, as window-end: the position after the last character it shows, its last row counted even if partly in sight. */
     function windowEnd(window?: WindowLike): number;
+    /**
+     * Whether a buffer's file, the current buffer's by default, is as it was
+     * when visited or last saved, as verify-visited-file-modtime: true for a
+     * buffer visiting no file or knowing no time, false for a file deleted
+     * since.
+     */
+    function verifyVisitedFileModtime(buffer?: BufferLike | null): boolean;
     /**
      * Where text reaches a place on the screen, as compute-motion: from
      * `from`, shown at `fromPos` ([column, row]), through the current buffer

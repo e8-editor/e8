@@ -332,6 +332,122 @@ impl Editor {
         Ok(names)
     }
 
+    /// Signals the error reading a file would, if it cannot be read, as
+    /// Emacs's `access-file`: `file-missing` or `permission-denied`, with
+    /// `string` saying what was being done and the name as given.
+    pub fn access_file(&mut self, file: &str, string: &str) -> Result<()> {
+        let abs = self.absolute(file);
+        if let Some(r) = self.handled("access-file", &abs, vec![s(&abs), s(string)]) {
+            return r.map(drop);
+        }
+        if fs::symlink_metadata(&abs).is_err() || !fs::path_exists(&abs) {
+            return Err(file_error(string, &std::io::Error::from(std::io::ErrorKind::NotFound), &[Path::new(file)]));
+        }
+        if !self.file_readable_p(&abs)? {
+            return Err(file_error(string, &std::io::Error::from(std::io::ErrorKind::PermissionDenied), &[Path::new(file)]));
+        }
+        Ok(())
+    }
+
+    /// The names in a directory that start with `file`, as Emacs's
+    /// `file-name-all-completions`: `.` and `..` among them, a directory's
+    /// ending in a slash, letters' case ignored as `completion-ignore-case`
+    /// says.
+    pub fn file_name_all_completions(&mut self, file: &str, dir: &str) -> Result<Vec<String>> {
+        let dir = self.absolute(dir);
+        if let Some(r) = self.handled("file-name-all-completions", &dir, vec![s(file), s(&dir)]) {
+            return r.map(|v| match v {
+                Value::List(items) => items.iter().filter_map(|i| i.as_str().map(str::to_string)).collect(),
+                _ => Vec::new(),
+            });
+        }
+        Ok(self.completion_candidates(file, &dir)?.into_iter().map(|(name, _)| name).collect())
+    }
+
+    /// Completes a file name in a directory, as Emacs's
+    /// `file-name-completion`: the longest start the names beginning with
+    /// `file` share, a directory's with a slash after it; `Ok(None)` if
+    /// none begins so, and `Value::Bool(true)` if `file` is the one name
+    /// there is. Names ending as `completion-ignored-extensions` lists,
+    /// and `.` and `..`, count only when nothing else does; `predicate`, if
+    /// given, is called with each name, `default-directory` bound to the
+    /// directory, and keeps those it is true of.
+    pub fn file_name_completion(&mut self, file: &str, dir: &str, predicate: Option<&Value>) -> Result<Value> {
+        let dir = self.absolute(dir);
+        if let Some(r) = self.handled("file-name-completion", &dir, vec![s(file), s(&dir), predicate.cloned().unwrap_or(Value::Null)]) {
+            return r;
+        }
+        let ignore_case = self.variable("completion-ignore-case").is_some_and(|v| v.is_true());
+        let ignored: Vec<String> = match self.variable("completion-ignored-extensions") {
+            Some(Value::List(items)) => items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect(),
+            _ => Vec::new(),
+        };
+        let mut kept = Vec::new();
+        let mut excluded = Vec::new();
+        for (name, directory) in self.completion_candidates(file, &dir)? {
+            let bare = name.trim_end_matches('/');
+            let excludable = bare == "." || bare == ".." || ignored.iter().any(|ext| {
+                // An entry ending in a slash is for directories, the rest for files.
+                if directory { ext.ends_with('/') && name.ends_with(ext.as_str()) && name.len() > ext.len() } else { !ext.ends_with('/') && bare.ends_with(ext.as_str()) && bare.len() > ext.len() }
+            });
+            if excludable { excluded.push(name) } else { kept.push(name) }
+        }
+        let mut matches = if kept.is_empty() { excluded } else { kept };
+        if let Some(predicate) = predicate.filter(|p| p.is_true()) {
+            let as_directory = if dir.ends_with('/') { dir.clone() } else { format!("{dir}/") };
+            let binding = self.specbind("default-directory", Value::Str(as_directory));
+            let mut chosen = Vec::new();
+            let mut failed = None;
+            for name in matches {
+                match self.funcall(predicate, &[Value::Str(name.clone())]) {
+                    Ok(v) if v.is_true() => chosen.push(name),
+                    Ok(_) => {}
+                    Err(e) => {
+                        failed = Some(e);
+                        break;
+                    }
+                }
+            }
+            self.unbind(binding);
+            if let Some(e) = failed {
+                return Err(e);
+            }
+            matches = chosen;
+        }
+        let Some(first) = matches.first() else { return Ok(Value::Null) };
+        let same = |a: char, b: char| if ignore_case { a.to_lowercase().eq(b.to_lowercase()) } else { a == b };
+        let mut common: Vec<char> = first.chars().collect();
+        for name in &matches[1..] {
+            let n = common.iter().zip(name.chars()).take_while(|(a, b)| same(**a, *b)).count();
+            common.truncate(n);
+        }
+        let common: String = common.into_iter().collect();
+        let exact = if ignore_case { common.to_lowercase() == file.to_lowercase() } else { common == file };
+        if matches.len() == 1 && exact {
+            return Ok(Value::Bool(true));
+        }
+        Ok(Value::Str(common))
+    }
+
+    /// The names in a directory beginning with `file`, each with whether
+    /// it is a directory, a directory's ending in a slash.
+    fn completion_candidates(&mut self, file: &str, dir: &str) -> Result<Vec<(String, bool)>> {
+        let ignore_case = self.variable("completion-ignore-case").is_some_and(|v| v.is_true());
+        let starts = |name: &str| {
+            if ignore_case { name.to_lowercase().starts_with(&file.to_lowercase()) } else { name.starts_with(file) }
+        };
+        let base = PathBuf::from(dir);
+        let mut out = Vec::new();
+        for name in crate::fileops::directory_files(&base)? {
+            if !starts(&name) {
+                continue;
+            }
+            let directory = fs::path_is_dir(base.join(&name));
+            out.push((if directory { format!("{name}/") } else { name }, directory));
+        }
+        Ok(out)
+    }
+
     /// Makes a file, or with `dir` a directory, of a new name starting with
     /// `prefix` in `temporary-file-directory`, holding `text` if given, as
     /// `make-temp-file`, and returns its name.

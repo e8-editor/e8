@@ -37,6 +37,7 @@ mod file_management;
 mod file_primitives;
 mod file_locals;
 mod files;
+mod files_left;
 mod flyspell;
 mod fonts;
 mod frame_accessors;

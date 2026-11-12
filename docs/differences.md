@@ -124,7 +124,8 @@ E8 reorders text as Emacs 30.2 does, and `tests/emacs/bidi/` compares the two on
 
 ## Files and the clipboard
 
-- **Auto-revert** (not yet) polls every `auto-revert-interval` seconds rather than being told by the system ([ADR 0018](adr/0018-files-and-saving.md)).
+- **Auto-revert** (not yet) polls every `auto-revert-interval` seconds rather than being told by the system ([ADR 0018](adr/0018-files-and-saving.md)). There are no file notifications, `kqueue-add-watch` and filenotify.el's kin ([ADR 0072](adr/0072-files-as-emacs-has-them.md)).
+- **File primitives** ([ADR 0072](adr/0072-files-as-emacs-has-them.md), not yet): times are milliseconds since 1970, as `e8.fileAttributes` gives them, not Lisp timestamps, so `visited-file-modtime` is a number, 0 when none is known and -1 for a file that did not exist. `directory-files` and `directory-files-and-attributes` with COUNT keep the first names in sorted order, where Emacs keeps the first it reads; ID-FORMAT is ignored, the attributes giving both ids and names. `file-name-completion` takes the case of the first name matching where `completion-ignore-case` lets names differ in case.
 - **The clipboard** (not yet): X11's primary selection is not used, and the terminal does not write the clipboard ([ADR 0031](adr/0031-the-system-clipboard.md)).
 - **Dired** (not yet): `M-DEL` and `* c` read their mark as text and RET, where Emacs reads a key ([ADR 0022](adr/0022-dired-and-projects.md)).
 - **Dired** (not yet): `!` offers no guessed command (`dired-guess-shell-alist-default`), `dired-do-query-replace-regexp` visits the files one after another rather than through fileloop, so `M-,` does not go on, and `Z` reports failures in the echo area rather than the `*Dired log*` buffer. wdired does not edit permissions (`wdired-allow-to-change-permissions`), and isearch and query-replace in it search the whole listing, not only the names.
