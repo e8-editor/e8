@@ -1232,7 +1232,13 @@
           directory: directory ?? undefined,
           env: pairs,
           // A buffer for standard error, as make-process's :stderr, or whether it comes in as output.
-          stderr: typeof stderr === "boolean" || stderr === undefined || stderr === null ? stderr !== false : nameOf(stderr),
+          // or a pipe process to send it to.
+          stderr:
+            stderr instanceof Process
+              ? stderr
+              : typeof stderr === "boolean" || stderr === undefined || stderr === null
+                ? stderr !== false
+                : nameOf(stderr),
           pty: type === "pty",
           coding: coding ?? undefined,
         },
@@ -1250,6 +1256,18 @@
           service: String(service === true ? "t" : service),
           server: Boolean(server),
           coding: coding ?? undefined,
+        },
+        filter ?? undefined,
+        sentinel ?? undefined,
+      );
+    },
+    makePipeProcess({ name, buffer, filter, sentinel, coding, noquery = false }) {
+      return native.makePipeProcess(
+        {
+          name: String(name),
+          buffer: buffer === undefined || buffer === null ? undefined : nameOf(buffer),
+          coding: coding ?? undefined,
+          noquery: Boolean(noquery),
         },
         filter ?? undefined,
         sentinel ?? undefined,

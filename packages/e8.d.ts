@@ -15264,6 +15264,107 @@ declare global {
     function processPlist(process: ProcessLike): Value[];
     /** Replace a process's property list, as set-process-plist. Returns it. */
     function setProcessPlist(process: ProcessLike, plist: Value[]): Value[];
+    /**
+     * Run a program with text of the current buffer as its input and wait
+     * for it, as Emacs's call-process-region: the text from `start` to
+     * `end`, within the accessible portion, or the whole buffer for a
+     * `start` of null, or `start` itself if it is a string. `del` deletes
+     * the region first. What the program writes goes where `destination`
+     * says, as call-process's: true for point in the current buffer, null
+     * to throw it away, 0 or another integer to throw it away without waiting, a buffer or
+     * its name for point in that buffer, `[":file", FILE]` for a file, or
+     * `[DESTINATION, STDERR]` to send standard error elsewhere, STDERR
+     * null to throw it away, true to keep it with the output, or a file
+     * name. `display` is accepted and ignored. Returns the exit code, a
+     * description of the signal that ended the program, as "Killed: 9",
+     * or undefined if not waited for. Asks the agent's permission first.
+     */
+    function callProcessRegion(start: number | string | null, end: number | null, program: string, del?: boolean | null, destination?: CallProcessDestination, display?: boolean | null, ...args: string[]): number | string | undefined;
+    /**
+     * Set whether a process's buffer takes on the coding its output is
+     * decoded in, as set-process-inherit-coding-system-flag: E8 keeps the
+     * flag, which decides nothing yet. Returns it.
+     */
+    function setProcessInheritCodingSystemFlag(process: ProcessLike, flag: Value): Value;
+    /**
+     * A process's process-inherit-coding-system-flag: set at its start if
+     * it has a buffer and inherit-process-coding-system is.
+     */
+    function processInheritCodingSystemFlag(process: ProcessLike): boolean;
+    /**
+     * Whether a process on a terminal has given it to a job of its own, as
+     * process-running-child-p: the job's process group id if so,
+     * undefined if not, and true where E8 cannot tell, as for a program
+     * on pipes. An error for a connection or pipe process.
+     */
+    function processRunningChildP(process: ProcessLike): number | true | undefined;
+    /**
+     * Whether the editor is waiting for the user to type, as
+     * waiting-for-user-input-p: true in a filter, sentinel or timer run
+     * while the command loop waits for a key, false in one run from
+     * acceptProcessOutput or sleepFor, or while a command runs.
+     */
+    function waitingForUserInputP(): boolean;
+    /**
+     * The names of the signals this system has, as signal-names: without
+     * "SIG", the highest numbered first, and "EXIT", signal 0, last;
+     * on Linux the real-time ones first, as "RTMAX" and "RTMIN+1".
+     * signalProcess takes each but those.
+     */
+    function signalNames(): string[];
+    /**
+     * The ids of the processes running on this machine, as
+     * list-system-processes, in increasing order.
+     */
+    function listSystemProcesses(): number[];
+    /**
+     * What the system says of a process of this machine, as
+     * process-attributes: [KEY, VALUE] pairs, as euid, user, egid, group,
+     * comm, state, ppid, pgrp, ttname, tpgid, majflt, utime, stime, time,
+     * nice, start, etime, vsize, rss, thcount and args, with sess, minflt,
+     * pri, pcpu, pmem and the children's times on Linux. Sizes are in
+     * kilobytes, times in seconds, `start` in seconds since 1970. What the
+     * system will not say of another user's process is left out;
+     * undefined if there is no such process.
+     */
+    function processAttributes(pid: number): [string, number | string][] | undefined;
+    /**
+     * An environment variable's value, as getenv-internal: from `env`, a
+     * list of "NAME=VALUE" strings, if given, true for one listed as
+     * "NAME" alone, which unsets it; else from process-environment if it
+     * is set, else E8's own environment. Undefined if it is not set.
+     */
+    function getenvInternal(variable: string, env?: string[]): string | true | undefined;
+    /**
+     * An address as Emacs writes one, as format-network-address: from
+     * `[a, b, c, d, port]` "a.b.c.d:port", from eight 16-bit words and a
+     * port "[x:x:x:x:x:x:x:x]:port", without the port if left out or with
+     * `omitPort`; a string, a local socket's name, as itself. Undefined
+     * for anything else.
+     */
+    function formatNetworkAddress(address: number[] | string, omitPort?: boolean): string | undefined;
+    /**
+     * The addresses a host name has, as network-lookup-address-info, each
+     * as Emacs writes one, with a port of 0: only IPv4 or IPv6 ones for a
+     * `family` of "ipv4" or "ipv6", and with `hints` "numeric" only if the
+     * name is itself an address. Undefined if it has none.
+     */
+    function networkLookupAddressInfo(name: string, family?: "ipv4" | "ipv6" | null, hints?: "numeric" | null): number[][] | undefined;
+    /**
+     * The machine's network interfaces' addresses, as network-interface-list:
+     * [NAME, ADDRESS] for each, or with `full` [NAME, ADDRESS, BROADCAST,
+     * NETMASK], each address as Emacs writes one; only IPv4 or IPv6 ones
+     * for a `family` of "ipv4" or "ipv6".
+     */
+    function networkInterfaceList(full?: boolean | null, family?: "ipv4" | "ipv6" | null): [string, ...number[][]][];
+    /**
+     * What the system says of a network interface, as
+     * network-interface-info: [ADDRESS, BROADCAST, NETMASK, HARDWARE,
+     * FLAGS], the addresses IPv4 ones as Emacs writes them, HARDWARE its
+     * type and bytes, FLAGS names such as "up" and "loopback", each null
+     * if it has none. Undefined if there is no such interface.
+     */
+    function networkInterfaceInfo(ifname: string): [number[] | null, number[] | null, number[] | null, [number, number[]] | null, string[]] | undefined;
     function removeTextProperty(start: number, end: number, name: string): void;
     /**
      * Start a group of changes to the current buffer that can be taken back as
@@ -17045,9 +17146,11 @@ declare global {
       /**
        * Whether standard error comes in as output too: true by default; on a
        * pseudo-terminal it always does. A buffer instead takes it on its own,
-       * made if there is none, as make-process's :stderr; on pipes only.
+       * made if there is none, as make-process's :stderr; on pipes only. A
+       * pipe process from makePipeProcess takes it as its output, on pipes
+       * or a terminal, and closes when the program has ended.
        */
-      stderr?: boolean | BufferLike;
+      stderr?: boolean | BufferLike | Process;
       /**
        * A pseudo-terminal, "pty", as a shell or a program that asks questions
        * wants, or pipes, "pipe"; as process-connection-type says by default.
@@ -17056,6 +17159,32 @@ declare global {
       /** How its output is decoded and its input encoded: one coding system, or [decoding, encoding]. */
       coding?: string | [string, string];
     }
+    /** What makePipeProcess makes, as make-pipe-process takes it. */
+    interface PipeProcessDefinition {
+      name: string;
+      /** The buffer its output goes into, made if there is none. */
+      buffer?: BufferLike;
+      filter?: ((process: Process, output: string) => void) | string | symbol | true | null;
+      /** Told "finished\n" when the program writing to it has ended, or it is deleted. */
+      sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
+      coding?: string | [string, string];
+      /** Whether exiting E8 goes ahead without asking while it is open. */
+      noquery?: boolean;
+    }
+    /**
+     * Where callProcessRegion puts what a program writes, as call-process's
+     * destination: true for point in the current buffer, null to throw it
+     * away, 0 or another integer to throw it away without waiting, a buffer or its name,
+     * [":file", FILE], or [DESTINATION, STDERR] with STDERR null to throw
+     * standard error away, true to keep it with the output, or a file name.
+     */
+    type CallProcessDestination =
+      | true
+      | null
+      | number
+      | BufferLike
+      | [":file", string]
+      | [true | null | number | BufferLike | [":file", string], null | true | string];
     /** What makeNetworkProcess opens, as make-network-process takes it. */
     interface NetworkProcessDefinition {
       name: string;
@@ -17087,6 +17216,14 @@ declare global {
      */
     function makeNetworkProcess(definition: NetworkProcessDefinition): Process;
     /**
+     * Make a pipe process, as make-pipe-process, and return it: no program,
+     * its output what a program started with it as makeProcess's `stderr`
+     * writes to standard error, into its buffer or to its filter. Its type
+     * is "pipe", its status "open" until that program has ended, or it is
+     * deleted, and then "closed". What is sent to it goes nowhere.
+     */
+    function makePipeProcess(definition: PipeProcessDefinition): Process;
+    /**
      * "run", "exit" or "signal", for a connection "open" or "closed", for a
      * server "listen", or undefined for a name no listed process has. A
      * process that has gone answers still, as these all do.
@@ -17099,8 +17236,8 @@ declare global {
     function setProcessCodingSystem(process: ProcessLike, decoding?: string, encoding?: string): void;
     /** The name of a process's terminal, as process-tty-name, if it talks through one. */
     function processTtyName(process: ProcessLike): string | undefined;
-    /** "real" for a program, "network" for a connection or server, as process-type. */
-    function processType(process: ProcessLike): "real" | "network" | undefined;
+    /** "real" for a program, "network" for a connection or server, "pipe" for a pipe process, as process-type. */
+    function processType(process: ProcessLike): "real" | "network" | "pipe" | undefined;
     /** [host, service] for a connection, a part of it by key ("host", "service", "remote", "server"), or true for a program, as process-contact. */
     function processContact(process: ProcessLike, key?: string): Value;
     /** Tell a process's terminal its size, as set-process-window-size; false without one. */

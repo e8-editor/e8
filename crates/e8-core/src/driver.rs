@@ -406,7 +406,7 @@ impl<D: FnMut(&mut Editor) -> Vec<FrameDescription>> NestedLoop for CommandLoop<
                 }
                 Err(TryRecvError::Empty) => {
                     // Nothing waiting: timers, then show where things are, then wait.
-                    guarded(ed, |ed| ed.run_timers());
+                    guarded(ed, |ed| ed.run_timers_awaiting_input());
                     if done(ed) {
                         return Ok(());
                     }

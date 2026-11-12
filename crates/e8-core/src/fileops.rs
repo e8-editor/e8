@@ -135,7 +135,7 @@ pub(crate) fn user_name(uid: u32) -> String {
 }
 
 #[cfg(unix)]
-fn group_name(gid: u32) -> String {
+pub(crate) fn group_name(gid: u32) -> String {
     let mut buf = vec![0u8; 4096];
     let mut grp: libc::group = unsafe { std::mem::zeroed() };
     let mut result = std::ptr::null_mut();
