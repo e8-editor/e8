@@ -454,6 +454,11 @@ impl Editor {
     pub fn window_pixel_rect(&self, id: WindowId) -> Option<WindowRect> {
         let frame = self.window_frame(id)?;
         let (width, height) = self.frame_units_of(frame);
+        // The minibuffer's window lies below the frame's windows, as many lines as it shows.
+        if id == MINIBUFFER_WINDOW {
+            let lines = self.mini_window_lines() as f32 * self.cell().1;
+            return Some(WindowRect { id, x: 0.0, y: height as f32, width: width as f32, height: lines, divider: false });
+        }
         self.frame_tree(frame)?.all_rects(0.0, 0.0, width as f32, height as f32, (1.0, 1.0)).into_iter().find(|r| r.id == id)
     }
 
