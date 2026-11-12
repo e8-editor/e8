@@ -15332,8 +15332,6 @@ declare global {
      * default font's, as frame-char-width and frame-char-height.
      */
     function frameCharSize(): [width: number, height: number];
-    /** Make windows the same size as their neighbours, as balance-windows does. */
-    function balanceWindows(): void;
     /** The windows in cyclic order, left to right and top to bottom, as other-window visits them. */
     function windowList(): Window[];
     /**

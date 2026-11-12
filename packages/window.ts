@@ -2549,7 +2549,8 @@ const lispDivide = (a: number, b: number): number => (Number.isInteger(a) && Num
  * can have, as balance-windows-2, then balances their children.
  */
 function balanceWindows2(window: e8.Window, horizontal: boolean): void {
-  const charSize = isNil(e8.variable("window-resize-pixelwise")) ? frameCharSize(horizontal) : 1;
+  // A whole number of units, as Emacs's frame-char-size is, so what is shared out adds up.
+  const charSize = isNil(e8.variable("window-resize-pixelwise")) ? Math.max(1, Math.floor(frameCharSize(horizontal))) : 1;
   const first = windowChild(window)!;
   let numberOfChildren = 0;
   let rest = 0;
@@ -2800,6 +2801,14 @@ export function countScreenLines(beg?: number | null, end?: number | null, count
   const b = beg ?? e8.pointMin();
   const f = end ?? e8.pointMax();
   if (b === f) return 0;
+  // As Emacs, BEG and END may lie outside the narrowing.
+  return e8.saveRestriction(() => {
+    e8.widen();
+    return countScreenLinesWidened(b, f, countFinalNewline, w);
+  });
+}
+
+function countScreenLinesWidened(b: number, f: number, countFinalNewline: boolean, w: e8.Window): number {
   const start = Math.min(b, f);
   const finish = Math.max(b, f);
   const last = !countFinalNewline && e8.charBefore(finish) === "\n" ? finish - 1 : finish;
@@ -2832,7 +2841,7 @@ e8.defun("window-buffer-height", (window?: e8.Window) => windowBufferHeight(wind
 function endOfLastNonBlankLine(): number {
   let end = e8.pointMax();
   const min = e8.pointMin();
-  while (end > min && " \t\n\r".includes(e8.charBefore(end) ?? "x")) end--;
+  while (end > min && " \t\n".includes(e8.charBefore(end) ?? "x")) end--;
   return end;
 }
 
@@ -2844,8 +2853,16 @@ function endOfLastNonBlankLine(): number {
  * frame.
  */
 function windowTextHeight(window: e8.Window): number {
-  const [from, to] = e8.withCurrentBuffer(e8.windowBuffer(window)!, () => [e8.pointMin(), endOfLastNonBlankLine()]);
-  const text = Math.min(e8.windowTextPixelSize(window, from, to)[1], framePixelSize(e8.windowFrame(window), false));
+  // No further than a frame's height of lines, as Emacs's Y-LIMIT stops it, so a long buffer is not laid out whole.
+  const frameHeight = framePixelSize(e8.windowFrame(window), false);
+  const lines = Math.ceil(frameHeight / frameCharSize(false)) + 1;
+  const [from, to] = e8.withCurrentBuffer(e8.windowBuffer(window)!, () => {
+    let limit = e8.pointMin();
+    for (let n = 0; n < lines && limit < e8.pointMax(); n++) limit = e8.lineEndPosition(limit) + 1;
+    return [e8.pointMin(), Math.min(endOfLastNonBlankLine(), limit)];
+  });
+  // An empty text is no rows, as Emacs measures it.
+  const text = from >= to ? 0 : Math.min(e8.windowTextPixelSize(window, from, to)[1], frameHeight);
   // What of the window is not text: its mode line and header line, and
   // the room the front end leaves around the text.
   return text + e8.windowPixelHeight(window) - e8.windowBodyPixelHeight(window);
@@ -2919,7 +2936,9 @@ export function fitWindowToBuffer(
         ? Math.min(totalHeight + windowMaxDelta(w, false, w, undefined, true, false, pixelwise), pixelwise ? lineHeight * maxHeight : maxHeight)
         : totalHeight + windowMaxDelta(w, false, w, undefined, true, false, pixelwise);
     let height = windowTextHeight(w);
-    if (!pixelwise) height = Math.ceil(height / charHeight);
+    // In lines: the lines to add or take for the units the text needs, so
+    // a window whose units are not whole lines shows its last line whole.
+    if (!pixelwise) height = totalHeight + Math.ceil((height - e8.windowPixelHeight(w)) / charHeight);
     height = Math.max(least, Math.min(most, height));
     if (height !== totalHeight) {
       windowPreserveSize(w);

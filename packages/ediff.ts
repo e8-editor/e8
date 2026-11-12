@@ -28,6 +28,7 @@
 
 import { allMatches, PerBuffer } from "subr";
 import { ediffCommands, ediffOtherBuffer } from "ediff-hook";
+import { balanceWindows } from "window";
 
 type BufType = "A" | "B" | "C" | "Ancestor";
 const BUF_TYPES: BufType[] = ["A", "B", "C", "Ancestor"];
@@ -887,7 +888,7 @@ function setupWindowsPlainCompare(s: Session): void {
     e8.setWindowBuffer(windC, s.buffers.C!);
   }
   // As window-combination-resize gives the variants equal shares.
-  e8.balanceWindows();
+  balanceWindows();
   s.windows = { A: windA, B: windB, C: windC };
   const control = e8.splitRootWindow("below", -controlHeight(s));
   e8.selectWindow(control);
@@ -2251,7 +2252,7 @@ const cleanupMess = e8.defun("ediff-cleanup-mess", () => {
     if (bufferWindow(A) !== undefined || bufferWindow(B) !== undefined) e8.selectWindow(e8.splitWindow(undefined, split));
     e8.call("switch-to-buffer", C.name!);
   }
-  e8.balanceWindows();
+  balanceWindows();
   clearMessage();
 });
 e8.addHook("ediff-quit-hook", () => e8.funcall(cleanupMess));
