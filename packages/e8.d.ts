@@ -15854,16 +15854,6 @@ declare global {
      */
     function verticalMotion(lines: number | [cols: number, lines: number], window?: WindowLike | null, curCol?: number | null): number;
     /**
-     * Where text reaches a place on the screen, as compute-motion: from
-     * `from`, shown at `fromPos` ([column, row]), through the current
-     * buffer to `to` or the place `toPos`, whichever comes first, lines
-     * continued after `width` columns (the window's text width by default)
-     * or truncated as `window` truncates them, `offsets` being
-     * [hscroll, tabOffset]. Gives [position, column, row, the column before
-     * the last character, whether the position starts a continuation row].
-     */
-    function computeMotion(from: number, fromPos: [number, number], to: number, toPos: [number, number], width?: number | null, offsets?: [number, number] | null, window?: WindowLike | null): [number, number, number, number, boolean];
-    /**
      * How wide the selected window's line numbers are, as
      * line-number-display-width: in digits; with "columns", in columns with
      * the space either side; with any other true value, in the front
@@ -15884,9 +15874,10 @@ declare global {
      * [the right edge of its last character from the window's left, its
      * bottom], in the front end's units, or with `inverse` the space right
      * of the character, or with `left` its first character's left edge.
-     * Rows the window's bottom cuts off are left out. `body` is accepted
-     * as in Emacs: E8's windows have no lines above their text but the
-     * header line, which rows are counted below either way.
+     * With `body`, bottoms are from the top of the text and rows the text's
+     * bottom cuts off are left out; without, from the window's top, and
+     * rows the window's bottom cuts off. Rows past the end of the text
+     * are empty. A header line is not one of the rows.
      */
     function windowLinesPixelDimensions(window?: WindowLike | null, first?: number | null, last?: number | null, body?: boolean | null, inverse?: boolean | null, left?: boolean | null): [number, number][] | undefined;
     /**
@@ -17466,6 +17457,18 @@ declare global {
     }
     /** Where a window's text ends, as window-end: the position after the last character it shows, its last row counted even if partly in sight. */
     function windowEnd(window?: WindowLike): number;
+    /**
+     * Where text reaches a place on the screen, as compute-motion: from
+     * `from`, shown at `fromPos` ([column, row]), through the current buffer
+     * to `to` or the place `toPos` (the window's bottom right if null),
+     * whichever comes first, invisible text skipped, lines continued after
+     * `width` columns (the window's body less a column on a terminal by
+     * default) or truncated as truncate-lines says or when `offsets`, being
+     * [hscroll, tabOffset], scroll. Gives [position, column, row, the column
+     * before the last character, whether the position starts a continuation
+     * row].
+     */
+    function computeMotion(from: number, fromPos: [number, number], to: number, toPos: [number, number] | null, width?: number | null, offsets?: [number, number] | null, window?: WindowLike | null): [number, number, number, number, boolean];
     /** Whether a position, point by default, shows in a window, as pos-visible-in-window-p; with `partially`, a row partly in sight counts. */
     function posVisibleInWindowP(pos?: number, window?: WindowLike, partially?: boolean): true | undefined;
     /** Where a position, point by default, shows in a window, as posn-at-point, or undefined if it is not in sight. */

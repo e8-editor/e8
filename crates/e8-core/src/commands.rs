@@ -674,12 +674,17 @@ fn row_column(ed: &Editor, b: &Buffer, row: &crate::rows::Row, pos: usize) -> f3
 /// with a goal in pixels: before the glyph that reaches past it, or the
 /// row's end; on a continued row, its last character rather than its end,
 /// which shows at the start of the next.
-pub(crate) fn position_at_x(ed: &Editor, b: &Buffer, row: &crate::rows::Row, goal: f32) -> usize {
+fn position_at_x(ed: &Editor, b: &Buffer, row: &crate::rows::Row, goal: f32) -> usize {
+    position_at_x_in(ed, ed.selected_window(), b, row, goal)
+}
+
+/// As [`position_at_x`], in a row as a window lays it out.
+pub(crate) fn position_at_x_in(ed: &Editor, window: crate::window::WindowId, b: &Buffer, row: &crate::rows::Row, goal: f32) -> usize {
     let tab = ed.tab_width_in(b);
     let glyphs = crate::display::row_glyphs(row, tab);
     let widths = ed.glyph_columns(row, &glyphs, tab);
     // A right-to-left row is laid out from the window's right edge.
-    let mut x = ed.row_offset_in(ed.selected_window(), row);
+    let mut x = ed.row_offset_in(window, row);
     for (i, glyph) in glyphs.iter().enumerate() {
         if x + widths[i] > goal {
             // An ellipsis or a string stands before the text after it.

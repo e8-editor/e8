@@ -241,28 +241,60 @@ impl Editor {
     }
 
     /// Runs `window-scroll-functions` for a window with its start, as
-    /// Emacs's `run-window-scroll-functions`.
-    pub fn run_window_scroll_functions(&mut self, window: WindowId) -> crate::error::Result<()> {
-        let Some(start) = self.window_start(window) else { return Ok(()) };
-        if let Some(w) = self.window_mut(window) {
-            w.scrolled_to = Some((w.buffer, start));
+    /// Emacs's `run-window-scroll-functions`: with the window's buffer
+    /// current, each function in turn, an error in one shown and the rest
+    /// still run. Notes the start they ran for, as it is once they have
+    /// run, so a function that moves it does not run them again.
+    pub fn run_window_scroll_functions(&mut self, window: WindowId) {
+        let Some(start) = self.window_start(window) else { return };
+        let Some(index) = self.window(window).and_then(|w| self.buffer_with_id(w.buffer)) else { return };
+        let functions = self.hook_functions_in(&self.buffers[index], "window-scroll-functions");
+        if !functions.is_empty() {
+            let args = [Value::Window(window), Value::Number(start as f64)];
+            self.with_current_buffer(index, |ed| {
+                for f in functions {
+                    if let Err(e) = f.call(ed, &args) {
+                        ed.message(format!("Error in window-scroll-functions ({}): {e}", f.name().unwrap_or("lambda")));
+                    }
+                }
+            });
         }
-        self.run_hook_with_args("window-scroll-functions", &[Value::Window(window), Value::Number(start as f64)])
+        self.note_scrolled_to(window);
     }
 
-    /// Runs `window-scroll-functions` for each window whose buffer or
-    /// start changed since it last ran, as redisplay does in Emacs.
+    /// Notes where a window starts now, for telling when it starts elsewhere.
+    fn note_scrolled_to(&mut self, window: WindowId) {
+        let Some(start) = self.window_start(window) else { return };
+        let Some(w) = self.window(window) else { return };
+        let (buffer, old) = (w.buffer, w.scrolled_to);
+        if let Some((b, marker)) = old
+            && let Some(i) = self.buffer_with_id(b)
+        {
+            self.buffers[i].remove_marker(marker);
+        }
+        let Some(i) = self.buffer_with_id(buffer) else { return };
+        let marker = self.buffers[i].make_marker(start, false);
+        if let Some(w) = self.window_mut(window) {
+            w.scrolled_to = Some((buffer, marker));
+        }
+    }
+
+    /// Whether a window starts elsewhere than where `window-scroll-functions`
+    /// last ran for it: in another buffer, or at another place in the
+    /// text, edits since having moved the place with the text.
+    fn starts_elsewhere(&self, window: WindowId) -> bool {
+        let Some(w) = self.window(window) else { return false };
+        let Some((buffer, marker)) = w.scrolled_to.filter(|(b, _)| *b == w.buffer) else { return true };
+        let Some(i) = self.buffer_with_id(buffer) else { return true };
+        self.buffers[i].marker(marker) != self.window_start(window)
+    }
+
+    /// Runs `window-scroll-functions` for each window that starts elsewhere
+    /// than when they last ran for it, as redisplay does in Emacs.
     pub(crate) fn run_scroll_functions_where_moved(&mut self) {
-        let moved: Vec<WindowId> = self
-            .window_views()
-            .into_iter()
-            .filter(|v| self.window(v.id).and_then(|w| w.scrolled_to) != self.window_start(v.id).map(|s| (v.buffer.id(), s)))
-            .map(|v| v.id)
-            .collect();
+        let moved: Vec<WindowId> = self.window_views().into_iter().map(|v| v.id).filter(|&w| self.starts_elsewhere(w)).collect();
         for window in moved {
-            if let Err(e) = self.run_window_scroll_functions(window) {
-                self.message(format!("Error in window-scroll-functions: {e}"));
-            }
+            self.run_window_scroll_functions(window);
         }
     }
 

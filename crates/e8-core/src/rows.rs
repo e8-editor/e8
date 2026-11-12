@@ -487,6 +487,23 @@ impl Editor {
         self.rows_in(b, b.top_line, count, dark, wrap)
     }
 
+    /// Whether a window showing a buffer truncates lines as `truncate-lines`
+    /// says, or as `truncate-partial-width-windows` says when the window
+    /// shares the frame's width with others: a number when the window is
+    /// narrower than it, nil never, and any other value always.
+    pub(crate) fn truncates_lines(&self, window: crate::window::WindowId, b: &Buffer) -> bool {
+        if self.variable_in(b, "truncate-lines").is_some_and(|v| v.is_true()) {
+            return true;
+        }
+        let width = self.window(window).map_or(80, |w| w.width);
+        let partial_truncates = match self.variable_in(b, "truncate-partial-width-windows") {
+            Some(Value::Number(limit)) => (width as f64) < limit,
+            Some(v) => v.is_true(),
+            None => width < 50,
+        };
+        partial_truncates && self.window_tree.is_partial_width(window)
+    }
+
     /// How a window showing a buffer wraps lines, or `None` if it truncates
     /// them: when `truncate-lines` is on, or when the window shares the
     /// frame's width with others and `truncate-partial-width-windows` says
@@ -495,19 +512,10 @@ impl Editor {
     /// window's width, leaving the last column for the continuation mark.
     pub(crate) fn wrap_in(&self, window: crate::window::WindowId, b: &Buffer) -> Option<Wrap> {
         // A window scrolled horizontally truncates, as Emacs's does.
-        if self.variable_in(b, "truncate-lines").is_some_and(|v| v.is_true()) || self.hscrolled(window) {
+        if self.truncates_lines(window, b) || self.hscrolled(window) {
             return None;
         }
         let width = self.window(window).map_or(80, |w| w.width);
-        let partial = self.window_tree.is_partial_width(window);
-        let partial_truncates = match self.variable_in(b, "truncate-partial-width-windows") {
-            Some(Value::Number(limit)) => (width as f64) < limit,
-            Some(v) => v.is_true(),
-            None => width < 50,
-        };
-        if partial && partial_truncates {
-            return None;
-        }
         let words = self.variable_in(b, "word-wrap").is_some_and(|v| v.is_true());
         let numbers = self.line_number_columns(window, b);
         // Without fringes the last column holds the continuation mark.

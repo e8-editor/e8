@@ -1587,7 +1587,8 @@ export function otherWindowForScrolling(): e8.Window {
   const scrollDefault = e8.variable("other-window-scroll-default");
   let window: e8.Value | undefined;
   if (selected === e8.minibufferWindow() && !isNil(scrollWindow)) window = scrollWindow;
-  else if (!isNil(scrollBuffer) && e8.bufferLiveP(scrollBuffer as e8.BufferLike)) {
+  // A buffer, not a name, as Emacs's BUFFERP asks.
+  else if (typeof scrollBuffer === "object" && scrollBuffer !== null && e8.bufferLiveP(scrollBuffer as e8.BufferLike)) {
     window = getBufferWindowList(scrollBuffer as e8.BufferLike)[0] ?? displayBuffer(scrollBuffer as e8.BufferLike, true);
   } else if (typeof scrollDefault === "function" || (typeof scrollDefault === "string" && e8.fboundp(scrollDefault))) {
     window = e8.funcall(scrollDefault as string);

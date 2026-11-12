@@ -50,8 +50,9 @@ pub(crate) struct Window {
     pub(crate) cursor_shown: bool,
     /// How far it is scrolled horizontally.
     pub(crate) hscroll: crate::scroll::Hscroll,
-    /// The buffer and start `window-scroll-functions` last ran for.
-    pub(crate) scrolled_to: Option<(u64, usize)>,
+    /// The buffer `window-scroll-functions` last ran for, and a marker in
+    /// it at the start they ran for, which edits move as they move the text.
+    pub(crate) scrolled_to: Option<(u64, u64)>,
 }
 
 impl Window {

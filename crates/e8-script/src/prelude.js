@@ -1313,6 +1313,8 @@
     windowStart: (window) => native.windowStart(window ?? native.selectedWindow()),
     setWindowStart: (window, pos) => native.setWindowStart(window ?? native.selectedWindow(), pos),
     windowEnd: (window) => native.windowEnd(window ?? native.selectedWindow()),
+    computeMotion: (from, fromPos, to, toPos, width, offsets, window) =>
+      native.computeMotion(from, [...fromPos, ...(toPos ?? [])], to, width ?? null, offsets ?? null, window ?? null),
     posVisibleInWindowP: (pos, window, partially) =>
       native.posVisibleInWindowP(pos ?? native.point(), window ?? native.selectedWindow(), Boolean(partially)) || undefined,
     posnAtPoint: (pos, window) => native.posnAtPoint(pos ?? native.point(), window ?? native.selectedWindow()),

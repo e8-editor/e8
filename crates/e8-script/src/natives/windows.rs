@@ -384,9 +384,9 @@ natives! {
         let _ = cur_col;
         let window = live_window(ed, window)?;
         let (cols, lines) = match &lines {
-            EditorValue::Number(n) => (None, *n),
+            EditorValue::Number(n) if n.fract() == 0.0 => (None, *n),
             EditorValue::List(pair) if pair.len() == 2 => match (pair[0].as_number(), pair[1].as_number()) {
-                (Some(cols), Some(lines)) => (Some(cols), lines),
+                (Some(cols), Some(lines)) if lines.fract() == 0.0 => (Some(cols), lines),
                 _ => return Err(wrong_type("numberp", lines.clone())),
             },
             _ => return Err(wrong_type("fixnump", lines.clone())),
@@ -394,19 +394,18 @@ natives! {
         Ok(ed.vertical_motion(lines as i64, cols, window))
     }
 
-    /// Where text reaches a place on the screen, as compute-motion: from
-    /// `from`, shown at `fromPos` ([column, row]), through the current
-    /// buffer to `to` or the place `toPos`, whichever comes first, lines
-    /// continued after `width` columns (the window's text width by default)
-    /// or truncated as `window` truncates them, `offsets` being
-    /// [hscroll, tabOffset]. Gives [position, column, row, the column before
-    /// the last character, whether the position starts a continuation row].
-    #[ts = "(from: number, fromPos: [number, number], to: number, toPos: [number, number], width?: number | null, offsets?: [number, number] | null, window?: WindowLike | null): [number, number, number, number, boolean]"]
-    pub fn computeMotion(ed, from: usize, from_pos: Vec<f64>, to: usize, to_pos: Vec<f64>, width: Option<f64>, offsets: Option<Vec<f64>>, window: Option<Win>) -> EditorValue {
+    /// compute-motion, wrapped by the prelude, which passes the two places
+    /// as one array, as natives take at most six arguments.
+    fn computeMotion(ed, from: usize, places: Vec<f64>, to: usize, width: Option<f64>, offsets: Option<Vec<f64>>, window: Option<Win>) -> EditorValue {
         let window = live_window(ed, window)?;
         let pair = |v: &[f64]| (v.first().copied().unwrap_or(0.0) as i64, v.get(1).copied().unwrap_or(0.0) as i64);
         let offsets = offsets.as_deref().map_or((0, 0), pair);
-        let m = ed.compute_motion(from, pair(&from_pos), to, pair(&to_pos), width.map(|w| w as i64), offsets, window);
+        if offsets.0 < 0 || offsets.1 < 0 {
+            return Err(e8_core::Error::signal("args-out-of-range", "Args out of range", vec![EditorValue::Number(offsets.0 as f64), EditorValue::Number(offsets.1 as f64)]));
+        }
+        let from_pos = pair(places.get(..2).unwrap_or(&[]));
+        let to_pos = (places.len() >= 4).then(|| pair(&places[2..]));
+        let m = ed.compute_motion(from, from_pos, to, to_pos, width.map(|w| w as i64), offsets, window)?;
         Ok(EditorValue::List(vec![
             EditorValue::Number(m.pos as f64),
             EditorValue::Number(m.hpos as f64),
@@ -455,14 +454,14 @@ natives! {
     /// [the right edge of its last character from the window's left, its
     /// bottom], in the front end's units, or with `inverse` the space right
     /// of the character, or with `left` its first character's left edge.
-    /// Rows the window's bottom cuts off are left out. `body` is accepted
-    /// as in Emacs: E8's windows have no lines above their text but the
-    /// header line, which rows are counted below either way.
+    /// With `body`, bottoms are from the top of the text and rows the text's
+    /// bottom cuts off are left out; without, from the window's top, and
+    /// rows the window's bottom cuts off. Rows past the end of the text
+    /// are empty. A header line is not one of the rows.
     #[ts = "(window?: WindowLike | null, first?: number | null, last?: number | null, body?: boolean | null, inverse?: boolean | null, left?: boolean | null): [number, number][] | undefined"]
     pub fn windowLinesPixelDimensions(ed, window: Option<Win>, first: Option<usize>, last: Option<usize>, body: Option<bool>, inverse: Option<bool>, left: Option<bool>) -> Option<EditorValue> {
-        let _ = body;
         let window = live_window(ed, window)?;
-        Ok(ed.window_lines_pixel_dimensions(window, first, last, inverse == Some(true), left == Some(true)).map(|rows| {
+        Ok(ed.window_lines_pixel_dimensions(window, first, last, body == Some(true), inverse == Some(true), left == Some(true)).map(|rows| {
             EditorValue::List(rows.into_iter().map(|(x, y)| EditorValue::List(vec![EditorValue::Number(x), EditorValue::Number(y)])).collect())
         }))
     }
@@ -481,7 +480,8 @@ natives! {
     #[ts = "(window?: WindowLike | null): void"]
     pub fn runWindowScrollFunctions(ed, window: Option<Win>) {
         let window = live_window(ed, window)?;
-        ed.run_window_scroll_functions(window)
+        ed.run_window_scroll_functions(window);
+        Ok(())
     }
 
     /// Whether a value is a window, live or deleted, as windowp.
