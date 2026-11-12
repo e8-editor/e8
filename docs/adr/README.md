@@ -73,3 +73,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0069](0069-windows-as-emacs-has-them.md) Windows as Emacs has them: window.c's tree, window.el's policy, windows as objects
 - [0070](0070-processes-as-emacs-has-them.md) Processes as Emacs has them: objects, filters and sentinels set at any time, and the rest of process.c
 - [0071](0071-scrolling-as-emacs-has-it.md) Scrolling as Emacs has it: horizontal and pixel scrolling kept by the window, and screen lines
+- [0072](0072-files-as-emacs-has-them.md) Files as Emacs has them: the rest of fileio.c, dired.c and filelock.c

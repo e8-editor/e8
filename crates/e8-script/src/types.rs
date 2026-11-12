@@ -1367,6 +1367,13 @@ const API: &str = r##"
   /** Where a window's text ends, as window-end: the position after the last character it shows, its last row counted even if partly in sight. */
   function windowEnd(window?: WindowLike): number;
   /**
+   * Whether a buffer's file, the current buffer's by default, is as it was
+   * when visited or last saved, as verify-visited-file-modtime: true for a
+   * buffer visiting no file or knowing no time, false for a file deleted
+   * since.
+   */
+  function verifyVisitedFileModtime(buffer?: BufferLike | null): boolean;
+  /**
    * Where text reaches a place on the screen, as compute-motion: from
    * `from`, shown at `fromPos` ([column, row]), through the current buffer
    * to `to` or the place `toPos` (the window's bottom right if null),

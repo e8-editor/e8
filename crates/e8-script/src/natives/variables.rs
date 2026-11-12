@@ -813,27 +813,7 @@ natives! {
     pub fn fileAttributes(ed, file: String) -> Option<Record> {
         let path = ed.expand_file_name(&file);
         let Some(a) = e8_core::fileops::file_attributes(&path) else { return Ok(None) };
-        let ms = |t: std::time::SystemTime| t.duration_since(std::time::UNIX_EPOCH).map_or(0.0, |d| d.as_millis() as f64);
-        let (kind, link) = match &a.kind {
-            e8_core::fileops::FileKind::File => ("file", None),
-            e8_core::fileops::FileKind::Directory => ("directory", None),
-            e8_core::fileops::FileKind::Symlink(to) => ("symlink", Some(to.clone())),
-        };
-        Ok(Some(
-            Record::new()
-                .with("type", kind)
-                .with("linkTarget", link)
-                .with("links", a.links as f64)
-                .with("uid", a.uid)
-                .with("gid", a.gid)
-                .with("user", a.user)
-                .with("group", a.group)
-                .with("size", a.size as f64)
-                .with("modified", ms(a.modified))
-                .with("accessed", ms(a.accessed))
-                .with("modes", a.modes)
-                .with("inode", a.inode as f64),
-        ))
+        Ok(Some(attributes_record(&a)))
     }
 
     /// Where a file is auto-saved: #name# beside it.
@@ -845,6 +825,30 @@ natives! {
     pub fn hasNewerAutoSave(ed, file: String) -> bool {
         Ok(Editor::has_newer_auto_save(Path::new(&file)))
     }
+}
+
+/// A file's attributes as scripts see them, as [`fileAttributes`] gives them.
+pub(crate) fn attributes_record(a: &e8_core::fileops::FileAttributes) -> Record {
+    // To the nanosecond as far as a number holds it, so a time read here can be set back exactly.
+    let ms = |t: std::time::SystemTime| t.duration_since(std::time::UNIX_EPOCH).map_or(0.0, |d| d.as_nanos() as f64 / 1e6);
+    let (kind, link) = match &a.kind {
+        e8_core::fileops::FileKind::File => ("file", None),
+        e8_core::fileops::FileKind::Directory => ("directory", None),
+        e8_core::fileops::FileKind::Symlink(to) => ("symlink", Some(to.clone())),
+    };
+    Record::new()
+        .with("type", kind)
+        .with("linkTarget", link)
+        .with("links", a.links as f64)
+        .with("uid", a.uid)
+        .with("gid", a.gid)
+        .with("user", a.user.clone())
+        .with("group", a.group.clone())
+        .with("size", a.size as f64)
+        .with("modified", ms(a.modified))
+        .with("accessed", ms(a.accessed))
+        .with("modes", a.modes.clone())
+        .with("inode", a.inode as f64)
 }
 
 /// A binding as scripts see it: a command's name, a prefix keymap, or the

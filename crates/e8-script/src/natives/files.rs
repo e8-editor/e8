@@ -105,6 +105,135 @@ natives! {
         })
     }
 
+    /// The permissions new files may have, as default-file-modes: those
+    /// the umask leaves, such as 0o755.
+    pub fn defaultFileModes(ed) -> u32 {
+        Ok(e8_core::vfs::default_file_modes())
+    }
+
+    /// Sets the permissions new files may have, as set-default-file-modes:
+    /// the umask, for E8 and the programs it starts afterwards.
+    pub fn setDefaultFileModes(ed, modes: u32) {
+        e8_core::vfs::set_default_file_modes(modes);
+        Ok(())
+    }
+
+    fn verifyVisitedFileModtime(ed) -> bool {
+        ed.verify_visited_file_modtime()
+    }
+
+    /// When the current buffer's file was last modified as the buffer
+    /// knows it, in milliseconds since 1970, as visited-file-modtime: 0 if
+    /// it knows none, and -1 if the file did not exist when visited.
+    pub fn visitedFileModtime(ed) -> f64 {
+        Ok(match ed.buffer().visited_file_modtime() {
+            Ok(Some(t)) => milliseconds(t),
+            Ok(None) => -1.0,
+            Err(()) => 0.0,
+        })
+    }
+
+    /// Takes the current buffer's file's modification time now, or `time`
+    /// in milliseconds since 1970, as the one it was visited at, as
+    /// set-visited-file-modtime: 0 and -1, as visitedFileModtime gives
+    /// them, for none known and a file that does not exist. A time that is
+    /// the file's own, as visitedFileModtime or fileAttributes gave it, is
+    /// taken as the file has it, to the nanosecond.
+    #[ts = "(time?: number | null): void"]
+    pub fn setVisitedFileModtime(ed, time: Option<f64>) {
+        match time {
+            None => ed.buffer_mut().set_visited_file_modtime(),
+            Some(0.0) => ed.buffer_mut().clear_visited_file_modtime(),
+            Some(-1.0) => ed.buffer_mut().set_visited_file_modtime_to(None),
+            Some(ms) => {
+                let now = ed.buffer().visited_file_modtime_now().filter(|t| milliseconds(*t) == ms);
+                let time = now.unwrap_or_else(|| {
+                    let nanos = (ms * 1e6).round();
+                    if nanos >= 0.0 { std::time::UNIX_EPOCH + std::time::Duration::from_nanos(nanos as u64) } else { std::time::UNIX_EPOCH - std::time::Duration::from_nanos(-nanos as u64) }
+                });
+                ed.buffer_mut().set_visited_file_modtime_to(Some(time));
+            }
+        }
+        Ok(())
+    }
+
+    /// Forgets when the current buffer's file was modified, as
+    /// clear-visited-file-modtime, so it is taken as unchanged.
+    pub fn clearVisitedFileModtime(ed) {
+        ed.buffer_mut().clear_visited_file_modtime();
+        Ok(())
+    }
+
+    /// Signals the error reading a file would, as access-file: file-missing
+    /// or permission-denied, `string` saying what was being done.
+    pub fn accessFile(ed, file: String, string: String) {
+        ed.access_file(&file, &string)
+    }
+
+    /// Completes a file name in a directory, as file-name-completion: the
+    /// longest start the names beginning with `file` share, a directory's
+    /// with a slash; true if `file` is the one name; undefined if none
+    /// begins so. Names completion-ignored-extensions lists, and . and ..,
+    /// count only when nothing else does; `predicate` is called with each
+    /// name, default-directory being the directory.
+    #[ts = "(file: string, directory: string, predicate?: ((name: string) => unknown) | string | null): string | true | undefined"]
+    pub fn fileNameCompletion(ed, file: String, dir: String, predicate: EditorValue) -> Option<EditorValue> {
+        let predicate = predicate.is_true().then_some(predicate);
+        Ok(match ed.file_name_completion(&file, &dir, predicate.as_ref())? {
+            EditorValue::Null => None,
+            v => Some(v),
+        })
+    }
+
+    /// The names in a directory that start with `file`, as
+    /// file-name-all-completions: . and .. among them, a directory's ending
+    /// in a slash.
+    pub fn fileNameAllCompletions(ed, file: String, dir: String) -> Vec<String> {
+        ed.file_name_all_completions(&file, &dir)
+    }
+
+    /// A directory's names with their attributes, as
+    /// directory-files-and-attributes: each `[name, attributes]`, as
+    /// directoryFiles and fileAttributes give them. `idFormat` is accepted
+    /// as in Emacs; the attributes give both ids and names.
+    #[ts = "(dir: string, full?: boolean | null, match?: string | null, nosort?: boolean | null, idFormat?: unknown, count?: number | null): [string, FileAttributes | undefined][]"]
+    pub fn directoryFilesAndAttributes(ed, dir: String, full: Option<bool>, pattern: Option<String>, nosort: Option<bool>, id_format: EditorValue, count: Option<usize>) -> Vec<Field> {
+        let args = vec![
+            EditorValue::Bool(full == Some(true)),
+            pattern.clone().map_or(EditorValue::Null, EditorValue::Str),
+            EditorValue::Bool(nosort == Some(true)),
+            id_format,
+            count.map_or(EditorValue::Null, |c| EditorValue::Number(c as f64)),
+        ];
+        if let Some(r) = ed.directory_files_and_attributes_handled(&dir, args) {
+            return Ok(match r? {
+                EditorValue::List(items) => items.into_iter().map(Field::from).collect(),
+                _ => Vec::new(),
+            });
+        }
+        let base = ed.expand_file_name(&dir).display().to_string();
+        let names = ed.directory_files(&base, full == Some(true), pattern.as_deref(), nosort == Some(true), count)?;
+        Ok(names
+            .into_iter()
+            .map(|name| {
+                let path = std::path::Path::new(&base).join(&name);
+                let attributes: Field = e8_core::fileops::file_attributes(&path).map(|a| crate::natives::variables::attributes_record(&a)).into();
+                Field::List(vec![Field::from(name), attributes])
+            })
+            .collect())
+    }
+
+    /// Whether one entry of directoryFilesAndAttributes comes before
+    /// another by name, as file-attributes-lessp.
+    #[ts = "(a: [string, ...unknown[]], b: [string, ...unknown[]]): boolean"]
+    pub fn fileAttributesLessp(ed, a: Vec<EditorValue>, b: Vec<EditorValue>) -> bool {
+        let name = |v: &[EditorValue]| match v.first() {
+            Some(EditorValue::Str(n)) => Ok(n.clone()),
+            other => Err(e8_core::Error::signal("wrong-type-argument", "Wrong type argument", vec![EditorValue::Symbol("stringp".into()), other.cloned().unwrap_or(EditorValue::Null)])),
+        };
+        Ok(name(&a)? < name(&b)?)
+    }
+
     /// Whether a file exists, through symbolic links, as file-exists-p. A file name handler may answer.
     pub fn fileExistsP(ed, file: String) -> bool {
         ed.file_exists_p(&file)
@@ -144,5 +273,13 @@ natives! {
     pub fn abbreviateFileName(ed, file: String) -> String {
         let short = abbreviate_path(Path::new(&file));
         Ok(if file.ends_with('/') && !short.ends_with('/') { short + "/" } else { short })
+    }
+}
+
+/// A time as milliseconds since 1970, to the nanosecond as far as a number holds it.
+fn milliseconds(t: std::time::SystemTime) -> f64 {
+    match t.duration_since(std::time::UNIX_EPOCH) {
+        Ok(d) => d.as_nanos() as f64 / 1e6,
+        Err(e) => -(e.duration().as_nanos() as f64) / 1e6,
     }
 }

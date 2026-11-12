@@ -166,6 +166,43 @@ impl Buffer {
         self.file.modtime_known = true;
     }
 
+    /// Takes a time as the visited file's modification time, as Emacs's
+    /// `set-visited-file-modtime` given one, `None` meaning the file does
+    /// not exist, as its -1 does.
+    pub fn set_visited_file_modtime_to(&mut self, time: Option<SystemTime>) {
+        self.file.modtime = time;
+        self.file.modtime_known = true;
+    }
+
+    /// When the visited file was last modified, as the system says now.
+    pub fn visited_file_modtime_now(&self) -> Option<SystemTime> {
+        self.path.as_deref().and_then(modtime)
+    }
+
+    /// Forgets the visited file's modification time, as Emacs's
+    /// `clear-visited-file-modtime`, so the file is taken as unchanged.
+    pub fn clear_visited_file_modtime(&mut self) {
+        self.file.modtime = None;
+        self.file.modtime_known = false;
+    }
+
+    /// The visited file's modification time, as Emacs's
+    /// `visited-file-modtime`: `Ok(Some(time))`, `Ok(None)` if the file did
+    /// not exist when visited, and `Err(())` if none is recorded, which
+    /// Emacs gives as 0.
+    pub fn visited_file_modtime(&self) -> std::result::Result<Option<SystemTime>, ()> {
+        if self.file.modtime_known { Ok(self.file.modtime) } else { Err(()) }
+    }
+
+    /// Whether the visited file is as it was when visited or last saved,
+    /// as Emacs's `verify-visited-file-modtime`: true for a buffer visiting
+    /// no file or with no time recorded, and false for a file deleted
+    /// since, or made where there was none.
+    pub fn verify_visited_file_modtime(&self) -> bool {
+        let Some(path) = &self.path else { return true };
+        !self.file.modtime_known || modtime(path) == self.file.modtime
+    }
+
     /// Refuses the first change to an unmodified buffer whose file changed
     /// on disk, as Emacs's lock_file does before asking
     /// `ask-user-about-supersession-threat`. A file with the same text as

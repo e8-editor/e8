@@ -650,6 +650,8 @@
       const id = native.recordRestriction();
       return unwindProtect(fn, () => native.unbind(id));
     },
+    verifyVisitedFileModtime: (buffer) =>
+      buffer == null ? native.verifyVisitedFileModtime() : e8.withCurrentBuffer(buffer, () => native.verifyVisitedFileModtime()),
     bufferLocalValue: (name, buffer) => e8.withCurrentBuffer(buffer, () => native.variable(String(name)) ?? undefined),
     bufferUndoList: (buffer) =>
       buffer === undefined ? native.bufferUndoList() : e8.withCurrentBuffer(buffer, () => native.bufferUndoList()),

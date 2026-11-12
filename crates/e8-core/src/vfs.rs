@@ -50,6 +50,45 @@ pub fn path_is_symlink(path: impl AsRef<Path>) -> bool {
     symlink_metadata(path).is_ok_and(|m| m.file_type().is_symlink())
 }
 
+/// The permissions new files may have, as Emacs's `default-file-modes`:
+/// those the umask leaves. As Emacs keeps it in `realmask`, the mask is
+/// read from the process once, by setting it and setting it back, and kept
+/// after, so no other thread ever sees it changed. On the web and in
+/// memory, the editor's own, from 0o022.
+pub fn default_file_modes() -> u32 {
+    !umask().load(std::sync::atomic::Ordering::Relaxed) & 0o777
+}
+
+/// Sets the permissions new files may have, as Emacs's
+/// `set-default-file-modes`: the umask, for the whole process and the
+/// programs it starts afterwards.
+pub fn set_default_file_modes(modes: u32) {
+    let mask = !modes & 0o777;
+    umask().store(mask, std::sync::atomic::Ordering::Relaxed);
+    #[cfg(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs"))))]
+    // SAFETY: umask only sets the process's mask.
+    unsafe {
+        libc::umask(mask as libc::mode_t);
+    }
+}
+
+/// The umask as the editor knows it.
+fn umask() -> &'static std::sync::atomic::AtomicU32 {
+    static MASK: std::sync::OnceLock<std::sync::atomic::AtomicU32> = std::sync::OnceLock::new();
+    MASK.get_or_init(|| {
+        #[cfg(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs"))))]
+        // SAFETY: umask only swaps the process's mask, set back at once.
+        let mask = unsafe {
+            let mask = libc::umask(0o022);
+            libc::umask(mask);
+            mask as u32
+        };
+        #[cfg(not(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs")))))]
+        let mask = 0o022;
+        std::sync::atomic::AtomicU32::new(mask)
+    })
+}
+
 /// The working directory, as `std::env::current_dir`; on the web, the
 /// home directory.
 pub fn current_dir() -> io::Result<PathBuf> {

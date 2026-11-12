@@ -332,6 +332,190 @@ impl Editor {
         Ok(names)
     }
 
+    /// Signals the error reading a file would, if it cannot be read, as
+    /// Emacs's `access-file`: `file-missing` or `permission-denied`, with
+    /// `string` saying what was being done and the name as given.
+    pub fn access_file(&mut self, file: &str, string: &str) -> Result<()> {
+        let abs = self.absolute(file);
+        if let Some(r) = self.handled("access-file", &abs, vec![s(&abs), s(string)]) {
+            return r.map(drop);
+        }
+        // Why it cannot be had, as the system says: missing, a directory
+        // on the way that cannot be searched, a file on the way.
+        if let Err(e) = fs::metadata(&abs) {
+            return Err(file_error(string, &e, &[Path::new(file)]));
+        }
+        if !self.file_readable_p(&abs)? {
+            return Err(file_error(string, &std::io::Error::from(std::io::ErrorKind::PermissionDenied), &[Path::new(file)]));
+        }
+        Ok(())
+    }
+
+    /// Whether the current buffer's file is as it was when visited or last
+    /// saved, as Emacs's `verify-visited-file-modtime`, a handler for the
+    /// file's name answering if there is one.
+    pub fn verify_visited_file_modtime(&mut self) -> Result<bool> {
+        if let Some(path) = self.buffer().path.as_ref().map(|p| p.display().to_string()) {
+            let id = self.buffer().id();
+            if let Some(r) = self.handled("verify-visited-file-modtime", &path, vec![Value::Buffer(id)]) {
+                return r.map(|v| v.is_true());
+            }
+        }
+        Ok(self.buffer().verify_visited_file_modtime())
+    }
+
+    /// What a handler for a directory makes of
+    /// `directory-files-and-attributes`, if there is one, as dired.c asks.
+    pub fn directory_files_and_attributes_handled(&mut self, dir: &str, args: Vec<Value>) -> Option<Result<Value>> {
+        let dir = self.absolute(dir);
+        let mut all = vec![s(&dir)];
+        all.extend(args);
+        self.handled("directory-files-and-attributes", &dir, all)
+    }
+
+    /// The handler for completing `file` in `dir`, as dired.c asks: the
+    /// directory's, else the file's.
+    fn completion_handler(&mut self, operation: &str, file: &str, dir: &str, args: Vec<Value>) -> Option<Result<Value>> {
+        if self.find_file_name_handler(dir, operation).is_some() {
+            return self.handled(operation, dir, args);
+        }
+        self.handled(operation, file, args)
+    }
+
+    /// The names in a directory that start with `file`, as Emacs's
+    /// `file-name-all-completions`: `.` and `..` among them, a directory's
+    /// ending in a slash, letters' case ignored as `completion-ignore-case`
+    /// says, and only those every regexp of `completion-regexp-list` matches.
+    pub fn file_name_all_completions(&mut self, file: &str, dir: &str) -> Result<Vec<String>> {
+        let dir = self.absolute(dir);
+        if let Some(r) = self.completion_handler("file-name-all-completions", file, &dir, vec![s(file), s(&dir)]) {
+            return r.map(|v| match v {
+                Value::List(items) => items.iter().filter_map(|i| i.as_str().map(str::to_string)).collect(),
+                _ => Vec::new(),
+            });
+        }
+        Ok(self.completion_candidates(file, &dir)?.into_iter().map(|(name, _)| name).collect())
+    }
+
+    /// Completes a file name in a directory, as Emacs's
+    /// `file-name-completion`, following dired.c's `file_name_completion`:
+    /// the longest start the names beginning with `file` share, a
+    /// directory's with a slash after it; `Value::Null` if none begins so,
+    /// and `Value::Bool(true)` if `file` is, letter for letter, the one name
+    /// there is. A name longer than `file` ending as
+    /// `completion-ignored-extensions` lists (a directory as an entry ending
+    /// in a slash does), and `.` and `..`, count only when nothing else
+    /// does. `predicate`, if given, is called with each name,
+    /// `default-directory` bound to the directory, and keeps those it is
+    /// true of. Where `completion-ignore-case` lets names differ in case
+    /// from `file`, the answer takes the case of an exact match, else of a
+    /// name that starts as `file` does.
+    pub fn file_name_completion(&mut self, file: &str, dir: &str, predicate: Option<&Value>) -> Result<Value> {
+        let dir = self.absolute(dir);
+        if let Some(r) = self.completion_handler("file-name-completion", file, &dir, vec![s(file), s(&dir), predicate.cloned().unwrap_or(Value::Null)]) {
+            return r;
+        }
+        let ignore_case = self.variable("completion-ignore-case").is_some_and(|v| v.is_true());
+        let fold = |t: &str| if ignore_case { t.to_lowercase() } else { t.to_string() };
+        let ignored: Vec<String> = match self.variable("completion-ignored-extensions") {
+            Some(Value::List(items)) => items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect(),
+            _ => Vec::new(),
+        };
+        let typed = file.chars().count();
+        let mut kept = Vec::new();
+        let mut excluded = Vec::new();
+        for (name, directory) in self.completion_candidates(file, &dir)? {
+            let bare = name.trim_end_matches('/');
+            // As dired.c: only names longer than what was typed, the name
+            // ending as the entry does or being it.
+            let ends_ignored = bare.chars().count() > typed
+                && ignored.iter().any(|ext| match (directory, ext.strip_suffix('/')) {
+                    (true, Some(dir_ext)) => fold(bare).ends_with(&fold(dir_ext)),
+                    (false, None) => fold(bare).ends_with(&fold(ext)),
+                    _ => false,
+                });
+            if bare == "." || bare == ".." || ends_ignored { excluded.push(name) } else { kept.push(name) }
+        }
+        let mut matches = if kept.is_empty() { excluded } else { kept };
+        if let Some(predicate) = predicate.filter(|p| p.is_true()) {
+            let as_directory = if dir.ends_with('/') { dir.clone() } else { format!("{dir}/") };
+            let binding = self.specbind("default-directory", Value::Str(as_directory));
+            let mut chosen = Vec::new();
+            let mut failed = None;
+            for name in matches {
+                match self.funcall(predicate, &[Value::Str(name.clone())]) {
+                    Ok(v) if v.is_true() => chosen.push(name),
+                    Ok(_) => {}
+                    Err(e) => {
+                        failed = Some(e);
+                        break;
+                    }
+                }
+            }
+            self.unbind(binding);
+            if let Some(e) = failed {
+                return Err(e);
+            }
+            matches = chosen;
+        }
+        if matches.is_empty() {
+            return Ok(Value::Null);
+        }
+        // The name whose case the answer takes.
+        let base = if ignore_case {
+            let exact = |m: &&String| fold(m.trim_end_matches('/')) == fold(file);
+            matches
+                .iter()
+                .filter(exact)
+                .find(|m| m.trim_end_matches('/') == file)
+                .or_else(|| matches.iter().find(exact))
+                .or_else(|| matches.iter().find(|m| m.starts_with(file)))
+                .unwrap_or(&matches[0])
+                .clone()
+        } else {
+            matches[0].clone()
+        };
+        let same = |a: char, b: char| if ignore_case { a.to_lowercase().eq(b.to_lowercase()) } else { a == b };
+        let mut common = base.chars().count();
+        for name in &matches {
+            common = common.min(base.chars().zip(name.chars()).take_while(|(a, b)| same(*a, *b)).count());
+        }
+        let common: String = base.chars().take(common).collect();
+        if matches.len() == 1 && common == file {
+            return Ok(Value::Bool(true));
+        }
+        Ok(Value::Str(common))
+    }
+
+    /// The names in a directory beginning with `file`, each with whether
+    /// it is a directory, a directory's ending in a slash, kept only if
+    /// every regexp of `completion-regexp-list` matches it.
+    fn completion_candidates(&mut self, file: &str, dir: &str) -> Result<Vec<(String, bool)>> {
+        let ignore_case = self.variable("completion-ignore-case").is_some_and(|v| v.is_true());
+        let regexps: Vec<String> = match self.variable("completion-regexp-list") {
+            Some(Value::List(items)) => items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect(),
+            _ => Vec::new(),
+        };
+        let starts = |name: &str| {
+            if ignore_case { name.to_lowercase().starts_with(&file.to_lowercase()) } else { name.starts_with(file) }
+        };
+        let base = PathBuf::from(dir);
+        let mut out = Vec::new();
+        'names: for name in crate::fileops::directory_files(&base)? {
+            if !starts(&name) {
+                continue;
+            }
+            for regexp in &regexps {
+                if self.string_match(regexp, &name, 0, ignore_case)?.is_none() {
+                    continue 'names;
+                }
+            }
+            let directory = fs::path_is_dir(base.join(&name));
+            out.push((if directory { format!("{name}/") } else { name }, directory));
+        }
+        Ok(out)
+    }
+
     /// Makes a file, or with `dir` a directory, of a new name starting with
     /// `prefix` in `temporary-file-directory`, holding `text` if given, as
     /// `make-temp-file`, and returns its name.

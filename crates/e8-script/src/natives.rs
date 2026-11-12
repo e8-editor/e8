@@ -42,7 +42,7 @@ mod processes;
 mod search;
 mod text;
 mod treesit;
-mod variables;
+pub(crate) mod variables;
 mod windows;
 
 use e8_core::{PrefixArg, Value as EditorValue};

@@ -260,6 +260,21 @@ export function xFocusFrame(frame: e8.FrameLike): void {
 }
 
 /**
+ * Runs `body` with new files given at most `modes`, as subr.el's
+ * with-file-modes: default-file-modes set to them, and set back after,
+ * however `body` ends.
+ */
+export function withFileModes<T>(modes: number, body: () => T): T {
+  const umask = e8.defaultFileModes();
+  e8.setDefaultFileModes(modes);
+  try {
+    return body();
+  } finally {
+    e8.setDefaultFileModes(umask);
+  }
+}
+
+/**
  * Run `body` with a window selected and its buffer current, then select
  * again the frame and window that were, and make the buffer that was
  * current current again, as with-selected-window, leaving the buffer
