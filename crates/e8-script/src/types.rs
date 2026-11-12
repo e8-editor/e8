@@ -893,9 +893,11 @@ const API: &str = r##"
    * Grow a window by `delta` lines, or columns if `horizontal`, taking them
    * from its neighbour; a negative delta shrinks it. Goes as far as the
    * windows' smallest sizes allow, and returns how far; with `apply` false,
-   * only says how far it could go, as window-resizable does.
+   * only says how far it could go, as window-resizable does. With
+   * `pixelwise`, `delta` and the result are the front end's units, points
+   * in the GUI, as window-resize's PIXELWISE.
    */
-  function resizeWindow(window: WindowLike | undefined, delta: number, horizontal?: boolean, apply?: boolean): number;
+  function resizeWindow(window: WindowLike | undefined, delta: number, horizontal?: boolean, apply?: boolean, pixelwise?: boolean): number;
 
   /** A search match: where it starts and ends, and each group's range, group 0 being the whole match. */
   interface Match {

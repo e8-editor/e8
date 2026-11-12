@@ -15221,6 +15221,28 @@ declare global {
     function frameWidth(frame?: FrameLike): number;
     /** The frames, newest first, as frame-list orders them. */
     function frameList(): Frame[];
+    /**
+     * The height of a window's text area in the front end's units, points
+     * in the GUI and lines on a terminal, beside its mode line, header line
+     * and the room its front end leaves, as window-body-height with PIXELWISE.
+     */
+    function windowBodyPixelHeight(window?: WindowLike): number;
+    /**
+     * The width of a window's text area in the front end's units, beside
+     * its fringes and divider, as window-body-width with PIXELWISE.
+     */
+    function windowBodyPixelWidth(window?: WindowLike): number;
+    /**
+     * A window's edges in the front end's units from the frame's windows'
+     * top left, as window-pixel-edges: left, top, right and bottom, its
+     * mode line and divider included, or with `body` its text area only.
+     */
+    function windowPixelEdges(window?: WindowLike, body?: boolean): [left: number, top: number, right: number, bottom: number];
+    /**
+     * A column's width and a line's height in the front end's units, the
+     * default font's, as frame-char-width and frame-char-height.
+     */
+    function frameCharSize(): [width: number, height: number];
     /** Make windows the same size as their neighbours, as balance-windows does. */
     function balanceWindows(): void;
     /** The windows in cyclic order, left to right and top to bottom, as other-window visits them. */
@@ -16184,9 +16206,11 @@ declare global {
      * Grow a window by `delta` lines, or columns if `horizontal`, taking them
      * from its neighbour; a negative delta shrinks it. Goes as far as the
      * windows' smallest sizes allow, and returns how far; with `apply` false,
-     * only says how far it could go, as window-resizable does.
+     * only says how far it could go, as window-resizable does. With
+     * `pixelwise`, `delta` and the result are the front end's units, points
+     * in the GUI, as window-resize's PIXELWISE.
      */
-    function resizeWindow(window: WindowLike | undefined, delta: number, horizontal?: boolean, apply?: boolean): number;
+    function resizeWindow(window: WindowLike | undefined, delta: number, horizontal?: boolean, apply?: boolean, pixelwise?: boolean): number;
 
     /** A search match: where it starts and ends, and each group's range, group 0 being the whole match. */
     interface Match {

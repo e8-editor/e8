@@ -773,10 +773,8 @@ fn transient_menu() {
     .unwrap();
     ed.set_variable("load-path", e8_core::Value::List(vec![e8_core::Value::Str(pkgs.path().display().to_string())]));
     scripting.eval_expression(&mut ed, r#"(e8.require("tm-menu"), e8.bindKey("<f5>", "tm-menu"))"#).unwrap();
-    // The frame as the harness's window holds it, in cells. The GUI's rows
-    // and mode lines are taller than the cells the core sizes windows in,
-    // so the menu's last row is cut until sizes are the front end's units
-    // (ADR 0069, stage 3); main did the same at this size.
+    // The frame as the harness's window holds it. The windows' sizes are
+    // points, so the menu, with no mode line, shows every row.
     ed.set_frame_size(75, 15);
     ed.press("<f5> - v").unwrap();
     harness(ed, Theme::Dark).snapshot("transient_menu_dark");

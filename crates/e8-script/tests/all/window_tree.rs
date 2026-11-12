@@ -82,3 +82,102 @@ fn enlarging_a_window_takes_from_the_one_after_it_or_the_last_from_the_one_befor
     ed.press("C-x o C-x ^").unwrap();
     assert_eq!(heights(&mut ed), "[6,12,6]");
 }
+
+/// A front end that measures in points, as the GUI does: characters 8
+/// wide and lines 20 tall, a mode line 32 tall, 12 above the text and 16
+/// of fringe each side.
+struct Points;
+
+impl e8_core::layout::TextMetrics for Points {
+    fn advance(&self, _: &e8_core::layout::FontSpec, _: char) -> f32 {
+        8.0
+    }
+    fn line_height(&self, _: &e8_core::layout::FontSpec) -> f32 {
+        20.0
+    }
+    fn char_width(&self) -> f32 {
+        8.0
+    }
+    fn char_height(&self) -> f32 {
+        20.0
+    }
+    fn window_chrome(&self) -> e8_core::layout::WindowChrome {
+        e8_core::layout::WindowChrome { mode_line: 32.0, header_line: 32.0, text_top: 12.0, fringes: 32.0, divider: 0.0 }
+    }
+}
+
+#[test]
+fn sizes_are_the_front_ends_units() {
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Points));
+    // 641 by 401 points: 80 columns and 20 lines, and a point to spare each way.
+    ed.set_frame_pixel_size(641, 401);
+    ed.press("C-x 2").unwrap();
+    // Halved in lines, 10 each; the old window keeps the spare point.
+    assert_eq!(
+        eval(&mut ed, &s, "JSON.stringify(e8.windowList().map((w) => [e8.windowPixelHeight(w), e8.windowBodyPixelHeight(w), e8.windowTotalHeight(w)]))"),
+        "[[201,157,10],[200,156,10]]"
+    );
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.windowPixelEdges(e8.windowList()[1], true))"), "[16,213,625,369]");
+    // Text rows beside the mode line and the room above: (200 - 32 - 12) / 20.
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowSize(e8.windowList()[1]).height)"), "7");
+    // Resized by points or by lines.
+    assert_eq!(eval(&mut ed, &s, "String(e8.resizeWindow(e8.windowList()[1], 15, false, true, true))"), "15");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), "215");
+    assert_eq!(eval(&mut ed, &s, "String(e8.resizeWindow(e8.windowList()[1], -1))"), "-1");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), "195");
+    // fit-window-to-buffer fits the text and what of the window is not text, in points.
+    eval(
+        &mut ed,
+        &s,
+        r#"(import("window").then((m) => { globalThis.win = m; }), "")"#,
+    );
+    eval(
+        &mut ed,
+        &s,
+        r#"((w) => { e8.withCurrentBuffer(e8.getBufferCreate("f"), () => e8.insert("1\n2\n3\n4\n5\n6")); e8.setWindowBuffer(w, "f"); win.fitWindowToBuffer(w); return ""; })(e8.windowList()[1])"#,
+    );
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), String::from("164"));
+}
+
+#[test]
+fn a_window_without_a_mode_line_has_that_line_for_text() {
+    // As Emacs: fit-window-to-buffer gives six lines of text six lines, the window having no mode line.
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"(import("window").then((m) => { globalThis.win = m; }), "")"#);
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"((w) => { e8.withCurrentBuffer(e8.getBufferCreate("f"), () => { e8.insert("1\n2\n3\n4\n5\n6"); e8.makeLocalVariable("mode-line-format"); e8.setVariable("mode-line-format", null); });
+            e8.setWindowBuffer(w, "f"); win.fitWindowToBuffer(w); return JSON.stringify([e8.windowTotalHeight(w), e8.windowSize(w).height]); })(e8.splitWindow())"#,
+    );
+    assert_eq!(got, "[6,6]");
+}
+
+/// Columns 7.83 points wide, as a GUI font's may be.
+struct Fractional;
+
+impl e8_core::layout::TextMetrics for Fractional {
+    fn advance(&self, _: &e8_core::layout::FontSpec, _: char) -> f32 {
+        7.83
+    }
+    fn line_height(&self, _: &e8_core::layout::FontSpec) -> f32 {
+        20.0
+    }
+    fn char_width(&self) -> f32 {
+        7.83
+    }
+    fn char_height(&self) -> f32 {
+        20.0
+    }
+}
+
+#[test]
+fn windows_total_sizes_add_up_to_the_frames() {
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Fractional));
+    ed.set_frame_pixel_size(1000, 480);
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.frameWidth(), e8.windowTotalWidth()])"), "[127,127]");
+    ed.press("C-x 3").unwrap();
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowList().reduce((n, w) => n + e8.windowTotalWidth(w), 0))"), "127");
+}

@@ -834,8 +834,8 @@
         : undefined;
     },
     windowUseTime: (window) => native.windowUseTime(window ?? native.selectedWindow()) ?? undefined,
-    resizeWindow: (window, delta, horizontal = false, apply = true) =>
-      native.resizeWindow(window ?? null, delta, horizontal, apply),
+    resizeWindow: (window, delta, horizontal = false, apply = true, pixelwise = false) =>
+      native.resizeWindow(window ?? null, delta, horizontal, apply, pixelwise),
 
     search(pattern, options = {}) {
       const { from, regexp = false, backward = false, bound, caseFold } = options;

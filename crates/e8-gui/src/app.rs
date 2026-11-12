@@ -23,10 +23,10 @@ use crate::metrics::{EguiMetrics, font_id};
 use crate::theme::{self, LINE_SPACING, TEXT_SIZE, Tokens, color32};
 
 /// Space around the buffer text.
-const PAD_X: f32 = 16.0;
-const PAD_Y: f32 = 12.0;
+pub(crate) const PAD_X: f32 = 16.0;
+pub(crate) const PAD_Y: f32 = 12.0;
 /// Space above and below the text of the mode line and echo area.
-const BAR_PAD: f32 = 6.0;
+pub(crate) const BAR_PAD: f32 = 6.0;
 /// The height of a macOS window's title bar, which a transparent one
 /// leaves the window to draw under.
 const TITLE_BAR_HEIGHT: f32 = 28.0;
@@ -761,11 +761,10 @@ fn pointer(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>,
 }
 
 /// Dragging a window's mode line or the divider on its right moves that
-/// edge, a whole line or column at a time, as Emacs's
-/// mouse-drag-mode-line and mouse-drag-vertical-line do. Returns whether
-/// the event was part of such a drag.
+/// edge, a point at a time, as Emacs's mouse-drag-mode-line and
+/// mouse-drag-vertical-line do with window-resize-pixelwise. Returns
+/// whether the event was part of such a drag.
 fn resize_drag(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>, layout: &Layout) -> bool {
-    let m = &layout.m;
     match (pressed, mouse.resizing) {
         (Some(true), _) => {
             let bottom = layout.echo_rect.top();
@@ -783,11 +782,12 @@ fn resize_drag(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bo
             true
         }
         (None, Some((window, divider, from))) => {
-            let (along, unit) = if divider { (pos.x, m.char_width) } else { (pos.y, m.line_height) };
-            let delta = ((along - from) / unit).trunc() as i64;
+            // In points, as the windows' sizes are, so the edge follows the pointer.
+            let along = if divider { pos.x } else { pos.y };
+            let delta = (along - from).trunc() as i64;
             if delta != 0 {
-                let moved = ed.move_window_edge(window, delta, divider);
-                mouse.resizing = Some((window, divider, from + moved as f32 * unit));
+                let moved = ed.move_window_edge_by(window, delta, divider);
+                mouse.resizing = Some((window, divider, from + moved as f32));
             }
             true
         }
@@ -838,7 +838,7 @@ fn set_metrics(ed: &mut Editor, ctx: &egui::Context, char_width: f32, line_heigh
 }
 
 /// What a layout tells the editor: the fonts' measures, and for the
-/// selected frame its size in cells and its height in lines, and each
+/// selected frame its windows' part in points and its height in lines, and each
 /// window's text area in columns and lines.
 #[derive(Clone, PartialEq)]
 struct Sizes {
@@ -851,10 +851,10 @@ struct Sizes {
 
 /// Tells the editor its windows' sizes, as a layout gives them.
 fn apply_sizes(ed: &mut Editor, sizes: &Sizes) {
-    if let Some(((cols, lines), frame_lines)) = sizes.frame {
+    if let Some(((width, height), frame_lines)) = sizes.frame {
         ed.set_minibuffer_width(sizes.echo_columns);
         ed.mini_window_height(frame_lines);
-        ed.set_frame_size(cols, lines);
+        ed.set_frame_pixel_size(width, height);
     }
     for &(id, cols, rows) in &sizes.windows {
         ed.set_window_size(id, cols, rows);
@@ -873,7 +873,8 @@ struct Layout {
     echo_rect: Rect,
     m: Metrics,
     /// The frame's size in cells and its height in lines with the echo area.
-    frame_cells: (usize, usize),
+    /// The windows' part of the frame in points, which the core keeps the windows' sizes in.
+    frame_units: (usize, usize),
     frame_lines: usize,
 }
 
@@ -915,16 +916,17 @@ impl Layout {
         let echo_lines = if frame == ed.selected_frame() { ed.mini_window_height(frame_lines) } else { 1 };
         let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
         let tab_bar = ed.tab_bar_lines(frame) > 0;
-        let mut layout = Layout::compute(frame, rect, m.clone(), &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id));
+        let mut layout = Layout::compute(frame, rect, m.clone(), &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
         // The frame in cells, which the windows' sizes count in: a new size
         // is shared among them first, as Emacs's normal sizes share it, and
         // they are laid out as the tree then says.
-        if frame == ed.selected_frame() && ed.frame_cells() != layout.frame_cells {
-            ed.set_frame_size(layout.frame_cells.0, layout.frame_cells.1);
+        if frame == ed.selected_frame() && ed.frame_units() != layout.frame_units {
+            ed.set_frame_pixel_size(layout.frame_units.0, layout.frame_units.1);
             let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
-            layout = Layout::compute(frame, rect, m, &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id));
+            layout = Layout::compute(frame, rect, m, &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
         } else if frame == ed.selected_frame() {
-            ed.set_frame_size(layout.frame_cells.0, layout.frame_cells.1);
+            // The same size, still given, so the frame's size counts as the front end's.
+            ed.set_frame_pixel_size(layout.frame_units.0, layout.frame_units.1);
         }
         for (id, cols, rows) in layout.sizes(false).windows {
             ed.set_window_size(id, cols, rows);
@@ -948,6 +950,7 @@ impl Layout {
             frame_lines,
             &|id, lines| lines > 2 && window(id).is_some_and(|w| w.header_line.is_some()),
             &|id| window(id).map_or((0, 0), |w| w.margins),
+            &|id| window(id).is_none_or(|w| w.shows_mode_line),
         )
     }
 
@@ -962,6 +965,7 @@ impl Layout {
         frame_lines: usize,
         wants_header: &dyn Fn(WindowId, usize) -> bool,
         margins_of: &dyn Fn(WindowId) -> (usize, usize),
+        shows_mode_line: &dyn Fn(WindowId) -> bool,
     ) -> Layout {
         let bar_height = m.line_height + 2.0 * BAR_PAD;
         let echo_height = bar_height + (echo_lines - 1) as f32 * m.line_height;
@@ -970,12 +974,15 @@ impl Layout {
         let tab_rect = tab_bar.then(|| Rect::from_min_size(rect.min, vec2(rect.width(), bar_height)));
         let windows_top = tab_rect.map_or(rect.top(), |r| r.bottom());
         let frame_height = echo_rect.top() - windows_top;
+        // The windows' sizes are points, as the core keeps them; a window
+        // without a mode line has its height for text.
         let windows: Vec<WindowLayout> = tree
-            .rects(rect.left(), windows_top, rect.width(), frame_height, (m.char_width, m.line_height))
+            .rects(rect.left(), windows_top, rect.width(), frame_height, (1.0, 1.0))
             .into_iter()
             .map(|r| {
                 let rect = Rect::from_min_size(pos2(r.x, r.y), vec2(r.width, r.height));
-                let mode_rect = Rect::from_min_max(pos2(rect.left(), rect.bottom() - bar_height), rect.max);
+                let mode_height = if shows_mode_line(r.id) { bar_height } else { 0.0 };
+                let mode_rect = Rect::from_min_max(pos2(rect.left(), rect.bottom() - mode_height), rect.max);
                 let total_lines = (rect.height() / m.line_height).round() as usize;
                 let header_rect = wants_header(r.id, total_lines).then(|| Rect::from_min_size(rect.min, vec2(rect.width(), bar_height)));
                 let text_top = header_rect.map_or(rect.top(), |h| h.bottom());
@@ -997,8 +1004,8 @@ impl Layout {
                 WindowLayout { id: r.id, rect, text_rect, mode_rect, header_rect, margins, fringes, divider: r.divider }
             })
             .collect();
-        let frame_cells = ((rect.width() / m.char_width) as usize, (frame_height / m.line_height) as usize);
-        Layout { frame, rect, tab_rect, windows, echo_rect, m, frame_cells, frame_lines }
+        let frame_units = (rect.width().floor().max(1.0) as usize, frame_height.floor().max(1.0) as usize);
+        Layout { frame, rect, tab_rect, windows, echo_rect, m, frame_units, frame_lines }
     }
 
     /// What it tells the editor, the frame's size too if it is selected.
@@ -1006,7 +1013,7 @@ impl Layout {
         Sizes {
             metrics: (self.m.char_width, self.m.line_height),
             echo_columns: echo_columns(self.rect, &self.m),
-            frame: selected.then_some((self.frame_cells, self.frame_lines)),
+            frame: selected.then_some((self.frame_units, self.frame_lines)),
             windows: self.windows.iter().map(|w| (w.id, ((w.text_rect.width() / self.m.char_width).floor() as usize).max(1), w.rows(&self.m))).collect(),
         }
     }
