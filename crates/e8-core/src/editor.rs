@@ -320,6 +320,10 @@ pub struct Editor {
     /// was first split, no front end having given it, so a lone window's
     /// new size can still change it.
     pub(crate) frame_size_implied: bool,
+    /// Each window's new pixel size, new total size and new normal size,
+    /// as window.el sets them before `window-resize-apply`: window.c's
+    /// new_pixel, new_total and new_normal.
+    pub(crate) window_new: std::collections::HashMap<crate::window::WindowId, crate::window::WindowNew>,
     /// Internal windows' parameters, as `window-parameter` keeps them;
     /// the window tree goes to front ends, so they are kept here.
     pub(crate) internal_window_parameters: std::collections::HashMap<crate::window::WindowId, std::collections::BTreeMap<String, crate::variables::Value>>,
@@ -480,6 +484,7 @@ impl Editor {
             frame_size: None,
             frame_size_implied: false,
             internal_window_parameters: Default::default(),
+            window_new: Default::default(),
             other_frames: Vec::new(),
             frame_order: vec![crate::window::FIRST_FRAME],
             selected_frame: crate::window::FIRST_FRAME,
