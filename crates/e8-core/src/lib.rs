@@ -44,6 +44,8 @@ mod fileio;
 pub mod fileops;
 mod files;
 mod fontify;
+mod indent;
+pub use indent::{Motion, WindowLine};
 mod indirect;
 mod insdel;
 pub use insdel::Insertion;

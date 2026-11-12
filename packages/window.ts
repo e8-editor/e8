@@ -1557,12 +1557,51 @@ e8.defineCommand({
   },
 });
 
-/** The window C-M-v scrolls, as other-window-for-scrolling: the next one. */
-function otherWindowForScrolling(): e8.Window {
-  const windows = e8.windowList();
-  if (windows.length === 1) throw new Error("There is no other window");
-  return windows[(windows.indexOf(e8.selectedWindow()) + 1) % windows.length];
+e8.defineVariable({
+  name: "minibuffer-scroll-window",
+  value: null,
+  doc: "The window C-M-v scrolls while the minibuffer is selected, such as the one showing completions; nil for the next window.",
+});
+e8.defineVariable({
+  name: "other-window-scroll-buffer",
+  value: null,
+  doc: "A buffer for C-M-v to scroll, shown in a window if it is in none; nil for the next window.",
+});
+e8.defineVariable({
+  name: "other-window-scroll-default",
+  value: null,
+  doc: "A function giving the window C-M-v scrolls when minibuffer-scroll-window and other-window-scroll-buffer do not say; nil for the next window.",
+});
+
+/**
+ * The window C-M-v scrolls, as other-window-for-scrolling: in the
+ * minibuffer, minibuffer-scroll-window; else one showing
+ * other-window-scroll-buffer, shown if need be; else what
+ * other-window-scroll-default gives; else the next window, on this frame
+ * or another visible one.
+ */
+export function otherWindowForScrolling(): e8.Window {
+  const selected = e8.selectedWindow();
+  const scrollWindow = e8.variable("minibuffer-scroll-window");
+  const scrollBuffer = e8.variable("other-window-scroll-buffer");
+  const scrollDefault = e8.variable("other-window-scroll-default");
+  let window: e8.Value | undefined;
+  if (selected === e8.minibufferWindow() && !isNil(scrollWindow)) window = scrollWindow;
+  // A buffer, not a name, as Emacs's BUFFERP asks.
+  else if (typeof scrollBuffer === "object" && scrollBuffer !== null && e8.bufferLiveP(scrollBuffer as e8.BufferLike)) {
+    window = getBufferWindowList(scrollBuffer as e8.BufferLike)[0] ?? displayBuffer(scrollBuffer as e8.BufferLike, true);
+  } else if (typeof scrollDefault === "function" || (typeof scrollDefault === "string" && e8.fboundp(scrollDefault))) {
+    window = e8.funcall(scrollDefault as string);
+  }
+  if (window === undefined) {
+    window = nextWindow(selected, sym("lambda"));
+    if (window === selected) window = nextWindow(selected, sym("lambda"), sym("visible"));
+  }
+  if (!e8.windowLiveP(window)) e8.signal("wrong-type-argument", "Not a live window", [sym("window-live-p"), window ?? null]);
+  if (window === selected) e8.signal("error", "There is no other window");
+  return window as e8.Window;
 }
+e8.defun("other-window-for-scrolling", () => otherWindowForScrolling());
 
 function scrollOther(command: e8.CommandName): void {
   const selected = e8.selectedWindow();
@@ -3898,26 +3937,7 @@ e8.defun("split-window-no-error", (window?: e8.Window, size?: number, side?: e8.
   splitWindowNoError(window, size, side, !isNil(pixelwise)) ?? null,
 );
 
-/** Moves point `lines` screen lines down, or up for a negative count, to a screen line's start, as vertical-motion in the selected window; gives how many it moved. */
-function verticalMotion(lines: number): number {
-  e8.gotoChar(e8.screenLine(e8.point()).start);
-  let moved = 0;
-  while (moved < lines) {
-    const line = e8.screenLine(e8.point());
-    const next = line.continued ? line.end : line.end + 1;
-    if (next > e8.pointMax()) {
-      e8.gotoChar(e8.pointMax());
-      break;
-    }
-    e8.gotoChar(next);
-    moved++;
-  }
-  while (moved > lines && e8.point() > e8.pointMin()) {
-    e8.gotoChar(e8.screenLine(e8.point() - 1).start);
-    moved--;
-  }
-  return moved;
-}
+const verticalMotion = (lines: number): number => e8.verticalMotion(lines);
 
 /**
  * Splits a window, the selected one by default, into two one above the
