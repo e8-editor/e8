@@ -4351,7 +4351,7 @@ function windowStateGet1(window: e8.Window, writable: boolean): e8.Value[] {
       [sym("margins"), leftMargin ?? null, ...(rightMargin !== undefined ? [rightMargin] : [])],
       // E8 has no scroll bars: what Emacs gives a terminal's window.
       [sym("scroll-bars"), null, 0, true, null, 0, true, null],
-      [sym("vscroll"), 0],
+      [sym("vscroll"), e8.windowVscroll(window)],
       cons("dedicated", e8.windowDedicatedP(window)),
       [
         sym("point"),
@@ -4478,6 +4478,7 @@ function windowStatePut2(ignore: unknown, pixelwise: boolean): void {
         e8.setWindowBuffer(window, name);
         const hscroll = alistGet(s, "hscroll");
         e8.setWindowHscroll(window, typeof hscroll === "number" ? hscroll : 0);
+        const vscroll = alistGet(s, "vscroll");
         const margins = assqRest(s, "margins");
         if (!isNil(margins[0]) || !isNil(margins[1]) || e8.windowMargins(window).some((m) => m !== undefined)) {
           e8.setWindowMargins(window, (margins[0] as number | null) ?? undefined, (margins[1] as number | null) ?? undefined);
@@ -4510,6 +4511,8 @@ function windowStatePut2(ignore: unknown, pixelwise: boolean): void {
           e8.selectWindow(window);
           statePutSelectedWindow = window;
         }
+        // Once the start is back, as the vscroll lasts only while it is.
+        e8.setWindowVscroll(window, typeof vscroll === "number" ? vscroll : 0);
         e8.setWindowNextBuffers(window, nextBuffers.map(liveBufferName).filter((b): b is string => b !== undefined));
         const prev: [string, number, number][] = [];
         for (const entry of prevBuffers) {

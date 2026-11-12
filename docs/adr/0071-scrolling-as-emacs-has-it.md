@@ -52,6 +52,16 @@ Disabled commands (novice.el) are left out: E8 has none, so `C-x <` scrolls at o
 - Long truncated lines scroll as in Emacs: point is kept 5 columns from either edge, and the window recentres when point would leave it. E8 recentred only at the right edge, and returned to column 0 as soon as point's column fitted. Text that shows today at the right of a truncated window can therefore show further left or right after this change. The GUI snapshots show no truncated lines scrolled, so they should not change.
 - `window.ts`'s own `verticalMotion` and the `hscroll` and `vscroll` that window states fix at 0 give way to the primitives.
 
+## Carried out
+
+All three stages landed on 2026-11-12, each after `make check` on both engines, a review against Emacs's source, and the ported packages' tests:
+
+1. Horizontal scrolling: e8-editor/e8 pull request 112. The numbers its tests check are what Emacs 30 gives in a terminal. The review it had found, among others, vertical scrolls undoing a scroll set from code and a panic in a one-column terminal window, both fixed there.
+2. Screen lines: pull request 113. `compute-motion` was ported from indent.c's loop after the review, and is checked against batch Emacs, whose numbers an interactive Emacs 30 does not always give for text after a newline.
+3. Pixel scrolling: the pull request after it. The GUI keeps no scroll of its own any more; the wheel sets the window's vscroll.
+
+What differs from Emacs is in [differences.md](../differences.md)'s entries for horizontal scrolling and screen lines. Scrolling took E8 from 543 to 557 of Emacs's 877 editor primitives by name, and the MELPA packages needing none missing from 219 to 235 of 295 ([docs/parity/demand.md](../parity/demand.md)).
+
 ## Dependencies introduced
 
 None.

@@ -117,6 +117,9 @@ pub struct WindowDescription {
     pub point_row: Option<usize>,
     /// How many columns it is scrolled to the left, as `window-hscroll`.
     pub hscroll: usize,
+    /// How far its rows are drawn above its top, in the front end's units,
+    /// as `window-vscroll`: the part of its first row scrolled out of sight.
+    pub vscroll: f32,
     pub line_numbers: Option<LineNumbers>,
     /// `line-number` and `line-number-current-line`.
     pub line_number_styles: [Style; 2],
@@ -257,6 +260,7 @@ impl Editor {
                 point: view.point,
                 point_row,
                 hscroll: self.window_hscroll(view.id),
+                vscroll: self.window_vscroll(view.id),
                 region: if view.selected { b.active_region() } else { None },
                 tab_width,
                 rows,

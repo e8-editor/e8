@@ -133,7 +133,8 @@ impl Editor {
         let header = if self.header_line(window).is_some() { unit } else { 0.0 };
         let bottom = header + self.window(window)?.height as f64 * unit;
         let tab_width = self.tab_width_in(b);
-        let mut y = header;
+        // The first row starts above the top by the vertical scroll.
+        let mut y = header - self.window_vscroll(window) as f64;
         let mut rows = Vec::new();
         for row in self.rows_filling(window, true) {
             let height = self.row_height(b, &row) as f64 * unit;

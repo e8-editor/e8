@@ -335,7 +335,8 @@ impl Editor {
                 let col: f32 = self.glyph_columns(row, &glyphs, tab_width)[..index].iter().sum::<f32>() + self.row_offset_in(window, row)
                     - self.row_hscroll(window, row, view.point) as f32;
                 let (cw, ch) = (self.metrics.char_width(), self.metrics.char_height());
-                return Some(Posn { window, point: pos, x: col * cw, y: y * ch, col, row: k });
+                // Above the window's top by its vertical scroll.
+                return Some(Posn { window, point: pos, x: col * cw, y: y * ch - self.window_vscroll(window), col, row: k });
             }
             y += self.row_height(b, row);
         }
@@ -351,7 +352,8 @@ impl Editor {
         let rows = self.rows_filling(window, true);
         let tab_width = self.tab_width_in(b);
         let (cw, ch) = (self.metrics.char_width(), self.metrics.char_height());
-        let (want_col, want_line) = (x / cw, y / ch);
+        // Below the top by the vertical scroll, as the rows are drawn.
+        let (want_col, want_line) = (x / cw, (y + self.window_vscroll(window)) / ch);
         let mut top = 0.0;
         for (k, row) in rows.iter().enumerate() {
             let height = self.row_height(b, row);
@@ -374,7 +376,7 @@ impl Editor {
                 }
                 let col = if point == row.end { col } else { widths[..glyphs.iter().position(|g| g.pos == Some(point)).unwrap_or(0)].iter().sum() };
                 let col = col + offset;
-                return Some(Posn { window, point, x: col * cw, y: top * ch, col, row: k });
+                return Some(Posn { window, point, x: col * cw, y: top * ch - self.window_vscroll(window), col, row: k });
             }
             top += height;
         }

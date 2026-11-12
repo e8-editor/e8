@@ -31,6 +31,17 @@ pub(crate) struct Hscroll {
     pub(crate) old_point: Option<usize>,
 }
 
+/// How far a window is scrolled up past the top of its first row, as
+/// window.c's `vscroll`, in the front end's units, for the buffer and
+/// start it was set at: once the window starts elsewhere it is 0, as
+/// Emacs's redisplay resets it when it picks a new start.
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub(crate) struct Vscroll {
+    pub(crate) buffer: u64,
+    pub(crate) start: usize,
+    pub(crate) units: f32,
+}
+
 pub(crate) fn define_variables(ed: &mut Editor) {
     ed.define_hook(
         "window-scroll-functions",
@@ -135,6 +146,30 @@ impl Editor {
     /// `C-v` does not undo `set-window-hscroll`.
     fn scrolled_vertically(&self) -> bool {
         self.last_command().is_some_and(|c| VERTICAL_SCROLLS.contains(&c))
+    }
+
+    /// How far a window is scrolled up past the top of its first row, in
+    /// the front end's units, as Emacs's `window-vscroll` with PIXELS-P:
+    /// always 0 on a terminal, whose rows are a cell high.
+    pub fn window_vscroll(&self, window: WindowId) -> f32 {
+        let Some(w) = self.window(window) else { return 0.0 };
+        let v = w.vscroll;
+        if self.metrics.uniform() || v.buffer != w.buffer || Some(v.start) != self.window_start(window) { 0.0 } else { v.units }
+    }
+
+    /// Scrolls a window up past the top of its first row, as Emacs's
+    /// `set-window-vscroll` with PIXELS-P: a negative amount is 0, and on
+    /// a terminal it does nothing. Lasts until the window starts
+    /// elsewhere. Returns the scroll.
+    pub fn set_window_vscroll(&mut self, window: WindowId, units: f32) -> f32 {
+        if self.metrics.uniform() {
+            return 0.0;
+        }
+        let Some(start) = self.window_start(window) else { return 0.0 };
+        if let Some(w) = self.window_mut(window) {
+            w.vscroll = Vscroll { buffer: w.buffer, start, units: units.max(0.0) };
+        }
+        self.window_vscroll(window)
     }
 
     /// Whether a window's lines are truncated because it is scrolled.
