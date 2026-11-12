@@ -15327,9 +15327,9 @@ declare global {
     /**
      * How many processors there are, as num-processors: those E8 may use,
      * less as OMP_NUM_THREADS or OMP_THREAD_LIMIT say; with "current", those
-     * it may use; with true, all the system has.
+     * it may use; with "all", all the system has.
      */
-    function numProcessors(query?: "current" | boolean | null): number;
+    function numProcessors(query?: "current" | "all" | boolean | null): number;
     /**
      * The processes, oldest first, as process-list: those running, and
      * those that have ended until their sentinel has run.

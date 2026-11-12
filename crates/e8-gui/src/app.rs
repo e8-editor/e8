@@ -87,6 +87,9 @@ pub struct E8App {
     /// Each frame's visibility and raise count as last acted on, to act
     /// again when `make-frame-visible`, `iconify-frame` or `raise-frame` change them.
     frame_states: std::collections::HashMap<FrameId, (e8_core::frame_description::Visibility, u64)>,
+    /// Whether each frame's native window was minimised when last looked
+    /// at, to tell the editor when the user restores one, as from the Dock.
+    minimised: std::collections::HashMap<FrameId, bool>,
 }
 
 /// Where the editor runs.
@@ -207,6 +210,7 @@ impl E8App {
             title_bar: false,
             appearance: std::collections::HashMap::new(),
             frame_states: std::collections::HashMap::new(),
+            minimised: std::collections::HashMap::new(),
         }
     }
 
@@ -401,7 +405,20 @@ impl E8App {
                 ctx.send_viewport_cmd_to(viewport, ViewportCommand::Focus);
             }
         }
+        // A window the user restored, as from the Dock, is visible again to
+        // the editor, so the next C-z iconifies it again.
+        for &frame in frames {
+            let viewport = if frame == self.main_frame { egui::ViewportId::ROOT } else { frame_viewport(frame) };
+            let Some(now) = ctx.input(|i| i.raw.viewports.get(&viewport).and_then(|v| v.minimized)) else { continue };
+            let was = self.minimised.insert(frame, now).unwrap_or(false);
+            if was && !now && self.frame_states.get(&frame).is_some_and(|s| s.0 == Visibility::Iconified) {
+                self.backend.run(move |ed, _| {
+                    let _ = ed.set_frame_visibility(frame, e8_core::Value::Bool(true));
+                });
+            }
+        }
         self.frame_states.retain(|f, _| frames.contains(f));
+        self.minimised.retain(|f, _| frames.contains(f));
     }
 
     /// The frames there are, and the one selected.

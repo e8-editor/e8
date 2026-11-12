@@ -1391,7 +1391,7 @@ const suspendFrame = e8.defineCommand({
   name: "suspend-frame",
   doc: "Iconify the selected frame in a window, or in a terminal stop E8 and go back to the shell, as suspend-emacs does.",
   run: () => {
-    if (!isNil(e8.variable("window-system"))) e8.iconifyFrame();
+    if (e8.windowSystem() !== undefined) e8.iconifyFrame();
     else e8.call("suspend-emacs");
   },
 });

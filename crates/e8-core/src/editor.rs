@@ -2734,9 +2734,12 @@ impl Editor {
     /// runs `suspend-hook` first. A window has no shell to continue it, so
     /// there it is an error.
     pub fn suspend_emacs(&mut self) -> Result<()> {
-        if self.variable("window-system").is_some_and(|v| v.is_true()) {
+        // A front end that shows images is a window, as window-system says.
+        if self.text_metrics().images() {
             return Err(Error::signal("user-error", "Cannot suspend E8 in a window; C-z iconifies it", Vec::new()));
         }
+        // Stopping the editor while an agent acts would stop its requests too.
+        self.check_permission("suspend E8")?;
         self.run_hooks("suspend-hook")?;
         self.suspend_requests += 1;
         Ok(())

@@ -78,23 +78,32 @@ pub fn group_name(gid: u32) -> Option<String> {
     imp::group_name(gid)
 }
 
-/// The login names of the system's users, as Emacs's `system-users`.
+/// The login names of the system's users, as Emacs's `system-users`:
+/// last first, as Emacs conses them, or the real user alone if the
+/// system lists none.
 pub fn system_users() -> Vec<String> {
-    imp::system_users()
+    let mut users = imp::system_users();
+    users.reverse();
+    if users.is_empty() {
+        users.push(real_login_name());
+    }
+    users
 }
 
-/// The names of the system's groups, as Emacs's `system-groups`.
+/// The names of the system's groups, as Emacs's `system-groups`, last first.
 pub fn system_groups() -> Vec<String> {
-    imp::system_groups()
+    let mut groups = imp::system_groups();
+    groups.reverse();
+    groups
 }
 
 /// The login name the editor goes by, as Emacs sets `user-login-name`:
-/// `$LOGNAME`, else `$USER`, else the effective user's.
+/// `$LOGNAME`, else `$USER`, else the effective user's; set but empty
+/// counts, as getenv gives it.
 pub fn login_name() -> String {
     std::env::var("LOGNAME")
         .ok()
-        .filter(|n| !n.is_empty())
-        .or_else(|| std::env::var("USER").ok().filter(|n| !n.is_empty()))
+        .or_else(|| std::env::var("USER").ok())
         .or_else(|| account(user_uid()).map(|a| a.login))
         .unwrap_or_else(|| "unknown".to_string())
 }
@@ -104,14 +113,16 @@ pub fn real_login_name() -> String {
     account(user_real_uid()).map_or_else(|| "unknown".to_string(), |a| a.login)
 }
 
-/// The full name the editor goes by, as Emacs sets `user-full-name`:
-/// `$NAME`, else the login name's account's.
+/// The full name the editor goes by, as Emacs's init_editfns sets
+/// `user-full-name`: `$NAME`, else the account of the login name if it is
+/// the real user's, and otherwise of the effective user id.
 pub fn full_name() -> String {
-    std::env::var("NAME")
-        .ok()
-        .filter(|n| !n.is_empty())
-        .or_else(|| account_named(&login_name()).map(|a| a.full_name))
-        .unwrap_or_else(|| "unknown".to_string())
+    if let Ok(name) = std::env::var("NAME") {
+        return name;
+    }
+    let login = login_name();
+    let account = if login == real_login_name() { account_named(&login) } else { account(user_uid()) };
+    account.map_or_else(|| "unknown".to_string(), |a| a.full_name)
 }
 
 /// How many processors there are, as Emacs's `num-processors`.
@@ -120,13 +131,17 @@ pub fn num_processors(query: Processors) -> usize {
     match query {
         Processors::Current => current,
         Processors::All => imp::all_processors().unwrap_or(current),
-        Processors::Overridable => {
-            // As gnulib's num_processors with NPROC_CURRENT_OVERRIDABLE.
-            let env = |name: &str| std::env::var(name).ok().and_then(|v| v.split(',').next()?.trim().parse::<usize>().ok()).filter(|n| *n > 0);
-            let wanted = env("OMP_NUM_THREADS").unwrap_or(current);
-            env("OMP_THREAD_LIMIT").map_or(wanted, |limit| wanted.min(limit))
-        }
+        Processors::Overridable => overridable(current, std::env::var("OMP_NUM_THREADS").ok().as_deref(), std::env::var("OMP_THREAD_LIMIT").ok().as_deref()),
     }
+}
+
+/// The processors offered when OpenMP's variables may say fewer, as
+/// gnulib's num_processors with NPROC_CURRENT_OVERRIDABLE: the first of
+/// `OMP_NUM_THREADS`'s list, at most `OMP_THREAD_LIMIT`.
+fn overridable(current: usize, threads: Option<&str>, limit: Option<&str>) -> usize {
+    let count = |v: Option<&str>| v.and_then(|v| v.split(',').next()?.trim().parse::<usize>().ok()).filter(|n| *n > 0);
+    let wanted = count(threads).unwrap_or(current);
+    count(limit).map_or(wanted, |limit| wanted.min(limit))
 }
 
 /// Stops the process until the shell continues it, as a terminal's job is
@@ -137,14 +152,14 @@ pub fn stop_self() {
 }
 
 /// A full name as the password database's comment field gives it, as
-/// Emacs reads it: up to the first comma, `&` standing for the login name
-/// with its first letter capitalized.
+/// Emacs reads it: up to the first comma, the first `&` standing for the
+/// login name with its first letter, if ASCII, capitalized.
 #[cfg_attr(not(unix), allow(dead_code))]
 fn full_name_of(gecos: &str, login: &str) -> String {
     let name = gecos.split(',').next().unwrap_or("");
     let mut capital = login.chars();
-    let login = capital.next().map(|c| c.to_uppercase().chain(capital).collect::<String>()).unwrap_or_default();
-    name.replace('&', &login)
+    let login = capital.next().map(|c| std::iter::once(c.to_ascii_uppercase()).chain(capital).collect::<String>()).unwrap_or_default();
+    name.replacen('&', &login, 1)
 }
 
 #[cfg(all(unix, not(target_arch = "wasm32")))]
@@ -152,30 +167,45 @@ mod imp {
     use super::Account;
     use std::ffi::{CStr, CString};
 
+    /// A string a database entry points to, or "" for none.
+    fn field(p: *const libc::c_char) -> String {
+        // SAFETY: a non-null field of an entry getpw*_r or getgr*_r filled
+        // points to a NUL-terminated string in its buffer.
+        if p.is_null() { String::new() } else { unsafe { CStr::from_ptr(p) }.to_string_lossy().into_owned() }
+    }
+
     fn from_passwd(pwd: &libc::passwd) -> Account {
-        // SAFETY: the fields of a passwd getpw*_r filled point to NUL-terminated strings in its buffer.
-        let field = |p: *const libc::c_char| if p.is_null() { String::new() } else { unsafe { CStr::from_ptr(p) }.to_string_lossy().into_owned() };
         let login = field(pwd.pw_name);
         Account { full_name: super::full_name_of(&field(pwd.pw_gecos), &login), login }
     }
 
+    /// Calls a getpw*_r or getgr*_r lookup with a buffer that grows while
+    /// the entry does not fit, as large directory groups need, and reads
+    /// the entry with `read` while the buffer its strings are in lives.
+    fn lookup<T, R>(call: impl Fn(&mut T, &mut [u8], *mut *mut T) -> libc::c_int, read: impl Fn(&T) -> R) -> Option<R> {
+        let mut size = 16384;
+        loop {
+            let mut buf = vec![0u8; size];
+            // SAFETY: the entry is plain data the call fills in.
+            let mut entry: T = unsafe { std::mem::zeroed() };
+            let mut result = std::ptr::null_mut();
+            match call(&mut entry, &mut buf, &mut result) {
+                0 if !result.is_null() => return Some(read(&entry)),
+                libc::ERANGE if size < 1 << 22 => size *= 4,
+                _ => return None,
+            }
+        }
+    }
+
     pub fn account(uid: u32) -> Option<Account> {
-        let mut buf = vec![0u8; 16384];
-        let mut pwd: libc::passwd = unsafe { std::mem::zeroed() };
-        let mut result = std::ptr::null_mut();
-        // SAFETY: getpwuid_r writes only into pwd and buf, which outlive the call.
-        let ok = unsafe { libc::getpwuid_r(uid, &mut pwd, buf.as_mut_ptr().cast(), buf.len(), &mut result) } == 0;
-        (ok && !result.is_null()).then(|| from_passwd(&pwd))
+        // SAFETY: getpwuid_r writes only into the entry and the buffer it is given.
+        lookup(|pwd: &mut libc::passwd, buf, result| unsafe { libc::getpwuid_r(uid, pwd, buf.as_mut_ptr().cast(), buf.len(), result) }, from_passwd)
     }
 
     pub fn account_named(login: &str) -> Option<Account> {
         let name = CString::new(login).ok()?;
-        let mut buf = vec![0u8; 16384];
-        let mut pwd: libc::passwd = unsafe { std::mem::zeroed() };
-        let mut result = std::ptr::null_mut();
-        // SAFETY: getpwnam_r writes only into pwd and buf, which outlive the call.
-        let ok = unsafe { libc::getpwnam_r(name.as_ptr(), &mut pwd, buf.as_mut_ptr().cast(), buf.len(), &mut result) } == 0;
-        (ok && !result.is_null()).then(|| from_passwd(&pwd))
+        // SAFETY: getpwnam_r writes only into the entry and the buffer it is given.
+        lookup(|pwd: &mut libc::passwd, buf, result| unsafe { libc::getpwnam_r(name.as_ptr(), pwd, buf.as_mut_ptr().cast(), buf.len(), result) }, from_passwd)
     }
 
     pub fn ids() -> (u32, u32, u32, u32) {
@@ -184,13 +214,8 @@ mod imp {
     }
 
     pub fn group_name(gid: u32) -> Option<String> {
-        let mut buf = vec![0u8; 16384];
-        let mut grp: libc::group = unsafe { std::mem::zeroed() };
-        let mut result = std::ptr::null_mut();
-        // SAFETY: getgrgid_r writes only into grp and buf, which outlive the call.
-        let ok = unsafe { libc::getgrgid_r(gid, &mut grp, buf.as_mut_ptr().cast(), buf.len(), &mut result) } == 0;
-        // SAFETY: on success gr_name points to a NUL-terminated string in buf.
-        (ok && !result.is_null()).then(|| unsafe { CStr::from_ptr(grp.gr_name) }.to_string_lossy().into_owned())
+        // SAFETY: getgrgid_r writes only into the entry and the buffer it is given.
+        lookup(|grp: &mut libc::group, buf, result| unsafe { libc::getgrgid_r(gid, grp, buf.as_mut_ptr().cast(), buf.len(), result) }, |g| field(g.gr_name))
     }
 
     /// The database is walked by one cursor per process, as Emacs walks it,
@@ -209,7 +234,7 @@ mod imp {
                 if p.is_null() {
                     break;
                 }
-                out.push(CStr::from_ptr((*p).pw_name).to_string_lossy().into_owned());
+                out.push(field((*p).pw_name));
             }
             libc::endpwent();
         }
@@ -227,7 +252,7 @@ mod imp {
                 if g.is_null() {
                     break;
                 }
-                out.push(CStr::from_ptr((*g).gr_name).to_string_lossy().into_owned());
+                out.push(field((*g).gr_name));
             }
             libc::endgrent();
         }
@@ -241,10 +266,12 @@ mod imp {
     }
 
     pub fn stop_self() {
-        // SAFETY: raise only sends this process a signal, whose default
-        // action stops it until a SIGCONT.
+        // The whole process group, as Emacs's sys_suspend stops it, so a
+        // shell running E8 under a wrapper sees its job stop too.
+        // SAFETY: kill only sends the group a signal, whose default action
+        // stops it until a SIGCONT.
         unsafe {
-            libc::raise(libc::SIGTSTP);
+            libc::kill(0, libc::SIGTSTP);
         }
     }
 }
@@ -295,6 +322,15 @@ mod tests {
     fn full_names_read_as_emacs_reads_the_comment_field() {
         assert_eq!(full_name_of("Ada Lovelace,Room 1,555", "ada"), "Ada Lovelace");
         assert_eq!(full_name_of("& Smith", "jane"), "Jane Smith");
+        assert_eq!(full_name_of("& and &", "jo"), "Jo and &");
         assert_eq!(full_name_of("", "x"), "");
+    }
+
+    #[test]
+    fn openmp_may_offer_fewer_processors() {
+        assert_eq!(overridable(8, None, None), 8);
+        assert_eq!(overridable(8, Some("2,4"), None), 2);
+        assert_eq!(overridable(8, Some("6"), Some("3")), 3);
+        assert_eq!(overridable(8, Some("0"), Some("x")), 8);
     }
 }

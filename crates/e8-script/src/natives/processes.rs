@@ -27,9 +27,10 @@ natives! {
     #[ts = "(user?: number | string | null): string | undefined"]
     pub fn userFullName(ed, user: EditorValue) -> Option<String> {
         Ok(match user {
-            EditorValue::Number(uid) => e8_core::users::account(uid as u32).map(|a| a.full_name),
+            EditorValue::Null => ed.variable("user-full-name").and_then(|v| v.as_str().map(str::to_string)),
+            EditorValue::Number(uid) if uid.fract() == 0.0 && (0.0..=u32::MAX as f64).contains(&uid) => e8_core::users::account(uid as u32).map(|a| a.full_name),
             EditorValue::Str(login) => e8_core::users::account_named(&login).map(|a| a.full_name),
-            _ => ed.variable("user-full-name").and_then(|v| v.as_str().map(str::to_string)),
+            other => return Err(e8_core::Error::signal("error", "Invalid UID specification", vec![other])),
         })
     }
 
@@ -81,12 +82,12 @@ natives! {
 
     /// How many processors there are, as num-processors: those E8 may use,
     /// less as OMP_NUM_THREADS or OMP_THREAD_LIMIT say; with "current", those
-    /// it may use; with true, all the system has.
-    #[ts = "(query?: \"current\" | boolean | null): number"]
+    /// it may use; with "all", all the system has.
+    #[ts = "(query?: \"current\" | \"all\" | boolean | null): number"]
     pub fn numProcessors(ed, query: EditorValue) -> usize {
         let query = match &query {
             EditorValue::Str(s) | EditorValue::Symbol(s) if s == "current" => e8_core::users::Processors::Current,
-            v if v.is_true() => e8_core::users::Processors::All,
+            EditorValue::Str(s) | EditorValue::Symbol(s) if s == "all" => e8_core::users::Processors::All,
             _ => e8_core::users::Processors::Overridable,
         };
         Ok(e8_core::users::num_processors(query))

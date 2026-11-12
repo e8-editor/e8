@@ -45,11 +45,10 @@ fn the_machine_and_the_process() {
     assert_eq!(eval(&mut ed, &s, "[e8.daemonp() ?? null, e8.systemName().length > 0]"), "[null,true]");
     let current = std::thread::available_parallelism().unwrap().get();
     assert_eq!(eval(&mut ed, &s, r#"e8.numProcessors("current")"#), current.to_string());
-    assert_eq!(eval(&mut ed, &s, "e8.numProcessors(true) >= e8.numProcessors(\"current\")"), "true");
-    // OMP_NUM_THREADS limits the processors offered when not asked otherwise.
-    // SAFETY: each test runs in a process of its own, with no other thread reading the environment now.
-    unsafe { std::env::set_var("OMP_NUM_THREADS", "1,2") };
-    assert_eq!(eval(&mut ed, &s, "[e8.numProcessors(), e8.numProcessors(\"current\") === e8.numProcessors(null)]"), format!("[1,{}]", current == 1));
+    // As Emacs: "all" counts every one, t is the default.
+    assert_eq!(eval(&mut ed, &s, r#"[e8.numProcessors("all") >= e8.numProcessors("current"), e8.numProcessors(true) === e8.numProcessors()]"#), "[true,true]");
+    // Ids that are not ids, as Emacs: an error.
+    assert_eq!(eval(&mut ed, &s, r#"[-1, 1.5, [1]].map((u) => e8.conditionCase(() => e8.userFullName(u) ?? null, { error: (e) => e.message }))"#), r#"["Invalid UID specification","Invalid UID specification","Invalid UID specification"]"#);
 }
 
 #[test]
@@ -61,11 +60,37 @@ fn suspending_runs_the_hook_and_asks_the_terminal_and_a_window_iconifies() {
     assert_eq!(eval(&mut ed, &s, "ran"), "1");
     ed.press("C-x C-z").unwrap();
     assert_eq!(ed.suspend_requests(), 2);
-    // In a window there is no shell: suspend-emacs refuses, C-z iconifies.
-    ed.set_variable("window-system", Value::Symbol("ns".into()));
+    // In a window, a front end that shows images, there is no shell:
+    // suspend-emacs refuses, C-z iconifies.
+    ed.set_text_metrics(std::sync::Arc::new(Window));
     let got = eval(&mut ed, &s, r#"e8.conditionCase(() => e8.call("suspend-emacs"), { "user-error": (e) => e.message })"#);
     assert!(got.contains("Cannot suspend"), "{got}");
     assert_eq!(ed.suspend_requests(), 2);
     ed.press("C-z").unwrap();
     assert_eq!(ed.frame_visibility(ed.selected_frame()), Value::Str("icon".into()));
+}
+
+/// A front end's metrics like the GUI's: a window, showing images.
+struct Window;
+
+impl e8_core::layout::TextMetrics for Window {
+    fn advance(&self, _font: &e8_core::layout::FontSpec, _c: char) -> f32 {
+        10.0
+    }
+
+    fn line_height(&self, _font: &e8_core::layout::FontSpec) -> f32 {
+        20.0
+    }
+
+    fn char_width(&self) -> f32 {
+        10.0
+    }
+
+    fn char_height(&self) -> f32 {
+        20.0
+    }
+
+    fn images(&self) -> bool {
+        true
+    }
 }

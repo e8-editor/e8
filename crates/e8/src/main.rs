@@ -166,16 +166,24 @@ fn run(
             // stopped until fg, then E8's screen again.
             // The same terminal kept: making it again would ask the
             // terminal where its cursor is, which the input thread reads.
-            execute!(io::stdout(), DisableMouseCapture, ratatui::crossterm::terminal::LeaveAlternateScreen)?;
-            ratatui::crossterm::terminal::disable_raw_mode()?;
+            // Failures here are not fatal: losing unsaved work to one
+            // would be worse than a screen to redraw.
+            let _ = execute!(io::stdout(), DisableMouseCapture, ratatui::crossterm::terminal::LeaveAlternateScreen);
+            let _ = ratatui::crossterm::terminal::disable_raw_mode();
             e8_core::users::stop_self();
-            ratatui::crossterm::terminal::enable_raw_mode()?;
-            execute!(
+            let _ = ratatui::crossterm::terminal::enable_raw_mode();
+            let _ = execute!(
                 io::stdout(),
                 ratatui::crossterm::terminal::EnterAlternateScreen,
                 EnableMouseCapture,
                 ratatui::crossterm::terminal::Clear(ratatui::crossterm::terminal::ClearType::All)
-            )?;
+            );
+            // The terminal may have been resized meanwhile, which no
+            // signal says while stopped, as Emacs reads its size again.
+            if let Ok((width, height)) = ratatui::crossterm::terminal::size() {
+                *size.lock().unwrap_or_else(|e| e.into_inner()) = (width, height);
+                driver.send(Input::Wake);
+            }
             // A blank frame, so the next is drawn whole: ratatui's own
             // clear asks the terminal where its cursor is too.
             let _ = terminal.draw(|frame| frame.render_widget(ratatui::widgets::Clear, frame.area()));
