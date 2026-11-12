@@ -50,6 +50,18 @@ impl FontSpec {
     }
 }
 
+/// What of a window is not text, in a front end's units: its mode line's and
+/// header line's heights, the space above its text, its fringes together,
+/// and the divider on the right of a window with another beside it.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct WindowChrome {
+    pub mode_line: f32,
+    pub header_line: f32,
+    pub text_top: f32,
+    pub fringes: f32,
+    pub divider: f32,
+}
+
 /// How big characters and lines are in a front end's fonts, in its own
 /// units, as Emacs's font backend tells redisplay.
 pub trait TextMetrics: Send + Sync {
@@ -65,6 +77,15 @@ pub trait TextMetrics: Send + Sync {
     /// terminal's cells are, so every row lies on the grid.
     fn uniform(&self) -> bool {
         false
+    }
+    /// How much of a window is not text, in these units: what its mode line
+    /// and header line take, how far its text starts below its top, its
+    /// fringes and its divider across, as the front end draws them. The
+    /// core sizes windows with it, as Emacs's window.c does with the mode
+    /// line's height and the fringes' widths. A terminal's default: a line
+    /// each for the mode line and header line, a column for the divider.
+    fn window_chrome(&self) -> WindowChrome {
+        WindowChrome { mode_line: self.char_height(), header_line: self.char_height(), text_top: 0.0, fringes: 0.0, divider: self.char_width() }
     }
     /// Whether windows have fringes beside their text, as a graphical
     /// frame's do, where the arrows for continued and truncated lines go.

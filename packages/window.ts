@@ -617,13 +617,18 @@ export function fitWindowToBuffer(window: e8.Window = e8.selectedWindow(), maxHe
   const buffer = e8.windowBuffer(window);
   if (buffer === undefined) return;
   const lines = e8.withCurrentBuffer(buffer, () => e8.lineCount() - (e8.bufferSize() > 0 && e8.charBefore(e8.pointMax()) === "\n" ? 1 : 0));
-  const s = size(window);
-  let wanted = Math.max(lines + s.totalHeight - s.height, typeof minHeight_ === "number" ? minHeight_ : minHeight());
-  if (typeof maxHeight === "number") wanted = Math.min(wanted, maxHeight);
-  const delta = wanted - s.totalHeight;
+  // In the front end's units, as Emacs fits pixels: the lines, and what
+  // of the window is not text, its mode line and the room above.
+  const [, lineHeight] = e8.frameCharSize();
+  const total = e8.windowPixelHeight(window);
+  const chrome = total - e8.windowBodyPixelHeight(window);
+  const least = (typeof minHeight_ === "number" ? minHeight_ : minHeight()) * lineHeight;
+  let wanted = Math.max(Math.ceil(lines * lineHeight + chrome), Math.round(least));
+  if (typeof maxHeight === "number") wanted = Math.min(wanted, Math.round(maxHeight * lineHeight));
+  const delta = Math.round(wanted - total);
   if (delta === 0) return;
-  const possible = e8.conditionCase(() => e8.resizeWindow(window, delta, false, false), { error: () => 0 });
-  if (possible !== 0) e8.conditionCase(() => e8.resizeWindow(window, possible, false), { error: () => 0 });
+  const possible = e8.conditionCase(() => e8.resizeWindow(window, delta, false, false, true), { error: () => 0 });
+  if (possible !== 0) e8.conditionCase(() => e8.resizeWindow(window, possible, false, true, true), { error: () => 0 });
 }
 e8.defun("fit-window-to-buffer", (window?: e8.Window, maxHeight?: number, minHeight?: number) => {
   fitWindowToBuffer(window ?? e8.selectedWindow(), maxHeight ?? undefined, minHeight ?? undefined);

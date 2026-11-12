@@ -82,3 +82,60 @@ fn enlarging_a_window_takes_from_the_one_after_it_or_the_last_from_the_one_befor
     ed.press("C-x o C-x ^").unwrap();
     assert_eq!(heights(&mut ed), "[6,12,6]");
 }
+
+/// A front end that measures in points, as the GUI does: characters 8
+/// wide and lines 20 tall, a mode line 32 tall, 12 above the text and 16
+/// of fringe each side.
+struct Points;
+
+impl e8_core::layout::TextMetrics for Points {
+    fn advance(&self, _: &e8_core::layout::FontSpec, _: char) -> f32 {
+        8.0
+    }
+    fn line_height(&self, _: &e8_core::layout::FontSpec) -> f32 {
+        20.0
+    }
+    fn char_width(&self) -> f32 {
+        8.0
+    }
+    fn char_height(&self) -> f32 {
+        20.0
+    }
+    fn window_chrome(&self) -> e8_core::layout::WindowChrome {
+        e8_core::layout::WindowChrome { mode_line: 32.0, header_line: 32.0, text_top: 12.0, fringes: 32.0, divider: 0.0 }
+    }
+}
+
+#[test]
+fn sizes_are_the_front_ends_units() {
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Points));
+    // 641 by 401 points: 80 columns and 20 lines, and a point to spare each way.
+    ed.set_frame_pixel_size(641, 401);
+    ed.press("C-x 2").unwrap();
+    // Halved in lines, 10 each; the old window keeps the spare point.
+    assert_eq!(
+        eval(&mut ed, &s, "JSON.stringify(e8.windowList().map((w) => [e8.windowPixelHeight(w), e8.windowBodyPixelHeight(w), e8.windowTotalHeight(w)]))"),
+        "[[201,157,10],[200,156,10]]"
+    );
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.windowPixelEdges(e8.windowList()[1], true))"), "[16,213,625,369]");
+    // Text rows beside the mode line and the room above: (200 - 32 - 12) / 20.
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowSize(e8.windowList()[1]).height)"), "7");
+    // Resized by points or by lines.
+    assert_eq!(eval(&mut ed, &s, "String(e8.resizeWindow(e8.windowList()[1], 15, false, true, true))"), "15");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), "215");
+    assert_eq!(eval(&mut ed, &s, "String(e8.resizeWindow(e8.windowList()[1], -1))"), "-1");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), "195");
+    // fit-window-to-buffer fits the text and what of the window is not text, in points.
+    eval(
+        &mut ed,
+        &s,
+        r#"(import("window").then((m) => { globalThis.win = m; }), "")"#,
+    );
+    eval(
+        &mut ed,
+        &s,
+        r#"((w) => { e8.withCurrentBuffer(e8.getBufferCreate("f"), () => e8.insert("1\n2\n3\n4\n5\n6")); e8.setWindowBuffer(w, "f"); win.fitWindowToBuffer(w); return ""; })(e8.windowList()[1])"#,
+    );
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), String::from("164"));
+}

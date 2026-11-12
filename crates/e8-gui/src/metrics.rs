@@ -118,6 +118,15 @@ impl TextMetrics for EguiMetrics {
         true
     }
 
+    /// The GUI's mode line and header line are bars a line tall with room
+    /// above and below; text starts below a margin, and the fringes are
+    /// the room each side.
+    fn window_chrome(&self) -> e8_core::layout::WindowChrome {
+        use crate::app::{BAR_PAD, PAD_X, PAD_Y};
+        let bar = self.line_height + 2.0 * BAR_PAD;
+        e8_core::layout::WindowChrome { mode_line: bar, header_line: bar, text_top: PAD_Y, fringes: 2.0 * PAD_X, divider: 0.0 }
+    }
+
     fn advance(&self, font: &FontSpec, c: char) -> f32 {
         let key = (font.scale.to_bits(), family_key(font), font.proportional(), font.bold, c);
         if let Some(&w) = self.advances.lock().expect("not poisoned").get(&key) {

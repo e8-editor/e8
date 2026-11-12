@@ -565,9 +565,53 @@ natives! {
         Ok(ed.window_use_time(window))
     }
 
-    fn resizeWindow(ed, window: Option<Win>, delta: i64, horizontal: bool, apply: bool) -> i64 {
+    fn resizeWindow(ed, window: Option<Win>, delta: i64, horizontal: bool, apply: bool, pixelwise: bool) -> i64 {
         let window = window.map(|x| x.0);
-        ed.resize_window(window, delta, horizontal, apply)
+        ed.resize_window_by(window, delta, horizontal, apply, pixelwise)
+    }
+
+    /// The height of a window's text area in the front end's units, points
+    /// in the GUI and lines on a terminal, beside its mode line, header line
+    /// and the room its front end leaves, as window-body-height with PIXELWISE.
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowBodyPixelHeight(ed, window: Option<Win>) -> f64 {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        ed.window_body_pixel_size(id).map(|s| s.1 as f64).ok_or_else(|| e8_core::Error::new("No such window"))
+    }
+
+    /// The width of a window's text area in the front end's units, beside
+    /// its fringes and divider, as window-body-width with PIXELWISE.
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowBodyPixelWidth(ed, window: Option<Win>) -> f64 {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        ed.window_body_pixel_size(id).map(|s| s.0 as f64).ok_or_else(|| e8_core::Error::new("No such window"))
+    }
+
+    /// A window's edges in the front end's units from the frame's windows'
+    /// top left, as window-pixel-edges: left, top, right and bottom, its
+    /// mode line and divider included, or with `body` its text area only.
+    #[ts = "(window?: WindowLike, body?: boolean): [left: number, top: number, right: number, bottom: number]"]
+    pub fn windowPixelEdges(ed, window: Option<Win>, body: Option<bool>) -> Vec<f64> {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        let r = ed.window_pixel_rect(id).ok_or_else(|| e8_core::Error::new("No such window"))?;
+        let (mut x0, mut y0, mut x1, mut y1) = (r.x, r.y, r.x + r.width, r.y + r.height);
+        if body.unwrap_or(false) && ed.window_list().contains(&id) {
+            let (above, below, across) = ed.window_chrome_units(id, &r);
+            let fringes = ed.text_metrics().window_chrome().fringes;
+            x0 += fringes / 2.0;
+            x1 = (x1 - (across - fringes / 2.0)).max(x0);
+            y0 += above;
+            y1 = (y1 - below).max(y0);
+        }
+        Ok(vec![x0 as f64, y0 as f64, x1 as f64, y1 as f64])
+    }
+
+    /// A column's width and a line's height in the front end's units, the
+    /// default font's, as frame-char-width and frame-char-height.
+    #[ts = "(): [width: number, height: number]"]
+    pub fn frameCharSize(ed) -> Vec<f64> {
+        let (w, h) = ed.cell();
+        Ok(vec![w as f64, h as f64])
     }
 
     /// Make windows the same size as their neighbours, as balance-windows does.

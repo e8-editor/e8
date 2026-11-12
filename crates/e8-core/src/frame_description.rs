@@ -135,6 +135,9 @@ pub struct WindowDescription {
     pub word_wrap: bool,
     /// The mode line, formatted at redisplay, each piece with its style.
     pub mode_line: Vec<(ModeLineSegment, Style)>,
+    /// Whether it has a mode line, its buffer's `mode-line-format` being
+    /// non-nil; a window without one has no room left for it.
+    pub shows_mode_line: bool,
     pub header_line: Option<Vec<(ModeLineSegment, Style)>>,
 }
 
@@ -251,6 +254,7 @@ impl Editor {
                 margins: self.window_margins(view.id),
                 word_wrap: self.variable_in(b, "word-wrap").is_some_and(|v| v.is_true()),
                 mode_line: styled(self.mode_line(view.id)),
+                shows_mode_line: self.window_shows_mode_line(view.id),
                 header_line: self.header_line(view.id).map(styled),
             });
         }

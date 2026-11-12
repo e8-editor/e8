@@ -1,8 +1,9 @@
 //! A frame's windows as window.c keeps them: a tree whose leaves are the
 //! live windows and whose other nodes are internal windows, each a
 //! combination of two or more child windows side by side or one above
-//! another (ADR 0069, stage 3). Every child has a total size, in lines or
-//! columns along its combination, its mode line and divider included;
+//! another (ADR 0069, stage 3). Every child has a total size along its
+//! combination, its mode line and divider included, in the front end's
+//! units, as Emacs keeps pixels: cells on a terminal, points in the GUI;
 //! across the combination it takes the combination's size.
 //!
 //! Splitting a window whose parent is a combination of the same kind makes
@@ -250,19 +251,17 @@ impl WindowTree {
         }
     }
 
-    /// The smallest a part of the tree can be across or down, as Emacs's
-    /// `window-min-width` and `window-min-height` allow for each window.
-    pub(crate) fn min_size(&self, horizontal: bool) -> usize {
+    /// The smallest a part of the tree can be across or down, in units of
+    /// which a column or line is `unit`, as Emacs's `window-min-width` and
+    /// `window-min-height` allow for each window.
+    pub(crate) fn min_size(&self, horizontal: bool, unit: f32) -> usize {
         match self {
             WindowTree::Leaf(_) => {
-                if horizontal {
-                    WINDOW_MIN_WIDTH
-                } else {
-                    WINDOW_MIN_HEIGHT
-                }
+                let cells = if horizontal { WINDOW_MIN_WIDTH } else { WINDOW_MIN_HEIGHT };
+                (cells as f32 * unit).round() as usize
             }
             WindowTree::Combination(c) => {
-                let sizes = c.children.iter().map(|p| p.tree.min_size(horizontal));
+                let sizes = c.children.iter().map(|p| p.tree.min_size(horizontal, unit));
                 if c.horizontal == horizontal { sizes.sum() } else { sizes.max().unwrap_or(0) }
             }
         }
@@ -369,7 +368,8 @@ impl WindowTree {
     /// window moves, as dragging its mode line or divider moves it, from
     /// the nearest combination where one is. Gives how far it went, or
     /// None if no combination of that kind is above it.
-    pub(crate) fn resize(&mut self, id: WindowId, delta: i64, horizontal: bool, extent: (usize, usize), apply: bool, edge: bool) -> Option<i64> {
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn resize(&mut self, id: WindowId, delta: i64, horizontal: bool, extent: (usize, usize), unit: f32, apply: bool, edge: bool) -> Option<i64> {
         let path = self.path(id)?;
         // The nearest combination of that kind with a sibling to take from.
         let (depth, k, n) = (0..path.len()).rev().find_map(|depth| {
@@ -392,8 +392,8 @@ impl WindowTree {
         let c = self.combination_mut(&up);
         let size = c.children[k].size as i64;
         let other = c.children[n].size as i64;
-        let lowest = c.children[k].tree.min_size(horizontal) as i64;
-        let highest = size + other - c.children[n].tree.min_size(horizontal) as i64;
+        let lowest = c.children[k].tree.min_size(horizontal, unit) as i64;
+        let highest = size + other - c.children[n].tree.min_size(horizontal, unit) as i64;
         let moved = (size + delta).clamp(lowest.min(size), highest.max(size));
         if apply {
             c.children[k].size = moved as usize;
@@ -413,17 +413,22 @@ impl WindowTree {
         node
     }
 
-    /// Gives each combination's children the same share of it, the first
-    /// ones a line or column more where it does not divide evenly, as
-    /// Emacs's `balance-windows`.
-    pub(crate) fn balance(&mut self, extent: (usize, usize)) {
+    /// Gives each combination's children the same share of it in whole
+    /// lines or columns of `cell`, the first ones one more where it does
+    /// not divide evenly and the last what is left of a unit, as Emacs's
+    /// `balance-windows`.
+    pub(crate) fn balance(&mut self, extent: (usize, usize), cell: (f32, f32)) {
         let WindowTree::Combination(c) = self else { return };
         let along = if c.horizontal { extent.0 } else { extent.1 };
+        let unit = if c.horizontal { cell.0 } else { cell.1 };
+        let lines = (along as f32 / unit).floor() as usize;
         let n = c.children.len();
+        let mut used = 0;
         for (i, p) in c.children.iter_mut().enumerate() {
-            p.size = along / n + usize::from(i < along % n);
+            p.size = if i + 1 == n { along - used } else { ((lines / n + usize::from(i < lines % n)) as f32 * unit).round() as usize };
+            used += p.size;
             let child = if c.horizontal { (p.size, extent.1) } else { (extent.0, p.size) };
-            p.tree.balance(child);
+            p.tree.balance(child, cell);
         }
         renormalize(c);
     }
@@ -580,17 +585,17 @@ mod tests {
         let mut tree = WindowTree::Leaf(1);
         split(&mut tree, 1, 2, 10, false, (80, 24));
         split(&mut tree, 2, 3, 11, false, (80, 24));
-        assert_eq!(tree.resize(2, 2, false, (80, 24), true, false), Some(2));
+        assert_eq!(tree.resize(2, 2, false, (80, 24), 1.0, true, false), Some(2));
         let sizes = |t: &WindowTree| match t {
             WindowTree::Combination(c) => c.children.iter().map(|p| p.size).collect::<Vec<_>>(),
             _ => vec![],
         };
         assert_eq!(sizes(&tree), [12, 8, 4]);
         // The last takes from the one before; no further than window-min-height.
-        assert_eq!(tree.resize(3, 10, false, (80, 24), true, false), Some(4));
+        assert_eq!(tree.resize(3, 10, false, (80, 24), 1.0, true, false), Some(4));
         assert_eq!(sizes(&tree), [12, 4, 8]);
         // Dragging the last window's mode line moves nothing.
-        assert_eq!(tree.resize(3, 1, false, (80, 24), true, true), None);
+        assert_eq!(tree.resize(3, 1, false, (80, 24), 1.0, true, true), None);
     }
 
     #[test]
