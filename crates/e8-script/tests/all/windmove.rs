@@ -247,3 +247,60 @@ fn window_in_direction_takes_window_els_arguments() {
     );
     assert_eq!(js(&mut ed, &s, r#"[e8.funcall("window-at-side-p", ws()[0], Symbol.for("top")), e8.funcall("window-at-side-p", ws()[0], Symbol.for("bottom"))]"#), "[true,false]");
 }
+
+#[test]
+fn windmove_display_shows_a_visited_file_that_way() {
+    // find-file shows the file as switch-to-buffer does, obeying the display actions.
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let file = dir.path().join("ff.txt");
+    std::fs::write(&file, "hello\n").unwrap();
+    let path = file.display().to_string();
+    let bind = r#"e8.bindKey("<f7>", "windmove-display-right")"#;
+    let typed = format!("type:{path}");
+    assert_eq!(after_keys(bind, &["<f7> C-x C-f C-a C-k", &typed, "RET"]), r#"[[[24,40],[24,40]],1,["*scratch*","ff.txt"]]"#);
+    assert_eq!(after_keys(bind, &["C-u <f7> C-x C-f C-a C-k", &typed, "RET"]), r#"[[[24,40],[24,40]],0,["*scratch*","ff.txt"]]"#);
+    // Without it, find-file shows the file in the selected window, and find-file-noselect in none.
+    assert_eq!(after_keys(bind, &["C-x C-f C-a C-k", &typed, "RET"]), r#"[[[24,80]],0,["ff.txt"]]"#);
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"(e8.setVariable("switch-to-buffer-obey-display-actions", true), "")"#);
+    assert_eq!(js(&mut ed, &s, &format!("[e8.findFileNoselect({path:?}), bufs()]")), r#"["ff.txt",["*scratch*"]]"#);
+}
+
+#[test]
+fn windmove_create_window_splits_for_any_value_but_a_function() {
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"(e8.setVariable("windmove-create-window", 1), "")"#);
+    assert_eq!(js(&mut ed, &s, r#"[go("windmove-left"), sz()]"#), "[0,[[24,40],[24,40]]]");
+    // A function is called with the direction, the argument and the window, and gives the window to select.
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"(e8.defun("my-create", (dir, arg, window) => ((globalThis.called = [dir.description, arg, window]), Symbol.for("no-select"))), e8.setVariable("windmove-create-window", "my-create"), "")"#,
+    );
+    assert_eq!(js(&mut ed, &s, r#"[go("windmove-left"), called, sz()]"#), r#"[0,["left",null,null],[[24,80]]]"#);
+}
+
+#[test]
+fn windmove_mode_stays_off_once_turned_off() {
+    let (mut ed, s) = setup();
+    assert_eq!(js(&mut ed, &s, r#"e8.variable("windmove-mode")"#), "false");
+    ed.call("windmove-default-keybindings", vec![]).unwrap();
+    assert_eq!(js(&mut ed, &s, r#"e8.variable("windmove-mode")"#), "true");
+    eval(&mut ed, &s, r#"(e8.callWithPrefix(-1, "windmove-mode"), "")"#);
+    ed.call("windmove-display-default-keybindings", vec![]).unwrap();
+    assert_eq!(js(&mut ed, &s, r#"e8.variable("windmove-mode")"#), "false");
+}
+
+#[test]
+fn display_buffer_override_next_command_unbinds_its_action() {
+    let (mut ed, s) = setup();
+    ed.call("windmove-display-right", vec![]).unwrap();
+    ed.press("C-x b").unwrap();
+    ed.type_text("foo");
+    ed.press("RET").unwrap();
+    assert_eq!(
+        js(&mut ed, &s, r#"[1, 2, 3].map((n) => e8.fboundp(`display-buffer-override-next-command--${n}`))"#),
+        "[false,false,false]"
+    );
+}

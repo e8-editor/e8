@@ -25,9 +25,10 @@ interface Ring<T> {
   items: T[];
 }
 const makeRing = <T>(size: number): Ring<T> => ({ size: Math.max(1, size), items: [] });
-function ringInsert<T>(ring: Ring<T>, item: T): void {
+/** Inserts an item, giving those that no longer fit. */
+function ringInsert<T>(ring: Ring<T>, item: T): T[] {
   ring.items.unshift(item);
-  if (ring.items.length > ring.size) ring.items.length = ring.size;
+  return ring.items.length > ring.size ? ring.items.splice(ring.size) : [];
 }
 const ringRef = <T>(ring: Ring<T>, index: number): T => ring.items[((index % ring.items.length) + ring.items.length) % ring.items.length];
 function ringRemove<T>(ring: Ring<T>, index: number): T {
@@ -36,7 +37,7 @@ function ringRemove<T>(ring: Ring<T>, index: number): T {
 }
 
 /** What winner compares configurations by: each window's edges and buffer, in order of their edges, as winner-win-data. */
-type WinData = [[number, number, number, number], string][];
+type WinData = [[number, number, number, number], e8.Buffer][];
 /** A configuration, and its windows' edges and buffers, as winner-conf. */
 type Conf = [e8.WindowConfiguration, WinData];
 
@@ -52,15 +53,32 @@ function winnerSortedWindowList(): e8.Window[] {
   });
 }
 
-const winnerWinData = (): WinData => winnerSortedWindowList().map((w) => [e8.windowEdges(w), e8.windowBuffer(w) ?? ""]);
+const winnerWinData = (): WinData => winnerSortedWindowList().map((w) => [e8.windowEdges(w), e8.getBuffer(e8.windowBuffer(w) ?? "")!]);
 const winnerConf = (): Conf => [e8.currentWindowConfiguration(), winnerWinData()];
-const winData = (a: WinData): string => JSON.stringify(a);
+/** Window data as a string to compare, the buffers as themselves, by id, as `equal` compares them by `eq`. */
+const winData = (a: WinData): string => JSON.stringify(a.map(([edges, buffer]) => [edges, buffer.id]));
 
 /** Each frame's configuration after the last command, as winner-currents. */
 const winnerCurrents = new Map<e8.Frame, Conf>();
 
+/**
+ * Lets the editor forget configurations nothing here holds any more, with
+ * the markers each keeps, rather than leaving them to the collector, as a
+ * configuration is taken after every command that changes the windows.
+ */
+function winnerForget(confs: (Conf | undefined)[]): void {
+  for (const conf of confs) {
+    if (conf === undefined) continue;
+    if ([...winnerCurrents.values()].includes(conf)) continue;
+    if ([...winnerRingAlist.values(), winnerPendingUndoRing].some((ring) => ring.items.includes(conf))) continue;
+    e8.freeWindowConfiguration(conf[0]);
+  }
+}
+
 const winnerRemember = (): void => {
+  const old = winnerCurrents.get(e8.selectedFrame());
   winnerCurrents.set(e8.selectedFrame(), winnerConf());
+  winnerForget([old]);
 };
 
 const winnerConfiguration = (frame: e8.Frame = e8.selectedFrame()): Conf => winnerCurrents.get(frame) ?? withSelectedFrame(frame, winnerConf);
@@ -89,8 +107,9 @@ function winnerInsertIfNew(frame: e8.Frame): void {
   const conf = winnerConfiguration(frame);
   const ring = winnerRing(frame);
   // When the previous configuration was very similar, keep only the latest.
-  if (ring.items.length > 0 && winnerEqual(conf, ringRef(ring, 0))) ringRemove(ring, 0);
-  ringInsert(ring, conf);
+  const dropped = ring.items.length > 0 && winnerEqual(conf, ringRef(ring, 0)) ? [ringRemove(ring, 0)] : [];
+  dropped.push(...ringInsert(ring, conf));
+  winnerForget(dropped);
   winnerLastFrames.push(frame);
 }
 
@@ -136,14 +155,14 @@ function winnerSetConf(winconf: e8.WindowConfiguration): void {
 }
 
 /** For each buffer, its mark and whether its region was active, and its point in each window, as winner-point-alist. */
-type PointEntry = { buffer: string; mark: [number | undefined, boolean]; points: [e8.Window | null, number][] };
+type PointEntry = { buffer: e8.Buffer; mark: [number | undefined, boolean]; points: [e8.Window | null, number][] };
 let winnerPointAlist: PointEntry[] = [];
 
 function winnerMakePointAlist(): PointEntry[] {
   const alist: PointEntry[] = [];
   for (const win of e8.windowList().filter((w) => w !== e8.minibufferWindow())) {
-    const buffer = e8.windowBuffer(win) ?? "";
-    let entry = alist.find((e) => e.buffer === buffer);
+    const buffer = e8.getBuffer(e8.windowBuffer(win) ?? "")!;
+    let entry = alist.find((e) => e.buffer.id === buffer.id);
     if (entry === undefined) {
       entry = { buffer, mark: e8.withCurrentBuffer(buffer, () => [e8.mark(), e8.regionActive()]), points: [] };
       alist.unshift(entry);
@@ -154,9 +173,9 @@ function winnerMakePointAlist(): PointEntry[] {
 }
 
 /** Where to put a window's point in a buffer, as winner-get-point: undefined if the buffer is gone. */
-function winnerGetPoint(buffer: string, win: e8.Window | null): number | undefined {
-  if (!e8.bufferLiveP(e8.getBuffer(buffer))) return undefined;
-  const entry = winnerPointAlist.find((e) => e.buffer === buffer);
+function winnerGetPoint(buffer: e8.Buffer, win: e8.Window | null): number | undefined {
+  if (!buffer.live) return undefined;
+  const entry = winnerPointAlist.find((e) => e.buffer.id === buffer.id);
   if (entry !== undefined) {
     const here = entry.points.find(([w]) => w === win) ?? entry.points.find(([w]) => w === null);
     if (here !== undefined) return here[1];
@@ -169,7 +188,8 @@ function winnerGetPoint(buffer: string, win: e8.Window | null): number | undefin
   return point;
 }
 
-function boring(buffer: string): boolean {
+function boring(buffer: string | undefined): boolean {
+  if (buffer === undefined) return false;
   const names = e8.variable("winner-boring-buffers");
   if (Array.isArray(names) && names.includes(buffer)) return true;
   const regexp = e8.variable("winner-boring-buffers-regexp");
@@ -182,28 +202,28 @@ function boring(buffer: string): boolean {
  * that leaves the configuration impossible, only one window being left.
  */
 function winnerSet(conf: Conf): boolean {
-  const buffers: string[] = [];
+  const buffers: e8.Buffer[] = [];
   const alive: (number | undefined)[] = conf[1].map(([, buffer]) => {
     const pos = winnerGetPoint(buffer, null);
-    if (pos !== undefined && !buffers.includes(buffer)) buffers.unshift(buffer);
+    if (pos !== undefined && !buffers.some((b) => b.id === buffer.id)) buffers.unshift(buffer);
     return pos;
   });
   winnerSetConf(conf[0]);
   const xwins: e8.Window[] = [];
   for (const win of winnerSortedWindowList()) {
-    const buffer = e8.windowBuffer(win) ?? "";
+    const buffer = e8.getBuffer(e8.windowBuffer(win) ?? "")!;
     let keep = alive.shift() !== undefined;
     if (keep) {
       const point = winnerGetPoint(buffer, win);
       if (point === undefined) keep = false;
       else e8.setWindowPoint(win, point);
     }
-    if (!keep || boring(buffer)) xwins.unshift(win);
+    if (!keep || boring(buffer.name)) xwins.unshift(win);
   }
   // Marks, as select-enable-primary is nil.
   if (nil(e8.variable("select-enable-primary"))) {
     for (const buffer of buffers) {
-      const entry = winnerPointAlist.find((e) => e.buffer === buffer);
+      const entry = winnerPointAlist.find((e) => e.buffer.id === buffer.id);
       if (entry === undefined) continue;
       e8.withCurrentBuffer(buffer, () => {
         e8.setMark(entry.mark[0] ?? null);
@@ -239,7 +259,7 @@ function winnerUndoThis(): boolean {
         return true;
       }
     }
-    ringRemove(winnerPendingUndoRing, winnerUndoCounter);
+    winnerForget([ringRemove(winnerPendingUndoRing, winnerUndoCounter)]);
   }
 }
 
@@ -268,7 +288,9 @@ const winnerRedo = e8.defineCommand({
   doc: "Restore a more recent window configuration saved by Winner mode.",
   run: () => {
     if (e8.lastCommand() !== "winner-undo") e8.userError("Previous command was not a ‘winner-undo’");
-    winnerSet(e8.minibufferDepth() === 0 ? ringRemove(winnerPendingUndoRing, 0) : ringRef(winnerPendingUndoRing, 0));
+    const conf = e8.minibufferDepth() === 0 ? ringRemove(winnerPendingUndoRing, 0) : ringRef(winnerPendingUndoRing, 0);
+    winnerSet(conf);
+    winnerForget([conf]);
     if (e8.selectedWindow() !== e8.minibufferWindow()) e8.message("Winner undid undo");
   },
 });

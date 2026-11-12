@@ -105,3 +105,32 @@ fn winner_mode_off_leaves_the_keys_and_signals() {
         "unbound"
     );
 }
+
+#[test]
+fn a_buffer_killed_and_made_again_is_not_the_one_winner_kept() {
+    // foo is killed and a new foo made: the window that showed the old one is not brought back.
+    let again = r#"e8.bindKey("<f4>", e8.defineCommand({ name: "kill-and-make-foo", run: () => { e8.call("kill-buffer", "foo"); e8.getBufferCreate("foo"); } }))"#;
+    assert_eq!(
+        after(again, &["C-x 3 C-x o C-x b", "type:foo", "RET C-x o C-x 1 <f4> C-c <left>"]),
+        r#"[[[24,40],[24,40]],0,["*scratch*","*scratch*"]] Winner undo (1 / 2)"#
+    );
+    assert_eq!(
+        after(again, &["C-x 2 C-x 3 C-x o C-x o C-x b", "type:foo", "RET C-x o C-x 1 <f4> C-c <left>"]),
+        r#"[[[24,40],[24,40]],0,["*scratch*","*scratch*"]] Winner undo (1 / 4)"#
+    );
+}
+
+#[test]
+fn winner_frees_the_configurations_it_no_longer_holds() {
+    // A configuration is taken after each command that changes the windows;
+    // those neither current nor in the ring are freed, with their markers.
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.set_frame_size(80, 24);
+    eval(&mut ed, &s, r#"(e8.setVariable("winner-ring-size", 3), e8.call("winner-mode"), "")"#);
+    for _ in 0..20 {
+        ed.press("C-x 2 C-x 1").unwrap();
+    }
+    let kept = ed.window_configuration_count();
+    assert!(kept <= 4, "{kept} window configurations kept");
+}

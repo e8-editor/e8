@@ -289,7 +289,9 @@
   class WindowConfiguration {
     constructor(id) {
       Object.defineProperty(this, "__e8WindowConfiguration", { value: id });
-      configurationsFreed.register(this, id);
+      // What freeing it early unregisters it with, as a marker's token.
+      Object.defineProperty(this, "__e8ConfigurationToken", { value: {} });
+      configurationsFreed.register(this, id, this.__e8ConfigurationToken);
       Object.freeze(this);
     }
   }
@@ -1361,6 +1363,11 @@
       return native.setWindowConfiguration(configuration.__e8WindowConfiguration) || undefined;
     },
     windowConfigurationP: (value) => value instanceof WindowConfiguration,
+    freeWindowConfiguration(configuration) {
+      if (!(configuration instanceof WindowConfiguration)) throw new TypeError("freeWindowConfiguration takes a window configuration");
+      configurationsFreed.unregister(configuration.__e8ConfigurationToken);
+      native.freeWindowConfiguration(configuration.__e8WindowConfiguration);
+    },
     // As Emacs's save-window-excursion: the windows put back as they were, however fn ends.
     saveWindowExcursion(fn) {
       const configuration = e8.currentWindowConfiguration();

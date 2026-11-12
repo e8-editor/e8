@@ -1411,9 +1411,7 @@ fn files_and_buffers(ed: &mut Editor) {
                 };
                 // As display-buffer-alist and the other actions say, with
                 // switch-to-buffer-obey-display-actions (window.ts).
-                if ed.variable("switch-to-buffer-obey-display-actions").is_some_and(|v| v.is_true())
-                    && ed.command("pop-to-buffer-same-window").is_some()
-                {
+                if ed.obeys_display_actions() {
                     ed.get_buffer_create(&name);
                     return ed.call("pop-to-buffer-same-window", vec![Arg::Str(name)]);
                 }

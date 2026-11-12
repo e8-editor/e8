@@ -2023,7 +2023,7 @@ impl Editor {
         let selected = self.selected_window;
         let history = self.window(selected).map(|w| (w.prev_buffers.clone(), w.next_buffers.clone()));
         let (order, buried) = (self.buffer_order.clone(), self.buried.clone());
-        let visited = self.visit_file(path);
+        let visited = self.visit_file_showing(path, true);
         if let (Some(w), Some((prev, next))) = (self.windows.iter_mut().find(|w| w.id == selected), history) {
             (w.prev_buffers, w.next_buffers) = (prev, next);
         }
@@ -2193,10 +2193,50 @@ impl Editor {
         Ok(())
     }
 
-    /// Visits a file in a buffer, reusing the buffer if the file is already open.
+    /// Whether `switch-to-buffer`, and so `find-file`, shows a buffer as the
+    /// display actions say, through window.ts's `pop-to-buffer-same-window`,
+    /// as `switch-to-buffer-obey-display-actions` asks.
+    pub fn obeys_display_actions(&self) -> bool {
+        self.variable("switch-to-buffer-obey-display-actions").is_some_and(|v| !v.is_nil())
+            && self.command("pop-to-buffer-same-window").is_some()
+    }
+
+    /// Visits a file in a buffer, reusing the buffer if the file is already
+    /// open, and shows it in the selected window, or, with
+    /// `switch-to-buffer-obey-display-actions`, where the display actions
+    /// say, as Emacs's `find-file` shows it with `switch-to-buffer`.
     pub fn visit_file(&mut self, path: &Path) -> Result<()> {
-        if let Some(index) = self.buffers.iter().position(|b| b.path.as_deref() == Some(path)) {
+        if !self.obeys_display_actions() {
+            return self.visit_file_showing(path, true);
+        }
+        // As find-file-noselect, then switch-to-buffer: read with the buffer
+        // current but not shown, then show it.
+        let before = self.buffers[self.current].id;
+        let visited = self.visit_file_showing(path, false);
+        let id = self.buffers[self.current].id;
+        let name = self.buffers[self.current].name.clone();
+        if let Some(back) = self.buffer_with_id(before) {
+            self.current = back;
+        }
+        visited?;
+        if self.buffer_with_id(id).is_some() {
+            self.call("pop-to-buffer-same-window", vec![Arg::Str(name)])?;
+        }
+        Ok(())
+    }
+
+    /// Makes a buffer current for visit_file, shown in the selected window when `show`.
+    fn visit_select(&mut self, index: usize, show: bool) {
+        if show {
             self.select(index);
+        } else {
+            self.current = index;
+        }
+    }
+
+    fn visit_file_showing(&mut self, path: &Path, show: bool) -> Result<()> {
+        if let Some(index) = self.buffers.iter().position(|b| b.path.as_deref() == Some(path)) {
+            self.visit_select(index, show);
             return Ok(());
         }
         let name = path.display().to_string();
@@ -2210,7 +2250,7 @@ impl Editor {
             buffer.path = Some(path.to_path_buf());
             crate::files::set_file_default_directory(&mut buffer, path);
             self.buffers.push(buffer);
-            self.select(self.buffers.len() - 1);
+            self.visit_select(self.buffers.len() - 1, show);
             if !is_new {
                 let read = self.insert_file_contents(&name, true, None, None, false);
                 let b = self.buffer_mut();
@@ -2231,7 +2271,7 @@ impl Editor {
             buffer.read_only = path.to_string_lossy().ends_with('~')
                 || fs::metadata(path).is_ok_and(|m| m.permissions().readonly());
             self.buffers.push(buffer);
-            self.select(self.buffers.len() - 1);
+            self.visit_select(self.buffers.len() - 1, show);
         }
         // As Emacs's after-find-file: auto-saving starts, and a newer
         // auto-save file is pointed out.

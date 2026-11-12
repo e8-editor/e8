@@ -5,6 +5,7 @@
 // Emacs autoloads its commands; windmove-mode, turned on as they are
 // first bound, holds the keys the *-default-keybindings functions bind.
 
+import { keyBinding } from "help";
 import { windowInDirection, splitWindow, deleteWindow, displayBufferOverrideNextCommand, maybeRaiseFrame, alistGet } from "window";
 
 e8.defineVariable({
@@ -45,6 +46,9 @@ const symName = (v: unknown): string | undefined => (typeof v === "symbol" ? v.d
 const prefixValue = (arg: e8.PrefixArg | undefined): number | undefined => (arg === null || arg === undefined ? undefined : e8.prefixNumericValue(arg));
 /** Whether a window is the minibuffer's and no minibuffer is open, as (and (window-minibuffer-p W) (not (minibuffer-window-active-p W))). */
 const inactiveMinibuffer = (w: e8.Window): boolean => w === e8.minibufferWindow() && e8.minibufferDepth() === 0;
+/** Whether a value is a function, or names one, as functionp. */
+const functionp = (v: unknown): boolean =>
+  typeof v === "function" || ((typeof v === "symbol" || (typeof v === "string" && v !== "")) && e8.fboundp(symName(v)!));
 /** window.el's directions for split-window's side: up and down are above and below. */
 const splitSide = (dir: string): string => (dir === "up" ? "above" : dir === "down" ? "below" : dir);
 
@@ -68,10 +72,10 @@ export function windmoveDoWindowSelect(dir: string, arg?: number | null, window?
   let other: e8.Window | symbol | undefined = windmoveFindOtherWindow(dir, arg, window);
   const create = e8.variable("windmove-create-window");
   if (!nil(create) && (other === undefined || inactiveMinibuffer(other as e8.Window))) {
-    if (create === true) {
+    if (!functionp(create)) {
       other = splitWindow(window, null, splitSide(dir));
     } else {
-      const got = e8.funcall(create as string, dir, arg ?? null, window ?? null);
+      const got = e8.funcall(create as string, Symbol.for(dir), arg ?? null, window ?? null);
       other = e8.windowp(got) ? got : symName(got) === "no-select" ? Symbol.for("no-select") : undefined;
     }
   }
@@ -103,14 +107,24 @@ for (const dir of DIRECTIONS) {
 
 // windmove-mode, whose keymap holds the keys the functions below bind.
 
+let windmoveLoaded = false;
 e8.defineMinorMode({
   name: "windmove-mode",
   global: true,
   doc: "Global minor mode for the windmove commands' keys, which windmove-default-keybindings and its kin bind in windmove-mode-map.",
+  onChange: () => {
+    windmoveLoaded = true;
+  },
 });
 // On from the start in Emacs, where windmove.el loads only when one of its
 // commands is first used: preloaded here, it turns on when its keys are
-// first bound, so it shows among the modes that are on only once in use.
+// first bound, so it shows among the modes that are on only once in use,
+// and stays off after that if it is turned off, as in Emacs.
+function windmoveLoad(): void {
+  if (windmoveLoaded) return;
+  windmoveLoaded = true;
+  if (nil(e8.variable("windmove-mode"))) e8.call("windmove-mode");
+}
 
 /** A modifier's prefix in a key's description, as Emacs writes them. */
 const MODIFIER: Record<string, string> = { alt: "A-", control: "C-", hyper: "H-", meta: "M-", shift: "S-", super: "s-" };
@@ -139,7 +153,7 @@ function modifierList(modifiers: e8.Value | undefined, otherwise: string[]): str
  */
 export function windmoveInstallDefaults(prefix: string | undefined, modifiers: string[], alist: [string, string][], uninstall = false): void {
   const map = "windmove-mode-map";
-  if (!uninstall && nil(e8.variable("windmove-mode"))) e8.call("windmove-mode");
+  windmoveLoad();
   for (const [command, key] of alist) {
     for (const [old, bound] of e8.keymapBindings(map)) if (bound === command) e8.keymapUnset(map, old, true);
     if (uninstall) continue;
@@ -149,7 +163,8 @@ export function windmoveInstallDefaults(prefix: string | undefined, modifiers: s
       continue;
     }
     const keys = (prefix ? `${prefix} ` : "") + keyWith(modifiers, key);
-    if (e8.lookupKey("global-map", keys) === "self-insert-command") e8.message(`Warning (emacs): Command ${command} is shadowing self-insert-key`);
+    const bound = keyBinding(keys) ?? ([...keys].length === 1 ? "self-insert-command" : undefined);
+    if (bound === "self-insert-command") e8.message(`Warning (emacs): Command ${command} is shadowing self-insert-key`);
     const oldFn = e8.lookupKey(map, keys);
     if (typeof oldFn === "string") e8.message(`Warning (emacs): Overriding ${oldFn} with ${command}`);
     e8.defineKey(map, keys, command as e8.CommandName);

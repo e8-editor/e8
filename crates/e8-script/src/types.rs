@@ -1432,6 +1432,12 @@ const API: &str = r##"
    */
   function setWindowConfiguration(configuration: WindowConfiguration): true | undefined;
   function windowConfigurationP(value: unknown): value is WindowConfiguration;
+  /**
+   * Let the editor forget a window configuration now, with the markers it
+   * keeps in buffers, rather than when the collector frees it: for code
+   * that takes many, as winner does. It cannot be put back afterwards.
+   */
+  function freeWindowConfiguration(configuration: WindowConfiguration): void;
   /** Run `fn`, then put the windows back as they were, however it ends, as save-window-excursion. */
   function saveWindowExcursion<T>(fn: () => T): T;
   /**

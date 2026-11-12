@@ -55,6 +55,12 @@ impl Value {
         !matches!(self, Value::Null | Value::Bool(false))
     }
 
+    /// Whether the value is Lisp's nil: null, false or the empty list,
+    /// which [`Value::is_true`] counts as true.
+    pub fn is_nil(&self) -> bool {
+        matches!(self, Value::Null | Value::Bool(false)) || matches!(self, Value::List(l) if l.is_empty())
+    }
+
     pub fn as_number(&self) -> Option<f64> {
         match self {
             Value::Number(n) => Some(*n),

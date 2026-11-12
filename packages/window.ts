@@ -1227,13 +1227,14 @@ export function displayBufferOverrideNextCommand(
   const command = e8.thisCommand();
   const clear = (): void => {
     e8.setVariable("switch-to-buffer-obey-display-actions", obeyDisplay);
+    if (e8.fboundp(action)) e8.fmakunbound(action);
     const overriding = e8.variable("display-buffer-overriding-action");
     if (!Array.isArray(overriding)) return;
     const functions = Array.isArray(overriding[0]) ? overriding[0].filter((f) => f !== action) : overriding[0] === action ? null : (overriding[0] ?? null);
     e8.setVariable("display-buffer-overriding-action", [functions, ...overriding.slice(1)]);
   };
   // An uninterned symbol in Lisp; here a function under a name of its own,
-  // which the overriding action holds and clearing takes out again.
+  // which the overriding action holds and clearing takes out and unbinds again.
   const action = e8.defun(`display-buffer-override-next-command--${++overrideCount}`, (buffer: e8.Value, alist: e8.Value) => {
     if (e8.minibufferDepth() > depth) return null;
     const b = e8.getBuffer(buffer as e8.BufferLike)!;
