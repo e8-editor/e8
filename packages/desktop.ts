@@ -70,7 +70,53 @@ interface Desktop {
   version: 1;
   globals: { [name: string]: e8.Value };
   buffers: SavedBuffer[];
-  windows?: WindowState;
+  /**
+   * The selected frame's windows, as window-state-get with WRITABLE gives
+   * them, printed as Lisp, as Emacs's frameset keeps them. Desktops E8
+   * saved before held an object of its own, `OldWindows`, read still.
+   */
+  windows?: string | OldWindows;
+}
+
+/** The windows as desktops before window-state-get kept them: a window, or two side by side or one above the other. */
+type OldWindows =
+  | { buffer: string; file?: string; point: number; start: number; selected: boolean }
+  | { sideBySide: boolean; firstSize: number | null; first: OldWindows; second: OldWindows };
+
+/**
+ * A window state, as window-state-get gives it, for windows an older
+ * desktop kept: each split's first window at its size in lines or
+ * columns then, as a share of the frame's root window now, and each
+ * window showing its buffer, or the buffer visiting its file.
+ */
+function fromOldWindows(old: OldWindows): WindowState {
+  const sym = (name: string) => Symbol.for(name);
+  const visiting = (file: string) => e8.bufferList().find((b) => e8.withCurrentBuffer(b, () => e8.bufferFileName()) === file);
+  const node = (w: OldWindows, normalHeight: number, normalWidth: number, height: number, width: number, last: boolean): e8.Value[] => {
+    const sizes: e8.Value[] = [...(last ? [[sym("last"), true]] : []), [sym("normal-height"), normalHeight], [sym("normal-width"), normalWidth]];
+    if ("buffer" in w) {
+      const buffer = (w.file ? visiting(w.file) : undefined) ?? w.buffer;
+      const place = [...(w.selected ? [[sym("selected"), true]] : [[sym("selected")]]), [sym("point"), w.point], [sym("start"), w.start]];
+      return [sym("leaf"), ...sizes, [sym("buffer"), buffer, ...place]];
+    }
+    const total = w.sideBySide ? width : height;
+    const first = Math.min(Math.max(w.firstSize ?? Math.floor(total / 2), 1), total - 1);
+    const share = first / total;
+    const [h1, w1, h2, w2] = w.sideBySide ? [height, first, height, total - first] : [first, width, total - first, width];
+    const children = w.sideBySide
+      ? [node(w.first, 1, share, h1, w1, false), node(w.second, 1, 1 - share, h2, w2, true)]
+      : [node(w.first, share, 1, h1, w1, false), node(w.second, 1 - share, 1, h2, w2, true)];
+    return [sym(w.sideBySide ? "hc" : "vc"), ...sizes, [sym("combination-limit")], ...children];
+  };
+  const root = e8.frameRootWindow();
+  return [[], ...node(old, 1, 1, e8.windowTotalHeight(root), e8.windowTotalWidth(root), true)];
+}
+
+/** The windows a desktop kept, as a window state. */
+function savedWindows(windows: string | OldWindows): WindowState | undefined {
+  if (typeof windows !== "string") return fromOldWindows(windows);
+  const [state] = e8.readFromString(windows);
+  return Array.isArray(state) ? state : undefined;
 }
 
 function desktopPath(): string[] {
@@ -149,7 +195,7 @@ function gather(): Desktop {
     });
     if (saved) buffers.push(saved);
   }
-  return { version: 1, globals, buffers, ...(truthy(e8.variable("desktop-restore-frames")) ? { windows: windowStateGet() } : {}) };
+  return { version: 1, globals, buffers, ...(truthy(e8.variable("desktop-restore-frames")) ? { windows: e8.prin1ToString(windowStateGet(null, true)) } : {}) };
 }
 
 /** The text last written, so auto-saving a desktop that did not change writes nothing, as desktop-file-checksum. */
@@ -254,7 +300,9 @@ function read(dirname?: string): boolean {
     else failed++;
   }
   if (locker !== e8.emacsPid()) claimLock(String(e8.variable("desktop-dirname")));
-  if (desktop.windows && truthy(e8.variable("desktop-restore-frames"))) windowStatePut(desktop.windows);
+  const windows = desktop.windows && truthy(e8.variable("desktop-restore-frames")) ? savedWindows(desktop.windows) : undefined;
+  // As frameset.el puts a frame's windows: safely, and a state that no longer fits leaves them as they are.
+  if (windows) e8.conditionCase(() => windowStatePut(windows, undefined, Symbol.for("safe")), { error: (e) => e8.message(`Desktop: windows not restored: ${e.message}`) });
   else if (desktop.buffers?.length) {
     const first = desktop.buffers.find((b) => e8.getBuffer(b.name));
     if (first) e8.call("switch-to-buffer", first.name);

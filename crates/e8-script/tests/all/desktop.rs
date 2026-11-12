@@ -106,3 +106,52 @@ fn a_desktop_another_e8_holds_is_not_loaded_without_asking() {
     ed.call("desktop-read", vec![Arg::Prefix(None)]).unwrap();
     assert!(ed.windows().iter().any(|w| w.buffer.name == "a.txt"));
 }
+
+/// Each window's lines, columns and buffer, in cyclic order.
+fn sizes(ed: &mut Editor, s: &Scripting) -> String {
+    s.eval_expression(ed, "JSON.stringify(e8.windowList().map((w) => [e8.windowTotalHeight(w), e8.windowTotalWidth(w), e8.windowBuffer(w)]))").unwrap()
+}
+
+#[test]
+fn the_windows_come_back_at_their_sizes_and_older_desktops_still_read() {
+    let config = dir();
+    let files = dir();
+    let (a, b) = (files.path().join("a.txt"), files.path().join("b.txt"));
+    fs::write(&a, "one\ntwo\nthree\n").unwrap();
+    fs::write(&b, "four\n").unwrap();
+    let before;
+    {
+        let (mut ed, s) = setup(config.path());
+        visit(&mut ed, &a);
+        ed.press("C-u 8 C-x 2 C-u 3 0 C-x 3").unwrap();
+        ed.press("C-x o C-x o").unwrap();
+        visit(&mut ed, &b);
+        before = sizes(&mut ed, &s);
+        assert_eq!(before, r#""[[8,30,\"a.txt\"],[8,50,\"a.txt\"],[15,80,\"b.txt\"]]""#);
+        ed.call("desktop-save", vec![Arg::Str(config.path().display().to_string()), Arg::Prefix(None)]).unwrap();
+    }
+    // Kept as window-state-get's writable state, printed as Lisp.
+    let saved = fs::read_to_string(config.path().join(".e8.desktop")).unwrap();
+    assert!(saved.contains(r#""windows": "(((min-height "#), "{saved}");
+    let (mut ed, s) = setup(config.path());
+    ed.set_variable("desktop-save-mode", Value::Bool(true));
+    ed.run_hooks("after-init-hook").unwrap();
+    assert_eq!(sizes(&mut ed, &s), before);
+    assert_eq!(ed.window_buffer().name, "b.txt", "the window selected then is selected");
+    drop(ed);
+    // A desktop E8 wrote before keeps its windows as an object of its own.
+    let mut desktop: serde_json::Value = serde_json::from_str(&saved).unwrap();
+    desktop["windows"] = serde_json::json!({
+        "sideBySide": false, "firstSize": 8,
+        "first": { "buffer": "a.txt", "file": a.display().to_string(), "point": 4, "start": 0, "selected": false },
+        "second": { "buffer": "b.txt", "file": b.display().to_string(), "point": 0, "start": 0, "selected": true }
+    });
+    fs::write(config.path().join(".e8.desktop"), desktop.to_string()).unwrap();
+    fs::remove_file(config.path().join(".e8.desktop.lock")).ok();
+    let (mut ed, s) = setup(config.path());
+    ed.set_variable("desktop-save-mode", Value::Bool(true));
+    ed.run_hooks("after-init-hook").unwrap();
+    assert_eq!(sizes(&mut ed, &s), r#""[[8,80,\"a.txt\"],[15,80,\"b.txt\"]]""#);
+    assert_eq!(windows(&ed), [("a.txt".into(), 4), ("b.txt".into(), 0)]);
+    assert_eq!(ed.window_buffer().name, "b.txt");
+}
