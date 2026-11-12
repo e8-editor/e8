@@ -6063,9 +6063,11 @@ declare global {
        */
       "query-replace-skip": [];
       /**
-       * Quit the selected window and bury its buffer.
+       * Quit WINDOW and bury its buffer.
        *
-       * A window made to show the buffer is deleted; one that showed another buffer before shows it again, where it was. Then the window that was selected when the buffer was shown is selected again. With a prefix argument, the buffer is killed.
+       * WINDOW must be a live window and defaults to the selected one. With prefix argument KILL non-nil, kill the buffer instead of burying it.
+       *
+       * This calls quit-restore-window to delete WINDOW or show some other buffer in it, as its quit-restore parameter says: a window made for the buffer is deleted, one that showed another buffer shows it again where it was and at its size then. The functions in quit-window-hook run before anything else. Code passes a window to window.ts's quitWindow.
        *
        * @param kill raw prefix argument
        *
@@ -7402,9 +7404,17 @@ declare global {
        */
       "window-configuration-to-register": [];
       /**
+       * Swap the states of live windows WINDOW-1 and WINDOW-2.
+       *
+       * Interactively, the selected window and the window following it in the cyclic ordering of windows on visible frames, each taking the other's buffer, start, point and parameters. Code passes the windows and SIZE (height, width or t, to swap their sizes too) to window.ts's windowSwapStates.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-swap-states": [];
+      /**
        * Toggle display of side windows on the selected frame.
        *
-       * With side windows, they are deleted after the frame's windows are kept in its window-state parameter; without, the side windows kept there are shown again around the main window.
+       * With side windows, they are deleted after the frame's state is kept in its window-state parameter, as window-state-get gives it; without, the state kept there is put back, with the main window as it is now.
        *
        * Defined in packages/window.ts.
        */
@@ -9184,6 +9194,15 @@ declare global {
        * Defined in packages/lisp.ts.
        */
       "forward-sexp-function": Value;
+      /**
+       * Function called to automatically hide frames.
+       * The function is called with one argument - a frame.
+       *
+       * Functions affected by this option are those that bury a buffer shown in a separate frame like `quit-window' and `bury-buffer'.
+       *
+       * Defined in packages/window.ts.
+       */
+      "frame-auto-hide-function": Value;
       /**
        * Whether the background is "dark" or "light", for choosing face colours: a face can have colours for each.
        *
@@ -12342,11 +12361,27 @@ declare global {
        */
       "window-min-width": Value;
       /**
+       * Alist of persistent window parameters.
+       *
+       * Each entry is (PARAMETER . PERSISTENCE): PERSISTENCE t means window-state-get keeps PARAMETER, and current-window-configuration does, unless it is asked for a state to write out; `writable' means it is kept in that too.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-persistent-parameters": Value;
+      /**
        * Non-nil means resize windows by the front end's units rather than whole lines and columns.
        *
        * Defined in packages/window.ts.
        */
       "window-resize-pixelwise": Value;
+      /**
+       * What window-state-put and set-window-configuration do with a window whose buffer was killed.
+       *
+       * nil or `delete' deletes it, `dedicated' deletes it if it was dedicated, t keeps it showing another buffer, and a function is called with the frame, a list of (WINDOW BUFFER START POINT DEDICATED nil) for such windows, and `state'.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-restore-killed-buffer-windows": Value;
       /**
        * How many side windows each side may have: [LEFT, TOP, RIGHT, BOTTOM], each a number or nil for any.
        *
@@ -12365,6 +12400,30 @@ declare global {
        * Defined in packages/window.ts.
        */
       "window-size-fixed": Value;
+      /**
+       * Helper variable for `window-state-put'.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-state-put-kept-windows": Value;
+      /**
+       * Helper variable for `window-state-put'.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-state-put-list": Value;
+      /**
+       * Helper variable for `window-state-put'.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-state-put-selected-window": Value;
+      /**
+       * Helper variable for `window-state-put'.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-state-put-stale-windows": Value;
       /**
        * Whether continued lines break at spaces and tabs rather than in the middle of a word.
        *
@@ -14317,6 +14376,10 @@ declare global {
        * Run after entering Python mode, after the hooks of the modes it is built on.
        */
       "python-ts-mode-hook": Value;
+      /**
+       * Hook run before performing any other actions in the `quit-window' command.
+       */
+      "quit-window-hook": Value;
       /**
        * Run after Read-Passwd mode is turned on or off.
        */
