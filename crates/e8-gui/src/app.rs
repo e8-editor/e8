@@ -338,7 +338,7 @@ impl E8App {
         match &mut self.backend {
             Backend::Inline { editor, .. } => {
                 // Timers and auto-saving, and a wake-up for the next one due.
-                editor.run_timers();
+                editor.run_timers_awaiting_input();
                 if let Some(due) = editor.next_timer_in() {
                     ctx.request_repaint_after(due);
                 }

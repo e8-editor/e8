@@ -50,31 +50,76 @@ impl Status {
     }
 }
 
+/// The signals this system has, by name without "SIG", as Emacs's
+/// sig2str names them.
+#[cfg(unix)]
+const SIGNALS: &[(&str, i32)] = &[
+    ("HUP", libc::SIGHUP),
+    ("INT", libc::SIGINT),
+    ("QUIT", libc::SIGQUIT),
+    ("ILL", libc::SIGILL),
+    ("TRAP", libc::SIGTRAP),
+    ("ABRT", libc::SIGABRT),
+    #[cfg(any(target_os = "macos", target_os = "ios", target_os = "freebsd"))]
+    ("EMT", libc::SIGEMT),
+    ("FPE", libc::SIGFPE),
+    ("KILL", libc::SIGKILL),
+    ("BUS", libc::SIGBUS),
+    ("SEGV", libc::SIGSEGV),
+    ("SYS", libc::SIGSYS),
+    ("PIPE", libc::SIGPIPE),
+    ("ALRM", libc::SIGALRM),
+    ("TERM", libc::SIGTERM),
+    ("URG", libc::SIGURG),
+    ("STOP", libc::SIGSTOP),
+    ("TSTP", libc::SIGTSTP),
+    ("CONT", libc::SIGCONT),
+    ("CHLD", libc::SIGCHLD),
+    ("TTIN", libc::SIGTTIN),
+    ("TTOU", libc::SIGTTOU),
+    ("IO", libc::SIGIO),
+    ("XCPU", libc::SIGXCPU),
+    ("XFSZ", libc::SIGXFSZ),
+    ("VTALRM", libc::SIGVTALRM),
+    ("PROF", libc::SIGPROF),
+    ("WINCH", libc::SIGWINCH),
+    #[cfg(any(target_os = "macos", target_os = "ios", target_os = "freebsd"))]
+    ("INFO", libc::SIGINFO),
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    ("STKFLT", libc::SIGSTKFLT),
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    ("PWR", libc::SIGPWR),
+    ("USR1", libc::SIGUSR1),
+    ("USR2", libc::SIGUSR2),
+];
+
 /// The signal a name gives, "SIGINT" or "int", as signal-process takes names.
 pub fn signal_number(name: &str) -> Option<i32> {
     #[cfg(unix)]
     {
         let name = name.trim_start_matches("SIG").trim_start_matches("sig").to_ascii_uppercase();
-        Some(match name.as_str() {
-            "HUP" => libc::SIGHUP,
-            "INT" => libc::SIGINT,
-            "QUIT" => libc::SIGQUIT,
-            "KILL" => libc::SIGKILL,
-            "TERM" => libc::SIGTERM,
-            "STOP" => libc::SIGSTOP,
-            "TSTP" => libc::SIGTSTP,
-            "CONT" => libc::SIGCONT,
-            "USR1" => libc::SIGUSR1,
-            "USR2" => libc::SIGUSR2,
-            "WINCH" => libc::SIGWINCH,
-            _ => return None,
-        })
+        SIGNALS.iter().find(|(n, _)| *n == name).map(|(_, sig)| *sig)
     }
     #[cfg(not(unix))]
     {
         let _ = name;
         None
     }
+}
+
+/// The names of the signals this system has, as Emacs's signal-names:
+/// without "SIG", the highest numbered first, and "EXIT", signal 0, last.
+pub fn signal_names() -> Vec<&'static str> {
+    #[cfg(unix)]
+    {
+        let mut signals: Vec<(&str, i32)> = SIGNALS.to_vec();
+        signals.sort_by_key(|(_, sig)| std::cmp::Reverse(*sig));
+        let mut names: Vec<&str> = signals.into_iter().map(|(n, _)| n).collect();
+        names.push("EXIT");
+        names
+    }
+    #[cfg(not(unix))]
+    Vec::new()
 }
 
 /// How Emacs describes a process ended by a signal.
@@ -110,6 +155,10 @@ pub(crate) enum Kind {
     /// A server listening for connections, which become processes of their
     /// own; dropping the flag stops it.
     Server(Contact, Arc<AtomicBool>),
+    /// A pipe, as make-pipe-process makes: what is written to its other
+    /// end is its output. The editor keeps that end until a program is
+    /// given it as its standard error, so the pipe ends when the program does.
+    PipeProcess(Option<std::io::PipeWriter>),
 }
 
 /// Where a network process connects or listens.
@@ -153,6 +202,8 @@ pub(crate) struct Process {
     /// set, in order.
     held_output: String,
     query_on_exit: bool,
+    /// Its process-inherit-coding-system-flag.
+    inherit_coding: bool,
     /// When it was seen to have exited, and how, while its output was still open.
     exited: Option<(Instant, Status)>,
     kind: Kind,
@@ -335,6 +386,9 @@ pub(crate) struct Processes {
     /// What is kept of processes that have gone from the list, by id, so
     /// their objects still answer, as Emacs's process objects do.
     gone: std::collections::HashMap<u64, Gone>,
+    /// Whether filters and timers run now because the editor is waiting
+    /// for the user to type, as Emacs's waiting-for-user-input-p.
+    waiting_for_user_input: bool,
 }
 
 /// What is kept of a process once it has gone from the list: its name,
@@ -351,6 +405,7 @@ struct Gone {
     mark: Option<u64>,
     pid: u32,
     query_on_exit: bool,
+    inherit_coding: bool,
     coding: (Coding, Coding),
     plist: Value,
     /// Its filter and sentinel, still read and set, as Emacs's are on a
@@ -384,7 +439,7 @@ impl Default for Processes {
     fn default() -> Processes {
         let (tx, rx) = sync_channel(QUEUED_CHUNKS);
         let tx = EventSender { tx, wake: Arc::new(Mutex::new(None)) };
-        Processes { list: Vec::new(), tx, rx, next_id: 1, held: Default::default(), outputs_seen: 0, watching: None, read_delay: Duration::ZERO, gone: Default::default() }
+        Processes { list: Vec::new(), tx, rx, next_id: 1, held: Default::default(), outputs_seen: 0, watching: None, read_delay: Duration::ZERO, gone: Default::default(), waiting_for_user_input: false }
     }
 }
 
@@ -443,7 +498,12 @@ impl Drop for Processes {
 /// Sends SIGHUP to a process's group, then kills what is left; a
 /// connection or server is closed.
 fn hang_up(p: &mut Process) {
-    match &p.kind {
+    match &mut p.kind {
+        Kind::PipeProcess(writer) => {
+            *writer = None;
+            p.stdin = None;
+            return;
+        }
         Kind::Server(_, stop) => {
             stop.store(true, Ordering::Relaxed);
             return;
@@ -487,6 +547,9 @@ pub struct ProcessSpec {
     /// there is none, as make-process's :stderr; on pipes only, and
     /// `merge_stderr` then does not apply.
     pub stderr_buffer: Option<String>,
+    /// A pipe process, by id, to write its standard error to, as
+    /// make-process's :stderr takes one; `merge_stderr` then does not apply.
+    pub stderr_process: Option<u64>,
     /// Its filter, called with the process and its output, as
     /// make-process's :filter; None for the default.
     pub filter: Option<Value>,
@@ -498,6 +561,18 @@ pub struct ProcessSpec {
     /// How its output is decoded and its input encoded, if not as
     /// default-process-coding-system says.
     pub coding: Option<(Coding, Coding)>,
+}
+
+/// What makes a pipe process, as make-pipe-process takes it.
+pub struct PipeSpec {
+    pub name: String,
+    /// The buffer its output goes to, by name, made if there is none.
+    pub buffer: Option<String>,
+    pub filter: Option<Value>,
+    pub sentinel: Option<Value>,
+    pub coding: Option<(Coding, Coding)>,
+    /// Whether exiting E8 goes ahead without asking while it is open, as :noquery.
+    pub noquery: bool,
 }
 
 /// What opens a network connection or server, as make-network-process takes it.
@@ -632,6 +707,14 @@ impl Editor {
     /// on as Emacs does. Asks the agent's permission first.
     pub fn make_process(&mut self, spec: ProcessSpec) -> Result<String> {
         let program = spec.command.first().ok_or_else(|| Error::new("No program to run"))?.clone();
+        // The pipe process its standard error goes to, as :stderr.
+        if let Some(id) = spec.stderr_process {
+            let p = self.processes.list.iter().find(|p| p.id == id);
+            if !matches!(p.map(|p| &p.kind), Some(Kind::PipeProcess(Some(_)))) {
+                let name = p.map_or_else(|| self.process_info(id).map_or_else(|| id.to_string(), |i| i.name), |p| p.name.clone());
+                return Err(Error::new(format!("Process {name} is not an open pipe process")));
+            }
+        }
         self.check_permission(&format!("run {}", spec.command.join(" ")))?;
         let buffer = spec.buffer.as_ref().map(|name| self.get_buffer_create(name));
         let dir = match &spec.directory {
@@ -700,7 +783,16 @@ impl Editor {
                 Box::new(output)
             }
         };
-        let mut child = command.spawn().map_err(|e| Error::new(format!("Searching for program: {e}, {program}")))?;
+        // Standard error to a pipe process, whose end the program now has
+        // alone, so the pipe ends when it does, as Emacs gives it.
+        if let Some(id) = spec.stderr_process
+            && let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id)
+            && let Kind::PipeProcess(end) = &mut p.kind
+            && let Some(end) = end.take()
+        {
+            command.stderr(Stdio::from(end));
+        }
+        let mut child = command.spawn().map_err(|e| crate::fileops::file_error("Searching for program", &e, &[std::path::Path::new(&program)]))?;
         // The command holds the other ends, which must close here for the
         // end of the output to be seen.
         drop(command);
@@ -762,6 +854,7 @@ impl Editor {
             }
             None => (None, None),
         };
+        let inherit_coding = self.inherits_coding(buffer_id);
         self.processes.list.push(Process {
             id,
             name: name.clone(),
@@ -778,6 +871,7 @@ impl Editor {
             plist: Value::Null,
             held_output: String::new(),
             query_on_exit: true,
+            inherit_coding,
             exited: None,
             kind,
             coding,
@@ -790,7 +884,7 @@ impl Editor {
 
     /// The codings a new process gets: coding-system-for-read and -write if
     /// bound, else default-process-coding-system's, as Emacs chooses.
-    fn default_process_coding(&self) -> (Coding, Coding) {
+    pub fn default_process_coding(&self) -> (Coding, Coding) {
         let named = |v: Option<Value>| v.and_then(|v| v.as_str().and_then(Coding::parse));
         let (mut decode, mut encode) = match self.variable("default-process-coding-system") {
             Some(Value::List(pair)) if pair.len() == 2 => (named(pair.first().cloned()), named(pair.get(1).cloned())),
@@ -802,6 +896,84 @@ impl Editor {
         (decode.unwrap_or(utf8), encode.unwrap_or(utf8))
     }
 
+    /// A new process's process-inherit-coding-system-flag: set when it has
+    /// a buffer and inherit-process-coding-system is, as make-process sets it.
+    fn inherits_coding(&self, buffer: Option<u64>) -> bool {
+        buffer.is_some() && self.variable("inherit-process-coding-system").is_some_and(|v| v.is_true())
+    }
+
+    /// A process's process-inherit-coding-system-flag, listed or gone.
+    pub fn process_inherit_coding_system_flag(&self, id: u64) -> Option<bool> {
+        match self.processes.list.iter().find(|p| p.id == id) {
+            Some(p) => Some(p.inherit_coding),
+            None => self.processes.gone.get(&id).map(|g| g.inherit_coding),
+        }
+    }
+
+    /// Sets a process's process-inherit-coding-system-flag, listed or gone.
+    /// E8 keeps it, as Emacs does, though it decides nothing yet.
+    pub fn set_process_inherit_coding_system_flag(&mut self, id: u64, flag: bool) {
+        if let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) {
+            p.inherit_coding = flag;
+        } else if let Some(g) = self.processes.gone.get_mut(&id) {
+            g.inherit_coding = flag;
+        }
+    }
+
+    /// Whether a process has given its terminal to a job of its own, as
+    /// process-running-child-p: the foreground group's id if so, None if
+    /// not, and true where E8 cannot tell, as for a program on pipes. An
+    /// error for a connection or pipe process, or one that has gone.
+    pub fn process_running_child_p(&self, id: u64) -> Result<Value> {
+        let Some(p) = self.processes.list.iter().find(|p| p.id == id) else {
+            let name = self.process_info(id).map_or_else(|| id.to_string(), |i| i.name);
+            return Err(Error::new(format!("Process {name} is not active")));
+        };
+        match &p.kind {
+            Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_) => Err(Error::new(format!("Process {} is not a subprocess", p.name))),
+            #[cfg(unix)]
+            Kind::Pty { master, .. } => {
+                use std::os::fd::AsRawFd;
+                // SAFETY: tcgetpgrp only reads the terminal's foreground group.
+                let group = unsafe { libc::tcgetpgrp(master.as_raw_fd()) };
+                Ok(if group == p.pid as i32 {
+                    Value::Null
+                } else if group > 0 {
+                    Value::Number(group as f64)
+                } else {
+                    Value::Bool(true)
+                })
+            }
+            Kind::Pipe => Ok(Value::Bool(true)),
+        }
+    }
+
+    /// Whether the editor is waiting for the user to type, as Emacs's
+    /// waiting-for-user-input-p: true while filters, sentinels and timers
+    /// run from the command loop's wait for keys, false while they run from
+    /// accept-process-output, sleep-for or a command.
+    pub fn waiting_for_user_input_p(&self) -> bool {
+        self.processes.waiting_for_user_input
+    }
+
+    /// Runs the timers and takes in processes' output, as
+    /// [`Editor::run_timers`], as the command loop does while it waits for
+    /// a key: waiting-for-user-input-p is true meanwhile.
+    pub fn run_timers_awaiting_input(&mut self) {
+        let was = std::mem::replace(&mut self.processes.waiting_for_user_input, true);
+        self.run_timers();
+        self.processes.waiting_for_user_input = was;
+    }
+
+    /// Runs `f` with waiting-for-user-input-p false, as Emacs's
+    /// wait_reading_process_output binds it when it does not read keys.
+    pub(crate) fn not_awaiting_input<T>(&mut self, f: impl FnOnce(&mut Editor) -> T) -> T {
+        let was = std::mem::replace(&mut self.processes.waiting_for_user_input, false);
+        let result = f(self);
+        self.processes.waiting_for_user_input = was;
+        result
+    }
+
     /// A unique process name, made so with "<1>" and on as Emacs does.
     fn unique_process_name(&self, base: &str) -> String {
         let mut name = base.to_string();
@@ -811,6 +983,57 @@ impl Editor {
             n += 1;
         }
         name
+    }
+
+    /// Makes a pipe process, as Emacs's make-pipe-process: no program, its
+    /// output what is written to the pipe's other end, which a program
+    /// started with it as its standard error writes to. It is "open" until
+    /// that program has ended, or it is deleted, and then "closed", its
+    /// sentinel told "finished". Returns its name, made unique.
+    pub fn make_pipe_process(&mut self, spec: PipeSpec) -> Result<String> {
+        let (reader, end) = std::io::pipe().map_err(|e| Error::new(format!("Making a pipe: {e}")))?;
+        let name = self.unique_process_name(&spec.name);
+        let id = self.processes.next_id;
+        self.processes.next_id += 1;
+        read_stream(id, reader, self.processes.tx.clone(), None, self.processes.read_delay, Event::Output);
+        let buffer = spec.buffer.as_ref().map(|name| self.get_buffer_create(name));
+        let (buffer_id, mark) = match buffer {
+            Some(index) => {
+                let b = &mut self.buffers[index];
+                let end = b.len();
+                (Some(b.id), Some(b.make_marker(end, false)))
+            }
+            None => (None, None),
+        };
+        let coding = spec.coding.unwrap_or_else(|| self.default_process_coding());
+        let inherit_coding = self.inherits_coding(buffer_id);
+        self.processes.list.push(Process {
+            id,
+            name: name.clone(),
+            buffer: buffer_id,
+            mark,
+            command: Vec::new(),
+            status: Status::Run,
+            child: None,
+            // What is sent to it goes nowhere, as in Emacs, where nothing
+            // reads the pipe it writes to.
+            stdin: Some(writer(std::io::sink(), || {})),
+            pid: 0,
+            open_streams: 1,
+            filter: spec.filter,
+            sentinel: spec.sentinel,
+            plist: Value::Null,
+            held_output: String::new(),
+            query_on_exit: !spec.noquery,
+            inherit_coding,
+            exited: None,
+            kind: Kind::PipeProcess(Some(end)),
+            coding,
+            pending: Vec::new(),
+            gate: None,
+            stderr: None,
+        });
+        Ok(name)
     }
 
     /// Opens a network connection, or a server listening for them, as
@@ -886,6 +1109,7 @@ impl Editor {
             None => (None, None),
         };
         let coding = spec.coding.unwrap_or_else(|| self.default_process_coding());
+        let inherit_coding = self.inherits_coding(buffer_id);
         self.processes.list.push(Process {
             id,
             name: name.clone(),
@@ -902,6 +1126,7 @@ impl Editor {
             plist: Value::Null,
             held_output: String::new(),
             query_on_exit: true,
+            inherit_coding,
             exited: None,
             kind,
             coding,
@@ -948,6 +1173,7 @@ impl Editor {
             }
             None => (None, None),
         };
+        let inherit_coding = self.inherits_coding(buffer_id);
         self.processes.list.push(Process {
             id,
             name: name.clone(),
@@ -965,6 +1191,7 @@ impl Editor {
             plist,
             held_output: String::new(),
             query_on_exit: true,
+            inherit_coding,
             exited: None,
             kind: Kind::Network(contact),
             coding,
@@ -1306,7 +1533,7 @@ impl Editor {
         }
         let i = self.processes.list.iter().position(|p| p.name == name).expect("found above");
         let mut p = self.processes.list.remove(i);
-        let network = matches!(p.kind, Kind::Network(_) | Kind::Server(..));
+        let network = matches!(p.kind, Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_));
         if network {
             hang_up(&mut p);
         }
@@ -1341,6 +1568,7 @@ impl Editor {
             mark: p.mark,
             pid: p.pid,
             query_on_exit: p.query_on_exit,
+            inherit_coding: p.inherit_coding,
             coding: p.coding,
             plist: p.plist.clone(),
             filter: p.filter.clone(),
@@ -1411,6 +1639,15 @@ impl Editor {
         let now = Instant::now();
         for p in &mut self.processes.list {
             if p.status != Status::Run {
+                continue;
+            }
+            // A pipe process ends when the program writing to it has.
+            if matches!(p.kind, Kind::PipeProcess(_)) {
+                if p.open_streams == 0 {
+                    p.status = Status::Exit(0);
+                    p.stdin = None;
+                    ended.push(p.id);
+                }
                 continue;
             }
             // A connection ends when the other side closes it.
@@ -1596,6 +1833,10 @@ impl Editor {
     /// As [`Editor::wait_for_process_output`], the process by its id: one
     /// that has gone has no more output, so it returns false at once.
     pub fn wait_for_process_output_id(&mut self, id: Option<u64>, secs: Option<f64>) -> Result<bool> {
+        self.not_awaiting_input(|ed| ed.wait_for_process_output_until(id, secs))
+    }
+
+    fn wait_for_process_output_until(&mut self, id: Option<u64>, secs: Option<f64>) -> Result<bool> {
         let deadline = secs.map(|s| Instant::now() + Duration::from_secs_f64(s.max(0.0)));
         loop {
             let before = self.processes.outputs_seen;
@@ -1702,24 +1943,74 @@ impl Editor {
     /// its exit code and what it wrote, standard error after standard
     /// output. Asks the agent's permission first.
     pub fn call_process(&mut self, command: &[String], directory: Option<&str>, input: Option<&str>) -> Result<(i32, String)> {
-        let program = command.first().ok_or_else(|| Error::new("No program to run"))?;
-        self.check_permission(&format!("run {}", command.join(" ")))?;
-        let dir = self.expand_file_name(directory.unwrap_or("."));
-        let (mut output, writer) = std::io::pipe().map_err(|e| Error::new(format!("Making a pipe: {e}")))?;
+        let result = self.call_process_with(CallSpec {
+            command,
+            directory,
+            input: input.map(|t| t.as_bytes().to_vec()),
+            stderr: CallStderr::Merge,
+            wait: true,
+        })?;
+        let code = match result.status {
+            Status::Exit(c) => c,
+            Status::Signal(s) => 128 + s,
+            Status::Run => 0,
+        };
+        Ok((code, String::from_utf8_lossy(&result.output).into_owned()))
+    }
+
+    /// Runs a program as Emacs's call-process and call-process-region do:
+    /// `input` its standard input, else none, as /dev/null; its output
+    /// and standard error read until it exits, unless it is not waited
+    /// for, as a destination of 0 asks, when both are thrown away and its
+    /// status is `Run`. `C-g` kills it. Asks the agent's permission first.
+    pub fn call_process_with(&mut self, spec: CallSpec) -> Result<CallResult> {
+        let program = spec.command.first().ok_or_else(|| Error::new("No program to run"))?;
+        self.check_permission(&format!("run {}", spec.command.join(" ")))?;
+        let dir = self.expand_file_name(spec.directory.unwrap_or("."));
         let mut process = Command::new(program);
         process
-            .args(&command[1..])
+            .args(&spec.command[1..])
             .current_dir(&dir)
             .env("TERM", "dumb")
-            .stdin(if input.is_some() { Stdio::piped() } else { Stdio::null() })
-            .stdout(writer.try_clone()?)
-            .stderr(writer);
-        let mut child = process.spawn().map_err(|e| Error::new(format!("Searching for program: {e}, {program}")))?;
-        drop(process);
-        if let (Some(text), Some(mut stdin)) = (input, child.stdin.take()) {
-            let text = text.to_string();
+            .stdin(if spec.input.is_some() { Stdio::piped() } else { Stdio::null() });
+        let spawn_failed = |e: std::io::Error| crate::fileops::file_error("Searching for program", &e, &[std::path::Path::new(program)]);
+        if !spec.wait {
+            process.stdout(Stdio::null()).stderr(Stdio::null());
+            let mut child = process.spawn().map_err(spawn_failed)?;
+            if let (Some(bytes), Some(mut stdin)) = (spec.input, child.stdin.take()) {
+                std::thread::spawn(move || {
+                    let _ = stdin.write_all(&bytes);
+                });
+            }
+            // Reaped when it ends, as Emacs's SIGCHLD handler reaps it.
             std::thread::spawn(move || {
-                let _ = stdin.write_all(text.as_bytes());
+                let _ = child.wait();
+            });
+            return Ok(CallResult { status: Status::Run, output: Vec::new(), errors: Vec::new() });
+        }
+        let (mut output, writer) = std::io::pipe().map_err(|e| Error::new(format!("Making a pipe: {e}")))?;
+        let mut errors = None;
+        let stderr = match spec.stderr {
+            CallStderr::Merge => Stdio::from(writer.try_clone()?),
+            CallStderr::Discard => Stdio::null(),
+            CallStderr::Separate => {
+                let (mut reader, writer) = std::io::pipe().map_err(|e| Error::new(format!("Making a pipe: {e}")))?;
+                errors = Some(std::thread::spawn(move || {
+                    let mut bytes = Vec::new();
+                    let _ = reader.read_to_end(&mut bytes);
+                    bytes
+                }));
+                Stdio::from(writer)
+            }
+        };
+        process.stdout(writer).stderr(stderr);
+        let mut child = process.spawn().map_err(spawn_failed)?;
+        // The command holds the other ends, which must close here for the
+        // end of the output to be seen.
+        drop(process);
+        if let (Some(bytes), Some(mut stdin)) = (spec.input, child.stdin.take()) {
+            std::thread::spawn(move || {
+                let _ = stdin.write_all(&bytes);
             });
         }
         // The output is read on a thread of its own, so the editor can
@@ -1758,14 +2049,216 @@ impl Editor {
             }
         }
         let status = child.wait().map_err(|e| Error::new(format!("Running {program}: {e}")))?;
-        let text = String::from_utf8_lossy(&bytes).into_owned();
-        let code = match exit_status(status) {
-            Status::Exit(c) => c,
-            Status::Signal(s) => 128 + s,
-            Status::Run => 0,
-        };
-        Ok((code, text))
+        let errors = errors.map(|t| t.join().unwrap_or_default()).unwrap_or_default();
+        Ok(CallResult { status: exit_status(status), output: bytes, errors })
     }
+}
+
+/// What call-process-region gives a program as its input.
+#[derive(Clone, Debug, PartialEq)]
+pub enum RegionInput {
+    /// The text between two positions, in either order, within the
+    /// accessible portion.
+    Region(usize, usize),
+    /// The whole buffer, its narrowing aside, as a START of nil.
+    Whole,
+    /// A string, as a START that is one.
+    Text(String),
+}
+
+/// Where call-process and call-process-region put what a program writes,
+/// as their DESTINATION.
+#[derive(Clone, Debug, PartialEq)]
+pub enum Destination {
+    /// Thrown away, waiting for the program: nil.
+    Discard,
+    /// Thrown away, not waiting: 0.
+    NoWait,
+    /// Inserted at point in a buffer, by index: t for the current one, or
+    /// a buffer or its name, made if there is none.
+    Buffer(usize),
+    /// Written to a file, as `(:file FILE)`.
+    File(String),
+}
+
+/// Where call-process sends standard error, as the second element of
+/// `(REAL-DESTINATION STDERR)`.
+#[derive(Clone, Debug, PartialEq)]
+pub enum StderrDestination {
+    /// With the output: t, or a destination alone.
+    Merge,
+    /// Thrown away: nil.
+    Discard,
+    /// Written to a file.
+    File(String),
+}
+
+/// Where a program's output and standard error go, as call-process's
+/// DESTINATION.
+#[derive(Clone, Debug, PartialEq)]
+pub struct CallDestination {
+    pub output: Destination,
+    pub stderr: StderrDestination,
+}
+
+impl Editor {
+    /// Reads call-process's DESTINATION: t, nil, 0, a buffer or its name,
+    /// `(:file FILE)`, or `(REAL-DESTINATION STDERR)` with STDERR nil, t or
+    /// a file name.
+    pub fn call_destination(&mut self, value: &Value) -> Result<CallDestination> {
+        let wrong = |v: &Value| Error::signal("wrong-type-argument", format!("Wrong type argument: stringp, {v}"), vec![Value::Symbol("stringp".into()), v.clone()]);
+        let output = |ed: &mut Editor, v: &Value| -> Result<Destination> {
+            Ok(match v {
+                Value::Null | Value::Bool(false) => Destination::Discard,
+                Value::Bool(true) => Destination::Buffer(ed.current),
+                Value::Number(n) if *n == 0.0 => Destination::NoWait,
+                Value::Buffer(id) => Destination::Buffer(ed.buffer_with_id(*id).ok_or_else(|| Error::new("Selecting deleted buffer"))?),
+                Value::List(items) if items.first().and_then(Value::as_str) == Some(":file") => {
+                    let file = items.get(1).and_then(Value::as_str).ok_or_else(|| wrong(v))?;
+                    Destination::File(ed.expand_file_name(file).to_string_lossy().into_owned())
+                }
+                v => Destination::Buffer(ed.get_buffer_create(v.as_str().ok_or_else(|| wrong(v))?)),
+            })
+        };
+        match value {
+            Value::List(items) if items.first().and_then(Value::as_str) != Some(":file") => {
+                let real = output(self, items.first().unwrap_or(&Value::Null))?;
+                let stderr = match items.get(1).unwrap_or(&Value::Null) {
+                    Value::Null | Value::Bool(false) => StderrDestination::Discard,
+                    Value::Bool(true) => StderrDestination::Merge,
+                    v => StderrDestination::File(self.expand_file_name(v.as_str().ok_or_else(|| wrong(v))?).to_string_lossy().into_owned()),
+                };
+                Ok(CallDestination { output: real, stderr })
+            }
+            v => Ok(CallDestination { output: output(self, v)?, stderr: StderrDestination::Merge }),
+        }
+    }
+
+    /// Runs a program with text of the buffer, or a string, as its input,
+    /// as Emacs's call-process-region: `delete` deletes the region first;
+    /// what it writes goes where `destination` says, inserted at point,
+    /// decoded as a process's output is. Returns its exit code, or how
+    /// strsignal describes the signal that ended it, or nil if not waited
+    /// for. Asks the agent's permission first.
+    pub fn call_process_region(&mut self, input: RegionInput, delete: bool, command: &[String], destination: &CallDestination) -> Result<Value> {
+        let text = match &input {
+            RegionInput::Region(start, end) => {
+                let b = self.buffer();
+                let (start, end) = (*start.min(end), *start.max(end));
+                if start < b.point_min() || end > b.point_max() {
+                    return Err(Error::signal(
+                        "args-out-of-range",
+                        format!("Args out of range: {start}, {end}"),
+                        vec![Value::Number(start as f64), Value::Number(end as f64)],
+                    ));
+                }
+                b.slice(start..end)
+            }
+            RegionInput::Whole => {
+                let b = self.buffer();
+                b.slice(0..b.len())
+            }
+            RegionInput::Text(text) => text.clone(),
+        };
+        if delete {
+            match input {
+                RegionInput::Region(start, end) => {
+                    self.delete_region(start, end)?;
+                }
+                RegionInput::Whole => {
+                    let len = self.buffer().len();
+                    self.delete_region(0, len)?;
+                }
+                RegionInput::Text(text) => {
+                    return Err(Error::signal(
+                        "wrong-type-argument",
+                        format!("Wrong type argument: integer-or-marker-p, {text:?}"),
+                        vec![Value::Symbol("integer-or-marker-p".into()), Value::Str(text)],
+                    ));
+                }
+            }
+        }
+        let coding = self.default_process_coding();
+        let input = coding.1.encode_lossy(&text).0;
+        let directory = self.expand_file_name(".").to_string_lossy().into_owned();
+        let stderr = match destination.stderr {
+            StderrDestination::Merge => CallStderr::Merge,
+            StderrDestination::Discard => CallStderr::Discard,
+            StderrDestination::File(_) => CallStderr::Separate,
+        };
+        let wait = destination.output != Destination::NoWait;
+        let result = self.call_process_with(CallSpec { command, directory: Some(&directory), input: Some(input), stderr, wait })?;
+        if let StderrDestination::File(file) = &destination.stderr {
+            crate::vfs::write(file, &result.errors).map_err(|e| crate::fileops::file_error("Writing", &e, &[std::path::Path::new(file)]))?;
+        }
+        match &destination.output {
+            Destination::Discard | Destination::NoWait => {}
+            Destination::File(file) => {
+                crate::vfs::write(file, &result.output).map_err(|e| crate::fileops::file_error("Writing", &e, &[std::path::Path::new(file)]))?;
+            }
+            Destination::Buffer(index) => {
+                let text = coding.0.decode(&result.output).0;
+                if !text.is_empty() {
+                    self.with_current_buffer(*index, |ed| ed.insert(&text))?;
+                }
+            }
+        }
+        Ok(match result.status {
+            Status::Run => Value::Null,
+            Status::Exit(code) => Value::Number(code as f64),
+            Status::Signal(sig) => Value::Str(signal_description(sig)),
+        })
+    }
+}
+
+/// Where a program [`Editor::call_process_with`] runs sends its standard
+/// error, as call-process's destination says.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum CallStderr {
+    /// With its output, as a destination that is a buffer alone.
+    Merge,
+    /// Nowhere, as `(BUFFER nil)`.
+    Discard,
+    /// Kept apart, for a file, as `(BUFFER FILE)`.
+    Separate,
+}
+
+/// What [`Editor::call_process_with`] runs.
+pub struct CallSpec<'a> {
+    /// The program and its arguments.
+    pub command: &'a [String],
+    /// The directory it runs in: the buffer's default-directory if none.
+    pub directory: Option<&'a str>,
+    /// Its standard input; none is /dev/null.
+    pub input: Option<Vec<u8>>,
+    pub stderr: CallStderr,
+    /// Whether to wait for it; if not, its output is thrown away.
+    pub wait: bool,
+}
+
+/// How a program [`Editor::call_process_with`] ran ended, and what it wrote.
+pub struct CallResult {
+    /// How it ended; `Run` for one not waited for.
+    pub status: Status,
+    /// Its output, with its standard error if merged.
+    pub output: Vec<u8>,
+    /// Its standard error, when kept apart.
+    pub errors: Vec<u8>,
+}
+
+/// How strsignal describes a signal, as call-process returns it for a
+/// program a signal ended: "Killed: 9" on macOS, "Killed" on Linux.
+pub fn signal_description(sig: i32) -> String {
+    #[cfg(unix)]
+    {
+        // SAFETY: strsignal returns a pointer to a NUL-terminated string,
+        // static or thread-local, valid until the next call, copied at once.
+        let text = unsafe { libc::strsignal(sig) };
+        if !text.is_null() {
+            return unsafe { std::ffi::CStr::from_ptr(text) }.to_string_lossy().into_owned();
+        }
+    }
+    format!("Unknown signal {sig}")
 }
 
 impl Process {
@@ -1786,10 +2279,12 @@ impl Process {
         }
     }
 
-    /// What it is, as process-type: "real" for a program, "network" for a connection or server.
+    /// What it is, as process-type: "real" for a program, "network" for a
+    /// connection or server, "pipe" for a pipe process.
     fn kind_name(&self) -> &'static str {
         match self.kind {
             Kind::Network(_) | Kind::Server(..) => "network",
+            Kind::PipeProcess(_) => "pipe",
             _ => "real",
         }
     }
@@ -1799,8 +2294,8 @@ impl Process {
     fn status_name(&self) -> &'static str {
         match (&self.kind, self.status) {
             (Kind::Server(..), Status::Run) => "listen",
-            (Kind::Network(_), Status::Run) => "open",
-            (Kind::Network(_) | Kind::Server(..), _) => "closed",
+            (Kind::Network(_) | Kind::PipeProcess(_), Status::Run) => "open",
+            (Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_), _) => "closed",
             (_, Status::Run) => "run",
             (_, Status::Exit(_)) => "exit",
             (_, Status::Signal(_)) => "signal",

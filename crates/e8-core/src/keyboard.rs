@@ -197,6 +197,10 @@ impl Editor {
     /// and output as processes write it, as Emacs's wait_reading_process_output
     /// does when it is not reading the keyboard.
     fn sleep_without_input(&mut self, secs: f64) {
+        self.not_awaiting_input(|ed| ed.sleep_without_input_for(secs));
+    }
+
+    fn sleep_without_input_for(&mut self, secs: f64) {
         let until = self.now() + std::time::Duration::from_secs_f64(secs.max(0.0));
         loop {
             self.run_timers();
