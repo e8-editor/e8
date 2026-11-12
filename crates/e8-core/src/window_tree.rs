@@ -356,6 +356,30 @@ impl WindowTree {
         vec![gone]
     }
 
+    /// Puts the window `window`, inside `main`, in `main`'s place, dropping
+    /// the rest of `main`, as window.c's `delete-other-windows-internal`:
+    /// its own windows are shared `extent`, `main`'s size, in their
+    /// proportions, and join `main`'s parent's combination if it is of
+    /// their kind and has no combination limit.
+    pub(crate) fn replace(&mut self, main: WindowId, window: WindowId, extent: (usize, usize)) {
+        let (Some(path), Some(mut sub)) = (self.path(main), self.node(window).cloned()) else { return };
+        sub.fit(extent);
+        *self.at_mut(&path) = sub;
+        let Some((&k, up)) = path.split_last() else { return };
+        let up = up.to_vec();
+        let parent = self.combination_mut(&up);
+        if let WindowTree::Combination(child) = &parent.children[k].tree
+            && child.horizontal == parent.horizontal
+            && !child.limit
+        {
+            let WindowTree::Combination(child) = parent.children.remove(k).tree else { unreachable!() };
+            for (j, p) in child.children.into_iter().enumerate() {
+                parent.children.insert(k + j, p);
+            }
+            renormalize(parent);
+        }
+    }
+
     /// Grows or shrinks a window by up to `delta` lines or columns, taking
     /// them from or giving them to a sibling in the nearest combination of
     /// that kind above it, as Emacs's `window-resize` with its defaults:
@@ -490,14 +514,6 @@ impl WindowTree {
             node = &c.children[i].tree;
         }
         false
-    }
-
-    /// The smallest part of the tree holding all of `ids`.
-    pub(crate) fn enclosing(&self, ids: &[WindowId]) -> Option<WindowId> {
-        let paths: Vec<Vec<usize>> = ids.iter().map(|&id| self.path(id)).collect::<Option<_>>()?;
-        let first = paths.first()?;
-        let common = (0..first.len()).take_while(|&d| paths.iter().all(|p| p.len() > d && p[d] == first[d])).count();
-        Some(self.node_at(&first[..common]).id())
     }
 }
 
@@ -659,8 +675,6 @@ mod tests {
         assert_eq!(sizes(&tree), [12, 6, 6]);
         tree.fit((80, 3));
         assert!(sizes(&tree).iter().all(|&n| n >= 1), "{:?}", sizes(&tree));
-        assert_eq!(tree.enclosing(&[2, 3]), Some(10));
-        assert_eq!(tree.enclosing(&[2]), Some(2));
     }
 
     #[test]
