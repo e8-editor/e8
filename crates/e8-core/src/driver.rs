@@ -70,6 +70,9 @@ pub struct Published {
     pub visible_bell: bool,
     /// Whether the editor wants to exit, as `C-x C-c` does.
     pub exit: bool,
+    /// How many times the editor asked to be suspended, as `suspend-emacs`
+    /// does: a terminal stops the process each time it goes up.
+    pub suspends: u64,
 }
 
 /// A handle on the editor's thread.
@@ -343,6 +346,7 @@ impl<D: FnMut(&mut Editor) -> Vec<FrameDescription>> CommandLoop<D> {
             p.bell |= ed.take_bell();
             p.visible_bell = ed.variable("visible-bell").is_some_and(|v| v.is_true());
             p.exit = ed.should_quit();
+            p.suspends = ed.suspend_requests();
         }
         (self.wake)();
     }

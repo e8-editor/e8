@@ -1386,6 +1386,17 @@ e8.defineVariable({
   value: Symbol.for("iconify-frame"),
 });
 e8.defun("iconify-frame", (frame?: e8.Frame) => (e8.iconifyFrame(frame ?? undefined), null));
+// C-z and C-x C-z, after frame.el's suspend-frame.
+const suspendFrame = e8.defineCommand({
+  name: "suspend-frame",
+  doc: "Iconify the selected frame in a window, or in a terminal stop E8 and go back to the shell, as suspend-emacs does.",
+  run: () => {
+    if (!isNil(e8.variable("window-system"))) e8.iconifyFrame();
+    else e8.call("suspend-emacs");
+  },
+});
+e8.bindKey("C-z", suspendFrame);
+e8.bindKey("C-x C-z", suspendFrame);
 e8.defun("make-frame-invisible", (frame?: e8.Frame) => (e8.makeFrameInvisible(frame ?? undefined), null));
 e8.defineHook("quit-window-hook", "Hook run before performing any other actions in the `quit-window' command.");
 

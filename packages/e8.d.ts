@@ -6710,6 +6710,18 @@ declare global {
        */
       "superword-mode": [];
       /**
+       * Stop E8 and go back to the shell, which continues it with fg, as a terminal's C-z stops a program.
+       *
+       * Runs suspend-hook first and suspend-resume-hook once continued. In a window there is no shell to go back to; C-z iconifies the window instead.
+       */
+      "suspend-emacs": [];
+      /**
+       * Iconify the selected frame in a window, or in a terminal stop E8 and go back to the shell, as suspend-emacs does.
+       *
+       * Defined in packages/window.ts.
+       */
+      "suspend-frame": [];
+      /**
        * Show a buffer in the window, creating it if it does not exist.
        *
        * Empty input switches to the buffer shown before this one.
@@ -12397,6 +12409,18 @@ declare global {
        */
       "user-emacs-directory": Value;
       /**
+       * The full name of the user E8 runs for, as signing commits, ChangeLog entries and exported files uses it: from $NAME, else the system's account.
+       */
+      "user-full-name": Value;
+      /**
+       * The login name E8 goes by: $LOGNAME, else $USER, else the account E8 runs as.
+       */
+      "user-login-name": Value;
+      /**
+       * The login name of the user who started E8, as the system has it.
+       */
+      "user-real-login-name": Value;
+      /**
        * Variable names answered in the minibuffer, newest first.
        */
       "variable-name-history": Value;
@@ -14827,6 +14851,14 @@ declare global {
        */
       "superword-mode-on-hook": Value;
       /**
+       * Run before suspend-emacs stops E8 for the shell.
+       */
+      "suspend-hook": Value;
+      /**
+       * Run after the shell continues E8 that suspend-emacs stopped.
+       */
+      "suspend-resume-hook": Value;
+      /**
        * Run after Tab-Bar-History mode is turned on or off.
        */
       "tab-bar-history-mode-hook": Value;
@@ -15259,6 +15291,45 @@ declare global {
     function autoSaveFileName(file: string): string;
     /** Whether a file's auto-save file is newer than the file. */
     function hasNewerAutoSave(file: string): boolean;
+    /**
+     * The login name E8 goes by, as user-login-name, or a user id's, or
+     * undefined for an id no account has.
+     */
+    function userLoginName(uid?: number | null): string | undefined;
+    /** The login name of the user who started E8, as user-real-login-name. */
+    function userRealLoginName(): string;
+    /**
+     * The full name E8 goes by, as user-full-name: the variable's value,
+     * or a user id's or login name's account's, undefined if none has one.
+     */
+    function userFullName(user?: number | string | null): string | undefined;
+    /** The user id E8 runs as, as user-uid. */
+    function userUid(): number;
+    /** The user id that started E8, as user-real-uid. */
+    function userRealUid(): number;
+    /** The group id E8 runs as, as group-gid. */
+    function groupGid(): number;
+    /** The group id that started E8, as group-real-gid. */
+    function groupRealGid(): number;
+    /** A group's name, as group-name, or undefined if there is no such group. */
+    function groupName(gid: number): string | undefined;
+    /** The login names of the system's users, as system-users. */
+    function systemUsers(): string[];
+    /** The names of the system's groups, as system-groups. */
+    function systemGroups(): string[];
+    /** The machine's name, as system-name. */
+    function systemName(): string;
+    /**
+     * Whether E8 runs as a server with no frames, as daemonp: undefined,
+     * as E8 has no daemon.
+     */
+    function daemonp(): boolean | undefined;
+    /**
+     * How many processors there are, as num-processors: those E8 may use,
+     * less as OMP_NUM_THREADS or OMP_THREAD_LIMIT say; with "current", those
+     * it may use; with true, all the system has.
+     */
+    function numProcessors(query?: "current" | boolean | null): number;
     /**
      * The processes, oldest first, as process-list: those running, and
      * those that have ended until their sentinel has run.

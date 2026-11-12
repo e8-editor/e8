@@ -393,6 +393,12 @@ fn movement(ed: &mut Editor) {
     });
     def(
         ed,
+        "suspend-emacs",
+        "Stop E8 and go back to the shell, which continues it with fg, as a terminal's C-z stops a program.\n\nRuns suspend-hook first and suspend-resume-hook once continued. In a window there is no shell to go back to; C-z iconifies the window instead.",
+        |ed, _| ed.suspend_emacs(),
+    );
+    def(
+        ed,
         "recenter",
         "Scroll so the line with point is in the middle of the window.\n\nWith a numeric prefix argument N, put it on line N of the window instead, counting from the bottom if N is negative.",
         |ed, _| {
