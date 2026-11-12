@@ -1,6 +1,6 @@
 # 0028. Windows as objects
 
-Status: accepted · 2026-10-30
+Status: accepted · 2026-10-30 · its decision that windows stay ids in scripts, and its note that internal windows have no ids, superseded by [0069](0069-windows-as-emacs-has-them.md)
 
 ## Context
 
