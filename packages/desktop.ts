@@ -301,7 +301,8 @@ function read(dirname?: string): boolean {
   }
   if (locker !== e8.emacsPid()) claimLock(String(e8.variable("desktop-dirname")));
   const windows = desktop.windows && truthy(e8.variable("desktop-restore-frames")) ? savedWindows(desktop.windows) : undefined;
-  if (windows) windowStatePut(windows);
+  // As frameset.el puts a frame's windows: safely, and a state that no longer fits leaves them as they are.
+  if (windows) e8.conditionCase(() => windowStatePut(windows, undefined, Symbol.for("safe")), { error: (e) => e8.message(`Desktop: windows not restored: ${e.message}`) });
   else if (desktop.buffers?.length) {
     const first = desktop.buffers.find((b) => e8.getBuffer(b.name));
     if (first) e8.call("switch-to-buffer", first.name);

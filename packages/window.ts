@@ -28,20 +28,13 @@ const liveBufferName = (v: unknown): string | undefined =>
 const sameBuffer = (a: unknown, buffer: string | undefined): boolean => buffer !== undefined && liveBufferName(a) === buffer;
 
 /**
- * Sets a window's quit-restore parameter, deleting the marker its old one
- * held for the previous buffer's point unless another window's holds it
- * too, as Emacs's collector frees a marker nothing refers to.
+ * Sets a window's quit-restore parameter. Emacs keeps the previous
+ * buffer's point as a marker, which its collector frees; E8 keeps the
+ * position, and quitting takes where the window was in that buffer from
+ * its previous buffers, which follow edits as the marker would.
  */
 function setQuitRestore(window: e8.Window, value: QuitRestore | null): void {
-  const old = quitRestore(window);
-  const marker = Array.isArray(old?.[1]) ? (old[1] as e8.Value[])[2] : undefined;
   e8.setWindowParameter(window, "quit-restore", value);
-  if (!(marker instanceof e8.Marker) || (Array.isArray(value?.[1]) && (value[1] as e8.Value[])[2] === marker)) return;
-  const held = e8.windowList1(undefined, false, true).some((w) => {
-    const quad = quitRestore(w)?.[1];
-    return Array.isArray(quad) && quad[2] === marker;
-  });
-  if (!held) e8.deleteMarker(marker);
 }
 
 /**
@@ -64,10 +57,7 @@ function recordWindow(type: "reuse" | "window" | "frame" | "tab", window: e8.Win
     }
   } else {
     const shown = e8.windowBuffer(window) ?? "";
-    const point = e8.makeMarker(e8.windowPoint(window), {
-      buffer: shown,
-      advances: !isNil(e8.withCurrentBuffer(shown, () => e8.variable("window-point-insertion-type"))),
-    });
+    const point = e8.windowPoint(window);
     const size = windowCombinedP(window) ? e8.windowTotalHeight(window) : e8.windowTotalWidth(window);
     setQuitRestore(window, [Symbol.for("other"), [e8.getBuffer(shown) ?? shown, e8.windowStart(window), point, size], selected, object]);
   }
@@ -1351,7 +1341,11 @@ export function quitRestoreWindow(window0?: e8.Window | null, buryOrKill?: "bury
       e8.conditionCase(() => windowResize(window, (quad[3] as number) - size(), windowCombinedP(window, true)), { error: () => null });
     }
     e8.setWindowDedicatedP(window, null);
-    setWindowBufferStartAndPoint(window, liveBufferName(quad[0])!, quad[1], quad[2]);
+    // The start as noted, a number as in Emacs; the point from the window's
+    // previous buffers, which follow edits as Emacs's marker does.
+    const previous = liveBufferName(quad[0])!;
+    const was = e8.windowPrevBuffers(window).find(([b]) => b === previous);
+    setWindowBufferStartAndPoint(window, previous, quad[1], was?.[2] ?? quad[2]);
     if (symName(flag) === "side") e8.setWindowDedicatedP(window, Symbol.for("side"));
     const entry = buryOrKill === "append" ? e8.windowPrevBuffers(window).find(([b]) => b === buffer) : undefined;
     if (buryOrKill) {

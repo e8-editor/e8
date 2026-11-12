@@ -250,10 +250,11 @@ fn quitting_a_window_made_for_a_buffer_deletes_it() {
 fn quitting_a_reused_window_gives_back_its_buffer_place_and_size() {
     let reuse = r#"(split(), e8.selectWindow(ws()[1]), e8.call("switch-to-buffer", "b"), e8.gotoChar(300), e8.setWindowStart(undefined, 200),
                    e8.selectWindow(ws()[0]), show("c", [["display-buffer-use-some-window"], ["inhibit-same-window", true]]))"#;
-    // (other (#<buffer b> 201 #<marker at 301 in b> 12) #<window 1 on *scratch*> #<buffer c>) in Emacs, from 1.
+    // (other (#<buffer b> 201 #<marker at 301 in b> 12) #<window 1 on *scratch*> #<buffer c>) in Emacs, from 1;
+    // E8 keeps the point as a position, the window's previous buffers following edits.
     assert_eq!(
         after(&format!(
-            r#"({reuse}, ((q) => [q[0].description, q[1][0].name, q[1][1], q[1][2].position, q[1][3], q[2] === ws()[0], q[3].name])(e8.windowParameter(ws()[1], "quit-restore")))"#
+            r#"({reuse}, ((q) => [q[0].description, q[1][0].name, q[1][1], q[1][2], q[1][3], q[2] === ws()[0], q[3].name])(e8.windowParameter(ws()[1], "quit-restore")))"#
         )),
         r#"["other","b",200,300,12,true,"c"]"#
     );
@@ -315,4 +316,16 @@ fn quitting_a_frame_made_for_a_buffer_hides_or_deletes_it() {
         "false"
     );
     assert_eq!(after(&format!("({pop}, win.quitWindow(true, e8.frameRootWindow(f)), [e8.frameLiveP(f), !!e8.getBuffer(\"a\")])")), "[false,false]");
+}
+
+#[test]
+fn putting_a_state_makes_its_selected_windows_buffer_current() {
+    // Emacs (Bug#69093): with "a" current, putting a state whose selected window shows "b" leaves "b" current.
+    assert_eq!(
+        after(
+            r#"(e8.getBufferCreate("a"), e8.call("switch-to-buffer", "b"), globalThis.st = win.windowStateGet(),
+                e8.withCurrentBuffer("a", () => (win.windowStatePut(st), e8.bufferName())))"#
+        ),
+        r#""b""#
+    );
 }
