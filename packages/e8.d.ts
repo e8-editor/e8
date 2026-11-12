@@ -16099,7 +16099,10 @@ declare global {
     /**
      * Takes the current buffer's file's modification time now, or `time`
      * in milliseconds since 1970, as the one it was visited at, as
-     * set-visited-file-modtime.
+     * set-visited-file-modtime: 0 and -1, as visitedFileModtime gives
+     * them, for none known and a file that does not exist. A time that is
+     * the file's own, as visitedFileModtime or fileAttributes gave it, is
+     * taken as the file has it, to the nanosecond.
      */
     function setVisitedFileModtime(time?: number | null): void;
     /**

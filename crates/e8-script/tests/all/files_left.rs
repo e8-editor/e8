@@ -84,7 +84,7 @@ fn access_file_says_why_a_file_cannot_be_read() {
     assert_eq!(eval(&mut ed, &s, &access.replace("NAME", r#""beta""#)), "null");
     assert_eq!(eval(&mut ed, &s, &access.replace("NAME", r#""nope""#)), r#"["file-missing","Reading","No such file or directory","nope"]"#);
     use std::os::unix::fs::PermissionsExt;
-    std::fs::set_permissions(dir.path().join("beta"), std::fs::Permissions::from_mode(0)).unwrap();
+    std::fs::set_permissions(dir.path().join("beta"), std::fs::Permissions::from_mode(0o000)).unwrap();
     assert_eq!(eval(&mut ed, &s, &access.replace("NAME", r#""beta""#)), r#"["permission-denied","Reading","Permission denied","beta"]"#);
 }
 
@@ -110,13 +110,53 @@ fn verify_visited_file_modtime_as_emacs_answers() {
     let file = dir.path().join("beta").display().to_string();
     ed.call("find-file", vec![Arg::Str(file.clone())]).unwrap();
     assert_eq!(eval(&mut ed, &s, "[e8.verifyVisitedFileModtime(), e8.visitedFileModtime() > 0]"), "[true,true]");
-    // Touched to 1970: changed, until the buffer takes the new time.
-    assert_eq!(eval(&mut ed, &s, &format!("(e8.setFileTimes({file:?}, 0), e8.verifyVisitedFileModtime())")), "false");
-    assert_eq!(eval(&mut ed, &s, "(e8.setVisitedFileModtime(), [e8.verifyVisitedFileModtime(), e8.visitedFileModtime()])"), "[true,0]");
+    // Read and set back, it is the same, to the nanosecond.
+    assert_eq!(eval(&mut ed, &s, "(e8.setVisitedFileModtime(e8.visitedFileModtime()), e8.verifyVisitedFileModtime())"), "true");
+    assert_eq!(eval(&mut ed, &s, &format!("(e8.setVisitedFileModtime(e8.fileAttributes({file:?}).modified), e8.verifyVisitedFileModtime())")), "true");
+    // Touched to a second after 1970: changed, until the buffer takes the new time.
+    assert_eq!(eval(&mut ed, &s, &format!("(e8.setFileTimes({file:?}, 1000), e8.verifyVisitedFileModtime())")), "false");
+    assert_eq!(eval(&mut ed, &s, "(e8.setVisitedFileModtime(), [e8.verifyVisitedFileModtime(), e8.visitedFileModtime()])"), "[true,1000]");
+    // 0 and -1 as Emacs's: none known, and a file that does not exist.
+    assert_eq!(eval(&mut ed, &s, "(e8.setVisitedFileModtime(0), [e8.verifyVisitedFileModtime(), e8.visitedFileModtime()])"), "[true,0]");
+    assert_eq!(eval(&mut ed, &s, "(e8.setVisitedFileModtime(-1), [e8.verifyVisitedFileModtime(), e8.visitedFileModtime()])"), "[false,-1]");
     assert_eq!(eval(&mut ed, &s, "(e8.clearVisitedFileModtime(), [e8.verifyVisitedFileModtime(), e8.visitedFileModtime()])"), "[true,0]");
     // Deleted since: changed.
     std::fs::remove_file(&file).unwrap();
     assert_eq!(eval(&mut ed, &s, "(e8.setVisitedFileModtime(5000), e8.verifyVisitedFileModtime())"), "false");
     // A buffer visiting no file, asked by name.
     assert_eq!(eval(&mut ed, &s, r#"e8.verifyVisitedFileModtime("*scratch*")"#), "true");
+}
+
+#[test]
+fn completion_ignores_extensions_and_chooses_case_as_emacs_does() {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    for name in [".gitignore", "x.a", "x.asm", "Foobar", "foo.txt", "Gamma.TXT"] {
+        std::fs::write(dir.path().join(name), "x").unwrap();
+    }
+    std::fs::create_dir(dir.path().join(".git")).unwrap();
+    std::fs::create_dir(dir.path().join("CVS")).unwrap();
+    let d = format!("{}/", dir.path().display());
+    let complete = |ed: &mut Editor, file: &str, fold: bool| {
+        eval(ed, &s, &format!("e8.letBind({{ \"completion-ignore-case\": {fold} }}, () => e8.fileNameCompletion({file:?}, {d:?}))"))
+    };
+    // As Emacs 30 gives them: a directory named as an ignored one, an
+    // ignored extension only past what was typed.
+    assert_eq!(complete(&mut ed, ".g", false), r#"".gitignore""#);
+    assert_eq!(complete(&mut ed, "C", false), r#""CVS/""#);
+    assert_eq!(complete(&mut ed, "x.a", false), r#""x.a""#);
+    assert_eq!(complete(&mut ed, "x", false), r#""x.asm""#);
+    // Ignoring case: the case of an exact match, else of a name starting as typed.
+    assert_eq!(complete(&mut ed, "gamma.txt", true), r#""Gamma.TXT""#);
+    assert_eq!(complete(&mut ed, "f", true), r#""foo""#);
+    assert_eq!(complete(&mut ed, "F", true), r#""Foo""#);
+    assert_eq!(complete(&mut ed, "f", false), r#""foo.txt""#);
+    // completion-regexp-list keeps only the names its regexps match.
+    let got = eval(&mut ed, &s, &format!("e8.letBind({{ \"completion-regexp-list\": [\"txt\"] }}, () => e8.fileNameAllCompletions(\"\", {d:?}).sort())"));
+    assert_eq!(got, r#"["foo.txt"]"#);
+    // access-file says what the system says.
+    let got = eval(&mut ed, &s, &format!("e8.conditionCase(() => e8.accessFile({:?}, \"Reading\") ?? null, {{ error: (e) => [e.symbol, ...e.data] }})", format!("{d}foo.txt/sub")));
+    assert_eq!(got, format!(r#"["file-error","Reading","Not a directory","{d}foo.txt/sub"]"#));
+    assert_eq!(eval(&mut ed, &s, r#"e8.conditionCase(() => e8.fileAttributesLessp([1], ["a"]), { "wrong-type-argument": () => "wrong-type-argument" })"#), r#""wrong-type-argument""#);
 }

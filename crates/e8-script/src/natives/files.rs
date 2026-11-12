@@ -119,7 +119,7 @@ natives! {
     }
 
     fn verifyVisitedFileModtime(ed) -> bool {
-        Ok(ed.buffer().verify_visited_file_modtime())
+        ed.verify_visited_file_modtime()
     }
 
     /// When the current buffer's file was last modified as the buffer
@@ -127,7 +127,7 @@ natives! {
     /// it knows none, and -1 if the file did not exist when visited.
     pub fn visitedFileModtime(ed) -> f64 {
         Ok(match ed.buffer().visited_file_modtime() {
-            Ok(Some(t)) => t.duration_since(std::time::UNIX_EPOCH).map_or(0.0, |d| d.as_millis() as f64),
+            Ok(Some(t)) => milliseconds(t),
             Ok(None) => -1.0,
             Err(()) => 0.0,
         })
@@ -135,12 +135,24 @@ natives! {
 
     /// Takes the current buffer's file's modification time now, or `time`
     /// in milliseconds since 1970, as the one it was visited at, as
-    /// set-visited-file-modtime.
+    /// set-visited-file-modtime: 0 and -1, as visitedFileModtime gives
+    /// them, for none known and a file that does not exist. A time that is
+    /// the file's own, as visitedFileModtime or fileAttributes gave it, is
+    /// taken as the file has it, to the nanosecond.
     #[ts = "(time?: number | null): void"]
     pub fn setVisitedFileModtime(ed, time: Option<f64>) {
         match time {
-            Some(ms) => ed.buffer_mut().set_visited_file_modtime_to(std::time::UNIX_EPOCH + std::time::Duration::from_millis(ms.max(0.0) as u64)),
             None => ed.buffer_mut().set_visited_file_modtime(),
+            Some(0.0) => ed.buffer_mut().clear_visited_file_modtime(),
+            Some(-1.0) => ed.buffer_mut().set_visited_file_modtime_to(None),
+            Some(ms) => {
+                let now = ed.buffer().visited_file_modtime_now().filter(|t| milliseconds(*t) == ms);
+                let time = now.unwrap_or_else(|| {
+                    let nanos = (ms * 1e6).round();
+                    if nanos >= 0.0 { std::time::UNIX_EPOCH + std::time::Duration::from_nanos(nanos as u64) } else { std::time::UNIX_EPOCH - std::time::Duration::from_nanos(-nanos as u64) }
+                });
+                ed.buffer_mut().set_visited_file_modtime_to(Some(time));
+            }
         }
         Ok(())
     }
@@ -186,7 +198,19 @@ natives! {
     /// as in Emacs; the attributes give both ids and names.
     #[ts = "(dir: string, full?: boolean | null, match?: string | null, nosort?: boolean | null, idFormat?: unknown, count?: number | null): [string, FileAttributes | undefined][]"]
     pub fn directoryFilesAndAttributes(ed, dir: String, full: Option<bool>, pattern: Option<String>, nosort: Option<bool>, id_format: EditorValue, count: Option<usize>) -> Vec<Field> {
-        let _ = id_format;
+        let args = vec![
+            EditorValue::Bool(full == Some(true)),
+            pattern.clone().map_or(EditorValue::Null, EditorValue::Str),
+            EditorValue::Bool(nosort == Some(true)),
+            id_format,
+            count.map_or(EditorValue::Null, |c| EditorValue::Number(c as f64)),
+        ];
+        if let Some(r) = ed.directory_files_and_attributes_handled(&dir, args) {
+            return Ok(match r? {
+                EditorValue::List(items) => items.into_iter().map(Field::from).collect(),
+                _ => Vec::new(),
+            });
+        }
         let base = ed.expand_file_name(&dir).display().to_string();
         let names = ed.directory_files(&base, full == Some(true), pattern.as_deref(), nosort == Some(true), count)?;
         Ok(names
@@ -203,8 +227,11 @@ natives! {
     /// another by name, as file-attributes-lessp.
     #[ts = "(a: [string, ...unknown[]], b: [string, ...unknown[]]): boolean"]
     pub fn fileAttributesLessp(ed, a: Vec<EditorValue>, b: Vec<EditorValue>) -> bool {
-        let name = |v: &[EditorValue]| v.first().and_then(|n| n.as_str().map(str::to_string)).unwrap_or_default();
-        Ok(name(&a) < name(&b))
+        let name = |v: &[EditorValue]| match v.first() {
+            Some(EditorValue::Str(n)) => Ok(n.clone()),
+            other => Err(e8_core::Error::signal("wrong-type-argument", "Wrong type argument", vec![EditorValue::Symbol("stringp".into()), other.cloned().unwrap_or(EditorValue::Null)])),
+        };
+        Ok(name(&a)? < name(&b)?)
     }
 
     /// Whether a file exists, through symbolic links, as file-exists-p. A file name handler may answer.
@@ -246,5 +273,13 @@ natives! {
     pub fn abbreviateFileName(ed, file: String) -> String {
         let short = abbreviate_path(Path::new(&file));
         Ok(if file.ends_with('/') && !short.ends_with('/') { short + "/" } else { short })
+    }
+}
+
+/// A time as milliseconds since 1970, to the nanosecond as far as a number holds it.
+fn milliseconds(t: std::time::SystemTime) -> f64 {
+    match t.duration_since(std::time::UNIX_EPOCH) {
+        Ok(d) => d.as_nanos() as f64 / 1e6,
+        Err(e) => -(e.duration().as_nanos() as f64) / 1e6,
     }
 }

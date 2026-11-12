@@ -167,10 +167,16 @@ impl Buffer {
     }
 
     /// Takes a time as the visited file's modification time, as Emacs's
-    /// `set-visited-file-modtime` given one.
-    pub fn set_visited_file_modtime_to(&mut self, time: SystemTime) {
-        self.file.modtime = Some(time);
+    /// `set-visited-file-modtime` given one, `None` meaning the file does
+    /// not exist, as its -1 does.
+    pub fn set_visited_file_modtime_to(&mut self, time: Option<SystemTime>) {
+        self.file.modtime = time;
         self.file.modtime_known = true;
+    }
+
+    /// When the visited file was last modified, as the system says now.
+    pub fn visited_file_modtime_now(&self) -> Option<SystemTime> {
+        self.path.as_deref().and_then(modtime)
     }
 
     /// Forgets the visited file's modification time, as Emacs's

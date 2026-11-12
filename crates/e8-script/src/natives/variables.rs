@@ -829,7 +829,8 @@ natives! {
 
 /// A file's attributes as scripts see them, as [`fileAttributes`] gives them.
 pub(crate) fn attributes_record(a: &e8_core::fileops::FileAttributes) -> Record {
-    let ms = |t: std::time::SystemTime| t.duration_since(std::time::UNIX_EPOCH).map_or(0.0, |d| d.as_millis() as f64);
+    // To the nanosecond as far as a number holds it, so a time read here can be set back exactly.
+    let ms = |t: std::time::SystemTime| t.duration_since(std::time::UNIX_EPOCH).map_or(0.0, |d| d.as_nanos() as f64 / 1e6);
     let (kind, link) = match &a.kind {
         e8_core::fileops::FileKind::File => ("file", None),
         e8_core::fileops::FileKind::Directory => ("directory", None),
