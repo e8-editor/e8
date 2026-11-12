@@ -441,6 +441,10 @@ impl Buffer {
         b.point = self.point;
         b.restriction = self.restriction;
         b.modified = modified;
+        // Unmodified, the buffer is as saved, as Emacs's SAVE_MODIFF says.
+        if !b.modified {
+            b.file.saved_tick = b.tick;
+        }
         b.tick = self.tick;
         b.base = Some(self.id);
         b.shared = Some(Shared { changes: Vec::new(), props: generation, modified, holds_undo: false });
@@ -549,6 +553,10 @@ impl Buffer {
             }
         }
         self.modified = silenced.modified;
+        // Unmodified, the buffer is as saved, as Emacs's SAVE_MODIFF says.
+        if !self.modified {
+            self.file.saved_tick = self.tick;
+        }
         // Nor do they deactivate the region, as fontifying in redisplay does not.
         self.changed = silenced.changed;
     }
@@ -557,6 +565,10 @@ impl Buffer {
         self.undo_boundary();
         self.save_generation += 1;
         self.modified = false;
+        // Unmodified, the buffer is as saved, as Emacs's SAVE_MODIFF says.
+        if !self.modified {
+            self.file.saved_tick = self.tick;
+        }
         // Saved or reverted, the buffer gives up its file's lock, as unlock_file.
         if std::mem::take(&mut self.file.locked)
             && let Some(path) = &self.path
@@ -588,6 +600,10 @@ impl Buffer {
     /// primitive-undo compares the visited file's time.
     pub fn set_modified(&mut self, modified: bool) {
         self.modified = modified;
+        // Unmodified, the buffer is as saved, as Emacs's SAVE_MODIFF says.
+        if !self.modified {
+            self.file.saved_tick = self.tick;
+        }
     }
 
     pub fn point(&self) -> usize {
@@ -1535,6 +1551,10 @@ impl Buffer {
         self.boundary_point = 0;
         self.open_point = None;
         self.modified = false;
+        // Unmodified, the buffer is as saved, as Emacs's SAVE_MODIFF says.
+        if !self.modified {
+            self.file.saved_tick = self.tick;
+        }
         self.save_generation += 1;
         // New text, so whatever was worked out from the old is out of date.
         self.tick += 1;

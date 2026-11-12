@@ -19,6 +19,31 @@ use crate::error::{Error, Result};
 use crate::fileops::file_error;
 use crate::variables::Value;
 
+/// Six letters and digits for a temporary file's name, different each
+/// time, as Emacs's mkostemp makes them.
+fn temp_letters() -> String {
+    use std::sync::atomic::{AtomicU64, Ordering};
+    static SEED: AtomicU64 = AtomicU64::new(0);
+    const LETTERS: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let start = crate::clock::system_now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_nanos() as u64) ^ ((crate::clock::process_id() as u64) << 32);
+    let mut seed = SEED.fetch_add(0x9E37_79B9_7F4A_7C15, Ordering::Relaxed) ^ start;
+    (0..6)
+        .map(|_| {
+            seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+            LETTERS[(seed >> 33) as usize % LETTERS.len()] as char
+        })
+        .collect()
+}
+
+/// What `make-temp-file-internal` makes, as its DIR-FLAG says: a file
+/// (nil), a directory (t), or only a name not in use (0).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TempKind {
+    File,
+    Directory,
+    NameOnly,
+}
+
 /// What `write-region` writes: the whole buffer, a stretch of it, or a string.
 #[derive(Clone, Debug, PartialEq)]
 pub enum WriteSource {
@@ -516,6 +541,71 @@ impl Editor {
         Ok(out)
     }
 
+    /// The directory a file name stands for where a program can use it, as
+    /// Emacs's `unhandled-file-name-directory`: a handler for the name may
+    /// say, as one for a remote name says there is none; otherwise the name
+    /// as a directory.
+    pub fn unhandled_file_name_directory(&mut self, file: &str) -> Result<Option<String>> {
+        // The name as given, as Emacs asks: not expanded.
+        if let Some(r) = self.handled("unhandled-file-name-directory", file, vec![s(file)]) {
+            return r.map(|v| v.as_str().map(str::to_string));
+        }
+        Ok(Some(match file {
+            "" => "./".to_string(),
+            f if f.ends_with('/') => f.to_string(),
+            f => format!("{f}/"),
+        }))
+    }
+
+    /// The size of the file system a file is on, and the space free and
+    /// free to this process, in bytes, as Emacs's `file-system-info`;
+    /// `None` where the system does not say.
+    pub fn file_system_info(&mut self, file: &str) -> Result<Option<[f64; 3]>> {
+        let abs = self.absolute(file);
+        if let Some(r) = self.handled("file-system-info", &abs, vec![s(&abs)]) {
+            return r.map(|v| match v {
+                Value::List(items) if items.len() == 3 => Some([0, 1, 2].map(|i| items[i].as_number().unwrap_or(0.0))),
+                _ => None,
+            });
+        }
+        #[cfg(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs"))))]
+        {
+            use std::os::unix::ffi::OsStrExt;
+            let Ok(c) = std::ffi::CString::new(Path::new(&abs).as_os_str().as_bytes()) else { return Ok(None) };
+            // SAFETY: statvfs fills the struct it is given from a path that ends in a nul.
+            let mut st: libc::statvfs = unsafe { std::mem::zeroed() };
+            if unsafe { libc::statvfs(c.as_ptr(), &mut st) } != 0 {
+                // No such file, as Emacs's file_metadata_errno takes it, is nil.
+                let e = std::io::Error::last_os_error();
+                if matches!(e.raw_os_error(), Some(libc::ENOENT) | Some(libc::ENOTDIR)) {
+                    return Ok(None);
+                }
+                return Err(file_error("Getting attributes", &e, &[Path::new(file)]));
+            }
+            let block = st.f_frsize as f64;
+            Ok(Some([st.f_blocks as f64 * block, st.f_bfree as f64 * block, st.f_bavail as f64 * block]))
+        }
+        #[cfg(not(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs")))))]
+        Ok(None)
+    }
+
+    /// Makes a file, a directory, or with `dir_flag` 0 only a name, starting
+    /// with the absolute `prefix`, as Emacs's `make-temp-file-internal`:
+    /// no handler is asked, and the file holds `text` if given.
+    pub fn make_temp_file_internal(&mut self, prefix: &str, dir_flag: TempKind, suffix: &str, text: Option<&str>) -> Result<String> {
+        if dir_flag != TempKind::NameOnly {
+            return self.make_temp_file(prefix, dir_flag == TempKind::Directory, suffix, text);
+        }
+        // Only a name, as Emacs's GT_NOCREATE: nothing is made, so nothing is asked.
+        for _ in 0..100 {
+            let name = format!("{prefix}{}{suffix}", temp_letters());
+            if fs::symlink_metadata(&name).is_err() {
+                return Ok(name);
+            }
+        }
+        Err(Error::new("Cannot create temporary file"))
+    }
+
     /// Makes a file, or with `dir` a directory, of a new name starting with
     /// `prefix` in `temporary-file-directory`, holding `text` if given, as
     /// `make-temp-file`, and returns its name.
@@ -529,15 +619,8 @@ impl Editor {
         // while an agent acts, wherever it is.
         let place = base.join(prefix);
         self.check_permission(&format!("make a temporary file at {}", place.display()))?;
-        const LETTERS: &[u8] = b"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        let mut seed = crate::clock::system_now().duration_since(UNIX_EPOCH).map_or(0, |d| d.as_nanos() as u64) ^ ((crate::clock::process_id() as u64) << 32);
         for _ in 0..100 {
-            let mut name = String::from(prefix);
-            for _ in 0..6 {
-                seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
-                name.push(LETTERS[(seed >> 33) as usize % LETTERS.len()] as char);
-            }
-            name.push_str(suffix);
+            let name = format!("{prefix}{}{suffix}", temp_letters());
             let path = base.join(&name);
             let made = if dir {
                 fs::create_dir(&path)
@@ -550,7 +633,7 @@ impl Editor {
             match made {
                 Ok(()) => return Ok(path.display().to_string()),
                 Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => continue,
-                Err(e) => return Err(file_error("Creating file with prefix", &e, &[&path])),
+                Err(e) => return Err(file_error(if dir { "Creating directory with prefix" } else { "Creating file with prefix" }, &e, &[Path::new(prefix)])),
             }
         }
         Err(Error::new("Cannot create temporary file"))

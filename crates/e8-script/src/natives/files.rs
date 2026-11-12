@@ -142,7 +142,7 @@ natives! {
     #[ts = "(time?: number | null): void"]
     pub fn setVisitedFileModtime(ed, time: Option<f64>) {
         match time {
-            None => ed.buffer_mut().set_visited_file_modtime(),
+            None => ed.buffer_mut().take_visited_file_modtime(),
             Some(0.0) => ed.buffer_mut().clear_visited_file_modtime(),
             Some(-1.0) => ed.buffer_mut().set_visited_file_modtime_to(None),
             Some(ms) => {
@@ -162,6 +162,157 @@ natives! {
     pub fn clearVisitedFileModtime(ed) {
         ed.buffer_mut().clear_visited_file_modtime();
         Ok(())
+    }
+
+    /// Whether the current buffer was auto-saved since it was visited or
+    /// last saved, as recent-auto-save-p.
+    pub fn recentAutoSaveP(ed) -> bool {
+        Ok(ed.buffer().recent_auto_save_p())
+    }
+
+    /// Takes the current buffer as auto-saved as it is now, as
+    /// set-buffer-auto-saved.
+    pub fn setBufferAutoSaved(ed) {
+        ed.buffer_mut().set_buffer_auto_saved();
+        Ok(())
+    }
+
+    /// Forgets that auto-saving the current buffer failed, as
+    /// clear-buffer-auto-save-failure. E8 does not stop auto-saving a
+    /// buffer after failures, so there is nothing to forget.
+    pub fn clearBufferAutoSaveFailure(ed) {
+        let _ = ed;
+        Ok(())
+    }
+
+    /// Locks a file, as lock-file: makes its lock file unless
+    /// create-lockfiles is off, signalling file-locked if another process
+    /// holds it.
+    pub fn lockFile(ed, file: String) {
+        ed.lock_file(&file)
+    }
+
+    /// Takes a file's lock away if E8 holds it, as unlock-file.
+    pub fn unlockFile(ed, file: String) {
+        ed.unlock_file(&file);
+        Ok(())
+    }
+
+    /// Locks `file`, or the current buffer's, if the buffer is modified, as
+    /// lock-buffer.
+    #[ts = "(file?: string | null): void"]
+    pub fn lockBuffer(ed, file: Option<String>) {
+        ed.lock_buffer(file.as_deref())
+    }
+
+    /// Takes the current buffer's file's lock away if the buffer is
+    /// modified, as unlock-buffer.
+    pub fn unlockBuffer(ed) {
+        ed.unlock_buffer();
+        Ok(())
+    }
+
+    /// Deletes a file, asking no file name handler, as delete-file-internal:
+    /// a file that does not exist is no error.
+    pub fn deleteFileInternal(ed, file: String) {
+        let path = ed.expand_file_name(&file);
+        ed.delete_file(&path, false)
+    }
+
+    /// Deletes an empty directory, asking no file name handler, as
+    /// delete-directory-internal.
+    pub fn deleteDirectoryInternal(ed, dir: String) {
+        let path = ed.expand_file_name(&dir);
+        ed.delete_directory_internal(&path)
+    }
+
+    /// Makes a directory, asking no file name handler, as
+    /// make-directory-internal: file-already-exists if it is there.
+    pub fn makeDirectoryInternal(ed, dir: String) {
+        let path = ed.expand_file_name(&dir);
+        ed.make_directory(&path, false)
+    }
+
+    /// Makes a file, or with `dirFlag` true a directory, or with 0 only a
+    /// name not in use, starting with the absolute `prefix` and ending
+    /// with `suffix`, holding `text`, as make-temp-file-internal. Gives its
+    /// name.
+    #[ts = "(prefix: string, dirFlag: boolean | 0 | null, suffix: string, text?: string | null): string"]
+    pub fn makeTempFileInternal(ed, prefix: String, dir_flag: EditorValue, suffix: String, text: Option<String>) -> String {
+        let kind = match dir_flag {
+            EditorValue::Number(n) if n == 0.0 => e8_core::TempKind::NameOnly,
+            v if v.is_true() => e8_core::TempKind::Directory,
+            _ => e8_core::TempKind::File,
+        };
+        let prefix = ed.expand_file_name(&prefix).display().to_string();
+        ed.make_temp_file_internal(&prefix, kind, &suffix, text.as_deref())
+    }
+
+    /// Moves a file or directory to the system's trash, as
+    /// system-move-file-to-trash.
+    pub fn systemMoveFileToTrash(ed, file: String) {
+        let path = ed.expand_file_name(&file);
+        ed.system_move_file_to_trash(&path)
+    }
+
+    /// The directory a file name stands for where a program can use it, as
+    /// unhandled-file-name-directory: the name as a directory, unless a file
+    /// name handler says otherwise, as one for a remote name says there is
+    /// none.
+    pub fn unhandledFileNameDirectory(ed, file: String) -> Option<String> {
+        ed.unhandled_file_name_directory(&file)
+    }
+
+    /// The size of the file system a file is on, and the bytes free and free
+    /// to E8, as file-system-info; undefined where the system does not say.
+    #[ts = "(file: string): [total: number, free: number, available: number] | undefined"]
+    pub fn fileSystemInfo(ed, file: String) -> Option<Vec<f64>> {
+        Ok(ed.file_system_info(&file)?.map(|i| i.to_vec()))
+    }
+
+    /// Writes what the system holds of files to disk, as unix-sync.
+    pub fn unixSync(ed) {
+        let _ = ed;
+        e8_core::vfs::sync();
+        Ok(())
+    }
+
+    /// Switches a standard stream between text and binary, as
+    /// set-binary-mode: something only MS-DOS and Windows tell apart, so
+    /// it does nothing and gives true, as Emacs does elsewhere.
+    #[ts = "(stream: \"stdin\" | \"stdout\" | \"stderr\", mode: unknown): true"]
+    pub fn setBinaryMode(ed, stream: String, mode: EditorValue) -> bool {
+        let _ = (ed, stream, mode);
+        Ok(true)
+    }
+
+    /// A file's access control list, as file-acl: undefined, as Emacs
+    /// gives where it supports none, as E8 does not.
+    pub fn fileAcl(ed, file: String) -> Option<String> {
+        let _ = (ed, file);
+        Ok(None)
+    }
+
+    /// Sets a file's access control list, as set-file-acl: false, as E8
+    /// supports none.
+    pub fn setFileAcl(ed, file: String, acl: EditorValue) -> bool {
+        let _ = (ed, file, acl);
+        Ok(false)
+    }
+
+    /// A file's SELinux context, as file-selinux-context: [user, role,
+    /// type, range], all null, as E8 supports none.
+    #[ts = "(file: string): [null, null, null, null]"]
+    pub fn fileSelinuxContext(ed, file: String) -> Vec<EditorValue> {
+        let _ = (ed, file);
+        Ok(vec![EditorValue::Null; 4])
+    }
+
+    /// Sets a file's SELinux context, as set-file-selinux-context: false,
+    /// as E8 supports none.
+    pub fn setFileSelinuxContext(ed, file: String, context: EditorValue) -> bool {
+        let _ = (ed, file, context);
+        Ok(false)
     }
 
     /// Signals the error reading a file would, as access-file: file-missing

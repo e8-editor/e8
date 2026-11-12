@@ -50,6 +50,15 @@ Left out: `kqueue-add-watch`, and file notifications with it, which are a piece 
 - On the web there is no process umask, so E8 keeps one of its own, which only `default-file-modes` reads.
 - Reading the umask means setting it and setting it back, as Emacs does, since POSIX has no other way. No other thread of E8's creates files at that moment.
 
+## Carried out
+
+Both stages landed on 2026-11-12 and 13, each after `make check` on both engines, a review against Emacs's source, and the ported packages' tests, with every answer the tests check recorded from Emacs 30 in batch on the same files:
+
+1. What packages call: e8-editor/e8 pull request 115. The review it had found completion's rules for ignored extensions and case, and visited file times losing their precision, both fixed there.
+2. What Emacs's own Lisp calls: the pull request after it. `set-buffer-modified-p` now locks and unlocks the file as Emacs's does.
+
+What differs from Emacs is in [differences.md](../differences.md)'s entry for file primitives. Files took E8 from 557 to 585 of Emacs's 877 editor primitives by name; only `kqueue-add-watch` is left of the group ([docs/parity/demand.md](../parity/demand.md)).
+
 ## Dependencies introduced
 
 None: `libc`, already a dependency of e8-core, gives `umask`, `statvfs` and `sync`.

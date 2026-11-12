@@ -392,6 +392,29 @@ impl Editor {
         self.remove(dir, trash, true)
     }
 
+    /// Deletes an empty directory, as Emacs's `delete-directory-internal`:
+    /// rmdir(2), which a directory with anything in it refuses.
+    pub fn delete_directory_internal(&mut self, dir: &Path) -> Result<()> {
+        self.check_permission(&format!("delete {}", abbreviate_path(dir)))?;
+        fs::remove_dir(dir).map_err(|e| file_error("Removing directory", &e, &[dir]))
+    }
+
+    /// Moves a file or directory to the system's trash, as Emacs's
+    /// `system-move-file-to-trash`. Files in memory have no trash; there
+    /// it is deleted.
+    pub fn system_move_file_to_trash(&mut self, path: &Path) -> Result<()> {
+        self.check_permission(&format!("move to the trash {}", abbreviate_path(path)))?;
+        #[cfg(not(any(target_arch = "wasm32", feature = "memory-fs")))]
+        {
+            trash::delete(path).map_err(|e| Error::new(format!("Moving to trash: {e}, {}", path.display())))
+        }
+        #[cfg(any(target_arch = "wasm32", feature = "memory-fs"))]
+        {
+            let removed = if fs::path_is_dir(path) { fs::remove_dir_all(path) } else { fs::remove_file(path) };
+            removed.map_err(|e| file_error("Removing old name", &e, &[path]))
+        }
+    }
+
     /// Writes text to a file, replacing what it held, as Emacs's
     /// `write-region` of a whole temporary buffer does, for saved state
     /// such as recentf's list.

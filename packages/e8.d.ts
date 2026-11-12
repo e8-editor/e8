@@ -16111,6 +16111,107 @@ declare global {
      */
     function clearVisitedFileModtime(): void;
     /**
+     * Whether the current buffer was auto-saved since it was visited or
+     * last saved, as recent-auto-save-p.
+     */
+    function recentAutoSaveP(): boolean;
+    /**
+     * Takes the current buffer as auto-saved as it is now, as
+     * set-buffer-auto-saved.
+     */
+    function setBufferAutoSaved(): void;
+    /**
+     * Forgets that auto-saving the current buffer failed, as
+     * clear-buffer-auto-save-failure. E8 does not stop auto-saving a
+     * buffer after failures, so there is nothing to forget.
+     */
+    function clearBufferAutoSaveFailure(): void;
+    /**
+     * Locks a file, as lock-file: makes its lock file unless
+     * create-lockfiles is off, signalling file-locked if another process
+     * holds it.
+     */
+    function lockFile(file: string): void;
+    /** Takes a file's lock away if E8 holds it, as unlock-file. */
+    function unlockFile(file: string): void;
+    /**
+     * Locks `file`, or the current buffer's, if the buffer is modified, as
+     * lock-buffer.
+     */
+    function lockBuffer(file?: string | null): void;
+    /**
+     * Takes the current buffer's file's lock away if the buffer is
+     * modified, as unlock-buffer.
+     */
+    function unlockBuffer(): void;
+    /**
+     * Deletes a file, asking no file name handler, as delete-file-internal:
+     * a file that does not exist is no error.
+     */
+    function deleteFileInternal(file: string): void;
+    /**
+     * Deletes an empty directory, asking no file name handler, as
+     * delete-directory-internal.
+     */
+    function deleteDirectoryInternal(dir: string): void;
+    /**
+     * Makes a directory, asking no file name handler, as
+     * make-directory-internal: file-already-exists if it is there.
+     */
+    function makeDirectoryInternal(dir: string): void;
+    /**
+     * Makes a file, or with `dirFlag` true a directory, or with 0 only a
+     * name not in use, starting with the absolute `prefix` and ending
+     * with `suffix`, holding `text`, as make-temp-file-internal. Gives its
+     * name.
+     */
+    function makeTempFileInternal(prefix: string, dirFlag: boolean | 0 | null, suffix: string, text?: string | null): string;
+    /**
+     * Moves a file or directory to the system's trash, as
+     * system-move-file-to-trash.
+     */
+    function systemMoveFileToTrash(file: string): void;
+    /**
+     * The directory a file name stands for where a program can use it, as
+     * unhandled-file-name-directory: the name as a directory, unless a file
+     * name handler says otherwise, as one for a remote name says there is
+     * none.
+     */
+    function unhandledFileNameDirectory(file: string): string | undefined;
+    /**
+     * The size of the file system a file is on, and the bytes free and free
+     * to E8, as file-system-info; undefined where the system does not say.
+     */
+    function fileSystemInfo(file: string): [total: number, free: number, available: number] | undefined;
+    /** Writes what the system holds of files to disk, as unix-sync. */
+    function unixSync(): void;
+    /**
+     * Switches a standard stream between text and binary, as
+     * set-binary-mode: something only MS-DOS and Windows tell apart, so
+     * it does nothing and gives true, as Emacs does elsewhere.
+     */
+    function setBinaryMode(stream: "stdin" | "stdout" | "stderr", mode: unknown): true;
+    /**
+     * A file's access control list, as file-acl: undefined, as Emacs
+     * gives where it supports none, as E8 does not.
+     */
+    function fileAcl(file: string): string | undefined;
+    /**
+     * Sets a file's access control list, as set-file-acl: false, as E8
+     * supports none.
+     */
+    function setFileAcl(file: string, acl: Value): boolean;
+    /**
+     * A file's SELinux context, as file-selinux-context: [user, role,
+     * type, range], all null, as E8 supports none.
+     */
+    function fileSelinuxContext(file: string): [null, null, null, null];
+    /**
+     * Sets a file's SELinux context, as set-file-selinux-context: false,
+     * as E8 supports none.
+     */
+    function setFileSelinuxContext(file: string, context: Value): boolean;
+    /**
      * Signals the error reading a file would, as access-file: file-missing
      * or permission-denied, `string` saying what was being done.
      */
