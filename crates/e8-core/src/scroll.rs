@@ -32,6 +32,10 @@ pub(crate) struct Hscroll {
 }
 
 pub(crate) fn define_variables(ed: &mut Editor) {
+    ed.define_hook(
+        "window-scroll-functions",
+        "Functions redisplay calls with a window and its new start when the window is about to show its buffer from somewhere else, as when it scrolls or shows another buffer.",
+    );
     for var in [
         Variable::new(
             "auto-hscroll-mode",
@@ -234,6 +238,32 @@ impl Editor {
         state.columns = scroll;
         self.set_hscroll_state(window, state);
         true
+    }
+
+    /// Runs `window-scroll-functions` for a window with its start, as
+    /// Emacs's `run-window-scroll-functions`.
+    pub fn run_window_scroll_functions(&mut self, window: WindowId) -> crate::error::Result<()> {
+        let Some(start) = self.window_start(window) else { return Ok(()) };
+        if let Some(w) = self.window_mut(window) {
+            w.scrolled_to = Some((w.buffer, start));
+        }
+        self.run_hook_with_args("window-scroll-functions", &[Value::Window(window), Value::Number(start as f64)])
+    }
+
+    /// Runs `window-scroll-functions` for each window whose buffer or
+    /// start changed since it last ran, as redisplay does in Emacs.
+    pub(crate) fn run_scroll_functions_where_moved(&mut self) {
+        let moved: Vec<WindowId> = self
+            .window_views()
+            .into_iter()
+            .filter(|v| self.window(v.id).and_then(|w| w.scrolled_to) != self.window_start(v.id).map(|s| (v.buffer.id(), s)))
+            .map(|v| v.id)
+            .collect();
+        for window in moved {
+            if let Err(e) = self.run_window_scroll_functions(window) {
+                self.message(format!("Error in window-scroll-functions: {e}"));
+            }
+        }
     }
 
     /// Every frame's windows.

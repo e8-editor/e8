@@ -10648,6 +10648,12 @@ declare global {
        */
       "minibuffer-local-must-match-map": Value;
       /**
+       * The window C-M-v scrolls while the minibuffer is selected, such as the one showing completions; nil for the next window.
+       *
+       * Defined in packages/window.ts.
+       */
+      "minibuffer-scroll-window": Value;
+      /**
        * The minor modes' lighters in the mode line, as [mode, lighter] pairs: each lighter shows while its mode's variable is true.
        */
       "minor-mode-alist": Value;
@@ -11343,6 +11349,18 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-yank-folded-subtrees": Value;
+      /**
+       * A buffer for C-M-v to scroll, shown in a window if it is in none; nil for the next window.
+       *
+       * Defined in packages/window.ts.
+       */
+      "other-window-scroll-buffer": Value;
+      /**
+       * A function giving the window C-M-v scrolls when minibuffer-scroll-window and other-window-scroll-buffer do not say; nil for the next window.
+       *
+       * Defined in packages/window.ts.
+       */
+      "other-window-scroll-default": Value;
       /**
        *
        * Defined in packages/outline.ts.
@@ -14929,6 +14947,10 @@ declare global {
        */
       "window-configuration-change-hook": Value;
       /**
+       * Functions redisplay calls with a window and its new start when the window is about to show its buffer from somewhere else, as when it scrolls or shows another buffer.
+       */
+      "window-scroll-functions": Value;
+      /**
        * Run after Winner mode is turned on or off.
        */
       "winner-mode-hook": Value;
@@ -15821,6 +15843,63 @@ declare global {
      * auto-hscroll-mode says. Gives the scroll.
      */
     function setWindowHscroll(window: WindowLike | null | undefined, columns: number): number;
+    /**
+     * Moves point `lines` screen lines down, or up if negative, to the
+     * start of the screen line, as vertical-motion, as `window` (the
+     * selected one by default) lays out the current buffer. Given as
+     * `[cols, lines]`, it stops at that column of the line instead,
+     * counted from what shows at the window's left edge. Past the end of
+     * the buffer point goes to the end. Gives how many lines it moved.
+     * `curCol`, Emacs's hint of point's column, is not needed.
+     */
+    function verticalMotion(lines: number | [cols: number, lines: number], window?: WindowLike | null, curCol?: number | null): number;
+    /**
+     * Where text reaches a place on the screen, as compute-motion: from
+     * `from`, shown at `fromPos` ([column, row]), through the current
+     * buffer to `to` or the place `toPos`, whichever comes first, lines
+     * continued after `width` columns (the window's text width by default)
+     * or truncated as `window` truncates them, `offsets` being
+     * [hscroll, tabOffset]. Gives [position, column, row, the column before
+     * the last character, whether the position starts a continuation row].
+     */
+    function computeMotion(from: number, fromPos: [number, number], to: number, toPos: [number, number], width?: number | null, offsets?: [number, number] | null, window?: WindowLike | null): [number, number, number, number, boolean];
+    /**
+     * How wide the selected window's line numbers are, as
+     * line-number-display-width: in digits; with "columns", in columns with
+     * the space either side; with any other true value, in the front
+     * end's units.
+     */
+    function lineNumberDisplayWidth(pixelwise?: "columns" | boolean | null): number;
+    /**
+     * The height of a line of a window, the selected one by default, as
+     * window-line-height: [height, row, top, cut off at the bottom], in the
+     * front end's units below the first text row. `line` is point's row
+     * by default, a text row from 0 (from the bottom if negative),
+     * "header-line" or "mode-line". Undefined if there is no such line.
+     */
+    function windowLineHeight(line?: number | "header-line" | "mode-line" | null, window?: WindowLike | null): [number, number, number, number] | undefined;
+    /**
+     * Where each line of a window, the selected one by default, ends, as
+     * window-lines-pixel-dimensions: for each row from `first` to `last`,
+     * [the right edge of its last character from the window's left, its
+     * bottom], in the front end's units, or with `inverse` the space right
+     * of the character, or with `left` its first character's left edge.
+     * Rows the window's bottom cuts off are left out. `body` is accepted
+     * as in Emacs: E8's windows have no lines above their text but the
+     * header line, which rows are counted below either way.
+     */
+    function windowLinesPixelDimensions(window?: WindowLike | null, first?: number | null, last?: number | null, body?: boolean | null, inverse?: boolean | null, left?: boolean | null): [number, number][] | undefined;
+    /**
+     * Makes the next redisplay draw a window, a frame or every frame
+     * afresh, as force-window-update. E8 draws every window afresh each
+     * time, so it has nothing to do.
+     */
+    function forceWindowUpdate(object?: WindowLike | Frame | BufferLike | null): void;
+    /**
+     * Runs window-scroll-functions for a window, the selected one by
+     * default, with its start, as run-window-scroll-functions.
+     */
+    function runWindowScrollFunctions(window?: WindowLike | null): void;
     /** Whether a value is a window, live or deleted, as windowp. */
     function windowp(value: unknown): value is Window;
     /** Whether a value is a frame that is live, as frame-live-p. */

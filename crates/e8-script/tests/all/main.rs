@@ -68,6 +68,7 @@ mod project;
 mod quit;
 mod redisplay;
 mod registers;
+mod screen_lines;
 mod scripts;
 mod search;
 mod sessions;

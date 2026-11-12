@@ -161,6 +161,7 @@ impl Editor {
         if self.hscroll_windows() {
             self.ensure_point_visible();
         }
+        self.run_scroll_functions_where_moved();
         // Again only where keeping point visible scrolled.
         self.fontify_windows(&settled);
         self.update_mode_lines();

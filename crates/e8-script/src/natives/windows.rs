@@ -372,6 +372,118 @@ natives! {
         Ok(ed.set_window_hscroll(id, columns))
     }
 
+    /// Moves point `lines` screen lines down, or up if negative, to the
+    /// start of the screen line, as vertical-motion, as `window` (the
+    /// selected one by default) lays out the current buffer. Given as
+    /// `[cols, lines]`, it stops at that column of the line instead,
+    /// counted from what shows at the window's left edge. Past the end of
+    /// the buffer point goes to the end. Gives how many lines it moved.
+    /// `curCol`, Emacs's hint of point's column, is not needed.
+    #[ts = "(lines: number | [cols: number, lines: number], window?: WindowLike | null, curCol?: number | null): number"]
+    pub fn verticalMotion(ed, lines: EditorValue, window: Option<Win>, cur_col: Option<f64>) -> i64 {
+        let _ = cur_col;
+        let window = live_window(ed, window)?;
+        let (cols, lines) = match &lines {
+            EditorValue::Number(n) => (None, *n),
+            EditorValue::List(pair) if pair.len() == 2 => match (pair[0].as_number(), pair[1].as_number()) {
+                (Some(cols), Some(lines)) => (Some(cols), lines),
+                _ => return Err(wrong_type("numberp", lines.clone())),
+            },
+            _ => return Err(wrong_type("fixnump", lines.clone())),
+        };
+        Ok(ed.vertical_motion(lines as i64, cols, window))
+    }
+
+    /// Where text reaches a place on the screen, as compute-motion: from
+    /// `from`, shown at `fromPos` ([column, row]), through the current
+    /// buffer to `to` or the place `toPos`, whichever comes first, lines
+    /// continued after `width` columns (the window's text width by default)
+    /// or truncated as `window` truncates them, `offsets` being
+    /// [hscroll, tabOffset]. Gives [position, column, row, the column before
+    /// the last character, whether the position starts a continuation row].
+    #[ts = "(from: number, fromPos: [number, number], to: number, toPos: [number, number], width?: number | null, offsets?: [number, number] | null, window?: WindowLike | null): [number, number, number, number, boolean]"]
+    pub fn computeMotion(ed, from: usize, from_pos: Vec<f64>, to: usize, to_pos: Vec<f64>, width: Option<f64>, offsets: Option<Vec<f64>>, window: Option<Win>) -> EditorValue {
+        let window = live_window(ed, window)?;
+        let pair = |v: &[f64]| (v.first().copied().unwrap_or(0.0) as i64, v.get(1).copied().unwrap_or(0.0) as i64);
+        let offsets = offsets.as_deref().map_or((0, 0), pair);
+        let m = ed.compute_motion(from, pair(&from_pos), to, pair(&to_pos), width.map(|w| w as i64), offsets, window);
+        Ok(EditorValue::List(vec![
+            EditorValue::Number(m.pos as f64),
+            EditorValue::Number(m.hpos as f64),
+            EditorValue::Number(m.vpos as f64),
+            EditorValue::Number(m.prev_hpos as f64),
+            EditorValue::Bool(m.continued),
+        ]))
+    }
+
+    /// How wide the selected window's line numbers are, as
+    /// line-number-display-width: in digits; with "columns", in columns with
+    /// the space either side; with any other true value, in the front
+    /// end's units.
+    #[ts = "(pixelwise?: \"columns\" | boolean | null): number"]
+    pub fn lineNumberDisplayWidth(ed, pixelwise: EditorValue) -> f64 {
+        let (digits, columns, pixels) = ed.line_number_display_width();
+        Ok(match &pixelwise {
+            EditorValue::Str(s) | EditorValue::Symbol(s) if s == "columns" => columns,
+            v if v.is_true() => pixels,
+            _ => digits as f64,
+        })
+    }
+
+    /// The height of a line of a window, the selected one by default, as
+    /// window-line-height: [height, row, top, cut off at the bottom], in the
+    /// front end's units below the first text row. `line` is point's row
+    /// by default, a text row from 0 (from the bottom if negative),
+    /// "header-line" or "mode-line". Undefined if there is no such line.
+    #[ts = "(line?: number | \"header-line\" | \"mode-line\" | null, window?: WindowLike | null): [number, number, number, number] | undefined"]
+    pub fn windowLineHeight(ed, line: EditorValue, window: Option<Win>) -> Option<Vec<f64>> {
+        let window = live_window(ed, window)?;
+        let line = match &line {
+            EditorValue::Null | EditorValue::Bool(false) => e8_core::WindowLine::Point,
+            EditorValue::Number(n) => e8_core::WindowLine::Text(*n as i64),
+            EditorValue::Str(s) | EditorValue::Symbol(s) if s == "header-line" => e8_core::WindowLine::HeaderLine,
+            EditorValue::Str(s) | EditorValue::Symbol(s) if s == "mode-line" => e8_core::WindowLine::ModeLine,
+            // E8 has no tab lines.
+            EditorValue::Str(s) | EditorValue::Symbol(s) if s == "tab-line" => return Ok(None),
+            _ => return Err(wrong_type("fixnump", line.clone())),
+        };
+        Ok(ed.window_line_height(window, line).map(|v| v.to_vec()))
+    }
+
+    /// Where each line of a window, the selected one by default, ends, as
+    /// window-lines-pixel-dimensions: for each row from `first` to `last`,
+    /// [the right edge of its last character from the window's left, its
+    /// bottom], in the front end's units, or with `inverse` the space right
+    /// of the character, or with `left` its first character's left edge.
+    /// Rows the window's bottom cuts off are left out. `body` is accepted
+    /// as in Emacs: E8's windows have no lines above their text but the
+    /// header line, which rows are counted below either way.
+    #[ts = "(window?: WindowLike | null, first?: number | null, last?: number | null, body?: boolean | null, inverse?: boolean | null, left?: boolean | null): [number, number][] | undefined"]
+    pub fn windowLinesPixelDimensions(ed, window: Option<Win>, first: Option<usize>, last: Option<usize>, body: Option<bool>, inverse: Option<bool>, left: Option<bool>) -> Option<EditorValue> {
+        let _ = body;
+        let window = live_window(ed, window)?;
+        Ok(ed.window_lines_pixel_dimensions(window, first, last, inverse == Some(true), left == Some(true)).map(|rows| {
+            EditorValue::List(rows.into_iter().map(|(x, y)| EditorValue::List(vec![EditorValue::Number(x), EditorValue::Number(y)])).collect())
+        }))
+    }
+
+    /// Makes the next redisplay draw a window, a frame or every frame
+    /// afresh, as force-window-update. E8 draws every window afresh each
+    /// time, so it has nothing to do.
+    #[ts = "(object?: WindowLike | Frame | BufferLike | null): void"]
+    pub fn forceWindowUpdate(ed, object: EditorValue) {
+        let _ = (ed, object);
+        Ok(())
+    }
+
+    /// Runs window-scroll-functions for a window, the selected one by
+    /// default, with its start, as run-window-scroll-functions.
+    #[ts = "(window?: WindowLike | null): void"]
+    pub fn runWindowScrollFunctions(ed, window: Option<Win>) {
+        let window = live_window(ed, window)?;
+        ed.run_window_scroll_functions(window)
+    }
+
     /// Whether a value is a window, live or deleted, as windowp.
     #[ts = "(value: unknown): value is Window"]
     pub fn windowp(ed, value: EditorValue) -> bool {
@@ -736,4 +848,9 @@ fn live_window(ed: &e8_core::Editor, window: Option<Win>) -> Result<e8_core::Win
         return Err(e8_core::Error::signal("wrong-type-argument", "Not a live window", vec![EditorValue::Symbol("window-live-p".into()), EditorValue::Window(id)]));
     }
     Ok(id)
+}
+
+/// The error Emacs signals for an argument of the wrong type.
+fn wrong_type(predicate: &str, value: EditorValue) -> e8_core::Error {
+    e8_core::Error::signal("wrong-type-argument", "Wrong type argument", vec![EditorValue::Symbol(predicate.into()), value])
 }

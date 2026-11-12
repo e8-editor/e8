@@ -674,7 +674,7 @@ fn row_column(ed: &Editor, b: &Buffer, row: &crate::rows::Row, pos: usize) -> f3
 /// with a goal in pixels: before the glyph that reaches past it, or the
 /// row's end; on a continued row, its last character rather than its end,
 /// which shows at the start of the next.
-fn position_at_x(ed: &Editor, b: &Buffer, row: &crate::rows::Row, goal: f32) -> usize {
+pub(crate) fn position_at_x(ed: &Editor, b: &Buffer, row: &crate::rows::Row, goal: f32) -> usize {
     let tab = ed.tab_width_in(b);
     let glyphs = crate::display::row_glyphs(row, tab);
     let widths = ed.glyph_columns(row, &glyphs, tab);
