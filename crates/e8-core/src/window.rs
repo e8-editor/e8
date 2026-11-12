@@ -596,6 +596,12 @@ impl Editor {
     pub fn set_window_buffer(&mut self, id: WindowId, name: &str) -> Result<()> {
         let index = self.find_buffer(name).ok_or_else(|| Error::new(format!("No such buffer {name}")))?;
         let w = self.window(id).ok_or_else(|| Error::new("No such window"))?;
+        // Unscrolled, even showing the same buffer again, as Emacs's set_window_buffer.
+        let w_dedicated_refuses = w.buffer != self.buffers[index].id && w.dedicated == Value::Bool(true);
+        if !w_dedicated_refuses {
+            self.window_mut(id).expect("checked").hscroll = Default::default();
+        }
+        let w = self.window(id).expect("checked");
         if w.buffer != self.buffers[index].id {
             if w.dedicated == Value::Bool(true) {
                 let shown = self.window_buffer_name(id).unwrap_or_default();

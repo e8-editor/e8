@@ -98,9 +98,9 @@ fn a_scrolled_window_truncates_its_lines() {
     ed.set_variable("truncate-lines", Value::Null);
     let w = ed.selected_window();
     // The long line takes three rows wrapped, one truncated.
-    assert_eq!(ed.screen_line(ed.window_buffer().point()).2, true);
+    assert!(ed.screen_line(ed.window_buffer().point()).2);
     ed.set_window_hscroll(w, 4);
-    assert_eq!(ed.screen_line(ed.window_buffer().point()).2, false);
+    assert!(!ed.screen_line(ed.window_buffer().point()).2);
     ed.set_window_hscroll(w, -3);
     assert_eq!(ed.window_hscroll(w), 0);
 }
@@ -180,4 +180,43 @@ fn scripts_read_and_set_the_scroll_and_window_states_keep_it() {
         r#"(globalThis.w = e8.splitWindow(), e8.deleteWindow(w), e8.conditionCase(() => String(e8.windowHscroll(w)), { "wrong-type-argument": () => "wrong-type-argument" }))"#,
     );
     assert_eq!(got, "wrong-type-argument");
+}
+
+#[test]
+fn scrolling_vertically_keeps_a_scroll_a_command_set() {
+    let mut ed = Editor::new();
+    let _s = Scripting::new(&mut ed).unwrap();
+    let lines: Vec<String> = (0..60).map(|n| format!("{n:02} {}", "x".repeat(60))).collect();
+    ed.type_text(&lines.join("\n"));
+    let w = ed.selected_window();
+    ed.set_window_size(w, 20, 10);
+    ed.set_variable("truncate-lines", Value::Bool(true));
+    press(&mut ed, "M-<");
+    ed.set_window_hscroll(w, 20);
+    ed.redisplay();
+    // As in Emacs, C-v moves point with the text but leaves the scroll.
+    assert_eq!(press(&mut ed, "C-v"), 20);
+    // Moving point otherwise brings it back in sight.
+    assert_eq!(press(&mut ed, "C-f"), 0);
+}
+
+#[test]
+fn showing_a_buffer_again_resets_the_scroll() {
+    let (mut ed, _s) = editor();
+    let w = ed.selected_window();
+    ed.set_window_hscroll(w, 9);
+    let name = ed.window_buffer().name.clone();
+    ed.set_window_buffer(w, &name).unwrap();
+    assert_eq!(ed.window_hscroll(w), 0);
+}
+
+#[test]
+fn positions_on_lines_current_line_mode_leaves_unscrolled() {
+    let (mut ed, _s) = editor();
+    ed.set_variable("auto-hscroll-mode", Value::Symbol("current-line".into()));
+    press(&mut ed, "C-e");
+    let w = ed.selected_window();
+    let line = ed.window_buffer().line_start(2);
+    assert_eq!(ed.posn_at_point(line, w).unwrap().col, 0.0);
+    assert_eq!(ed.posn_at_point(ed.window_buffer().point(), w).unwrap().col, 16.0);
 }

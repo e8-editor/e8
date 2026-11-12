@@ -278,6 +278,10 @@ fn row_line(
     let cut_right = !row.continued && width > 0 && glyphs.iter().map(|g| g.width).sum::<usize>() >= hscroll + width;
     // The columns text shows in, between the marks.
     let (left, right) = (hscroll + usize::from(cut_left), (hscroll + width).saturating_sub(usize::from(cut_right)));
+    // A window a column wide has room for one mark and no text.
+    if left >= right {
+        return Line::from(if cut_left || cut_right { "$" } else { "" });
+    }
     if cut_left {
         push(&mut spans, "$", Style::new());
     }
@@ -776,6 +780,19 @@ mod tests {
         // Scrolled 24: every line with text scrolled off shows `$` first.
         assert_eq!(rows[..5], ["$", "$", "", "$", "$pqrstuvwxyzABCDEFG$"]);
         assert_eq!(ed.window_hscroll(ed.selected_window()), 24);
+    }
+
+    #[test]
+    fn a_column_wide_window_shows_only_the_mark() {
+        let mut ed = Editor::new();
+        ed.type_text("\tabcdefgh");
+        let (row, glyphs) = {
+            let rows = ed.rows_of_window(ed.selected_window(), 1, true);
+            let glyphs = row_glyphs(&rows[0], 8);
+            (rows[0].clone(), glyphs)
+        };
+        let text: String = row_line(&row, &glyphs, 3, 1, None, true, true).spans.iter().map(|s| s.content.to_string()).collect();
+        assert_eq!(text, "$");
     }
 
     #[test]

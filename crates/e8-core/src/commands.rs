@@ -349,7 +349,9 @@ fn movement(ed: &mut Editor) {
                     _ => None,
                 };
                 let set_minimum = ed.called_interactively();
-                let columns = columns.unwrap_or_else(|| ed.text_area_columns(ed.selected_window()) as i64 - 2);
+                // The window's body, line numbers included, as window_body_width.
+                let body = ed.window_body_columns(ed.selected_window());
+                let columns = columns.unwrap_or(body as i64 - 2);
                 ed.scroll_left(sign * columns, set_minimum);
                 Ok(())
             })

@@ -7,6 +7,7 @@
 //!
 //! [ADR 0071]: ../../../docs/adr/0071-scrolling-as-emacs-has-it.md
 
+use crate::buffer::Buffer;
 use crate::editor::Editor;
 use crate::rows::Row;
 use crate::variables::{Value, Variable};
@@ -98,11 +99,15 @@ impl Editor {
         scroll
     }
 
-    /// Whether a window scrolls only the line point is on, as xdisp.c's
-    /// `hscrolling_current_line_p`.
-    fn hscrolling_current_line(&self, window: WindowId) -> bool {
-        let Some(view) = self.window_views().into_iter().find(|v| v.id == window) else { return false };
-        !self.hscroll_state(window).suspended && matches!(self.variable_in(view.buffer, "auto-hscroll-mode"), Some(Value::Str(s)) if s == "current-line")
+    /// How many columns a window's body is wide, line numbers included.
+    pub(crate) fn window_body_columns(&self, window: WindowId) -> usize {
+        self.window(window).map_or(80, |w| w.width)
+    }
+
+    /// Whether a window showing a buffer scrolls only the line point is
+    /// on, as xdisp.c's `hscrolling_current_line_p`.
+    fn hscrolling_current_line(&self, b: &Buffer, state: Hscroll) -> bool {
+        !state.suspended && matches!(self.variable_in(b, "auto-hscroll-mode"), Some(Value::Str(s) | Value::Symbol(s)) if s == "current-line")
     }
 
     /// How many columns a row of a window is scrolled to the left: the
@@ -110,11 +115,22 @@ impl Editor {
     /// its least on every row but point's. Right-to-left rows are not
     /// scrolled.
     pub fn row_hscroll(&self, window: WindowId, row: &Row, point: usize) -> usize {
+        let state = self.hscroll_state(window);
         if row.right_to_left {
             return 0;
         }
-        let state = self.hscroll_state(window);
-        if self.hscrolling_current_line(window) && !row.shows_point(point) { state.min } else { state.columns }
+        if state.columns == state.min || row.shows_point(point) {
+            return state.columns;
+        }
+        let Some(b) = self.buffer_with_id(state.buffer).map(|i| &self.buffers[i]) else { return state.columns };
+        if self.hscrolling_current_line(b, state) { state.min } else { state.columns }
+    }
+
+    /// Keeps a scroll a command set while a vertical scroll moves point,
+    /// as window.c's window_scroll moves `old_pointm` with point, so that
+    /// `C-v` does not undo `set-window-hscroll`.
+    fn scrolled_vertically(&self) -> bool {
+        self.last_command().is_some_and(|c| VERTICAL_SCROLLS.contains(&c))
     }
 
     /// Whether a window's lines are truncated because it is scrolled.
@@ -144,14 +160,13 @@ impl Editor {
 
     fn hscroll_window(&mut self, window: WindowId, point: usize, step: Step, margin: f32) -> bool {
         let mut state = self.hscroll_state(window);
-        // A scroll a command set lasts until point moves.
-        if state.suspended && state.old_point.is_some_and(|old| old != point) {
+        // A scroll a command set lasts until point moves, other than by scrolling.
+        if state.suspended && state.old_point.is_some_and(|old| old != point) && !self.scrolled_vertically() {
             state.suspended = false;
         }
         state.old_point = Some(point);
         self.set_hscroll_state(window, state);
-        let Some(view) = self.window_views().into_iter().find(|v| v.id == window) else { return false };
-        let b = view.buffer;
+        let Some(b) = self.buffer_with_id(state.buffer).map(|i| &self.buffers[i]) else { return false };
         if !self.variable_in(b, "auto-hscroll-mode").is_some_and(|v| v.is_true()) || state.suspended {
             return false;
         }
@@ -174,7 +189,11 @@ impl Editor {
         // Where point is in its line, unscrolled, and in the window.
         let point_x: f32 = columns[..index].iter().sum();
         let row_width: f32 = columns.iter().sum();
-        let current_line = self.hscrolling_current_line(window);
+        // Only where point shows, as Emacs needs the cursor in the window.
+        if window != self.selected_window && !self.pos_visible_in_window_p(point, window, true) {
+            return false;
+        }
+        let current_line = self.hscrolling_current_line(b, state);
         let shown = self.row_hscroll(window, row, point) as f32;
         let cursor_x = point_x - shown;
         // As Emacs's text area, line numbers included, and where text starts in it.
@@ -192,7 +211,8 @@ impl Editor {
         if !wants {
             return false;
         }
-        let x = point_x + numbers;
+        // Line numbers come before text in sight only.
+        let x = if point_x >= shown { point_x + numbers } else { point_x };
         let at_end_of_line = b.char_at(point).is_none_or(|c| c == '\n');
         let wanted = match step {
             Step::Centre => {
@@ -221,6 +241,20 @@ impl Editor {
         self.frame_list().into_iter().flat_map(|f| self.frame_windows(f)).collect()
     }
 }
+
+/// The commands that scroll a window vertically, which keep a scroll set
+/// by a command though they move point.
+const VERTICAL_SCROLLS: &[&str] = &[
+    "scroll-up-command",
+    "scroll-down-command",
+    "scroll-up",
+    "scroll-down",
+    "scroll-up-line",
+    "scroll-down-line",
+    "mwheel-scroll",
+    "scroll-other-window",
+    "scroll-other-window-down",
+];
 
 /// How far automatic scrolling goes, as `hscroll-step` says.
 #[derive(Clone, Copy)]
