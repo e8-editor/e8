@@ -59,8 +59,8 @@ fn a_function_that_is_not_a_command_and_an_undefined_key() {
     ed.type_text("my-helper");
     ed.press("RET").unwrap();
     assert!(help(&ed).starts_with("my-helper is a function defined with e8.defun"), "{}", help(&ed));
-    ed.press("C-h k C-x C-z").unwrap();
-    assert_eq!(ed.echo(), Some("C-x C-z is undefined"));
+    ed.press("C-h k C-x C-y").unwrap();
+    assert_eq!(ed.echo(), Some("C-x C-y is undefined"));
 }
 
 #[test]
@@ -68,8 +68,8 @@ fn describe_key_briefly_and_where_is() {
     let (mut ed, _s) = setup();
     ed.press("C-h c C-x C-f").unwrap();
     assert_eq!(ed.echo(), Some("C-x C-f runs the command find-file"));
-    ed.press("C-h c C-x C-z").unwrap();
-    assert_eq!(ed.echo(), Some("C-x C-z is undefined"));
+    ed.press("C-h c C-x C-y").unwrap();
+    assert_eq!(ed.echo(), Some("C-x C-y is undefined"));
     ed.press("C-h w").unwrap();
     ed.type_text("find-file");
     ed.press("RET").unwrap();
