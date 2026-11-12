@@ -353,6 +353,10 @@ struct Gone {
     query_on_exit: bool,
     coding: (Coding, Coding),
     plist: Value,
+    /// Its filter and sentinel, still read and set, as Emacs's are on a
+    /// process that has gone, though never run.
+    filter: Option<Value>,
+    sentinel: Option<Value>,
 }
 
 /// What can be asked of a process, listed or gone, as process-status,
@@ -925,7 +929,7 @@ impl Editor {
         let Kind::Server(contact, _) = &s.kind else { return };
         let label = format!("{} <{peer}>", s.name);
         let base = s.name.clone();
-        let (filter, sentinel, coding) = (s.filter.clone(), s.sentinel.clone(), s.coding);
+        let (filter, sentinel, coding, plist) = (s.filter.clone(), s.sentinel.clone(), s.coding, s.plist.clone());
         let buffer_name = (s.filter.is_none()).then(|| {
             let base = s.buffer.and_then(|b| self.buffers.iter().find(|x| x.id == b)).map_or(base.clone(), |b| b.name.clone());
             format!("{base} <{peer}>")
@@ -957,7 +961,8 @@ impl Editor {
             open_streams: 1,
             filter,
             sentinel: sentinel.clone(),
-            plist: Value::Null,
+            // A copy of the server's, as server_accept_connection gives it.
+            plist,
             held_output: String::new(),
             query_on_exit: true,
             exited: None,
@@ -1050,29 +1055,42 @@ impl Editor {
     }
 
     /// A process's filter, as process-filter: None for the default, and
-    /// `true` for `t`. A process that has gone has the default.
+    /// `true` for `t`. A process that has gone keeps its own, as in Emacs.
     pub fn process_filter(&self, id: u64) -> Option<Value> {
-        self.processes.list.iter().find(|p| p.id == id).and_then(|p| p.filter.clone())
+        match self.processes.list.iter().find(|p| p.id == id) {
+            Some(p) => p.filter.clone(),
+            None => self.processes.gone.get(&id).and_then(|g| g.filter.clone()),
+        }
     }
 
     /// Sets a process's filter, as set-process-filter: nil for the default,
-    /// `t` to hold its output back until another is set. Nothing for a
-    /// process that has gone, which has no output.
+    /// `t` to hold its output back until another is set. A process that
+    /// has gone keeps it, though it has no more output to give it.
     pub fn set_process_filter(&mut self, id: u64, filter: Value) {
+        let filter = (!filter.is_nil()).then_some(filter);
         if let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) {
-            p.filter = (!filter.is_nil()).then_some(filter);
+            p.filter = filter;
+        } else if let Some(g) = self.processes.gone.get_mut(&id) {
+            g.filter = filter;
         }
     }
 
     /// A process's sentinel, as process-sentinel: None for the default.
     pub fn process_sentinel(&self, id: u64) -> Option<Value> {
-        self.processes.list.iter().find(|p| p.id == id).and_then(|p| p.sentinel.clone())
+        match self.processes.list.iter().find(|p| p.id == id) {
+            Some(p) => p.sentinel.clone(),
+            None => self.processes.gone.get(&id).and_then(|g| g.sentinel.clone()),
+        }
     }
 
-    /// Sets a process's sentinel, as set-process-sentinel: nil for the default.
+    /// Sets a process's sentinel, as set-process-sentinel: nil for the
+    /// default. A process that has gone keeps it, never to run it.
     pub fn set_process_sentinel(&mut self, id: u64, sentinel: Value) {
+        let sentinel = (!sentinel.is_nil()).then_some(sentinel);
         if let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) {
-            p.sentinel = (!sentinel.is_nil()).then_some(sentinel);
+            p.sentinel = sentinel;
+        } else if let Some(g) = self.processes.gone.get_mut(&id) {
+            g.sentinel = sentinel;
         }
     }
 
@@ -1325,6 +1343,8 @@ impl Editor {
             query_on_exit: p.query_on_exit,
             coding: p.coding,
             plist: p.plist.clone(),
+            filter: p.filter.clone(),
+            sentinel: p.sentinel.clone(),
         };
         self.processes.gone.insert(p.id, gone);
     }
@@ -1626,6 +1646,16 @@ impl Editor {
             p.held_output.push_str(text);
             return;
         }
+        // What was held while the filter was t comes first, though the
+        // filter was set since the last look at processes.
+        let text = if p.held_output.is_empty() {
+            std::borrow::Cow::Borrowed(text)
+        } else {
+            let mut held = std::mem::take(&mut p.held_output);
+            held.push_str(text);
+            std::borrow::Cow::Owned(held)
+        };
+        let text: &str = &text;
         let filter = p.filter.clone();
         if self.processes.watching.is_none_or(|w| w == id) {
             self.processes.outputs_seen += 1;

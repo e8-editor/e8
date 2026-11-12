@@ -13,8 +13,8 @@ natives! {
         buffer: Option<String>,
         command: Vec<String>,
         options: Fields,
-        filter: Option<e8_core::Function>,
-        sentinel: Option<e8_core::Function>,
+        filter: Option<EditorValue>,
+        sentinel: Option<EditorValue>,
     ) -> ProcObj {
         let spec = e8_core::ProcessSpec {
             name,
@@ -33,8 +33,8 @@ natives! {
             },
             merge_stderr: options.get("stderr").is_none_or(EditorValue::is_true),
             stderr_buffer: options.string("stderr"),
-            filter: filter.map(EditorValue::Function),
-            sentinel: sentinel.map(EditorValue::Function),
+            filter: handler(filter),
+            sentinel: handler(sentinel),
             pty: options.flag("pty"),
             coding: coding_pair(options.get("coding"))?,
         };
@@ -42,15 +42,15 @@ natives! {
         Ok(ProcObj(ed.process_named(&name).expect("just started")))
     }
 
-    fn makeNetworkProcess(ed, options: Fields, filter: Option<e8_core::Function>, sentinel: Option<e8_core::Function>) -> ProcObj {
+    fn makeNetworkProcess(ed, options: Fields, filter: Option<EditorValue>, sentinel: Option<EditorValue>) -> ProcObj {
         let spec = e8_core::NetworkSpec {
             name: options.string("name").ok_or_else(|| Error::new("A network process needs a name"))?,
             buffer: options.string("buffer"),
             host: options.string("host"),
             service: options.get("service").map(|s| s.as_str().map_or_else(|| s.to_string(), str::to_string)).unwrap_or_default(),
             server: options.flag("server"),
-            filter: filter.map(EditorValue::Function),
-            sentinel: sentinel.map(EditorValue::Function),
+            filter: handler(filter),
+            sentinel: handler(sentinel),
             coding: coding_pair(options.get("coding"))?,
         };
         let name = ed.make_network_process(spec)?;
@@ -227,6 +227,12 @@ natives! {
         let (code, output) = ed.call_process(&command, directory.as_deref(), input.as_deref())?;
         Ok(Record::new().with("exit", code).with("output", output))
     }
+}
+
+/// A filter or sentinel as make-process's :filter and :sentinel take it:
+/// a function, a name, or for a filter t; nil for the default.
+fn handler(value: Option<EditorValue>) -> Option<EditorValue> {
+    value.filter(|v| !v.is_nil())
 }
 
 /// The signal a name gives, as signal-process takes them: "SIGINT", "int", or a number.

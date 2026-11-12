@@ -266,11 +266,24 @@ fn number(name: &str) -> Option<f64> {
 /// `noescape`, strings as their text, as princ.
 pub fn prin1_to_string(value: &Value, noescape: bool) -> String {
     let mut out = String::new();
-    print(value, noescape, &mut out);
+    print(value, noescape, &|_| None, &mut out);
     out
 }
 
-fn print(value: &Value, noescape: bool, out: &mut String) {
+impl crate::editor::Editor {
+    /// The printed form of a value, as prin1-to-string writes it, with what
+    /// only the editor knows: a process by its name, `#<process NAME>`.
+    pub fn prin1_to_string(&self, value: &Value, noescape: bool) -> String {
+        let mut out = String::new();
+        print(value, noescape, &|id| self.process_info(id).map(|p| p.name), &mut out);
+        out
+    }
+}
+
+/// A process's name by its id, where the printer can ask the editor.
+type ProcessName<'a> = &'a dyn Fn(u64) -> Option<String>;
+
+fn print(value: &Value, noescape: bool, process_name: ProcessName, out: &mut String) {
     match value {
         Value::Null | Value::Bool(false) => out.push_str("nil"),
         Value::Bool(true) => out.push('t'),
@@ -299,7 +312,7 @@ fn print(value: &Value, noescape: bool, out: &mut String) {
                 out.push('"');
             }
         }
-        Value::Text(t) => print(&Value::Str(t.string.clone()), noescape, out),
+        Value::Text(t) => print(&Value::Str(t.string.clone()), noescape, process_name, out),
         Value::Symbol(name) => {
             if noescape {
                 out.push_str(name);
@@ -326,7 +339,7 @@ fn print(value: &Value, noescape: bool, out: &mut String) {
                 };
                 if let Some(prefix) = prefix {
                     out.push_str(prefix);
-                    print(x, noescape, out);
+                    print(x, noescape, process_name, out);
                     return;
                 }
             }
@@ -335,13 +348,17 @@ fn print(value: &Value, noescape: bool, out: &mut String) {
                 if i > 0 {
                     out.push(' ');
                 }
-                print(item, noescape, out);
+                print(item, noescape, process_name, out);
             }
             out.push(')');
         }
         // As Emacs prints them, the window without its buffer, which the
         // editor's printer does not see.
-        Value::Window(_) | Value::Frame(_) | Value::Process(_) => out.push_str(&value.to_string()),
+        Value::Process(id) => match process_name(*id) {
+            Some(name) => out.push_str(&format!("#<process {name}>")),
+            None => out.push_str(&value.to_string()),
+        },
+        Value::Window(_) | Value::Frame(_) => out.push_str(&value.to_string()),
         other => out.push_str(&format!("#<{other:?}>")),
     }
 }

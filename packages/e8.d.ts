@@ -17034,10 +17034,14 @@ declare global {
       directory?: string;
       /** Environment variables to set, besides TERM=dumb. */
       env?: { [name: string]: string };
-      /** Called with the process and each piece of output, instead of inserting it in the buffer. */
-      filter?: (process: Process, output: string) => void;
-      /** Called with the process and what happened, "finished\n" or "exited abnormally with code 2\n", when it ends. */
-      sentinel?: (process: Process, event: string) => void;
+      /**
+       * Called with the process and each piece of output, instead of
+       * inserting it in the buffer: a function, or one's name; true, as
+       * Emacs's t, holds the output back until another filter is set.
+       */
+      filter?: ((process: Process, output: string) => void) | string | symbol | true | null;
+      /** Called with the process and what happened, "finished\n" or "exited abnormally with code 2\n", when it ends: a function, or one's name. */
+      sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
       /**
        * Whether standard error comes in as output too: true by default; on a
        * pseudo-terminal it always does. A buffer instead takes it on its own,
@@ -17064,9 +17068,9 @@ declare global {
       family?: "local";
       /** Listen for connections, each of which becomes a process of its own. */
       server?: boolean;
-      filter?: (process: Process, output: string) => void;
+      filter?: ((process: Process, output: string) => void) | string | symbol | true | null;
       /** Told "deleted\n", "connection broken by remote peer\n", or for a server's new connection "open from HOST\n". */
-      sentinel?: (process: Process, event: string) => void;
+      sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
       coding?: string | [string, string];
     }
     /**

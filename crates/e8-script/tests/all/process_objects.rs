@@ -318,3 +318,109 @@ fn functions_still_take_a_process_by_name() {
         r#"[["run",true,false,["utf-8-unix","utf-8-unix"],"real",["cat"],1,"function","named"],[[true,"named","hello\n"],["finished\n"]]]"#
     );
 }
+
+/// Output held while a filter was t comes before what follows, though the
+/// filter is set in the middle of a look at processes, from another
+/// process's filter, with more output already waiting.
+#[test]
+fn held_output_comes_first_when_the_filter_is_set_from_another_filter() {
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"globalThis.seen = [];
+        globalThis.a = e8.makeProcess({ name: "a", connectionType: "pipe", command: ["sh", "-c", "echo a1; sleep 0.3; echo a2"] });
+        e8.setProcessFilter(a, true);
+        e8.makeProcess({ name: "b", connectionType: "pipe", command: ["sh", "-c", "sleep 0.15; echo b"],
+          filter: () => e8.setProcessFilter(a, (_p, text) => seen.push(text)) });"#,
+    );
+    // Everything waits to be taken in at once: a1 (held), b's output, which
+    // sets a's filter, then a2.
+    std::thread::sleep(Duration::from_millis(600));
+    until(&mut ed, &s, "!a.live");
+    assert_eq!(value(&mut ed, &s, r#"seen.join("")"#), "a1\na2\n");
+}
+
+/// Emacs 30: make-process takes :filter t, and a filter and sentinel by name.
+#[test]
+fn make_process_takes_a_filter_of_t_and_handlers_by_name() {
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"globalThis.seen = [];
+        e8.defun("my-filter", (_p, text) => seen.push(text));
+        e8.defun("my-sentinel", (_p, event) => seen.push(event));
+        globalThis.p = e8.makeProcess({ name: "byname", command: ["echo", "hi"], filter: "my-filter", sentinel: Symbol.for("my-sentinel") });
+        globalThis.q = e8.makeProcess({ name: "held", command: ["sh", "-c", "echo held; sleep 0.3"], filter: true });
+        globalThis.handlers = [e8.processFilter(p), e8.processSentinel(p), e8.processFilter(q)];"#,
+    );
+    until(&mut ed, &s, "!p.live");
+    assert_eq!(value(&mut ed, &s, "JSON.stringify([handlers[0], String(handlers[1]), handlers[2], seen])"), r#"["my-filter","Symbol(my-sentinel)",true,["hi\n","finished\n"]]"#);
+    eval(&mut ed, &s, r#"globalThis.later = ""; e8.setProcessFilter(q, (_p, text) => { later += text; });"#);
+    until(&mut ed, &s, "!q.live");
+    assert_eq!(value(&mut ed, &s, "later"), "held\n");
+}
+
+/// Emacs 30: (prin1-to-string (start-process "pp" nil "true")) is "#<process pp>".
+#[test]
+fn a_process_prints_with_its_name() {
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"globalThis.p = e8.makeProcess({ name: "pp", command: ["true"] });"#);
+    assert_eq!(value(&mut ed, &s, "e8.prin1ToString([p, 1])"), "(#<process pp> 1)");
+    until(&mut ed, &s, "!p.live");
+    assert_eq!(value(&mut ed, &s, "e8.prin1ToString(p)"), "#<process pp>", "and once it has gone");
+}
+
+/// Emacs 30: process-filter of a deleted process gives the function it had,
+/// and set-process-filter and -sentinel on it keep what they are given.
+#[test]
+fn a_process_that_has_gone_keeps_its_filter_and_sentinel() {
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"globalThis.f = () => {};
+        globalThis.p = e8.makeProcess({ name: "dead", command: ["sleep", "10"], filter: f });
+        e8.deleteProcess(p);
+        globalThis.kept = e8.processFilter(p) === f;
+        e8.setProcessFilter(p, "ignore");
+        e8.setProcessSentinel(p, "ignore");"#,
+    );
+    assert_eq!(value(&mut ed, &s, r#"JSON.stringify([kept, e8.processFilter(p), e8.processSentinel(p)])"#), r#"[true,"ignore","ignore"]"#);
+}
+
+/// Emacs 30: a connection a server accepts starts with a copy of the
+/// server's plist, as process-get in the server's sentinel shows.
+#[test]
+fn an_accepted_connection_has_a_copy_of_the_server_s_plist() {
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"globalThis.read = [];
+        globalThis.srv = e8.makeNetworkProcess({ name: "psrv", service: true, server: true,
+          sentinel: (proc, event) => read.push([proc === srv, subr.processGet(proc, "k"), event]) });
+        subr.processPut(srv, "k", "v");
+        globalThis.cli = e8.makeNetworkProcess({ name: "pcli", service: Number(e8.processContact(srv, "service")) });"#,
+    );
+    until(&mut ed, &s, "read.length > 0");
+    assert_eq!(value(&mut ed, &s, "JSON.stringify(read)"), r#"[[false,"v","open from 127.0.0.1\n"]]"#);
+    eval(&mut ed, &s, "e8.deleteProcess(cli); e8.deleteProcess(srv);");
+}
+
+/// A process with a buffer for standard error answers once it has gone,
+/// and its buffer can go too.
+#[test]
+fn a_process_with_a_stderr_buffer_answers_once_gone() {
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"globalThis.p = e8.makeProcess({ name: "err", connectionType: "pipe", stderr: "*err*", command: ["sh", "-c", "echo oops >&2"] });"#,
+    );
+    until(&mut ed, &s, "!p.live");
+    assert_eq!(buffer_text(&ed, "*err*"), "oops\n");
+    eval(&mut ed, &s, r#"e8.call("kill-buffer", "*err*"); e8.deleteProcess(p);"#);
+    assert_eq!(value(&mut ed, &s, "JSON.stringify([e8.processStatus(p), e8.processName(p)])"), r#"["exit","err"]"#);
+}
