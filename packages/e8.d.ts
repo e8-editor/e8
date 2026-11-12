@@ -7396,6 +7396,190 @@ declare global {
        */
       "widen": [];
       /**
+       * Bind MODIFIERS-<left>, <right>, <up> and <down> to windmove-left and the rest, in windmove-mode-map. MODIFIERS is a modifier or a list of them, shift by default; none binds the bare arrow keys.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-default-keybindings": [];
+      /**
+       * Bind PREFIX MODIFIERS-<left>, <right>, <up> and <down> to windmove-delete-left and the rest, in windmove-mode-map. PREFIX is C-x by default, none for no prefix; MODIFIERS is a modifier or a list of them, shift by default, none for the bare keys.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-delete-default-keybindings": [];
+      /**
+       * Delete the window below the current one. With C-u, also kill its buffer; with M-0, delete the selected window and select that one.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-delete-down": [arg?: PrefixArg | boolean];
+      /**
+       * Delete the window to the left of the current one. With C-u, also kill its buffer; with M-0, delete the selected window and select that one.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-delete-left": [arg?: PrefixArg | boolean];
+      /**
+       * Delete the window to the right of the current one. With C-u, also kill its buffer; with M-0, delete the selected window and select that one.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-delete-right": [arg?: PrefixArg | boolean];
+      /**
+       * Delete the window above the current one. With C-u, also kill its buffer; with M-0, delete the selected window and select that one.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-delete-up": [arg?: PrefixArg | boolean];
+      /**
+       * Bind MODIFIERS-<left>, <right>, <up>, <down>, 0, f and t to windmove-display-left and the rest, in windmove-mode-map. MODIFIERS is a modifier or a list of them, shift and meta by default; none binds the bare keys.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-default-keybindings": [];
+      /**
+       * Display the next buffer in window below the current one. See windmove-display-in-direction for the prefix argument and windmove-display-no-select.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-down": [arg?: PrefixArg | boolean];
+      /**
+       * Display the next buffer in window to the left of the current one. See windmove-display-in-direction for the prefix argument and windmove-display-no-select.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-left": [arg?: PrefixArg | boolean];
+      /**
+       * Display the next buffer in a new frame. See windmove-display-in-direction for the prefix argument and windmove-display-no-select.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-new-frame": [arg?: PrefixArg | boolean];
+      /**
+       * Display the next buffer in a new tab. See windmove-display-in-direction for the prefix argument and windmove-display-no-select.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-new-tab": [arg?: PrefixArg | boolean];
+      /**
+       * Display the next buffer in window to the right of the current one. See windmove-display-in-direction for the prefix argument and windmove-display-no-select.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-right": [arg?: PrefixArg | boolean];
+      /**
+       * Display the next buffer in the same window. See windmove-display-in-direction for the prefix argument and windmove-display-no-select.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-same-window": [arg?: PrefixArg | boolean];
+      /**
+       * Display the next buffer in window above the current one. See windmove-display-in-direction for the prefix argument and windmove-display-no-select.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-up": [arg?: PrefixArg | boolean];
+      /**
+       * Select the window below the current one.
+       *
+       * With no prefix argument, or a prefix argument of zero, "down" is from point in the window; otherwise from the left edge (for positive ARG) or the right edge (for negative ARG) of the window. With no window there, a user error, unless windmove-create-window makes one.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-down": [arg?: PrefixArg | boolean];
+      /**
+       * Select the window to the left of the current one.
+       *
+       * With no prefix argument, or a prefix argument of zero, "left" is from point in the window; otherwise from the top edge (for positive ARG) or the bottom edge (for negative ARG) of the window. With no window there, a user error, unless windmove-create-window makes one.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-left": [arg?: PrefixArg | boolean];
+      /**
+       * Global minor mode for the windmove commands' keys, which windmove-default-keybindings and its kin bind in windmove-mode-map.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-mode": [];
+      /**
+       * Select the window to the right of the current one.
+       *
+       * With no prefix argument, or a prefix argument of zero, "right" is from point in the window; otherwise from the top edge (for positive ARG) or the bottom edge (for negative ARG) of the window. With no window there, a user error, unless windmove-create-window makes one.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-right": [arg?: PrefixArg | boolean];
+      /**
+       * Bind MODIFIERS-<left>, <right>, <up> and <down> to windmove-swap-states-left and the rest, in windmove-mode-map. MODIFIERS is a modifier or a list of them, shift and super by default; none binds the bare arrow keys.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-swap-states-default-keybindings": [];
+      /**
+       * Swap the states with the window below from the current one.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-swap-states-down": [];
+      /**
+       * Swap the states with the window on the left from the current one.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-swap-states-left": [];
+      /**
+       * Swap the states with the window on the right from the current one.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-swap-states-right": [];
+      /**
+       * Swap the states with the window above from the current one.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-swap-states-up": [];
+      /**
+       * Select the window above the current one.
+       *
+       * With no prefix argument, or a prefix argument of zero, "up" is from point in the window; otherwise from the left edge (for positive ARG) or the right edge (for negative ARG) of the window. With no window there, a user error, unless windmove-create-window makes one.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-up": [arg?: PrefixArg | boolean];
+      /**
        * Store the frame's windows and what they show in a register, to restore with C-x r j.
        *
        * Defined in packages/register.ts.
@@ -7409,6 +7593,26 @@ declare global {
        * Defined in packages/window.ts.
        */
       "window-toggle-side-windows": [];
+      /**
+       * Toggle Winner mode, which records the changes in the window configuration so that they can be undone with winner-undo, C-c <left>. Changing your mind while undoing, C-c <right> (winner-redo) undoes the undo.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/winner.ts.
+       */
+      "winner-mode": [];
+      /**
+       * Restore a more recent window configuration saved by Winner mode.
+       *
+       * Defined in packages/winner.ts.
+       */
+      "winner-redo": [];
+      /**
+       * Switch back to an earlier window configuration saved by Winner mode. In other words, undo changes in window configuration.
+       *
+       * Defined in packages/winner.ts.
+       */
+      "winner-undo": [];
       /**
        * Write the current buffer to a file and visit that file instead.
        *
@@ -11748,6 +11952,12 @@ declare global {
        */
       "superword-mode-map": Value;
       /**
+       * If non-nil, switch-to-buffer shows the buffer as display-buffer-alist and the other display actions say, as pop-to-buffer-same-window does.
+       *
+       * Defined in packages/window.ts.
+       */
+      "switch-to-buffer-obey-display-actions": Value;
+      /**
        * Whether switch-to-buffer shows a buffer where the window last showed it, with its point there.
        *
        * t does whenever the window showed the buffer before, already-displayed only if another window shows it now, and nil never does: the window shows it at the buffer's point.
@@ -12306,6 +12516,46 @@ declare global {
        */
       "widen-automatically": Value;
       /**
+       * Whether the windmove commands may go to windows whose no-other-window parameter is set.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-allow-all-windows": Value;
+      /**
+       * Whether moving off the edge of the frame makes a new window that way. It can be a function, given the direction, the prefix argument and the selected window, giving the window to select or the symbol no-select.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-create-window": Value;
+      /**
+       * Whether windmove-display-left and the rest leave the window the buffer goes to unselected: nil selects it, ignore selects neither and leaves it to the next command, anything else selects the window selected before. A prefix argument of C-u reverses it.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-display-no-select": Value;
+      /**
+       * Whether Windmove mode is on. Use the command windmove-mode to change it.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-mode": Value;
+      /**
+       * Keymap windmove-mode-map.
+       */
+      "windmove-mode-map": Value;
+      /**
+       * No longer used, as in Emacs since 27.1.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-window-distance-delta": Value;
+      /**
+       * Whether moving off the edge of the frame wraps around: left from the leftmost window finds the rightmost one, and so on. The minibuffer's window is skipped moving up or down unless it is active.
+       *
+       * Defined in packages/windmove.ts.
+       */
+      "windmove-wrap-around": Value;
+      /**
        * Non-nil means do not check side windows, as window--sides-check does after splitting and deleting windows.
        *
        * Defined in packages/window.ts.
@@ -12365,6 +12615,44 @@ declare global {
        * Defined in packages/window.ts.
        */
       "window-size-fixed": Value;
+      /**
+       * List of buffer names whose windows winner-undo will not restore. You may want to include buffer names such as *Help*, *Apropos*, *Buffer List*, *info* and *Compile-Log*.
+       *
+       * Defined in packages/winner.ts.
+       */
+      "winner-boring-buffers": Value;
+      /**
+       * winner-undo will not restore windows with buffers matching this regexp.
+       *
+       * Defined in packages/winner.ts.
+       */
+      "winner-boring-buffers-regexp": Value;
+      /**
+       * Non-nil means do not bind keys in Winner mode.
+       *
+       * Defined in packages/winner.ts.
+       */
+      "winner-dont-bind-my-keys": Value;
+      /**
+       * Whether Winner mode is on. Use the command winner-mode to change it.
+       *
+       * Defined in packages/winner.ts.
+       */
+      "winner-mode": Value;
+      /**
+       * Keymap winner-mode-map.
+       */
+      "winner-mode-map": Value;
+      /**
+       * Keymap winner-repeat-map.
+       */
+      "winner-repeat-map": Value;
+      /**
+       * Maximum number of stored window configurations per frame.
+       *
+       * Defined in packages/winner.ts.
+       */
+      "winner-ring-size": Value;
       /**
        * Whether continued lines break at spaces and tabs rather than in the middle of a word.
        *
@@ -14530,9 +14818,33 @@ declare global {
        */
       "which-key-mode-on-hook": Value;
       /**
+       * Run after Windmove mode is turned on or off.
+       */
+      "windmove-mode-hook": Value;
+      /**
+       * Run after Windmove mode is turned off.
+       */
+      "windmove-mode-off-hook": Value;
+      /**
+       * Run after Windmove mode is turned on.
+       */
+      "windmove-mode-on-hook": Value;
+      /**
        * Functions called after the selected frame's windows, or the buffers they show, change.
        */
       "window-configuration-change-hook": Value;
+      /**
+       * Run after Winner mode is turned on or off.
+       */
+      "winner-mode-hook": Value;
+      /**
+       * Run after Winner mode is turned off.
+       */
+      "winner-mode-off-hook": Value;
+      /**
+       * Run after Winner mode is turned on.
+       */
+      "winner-mode-on-hook": Value;
       /**
        * Run after entering XREF mode, after the hooks of the modes it is built on.
        */

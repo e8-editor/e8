@@ -1,0 +1,371 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "windmove-right-then-type",
+      "input": {
+        "text": "one\ntwo\nthree\n",
+        "point": 0,
+        "keys": "C-x 2 C-x 3 M-x x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "windmove-right"
+        ]
+      },
+      "text": "xone\ntwo\nthree\n",
+      "visible": "xone\ntwo\nthree\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 40,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 1,
+          "width": 40,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "windmove-down-from-the-top-right",
+      "input": {
+        "text": "one\ntwo\nthree\n",
+        "point": 0,
+        "keys": "C-x 2 C-x 3 C-x o M-x x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "windmove-down"
+        ]
+      },
+      "text": "xone\ntwo\nthree\n",
+      "visible": "xone\ntwo\nthree\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 40,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 40,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 1,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "windmove-up-from-the-bottom",
+      "input": {
+        "text": "one\ntwo\nthree\n",
+        "point": 0,
+        "keys": "C-x 2 C-x 3 C-x o C-x o M-x x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "windmove-up"
+        ]
+      },
+      "text": "xone\ntwo\nthree\n",
+      "visible": "xone\ntwo\nthree\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 1,
+          "width": 40,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 40,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        }
+      ]
+    },
+    {
+      "name": "windmove-left-at-the-edge",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x 3 M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "windmove-left"
+        ],
+        "message": true
+      },
+      "text": "one\ntwo\n",
+      "visible": "one\ntwo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No window left from selected window",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 40,
+          "height": 24,
+          "selected": true
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 40,
+          "height": 24,
+          "selected": false
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "windmove-wrap-around",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x 3 M-x x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "windmove-left"
+        ],
+        "vars": {
+          "windmove-wrap-around": true
+        }
+      },
+      "text": "xone\ntwo\n",
+      "visible": "xone\ntwo\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 40,
+          "height": 24,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 1,
+          "width": 40,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "windmove-delete-right",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x 3 C-n M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "windmove-delete-right"
+        ]
+      },
+      "text": "one\ntwo\n",
+      "visible": "one\ntwo\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 4,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "windmove-delete-up-with-m-0",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x 2 C-x o C-n M-0 M-x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "windmove-delete-up"
+        ]
+      },
+      "text": "one\ntwo\n",
+      "visible": "one\ntwo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "windmove-display-right-and-switch",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "M-x C-x b x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "windmove-display-right",
+          "foo"
+        ]
+      },
+      "text": "x",
+      "visible": "x",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 40,
+          "height": 24,
+          "selected": false
+        },
+        {
+          "buffer": "foo",
+          "point": 1,
+          "width": 40,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "windmove-swap-states-down",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x 2 C-x o C-x b C-x o C-n M-x x",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "answers": [
+          "foo",
+          "windmove-swap-states-down"
+        ]
+      },
+      "text": "one\nxtwo\n",
+      "visible": "one\nxtwo\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "foo",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 5,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    }
+  ]
+}

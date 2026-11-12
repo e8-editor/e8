@@ -23,7 +23,7 @@ function quitRestore(window: e8.Window): QuitRestore | undefined {
  * in it, as display-buffer-record-window: `type` is "reuse" for a window
  * that was there, else "window" or "frame" for one made for the buffer.
  */
-function recordWindow(type: "reuse" | "window" | "frame", window: e8.Window, buffer: string): void {
+function recordWindow(type: "reuse" | "window" | "frame" | "tab", window: e8.Window, buffer: string): void {
   const selected = e8.selectedWindow();
   if (type !== "reuse") {
     e8.setWindowParameter(window, "quit-restore", [type, type, selected, buffer]);
@@ -253,42 +253,118 @@ const splitPartNoError = (part: e8.Window[], side: "below" | "right" | "above" |
   e8.conditionCase<e8.Window | undefined>(() => splitPart(part, side, size), { error: () => undefined });
 
 /**
- * The window next to one in a direction, as window-in-direction: above,
- * below, left or right of it, the nearest along the line or column its
- * point is on, else the nearest one that direction; none at the frame's
- * edge. The minibuffer's window, and windows with a no-other-window
- * parameter unless `ignore`, are not taken.
+ * Whether a window is at a side of its frame, as window-at-side-p: its
+ * left, top, right or bottom edge, the default, that of the frame's root
+ * window.
  */
-export function windowInDirection(direction: string, window: e8.Window = e8.selectedWindow(), ignore = false): e8.Window | undefined {
+export function windowAtSideP(window: e8.Window = e8.selectedWindow(), side?: string | null): boolean {
+  const edge = side === "left" ? 0 : side === "top" ? 1 : side === "right" ? 2 : 3;
+  return e8.windowPixelEdges(window)[edge] === e8.windowPixelEdges(e8.frameRootWindow(e8.windowFrame(window)))[edge];
+}
+e8.defun("window-at-side-p", (window?: e8.Window, side?: e8.Value) => windowAtSideP(window ?? undefined, symName(side)));
+
+/** How far a window is from a row or column it does not cover, as window--in-direction-2. */
+function windowInDirection2(window: e8.Window, posn: number, horizontal: boolean): number {
+  const [left, top] = e8.windowPixelEdges(window);
+  if (horizontal) return top > posn ? top - posn : posn - top - e8.windowPixelHeight(window);
+  return left > posn ? left - posn : posn - left - e8.windowPixelWidth(window);
+}
+
+/**
+ * The window next to one in a direction, as window-in-direction: above
+ * (or up), below (or down), left or right of it, the nearest along the
+ * row or column its point is on, else the nearest that way. A window
+ * whose no-other-window parameter is set is taken only with `ignore`.
+ * `sign` negative measures from the window's right or bottom edge rather
+ * than its point, positive from its left or top edge; `wrap` goes round
+ * the frame's edges, the minibuffer's window lying above the top; and
+ * `minibuf` true takes the minibuffer's window even when it is not
+ * active, nil only when it is, and anything else never. Undefined if
+ * there is none.
+ */
+export function windowInDirection(
+  direction: string,
+  window0?: e8.Window | null,
+  ignore: unknown = null,
+  sign?: number | null,
+  wrap: unknown = null,
+  minibuf: unknown = null,
+): e8.Window | undefined {
+  const window = window0 ?? e8.selectedWindow();
+  if (!e8.windowLiveP(window)) e8.signal("wrong-type-argument", "Wrong type argument: window-live-p", [window]);
   const dir = direction === "up" ? "above" : direction === "down" ? "below" : direction;
   if (!["above", "below", "left", "right"].includes(dir)) e8.signal("error", `Wrong direction ${direction}`);
-  const [l, t, r, b] = e8.windowEdges(window);
+  const frame = e8.windowFrame(window);
   const hor = dir === "left" || dir === "right";
-  // Along the row or column point is on, as Emacs's posn-at-point gives it.
-  const posn = e8.posnAtPoint(e8.windowPoint(window), window);
-  const along = hor ? t + (posn?.row ?? 0) : l + (posn?.col ?? 0);
+  const [wLeft, wTop] = e8.windowPixelEdges(window);
+  const first = hor ? wLeft : wTop;
+  const last = first + (hor ? e8.windowPixelWidth(window) : e8.windowPixelHeight(window));
+  let posn: number;
+  if (typeof sign === "number" && sign < 0) {
+    posn = hor ? wTop + e8.windowPixelHeight(window) - 1 : wLeft + e8.windowPixelWidth(window) - 1;
+  } else if (typeof sign === "number" && sign > 0) {
+    posn = hor ? wTop : wLeft;
+  } else {
+    // posn-at-point's (X . Y), in the front end's units, from the text area.
+    const at = e8.posnAtPoint(e8.windowPoint(window), window);
+    posn = hor ? (at?.y ?? 1) + wTop : (at?.x ?? 1) + wLeft;
+  }
+  let bestEdge = dir === "below" ? framePixelSize(frame, false) : dir === "right" ? framePixelSize(frame, true) : -1;
+  let bestEdge2 = bestEdge;
+  let bestDiff2 = hor ? framePixelSize(frame, false) : framePixelSize(frame, true);
   let best: e8.Window | undefined;
-  let bestDistance = Infinity;
-  let second: e8.Window | undefined;
-  let secondDistance: [number, number] = [Infinity, Infinity];
-  for (const w of e8.windowList1(e8.frameFirstWindow(e8.windowFrame(window)), false, false)) {
-    if (w === window || (!ignore && !isNil(e8.windowParameter(w, "no-other-window")))) continue;
-    const [wl, wt, wr, wb] = e8.windowEdges(w);
-    const distance =
-      dir === "left" ? l - wr : dir === "right" ? wl - r : dir === "above" ? t - wb : wt - b;
-    // Only windows beyond the edge, and that overlap the window along it.
-    const overlaps = hor ? wt < b && wb > t : wl < r && wr > l;
-    if (distance < 0 || !overlaps) continue;
-    const covers = hor ? wt <= along && along < wb : wl <= along && along < wr;
-    if (covers) {
-      if (distance < bestDistance) [best, bestDistance] = [w, distance];
-    } else {
-      const off = hor ? Math.min(Math.abs(wt - along), Math.abs(wb - 1 - along)) : Math.min(Math.abs(wl - along), Math.abs(wr - 1 - along));
-      if (distance < secondDistance[0] || (distance === secondDistance[0] && off < secondDistance[1])) [second, secondDistance] = [w, [distance, off]];
+  let best2: e8.Window | undefined;
+  const active = activeMinibufferWindow();
+  // walk-window-tree with MINIBUF: t always, nil while active, else never.
+  const withMini = minibuf === true || (isNil(minibuf) && active !== undefined);
+  for (const w of e8.windowList1(e8.frameFirstWindow(frame), withMini, false)) {
+    if (w === window || (!isNil(e8.windowParameter(w, "no-other-window")) && isNil(ignore))) continue;
+    const [wl, wt] = e8.windowPixelEdges(w);
+    const ww = e8.windowPixelWidth(w);
+    const wh = e8.windowPixelHeight(w);
+    if (hor) {
+      if (wt <= posn && posn < wt + wh) {
+        if (
+          (dir === "left" && ((wl <= first && wl > bestEdge) || (!isNil(wrap) && windowAtSideP(window, "left") && windowAtSideP(w, "right")))) ||
+          (dir === "right" && ((wl >= last && wl < bestEdge) || (!isNil(wrap) && windowAtSideP(window, "right") && windowAtSideP(w, "left"))))
+        ) {
+          bestEdge = wl;
+          best = w;
+        }
+      } else if ((dir === "left" && wl + ww <= first) || (dir === "right" && last <= wl)) {
+        const diff = windowInDirection2(w, posn, true);
+        if (diff < bestDiff2 || (diff === bestDiff2 && (dir === "left" ? wl > bestEdge2 : wl < bestEdge2))) {
+          bestEdge2 = wl;
+          bestDiff2 = diff;
+          best2 = w;
+        }
+      }
+    } else if (wl <= posn && posn < wl + ww) {
+      if (
+        (dir === "above" &&
+          ((wt <= first && wt > bestEdge) ||
+            (!isNil(wrap) && windowAtSideP(window, "top") && (active !== undefined ? w === active : windowAtSideP(w, "bottom"))))) ||
+        (dir === "below" &&
+          ((wt >= first && wt < bestEdge) ||
+            (!isNil(wrap) && (active !== undefined ? window === active : windowAtSideP(window, "bottom")) && windowAtSideP(w, "top"))))
+      ) {
+        bestEdge = wt;
+        best = w;
+      }
+    } else if ((dir === "above" && wt + wh <= first) || (dir === "below" && last <= wt)) {
+      const diff = windowInDirection2(w, posn, false);
+      if (diff < bestDiff2 || (diff === bestDiff2 && (dir === "above" ? wt > bestEdge2 : wt < bestEdge2))) {
+        bestEdge2 = wt;
+        bestDiff2 = diff;
+        best2 = w;
+      }
     }
   }
-  return best ?? second;
+  return best ?? best2;
 }
+e8.defun("window-in-direction", (direction: e8.Value, window?: e8.Window, ignore?: e8.Value, sign?: number, wrap?: e8.Value, minibuf?: e8.Value) =>
+  windowInDirection(symName(direction) ?? "", window, ignore, sign, wrap, minibuf) ?? null,
+);
 
 /** The windows along an edge of a part of the frame, in a direction, as windows-sharing-edge: those whose opposite edge touches it. */
 function windowsSharingEdge(part: e8.Window[], direction: string): e8.Window[] {
@@ -487,7 +563,7 @@ function evenWindowSizes(window: e8.Window): void {
 }
 
 /** Shows and raises the frame a window is on, unless it is the selected one, as window--maybe-raise-frame. */
-function maybeRaiseFrame(frame: e8.Frame | undefined): void {
+export function maybeRaiseFrame(frame: e8.Frame | undefined): void {
   if (frame === undefined) return;
   e8.makeFrameVisible(frame);
   if (frame !== e8.selectedFrame() && isNil(e8.frameParameter(frame, "no-focus-on-map")) && isNil(e8.frameParameter(frame, "no-accept-focus"))) {
@@ -521,7 +597,7 @@ function popUpFrames(alist: Alist): boolean {
  * its window-height and window-width, sets its window-parameters, and
  * with bump-use-time makes it the most recently used after the selected one.
  */
-export function windowDisplayBuffer(buffer: e8.BufferLike, window: e8.Window | undefined, type: "reuse" | "window" | "frame", alist: Alist = []): e8.Window | undefined {
+export function windowDisplayBuffer(buffer: e8.BufferLike, window: e8.Window | undefined, type: "reuse" | "window" | "frame" | "tab", alist: Alist = []): e8.Window | undefined {
   const name = e8.bufferName(buffer);
   if (name === undefined || window === undefined || !e8.windowLiveP(window)) return undefined;
   recordWindow(type, window, name);
@@ -1121,6 +1197,70 @@ export function popToBuffer(bufferOrName: e8.BufferLike, action?: e8.Value, nore
     e8.selectWindow(window, norecord);
   }
   return buffer;
+}
+
+e8.defineVariable({
+  name: "switch-to-buffer-obey-display-actions",
+  doc: "If non-nil, switch-to-buffer shows the buffer as display-buffer-alist and the other display actions say, as pop-to-buffer-same-window does.",
+  value: null,
+});
+
+let overrideCount = 0;
+
+/**
+ * Has the next command's first display-buffer show its buffer where
+ * `preFunction` says, as display-buffer-override-next-command: given the
+ * buffer and the alist, it gives [WINDOW, TYPE], TYPE being reuse, window,
+ * frame or tab as for window--display-buffer. After that command,
+ * `postFunction` is called with the window selected before and the one
+ * the buffer went to. Commands in a minibuffer the next command opens
+ * neither use nor end it. Gives a function that ends it early.
+ */
+export function displayBufferOverrideNextCommand(
+  preFunction: (buffer: e8.Buffer, alist: Alist) => [e8.Window | undefined, "reuse" | "window" | "frame" | "tab"],
+  postFunction?: (oldWindow: e8.Window, newWindow: e8.Window | undefined) => void,
+): () => void {
+  const oldWindow = e8.minibufferSelectedWindow() ?? e8.selectedWindow();
+  let newWindow: e8.Window | undefined;
+  const depth = e8.minibufferDepth();
+  const obeyDisplay = e8.variable("switch-to-buffer-obey-display-actions") ?? null;
+  const command = e8.thisCommand();
+  const clear = (): void => {
+    e8.setVariable("switch-to-buffer-obey-display-actions", obeyDisplay);
+    const overriding = e8.variable("display-buffer-overriding-action");
+    if (!Array.isArray(overriding)) return;
+    const functions = Array.isArray(overriding[0]) ? overriding[0].filter((f) => f !== action) : overriding[0] === action ? null : (overriding[0] ?? null);
+    e8.setVariable("display-buffer-overriding-action", [functions, ...overriding.slice(1)]);
+  };
+  // An uninterned symbol in Lisp; here a function under a name of its own,
+  // which the overriding action holds and clearing takes out again.
+  const action = e8.defun(`display-buffer-override-next-command--${++overrideCount}`, (buffer: e8.Value, alist: e8.Value) => {
+    if (e8.minibufferDepth() > depth) return null;
+    const b = e8.getBuffer(buffer as e8.BufferLike)!;
+    const list = Array.isArray(alist) ? alist : [];
+    const [window, type] = preFunction(b, list);
+    newWindow = windowDisplayBuffer(b, window, type, list);
+    // Only the first display-buffer is overridden (bug#39722).
+    clear();
+    return newWindow ?? null;
+  });
+  const post = (): void => {
+    // After the next command, not this one, nor those in its minibuffer (bug#49057).
+    if (e8.minibufferDepth() > depth || e8.thisCommand() === command) return;
+    exit();
+  };
+  const exit = (): void => {
+    clear();
+    e8.removeHook("post-command-hook", post);
+    if (postFunction !== undefined) postFunction(oldWindow, newWindow);
+  };
+  e8.addHook("post-command-hook", post);
+  e8.setVariable("switch-to-buffer-obey-display-actions", true);
+  const overriding = e8.variable("display-buffer-overriding-action");
+  const [functions, ...alist] = Array.isArray(overriding) && overriding.length > 0 ? overriding : [null];
+  const list = isNil(functions) ? [] : Array.isArray(functions) ? functions : [functions];
+  e8.setVariable("display-buffer-overriding-action", [[action, ...list], ...alist]);
+  return exit;
 }
 
 /** The action to show a buffer in the selected window, as display-buffer--same-window-action. */
@@ -4145,11 +4285,12 @@ export function windowStatePut(state: WindowState): void {
 // windows the selected frame has or which buffers they show, where Emacs
 // runs it as redisplay finds the change.
 e8.defineHook("window-configuration-change-hook", "Functions called after the selected frame's windows, or the buffers they show, change.");
-let lastConfiguration: string | undefined;
+// Taken as window.ts loads, so the first command that changes them runs it.
+const windowsNow = (): string => e8.windowList().map((w) => `${w}:${e8.windowBuffer(w)}`).join(" ");
+let lastConfiguration = windowsNow();
 e8.addHook("post-command-hook", () => {
-  const now = e8.windowList().map((w) => `${w}:${e8.windowBuffer(w)}`).join(" ");
+  const now = windowsNow();
   if (now === lastConfiguration) return;
-  const changed = lastConfiguration !== undefined;
   lastConfiguration = now;
-  if (changed) e8.runHooks("window-configuration-change-hook");
+  e8.runHooks("window-configuration-change-hook");
 });

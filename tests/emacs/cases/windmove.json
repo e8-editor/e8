@@ -1,0 +1,67 @@
+[
+  {
+    "name": "windmove-right-then-type",
+    "text": "one\ntwo\nthree\n",
+    "keys": "C-x 2 C-x 3 M-x x",
+    "answers": ["windmove-right"],
+    "windows": true
+  },
+  {
+    "name": "windmove-down-from-the-top-right",
+    "text": "one\ntwo\nthree\n",
+    "keys": "C-x 2 C-x 3 C-x o M-x x",
+    "answers": ["windmove-down"],
+    "windows": true
+  },
+  {
+    "name": "windmove-up-from-the-bottom",
+    "text": "one\ntwo\nthree\n",
+    "keys": "C-x 2 C-x 3 C-x o C-x o M-x x",
+    "answers": ["windmove-up"],
+    "windows": true
+  },
+  {
+    "name": "windmove-left-at-the-edge",
+    "text": "one\ntwo\n",
+    "keys": "C-x 3 M-x",
+    "answers": ["windmove-left"],
+    "windows": true,
+    "message": true
+  },
+  {
+    "name": "windmove-wrap-around",
+    "text": "one\ntwo\n",
+    "keys": "C-x 3 M-x x",
+    "answers": ["windmove-left"],
+    "vars": { "windmove-wrap-around": true },
+    "windows": true
+  },
+  {
+    "name": "windmove-delete-right",
+    "text": "one\ntwo\n",
+    "keys": "C-x 3 C-n M-x",
+    "answers": ["windmove-delete-right"],
+    "windows": true
+  },
+  {
+    "name": "windmove-delete-up-with-m-0",
+    "text": "one\ntwo\n",
+    "keys": "C-x 2 C-x o C-n M-0 M-x",
+    "answers": ["windmove-delete-up"],
+    "windows": true
+  },
+  {
+    "name": "windmove-display-right-and-switch",
+    "text": "one\ntwo\n",
+    "keys": "M-x C-x b x",
+    "answers": ["windmove-display-right", "foo"],
+    "windows": true
+  },
+  {
+    "name": "windmove-swap-states-down",
+    "text": "one\ntwo\n",
+    "keys": "C-x 2 C-x o C-x b C-x o C-n M-x x",
+    "answers": ["foo", "windmove-swap-states-down"],
+    "windows": true
+  }
+]

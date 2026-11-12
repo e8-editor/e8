@@ -1409,6 +1409,14 @@ fn files_and_buffers(ed: &mut Editor) {
                         .ok_or_else(|| Error::new("No other buffer"))?,
                     name => name.to_string(),
                 };
+                // As display-buffer-alist and the other actions say, with
+                // switch-to-buffer-obey-display-actions (window.ts).
+                if ed.variable("switch-to-buffer-obey-display-actions").is_some_and(|v| v.is_true())
+                    && ed.command("pop-to-buffer-same-window").is_some()
+                {
+                    ed.get_buffer_create(&name);
+                    return ed.call("pop-to-buffer-same-window", vec![Arg::Str(name)]);
+                }
                 // A window strongly dedicated to its buffer keeps it: typed,
                 // switching is refused, as switch-to-buffer-in-dedicated-window
                 // is nil in Emacs; from code, another window shows the buffer.
