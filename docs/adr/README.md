@@ -71,3 +71,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0067](0067-themes-are-one-collection.md) Themes are one collection, with a chooser
 - [0068](0068-quick-help-for-newcomers.md) Quick help for newcomers, a layer that can be turned off
 - [0069](0069-windows-as-emacs-has-them.md) Windows as Emacs has them: window.c's tree, window.el's policy, windows as objects
+- [0070](0070-processes-as-emacs-has-them.md) Processes as Emacs has them: objects, filters and sentinels set at any time, and the rest of process.c
