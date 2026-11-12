@@ -140,6 +140,9 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/kmacro.ts", include_str!("../../../packages/kmacro.ts")),
     ("packages/window.ts", include_str!("../../../packages/window.ts")),
     ("packages/tab-bar.ts", include_str!("../../../packages/tab-bar.ts")),
+    // Preloaded for their commands and winner-mode, which Emacs autoloads.
+    ("packages/windmove.ts", include_str!("../../../packages/windmove.ts")),
+    ("packages/winner.ts", include_str!("../../../packages/winner.ts")),
     ("packages/which-key.ts", include_str!("../../../packages/which-key.ts")),
     ("packages/mouse.ts", include_str!("../../../packages/mouse.ts")),
     ("packages/isearch.ts", include_str!("../../../packages/isearch.ts")),

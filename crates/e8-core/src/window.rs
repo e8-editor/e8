@@ -1744,6 +1744,12 @@ impl Editor {
         self.window_configurations.contains_key(&id)
     }
 
+    /// How many window configurations the editor keeps, each with markers
+    /// in buffers, until they are freed.
+    pub fn window_configuration_count(&self) -> usize {
+        self.window_configurations.len()
+    }
+
     /// Feeds a mouse button event, such as `<mouse-1>` or `S-<drag-mouse-1>`,
     /// that happened where `event` says. It runs whatever the key is bound
     /// to, which reads the event with [`Editor::last_mouse_event`].

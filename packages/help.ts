@@ -136,7 +136,7 @@ function isPrintable(key: string): boolean {
 }
 
 /** The command a key sequence runs in the active keymaps, as key-binding; a keyboard macro as "Keyboard Macro". */
-function keyBinding(keys: string): string | undefined {
+export function keyBinding(keys: string): string | undefined {
   for (const map of e8.currentActiveMaps()) {
     const binding = e8.lookupKey(map, keys);
     if (typeof binding === "string") return binding;
