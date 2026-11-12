@@ -331,7 +331,9 @@ impl Editor {
                 let glyphs = crate::display::row_glyphs(row, tab_width);
                 let index = crate::display::cursor_glyph(row, &glyphs, pos);
                 // A right-to-left row is laid out from the right edge.
-                let col: f32 = self.glyph_columns(row, &glyphs, tab_width)[..index].iter().sum::<f32>() + self.row_offset_in(window, row);
+                // Less what the window is scrolled, as Emacs's pos_visible_p.
+                let col: f32 = self.glyph_columns(row, &glyphs, tab_width)[..index].iter().sum::<f32>() + self.row_offset_in(window, row)
+                    - self.window_hscroll(window) as f32;
                 let (cw, ch) = (self.metrics.char_width(), self.metrics.char_height());
                 return Some(Posn { window, point: pos, x: col * cw, y: y * ch, col, row: k });
             }
@@ -357,7 +359,8 @@ impl Editor {
                 let glyphs = crate::display::row_glyphs(row, tab_width);
                 let widths = self.glyph_columns(row, &glyphs, tab_width);
                 // A right-to-left row is laid out from the right edge.
-                let offset = self.row_offset_in(window, row);
+                // Right of the columns scrolled off the left edge.
+                let offset = self.row_offset_in(window, row) - self.row_hscroll(window, row, view.point) as f32;
                 let want_col = want_col - offset;
                 let mut col = 0.0;
                 let mut point = row.end;

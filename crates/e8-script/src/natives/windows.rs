@@ -355,6 +355,23 @@ natives! {
         Ok(Win::from_value(&window).is_some_and(|w| ed.window_frame(w.0).is_some() && !ed.window_internal_p(w.0)))
     }
 
+    /// How many columns a window, the selected one by default, is scrolled
+    /// to the left, as window-hscroll.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowHscroll(ed, window: Option<Win>) -> usize {
+        Ok(ed.window_hscroll(live_window(ed, window)?))
+    }
+
+    /// Scrolls a window, the selected one by default, `columns` to the
+    /// left, as set-window-hscroll: a negative number is 0. Redisplay
+    /// leaves it until point moves, then scrolls to keep point in sight as
+    /// auto-hscroll-mode says. Gives the scroll.
+    #[ts = "(window: WindowLike | null | undefined, columns: number): number"]
+    pub fn setWindowHscroll(ed, window: Option<Win>, columns: i64) -> usize {
+        let id = live_window(ed, window)?;
+        Ok(ed.set_window_hscroll(id, columns))
+    }
+
     /// Whether a value is a window, live or deleted, as windowp.
     #[ts = "(value: unknown): value is Window"]
     pub fn windowp(ed, value: EditorValue) -> bool {
@@ -709,4 +726,14 @@ natives! {
         let (start, end, continued) = ed.screen_line(pos);
         Ok(Record::new().with("start", start).with("end", end).with("continued", continued))
     }
+}
+
+/// A window given, or the selected one, if it is live; else the error
+/// Emacs's decode_live_window signals.
+fn live_window(ed: &e8_core::Editor, window: Option<Win>) -> Result<e8_core::WindowId, e8_core::Error> {
+    let id = window.map_or(ed.selected_window(), |w| w.0);
+    if ed.window_frame(id).is_none() || ed.window_internal_p(id) {
+        return Err(e8_core::Error::signal("wrong-type-argument", "Not a live window", vec![EditorValue::Symbol("window-live-p".into()), EditorValue::Window(id)]));
+    }
+    Ok(id)
 }

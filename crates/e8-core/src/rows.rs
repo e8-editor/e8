@@ -494,7 +494,8 @@ impl Editor {
     /// never, and any other value always. Lines wrap one column short of the
     /// window's width, leaving the last column for the continuation mark.
     pub(crate) fn wrap_in(&self, window: crate::window::WindowId, b: &Buffer) -> Option<Wrap> {
-        if self.variable_in(b, "truncate-lines").is_some_and(|v| v.is_true()) {
+        // A window scrolled horizontally truncates, as Emacs's does.
+        if self.variable_in(b, "truncate-lines").is_some_and(|v| v.is_true()) || self.hscrolled(window) {
             return None;
         }
         let width = self.window(window).map_or(80, |w| w.width);

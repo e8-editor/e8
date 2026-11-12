@@ -156,6 +156,11 @@ impl Editor {
     pub fn redisplay(&mut self) {
         let settled = self.fontify_windows(&[]);
         self.ensure_point_visible();
+        // Scrolling horizontally truncates lines, or stopping wraps them
+        // again, which can move point's row.
+        if self.hscroll_windows() {
+            self.ensure_point_visible();
+        }
         // Again only where keeping point visible scrolled.
         self.fontify_windows(&settled);
         self.update_mode_lines();

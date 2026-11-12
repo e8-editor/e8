@@ -337,6 +337,26 @@ fn movement(ed: &mut Editor) {
         }
         Ok(())
     });
+    for (name, sign, doc) in [
+        ("scroll-left", 1, "Scroll the selected window's text left by the prefix argument's columns, showing more of long lines' ends.\n\nWithout one, by the window's width less two. Run by keys, the scroll it leaves is the least that keeping point in sight scrolls back to, until it scrolls back further. Gives the window's scroll."),
+        ("scroll-right", -1, "Scroll the selected window's text right by the prefix argument's columns, back towards the lines' starts.\n\nWithout one, by the window's width less two. Run by keys, the scroll it leaves is the least that keeping point in sight scrolls back to. Gives the window's scroll."),
+    ] {
+        ed.define_command(
+            Command::new(name, doc, move |ed, args| {
+                let columns = match args.first() {
+                    Some(Arg::Prefix(Some(arg))) => Some(arg.numeric()),
+                    Some(Arg::Int(n)) => Some(*n),
+                    _ => None,
+                };
+                let set_minimum = ed.called_interactively();
+                let columns = columns.unwrap_or_else(|| ed.text_area_columns(ed.selected_window()) as i64 - 2);
+                ed.scroll_left(sign * columns, set_minimum);
+                Ok(())
+            })
+            .param("arg", ParamKind::Prefix, "")
+            .shift_select(),
+        );
+    }
     def_motion(ed, "scroll-down-command", "Scroll the text down by nearly a screen, showing earlier lines.\n\nWith a numeric prefix argument, scroll that many lines; with C-- alone, scroll the other way.", |ed, _| {
         match ed.current_prefix_arg() {
             None => scroll_screen_down(ed),
@@ -1663,6 +1683,8 @@ fn bind_defaults(ed: &mut Editor) {
         ("M-v", "scroll-down-command"),
         ("<prior>", "scroll-down-command"),
         ("C-l", "recenter"),
+        ("C-x <", "scroll-left"),
+        ("C-x >", "scroll-right"),
         ("<wheel-up>", "mwheel-scroll"),
         ("<wheel-down>", "mwheel-scroll"),
         ("RET", "newline"),

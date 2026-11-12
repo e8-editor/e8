@@ -1070,13 +1070,9 @@ fn hit(ed: &Editor, layout: &Layout, pos: Pos2, scroll: (WindowId, f32)) -> Opti
     let view = ed.windows().into_iter().find(|v| v.id == w.id)?;
     let offset = if scroll.0 == w.id { scroll.1 } else { 0.0 };
     let rows = ed.rows_to_draw(w.id, true);
-    // Text starts right of the line numbers.
+    // Text starts right of the line numbers; the editor counts the horizontal scroll.
     let gutter = ed.line_numbers(w.id, &rows).map_or(0.0, |n| n.width as f32 * m.char_width);
-    // The same horizontal scroll as drawing uses.
-    let cursor_x = ed.posn_at_point(view.point, w.id).map_or(0.0, |p| p.x);
-    let width = w.text_rect.width() - gutter;
-    let hscroll = if cursor_x + m.char_width <= width { 0.0 } else { (cursor_x - width / 2.0).max(0.0) };
-    let (x, y) = (pos.x - w.text_rect.left() - gutter + hscroll, pos.y - w.text_rect.top() + offset);
+    let (x, y) = (pos.x - w.text_rect.left() - gutter, pos.y - w.text_rect.top() + offset);
     let position = ed.posn_at_x_y(x.max(0.0), y.max(0.0), w.id).map_or(view.buffer.len(), |p| p.point);
     Some((w.id, Some(position)))
 }
@@ -1155,7 +1151,8 @@ fn draw_buffer(
 
     // A right-to-left row is laid out from the window's right edge.
     let offsets: Vec<f32> = described.iter().map(|r| r.offset * m.char_width).collect();
-    // Scroll horizontally, as Emacs does, when point would be off the right edge.
+    // How far each row is scrolled horizontally, as the editor scrolled its window.
+    let shift: Vec<f32> = described.iter().map(|r| r.hscroll * m.char_width).collect();
     let cursor = point_row.map(|i| {
         let (galley, glyphs) = &laid_out[i];
         let index = cursor_glyph(rows[i], glyphs, point);
@@ -1166,18 +1163,13 @@ fn draw_buffer(
     let cursor_x = cursor
         .as_ref()
         .map_or(0.0, |(i, galley, index, _)| galley.pos_from_cursor(CCursor::new(*index)).min.x + offsets[*i]);
-    let hscroll = if cursor_x + m.char_width <= area.width() {
-        0.0
-    } else {
-        (cursor_x - area.width() / 2.0).max(0.0)
-    };
 
     // What the fringes show: a row cut off at either side shows the
     // truncation arrow there, unless a display spec put a bitmap there.
     let fringes = &window.fringes;
     let fringe_at = |i: usize| {
         let (row, galley) = (rows[i], &laid_out[i].0);
-        let truncated = [hscroll > 0.0 || offsets[i] < -0.5, !row.continued && galley.size().x - hscroll > area.width() + 0.5];
+        let truncated = [(shift[i] > 0.0 && !laid_out[i].1.is_empty()) || offsets[i] < -0.5, !row.continued && galley.size().x - shift[i] > area.width() + 0.5];
         let here = &fringes.rows[i];
         let pick = |side: usize, computed: &Option<e8_core::FringeSpec>| {
             if truncated[side] && row.fringes[side].is_none() { window.truncation[side].clone() } else { computed.clone() }
@@ -1204,7 +1196,7 @@ fn draw_buffer(
             let (top, bottom) = glyph.map_or((row_top(i), row_top(i) + heights[i]), |g| (y + g.top(), y + g.bottom()));
             // From the last glyph's right edge, where the text's own
             // background stops, so no seam shows between them.
-            let x = area.left() - hscroll + glyph.map_or(galley.size().x, |g| g.right().min(galley.size().x));
+            let x = area.left() - shift[i] + glyph.map_or(galley.size().x, |g| g.right().min(galley.size().x));
             // Left of a right-to-left row's text.
             let (from, to) = if rows[i].right_to_left { (area.left(), area.left() + offsets[i]) } else { (x, area.right()) };
             if let Some(bg) = style.background {
@@ -1225,7 +1217,7 @@ fn draw_buffer(
             && (rows[i].right_to_left || e8_core::display::reordered(laid_out[i].1))
         {
             // Bidirectional text can show the region in pieces.
-            let left = area.left() - hscroll + offsets[i];
+            let left = area.left() - shift[i] + offsets[i];
             let top = row_top(i);
             for (from, to) in region_pieces(rows[i], laid_out[i].1, galley, r) {
                 let (from, to) = (from.map_or(area.left(), |x| left + x), to.map_or(area.right(), |x| left + x));
@@ -1234,7 +1226,7 @@ fn draw_buffer(
         } else if let Some(r) = &region
             && let Some((from, to)) = region_span(rows[i], laid_out[i].1, galley, r)
         {
-            let left = area.left() - hscroll;
+            let left = area.left() - shift[i];
             let right = to.map_or(area.right(), |x| left + x);
             let top = row_top(i);
             clipped.rect_filled(Rect::from_min_max(pos2(left + from, top), pos2(right, top + heights[i])), 0.0, selection);
@@ -1244,7 +1236,7 @@ fn draw_buffer(
             Some(ascent) => row_top(i) + ascent - galley_baseline(galley),
             None => row_top(i) + (heights[i] - galley.size().y) / 2.0,
         };
-        let x = area.left() - hscroll + offsets[i];
+        let x = area.left() - shift[i] + offsets[i];
         clipped.galley(pos2(x, y), galley.clone(), t.ink);
         draw_row_images(&clipped, fd, &described[i], pos2(x, row_top(i)), m, t);
         draw_apart(&clipped, rows[i], laid_out[i].1, galley, pos2(x, y), default_style, m, t);
@@ -1252,7 +1244,7 @@ fn draw_buffer(
         let text_top = y + galley.rows.first().and_then(|r| r.row.glyphs.first().map(|g| g.logical_rect().top() + r.pos.y)).unwrap_or(0.0);
         draw_decorations(&clipped, rows[i], laid_out[i].1, galley, x, row_top(i), text_top, y, heights[i], default_style, t);
         if let Some(bold) = &emboldened[i] {
-            clipped.galley(pos2(area.left() - hscroll + offsets[i] + FAUX_BOLD_OFFSET, y), bold.clone(), t.ink);
+            clipped.galley(pos2(area.left() - shift[i] + offsets[i] + FAUX_BOLD_OFFSET, y), bold.clone(), t.ink);
         }
         let top = row_top(i);
         // What the margins show beside the row.
@@ -1298,12 +1290,12 @@ fn draw_buffer(
     }
     // A window whose cursor internal-show-cursor hid shows none.
     if let Some((i, galley, index, under)) = cursor.filter(|_| window.cursor_shown) {
-        let pos = pos2(area.left() - hscroll + cursor_x, row_top(i));
+        let pos = pos2(area.left() - shift[i] + cursor_x, row_top(i));
         let font = rows[i].segments.iter().find(|s| s.start <= point).map(|s| FontSpec::of(&s.style)).unwrap_or_else(FontSpec::default_font);
         // At the end of a line that fills the row, the cursor goes in the
         // right fringe, as Emacs's overflow-newline-into-fringe puts it.
         let cursor_clip = Rect::from_min_max(clipped.clip_rect().min, pos2(view.fringes[1].right(), clipped.clip_rect().bottom()));
-        if let Some(rect) = cursor_on_image(&described[i], point, pos2(area.left() - hscroll + offsets[i], row_top(i)), m) {
+        if let Some(rect) = cursor_on_image(&described[i], point, pos2(area.left() - shift[i] + offsets[i], row_top(i)), m) {
             painter.with_clip_rect(cursor_clip).rect_stroke(rect, 0.0, Stroke::new(1.0, t.ink), StrokeKind::Outside);
             return;
         }
