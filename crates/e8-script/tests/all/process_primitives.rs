@@ -11,6 +11,8 @@ use std::time::Duration;
 use e8_core::Editor;
 use e8_script::Scripting;
 
+use crate::driven::Driven;
+
 fn setup() -> (Editor, Scripting) {
     let mut ed = Editor::new();
     let s = Scripting::new(&mut ed).unwrap();
@@ -142,6 +144,10 @@ fn it_returns_the_exit_code_or_the_signal_or_nothing() {
     let terminated = value(&mut ed, &s, r#"e8.callProcessRegion(0, 3, "sh", null, null, null, "-c", "kill -15 $$")"#);
     assert!(terminated.starts_with("Terminated"), "{terminated}");
     assert_eq!(value(&mut ed, &s, r#"String(e8.callProcessRegion(0, 3, "sh", null, 0, null, "-c", "exit 3"))"#), "undefined");
+    // Emacs 30: (call-process "true" nil 1), 2 or -1 are nil too, not waited for.
+    for n in ["1", "2", "-1"] {
+        assert_eq!(value(&mut ed, &s, &format!(r#"String(e8.callProcessRegion(0, 3, "true", null, {n}))"#)), "undefined");
+    }
     assert_eq!(
         value(
             &mut ed,
@@ -361,6 +367,17 @@ fn format_network_address_writes_addresses_as_emacs_does() {
         ("[-1, 0, 0, 1, 80]", "undefined"),
         ("null", "undefined"),
         ("7", "undefined"),
+        // A port beyond 16 bits, or an element out of its range, is none.
+        ("[1, 2, 3, 4, 99999]", "undefined"),
+        ("[1, 2, 3, 4, -1]", "undefined"),
+        ("[1, 2, 3, 4, 65535]", "1.2.3.4:65535"),
+        ("[1, 2, 3, 4, 65536]", "undefined"),
+        ("[1, 2, 3, 4, 99999], true", "undefined"),
+        ("[256, 0, 0, 1]", "undefined"),
+        ("[0, 0, 0, 0, 0, 0, 0, 65536, 80]", "undefined"),
+        ("[0, 0, 0, 0, 0, 0, 0, 1, 99999]", "undefined"),
+        ("[0, 0, 0, 0, 0, 0, 0, 1, -1]", "undefined"),
+        ("[1.5, 2, 3, 4]", "undefined"),
     ];
     for (args, want) in cases {
         assert_eq!(value(&mut ed, &s, &format!("String(e8.formatNetworkAddress({args}))")), want, "{args}");
@@ -478,25 +495,118 @@ fn the_inherit_coding_flag_is_kept() {
 }
 
 /// Emacs 30: nil from code a command runs, as in batch; true in a filter
-/// the command loop runs while it waits for a key, false in one
-/// accept-process-output runs.
+/// the command loop runs while it waits for a key, or while a prompt
+/// does; nil while sleep-for waits, which reads no keys though E8 runs
+/// them meanwhile, and in a filter accept-process-output runs.
 #[test]
 fn waiting_for_user_input_p_is_true_only_while_waiting_for_keys() {
+    let d = Driven::new(
+        r#"globalThis.seen = { idle: [], sleeping: [], prompting: [], accepting: [] };
+        globalThis.phase = "idle";
+        globalThis.p = e8.makeProcess({ name: "w", command: ["sh", "-c", "while true; do echo x; sleep 0.05; done"], connectionType: "pipe",
+          filter: () => seen[phase].push(e8.waitingForUserInputP()) });"#,
+    );
+    let wait_for = |what: &str| {
+        let start = std::time::Instant::now();
+        while d.eval_expression(&format!("seen.{what}.length > 2")) != "true" {
+            assert!(start.elapsed() < Duration::from_secs(10), "no output while {what}");
+            std::thread::sleep(Duration::from_millis(20));
+        }
+    };
+    wait_for("idle");
+    d.start_eval(r#"phase = "sleeping"; e8.sleepFor(0.6); phase = "idle";"#);
+    wait_for("sleeping");
+    d.eval(r#"phase = "accepting"; e8.acceptProcessOutput(p, 0.3); e8.acceptProcessOutput(p, 0.3); phase = "idle";"#);
+    d.start_eval(r#"phase = "prompting"; e8.readString("Say: ");"#);
+    wait_for("prompting");
+    d.press("C-g");
+    d.eval(r#"phase = "idle"; e8.deleteProcess(p);"#);
+    let all = |what: &str, want: bool| {
+        let got: Vec<bool> = serde_json::from_str(&d.eval_expression(&format!("seen.{what}"))).unwrap();
+        assert!(!got.is_empty() && got.iter().all(|b| *b == want), "{what}: {got:?}");
+    };
+    all("sleeping", false);
+    all("accepting", false);
+    all("prompting", true);
+    assert!(d.eval_expression("seen.idle.includes(true)") == "true");
+    assert_eq!(d.eval_expression("e8.waitingForUserInputP()"), "false");
+}
+
+/// As Emacs opens the file as the program's standard error, nothing waits
+/// for what the program leaves running with it open.
+#[test]
+fn standard_error_to_a_file_does_not_wait_for_what_is_left_running() {
     let (mut ed, s) = setup();
-    assert_eq!(value(&mut ed, &s, "String(e8.waitingForUserInputP())"), "false");
+    let dir = tempfile::tempdir().unwrap();
+    let err = dir.path().join("err.txt");
+    buffer_with(&mut ed, &s, "abc", 0);
+    let started = std::time::Instant::now();
+    let code = value(
+        &mut ed,
+        &s,
+        &format!(
+            r#"e8.callProcessRegion(0, 3, "sh", null, ["*o*", {}], null, "-c", "sleep 30 >/dev/null & echo err >&2; cat")"#,
+            serde_json::to_string(&err).unwrap()
+        ),
+    );
+    assert_eq!(code, "0");
+    assert!(started.elapsed() < Duration::from_secs(10), "waited {:?}", started.elapsed());
+    assert_eq!(buffer_text(&ed, "*o*"), "abc");
+    assert_eq!(std::fs::read_to_string(&err).unwrap(), "err\n");
+}
+
+/// Emacs 30: output for a read-only buffer is buffer-read-only, the buffer
+/// left as it was; so is deleting the region of a read-only current buffer.
+#[test]
+fn a_read_only_destination_is_buffer_read_only() {
+    let (mut ed, s) = setup();
+    buffer_with(&mut ed, &s, "abc", 0);
+    eval(&mut ed, &s, r#"e8.withCurrentBuffer(e8.getBufferCreate("*ro*"), () => { e8.insert("x"); e8.setReadOnly(true); });"#);
+    assert_eq!(
+        value(&mut ed, &s, r#"e8.conditionCase(() => e8.callProcessRegion(0, 3, "cat", null, "*ro*"), { "buffer-read-only": () => "ro" })"#),
+        "ro"
+    );
+    assert_eq!(buffer_text(&ed, "*ro*"), "x");
+    eval(&mut ed, &s, "e8.setReadOnly(true);");
+    assert_eq!(
+        value(&mut ed, &s, r#"e8.conditionCase(() => e8.callProcessRegion(0, 3, "cat", true, true), { "buffer-read-only": () => "ro" })"#),
+        "ro"
+    );
+    assert_eq!(buffer_string(&mut ed, &s), "abc");
+}
+
+/// Emacs 30: deleting the region and inserting the output leave no
+/// boundary between them in buffer-undo-list, so one undo takes back both.
+#[test]
+fn deleting_and_inserting_undo_as_one() {
+    let (mut ed, s) = setup();
+    ed.switch_to_buffer("undo");
+    ed.type_text("hello");
+    eval(&mut ed, &s, r#"e8.callProcessRegion(0, 5, "tr", true, true, null, "a-z", "A-Z");"#);
+    assert_eq!(buffer_string(&mut ed, &s), "HELLO");
+    // Emacs: ((1 . 6) ("hello" . -1) 6 nil ...), the insertion and the
+    // deletion with no boundary between.
+    let list: serde_json::Value = serde_json::from_str(&value(&mut ed, &s, "JSON.stringify(e8.bufferUndoList())")).unwrap();
+    assert_eq!(list[0], serde_json::json!([0, 5]));
+    assert_eq!(list[1][0]["string"], "hello");
+}
+
+/// Emacs 30: process-running-child-p on a program that has ended, in its
+/// sentinel or after, is "Process NAME is not active".
+#[test]
+fn a_program_that_has_ended_has_no_running_child() {
+    let (mut ed, s) = setup();
     eval(
         &mut ed,
         &s,
-        r#"globalThis.seen = [];
-        globalThis.p = e8.makeProcess({ name: "w", command: ["sh", "-c", "echo a; sleep 0.3; echo b"], connectionType: "pipe",
-          filter: () => seen.push(e8.waitingForUserInputP()) });"#,
+        r#"globalThis.said = undefined;
+        globalThis.p = e8.makeProcess({ name: "t", command: ["true"], connectionType: "pty",
+          sentinel: (p) => { said = e8.conditionCase(() => String(e8.processRunningChildP(p)), { error: (e) => e.message }); } });"#,
     );
-    until(&mut ed, &s, "seen.length >= 1");
-    let start = std::time::Instant::now();
-    while value(&mut ed, &s, "String(seen.length)") == "1" && start.elapsed() < Duration::from_secs(10) {
-        ed.run_timers_awaiting_input();
-        std::thread::sleep(Duration::from_millis(10));
-    }
-    assert_eq!(value(&mut ed, &s, "JSON.stringify(seen)"), "[false,true]");
-    assert_eq!(value(&mut ed, &s, "String(e8.waitingForUserInputP())"), "false");
+    until(&mut ed, &s, "said !== undefined");
+    assert_eq!(value(&mut ed, &s, "said"), "Process t is not active");
+    assert_eq!(
+        value(&mut ed, &s, r#"e8.conditionCase(() => e8.processRunningChildP(p), { error: (e) => e.message })"#),
+        "Process t is not active"
+    );
 }

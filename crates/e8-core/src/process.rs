@@ -109,13 +109,29 @@ pub fn signal_number(name: &str) -> Option<i32> {
 
 /// The names of the signals this system has, as Emacs's signal-names:
 /// without "SIG", the highest numbered first, and "EXIT", signal 0, last.
-pub fn signal_names() -> Vec<&'static str> {
+pub fn signal_names() -> Vec<String> {
     #[cfg(unix)]
     {
         let mut signals: Vec<(&str, i32)> = SIGNALS.to_vec();
         signals.sort_by_key(|(_, sig)| std::cmp::Reverse(*sig));
-        let mut names: Vec<&str> = signals.into_iter().map(|(n, _)| n).collect();
-        names.push("EXIT");
+        let mut names: Vec<String> = signals.into_iter().map(|(n, _)| n.to_string()).collect();
+        // The real-time signals, highest first, named as gnulib's sig2str
+        // names them: RTMIN+n for the lower half, RTMAX-n for the upper.
+        #[cfg(any(target_os = "linux", target_os = "android"))]
+        {
+            let (min, max) = (libc::SIGRTMIN(), libc::SIGRTMAX());
+            let rt = (min..=max).rev().map(|sig| {
+                if sig <= min + (max - min) / 2 {
+                    if sig == min { "RTMIN".to_string() } else { format!("RTMIN+{}", sig - min) }
+                } else if sig == max {
+                    "RTMAX".to_string()
+                } else {
+                    format!("RTMAX-{}", max - sig)
+                }
+            });
+            names.splice(0..0, rt);
+        }
+        names.push("EXIT".into());
         names
     }
     #[cfg(not(unix))]
@@ -389,6 +405,9 @@ pub(crate) struct Processes {
     /// Whether filters and timers run now because the editor is waiting
     /// for the user to type, as Emacs's waiting-for-user-input-p.
     waiting_for_user_input: bool,
+    /// For each wait for an answer under way, innermost last, whether it
+    /// reads keys, as a prompt does, or only lets them run, as sleep-for.
+    pub(crate) waits_reading_keys: Vec<bool>,
 }
 
 /// What is kept of a process once it has gone from the list: its name,
@@ -439,7 +458,7 @@ impl Default for Processes {
     fn default() -> Processes {
         let (tx, rx) = sync_channel(QUEUED_CHUNKS);
         let tx = EventSender { tx, wake: Arc::new(Mutex::new(None)) };
-        Processes { list: Vec::new(), tx, rx, next_id: 1, held: Default::default(), outputs_seen: 0, watching: None, read_delay: Duration::ZERO, gone: Default::default(), waiting_for_user_input: false }
+        Processes { list: Vec::new(), tx, rx, next_id: 1, held: Default::default(), outputs_seen: 0, watching: None, read_delay: Duration::ZERO, gone: Default::default(), waiting_for_user_input: false, waits_reading_keys: Vec::new() }
     }
 }
 
@@ -925,7 +944,9 @@ impl Editor {
     /// not, and true where E8 cannot tell, as for a program on pipes. An
     /// error for a connection or pipe process, or one that has gone.
     pub fn process_running_child_p(&self, id: u64) -> Result<Value> {
-        let Some(p) = self.processes.list.iter().find(|p| p.id == id) else {
+        // One that has ended is not active, though listed until its
+        // sentinel has run, as Emacs's closes its descriptors first.
+        let Some(p) = self.processes.list.iter().find(|p| p.id == id && (p.status == Status::Run || matches!(p.kind, Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_)))) else {
             let name = self.process_info(id).map_or_else(|| id.to_string(), |i| i.name);
             return Err(Error::new(format!("Process {name} is not active")));
         };
@@ -953,25 +974,31 @@ impl Editor {
     /// run from the command loop's wait for keys, false while they run from
     /// accept-process-output, sleep-for or a command.
     pub fn waiting_for_user_input_p(&self) -> bool {
-        self.processes.waiting_for_user_input
+        // The command loop runs within sleep-for too, which reads no keys
+        // in Emacs, so a filter run there is not waiting for them.
+        self.processes.waiting_for_user_input && self.processes.waits_reading_keys.last() != Some(&false)
     }
 
     /// Runs the timers and takes in processes' output, as
     /// [`Editor::run_timers`], as the command loop does while it waits for
     /// a key: waiting-for-user-input-p is true meanwhile.
     pub fn run_timers_awaiting_input(&mut self) {
-        let was = std::mem::replace(&mut self.processes.waiting_for_user_input, true);
-        self.run_timers();
-        self.processes.waiting_for_user_input = was;
+        self.with_awaiting_input(true, Editor::run_timers);
     }
 
     /// Runs `f` with waiting-for-user-input-p false, as Emacs's
     /// wait_reading_process_output binds it when it does not read keys.
     pub(crate) fn not_awaiting_input<T>(&mut self, f: impl FnOnce(&mut Editor) -> T) -> T {
-        let was = std::mem::replace(&mut self.processes.waiting_for_user_input, false);
-        let result = f(self);
+        self.with_awaiting_input(false, f)
+    }
+
+    /// Runs `f` with waiting-for-user-input-p's flag set as given, put
+    /// back afterwards even if `f` panics, as the driver survives a panic.
+    fn with_awaiting_input<T>(&mut self, awaiting: bool, f: impl FnOnce(&mut Editor) -> T) -> T {
+        let was = std::mem::replace(&mut self.processes.waiting_for_user_input, awaiting);
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| f(self)));
         self.processes.waiting_for_user_input = was;
-        result
+        result.unwrap_or_else(|panic| std::panic::resume_unwind(panic))
     }
 
     /// A unique process name, made so with "<1>" and on as Emacs does.
@@ -1986,21 +2013,18 @@ impl Editor {
             std::thread::spawn(move || {
                 let _ = child.wait();
             });
-            return Ok(CallResult { status: Status::Run, output: Vec::new(), errors: Vec::new() });
+            return Ok(CallResult { status: Status::Run, output: Vec::new() });
         }
         let (mut output, writer) = std::io::pipe().map_err(|e| Error::new(format!("Making a pipe: {e}")))?;
-        let mut errors = None;
         let stderr = match spec.stderr {
             CallStderr::Merge => Stdio::from(writer.try_clone()?),
             CallStderr::Discard => Stdio::null(),
-            CallStderr::Separate => {
-                let (mut reader, writer) = std::io::pipe().map_err(|e| Error::new(format!("Making a pipe: {e}")))?;
-                errors = Some(std::thread::spawn(move || {
-                    let mut bytes = Vec::new();
-                    let _ = reader.read_to_end(&mut bytes);
-                    bytes
-                }));
-                Stdio::from(writer)
+            // The file itself, as Emacs opens it for the program, so nothing
+            // waits for whatever the program leaves running to close it.
+            // A program writes to the system's files, not the editor's
+            // stand-in, so this is std's.
+            CallStderr::File(file) => {
+                Stdio::from(std::fs::File::create(&file).map_err(|e| crate::fileops::file_error("Opening process output file", &e, &[&file]))?)
             }
         };
         process.stdout(writer).stderr(stderr);
@@ -2049,8 +2073,7 @@ impl Editor {
             }
         }
         let status = child.wait().map_err(|e| Error::new(format!("Running {program}: {e}")))?;
-        let errors = errors.map(|t| t.join().unwrap_or_default()).unwrap_or_default();
-        Ok(CallResult { status: exit_status(status), output: bytes, errors })
+        Ok(CallResult { status: exit_status(status), output: bytes })
     }
 }
 
@@ -2072,7 +2095,7 @@ pub enum RegionInput {
 pub enum Destination {
     /// Thrown away, waiting for the program: nil.
     Discard,
-    /// Thrown away, not waiting: 0.
+    /// Thrown away, not waiting: 0, or any integer.
     NoWait,
     /// Inserted at point in a buffer, by index: t for the current one, or
     /// a buffer or its name, made if there is none.
@@ -2111,7 +2134,8 @@ impl Editor {
             Ok(match v {
                 Value::Null | Value::Bool(false) => Destination::Discard,
                 Value::Bool(true) => Destination::Buffer(ed.current),
-                Value::Number(n) if *n == 0.0 => Destination::NoWait,
+                // Any integer, as Emacs 30 takes 1, 2 or -1 as it does 0.
+                Value::Number(n) if n.fract() == 0.0 => Destination::NoWait,
                 Value::Buffer(id) => Destination::Buffer(ed.buffer_with_id(*id).ok_or_else(|| Error::new("Selecting deleted buffer"))?),
                 Value::List(items) if items.first().and_then(Value::as_str) == Some(":file") => {
                     let file = items.get(1).and_then(Value::as_str).ok_or_else(|| wrong(v))?;
@@ -2181,16 +2205,13 @@ impl Editor {
         let coding = self.default_process_coding();
         let input = coding.1.encode_lossy(&text).0;
         let directory = self.expand_file_name(".").to_string_lossy().into_owned();
-        let stderr = match destination.stderr {
+        let stderr = match &destination.stderr {
             StderrDestination::Merge => CallStderr::Merge,
             StderrDestination::Discard => CallStderr::Discard,
-            StderrDestination::File(_) => CallStderr::Separate,
+            StderrDestination::File(file) => CallStderr::File(file.clone().into()),
         };
         let wait = destination.output != Destination::NoWait;
         let result = self.call_process_with(CallSpec { command, directory: Some(&directory), input: Some(input), stderr, wait })?;
-        if let StderrDestination::File(file) = &destination.stderr {
-            crate::vfs::write(file, &result.errors).map_err(|e| crate::fileops::file_error("Writing", &e, &[std::path::Path::new(file)]))?;
-        }
         match &destination.output {
             Destination::Discard | Destination::NoWait => {}
             Destination::File(file) => {
@@ -2213,14 +2234,14 @@ impl Editor {
 
 /// Where a program [`Editor::call_process_with`] runs sends its standard
 /// error, as call-process's destination says.
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum CallStderr {
     /// With its output, as a destination that is a buffer alone.
     Merge,
     /// Nowhere, as `(BUFFER nil)`.
     Discard,
-    /// Kept apart, for a file, as `(BUFFER FILE)`.
-    Separate,
+    /// Into a file, made afresh, as `(BUFFER FILE)`.
+    File(std::path::PathBuf),
 }
 
 /// What [`Editor::call_process_with`] runs.
@@ -2242,8 +2263,6 @@ pub struct CallResult {
     pub status: Status,
     /// Its output, with its standard error if merged.
     pub output: Vec<u8>,
-    /// Its standard error, when kept apart.
-    pub errors: Vec<u8>,
 }
 
 /// How strsignal describes a signal, as call-process returns it for a

@@ -832,6 +832,21 @@ impl Editor {
     /// `slot`, as Emacs's `read-from-minibuffer` returns it, with the
     /// current buffer and prefix argument the asker's again, as at `asker`.
     pub(crate) fn wait_for_answer(&mut self, asker: &Resume, slot: &AnswerSlot) -> Result<Value> {
+        self.wait_for_answer_reading(asker, slot, true)
+    }
+
+    /// As [`Editor::wait_for_answer`], saying whether the wait reads keys,
+    /// as a prompt does, or only lets them run while it waits, as
+    /// sleep-for, for waiting-for-user-input-p.
+    pub(crate) fn wait_for_answer_reading(&mut self, asker: &Resume, slot: &AnswerSlot, reads_keys: bool) -> Result<Value> {
+        self.processes.waits_reading_keys.push(reads_keys);
+        let depth = self.processes.waits_reading_keys.len();
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| self.wait_for_answer_inner(asker, slot)));
+        self.processes.waits_reading_keys.truncate(depth - 1);
+        result.unwrap_or_else(|panic| std::panic::resume_unwind(panic))
+    }
+
+    fn wait_for_answer_inner(&mut self, asker: &Resume, slot: &AnswerSlot) -> Result<Value> {
         let waiting = slot.clone();
         if let Err(e) = self.wait_until(asker, Rc::new(move |_| waiting.borrow().is_some())) {
             self.abandon(slot);

@@ -186,14 +186,16 @@ mod ifaddrs {
         unsafe {
             #[cfg(any(target_os = "macos", target_os = "ios", target_os = "freebsd"))]
             if (*sa).sa_family as i32 == libc::AF_LINK {
-                let dl = &*(sa as *const libc::sockaddr_dl);
-                if dl.sdl_alen == 0 {
+                let dl = sa as *const libc::sockaddr_dl;
+                let (nlen, alen) = ((*dl).sdl_nlen as usize, (*dl).sdl_alen as usize);
+                if alen == 0 {
                     return None;
                 }
                 // The name comes first in sdl_data, then the address, which
-                // may run past the field's declared length.
-                let data = dl.sdl_data.as_ptr() as *const u8;
-                let bytes = std::slice::from_raw_parts(data.add(dl.sdl_nlen as usize), dl.sdl_alen as usize);
+                // may run past the field's declared length: reached from the
+                // raw pointer, never through a reference to the field.
+                let data = std::ptr::addr_of!((*dl).sdl_data) as *const u8;
+                let bytes = std::slice::from_raw_parts(data.add(nlen), alen);
                 return Some((libc::AF_LINK as u32, bytes.iter().map(|b| *b as u32).collect()));
             }
             #[cfg(any(target_os = "linux", target_os = "android"))]
@@ -420,7 +422,8 @@ mod imp {
     }
 
     pub fn attributes(pid: u32) -> Option<Vec<(&'static str, Value)>> {
-        let stat = fs::read_to_string(format!("/proc/{pid}/stat")).ok()?;
+        // A command's name is bytes, not always UTF-8.
+        let stat = String::from_utf8_lossy(&fs::read(format!("/proc/{pid}/stat")).ok()?).into_owned();
         let status = fs::read_to_string(format!("/proc/{pid}/status")).unwrap_or_default();
         // The command is in parentheses, and may hold spaces and parentheses itself.
         let open = stat.find('(')?;

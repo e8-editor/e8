@@ -187,7 +187,9 @@ impl Editor {
             }),
         );
         self.keyboard.sleeping.push(answer.clone());
-        let result = self.wait_for_answer(&asker, &answer);
+        // Keys run their commands meanwhile, but sleep-for reads none, as
+        // Emacs's waits with read_kbd 0, for waiting-for-user-input-p.
+        let result = self.wait_for_answer_reading(&asker, &answer, false);
         self.keyboard.sleeping.retain(|s| !std::rc::Rc::ptr_eq(s, &answer));
         self.cancel_timer(timer);
         result.map(|_| ())

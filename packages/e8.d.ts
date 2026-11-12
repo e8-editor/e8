@@ -15271,7 +15271,7 @@ declare global {
      * `start` of null, or `start` itself if it is a string. `del` deletes
      * the region first. What the program writes goes where `destination`
      * says, as call-process's: true for point in the current buffer, null
-     * to throw it away, 0 to throw it away without waiting, a buffer or
+     * to throw it away, 0 or another integer to throw it away without waiting, a buffer or
      * its name for point in that buffer, `[":file", FILE]` for a file, or
      * `[DESTINATION, STDERR]` to send standard error elsewhere, STDERR
      * null to throw it away, true to keep it with the output, or a file
@@ -15307,8 +15307,9 @@ declare global {
     function waitingForUserInputP(): boolean;
     /**
      * The names of the signals this system has, as signal-names: without
-     * "SIG", the highest numbered first, and "EXIT", signal 0, last.
-     * signalProcess takes each.
+     * "SIG", the highest numbered first, and "EXIT", signal 0, last;
+     * on Linux the real-time ones first, as "RTMAX" and "RTMIN+1".
+     * signalProcess takes each but those.
      */
     function signalNames(): string[];
     /**
@@ -17173,17 +17174,17 @@ declare global {
     /**
      * Where callProcessRegion puts what a program writes, as call-process's
      * destination: true for point in the current buffer, null to throw it
-     * away, 0 to throw it away without waiting, a buffer or its name,
+     * away, 0 or another integer to throw it away without waiting, a buffer or its name,
      * [":file", FILE], or [DESTINATION, STDERR] with STDERR null to throw
      * standard error away, true to keep it with the output, or a file name.
      */
     type CallProcessDestination =
       | true
       | null
-      | 0
+      | number
       | BufferLike
       | [":file", string]
-      | [true | null | 0 | BufferLike | [":file", string], null | true | string];
+      | [true | null | number | BufferLike | [":file", string], null | true | string];
     /** What makeNetworkProcess opens, as make-network-process takes it. */
     interface NetworkProcessDefinition {
       name: string;

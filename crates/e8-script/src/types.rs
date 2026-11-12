@@ -1197,17 +1197,17 @@ const API: &str = r##"
   /**
    * Where callProcessRegion puts what a program writes, as call-process's
    * destination: true for point in the current buffer, null to throw it
-   * away, 0 to throw it away without waiting, a buffer or its name,
+   * away, 0 or another integer to throw it away without waiting, a buffer or its name,
    * [":file", FILE], or [DESTINATION, STDERR] with STDERR null to throw
    * standard error away, true to keep it with the output, or a file name.
    */
   type CallProcessDestination =
     | true
     | null
-    | 0
+    | number
     | BufferLike
     | [":file", string]
-    | [true | null | 0 | BufferLike | [":file", string], null | true | string];
+    | [true | null | number | BufferLike | [":file", string], null | true | string];
   /** What makeNetworkProcess opens, as make-network-process takes it. */
   interface NetworkProcessDefinition {
     name: string;
