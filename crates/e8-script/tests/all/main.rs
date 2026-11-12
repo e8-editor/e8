@@ -82,6 +82,7 @@ mod view;
 mod which_key;
 mod windows;
 mod window_balance;
+mod window_split;
 mod window_resize;
 mod window_tree;
 mod windows_as_objects;

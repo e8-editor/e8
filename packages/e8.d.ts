@@ -1488,13 +1488,19 @@ declare global {
        */
       "delete-other-frames": [];
       /**
-       * Make the selected window fill the frame, deleting the others.
+       * Make the selected window fill its frame, deleting the others.
        *
-       * As in Emacs, a window's delete-other-windows parameter can be a function to call instead, windows with a no-delete-other-windows parameter stay, and in a side window this is an error.
+       * A window's delete-other-windows parameter can be a function to call instead, windows with a no-delete-other-windows parameter stay, part of an atomic window keeps the whole of it, and in a side window this is an error.
        *
        * Defined in packages/window.ts.
        */
       "delete-other-windows": [];
+      /**
+       * Delete the windows in the same column as the selected window, but not the window itself.
+       *
+       * Defined in packages/window.ts.
+       */
+      "delete-other-windows-vertically": [];
       /**
        * Delete the pair of characters around the sexp after point, such as parentheses or quotes; with a negative argument, around the one before.
        *
@@ -1530,13 +1536,24 @@ declare global {
        */
       "delete-trailing-whitespace": [];
       /**
-       * Delete the selected window, giving its space to its neighbour.
+       * Delete the selected window, giving its space to its neighbours.
        *
-       * The most recently used of the other windows is selected.
+       * Its delete-window parameter can be a function to call instead; part of an atomic window deletes the whole of it, and the frame's only window or its main window beside side windows cannot be deleted. delete-window-choose-selected says which window is selected next. Code deletes another window with window.ts's deleteWindow.
        *
        * Defined in packages/window.ts.
        */
       "delete-window": [];
+      /**
+       * Delete all windows showing a buffer.
+       *
+       * With a prefix argument of 0, only windows on visible and iconified frames; with another, only the selected frame's. A window that cannot be deleted shows another buffer instead.
+       *
+       * @param buffer buffer name
+       * @param frame raw prefix argument
+       *
+       * Defined in packages/window.ts.
+       */
+      "delete-windows-on": [buffer: string, frame?: PrefixArg | boolean];
       /**
        * List the keys and the commands they run in the current buffer: the major mode's, each minor mode's that is on, and the global ones.
        *
@@ -5626,13 +5643,15 @@ declare global {
        */
       "other-frame": [];
       /**
-       * Select another window, the next in cyclic order.
+       * Select another window in cyclic ordering of windows.
        *
-       * A prefix argument says how many windows on to go; a negative one goes back.
+       * A prefix argument says how many windows on to go; a negative one goes back. Windows with a no-other-window parameter are passed over, and the selected window's other-window parameter can be a function to call instead. Code passing ALL-FRAMES calls window.ts's otherWindow.
+       *
+       * @param count prefix count
        *
        * Defined in packages/window.ts.
        */
-      "other-window": [];
+      "other-window": [count?: number];
       /**
        * On a heading, cycle its visibility: folded, then its children, then its whole subtree.
        *
@@ -6618,7 +6637,7 @@ declare global {
       /**
        * Split the selected window into two, one above the other.
        *
-       * The selected window stays on top and the new one below shows the same buffer at the same place. A prefix argument gives the selected window that many lines, or the new one if it is negative.
+       * The selected window stays on top and the new one below shows the same buffer at the same place. A prefix argument gives the selected window that many lines, or the new one if it is negative. With split-window-keep-point nil, point is moved so that neither window scrolls.
        *
        * Defined in packages/window.ts.
        */
@@ -7382,6 +7401,14 @@ declare global {
        * Defined in packages/register.ts.
        */
       "window-configuration-to-register": [];
+      /**
+       * Toggle display of side windows on the selected frame.
+       *
+       * With side windows, they are deleted after the frame's windows are kept in its window-state parameter; without, the side windows kept there are shown again around the main window.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-toggle-side-windows": [];
       /**
        * Write the current buffer to a file and visit that file instead.
        *
@@ -8356,6 +8383,12 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "delete-trailing-lines": Value;
+      /**
+       * How to choose a frame's selected window after its selected window is deleted: `mru' the most recently used window, `pos' the window at the deleted window's point, nil the frame's first window. A window with a no-other-window parameter is chosen only if all the frame's windows have one.
+       *
+       * Defined in packages/window.ts.
+       */
+      "delete-window-choose-selected": Value;
       /**
        * Seconds idle after which the desktop is saved, if it has changed; nil or 0 for never.
        *
@@ -11673,6 +11706,12 @@ declare global {
        */
       "split-width-threshold": Value;
       /**
+       * If non-nil, split-window-below keeps point where it is in both windows; if nil, it moves point so as to scroll less.
+       *
+       * Defined in packages/window.ts.
+       */
+      "split-window-keep-point": Value;
+      /**
        * The function display-buffer splits a window with, given the window, giving the new window or nil.
        *
        * Defined in packages/window.ts.
@@ -12266,6 +12305,12 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "widen-automatically": Value;
+      /**
+       * Non-nil means do not check side windows, as window--sides-check does after splitting and deleting windows.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window--sides-inhibit-check": Value;
       /**
        * Factor by which the window area should be over-estimated, as balance-windows-area reads it in each window's buffer.
        *
@@ -15042,13 +15087,6 @@ declare global {
      */
     function splitRootWindow(side?: "below" | "right" | "above" | "left", size?: number): Window;
     /**
-     * Splits the smallest part of the selected frame's windows that holds
-     * all of `windows`, as Emacs splits an internal window, such as the
-     * main window beside side windows: the new window takes the part's
-     * whole bottom, right, top or left. `size` is as splitWindow's.
-     */
-    function splitWindowsEnclosing(windows: WindowLike[], side?: "below" | "right" | "above" | "left", size?: number): Window;
-    /**
      * Marks a window the second most recently used, after the selected
      * one, as window-bump-use-time; gives its use time, or undefined for
      * the selected window.
@@ -15106,12 +15144,31 @@ declare global {
     /** Sets an internal window's combination limit, as set-window-combination-limit. */
     function setWindowCombinationLimit(window: WindowLike, limit: boolean): void;
     /**
-     * Splits a window, live or internal, as split-window-internal: the new
-     * window below, to the right, above or to the left of it, sharing its
-     * size, which `size` gives as splitWindow's does. A new window beside
-     * an internal window shows the selected window's buffer.
+     * Splits a window of the selected frame, live or internal, as
+     * window.c's split-window-internal, once window.el's split-window has
+     * worked out the sizes: the new window `pixelSize` units along the
+     * split, on `side` of `window`, with `normalSize` as its normal size.
+     * `window`, or with window-combination-resize its siblings, take the
+     * new pixel sizes set before; a new internal window holds the two
+     * unless `window`'s parent combines windows that way and
+     * window-combination-limit is not t. The new window shows `window`'s
+     * buffer, or the selected window's for an internal one.
      */
-    function splitWindowInternal(window: WindowLike, side?: "below" | "right" | "above" | "left", size?: number): Window;
+    function splitWindowInternal(window: WindowLike, pixelSize: number, side?: "below" | "right" | "above" | "left", normalSize?: number): Window;
+    /**
+     * Deletes a window of the selected frame, live or internal, as
+     * window.c's delete-window-internal, once window.el's delete-window
+     * has given its siblings their new pixel sizes; fails if they do not
+     * fill their parent. If the selected window goes, the frame's first
+     * window is selected.
+     */
+    function deleteWindowInternal(window: WindowLike): void;
+    /**
+     * Makes `window`, the selected one by default, fill `root`, the
+     * frame's root window by default, deleting the other windows in it,
+     * as delete-other-windows-internal.
+     */
+    function deleteOtherWindowsInternal(window?: WindowLike, root?: WindowLike): void;
     /** The buffer-local minor modes on in the current buffer, as local-minor-modes. */
     function localMinorModes(): string[];
     /**

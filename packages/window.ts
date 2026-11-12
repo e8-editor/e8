@@ -1,79 +1,6 @@
 // Commands for windows, after Emacs's window.el. The primitives they use,
-// splitting, deleting, selecting and resizing windows, are in the core.
-
-/** The size a prefix argument asks a split for, as split-window-below reads it. */
-function splitSize(): number | undefined {
-  const arg = e8.prefixArg();
-  return arg === null ? undefined : e8.prefixNumericValue(arg);
-}
-
-const splitBelow = e8.defineCommand({
-  name: "split-window-below",
-  doc:
-    "Split the selected window into two, one above the other.\n\n" +
-    "The selected window stays on top and the new one below shows the same buffer at the same place. " +
-    "A prefix argument gives the selected window that many lines, or the new one if it is negative.",
-  run: () => {
-    e8.splitWindow(undefined, "below", splitSize());
-  },
-});
-
-const splitRight = e8.defineCommand({
-  name: "split-window-right",
-  doc:
-    "Split the selected window into two, side by side.\n\n" +
-    "The selected window stays on the left and the new one on the right shows the same buffer at the same place. " +
-    "A prefix argument gives the selected window that many columns, or the new one if it is negative.",
-  run: () => {
-    e8.splitWindow(undefined, "right", splitSize());
-  },
-});
-
-const otherWindow = e8.defineCommand({
-  name: "other-window",
-  doc:
-    "Select another window, the next in cyclic order.\n\n" +
-    "A prefix argument says how many windows on to go; a negative one goes back.",
-  run: () => {
-    const windows = e8.windowList();
-    const count = e8.prefixNumericValue(e8.prefixArg());
-    const i = windows.indexOf(e8.selectedWindow());
-    const n = windows.length;
-    e8.selectWindow(windows[(((i + count) % n) + n) % n]);
-  },
-});
-
-const deleteWindow = e8.defineCommand({
-  name: "delete-window",
-  doc:
-    "Delete the selected window, giving its space to its neighbour.\n\n" +
-    "The most recently used of the other windows is selected.",
-  run: () => e8.deleteWindow(),
-});
-
-const deleteOtherWindows = e8.defineCommand({
-  name: "delete-other-windows",
-  doc:
-    "Make the selected window fill the frame, deleting the others.\n\n" +
-    "As in Emacs, a window's delete-other-windows parameter can be a function to call instead, windows with a " +
-    "no-delete-other-windows parameter stay, and in a side window this is an error.",
-  run: () => {
-    const selected = e8.selectedWindow();
-    const fn = e8.variable("ignore-window-parameters") ? undefined : e8.windowParameter(selected, "delete-other-windows");
-    if (fn !== undefined && fn !== null && fn !== true) {
-      e8.funcall((typeof fn === "symbol" ? fn.description : fn) as string, selected);
-      return;
-    }
-    if (fn !== true && !e8.variable("ignore-window-parameters")) {
-      if (e8.windowParameter(selected, "window-side") != null) e8.signal("error", "Cannot make side window the only window");
-      if (selected === e8.minibufferWindow()) e8.signal("error", "Can't expand minibuffer to full frame");
-    }
-    const keep = (w: e8.Window) => !e8.variable("ignore-window-parameters") && e8.windowParameter(w, "no-delete-other-windows") != null;
-    for (const window of e8.windowList()) {
-      if (window !== selected && !keep(window)) e8.deleteWindow(window);
-    }
-  },
-});
+// window.c's, are in the core: split-window-internal and
+// delete-window-internal, selecting windows and applying new sizes.
 
 /**
  * How to undo showing a buffer in a window, as display-buffer-record-window
@@ -124,10 +51,9 @@ function recordWindow(type: "reuse" | "window" | "frame", window: e8.Window, buf
 // strings or Symbol.for(name): `["side", "right"]` and `["side",
 // Symbol.for("right")]` are the same entry.
 //
-// E8's windows have no internal windows yet (ADR 0069, stage 3). Where
-// window.el takes an internal window, such as the frame's main window
-// beside its side windows, this takes the live windows it holds, a part,
-// and splits the smallest part of the tree that holds them.
+// Some of display-buffer's actions still take the live windows an
+// internal window holds, a part, where window.el takes the internal window
+// itself, and split the smallest window holding them.
 
 /** Lisp's nil: null, undefined, false or an empty list. */
 const isNil = (v: unknown): boolean => v === undefined || v === null || v === false || (Array.isArray(v) && v.length === 0);
@@ -304,9 +230,22 @@ function partEdges(windows: e8.Window[]): [number, number, number, number] {
   return [Math.min(...all.map((e) => e[0])), Math.min(...all.map((e) => e[1])), Math.max(...all.map((e) => e[2])), Math.max(...all.map((e) => e[3]))];
 }
 
-/** Splits a part of the frame: a live window as split-window does, several as their internal window would be. */
+/** The smallest window holding all of `windows`: the window itself for one, else the internal window that holds them. */
+function windowEnclosing(windows: e8.Window[]): e8.Window {
+  const chain = (w: e8.Window): e8.Window[] => {
+    const out: e8.Window[] = [];
+    for (let x: e8.Window | undefined = w; x !== undefined; x = e8.windowParent(x)) out.unshift(x);
+    return out;
+  };
+  const chains = windows.map(chain);
+  let common: e8.Window | undefined;
+  for (let i = 0; chains.length > 0 && i < chains[0].length && chains.every((c) => c[i] === chains[0][i]); i++) common = chains[0][i];
+  return common ?? e8.frameRootWindow();
+}
+
+/** Splits a part of the frame, the window holding a set of windows, as split-window does. */
 function splitPart(part: e8.Window[], side: "below" | "right" | "above" | "left", size?: number): e8.Window {
-  return part.length === 1 ? e8.splitWindow(part[0], side, size) : e8.splitWindowsEnclosing(part, side, size);
+  return splitWindow(windowEnclosing(part), size, side);
 }
 
 /** Splits a part as split-window-no-error does: undefined where it cannot be. */
@@ -370,16 +309,25 @@ function mainWindows(): e8.Window[] {
 }
 
 /**
- * The frame's main window, as window-main-window: its only window not a
- * side window. E8 has no internal windows yet (ADR 0069, stage 3): with
- * several such windows, the selected one stands for them.
+ * A frame's main window, as window-main-window: its root window if it has
+ * no side windows, else the window, live or internal, that is not a side
+ * window and has side windows beside it, holding the frame's other windows.
  */
-export function windowMainWindow(): e8.Window {
-  const others = mainWindows();
-  if (others.length === 1) return others[0];
-  const selected = e8.selectedWindow();
-  return others.includes(selected) ? selected : (others[0] ?? selected);
+export function windowMainWindow(frame?: e8.Frame): e8.Window {
+  let main: e8.Window | undefined;
+  walkWindowTree(
+    (window) => {
+      if (isSide(window)) return;
+      const prev = e8.windowPrevSibling(window);
+      const next = e8.windowNextSibling(window);
+      if ((prev !== undefined && isSide(prev)) || (next !== undefined && isSide(next))) main = window;
+    },
+    frame,
+    true,
+  );
+  return main ?? e8.frameRootWindow(frame);
 }
+e8.defun("window-main-window", (frame?: e8.Frame) => windowMainWindow(frame ?? undefined));
 
 e8.defineVariable({
   name: "ignore-window-parameters",
@@ -937,7 +885,7 @@ defineAction("display-buffer-in-direction", (buffer, alist) => {
 defineAction("display-buffer-full-frame", (buffer, alist) => {
   const window = windowOf(reuseWindow(buffer, alist) ?? sameWindow(buffer, alist) ?? popUpWindow(buffer, alist) ?? useSomeWindow(buffer, alist));
   if (window === undefined) return undefined;
-  for (const w of e8.windowList()) if (w !== window && w !== e8.minibufferWindow()) e8.deleteWindow(w);
+  deleteOtherWindows(window);
   return window;
 });
 
@@ -1263,31 +1211,32 @@ const killBufferAndWindow = e8.defineCommand({
   run: () => {
     const buffer = e8.windowBuffer() ?? "";
     const window = e8.selectedWindow();
-    if (e8.windowList().length > 1) {
-      e8.setWindowParameter(window, "quit-restore", null);
-      e8.deleteWindow(window);
-    }
+    e8.setWindowParameter(window, "quit-restore", null);
+    e8.conditionCase(() => deleteWindow(window), { error: () => null });
     e8.call("kill-buffer", buffer);
+    // As Emacs, delete-window again to show why it could not be deleted.
+    if (e8.getBuffer(buffer) === undefined && e8.selectedWindow() === window) deleteWindow();
   },
 });
 
 /**
  * Deletes a window if it can be, as window--delete: with `dedicatedOnly`,
- * only one dedicated to its buffer. The only window of a frame goes with
- * the frame if there are others and its buffer is being killed; Emacs
- * would hide such a frame otherwise, which E8 cannot. Says whether it went.
+ * only one dedicated to its buffer. A window window-deletable-p says can
+ * go goes with delete-window; the only window of a frame goes with the
+ * frame if its buffer is being killed; Emacs would hide such a frame
+ * otherwise, which E8 cannot. Says whether it went.
  */
 function windowDelete(window: e8.Window, dedicatedOnly: boolean, kill: boolean): boolean {
   if (dedicatedOnly && !dedicated(window)) return false;
-  if (e8.windowList().length > 1) {
-    e8.deleteWindow(window);
+  const deletable = windowDeletableP(window);
+  if (deletable === "frame") {
+    if (!kill) return false;
+    e8.deleteFrame(e8.windowFrame(window));
     return true;
   }
-  if (kill && e8.frameList().length > 1) {
-    e8.deleteFrame();
-    return true;
-  }
-  return false;
+  if (!deletable) return false;
+  deleteWindow(window);
+  return true;
 }
 
 /** Selects the window selected when a quit window's buffer was shown, if it is still there. */
@@ -3000,6 +2949,980 @@ const shrinkIfLarger = e8.defineCommand({
   run: () => shrinkWindowIfLargerThanBuffer(),
 });
 
+// Atomic and side windows' checks, splitting and deleting windows, and
+// other-window, as window.el has them (ADR 0069, stage 4), on window.c's
+// split-window-internal and delete-window-internal. E8's core deletes
+// and splits only the selected frame's windows this way: a window on
+// another frame is deleted by the core's own deleteWindow, which gives its
+// space to a sibling.
+
+e8.defineVariable({
+  name: "window--sides-inhibit-check",
+  doc: "Non-nil means do not check side windows, as window--sides-check does after splitting and deleting windows.",
+  value: null,
+});
+e8.defineVariable({
+  name: "delete-window-choose-selected",
+  doc:
+    "How to choose a frame's selected window after its selected window is deleted: " +
+    "`mru' the most recently used window, `pos' the window at the deleted window's point, nil the frame's first window. " +
+    "A window with a no-other-window parameter is chosen only if all the frame's windows have one.",
+  value: "mru",
+});
+e8.defineVariable({
+  name: "split-window-keep-point",
+  doc: "If non-nil, split-window-below keeps point where it is in both windows; if nil, it moves point so as to scroll less.",
+  value: true,
+});
+
+/** A window argument as window-normalize-window takes it: the selected window for none, else a window that is live or internal. */
+function windowNormalizeWindow(window?: e8.Value | null): e8.Window {
+  if (isNil(window)) return e8.selectedWindow();
+  if (!e8.windowValidP(window)) e8.signal("wrong-type-argument", "Wrong type argument: window-valid-p", [window as e8.Value]);
+  return window as e8.Window;
+}
+
+/** Whether a value is a function, or names one, as functionp. */
+const functionp = (v: unknown): boolean =>
+  typeof v === "function" || ((typeof v === "symbol" || (typeof v === "string" && v !== "")) && e8.fboundp(symName(v)!));
+
+/** Lisp's equal for the values window parameters hold: symbols and strings by name, the rest as data. */
+const lispEqual = (a: unknown, b: unknown): boolean => {
+  const [x, y] = [symName(a), symName(b)];
+  if (x !== undefined || y !== undefined) return x === y;
+  return a === b || JSON.stringify(a) === JSON.stringify(b);
+};
+
+/** Whether `ignore-window-parameters` is on. */
+const ignoringParameters = (): boolean => !isNil(e8.variable("ignore-window-parameters"));
+
+/** Whether a window is its frame's root window, as frame-root-window-p. */
+const frameRootWindowP = (window: e8.Window): boolean => window === e8.frameRootWindow(e8.windowFrame(window));
+
+/** Rounds to the nearest whole number, halves to the even one, as Lisp's round. */
+const lispRound = (x: number): number => {
+  const r = Math.round(x);
+  return Math.abs(x % 1) === 0.5 && r % 2 !== 0 ? r - 1 : r;
+};
+
+/**
+ * Calls `fn` on the window `window` and what it holds, as
+ * walk-window-subtree: its live windows, or with `any` its internal ones
+ * too, parents first.
+ */
+export function walkWindowSubtree(fn: (window: e8.Window) => void, window: e8.Window = e8.selectedWindow(), any = false): void {
+  const walk = (w: e8.Window | undefined, subOnly: boolean): void => {
+    while (w !== undefined) {
+      const live = e8.windowLiveP(w);
+      if (live || any) fn(w);
+      if (!live) {
+        walk(e8.windowLeftChild(w), false);
+        walk(e8.windowTopChild(w), false);
+      }
+      w = subOnly ? undefined : e8.windowNextSibling(w);
+    }
+  };
+  walk(window, true);
+}
+
+/**
+ * The first window on a frame whose parameter `parameter` is not nil, as
+ * window-with-parameter: one whose value is `value` if that is given,
+ * live windows only unless `any`.
+ */
+export function windowWithParameter(parameter: string, value?: e8.Value | null, frame?: e8.Frame, any = false): e8.Window | undefined {
+  const found: e8.Window[] = [];
+  walkWindowTree(
+    (w) => {
+      const v = e8.windowParameter(w, parameter);
+      if (!isNil(v) && (isNil(value) || lispEqual(value, v))) found.push(w);
+    },
+    frame,
+    any,
+  );
+  return found[0];
+}
+e8.defun("window-with-parameter", (parameter: e8.Value, value?: e8.Value, frame?: e8.Frame, any?: e8.Value) =>
+  windowWithParameter(symName(parameter) ?? "", value ?? null, frame ?? undefined, !isNil(any)) ?? null,
+);
+
+// Atomic windows.
+
+/** The root of the atomic window `window` is part of, as window-atom-root; undefined if it is part of none. */
+export function windowAtomRoot(window?: e8.Window | null): e8.Window | undefined {
+  let w: e8.Window | undefined = windowNormalizeWindow(window);
+  let root: e8.Window | undefined;
+  while (w !== undefined && !isNil(e8.windowParameter(w, "window-atom"))) {
+    root = w;
+    w = e8.windowParent(w);
+  }
+  return root;
+}
+e8.defun("window-atom-root", (window?: e8.Window) => windowAtomRoot(window) ?? null);
+
+/** Makes an internal window atomic, as window-make-atom: it and all it holds get a window-atom parameter. */
+export function windowMakeAtom(window: e8.Window): e8.Window {
+  if (windowChild(window) === undefined) e8.signal("error", `Window ${String(window)} is not an internal window`);
+  walkWindowSubtree((w) => {
+    if (isNil(e8.windowParameter(w, "window-atom"))) e8.setWindowParameter(w, "window-atom", true);
+  }, window, true);
+  return window;
+}
+e8.defun("window-make-atom", (window: e8.Window) => windowMakeAtom(window));
+
+/**
+ * Shows a buffer in a new window combined with an existing one into an
+ * atomic window, as display-buffer-in-atom-window: the alist's `window`,
+ * the selected one by default, and its `side`, below by default, say
+ * where. Splitting or deleting a part of an atomic window splits or
+ * deletes all of it.
+ */
+defineAction("display-buffer-in-atom-window", (buffer, alist) =>
+  e8.letBind({ "ignore-window-parameters": true, "window-combination-limit": true, "window-combination-resize": "atom" }, () => {
+    const given = alistGet(alist, "window");
+    const side = symName(alistGet(alist, "side")) ?? "below";
+    const atom = e8.windowp(given) ? e8.windowParameter(given, "window-atom") : undefined;
+    const window = windowNormalizeWindow(given);
+    const root = windowAtomRoot(window);
+    const made = splitWindowNoError(window, undefined, side);
+    if (made === undefined) return undefined;
+    // Rooted at the old root when the window was part of an atomic window, else at the window's new parent.
+    windowMakeAtom(root !== undefined && root !== window ? root : e8.windowParent(window)!);
+    if (isNil(atom) && e8.windowLiveP(window)) e8.setWindowParameter(window, "window-atom", "main");
+    e8.setWindowParameter(made, "window-atom", side);
+    return windowDisplayBuffer(buffer, made, "window", alist);
+  }),
+);
+
+/** Dissolves wrongly made atomic windows from `window` on, as window--atom-check-1. */
+function windowAtomCheck1(window: e8.Window | undefined): void {
+  for (let w = window; w !== undefined; w = e8.windowNextSibling(w)) {
+    if (!isNil(e8.windowParameter(w, "window-atom"))) {
+      let count = 0;
+      let reset = false;
+      walkWindowSubtree((sub) => {
+        if (reset) return;
+        if (!isNil(e8.windowParameter(sub, "window-atom"))) count++;
+        else reset = true;
+      }, w, true);
+      // One with no other window, or holding one that is not atomic, is no atomic window.
+      if (reset || count === 1) walkWindowSubtree((sub) => e8.setWindowParameter(sub, "window-atom", null), w, true);
+    } else if (!e8.windowLiveP(w)) {
+      windowAtomCheck1(e8.windowLeftChild(w));
+      windowAtomCheck1(e8.windowTopChild(w));
+    }
+  }
+}
+
+/** Checks a frame's atomic windows, dissolving any wrongly made, as window--atom-check. */
+export function windowAtomCheck(frame?: e8.Frame): void {
+  windowAtomCheck1(e8.frameRootWindow(frame));
+}
+
+// Side windows' checks.
+
+/** Signals an error if a frame's side windows are not as window.el makes them, as window--sides-check-failed. */
+function windowSidesCheckFailed(frame?: e8.Frame): boolean {
+  for (const side of SIDES) {
+    const window = windowWithParameter("window-side", side, frame, true);
+    if (window === undefined) continue;
+    const onSide = (w: e8.Window) => symName(e8.windowParameter(w, "window-side")) === side;
+    if (e8.windowLiveP(window)) {
+      walkWindowTree((t) => {
+        if (onSide(t) && t !== window) e8.signal("error", `Window ${String(t)} has same side ${side} as window ${String(window)} but no common parent`);
+      }, frame, true);
+    } else {
+      walkWindowTree((t) => {
+        if (e8.windowParent(t) === window) {
+          if (!onSide(t)) e8.signal("error", `Window ${String(t)} has not same side ${side} as its parent ${String(window)}`);
+        } else if (onSide(t) && t !== window) {
+          e8.signal("error", `Window ${String(t)} has same side ${side} as major side window ${String(window)} but its parent is ${String(e8.windowParent(t))}`);
+        }
+      }, frame, true);
+    }
+  }
+  return false;
+}
+
+/**
+ * Checks a frame's side windows, as window--sides-check: at most one
+ * internal side window on each side, all its children on that side, and
+ * no other window on it; else at most one window on the side.
+ */
+export function windowSidesCheck(frame?: e8.Frame): void {
+  if (isNil(e8.variable("window--sides-inhibit-check")) && windowWithParameter("window-side", null, frame, true) !== undefined && windowSidesCheckFailed(frame)) {
+    walkWindowTree((w) => e8.setWindowParameter(w, "window-side", null), frame, true);
+    e8.message(`Side windows configuration reset for frame ${String(frame ?? e8.selectedFrame())}`);
+  }
+}
+
+/** Checks a frame's atomic and side windows, as window--check. */
+export function windowCheck(frame?: e8.Frame): void {
+  windowSidesCheck(frame);
+  windowAtomCheck(frame);
+}
+
+// Cycling through windows.
+
+/** Whether next-window's MINIBUF counts the minibuffer's window: t always, nil while it is active, anything else never. */
+const countsMinibuffer = (minibuf: e8.Value | undefined): boolean => minibuf === true || (isNil(minibuf) && e8.minibufferDepth() > 0);
+
+/** The window after `window` in cyclic order, as next-window, on the frames `allFrames` says. */
+export function nextWindow(window: e8.Window = e8.selectedWindow(), minibuf?: e8.Value | null, allFrames?: e8.Value | null): e8.Window {
+  return windowsOnFrames(allFrames ?? undefined, window, countsMinibuffer(minibuf ?? undefined))[1] ?? window;
+}
+
+/** The window before `window` in cyclic order, as previous-window. */
+export function previousWindow(window: e8.Window = e8.selectedWindow(), minibuf?: e8.Value | null, allFrames?: e8.Value | null): e8.Window {
+  const list = windowsOnFrames(allFrames ?? undefined, window, countsMinibuffer(minibuf ?? undefined));
+  return list.length > 1 ? list[list.length - 1] : window;
+}
+
+/**
+ * Selects another window, `count` on in cyclic order, or back with a
+ * negative count, as other-window: windows with a no-other-window
+ * parameter are passed over, and a window's other-window parameter can be
+ * a function to call instead with `count` and `allFrames`, which is as
+ * next-window's.
+ */
+export function otherWindow(count: number, allFrames?: e8.Value | null, interactive = false): null {
+  let window = e8.selectedWindow();
+  const original = window;
+  const fn = ignoringParameters() ? undefined : e8.windowParameter(window, "other-window");
+  if (functionp(fn)) {
+    fcall(fn, count, allFrames ?? null);
+    return null;
+  }
+  let oldWindow: e8.Window | undefined;
+  let oldCount = 0;
+  const step = (next: (w: e8.Window) => e8.Window, by: number): boolean => {
+    window = next(window);
+    if (window === oldWindow) {
+      // Round the windows without a change: all are passed over.
+      if (count === oldCount) return false;
+    } else if (!isNil(e8.windowParameter(window, "no-other-window"))) {
+      if (oldWindow === undefined) [oldWindow, oldCount] = [window, count];
+    } else {
+      count += by;
+    }
+    return true;
+  };
+  while (count > 0) if (!step((w) => nextWindow(w, null, allFrames), -1)) return null;
+  while (count < 0) if (!step((w) => previousWindow(w, null, allFrames), 1)) return null;
+  if (window === original && interactive && !e8.executingKbdMacro() && isNil(e8.variable("noninteractive"))) e8.message("No other window to select");
+  e8.selectWindow(window);
+  return null;
+}
+
+/** Whether the selected window is the only one, as one-window-p: the minibuffer's counts while active, unless `nomini`. */
+export function oneWindowP(nomini = false, allFrames?: e8.Value | null): boolean {
+  let base = e8.selectedWindow();
+  if (nomini && base === e8.minibufferWindow()) base = nextWindow(base);
+  return base === nextWindow(base, nomini ? "arg" : null, allFrames);
+}
+e8.defun("one-window-p", (nomini?: e8.Value, allFrames?: e8.Value) => oneWindowP(!isNil(nomini), allFrames ?? null));
+
+const otherWindowCommand = e8.defineCommand({
+  name: "other-window",
+  doc:
+    "Select another window in cyclic ordering of windows.\n\n" +
+    "A prefix argument says how many windows on to go; a negative one goes back. Windows with a no-other-window " +
+    "parameter are passed over, and the selected window's other-window parameter can be a function to call instead. " +
+    "Code passing ALL-FRAMES calls window.ts's otherWindow.",
+  params: [{ name: "count", kind: "count" }],
+  run: (count) => {
+    otherWindow(count, null, e8.calledInteractively());
+  },
+});
+
+// Deleting windows.
+
+/** The window at frame-relative units `x` and `y`, as window-at-x-y; with `noOther`, none if it has a no-other-window parameter. */
+export function windowAtXY(x: number, y: number, frame?: e8.Frame, noOther = false): e8.Window | undefined {
+  const [, , rootRight, rootBottom] = e8.windowPixelEdges(e8.frameRootWindow(frame));
+  const found: e8.Window[] = [];
+  walkWindowTree((w) => {
+    const [l, t, r, b] = e8.windowPixelEdges(w);
+    if (x >= l && (x < r || x === rootRight) && y >= t && (y < b || y === rootBottom)) found.push(w);
+  }, frame);
+  const window = found[0];
+  return window !== undefined && noOther && !isNil(e8.windowParameter(window, "no-other-window")) ? undefined : window;
+}
+
+/**
+ * Whether a window can be deleted, as window-deletable-p: true, "frame"
+ * for a frame's root window whose frame can go as there are others, or
+ * false, as for the minibuffer's window and the frame's main window
+ * beside side windows. Part of an atomic window answers for its root.
+ */
+export function windowDeletableP(window0?: e8.Window | null): boolean | "frame" {
+  let window = windowNormalizeWindow(window0);
+  if (!(ignoringParameters() || e8.windowParameter(window, "delete-window") === true) && !isNil(e8.windowParameter(window, "window-atom"))) {
+    window = windowAtomRoot(window) ?? window;
+  }
+  const frame = e8.windowFrame(window);
+  if (frameRootWindowP(window)) {
+    // E8 has one minibuffer for every frame, so no frame holds another's.
+    const others = e8.frameList().some((f) => f !== frame && e8.frameVisibleP(f) !== false);
+    return others ? "frame" : false;
+  }
+  if (windowMinibufferP(window)) return false;
+  return ignoringParameters() || window !== windowMainWindow(frame);
+}
+e8.defun("window-deletable-p", (window?: e8.Window) => windowDeletableP(window));
+
+/** Makes a window its frame's selected one, as set-frame-selected-window: selecting it on the selected frame. */
+function setFrameSelectedWindow(frame: e8.Frame | undefined, window: e8.Window): void {
+  if (frame === undefined || frame === e8.selectedFrame()) e8.selectWindow(window);
+}
+
+/**
+ * Deletes a window, the selected one by default, as delete-window: its
+ * space goes to the sibling before it, or after it if it is the first, or
+ * with window-combination-resize t to all its siblings. Its
+ * delete-window parameter can be a function to call instead; a part of an
+ * atomic window deletes the whole of it; and the last window, a side
+ * window's frame's main window or an atomic window filling its frame
+ * cannot be deleted. If the frame's selected window goes,
+ * delete-window-choose-selected says which is selected next.
+ */
+export function deleteWindow(window0?: e8.Window | null): unknown {
+  const window = windowNormalizeWindow(window0);
+  const frame = e8.windowFrame(window);
+  const fn = e8.windowParameter(window, "delete-window");
+  const parent = e8.windowParent(window);
+  windowCheck(frame);
+  if (ignoringParameters() || fn === true) {
+    // Parameters are not looked at.
+  } else if (functionp(fn)) {
+    return fcall(fn, window);
+  } else if (!isNil(e8.windowParameter(window, "window-atom"))) {
+    const atomRoot = windowAtomRoot(window);
+    if (atomRoot !== undefined && atomRoot !== window) {
+      if (atomRoot === e8.frameRootWindow(frame)) e8.signal("error", "Root of atomic window is root window of its frame");
+      return deleteWindow(atomRoot);
+    }
+  }
+  if (parent === undefined) e8.signal("error", "Attempt to delete minibuffer or sole ordinary window");
+  if (!(ignoringParameters() || fn === true) && window === windowMainWindow(frame)) e8.signal("error", `Attempt to delete main window of frame ${String(frame)}`);
+  if (frame !== e8.selectedFrame()) {
+    e8.deleteWindow(window);
+    return null;
+  }
+  const horizontal = e8.windowLeftChild(parent) !== undefined;
+  const size = windowSize(window, horizontal, true);
+  const resize = e8.variable("window-combination-resize");
+  return e8.letBind({ "window-combination-resize": isNil(resize) ? (e8.windowParameter(parent, "window-side") ?? null) : (resize ?? null) }, () => {
+    const frameSelectedWindow = e8.frameSelectedWindow(frame)!;
+    // Emacs 23 gives the space preferably to the sibling on the left.
+    const sibling = windowLeft(window) ?? windowRight(window);
+    windowResizeReset(frame, horizontal);
+    if (e8.variable("window-combination-resize") !== true && sibling !== undefined && windowSizableP(sibling, size, horizontal, null, true)) {
+      windowResizeThisWindow(sibling, size, horizontal, null, true);
+      setWindowNewNormal(sibling, e8.windowNormalSize(sibling, horizontal) + e8.windowNormalSize(window, horizontal));
+    } else if (windowResizableP_(window, -size, horizontal, null, undefined, false, true, true)) {
+      windowResizeSiblings(window, -size, horizontal);
+    } else {
+      windowResizeSiblings(window, -size, horizontal, true);
+    }
+    let at: [number, number] | undefined;
+    if (symName(e8.variable("delete-window-choose-selected")) === "pos") {
+      // Where point is in the selected window, from the frame's top left.
+      const [left, top] = e8.windowPixelEdges(frameSelectedWindow);
+      const posn = e8.posnAtPoint(e8.windowPoint(frameSelectedWindow), frameSelectedWindow);
+      if (posn !== undefined) at = [left + posn.col * frameCharSize(true), top + posn.row * frameCharSize(false)];
+    }
+    e8.deleteWindowInternal(window);
+    windowPixelToTotal(frame, horizontal);
+    const choose = symName(e8.variable("delete-window-choose-selected"));
+    let chosen: e8.Window | undefined;
+    if (e8.windowLiveP(frameSelectedWindow)) {
+      // The selected window stays selected.
+    } else if (at !== undefined && (chosen = windowAtXY(at[0], at[1], frame, true)) !== undefined) {
+      setFrameSelectedWindow(frame, chosen);
+    } else if (choose === "mru" && (chosen = getMruWindow(frame, false, false, true)) !== undefined) {
+      setFrameSelectedWindow(frame, chosen);
+    } else if (!isNil(e8.windowParameter(e8.frameSelectedWindow(frame)!, "no-other-window"))) {
+      const other = windowsOnFrames(frame, e8.frameFirstWindow(frame)).find((w) => isNil(e8.windowParameter(w, "no-other-window")));
+      setFrameSelectedWindow(frame, other ?? e8.frameSelectedWindow(frame)!);
+    } else {
+      setFrameSelectedWindow(frame, e8.frameSelectedWindow(frame)!);
+    }
+    windowCheck(frame);
+    return null;
+  });
+}
+
+/**
+ * Makes a window fill its frame, the selected one by default, as
+ * delete-other-windows: its delete-other-windows parameter can be a
+ * function to call instead, a part of an atomic window makes the whole of
+ * it fill the frame, a side window cannot, and windows with a
+ * no-delete-other-windows parameter stay, the main window then filling
+ * the space within the side windows.
+ */
+export function deleteOtherWindows(window0?: e8.Window | null, interactive = false): unknown {
+  const window = windowNormalizeWindow(window0);
+  const frame = e8.windowFrame(window);
+  const fn = e8.windowParameter(window, "delete-other-windows");
+  let atomRoot: e8.Window | undefined;
+  windowCheck(frame);
+  if (ignoringParameters() || fn === true) {
+    // Parameters are not looked at.
+  } else if (functionp(fn)) {
+    return fcall(fn, window);
+  } else if (!isNil(e8.windowParameter(window, "window-atom")) && (atomRoot = windowAtomRoot(window)) !== undefined && atomRoot !== window) {
+    if (atomRoot === e8.frameRootWindow(frame)) e8.signal("error", "Root of atomic window is root window of its frame");
+    return deleteOtherWindows(atomRoot);
+  } else if (isSide(window)) {
+    e8.signal("error", "Cannot make side window the only window");
+  } else if (windowMinibufferP(window) && window !== e8.frameRootWindow(frame)) {
+    e8.signal("error", "Can't expand minibuffer to full frame");
+  }
+  let main: e8.Window;
+  const noDelete = (w: e8.Window) => !isNil(e8.windowParameter(w, "no-delete-other-windows"));
+  if (ignoringParameters() || windowWithParameter("no-delete-other-windows", null, frame) === undefined) {
+    main = e8.frameRootWindow(frame);
+  } else {
+    let all = true;
+    walkWindowTree((other) => {
+      if ((isSide(other) && !noDelete(other)) || (!isSide(other) && noDelete(other))) all = false;
+    }, frame);
+    if (all) {
+      main = windowMainWindow(frame);
+    } else {
+      // Window by window, as a deletable side window or a non-side window to keep was found.
+      for (const other of windowsOnFrames(frame ?? e8.selectedFrame(), e8.frameFirstWindow(frame))) {
+        if (e8.windowLiveP(other) && other !== window && !noDelete(other) && (atomRoot === undefined || windowAtomRoot(other) !== atomRoot)) {
+          e8.conditionCase(() => deleteWindow(other), { error: () => null });
+        }
+      }
+      return null;
+    }
+  }
+  if (window === main) {
+    if (interactive && !e8.executingKbdMacro() && isNil(e8.variable("noninteractive"))) e8.message("No other windows to delete");
+  } else {
+    e8.deleteOtherWindowsInternal(window, main);
+    windowCheck(frame);
+  }
+  return null;
+}
+
+/** Deletes the other windows in a window's column, the selected one's by default, as delete-other-windows-vertically. */
+export function deleteOtherWindowsVertically(window0?: e8.Window | null): void {
+  const window = window0 ?? e8.selectedWindow();
+  const [left, , right] = e8.windowEdges(window);
+  const delenda: e8.Window[] = [];
+  for (let w = nextWindow(window, 1); w !== window; w = nextWindow(w, 1)) {
+    const e = e8.windowEdges(w);
+    if (e[0] === left && e[2] === right) delenda.unshift(w);
+  }
+  for (const w of delenda) deleteWindow(w);
+}
+
+const deleteWindowCommand = e8.defineCommand({
+  name: "delete-window",
+  doc:
+    "Delete the selected window, giving its space to its neighbours.\n\n" +
+    "Its delete-window parameter can be a function to call instead; part of an atomic window deletes the whole of it, " +
+    "and the frame's only window or its main window beside side windows cannot be deleted. " +
+    "delete-window-choose-selected says which window is selected next. Code deletes another window with window.ts's deleteWindow.",
+  run: () => {
+    deleteWindow();
+  },
+});
+
+const deleteOtherWindowsCommand = e8.defineCommand({
+  name: "delete-other-windows",
+  doc:
+    "Make the selected window fill its frame, deleting the others.\n\n" +
+    "A window's delete-other-windows parameter can be a function to call instead, windows with a " +
+    "no-delete-other-windows parameter stay, part of an atomic window keeps the whole of it, and in a side window this is an error.",
+  run: () => {
+    deleteOtherWindows(undefined, e8.calledInteractively());
+  },
+});
+
+e8.defineCommand({
+  name: "delete-other-windows-vertically",
+  doc: "Delete the windows in the same column as the selected window, but not the window itself.",
+  run: () => deleteOtherWindowsVertically(),
+});
+
+/**
+ * Deletes the windows showing a buffer, the current one by default, as
+ * delete-windows-on: on all frames, or as `frame` says, t the selected
+ * frame only and otherwise as next-window's ALL-FRAMES. A frame's root
+ * window goes with its frame if it is dedicated and there are others,
+ * and a window that cannot be deleted shows another buffer. Windows not
+ * showing the buffer forget it.
+ */
+export function deleteWindowsOn(bufferOrName?: e8.BufferLike | null, frame?: e8.Value | null): void {
+  const buffer = e8.getBuffer(bufferOrName ?? e8.currentBuffer());
+  if (buffer === undefined || !e8.bufferLiveP(buffer)) e8.signal("error", `No such live buffer ${String(bufferOrName)}`);
+  const allFrames = isNil(frame) ? true : frame === true ? null : frame;
+  for (const window of windowsOnFrames(allFrames ?? undefined, undefined, e8.minibufferDepth() > 0)) {
+    if (!e8.windowLiveP(window)) continue;
+    if (e8.windowBuffer(window) === buffer.name) {
+      const deletable = windowDeletableP(window);
+      const flag = e8.windowDedicatedP(window);
+      if (deletable === "frame" && !isNil(flag)) {
+        e8.deleteFrame(e8.windowFrame(window));
+      } else if (deletable === true) {
+        deleteWindow(window);
+      } else {
+        e8.setWindowDedicatedP(window, null);
+        e8.switchToPrevBuffer(window, "bury");
+        if (symName(flag) === "side") e8.setWindowDedicatedP(window, "side");
+      }
+    } else if (window !== e8.minibufferWindow()) {
+      // As unrecord-window-buffer.
+      e8.setWindowPrevBuffers(window, e8.windowPrevBuffers(window).filter(([b]) => b !== buffer.name));
+      e8.setWindowNextBuffers(window, e8.windowNextBuffers(window).filter((b) => b !== buffer.name));
+    }
+  }
+}
+
+e8.defineCommand({
+  name: "delete-windows-on",
+  doc:
+    "Delete all windows showing a buffer.\n\n" +
+    "With a prefix argument of 0, only windows on visible and iconified frames; with another, only the selected frame's. " +
+    "A window that cannot be deleted shows another buffer instead.",
+  params: [
+    { name: "buffer", kind: "buffer", prompt: "Delete windows on (buffer): " },
+    { name: "frame", kind: "prefix" },
+  ],
+  run: (buffer, prefix) => {
+    deleteWindowsOn(buffer, prefix === 0 ? 0 : isNil(prefix) ? null : true);
+  },
+});
+
+// Splitting windows.
+
+/** How much of a combination's size a new child could take from its children that can be resized, as window--combination-resizable. */
+function windowCombinationResizable(parent: e8.Window, horizontal = false): number {
+  let number = 0;
+  let total = 0;
+  for (let sub = windowChild(parent); sub !== undefined; sub = windowRight(sub)) {
+    if (!windowSizeFixedP(sub, horizontal)) {
+      number++;
+      total += windowSize(sub, horizontal, true);
+    }
+  }
+  return lispDivide(total, number + 1);
+}
+
+/** The most windows one above another in a window, or side by side with `horizontal`, as window-combinations. */
+export function windowCombinations(window: e8.Window, horizontal = false, ignoreFixed = false): number {
+  if (e8.windowLiveP(window)) return 1;
+  const iso = horizontal ? e8.windowLeftChild(window) : e8.windowTopChild(window);
+  let count = iso !== undefined ? 0 : 1;
+  for (let child = windowChild(window); child !== undefined; child = windowRight(child)) {
+    if (ignoreFixed && windowSizeFixedP(child, horizontal)) continue;
+    const n = windowCombinations(child, horizontal, ignoreFixed);
+    count = iso !== undefined ? count + n : Math.max(count, n);
+  }
+  return count;
+}
+e8.defun("window-combinations", (window?: e8.Window, horizontal?: e8.Value, ignoreFixed?: e8.Value) =>
+  windowCombinations(windowNormalizeWindow(window), !isNil(horizontal), !isNil(ignoreFixed)),
+);
+
+/**
+ * Makes a new window beside a window, the selected one by default, as
+ * split-window, and gives it. `size` gives the window that many lines, or
+ * columns beside it, or with a negative size the new window; half each by
+ * default. `side` is below (nil), above, left or right (t). `pixelwise`
+ * takes `size` in the front end's units. window-combination-resize t
+ * takes the new window's space from the window's siblings too, and
+ * window-combination-limit t always makes a new internal window. Its
+ * split-window parameter can be a function to call instead; part of an
+ * atomic window splits the whole of it, and a side window is split only
+ * with window-combination-resize `side'.
+ */
+export function splitWindow(window0?: e8.Window | null, size?: number | null, side0?: e8.Value | null, pixelwise = false): e8.Window {
+  const window = windowNormalizeWindow(window0);
+  const name = symName(side0);
+  const side =
+    isNil(side0) ? "below"
+    : name === "up" ? "above"
+    : name === "down" ? "below"
+    : name === "below" || name === "above" || name === "right" || name === "left" ? name
+    : "right";
+  const horizontal = side === "right" || side === "left";
+  const frame = e8.windowFrame(window);
+  const parent = e8.windowParent(window);
+  const fn = e8.windowParameter(window, "split-window");
+  const windowSide = e8.windowParameter(window, "window-side");
+  let limit = e8.variable("window-combination-limit") ?? null;
+  const resizeVar = e8.variable("window-combination-resize") ?? null;
+  const charSize = frameCharSize(horizontal);
+  const pixelSize = typeof size === "number" ? windowSizeToPixel(window, size, horizontal, pixelwise, true) : undefined;
+  const dividerWidth = 0;
+  let ignore: unknown = null;
+  windowCheck(frame);
+  if (ignoringParameters() || fn === true) {
+    // Parameters are not looked at.
+  } else if (functionp(fn)) {
+    return fcall(fn, window, size ?? null, side);
+  } else if (!isNil(e8.windowParameter(window, "window-atom"))) {
+    const atomRoot = windowAtomRoot(window);
+    if (atomRoot !== undefined && atomRoot !== window) return splitWindow(atomRoot, size, side, pixelwise);
+  }
+  if (!(ignoringParameters() || fn === true)) {
+    if (symName(resizeVar) !== "side" && !isNil(windowSide)) {
+      e8.signal("error", "Cannot split side window or parent of side window");
+    }
+    const prev = e8.windowPrevSibling(window);
+    const next = e8.windowNextSibling(window);
+    if (symName(resizeVar) !== "side" && ((prev !== undefined && isSide(prev)) || (next !== undefined && isSide(next)))) limit = true;
+  }
+  if (resizeVar === true && pixelSize !== undefined && pixelSize > 0) limit = true;
+  const parentPixelSize = parent !== undefined ? windowSize(parent, horizontal, true) : 0;
+  // Whether to resize the other windows in the window's combination.
+  const resize = !isNil(resizeVar) && (!isNil(windowSide) || symName(resizeVar) !== "side") && limit !== true && windowCombinedP(window, horizontal);
+  const oldPixelSize = windowSize(window, horizontal, true);
+  let newPixelSize: number;
+  if (pixelSize === undefined) {
+    newPixelSize = resize
+      ? Math.max(
+          Math.min(parentPixelSize - windowMinSize(parent!, horizontal, null, true), windowCombinationResizable(parent!, horizontal)),
+          windowMinPixelHeight(e8.selectedWindow()),
+        )
+      : lispDivide(oldPixelSize, 2);
+    // Whole units, as Emacs's frame-char-size is, so the two sizes add up.
+    if (isNil(e8.variable("window-resize-pixelwise"))) newPixelSize = Math.round(charSize * lispRound(newPixelSize / charSize));
+  } else if (pixelSize >= 0) {
+    newPixelSize = oldPixelSize - pixelSize;
+  } else {
+    newPixelSize = -pixelSize;
+  }
+  const tooSmall = (w: e8.Window) => e8.signal("error", `Window ${String(w)} too small for splitting`);
+  const parentSizable = () =>
+    windowSizableP(parent!, -(newPixelSize + dividerWidth), horizontal, null, true) ||
+    windowSizableP(parent!, -(newPixelSize + dividerWidth), horizontal, (ignore = Symbol.for("preserved")), true);
+  const safe = windowSafeMinSize(window, horizontal, true);
+  if (pixelSize === undefined) {
+    if (resize) {
+      if (!parentSizable()) tooSmall(parent!);
+    } else if (
+      newPixelSize + dividerWidth + windowMinSize(window, horizontal, null, true) > oldPixelSize &&
+      newPixelSize + dividerWidth + windowMinSize(window, horizontal, (ignore = Symbol.for("preserved")), true) > oldPixelSize
+    ) {
+      tooSmall(window);
+    }
+  } else if (pixelSize >= 0 && (pixelSize >= oldPixelSize || newPixelSize < safe)) {
+    tooSmall(window);
+  } else if (resize) {
+    if (!parentSizable()) tooSmall(parent!);
+  } else if (newPixelSize < safe || oldPixelSize - newPixelSize < safe) {
+    tooSmall(window);
+  }
+  windowResizeReset(frame, horizontal);
+  // A new internal window, to nest, or as the window is not in a combination this way.
+  const newParent = limit === true || !windowCombinedP(window, horizontal);
+  const newNormal =
+    pixelSize !== undefined ? newPixelSize / (newParent ? oldPixelSize : parentPixelSize)
+    : newParent ? 0.5
+    : resize ? 1.0 / (1 + windowCombinations(parent!, horizontal, true))
+    : e8.windowNormalSize(window, horizontal) / 2.0;
+  if (resize) {
+    // The space from the window's siblings, which do not go up the tree, as that could not be given back.
+    windowResizeChildWindows(parent!, -newPixelSize, horizontal, undefined, ignore);
+    const normal = 1.0 - newNormal;
+    for (let sub = windowChild(parent!); sub !== undefined; sub = windowRight(sub)) setWindowNewNormal(sub, e8.windowNormalSize(sub, horizontal) * normal);
+  } else {
+    // All of it from the window.
+    e8.setWindowNewPixel(window, oldPixelSize - newPixelSize);
+    windowResizeThisWindow(window, -newPixelSize, horizontal, ignore);
+    setWindowNewNormal(window, (newParent ? 1.0 : e8.windowNormalSize(window, horizontal)) - newNormal);
+  }
+  const made = e8.letBind({ "window-combination-limit": limit }, () => e8.splitWindowInternal(window, newPixelSize, side, newNormal));
+  windowPixelToTotal(frame, horizontal);
+  if (symName(resizeVar) === "side") {
+    const newSide = !isNil(windowSide) ? windowSide! : side === "above" ? "top" : side === "below" ? "bottom" : side;
+    e8.setWindowParameter(made, "window-side", newSide);
+    // Splitting a side root window gives the new parent its side.
+    if (newParent && !isNil(e8.windowParameter(window, "window-side"))) e8.setWindowParameter(e8.windowParent(made)!, "window-side", newSide);
+  } else if (symName(resizeVar) === "atom") {
+    // So window--check keeps an atomic window the new one is nested in.
+    if (isNil(e8.windowParameter(window, "window-atom"))) e8.setWindowParameter(window, "window-atom", true);
+    if (newParent) e8.setWindowParameter(e8.windowParent(made)!, "window-atom", true);
+    e8.setWindowParameter(made, "window-atom", true);
+  }
+  const minMargins = e8.windowParameter(window, "min-margins");
+  if (!isNil(minMargins)) e8.setWindowParameter(made, "min-margins", minMargins!);
+  if (size === undefined || size === null) windowSanitizeWindowSizes(horizontal);
+  windowCheck(frame);
+  return made;
+}
+e8.defun("split-window", (window?: e8.Window, size?: number, side?: e8.Value, pixelwise?: e8.Value) => splitWindow(window, size, side, !isNil(pixelwise)));
+
+/** Splits a window as split-window does, giving undefined rather than an error where it cannot be, as split-window-no-error. */
+export function splitWindowNoError(window?: e8.Window | null, size?: number | null, side?: e8.Value | null, pixelwise = false): e8.Window | undefined {
+  return e8.conditionCase<e8.Window | undefined>(() => splitWindow(window, size, side, pixelwise), { error: () => undefined });
+}
+e8.defun("split-window-no-error", (window?: e8.Window, size?: number, side?: e8.Value, pixelwise?: e8.Value) =>
+  splitWindowNoError(window, size, side, !isNil(pixelwise)) ?? null,
+);
+
+/** Moves point `lines` screen lines down, or up for a negative count, to a screen line's start, as vertical-motion in the selected window; gives how many it moved. */
+function verticalMotion(lines: number): number {
+  e8.gotoChar(e8.screenLine(e8.point()).start);
+  let moved = 0;
+  while (moved < lines) {
+    const line = e8.screenLine(e8.point());
+    const next = line.continued ? line.end : line.end + 1;
+    if (next > e8.pointMax()) {
+      e8.gotoChar(e8.pointMax());
+      break;
+    }
+    e8.gotoChar(next);
+    moved++;
+  }
+  while (moved > lines && e8.point() > e8.pointMin()) {
+    e8.gotoChar(e8.screenLine(e8.point() - 1).start);
+    moved--;
+  }
+  return moved;
+}
+
+/**
+ * Splits a window, the selected one by default, into two one above the
+ * other, as split-window-below, and gives the new one, below. `size` as
+ * split-window's; a new window less than window-min-height is refused.
+ * With split-window-keep-point nil, splitting the selected window puts
+ * the new window's start after the old one's text, so neither scrolls,
+ * and selects the new window if point is in its part.
+ */
+export function splitWindowBelow(size?: number | null, windowToSplit?: e8.Window | null): e8.Window {
+  const oldPoint = e8.windowPoint();
+  if (typeof size === "number" && size < 0 && -size < numberVariable("window-min-height", 4)) e8.signal("error", "Size of new window too small");
+  const made = splitWindow(windowToSplit, size);
+  if (isNil(e8.variable("split-window-keep-point")) && (isNil(windowToSplit) || windowToSplit === e8.selectedWindow())) {
+    const selected = e8.selectedWindow();
+    const height = e8.windowTotalHeight(selected);
+    let byHeight = false;
+    let bottom = 0;
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.windowStart(selected));
+      const moved = verticalMotion(height);
+      e8.setWindowStart(made, e8.point());
+      if (e8.point() > e8.windowPoint(made)) e8.setWindowPoint(made, e8.point());
+      if (moved === height) {
+        byHeight = true;
+        verticalMotion(-1);
+      }
+      bottom = e8.point();
+    });
+    if (byHeight && bottom <= e8.point()) e8.setWindowPoint(selected, bottom - 1);
+    if (byHeight && e8.windowStart(made) <= oldPoint) {
+      e8.setWindowPoint(made, oldPoint);
+      e8.selectWindow(made);
+    }
+  }
+  // The new window quits as the old one does.
+  const quitRestore = e8.windowParameter(windowToSplit ?? undefined, "quit-restore");
+  if (!isNil(quitRestore)) e8.setWindowParameter(made, "quit-restore", quitRestore!);
+  return made;
+}
+
+/** Splits a window, the selected one by default, into two side by side, as split-window-right, and gives the new one, on the right. */
+export function splitWindowRight(size?: number | null, windowToSplit?: e8.Window | null): e8.Window {
+  if (typeof size === "number" && size < 0 && -size < numberVariable("window-min-width", 10)) e8.signal("error", "Size of new window too small");
+  const made = splitWindow(windowToSplit, size, true);
+  const quitRestore = e8.windowParameter(windowToSplit ?? undefined, "quit-restore");
+  if (!isNil(quitRestore)) e8.setWindowParameter(made, "quit-restore", quitRestore!);
+  return made;
+}
+
+/** The size a prefix argument asks a split for, as split-window-below reads it. */
+function splitSize(): number | undefined {
+  const arg = e8.prefixArg();
+  return arg === null ? undefined : e8.prefixNumericValue(arg);
+}
+
+const splitBelow = e8.defineCommand({
+  name: "split-window-below",
+  doc:
+    "Split the selected window into two, one above the other.\n\n" +
+    "The selected window stays on top and the new one below shows the same buffer at the same place. " +
+    "A prefix argument gives the selected window that many lines, or the new one if it is negative. " +
+    "With split-window-keep-point nil, point is moved so that neither window scrolls.",
+  run: () => {
+    splitWindowBelow(splitSize(), e8.selectedWindow());
+  },
+});
+
+const splitRight = e8.defineCommand({
+  name: "split-window-right",
+  doc:
+    "Split the selected window into two, side by side.\n\n" +
+    "The selected window stays on the left and the new one on the right shows the same buffer at the same place. " +
+    "A prefix argument gives the selected window that many columns, or the new one if it is negative.",
+  run: () => {
+    splitWindowRight(splitSize(), e8.selectedWindow());
+  },
+});
+
+const splitRootBelow = e8.defineCommand({
+  name: "split-root-window-below",
+  doc:
+    "Split the frame's root window in two, the new window below taking the frame's whole width. " +
+    "A prefix argument gives the windows above that many lines, or the new one if it is negative.",
+  run: () => {
+    splitWindowBelow(splitSize(), e8.frameRootWindow());
+  },
+});
+
+const splitRootRight = e8.defineCommand({
+  name: "split-root-window-right",
+  doc:
+    "Split the frame's root window in two, the new window on the right taking the frame's whole height. " +
+    "A prefix argument gives the windows on the left that many columns, or the new one if it is negative.",
+  run: () => {
+    splitWindowRight(splitSize(), e8.frameRootWindow());
+  },
+});
+
+// Hiding and showing side windows.
+
+/**
+ * A window and what it holds, as window-toggle-side-windows keeps them
+ * in a frame's window-state parameter: whether it is the frame's main
+ * window, its size along its parent in the front end's units, its
+ * persistent parameters, and a live window's buffer, start, point and
+ * dedication, or an internal window's kind, combination limit and children.
+ */
+interface SideWindowsState {
+  main?: boolean;
+  size: number;
+  parameters: [string, e8.Value][];
+  buffer?: string;
+  start?: number;
+  point?: number;
+  dedicated?: e8.Value;
+  horizontal?: boolean;
+  limit?: boolean;
+  children?: SideWindowsState[];
+}
+
+/** The window parameters window-toggle-side-windows keeps, as window-persistent-parameters makes window-state-get keep them. */
+const PERSISTENT_PARAMETERS = ["window-side", "window-slot", "clone-of"];
+
+function sideWindowsState(window: e8.Window, main: e8.Window): SideWindowsState {
+  const parent = e8.windowParent(window);
+  const horizontal = parent !== undefined && e8.windowLeftChild(parent) !== undefined;
+  const parameters: [string, e8.Value][] = [];
+  for (const name of PERSISTENT_PARAMETERS) {
+    const v = e8.windowParameter(window, name);
+    if (!isNil(v)) parameters.push([name, typeof v === "symbol" ? v.description! : v!]);
+  }
+  const state: SideWindowsState = { size: windowSize(window, horizontal, true), parameters };
+  if (window === main) state.main = true;
+  if (e8.windowLiveP(window)) {
+    Object.assign(state, {
+      buffer: e8.windowBuffer(window),
+      start: e8.windowStart(window),
+      point: e8.windowPoint(window),
+      dedicated: e8.windowDedicatedP(window) ?? null,
+    });
+  } else {
+    const children: SideWindowsState[] = [];
+    for (let c = windowChild(window); c !== undefined; c = windowRight(c)) children.push(sideWindowsState(c, main));
+    Object.assign(state, { horizontal: e8.windowLeftChild(window) !== undefined, limit: e8.windowCombinationLimit(window), children });
+  }
+  return state;
+}
+
+const holdsMain = (s: SideWindowsState): boolean => s.main === true || (s.children ?? []).some(holdsMain);
+
+/** Gives a window a kept window's parameters, and a live one its buffer as it was. */
+function putSideWindowState(s: SideWindowsState, window: e8.Window): void {
+  for (const [name, value] of s.parameters) e8.setWindowParameter(window, name, value);
+  if (s.children === undefined) {
+    if (s.buffer !== undefined && e8.getBuffer(s.buffer) !== undefined) {
+      e8.setWindowBuffer(window, s.buffer);
+      e8.setWindowStart(window, s.start ?? 0);
+      e8.setWindowPoint(window, s.point ?? 0);
+    }
+    e8.setWindowDedicatedP(window, s.dedicated ?? null);
+    return;
+  }
+  // An internal window: its children split off the last, each at its size, the first keeping the rest.
+  const windows = [window];
+  for (const [j, child] of s.children.entries()) {
+    if (j === 0) continue;
+    const made = e8.letBind({ "window-combination-limit": j === 1 }, () => splitWindow(windows[j - 1], -child.size, s.horizontal ? "right" : "below", true));
+    windows.push(made);
+  }
+  const parent = e8.windowParent(window);
+  if (parent !== undefined) e8.setWindowCombinationLimit(parent, s.limit === true);
+  s.children.forEach((child, j) => putSideWindowState(child, windows[j]));
+}
+
+/**
+ * Puts the windows a kept state had around its main window back around
+ * `current`, which stands for the part of the state holding the main
+ * window: its siblings split off it at their sizes, those before it
+ * first, then those after it, nearest last.
+ */
+function putAroundMain(s: SideWindowsState, current: e8.Window): void {
+  if (s.main === true || s.children === undefined) return;
+  const i = s.children.findIndex(holdsMain);
+  const before = s.horizontal ? "left" : "above";
+  const after = s.horizontal ? "right" : "below";
+  let first = true;
+  const split = (child: SideWindowsState, side: string): e8.Window => {
+    const made = e8.letBind({ "window-combination-limit": first }, () => splitWindow(current, -child.size, side, true));
+    first = false;
+    return made;
+  };
+  const made: [SideWindowsState, e8.Window][] = [];
+  for (const child of s.children.slice(0, i)) made.push([child, split(child, before)]);
+  for (const child of s.children.slice(i + 1).reverse()) made.push([child, split(child, after)]);
+  const parent = e8.windowParent(current);
+  if (parent !== undefined) {
+    for (const [name, value] of s.parameters) e8.setWindowParameter(parent, name, value);
+    e8.setWindowCombinationLimit(parent, s.limit === true);
+  }
+  for (const [child, window] of made) putSideWindowState(child, window);
+  putAroundMain(s.children[i], current);
+}
+
+/**
+ * Hides or shows a frame's side windows, the selected frame's by default,
+ * as window-toggle-side-windows: with side windows, keeps the frame's
+ * windows in its window-state parameter and deletes all but the main
+ * window; without, puts the side windows kept there back around the main
+ * window, leaving that as it is.
+ */
+export function windowToggleSideWindows(frame0?: e8.Frame | null): void {
+  const frame = frame0 ?? e8.selectedFrame();
+  e8.letBind({ "window--sides-inhibit-check": true }, () => {
+    if (windowWithParameter("window-side", null, frame) !== undefined) {
+      const main = windowMainWindow(frame);
+      e8.setFrameParameter(frame, "window-state", JSON.stringify(sideWindowsState(e8.frameRootWindow(frame), main)));
+      e8.letBind({ "ignore-window-parameters": true }, () => deleteOtherWindows(main));
+      return;
+    }
+    const kept = e8.frameParameter(frame, "window-state");
+    if (typeof kept !== "string" || kept === "") e8.signal("error", "No side windows state found");
+    e8.letBind({ "ignore-window-parameters": true }, () => putAroundMain(JSON.parse(kept) as SideWindowsState, e8.frameRootWindow(frame)));
+  });
+}
+
+e8.defineCommand({
+  name: "window-toggle-side-windows",
+  doc:
+    "Toggle display of side windows on the selected frame.\n\n" +
+    "With side windows, they are deleted after the frame's windows are kept in its window-state parameter; " +
+    "without, the side windows kept there are shown again around the main window.",
+  run: () => windowToggleSideWindows(),
+});
+
 // Frames, as frame.el's commands, on C-x 5.
 
 const makeFrameCommand = e8.defineCommand({
@@ -3075,33 +3998,13 @@ e8.bindKey("C-x 5 C-o", displayBufferOtherFrame);
 
 e8.bindKey("C-x <left>", previousBuffer);
 e8.bindKey("C-x <right>", nextBuffer);
-const splitRootBelow = e8.defineCommand({
-  name: "split-root-window-below",
-  doc:
-    "Split the frame's root window in two, the new window below taking the frame's whole width. " +
-    "A prefix argument gives the windows above that many lines, or the new one if it is negative.",
-  run: () => {
-    e8.splitRootWindow("below", splitSize());
-  },
-});
-
-const splitRootRight = e8.defineCommand({
-  name: "split-root-window-right",
-  doc:
-    "Split the frame's root window in two, the new window on the right taking the frame's whole height. " +
-    "A prefix argument gives the windows on the left that many columns, or the new one if it is negative.",
-  run: () => {
-    e8.splitRootWindow("right", splitSize());
-  },
-});
-
 e8.bindKey("C-x w 2", splitRootBelow);
 e8.bindKey("C-x w 3", splitRootRight);
 e8.bindKey("C-x 2", splitBelow);
 e8.bindKey("C-x 3", splitRight);
-e8.bindKey("C-x o", otherWindow);
-e8.bindKey("C-x 0", deleteWindow);
-e8.bindKey("C-x 1", deleteOtherWindows);
+e8.bindKey("C-x o", otherWindowCommand);
+e8.bindKey("C-x 0", deleteWindowCommand);
+e8.bindKey("C-x 1", deleteOtherWindowsCommand);
 e8.bindKey("C-x 4 b", switchToBufferOtherWindow);
 e8.bindKey("C-x 4 f", findFileOtherWindow);
 e8.bindKey("C-x 4 C-f", findFileOtherWindow);

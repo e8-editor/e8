@@ -97,12 +97,15 @@ fn deleting_windows() {
 #[test]
 fn small_windows_do_not_split() {
     let (mut ed, _scripting) = setup("");
-    ed.set_viewport_height(6);
+    // As Emacs 30: six lines with the mode line cannot be split, seven
+    // can, the new window taking three, less than window-min-height, as
+    // window--sanitize-window-sizes finds none to give it.
+    ed.set_viewport_height(5);
     let err = ed.call("split-window-below", vec![]).unwrap_err();
     assert_eq!(err.to_string(), "Window #<window 1 on *scratch*> too small for splitting");
-    ed.set_viewport_height(7);
+    ed.set_viewport_height(6);
     ed.call("split-window-below", vec![]).unwrap();
-    assert_eq!(ed.viewport_height(), 3, "eight lines with the mode line, halved, less the mode line");
+    assert_eq!(ed.viewport_height(), 3, "the four lines the old window keeps, less the mode line");
 }
 
 #[test]

@@ -18,17 +18,6 @@ natives! {
         ed.split_root_window_toward(matches!(side, "right" | "left"), matches!(side, "left" | "above"), size).map(Win)
     }
 
-    /// Splits the smallest part of the selected frame's windows that holds
-    /// all of `windows`, as Emacs splits an internal window, such as the
-    /// main window beside side windows: the new window takes the part's
-    /// whole bottom, right, top or left. `size` is as splitWindow's.
-    #[ts = "(windows: WindowLike[], side?: \"below\" | \"right\" | \"above\" | \"left\", size?: number): Window"]
-    pub fn splitWindowsEnclosing(ed, windows: Vec<Win>, side: Option<String>, size: Option<i64>) -> Win {
-        let side = side.as_deref().unwrap_or("below");
-        let ids: Vec<u64> = windows.iter().map(|w| w.0).collect();
-        ed.split_windows_toward(&ids, matches!(side, "right" | "left"), matches!(side, "left" | "above"), size).map(Win)
-    }
-
     /// Marks a window the second most recently used, after the selected
     /// one, as window-bump-use-time; gives its use time, or undefined for
     /// the selected window.
@@ -141,14 +130,36 @@ natives! {
         ed.set_window_combination_limit(window.0, limit)
     }
 
-    /// Splits a window, live or internal, as split-window-internal: the new
-    /// window below, to the right, above or to the left of it, sharing its
-    /// size, which `size` gives as splitWindow's does. A new window beside
-    /// an internal window shows the selected window's buffer.
-    #[ts = "(window: WindowLike, side?: \"below\" | \"right\" | \"above\" | \"left\", size?: number): Window"]
-    pub fn splitWindowInternal(ed, window: Win, side: Option<String>, size: Option<i64>) -> Win {
-        let side = side.as_deref().unwrap_or("below");
-        ed.split_window_internal(window.0, matches!(side, "right" | "left"), matches!(side, "left" | "above"), size).map(Win)
+    /// Splits a window of the selected frame, live or internal, as
+    /// window.c's split-window-internal, once window.el's split-window has
+    /// worked out the sizes: the new window `pixelSize` units along the
+    /// split, on `side` of `window`, with `normalSize` as its normal size.
+    /// `window`, or with window-combination-resize its siblings, take the
+    /// new pixel sizes set before; a new internal window holds the two
+    /// unless `window`'s parent combines windows that way and
+    /// window-combination-limit is not t. The new window shows `window`'s
+    /// buffer, or the selected window's for an internal one.
+    #[ts = "(window: WindowLike, pixelSize: number, side?: \"below\" | \"right\" | \"above\" | \"left\", normalSize?: number): Window"]
+    pub fn splitWindowInternal(ed, window: Win, pixel_size: i64, side: Option<String>, normal_size: Option<f64>) -> Win {
+        ed.split_window_internal(window.0, pixel_size, side.as_deref().unwrap_or("below"), normal_size).map(Win)
+    }
+
+    /// Deletes a window of the selected frame, live or internal, as
+    /// window.c's delete-window-internal, once window.el's delete-window
+    /// has given its siblings their new pixel sizes; fails if they do not
+    /// fill their parent. If the selected window goes, the frame's first
+    /// window is selected.
+    #[ts = "(window: WindowLike): void"]
+    pub fn deleteWindowInternal(ed, window: Win) -> () {
+        ed.delete_window_internal(window.0)
+    }
+
+    /// Makes `window`, the selected one by default, fill `root`, the
+    /// frame's root window by default, deleting the other windows in it,
+    /// as delete-other-windows-internal.
+    #[ts = "(window?: WindowLike, root?: WindowLike): void"]
+    pub fn deleteOtherWindowsInternal(ed, window: Option<Win>, root: Option<Win>) -> () {
+        ed.delete_other_windows_internal(window.map(|w| w.0), root.map(|w| w.0))
     }
 
     /// The buffer-local minor modes on in the current buffer, as local-minor-modes.
