@@ -2,8 +2,8 @@
 // and the rest once windmove-default-keybindings binds them, selecting,
 // displaying a buffer in, deleting and swapping with the window that way,
 // found by window.el's window-in-direction (window.ts). Preloaded, as
-// Emacs autoloads its commands; windmove-mode, on from the start as in
-// Emacs, holds the keys the *-default-keybindings functions bind.
+// Emacs autoloads its commands; windmove-mode, turned on as they are
+// first bound, holds the keys the *-default-keybindings functions bind.
 
 import { windowInDirection, splitWindow, deleteWindow, displayBufferOverrideNextCommand, maybeRaiseFrame, alistGet } from "window";
 
@@ -108,7 +108,9 @@ e8.defineMinorMode({
   global: true,
   doc: "Global minor mode for the windmove commands' keys, which windmove-default-keybindings and its kin bind in windmove-mode-map.",
 });
-e8.setVariable("windmove-mode", true);
+// On from the start in Emacs, where windmove.el loads only when one of its
+// commands is first used: preloaded here, it turns on when its keys are
+// first bound, so it shows among the modes that are on only once in use.
 
 /** A modifier's prefix in a key's description, as Emacs writes them. */
 const MODIFIER: Record<string, string> = { alt: "A-", control: "C-", hyper: "H-", meta: "M-", shift: "S-", super: "s-" };
@@ -137,6 +139,7 @@ function modifierList(modifiers: e8.Value | undefined, otherwise: string[]): str
  */
 export function windmoveInstallDefaults(prefix: string | undefined, modifiers: string[], alist: [string, string][], uninstall = false): void {
   const map = "windmove-mode-map";
+  if (!uninstall && nil(e8.variable("windmove-mode"))) e8.call("windmove-mode");
   for (const [command, key] of alist) {
     for (const [old, bound] of e8.keymapBindings(map)) if (bound === command) e8.keymapUnset(map, old, true);
     if (uninstall) continue;
