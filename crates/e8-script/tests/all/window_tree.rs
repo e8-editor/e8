@@ -139,3 +139,45 @@ fn sizes_are_the_front_ends_units() {
     );
     assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), String::from("164"));
 }
+
+#[test]
+fn a_window_without_a_mode_line_has_that_line_for_text() {
+    // As Emacs: fit-window-to-buffer gives six lines of text six lines, the window having no mode line.
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"(import("window").then((m) => { globalThis.win = m; }), "")"#);
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"((w) => { e8.withCurrentBuffer(e8.getBufferCreate("f"), () => { e8.insert("1\n2\n3\n4\n5\n6"); e8.makeLocalVariable("mode-line-format"); e8.setVariable("mode-line-format", null); });
+            e8.setWindowBuffer(w, "f"); win.fitWindowToBuffer(w); return JSON.stringify([e8.windowTotalHeight(w), e8.windowSize(w).height]); })(e8.splitWindow())"#,
+    );
+    assert_eq!(got, "[6,6]");
+}
+
+/// Columns 7.83 points wide, as a GUI font's may be.
+struct Fractional;
+
+impl e8_core::layout::TextMetrics for Fractional {
+    fn advance(&self, _: &e8_core::layout::FontSpec, _: char) -> f32 {
+        7.83
+    }
+    fn line_height(&self, _: &e8_core::layout::FontSpec) -> f32 {
+        20.0
+    }
+    fn char_width(&self) -> f32 {
+        7.83
+    }
+    fn char_height(&self) -> f32 {
+        20.0
+    }
+}
+
+#[test]
+fn windows_total_sizes_add_up_to_the_frames() {
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Fractional));
+    ed.set_frame_pixel_size(1000, 480);
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.frameWidth(), e8.windowTotalWidth()])"), "[127,127]");
+    ed.press("C-x 3").unwrap();
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowList().reduce((n, w) => n + e8.windowTotalWidth(w), 0))"), "127");
+}

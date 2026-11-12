@@ -28,7 +28,7 @@ struct WindowArea {
 /// says they divide it.
 fn window_areas(ed: &Editor, width: u16, height: u16) -> Vec<WindowArea> {
     let tab_lines = ed.tab_bar_lines(ed.selected_frame()) as u16;
-    areas_of(ed.window_tree(), tab_lines, ed.mini_window_lines(), &|id, h| ed.window_wants_header_line(id, h), &|id| ed.window_margins(id), width, height)
+    areas_of(ed.window_tree(), tab_lines, ed.mini_window_lines(), &|id, h| ed.window_wants_header_line(id, h), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id), width, height)
 }
 
 /// As [`window_areas`], as a frame description says.
@@ -36,7 +36,8 @@ fn described_areas(fd: &FrameDescription, width: u16, height: u16) -> Vec<Window
     let window = |id: WindowId| fd.windows.iter().find(|w| w.id == id);
     let header = |id, h: usize| h > 2 && window(id).is_some_and(|w| w.header_line.is_some());
     let margins = |id| window(id).map_or((0, 0), |w| w.margins);
-    areas_of(&fd.tree, u16::from(fd.tab_bar.is_some()), fd.echo_lines, &header, &margins, width, height)
+    let mode_line = |id| window(id).is_none_or(|w| w.shows_mode_line);
+    areas_of(&fd.tree, u16::from(fd.tab_bar.is_some()), fd.echo_lines, &header, &margins, &mode_line, width, height)
 }
 
 fn areas_of(
@@ -45,6 +46,7 @@ fn areas_of(
     echo_lines: usize,
     wants_header: &dyn Fn(WindowId, usize) -> bool,
     margins_of: &dyn Fn(WindowId) -> (usize, usize),
+    shows_mode_line: &dyn Fn(WindowId) -> bool,
     width: u16,
     height: u16,
 ) -> Vec<WindowArea> {
@@ -61,14 +63,16 @@ fn areas_of(
             let (left, right) = margins_of(r.id);
             let left = (left as u16).min(body_width.saturating_sub(1));
             let right = (right as u16).min(body_width.saturating_sub(1 + left));
-            let (top, height) = (y + header, h - 1 - header);
+            // A window without a mode line, as Emacs's with mode-line-format nil, has that row for text.
+            let mode = u16::from(shows_mode_line(r.id));
+            let (top, height) = (y + header, (h - mode - header).max(1));
             WindowArea {
                 id: r.id,
                 text: Rect::new(x + left, top, body_width - left - right, height),
-                mode_line: Rect::new(x, y + h - 1, w, 1),
+                mode_line: Rect::new(x, y + h - mode, w, mode),
                 header_line: (header == 1).then(|| Rect::new(x, y, body_width, 1)),
                 margins: [Rect::new(x, top, left, height), Rect::new(x + body_width - right, top, right, height)],
-                divider: r.divider.then(|| Rect::new(x + w - 1, y, 1, h - 1)),
+                divider: r.divider.then(|| Rect::new(x + w - 1, y, 1, h - mode)),
             }
         })
         .collect()

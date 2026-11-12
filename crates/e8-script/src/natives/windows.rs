@@ -471,7 +471,7 @@ natives! {
     pub fn windowModeLineHeight(ed, window: Option<Win>) -> f64 {
         let window = window.map(|x| x.0);
         let w = window.unwrap_or(ed.selected_window());
-        Ok(if ed.window_shows_mode_line(w) { ed.text_metrics().char_height() as f64 } else { 0.0 })
+        Ok(if ed.window_shows_mode_line(w) { ed.text_metrics().window_chrome().mode_line as f64 } else { 0.0 })
     }
 
     /// A window's total height in lines, its mode line and header line
@@ -503,7 +503,7 @@ natives! {
         let window = window.map(|x| x.0);
         let w = window.unwrap_or(ed.selected_window());
         let lines = ed.window_total_size(w).map_or(0, |s| s.1);
-        Ok(if ed.window_wants_header_line(w, lines) { ed.text_metrics().char_height() as f64 } else { 0.0 })
+        Ok(if ed.window_wants_header_line(w, lines) { ed.text_metrics().window_chrome().header_line as f64 } else { 0.0 })
     }
 
     /// A frame's selected window, the selected frame's by default, as frame-selected-window.
@@ -595,7 +595,7 @@ natives! {
         let id = window.map_or(ed.selected_window(), |w| w.0);
         let r = ed.window_pixel_rect(id).ok_or_else(|| e8_core::Error::new("No such window"))?;
         let (mut x0, mut y0, mut x1, mut y1) = (r.x, r.y, r.x + r.width, r.y + r.height);
-        if body.unwrap_or(false) && ed.window_list().contains(&id) {
+        if body.unwrap_or(false) && ed.window_frame(id).is_some() && !ed.window_internal_p(id) {
             let (above, below, across) = ed.window_chrome_units(id, &r);
             let fringes = ed.text_metrics().window_chrome().fringes;
             x0 += fringes / 2.0;

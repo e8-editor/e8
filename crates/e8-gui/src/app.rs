@@ -761,11 +761,10 @@ fn pointer(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>,
 }
 
 /// Dragging a window's mode line or the divider on its right moves that
-/// edge, a whole line or column at a time, as Emacs's
-/// mouse-drag-mode-line and mouse-drag-vertical-line do. Returns whether
-/// the event was part of such a drag.
+/// edge, a point at a time, as Emacs's mouse-drag-mode-line and
+/// mouse-drag-vertical-line do with window-resize-pixelwise. Returns
+/// whether the event was part of such a drag.
 fn resize_drag(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>, layout: &Layout) -> bool {
-    let m = &layout.m;
     match (pressed, mouse.resizing) {
         (Some(true), _) => {
             let bottom = layout.echo_rect.top();
@@ -783,11 +782,12 @@ fn resize_drag(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bo
             true
         }
         (None, Some((window, divider, from))) => {
-            let (along, unit) = if divider { (pos.x, m.char_width) } else { (pos.y, m.line_height) };
-            let delta = ((along - from) / unit).trunc() as i64;
+            // In points, as the windows' sizes are, so the edge follows the pointer.
+            let along = if divider { pos.x } else { pos.y };
+            let delta = (along - from).trunc() as i64;
             if delta != 0 {
-                let moved = ed.move_window_edge(window, delta, divider);
-                mouse.resizing = Some((window, divider, from + moved as f32 * unit));
+                let moved = ed.move_window_edge_by(window, delta, divider);
+                mouse.resizing = Some((window, divider, from + moved as f32));
             }
             true
         }
@@ -924,6 +924,9 @@ impl Layout {
             ed.set_frame_pixel_size(layout.frame_units.0, layout.frame_units.1);
             let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
             layout = Layout::compute(frame, rect, m, &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
+        } else if frame == ed.selected_frame() {
+            // The same size, still given, so the frame's size counts as the front end's.
+            ed.set_frame_pixel_size(layout.frame_units.0, layout.frame_units.1);
         }
         for (id, cols, rows) in layout.sizes(false).windows {
             ed.set_window_size(id, cols, rows);

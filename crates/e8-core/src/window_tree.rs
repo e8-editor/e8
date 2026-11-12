@@ -251,17 +251,14 @@ impl WindowTree {
         }
     }
 
-    /// The smallest a part of the tree can be across or down, in units of
-    /// which a column or line is `unit`, as Emacs's `window-min-width` and
-    /// `window-min-height` allow for each window.
-    pub(crate) fn min_size(&self, horizontal: bool, unit: f32) -> usize {
+    /// The smallest a part of the tree can be across or down, each live
+    /// window `leaf` units at least, as Emacs's `window-min-size` gives it
+    /// from `window-min-width` and `window-min-height`.
+    pub(crate) fn min_size(&self, horizontal: bool, leaf: usize) -> usize {
         match self {
-            WindowTree::Leaf(_) => {
-                let cells = if horizontal { WINDOW_MIN_WIDTH } else { WINDOW_MIN_HEIGHT };
-                (cells as f32 * unit).round() as usize
-            }
+            WindowTree::Leaf(_) => leaf,
             WindowTree::Combination(c) => {
-                let sizes = c.children.iter().map(|p| p.tree.min_size(horizontal, unit));
+                let sizes = c.children.iter().map(|p| p.tree.min_size(horizontal, leaf));
                 if c.horizontal == horizontal { sizes.sum() } else { sizes.max().unwrap_or(0) }
             }
         }
@@ -369,7 +366,7 @@ impl WindowTree {
     /// the nearest combination where one is. Gives how far it went, or
     /// None if no combination of that kind is above it.
     #[allow(clippy::too_many_arguments)]
-    pub(crate) fn resize(&mut self, id: WindowId, delta: i64, horizontal: bool, extent: (usize, usize), unit: f32, apply: bool, edge: bool) -> Option<i64> {
+    pub(crate) fn resize(&mut self, id: WindowId, delta: i64, horizontal: bool, extent: (usize, usize), leaf: usize, apply: bool, edge: bool) -> Option<i64> {
         let path = self.path(id)?;
         // The nearest combination of that kind with a sibling to take from.
         let (depth, k, n) = (0..path.len()).rev().find_map(|depth| {
@@ -392,8 +389,8 @@ impl WindowTree {
         let c = self.combination_mut(&up);
         let size = c.children[k].size as i64;
         let other = c.children[n].size as i64;
-        let lowest = c.children[k].tree.min_size(horizontal, unit) as i64;
-        let highest = size + other - c.children[n].tree.min_size(horizontal, unit) as i64;
+        let lowest = c.children[k].tree.min_size(horizontal, leaf) as i64;
+        let highest = size + other - c.children[n].tree.min_size(horizontal, leaf) as i64;
         let moved = (size + delta).clamp(lowest.min(size), highest.max(size));
         if apply {
             c.children[k].size = moved as usize;
@@ -425,7 +422,8 @@ impl WindowTree {
         let n = c.children.len();
         let mut used = 0;
         for (i, p) in c.children.iter_mut().enumerate() {
-            p.size = if i + 1 == n { along - used } else { ((lines / n + usize::from(i < lines % n)) as f32 * unit).round() as usize };
+            let share = ((lines / n + usize::from(i < lines % n)) as f32 * unit).round() as usize;
+            p.size = if i + 1 == n { along.saturating_sub(used) } else { share.min(along.saturating_sub(used)) };
             used += p.size;
             let child = if c.horizontal { (p.size, extent.1) } else { (extent.0, p.size) };
             p.tree.balance(child, cell);
@@ -585,17 +583,17 @@ mod tests {
         let mut tree = WindowTree::Leaf(1);
         split(&mut tree, 1, 2, 10, false, (80, 24));
         split(&mut tree, 2, 3, 11, false, (80, 24));
-        assert_eq!(tree.resize(2, 2, false, (80, 24), 1.0, true, false), Some(2));
+        assert_eq!(tree.resize(2, 2, false, (80, 24), 4, true, false), Some(2));
         let sizes = |t: &WindowTree| match t {
             WindowTree::Combination(c) => c.children.iter().map(|p| p.size).collect::<Vec<_>>(),
             _ => vec![],
         };
         assert_eq!(sizes(&tree), [12, 8, 4]);
         // The last takes from the one before; no further than window-min-height.
-        assert_eq!(tree.resize(3, 10, false, (80, 24), 1.0, true, false), Some(4));
+        assert_eq!(tree.resize(3, 10, false, (80, 24), 4, true, false), Some(4));
         assert_eq!(sizes(&tree), [12, 4, 8]);
         // Dragging the last window's mode line moves nothing.
-        assert_eq!(tree.resize(3, 1, false, (80, 24), 1.0, true, true), None);
+        assert_eq!(tree.resize(3, 1, false, (80, 24), 4, true, true), None);
     }
 
     #[test]
@@ -617,5 +615,15 @@ mod tests {
         assert!(sizes(&tree).iter().all(|&n| n >= 1), "{:?}", sizes(&tree));
         assert_eq!(tree.enclosing(&[2, 3]), Some(10));
         assert_eq!(tree.enclosing(&[2]), Some(2));
+    }
+
+    #[test]
+    fn balancing_a_combination_smaller_than_its_windows_never_overflows() {
+        let mut tree = WindowTree::Leaf(1);
+        split(&mut tree, 1, 2, 10, false, (80, 41));
+        split(&mut tree, 2, 3, 11, false, (80, 41));
+        tree.balance((80, 41), (8.0, 20.6));
+        let WindowTree::Combination(c) = &tree else { panic!() };
+        assert_eq!(c.children.iter().map(|p| p.size).sum::<usize>(), 41);
     }
 }

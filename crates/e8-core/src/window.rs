@@ -383,10 +383,44 @@ impl Editor {
         })
     }
 
-    /// A size in the front end's units as whole columns or lines, rounded.
+    /// The smallest a live window may be across or down, in the front end's
+    /// units: window-min-width columns and window-min-height lines, and
+    /// room for what of it is not text and a line or two columns of it, as
+    /// Emacs's `window-min-size` counts the mode line's height.
+    pub(crate) fn window_min_units(&self, horizontal: bool) -> usize {
+        let (cw, lh) = self.cell();
+        let chrome = self.text_metrics().window_chrome();
+        let units = if horizontal {
+            (WINDOW_MIN_WIDTH as f32 * cw).max(chrome.fringes + chrome.divider + 2.0 * cw)
+        } else {
+            (WINDOW_MIN_HEIGHT as f32 * lh).max(chrome.mode_line + chrome.text_top + lh)
+        };
+        units.round() as usize
+    }
+
+    /// The smallest a window may be made with an explicit size, in the
+    /// front end's units, as window-safe-min-height and -width: a line and
+    /// what of it is not text, or two columns.
+    fn window_safe_min_units(&self, horizontal: bool) -> i64 {
+        let (cw, lh) = self.cell();
+        let chrome = self.text_metrics().window_chrome();
+        let units = if horizontal { (2.0 * cw).max(chrome.fringes + cw) } else { (2.0 * lh).max(chrome.mode_line + chrome.text_top + lh) };
+        units.round() as i64
+    }
+
+    /// A place in the front end's units as whole columns or lines from the
+    /// frame's top left, rounded down, as the frame's own size is; edges so
+    /// counted make windows' sizes add up to the frame's, as Emacs's
+    /// window--pixel-to-total keeps them.
     fn to_cells(&self, units: f32, horizontal: bool) -> usize {
         let (cw, lh) = self.cell();
-        (units / if horizontal { cw } else { lh }).round() as usize
+        // A hair's grace, so a size worked out as a product comes back whole.
+        ((units + 0.001) / if horizontal { cw } else { lh }).floor() as usize
+    }
+
+    /// A window's total columns and lines, from its edges in cells.
+    fn total_cells(&self, r: &WindowRect) -> (usize, usize) {
+        (self.to_cells(r.x + r.width, true) - self.to_cells(r.x, true), self.to_cells(r.y + r.height, false) - self.to_cells(r.y, false))
     }
 
     /// Each window's total size, in columns with its divider and lines with
@@ -396,7 +430,10 @@ impl Editor {
         self.window_tree
             .rects(0.0, 0.0, width as f32, height as f32, (1.0, 1.0))
             .iter()
-            .map(|r| (r.id, self.to_cells(r.width, true), self.to_cells(r.height, false)))
+            .map(|r| {
+                let (cols, lines) = self.total_cells(r);
+                (r.id, cols, lines)
+            })
             .collect()
     }
 
@@ -422,7 +459,7 @@ impl Editor {
     /// its right).
     pub fn window_chrome_units(&self, id: WindowId, rect: &WindowRect) -> (f32, f32, f32) {
         let chrome = self.text_metrics().window_chrome();
-        let lines = self.to_cells(rect.height, false);
+        let lines = self.total_cells(rect).1;
         let header = if self.window_wants_header_line(id, lines) { chrome.header_line } else { 0.0 };
         let mode = if self.window_shows_mode_line(id) { chrome.mode_line } else { 0.0 };
         let across = chrome.fringes + if rect.divider { chrome.divider } else { 0.0 };
@@ -456,9 +493,8 @@ impl Editor {
     /// The frame in cells, without the echo area: as a front end said, or
     /// as the windows add up to.
     pub fn frame_cells(&self) -> (usize, usize) {
-        let (cw, lh) = self.cell();
         let (width, height) = self.frame_units();
-        ((width as f32 / cw).floor() as usize, (height as f32 / lh).floor() as usize)
+        (self.to_cells(width as f32, true), self.to_cells(height as f32, false))
     }
 
     /// Lays the windows out in the frame, as their sizes in the tree say:
@@ -469,9 +505,7 @@ impl Editor {
         self.window_tree.fit((width, height));
         let (cw, lh) = self.cell();
         for r in self.window_tree.rects(0.0, 0.0, width as f32, height as f32, (1.0, 1.0)) {
-            let (above, _, across) = self.window_chrome_units(r.id, &r);
-            // The mode line's line is left whether it shows or not, as before.
-            let below = self.text_metrics().window_chrome().mode_line;
+            let (above, below, across) = self.window_chrome_units(r.id, &r);
             if let Some(w) = self.window_mut(r.id) {
                 w.width = (((r.width - across) / cw).floor() as usize).max(1);
                 w.height = (((r.height - above - below) / lh).floor() as usize).max(1);
@@ -497,7 +531,8 @@ impl Editor {
         let unit = if horizontal { self.cell().0 } else { self.cell().1 };
         let delta_units = if pixelwise { delta } else { (delta as f32 * unit).round() as i64 };
         let extent = self.frame_units();
-        let moved = self.window_tree.resize(id, delta_units, horizontal, extent, unit, apply, false).unwrap_or(0);
+        let leaf = self.window_min_units(horizontal);
+        let moved = self.window_tree.resize(id, delta_units, horizontal, extent, leaf, apply, false).unwrap_or(0);
         if apply {
             self.relayout();
         }
@@ -509,10 +544,18 @@ impl Editor {
     /// in Emacs. A window with nothing below or to its right stays as it is.
     pub fn move_window_edge(&mut self, id: WindowId, delta: i64, horizontal: bool) -> i64 {
         let unit = if horizontal { self.cell().0 } else { self.cell().1 };
-        let extent = self.frame_units();
-        let moved = self.window_tree.resize(id, (delta as f32 * unit).round() as i64, horizontal, extent, unit, true, true).unwrap_or(0);
-        self.relayout();
+        let moved = self.move_window_edge_by(id, (delta as f32 * unit).round() as i64, horizontal);
         (moved as f32 / unit).round() as i64
+    }
+
+    /// Moves a window's bottom or right edge by `delta` of the front end's
+    /// units, as dragging with the mouse does, and gives how far it went.
+    pub fn move_window_edge_by(&mut self, id: WindowId, delta: i64, horizontal: bool) -> i64 {
+        let extent = self.frame_units();
+        let leaf = self.window_min_units(horizontal);
+        let moved = self.window_tree.resize(id, delta, horizontal, extent, leaf, true, true).unwrap_or(0);
+        self.relayout();
+        moved
     }
 
     /// Makes the windows the same size as their neighbours, as Emacs's
@@ -695,26 +738,27 @@ impl Editor {
         let total_units = if side_by_side { total_width } else { total_height } as i64;
         let total = (total_units as f32 / unit).floor() as i64;
         let units = |lines: i64| ((lines as f32 * unit).round() as i64).min(total_units);
-        let min = if side_by_side { WINDOW_MIN_WIDTH } else { WINDOW_MIN_HEIGHT } as i64;
+        let min_units = self.window_min_units(side_by_side) as i64;
+        let safe = self.window_safe_min_units(side_by_side);
         // An explicit size only has to leave each window its safe minimum,
         // as window-safe-min-height and -width give: a line and the mode
         // line, or two columns. Halved, the old window keeps an odd line or
         // column, before or after, and what is left of a unit.
         let (old, new) = match size {
-            None if total < 2 * min => {
+            None if total_units < 2 * min_units => {
                 let name = if live { format!("#<window {id} on {}>", self.window_buffer_name(id).unwrap_or_default()) } else { format!("#<window {id}>") };
                 return Err(Error::new(format!("Window {name} too small for splitting")));
             }
             None => (total_units - units(total / 2), units(total / 2)),
             Some(size) => {
-                let (old, new) = if size >= 0 { (size, total - size) } else { (total + size, -size) };
-                if new < 2 {
+                let (old, new) = if size >= 0 { (units(size), total_units - units(size)) } else { (total_units - units(-size), units(-size)) };
+                if new < safe {
                     return Err(Error::new("Size of new window too small"));
                 }
-                if old < 2 {
+                if old < safe {
                     return Err(Error::new("Size of window too small"));
                 }
-                if size >= 0 { (units(old), total_units - units(old)) } else { (total_units - units(new), units(new)) }
+                (old, new)
             }
         };
         // Sizes are kept in the frame's units, which a front end gives; until one has, the frame is as the windows are now.
