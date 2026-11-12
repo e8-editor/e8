@@ -4326,7 +4326,7 @@ function windowStateGet1(window: e8.Window, writable: boolean): e8.Value[] {
       sym("buffer"),
       writable ? buffer : (e8.getBuffer(buffer) ?? buffer),
       cons("selected", selected),
-      [sym("hscroll"), 0],
+      [sym("hscroll"), e8.windowHscroll(window)],
       [sym("fringes"), ...fringes],
       [sym("margins"), leftMargin ?? null, ...(rightMargin !== undefined ? [rightMargin] : [])],
       // E8 has no scroll bars: what Emacs gives a terminal's window.
@@ -4456,6 +4456,8 @@ function windowStatePut2(ignore: unknown, pixelwise: boolean): void {
     if (name !== undefined) {
       e8.withCurrentBuffer(name, () => {
         e8.setWindowBuffer(window, name);
+        const hscroll = alistGet(s, "hscroll");
+        e8.setWindowHscroll(window, typeof hscroll === "number" ? hscroll : 0);
         const margins = assqRest(s, "margins");
         if (!isNil(margins[0]) || !isNil(margins[1]) || e8.windowMargins(window).some((m) => m !== undefined)) {
           e8.setWindowMargins(window, (margins[0] as number | null) ?? undefined, (margins[1] as number | null) ?? undefined);

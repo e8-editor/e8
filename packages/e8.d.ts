@@ -6400,6 +6400,14 @@ declare global {
        */
       "scroll-down-line": [n?: number];
       /**
+       * Scroll the selected window's text left by the prefix argument's columns, showing more of long lines' ends.
+       *
+       * Without one, by the window's width less two. Run by keys, the scroll it leaves is the least that keeping point in sight scrolls back to, until it scrolls back further. Gives the window's scroll.
+       *
+       * @param arg raw prefix argument
+       */
+      "scroll-left": [arg?: PrefixArg | boolean];
+      /**
        * Scroll the next window up a screen, as C-v does in the selected one. A prefix argument says how many lines.
        *
        * Defined in packages/window.ts.
@@ -6411,6 +6419,14 @@ declare global {
        * Defined in packages/window.ts.
        */
       "scroll-other-window-down": [];
+      /**
+       * Scroll the selected window's text right by the prefix argument's columns, back towards the lines' starts.
+       *
+       * Without one, by the window's width less two. Run by keys, the scroll it leaves is the least that keeping point in sight scrolls back to. Gives the window's scroll.
+       *
+       * @param arg raw prefix argument
+       */
+      "scroll-right": [arg?: PrefixArg | boolean];
       /**
        * Scroll the text up by nearly a screen, showing later lines.
        *
@@ -7975,6 +7991,12 @@ declare global {
        * Keymap auto-fill-mode-map.
        */
       "auto-fill-mode-map": Value;
+      /**
+       * Whether redisplay scrolls windows horizontally to keep point in sight.
+       *
+       * nil leaves the scroll as it is, `current-line' scrolls only the line point is on, and any other non-nil value the whole window.
+       */
+      "auto-hscroll-mode": Value;
       /**
        * Which major mode files get, by name: a list of [pattern, mode] pairs, tried in order.
        *
@@ -9621,6 +9643,16 @@ declare global {
        * Defined in packages/hideshow.ts.
        */
       "hs-special-modes-alist": Value;
+      /**
+       * How many columns away from a window's left or right edge point may come before redisplay scrolls the window horizontally.
+       */
+      "hscroll-margin": Value;
+      /**
+       * How far redisplay scrolls a window horizontally when point comes too near an edge.
+       *
+       * An integer is that many columns; a float between 0 and 1 that fraction of the window's width; 0 puts point in the middle of the window.
+       */
+      "hscroll-step": Value;
       /**
        * Keymap icomplete-fido-mode-map.
        */
@@ -15777,6 +15809,18 @@ declare global {
     function windowValidP(window: unknown): boolean;
     /** Whether a value is a window showing a buffer, as window-live-p. */
     function windowLiveP(window: unknown): boolean;
+    /**
+     * How many columns a window, the selected one by default, is scrolled
+     * to the left, as window-hscroll.
+     */
+    function windowHscroll(window?: WindowLike | null): number;
+    /**
+     * Scrolls a window, the selected one by default, `columns` to the
+     * left, as set-window-hscroll: a negative number is 0. Redisplay
+     * leaves it until point moves, then scrolls to keep point in sight as
+     * auto-hscroll-mode says. Gives the scroll.
+     */
+    function setWindowHscroll(window: WindowLike | null | undefined, columns: number): number;
     /** Whether a value is a window, live or deleted, as windowp. */
     function windowp(value: unknown): value is Window;
     /** Whether a value is a frame that is live, as frame-live-p. */

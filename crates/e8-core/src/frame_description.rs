@@ -115,6 +115,8 @@ pub struct WindowDescription {
     pub rows: Vec<RowDescription>,
     /// The row point shows on, if any.
     pub point_row: Option<usize>,
+    /// How many columns it is scrolled to the left, as `window-hscroll`.
+    pub hscroll: usize,
     pub line_numbers: Option<LineNumbers>,
     /// `line-number` and `line-number-current-line`.
     pub line_number_styles: [Style; 2],
@@ -159,6 +161,11 @@ pub struct RowDescription {
     /// How far right of the text area's left edge it starts, in default
     /// columns: a right-to-left row is laid out from the right edge.
     pub offset: f32,
+    /// How many default columns of it are scrolled off the left edge, as
+    /// its window is scrolled horizontally ([`WindowDescription::hscroll`],
+    /// or on every row but point's its least, when `auto-hscroll-mode` is
+    /// `current-line`). Text starts that far left of `offset`.
+    pub hscroll: f32,
     /// For a row with images, its ascent, on which text and images sit.
     pub ascent: Option<f32>,
     /// Where each of its segments' boxes starts below the row's top, for a
@@ -187,6 +194,7 @@ impl Editor {
             on_grid,
             width,
             offset,
+            hscroll: 0.0,
             ascent,
             segment_tops,
             margin_tops,
@@ -207,7 +215,14 @@ impl Editor {
         for view in self.frame_windows(frame) {
             let b = view.buffer;
             let tab_width = self.tab_width_in(b);
-            let rows: Vec<RowDescription> = self.rows_to_draw(view.id, dark).into_iter().map(|row| self.describe_row(b, Some(view.id), row, tab_width)).collect();
+            let rows: Vec<RowDescription> = self
+                .rows_to_draw(view.id, dark)
+                .into_iter()
+                .map(|row| {
+                    let hscroll = self.row_hscroll(view.id, &row, view.point) as f32;
+                    RowDescription { hscroll, ..self.describe_row(b, Some(view.id), row, tab_width) }
+                })
+                .collect();
             let plain: Vec<Row> = rows.iter().map(|r| r.row.clone()).collect();
             let fringes = self.window_fringes(view.id, &plain, &[]);
             let truncation = [
@@ -241,6 +256,7 @@ impl Editor {
                 selected: view.selected,
                 point: view.point,
                 point_row,
+                hscroll: self.window_hscroll(view.id),
                 region: if view.selected { b.active_region() } else { None },
                 tab_width,
                 rows,

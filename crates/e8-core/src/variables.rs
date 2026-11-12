@@ -1114,6 +1114,7 @@ pub(crate) fn install(ed: &mut Editor) {
         ed.define_variable(var);
     }
     crate::image::define_variables(ed);
+    crate::scroll::define_variables(ed);
     ed.define_variable(Variable::new(crate::modes::GLOBAL_MAP, "The keymap that applies everywhere, after the minibuffer's and the modes' keymaps.", Value::Keymap(ed.global_map)));
     ed.define_variable(Variable::new(crate::modes::MINIBUFFER_MAP, "The keymap while a prompt is open, before the modes' and the global keymap.", Value::Keymap(ed.minibuffer_map)));
     for (name, doc) in [

@@ -64,6 +64,7 @@ mod properties;
 mod questions;
 pub mod regexp;
 mod rows;
+mod scroll;
 mod search;
 pub mod select;
 mod symbols;

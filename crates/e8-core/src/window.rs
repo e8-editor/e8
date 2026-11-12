@@ -48,6 +48,8 @@ pub(crate) struct Window {
     pub(crate) margins: Option<(u64, usize, usize)>,
     /// Whether its cursor is drawn, as `internal-show-cursor` sets it.
     pub(crate) cursor_shown: bool,
+    /// How far it is scrolled horizontally.
+    pub(crate) hscroll: crate::scroll::Hscroll,
 }
 
 impl Window {
@@ -64,6 +66,7 @@ impl Window {
             next_buffers: Vec::new(),
             margins: None,
             cursor_shown: true,
+            hscroll: Default::default(),
         }
     }
 }
@@ -97,6 +100,7 @@ struct SavedWindow {
     /// for an entry the window has dropped meanwhile.
     prev_buffers: Vec<(u64, usize, usize)>,
     next_buffers: Vec<u64>,
+    hscroll: crate::scroll::Hscroll,
 }
 
 /// What switching a window to another buffer does with the one it leaves,
@@ -161,7 +165,7 @@ impl Editor {
         self.windows.iter().find(|w| w.id == id)
     }
 
-    fn window_mut(&mut self, id: WindowId) -> Option<&mut Window> {
+    pub(crate) fn window_mut(&mut self, id: WindowId) -> Option<&mut Window> {
         self.windows.iter_mut().find(|w| w.id == id)
     }
 
@@ -592,6 +596,12 @@ impl Editor {
     pub fn set_window_buffer(&mut self, id: WindowId, name: &str) -> Result<()> {
         let index = self.find_buffer(name).ok_or_else(|| Error::new(format!("No such buffer {name}")))?;
         let w = self.window(id).ok_or_else(|| Error::new("No such window"))?;
+        // Unscrolled, even showing the same buffer again, as Emacs's set_window_buffer.
+        let w_dedicated_refuses = w.buffer != self.buffers[index].id && w.dedicated == Value::Bool(true);
+        if !w_dedicated_refuses {
+            self.window_mut(id).expect("checked").hscroll = Default::default();
+        }
+        let w = self.window(id).expect("checked");
         if w.buffer != self.buffers[index].id {
             if w.dedicated == Value::Bool(true) {
                 let shown = self.window_buffer_name(id).unwrap_or_default();
@@ -1610,6 +1620,7 @@ impl Editor {
         for id in self.window_tree.leaves() {
             let Some(w) = self.window(id) else { continue };
             let (buffer, width, height) = (w.buffer, w.width, w.height);
+            let hscroll = self.hscroll_state(id);
             let (parameters, dedicated, next_buffers) = (w.parameters.clone(), w.dedicated.clone(), w.next_buffers.clone());
             let prev_buffers = w
                 .prev_buffers
@@ -1624,7 +1635,7 @@ impl Editor {
             let b = &mut self.buffers[index];
             let point_pos = if id == selected { b.point() } else { b.window_point(id).unwrap_or(b.point()) };
             let (start, point) = (b.make_marker(start_pos, false), b.make_marker(point_pos, false));
-            windows.push(SavedWindow { id, buffer, start, point, width, height, parameters, dedicated, prev_buffers, next_buffers });
+            windows.push(SavedWindow { id, buffer, start, point, width, height, parameters, dedicated, prev_buffers, next_buffers, hscroll });
         }
         let current = self.buffers[self.current].id;
         self.next_window_configuration += 1;
@@ -1660,7 +1671,7 @@ impl Editor {
             .iter()
             .map(|w| (w.id, w.buffer, self.marker_position(w.start).map(|(n, p)| (n.to_string(), p)), self.marker_position(w.point).map(|(n, p)| (n.to_string(), p)), w.width, w.height))
             .collect();
-        let extras: Vec<_> = config.windows.iter().map(|w| (w.parameters.clone(), w.dedicated.clone(), w.prev_buffers.clone(), w.next_buffers.clone())).collect();
+        let extras: Vec<_> = config.windows.iter().map(|w| (w.parameters.clone(), w.dedicated.clone(), w.prev_buffers.clone(), w.next_buffers.clone(), w.hscroll)).collect();
         // The selected window's point and start go to its buffer first, as
         // they would on selecting another.
         let old = self.selected_window;
@@ -1677,7 +1688,7 @@ impl Editor {
             }
         }
         let fallback = self.other_buffer().and_then(|n| self.find_buffer(n)).unwrap_or(0);
-        for ((id, buffer, start, point, width, height), (parameters, dedicated, prev, next)) in saved.into_iter().zip(extras) {
+        for ((id, buffer, start, point, width, height), (parameters, dedicated, prev, next, hscroll)) in saved.into_iter().zip(extras) {
             let index = self.buffer_with_id(buffer).unwrap_or(fallback);
             let buffer = self.buffers[index].id;
             if let Some(w) = self.window(id) {
@@ -1691,6 +1702,7 @@ impl Editor {
             w.buffer = buffer;
             (w.width, w.height) = (width, height);
             (w.parameters, w.dedicated, w.next_buffers) = (parameters, dedicated, next);
+            w.hscroll = crate::scroll::Hscroll { buffer, ..hscroll };
             // An entry the window still has has followed edits since; one
             // it dropped comes back as it was.
             let mut entries = Vec::new();

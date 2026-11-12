@@ -42,6 +42,7 @@ mod fonts;
 mod frame_accessors;
 mod help;
 mod help_guide;
+mod hscroll;
 mod hi_lock;
 mod images;
 mod indirect;

@@ -2,7 +2,7 @@
 
 use std::ops::Range;
 
-use e8_core::display::{Glyph, cursor_glyph, position_at_column, row_glyphs, row_showing};
+use e8_core::display::{Glyph, cursor_glyph, position_at_column, row_glyphs};
 use e8_core::frame_description::{Echo, FrameDescription, WindowDescription};
 use e8_core::{Color as FaceColor, Editor, LineNumbers, Row, Style as FaceStyle, WindowId, WindowTree, WindowView, palette};
 use ratatui::Frame;
@@ -131,11 +131,11 @@ pub fn draw(frame: &mut Frame, fd: &FrameDescription) {
 }
 
 /// A window's rows as a mouse event finds them, with their glyphs, and how
-/// far the window is scrolled horizontally.
+/// far each is scrolled horizontally.
 struct WindowRows {
     rows: Vec<Row>,
     glyph_rows: Vec<Vec<Glyph>>,
-    hscroll: usize,
+    hscrolls: Vec<usize>,
     /// The line numbers left of the text, if the buffer shows them.
     numbers: Option<LineNumbers>,
 }
@@ -153,23 +153,10 @@ fn text_area(area: Rect, gutter: u16) -> Rect {
 fn window_rows(ed: &Editor, view: &WindowView, area: Rect) -> WindowRows {
     let rows = ed.rows_of_window(view.id, area.height as usize, ed.dark_background());
     let numbers = ed.line_numbers(view.id, &rows);
-    let width = (area.width - gutter(&numbers, area)) as usize;
     let tab_width = ed.tab_width_in(view.buffer);
     let glyph_rows: Vec<Vec<Glyph>> = rows.iter().map(|r| row_glyphs(r, tab_width)).collect();
-    let point = view.point;
-    let point_row = row_showing(&rows, point, tab_width).unwrap_or(0);
-    let point_col: usize = glyph_rows
-        .get(point_row)
-        .map(|g| g[..cursor_glyph(&rows[point_row], g, point)].iter().map(|g| g.width).sum())
-        .unwrap_or(0);
-    // A right-to-left row is laid out from the right edge.
-    let point_col = match rows.get(point_row).filter(|r| r.right_to_left) {
-        Some(row) => (point_col as i64 + rtl_offset(row, &glyph_rows[point_row], width)).max(0) as usize,
-        None => point_col,
-    };
-    // Scroll horizontally, as Emacs does, when point would be off the right edge.
-    let hscroll = if point_col < width { 0 } else { point_col - width / 2 };
-    WindowRows { rows, glyph_rows, hscroll, numbers }
+    let hscrolls = rows.iter().map(|r| ed.row_hscroll(view.id, r, view.point)).collect();
+    WindowRows { rows, glyph_rows, hscrolls, numbers }
 }
 
 /// Where a right-to-left row starts in a text area `width` columns wide:
@@ -211,7 +198,7 @@ pub fn mouse_target(ed: &Editor, width: u16, height: u16, x: u16, y: u16) -> Opt
             let col = x as i64 - text.x as i64 - rtl_offset(row, glyphs, text.width as usize);
             if col < 0 { glyphs.first().and_then(|g| g.pos).unwrap_or(row.end) } else { position_at_column(row, glyphs, col as usize) }
         }
-        (Some(row), Some(glyphs)) => position_at_column(row, glyphs, x.saturating_sub(text.x) as usize + drawn.hscroll),
+        (Some(r), Some(glyphs)) => position_at_column(r, glyphs, x.saturating_sub(text.x) as usize + drawn.hscrolls[row]),
         _ => view.buffer.len(),
     };
     Some((area.id, Some(position)))
@@ -252,20 +239,23 @@ fn draw_window(frame: &mut Frame, fd: &FrameDescription, w: &WindowDescription, 
         Some(r) => (point_col as i64 + rtl_offset(&r.row, &r.glyphs, width)).max(0) as usize,
         None => point_col,
     };
-    // Scroll horizontally, as Emacs does, when point would be off the right edge.
-    let hscroll = if point_col < width { 0 } else { point_col - width / 2 };
+    // As far left as the editor scrolled point's row.
+    let point_col = point_col.saturating_sub(rows.get(point_row).map_or(0, |r| r.hscroll as usize));
     // Only the selected window shows the region, as in Emacs.
     let region = w.region.clone();
     // Lines broken between words show no continuation mark, as on Emacs's terminals.
     let marks = !w.word_wrap;
-    let lines: Vec<Line> = rows.iter().map(|r| row_line(&r.row, &r.glyphs, hscroll, width, region.as_ref(), dark, marks)).collect();
+    let lines: Vec<Line> = rows.iter().map(|r| row_line(&r.row, &r.glyphs, r.hscroll as usize, width, region.as_ref(), dark, marks)).collect();
     frame.render_widget(Paragraph::new(lines), area);
-    Position::new(area.x + (point_col - hscroll) as u16, area.y + point_row as u16)
+    Position::new(area.x + point_col.min(width.saturating_sub(1)) as u16, area.y + point_row as u16)
 }
 
-/// A row as a terminal line: faces as true colour, the region in reverse
-/// video. A selected newline fills the rest of the row, as Emacs's region
-/// face extends to the window's edge.
+/// A row as a terminal line, `hscroll` columns scrolled off its left edge:
+/// faces as true colour, the region in reverse video. A selected newline
+/// fills the rest of the row, as Emacs's region face extends to the
+/// window's edge. A line cut off at either edge shows `$` there, as on
+/// Emacs's terminals: at the left in place of the first column's text,
+/// at the right in the last column.
 fn row_line(
     row: &Row,
     glyphs: &[Glyph],
@@ -284,29 +274,43 @@ fn row_line(
         Some(last) if last.style == style => last.content.to_mut().push_str(s),
         _ => spans.push(Span::styled(s.to_string(), style)),
     };
+    let cut_left = hscroll > 0 && !glyphs.is_empty();
+    let cut_right = !row.continued && width > 0 && glyphs.iter().map(|g| g.width).sum::<usize>() >= hscroll + width;
+    // The columns text shows in, between the marks.
+    let (left, right) = (hscroll + usize::from(cut_left), (hscroll + width).saturating_sub(usize::from(cut_right)));
+    // A window a column wide has room for one mark and no text.
+    if left >= right {
+        return Line::from(if cut_left || cut_right { "$" } else { "" });
+    }
+    if cut_left {
+        push(&mut spans, "$", Style::new());
+    }
     let mut col = 0;
     for glyph in glyphs {
-        if col >= hscroll + width {
+        if col >= right {
             break;
         }
         let mut style = terminal_style(&row.segments[glyph.segment].style, dark);
         if glyph.pos.is_some_and(selected) {
             style = style.add_modifier(Modifier::REVERSED);
         }
-        if col >= hscroll && col + glyph.width <= hscroll + width {
+        let end = col + glyph.width;
+        if col >= left && end <= right {
             push(&mut spans, &glyph.text, style);
-        } else if col < hscroll && col + glyph.width > hscroll {
-            // A tab that straddles the left edge still takes up its visible columns.
-            push(&mut spans, &" ".repeat(col + glyph.width - hscroll), style);
+        } else if end > left {
+            // A tab or wide character across an edge takes up its columns inside it.
+            push(&mut spans, &" ".repeat(end.min(right) - col.max(left)), style);
         }
-        col += glyph.width;
+        col = end;
     }
-    if selected(row.end) && !row.continued && col < hscroll + width {
-        let fill = hscroll + width - col.max(hscroll);
+    if cut_right {
+        push(&mut spans, "$", Style::new());
+    } else if selected(row.end) && !row.continued && col < right {
+        let fill = right - col.max(left);
         push(&mut spans, &" ".repeat(fill), Style::new().add_modifier(Modifier::REVERSED));
-    } else if let Some(extend) = row.extend.as_ref().filter(|_| !row.continued && col < hscroll + width) {
+    } else if let Some(extend) = row.extend.as_ref().filter(|_| !row.continued && col < right) {
         // A face that extends fills the rest of the row with its background.
-        let fill = hscroll + width - col.max(hscroll);
+        let fill = right - col.max(left);
         let bg = terminal_style(extend, dark).bg.unwrap_or(Color::Reset);
         let style = if extend.underline { Style::new().bg(bg).add_modifier(Modifier::UNDERLINED) } else { Style::new().bg(bg) };
         push(&mut spans, &" ".repeat(fill), style);
@@ -751,12 +755,54 @@ mod tests {
         assert_eq!(rows[0], "a^Ab");
         assert_eq!(rows[1], "        x");
 
-        // With truncate-lines, point at column 30 of a 20 column window
-        // recentres it horizontally.
+        // With truncate-lines, point at the end of a 30 column line in a 20
+        // column window scrolls it to leave 4 columns right of point, as in
+        // Emacs, with `$` at the left for the text scrolled off.
         let mut ed = Editor::new();
         ed.set_variable("truncate-lines", e8_core::Value::Bool(true));
         ed.type_text(&"x".repeat(30));
         let rows = render(&mut ed, 20, 4);
-        assert_eq!(rows[0], "x".repeat(10));
+        assert_eq!(rows[0], format!("${}", "x".repeat(15)));
+    }
+
+    #[test]
+    fn truncated_lines_show_a_dollar_at_either_edge() {
+        let mut ed = Editor::new();
+        ed.set_variable("truncate-lines", e8_core::Value::Bool(true));
+        ed.type_text("0123456789abcdefghij\n0123456789abcdefghi\n\nshort\n0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJ");
+        ed.press("C-a").unwrap();
+        let rows = render(&mut ed, 20, 7);
+        // A line as wide as the window loses its last column to the `$`.
+        assert_eq!(rows[..5], ["0123456789abcdefghi$", "0123456789abcdefghi", "", "short", "0123456789abcdefghi$"]);
+        let point = ed.window_buffer().point() + 34;
+        ed.window_buffer_mut().set_point(point);
+        let rows = render(&mut ed, 20, 7);
+        // Scrolled 24: every line with text scrolled off shows `$` first.
+        assert_eq!(rows[..5], ["$", "$", "", "$", "$pqrstuvwxyzABCDEFG$"]);
+        assert_eq!(ed.window_hscroll(ed.selected_window()), 24);
+    }
+
+    #[test]
+    fn a_column_wide_window_shows_only_the_mark() {
+        let mut ed = Editor::new();
+        ed.type_text("\tabcdefgh");
+        let (row, glyphs) = {
+            let rows = ed.rows_of_window(ed.selected_window(), 1, true);
+            let glyphs = row_glyphs(&rows[0], 8);
+            (rows[0].clone(), glyphs)
+        };
+        let text: String = row_line(&row, &glyphs, 3, 1, None, true, true).spans.iter().map(|s| s.content.to_string()).collect();
+        assert_eq!(text, "$");
+    }
+
+    #[test]
+    fn clicks_land_on_scrolled_text() {
+        let mut ed = Editor::new();
+        ed.set_variable("truncate-lines", e8_core::Value::Bool(true));
+        ed.type_text("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJ");
+        render(&mut ed, 20, 4);
+        // Scrolled 30, the third column shows column 32.
+        let target = mouse_target(&ed, 20, 4, 2, 0).unwrap();
+        assert_eq!(target.1, Some(32));
     }
 }
