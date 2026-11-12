@@ -226,6 +226,7 @@ impl Editor {
         for (p, v) in command.params.iter().zip(values) {
             let v = match v {
                 Value::Buffer(id) => self.buffer_with_id(*id).map_or(Value::Null, |i| Value::Str(self.buffers[i].name.clone())),
+                Value::Process(id) => self.process_info(*id).map_or(Value::Null, |p| Value::Str(p.name)),
                 v => v.clone(),
             };
             args.push(Arg::from_value(p.kind, &v)?);

@@ -106,7 +106,7 @@ export interface RequestSenderArgs {
 export interface Client {
   contextBuffer?: e8.BufferLike;
   instanceCount: number;
-  process: string | undefined;
+  process: e8.Process | undefined;
   command: string;
   commandParams: string[];
   /** Strings of the form "VAR=value". */

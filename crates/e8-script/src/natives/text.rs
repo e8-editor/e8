@@ -1103,6 +1103,6 @@ natives! {
     /// A value written as Lisp would read it back, as prin1-to-string; with
     /// `noescape`, strings and symbols as their text, as princ writes them.
     pub fn prin1ToString(ed, value: e8_core::Value, noescape: Opt<bool>) -> String {
-        Ok(e8_core::lread::prin1_to_string(&value, noescape.0.unwrap_or(false)))
+        Ok(ed.prin1_to_string(&value, noescape.0.unwrap_or(false)))
     }
 }

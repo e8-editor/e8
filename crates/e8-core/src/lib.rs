@@ -93,7 +93,7 @@ pub use minibuffer::{MinibufferInfo, Reading, file_name_all_completions};
 pub use modes::MinorMode;
 pub use prefix::{PrefixArg, prefix_numeric_value};
 pub use properties::{Overlay, Props, Text};
-pub use process::{Contact, NetworkSpec, ProcessSpec, Status as ProcessStatus};
+pub use process::{Contact, NetworkSpec, ProcessInfo, ProcessSpec, Status as ProcessStatus};
 pub use font::{Font, FontKind, FontSize, font_spec};
 pub use quit::{QuitHandle, QuitState};
 pub use fringe::{FringeAlign, FringeBitmap, RowFringes, STANDARD_BITMAPS, WindowFringes};

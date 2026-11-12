@@ -40,6 +40,9 @@ pub enum Value {
     Window(u64),
     /// A frame, by its id, live or deleted, as Emacs's frame objects.
     Frame(u64),
+    /// A process, by its id, listed or gone, as Emacs's process objects
+    /// (ADR 0070).
+    Process(u64),
     /// A font spec, entity or object, as Emacs's font vectors.
     Font(Box<crate::font::Font>),
     /// A script's own object, such as an org-roam node, which the editor
@@ -227,6 +230,7 @@ impl fmt::Display for Value {
             Value::Marker(id) => write!(f, "#<marker {id}>"),
             Value::Window(id) => write!(f, "#<window {id}>"),
             Value::Frame(id) => write!(f, "#<frame F{}>", id.saturating_sub(crate::window::FIRST_FRAME) + 1),
+            Value::Process(id) => write!(f, "#<process {id}>"),
             Value::Font(font) => write!(f, "#<{} {}>", font.kind.name(), font.xlfd_name(true)),
             Value::Object(object) => write!(f, "{object:?}"),
         }

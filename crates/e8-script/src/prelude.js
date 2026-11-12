@@ -154,6 +154,48 @@
     return f;
   };
   /**
+   * A process as an object, as Emacs's process objects (ADR 0070): the
+   * same object each time, and still answering for the process once it has
+   * gone from processList, though no longer live. Its string is its name,
+   * so it can go where a name went; functions taking a process take its
+   * name too.
+   */
+  const processes = new Map();
+  class Process {
+    constructor(id) {
+      Object.defineProperty(this, "__e8ProcessId", { value: id });
+      Object.freeze(this);
+    }
+    get id() {
+      return this.__e8ProcessId;
+    }
+    /** Its name, as process-name. */
+    get name() {
+      return native.processInfo(this)?.name;
+    }
+    /** Whether it is running, as process-live-p. */
+    get live() {
+      return processLive(native.processInfo(this));
+    }
+    toString() {
+      return this.name ?? `#<process ${this.__e8ProcessId}>`;
+    }
+    /** As Emacs prints a process: #<process NAME>. */
+    toJSON() {
+      return `#<process ${this.toString()}>`;
+    }
+  }
+  globalThis.__e8Process = (id) => {
+    let p = processes.get(id);
+    if (p === undefined) {
+      p = new Process(id);
+      processes.set(id, p);
+    }
+    return p;
+  };
+  /** Whether a process, as processInfo describes it, is running, as process-live-p. */
+  const processLive = (info) => info !== undefined && info !== null && info.listed && ["run", "open", "listen", "connect", "stop"].includes(info.status);
+  /**
    * A keymap, as Emacs's keymaps are values: bound in a keymap, it is a
    * prefix map, and a variable or text property can hold one.
    */
@@ -1213,30 +1255,41 @@
         sentinel ?? undefined,
       );
     },
-    processLiveP: (name) => ["run", "open", "listen", "connect", "stop"].includes(native.processInfo(String(name))?.status),
-    processCodingSystem: (name) => native.processPrimitive("process-coding-system", String(name)) ?? undefined,
-    setProcessCodingSystem: (name, decoding, encoding) =>
-      native.processPrimitive("set-process-coding-system", String(name), String(decoding ?? "undecided"), String(encoding ?? decoding ?? "undecided")),
-    processTtyName: (name) => native.processPrimitive("process-tty-name", String(name)) ?? undefined,
-    processType: (name) => native.processPrimitive("process-type", String(name)) ?? undefined,
-    processContact: (name, key) =>
-      key === undefined ? native.processPrimitive("process-contact", String(name)) : native.processPrimitive("process-contact", String(name), String(key)) ?? undefined,
-    setProcessWindowSize: (name, height, width) => native.processPrimitive("set-process-window-size", String(name), height, width),
-    processSendRegion: (name, start, end) => native.processSendString(String(name), native.bufferText(Math.min(start, end), Math.max(start, end))),
-    quitProcess: (name, currentGroup = false) => native.processPrimitive("signal-process", String(name), "QUIT", Boolean(currentGroup)),
-    stopProcess: (name, currentGroup = false) => native.processPrimitive("signal-process", String(name), "TSTP", Boolean(currentGroup)),
-    continueProcess: (name, currentGroup = false) => native.processPrimitive("signal-process", String(name), "CONT", Boolean(currentGroup)),
-    processStatus: (name) => native.processInfo(String(name))?.status,
-    processExitStatus: (name) => native.processInfo(String(name))?.exitStatus ?? undefined,
-    processBuffer: (name) => native.processInfo(String(name))?.buffer ?? undefined,
-    processMark: (name) => native.processInfo(String(name))?.mark ?? undefined,
-    processCommand: (name) => native.processInfo(String(name))?.command,
-    processId: (name) => native.processInfo(String(name))?.pid ?? undefined,
-    processQueryOnExitFlag: (name) => native.processInfo(String(name))?.queryOnExit ?? false,
+    processLiveP: (process) => processLive(native.processInfo(process)),
+    processCodingSystem: (process) => native.processPrimitive("process-coding-system", process) ?? undefined,
+    setProcessCodingSystem: (process, decoding, encoding) =>
+      native.processPrimitive("set-process-coding-system", process, String(decoding ?? "undecided"), String(encoding ?? decoding ?? "undecided")),
+    processTtyName: (process) => native.processPrimitive("process-tty-name", process) ?? undefined,
+    processType: (process) => native.processPrimitive("process-type", process) ?? undefined,
+    processContact: (process, key) =>
+      key === undefined ? native.processPrimitive("process-contact", process) : native.processPrimitive("process-contact", process, String(key)) ?? undefined,
+    setProcessWindowSize: (process, height, width) => native.processPrimitive("set-process-window-size", process, height, width),
+    processSendRegion: (process, start, end) => native.processSendString(process, native.bufferText(Math.min(start, end), Math.max(start, end))),
+    quitProcess: (process, currentGroup = false) => native.processPrimitive("signal-process", process, "QUIT", Boolean(currentGroup)),
+    stopProcess: (process, currentGroup = false) => native.processPrimitive("signal-process", process, "TSTP", Boolean(currentGroup)),
+    continueProcess: (process, currentGroup = false) => native.processPrimitive("signal-process", process, "CONT", Boolean(currentGroup)),
+    processName: (process) => native.processInfo(process)?.name,
+    processStatus: (process) => native.processInfo(process)?.status,
+    processExitStatus: (process) => native.processInfo(process)?.exitStatus ?? undefined,
+    processBuffer: (process) => native.processInfo(process)?.buffer ?? undefined,
+    processMark: (process) => native.processInfo(process)?.mark ?? undefined,
+    processCommand: (process) => native.processInfo(process)?.command,
+    processId: (process) => native.processInfo(process)?.pid ?? undefined,
+    processQueryOnExitFlag: (process) => native.processInfo(process)?.queryOnExit ?? false,
     getBufferProcess: (buffer) => native.getBufferProcess(nameOf(buffer)) ?? undefined,
-    interruptProcess: (name, currentGroup = false) => native.processPrimitive("signal-process", String(name), "INT", Boolean(currentGroup)),
-    killProcess: (name, currentGroup = false) => native.processPrimitive("signal-process", String(name), "KILL", Boolean(currentGroup)),
-    signalProcess: (name, signal) => native.processPrimitive("signal-process", String(name), signal, false),
+    interruptProcess: (process, currentGroup = false) => native.processPrimitive("signal-process", process, "INT", Boolean(currentGroup)),
+    killProcess: (process, currentGroup = false) => native.processPrimitive("signal-process", process, "KILL", Boolean(currentGroup)),
+    signalProcess: (process, signal) => native.processPrimitive("signal-process", process, signal, false),
+    // The default is given as its function, so it can be called, as
+    // funcall calls Emacs's internal-default-process-filter, and compared.
+    processFilter: (process) => {
+      const f = native.processFilterSet(process);
+      return f === null || f === undefined ? api.internalDefaultProcessFilter : f;
+    },
+    processSentinel: (process) => {
+      const f = native.processSentinelSet(process);
+      return f === null || f === undefined ? api.internalDefaultProcessSentinel : f;
+    },
     callProcess: (command, { directory, input } = {}) =>
       native.callProcess(command.map(String), directory ?? undefined, input === undefined ? undefined : String(input)),
     windowStart: (window) => native.windowStart(window ?? native.selectedWindow()),
@@ -1657,6 +1710,9 @@
   });
 
   e8.addHook("kill-buffer-hook", forgetBuffer);
+  // By their Lisp names too, as a filter or sentinel can be given by name.
+  e8.defun("internal-default-process-filter", api.internalDefaultProcessFilter);
+  e8.defun("internal-default-process-sentinel", api.internalDefaultProcessSentinel);
 
   globalThis.console = Object.freeze({
     log: (...items) => native.message(items.map(String).join(" ")),

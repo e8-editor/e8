@@ -4,7 +4,7 @@
 use e8_core::Value as EditorValue;
 use rquickjs::{Coerced, Ctx, FromJs, IntoJs, Value};
 
-use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Opt, PlistOrValue, Posn, Prefix, Record, Rest, Win};
+use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Opt, PlistOrValue, Posn, Prefix, Proc, ProcObj, Record, Rest, Win};
 
 /// A value a native takes, converted from the script's.
 pub(crate) trait Conv: Sized {
@@ -106,6 +106,21 @@ impl Conv for Frm {
     fn conv<'js>(ctx: &Ctx<'js>, js: Self::Js<'js>) -> rquickjs::Result<Self> {
         let value = super::value_from_js(ctx, js)?;
         Frm::from_value(&value).ok_or_else(|| rquickjs::Exception::throw_type(ctx, &format!("Not a frame: {value}")))
+    }
+}
+
+/// A Process, or a process's name.
+impl Conv for Proc {
+    type Js<'js> = Value<'js>;
+    fn conv<'js>(ctx: &Ctx<'js>, js: Self::Js<'js>) -> rquickjs::Result<Self> {
+        let value = super::value_from_js(ctx, js)?;
+        Proc::from_value(&value).ok_or_else(|| rquickjs::Exception::throw_type(ctx, &format!("Not a process: {value}")))
+    }
+}
+
+impl Ret for ProcObj {
+    fn give<'js>(self, ctx: &Ctx<'js>) -> rquickjs::Result<Value<'js>> {
+        super::value_to_js(ctx, &EditorValue::Process(self.0))
     }
 }
 

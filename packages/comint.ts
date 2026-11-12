@@ -66,13 +66,13 @@ function state(buffer = e8.bufferName()): State {
 const nil = (v: unknown) => v === null || v === undefined || v === false;
 
 /** The current buffer's process, or the error comint gives without one. */
-function bufferProcess(): string {
+function bufferProcess(): e8.Process {
   const p = e8.getBufferProcess(e8.bufferName());
   if (p === undefined) throw new Error("Current buffer has no process");
   return p;
 }
 
-const processMark = (p: string): number => e8.markerPosition(e8.processMark(p)!)!;
+const processMark = (p: e8.ProcessLike): number => e8.markerPosition(e8.processMark(p)!)!;
 
 const PROMPT_REAR_NONSTICKY = ["field", "inhibit-line-move-field-capture", "read-only", "font-lock-face", "insert-in-front-hooks"];
 
@@ -142,7 +142,7 @@ function advanceWindowPoints(buffer: string, at: number, to: number): void {
  * motion done, then comint-output-filter-functions run, and the last line
  * left as the prompt.
  */
-export function outputFilter(process: string, text: string): void {
+export function outputFilter(process: e8.ProcessLike, text: string): void {
   const buffer = e8.processBuffer(process);
   if (buffer === undefined || !e8.bufferLiveP(e8.getBuffer(buffer))) return;
   e8.withCurrentBuffer(buffer, () => {
@@ -263,7 +263,7 @@ const dropEcho = e8.defun("comint--drop-echo", (text: string) => {
 });
 
 /** Starts a program in a buffer, on a terminal, with its output going through comint, as comint-exec. */
-export function comintExec(buffer: string, name: string, command: string[], startfile?: string): string {
+export function comintExec(buffer: string, name: string, command: string[], startfile?: string): e8.Process {
   const old = e8.getBufferProcess(buffer);
   if (old !== undefined) e8.deleteProcess(old);
   const directory = e8.withCurrentBuffer(buffer, () => e8.expandFileName("."));

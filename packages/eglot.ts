@@ -117,7 +117,7 @@ function languageId(mode: string): string {
 
 interface Server {
   name: string;
-  process: string;
+  process: e8.Process;
   root: string;
   modes: string[];
   nextId: number;
@@ -246,9 +246,9 @@ function serverCommand(mode: string): string[] | undefined {
 /** Starts a server for a mode in a project and tells it what we can do, as eglot--connect. */
 function connect(mode: string, root: string, command: string[]): Server {
   const name = `EGLOT (${e8.fileNameNondirectory(root.replace(/\/$/, ""))}/${mode})`;
-  const server: Server = {
+  // The process is given once started, its filter and sentinel finding it here.
+  const server = {
     name,
-    process: "",
     root,
     modes: [mode],
     nextId: 1,
@@ -257,7 +257,7 @@ function connect(mode: string, root: string, command: string[]): Server {
     capabilities: {},
     buffers: new Set(),
     initialized: false,
-  };
+  } as Server;
   server.process = e8.makeProcess({
     name,
     command,
@@ -268,7 +268,7 @@ function connect(mode: string, root: string, command: string[]): Server {
     coding: "utf-8-unix",
     filter: (_p, output) => filter(server, output),
     sentinel: (_p, event) => {
-      if (!e8.processLiveP(server.process)) {
+      if (!e8.processLiveP(_p)) {
         e8.message(`[eglot] ${name} ${event.trim()}`);
         disconnect(server);
       }

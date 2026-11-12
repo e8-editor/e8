@@ -168,14 +168,6 @@ natives! {
         Ok(ed.enabled_minor_modes().into_iter().filter(|m| !global.contains(&m.as_str())).collect())
     }
 
-    /// Wait for output from a process, or any with none named, for up to
-    /// `seconds`, or until some comes, as accept-process-output: it goes to
-    /// the filters meanwhile, and timers run, but keys wait. Whether output came.
-    #[ts = "(process?: string, seconds?: number): boolean"]
-    pub fn acceptProcessOutput(ed, process: Option<String>, seconds: Option<f64>) -> bool {
-        ed.wait_for_process_output(process.as_deref(), seconds)
-    }
-
     /// E8's process id, as emacs-pid.
     pub fn emacsPid(ed) -> u32 {
         Ok(e8_core::clock::process_id())
