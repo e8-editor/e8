@@ -5,7 +5,7 @@
 use e8_core::Value as EditorValue;
 
 use super::{Js, Thrown, number, string};
-use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Opt, PlistOrValue, Posn, Prefix, Record, Rest, Win};
+use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Opt, PlistOrValue, Posn, Prefix, Proc, ProcObj, Record, Rest, Win};
 
 type Scope<'s, 'i> = v8::PinScope<'s, 'i>;
 type Value<'s> = v8::Local<'s, v8::Value>;
@@ -155,6 +155,23 @@ impl Conv for Frm {
             Some(f) => Ok(f),
             None => Err(type_error(scope, &format!("Not a frame: {value}"))),
         }
+    }
+}
+
+/// A Process, or a process's name.
+impl Conv for Proc {
+    fn conv<'s>(scope: &mut Scope<'s, '_>, value: Value<'s>) -> Result<Self, Thrown> {
+        let value = super::value_from_js(scope, value)?;
+        match Proc::from_value(&value) {
+            Some(p) => Ok(p),
+            None => Err(type_error(scope, &format!("Not a process: {value}"))),
+        }
+    }
+}
+
+impl Ret for ProcObj {
+    fn give<'s>(self, scope: &mut Scope<'s, '_>) -> Js<'s> {
+        super::value_to_js(scope, &EditorValue::Process(self.0))
     }
 }
 

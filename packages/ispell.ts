@@ -669,7 +669,7 @@ function formatWord(word: string): string {
 
 interface Session {
   /** The checker's process. */
-  process: string;
+  process: e8.Process;
   directory: string;
 }
 let session: Session | undefined;
@@ -753,7 +753,7 @@ function startProcess(): void {
     directory: e8.fileAccessibleDirectoryP(directory) ? directory : e8.expandFileName("~/"),
     connectionType: "pipe",
     coding: e8.codingSystemP(coding) ? coding : "utf-8",
-    filter: (_process: string, output: string) => takeOutput(output),
+    filter: (_process: e8.Process, output: string) => takeOutput(output),
   });
   e8.setProcessQueryOnExitFlag(process, false);
   session = { process, directory };

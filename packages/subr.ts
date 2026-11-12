@@ -323,12 +323,27 @@ export function windowMinibufferP(window?: e8.WindowLike): boolean {
   return w === e8.minibufferWindow() || w === 0;
 }
 
-/** The process with a name, as get-process: E8 names processes by their names. */
-export const getProcess = (name: string): string | undefined => (e8.processList().includes(name) ? name : undefined);
-/** Whether a value is a process E8 knows, as processp. */
-export const processp = (process: unknown): boolean => typeof process === "string" && e8.processStatus(process) !== undefined;
-/** A process's name, as process-name: the name is the process. */
-export const processName = (process: string): string => process;
+/** The process with a name, as get-process; a process is itself. */
+export const getProcess = (name: e8.ProcessLike): e8.Process | undefined => e8.getProcess(name);
+/** Whether a value is a process, listed or gone, as processp: a name is not one. */
+export const processp = (value: unknown): value is e8.Process => e8.processp(value);
+/** A process's name, as process-name. */
+export const processName = (process: e8.ProcessLike): string => e8.processName(process) ?? String(process);
+/** A property of a process, as subr.el's process-get. */
+export function processGet(process: e8.ProcessLike, prop: e8.Value): e8.Value | undefined {
+  const plist = e8.processPlist(process);
+  for (let i = 0; i + 1 < plist.length; i += 2) if (plist[i] === prop) return plist[i + 1];
+  return undefined;
+}
+/** Set a property of a process, as subr.el's process-put. Returns the value. */
+export function processPut<T extends e8.Value>(process: e8.ProcessLike, prop: e8.Value, value: T): T {
+  const plist = e8.processPlist(process);
+  const i = plist.findIndex((p, j) => j % 2 === 0 && p === prop);
+  if (i >= 0 && i + 1 < plist.length) plist[i + 1] = value;
+  else plist.push(prop, value);
+  e8.setProcessPlist(process, plist);
+  return value;
+}
 
 /** Whether a file name names a directory, ending in a slash, as directory-name-p. */
 export const directoryNameP = (name: string): boolean => name.endsWith("/");

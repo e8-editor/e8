@@ -289,7 +289,7 @@ async function compilationStart(command: string, mode: string, directory: string
 }
 
 /** Inserts output at the process mark, as compilation-filter, and finds the messages in it. */
-function compilationFilter(proc: string, output: string): void {
+function compilationFilter(proc: e8.Process, output: string): void {
   const buffer = e8.processBuffer(proc);
   if (buffer === undefined || !e8.bufferList().includes(buffer)) return;
   e8.withCurrentBuffer(buffer, () => {
@@ -315,7 +315,7 @@ function compilationFilter(proc: string, output: string): void {
 }
 
 /** Notes how the compilation ended, as compilation-handle-exit. */
-function compilationSentinel(proc: string, event: string, modeName: string): void {
+function compilationSentinel(proc: e8.Process, event: string, modeName: string): void {
   const buffer = e8.processBuffer(proc);
   if (buffer === undefined || !e8.bufferList().includes(buffer)) return;
   let message = "";

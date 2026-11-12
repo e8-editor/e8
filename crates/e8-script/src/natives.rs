@@ -38,6 +38,7 @@ mod chartab;
 mod editor;
 mod files;
 mod images;
+mod processes;
 mod search;
 mod text;
 mod treesit;
@@ -243,6 +244,56 @@ impl Frm {
     }
 }
 
+/// A process, as scripts give one: a `Process` object, or, so packages
+/// written before the objects keep working, its name (ADR 0070). Scripts
+/// get a process as its object.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) enum Proc {
+    Id(u64),
+    Name(String),
+}
+
+impl Proc {
+    pub fn from_value(value: &EditorValue) -> Option<Proc> {
+        match value {
+            EditorValue::Process(id) => Some(Proc::Id(*id)),
+            EditorValue::Str(_) | EditorValue::Text(_) | EditorValue::Symbol(_) => value.as_str().map(|s| Proc::Name(s.to_string())),
+            _ => None,
+        }
+    }
+
+    /// The process's id: its object's, or that of the listed process with
+    /// the name. A name no listed process has is an error, as get-process
+    /// finding none.
+    pub fn id(&self, ed: &e8_core::Editor) -> e8_core::Result<u64> {
+        match self {
+            Proc::Id(id) => Ok(*id),
+            Proc::Name(name) => ed.process_named(name).ok_or_else(|| e8_core::Error::new(format!("Process {name} does not exist"))),
+        }
+    }
+
+    /// The process's id if there is one: a name no listed process has gives none.
+    pub fn id_if_any(&self, ed: &e8_core::Editor) -> Option<u64> {
+        self.id(ed).ok()
+    }
+
+    /// The name of the listed process, for the editor's functions that take
+    /// one: a process that has gone is not running.
+    pub fn listed_name(&self, ed: &e8_core::Editor) -> e8_core::Result<String> {
+        match self {
+            Proc::Name(name) => Ok(name.clone()),
+            Proc::Id(id) => ed.listed_process_name(*id).ok_or_else(|| {
+                let name = ed.process_info(*id).map_or_else(|| format!("#<process {id}>"), |p| p.name);
+                e8_core::Error::new(format!("Process {name} not running"))
+            }),
+        }
+    }
+}
+
+/// A process given back to a script: its `Process` object.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct ProcObj(pub u64);
+
 /// A position in a window, or none: see `posn_to_js`.
 pub(crate) struct Posn(pub Option<e8_core::layout::Posn>);
 
@@ -328,6 +379,7 @@ field_from_number!(f64, f32, i64, i32, u64, u32, u8, usize);
 const TABLES: &[&[Native]] = &[
     editor::TABLE,
     variables::TABLE,
+    processes::TABLE,
     text::TABLE,
     bidi::TABLE,
     treesit::TABLE,
@@ -348,6 +400,7 @@ pub(crate) fn tables() -> impl Iterator<Item = &'static Native> {
 pub(crate) fn install<'js>(ctx: &rquickjs::Ctx<'js>, native: &rquickjs::Object<'js>, api: &rquickjs::Object<'js>) -> rquickjs::Result<()> {
     editor::install(ctx, native, api)?;
     variables::install(ctx, native, api)?;
+    processes::install(ctx, native, api)?;
     text::install(ctx, native, api)?;
     bidi::install(ctx, native, api)?;
     treesit::install(ctx, native, api)?;
@@ -364,6 +417,7 @@ pub(crate) fn install<'js>(ctx: &rquickjs::Ctx<'js>, native: &rquickjs::Object<'
 pub(crate) fn install<'s>(scope: &mut v8::PinScope<'s, '_>, native: v8::Local<'s, v8::Object>, api: v8::Local<'s, v8::Object>) {
     editor::install(scope, native, api);
     variables::install(scope, native, api);
+    processes::install(scope, native, api);
     text::install(scope, native, api);
     bidi::install(scope, native, api);
     treesit::install(scope, native, api);
@@ -393,7 +447,7 @@ fn signature(native: &Native) -> String {
         .map(|(name, ty)| {
             let ty = ty.replace(' ', "");
             // A window or frame is taken as its number too, while packages move to the objects.
-            let like = |t: String| t.replace("Window", "WindowLike").replace("Frame", "FrameLike");
+            let like = |t: String| t.replace("Window", "WindowLike").replace("Frame", "FrameLike").replace("Process", "ProcessLike");
             if let Some(inner) = ty.strip_prefix("Opt<").and_then(|t| t.strip_suffix('>')) {
                 format!("{name}?: {}", like(ts_type(inner)))
             } else if let Some(inner) = ty.strip_prefix("Rest<").and_then(|t| t.strip_suffix('>')) {
@@ -423,6 +477,7 @@ fn ts_type(ty: &str) -> String {
         "Prefix" => "PrefixArg",
         "Win" => "Window",
         "Frm" => "Frame",
+        "Proc" | "ProcObj" => "Process",
         "Text" | "e8_core::Text" => "string | PropertizedString",
         _ => "Value",
     }

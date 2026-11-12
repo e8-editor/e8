@@ -60,6 +60,7 @@ mod org_src;
 mod overlays;
 mod package_vc;
 mod parens;
+mod process_objects;
 mod processes;
 mod project;
 mod quit;

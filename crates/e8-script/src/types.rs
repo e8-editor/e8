@@ -246,7 +246,7 @@ const API: &str = r##"
    * What variables, hooks and text properties hold, as Emacs's values: a
    * function too, as a lambda in a variable, kept as itself.
    */
-  type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | PropertizedString | Keymap | CharTable | Marker | Font;
+  type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | Process | PropertizedString | Keymap | CharTable | Marker | Font;
   /**
    * A keymap, as Emacs's keymaps are values: bound to a prefix key in
    * another keymap it is that key's prefix map, shared wherever it is
@@ -360,6 +360,25 @@ const API: &str = r##"
   type WindowLike = Window | number;
   /** A frame, or its number while packages move to the objects. */
   type FrameLike = Frame | number;
+  /**
+   * A process as an object, as Emacs's process objects (ADR 0070): the
+   * same object each time, and still answering for the process once it
+   * has gone from processList, though no longer live. Its string is its
+   * name, so it goes where a name went.
+   */
+  interface Process {
+    /** A number no other process has had. */
+    readonly id: number;
+    /** Its name, as process-name. */
+    readonly name: string;
+    /** Whether it is running, or a connection or server open, as process-live-p. */
+    readonly live: boolean;
+  }
+  /**
+   * A process, or the name of one in processList, as packages written
+   * before the objects pass it.
+   */
+  type ProcessLike = Process | string;
   type VariableName = keyof Variables;
   type HookName = keyof Hooks;
 
@@ -1140,9 +1159,9 @@ const API: &str = r##"
     /** Environment variables to set, besides TERM=dumb. */
     env?: { [name: string]: string };
     /** Called with the process and each piece of output, instead of inserting it in the buffer. */
-    filter?: (process: string, output: string) => void;
+    filter?: (process: Process, output: string) => void;
     /** Called with the process and what happened, "finished\n" or "exited abnormally with code 2\n", when it ends. */
-    sentinel?: (process: string, event: string) => void;
+    sentinel?: (process: Process, event: string) => void;
     /**
      * Whether standard error comes in as output too: true by default; on a
      * pseudo-terminal it always does. A buffer instead takes it on its own,
@@ -1169,64 +1188,77 @@ const API: &str = r##"
     family?: "local";
     /** Listen for connections, each of which becomes a process of its own. */
     server?: boolean;
-    filter?: (process: string, output: string) => void;
+    filter?: (process: Process, output: string) => void;
     /** Told "deleted\n", "connection broken by remote peer\n", or for a server's new connection "open from HOST\n". */
-    sentinel?: (process: string, event: string) => void;
+    sentinel?: (process: Process, event: string) => void;
     coding?: string | [string, string];
   }
   /**
    * Start a program running alongside the editor, as Emacs's make-process,
-   * and return its name. Its output goes into its buffer at its mark, or to
+   * and return it. Its output goes into its buffer at its mark, or to
    * its filter; when it ends, its sentinel runs, or a line saying so goes
    * into its buffer. Starting it asks the agent's permission.
    */
-  function makeProcess(definition: ProcessDefinition): string;
+  function makeProcess(definition: ProcessDefinition): Process;
   /**
    * Open a network connection, or a server for them, as make-network-process,
-   * and return its name. A server's connections are processes of their own,
+   * and return it. A server's connections are processes of their own,
    * named after it and who connected. Asks the agent's permission.
    */
-  function makeNetworkProcess(definition: NetworkProcessDefinition): string;
-  /** "run", "exit" or "signal", for a connection "open" or "closed", for a server "listen", or undefined for no such process. */
-  function processStatus(process: string): "run" | "exit" | "signal" | "open" | "closed" | "listen" | undefined;
+  function makeNetworkProcess(definition: NetworkProcessDefinition): Process;
+  /**
+   * "run", "exit" or "signal", for a connection "open" or "closed", for a
+   * server "listen", or undefined for a name no listed process has. A
+   * process that has gone answers still, as these all do.
+   */
+  function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | undefined;
   /** Whether a process is running, or a connection or server open, as process-live-p. */
-  function processLiveP(process: string): boolean;
+  function processLiveP(process: ProcessLike): boolean;
   /** How a process's output is decoded and its input encoded, as process-coding-system. */
-  function processCodingSystem(process: string): [string, string] | undefined;
-  function setProcessCodingSystem(process: string, decoding?: string, encoding?: string): void;
+  function processCodingSystem(process: ProcessLike): [string, string] | undefined;
+  function setProcessCodingSystem(process: ProcessLike, decoding?: string, encoding?: string): void;
   /** The name of a process's terminal, as process-tty-name, if it talks through one. */
-  function processTtyName(process: string): string | undefined;
+  function processTtyName(process: ProcessLike): string | undefined;
   /** "real" for a program, "network" for a connection or server, as process-type. */
-  function processType(process: string): "real" | "network" | undefined;
+  function processType(process: ProcessLike): "real" | "network" | undefined;
   /** [host, service] for a connection, a part of it by key ("host", "service", "remote", "server"), or true for a program, as process-contact. */
-  function processContact(process: string, key?: string): Value;
+  function processContact(process: ProcessLike, key?: string): Value;
   /** Tell a process's terminal its size, as set-process-window-size; false without one. */
-  function setProcessWindowSize(process: string, height: number, width: number): boolean;
+  function setProcessWindowSize(process: ProcessLike, height: number, width: number): boolean;
   /** Send the text between two positions to a process, as process-send-region. */
-  function processSendRegion(process: string, start: number, end: number): void;
+  function processSendRegion(process: ProcessLike, start: number, end: number): void;
   /** Send SIGQUIT, as quit-process; with currentGroup, to the job in the foreground on its terminal. */
-  function quitProcess(process: string, currentGroup?: boolean): void;
+  function quitProcess(process: ProcessLike, currentGroup?: boolean): void;
   /** Stop a process, as stop-process. */
-  function stopProcess(process: string, currentGroup?: boolean): void;
+  function stopProcess(process: ProcessLike, currentGroup?: boolean): void;
   /** Let a stopped process go on, as continue-process. */
-  function continueProcess(process: string, currentGroup?: boolean): void;
+  function continueProcess(process: ProcessLike, currentGroup?: boolean): void;
   /** The exit code, or the signal that ended it. */
-  function processExitStatus(process: string): number | undefined;
-  function processBuffer(process: string): string | undefined;
+  function processExitStatus(process: ProcessLike): number | undefined;
+  /** Its name, as process-name. */
+  function processName(process: ProcessLike): string | undefined;
+  /**
+   * A process's filter, as process-filter: internalDefaultProcessFilter
+   * for the default, so it can be called, or true for Emacs's t.
+   */
+  function processFilter(process: ProcessLike): ((process: Process, output: string) => void) | string | symbol | true;
+  /** A process's sentinel, as process-sentinel: internalDefaultProcessSentinel for the default. */
+  function processSentinel(process: ProcessLike): ((process: Process, event: string) => void) | string | symbol;
+  function processBuffer(process: ProcessLike): string | undefined;
   /** The marker where its output goes, as process-mark. */
-  function processMark(process: string): number | undefined;
-  function processCommand(process: string): string[] | undefined;
-  function processId(process: string): number | undefined;
+  function processMark(process: ProcessLike): number | undefined;
+  function processCommand(process: ProcessLike): string[] | undefined;
+  function processId(process: ProcessLike): number | undefined;
   /** Whether exiting E8 asks before killing it, as process-query-on-exit-flag. */
-  function processQueryOnExitFlag(process: string): boolean;
+  function processQueryOnExitFlag(process: ProcessLike): boolean;
   /** The process writing to a buffer, as get-buffer-process. */
-  function getBufferProcess(buffer: BufferLike): string | undefined;
+  function getBufferProcess(buffer: BufferLike): Process | undefined;
   /** Interrupt a process and what it started, as C-c does in a terminal; with currentGroup, the job in the foreground on its terminal. */
-  function interruptProcess(process: string, currentGroup?: boolean): void;
+  function interruptProcess(process: ProcessLike, currentGroup?: boolean): void;
   /** Kill a process and what it started. */
-  function killProcess(process: string, currentGroup?: boolean): void;
+  function killProcess(process: ProcessLike, currentGroup?: boolean): void;
   /** Send a signal, by number or name ("SIGINT", "TERM"), as signal-process. */
-  function signalProcess(process: string, signal: number | string): void;
+  function signalProcess(process: ProcessLike, signal: number | string): void;
   /**
    * Run a program and wait for it, as Emacs's call-process: its exit code
    * and what it wrote. Asks the agent's permission first.

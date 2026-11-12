@@ -341,7 +341,7 @@ fn print(value: &Value, noescape: bool, out: &mut String) {
         }
         // As Emacs prints them, the window without its buffer, which the
         // editor's printer does not see.
-        Value::Window(_) | Value::Frame(_) => out.push_str(&value.to_string()),
+        Value::Window(_) | Value::Frame(_) | Value::Process(_) => out.push_str(&value.to_string()),
         other => out.push_str(&format!("#<{other:?}>")),
     }
 }

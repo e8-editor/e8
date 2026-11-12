@@ -25,7 +25,7 @@ use crate::clock::Instant;
 use crate::coding::{Coding, Eol};
 use crate::editor::Editor;
 use crate::error::{Error, Result};
-use crate::variables::{HookFn, Value};
+use crate::variables::Value;
 
 /// How a process stands, as Emacs's `process-status`.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -141,8 +141,17 @@ pub(crate) struct Process {
     pid: u32,
     /// Output streams still open.
     open_streams: usize,
-    filter: Option<HookFn>,
-    sentinel: Option<HookFn>,
+    /// Its filter, as set-process-filter: None for the default, which
+    /// inserts at its mark, and `true` for Emacs's `t`, which holds its
+    /// output back until another is set.
+    filter: Option<Value>,
+    /// Its sentinel, as set-process-sentinel: None for the default.
+    sentinel: Option<Value>,
+    /// Its property list, as process-plist: [prop, value, ...].
+    plist: Value,
+    /// Output that came while its filter was `t`, to give the next filter
+    /// set, in order.
+    held_output: String,
     query_on_exit: bool,
     /// When it was seen to have exited, and how, while its output was still open.
     exited: Option<(Instant, Status)>,
@@ -323,13 +332,55 @@ pub(crate) struct Processes {
     watching: Option<u64>,
     /// How long each read of a program's output is held back, for tests.
     read_delay: Duration,
+    /// What is kept of processes that have gone from the list, by id, so
+    /// their objects still answer, as Emacs's process objects do.
+    gone: std::collections::HashMap<u64, Gone>,
+}
+
+/// What is kept of a process once it has gone from the list: its name,
+/// command, status, buffer and plist, without its streams, filter and
+/// sentinel ([ADR 0070](../../../docs/adr/0070-processes-as-emacs-has-them.md)).
+struct Gone {
+    name: String,
+    command: Vec<String>,
+    status: Status,
+    status_name: &'static str,
+    kind: &'static str,
+    buffer: Option<u64>,
+    /// Its mark while its sentinel runs on its way out, then none.
+    mark: Option<u64>,
+    pid: u32,
+    query_on_exit: bool,
+    coding: (Coding, Coding),
+    plist: Value,
+}
+
+/// What can be asked of a process, listed or gone, as process-status,
+/// process-buffer and their kin answer.
+#[derive(Clone, Debug)]
+pub struct ProcessInfo {
+    pub name: String,
+    pub command: Vec<String>,
+    pub status: Status,
+    /// Its status as process-status names it.
+    pub status_name: &'static str,
+    /// "real" or "network", as process-type.
+    pub kind: &'static str,
+    /// The name of its buffer, if it has one still live.
+    pub buffer: Option<String>,
+    pub mark: Option<u64>,
+    /// Its program's process id; none for a connection.
+    pub pid: Option<u32>,
+    pub query_on_exit: bool,
+    /// Whether it is still in the process list.
+    pub listed: bool,
 }
 
 impl Default for Processes {
     fn default() -> Processes {
         let (tx, rx) = sync_channel(QUEUED_CHUNKS);
         let tx = EventSender { tx, wake: Arc::new(Mutex::new(None)) };
-        Processes { list: Vec::new(), tx, rx, next_id: 1, held: Default::default(), outputs_seen: 0, watching: None, read_delay: Duration::ZERO }
+        Processes { list: Vec::new(), tx, rx, next_id: 1, held: Default::default(), outputs_seen: 0, watching: None, read_delay: Duration::ZERO, gone: Default::default() }
     }
 }
 
@@ -432,8 +483,11 @@ pub struct ProcessSpec {
     /// there is none, as make-process's :stderr; on pipes only, and
     /// `merge_stderr` then does not apply.
     pub stderr_buffer: Option<String>,
-    pub filter: Option<HookFn>,
-    pub sentinel: Option<HookFn>,
+    /// Its filter, called with the process and its output, as
+    /// make-process's :filter; None for the default.
+    pub filter: Option<Value>,
+    /// Its sentinel, called with the process and the event; None for the default.
+    pub sentinel: Option<Value>,
     /// Whether it talks through a pseudo-terminal rather than pipes, as
     /// process-connection-type t asks.
     pub pty: bool,
@@ -451,8 +505,8 @@ pub struct NetworkSpec {
     /// The port, "t" for any free one when listening, or a local socket's file.
     pub service: String,
     pub server: bool,
-    pub filter: Option<HookFn>,
-    pub sentinel: Option<HookFn>,
+    pub filter: Option<Value>,
+    pub sentinel: Option<Value>,
     pub coding: Option<(Coding, Coding)>,
 }
 
@@ -717,6 +771,8 @@ impl Editor {
             open_streams,
             filter: spec.filter,
             sentinel: spec.sentinel,
+            plist: Value::Null,
+            held_output: String::new(),
             query_on_exit: true,
             exited: None,
             kind,
@@ -839,6 +895,8 @@ impl Editor {
             open_streams,
             filter: spec.filter,
             sentinel: spec.sentinel,
+            plist: Value::Null,
+            held_output: String::new(),
             query_on_exit: true,
             exited: None,
             kind,
@@ -899,6 +957,8 @@ impl Editor {
             open_streams: 1,
             filter,
             sentinel: sentinel.clone(),
+            plist: Value::Null,
+            held_output: String::new(),
             query_on_exit: true,
             exited: None,
             kind: Kind::Network(contact),
@@ -908,7 +968,7 @@ impl Editor {
             stderr: None,
         });
         if let Some(f) = sentinel
-            && let Err(e) = f(self, &[Value::Str(name), Value::Str(format!("open from {host}\n"))])
+            && let Err(e) = self.funcall(&f, &[Value::Process(id), Value::Str(format!("open from {host}\n"))])
         {
             self.message(format!("error in process sentinel: {e}"));
         }
@@ -925,6 +985,116 @@ impl Editor {
     /// The processes, oldest first, as Emacs's process-list.
     pub fn process_list(&self) -> Vec<String> {
         self.processes.list.iter().map(|p| p.name.clone()).collect()
+    }
+
+    /// The processes' ids, oldest first, as process-list gives its objects.
+    pub fn process_ids(&self) -> Vec<u64> {
+        self.processes.list.iter().map(|p| p.id).collect()
+    }
+
+    /// The id of the listed process with a name, as get-process finds it.
+    pub fn process_named(&self, name: &str) -> Option<u64> {
+        self.processes.list.iter().find(|p| p.name == name).map(|p| p.id)
+    }
+
+    /// The name of the listed process with an id: none once it has gone.
+    pub fn listed_process_name(&self, id: u64) -> Option<String> {
+        self.processes.list.iter().find(|p| p.id == id).map(|p| p.name.clone())
+    }
+
+    /// What can be asked of a process by its id, listed or gone, as its
+    /// object answers in Emacs; none for an id no process had.
+    pub fn process_info(&self, id: u64) -> Option<ProcessInfo> {
+        let buffer = |b: Option<u64>| b.and_then(|b| self.buffers.iter().find(|x| x.id == b)).map(|b| b.name.clone());
+        if let Some(p) = self.processes.list.iter().find(|p| p.id == id) {
+            return Some(ProcessInfo {
+                name: p.name.clone(),
+                command: p.command.clone(),
+                status: p.status,
+                status_name: p.status_name(),
+                kind: p.kind_name(),
+                buffer: buffer(p.buffer),
+                mark: p.mark,
+                pid: (p.pid != 0).then_some(p.pid),
+                query_on_exit: p.query_on_exit,
+                listed: true,
+            });
+        }
+        let g = self.processes.gone.get(&id)?;
+        Some(ProcessInfo {
+            name: g.name.clone(),
+            command: g.command.clone(),
+            status: g.status,
+            status_name: g.status_name,
+            kind: g.kind,
+            buffer: buffer(g.buffer),
+            mark: g.mark,
+            pid: (g.pid != 0).then_some(g.pid),
+            query_on_exit: g.query_on_exit,
+            listed: false,
+        })
+    }
+
+    /// The codings of a process by id, listed or gone.
+    pub fn process_coding_system_of(&self, id: u64) -> Option<(Coding, Coding)> {
+        match self.processes.list.iter().find(|p| p.id == id) {
+            Some(p) => Some(p.coding),
+            None => self.processes.gone.get(&id).map(|g| g.coding),
+        }
+    }
+
+    /// The process writing to a buffer, by id, as get-buffer-process.
+    pub fn buffer_process_id(&self, buffer: &str) -> Option<u64> {
+        let id = self.buffers.iter().find(|b| b.name == buffer)?.id;
+        self.processes.list.iter().find(|p| p.buffer == Some(id)).map(|p| p.id)
+    }
+
+    /// A process's filter, as process-filter: None for the default, and
+    /// `true` for `t`. A process that has gone has the default.
+    pub fn process_filter(&self, id: u64) -> Option<Value> {
+        self.processes.list.iter().find(|p| p.id == id).and_then(|p| p.filter.clone())
+    }
+
+    /// Sets a process's filter, as set-process-filter: nil for the default,
+    /// `t` to hold its output back until another is set. Nothing for a
+    /// process that has gone, which has no output.
+    pub fn set_process_filter(&mut self, id: u64, filter: Value) {
+        if let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) {
+            p.filter = (!filter.is_nil()).then_some(filter);
+        }
+    }
+
+    /// A process's sentinel, as process-sentinel: None for the default.
+    pub fn process_sentinel(&self, id: u64) -> Option<Value> {
+        self.processes.list.iter().find(|p| p.id == id).and_then(|p| p.sentinel.clone())
+    }
+
+    /// Sets a process's sentinel, as set-process-sentinel: nil for the default.
+    pub fn set_process_sentinel(&mut self, id: u64, sentinel: Value) {
+        if let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) {
+            p.sentinel = (!sentinel.is_nil()).then_some(sentinel);
+        }
+    }
+
+    /// A process's property list, as process-plist: [prop, value, ...].
+    pub fn process_plist(&self, id: u64) -> Value {
+        match self.processes.list.iter().find(|p| p.id == id) {
+            Some(p) => p.plist.clone(),
+            None => self.processes.gone.get(&id).map_or(Value::Null, |g| g.plist.clone()),
+        }
+    }
+
+    /// Replaces a process's property list, as set-process-plist, listed or gone.
+    pub fn set_process_plist(&mut self, id: u64, plist: Value) -> Result<()> {
+        if !matches!(plist, Value::List(_) | Value::Null) {
+            return Err(Error::signal("wrong-type-argument", format!("Wrong type argument: listp, {plist}"), vec![Value::Symbol("listp".into()), plist]));
+        }
+        if let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) {
+            p.plist = plist;
+        } else if let Some(g) = self.processes.gone.get_mut(&id) {
+            g.plist = plist;
+        }
+        Ok(())
     }
 
     pub fn process_status(&self, name: &str) -> Option<Status> {
@@ -1019,10 +1189,7 @@ impl Editor {
 
     /// What a process is, as process-type: "real" for a program, "network" for a connection or server.
     pub fn process_type(&self, name: &str) -> Option<&'static str> {
-        Some(match self.process(name).ok()?.kind {
-            Kind::Network(_) | Kind::Server(..) => "network",
-            _ => "real",
-        })
+        Some(self.process(name).ok()?.kind_name())
     }
 
     /// Where a network process connects or listens, as process-contact; None for a program.
@@ -1130,9 +1297,42 @@ impl Editor {
             _ if network => Status::Exit(0),
             _ => Status::Signal(9),
         };
-        if p.status == Status::Run {
+        let notify = p.status == Status::Run;
+        if notify {
             p.status = status;
+        }
+        // Kept, as Emacs's process object is, before its sentinel runs, so
+        // the sentinel can ask about it.
+        self.keep_gone(&p);
+        if notify {
             self.notify(&p);
+        }
+        self.forget_marks(p);
+        Ok(())
+    }
+
+    /// Keeps what can still be asked of a process leaving the list.
+    fn keep_gone(&mut self, p: &Process) {
+        let gone = Gone {
+            name: p.name.clone(),
+            command: p.command.clone(),
+            status: p.status,
+            status_name: p.status_name(),
+            kind: p.kind_name(),
+            buffer: p.buffer,
+            mark: p.mark,
+            pid: p.pid,
+            query_on_exit: p.query_on_exit,
+            coding: p.coding,
+            plist: p.plist.clone(),
+        };
+        self.processes.gone.insert(p.id, gone);
+    }
+
+    /// Deletes the markers of a process that has gone, its sentinel having run.
+    fn forget_marks(&mut self, p: Process) {
+        if let Some(gone) = self.processes.gone.get_mut(&p.id) {
+            gone.mark = None;
         }
         if let Some(id) = p.mark {
             self.delete_marker(id);
@@ -1140,7 +1340,6 @@ impl Editor {
         if let Some(err) = p.stderr {
             self.delete_marker(err.mark);
         }
-        Ok(())
     }
 
     /// Holds back each read of a program's output started after this, as a
@@ -1159,19 +1358,19 @@ impl Editor {
     /// Takes in what processes have written and notices those that have
     /// ended, running filters and sentinels, as Emacs's wait_reading_process_output.
     pub(crate) fn poll_processes(&mut self) {
+        self.release_held_output();
         let mut drained = false;
         for _ in 0..CHUNKS_PER_POLL {
             let Some(event) = self.processes.held.pop_front().or_else(|| self.processes.rx.try_recv().ok()) else {
                 drained = true;
                 break;
             };
-            let name = |ed: &Editor, id: u64| ed.processes.list.iter().find(|p| p.id == id).map(|p| p.name.clone());
             match event {
                 Event::Output(id, bytes) => {
-                    if let Some(name) = name(self, id) {
+                    if self.processes.list.iter().any(|p| p.id == id) {
                         let text = self.decode_output(id, &bytes);
                         if !text.is_empty() {
-                            self.process_output(&name, &text);
+                            self.process_output(id, &text);
                         }
                     }
                 }
@@ -1199,7 +1398,7 @@ impl Editor {
                 if p.open_streams == 0 {
                     p.status = Status::Exit(256);
                     p.stdin = None;
-                    ended.push(p.name.clone());
+                    ended.push(p.id);
                 }
                 continue;
             }
@@ -1217,7 +1416,7 @@ impl Editor {
             if p.open_streams == 0 {
                 p.status = status;
                 p.stdin = None;
-                ended.push(p.name.clone());
+                ended.push(p.id);
             } else if drained && (p.gate.is_some() || now.duration_since(when) >= Duration::from_millis(200)) {
                 quiet.push((p.id, status));
             }
@@ -1250,10 +1449,9 @@ impl Editor {
             for event in taken {
                 match event {
                     Event::Output(_, bytes) => {
-                        let name = self.processes.list[i].name.clone();
                         let text = self.decode_output(id, &bytes);
                         if !text.is_empty() {
-                            self.process_output(&name, &text);
+                            self.process_output(id, &text);
                         }
                     }
                     Event::Stderr(_, bytes) => self.process_stderr(id, &bytes),
@@ -1266,54 +1464,80 @@ impl Editor {
             if p.status == Status::Run {
                 p.status = status;
                 p.stdin = None;
-                ended.push(p.name.clone());
+                ended.push(p.id);
             }
         }
-        for name in ended {
-            let Some(i) = self.processes.list.iter().position(|p| p.name == name) else { continue };
+        for id in ended {
+            let Some(i) = self.processes.list.iter().position(|p| p.id == id) else { continue };
             // A process that has ended stays listed, as in Emacs, until deleted;
             // its sentinel runs with it still there.
-            let sentinel = self.processes.list[i].sentinel.clone();
-            let event = self.processes.list[i].event();
-            match sentinel {
-                Some(f) => {
-                    if let Err(e) = f(self, &[Value::Str(name.clone()), Value::Str(event)]) {
-                        self.message(format!("error in process sentinel: {e}"));
-                    }
-                }
-                None => {
-                    let p = &self.processes.list[i];
-                    let line = format!("\nProcess {} {}", p.name, p.event());
-                    let (buffer, mark) = (p.buffer, p.mark);
-                    self.insert_process_text(buffer, mark, &line, false);
-                }
-            }
+            let (sentinel, event) = (self.processes.list[i].sentinel.clone(), self.processes.list[i].event());
+            self.run_sentinel(id, sentinel, event);
             // Gone from the list once ended and reported, as a process whose
             // status has been noticed and which nothing refers to.
-            if let Some(i) = self.processes.list.iter().position(|p| p.name == name && p.status != Status::Run) {
+            if let Some(i) = self.processes.list.iter().position(|p| p.id == id && p.status != Status::Run) {
                 let p = self.processes.list.remove(i);
-                if let Some(id) = p.mark {
-                    self.delete_marker(id);
-                }
-                if let Some(err) = p.stderr {
-                    self.delete_marker(err.mark);
-                }
+                self.keep_gone(&p);
+                self.forget_marks(p);
             }
         }
     }
 
+    /// Gives output held while a process's filter was `t` to the filter
+    /// set since, in order, as Emacs reads it once the filter is not `t`.
+    fn release_held_output(&mut self) {
+        let waiting: Vec<(u64, String)> = self
+            .processes
+            .list
+            .iter_mut()
+            .filter(|p| !p.held_output.is_empty() && p.filter != Some(Value::Bool(true)))
+            .map(|p| (p.id, std::mem::take(&mut p.held_output)))
+            .collect();
+        for (id, text) in waiting {
+            self.process_output(id, &text);
+        }
+    }
+
     fn notify(&mut self, p: &Process) {
-        let event = p.event();
-        match &p.sentinel {
-            Some(f) => {
-                if let Err(e) = f(self, &[Value::Str(p.name.clone()), Value::Str(event)]) {
-                    self.message(format!("error in process sentinel: {e}"));
-                }
+        self.run_sentinel(p.id, p.sentinel.clone(), p.event());
+    }
+
+    /// Runs a process's sentinel with the event, or the default one.
+    fn run_sentinel(&mut self, id: u64, sentinel: Option<Value>, event: String) {
+        let result = match sentinel {
+            Some(f) if !f.is_nil() => self.funcall(&f, &[Value::Process(id), Value::Str(event)]).map(drop),
+            _ => {
+                self.internal_default_process_sentinel(id, &event);
+                Ok(())
             }
-            None => {
-                let line = format!("\nProcess {} {}", p.name, event);
-                self.insert_process_text(p.buffer, p.mark, &line, false);
-            }
+        };
+        if let Err(e) = result {
+            self.message(format!("error in process sentinel: {e}"));
+        }
+    }
+
+    /// What a process's sentinel does by default, as Emacs's
+    /// internal-default-process-sentinel: a line saying what happened, at
+    /// its mark in its buffer.
+    pub fn internal_default_process_sentinel(&mut self, id: u64, event: &str) {
+        let Some((name, buffer, mark)) = self.process_place(id) else { return };
+        let line = format!("\nProcess {name} {event}");
+        self.insert_process_text(buffer, mark, &line, false);
+    }
+
+    /// What a process's filter does by default, as Emacs's
+    /// internal-default-process-filter: the text inserted at its mark in
+    /// its buffer, point moving along if it was there.
+    pub fn internal_default_process_filter(&mut self, id: u64, text: &str) {
+        let Some((_, buffer, mark)) = self.process_place(id) else { return };
+        self.insert_process_text(buffer, mark, text, true);
+    }
+
+    /// A process's name, buffer and mark, listed or gone.
+    fn process_place(&self, id: u64) -> Option<(String, Option<u64>, Option<u64>)> {
+        match self.processes.list.iter().find(|p| p.id == id) {
+            Some(p) => Some((p.name.clone(), p.buffer, p.mark)),
+            None => self.processes.gone.get(&id).map(|g| (g.name.clone(), g.buffer, g.mark)),
         }
     }
 
@@ -1346,6 +1570,12 @@ impl Editor {
             Some(name) => Some(self.process(name)?.id),
             None => None,
         };
+        self.wait_for_process_output_id(id, secs)
+    }
+
+    /// As [`Editor::wait_for_process_output`], the process by its id: one
+    /// that has gone has no more output, so it returns false at once.
+    pub fn wait_for_process_output_id(&mut self, id: Option<u64>, secs: Option<f64>) -> Result<bool> {
         let deadline = secs.map(|s| Instant::now() + Duration::from_secs_f64(s.max(0.0)));
         loop {
             let before = self.processes.outputs_seen;
@@ -1389,22 +1619,24 @@ impl Editor {
         }
     }
 
-    fn process_output(&mut self, name: &str, text: &str) {
-        let Ok(id) = self.process(name).map(|p| p.id) else { return };
+    fn process_output(&mut self, id: u64, text: &str) {
+        let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) else { return };
+        // A filter of t holds the output back, as Emacs stops reading it.
+        if p.filter == Some(Value::Bool(true)) {
+            p.held_output.push_str(text);
+            return;
+        }
+        let filter = p.filter.clone();
         if self.processes.watching.is_none_or(|w| w == id) {
             self.processes.outputs_seen += 1;
         }
-        let Ok(p) = self.process(name) else { return };
-        match p.filter.clone() {
-            Some(f) => {
-                if let Err(e) = f(self, &[Value::Str(name.to_string()), Value::Str(text.to_string())]) {
+        match filter {
+            Some(f) if !f.is_nil() => {
+                if let Err(e) = self.funcall(&f, &[Value::Process(id), Value::Str(text.to_string())]) {
                     self.message(format!("error in process filter: {e}"));
                 }
             }
-            None => {
-                let (buffer, mark) = (p.buffer, p.mark);
-                self.insert_process_text(buffer, mark, text, true);
-            }
+            _ => self.internal_default_process_filter(id, text),
         }
     }
 
@@ -1521,6 +1753,14 @@ impl Process {
             (Kind::Network(_) | Kind::Server(..), Status::Exit(0)) => "deleted\n".into(),
             (Kind::Network(_) | Kind::Server(..), Status::Exit(_)) => "connection broken by remote peer\n".into(),
             (_, status) => status.event(),
+        }
+    }
+
+    /// What it is, as process-type: "real" for a program, "network" for a connection or server.
+    fn kind_name(&self) -> &'static str {
+        match self.kind {
+            Kind::Network(_) | Kind::Server(..) => "network",
+            _ => "real",
         }
     }
 

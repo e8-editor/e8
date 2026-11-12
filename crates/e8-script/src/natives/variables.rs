@@ -1,7 +1,7 @@
 //! Variables, hooks, keymaps, modes and help.
 
 use crate::*;
-use crate::natives::{natives, Field, Fields, Opt, Record, Rest};
+use crate::natives::{natives, Field, Fields, Opt, Record};
 
 natives! {
     /// Give the current buffer its own value, starting from the one it sees now.
@@ -216,42 +216,6 @@ natives! {
     fn frameSize(ed) -> Vec<f64> {
         let total = ed.frame_lines();
         Ok(vec![ed.frame_cells().0 as f64, total as f64, ed.max_mini_window_lines(total) as f64])
-    }
-
-    /// The processes running, as process-list.
-    pub fn processList(ed) -> Vec<String> {
-        Ok(ed.process_list())
-    }
-
-    fn getBufferProcess(ed, buffer: String) -> Option<String> {
-        Ok(ed.buffer_process(&buffer))
-    }
-
-    /// Write to a process's input, encoded in its coding, as process-send-string.
-    #[ts = "(process: string, text: string): void"]
-    pub fn processSendString(ed, name: String, text: String) {
-        ed.process_send_string(&name, &text)
-    }
-
-    /// Make a process see the end of its input, as process-send-eof: C-d on a terminal, else its input closed.
-    #[ts = "(process: string): void"]
-    pub fn processSendEof(ed, name: String) {
-        ed.process_send_eof(&name)
-    }
-
-    fn signalProcess(ed, name: String, signal: i32) {
-        ed.signal_process(&name, signal)
-    }
-
-    /// Kill a process and forget it, as delete-process.
-    #[ts = "(process: string): void"]
-    pub fn deleteProcess(ed, name: String) {
-        ed.delete_process(&name)
-    }
-
-    #[ts = "(process: string, query: boolean): void"]
-    pub fn setProcessQueryOnExitFlag(ed, name: String, query: bool) {
-        ed.set_process_query_on_exit(&name, query)
     }
 
     /// Stop a timer, as Emacs's cancel-timer.
@@ -535,11 +499,6 @@ natives! {
 
     fn composeLocalMap(ed, keymap: EditorValue) {
         ed.compose_local_map(&keymap)
-    }
-
-    /// The rest of process.c's functions on a process by name, by their Lisp names.
-    fn processPrimitive(ed, op: String, name: String, args: Rest<EditorValue>) -> EditorValue {
-        process_primitive(ed, &op, &name, &args.0)
     }
 
     fn addHook(ed, hook: String, function: e8_core::Function, depth: f64, local: bool) -> f64 {
@@ -837,77 +796,6 @@ natives! {
             e8_core::completion::Try::Exact => Field::from(true),
             e8_core::completion::Try::Completed { text, point } => Record::new().with("text", text).with("point", point).into(),
         })
-    }
-
-    fn makeProcess(
-        ed,
-        name: String,
-        buffer: Option<String>,
-        command: Vec<String>,
-        options: Fields,
-        filter: Option<e8_core::Function>,
-        sentinel: Option<e8_core::Function>,
-    ) -> String {
-        let spec = e8_core::ProcessSpec {
-            name,
-            buffer,
-            command,
-            directory: options.string("directory"),
-            env: match options.get("env") {
-                Some(EditorValue::List(pairs)) => pairs
-                    .iter()
-                    .filter_map(|kv| match kv {
-                        EditorValue::List(kv) => Some((kv.first()?.as_str()?.to_string(), kv.get(1)?.as_str()?.to_string())),
-                        _ => None,
-                    })
-                    .collect(),
-                _ => Vec::new(),
-            },
-            merge_stderr: options.get("stderr").is_none_or(EditorValue::is_true),
-            stderr_buffer: options.string("stderr"),
-            filter: filter.map(hook_of),
-            sentinel: sentinel.map(hook_of),
-            pty: options.flag("pty"),
-            coding: coding_pair(options.get("coding"))?,
-        };
-        ed.make_process(spec)
-    }
-
-    fn makeNetworkProcess(ed, options: Fields, filter: Option<e8_core::Function>, sentinel: Option<e8_core::Function>) -> String {
-        let spec = e8_core::NetworkSpec {
-            name: options.string("name").ok_or_else(|| Error::new("A network process needs a name"))?,
-            buffer: options.string("buffer"),
-            host: options.string("host"),
-            service: options.get("service").map(|s| s.as_str().map_or_else(|| s.to_string(), str::to_string)).unwrap_or_default(),
-            server: options.flag("server"),
-            filter: filter.map(hook_of),
-            sentinel: sentinel.map(hook_of),
-            coding: coding_pair(options.get("coding"))?,
-        };
-        ed.make_network_process(spec)
-    }
-
-    fn processInfo(ed, name: String) -> Option<Record> {
-        let Some(status) = ed.process_status(&name) else { return Ok(None) };
-        let code = match status {
-            e8_core::ProcessStatus::Run => None,
-            e8_core::ProcessStatus::Exit(c) | e8_core::ProcessStatus::Signal(c) => Some(c),
-        };
-        Ok(Some(
-            Record::new()
-                .with("status", ed.process_status_name(&name).unwrap_or("exit"))
-                .with("exitStatus", code)
-                .with("buffer", ed.process_buffer(&name))
-                .with("mark", ed.process_mark(&name))
-                .with("command", ed.process_command(&name).unwrap_or_default())
-                .with("pid", ed.process_id(&name))
-                .with("queryOnExit", ed.process_query_on_exit(&name)),
-        ))
-    }
-
-    fn callProcess(ed, command: Vec<String>, directory: Option<String>, input: Option<String>) -> Record {
-        let (code, output) = ed.call_process(&command, directory.as_deref(), input.as_deref())?;
-        Ok(Record::new().with("exit", code).with("output", output))
     }
 
     fn runWithTimer(ed, secs: f64, repeat: Option<f64>, idle: bool, run: e8_core::Function) -> f64 {

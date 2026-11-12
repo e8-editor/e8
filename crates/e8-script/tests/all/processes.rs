@@ -292,10 +292,10 @@ fn network_servers_and_clients() {
         &s,
         r#"globalThis.got = []; globalThis.events = [];
         e8.makeNetworkProcess({ name: "srv", service: true, server: true,
-          filter: (p, text) => { got.push([p, text]); e8.processSendString(p, text.toUpperCase()); },
-          sentinel: (p, e) => events.push([p, e]) });
+          filter: (p, text) => { got.push([String(p), text]); e8.processSendString(p, text.toUpperCase()); },
+          sentinel: (p, e) => events.push([String(p), e]) });
         globalThis.port = e8.processContact("srv", "service");
-        e8.makeNetworkProcess({ name: "cli", buffer: "*cli*", service: Number(port), sentinel: (p, e) => events.push([p, e]) });
+        e8.makeNetworkProcess({ name: "cli", buffer: "*cli*", service: Number(port), sentinel: (p, e) => events.push([String(p), e]) });
         e8.processSendString("cli", "hello");
         globalThis.statuses = [e8.processStatus("srv"), e8.processStatus("cli"), e8.processType("cli"), e8.processLiveP("cli")];"#,
     );
