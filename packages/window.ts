@@ -999,7 +999,6 @@ defineAction("display-buffer-in-side-window", (buffer, alist0) => {
     if (made !== undefined) {
       e8.setWindowParameter(made, "window-side", side);
       e8.setWindowParameter(made, "window-slot", slot);
-      shareEvenly(sideWindows(side), leftOrRight);
       return windowDisplayBuffer(buffer, made, "window", alist);
     }
   }
@@ -1008,19 +1007,6 @@ defineAction("display-buffer-in-side-window", (buffer, alist0) => {
   return windowDisplayBuffer(buffer, bestWindow, "reuse", alist);
 });
 
-/** Gives the windows along a side the same share of it, as window.el's splits with window-combination-resize `side` leave them. */
-function shareEvenly(windows: e8.Window[], leftOrRight: boolean): void {
-  const total = windows.reduce((n, w) => n + (leftOrRight ? size(w).totalHeight : size(w).totalWidth), 0);
-  const each = Math.floor(total / windows.length);
-  // What does not divide evenly goes to the outer windows first, as Emacs's proportional resize leaves it.
-  const extras = new Set<number>();
-  for (let i = 0, n = total - each * windows.length; i < n; i++) extras.add(i % 2 === 0 ? i / 2 : windows.length - 1 - (i - 1) / 2);
-  for (const [i, w] of windows.slice(0, -1).entries()) {
-    const wanted = each + (extras.has(i) ? 1 : 0);
-    const now = leftOrRight ? size(w).totalHeight : size(w).totalWidth;
-    if (wanted !== now) e8.conditionCase(() => e8.resizeWindow(w, wanted - now, !leftOrRight), { error: () => 0 });
-  }
-}
 
 /**
  * Whether a buffer matches a condition of display-buffer-alist's, as
@@ -3402,6 +3388,11 @@ export function deleteOtherWindows(window0?: e8.Window | null, interactive = fal
   }
   if (window === main) {
     if (interactive && !e8.executingKbdMacro() && isNil(e8.variable("noninteractive"))) e8.message("No other windows to delete");
+  } else if (frame !== undefined && frame !== e8.selectedFrame()) {
+    // The core deletes this way on the selected frame only: on another, window by window.
+    for (const other of windowsOnFrames(frame, e8.frameFirstWindow(frame))) {
+      if (other !== window && e8.windowLiveP(other) && !within(other, window)) e8.conditionCase(() => e8.deleteWindow(other), { error: () => null });
+    }
   } else {
     e8.deleteOtherWindowsInternal(window, main);
     windowCheck(frame);
@@ -3851,12 +3842,15 @@ function putSideWindowState(s: SideWindowsState, window: e8.Window): void {
     e8.setWindowDedicatedP(window, s.dedicated ?? null);
     return;
   }
-  // An internal window: its children split off the last, each at its size, the first keeping the rest.
-  const windows = [window];
-  for (const [j, child] of s.children.entries()) {
-    if (j === 0) continue;
-    const made = e8.letBind({ "window-combination-limit": j === 1 }, () => splitWindow(windows[j - 1], -child.size, s.horizontal ? "right" : "below", true));
-    windows.push(made);
+  // An internal window: its children split off the first, the last first,
+  // each at its size, so the first keeps what is left, as the record had it.
+  const windows: e8.Window[] = new Array(s.children.length);
+  windows[0] = window;
+  for (let j = s.children.length - 1; j >= 1; j--) {
+    const child = s.children[j];
+    windows[j] = e8.letBind({ "window-combination-limit": j === s.children.length - 1 }, () =>
+      splitWindow(window, -child.size, s.horizontal ? "right" : "below", true),
+    );
   }
   const parent = e8.windowParent(window);
   if (parent !== undefined) e8.setWindowCombinationLimit(parent, s.limit === true);

@@ -306,3 +306,36 @@ fn delete_windows_on_deletes_those_it_can() {
     );
 }
 
+
+#[test]
+fn a_side_of_three_windows_comes_back_as_it_was() {
+    // Emacs: three bottom slots toggled off and on again are (6 27) (6 27) (6 26), s1 s2 s3.
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"(side("s1", [["side", "bottom"], ["slot", -1]]), side("s2", [["side", "bottom"], ["slot", 0]]), side("s3", [["side", "bottom"], ["slot", 1]]), "")"#,
+    );
+    let before = eval(&mut ed, &s, "JSON.stringify([sz().slice(1), bufs().slice(1)])");
+    for _ in 0..2 {
+        ed.press("M-x").unwrap();
+        ed.type_text("window-toggle-side-windows");
+        ed.press("RET").unwrap();
+    }
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([sz().slice(1), bufs().slice(1)])"), before);
+    assert_eq!(before, r#"[[[6,27],[6,27],[6,26]],["s1","s2","s3"]]"#);
+}
+
+#[test]
+fn deleting_the_others_inside_a_window_selects_its_last() {
+    // Emacs: with [(a|h1|h2), m] and m selected, (delete-other-windows-internal (window-parent a)) selects h2.
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"((a) => { const m = split(a, null, "below"); const h1 = split(a, null, "right"); const h2 = split(h1, null, "right");
+            e8.selectWindow(m); e8.deleteOtherWindowsInternal(e8.windowParent(a));
+            return String([a, h1, h2].indexOf(e8.selectedWindow())); })(e8.selectedWindow())"#,
+    );
+    assert_eq!(got, "2");
+}

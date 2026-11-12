@@ -1006,8 +1006,8 @@ impl Editor {
         let leaves = self.window_tree.leaves();
         let going: Vec<WindowId> = all.into_iter().filter(|w| !kept.contains(w)).collect();
         if going.contains(&self.selected_window) {
-            let i = leaves.iter().position(|&w| w == self.selected_window).unwrap_or(0);
-            let next = (1..=leaves.len()).map(|k| leaves[(i + k) % leaves.len()]).find(|w| kept.contains(w)).expect("a live window inside");
+            // The last live window inside, as Emacs's delete-other-windows-internal selects.
+            let next = leaves.iter().rev().copied().find(|w| kept.contains(w)).expect("a live window inside");
             self.select_window(next)?;
         }
         let extent = self.window_tree.extent_of(main, self.frame_units()).ok_or_else(|| Error::new("No such window"))?;
