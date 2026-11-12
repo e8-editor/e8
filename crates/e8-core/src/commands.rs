@@ -409,6 +409,9 @@ fn movement(ed: &mut Editor) {
             };
             let top = ed.move_rows_in(b, point_row, -row).0;
             ed.window_buffer_mut().top_line = top;
+            // Whole lines from the top, as Emacs's recenter resets the vscroll.
+            let window = ed.selected_window();
+            ed.reset_vscroll(window);
             Ok(())
         },
     );

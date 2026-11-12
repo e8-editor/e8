@@ -33,12 +33,13 @@ pub(crate) struct Hscroll {
 
 /// How far a window is scrolled up past the top of its first row, as
 /// window.c's `vscroll`, in the front end's units, for the buffer and
-/// start it was set at: once the window starts elsewhere it is 0, as
-/// Emacs's redisplay resets it when it picks a new start.
+/// start it was set at, the start a marker that edits move with the text:
+/// once the window starts elsewhere it is 0, and the next redisplay
+/// forgets it, as Emacs's resets it when it picks a new start.
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub(crate) struct Vscroll {
     pub(crate) buffer: u64,
-    pub(crate) start: usize,
+    pub(crate) start: u64,
     pub(crate) units: f32,
 }
 
@@ -154,7 +155,32 @@ impl Editor {
     pub fn window_vscroll(&self, window: WindowId) -> f32 {
         let Some(w) = self.window(window) else { return 0.0 };
         let v = w.vscroll;
-        if self.metrics.uniform() || v.buffer != w.buffer || Some(v.start) != self.window_start(window) { 0.0 } else { v.units }
+        if v.units == 0.0 || self.metrics.uniform() || v.buffer != w.buffer {
+            return 0.0;
+        }
+        let start = self.buffer_with_id(v.buffer).and_then(|i| self.buffers[i].marker(v.start));
+        if start.is_some() && start == self.window_start(window) { v.units } else { 0.0 }
+    }
+
+    /// Forgets a window's vertical scroll, as Emacs resets it when the
+    /// window shows a buffer or recentres.
+    pub(crate) fn reset_vscroll(&mut self, window: WindowId) {
+        let Some(w) = self.window_mut(window) else { return };
+        let old = std::mem::take(&mut w.vscroll);
+        if old.units != 0.0
+            && let Some(i) = self.buffer_with_id(old.buffer)
+        {
+            self.buffers[i].remove_marker(old.start);
+        }
+    }
+
+    /// Forgets the vertical scroll of every window that starts elsewhere
+    /// than where it was set, so coming back there does not bring it back.
+    pub(crate) fn forget_moved_vscrolls(&mut self) {
+        let moved: Vec<WindowId> = self.window_views().into_iter().map(|v| v.id).filter(|&w| self.window(w).is_some_and(|x| x.vscroll.units != 0.0) && self.window_vscroll(w) == 0.0).collect();
+        for window in moved {
+            self.reset_vscroll(window);
+        }
     }
 
     /// Scrolls a window up past the top of its first row, as Emacs's
@@ -166,8 +192,15 @@ impl Editor {
             return 0.0;
         }
         let Some(start) = self.window_start(window) else { return 0.0 };
-        if let Some(w) = self.window_mut(window) {
-            w.vscroll = Vscroll { buffer: w.buffer, start, units: units.max(0.0) };
+        self.reset_vscroll(window);
+        let units = units.max(0.0);
+        let Some(index) = self.window(window).and_then(|w| self.buffer_with_id(w.buffer)) else { return 0.0 };
+        if units > 0.0 {
+            let buffer = self.buffers[index].id;
+            let marker = self.buffers[index].make_marker(start, false);
+            if let Some(w) = self.window_mut(window) {
+                w.vscroll = Vscroll { buffer, start: marker, units };
+            }
         }
         self.window_vscroll(window)
     }

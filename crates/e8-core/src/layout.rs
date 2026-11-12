@@ -380,7 +380,7 @@ impl Editor {
             }
             top += height;
         }
-        Some(Posn { window, point: b.point_max(), x: 0.0, y: top * ch, col: 0.0, row: rows.len() })
+        Some(Posn { window, point: b.point_max(), x: 0.0, y: top * ch - self.window_vscroll(window), col: 0.0, row: rows.len() })
     }
 
     /// Where a window's text ends, as Emacs's `window-end`: the position
@@ -453,7 +453,7 @@ impl Editor {
 impl Editor {
     /// Whether a buffer position shows in a window, as Emacs's
     /// `pos-visible-in-window-p`; with `partially`, a row only partly in
-    /// sight at the bottom counts.
+    /// sight, at the bottom or scrolled part out at the top, counts.
     pub fn pos_visible_in_window_p(&self, pos: usize, window: WindowId, partially: bool) -> bool {
         let Some(posn) = self.posn_at_point(pos, window) else { return false };
         if partially {
@@ -462,7 +462,7 @@ impl Editor {
         let Some(view) = self.frame_list().into_iter().flat_map(|f| self.frame_windows(f)).find(|v| v.id == window) else { return false };
         let lines = self.window(window).map_or(24, |w| w.height) as f32;
         let row = &self.rows_filling(window, true)[posn.row];
-        posn.y / self.metrics.char_height() + self.row_height(view.buffer, row) <= lines
+        posn.y >= 0.0 && posn.y / self.metrics.char_height() + self.row_height(view.buffer, row) <= lines
     }
 
     /// The width of the current buffer's default font, as Emacs's

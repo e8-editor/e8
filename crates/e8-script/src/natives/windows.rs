@@ -373,19 +373,18 @@ natives! {
     }
 
     /// How far a window, the selected one by default, is scrolled up past
-    /// the top of its first row, as window-vscroll: in lines of the default
-    /// font's height, or with `pixelsP` in the front end's units. Always 0
+    /// the top of its first row, as window-vscroll: in the frame's lines, or with `pixelsP` in the front end's units. Always 0
     /// on a terminal.
     #[ts = "(window?: WindowLike | null, pixelsP?: boolean | null): number"]
     pub fn windowVscroll(ed, window: Option<Win>, pixels: Option<bool>) -> f64 {
         let window = live_window(ed, window)?;
         let units = ed.window_vscroll(window) as f64;
-        Ok(if pixels == Some(true) { units } else { units / ed.default_font_height() as f64 })
+        Ok(if pixels == Some(true) { units } else { units / ed.text_metrics().char_height() as f64 })
     }
 
     /// Scrolls a window, the selected one by default, up past the top of
-    /// its first row, as set-window-vscroll: by `vscroll` lines of the
-    /// default font's height, or with `pixelsP` the front end's units. A
+    /// its first row, as set-window-vscroll: by `vscroll` of the frame's
+    /// lines, or with `pixelsP` the front end's units. A
     /// negative amount is 0, and on a terminal it does nothing. Lasts until
     /// the window starts elsewhere. Gives the scroll, as windowVscroll.
     /// `preserveVscrollP` is accepted as in Emacs; E8's minibuffer never
@@ -394,7 +393,7 @@ natives! {
     pub fn setWindowVscroll(ed, window: Option<Win>, vscroll: f64, pixels: Option<bool>, preserve: Option<bool>) -> f64 {
         let _ = preserve;
         let window = live_window(ed, window)?;
-        let height = ed.default_font_height() as f64;
+        let height = ed.text_metrics().char_height() as f64;
         let units = if pixels == Some(true) { vscroll } else { vscroll * height };
         let set = ed.set_window_vscroll(window, units as f32) as f64;
         Ok(if pixels == Some(true) { set } else { set / height })

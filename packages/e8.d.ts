@@ -15845,15 +15845,14 @@ declare global {
     function setWindowHscroll(window: WindowLike | null | undefined, columns: number): number;
     /**
      * How far a window, the selected one by default, is scrolled up past
-     * the top of its first row, as window-vscroll: in lines of the default
-     * font's height, or with `pixelsP` in the front end's units. Always 0
+     * the top of its first row, as window-vscroll: in the frame's lines, or with `pixelsP` in the front end's units. Always 0
      * on a terminal.
      */
     function windowVscroll(window?: WindowLike | null, pixelsP?: boolean | null): number;
     /**
      * Scrolls a window, the selected one by default, up past the top of
-     * its first row, as set-window-vscroll: by `vscroll` lines of the
-     * default font's height, or with `pixelsP` the front end's units. A
+     * its first row, as set-window-vscroll: by `vscroll` of the frame's
+     * lines, or with `pixelsP` the front end's units. A
      * negative amount is 0, and on a terminal it does nothing. Lasts until
      * the window starts elsewhere. Gives the scroll, as windowVscroll.
      * `preserveVscrollP` is accepted as in Emacs; E8's minibuffer never

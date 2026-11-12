@@ -607,6 +607,7 @@ impl Editor {
         let w_dedicated_refuses = w.buffer != self.buffers[index].id && w.dedicated == Value::Bool(true);
         if !w_dedicated_refuses {
             self.window_mut(id).expect("checked").hscroll = Default::default();
+            self.reset_vscroll(id);
         }
         let w = self.window(id).expect("checked");
         if w.buffer != self.buffers[index].id {
