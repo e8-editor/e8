@@ -51,9 +51,6 @@ pub struct E8App {
     bell: Option<bool>,
     title: String,
     mac: bool,
-    /// Smooth scrolling's offset, shared with the editor's thread, which
-    /// moves whole lines.
-    scroll: Arc<Mutex<Scroll>>,
     mouse: Arc<Mutex<Mouse>>,
     /// Messages from an agent through e8-mcp, answered between frames.
     #[cfg(not(target_arch = "wasm32"))]
@@ -118,18 +115,6 @@ impl Backend {
             Backend::Thread { driver, .. } => driver.key(key),
         }
     }
-}
-
-/// Smooth scrolling: how far the view is scrolled past the window's top
-/// line, in points, always less than one line, whole lines being the
-/// core's `top_line`; the window it applies to, the one last scrolled; and
-/// the window, buffer and top line it belongs to, so that when something
-/// else moves the view, such as C-v or switching buffers, it resets.
-#[derive(Default)]
-struct Scroll {
-    offset: f32,
-    window: WindowId,
-    anchor: (WindowId, String, usize),
 }
 
 /// The state of the primary button, for turning presses and moves into
@@ -206,7 +191,6 @@ impl E8App {
             bell: None,
             title: String::new(),
             mac: cfg!(target_os = "macos"),
-            scroll: Default::default(),
             mouse: Default::default(),
             #[cfg(not(target_arch = "wasm32"))]
             agent: None,
@@ -620,16 +604,6 @@ impl E8App {
         // a theme's rather than the system's, and the theme's colours over
         // it where its faces give them.
         let t = Tokens::new(description.dark).themed(&description);
-        // The view moved some other way than by the wheel, as by C-v or
-        // switching buffers: no offset.
-        if frame_selected {
-            let mut scroll = self.scroll.lock().unwrap_or_else(|e| e.into_inner());
-            let view = description.windows.iter().find(|w| w.id == scroll.window).map_or((0, String::new(), 0), |w| (w.id, w.buffer.clone(), w.top_line));
-            if view != scroll.anchor {
-                scroll.offset = 0.0;
-                scroll.anchor = view;
-            }
-        }
 
         if self.exit {
             ctx.send_viewport_cmd_to(egui::ViewportId::ROOT, ViewportCommand::Close);
@@ -637,13 +611,7 @@ impl E8App {
         self.update_title(&ctx, frame, &description.title);
         // The selected frame's window types into it, so only it shows filled cursors.
         let focused = ctx.input(|i| i.focused) && frame_selected;
-        let scroll = if frame_selected {
-            let s = self.scroll.lock().unwrap_or_else(|e| e.into_inner());
-            (s.window, s.offset)
-        } else {
-            (0, 0.0)
-        };
-        draw(ui, &description, &layout, t, focused, scroll);
+        draw(ui, &description, &layout, t, focused);
         Some(t)
     }
 
@@ -661,24 +629,21 @@ impl E8App {
             egui::Event::PointerMoved(pos) if self.button_down => (*pos, None, false),
             _ => return,
         };
-        let (mouse, scroll, layout) = (self.mouse.clone(), self.scroll.clone(), layout.clone());
+        let (mouse, layout) = (self.mouse.clone(), layout.clone());
         self.backend.run(move |ed, _| {
             let mut mouse = mouse.lock().unwrap_or_else(|e| e.into_inner());
             if pressed.is_none() && !mouse.clicks.is_down() && mouse.resizing.is_none() {
                 return;
             }
-            let offset = {
-                let s = scroll.lock().unwrap_or_else(|e| e.into_inner());
-                (s.window, s.offset)
-            };
-            pointer(ed, &mut mouse, pos, pressed, shift, &layout, time, offset);
+            pointer(ed, &mut mouse, pos, pressed, shift, &layout, time);
         });
     }
 
     /// Smooth scrolling from the mouse wheel or a trackpad. egui smooths
     /// notched wheels over a few frames; trackpads give points directly.
     /// Whole lines go to the editor as wheel events, which run mwheel-scroll
-    /// like any key, and the remainder is drawn as an offset.
+    /// like any key, and the remainder is the window's vscroll, which
+    /// lasts until the window starts elsewhere, as by C-v.
     fn scroll(&mut self, ctx: &egui::Context, layout: &Layout) {
         let line_height = layout.m.line_height;
         // Positive y moves the content down, revealing earlier lines.
@@ -689,23 +654,16 @@ impl E8App {
         // The window under the pointer scrolls, selected or not, as in Emacs.
         let hover = ctx.input(|i| i.pointer.hover_pos());
         let under = hover.and_then(|p| layout.windows.iter().find(|w| w.rect.contains(p))).map(|w| w.id);
-        let scroll = self.scroll.clone();
         self.backend.run(move |ed, _| {
             let window = under.unwrap_or(ed.selected_window());
-            let mut s = scroll.lock().unwrap_or_else(|e| e.into_inner());
-            if window != s.window {
-                s.window = window;
-                s.offset = 0.0;
-            }
-            let top_of = |ed: &Editor| ed.windows().into_iter().find(|w| w.id == window).map(|w| (w.top_line, w.buffer.line_count(), w.buffer.name.clone()));
-            let Some((top, lines, _)) = top_of(ed) else { return };
-            let wanted = (top as f32 * line_height + s.offset - dy).clamp(0.0, (lines - 1) as f32 * line_height);
+            let top_of = |ed: &Editor| ed.windows().into_iter().find(|w| w.id == window).map(|w| (w.top_line, w.buffer.line_count()));
+            let Some((top, lines)) = top_of(ed) else { return };
+            let wanted = (top as f32 * line_height + ed.window_vscroll(window) - dy).clamp(0.0, (lines - 1) as f32 * line_height);
             let wanted_top = (wanted / line_height).floor() as usize;
             ed.wheel_in(Some(window), wanted_top as isize - top as isize);
-            let (top, name) = top_of(ed).map_or((0, String::new()), |(top, _, name)| (top, name));
+            let top = top_of(ed).map_or(0, |(top, _)| top);
             // If the wheel is bound to something else, there is nothing to offset.
-            s.offset = if top == wanted_top { wanted - top as f32 * line_height } else { 0.0 };
-            s.anchor = (window, name, top);
+            ed.set_window_vscroll(window, if top == wanted_top { wanted - top as f32 * line_height } else { 0.0 });
         });
     }
 
@@ -735,7 +693,7 @@ impl E8App {
 /// A press, move or release of the primary button, as Emacs's mouse keys,
 /// with the editor: see [`E8App::pointer`].
 #[allow(clippy::too_many_arguments)]
-fn pointer(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>, shift: bool, layout: &Layout, time: f64, offset: (WindowId, f32)) {
+fn pointer(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>, shift: bool, layout: &Layout, time: f64) {
     // A press on the tab bar is a click on it, at the column under it.
     if let Some(rect) = layout.tab_rect.filter(|r| r.contains(pos))
         && !mouse.clicks.is_down()
@@ -749,7 +707,7 @@ fn pointer(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>,
     if resize_drag(ed, mouse, pos, pressed, layout) {
         return;
     }
-    let target = hit(ed, layout, pos, offset);
+    let target = hit(ed, layout, pos);
     match pressed {
         Some(true) => {
             let Some(target) = target else { return };
@@ -1020,7 +978,7 @@ impl Layout {
 }
 
 /// Draws a frame as the core described it, asking the editor nothing.
-fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: bool, scroll: (WindowId, f32)) {
+fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: bool) {
     let painter = ui.painter().clone();
     painter.rect_filled(layout.rect, 0.0, t.bg);
     let m = &layout.m;
@@ -1040,8 +998,7 @@ fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: boo
         let top = w.header_rect.map_or(w.rect.top(), |h| h.bottom());
         // Text stops at the text area's edge, leaving the margins and fringes beside it.
         let clip = Rect::from_min_max(pos2(w.text_rect.left(), top), pos2(w.text_rect.right(), w.mode_rect.top()));
-        let offset = if window.id == scroll.0 { scroll.1 } else { 0.0 };
-        let view = View { area: w.text_rect, clip, scroll_offset: offset, margins: w.margins, fringes: w.fringes };
+        let view = View { area: w.text_rect, clip, scroll_offset: window.vscroll, margins: w.margins, fringes: w.fringes };
         draw_buffer(&painter, fd, window, &view, m, t, cursor);
         draw_mode_line(&painter, window, w.mode_rect, m, t, &fd.chrome);
         if let Some(header) = w.header_rect {
@@ -1061,18 +1018,18 @@ fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: boo
 /// What is under a point of the window, for a mouse event: an editor
 /// window, and the buffer position there if the point is over its text.
 /// Below the last line of text is the end of the buffer, as in Emacs.
-fn hit(ed: &Editor, layout: &Layout, pos: Pos2, scroll: (WindowId, f32)) -> Option<(WindowId, Option<usize>)> {
+fn hit(ed: &Editor, layout: &Layout, pos: Pos2) -> Option<(WindowId, Option<usize>)> {
     let m = &layout.m;
     let w = layout.windows.iter().find(|w| w.rect.contains(pos))?;
     if pos.y >= w.mode_rect.top() || w.header_rect.is_some_and(|h| pos.y < h.bottom()) {
         return Some((w.id, None));
     }
     let view = ed.windows().into_iter().find(|v| v.id == w.id)?;
-    let offset = if scroll.0 == w.id { scroll.1 } else { 0.0 };
     let rows = ed.rows_to_draw(w.id, true);
     // Text starts right of the line numbers; the editor counts the horizontal scroll.
     let gutter = ed.line_numbers(w.id, &rows).map_or(0.0, |n| n.width as f32 * m.char_width);
-    let (x, y) = (pos.x - w.text_rect.left() - gutter, pos.y - w.text_rect.top() + offset);
+    // The editor counts the scroll, horizontal and vertical.
+    let (x, y) = (pos.x - w.text_rect.left() - gutter, pos.y - w.text_rect.top());
     let position = ed.posn_at_x_y(x.max(0.0), y.max(0.0), w.id).map_or(view.buffer.len(), |p| p.point);
     Some((w.id, Some(position)))
 }

@@ -50,6 +50,8 @@ pub(crate) struct Window {
     pub(crate) cursor_shown: bool,
     /// How far it is scrolled horizontally.
     pub(crate) hscroll: crate::scroll::Hscroll,
+    /// How far it is scrolled up past its start, in the front end's units.
+    pub(crate) vscroll: crate::scroll::Vscroll,
     /// The buffer `window-scroll-functions` last ran for, and a marker in
     /// it at the start they ran for, which edits move as they move the text.
     pub(crate) scrolled_to: Option<(u64, u64)>,
@@ -70,6 +72,7 @@ impl Window {
             margins: None,
             cursor_shown: true,
             hscroll: Default::default(),
+            vscroll: Default::default(),
             scrolled_to: None,
         }
     }
@@ -604,6 +607,7 @@ impl Editor {
         let w_dedicated_refuses = w.buffer != self.buffers[index].id && w.dedicated == Value::Bool(true);
         if !w_dedicated_refuses {
             self.window_mut(id).expect("checked").hscroll = Default::default();
+            self.reset_vscroll(id);
         }
         let w = self.window(id).expect("checked");
         if w.buffer != self.buffers[index].id {

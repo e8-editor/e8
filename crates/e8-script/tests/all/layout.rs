@@ -129,3 +129,54 @@ fn scrolling_moves_by_the_height_rows_take() {
     assert_eq!(ed.window_buffer().top_line, 0);
     assert_eq!(ed.window_buffer().line_of(ed.window_buffer().point()), 5);
 }
+
+/// The vertical scroll a window keeps, as Emacs's vscroll (ADR 0071): in
+/// lines or points, counted by the positions, gone once the window starts
+/// elsewhere, and kept by window states.
+#[test]
+fn a_window_scrolled_part_of_a_line_up_draws_and_finds_its_rows_higher() {
+    let (mut ed, s) = setup(&lines(40));
+    ed.redisplay();
+    assert_eq!(eval(&mut ed, &s, "[e8.windowVscroll(), e8.setWindowVscroll(null, 0.5), e8.windowVscroll(null, true)]"), "[0,0.5,10]");
+    ed.redisplay();
+    let fd = ed.describe_frame(ed.selected_frame(), 1.0);
+    assert_eq!(fd.windows[0].vscroll, 10.0);
+    // The second line's top is 10 points down; a point 5 down is still the first line, 15 down the second.
+    assert_eq!(eval(&mut ed, &s, "[e8.posnAtPoint(7).y, e8.posnAtXY(0, 5).point, e8.posnAtXY(0, 15).point]"), "[10,0,7]");
+    assert_eq!(eval(&mut ed, &s, "e8.windowLineHeight(0)"), "[10,0,-10,0]");
+    // A window state keeps it; negative is 0.
+    assert_eq!(eval(&mut ed, &s, r#"(globalThis.state = e8.funcall("window-state-get"), e8.setWindowVscroll(null, -3))"#), "0");
+    assert_eq!(eval(&mut ed, &s, r#"(e8.funcall("window-state-put", state), e8.windowVscroll(null, true))"#), "10");
+    // The first line is only partly in sight.
+    assert_eq!(eval(&mut ed, &s, "[e8.posVisibleInWindowP(0) ?? null, e8.posVisibleInWindowP(0, null, true)]"), "[null,true]");
+    // Text typed at the start moves the start with it, and the scroll stays.
+    ed.window_buffer_mut().set_point(0);
+    ed.type_text("new ");
+    ed.redisplay();
+    assert_eq!(eval(&mut ed, &s, "e8.windowVscroll(null, true)"), "10");
+    // Starting elsewhere, as C-v makes it, it is gone, and coming back does not bring it back.
+    ed.press("C-v").unwrap();
+    ed.redisplay();
+    assert_eq!(eval(&mut ed, &s, "e8.windowVscroll()"), "0");
+    ed.press("M-v").unwrap();
+    ed.redisplay();
+    assert_eq!(eval(&mut ed, &s, "e8.windowVscroll()"), "0");
+    // C-l recentres to whole lines.
+    assert_eq!(eval(&mut ed, &s, "(e8.setWindowVscroll(null, 0.25), e8.call(\"recenter\"), e8.windowVscroll())"), "0");
+}
+
+#[test]
+fn a_windows_vertical_scroll_is_in_the_frames_lines_whatever_the_buffers_scale() {
+    let (mut ed, s) = setup(&lines(40));
+    ed.press("C-x C-=").unwrap();
+    ed.redisplay();
+    assert_eq!(eval(&mut ed, &s, "e8.defaultFontHeight() > 20"), "true");
+    assert_eq!(eval(&mut ed, &s, "[e8.setWindowVscroll(null, 0.5), e8.windowVscroll(null, true)]"), "[0.5,10]");
+}
+
+#[test]
+fn a_terminal_never_scrolls_by_part_of_a_line() {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    assert_eq!(eval(&mut ed, &s, "[e8.setWindowVscroll(null, 2), e8.windowVscroll(), e8.windowVscroll(null, true)]"), "[0,0,0]");
+}
