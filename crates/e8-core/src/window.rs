@@ -110,6 +110,16 @@ pub enum BuryOrKill {
     Append,
 }
 
+/// A window's sizes as window.el sets them to apply together, as window.c's
+/// new_pixel, new_total and new_normal: unset, each is the window's own.
+/// A new normal size of `Some(None)` is nil, as window--resize-reset makes it.
+#[derive(Clone, Debug, Default)]
+pub struct WindowNew {
+    pub pixel: Option<i64>,
+    pub total: Option<i64>,
+    pub normal: Option<Option<f64>>,
+}
+
 /// A frame that is not selected: its windows and which of them was
 /// selected in it. The selected frame's are the editor's own.
 pub(crate) struct Frame {
@@ -390,10 +400,12 @@ impl Editor {
     pub(crate) fn window_min_units(&self, horizontal: bool) -> usize {
         let (cw, lh) = self.cell();
         let chrome = self.text_metrics().window_chrome();
+        // window-min-width and window-min-height, as a script set them.
+        let lines = |name: &str, default: usize| self.variable(name).and_then(|v| v.as_number()).map_or(default as f32, |n| n.max(0.0) as f32);
         let units = if horizontal {
-            (WINDOW_MIN_WIDTH as f32 * cw).max(chrome.fringes + chrome.divider + 2.0 * cw)
+            (lines("window-min-width", WINDOW_MIN_WIDTH) * cw).max(chrome.fringes + chrome.divider + 2.0 * cw)
         } else {
-            (WINDOW_MIN_HEIGHT as f32 * lh).max(chrome.mode_line + chrome.text_top + lh)
+            (lines("window-min-height", WINDOW_MIN_HEIGHT) * lh).max(chrome.mode_line + chrome.text_top + lh)
         };
         units.round() as usize
     }
@@ -840,8 +852,85 @@ impl Editor {
         for gone in self.window_tree.remove(id).into_iter().chain(internal) {
             self.internal_window_parameters.remove(&gone);
         }
+        self.prune_internal_windows();
         self.relayout();
         Ok(())
+    }
+
+    /// A window's size along `horizontal` in the front end's units, live or
+    /// internal, as `window-pixel-width` and `-height`.
+    pub fn window_pixel_along(&self, id: WindowId, horizontal: bool) -> Option<i64> {
+        let r = self.window_pixel_rect(id)?;
+        Some(if horizontal { r.width } else { r.height }.round() as i64)
+    }
+
+    /// A window's new pixel size, as `window-new-pixel`: its own height
+    /// until one is set.
+    pub fn window_new_pixel(&self, id: WindowId) -> Option<i64> {
+        self.window_new.get(&id).and_then(|n| n.pixel).or_else(|| self.window_pixel_along(id, false))
+    }
+
+    /// Sets a window's new pixel size, or adds to it, as `set-window-new-pixel`.
+    pub fn set_window_new_pixel(&mut self, id: WindowId, size: i64, add: bool) -> Result<i64> {
+        let now = self.window_new_pixel(id).ok_or_else(|| Error::new("No such window"))?;
+        let size = if add { now + size } else { size };
+        self.window_new.entry(id).or_default().pixel = Some(size);
+        Ok(size)
+    }
+
+    /// A window's new total size, in lines or columns, as `window-new-total`.
+    pub fn window_new_total(&self, id: WindowId) -> Option<i64> {
+        let (cols, lines) = self.window_total_size(id)?;
+        let _ = cols;
+        Some(self.window_new.get(&id).and_then(|n| n.total).unwrap_or(lines as i64))
+    }
+
+    /// Sets a window's new total size, or adds to it, as `set-window-new-total`.
+    pub fn set_window_new_total(&mut self, id: WindowId, size: i64, add: bool) -> Result<i64> {
+        let now = self.window_new_total(id).ok_or_else(|| Error::new("No such window"))?;
+        let size = if add { now + size } else { size };
+        self.window_new.entry(id).or_default().total = Some(size);
+        Ok(size)
+    }
+
+    /// A window's new normal size, as `window-new-normal`: its normal size
+    /// until one is set, and nil once window--resize-reset clears it.
+    pub fn window_new_normal(&self, id: WindowId) -> Option<f64> {
+        match self.window_new.get(&id).and_then(|n| n.normal) {
+            Some(set) => set,
+            None => self.window_normal_size(id, self.window_parent(id).and_then(|p| self.window_children(p)).is_some_and(|c| c.0)),
+        }
+    }
+
+    /// Sets a window's new normal size, nil with none, as `set-window-new-normal`.
+    pub fn set_window_new_normal(&mut self, id: WindowId, size: Option<f64>) -> Result<()> {
+        if self.window_frame(id).is_none() {
+            return Err(Error::new("No such window"));
+        }
+        self.window_new.entry(id).or_default().normal = Some(size);
+        Ok(())
+    }
+
+    /// Gives a frame's windows their new pixel sizes along `horizontal`, as
+    /// `window-resize-apply`, if they add up, with their new normal sizes;
+    /// says whether they did.
+    pub fn window_resize_apply(&mut self, frame: FrameId, horizontal: bool) -> bool {
+        let Some(tree) = self.frame_tree(frame) else { return false };
+        let root = tree.id();
+        let (width, height) = self.frame_units_of(frame);
+        let current = if horizontal { width } else { height };
+        let new: std::collections::HashMap<WindowId, usize> =
+            self.window_new.iter().filter_map(|(&id, n)| Some((id, usize::try_from(n.pixel?).ok()?))).collect();
+        if new.get(&root).is_some_and(|&n| n != current) {
+            return false;
+        }
+        let normals: std::collections::HashMap<WindowId, f64> = self.window_new.iter().filter_map(|(&id, n)| Some((id, n.normal??))).collect();
+        let tree = if frame == self.selected_frame { &mut self.window_tree } else { &mut self.other_frames.iter_mut().find(|f| f.id == frame).expect("found").tree };
+        let applied = tree.apply_sizes(horizontal, current, &|id| new.get(&id).copied(), &|id| normals.get(&id).copied());
+        if applied {
+            self.relayout();
+        }
+        applied
     }
 
     /// Forgets the parameters of internal windows no frame has any more.
@@ -849,6 +938,7 @@ impl Editor {
         let mut ids: Vec<WindowId> = self.window_tree.ids();
         ids.extend(self.other_frames.iter().flat_map(|f| f.tree.ids()));
         self.internal_window_parameters.retain(|id, _| ids.contains(id));
+        self.window_new.retain(|id, _| ids.contains(id));
     }
 
     /// Makes a window the selected one, whose buffer commands act on, and
@@ -1587,8 +1677,7 @@ impl Editor {
         if c.horizontal != horizontal {
             return Some(1.0);
         }
-        let total: usize = c.children.iter().map(|p| p.size).sum();
-        Some(if total == 0 { 0.0 } else { c.children[i].size as f64 / total as f64 })
+        Some(c.children[i].normal)
     }
 
     /// An internal window's combination limit, as `window-combination-limit`.

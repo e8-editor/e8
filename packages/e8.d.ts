@@ -15239,6 +15239,34 @@ declare global {
      */
     function windowPixelEdges(window?: WindowLike, body?: boolean): [left: number, top: number, right: number, bottom: number];
     /**
+     * A window's new pixel size, as window.el sets it before
+     * window-resize-apply: window-new-pixel; its height until one is set.
+     */
+    function windowNewPixel(window?: WindowLike): number;
+    /** Sets a window's new pixel size, or with `add` adds to it, as set-window-new-pixel; gives the new size. */
+    function setWindowNewPixel(window: WindowLike, size: number, add?: boolean): number;
+    /** A window's new total size in lines or columns, as window-new-total. */
+    function windowNewTotal(window?: WindowLike): number;
+    /** Sets a window's new total size, or with `add` adds to it, as set-window-new-total; gives the new size. */
+    function setWindowNewTotal(window: WindowLike, size: number, add?: boolean): number;
+    /** A window's new normal size, as window-new-normal: undefined once cleared. */
+    function windowNewNormal(window?: WindowLike): number | undefined;
+    /** Sets a window's new normal size, or clears it with none, as set-window-new-normal. */
+    function setWindowNewNormal(window: WindowLike, size?: number): void;
+    /**
+     * Gives a frame's windows their new pixel sizes, heights or with
+     * `horizontal` widths, and their new normal sizes, as
+     * window-resize-apply, if each combination's children add up to it;
+     * says whether they did.
+     */
+    function windowResizeApply(frame?: FrameLike, horizontal?: boolean): boolean;
+    /**
+     * Applies new total sizes, as window-resize-apply-total. E8 works out
+     * total sizes from pixel sizes, which window-resize-apply has given,
+     * so this has nothing left to do and says so with true.
+     */
+    function windowResizeApplyTotal(frame?: FrameLike, horizontal?: boolean): boolean;
+    /**
      * A column's width and a line's height in the front end's units, the
      * default font's, as frame-char-width and frame-char-height.
      */

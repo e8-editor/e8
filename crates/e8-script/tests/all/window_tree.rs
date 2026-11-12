@@ -181,3 +181,45 @@ fn windows_total_sizes_add_up_to_the_frames() {
     ed.press("C-x 3").unwrap();
     assert_eq!(eval(&mut ed, &s, "String(e8.windowList().reduce((n, w) => n + e8.windowTotalWidth(w), 0))"), "127");
 }
+
+#[test]
+fn new_sizes_are_applied_together_when_they_add_up() {
+    // As Emacs 30 in batch, where a pixel is a line.
+    let (mut ed, s) = setup();
+    ed.press("C-x 2 C-x 2").unwrap();
+    eval(&mut ed, &s, r#"(import("window").then((m) => { globalThis.win = m; }), globalThis.ws = e8.windowList(), "")"#);
+    let heights = |ed: &mut Editor| eval(ed, &s, "JSON.stringify(ws.map((w) => e8.windowPixelHeight(w)))");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.windowNewPixel(ws[0]), e8.windowNewTotal(ws[0]), e8.windowNewNormal(ws[0])])"), "[6,6,0.25]");
+    eval(&mut ed, &s, r#"(win.windowResizeReset(), "")"#);
+    assert_eq!(
+        eval(&mut ed, &s, "JSON.stringify([ws.map((w) => e8.windowNewPixel(w)), ws.map((w) => e8.windowNewTotal(w)), ws.map((w) => e8.windowNewNormal(w) ?? null)])"),
+        "[[6,6,12],[6,6,12],[null,null,null]]"
+    );
+    assert_eq!(eval(&mut ed, &s, "(e8.setWindowNewPixel(ws[0], 8), e8.setWindowNewPixel(ws[1], 4), String(e8.windowResizeApply()))"), "true");
+    assert_eq!(heights(&mut ed), "[8,4,12]");
+    // Sizes that do not add up are not applied.
+    assert_eq!(eval(&mut ed, &s, "(win.windowResizeReset(), e8.setWindowNewPixel(ws[0], 2, true), String(e8.windowResizeApply()))"), "false");
+    assert_eq!(heights(&mut ed), "[8,4,12]");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowNewPixel(ws[0]))"), "10");
+    assert_eq!(
+        eval(
+            &mut ed,
+            &s,
+            r#"(win.windowResizeReset(), e8.setWindowNewPixel(ws[0], 6), e8.setWindowNewPixel(ws[2], 14),
+              e8.setWindowNewNormal(ws[0], 0.25), e8.setWindowNewNormal(ws[1], 0.25), e8.setWindowNewNormal(ws[2], 0.5),
+              String(e8.windowResizeApply()))"#
+        ),
+        "true"
+    );
+    assert_eq!(heights(&mut ed), "[6,4,14]");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(ws.map((w) => e8.windowNormalSize(w)))"), "[0.25,0.25,0.5]");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowResizeApplyTotal())"), "true");
+}
+
+#[test]
+fn window_min_height_is_read_as_a_script_sets_it() {
+    let (mut ed, s) = setup();
+    ed.press("C-x 2").unwrap();
+    // Twelve lines each; with window-min-height 10 the window below cannot give six.
+    assert_eq!(eval(&mut ed, &s, r#"(e8.setVariable("window-min-height", 10), String(e8.resizeWindow(undefined, 6)))"#), "2");
+}

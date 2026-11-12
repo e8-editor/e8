@@ -431,6 +431,50 @@ impl WindowTree {
         renormalize(c);
     }
 
+    /// Gives the windows the sizes `new` says, along `horizontal`, as
+    /// window.c's window_resize_apply, if they add up: each combination of
+    /// that kind as big as its children together, and each child across
+    /// one as big as it; a window `new` says nothing of keeps its size, and
+    /// the tree is `root` units. Normal sizes are `normal`'s where it gives
+    /// one for every child, else worked out from the sizes. Says whether
+    /// the sizes added up and were given.
+    pub(crate) fn apply_sizes(&mut self, horizontal: bool, root: usize, new: &dyn Fn(WindowId) -> Option<usize>, normal: &dyn Fn(WindowId) -> Option<f64>) -> bool {
+        if !self.sizes_add_up(horizontal, root, new) {
+            return false;
+        }
+        self.set_sizes(horizontal, new, normal);
+        true
+    }
+
+    fn sizes_add_up(&self, horizontal: bool, size: usize, new: &dyn Fn(WindowId) -> Option<usize>) -> bool {
+        let WindowTree::Combination(c) = self else { return true };
+        if c.horizontal == horizontal {
+            let sizes: Vec<usize> = c.children.iter().map(|p| new(p.tree.id()).unwrap_or(p.size)).collect();
+            sizes.iter().sum::<usize>() == size && c.children.iter().zip(&sizes).all(|(p, &s)| p.tree.sizes_add_up(horizontal, s, new))
+        } else {
+            c.children.iter().all(|p| new(p.tree.id()).is_none_or(|s| s == size) && p.tree.sizes_add_up(horizontal, size, new))
+        }
+    }
+
+    fn set_sizes(&mut self, horizontal: bool, new: &dyn Fn(WindowId) -> Option<usize>, normal: &dyn Fn(WindowId) -> Option<f64>) {
+        let WindowTree::Combination(c) = self else { return };
+        if c.horizontal == horizontal {
+            for p in &mut c.children {
+                if let Some(size) = new(p.tree.id()) {
+                    p.size = size;
+                }
+            }
+            let normals: Option<Vec<f64>> = c.children.iter().map(|p| normal(p.tree.id())).collect();
+            match normals {
+                Some(n) => c.children.iter_mut().zip(n).for_each(|(p, n)| p.normal = n),
+                None => renormalize(c),
+            }
+        }
+        for p in &mut c.children {
+            p.tree.set_sizes(horizontal, new, normal);
+        }
+    }
+
     /// Whether a window shares the frame's width with others, as Emacs's
     /// `window-full-width-p` is false for it.
     pub(crate) fn is_partial_width(&self, id: WindowId) -> bool {

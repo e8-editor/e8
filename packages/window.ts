@@ -264,6 +264,33 @@ function windowChildCount(window: e8.Window): number {
   return n;
 }
 
+/** Calls `fn` on every window of a frame's tree, parents before children, internal ones too unless `any` is false, as walk-window-tree. */
+export function walkWindowTree(fn: (window: e8.Window) => void, frame?: e8.Frame, any = true): void {
+  const walk = (w: e8.Window): void => {
+    const first = e8.windowTopChild(w) ?? e8.windowLeftChild(w);
+    if (first === undefined || any) fn(w);
+    for (let c = first; c !== undefined; c = e8.windowNextSibling(c)) walk(c);
+  };
+  walk(e8.frameRootWindow(frame));
+}
+
+/**
+ * Sets every window's new sizes to its own and clears its new normal
+ * size, as window--resize-reset, before window.el works out new sizes and
+ * window-resize-apply gives them.
+ */
+export function windowResizeReset(frame?: e8.Frame, horizontal = false): void {
+  walkWindowTree((w) => {
+    e8.setWindowNewPixel(w, horizontal ? e8.windowPixelWidth(w) : e8.windowPixelHeight(w));
+    e8.setWindowNewTotal(w, horizontal ? e8.windowTotalWidth(w) : e8.windowTotalHeight(w));
+    e8.setWindowNewNormal(w);
+  }, frame);
+}
+e8.defun("window--resize-reset", (frame?: e8.Frame, horizontal?: boolean) => {
+  windowResizeReset(frame ?? undefined, horizontal === true);
+  return null;
+});
+
 /** Whether a window is part of a combination one above another, or side by side with `horizontal`, as window-combined-p. */
 export function windowCombinedP(window: e8.Window, horizontal = false): boolean {
   const parent = e8.windowParent(window);

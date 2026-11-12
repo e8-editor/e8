@@ -606,6 +606,65 @@ natives! {
         Ok(vec![x0 as f64, y0 as f64, x1 as f64, y1 as f64])
     }
 
+    /// A window's new pixel size, as window.el sets it before
+    /// window-resize-apply: window-new-pixel; its height until one is set.
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowNewPixel(ed, window: Option<Win>) -> i64 {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        ed.window_new_pixel(id).ok_or_else(|| e8_core::Error::new("No such window"))
+    }
+
+    /// Sets a window's new pixel size, or with `add` adds to it, as set-window-new-pixel; gives the new size.
+    #[ts = "(window: WindowLike, size: number, add?: boolean): number"]
+    pub fn setWindowNewPixel(ed, window: Win, size: i64, add: Option<bool>) -> i64 {
+        ed.set_window_new_pixel(window.0, size, add.unwrap_or(false))
+    }
+
+    /// A window's new total size in lines or columns, as window-new-total.
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowNewTotal(ed, window: Option<Win>) -> i64 {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        ed.window_new_total(id).ok_or_else(|| e8_core::Error::new("No such window"))
+    }
+
+    /// Sets a window's new total size, or with `add` adds to it, as set-window-new-total; gives the new size.
+    #[ts = "(window: WindowLike, size: number, add?: boolean): number"]
+    pub fn setWindowNewTotal(ed, window: Win, size: i64, add: Option<bool>) -> i64 {
+        ed.set_window_new_total(window.0, size, add.unwrap_or(false))
+    }
+
+    /// A window's new normal size, as window-new-normal: undefined once cleared.
+    #[ts = "(window?: WindowLike): number | undefined"]
+    pub fn windowNewNormal(ed, window: Option<Win>) -> Option<f64> {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        Ok(ed.window_new_normal(id))
+    }
+
+    /// Sets a window's new normal size, or clears it with none, as set-window-new-normal.
+    #[ts = "(window: WindowLike, size?: number): void"]
+    pub fn setWindowNewNormal(ed, window: Win, size: Option<f64>) -> () {
+        ed.set_window_new_normal(window.0, size)
+    }
+
+    /// Gives a frame's windows their new pixel sizes, heights or with
+    /// `horizontal` widths, and their new normal sizes, as
+    /// window-resize-apply, if each combination's children add up to it;
+    /// says whether they did.
+    #[ts = "(frame?: FrameLike, horizontal?: boolean): boolean"]
+    pub fn windowResizeApply(ed, frame: Option<Frm>, horizontal: Option<bool>) -> bool {
+        let frame = frame.map_or(ed.selected_frame(), |f| f.0);
+        Ok(ed.window_resize_apply(frame, horizontal.unwrap_or(false)))
+    }
+
+    /// Applies new total sizes, as window-resize-apply-total. E8 works out
+    /// total sizes from pixel sizes, which window-resize-apply has given,
+    /// so this has nothing left to do and says so with true.
+    #[ts = "(frame?: FrameLike, horizontal?: boolean): boolean"]
+    pub fn windowResizeApplyTotal(ed, frame: Option<Frm>, horizontal: Option<bool>) -> bool {
+        let _ = (frame, horizontal);
+        Ok(true)
+    }
+
     /// A column's width and a line's height in the front end's units, the
     /// default font's, as frame-char-width and frame-char-height.
     #[ts = "(): [width: number, height: number]"]
