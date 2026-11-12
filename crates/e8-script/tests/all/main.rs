@@ -84,6 +84,7 @@ mod windows;
 mod windmove;
 mod window_balance;
 mod window_split;
+mod window_state;
 mod window_resize;
 mod window_tree;
 mod windows_as_objects;

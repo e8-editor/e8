@@ -1143,7 +1143,11 @@ impl Editor {
         self.window_use += 1;
         let used = self.window_use;
         if id == self.selected_window {
-            self.window_mut(id).expect("checked").used = used;
+            // Its buffer becomes current, as select-window's set_buffer makes it.
+            let w = self.window_mut(id).expect("checked");
+            w.used = used;
+            let buffer = w.buffer;
+            self.current = self.buffer_index(buffer);
             return Ok(());
         }
         // The old window keeps its own point and top line, in the buffer it

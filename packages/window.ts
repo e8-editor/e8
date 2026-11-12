@@ -4,18 +4,37 @@
 
 /**
  * How to undo showing a buffer in a window, as display-buffer-record-window
- * writes the quit-restore window parameter: `["window", "window", SELECTED,
- * BUFFER]` for a window made to show BUFFER, `["frame", "frame", ...]` for
- * one on a frame made for it, `["other", [PREVIOUS, START, POINT, HEIGHT],
- * SELECTED, BUFFER]` for a window that showed PREVIOUS from START with POINT,
- * and `"same"` first once BUFFER is shown in it again. SELECTED is the window
- * selected then.
+ * writes the quit-restore window parameter, a list of four as window.el's:
+ * `[window, window, SELECTED, BUFFER]` for a window made to show BUFFER,
+ * `[frame, frame, ...]` for one on a frame made for it, `[other, [PREVIOUS,
+ * START, POINT, SIZE], SELECTED, BUFFER]` for a window that showed the
+ * buffer PREVIOUS from START with POINT a marker, SIZE its height, or its
+ * width if it was not in a column, and `same` first once BUFFER is shown in
+ * it again. The kinds are symbols and the buffers buffer objects; SELECTED
+ * is the window selected then.
  */
-type QuitRestore = [string, string | [string, number, number, number], e8.Window, string];
+type QuitRestore = e8.Value[];
 
 function quitRestore(window: e8.Window): QuitRestore | undefined {
   const v = e8.windowParameter(window, "quit-restore");
-  return Array.isArray(v) && v.length === 4 ? (v as unknown as QuitRestore) : undefined;
+  return Array.isArray(v) && v.length === 4 ? v : undefined;
+}
+
+/** The name of the live buffer a value is, a buffer object or a name; undefined for a killed buffer or anything else. */
+const liveBufferName = (v: unknown): string | undefined =>
+  typeof v === "string" ? (e8.getBuffer(v) !== undefined ? v : undefined) : typeof v === "object" && v !== null && "live" in v ? (v as e8.Buffer).name : undefined;
+
+/** Whether a quit-restore parameter's buffer, a buffer object or a name, is `buffer`. */
+const sameBuffer = (a: unknown, buffer: string | undefined): boolean => buffer !== undefined && liveBufferName(a) === buffer;
+
+/**
+ * Sets a window's quit-restore parameter. Emacs keeps the previous
+ * buffer's point as a marker, which its collector frees; E8 keeps the
+ * position, and quitting takes where the window was in that buffer from
+ * its previous buffers, which follow edits as the marker would.
+ */
+function setQuitRestore(window: e8.Window, value: QuitRestore | null): void {
+  e8.setWindowParameter(window, "quit-restore", value);
 }
 
 /**
@@ -25,18 +44,22 @@ function quitRestore(window: e8.Window): QuitRestore | undefined {
  */
 function recordWindow(type: "reuse" | "window" | "frame" | "tab", window: e8.Window, buffer: string): void {
   const selected = e8.selectedWindow();
+  const object = e8.getBuffer(buffer) ?? buffer;
   if (type !== "reuse") {
-    e8.setWindowParameter(window, "quit-restore", [type, type, selected, buffer]);
+    setQuitRestore(window, [Symbol.for(type), Symbol.for(type), selected, object]);
   } else if (e8.windowBuffer(window) === buffer) {
+    // It shows the buffer already: say so, and note the window selected now.
     const restore = quitRestore(window);
     if (restore) {
-      restore[0] = "same";
+      restore[0] = Symbol.for("same");
       if (window !== selected && window !== restore[2]) restore[2] = selected;
-      e8.setWindowParameter(window, "quit-restore", restore as unknown as e8.Value);
+      e8.setWindowParameter(window, "quit-restore", restore);
     }
   } else {
-    const previous = [e8.windowBuffer(window) ?? "", e8.windowStart(window), e8.windowPoint(window), size(window).totalHeight];
-    e8.setWindowParameter(window, "quit-restore", ["other", previous, selected, buffer]);
+    const shown = e8.windowBuffer(window) ?? "";
+    const point = e8.windowPoint(window);
+    const size = windowCombinedP(window) ? e8.windowTotalHeight(window) : e8.windowTotalWidth(window);
+    setQuitRestore(window, [Symbol.for("other"), [e8.getBuffer(shown) ?? shown, e8.windowStart(window), point, size], selected, object]);
   }
 }
 
@@ -620,7 +643,7 @@ export function windowDisplayBuffer(buffer: e8.BufferLike, window: e8.Window | u
     e8.letBind({ "inhibit-read-only": true, "inhibit-modification-hooks": true }, () => fcall(body, window));
   }
   const restore = quitRestore(window);
-  const made = type === "window" || (restore?.[0] === "same" && restore?.[1] === "window");
+  const made = type === "window" || (symName(restore?.[0]) === "same" && symName(restore?.[1]) === "window");
   if (made) {
     applySize(window, alistGet(alist, "window-height"), false);
     applySize(window, alistGet(alist, "window-width"), true);
@@ -1045,7 +1068,9 @@ defineAction("display-buffer-in-side-window", (buffer, alist0) => {
     const window = splitPartNoError(sideNextTo(side), rootSide, sized ? undefined : -Math.max(2, Math.trunc(total / 4)));
     if (window === undefined) return undefined;
     e8.setWindowParameter(window, "window-side", side);
+    addPersistentParameter("window-side");
     e8.setWindowParameter(window, "window-slot", slot);
+    addPersistentParameter("window-slot");
     return windowDisplayBuffer(buffer, window, "window", alist);
   }
   let thisWindow: e8.Window | undefined;
@@ -1074,7 +1099,9 @@ defineAction("display-buffer-in-side-window", (buffer, alist0) => {
       );
     if (made !== undefined) {
       e8.setWindowParameter(made, "window-side", side);
+      addPersistentParameter("window-side");
       e8.setWindowParameter(made, "window-slot", slot);
+      addPersistentParameter("window-slot");
       return windowDisplayBuffer(buffer, made, "window", alist);
     }
   }
@@ -1338,7 +1365,7 @@ const killBufferAndWindow = e8.defineCommand({
   run: () => {
     const buffer = e8.windowBuffer() ?? "";
     const window = e8.selectedWindow();
-    e8.setWindowParameter(window, "quit-restore", null);
+    setQuitRestore(window, null);
     e8.conditionCase(() => deleteWindow(window), { error: () => null });
     e8.call("kill-buffer", buffer);
     // As Emacs, delete-window again to show why it could not be deleted.
@@ -1346,100 +1373,171 @@ const killBufferAndWindow = e8.defineCommand({
   },
 });
 
+e8.defun("display-buffer-record-window", (type: e8.Value, window: e8.Window, buffer: e8.BufferLike) => {
+  recordWindow(symName(type) as "reuse" | "window" | "frame" | "tab", window, e8.bufferName(buffer) ?? "");
+  return null;
+});
+
+e8.defineVariable({
+  name: "frame-auto-hide-function",
+  doc:
+    "Function called to automatically hide frames.\nThe function is called with one argument - a frame.\n\n" +
+    "Functions affected by this option are those that bury a buffer shown in a separate frame like `quit-window' and `bury-buffer'.",
+  value: Symbol.for("iconify-frame"),
+});
+e8.defun("iconify-frame", (frame?: e8.Frame) => (e8.iconifyFrame(frame ?? undefined), null));
+e8.defun("make-frame-invisible", (frame?: e8.Frame) => (e8.makeFrameInvisible(frame ?? undefined), null));
+e8.defineHook("quit-window-hook", "Hook run before performing any other actions in the `quit-window' command.");
+
 /**
  * Deletes a window if it can be, as window--delete: with `dedicatedOnly`,
  * only one dedicated to its buffer. A window window-deletable-p says can
- * go goes with delete-window; the only window of a frame goes with the
- * frame if its buffer is being killed; Emacs would hide such a frame
- * otherwise, which E8 cannot. Says whether it went.
+ * go goes with delete-window. The only window of a frame takes its frame
+ * with it if its buffer is being killed, else the frame is hidden by its
+ * auto-hide-function parameter or frame-auto-hide-function, iconify-frame
+ * by default. Gives true when the window went, "frame" when its frame
+ * did or was hidden, and false otherwise.
  */
-function windowDelete(window: e8.Window, dedicatedOnly: boolean, kill: boolean): boolean {
+function windowDelete(window0: e8.Window | undefined, dedicatedOnly: boolean, kill: boolean): boolean | "frame" {
+  const window = windowNormalizeWindow(window0);
   if (dedicatedOnly && !dedicated(window)) return false;
   const deletable = windowDeletableP(window);
   if (deletable === "frame") {
-    if (!kill) return false;
-    e8.deleteFrame(e8.windowFrame(window));
-    return true;
+    const frame = e8.windowFrame(window)!;
+    const own = e8.frameParameter(frame, "auto-hide-function");
+    if (kill) e8.deleteFrame(frame);
+    else if (functionp(own)) fcall(own);
+    else if (functionp(e8.variable("frame-auto-hide-function"))) fcall(e8.variable("frame-auto-hide-function"), frame);
+    return "frame";
   }
   if (!deletable) return false;
   deleteWindow(window);
   return true;
 }
+e8.defun("window--delete", (window?: e8.Window, dedicatedOnly?: e8.Value, kill?: e8.Value) => {
+  const got = windowDelete(window ?? undefined, !isNil(dedicatedOnly), !isNil(kill));
+  return got === "frame" ? Symbol.for("frame") : got || null;
+});
 
-/** Selects the window selected when a quit window's buffer was shown, if it is still there. */
-function reselect(window: e8.Window | undefined): void {
-  if (window !== undefined && window !== e8.selectedWindow() && e8.windowList().includes(window)) e8.selectWindow(window);
+/** Selects a window after quitting another, as window--quit-restore-select-window: not an inactive minibuffer window. */
+function quitRestoreSelectWindow(window: e8.Value | undefined): void {
+  if (e8.windowp(window) && e8.windowLiveP(window) && (window !== e8.minibufferWindow() || e8.minibufferDepth() > 0)) e8.selectWindow(window);
 }
 
+/** Shows a buffer in a window from a start and with a point, as set-window-buffer-start-and-point; a dedicated side window stays one. */
+export function setWindowBufferStartAndPoint(window: e8.Window, buffer: e8.BufferLike, start?: e8.Value, point?: e8.Value): void {
+  const side = symName(e8.windowDedicatedP(window)) === "side";
+  e8.setWindowBuffer(window, buffer);
+  if (side) e8.setWindowDedicatedP(window, Symbol.for("side"));
+  const position = (v: e8.Value | undefined): number | undefined => (typeof v === "number" ? v : v instanceof e8.Marker ? v.position : undefined);
+  const size = e8.withCurrentBuffer(buffer, () => e8.bufferSize());
+  const s = position(start);
+  if (s !== undefined) e8.setWindowStart(window, Math.max(0, Math.min(s, size)));
+  const p = position(point);
+  if (p !== undefined) e8.setWindowPoint(window, Math.max(0, Math.min(p, size)));
+}
+e8.defun("set-window-buffer-start-and-point", (window: e8.Window, buffer: e8.BufferLike, start?: e8.Value, point?: e8.Value) => {
+  setWindowBufferStartAndPoint(windowNormalizeWindow(window), buffer, start ?? undefined, point ?? undefined);
+  return null;
+});
+
 /**
- * Quits a window, as quit-restore-window: deletes it if it is dedicated or
- * was made for its buffer, else shows what it showed before, as its
- * quit-restore parameter or its previous buffers say. `buryOrKill` says
- * what becomes of its buffer: "kill" kills it, "bury" puts it last in the
- * buffer list and forgets it in the window, and "append" moves it to the
- * end of the window's previous buffers.
+ * Quits a window, the selected one by default, as quit-restore-window:
+ * as its quit-restore parameter says, deletes it and its frame, deletes
+ * it alone, shows the buffer it showed before at its old start and point
+ * and with its old size, or shows some other buffer, then selects the
+ * window selected when its buffer was shown. A dedicated window is deleted
+ * if it can be. `buryOrKill` says what becomes of its buffer: "kill" kills
+ * it, "bury" puts it last in the buffer list and forgets it in the window,
+ * and "append" moves it to the end of the window's previous buffers.
  */
-function quitRestoreWindow(window: e8.Window, buryOrKill?: "bury" | "kill" | "append"): void {
+export function quitRestoreWindow(window0?: e8.Window | null, buryOrKill?: "bury" | "kill" | "append" | null): void {
+  const window = windowNormalizeWindow(window0);
   const buffer = e8.windowBuffer(window) ?? "";
   const restore = quitRestore(window);
   const selectedThen = restore?.[2];
   const prevBuffer = e8.windowPrevBuffers(window).find(([b]) => b !== buffer)?.[0];
   const flag = e8.windowDedicatedP(window);
   const kill = buryOrKill === "kill";
-  if (dedicated(window) && flag !== "side" && windowDelete(window, true, kill)) {
-    reselect(selectedThen);
+  const kind = symName(restore?.[1]);
+  const quad = Array.isArray(restore?.[1]) ? (restore[1] as e8.Value[]) : undefined;
+  if (!isNil(flag) && symName(flag) !== "side" && windowDelete(window, true, kill)) {
+    // A dedicated window, not a side window, went.
+    quitRestoreSelectWindow(selectedThen);
+  } else if (prevBuffer === undefined && kind === "tab" && sameBuffer(restore?.[3], buffer)) {
+    e8.call("tab-bar-close-tab");
+    quitRestoreSelectWindow(selectedThen);
   } else if (
     prevBuffer === undefined &&
-    (restore?.[1] === "frame" || (restore?.[1] === "window" && e8.windowList().length > 1)) &&
-    restore?.[3] === buffer &&
+    // A window made on a frame that was there, now the frame's only one, stays (Bug#12764).
+    (kind === "frame" || (kind === "window" && !frameRootWindowP(window))) &&
+    sameBuffer(restore?.[3], buffer) &&
     windowDelete(window, false, kill)
   ) {
-    reselect(selectedThen);
-  } else if (restore && Array.isArray(restore[1]) && e8.getBuffer(restore[1][0]) !== undefined && restore[3] === buffer) {
-    const [previous, start, point] = restore[1];
-    // Where the window was in it, from its previous buffers, which follow
-    // edits as the markers Emacs keeps here do.
-    const entry = e8.windowPrevBuffers(window).find(([b]) => b === previous);
+    quitRestoreSelectWindow(selectedThen);
+  } else if (quad !== undefined && liveBufferName(quad[0]) !== undefined && sameBuffer(restore?.[3], buffer)) {
+    // Show the buffer it showed before, at its size then if it can have it.
+    const size = (): number => (windowCombinedP(window) ? e8.windowTotalHeight(window) : e8.windowTotalWidth(window));
+    if (typeof quad[3] === "number" && quad[3] !== size()) {
+      e8.conditionCase(() => windowResize(window, (quad[3] as number) - size(), windowCombinedP(window, true)), { error: () => null });
+    }
     e8.setWindowDedicatedP(window, null);
-    e8.setWindowBuffer(window, previous);
-    e8.setWindowStart(window, entry?.[1] ?? start);
-    e8.setWindowPoint(window, entry?.[2] ?? point);
-    if (flag === "side") e8.setWindowDedicatedP(window, "side");
-    const appended = buryOrKill === "append" ? e8.windowPrevBuffers(window).find(([b]) => b === buffer) : undefined;
+    // The start as noted, a number as in Emacs; the point from the window's
+    // previous buffers, which follow edits as Emacs's marker does.
+    const previous = liveBufferName(quad[0])!;
+    const was = e8.windowPrevBuffers(window).find(([b]) => b === previous);
+    setWindowBufferStartAndPoint(window, previous, quad[1], was?.[2] ?? quad[2]);
+    if (symName(flag) === "side") e8.setWindowDedicatedP(window, Symbol.for("side"));
+    const entry = buryOrKill === "append" ? e8.windowPrevBuffers(window).find(([b]) => b === buffer) : undefined;
     if (buryOrKill) {
       e8.setWindowPrevBuffers(window, e8.windowPrevBuffers(window).filter(([b]) => b !== buffer));
       e8.setWindowNextBuffers(window, e8.windowNextBuffers(window).filter((b) => b !== buffer));
     }
-    if (appended) e8.setWindowPrevBuffers(window, [...e8.windowPrevBuffers(window), appended]);
-    e8.setWindowParameter(window, "quit-restore", null);
-    reselect(selectedThen);
+    // Last in its previous buffers, where display-buffer-in-previous-window can still find it.
+    if (entry) e8.setWindowPrevBuffers(window, [...e8.windowPrevBuffers(window), entry]);
+    setQuitRestore(window, null);
+    quitRestoreSelectWindow(selectedThen);
   } else {
-    e8.setWindowParameter(window, "quit-restore", null);
+    setQuitRestore(window, null);
     e8.setWindowDedicatedP(window, null);
-    if (e8.switchToPrevBuffer(window, buryOrKill) !== undefined) {
-      if (flag === "side") e8.setWindowDedicatedP(window, "side");
+    // Delete the window only if no previous buffer can be shown in it (Bug#48367).
+    if (e8.switchToPrevBuffer(window, buryOrKill ?? undefined) !== undefined) {
+      if (symName(flag) === "side") e8.setWindowDedicatedP(window, Symbol.for("side"));
     } else {
       windowDelete(window, false, kill);
+      quitRestoreSelectWindow(selectedThen);
     }
-    reselect(selectedThen);
   }
   if (e8.getBuffer(buffer) === undefined) return;
   if (kill) e8.call("kill-buffer", buffer);
   else if (buryOrKill) e8.buryBufferInternal(buffer);
 }
+e8.defun("quit-restore-window", (window?: e8.Window, buryOrKill?: e8.Value) => {
+  quitRestoreWindow(window ?? undefined, (symName(buryOrKill) as "bury" | "kill" | "append" | undefined) ?? null);
+  return null;
+});
+
+/**
+ * Quits a window, the selected one by default, and buries its buffer, or
+ * with `kill` kills it, as quit-window: runs quit-window-hook in the
+ * window's buffer, then quit-restore-window.
+ */
+export function quitWindow(kill?: e8.Value, window0?: e8.Window | null): void {
+  const window = windowNormalizeWindow(window0);
+  e8.withCurrentBuffer(e8.windowBuffer(window) ?? "", () => e8.runHooks("quit-window-hook"));
+  quitRestoreWindow(window, isNil(kill) ? "bury" : "kill");
+}
 
 e8.defineCommand({
   name: "quit-window",
   doc:
-    "Quit the selected window and bury its buffer.\n\n" +
-    "A window made to show the buffer is deleted; one that showed another buffer before shows it again, where it was. " +
-    "Then the window that was selected when the buffer was shown is selected again. With a prefix argument, the buffer is killed.",
+    "Quit WINDOW and bury its buffer.\n\n" +
+    "WINDOW must be a live window and defaults to the selected one. With prefix argument KILL non-nil, kill the buffer instead of burying it.\n\n" +
+    "This calls quit-restore-window to delete WINDOW or show some other buffer in it, as its quit-restore parameter says: " +
+    "a window made for the buffer is deleted, one that showed another buffer shows it again where it was and at its size then. " +
+    "The functions in quit-window-hook run before anything else. Code passes a window to window.ts's quitWindow.",
   params: [{ name: "kill", kind: "prefix" }],
-  run: (kill) => {
-    const window = e8.selectedWindow();
-    e8.withCurrentBuffer(e8.windowBuffer(window) ?? "", () => e8.runHooks("quit-window-hook"));
-    quitRestoreWindow(window, kill !== null && kill !== undefined ? "kill" : "bury");
-  },
+  run: (kill) => quitWindow(kill ?? null),
 });
 
 e8.defineCommand({
@@ -3921,140 +4019,53 @@ const splitRootRight = e8.defineCommand({
 
 // Hiding and showing side windows.
 
-/**
- * A window and what it holds, as window-toggle-side-windows keeps them
- * in a frame's window-state parameter: whether it is the frame's main
- * window, its size along its parent in the front end's units, its
- * persistent parameters, and a live window's buffer, start, point and
- * dedication, or an internal window's kind, combination limit and children.
- */
-interface SideWindowsState {
-  main?: boolean;
-  size: number;
-  parameters: [string, e8.Value][];
-  buffer?: string;
-  start?: number;
-  point?: number;
-  dedicated?: e8.Value;
-  horizontal?: boolean;
-  limit?: boolean;
-  children?: SideWindowsState[];
-}
-
-/** The window parameters window-toggle-side-windows keeps, as window-persistent-parameters makes window-state-get keep them. */
-const PERSISTENT_PARAMETERS = ["window-side", "window-slot", "clone-of"];
-
-function sideWindowsState(window: e8.Window, main: e8.Window): SideWindowsState {
-  const parent = e8.windowParent(window);
-  const horizontal = parent !== undefined && e8.windowLeftChild(parent) !== undefined;
-  const parameters: [string, e8.Value][] = [];
-  for (const name of PERSISTENT_PARAMETERS) {
-    const v = e8.windowParameter(window, name);
-    if (!isNil(v)) parameters.push([name, typeof v === "symbol" ? v.description! : v!]);
-  }
-  const state: SideWindowsState = { size: windowSize(window, horizontal, true), parameters };
-  if (window === main) state.main = true;
-  if (e8.windowLiveP(window)) {
-    Object.assign(state, {
-      buffer: e8.windowBuffer(window),
-      start: e8.windowStart(window),
-      point: e8.windowPoint(window),
-      dedicated: e8.windowDedicatedP(window) ?? null,
-    });
-  } else {
-    const children: SideWindowsState[] = [];
-    for (let c = windowChild(window); c !== undefined; c = windowRight(c)) children.push(sideWindowsState(c, main));
-    Object.assign(state, { horizontal: e8.windowLeftChild(window) !== undefined, limit: e8.windowCombinationLimit(window), children });
-  }
-  return state;
-}
-
-const holdsMain = (s: SideWindowsState): boolean => s.main === true || (s.children ?? []).some(holdsMain);
-
-/** Gives a window a kept window's parameters, and a live one its buffer as it was. */
-function putSideWindowState(s: SideWindowsState, window: e8.Window): void {
-  for (const [name, value] of s.parameters) e8.setWindowParameter(window, name, value);
-  if (s.children === undefined) {
-    if (s.buffer !== undefined && e8.getBuffer(s.buffer) !== undefined) {
-      e8.setWindowBuffer(window, s.buffer);
-      e8.setWindowStart(window, s.start ?? 0);
-      e8.setWindowPoint(window, s.point ?? 0);
-    }
-    e8.setWindowDedicatedP(window, s.dedicated ?? null);
-    return;
-  }
-  // An internal window: its children split off the first, the last first,
-  // each at its size, so the first keeps what is left, as the record had it.
-  const windows: e8.Window[] = new Array(s.children.length);
-  windows[0] = window;
-  for (let j = s.children.length - 1; j >= 1; j--) {
-    const child = s.children[j];
-    windows[j] = e8.letBind({ "window-combination-limit": j === s.children.length - 1 }, () =>
-      splitWindow(window, -child.size, s.horizontal ? "right" : "below", true),
-    );
-  }
-  const parent = e8.windowParent(window);
-  if (parent !== undefined) e8.setWindowCombinationLimit(parent, s.limit === true);
-  s.children.forEach((child, j) => putSideWindowState(child, windows[j]));
-}
-
-/**
- * Puts the windows a kept state had around its main window back around
- * `current`, which stands for the part of the state holding the main
- * window: its siblings split off it at their sizes, those before it
- * first, then those after it, nearest last.
- */
-function putAroundMain(s: SideWindowsState, current: e8.Window): void {
-  if (s.main === true || s.children === undefined) return;
-  const i = s.children.findIndex(holdsMain);
-  const before = s.horizontal ? "left" : "above";
-  const after = s.horizontal ? "right" : "below";
-  let first = true;
-  const split = (child: SideWindowsState, side: string): e8.Window => {
-    const made = e8.letBind({ "window-combination-limit": first }, () => splitWindow(current, -child.size, side, true));
-    first = false;
-    return made;
-  };
-  const made: [SideWindowsState, e8.Window][] = [];
-  for (const child of s.children.slice(0, i)) made.push([child, split(child, before)]);
-  for (const child of s.children.slice(i + 1).reverse()) made.push([child, split(child, after)]);
-  const parent = e8.windowParent(current);
-  if (parent !== undefined) {
-    for (const [name, value] of s.parameters) e8.setWindowParameter(parent, name, value);
-    e8.setWindowCombinationLimit(parent, s.limit === true);
-  }
-  for (const [child, window] of made) putSideWindowState(child, window);
-  putAroundMain(s.children[i], current);
+/** Deletes the markers a window state holds, one no longer kept, as Emacs's collector would. */
+function freeStateMarkers(v: unknown): void {
+  if (v instanceof e8.Marker) e8.deleteMarker(v);
+  else if (Array.isArray(v)) v.forEach(freeStateMarkers);
 }
 
 /**
  * Hides or shows a frame's side windows, the selected frame's by default,
  * as window-toggle-side-windows: with side windows, keeps the frame's
- * windows in its window-state parameter and deletes all but the main
- * window; without, puts the side windows kept there back around the main
- * window, leaving that as it is.
+ * state in its window-state parameter, as window-state-get gives it, and
+ * deletes all but the main window; without, puts the state kept there
+ * back and the main window's state into its main window.
  */
 export function windowToggleSideWindows(frame0?: e8.Frame | null): void {
   const frame = frame0 ?? e8.selectedFrame();
   e8.letBind({ "window--sides-inhibit-check": true }, () => {
     if (windowWithParameter("window-side", null, frame) !== undefined) {
-      const main = windowMainWindow(frame);
-      e8.setFrameParameter(frame, "window-state", JSON.stringify(sideWindowsState(e8.frameRootWindow(frame), main)));
-      e8.letBind({ "ignore-window-parameters": true }, () => deleteOtherWindows(main));
+      freeStateMarkers(e8.frameParameter(frame, "window-state"));
+      e8.setFrameParameter(frame, "window-state", windowStateGet(e8.frameRootWindow(frame)));
+      e8.letBind({ "ignore-window-parameters": true }, () => deleteOtherWindows(windowMainWindow(frame)));
       return;
     }
-    const kept = e8.frameParameter(frame, "window-state");
-    if (typeof kept !== "string" || kept === "") e8.signal("error", "No side windows state found");
-    e8.letBind({ "ignore-window-parameters": true }, () => putAroundMain(JSON.parse(kept) as SideWindowsState, e8.frameRootWindow(frame)));
+    const state = e8.frameParameter(frame, "window-state");
+    if (!Array.isArray(state) || state.length === 0) e8.signal("error", "No side windows state found");
+    e8.letBind({ "window-combination-resize": true }, () => {
+      const mainState = windowStateGet(e8.frameRootWindow(frame));
+      windowStatePut(state as WindowState, e8.frameRootWindow(frame), true);
+      windowStatePut(mainState, windowMainWindow(frame));
+      freeStateMarkers(mainState);
+    });
   });
+}
+
+/** Makes a window parameter one window-state-get keeps, written out too, as display-buffer-in-side-window does with add-to-list. */
+function addPersistentParameter(name: string): void {
+  const now = e8.variable("window-persistent-parameters");
+  const list = Array.isArray(now) ? now : [];
+  if (list.some((entry) => Array.isArray(entry) && entry.length === 2 && symName(entry[0]) === name && symName(entry[1]) === "writable")) return;
+  e8.setVariable("window-persistent-parameters", [[Symbol.for(name), Symbol.for("writable")], ...list]);
 }
 
 e8.defineCommand({
   name: "window-toggle-side-windows",
   doc:
     "Toggle display of side windows on the selected frame.\n\n" +
-    "With side windows, they are deleted after the frame's windows are kept in its window-state parameter; " +
-    "without, the side windows kept there are shown again around the main window.",
+    "With side windows, they are deleted after the frame's state is kept in its window-state parameter, as window-state-get gives it; " +
+    "without, the state kept there is put back, with the main window as it is now.",
   run: () => windowToggleSideWindows(),
 });
 
@@ -4222,65 +4233,463 @@ e8.defineCommand({
 e8.bindKey("M-r", "move-to-window-line-top-bottom");
 
 // --- Window states, as window.el's window-state-get and window-state-put ----
+//
+// A window state is Lisp data, as window.el's, held as E8 holds Lisp's
+// data: a list is an array, an alist entry (KEY . VALUE) is [KEY, VALUE]
+// and (KEY . nil) is [KEY], symbols are Symbol.for(name), t is true and nil
+// null. So `(window-state-get nil t)` prints with e8.prin1ToString and
+// reads back with e8.readFromString, and a state Emacs printed reads as
+// one. A state is [HEAD, TYPE, ...ENTRIES]: HEAD the least sizes of the
+// window as an alist, TYPE `leaf` for a live window, `vc` for a column
+// and `hc` for a row, and ENTRIES its sizes, parameters, buffer and, for an
+// internal window, the states of its children, each [TYPE, ...ENTRIES].
 
-/** One window's part of a window state: its buffer, by name and file, and where it starts and its point. */
-interface WindowLeafState {
-  buffer: string;
-  file?: string;
-  point: number;
-  start: number;
-  selected: boolean;
+/** A window state, as window-state-get gives it. */
+export type WindowState = e8.Value[];
+
+e8.defineVariable({
+  name: "window-persistent-parameters",
+  doc:
+    "Alist of persistent window parameters.\n\nEach entry is (PARAMETER . PERSISTENCE): PERSISTENCE t means window-state-get keeps PARAMETER, " +
+    "and current-window-configuration does, unless it is asked for a state to write out; `writable' means it is kept in that too.",
+  value: [
+    [Symbol.for("context"), Symbol.for("writable")],
+    [Symbol.for("clone-of"), true],
+  ],
+});
+e8.defineVariable({
+  name: "window-restore-killed-buffer-windows",
+  doc:
+    "What window-state-put and set-window-configuration do with a window whose buffer was killed.\n\n" +
+    "nil or `delete' deletes it, `dedicated' deletes it if it was dedicated, t keeps it showing another buffer, " +
+    "and a function is called with the frame, a list of (WINDOW BUFFER START POINT DEDICATED nil) for such windows, and `state'.",
+  value: null,
+});
+for (const name of ["window-state-put-list", "window-state-put-stale-windows", "window-state-put-kept-windows", "window-state-put-selected-window"]) {
+  e8.defineVariable({ name, doc: "Helper variable for `window-state-put'.", value: null });
 }
-/** The selected frame's windows as data, which can be written out and read back, as window-state-get with WRITABLE. */
-export type WindowState = WindowLeafState | { sideBySide: boolean; firstSize: number | null; first: WindowState; second: WindowState };
 
-export function windowStateGet(): WindowState {
-  const selected = e8.selectedWindow();
-  const node = (t: e8.WindowTreeNode): WindowState => {
-    if (!Array.isArray(t)) {
-      const buffer = e8.windowBuffer(t) ?? "*scratch*";
-      const file = e8.withCurrentBuffer(buffer, () => e8.bufferFileName());
-      return { buffer, ...(file ? { file } : {}), point: e8.windowPoint(t), start: e8.windowStart(t), selected: t === selected };
-    }
-    const [sideBySide, firstSize, first, second] = t;
-    return { sideBySide, firstSize, first: node(first), second: node(second) };
+const sym = (name: string): symbol => Symbol.for(name);
+/** An alist entry (KEY . VALUE), as [KEY] when VALUE is nil, as Lisp prints it. */
+const cons = (key: string, value: e8.Value | undefined): e8.Value[] => (isNil(value) ? [sym(key)] : [sym(key), value!]);
+/** The rest of an alist entry whose value is a list, as (cdr (assq KEY ALIST)) of (KEY A B ...). */
+const assqRest = (alist: e8.Value[], key: string): e8.Value[] => assq(alist, key)?.slice(1) ?? [];
+/** A number in an alist, as (cdr (assq KEY ALIST)); 0 if it has none. */
+const alistNumber = (alist: e8.Value[], key: string): number => {
+  const v = alistGet(alist, key);
+  return typeof v === "number" ? v : 0;
+};
+/** Where a state's position is: a number, or a marker's position. */
+const statePosition = (v: e8.Value | undefined): number | undefined => (typeof v === "number" ? v : v instanceof e8.Marker ? v.position : undefined);
+
+/** A window's part of its state, as window--state-get-1. */
+function windowStateGet1(window: e8.Window, writable: boolean): e8.Value[] {
+  const type = e8.windowTopChild(window) !== undefined ? "vc" : e8.windowLeftChild(window) !== undefined ? "hc" : "leaf";
+  const live = e8.windowLiveP(window);
+  const buffer = live ? e8.windowBuffer(window) : undefined;
+  const selected = window === e8.selectedWindow();
+  const nextBuffers = live ? e8.windowNextBuffers(window).filter((b) => e8.getBuffer(b) !== undefined) : [];
+  const prevBuffers = live ? e8.windowPrevBuffers(window).filter(([b]) => e8.getBuffer(b) !== undefined) : [];
+  const head: e8.Value[] = [sym(type)];
+  // A frame's root window has the minibuffer's window after it in Emacs, so is not last.
+  if (e8.windowNextSibling(window) === undefined && !frameRootWindowP(window)) head.push([sym("last"), true]);
+  head.push(
+    [sym("pixel-width"), e8.windowPixelWidth(window)],
+    [sym("pixel-height"), e8.windowPixelHeight(window)],
+    [sym("total-width"), e8.windowTotalWidth(window)],
+    [sym("total-height"), e8.windowTotalHeight(window)],
+    [sym("normal-height"), e8.windowNormalSize(window)],
+    [sym("normal-width"), e8.windowNormalSize(window, true)],
+  );
+  if (!live) head.push(cons("combination-limit", e8.windowCombinationLimit(window) || null));
+  // The parameters window-persistent-parameters keeps: with `writable',
+  // only those whose persistence is `writable'.
+  const persistent = (Array.isArray(e8.variable("window-persistent-parameters")) ? e8.variable("window-persistent-parameters") : []) as e8.Value[];
+  const persistence = (name: string): e8.Value | undefined => {
+    const v = alistGet(persistent, name);
+    return isNil(v) ? undefined : v;
   };
-  return node(e8.windowTree());
+  const keeps = (name: string): boolean => {
+    const pers = persistence(name);
+    return pers !== undefined && (!writable || symName(pers) === "writable");
+  };
+  const parameters: e8.Value[] = [];
+  for (const [name, value] of Object.entries(e8.windowParameters(window))) if (keeps(name)) parameters.push(cons(name, value));
+  if (keeps("clone-of") && !parameters.some((p) => Array.isArray(p) && symName(p[0]) === "clone-of")) parameters.unshift([sym("clone-of"), window]);
+  if (parameters.length > 0) head.push([sym("parameters"), ...parameters]);
+  if (buffer !== undefined) {
+    const point = e8.windowPoint(window);
+    const start = e8.windowStart(window);
+    const [leftMargin, rightMargin] = e8.windowMargins(window);
+    const fringes = e8.windowFringes(window).map((v) => (v === false ? null : v));
+    head.push([
+      sym("buffer"),
+      writable ? buffer : (e8.getBuffer(buffer) ?? buffer),
+      cons("selected", selected),
+      [sym("hscroll"), 0],
+      [sym("fringes"), ...fringes],
+      [sym("margins"), leftMargin ?? null, ...(rightMargin !== undefined ? [rightMargin] : [])],
+      // E8 has no scroll bars: what Emacs gives a terminal's window.
+      [sym("scroll-bars"), null, 0, true, null, 0, true, null],
+      [sym("vscroll"), 0],
+      cons("dedicated", e8.windowDedicatedP(window)),
+      [
+        sym("point"),
+        writable
+          ? point
+          : e8.makeMarker(point, { buffer, advances: !isNil(e8.withCurrentBuffer(buffer, () => e8.variable("window-point-insertion-type"))) }),
+      ],
+      [sym("start"), writable ? start : e8.makeMarker(start, { buffer })],
+    ]);
+  }
+  if (nextBuffers.length > 0) head.push([sym("next-buffers"), ...(writable ? nextBuffers : nextBuffers.map((b) => e8.getBuffer(b)!))]);
+  if (prevBuffers.length > 0) {
+    head.push([sym("prev-buffers"), ...prevBuffers.map(([b, start, point]) => [writable ? b : e8.getBuffer(b)!, start, point])]);
+  }
+  const tail: e8.Value[] = [];
+  for (let c = windowChild(window); c !== undefined; c = windowRight(c)) tail.push(windowStateGet1(c, writable));
+  return [...head, ...tail];
 }
 
 /**
- * Makes the selected frame's windows as a state says, as window-state-put:
- * each shows its buffer, or the buffer visiting its file, or else the
- * current buffer, at its point.
+ * The state of a window, the selected frame's root window by default, as
+ * window-state-get: its least sizes and, as windowStateGet1 gives them,
+ * its sizes, persistent parameters, buffer and children. With `writable`
+ * the state can be written out and read back in another session: buffers
+ * by name, positions as numbers rather than markers, and only parameters
+ * window-persistent-parameters makes `writable'.
  */
-export function windowStatePut(state: WindowState): void {
-  e8.call("delete-other-windows");
-  let toSelect: e8.Window | undefined;
-  const fill = (window: e8.Window, s: WindowState): void => {
-    if ("buffer" in s) {
-      const visiting = (file: string) => e8.bufferList().find((b) => e8.withCurrentBuffer(b, () => e8.bufferFileName()) === file);
-      const byFile = s.file ? visiting(s.file) : undefined;
-      const live = e8.getBuffer(byFile ?? s.buffer);
-      if (live) {
-        e8.setWindowBuffer(window, live.name!);
-        e8.setWindowStart(window, Math.min(s.start, e8.withCurrentBuffer(live, () => e8.bufferSize())));
-        e8.setWindowPoint(window, Math.min(s.point, e8.withCurrentBuffer(live, () => e8.bufferSize())));
-      }
-      if (s.selected) toSelect = window;
-      return;
-    }
-    let other: e8.Window;
-    try {
-      other = e8.splitWindow(window, s.sideBySide ? "right" : "below", s.firstSize ?? undefined);
-    } catch {
-      other = e8.splitWindow(window, s.sideBySide ? "right" : "below");
-    }
-    fill(window, s.first);
-    fill(other, s.second);
-  };
-  fill(e8.selectedWindow(), state);
-  if (toSelect !== undefined) e8.selectWindow(toSelect);
+export function windowStateGet(window0?: e8.Window | null, writable = false): WindowState {
+  let window: e8.Window;
+  if (isNil(window0)) window = e8.frameRootWindow();
+  else if (e8.windowValidP(window0)) window = window0!;
+  else e8.signal("error", `${e8.prin1ToString(window0 as e8.Value)} is not a live or internal window`);
+  const min = (horizontal: boolean, ignore: unknown, pixelwise: boolean) => windowMinSize(window, horizontal, ignore, pixelwise);
+  const safe = sym("safe");
+  return [
+    [
+      [sym("min-height"), min(false, null, false)],
+      [sym("min-width"), min(true, null, false)],
+      [sym("min-height-ignore"), min(false, true, false)],
+      [sym("min-width-ignore"), min(true, true, false)],
+      [sym("min-height-safe"), min(false, safe, false)],
+      [sym("min-width-safe"), min(true, safe, false)],
+      [sym("min-pixel-height"), min(false, null, true)],
+      [sym("min-pixel-width"), min(true, null, true)],
+      [sym("min-pixel-height-ignore"), min(false, true, true)],
+      [sym("min-pixel-width-ignore"), min(true, true, true)],
+      [sym("min-pixel-height-safe"), min(false, safe, true)],
+      [sym("min-pixel-width-safe"), min(true, safe, true)],
+    ],
+    ...windowStateGet1(window, writable),
+  ];
 }
+e8.defun("window-state-get", (window?: e8.Window, writable?: e8.Value) => windowStateGet(window, !isNil(writable)));
+
+/** What window--state-put-1 leaves window--state-put-2 to do: each window with its entries, the last found first. */
+let statePutList: [e8.Window, e8.Value[]][] = [];
+let statePutStaleWindows: e8.Window[] = [];
+let statePutKeptWindows: e8.Value[][] = [];
+let statePutSelectedWindow: e8.Window | undefined;
+
+/** Splits a window into the windows a state's part has, as window--state-put-1, noting what each is to hold. */
+function windowStatePut1(state: e8.Value[], window: e8.Window | undefined, ignore: unknown, totals: boolean, pixelwise = false): void {
+  const type = symName(state[0]);
+  const rest = state.slice(1);
+  if (type === "leaf") {
+    statePutList.unshift([window!, rest]);
+    return;
+  }
+  if (type !== "vc" && type !== "hc") return;
+  const horizontal = type === "hc";
+  const total = windowSize(window!, horizontal, pixelwise);
+  let first = true;
+  // A combination inside one of the same kind gets a parent of its own (Bug#50867, Bug#64405).
+  let limit: true | null = alistGet(rest, "combination-limit") === true || windowCombinedP(window!, horizontal) ? true : null;
+  for (const item of rest) {
+    if (!Array.isArray(item) || !["leaf", "vc", "hc"].includes(symName(item[0]) ?? "")) continue;
+    let next: e8.Window | undefined;
+    if (assq(item, "last") !== undefined) {
+      next = undefined;
+    } else {
+      // The new and final size of the window split, which is safe, as it is resized later.
+      let size = totals
+        ? alistNumber(item, pixelwise ? (horizontal ? "pixel-width" : "pixel-height") : horizontal ? "total-width" : "total-height")
+        : lispRound(total * alistNumber(item, horizontal ? "normal-width" : "normal-height"));
+      size = Math.max(size, horizontal ? windowSafeMinWidth * (pixelwise ? frameCharSize(true) : 1) : windowSafeMinHeight * (pixelwise ? frameCharSize(false) : 1));
+      if (windowSizableP(window!, -size, horizontal, sym("safe"), pixelwise)) {
+        const l = limit;
+        next = e8.letBind({ "window-combination-limit": l }, () => splitWindowNoError(window, size, horizontal ? true : null, pixelwise));
+        limit = null;
+      } else {
+        e8.signal("error", `Cannot resize window ${e8.prin1ToString(window!)}`);
+      }
+      if (first) {
+        first = false;
+        statePutList.unshift([e8.windowParent(window!)!, rest]);
+      }
+    }
+    // As window.el, the children are put at total sizes, not pixels.
+    windowStatePut1(item, window, ignore, totals);
+    window = next;
+  }
+}
+
+/** Gives the windows window--state-put-1 made their parameters, buffers and sizes, as window--state-put-2. */
+function windowStatePut2(ignore: unknown, pixelwise: boolean): void {
+  for (const [window, item] of statePutList) {
+    if (!e8.windowValidP(window)) continue;
+    const parameters = assqRest(item, "parameters");
+    const state = assq(item, "buffer")?.slice(1);
+    const nextBuffers = assqRest(item, "next-buffers");
+    const prevBuffers = assqRest(item, "prev-buffers");
+    if (!isNil(alistGet(item, "combination-limit"))) e8.setWindowCombinationLimit(window, true);
+    for (const name of Object.keys(e8.windowParameters(window))) e8.setWindowParameter(window, name, null);
+    for (const p of parameters) {
+      if (Array.isArray(p) && p.length > 0) e8.setWindowParameter(window, symName(p[0]) ?? String(p[0]), p.length === 2 ? (p[1] ?? null) : p.length === 1 ? null : p.slice(1));
+    }
+    if (state === undefined) continue;
+    const oldBufferOrName = state[0];
+    const name = liveBufferName(oldBufferOrName);
+    const s = state.slice(1);
+    const dedicatedFlag = isNil(alistGet(s, "dedicated")) ? null : alistGet(s, "dedicated")!;
+    if (name !== undefined) {
+      e8.withCurrentBuffer(name, () => {
+        e8.setWindowBuffer(window, name);
+        const margins = assqRest(s, "margins");
+        if (!isNil(margins[0]) || !isNil(margins[1]) || e8.windowMargins(window).some((m) => m !== undefined)) {
+          e8.setWindowMargins(window, (margins[0] as number | null) ?? undefined, (margins[1] as number | null) ?? undefined);
+        }
+        const fixed = symName(e8.variable("window-size-fixed"));
+        const adjust = (horizontal: boolean) => {
+          if (fixed === "t" || e8.variable("window-size-fixed") === true || fixed === (horizontal ? "width" : "height") || !isNil(windowPreservedSize(window, horizontal))) {
+            // A window of fixed size: try to give it its size back.
+            const delta =
+              alistNumber(item, pixelwise ? (horizontal ? "pixel-width" : "pixel-height") : horizontal ? "total-width" : "total-height") -
+              windowSize(window, horizontal, pixelwise);
+            e8.letBind({ "window-size-fixed": null }, () => {
+              if (windowResizableP_(window, delta, horizontal, null, undefined, false, false, pixelwise)) windowResize(window, delta, horizontal, null, pixelwise);
+            });
+          } else {
+            // Else see that it is not too small.
+            const delta = windowMinSize(window, horizontal, ignore, pixelwise) - windowSize(window, horizontal, pixelwise);
+            if (delta > 0 && windowResizableP_(window, delta, horizontal, ignore, undefined, false, false, pixelwise)) windowResize(window, delta, horizontal, ignore, pixelwise);
+          }
+        };
+        adjust(false);
+        adjust(true);
+        e8.setWindowDedicatedP(window, dedicatedFlag);
+        const size = e8.bufferSize();
+        const start = statePosition(alistGet(s, "start"));
+        const point = statePosition(alistGet(s, "point"));
+        if (start !== undefined) e8.setWindowStart(window, Math.max(0, Math.min(start, size)));
+        if (point !== undefined) e8.setWindowPoint(window, Math.max(0, Math.min(point, size)));
+        if (!isNil(alistGet(s, "selected"))) {
+          e8.selectWindow(window);
+          statePutSelectedWindow = window;
+        }
+        e8.setWindowNextBuffers(window, nextBuffers.map(liveBufferName).filter((b): b is string => b !== undefined));
+        const prev: [string, number, number][] = [];
+        for (const entry of prevBuffers) {
+          if (!Array.isArray(entry)) continue;
+          const b = liveBufferName(entry[0]);
+          if (b !== undefined) prev.push([b, statePosition(entry[1]) ?? 0, statePosition(entry[2]) ?? 0]);
+        }
+        e8.setWindowPrevBuffers(window, prev);
+      });
+    } else if (!windowMinibufferP(window)) {
+      // Its buffer was killed: preferably show a buffer it showed before.
+      e8.switchToPrevBuffer(window);
+      const how = e8.variable("window-restore-killed-buffer-windows");
+      if (functionp(how)) {
+        statePutKeptWindows.unshift([window, oldBufferOrName ?? null, statePosition(alistGet(s, "start")) ?? null, statePosition(alistGet(s, "point")) ?? null, dedicatedFlag, null]);
+      } else if ((!isNil(dedicatedFlag) && symName(how) === "dedicated") || isNil(how) || symName(how) === "delete") {
+        statePutStaleWindows.unshift(window);
+      }
+      e8.setWindowDedicatedP(window, null);
+    }
+  }
+}
+
+/** Runs `f` with a buffer of its own current, killed afterwards, as with-temp-buffer. */
+function withTempBuffer<T>(f: (name: string) => T): T {
+  const name = e8.generateNewBufferName(" *temp*");
+  e8.getBufferCreate(name);
+  try {
+    return e8.withCurrentBuffer(name, () => f(name));
+  } finally {
+    if (e8.getBuffer(name) !== undefined) e8.call("kill-buffer", name);
+  }
+}
+
+/**
+ * Puts a state window-state-get gave into a window, as window-state-put:
+ * a live window is split into the windows the state has, sized as they
+ * were if the window is as large as the state's was, else in proportion;
+ * an internal window is first made one live window, and with no window
+ * the frame's windows are replaced. Each window gets its buffer, start,
+ * point, dedication and parameters back, and the window selected then is
+ * selected. A window whose buffer was killed is deleted, or kept as
+ * window-restore-killed-buffer-windows says. `ignore` non-nil ignores
+ * least sizes and fixed sizes, and `safe` lets windows be as small as
+ * window-safe-min-height and -width.
+ */
+export function windowStatePut(state: WindowState, window0?: e8.Window | null, ignore: unknown = null): void {
+  statePutStaleWindows = [];
+  statePutKeptWindows = [];
+  let window: e8.Window;
+  if (!isNil(window0) && e8.windowLiveP(window0)) {
+    window = window0!;
+  } else {
+    // Reduce an internal window, or the frame, to one live window, and put a new one in its place.
+    const root = isNil(window0) ? undefined : window0!;
+    let live: e8.Window | undefined;
+    if (root !== undefined) {
+      walkWindowSubtree(
+        (w) => {
+          if (live === undefined && e8.windowLiveP(w) && isNil(e8.windowParameter(w, "window-side"))) live = w;
+        },
+        root,
+      );
+    }
+    const kept = live ?? e8.selectedWindow();
+    e8.deleteOtherWindowsInternal(kept, root);
+    const made = splitWindow(kept, windowSafeMinWidth, true);
+    deleteWindow(kept);
+    window = made;
+  }
+  e8.setWindowDedicatedP(window, null);
+  const frame = e8.windowFrame(window);
+  const head = Array.isArray(state[0]) ? (state[0] as e8.Value[]) : [];
+  const pixelwise = !isNil(alistGet(state, "pixel-width")) && !isNil(alistGet(state, "pixel-height"));
+  const totals =
+    (pixelwise && e8.windowPixelWidth(window) === alistGet(state, "pixel-width") && e8.windowPixelHeight(window) === alistGet(state, "pixel-height")) ||
+    (e8.windowTotalWidth(window) === alistGet(state, "total-width") && e8.windowTotalHeight(window) === alistGet(state, "total-height"));
+  let minHeight = alistNumber(head, pixelwise ? "min-pixel-height" : "min-height");
+  let minWidth = alistNumber(head, pixelwise ? "min-pixel-width" : "min-width");
+  const tooSmall = () => minHeight > windowSize(window, false, pixelwise) || minWidth > windowSize(window, true, pixelwise);
+  e8.letBind({ "window-combination-limit": null, "window-combination-resize": null }, () => {
+    if (
+      !totals &&
+      tooSmall() &&
+      (isNil(ignore) ||
+        ((minHeight = alistNumber(head, pixelwise ? "min-pixel-height-ignore" : "min-height-ignore")),
+        (minWidth = alistNumber(head, pixelwise ? "min-pixel-width-ignore" : "min-width-ignore")),
+        tooSmall() &&
+          (symName(ignore) !== "safe" ||
+            ((minHeight = alistNumber(head, pixelwise ? "min-pixel-height-safe" : "min-height-safe")),
+            (minWidth = alistNumber(head, pixelwise ? "min-pixel-width-safe" : "min-width-safe")),
+            tooSmall()))))
+    ) {
+      e8.signal("error", `Window ${e8.prin1ToString(window)} too small to accommodate state`);
+    }
+    statePutList = [];
+    statePutSelectedWindow = undefined;
+    // On a buffer of its own, so no buffer's window-size-fixed stops the splitting.
+    withTempBuffer((temp) => {
+      e8.setWindowBuffer(window, temp);
+      windowStatePut1(state.slice(1), window, null, totals, pixelwise);
+      windowStatePut2(ignore, pixelwise);
+    });
+    statePutList = [];
+    if (statePutSelectedWindow !== undefined && e8.windowLiveP(statePutSelectedWindow)) e8.selectWindow(statePutSelectedWindow);
+    while (statePutStaleWindows.length > 0) {
+      const stale = statePutStaleWindows.shift()!;
+      if (e8.windowValidP(stale) && windowDeletableP(stale) === true) deleteWindow(stale);
+    }
+    const how = e8.variable("window-restore-killed-buffer-windows");
+    if (functionp(how)) {
+      fcall(how, frame, statePutKeptWindows, sym("state"));
+      statePutKeptWindows = [];
+    }
+    windowCheck(frame);
+  });
+}
+e8.defun("window-state-put", (state: e8.Value, window?: e8.Window, ignore?: e8.Value) => {
+  if (!Array.isArray(state)) e8.signal("wrong-type-argument", "Wrong type argument: listp", [state]);
+  windowStatePut(state as WindowState, window, ignore ?? null);
+  return null;
+});
+
+/** The buffers a window state shows, as window-state-buffers. */
+export function windowStateBuffers(state: e8.Value[]): e8.Value[] {
+  const buffer = assq(state, "buffer")?.[1];
+  const items = Array.isArray(state[0]) ? state.slice(2) : state.slice(1);
+  const buffers = items.flatMap((item) =>
+    Array.isArray(item) && ["leaf", "vc", "hc"].includes(symName(item[0]) ?? "") ? windowStateBuffers(item) : [],
+  );
+  return buffer !== undefined ? [buffer, ...buffers] : buffers;
+}
+e8.defun("window-state-buffers", (state: e8.Value) => windowStateBuffers(Array.isArray(state) ? state : []));
+
+/**
+ * Swaps the states of two live windows, as window-swap-states: the
+ * selected window and the next one by default. `size` `height`, `width`
+ * or t swaps their heights, widths or both, as far as they can be.
+ */
+export function windowSwapStates(window10?: e8.Window | null, window20?: e8.Window | null, size: e8.Value = null): void {
+  const window1 = windowNormalizeWindow(window10);
+  if (!e8.windowLiveP(window1)) e8.signal("error", `${e8.prin1ToString(window1)} is not a live window`);
+  let window2: e8.Window;
+  if (!isNil(window20)) {
+    if (!e8.windowLiveP(window20)) e8.signal("error", `${e8.prin1ToString(window20 as e8.Value)} is not a live window`);
+    window2 = window20!;
+  } else {
+    window2 = nextWindow(window1, sym("nomini"), sym("visible"));
+  }
+  if (window1 === window2) return;
+  const height = size === true || symName(size) === "height";
+  const width = size === true || symName(size) === "width";
+  const state1 = windowStateGet(window1);
+  const width1 = width ? e8.windowBodyPixelWidth(window1) : 0;
+  const height1 = height ? e8.windowBodyPixelHeight(window1) : 0;
+  const state2 = windowStateGet(window2);
+  const width2 = width ? e8.windowBodyPixelWidth(window2) : 0;
+  const height2 = height ? e8.windowBodyPixelHeight(window2) : 0;
+  windowStatePut(state1, window2, true);
+  windowStatePut(state2, window1, true);
+  // Overlays shown in one window only follow it.
+  const swapOverlays = (buffer: string) =>
+    e8.withCurrentBuffer(buffer, () => {
+      for (const overlay of e8.overlaysIn(0, e8.bufferSize())) {
+        const w = e8.overlayGet(overlay, "window");
+        if (w === window1) e8.overlayPut(overlay, "window", window2);
+        else if (w === window2) e8.overlayPut(overlay, "window", window1);
+      }
+    });
+  swapOverlays(e8.windowBuffer(window1)!);
+  if (e8.windowBuffer(window1) !== e8.windowBuffer(window2)) swapOverlays(e8.windowBuffer(window2)!);
+  if (isNil(size)) return;
+  let old: number;
+  if (width) {
+    if ((old = e8.windowBodyPixelWidth(window1)) !== width2) windowResizeNoError(window1, width2 - old, true, true, true);
+    if ((old = e8.windowBodyPixelWidth(window2)) !== width1) {
+      const preserved = windowPreservedSize(window1, true);
+      windowPreserveSize(window1, true, true);
+      windowResizeNoError(window2, width1 - old, true, true, true);
+      windowPreserveSize(window1, true, preserved ?? null);
+    }
+  }
+  if (height) {
+    if ((old = e8.windowBodyPixelHeight(window1)) !== height2) windowResizeNoError(window1, height2 - old, false, true, true);
+    if ((old = e8.windowBodyPixelHeight(window2)) !== height1) {
+      const preserved = windowPreservedSize(window1);
+      windowPreserveSize(window1, false, true);
+      windowResizeNoError(window2, height1 - old, false, true, true);
+      windowPreserveSize(window1, false, preserved ?? null);
+    }
+  }
+}
+
+e8.defineCommand({
+  name: "window-swap-states",
+  doc:
+    "Swap the states of live windows WINDOW-1 and WINDOW-2.\n\n" +
+    "Interactively, the selected window and the window following it in the cyclic ordering of windows on visible frames, " +
+    "each taking the other's buffer, start, point and parameters. Code passes the windows and SIZE (height, width or t, " +
+    "to swap their sizes too) to window.ts's windowSwapStates.",
+  run: () => windowSwapStates(),
+});
 
 // window-configuration-change-hook: run after a command that changed which
 // windows the selected frame has or which buffers they show, where Emacs

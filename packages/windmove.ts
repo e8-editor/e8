@@ -6,7 +6,7 @@
 // first bound, holds the keys the *-default-keybindings functions bind.
 
 import { keyBinding } from "help";
-import { windowInDirection, splitWindow, deleteWindow, displayBufferOverrideNextCommand, maybeRaiseFrame, alistGet } from "window";
+import { windowInDirection, windowSwapStates, splitWindow, deleteWindow, displayBufferOverrideNextCommand, maybeRaiseFrame, alistGet } from "window";
 
 e8.defineVariable({
   name: "windmove-wrap-around",
@@ -320,56 +320,12 @@ e8.defineCommand({
 
 // Swapping states with the window in a direction.
 
-/**
- * Swaps what two live windows show, as window.el's window-swap-states
- * without SIZE: each one's buffer, start, point, dedication and previous and next buffers, and overlays' window
- * properties; the selected one's selection goes with its state. Here,
- * private to windmove, until window.ts has window-state-get and
- * window-state-put in Emacs's shape and window-swap-states with them.
- */
-function windowSwapStates(window1: e8.Window, window2: e8.Window): void {
-  if (window1 === window2) return;
-  const state = (w: e8.Window) => ({
-    buffer: e8.windowBuffer(w)!,
-    start: e8.windowStart(w),
-    point: e8.windowPoint(w),
-    dedicated: e8.windowDedicatedP(w) ?? null,
-    prev: e8.windowPrevBuffers(w),
-    next: e8.windowNextBuffers(w),
-    selected: w === e8.selectedWindow(),
-  });
-  const put = (s: ReturnType<typeof state>, w: e8.Window): void => {
-    e8.setWindowDedicatedP(w, null);
-    e8.setWindowBuffer(w, s.buffer);
-    e8.setWindowStart(w, s.start);
-    e8.setWindowPoint(w, s.point);
-    e8.setWindowDedicatedP(w, s.dedicated);
-    e8.setWindowPrevBuffers(w, s.prev);
-    e8.setWindowNextBuffers(w, s.next);
-  };
-  const s1 = state(window1);
-  const s2 = state(window2);
-  put(s1, window2);
-  put(s2, window1);
-  for (const buffer of new Set([s1.buffer, s2.buffer])) {
-    e8.withCurrentBuffer(buffer, () => {
-      for (const overlay of e8.overlaysIn(e8.pointMin(), e8.pointMax())) {
-        const w = e8.overlayGet(overlay, "window");
-        if (w === window1) e8.overlayPut(overlay, "window", window2);
-        else if (w === window2) e8.overlayPut(overlay, "window", window1);
-      }
-    });
-  }
-  if (s1.selected) e8.selectWindow(window2);
-  else if (s2.selected) e8.selectWindow(window1);
-}
-
 /** Swaps the selected window's state with the window's in a direction, as windmove-swap-states-in-direction. */
 export function windmoveSwapStatesInDirection(dir: string): void {
   const other = windowInDirection(dir, null, e8.variable("windmove-allow-all-windows"), null, e8.variable("windmove-wrap-around"), Symbol.for("nomini"));
   if (other === undefined || other === e8.minibufferWindow()) e8.userError(`No window ${dir} from selected window`);
   if (e8.selectedWindow() === e8.minibufferWindow()) e8.userError("Can't swap window with the minibuffer");
-  windowSwapStates(e8.selectedWindow(), other);
+  windowSwapStates(null, other);
 }
 e8.defun("windmove-swap-states-in-direction", (dir: e8.Value) => {
   windmoveSwapStatesInDirection(symName(dir) ?? "");

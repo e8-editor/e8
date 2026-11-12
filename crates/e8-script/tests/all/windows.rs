@@ -324,9 +324,11 @@ fn quitting_a_window_uses_its_quit_restore_parameter() {
     ed.press("C-h f").unwrap();
     ed.type_text("forward-char");
     ed.press("RET").unwrap();
-    // The window selected then is the window itself, as Emacs's quit-restore holds it.
+    // The window selected then is the window itself, as Emacs's quit-restore
+    // holds it: (window window #<window 1 on *scratch*> #<buffer *Help*>) in
+    // Emacs 30, the kinds symbols and the buffer an object.
     assert_eq!(
-        eval(&mut ed, &s, r#"(() => { const help = e8.windowList().find((w) => e8.windowBuffer(w) === "*Help*"); const [a, b, selected, buffer] = e8.windowParameter(help, "quit-restore"); return JSON.stringify([a, b, selected.id, buffer]); })()"#),
+        eval(&mut ed, &s, r#"(() => { const help = e8.windowList().find((w) => e8.windowBuffer(w) === "*Help*"); const [a, b, selected, buffer] = e8.windowParameter(help, "quit-restore"); return JSON.stringify([a.description, b.description, selected.id, buffer.name]); })()"#),
         r#""[\"window\",\"window\",1,\"*Help*\"]""#
     );
     ed.press("C-x o q").unwrap();
