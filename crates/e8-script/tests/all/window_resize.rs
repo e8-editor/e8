@@ -293,3 +293,44 @@ fn full_height_windows() {
         "[true,false]"
     );
 }
+
+#[test]
+fn frame_windows_min_size_counts_the_minibuffers_window_and_preserving_stops_by_default() {
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([win.frameWindowsMinSize(), win.frameWindowsMinSize(undefined, false, null, true)])"), "[8,5]");
+    assert_eq!(
+        eval(&mut ed, &s, "(win.windowPreserveSize(undefined, false, true), String(win.windowPreservedSize()))"),
+        "23"
+    );
+    assert_eq!(eval(&mut ed, &s, "(win.windowPreserveSize(), String(win.windowPreservedSize()))"), "undefined");
+}
+
+/// Columns 7.83 points wide, as a GUI font's may be.
+struct Fractional;
+
+impl e8_core::layout::TextMetrics for Fractional {
+    fn advance(&self, _: &e8_core::layout::FontSpec, _: char) -> f32 {
+        7.83
+    }
+    fn line_height(&self, _: &e8_core::layout::FontSpec) -> f32 {
+        21.0
+    }
+    fn char_width(&self) -> f32 {
+        7.83
+    }
+    fn char_height(&self) -> f32 {
+        21.0
+    }
+}
+
+#[test]
+fn columns_of_a_fractional_width_resize_no_further_than_the_windows_allow() {
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Fractional));
+    ed.set_frame_pixel_size(1000, 504);
+    ed.press("C-x 3 C-x o").unwrap();
+    assert_eq!(press(&mut ed, "M-x minimize-window RET"), None);
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelWidth())"), "78");
+    ed.press("C-x o").unwrap();
+    assert_eq!(press(&mut ed, "M-x maximize-window RET"), None);
+}

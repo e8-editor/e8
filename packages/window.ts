@@ -280,6 +280,7 @@ export function walkWindowTree(fn: (window: e8.Window) => void, frame?: e8.Frame
  * window-resize-apply gives them.
  */
 export function windowResizeReset(frame?: e8.Frame, horizontal = false): void {
+  for (const w of [...newNormals.keys()]) if (!e8.windowValidP(w)) newNormals.delete(w);
   walkWindowTree((w) => {
     e8.setWindowNewPixel(w, horizontal ? e8.windowPixelWidth(w) : e8.windowPixelHeight(w));
     e8.setWindowNewTotal(w, horizontal ? e8.windowTotalWidth(w) : e8.windowTotalHeight(w));
@@ -1589,12 +1590,12 @@ e8.defun("window-body-size", (window?: e8.Window, horizontal?: e8.Value, pixelwi
  * as window-preserve-size: kept in its window-preserved-size parameter as
  * [BUFFER, WIDTH, HEIGHT], for as long as it shows that buffer.
  */
-export function windowPreserveSize(window: e8.Window = e8.selectedWindow(), horizontal = false, preserve: unknown = true): void {
+export function windowPreserveSize(window: e8.Window = e8.selectedWindow(), horizontal = false, preserve: unknown = null): void {
   const parameter = e8.windowParameter(window, "window-preserved-size");
   const old = Array.isArray(parameter) ? parameter : [];
   const width = horizontal ? (isNil(preserve) ? null : e8.windowBodyPixelWidth(window)) : (old[1] ?? null);
   const height = horizontal ? (old[2] ?? null) : isNil(preserve) ? null : e8.windowBodyPixelHeight(window);
-  e8.setWindowParameter(window, "window-preserved-size", [e8.windowBuffer(window) ?? null, width, height]);
+  e8.setWindowParameter(window, "window-preserved-size", [e8.getBuffer(e8.windowBuffer(window) ?? "") ?? null, width, height]);
 }
 e8.defun("window-preserve-size", (window?: e8.Window, horizontal?: e8.Value, preserve?: e8.Value) => {
   windowPreserveSize(window ?? undefined, !isNil(horizontal), preserve ?? null);
@@ -1604,7 +1605,8 @@ e8.defun("window-preserve-size", (window?: e8.Window, horizontal?: e8.Value, pre
 /** The body height, or width with `horizontal`, a window keeps, as window-preserved-size; undefined if it keeps none. */
 export function windowPreservedSize(window: e8.Window = e8.selectedWindow(), horizontal = false): e8.Value | undefined {
   const parameter = e8.windowParameter(window, "window-preserved-size");
-  if (Array.isArray(parameter) && parameter[0] === e8.windowBuffer(window)) return parameter[horizontal ? 1 : 2] ?? undefined;
+  // The buffer itself, as Emacs compares it with eq, so a renamed buffer keeps it and a new one of the name does not.
+  if (Array.isArray(parameter) && parameter[0] === e8.getBuffer(e8.windowBuffer(window) ?? "")) return parameter[horizontal ? 1 : 2] ?? undefined;
   return undefined;
 }
 e8.defun("window-preserved-size", (window?: e8.Window, horizontal?: e8.Value) => windowPreservedSize(window ?? undefined, !isNil(horizontal)) ?? null);
@@ -1809,8 +1811,11 @@ e8.defun(
 /** The least height, or width, a frame's windows can have, as frame-windows-min-size. */
 export function frameWindowsMinSize(frame?: e8.Frame, horizontal = false, ignore: unknown = null, pixelwise = false): number {
   const root = e8.frameRootWindow(frame);
-  const mini = e8.windowNextSibling(root);
-  return windowMinSize(root, horizontal, ignore, pixelwise) + (mini !== undefined && !horizontal ? windowMinSize(mini, horizontal, null, pixelwise) : 0);
+  // The minibuffer's window, the root's sibling in Emacs, which E8 keeps
+  // apart from the tree: as window-min-size gives it there, a line, or
+  // without PIXELWISE window-min-height lines.
+  const mini = pixelwise ? Math.round(frameCharSize(false)) : minHeight();
+  return windowMinSize(root, horizontal, ignore, pixelwise) + (!horizontal ? mini : 0);
 }
 e8.defun("frame-windows-min-size", (frame?: e8.Frame, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) =>
   frameWindowsMinSize(frame ?? undefined, !isNil(horizontal), ignore ?? null, !isNil(pixelwise)),
@@ -1982,6 +1987,15 @@ export function windowResize(window: e8.Window = e8.selectedWindow(), delta: num
   const minibufferWindow = e8.minibufferWindow();
   delta = windowSizeToPixel(window, delta, horizontal, pixelwise, true);
   if (window === e8.frameRootWindow(frame)) e8.signal("error", "Cannot resize the root window of a frame");
+  if (!pixelwise && !windowMinibufferP(window)) {
+    // Lines or columns of a font whose width is not a whole number of units,
+    // as a GUI's may be, can come to a unit more than can go: no further
+    // than the windows around allow, as whole units would have stopped.
+    // Only that rounding is taken back; asking for more stays an error.
+    const unit = frameCharSize(horizontal);
+    const most = delta > 0 ? windowMaxDelta(window, horizontal, ignore, undefined, false, false, true) : -windowMinDelta(window, horizontal, ignore, undefined, false, false, true);
+    if (Math.abs(delta) > Math.abs(most) && Math.abs(delta) - Math.abs(most) < unit) delta = most;
+  }
   if (windowMinibufferP(window)) {
     if (horizontal) e8.signal("error", "Cannot resize minibuffer window horizontally");
     windowResizeMiniWindow(window, delta);
@@ -2152,8 +2166,10 @@ function windowResizeChildWindows(
       setWindowNewNormal(sub, windowSize(sub, horizontal, true) / parentTotal - e8.windowNormalSize(sub, horizontal));
     }
   }
-  let bestWindow: e8.Window | true | undefined = true;
+  // As window.el: only a delta to share out makes the last pass, once it is all shared.
+  let bestWindow: e8.Window | true | undefined;
   if (delta < 0) {
+    bestWindow = true;
     while (bestWindow !== undefined && delta !== 0) {
       bestWindow = undefined;
       let bestValue: number | undefined;
@@ -2178,6 +2194,7 @@ function windowResizeChildWindows(
       }
     }
   } else if (delta > 0) {
+    bestWindow = true;
     while (bestWindow !== undefined && delta !== 0) {
       bestWindow = undefined;
       let bestValue: number | undefined;
