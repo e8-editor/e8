@@ -1169,9 +1169,11 @@ const API: &str = r##"
     /**
      * Whether standard error comes in as output too: true by default; on a
      * pseudo-terminal it always does. A buffer instead takes it on its own,
-     * made if there is none, as make-process's :stderr; on pipes only.
+     * made if there is none, as make-process's :stderr; on pipes only. A
+     * pipe process from makePipeProcess takes it as its output, on pipes
+     * or a terminal, and closes when the program has ended.
      */
-    stderr?: boolean | BufferLike;
+    stderr?: boolean | BufferLike | Process;
     /**
      * A pseudo-terminal, "pty", as a shell or a program that asks questions
      * wants, or pipes, "pipe"; as process-connection-type says by default.
@@ -1180,6 +1182,32 @@ const API: &str = r##"
     /** How its output is decoded and its input encoded: one coding system, or [decoding, encoding]. */
     coding?: string | [string, string];
   }
+  /** What makePipeProcess makes, as make-pipe-process takes it. */
+  interface PipeProcessDefinition {
+    name: string;
+    /** The buffer its output goes into, made if there is none. */
+    buffer?: BufferLike;
+    filter?: ((process: Process, output: string) => void) | string | symbol | true | null;
+    /** Told "finished\n" when the program writing to it has ended, or it is deleted. */
+    sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
+    coding?: string | [string, string];
+    /** Whether exiting E8 goes ahead without asking while it is open. */
+    noquery?: boolean;
+  }
+  /**
+   * Where callProcessRegion puts what a program writes, as call-process's
+   * destination: true for point in the current buffer, null to throw it
+   * away, 0 to throw it away without waiting, a buffer or its name,
+   * [":file", FILE], or [DESTINATION, STDERR] with STDERR null to throw
+   * standard error away, true to keep it with the output, or a file name.
+   */
+  type CallProcessDestination =
+    | true
+    | null
+    | 0
+    | BufferLike
+    | [":file", string]
+    | [true | null | 0 | BufferLike | [":file", string], null | true | string];
   /** What makeNetworkProcess opens, as make-network-process takes it. */
   interface NetworkProcessDefinition {
     name: string;
@@ -1211,6 +1239,14 @@ const API: &str = r##"
    */
   function makeNetworkProcess(definition: NetworkProcessDefinition): Process;
   /**
+   * Make a pipe process, as make-pipe-process, and return it: no program,
+   * its output what a program started with it as makeProcess's `stderr`
+   * writes to standard error, into its buffer or to its filter. Its type
+   * is "pipe", its status "open" until that program has ended, or it is
+   * deleted, and then "closed". What is sent to it goes nowhere.
+   */
+  function makePipeProcess(definition: PipeProcessDefinition): Process;
+  /**
    * "run", "exit" or "signal", for a connection "open" or "closed", for a
    * server "listen", or undefined for a name no listed process has. A
    * process that has gone answers still, as these all do.
@@ -1223,8 +1259,8 @@ const API: &str = r##"
   function setProcessCodingSystem(process: ProcessLike, decoding?: string, encoding?: string): void;
   /** The name of a process's terminal, as process-tty-name, if it talks through one. */
   function processTtyName(process: ProcessLike): string | undefined;
-  /** "real" for a program, "network" for a connection or server, as process-type. */
-  function processType(process: ProcessLike): "real" | "network" | undefined;
+  /** "real" for a program, "network" for a connection or server, "pipe" for a pipe process, as process-type. */
+  function processType(process: ProcessLike): "real" | "network" | "pipe" | undefined;
   /** [host, service] for a connection, a part of it by key ("host", "service", "remote", "server"), or true for a program, as process-contact. */
   function processContact(process: ProcessLike, key?: string): Value;
   /** Tell a process's terminal its size, as set-process-window-size; false without one. */

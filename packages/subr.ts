@@ -345,6 +345,24 @@ export function processPut<T extends e8.Value>(process: e8.ProcessLike, prop: e8
   return value;
 }
 
+/**
+ * Run a shell command with the text from `start` to `end` as its input,
+ * as subr.el's call-shell-region: callProcessRegion running
+ * shell-file-name with shell-command-switch and the command, `start` and
+ * `buffer` as it takes them. Returns the exit code.
+ */
+export function callShellRegion(
+  start: number | string | null,
+  end: number | null,
+  command: string,
+  del?: boolean | null,
+  buffer?: e8.CallProcessDestination,
+): number | string | undefined {
+  const shell = String(e8.variable("shell-file-name") ?? "/bin/sh");
+  const forShell = String(e8.variable("shell-command-switch") ?? "-c");
+  return e8.callProcessRegion(start, end, shell, del, buffer, null, forShell, command);
+}
+
 /** Whether a file name names a directory, ending in a slash, as directory-name-p. */
 export const directoryNameP = (name: string): boolean => name.endsWith("/");
 

@@ -75,7 +75,7 @@ macro_rules! natives {
         $(#[safe_point = $safe_point:literal])?
         $vis:vis fn $name:ident($ed:ident $(, $arg:ident: $ty:ty)* $(,)?) $(-> $ret:ty)? $body:block
     )*) => {
-        #[allow(non_snake_case, unused_imports, unused_variables, unused_mut, clippy::needless_question_mark, clippy::unnecessary_wraps)]
+        #[allow(non_snake_case, unused_imports, unused_variables, unused_mut, clippy::needless_question_mark, clippy::unnecessary_wraps, clippy::too_many_arguments)]
         mod body {
             use super::*;
             $(

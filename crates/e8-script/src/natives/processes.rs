@@ -33,6 +33,10 @@ natives! {
             },
             merge_stderr: options.get("stderr").is_none_or(EditorValue::is_true),
             stderr_buffer: options.string("stderr"),
+            stderr_process: match options.get("stderr") {
+                Some(EditorValue::Process(id)) => Some(*id),
+                _ => None,
+            },
             filter: handler(filter),
             sentinel: handler(sentinel),
             pty: options.flag("pty"),
@@ -55,6 +59,19 @@ natives! {
         };
         let name = ed.make_network_process(spec)?;
         Ok(ProcObj(ed.process_named(&name).expect("just opened")))
+    }
+
+    fn makePipeProcess(ed, options: Fields, filter: Option<EditorValue>, sentinel: Option<EditorValue>) -> ProcObj {
+        let spec = e8_core::PipeSpec {
+            name: options.string("name").ok_or_else(|| Error::new("A pipe process needs a name"))?,
+            buffer: options.string("buffer"),
+            filter: handler(filter),
+            sentinel: handler(sentinel),
+            coding: coding_pair(options.get("coding"))?,
+            noquery: options.flag("noquery"),
+        };
+        let name = ed.make_pipe_process(spec)?;
+        Ok(ProcObj(ed.process_named(&name).expect("just made")))
     }
 
     /// The processes, oldest first, as process-list: those running, and
@@ -223,10 +240,295 @@ natives! {
         Ok(plist)
     }
 
+    /// Run a program with text of the current buffer as its input and wait
+    /// for it, as Emacs's call-process-region: the text from `start` to
+    /// `end`, within the accessible portion, or the whole buffer for a
+    /// `start` of null, or `start` itself if it is a string. `del` deletes
+    /// the region first. What the program writes goes where `destination`
+    /// says, as call-process's: true for point in the current buffer, null
+    /// to throw it away, 0 to throw it away without waiting, a buffer or
+    /// its name for point in that buffer, `[":file", FILE]` for a file, or
+    /// `[DESTINATION, STDERR]` to send standard error elsewhere, STDERR
+    /// null to throw it away, true to keep it with the output, or a file
+    /// name. `display` is accepted and ignored. Returns the exit code, a
+    /// description of the signal that ended the program, as "Killed: 9",
+    /// or undefined if not waited for. Asks the agent's permission first.
+    #[ts = "(start: number | string | null, end: number | null, program: string, del?: boolean | null, destination?: CallProcessDestination, display?: boolean | null, ...args: string[]): number | string | undefined"]
+    pub fn callProcessRegion(
+        ed,
+        start: EditorValue,
+        end: EditorValue,
+        program: String,
+        del: Option<EditorValue>,
+        destination: Option<EditorValue>,
+        // DISPLAY, then the arguments: one parameter, as QuickJS's
+        // functions take at most seven.
+        display_and_args: Rest<EditorValue>,
+    ) -> Option<EditorValue> {
+        let position = |v: &EditorValue| -> e8_core::Result<usize> {
+            match v.as_number() {
+                Some(n) if n >= 0.0 && n.fract() == 0.0 => Ok(n as usize),
+                _ => Err(Error::signal(
+                    "wrong-type-argument",
+                    format!("Wrong type argument: integer-or-marker-p, {v}"),
+                    vec![EditorValue::Symbol("integer-or-marker-p".into()), v.clone()],
+                )),
+            }
+        };
+        let input = match &start {
+            EditorValue::Null | EditorValue::Bool(false) => e8_core::RegionInput::Whole,
+            EditorValue::Str(_) | EditorValue::Text(_) => e8_core::RegionInput::Text(start.as_str().unwrap_or_default().to_string()),
+            v => e8_core::RegionInput::Region(position(v)?, position(&end)?),
+        };
+        let destination = ed.call_destination(destination.as_ref().unwrap_or(&EditorValue::Null))?;
+        let mut command = vec![program];
+        for arg in display_and_args.0.iter().skip(1) {
+            let text = arg.as_str().ok_or_else(|| {
+                Error::signal("wrong-type-argument", format!("Wrong type argument: stringp, {arg}"), vec![EditorValue::Symbol("stringp".into()), arg.clone()])
+            })?;
+            command.push(text.to_string());
+        }
+        let delete = del.is_some_and(|d| d.is_true());
+        let result = ed.call_process_region(input, delete, &command, &destination)?;
+        Ok((!result.is_nil()).then_some(result))
+    }
+
+    /// Set whether a process's buffer takes on the coding its output is
+    /// decoded in, as set-process-inherit-coding-system-flag: E8 keeps the
+    /// flag, which decides nothing yet. Returns it.
+    pub fn setProcessInheritCodingSystemFlag(ed, process: Proc, flag: EditorValue) -> EditorValue {
+        let id = process.id(ed)?;
+        ed.set_process_inherit_coding_system_flag(id, flag.is_true());
+        Ok(flag)
+    }
+
+    /// A process's process-inherit-coding-system-flag: set at its start if
+    /// it has a buffer and inherit-process-coding-system is.
+    pub fn processInheritCodingSystemFlag(ed, process: Proc) -> bool {
+        let id = process.id(ed)?;
+        Ok(ed.process_inherit_coding_system_flag(id).unwrap_or(false))
+    }
+
+    /// Whether a process on a terminal has given it to a job of its own, as
+    /// process-running-child-p: the job's process group id if so,
+    /// undefined if not, and true where E8 cannot tell, as for a program
+    /// on pipes. An error for a connection or pipe process.
+    #[ts = "(process: ProcessLike): number | true | undefined"]
+    pub fn processRunningChildP(ed, process: Proc) -> Option<EditorValue> {
+        let id = process.id(ed)?;
+        let child = ed.process_running_child_p(id)?;
+        Ok((!child.is_nil()).then_some(child))
+    }
+
+    /// Whether the editor is waiting for the user to type, as
+    /// waiting-for-user-input-p: true in a filter, sentinel or timer run
+    /// while the command loop waits for a key, false in one run from
+    /// acceptProcessOutput or sleepFor, or while a command runs.
+    pub fn waitingForUserInputP(ed) -> bool {
+        Ok(ed.waiting_for_user_input_p())
+    }
+
+    /// The names of the signals this system has, as signal-names: without
+    /// "SIG", the highest numbered first, and "EXIT", signal 0, last.
+    /// signalProcess takes each.
+    pub fn signalNames(ed) -> Vec<&'static str> {
+        Ok(e8_core::process::signal_names())
+    }
+
+    /// The ids of the processes running on this machine, as
+    /// list-system-processes, in increasing order.
+    pub fn listSystemProcesses(ed) -> Vec<u32> {
+        Ok(e8_core::sysdep::list_system_processes())
+    }
+
+    /// What the system says of a process of this machine, as
+    /// process-attributes: [KEY, VALUE] pairs, as euid, user, egid, group,
+    /// comm, state, ppid, pgrp, ttname, tpgid, majflt, utime, stime, time,
+    /// nice, start, etime, vsize, rss, thcount and args, with sess, minflt,
+    /// pri, pcpu, pmem and the children's times on Linux. Sizes are in
+    /// kilobytes, times in seconds, `start` in seconds since 1970. What the
+    /// system will not say of another user's process is left out;
+    /// undefined if there is no such process.
+    #[ts = "(pid: number): [string, number | string][] | undefined"]
+    pub fn processAttributes(ed, pid: f64) -> Option<EditorValue> {
+        if pid < 0.0 || pid.fract() != 0.0 || pid > u32::MAX as f64 {
+            return Ok(None);
+        }
+        Ok(e8_core::sysdep::process_attributes(pid as u32).map(|attrs| {
+            EditorValue::List(attrs.into_iter().map(|(k, v)| EditorValue::List(vec![EditorValue::Str(k.into()), v])).collect())
+        }))
+    }
+
+    /// An environment variable's value, as getenv-internal: from `env`, a
+    /// list of "NAME=VALUE" strings, if given, true for one listed as
+    /// "NAME" alone, which unsets it; else from process-environment if it
+    /// is set, else E8's own environment. Undefined if it is not set.
+    #[ts = "(variable: string, env?: string[]): string | true | undefined"]
+    pub fn getenvInternal(ed, variable: String, env: Option<EditorValue>) -> Option<EditorValue> {
+        let lookup = |list: &[EditorValue]| -> Option<EditorValue> {
+            list.iter().filter_map(EditorValue::as_str).find_map(|entry| match entry.strip_prefix(variable.as_str()) {
+                Some("") => Some(EditorValue::Bool(true)),
+                Some(rest) => rest.strip_prefix('=').map(|v| EditorValue::Str(v.to_string())),
+                None => None,
+            })
+        };
+        if let Some(EditorValue::List(list)) = &env {
+            return Ok(lookup(list));
+        }
+        if let Some(EditorValue::List(list)) = ed.variable("process-environment") {
+            // An entry naming it alone unsets it, as getenv then finds nothing.
+            return Ok(lookup(&list).filter(|v| !matches!(v, EditorValue::Bool(true))));
+        }
+        Ok(std::env::var(&variable).ok().map(EditorValue::Str))
+    }
+
+    /// An address as Emacs writes one, as format-network-address: from
+    /// `[a, b, c, d, port]` "a.b.c.d:port", from eight 16-bit words and a
+    /// port "[x:x:x:x:x:x:x:x]:port", without the port if left out or with
+    /// `omitPort`; a string, a local socket's name, as itself. Undefined
+    /// for anything else.
+    #[ts = "(address: number[] | string, omitPort?: boolean): string | undefined"]
+    pub fn formatNetworkAddress(ed, address: EditorValue, omit_port: Option<bool>) -> Option<String> {
+        Ok(format_network_address(&address, omit_port.unwrap_or(false)))
+    }
+
+    /// The addresses a host name has, as network-lookup-address-info, each
+    /// as Emacs writes one, with a port of 0: only IPv4 or IPv6 ones for a
+    /// `family` of "ipv4" or "ipv6", and with `hints` "numeric" only if the
+    /// name is itself an address. Undefined if it has none.
+    #[ts = "(name: string, family?: \"ipv4\" | \"ipv6\" | null, hints?: \"numeric\" | null): number[][] | undefined"]
+    pub fn networkLookupAddressInfo(ed, name: String, family: Option<EditorValue>, hints: Option<EditorValue>) -> Option<Vec<Vec<u32>>> {
+        let family = match family.as_ref().filter(|f| !f.is_nil()) {
+            None => None,
+            Some(f) => match f.as_str() {
+                Some("ipv4") => Some(false),
+                Some("ipv6") => Some(true),
+                _ => return Err(Error::new("Unsupported family")),
+            },
+        };
+        let numeric = hints.as_ref().and_then(|h| h.as_str()) == Some("numeric");
+        let addresses: Vec<std::net::IpAddr> = if numeric {
+            name.parse::<std::net::IpAddr>().into_iter().collect()
+        } else {
+            use std::net::ToSocketAddrs;
+            match (name.as_str(), 0).to_socket_addrs() {
+                Ok(found) => found.map(|a| a.ip()).collect(),
+                Err(_) => Vec::new(),
+            }
+        };
+        let mut out: Vec<Vec<u32>> = Vec::new();
+        for ip in addresses {
+            if family.is_some_and(|v6| v6 != ip.is_ipv6()) {
+                continue;
+            }
+            let v = address_vector(ip);
+            if !out.contains(&v) {
+                out.push(v);
+            }
+        }
+        Ok((!out.is_empty()).then_some(out))
+    }
+
+    /// The machine's network interfaces' addresses, as network-interface-list:
+    /// [NAME, ADDRESS] for each, or with `full` [NAME, ADDRESS, BROADCAST,
+    /// NETMASK], each address as Emacs writes one; only IPv4 or IPv6 ones
+    /// for a `family` of "ipv4" or "ipv6".
+    #[ts = "(full?: boolean | null, family?: \"ipv4\" | \"ipv6\" | null): [string, ...number[][]][]"]
+    pub fn networkInterfaceList(ed, full: Option<bool>, family: Option<EditorValue>) -> EditorValue {
+        let family = match family.as_ref().filter(|f| !f.is_nil()) {
+            None => None,
+            Some(f) => match f.as_str() {
+                Some("ipv4") => Some(false),
+                Some("ipv6") => Some(true),
+                _ => return Err(Error::new("Unsupported address family")),
+            },
+        };
+        let vector = |v: &[u32]| EditorValue::List(v.iter().map(|n| EditorValue::Number(*n as f64)).collect());
+        Ok(EditorValue::List(
+            e8_core::sysdep::network_interfaces()
+                .into_iter()
+                .filter(|a| family.is_none_or(|v6| v6 == a.ipv6))
+                .map(|a| {
+                    let mut entry = vec![EditorValue::Str(a.name.clone()), vector(&a.address)];
+                    if full.unwrap_or(false) {
+                        entry.push(vector(&a.broadcast()));
+                        entry.push(vector(&a.netmask));
+                    }
+                    EditorValue::List(entry)
+                })
+                .collect(),
+        ))
+    }
+
+    /// What the system says of a network interface, as
+    /// network-interface-info: [ADDRESS, BROADCAST, NETMASK, HARDWARE,
+    /// FLAGS], the addresses IPv4 ones as Emacs writes them, HARDWARE its
+    /// type and bytes, FLAGS names such as "up" and "loopback", each null
+    /// if it has none. Undefined if there is no such interface.
+    #[ts = "(ifname: string): [number[] | null, number[] | null, number[] | null, [number, number[]] | null, string[]] | undefined"]
+    pub fn networkInterfaceInfo(ed, ifname: String) -> Option<EditorValue> {
+        let vector = |v: &[u32]| EditorValue::List(v.iter().map(|n| EditorValue::Number(*n as f64)).collect());
+        let opt = |v: Option<Vec<u32>>| v.map_or(EditorValue::Null, |v| vector(&v));
+        Ok(e8_core::sysdep::network_interface_info(&ifname).map(|i| {
+            EditorValue::List(vec![
+                opt(i.address),
+                opt(i.broadcast),
+                opt(i.netmask),
+                i.hardware.map_or(EditorValue::Null, |(kind, bytes)| EditorValue::List(vec![EditorValue::Number(kind as f64), vector(&bytes)])),
+                EditorValue::List(i.flags.into_iter().map(|f| EditorValue::Str(f.into())).collect()),
+            ])
+        }))
+    }
+
     fn callProcess(ed, command: Vec<String>, directory: Option<String>, input: Option<String>) -> Record {
         let (code, output) = ed.call_process(&command, directory.as_deref(), input.as_deref())?;
         Ok(Record::new().with("exit", code).with("output", output))
     }
+}
+
+/// An address as Emacs writes one: four bytes, or eight 16-bit words, and a port of 0.
+fn address_vector(ip: std::net::IpAddr) -> Vec<u32> {
+    let mut v: Vec<u32> = match ip {
+        std::net::IpAddr::V4(a) => a.octets().iter().map(|b| *b as u32).collect(),
+        std::net::IpAddr::V6(a) => a.segments().iter().map(|w| *w as u32).collect(),
+    };
+    v.push(0);
+    v
+}
+
+/// format-network-address, as process.c's: each element a whole number
+/// within a byte, or a 16-bit word for IPv6; the port any whole number.
+fn format_network_address(address: &EditorValue, omit_port: bool) -> Option<String> {
+    let items = match address {
+        EditorValue::Str(_) | EditorValue::Text(_) => return address.as_str().map(str::to_string),
+        EditorValue::List(items) => items,
+        _ => return None,
+    };
+    let numbers: Vec<i64> = items.iter().map(|v| v.as_number().filter(|n| n.fract() == 0.0).map(|n| n as i64)).collect::<Option<_>>()?;
+    let (words, port, max) = match numbers.len() {
+        4 => (&numbers[..4], None, 255),
+        5 => (&numbers[..4], Some(numbers[4]), 255),
+        8 => (&numbers[..8], None, 65535),
+        9 => (&numbers[..8], Some(numbers[8]), 65535),
+        _ => return None,
+    };
+    if words.iter().any(|n| !(0..=max).contains(n)) {
+        return None;
+    }
+    let port = port.filter(|_| !omit_port);
+    Some(if words.len() == 4 {
+        let host = words.iter().map(i64::to_string).collect::<Vec<_>>().join(".");
+        match port {
+            Some(p) => format!("{host}:{p}"),
+            None => host,
+        }
+    } else {
+        let host = words.iter().map(|w| format!("{w:x}")).collect::<Vec<_>>().join(":");
+        match port {
+            Some(p) => format!("[{host}]:{p}"),
+            None => host,
+        }
+    })
 }
 
 /// A filter or sentinel as make-process's :filter and :sentinel take it:
