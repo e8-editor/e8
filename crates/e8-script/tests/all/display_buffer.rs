@@ -223,3 +223,37 @@ fn fit_window_to_buffer_fits_lines_between_its_limits() {
         assert!(got.contains(&format!(r#"["f",[0,{},80,24],null,null]"#, 24 - height)), "{text:?}: {got}");
     }
 }
+
+#[test]
+fn main_windows_split_beside_a_side_window_stay_together() {
+    // A split beside a side window makes an internal window of its own, so
+    // a left side window spans both, and deleting the side window shares
+    // its lines between them.
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"(win.displayBuffer("a", ["display-buffer-in-side-window", ["side", "bottom"]]), e8.call("split-window-below"),
+          win.displayBuffer("b", ["display-buffer-in-side-window", ["side", "left"]]), "")"#,
+    );
+    assert_eq!(
+        eval(&mut ed, &s, "layout()"),
+        r#"[["b",[0,0,20,18],"left",0],["main",[20,0,80,9],null,null],["main",[20,9,80,18],null,null],["a",[0,18,80,24],"bottom",0]]"#
+    );
+    eval(&mut ed, &s, r#"(e8.deleteWindow(e8.windowList()[3]), "")"#);
+    assert_eq!(
+        eval(&mut ed, &s, "layout()"),
+        r#"[["b",[0,0,20,24],"left",0],["main",[20,0,80,12],null,null],["main",[20,12,80,24],null,null]]"#
+    );
+}
+
+#[test]
+fn windows_come_back_to_their_sizes_when_the_frame_does() {
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"(e8.call("split-window-below"), e8.call("split-window-below"), "")"#);
+    let heights = |ed: &mut Editor| eval(ed, &s, "JSON.stringify(e8.windowList().map((w) => e8.windowTotalHeight(w)))");
+    assert_eq!(heights(&mut ed), "[6,6,12]");
+    ed.set_frame_size(80, 14);
+    ed.set_frame_size(80, 24);
+    assert_eq!(heights(&mut ed), "[6,6,12]");
+}

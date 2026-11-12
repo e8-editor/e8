@@ -19,10 +19,8 @@ pub type WindowId = u64;
 /// The minibuffer's window, as scripts name it, which windows' ids never are.
 pub const MINIBUFFER_WINDOW: WindowId = 0;
 
-/// The smallest window that can be made by splitting, counting its mode
-/// line, as Emacs's `window-min-height` and `window-min-width`.
-const WINDOW_MIN_HEIGHT: usize = 4;
-const WINDOW_MIN_WIDTH: usize = 10;
+pub use crate::window_tree::{Combination, Part, WindowRect, WindowTree};
+use crate::window_tree::{WINDOW_MIN_HEIGHT, WINDOW_MIN_WIDTH};
 
 pub(crate) struct Window {
     pub(crate) id: WindowId,
@@ -112,239 +110,6 @@ pub enum BuryOrKill {
     Append,
 }
 
-/// How the frame is divided. A split halves a window, the first part above
-/// or to the left keeping the extra line or column of an odd size, until a
-/// window is resized and the split takes a size of its own.
-#[derive(Clone, Debug, PartialEq)]
-pub enum WindowTree {
-    Leaf(WindowId),
-    Split {
-        /// Side by side (`C-x 3`) rather than one above the other (`C-x 2`).
-        side_by_side: bool,
-        first: Box<WindowTree>,
-        second: Box<WindowTree>,
-        /// The first part's total size, in lines or columns, once a resize
-        /// has set it; half otherwise.
-        first_size: Option<usize>,
-    },
-}
-
-/// How resizing a window went: not in this part of the tree, in it but with
-/// no split of the right kind above it yet, or resized by this much.
-enum Resize {
-    Elsewhere,
-    Pending,
-    Done(i64),
-}
-
-/// Where a window goes, in whatever units a front end lays out in.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct WindowRect {
-    pub id: WindowId,
-    pub x: f32,
-    pub y: f32,
-    pub width: f32,
-    pub height: f32,
-    /// Whether a window lies to the right, so a divider goes on this one's right edge.
-    pub divider: bool,
-}
-
-impl WindowTree {
-    /// The windows in cyclic order, as `other-window` visits them: left to
-    /// right and top to bottom.
-    pub fn leaves(&self) -> Vec<WindowId> {
-        match self {
-            WindowTree::Leaf(id) => vec![*id],
-            WindowTree::Split { first, second, .. } => {
-                let mut ids = first.leaves();
-                ids.extend(second.leaves());
-                ids
-            }
-        }
-    }
-
-    /// Divides a rectangle among the windows. Sizes are rounded to whole
-    /// units, so cells for a terminal and points for a window both work.
-    /// `cell` is a column's width and a line's height, in which a resized
-    /// split's size is counted.
-    pub fn rects(&self, x: f32, y: f32, width: f32, height: f32, cell: (f32, f32)) -> Vec<WindowRect> {
-        let mut out = Vec::new();
-        self.rects_into(x, y, width, height, cell, false, &mut out);
-        out
-    }
-
-    #[allow(clippy::too_many_arguments)]
-    fn rects_into(&self, x: f32, y: f32, w: f32, h: f32, cell: (f32, f32), divider: bool, out: &mut Vec<WindowRect>) {
-        // The first part's share of `extent`: its own size if a resize set
-        // one, kept clear of the edges, or half.
-        let share = |size: &Option<usize>, extent: f32, unit: f32| match size {
-            Some(n) => (*n as f32 * unit).round().clamp(unit.min(extent), (extent - unit).max(0.0)),
-            None => (extent / 2.0).ceil(),
-        };
-        match self {
-            WindowTree::Leaf(id) => out.push(WindowRect { id: *id, x, y, width: w, height: h, divider }),
-            WindowTree::Split { side_by_side: true, first, second, first_size } => {
-                let left = share(first_size, w, cell.0);
-                first.rects_into(x, y, left, h, cell, true, out);
-                second.rects_into(x + left, y, w - left, h, cell, divider, out);
-            }
-            WindowTree::Split { side_by_side: false, first, second, first_size } => {
-                let top = share(first_size, h, cell.1);
-                first.rects_into(x, y, w, top, cell, divider, out);
-                second.rects_into(x, y + top, w, h - top, cell, divider, out);
-            }
-        }
-    }
-
-    /// The smallest a part of the tree can be across or down, as Emacs's
-    /// `window-min-width` and `window-min-height` allow for each window.
-    fn min_size(&self, horizontal: bool) -> usize {
-        match self {
-            WindowTree::Leaf(_) => {
-                if horizontal {
-                    WINDOW_MIN_WIDTH
-                } else {
-                    WINDOW_MIN_HEIGHT
-                }
-            }
-            WindowTree::Split { side_by_side, first, second, .. } => {
-                let (a, b) = (first.min_size(horizontal), second.min_size(horizontal));
-                if *side_by_side == horizontal { a + b } else { a.max(b) }
-            }
-        }
-    }
-
-    /// Grows or shrinks a window by up to `delta` lines or columns, taking
-    /// them from or giving them to its neighbour in the nearest split of
-    /// that kind, as Emacs's `window-resize`. `extent` is this part's size
-    /// in cells; with `apply` off, only works out how far it could go.
-    /// With `edge`, only a split below or to the right of the window moves,
-    /// as dragging its mode line or divider moves that edge.
-    #[allow(clippy::too_many_arguments)]
-    fn resize(&mut self, id: WindowId, delta: i64, horizontal: bool, extent: (usize, usize), apply: bool, edge: bool) -> Resize {
-        let WindowTree::Split { side_by_side, first, second, first_size } = self else {
-            return if *self == WindowTree::Leaf(id) { Resize::Pending } else { Resize::Elsewhere };
-        };
-        let along = if *side_by_side { extent.0 } else { extent.1 };
-        let size = first_size.unwrap_or(along.div_ceil(2)).min(along);
-        let parts = |n: usize| if *side_by_side { ((n, extent.1), (extent.0 - n, extent.1)) } else { ((extent.0, n), (extent.0, extent.1 - n)) };
-        let (first_extent, second_extent) = parts(size);
-        let (inner, in_first) = match first.resize(id, delta, horizontal, first_extent, apply, edge) {
-            Resize::Elsewhere => (second.resize(id, delta, horizontal, second_extent, apply, edge), false),
-            found => (found, true),
-        };
-        if !matches!(inner, Resize::Pending) || *side_by_side != horizontal || (edge && !in_first) {
-            return inner;
-        }
-        // This split divides the window from its neighbour: move the line.
-        let lowest = first.min_size(horizontal) as i64;
-        let highest = along as i64 - second.min_size(horizontal) as i64;
-        let wanted = size as i64 + if in_first { delta } else { -delta };
-        let moved = wanted.clamp(lowest.min(size as i64), highest.max(size as i64));
-        if apply {
-            *first_size = Some(moved as usize);
-        }
-        Resize::Done(if in_first { moved - size as i64 } else { size as i64 - moved })
-    }
-
-    /// Makes windows side by side as wide as each other, and windows one
-    /// above the other as tall, as Emacs's `balance-windows`.
-    fn balance(&mut self, extent: (usize, usize)) {
-        // How many windows share a run of splits of one kind.
-        fn count(tree: &WindowTree, side_by_side: bool) -> usize {
-            match tree {
-                WindowTree::Split { side_by_side: s, first, second, .. } if *s == side_by_side => {
-                    count(first, side_by_side) + count(second, side_by_side)
-                }
-                _ => 1,
-            }
-        }
-        let WindowTree::Split { side_by_side, first, second, first_size } = self else { return };
-        let along = if *side_by_side { extent.0 } else { extent.1 };
-        let (a, b) = (count(first, *side_by_side), count(second, *side_by_side));
-        let size = (along * a).div_ceil(a + b);
-        *first_size = Some(size);
-        let (fe, se) = if *side_by_side { ((size, extent.1), (along - size, extent.1)) } else { ((extent.0, size), (extent.0, along - size)) };
-        first.balance(fe);
-        second.balance(se);
-    }
-
-    /// Whether a window shares the frame's width with others, as Emacs's
-    /// `window-full-width-p` is false for it.
-    pub(crate) fn is_partial_width(&self, id: WindowId) -> bool {
-        match self {
-            WindowTree::Leaf(_) => false,
-            WindowTree::Split { side_by_side, first, second, .. } => {
-                let inside = first.leaves().contains(&id) || second.leaves().contains(&id);
-                (*side_by_side && inside) || first.is_partial_width(id) || second.is_partial_width(id)
-            }
-        }
-    }
-
-    /// Splits the leaf `id`, the new window after it, or before it, to its
-    /// left or above it, with `before`.
-    fn split(&mut self, id: WindowId, new: WindowId, side_by_side: bool, before: bool, first_size: Option<usize>) -> bool {
-        match self {
-            WindowTree::Leaf(leaf) if *leaf == id => {
-                let (a, b) = if before { (new, id) } else { (id, new) };
-                *self = WindowTree::Split {
-                    side_by_side,
-                    first: Box::new(WindowTree::Leaf(a)),
-                    second: Box::new(WindowTree::Leaf(b)),
-                    first_size,
-                };
-                true
-            }
-            WindowTree::Leaf(_) => false,
-            WindowTree::Split { first, second, .. } => {
-                first.split(id, new, side_by_side, before, first_size) || second.split(id, new, side_by_side, before, first_size)
-            }
-        }
-    }
-
-    /// The smallest part of the tree holding every window in `ids`.
-    fn enclosing_mut(&mut self, ids: &[WindowId]) -> Option<&mut WindowTree> {
-        let holds = |t: &WindowTree| {
-            let leaves = t.leaves();
-            !ids.is_empty() && ids.iter().all(|id| leaves.contains(id))
-        };
-        if !holds(self) {
-            return None;
-        }
-        let child = match self {
-            WindowTree::Split { first, second, .. } => {
-                if holds(first) {
-                    Some(true)
-                } else if holds(second) {
-                    Some(false)
-                } else {
-                    None
-                }
-            }
-            WindowTree::Leaf(_) => None,
-        };
-        match (child, self) {
-            (Some(true), WindowTree::Split { first, .. }) => first.enclosing_mut(ids),
-            (Some(false), WindowTree::Split { second, .. }) => second.enclosing_mut(ids),
-            (_, this) => Some(this),
-        }
-    }
-
-    /// Removes a window, giving its space to its sibling.
-    fn remove(&mut self, id: WindowId) -> bool {
-        let WindowTree::Split { first, second, .. } = self else { return false };
-        if **first == WindowTree::Leaf(id) {
-            *self = (**second).clone();
-            return true;
-        }
-        if **second == WindowTree::Leaf(id) {
-            *self = (**first).clone();
-            return true;
-        }
-        first.remove(id) || second.remove(id)
-    }
-}
-
 /// A frame that is not selected: its windows and which of them was
 /// selected in it. The selected frame's are the editor's own.
 pub(crate) struct Frame {
@@ -352,6 +117,7 @@ pub(crate) struct Frame {
     tree: WindowTree,
     selected_window: WindowId,
     frame_size: Option<(usize, usize)>,
+    frame_size_implied: bool,
 }
 
 pub type FrameId = u64;
@@ -473,7 +239,7 @@ impl Editor {
         self.buffers[index].set_window_point(window, point);
         self.next_frame_id += 1;
         let id = self.next_frame_id;
-        self.other_frames.push(Frame { id, tree: WindowTree::Leaf(window), selected_window: window, frame_size: self.frame_size });
+        self.other_frames.push(Frame { id, tree: WindowTree::Leaf(window), selected_window: window, frame_size: self.frame_size, frame_size_implied: self.frame_size_implied });
         self.frame_order.insert(0, id);
         self.select_frame(id)?;
         Ok(id)
@@ -499,6 +265,7 @@ impl Editor {
             tree: std::mem::replace(&mut self.window_tree, frame.tree),
             selected_window: std::mem::replace(&mut self.selected_window, frame.selected_window),
             frame_size: std::mem::replace(&mut self.frame_size, frame.frame_size),
+            frame_size_implied: std::mem::replace(&mut self.frame_size_implied, frame.frame_size_implied),
         });
         self.selected_frame = id;
         self.window_use += 1;
@@ -540,6 +307,7 @@ impl Editor {
         self.frame_parameters.remove(&id);
         self.frame_raises.remove(&id);
         self.tab_bars.remove(&id);
+        self.prune_internal_windows();
         Ok(())
     }
 
@@ -585,6 +353,7 @@ impl Editor {
     /// each with [`Editor::set_window_size`].
     pub fn set_frame_size(&mut self, cols: usize, lines: usize) {
         self.frame_size = Some((cols.max(1), lines.max(1)));
+        self.frame_size_implied = false;
         self.relayout();
     }
 
@@ -613,10 +382,10 @@ impl Editor {
         if id == MINIBUFFER_WINDOW {
             return Some((0, lines, cols, lines + self.mini_window_lines()));
         }
-        let rect = self.frame_tree(frame)?.rects(0.0, 0.0, cols as f32, lines as f32, (1.0, 1.0)).into_iter().find(|r| r.id == id)?;
+        let rect = self.frame_tree(frame)?.all_rects(0.0, 0.0, cols as f32, lines as f32, (1.0, 1.0)).into_iter().find(|r| r.id == id)?;
         let (left, top) = (rect.x as usize, rect.y as usize);
         let (right, bottom) = (left + rect.width as usize, top + rect.height as usize);
-        if !body {
+        if !body || self.window(id).is_none() {
             return Some((left, top, right, bottom));
         }
         let header = usize::from(self.window_wants_header_line(id, rect.height as usize));
@@ -637,6 +406,7 @@ impl Editor {
     /// Lays the windows out in the frame, as their sizes in the tree say.
     fn relayout(&mut self) {
         let Some((cols, lines)) = self.frame_size else { return };
+        self.window_tree.fit((cols, lines));
         for r in self.window_tree.rects(0.0, 0.0, cols as f32, lines as f32, (1.0, 1.0)) {
             let divider = usize::from(r.divider);
             let header = usize::from(self.window_wants_header_line(r.id, r.height as usize));
@@ -658,10 +428,7 @@ impl Editor {
             return Err(Error::new("No such window"));
         }
         let extent = self.frame_cells();
-        let moved = match self.window_tree.resize(id, delta, horizontal, extent, apply, false) {
-            Resize::Done(n) => n,
-            _ => 0,
-        };
+        let moved = self.window_tree.resize(id, delta, horizontal, extent, apply, false).unwrap_or(0);
         if apply {
             self.relayout();
         }
@@ -673,10 +440,7 @@ impl Editor {
     /// in Emacs. A window with nothing below or to its right stays as it is.
     pub fn move_window_edge(&mut self, id: WindowId, delta: i64, horizontal: bool) -> i64 {
         let extent = self.frame_cells();
-        let moved = match self.window_tree.resize(id, delta, horizontal, extent, true, true) {
-            Resize::Done(n) => n,
-            _ => 0,
-        };
+        let moved = self.window_tree.resize(id, delta, horizontal, extent, true, true).unwrap_or(0);
         self.relayout();
         moved
     }
@@ -805,74 +569,10 @@ impl Editor {
     /// SIDE `left` and `above`.
     pub fn split_window_toward(&mut self, id: Option<WindowId>, side_by_side: bool, before: bool, size: Option<i64>) -> Result<WindowId> {
         let id = id.unwrap_or(self.selected_window);
-        let view = self
-            .windows()
-            .into_iter()
-            .find(|v| v.id == id)
-            .map(|v| (v.point, v.top_line, v.buffer.id))
-            .ok_or_else(|| Error::new("No such window"))?;
-        let w = self.window(id).expect("listed windows exist");
-        let (width, height) = (w.width, w.height);
-        let buffer_name = self.window_buffer_name(id).unwrap_or_default().to_string();
-        // Total sizes, divider and mode line included, as window-min-width
-        // and window-min-height count them.
-        let total = self.window_total_sizes().into_iter().find(|s| s.0 == id);
-        let (total_width, total_height) = total.map_or((width, height + 1), |s| (s.1, s.2));
-        let too_small = if side_by_side {
-            total_width < 2 * WINDOW_MIN_WIDTH
-        } else {
-            total_height < 2 * WINDOW_MIN_HEIGHT
-        };
-        // An explicit size only has to leave each window its safe minimum,
-        // as window-safe-min-height and -width give: a line and the mode
-        // line, or two columns.
-        let first_size = match size {
-            None => None,
-            Some(size) => {
-                let total = self
-                    .window_total_sizes()
-                    .into_iter()
-                    .find(|s| s.0 == id)
-                    .map_or(0, |s| if side_by_side { s.1 } else { s.2 }) as i64;
-                let safe = 2;
-                let (old, new) = if size >= 0 { (size, total - size) } else { (total + size, -size) };
-                if new < safe {
-                    return Err(Error::new("Size of new window too small"));
-                }
-                if old < safe {
-                    return Err(Error::new("Size of window too small"));
-                }
-                // The first part is the new window's when it goes before.
-                Some(if before { new } else { old } as usize)
-            }
-        };
-        if too_small && first_size.is_none() {
-            return Err(Error::new(format!("Window #<window {id} on {buffer_name}> too small for splitting")));
+        if !self.window_tree.leaves().contains(&id) {
+            return Err(Error::new("No such window"));
         }
-        // Halved, the old window keeps an odd line or column, before or after.
-        let first_size = first_size.or_else(|| before.then_some(if side_by_side { total_width } else { total_height } / 2));
-        self.next_window_id += 1;
-        let new = self.next_window_id;
-        let (old_size, new_size) = if side_by_side {
-            let left = width.div_ceil(2);
-            ((left - 1, height), (width - left, height))
-        } else {
-            let top = (height + 1).div_ceil(2);
-            ((width, top - 1), (width, height + 1 - top - 1))
-        };
-        let (old_size, new_size) = if before { (new_size, old_size) } else { (old_size, new_size) };
-        let w = self.window_mut(id).expect("listed windows exist");
-        (w.width, w.height) = old_size;
-        // A new window has showed no buffers before, as in Emacs.
-        self.windows.push(Window::new(new, view.2, new_size.0, new_size.1));
-        let index = self.buffer_index(view.2);
-        let b = &mut self.buffers[index];
-        b.set_window_point(new, view.0);
-        let start = b.line_start(view.1.min(b.line_count() - 1));
-        b.set_window_start(new, start);
-        self.window_tree.split(id, new, side_by_side, before, first_size);
-        self.relayout();
-        Ok(new)
+        self.split_node(id, side_by_side, before, size)
     }
 
     /// Splits the frame's root window, as Emacs's `split-root-window-below`
@@ -887,32 +587,48 @@ impl Editor {
     /// Splits the frame's root window as [`Editor::split_root_window`] does,
     /// the new window along its left or top with `before`.
     pub fn split_root_window_toward(&mut self, side_by_side: bool, before: bool, size: Option<i64>) -> Result<WindowId> {
-        let all = self.window_tree.leaves();
-        self.split_windows_toward(&all, side_by_side, before, size)
+        let root = self.window_tree.id();
+        self.split_node(root, side_by_side, before, size)
     }
 
     /// Splits the smallest part of the selected frame's window tree that
-    /// holds all of `ids`, as Emacs splits an internal window: the new
-    /// window, showing the selected window's buffer, takes the whole side
-    /// of that part, after it or, with `before`, before it. `size` is as
-    /// split-window's, the part's lines or columns, or the new window's if
-    /// negative. With every window, this is splitting the frame's root.
+    /// holds all of `ids`, the internal window holding them, as Emacs
+    /// splits an internal window: the new window, showing the selected
+    /// window's buffer, takes the whole side of that part, after it or,
+    /// with `before`, before it. `size` is as split-window's, the part's
+    /// lines or columns, or the new window's if negative. With every
+    /// window, this is splitting the frame's root.
     pub fn split_windows_toward(&mut self, ids: &[WindowId], side_by_side: bool, before: bool, size: Option<i64>) -> Result<WindowId> {
-        let edges: Vec<_> = ids.iter().map(|&id| self.window_edges(id, false)).collect::<Option<_>>().ok_or_else(|| Error::new("No such window"))?;
-        if self.window_tree.clone().enclosing_mut(ids).is_none() {
-            return Err(Error::new("Windows not on the selected frame"));
+        let part = self.window_tree.enclosing(ids).ok_or_else(|| Error::new("Windows not on the selected frame"))?;
+        self.split_node(part, side_by_side, before, size)
+    }
+
+    /// Splits a window of the selected frame, live or internal, as Emacs's
+    /// `split-window`: the new window shows the buffer of the live window
+    /// split, at its place, or the selected window's for an internal one.
+    pub fn split_window_internal(&mut self, id: WindowId, side_by_side: bool, before: bool, size: Option<i64>) -> Result<WindowId> {
+        if !self.window_tree.contains(id) {
+            return Err(Error::new("No such window"));
         }
-        let total = if side_by_side {
-            edges.iter().map(|e| e.2).max().unwrap_or(0) - edges.iter().map(|e| e.0).min().unwrap_or(0)
-        } else {
-            edges.iter().map(|e| e.3).max().unwrap_or(0) - edges.iter().map(|e| e.1).min().unwrap_or(0)
-        } as i64;
-        let first_size = match size {
-            None if total < 2 * if side_by_side { WINDOW_MIN_WIDTH } else { WINDOW_MIN_HEIGHT } as i64 => {
-                return Err(Error::new("Root window too small for splitting"));
+        self.split_node(id, side_by_side, before, size)
+    }
+
+    fn split_node(&mut self, id: WindowId, side_by_side: bool, before: bool, size: Option<i64>) -> Result<WindowId> {
+        let extent = self.frame_cells();
+        let live = self.window(id).is_some();
+        let (total_width, total_height) = self.window_tree.extent_of(id, extent).ok_or_else(|| Error::new("No such window"))?;
+        let total = if side_by_side { total_width } else { total_height } as i64;
+        let min = if side_by_side { WINDOW_MIN_WIDTH } else { WINDOW_MIN_HEIGHT } as i64;
+        // An explicit size only has to leave each window its safe minimum,
+        // as window-safe-min-height and -width give: a line and the mode
+        // line, or two columns. Halved, the old window keeps an odd line or
+        // column, before or after.
+        let (old, new) = match size {
+            None if total < 2 * min => {
+                let name = if live { format!("#<window {id} on {}>", self.window_buffer_name(id).unwrap_or_default()) } else { format!("#<window {id}>") };
+                return Err(Error::new(format!("Window {name} too small for splitting")));
             }
-            // Halved, the old part keeps an odd line or column.
-            None => before.then_some(total as usize / 2),
+            None => (total - total / 2, total / 2),
             Some(size) => {
                 let (old, new) = if size >= 0 { (size, total - size) } else { (total + size, -size) };
                 if new < 2 {
@@ -921,26 +637,55 @@ impl Editor {
                 if old < 2 {
                     return Err(Error::new("Size of window too small"));
                 }
-                Some(if before { new } else { old } as usize)
+                (old, new)
             }
         };
-        let (cols, _) = self.frame_cells();
-        let selected = self.selected_window;
-        let view = self.windows().into_iter().find(|v| v.id == selected).map(|v| (v.point, v.top_line, v.buffer.id)).ok_or_else(|| Error::new("No such window"))?;
+        // Sizes are kept in the frame's cells, which a front end gives; until one has, the frame is as the windows are now.
+        if self.frame_size.is_none() {
+            self.frame_size = Some(extent);
+            self.frame_size_implied = true;
+        }
+        // As split-window: a side window is split only for its side's slots
+        // (window-combination-resize `side'), and a window beside a side
+        // window gets an internal window of its own, so the side window
+        // stays along the whole side.
+        let resize_side = self.variable("window-combination-resize").is_some_and(|v| v.as_str() == Some("side"));
+        let has_side = |ed: &Editor, w: Option<WindowId>| w.is_some_and(|w| ed.window_parameter(w, "window-side").is_some_and(|v| v.is_true()));
+        if !resize_side && has_side(self, Some(id)) {
+            return Err(Error::new("Cannot split side window or parent of side window"));
+        }
+        let beside_side = !resize_side && (has_side(self, self.window_sibling(id, false)) || has_side(self, self.window_sibling(id, true)));
+        let limit = beside_side || self.variable("window-combination-limit") == Some(Value::Bool(true));
+        let source = if live { id } else { self.selected_window };
+        let view = self.windows().into_iter().find(|v| v.id == source).map(|v| (v.point, v.top_line, v.buffer.id)).ok_or_else(|| Error::new("No such window"))?;
+        // The internal window, if one is made, is numbered before the new window, as in Emacs.
+        let internal = if self.window_tree.split_makes_parent(id, side_by_side, limit) {
+            self.next_window_id += 1;
+            self.next_window_id
+        } else {
+            0
+        };
         self.next_window_id += 1;
-        let new = self.next_window_id;
-        self.windows.push(Window::new(new, view.2, cols, 1));
+        let new_id = self.next_window_id;
+        // A new window has showed no buffers before, as in Emacs.
+        self.windows.push(Window::new(new_id, view.2, 1, 1));
         let index = self.buffer_index(view.2);
         let b = &mut self.buffers[index];
-        b.set_window_point(new, view.0);
+        b.set_window_point(new_id, view.0);
         let start = b.line_start(view.1.min(b.line_count() - 1));
-        b.set_window_start(new, start);
-        let part = self.window_tree.enclosing_mut(ids).expect("checked above");
-        let tree = std::mem::replace(part, WindowTree::Leaf(new));
-        let (first, second) = if before { (WindowTree::Leaf(new), tree) } else { (tree, WindowTree::Leaf(new)) };
-        *part = WindowTree::Split { side_by_side, first: Box::new(first), second: Box::new(second), first_size };
+        b.set_window_start(new_id, start);
+        self.window_tree.split(&crate::window_tree::Split {
+            target: id,
+            new: new_id,
+            internal,
+            horizontal: side_by_side,
+            before,
+            old_size: old as usize,
+            new_size: new as usize,
+            limit,
+        });
         self.relayout();
-        Ok(new)
+        Ok(new_id)
     }
 
     /// Deletes a window, giving its space to its neighbour, as Emacs's
@@ -948,31 +693,41 @@ impl Editor {
     /// left is selected.
     pub fn delete_window(&mut self, id: Option<WindowId>) -> Result<()> {
         let id = id.unwrap_or(self.selected_window);
-        if self.window(id).is_none() {
-            return Err(Error::new("No such window"));
-        }
-        // Only the selected frame's windows count.
+        // Only the selected frame's windows count; an internal window goes with all it holds, as in Emacs.
+        let inside = match self.window_tree.node(id) {
+            Some(node) if id != MINIBUFFER_WINDOW => node.leaves(),
+            _ => return Err(Error::new("No such window")),
+        };
         let leaves = self.window_tree.leaves();
-        if !leaves.contains(&id) {
-            return Err(Error::new("No such window"));
-        }
-        if leaves.len() == 1 {
+        if inside.len() == leaves.len() {
             return Err(Error::new("Attempt to delete minibuffer or sole ordinary window"));
         }
-        if id == self.selected_window {
+        if inside.contains(&self.selected_window) {
             let next = self
                 .windows
                 .iter()
-                .filter(|w| w.id != id && leaves.contains(&w.id))
+                .filter(|w| !inside.contains(&w.id) && leaves.contains(&w.id))
                 .max_by_key(|w| w.used)
                 .map(|w| w.id)
                 .expect("another window");
             self.select_window_norecord(next)?;
         }
-        self.forget_window(id);
-        self.window_tree.remove(id);
+        for &w in &inside {
+            self.forget_window(w);
+        }
+        let internal: Vec<WindowId> = self.window_tree.node(id).map(|n| n.ids()).unwrap_or_default();
+        for gone in self.window_tree.remove(id).into_iter().chain(internal) {
+            self.internal_window_parameters.remove(&gone);
+        }
         self.relayout();
         Ok(())
+    }
+
+    /// Forgets the parameters of internal windows no frame has any more.
+    pub(crate) fn prune_internal_windows(&mut self) {
+        let mut ids: Vec<WindowId> = self.window_tree.ids();
+        ids.extend(self.other_frames.iter().flat_map(|f| f.tree.ids()));
+        self.internal_window_parameters.retain(|id, _| ids.contains(id));
     }
 
     /// Makes a window the selected one, whose buffer commands act on, and
@@ -1086,7 +841,10 @@ impl Editor {
                     let leaves = tree.leaves();
                     let next = self.windows.iter().filter(|w| w.id != id && leaves.contains(&w.id)).max_by_key(|w| w.used).map(|w| w.id);
                     let frame = self.other_frames.iter_mut().find(|x| x.id == f).expect("found");
-                    frame.tree.remove(id);
+                    let gone = frame.tree.remove(id);
+                    for g in gone {
+                        self.internal_window_parameters.remove(&g);
+                    }
                     if frame.selected_window == id {
                         frame.selected_window = next.expect("another window");
                     }
@@ -1312,11 +1070,23 @@ impl Editor {
 
     /// A window's parameter, as Emacs's `window-parameter`.
     pub fn window_parameter(&self, id: WindowId, name: &str) -> Option<&Value> {
-        self.window(id)?.parameters.get(name)
+        match self.window(id) {
+            Some(w) => w.parameters.get(name),
+            None => self.internal_window_parameters.get(&id)?.get(name),
+        }
     }
 
     /// Sets a window's parameter, or with null takes it away, as `set-window-parameter`.
     pub fn set_window_parameter(&mut self, id: WindowId, name: &str, value: Value) -> Result<()> {
+        if self.window(id).is_none() && self.window_internal_p(id) {
+            let parameters = self.internal_window_parameters.entry(id).or_default();
+            if value == Value::Null {
+                parameters.remove(name);
+            } else {
+                parameters.insert(name.to_string(), value);
+            }
+            return Ok(());
+        }
         let w = self.window_mut(id).ok_or_else(|| Error::new("No such window"))?;
         if value == Value::Null {
             w.parameters.remove(name);
@@ -1328,7 +1098,11 @@ impl Editor {
 
     /// A window's parameters, as `window-parameters`.
     pub fn window_parameters(&self, id: WindowId) -> Vec<(String, Value)> {
-        self.window(id).map(|w| w.parameters.iter().map(|(k, v)| (k.clone(), v.clone())).collect()).unwrap_or_default()
+        let parameters = match self.window(id) {
+            Some(w) => Some(&w.parameters),
+            None => self.internal_window_parameters.get(&id),
+        };
+        parameters.map(|p| p.iter().map(|(k, v)| (k.clone(), v.clone())).collect()).unwrap_or_default()
     }
 
     /// Whether a window is dedicated to its buffer, as `window-dedicated-p`:
@@ -1561,6 +1335,7 @@ impl Editor {
             self.buffers[self.current].set_point(point);
         }
         self.minibuffer_window_selected = minibuffer_selected && self.in_minibuffer();
+        self.prune_internal_windows();
         self.relayout();
         Ok(true)
     }
@@ -1641,10 +1416,75 @@ impl Editor {
     /// The frame a window is on, as Emacs's `window-frame`: the minibuffer's
     /// window is the selected frame's. None for no such window.
     pub fn window_frame(&self, window: WindowId) -> Option<FrameId> {
-        if window == MINIBUFFER_WINDOW || self.window_tree.leaves().contains(&window) {
+        if window == MINIBUFFER_WINDOW || self.window_tree.contains(window) {
             return Some(self.selected_frame);
         }
-        self.other_frames.iter().find(|f| f.tree.leaves().contains(&window)).map(|f| f.id)
+        self.other_frames.iter().find(|f| f.tree.contains(window)).map(|f| f.id)
+    }
+
+    /// A frame's root window: its only live window, or the internal window
+    /// holding all its others, as Emacs's `frame-root-window`.
+    pub fn frame_root_window(&self, frame: FrameId) -> Option<WindowId> {
+        self.frame_tree(frame).map(WindowTree::id)
+    }
+
+    /// Whether a window is an internal window of some frame, as Emacs's
+    /// `window-valid-p` is true and `window-live-p` false for one.
+    pub fn window_internal_p(&self, id: WindowId) -> bool {
+        self.window_frame(id).and_then(|f| self.frame_tree(f)).is_some_and(|t| t.combination_of(id).is_some())
+    }
+
+    /// A window's parent, the internal window it is a child of, as Emacs's `window-parent`.
+    pub fn window_parent(&self, id: WindowId) -> Option<WindowId> {
+        let tree = self.frame_tree(self.window_frame(id)?)?;
+        tree.parent(id).map(|(c, _)| c.id)
+    }
+
+    /// An internal window's children, first to last, and whether they are
+    /// side by side; none for a live window, as `window-top-child` and
+    /// `window-left-child` find the first.
+    pub fn window_children(&self, id: WindowId) -> Option<(bool, Vec<WindowId>)> {
+        let tree = self.frame_tree(self.window_frame(id)?)?;
+        let c = tree.combination_of(id)?;
+        Some((c.horizontal, c.children.iter().map(|p| p.tree.id()).collect()))
+    }
+
+    /// The window after or before one in its parent, as Emacs's
+    /// `window-next-sibling` and `window-prev-sibling`.
+    pub fn window_sibling(&self, id: WindowId, next: bool) -> Option<WindowId> {
+        let tree = self.frame_tree(self.window_frame(id)?)?;
+        let (c, i) = tree.parent(id)?;
+        let j = if next { i + 1 } else { i.checked_sub(1)? };
+        c.children.get(j).map(|p| p.tree.id())
+    }
+
+    /// A window's share of its parent along its parent's combination, and
+    /// across it, 1.0, as Emacs's `window-normal-size`; 1.0 for the root.
+    pub fn window_normal_size(&self, id: WindowId, horizontal: bool) -> Option<f64> {
+        let tree = self.frame_tree(self.window_frame(id)?)?;
+        let Some((c, i)) = tree.parent(id) else { return Some(1.0) };
+        if c.horizontal != horizontal {
+            return Some(1.0);
+        }
+        let total: usize = c.children.iter().map(|p| p.size).sum();
+        Some(if total == 0 { 0.0 } else { c.children[i].size as f64 / total as f64 })
+    }
+
+    /// An internal window's combination limit, as `window-combination-limit`.
+    pub fn window_combination_limit(&self, id: WindowId) -> Option<bool> {
+        let tree = self.frame_tree(self.window_frame(id)?)?;
+        tree.combination_of(id).map(|c| c.limit)
+    }
+
+    /// Sets an internal window's combination limit, as
+    /// `set-window-combination-limit`: with it, splitting a child makes a
+    /// new internal window rather than another child.
+    pub fn set_window_combination_limit(&mut self, id: WindowId, limit: bool) -> Result<()> {
+        let frame = self.window_frame(id).ok_or_else(|| Error::new("No such window"))?;
+        let tree = if frame == self.selected_frame { &mut self.window_tree } else { &mut self.other_frames.iter_mut().find(|f| f.id == frame).expect("found").tree };
+        let c = tree.combination_by_id_mut(id).ok_or_else(|| Error::signal("wrong-type-argument", "Not an internal window", Vec::new()))?;
+        c.limit = limit;
+        Ok(())
     }
 
     /// A frame's first window, its top left one, as Emacs's `frame-first-window`.
@@ -1734,6 +1574,10 @@ impl Editor {
         if let Some(&(_, cols, lines)) = self.window_total_sizes().iter().find(|(w, ..)| *w == id) {
             return Some((cols, lines));
         }
+        if self.window_internal_p(id) {
+            let (l, t, r, b) = self.window_edges(id, false)?;
+            return Some((r - l, b - t));
+        }
         let w = self.window(id)?;
         let lines = w.height + usize::from(self.window_shows_mode_line(id)) + usize::from(self.window_wants_header_line(id, w.height + 2));
         Some((w.width, lines))
@@ -1790,6 +1634,11 @@ impl Editor {
     }
 
     pub(crate) fn set_selected_window_height(&mut self, lines: usize) {
+        // A lone window's size is the frame's, where no front end gave one.
+        if self.frame_size_implied && matches!(self.window_tree, WindowTree::Leaf(_)) {
+            self.frame_size = None;
+            self.frame_size_implied = false;
+        }
         let selected = self.selected_window;
         if let Some(w) = self.window_mut(selected) {
             w.height = lines.max(1);
@@ -1801,31 +1650,71 @@ impl Editor {
 mod tests {
     use super::*;
 
+    fn rects(ed: &Editor) -> Vec<(WindowId, f32, f32, f32, f32, bool)> {
+        let (cols, lines) = ed.frame_cells();
+        ed.window_tree().rects(0.0, 0.0, cols as f32, lines as f32, (1.0, 1.0)).iter().map(|r| (r.id, r.x, r.y, r.width, r.height, r.divider)).collect()
+    }
+
     #[test]
     fn splits_halve_and_odd_sizes_go_first() {
-        let mut tree = WindowTree::Leaf(1);
-        tree.split(1, 2, false, false, None);
-        tree.split(1, 3, true, false, None);
-        assert_eq!(tree.leaves(), [1, 3, 2]);
-        let rects = tree.rects(0.0, 0.0, 81.0, 25.0, (1.0, 1.0));
-        let size = |r: &WindowRect| (r.id, r.x, r.y, r.width, r.height, r.divider);
-        assert_eq!(
-            rects.iter().map(size).collect::<Vec<_>>(),
-            [(1, 0.0, 0.0, 41.0, 13.0, true), (3, 41.0, 0.0, 40.0, 13.0, false), (2, 0.0, 13.0, 81.0, 12.0, false)]
-        );
-        tree.remove(1);
-        assert_eq!(tree.leaves(), [3, 2]);
-        tree.remove(2);
-        assert_eq!(tree, WindowTree::Leaf(3));
+        let mut ed = Editor::new();
+        ed.set_frame_size(81, 25);
+        let below = ed.split_window(None, false).unwrap();
+        let right = ed.split_window(None, true).unwrap();
+        assert_eq!(ed.window_list(), [1, right, below]);
+        assert_eq!(rects(&ed), [(1, 0.0, 0.0, 41.0, 13.0, true), (right, 41.0, 0.0, 40.0, 13.0, false), (below, 0.0, 13.0, 81.0, 12.0, false)]);
+        ed.delete_window(Some(1)).unwrap();
+        assert_eq!(ed.window_list(), [right, below]);
+        ed.delete_window(Some(below)).unwrap();
+        assert_eq!(*ed.window_tree(), WindowTree::Leaf(right));
     }
 
     #[test]
     fn a_split_before_puts_the_new_window_first_at_its_size() {
-        let mut tree = WindowTree::Leaf(1);
-        tree.split(1, 2, true, true, Some(30));
-        assert_eq!(tree.leaves(), [2, 1]);
-        let rects = tree.rects(0.0, 0.0, 80.0, 24.0, (1.0, 1.0));
-        let size = |r: &WindowRect| (r.id, r.x, r.width);
-        assert_eq!(rects.iter().map(size).collect::<Vec<_>>(), [(2, 0.0, 30.0), (1, 30.0, 50.0)]);
+        let mut ed = Editor::new();
+        ed.set_frame_size(80, 24);
+        let new = ed.split_window_toward(None, true, true, Some(-30)).unwrap();
+        assert_eq!(ed.window_list(), [new, 1]);
+        assert_eq!(rects(&ed).iter().map(|r| (r.0, r.1, r.3)).collect::<Vec<_>>(), [(new, 0.0, 30.0), (1, 30.0, 50.0)]);
+    }
+
+    #[test]
+    fn internal_windows_have_ids_parents_children_and_parameters() {
+        let mut ed = Editor::new();
+        ed.set_frame_size(80, 24);
+        let below = ed.split_window(None, false).unwrap();
+        let third = ed.split_window(Some(below), false).unwrap();
+        let root = ed.frame_root_window(ed.selected_frame()).unwrap();
+        assert!(ed.window_internal_p(root));
+        assert_eq!(ed.window_children(root), Some((false, vec![1, below, third])));
+        assert_eq!(ed.window_parent(third), Some(root));
+        assert_eq!((ed.window_sibling(below, true), ed.window_sibling(below, false)), (Some(third), Some(1)));
+        assert_eq!(ed.window_normal_size(1, false), Some(0.5));
+        assert_eq!(ed.window_edges(root, false), Some((0, 0, 80, 24)));
+        ed.set_window_parameter(root, "p", Value::Bool(true)).unwrap();
+        assert_eq!(ed.window_parameter(root, "p"), Some(&Value::Bool(true)));
+        // A parent's combination limit keeps it from being merged away; splitting a child still makes a sibling.
+        ed.set_window_combination_limit(root, true).unwrap();
+        let fourth = ed.split_window(Some(1), false).unwrap();
+        assert_eq!(ed.window_parent(fourth), Some(root));
+        // Deleting an internal window deletes the windows it holds.
+        let right = ed.split_window(Some(third), true).unwrap();
+        let inner = ed.window_parent(right).unwrap();
+        assert_ne!(inner, root);
+        ed.delete_window(Some(inner)).unwrap();
+        assert!(!ed.window_list().contains(&right) && !ed.window_list().contains(&third));
+    }
+
+    #[test]
+    fn a_window_beside_a_side_window_splits_into_an_internal_window_of_its_own() {
+        let mut ed = Editor::new();
+        ed.set_frame_size(80, 24);
+        let side = ed.split_window(None, false).unwrap();
+        ed.set_window_parameter(side, "window-side", Value::Symbol("bottom".into())).unwrap();
+        let root = ed.frame_root_window(ed.selected_frame()).unwrap();
+        let made = ed.split_window(Some(1), false).unwrap();
+        assert_ne!(ed.window_parent(made), Some(root));
+        assert_eq!(ed.window_parent(side), Some(root));
+        assert!(ed.split_window(Some(side), true).is_err(), "a side window is not split");
     }
 }

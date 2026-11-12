@@ -12224,6 +12224,18 @@ declare global {
        */
       "widen-automatically": Value;
       /**
+       * If t, splitting a window makes a new internal window holding it and the new one, rather than a sibling in its parent.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-combination-limit": Value;
+      /**
+       * How splitting and deleting windows resize the others; `side' lets display-buffer split side windows for their slots.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-combination-resize": Value;
+      /**
        * The fewest lines a window may have, its mode line included, when it is split or resized.
        *
        * Defined in packages/window.ts.
@@ -14990,9 +15002,55 @@ declare global {
     /**
      * How the selected frame's windows divide it: a window, or for a split
      * [sideBySide, firstSize, first, second], firstSize the first part's
-     * lines or columns if a resize set it, as window-tree describes them.
+     * total lines or columns. A combination of more than two windows is
+     * nested from its first: [h, a, A, [h, b, B, C]]. Emacs's windows, with
+     * frameRootWindow, windowParent and the children, describe it as it is.
      */
     function windowTree(): WindowTreeNode;
+    /**
+     * A frame's root window, the selected frame's by default: its only
+     * window, or the internal window holding the others, as frame-root-window.
+     */
+    function frameRootWindow(frame?: FrameLike): Window;
+    /**
+     * A window's parent, the internal window it is a child of, as
+     * window-parent; undefined for a frame's root window.
+     */
+    function windowParent(window?: WindowLike): Window | undefined;
+    /**
+     * An internal window's first child if its children are one above
+     * another, as window-top-child; undefined otherwise.
+     */
+    function windowTopChild(window?: WindowLike): Window | undefined;
+    /**
+     * An internal window's first child if its children are side by side,
+     * as window-left-child; undefined otherwise.
+     */
+    function windowLeftChild(window?: WindowLike): Window | undefined;
+    /** The window after one in its parent, as window-next-sibling. */
+    function windowNextSibling(window?: WindowLike): Window | undefined;
+    /** The window before one in its parent, as window-prev-sibling. */
+    function windowPrevSibling(window?: WindowLike): Window | undefined;
+    /**
+     * A window's share of its parent's height, or width with `horizontal`,
+     * as window-normal-size: 1.0 across its parent's combination and for
+     * the root.
+     */
+    function windowNormalSize(window?: WindowLike, horizontal?: boolean): number;
+    /**
+     * An internal window's combination limit, as window-combination-limit:
+     * whether splitting a child makes a new internal window.
+     */
+    function windowCombinationLimit(window: WindowLike): boolean;
+    /** Sets an internal window's combination limit, as set-window-combination-limit. */
+    function setWindowCombinationLimit(window: WindowLike, limit: boolean): void;
+    /**
+     * Splits a window, live or internal, as split-window-internal: the new
+     * window below, to the right, above or to the left of it, sharing its
+     * size, which `size` gives as splitWindow's does. A new window beside
+     * an internal window shows the selected window's buffer.
+     */
+    function splitWindowInternal(window: WindowLike, side?: "below" | "right" | "above" | "left", size?: number): Window;
     /** The buffer-local minor modes on in the current buffer, as local-minor-modes. */
     function localMinorModes(): string[];
     /**
@@ -15129,6 +15187,17 @@ declare global {
     function windowPixelHeight(window?: WindowLike): number;
     /** How tall a window's mode line is, 0 without one, as window-mode-line-height. */
     function windowModeLineHeight(window?: WindowLike): number;
+    /**
+     * A window's total height in lines, its mode line and header line
+     * included, as window-total-height; an internal window's is its
+     * children's together.
+     */
+    function windowTotalHeight(window?: WindowLike): number;
+    /**
+     * A window's total width in columns, its divider and margins included,
+     * as window-total-width.
+     */
+    function windowTotalWidth(window?: WindowLike): number;
     /** How tall a window's header line is, 0 without one, as window-header-line-height. */
     function windowHeaderLineHeight(window?: WindowLike): number;
     /** A frame's selected window, the selected frame's by default, as frame-selected-window. */

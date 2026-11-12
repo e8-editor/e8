@@ -47,21 +47,108 @@ natives! {
 
     /// How the selected frame's windows divide it: a window, or for a split
     /// [sideBySide, firstSize, first, second], firstSize the first part's
-    /// lines or columns if a resize set it, as window-tree describes them.
+    /// total lines or columns. A combination of more than two windows is
+    /// nested from its first: [h, a, A, [h, b, B, C]]. Emacs's windows, with
+    /// frameRootWindow, windowParent and the children, describe it as it is.
     #[ts = "(): WindowTreeNode"]
     pub fn windowTree(ed) -> EditorValue {
         fn node(t: &e8_core::WindowTree) -> EditorValue {
             match t {
                 e8_core::WindowTree::Leaf(id) => EditorValue::Window(*id),
-                e8_core::WindowTree::Split { side_by_side, first, second, first_size } => EditorValue::List(vec![
-                    EditorValue::Bool(*side_by_side),
-                    first_size.map_or(EditorValue::Null, |n| EditorValue::Number(n as f64)),
-                    node(first),
-                    node(second),
+                e8_core::WindowTree::Combination(c) => parts(c.horizontal, &c.children),
+            }
+        }
+        fn parts(horizontal: bool, children: &[e8_core::Part]) -> EditorValue {
+            match children {
+                [only] => node(&only.tree),
+                [first, rest @ ..] => EditorValue::List(vec![
+                    EditorValue::Bool(horizontal),
+                    EditorValue::Number(first.size as f64),
+                    node(&first.tree),
+                    parts(horizontal, rest),
                 ]),
+                [] => EditorValue::Null,
             }
         }
         Ok(node(ed.window_tree()))
+    }
+
+    /// A frame's root window, the selected frame's by default: its only
+    /// window, or the internal window holding the others, as frame-root-window.
+    #[ts = "(frame?: FrameLike): Window"]
+    pub fn frameRootWindow(ed, frame: Option<Frm>) -> Win {
+        let frame = frame.map_or(ed.selected_frame(), |f| f.0);
+        ed.frame_root_window(frame).map(Win).ok_or_else(|| e8_core::Error::new("No such frame"))
+    }
+
+    /// A window's parent, the internal window it is a child of, as
+    /// window-parent; undefined for a frame's root window.
+    #[ts = "(window?: WindowLike): Window | undefined"]
+    pub fn windowParent(ed, window: Option<Win>) -> Option<Win> {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        Ok(ed.window_parent(id).map(Win))
+    }
+
+    /// An internal window's first child if its children are one above
+    /// another, as window-top-child; undefined otherwise.
+    #[ts = "(window?: WindowLike): Window | undefined"]
+    pub fn windowTopChild(ed, window: Option<Win>) -> Option<Win> {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        Ok(ed.window_children(id).and_then(|(h, c)| (!h).then(|| c.first().copied()).flatten()).map(Win))
+    }
+
+    /// An internal window's first child if its children are side by side,
+    /// as window-left-child; undefined otherwise.
+    #[ts = "(window?: WindowLike): Window | undefined"]
+    pub fn windowLeftChild(ed, window: Option<Win>) -> Option<Win> {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        Ok(ed.window_children(id).and_then(|(h, c)| h.then(|| c.first().copied()).flatten()).map(Win))
+    }
+
+    /// The window after one in its parent, as window-next-sibling.
+    #[ts = "(window?: WindowLike): Window | undefined"]
+    pub fn windowNextSibling(ed, window: Option<Win>) -> Option<Win> {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        Ok(ed.window_sibling(id, true).map(Win))
+    }
+
+    /// The window before one in its parent, as window-prev-sibling.
+    #[ts = "(window?: WindowLike): Window | undefined"]
+    pub fn windowPrevSibling(ed, window: Option<Win>) -> Option<Win> {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        Ok(ed.window_sibling(id, false).map(Win))
+    }
+
+    /// A window's share of its parent's height, or width with `horizontal`,
+    /// as window-normal-size: 1.0 across its parent's combination and for
+    /// the root.
+    #[ts = "(window?: WindowLike, horizontal?: boolean): number"]
+    pub fn windowNormalSize(ed, window: Option<Win>, horizontal: Option<bool>) -> f64 {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        ed.window_normal_size(id, horizontal.unwrap_or(false)).ok_or_else(|| e8_core::Error::new("No such window"))
+    }
+
+    /// An internal window's combination limit, as window-combination-limit:
+    /// whether splitting a child makes a new internal window.
+    #[ts = "(window: WindowLike): boolean"]
+    pub fn windowCombinationLimit(ed, window: Win) -> bool {
+        ed.window_combination_limit(window.0).ok_or_else(|| e8_core::Error::signal("wrong-type-argument", "Not an internal window", Vec::new()))
+    }
+
+    /// Sets an internal window's combination limit, as set-window-combination-limit.
+    #[ts = "(window: WindowLike, limit: boolean): void"]
+    pub fn setWindowCombinationLimit(ed, window: Win, limit: bool) -> () {
+        ed.set_window_combination_limit(window.0, limit)
+    }
+
+    /// Splits a window, live or internal, as split-window-internal: the new
+    /// window below, to the right, above or to the left of it, sharing its
+    /// size, which `size` gives as splitWindow's does. A new window beside
+    /// an internal window shows the selected window's buffer.
+    #[ts = "(window: WindowLike, side?: \"below\" | \"right\" | \"above\" | \"left\", size?: number): Window"]
+    pub fn splitWindowInternal(ed, window: Win, side: Option<String>, size: Option<i64>) -> Win {
+        let side = side.as_deref().unwrap_or("below");
+        ed.split_window_internal(window.0, matches!(side, "right" | "left"), matches!(side, "left" | "above"), size).map(Win)
     }
 
     /// The buffer-local minor modes on in the current buffer, as local-minor-modes.
@@ -262,7 +349,7 @@ natives! {
     /// Whether a value is a window showing a buffer, as window-live-p.
     #[ts = "(window: unknown): boolean"]
     pub fn windowLiveP(ed, window: EditorValue) -> bool {
-        Ok(Win::from_value(&window).is_some_and(|w| ed.window_frame(w.0).is_some()))
+        Ok(Win::from_value(&window).is_some_and(|w| ed.window_frame(w.0).is_some() && !ed.window_internal_p(w.0)))
     }
 
     /// Whether a value is a window, live or deleted, as windowp.
@@ -385,6 +472,29 @@ natives! {
         let window = window.map(|x| x.0);
         let w = window.unwrap_or(ed.selected_window());
         Ok(if ed.window_shows_mode_line(w) { ed.text_metrics().char_height() as f64 } else { 0.0 })
+    }
+
+    /// A window's total height in lines, its mode line and header line
+    /// included, as window-total-height; an internal window's is its
+    /// children's together.
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowTotalHeight(ed, window: Option<Win>) -> usize {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        if id == e8_core::MINIBUFFER_WINDOW {
+            return Ok(ed.mini_window_lines());
+        }
+        ed.window_total_size(id).map(|s| s.1).ok_or_else(|| e8_core::Error::new("No such window"))
+    }
+
+    /// A window's total width in columns, its divider and margins included,
+    /// as window-total-width.
+    #[ts = "(window?: WindowLike): number"]
+    pub fn windowTotalWidth(ed, window: Option<Win>) -> usize {
+        let id = window.map_or(ed.selected_window(), |w| w.0);
+        if id == e8_core::MINIBUFFER_WINDOW {
+            return Ok(ed.frame_cells().0);
+        }
+        ed.window_total_size(id).map(|s| s.0).ok_or_else(|| e8_core::Error::new("No such window"))
     }
 
     /// How tall a window's header line is, 0 without one, as window-header-line-height.

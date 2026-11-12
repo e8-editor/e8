@@ -915,9 +915,15 @@ impl Layout {
         let echo_lines = if frame == ed.selected_frame() { ed.mini_window_height(frame_lines) } else { 1 };
         let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
         let tab_bar = ed.tab_bar_lines(frame) > 0;
-        let layout = Layout::compute(frame, rect, m, &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id));
-        // The frame in cells, which resized windows' sizes count in.
-        if frame == ed.selected_frame() {
+        let mut layout = Layout::compute(frame, rect, m.clone(), &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id));
+        // The frame in cells, which the windows' sizes count in: a new size
+        // is shared among them first, as Emacs's normal sizes share it, and
+        // they are laid out as the tree then says.
+        if frame == ed.selected_frame() && ed.frame_cells() != layout.frame_cells {
+            ed.set_frame_size(layout.frame_cells.0, layout.frame_cells.1);
+            let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
+            layout = Layout::compute(frame, rect, m, &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id));
+        } else if frame == ed.selected_frame() {
             ed.set_frame_size(layout.frame_cells.0, layout.frame_cells.1);
         }
         for (id, cols, rows) in layout.sizes(false).windows {
