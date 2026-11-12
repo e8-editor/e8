@@ -651,11 +651,21 @@ declare global {
        */
       "backward-word": [n?: number];
       /**
-       * Make windows side by side the same width and windows one above another the same height.
+       * Balance the sizes of windows shown on the selected frame.
+       *
+       * Windows one above another get the same height and windows side by side the same width, but for windows whose size is fixed or preserved.
        *
        * Defined in packages/window.ts.
        */
       "balance-windows": [];
+      /**
+       * Make all visible windows the same area (approximately).
+       *
+       * See also window-area-factor to change the relative size of specific buffers.
+       *
+       * Defined in packages/window.ts.
+       */
+      "balance-windows-area": [];
       /**
        * The major mode for editing shell scripts, highlighted from a tree-sitter syntax tree.
        *
@@ -6564,7 +6574,7 @@ declare global {
       /**
        * Shrink the selected window to fit its buffer, if the buffer is shorter than the window.
        *
-       * The window keeps at least window-min-height lines, and a window alone in its column is left as it is.
+       * The window keeps at least window-min-height lines, and a window alone in its column, or whose buffer's start is scrolled out of view, is left as it is.
        *
        * Defined in packages/window.ts.
        */
@@ -9040,6 +9050,19 @@ declare global {
        * A char-table of functions that find where words end, for the word commands: a word whose first character, or last going back, has one ends where it says, called with the position and the limit. Subword mode sets it.
        */
       "find-word-boundary-function-table": Value;
+      /**
+       * Non-nil means fit-window-to-buffer can fit a frame to its buffer. E8 does not size frames to their buffers, so a frame's only window is left as it is.
+       *
+       * Defined in packages/window.ts.
+       */
+      "fit-frame-to-buffer": Value;
+      /**
+       * Non-nil means fit-window-to-buffer can resize windows horizontally.
+       * If this is nil, it never does; if `only', it resizes windows horizontally only; any other value means it can resize windows in both dimensions.
+       *
+       * Defined in packages/window.ts.
+       */
+      "fit-window-to-buffer-horizontally": Value;
       /**
        * Whether words written twice count when their case differs.
        *
@@ -12244,6 +12267,12 @@ declare global {
        */
       "widen-automatically": Value;
       /**
+       * Factor by which the window area should be over-estimated, as balance-windows-area reads it in each window's buffer.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-area-factor": Value;
+      /**
        * If t, splitting a window makes a new internal window holding it and the new one, rather than a sibling in its parent.
        *
        * Defined in packages/window.ts.
@@ -15303,8 +15332,6 @@ declare global {
      * default font's, as frame-char-width and frame-char-height.
      */
     function frameCharSize(): [width: number, height: number];
-    /** Make windows the same size as their neighbours, as balance-windows does. */
-    function balanceWindows(): void;
     /** The windows in cyclic order, left to right and top to bottom, as other-window visits them. */
     function windowList(): Window[];
     /**

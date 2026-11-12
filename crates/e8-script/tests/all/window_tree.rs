@@ -126,7 +126,8 @@ fn sizes_are_the_front_ends_units() {
     assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), "215");
     assert_eq!(eval(&mut ed, &s, "String(e8.resizeWindow(e8.windowList()[1], -1))"), "-1");
     assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), "195");
-    // fit-window-to-buffer fits the text and what of the window is not text, in points.
+    // fit-window-to-buffer fits the text and what of the window is not
+    // text, 164 points, in whole lines as Emacs does: nine, so a line less.
     eval(
         &mut ed,
         &s,
@@ -137,6 +138,9 @@ fn sizes_are_the_front_ends_units() {
         &s,
         r#"((w) => { e8.withCurrentBuffer(e8.getBufferCreate("f"), () => e8.insert("1\n2\n3\n4\n5\n6")); e8.setWindowBuffer(w, "f"); win.fitWindowToBuffer(w); return ""; })(e8.windowList()[1])"#,
     );
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), String::from("175"));
+    // In points with window-resize-pixelwise.
+    eval(&mut ed, &s, r#"(e8.setVariable("window-resize-pixelwise", true), win.fitWindowToBuffer(e8.windowList()[1]), "")"#);
     assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), String::from("164"));
 }
 
@@ -241,4 +245,25 @@ fn new_sizes_are_refused_below_a_line_and_normals_kept_where_none_is_given() {
         "true"
     );
     assert_eq!(eval(&mut ed, &s, "JSON.stringify(ws.map((w) => e8.windowNormalSize(w)))"), "[0.1,0.5]");
+}
+
+#[test]
+fn a_fitted_window_whose_units_are_not_whole_lines_shows_its_last_line_whole() {
+    // 195 points counts as 10 lines; with a header line, six lines of text
+    // need 196 (120, a 32-point mode line and header line, 12 above), so
+    // the window grows a line rather than cutting the last by a point.
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Points));
+    ed.set_frame_pixel_size(641, 401);
+    ed.press("C-x 2").unwrap();
+    eval(&mut ed, &s, r#"(import("window").then((m) => { globalThis.win = m; }), "")"#);
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"((w) => { e8.resizeWindow(w, -5, false, true, true);
+            e8.withCurrentBuffer(e8.getBufferCreate("f"), () => { e8.insert("1\n2\n3\n4\n5\n6"); e8.makeLocalVariable("header-line-format"); e8.setVariable("header-line-format", "head"); });
+            e8.setWindowBuffer(w, "f"); const before = e8.windowPixelHeight(w); win.fitWindowToBuffer(w);
+            return JSON.stringify([before, e8.windowPixelHeight(w)]); })(e8.windowList()[1])"#,
+    );
+    assert_eq!(got, "[195,215]");
 }

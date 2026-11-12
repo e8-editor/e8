@@ -673,12 +673,6 @@ natives! {
         Ok(vec![w as f64, h as f64])
     }
 
-    /// Make windows the same size as their neighbours, as balance-windows does.
-    pub fn balanceWindows(ed) {
-        ed.balance_windows();
-        Ok(())
-    }
-
     /// The windows in cyclic order, left to right and top to bottom, as other-window visits them.
     pub fn windowList(ed) -> Vec<Win> {
         // The minibuffer's window comes last while a prompt is open, as in Emacs's window-list.

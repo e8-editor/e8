@@ -637,36 +637,6 @@ function applySize(window: e8.Window, value: e8.Value | undefined, horizontal: b
   e8.conditionCase(() => e8.resizeWindow(window, delta, horizontal), { error: () => 0 });
 }
 
-/**
- * Makes a window as tall as its buffer's lines, as fit-window-to-buffer:
- * no fewer than `minHeight` lines (window-min-height) and no more than
- * `maxHeight` or the windows around can give, its mode line and header
- * line counted. A window not one above another is left as it is. Lines
- * are the buffer's, not the screen lines wrapping makes (ADR 0069, stage 4).
- */
-export function fitWindowToBuffer(window: e8.Window = e8.selectedWindow(), maxHeight?: number, minHeight_?: number): void {
-  if (!e8.windowLiveP(window) || !windowCombinedP(window, false)) return;
-  const buffer = e8.windowBuffer(window);
-  if (buffer === undefined) return;
-  const lines = e8.withCurrentBuffer(buffer, () => e8.lineCount() - (e8.bufferSize() > 0 && e8.charBefore(e8.pointMax()) === "\n" ? 1 : 0));
-  // In the front end's units, as Emacs fits pixels: the lines, and what
-  // of the window is not text, its mode line and the room above.
-  const [, lineHeight] = e8.frameCharSize();
-  const total = e8.windowPixelHeight(window);
-  const chrome = total - e8.windowBodyPixelHeight(window);
-  const least = (typeof minHeight_ === "number" ? minHeight_ : minHeight()) * lineHeight;
-  let wanted = Math.max(Math.ceil(lines * lineHeight + chrome), Math.round(least));
-  if (typeof maxHeight === "number") wanted = Math.min(wanted, Math.round(maxHeight * lineHeight));
-  const delta = Math.round(wanted - total);
-  if (delta === 0) return;
-  const possible = e8.conditionCase(() => e8.resizeWindow(window, delta, false, false, true), { error: () => 0 });
-  if (possible !== 0) e8.conditionCase(() => e8.resizeWindow(window, possible, false, true, true), { error: () => 0 });
-}
-e8.defun("fit-window-to-buffer", (window?: e8.Window, maxHeight?: number, minHeight?: number) => {
-  fitWindowToBuffer(window ?? e8.selectedWindow(), maxHeight ?? undefined, minHeight ?? undefined);
-  return null;
-});
-
 /** Whether display-buffer should show a buffer in the selected window, as same-window-p: its name is in same-window-buffer-names, or matches same-window-regexps. */
 export function sameWindowP(bufferName: string): boolean {
   const names = e8.variable("same-window-buffer-names");
@@ -2568,22 +2538,466 @@ e8.defineCommand({
   run: () => minimizeWindow(),
 });
 
-const balanceWindows = e8.defineCommand({
+// Balancing windows, as window.el's balance-windows and balance-windows-area.
+
+/** Lisp's `/`: whole numbers divided give a whole number, toward zero. */
+const lispDivide = (a: number, b: number): number => (Number.isInteger(a) && Number.isInteger(b) ? Math.trunc(a / b) : a / b);
+
+/**
+ * Gives the children of `window`, a combination one above another, or
+ * side by side with `horizontal`, new sizes as nearly the same as they
+ * can have, as balance-windows-2, then balances their children.
+ */
+function balanceWindows2(window: e8.Window, horizontal: boolean): void {
+  // A whole number of units, as Emacs's frame-char-size is, so what is shared out adds up.
+  const charSize = isNil(e8.variable("window-resize-pixelwise")) ? Math.max(1, Math.floor(frameCharSize(horizontal))) : 1;
+  const first = windowChild(window)!;
+  let numberOfChildren = 0;
+  let rest = 0;
+  const parentSize = e8.windowNewPixel(window);
+  let totalSum = parentSize;
+  for (let sub: e8.Window | undefined = first; sub !== undefined; sub = windowRight(sub)) {
+    if (windowSizeFixedP(sub, horizontal)) {
+      totalSum -= windowSize(sub, horizontal, true);
+      setWindowNewNormal(sub, Symbol.for("ignore"));
+    } else numberOfChildren++;
+  }
+  let failed = true;
+  while (failed && numberOfChildren > 0) {
+    const size = lispDivide(totalSum, numberOfChildren);
+    failed = false;
+    for (let sub: e8.Window | undefined = first; sub !== undefined && !failed; sub = windowRight(sub)) {
+      // Children to be ignored or stuck are left out.
+      if (windowResizeChildWindowsSkipP(sub)) continue;
+      const subTotal = windowSize(sub, horizontal, true);
+      const subDelta = size - subTotal;
+      const subAmount = windowSizable(sub, subDelta, horizontal, null, true);
+      e8.setWindowNewPixel(sub, subTotal + subAmount);
+      if (subAmount !== subDelta) {
+        totalSum -= subTotal + subAmount;
+        numberOfChildren--;
+        // Another round, without this one.
+        failed = true;
+        setWindowNewNormal(sub, Symbol.for("skip"));
+      }
+    }
+  }
+  if (numberOfChildren > 0) {
+    rest = totalSum % numberOfChildren;
+    // What rounding left over goes a line or column at a time to the
+    // children, as window.el asks whether the parent, not each child,
+    // is to be skipped.
+    for (let sub: e8.Window | undefined = first; sub !== undefined && rest > 0; sub = windowRight(sub)) {
+      if (!windowResizeChildWindowsSkipP(window)) {
+        e8.setWindowNewPixel(sub, Math.min(rest, charSize), true);
+        rest -= charSize;
+      }
+    }
+  }
+  // And what is left after that to the stuck ones.
+  for (let sub: e8.Window | undefined = first; sub !== undefined && rest > 0; sub = windowRight(sub)) {
+    if (!newNormalIs(sub, "ignore")) {
+      e8.setWindowNewPixel(sub, Math.min(rest, charSize), true);
+      rest -= charSize;
+    }
+  }
+  for (let sub: e8.Window | undefined = first; sub !== undefined; sub = windowRight(sub)) {
+    setWindowNewNormal(sub, (newNormalIs(sub, "ignore") ? windowSize(sub, horizontal, true) : e8.windowNewPixel(sub)) / parentSize);
+    balanceWindows1(sub, horizontal);
+  }
+}
+
+/** Balances the children of `window`, and theirs, one above another, or side by side with `horizontal`, as balance-windows-1. */
+function balanceWindows1(window: e8.Window, horizontal = false): void {
+  let sub = windowChild(window);
+  if (sub === undefined) return;
+  if (windowCombinedP(sub, horizontal)) {
+    balanceWindows2(window, horizontal);
+    return;
+  }
+  const size = e8.windowNewPixel(window);
+  for (; sub !== undefined; sub = windowRight(sub)) {
+    e8.setWindowNewPixel(sub, size);
+    balanceWindows1(sub, horizontal);
+  }
+}
+
+/**
+ * Makes windows one above another the same height and windows side by
+ * side the same width, as balance-windows: the windows of a frame's root
+ * window, the selected frame's by default, or those within `windowOrFrame`.
+ * A window whose size is fixed or kept keeps it.
+ */
+export function balanceWindows(windowOrFrame?: e8.Window | e8.Frame | null): void {
+  let window: e8.Window;
+  if (isNil(windowOrFrame) || e8.frameLiveP(windowOrFrame)) window = e8.frameRootWindow((windowOrFrame ?? undefined) as e8.Frame | undefined);
+  else if (e8.windowLiveP(windowOrFrame) || (e8.windowValidP(windowOrFrame) && windowChild(windowOrFrame as e8.Window) !== undefined)) {
+    window = windowOrFrame as e8.Window;
+  } else return e8.signal("error", `Not a window or frame ${String(windowOrFrame)}`);
+  const frame = e8.windowFrame(window);
+  // Heights.
+  windowResizeReset(frame);
+  balanceWindows1(window);
+  if (windowResizeApplyP(frame)) {
+    e8.windowResizeApply(frame);
+    windowPixelToTotal(frame);
+  }
+  // Widths.
+  windowResizeReset(frame, true);
+  balanceWindows1(window, true);
+  if (windowResizeApplyP(frame, true)) {
+    e8.windowResizeApply(frame, true);
+    windowPixelToTotal(frame, true);
+  }
+}
+// A command and a function cannot share a name, so Lisp's (balance-windows WINDOW-OR-FRAME) is window.ts's balanceWindows.
+const balanceWindowsCommand = e8.defineCommand({
   name: "balance-windows",
-  doc: "Make windows side by side the same width and windows one above another the same height.",
-  run: () => e8.balanceWindows(),
+  doc:
+    "Balance the sizes of windows shown on the selected frame.\n\n" +
+    "Windows one above another get the same height and windows side by side the same width, " +
+    "but for windows whose size is fixed or preserved.",
+  run: () => balanceWindows(),
 });
 
+/** Whether a window's buffer fixes its size, as window-fixed-size-p: in any direction, or with `direction` "height" or "width" in that one. */
+export function windowFixedSizeP(window: e8.Window = e8.selectedWindow(), direction?: "height" | "width"): boolean {
+  const fixed = e8.withCurrentBuffer(e8.windowBuffer(window) ?? e8.currentBuffer(), () => e8.variable("window-size-fixed"));
+  if (isNil(fixed)) return false;
+  return !(direction !== undefined && ((direction === "height" && symName(fixed) === "width") || (direction === "width" && symName(fixed) === "height")));
+}
+e8.defun("window-fixed-size-p", (window?: e8.Window, direction?: e8.Value) =>
+  windowFixedSizeP(window ?? undefined, symName(direction) === "height" ? "height" : symName(direction) === "width" ? "width" : undefined),
+);
+
+e8.defineVariable({
+  name: "window-area-factor",
+  doc: "Factor by which the window area should be over-estimated, as balance-windows-area reads it in each window's buffer.",
+  value: 1,
+  local: true,
+});
+
+/** Moves a window's trailing edge by `delta`, halving it until it can, as balance-windows-area-adjust. */
+function balanceWindowsAreaAdjust(window: e8.Window, delta: number, horizontal: boolean, pixelwise: boolean): void {
+  while (Math.abs(delta) >= 1) {
+    e8.conditionCase(
+      () => {
+        adjustWindowTrailingEdge(window, delta, horizontal, pixelwise);
+        delta = 0;
+      },
+      {
+        error: () => {
+          delta = lispDivide(delta, 2);
+        },
+      },
+    );
+  }
+}
+
+/**
+ * Makes the windows of the selected frame about the same area, as
+ * balance-windows-area: each in turn moves its edge with the next
+ * window's, round and round until nothing changes, scaled by
+ * window-area-factor in their buffers. Windows whose buffers fix their
+ * size are left as they are.
+ */
+export function balanceWindowsArea(): void {
+  let unchanged = 0;
+  let carry = 0;
+  // Fixed-size windows are left out.
+  const wins = e8.windowList1(e8.selectedWindow(), false).filter((w) => !windowFixedSizeP(w));
+  const changelog = new Map<e8.Window, string[]>();
+  const pixelwise = !isNil(e8.variable("window-resize-pixelwise"));
+  const factor = (w: e8.Window): number => {
+    const f = e8.bufferLocalValue("window-area-factor", e8.windowBuffer(w) ?? e8.currentBuffer());
+    return typeof f === "number" ? f : 1;
+  };
+  const nextWindow = (w: e8.Window): e8.Window => e8.windowList1(w, false)[1] ?? w;
+  while (unchanged < 2) {
+    unchanged++;
+    for (const win of wins) {
+      let next = win;
+      do next = nextWindow(next);
+      while (windowFixedSizeP(next));
+      const horiz = e8.windowPixelEdges(win)[0] < e8.windowPixelEdges(next)[0];
+      const areadiff = lispDivide(
+        windowSize(next, false, pixelwise) * windowSize(next, true, pixelwise) * factor(next) -
+          windowSize(win, false, pixelwise) * windowSize(win, true, pixelwise) * factor(win),
+        Math.max(factor(win), factor(next)),
+      );
+      const edgesize = horiz
+        ? windowSize(win, false, pixelwise) + windowSize(next, false, pixelwise)
+        : windowSize(win, true, pixelwise) + windowSize(next, true, pixelwise);
+      let diff = lispDivide(areadiff, edgesize);
+      // Maybe diff is closer to 1 than to 0.
+      if (diff === 0) diff = lispDivide(3 * areadiff, 2 * edgesize);
+      if (diff === 0 && areadiff !== 0) {
+        diff = lispDivide(areadiff + carry, edgesize);
+        // Changing things smoothly.
+        if (diff > 1 || diff < -1) diff = lispDivide(diff, 2);
+      }
+      if (diff === 0) {
+        // So that negligible differences do not add up.
+        carry += areadiff;
+      } else {
+        balanceWindowsAreaAdjust(win, diff, horiz, pixelwise);
+        // The same change seen before for this window is most likely an
+        // endless loop, so it does not count as a change.
+        const change = JSON.stringify(e8.windowPixelEdges(win));
+        const seen = changelog.get(win) ?? [];
+        if (!seen.includes(change)) {
+          changelog.set(win, [...seen, change]);
+          unchanged = 0;
+          carry = 0;
+        }
+      }
+    }
+  }
+}
+e8.defineCommand({
+  name: "balance-windows-area",
+  doc: "Make all visible windows the same area (approximately).\n\nSee also window-area-factor to change the relative size of specific buffers.",
+  run: () => balanceWindowsArea(),
+});
+
+// Fitting a window to its buffer, as window.el's fit-window-to-buffer.
+
+e8.defineVariable({
+  name: "fit-window-to-buffer-horizontally",
+  doc:
+    "Non-nil means fit-window-to-buffer can resize windows horizontally.\n" +
+    "If this is nil, it never does; if `only', it resizes windows horizontally only; " +
+    "any other value means it can resize windows in both dimensions.",
+  value: null,
+});
+e8.defineVariable({
+  name: "fit-frame-to-buffer",
+  doc: "Non-nil means fit-window-to-buffer can fit a frame to its buffer. E8 does not size frames to their buffers, so a frame's only window is left as it is.",
+  value: null,
+});
+
+/** A live window, the selected one if none is given, as window-normalize-window with LIVE-ONLY. */
+function windowNormalizeLiveWindow(window?: e8.Window | null): e8.Window {
+  if (isNil(window)) return e8.selectedWindow();
+  if (!e8.windowLiveP(window)) e8.signal("wrong-type-argument", "Wrong type argument: window-live-p", [window as e8.Value]);
+  return window as e8.Window;
+}
+
+/** A frame's width, or height with the minibuffer's window, in the front end's units, as frame-pixel-width and frame-pixel-height. */
+function framePixelSize(frame: e8.Frame | undefined, horizontal: boolean): number {
+  const root = e8.frameRootWindow(frame);
+  return horizontal ? e8.windowPixelWidth(root) : e8.windowPixelHeight(root) + e8.windowPixelHeight(e8.minibufferWindow());
+}
+
+/**
+ * The number of screen lines from `beg` to `end` in the current buffer,
+ * as count-screen-lines: lines long enough to wrap count each row; a
+ * newline at the end is left out unless `countFinalNewline`. Rows are
+ * as `window`, the selected one by default, shows them when it shows the
+ * current buffer, else the buffer's lines unwrapped.
+ */
+export function countScreenLines(beg?: number | null, end?: number | null, countFinalNewline = false, window?: e8.Window | null): number {
+  const w = isNil(window) ? e8.selectedWindow() : (window as e8.Window);
+  const b = beg ?? e8.pointMin();
+  const f = end ?? e8.pointMax();
+  if (b === f) return 0;
+  // As Emacs, BEG and END may lie outside the narrowing.
+  return e8.saveRestriction(() => {
+    e8.widen();
+    return countScreenLinesWidened(b, f, countFinalNewline, w);
+  });
+}
+
+function countScreenLinesWidened(b: number, f: number, countFinalNewline: boolean, w: e8.Window): number {
+  const start = Math.min(b, f);
+  const finish = Math.max(b, f);
+  const last = !countFinalNewline && e8.charBefore(finish) === "\n" ? finish - 1 : finish;
+  const lineHeight = frameCharSize(false);
+  // vertical-motion's rows, from the height of the text they hold.
+  if (e8.getBuffer(e8.windowBuffer(w) ?? "") === e8.getBuffer(e8.currentBuffer())) {
+    return Math.max(1, Math.round(e8.windowTextPixelSize(w, start, last)[1] / lineHeight));
+  }
+  return e8.saveRestriction(() => {
+    e8.narrowToRegion(start, last);
+    return Math.max(1, Math.round(e8.bufferTextPixelSize(e8.bufferName(e8.currentBuffer()))[1] / lineHeight));
+  });
+}
+e8.defun("count-screen-lines", (beg?: number, end?: number, countFinalNewline?: e8.Value, window?: e8.Window) =>
+  countScreenLines(beg, end, !isNil(countFinalNewline), window),
+);
+
+/** How many screen lines a live window's buffer takes, as window-buffer-height: a newline at its end left out unless point is after it. */
+export function windowBufferHeight(window?: e8.Window | null): number {
+  const w = windowNormalizeLiveWindow(window);
+  return e8.withCurrentBuffer(e8.windowBuffer(w)!, () => Math.max(1, countScreenLines(e8.pointMin(), e8.pointMax(), e8.point() === e8.pointMax(), w)));
+}
+e8.defun("window-buffer-height", (window?: e8.Window) => windowBufferHeight(window));
+
+/**
+ * The end of the last line of a buffer's accessible text that is not
+ * blank, as window-text-pixel-size takes a TO of t: before the spaces,
+ * tabs and newlines at its end.
+ */
+function endOfLastNonBlankLine(): number {
+  let end = e8.pointMax();
+  const min = e8.pointMin();
+  while (end > min && " \t\n".includes(e8.charBefore(end) ?? "x")) end--;
+  return end;
+}
+
+/**
+ * The height of a window's buffer's text, as fit-window-to-buffer measures
+ * it with window-text-pixel-size: from the start of its accessible text to
+ * the end of its last line that is not blank, rows wrapped as the window
+ * wraps them, its mode line and header line counted, no taller than its
+ * frame.
+ */
+function windowTextHeight(window: e8.Window): number {
+  // No further than a frame's height of lines, as Emacs's Y-LIMIT stops it, so a long buffer is not laid out whole.
+  const frameHeight = framePixelSize(e8.windowFrame(window), false);
+  const lines = Math.ceil(frameHeight / frameCharSize(false)) + 1;
+  const [from, to] = e8.withCurrentBuffer(e8.windowBuffer(window)!, () => {
+    let limit = e8.pointMin();
+    for (let n = 0; n < lines && limit < e8.pointMax(); n++) limit = e8.lineEndPosition(limit) + 1;
+    return [e8.pointMin(), Math.min(endOfLastNonBlankLine(), limit)];
+  });
+  // An empty text is no rows, as Emacs measures it.
+  const text = from >= to ? 0 : Math.min(e8.windowTextPixelSize(window, from, to)[1], frameHeight);
+  // What of the window is not text: its mode line and header line, and
+  // the room the front end leaves around the text.
+  return text + e8.windowPixelHeight(window) - e8.windowBodyPixelHeight(window);
+}
+
+/**
+ * The width of a window's buffer's text, as fit-window-to-buffer measures
+ * it with window-text-pixel-size fitting horizontally: the widest of the
+ * lines from the window's start that reach `yLimit` in the front end's
+ * units, the line there counted too, no wider than its frame. The lines
+ * are measured unwrapped.
+ */
+function windowTextWidth(window: e8.Window, yLimit: number): number {
+  const lines = Math.floor(yLimit / frameCharSize(false)) + 1;
+  const buffer = e8.windowBuffer(window)!;
+  const start = e8.windowStart(window);
+  const width = e8.withCurrentBuffer(buffer, () => {
+    let end = e8.lineEndPosition(Math.max(start, e8.pointMin()));
+    for (let n = 1; n < lines && end < e8.pointMax(); n++) end = e8.lineEndPosition(end + 1);
+    return e8.saveRestriction(() => {
+      e8.narrowToRegion(Math.max(start, e8.pointMin()), end);
+      return e8.bufferTextPixelSize(buffer)[0];
+    });
+  });
+  return Math.min(width, framePixelSize(e8.windowFrame(window), true));
+}
+
+/**
+ * Makes a live window, the selected one by default, the size its buffer's
+ * text needs, as fit-window-to-buffer. A window one above others gets the
+ * height of the buffer's accessible text, as wrapped, its mode line and
+ * header line counted, no less than `minHeight` (window-min-height) and no
+ * more than `maxHeight` or what the windows around can give, in lines. A
+ * window beside others, when fit-window-to-buffer-horizontally is non-nil,
+ * gets the width of the widest line from its start down, between
+ * `minWidth` (window-min-width) and `maxWidth` columns. With
+ * `preserveSize`, it keeps the size it was given (window-preserve-size).
+ * Fits by the front end's units when window-resize-pixelwise is non-nil.
+ * A window alone on its frame is left as it is, as Emacs leaves it with
+ * fit-frame-to-buffer nil.
+ */
+export function fitWindowToBuffer(
+  window?: e8.Window | null,
+  maxHeight?: number | null,
+  minHeight_?: number | null,
+  maxWidth?: number | null,
+  minWidth_?: number | null,
+  preserveSize = false,
+): void {
+  const w = windowNormalizeLiveWindow(window);
+  const frame = e8.windowFrame(w);
+  // Emacs fits the frame to the buffer here when fit-frame-to-buffer is
+  // non-nil; E8 does not size frames to buffers.
+  if (w === e8.frameRootWindow(frame)) return;
+  const pixelwise = !isNil(e8.variable("window-resize-pixelwise"));
+  const charHeight = frameCharSize(false);
+  const horizontally = e8.variable("fit-window-to-buffer-horizontally");
+  // window.el passes `preserved' as window-size-fixed-p's HORIZONTAL here,
+  // so a width kept stops the height being fitted, and a height kept not.
+  if (symName(horizontally) !== "only" && !windowSizeFixedP(w, true) && windowCombinedP(w)) {
+    const lineHeight = charHeight;
+    const totalHeight = windowSize(w, false, pixelwise);
+    const least =
+      typeof minHeight_ === "number"
+        ? // No less than window-safe-min-height.
+          Math.max(pixelwise ? lineHeight * minHeight_ : minHeight_, pixelwise ? windowSafeMinSize(w, false, true) : windowSafeMinHeight)
+        : // Keeping the mode line and header line.
+          Math.max(pixelwise ? lineHeight * numberVariable("window-min-height", 4) : numberVariable("window-min-height", 4), windowMinSize(w, false, w, pixelwise));
+    const most =
+      typeof maxHeight === "number"
+        ? Math.min(totalHeight + windowMaxDelta(w, false, w, undefined, true, false, pixelwise), pixelwise ? lineHeight * maxHeight : maxHeight)
+        : totalHeight + windowMaxDelta(w, false, w, undefined, true, false, pixelwise);
+    let height = windowTextHeight(w);
+    // In lines: the lines to add or take for the units the text needs, so
+    // a window whose units are not whole lines shows its last line whole.
+    if (!pixelwise) height = totalHeight + Math.ceil((height - e8.windowPixelHeight(w)) / charHeight);
+    height = Math.max(least, Math.min(most, height));
+    if (height !== totalHeight) {
+      windowPreserveSize(w);
+      windowResizeNoError(w, height - totalHeight, false, w, pixelwise);
+      if (preserveSize) windowPreserveSize(w, false, true);
+    }
+  } else if (!isNil(horizontally) && !windowSizeFixedP(w, true, Symbol.for("preserved")) && windowCombinedP(w, true)) {
+    const charWidth = frameCharSize(true);
+    const totalWidth = windowSize(w, true, pixelwise);
+    const least =
+      typeof minWidth_ === "number"
+        ? // No less than window-safe-min-width.
+          Math.max(pixelwise ? charWidth * minWidth_ : minWidth_, pixelwise ? windowSafeMinSize(w, true, true) : windowSafeMinWidth)
+        : // window.el asks window-min-size for the height here, not the width.
+          Math.max(pixelwise ? charWidth * numberVariable("window-min-width", 10) : numberVariable("window-min-width", 10), windowMinSize(w, false, w, pixelwise));
+    const most =
+      typeof maxWidth === "number"
+        ? Math.min(totalWidth + windowMaxDelta(w, true, w, undefined, true, false, pixelwise), pixelwise ? charWidth * maxWidth : maxWidth)
+        : totalWidth + windowMaxDelta(w, true, w, undefined, true, false, pixelwise);
+    // The window's start stays where it is, and its height as it is.
+    let width =
+      windowTextWidth(w, windowBodySize(w, false, pixelwise) * (pixelwise ? 1 : charHeight)) +
+      (totalWidth * (pixelwise ? 1 : charWidth) - e8.windowBodyPixelWidth(w));
+    if (!pixelwise) width = Math.ceil(width / charWidth);
+    width = Math.max(least, Math.min(most, width));
+    if (width !== totalWidth) {
+      windowPreserveSize(w, true);
+      windowResizeNoError(w, width - totalWidth, true, w, pixelwise);
+      if (preserveSize) windowPreserveSize(w, true, true);
+    }
+  }
+}
+e8.defun(
+  "fit-window-to-buffer",
+  (window?: e8.Window, maxHeight?: number, minHeight?: number, maxWidth?: number, minWidth?: number, preserveSize?: e8.Value) => {
+    fitWindowToBuffer(window, maxHeight, minHeight, maxWidth, minWidth, !isNil(preserveSize));
+    return null;
+  },
+);
+
+/**
+ * Shrinks a live window, the selected one by default, to its buffer's
+ * text, as shrink-window-if-larger-than-buffer: fit-window-to-buffer no
+ * taller than it is, if it is one above others and the start of the
+ * current buffer shows in it.
+ */
+export function shrinkWindowIfLargerThanBuffer(window?: e8.Window | null): void {
+  const w = windowNormalizeLiveWindow(window);
+  // That point-min shows: the current buffer's, as window.el asks.
+  if (windowCombinedP(w) && e8.posVisibleInWindowP(e8.pointMin(), w)) fitWindowToBuffer(w, windowTotalSize(w));
+}
+// As balance-windows, code passing a window calls shrinkWindowIfLargerThanBuffer.
 const shrinkIfLarger = e8.defineCommand({
   name: "shrink-window-if-larger-than-buffer",
   doc:
     "Shrink the selected window to fit its buffer, if the buffer is shorter than the window.\n\n" +
-    "The window keeps at least window-min-height lines, and a window alone in its column is left as it is.",
-  run: () => {
-    const s = size(e8.selectedWindow());
-    const needed = Math.max(minHeight(), e8.lineCount() + 1);
-    if (s.totalHeight > needed) e8.resizeWindow(undefined, needed - s.totalHeight, false);
-  },
+    "The window keeps at least window-min-height lines, and a window alone in its column, " +
+    "or whose buffer's start is scrolled out of view, is left as it is.",
+  run: () => shrinkWindowIfLargerThanBuffer(),
 });
 
 // Frames, as frame.el's commands, on C-x 5.
@@ -2698,7 +3112,7 @@ e8.bindKey("C-M-S-v", scrollOtherWindowDown);
 e8.bindKey("C-x ^", enlargeWindowCommand);
 e8.bindKey("C-x }", enlargeWindowHorizontally);
 e8.bindKey("C-x {", shrinkWindowHorizontally);
-e8.bindKey("C-x +", balanceWindows);
+e8.bindKey("C-x +", balanceWindowsCommand);
 e8.bindKey("C-x -", shrinkIfLarger);
 
 // C-l, after window.el's recenter-top-bottom: the line with point to the
