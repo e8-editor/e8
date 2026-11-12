@@ -228,6 +228,86 @@ impl Editor {
         Ok(current_lock_owner(&lock_file_name(Path::new(&file))))
     }
 
+    /// Locks a file, as Emacs's `lock-file`: unless `create-lockfiles` is
+    /// off, makes its lock file, `file-locked` signalled if another
+    /// process holds it, and counts buffers visiting it as holding it.
+    pub fn lock_file(&mut self, file: &str) -> Result<()> {
+        let path = self.expand_file_name(file);
+        if !self.lockfiles() {
+            return Ok(());
+        }
+        let lock = lock_file_name(&path);
+        match create_lock(&lock, false) {
+            Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => match current_lock_owner(&lock) {
+                LockOwner::Other(owner) => {
+                    return Err(Error::signal("file-locked", format!("File is locked: {}, {owner}", path.display()), vec![Value::Str(path.display().to_string()), Value::Str(owner)]));
+                }
+                LockOwner::None => {
+                    let _ = fs::remove_file(&lock);
+                    let _ = create_lock(&lock, false);
+                }
+                LockOwner::Me => {}
+            },
+            // Where no lock can be made, editing goes on without one, as in Emacs.
+            _ => {}
+        }
+        for b in &mut self.buffers {
+            if b.path.as_deref() == Some(path.as_path()) {
+                b.file.locked = true;
+            }
+        }
+        Ok(())
+    }
+
+    /// Takes a file's lock away if this process holds it, as Emacs's
+    /// `unlock-file`, buffers visiting it no longer holding it.
+    pub fn unlock_file(&mut self, file: &str) {
+        let path = self.expand_file_name(file);
+        unlock(&path);
+        for b in &mut self.buffers {
+            if b.path.as_deref() == Some(path.as_path()) {
+                b.file.locked = false;
+            }
+        }
+    }
+
+    /// Locks `file`, or the current buffer's, if the buffer is modified, as
+    /// Emacs's `lock-buffer`.
+    pub fn lock_buffer(&mut self, file: Option<&str>) -> Result<()> {
+        let b = self.buffer();
+        let Some(file) = file.map(str::to_string).or_else(|| b.path.as_ref().map(|p| p.display().to_string())) else { return Ok(()) };
+        if b.is_modified() { self.lock_file(&file) } else { Ok(()) }
+    }
+
+    /// Takes the current buffer's file's lock away if the buffer is
+    /// modified, as Emacs's `unlock-buffer`: an unmodified one holds none.
+    pub fn unlock_buffer(&mut self) {
+        let b = self.buffer();
+        if b.is_modified()
+            && let Some(path) = b.path.as_ref().map(|p| p.display().to_string())
+        {
+            self.unlock_file(&path);
+        }
+    }
+
+    /// Marks the current buffer modified or not, as Emacs's
+    /// `set-buffer-modified-p`, its file locked as it becomes modified and
+    /// unlocked as it stops being so.
+    pub fn set_buffer_modified_p(&mut self, modified: bool) -> Result<()> {
+        if modified == self.buffer().is_modified() {
+            return Ok(());
+        }
+        if modified {
+            self.lock_on_first_change()?;
+            self.buffer_mut().set_modified(true);
+        } else {
+            self.buffer_mut().set_modified(false);
+            let index = self.buffer_with_id(self.buffer().id()).expect("current");
+            self.release_lock_of(index);
+        }
+        Ok(())
+    }
+
     /// Takes the lock of a file, as answering s to a locked file's question does.
     pub(crate) fn steal_lock(&mut self, buffer: u64) {
         let Some(b) = self.buffers.iter_mut().find(|b| b.id == buffer) else { return };

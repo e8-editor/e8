@@ -31,6 +31,9 @@ pub struct FileState {
     pub(crate) auto_save: Option<PathBuf>,
     /// The buffer's tick when it was last auto-saved or saved.
     pub(crate) auto_saved_tick: u64,
+    /// The buffer's tick when it was last visited, saved or reverted, as
+    /// Emacs's SAVE_MODIFF.
+    pub(crate) saved_tick: u64,
     /// Lets edits go ahead although the file changed on disk, while the
     /// user's answer or a revert has them made.
     pub(crate) allow_supersession: bool,
@@ -160,10 +163,29 @@ impl Buffer {
     }
 
     /// Takes the file's current modification time as the one visited, as
-    /// Emacs's `set-visited-file-modtime`.
+    /// visiting, saving and reverting do, the buffer being as the file is.
     pub fn set_visited_file_modtime(&mut self) {
+        self.take_visited_file_modtime();
+        self.file.saved_tick = self.modified_tick();
+    }
+
+    /// Takes the file's current modification time as the one visited, as
+    /// Emacs's `set-visited-file-modtime` does, the text aside.
+    pub fn take_visited_file_modtime(&mut self) {
         self.file.modtime = self.path.as_deref().and_then(modtime);
         self.file.modtime_known = true;
+    }
+
+    /// Whether the buffer was auto-saved since it was visited or last
+    /// saved, as Emacs's `recent-auto-save-p`.
+    pub fn recent_auto_save_p(&self) -> bool {
+        self.file.auto_saved_tick > self.file.saved_tick
+    }
+
+    /// Takes the buffer as auto-saved as it is now, as Emacs's
+    /// `set-buffer-auto-saved`.
+    pub fn set_buffer_auto_saved(&mut self) {
+        self.file.auto_saved_tick = self.modified_tick();
     }
 
     /// Takes a time as the visited file's modification time, as Emacs's

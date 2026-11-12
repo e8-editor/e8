@@ -19,6 +19,15 @@ use crate::error::{Error, Result};
 use crate::fileops::file_error;
 use crate::variables::Value;
 
+/// What `make-temp-file-internal` makes, as its DIR-FLAG says: a file
+/// (nil), a directory (t), or only a name not in use (0).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TempKind {
+    File,
+    Directory,
+    NameOnly,
+}
+
 /// What `write-region` writes: the whole buffer, a stretch of it, or a string.
 #[derive(Clone, Debug, PartialEq)]
 pub enum WriteSource {
@@ -514,6 +523,56 @@ impl Editor {
             out.push((if directory { format!("{name}/") } else { name }, directory));
         }
         Ok(out)
+    }
+
+    /// The directory a file name stands for where a program can use it, as
+    /// Emacs's `unhandled-file-name-directory`: a handler for the name may
+    /// say, as one for a remote name says there is none; otherwise the name
+    /// as a directory.
+    pub fn unhandled_file_name_directory(&mut self, file: &str) -> Result<Option<String>> {
+        let abs = self.absolute(file);
+        if let Some(r) = self.handled("unhandled-file-name-directory", &abs, vec![s(&abs)]) {
+            return r.map(|v| v.as_str().map(str::to_string));
+        }
+        Ok(Some(if abs.ends_with('/') { abs } else { format!("{abs}/") }))
+    }
+
+    /// The size of the file system a file is on, and the space free and
+    /// free to this process, in bytes, as Emacs's `file-system-info`;
+    /// `None` where the system does not say.
+    pub fn file_system_info(&mut self, file: &str) -> Result<Option<[f64; 3]>> {
+        let abs = self.absolute(file);
+        if let Some(r) = self.handled("file-system-info", &abs, vec![s(&abs)]) {
+            return r.map(|v| match v {
+                Value::List(items) if items.len() == 3 => Some([0, 1, 2].map(|i| items[i].as_number().unwrap_or(0.0))),
+                _ => None,
+            });
+        }
+        #[cfg(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs"))))]
+        {
+            use std::os::unix::ffi::OsStrExt;
+            let Ok(c) = std::ffi::CString::new(Path::new(&abs).as_os_str().as_bytes()) else { return Ok(None) };
+            // SAFETY: statvfs fills the struct it is given from a path that ends in a nul.
+            let mut st: libc::statvfs = unsafe { std::mem::zeroed() };
+            if unsafe { libc::statvfs(c.as_ptr(), &mut st) } != 0 {
+                return Err(file_error("Getting file system info", &std::io::Error::last_os_error(), &[Path::new(file)]));
+            }
+            let block = st.f_frsize as f64;
+            Ok(Some([st.f_blocks as f64 * block, st.f_bfree as f64 * block, st.f_bavail as f64 * block]))
+        }
+        #[cfg(not(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs")))))]
+        Ok(None)
+    }
+
+    /// Makes a file, a directory, or with `dir_flag` 0 only a name, starting
+    /// with the absolute `prefix`, as Emacs's `make-temp-file-internal`:
+    /// no handler is asked, and the file holds `text` if given.
+    pub fn make_temp_file_internal(&mut self, prefix: &str, dir_flag: TempKind, suffix: &str, text: Option<&str>) -> Result<String> {
+        let name = self.make_temp_file(prefix, dir_flag == TempKind::Directory, suffix, text)?;
+        if dir_flag == TempKind::NameOnly {
+            let _ = fs::remove_file(&name);
+        }
+        Ok(name)
     }
 
     /// Makes a file, or with `dir` a directory, of a new name starting with

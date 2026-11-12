@@ -562,8 +562,7 @@ natives! {
 
     /// Mark the current buffer modified or not, as Emacs's set-buffer-modified-p.
     pub fn setBufferModified(ed, modified: bool) {
-        ed.buffer_mut().set_modified(modified);
-        Ok(())
+        ed.set_buffer_modified_p(modified)
     }
 
     /// Indirect buffers, as buffer.c's: ids, as buffer objects refer to them.

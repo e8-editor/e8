@@ -72,6 +72,16 @@ pub fn set_default_file_modes(modes: u32) {
     }
 }
 
+/// Writes what the system holds of files to disk, as sync(2), which
+/// Emacs's `unix-sync` calls; in memory there is nothing to write.
+pub fn sync() {
+    #[cfg(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs"))))]
+    // SAFETY: sync takes no arguments and cannot fail.
+    unsafe {
+        libc::sync();
+    }
+}
+
 /// The umask as the editor knows it.
 fn umask() -> &'static std::sync::atomic::AtomicU32 {
     static MASK: std::sync::OnceLock<std::sync::atomic::AtomicU32> = std::sync::OnceLock::new();
