@@ -283,7 +283,7 @@ export function windowResizeReset(frame?: e8.Frame, horizontal = false): void {
   walkWindowTree((w) => {
     e8.setWindowNewPixel(w, horizontal ? e8.windowPixelWidth(w) : e8.windowPixelHeight(w));
     e8.setWindowNewTotal(w, horizontal ? e8.windowTotalWidth(w) : e8.windowTotalHeight(w));
-    e8.setWindowNewNormal(w);
+    setWindowNewNormal(w);
   }, frame, true);
 }
 e8.defun("window--resize-reset", (frame?: e8.Frame, horizontal?: boolean) => {
@@ -599,8 +599,12 @@ export function windowDisplayBuffer(buffer: e8.BufferLike, window: e8.Window | u
   if (made) {
     applySize(window, alistGet(alist, "window-height"), false);
     applySize(window, alistGet(alist, "window-width"), true);
+    // (WIDTH . HEIGHT): whether to keep each, as window-preserve-size.
     const preserve = alistGet(alist, "preserve-size");
-    if (Array.isArray(preserve)) e8.setWindowParameter(window, "window-preserved-size", preserve);
+    if (Array.isArray(preserve)) {
+      windowPreserveSize(window, true, preserve[0] ?? null);
+      windowPreserveSize(window, false, preserve[1] ?? null);
+    }
   }
   const parameters = alistGet(alist, "window-parameters");
   const pairs = Array.isArray(parameters) && parameters.every(Array.isArray) ? parameters : (assq(alist, "window-parameters")?.slice(1) ?? []);
@@ -1473,50 +1477,1078 @@ const nextBuffer = e8.defineCommand({
   },
 });
 
-// Resizing, as window.el's enlarge-window and shrink-window.
+// Window sizes and resizing, window.el's, from window-total-size to
+// minimize-window, in its shape (ADR 0069, stage 4). Sizes are in the
+// front end's units, "pixels": cells on a terminal, points in the GUI.
+// window.el keeps symbols and conses in a window's new normal size while
+// it works (`ignore`, `skip`, (MIN-DELTA . FACTOR)); window.c applies only
+// numbers, so the core holds those and `newNormals` the rest. E8 has no
+// scroll bars and no right or bottom dividers as frame parameters, so they
+// count as nothing here; the frame's root window is never resized by
+// resizing the frame through window.el, and the minibuffer's window sizes
+// itself, as resize-mini-windows says, so window--resize-mini-window does
+// nothing.
 
-/**
- * Grows the selected window by the prefix argument's lines or columns, or
- * shrinks it when `shrink`. As in Emacs, the commands themselves fail when
- * the windows around cannot give up that much; otherwise it goes as far as
- * it can.
- */
-function resize(command: string, horizontal: boolean, shrink: boolean): void {
-  const count = e8.prefixNumericValue(e8.prefixArg());
-  const delta = shrink ? -count : count;
-  if (delta === 0) return;
-  if (e8.resizeWindow(undefined, delta, horizontal, false) === delta) {
-    e8.resizeWindow(undefined, delta, horizontal);
+e8.defineVariable({
+  name: "window-size-fixed",
+  doc:
+    "Non-nil in a buffer means windows showing it keep their size: height only their height, width only their width, t both. " +
+    "Emacs changes them only when it has no other choice, as when a neighbouring window is deleted.",
+  value: null,
+  local: true,
+});
+e8.defineVariable({
+  name: "window-resize-pixelwise",
+  doc: "Non-nil means resize windows by the front end's units rather than whole lines and columns.",
+  value: null,
+});
+
+/** A window's first child, as window-child; undefined for a live window. */
+const windowChild = (window: e8.Window): e8.Window | undefined => e8.windowTopChild(window) ?? e8.windowLeftChild(window);
+/** An internal window's last child, as window-last-child. */
+function windowLastChild(window: e8.Window): e8.Window | undefined {
+  let c = windowChild(window);
+  for (let n = c && e8.windowNextSibling(c); n !== undefined; n = e8.windowNextSibling(n)) c = n;
+  return c;
+}
+/** The window after one in its parent, as window-right. */
+const windowRight = (window: e8.Window): e8.Window | undefined => e8.windowNextSibling(window);
+/** The window before one in its parent, as window-left. */
+const windowLeft = (window: e8.Window): e8.Window | undefined => e8.windowPrevSibling(window);
+/** Whether an internal window's children are side by side with `horizontal`, else one above another, as window-combination-p. */
+const windowCombinationP = (window: e8.Window, horizontal: boolean): boolean =>
+  (horizontal ? e8.windowLeftChild(window) : e8.windowTopChild(window)) !== undefined;
+/** The left and top edges of a window, live or internal, as window-pixel-left and window-pixel-top. */
+const windowPixelLeft = (window: e8.Window): number => e8.windowPixelEdges(window)[0];
+const windowPixelTop = (window: e8.Window): number => e8.windowPixelEdges(window)[1];
+/** Whether a window is the minibuffer's, as window-minibuffer-p. */
+const windowMinibufferP = (window: e8.Window): boolean => window === e8.minibufferWindow();
+/** The minibuffer's window while a minibuffer is open, as active-minibuffer-window. */
+const activeMinibufferWindow = (): e8.Window | undefined => (e8.minibufferDepth() > 0 ? e8.minibufferWindow() : undefined);
+
+/** A column's width, or with `horizontal` false a line's height, as frame-char-size. */
+function frameCharSize(horizontal = false): number {
+  const [width, height] = e8.frameCharSize();
+  return horizontal ? width : height;
+}
+/** A number variable's value, or `otherwise`. */
+const numberVariable = (name: string, otherwise: number): number => {
+  const v = e8.variable(name);
+  return typeof v === "number" ? v : otherwise;
+};
+const windowSafeMinHeight = 1;
+const windowSafeMinWidth = 2;
+
+// What window.el keeps in a new normal size that is not a number.
+const newNormals = new Map<e8.Window, unknown>();
+/** A window's new normal size, as window-new-normal: a number, nil, or what window.el put there. */
+function windowNewNormal(window: e8.Window): unknown {
+  return newNormals.has(window) ? newNormals.get(window) : (e8.windowNewNormal(window) ?? null);
+}
+/** Sets a window's new normal size, as set-window-new-normal: a number window-resize-apply gives it, or a mark of window.el's own. */
+function setWindowNewNormal(window: e8.Window, size?: unknown): void {
+  if (typeof size === "number") {
+    newNormals.delete(window);
+    e8.setWindowNewNormal(window, size);
     return;
   }
-  if (e8.thisCommand() === command) {
-    throw new Error(`Cannot ${shrink ? "shrink" : "enlarge"} selected window ${horizontal ? "horizontally" : "vertically"}`);
-  }
-  e8.resizeWindow(undefined, delta, horizontal);
+  e8.setWindowNewNormal(window);
+  if (isNil(size)) newNormals.delete(window);
+  else newNormals.set(window, size);
+}
+const newNormalIs = (window: e8.Window, ...names: string[]): boolean => names.includes(symName(windowNewNormal(window)) ?? "");
+
+/** A window's total height in lines, or width in columns with `horizontal`, as window-total-size. */
+export function windowTotalSize(window: e8.Window = e8.selectedWindow(), horizontal = false): number {
+  return horizontal ? e8.windowTotalWidth(window) : e8.windowTotalHeight(window);
+}
+e8.defun("window-total-size", (window?: e8.Window, horizontal?: e8.Value) => windowTotalSize(window ?? undefined, !isNil(horizontal)));
+
+/** A window's total height or with `horizontal` width, in lines and columns or with `pixelwise` the front end's units, as window-size. */
+export function windowSize(window: e8.Window = e8.selectedWindow(), horizontal = false, pixelwise = false): number {
+  if (pixelwise) return horizontal ? e8.windowPixelWidth(window) : e8.windowPixelHeight(window);
+  return windowTotalSize(window, horizontal);
+}
+e8.defun("window-size", (window?: e8.Window, horizontal?: e8.Value, pixelwise?: e8.Value) =>
+  windowSize(window ?? undefined, !isNil(horizontal), !isNil(pixelwise)),
+);
+
+/** The height or with `horizontal` width of a window's text area, as window-body-size. */
+export function windowBodySize(window: e8.Window = e8.selectedWindow(), horizontal = false, pixelwise = false): number {
+  if (pixelwise) return horizontal ? e8.windowBodyPixelWidth(window) : e8.windowBodyPixelHeight(window);
+  const s = e8.windowSize(window);
+  return s === undefined ? 0 : horizontal ? s.width : s.height;
+}
+e8.defun("window-body-size", (window?: e8.Window, horizontal?: e8.Value, pixelwise?: e8.Value) =>
+  windowBodySize(window ?? undefined, !isNil(horizontal), !isNil(pixelwise)),
+);
+
+/**
+ * Keeps a live window's body height, or width with `horizontal`, as it is
+ * now while windows are resized, or with `preserve` nil stops keeping it,
+ * as window-preserve-size: kept in its window-preserved-size parameter as
+ * [BUFFER, WIDTH, HEIGHT], for as long as it shows that buffer.
+ */
+export function windowPreserveSize(window: e8.Window = e8.selectedWindow(), horizontal = false, preserve: unknown = true): void {
+  const parameter = e8.windowParameter(window, "window-preserved-size");
+  const old = Array.isArray(parameter) ? parameter : [];
+  const width = horizontal ? (isNil(preserve) ? null : e8.windowBodyPixelWidth(window)) : (old[1] ?? null);
+  const height = horizontal ? (old[2] ?? null) : isNil(preserve) ? null : e8.windowBodyPixelHeight(window);
+  e8.setWindowParameter(window, "window-preserved-size", [e8.windowBuffer(window) ?? null, width, height]);
+}
+e8.defun("window-preserve-size", (window?: e8.Window, horizontal?: e8.Value, preserve?: e8.Value) => {
+  windowPreserveSize(window ?? undefined, !isNil(horizontal), preserve ?? null);
+  return null;
+});
+
+/** The body height, or width with `horizontal`, a window keeps, as window-preserved-size; undefined if it keeps none. */
+export function windowPreservedSize(window: e8.Window = e8.selectedWindow(), horizontal = false): e8.Value | undefined {
+  const parameter = e8.windowParameter(window, "window-preserved-size");
+  if (Array.isArray(parameter) && parameter[0] === e8.windowBuffer(window)) return parameter[horizontal ? 1 : 2] ?? undefined;
+  return undefined;
+}
+e8.defun("window-preserved-size", (window?: e8.Window, horizontal?: e8.Value) => windowPreservedSize(window ?? undefined, !isNil(horizontal)) ?? null);
+
+/** Whether a window's height, or width, is kept now, as window--preserve-size: the size kept is the size it has. */
+function windowPreserveSize_(window: e8.Window, horizontal: boolean): boolean {
+  const size = windowPreservedSize(window, horizontal);
+  return typeof size === "number" && size === windowBodySize(window, horizontal, true);
 }
 
-const enlargeWindow = e8.defineCommand({
+/** The least size a window can safely have, as window-safe-min-size: a line or two columns. */
+export function windowSafeMinSize(window: e8.Window = e8.selectedWindow(), horizontal = false, pixelwise = false): number {
+  void window;
+  if (pixelwise) return Math.round(horizontal ? windowSafeMinWidth * frameCharSize(true) : windowSafeMinHeight * frameCharSize(false));
+  return horizontal ? windowSafeMinWidth : windowSafeMinHeight;
+}
+e8.defun("window-safe-min-size", (window?: e8.Window, horizontal?: e8.Value, pixelwise?: e8.Value) =>
+  windowSafeMinSize(window ?? undefined, !isNil(horizontal), !isNil(pixelwise)),
+);
+
+/** The least height of a window in units, as window-min-pixel-height: window-min-height lines, one for the minibuffer's. */
+const windowMinPixelHeight = (window: e8.Window): number =>
+  Math.round(Math.max(windowMinibufferP(window) ? 1 : numberVariable("window-min-height", 4), windowSafeMinHeight) * frameCharSize(false));
+/** The least width of a window in units, as window-min-pixel-width. */
+const windowMinPixelWidth = (): number => Math.round(Math.max(numberVariable("window-min-width", 10), windowSafeMinWidth) * frameCharSize(true));
+
+/**
+ * The least height, or width with `horizontal`, a window can have, as
+ * window-min-size: for a live window window-min-height lines or
+ * window-min-width columns, and what it needs beside its text; for an
+ * internal window its children's together, or the largest across them.
+ * `ignore` is as window-resizable's.
+ */
+export function windowMinSize(window: e8.Window = e8.selectedWindow(), horizontal = false, ignore: unknown = null, pixelwise = false): number {
+  return windowMinSize1(window, horizontal, ignore, pixelwise);
+}
+e8.defun("window-min-size", (window?: e8.Window, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) =>
+  windowMinSize(window ?? undefined, !isNil(horizontal), ignore ?? null, !isNil(pixelwise)),
+);
+
+/** Whether `ignore` says to ignore a window's restrictions, as window--min-size-ignore-p. */
+function windowMinSizeIgnoreP(window: e8.Window, ignore: unknown): boolean {
+  if (e8.windowValidP(ignore)) return window === ignore;
+  return !(isNil(ignore) || symName(ignore) === "preserved");
+}
+
+function windowMinSize1(window: e8.Window, horizontal: boolean, ignore: unknown, pixelwise: boolean): number {
+  let sub = windowChild(window);
+  if (sub !== undefined) {
+    let value = 0;
+    if (windowCombinedP(sub, horizontal)) {
+      // An iso-combination needs its children's together.
+      for (; sub !== undefined; sub = windowRight(sub)) value += windowMinSize1(sub, horizontal, ignore, pixelwise);
+    } else {
+      // An ortho-combination needs the most any of them needs.
+      for (; sub !== undefined; sub = windowRight(sub)) value = Math.max(value, windowMinSize1(sub, horizontal, ignore, pixelwise));
+    }
+    return value;
+  }
+  return e8.withCurrentBuffer(e8.windowBuffer(window) ?? e8.currentBuffer(), () => {
+    if (windowSizeFixedP(window, horizontal, ignore)) return windowSize(window, horizontal, pixelwise);
+    if (symName(ignore) === "safe") return windowSafeMinSize(window, horizontal, pixelwise);
+    const ignored = windowMinSizeIgnoreP(window, ignore);
+    const resizePixelwise = !isNil(e8.variable("window-resize-pixelwise"));
+    if (horizontal) {
+      const charSize = frameCharSize(true);
+      const [leftFringe, rightFringe] = e8.windowFringes(window);
+      const [leftMargin, rightMargin] = e8.windowMargins(window);
+      // A min-margins parameter (LEFT . RIGHT) stands for the margins.
+      const minMargins = e8.windowParameter(window, "min-margins");
+      const leftMin = Array.isArray(minMargins) && typeof minMargins[0] === "number" ? minMargins[0] : undefined;
+      const rightMin = Array.isArray(minMargins) && typeof minMargins[1] === "number" ? minMargins[1] : undefined;
+      // No scroll bars or right dividers in E8.
+      const pixelWidth =
+        windowSafeMinSize(window, true, true) + (leftMin ?? leftMargin ?? 0) * charSize + (rightMin ?? rightMargin ?? 0) * charSize + leftFringe + rightFringe;
+      if (pixelwise) {
+        return Math.max(resizePixelwise ? Math.round(pixelWidth) : Math.round(Math.ceil(pixelWidth / charSize) * charSize), ignored ? 0 : windowMinPixelWidth());
+      }
+      return Math.max(Math.ceil(pixelWidth / charSize), ignored ? 0 : numberVariable("window-min-width", 10));
+    }
+    const charSize = frameCharSize(false);
+    // A line, and the window's tab line, header line and mode line: what of it is not text.
+    const pixelHeight = windowSafeMinSize(window, false, true) + (e8.windowPixelHeight(window) - e8.windowBodyPixelHeight(window));
+    if (pixelwise) {
+      return Math.max(resizePixelwise ? Math.round(pixelHeight) : Math.round(Math.ceil(pixelHeight / charSize) * charSize), ignored ? 0 : windowMinPixelHeight(window));
+    }
+    return Math.max(Math.ceil(pixelHeight / charSize), ignored ? 0 : numberVariable("window-min-height", 4));
+  });
+}
+
+/**
+ * How far a window can grow by `delta`, or shrink by a negative one,
+ * looking only at it and its children, as window-sizable: `delta` if it
+ * can, else the most between 0 and `delta` it can.
+ */
+export function windowSizable(window: e8.Window = e8.selectedWindow(), delta: number, horizontal = false, ignore: unknown = null, pixelwise = false): number {
+  if (delta < 0) {
+    const minSize = windowMinSize(window, horizontal, ignore, pixelwise);
+    const size = windowSize(window, horizontal, pixelwise);
+    return size <= minSize ? 0 : Math.max(minSize - size, delta);
+  }
+  if (delta > 0) return windowSizeFixedP(window, horizontal, ignore) ? 0 : delta;
+  return 0;
+}
+e8.defun("window-sizable", (window: e8.Window, delta: number, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) =>
+  windowSizable(window ?? undefined, delta, !isNil(horizontal), ignore ?? null, !isNil(pixelwise)),
+);
+
+/** Whether a window alone can be resized by `delta`, as window-sizable-p. */
+export function windowSizableP(window: e8.Window = e8.selectedWindow(), delta: number, horizontal = false, ignore: unknown = null, pixelwise = false): boolean {
+  const got = windowSizable(window, delta, horizontal, ignore, pixelwise);
+  return delta > 0 ? got >= delta : got <= delta;
+}
+e8.defun("window-sizable-p", (window: e8.Window, delta: number, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) =>
+  windowSizableP(window ?? undefined, delta, !isNil(horizontal), ignore ?? null, !isNil(pixelwise)),
+);
+
+function windowSizeFixed1(window: e8.Window, horizontal: boolean, ignore: unknown): boolean {
+  let sub = windowChild(window);
+  if (sub !== undefined) {
+    if (windowCombinedP(sub, horizontal)) {
+      // An iso-combination is fixed if all its children are.
+      for (; sub !== undefined; sub = windowRight(sub)) if (!windowSizeFixed1(sub, horizontal, ignore)) return false;
+      return true;
+    }
+    // An ortho-combination is fixed if any of its children is.
+    for (; sub !== undefined; sub = windowRight(sub)) if (windowSizeFixed1(sub, horizontal, ignore)) return true;
+    return false;
+  }
+  if (e8.windowp(ignore) && window === ignore) return false;
+  if (symName(ignore) !== "preserved" && windowPreserveSize_(window, horizontal)) return true;
+  const fixed = e8.withCurrentBuffer(e8.windowBuffer(window) ?? e8.currentBuffer(), () => e8.variable("window-size-fixed"));
+  return fixed === true || symName(fixed) === (horizontal ? "width" : "height");
+}
+
+/**
+ * Whether a window's height, or width with `horizontal`, is fixed, as
+ * window-size-fixed-p: by window-size-fixed in its buffer or a size it
+ * keeps; for an internal window, by its children's.
+ */
+export function windowSizeFixedP(window: e8.Window = e8.selectedWindow(), horizontal = false, ignore: unknown = null): boolean {
+  if (e8.windowp(ignore) || isNil(ignore) || symName(ignore) === "preserved") return windowSizeFixed1(window, horizontal, ignore);
+  return false;
+}
+e8.defun("window-size-fixed-p", (window?: e8.Window, horizontal?: e8.Value, ignore?: e8.Value) =>
+  windowSizeFixedP(window ?? undefined, !isNil(horizontal), ignore ?? null),
+);
+
+type Trail = "before" | "after" | undefined;
+const trailOf = (v: unknown): Trail => (symName(v) === "before" ? "before" : symName(v) === "after" ? "after" : undefined);
+
+function windowMinDelta1(window: e8.Window, delta: number, horizontal = false, ignore: unknown = null, trail?: Trail, noup = false, pixelwise = false): number {
+  const parent = e8.windowParent(window);
+  // Nothing to take at the top.
+  if (parent === undefined) return 0;
+  let sub = windowChild(parent);
+  if (windowCombinedP(sub!, horizontal)) {
+    // In an iso-combination, DELTA if a sibling not fixed in size can take it.
+    let skip = trail === "after";
+    for (; sub !== undefined; sub = windowRight(sub)) {
+      if (sub === window) skip = trail === "before";
+      else if (skip) continue;
+      else if (windowSizeFixedP(sub, horizontal, ignore)) continue;
+      else return delta;
+    }
+  } else {
+    // In an ortho-combination, as little as the others can shrink.
+    for (; sub !== undefined; sub = windowRight(sub)) {
+      if (sub !== window) delta = Math.min(delta, Math.max(windowSize(sub, horizontal, pixelwise) - windowMinSize(sub, horizontal, ignore, pixelwise), 0));
+    }
+  }
+  return noup ? delta : windowMinDelta1(parent, delta, horizontal, ignore, trail, false, pixelwise);
+}
+
+/**
+ * How far a window can shrink, as window-min-delta: 0 if it cannot.
+ * `trail` "before" lets only windows above or left of it grow, "after"
+ * only those below or right; `noup` keeps to its own combination, and
+ * `nodown` asks only whether the others could take all of it.
+ */
+export function windowMinDelta(
+  window: e8.Window = e8.selectedWindow(),
+  horizontal = false,
+  ignore: unknown = null,
+  trail?: Trail,
+  noup = false,
+  nodown = false,
+  pixelwise = false,
+): number {
+  const size = windowSize(window, horizontal, pixelwise);
+  const minimum = windowMinSize(window, horizontal, ignore, pixelwise);
+  if (nodown) return windowMinDelta1(window, size, horizontal, ignore, trail, noup, pixelwise);
+  if (size <= minimum) return 0;
+  return windowMinDelta1(window, size - minimum, horizontal, ignore, trail, noup, pixelwise);
+}
+e8.defun(
+  "window-min-delta",
+  (window?: e8.Window, horizontal?: e8.Value, ignore?: e8.Value, trail?: e8.Value, noup?: e8.Value, nodown?: e8.Value, pixelwise?: e8.Value) =>
+    windowMinDelta(window ?? undefined, !isNil(horizontal), ignore ?? null, trailOf(trail), !isNil(noup), !isNil(nodown), !isNil(pixelwise)),
+);
+
+/** The least height, or width, a frame's windows can have, as frame-windows-min-size. */
+export function frameWindowsMinSize(frame?: e8.Frame, horizontal = false, ignore: unknown = null, pixelwise = false): number {
+  const root = e8.frameRootWindow(frame);
+  const mini = e8.windowNextSibling(root);
+  return windowMinSize(root, horizontal, ignore, pixelwise) + (mini !== undefined && !horizontal ? windowMinSize(mini, horizontal, null, pixelwise) : 0);
+}
+e8.defun("frame-windows-min-size", (frame?: e8.Frame, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) =>
+  frameWindowsMinSize(frame ?? undefined, !isNil(horizontal), ignore ?? null, !isNil(pixelwise)),
+);
+
+function windowMaxDelta1(window: e8.Window, delta: number, horizontal = false, ignore: unknown = null, trail?: Trail, noup = false, pixelwise = false): number {
+  const parent = e8.windowParent(window);
+  // At the top, DELTA is all there is.
+  if (parent === undefined) return delta;
+  let sub = windowChild(parent);
+  if (windowCombinedP(sub!, horizontal)) {
+    // In an iso-combination, what the others can give.
+    let skip = trail === "after";
+    for (; sub !== undefined; sub = windowRight(sub)) {
+      if (sub === window) skip = trail === "before";
+      else if (!skip) delta += Math.max(windowSize(sub, horizontal, pixelwise) - windowMinSize(sub, horizontal, ignore, pixelwise), 0);
+    }
+  } else {
+    // In an ortho-combination, nothing more if another child is fixed in size.
+    for (; sub !== undefined; sub = windowRight(sub)) if (sub !== window && windowSizeFixedP(sub, horizontal, ignore)) return delta;
+  }
+  return noup ? delta : windowMaxDelta1(parent, delta, horizontal, ignore, trail, false, pixelwise);
+}
+
+/** How far a window can grow, as window-max-delta: 0 if it cannot; the arguments as window-min-delta's. */
+export function windowMaxDelta(
+  window: e8.Window = e8.selectedWindow(),
+  horizontal = false,
+  ignore: unknown = null,
+  trail?: Trail,
+  noup = false,
+  nodown = false,
+  pixelwise = false,
+): number {
+  if (!nodown && windowSizeFixedP(window, horizontal, ignore)) return 0;
+  return windowMaxDelta1(window, 0, horizontal, ignore, trail, noup, pixelwise);
+}
+e8.defun(
+  "window-max-delta",
+  (window?: e8.Window, horizontal?: e8.Value, ignore?: e8.Value, trail?: e8.Value, noup?: e8.Value, nodown?: e8.Value, pixelwise?: e8.Value) =>
+    windowMaxDelta(window ?? undefined, !isNil(horizontal), ignore ?? null, trailOf(trail), !isNil(noup), !isNil(nodown), !isNil(pixelwise)),
+);
+
+/** How far a window can be resized by `delta`, as window--resizable; the arguments as window-min-delta's. */
+function windowResizable_(
+  window: e8.Window = e8.selectedWindow(),
+  delta: number,
+  horizontal = false,
+  ignore: unknown = null,
+  trail?: Trail,
+  noup = false,
+  nodown = false,
+  pixelwise = false,
+): number {
+  if (delta < 0) return Math.max(-windowMinDelta(window, horizontal, ignore, trail, noup, nodown, pixelwise), delta);
+  if (delta > 0) return Math.min(windowMaxDelta(window, horizontal, ignore, trail, noup, nodown, pixelwise), delta);
+  return 0;
+}
+
+/** Whether a window can be resized by all of `delta`, as window--resizable-p. */
+function windowResizableP_(
+  window: e8.Window = e8.selectedWindow(),
+  delta: number,
+  horizontal = false,
+  ignore: unknown = null,
+  trail?: Trail,
+  noup = false,
+  nodown = false,
+  pixelwise = false,
+): boolean {
+  const got = windowResizable_(window, delta, horizontal, ignore, trail, noup, nodown, pixelwise);
+  return delta > 0 ? got >= delta : got <= delta;
+}
+
+/**
+ * How far a window can grow by `delta` lines, or columns with
+ * `horizontal`, or shrink by a negative one, taking from or giving to
+ * other windows, as window-resizable: `delta` if it can, else the most
+ * between 0 and `delta` it can. `ignore` t ignores window-size-fixed and
+ * the least sizes, `safe` too and lets windows go down to a line or two
+ * columns, `preserved` ignores only sizes windows keep, and a window
+ * ignores that window's restrictions.
+ */
+export function windowResizable(window: e8.Window = e8.selectedWindow(), delta: number, horizontal = false, ignore: unknown = null, pixelwise = false): number {
+  return windowResizable_(window, delta, horizontal, ignore, undefined, false, false, pixelwise);
+}
+e8.defun("window-resizable", (window: e8.Window, delta: number, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) =>
+  windowResizable(window ?? undefined, delta, !isNil(horizontal), ignore ?? null, !isNil(pixelwise)),
+);
+
+/** Whether a window can be resized by all of `delta`, as window-resizable-p. */
+export function windowResizableP(window: e8.Window = e8.selectedWindow(), delta: number, horizontal = false, ignore: unknown = null, pixelwise = false): boolean {
+  return windowResizableP_(window, delta, horizontal, ignore, undefined, false, false, pixelwise);
+}
+e8.defun("window-resizable-p", (window: e8.Window, delta: number, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) =>
+  windowResizableP(window ?? undefined, delta, !isNil(horizontal), ignore ?? null, !isNil(pixelwise)),
+);
+
+/** Whether a window is as tall as its frame's root window, as window-full-height-p. */
+export function windowFullHeightP(window: e8.Window = e8.selectedWindow()): boolean {
+  if (windowMinibufferP(window)) return window === e8.frameRootWindow(e8.windowFrame(window));
+  return e8.windowPixelHeight(window) === e8.windowPixelHeight(e8.frameRootWindow(e8.windowFrame(window)));
+}
+e8.defun("window-full-height-p", (window?: e8.Window) => windowFullHeightP(window ?? undefined));
+
+/** Whether a window is as wide as its frame's root window, as window-full-width-p. */
+export function windowFullWidthP(window: e8.Window = e8.selectedWindow()): boolean {
+  return e8.windowPixelWidth(window) === e8.windowPixelWidth(e8.frameRootWindow(e8.windowFrame(window)));
+}
+e8.defun("window-full-width-p", (window?: e8.Window) => windowFullWidthP(window ?? undefined));
+
+/**
+ * A number of lines, or columns with `horizontal`, in the front end's
+ * units, as window--size-to-pixel; with `pixelwise` the size is in those
+ * units already, rounded to whole lines or columns with `roundMaybe`
+ * unless window-resize-pixelwise.
+ */
+function windowSizeToPixel(window: e8.Window, size: number, horizontal = false, pixelwise = false, roundMaybe = false): number {
+  void window;
+  const charSize = frameCharSize(horizontal);
+  if (pixelwise) {
+    return roundMaybe && isNil(e8.variable("window-resize-pixelwise")) ? Math.round(Math.round(size / charSize) * charSize) : size;
+  }
+  return Math.round(size * charSize);
+}
+
+/**
+ * Gives windows total sizes from their pixel sizes, as window--pixel-to-total:
+ * E8 works them out from pixel sizes itself, so window-resize-apply-total
+ * is all there is to it.
+ */
+function windowPixelToTotal(frame?: e8.Frame, horizontal = false): void {
+  e8.windowResizeApplyTotal(frame, horizontal);
+}
+
+/**
+ * Resizes the minibuffer's window, as window--resize-mini-window. E8's
+ * minibuffer window sizes itself to what it shows, as resize-mini-windows
+ * says, and is not part of the frame's window tree, so this does nothing.
+ */
+function windowResizeMiniWindow(window: e8.Window, delta: number): void {
+  void window;
+  void delta;
+}
+
+/** Whether a window on a frame is to change size, as window--resize-apply-p. */
+function windowResizeApplyP(frame?: e8.Frame, horizontal = false): boolean {
+  let apply = false;
+  walkWindowTree(
+    (w) => {
+      if (e8.windowNewPixel(w) !== windowSize(w, horizontal, true)) apply = true;
+    },
+    frame,
+    true,
+  );
+  return apply;
+}
+
+/**
+ * Resizes a window by `delta` lines, or columns with `horizontal`, or with
+ * `pixelwise` the front end's units, as window-resize: other windows give
+ * or take the difference, its neighbour alone if it can and
+ * window-combination-resize is not t, else the others in its combination
+ * in proportion, and its parent's if they cannot. `ignore` is as
+ * window-resizable's. An error if the window cannot be resized that much.
+ */
+export function windowResize(window: e8.Window = e8.selectedWindow(), delta: number, horizontal = false, ignore: unknown = null, pixelwise = false): void {
+  const frame = e8.windowFrame(window);
+  const minibufferWindow = e8.minibufferWindow();
+  delta = windowSizeToPixel(window, delta, horizontal, pixelwise, true);
+  if (window === e8.frameRootWindow(frame)) e8.signal("error", "Cannot resize the root window of a frame");
+  if (windowMinibufferP(window)) {
+    if (horizontal) e8.signal("error", "Cannot resize minibuffer window horizontally");
+    windowResizeMiniWindow(window, delta);
+    return;
+  }
+  if (
+    !horizontal &&
+    windowFullHeightP(window) &&
+    (isNil(e8.variable("resize-mini-windows")) || minibufferWindow === activeMinibufferWindow())
+  ) {
+    // Emacs resizes the minibuffer's window here.
+    windowResizeMiniWindow(minibufferWindow, -delta);
+    return;
+  }
+  if (
+    windowResizableP_(window, delta, horizontal, ignore, undefined, false, false, true) ||
+    (isNil(ignore) && ((ignore = Symbol.for("preserved")), windowResizableP_(window, delta, horizontal, ignore, undefined, false, false, true)))
+  ) {
+    windowResizeReset(frame, horizontal);
+    windowResizeThisWindow(window, delta, horizontal, ignore, true);
+    const sibling = windowCombinedP(window, horizontal) ? (windowRight(window) ?? windowLeft(window)) : undefined;
+    if (e8.variable("window-combination-resize") !== true && sibling !== undefined && windowSizableP(sibling, -delta, horizontal, ignore, true)) {
+      // Its neighbour after it, or before it if it is the last, gives or takes it all.
+      const normalDelta = delta / windowSize(e8.windowParent(window)!, horizontal, true);
+      windowResizeThisWindow(sibling, -delta, horizontal, null, true);
+      setWindowNewNormal(window, e8.windowNormalSize(window, horizontal) + normalDelta);
+      setWindowNewNormal(sibling, e8.windowNormalSize(sibling, horizontal) - normalDelta);
+    } else {
+      // Otherwise all the others in its combination do.
+      windowResizeSiblings(window, delta, horizontal, ignore);
+    }
+    if (windowResizeApplyP(frame, horizontal)) {
+      if (e8.windowResizeApply(frame, horizontal)) windowPixelToTotal(frame, horizontal);
+      else e8.signal("error", `Failed to apply resizing ${String(window)}`);
+    }
+    return;
+  }
+  e8.signal("error", `Cannot resize window ${String(window)}`);
+}
+e8.defun("window-resize", (window: e8.Window, delta: number, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) => {
+  windowResize(window ?? undefined, delta, !isNil(horizontal), ignore ?? null, !isNil(pixelwise));
+  return null;
+});
+
+/** Resizes a window as window-resize does if it can be resized by all of `delta`, else leaves it, as window-resize-no-error. */
+export function windowResizeNoError(window: e8.Window = e8.selectedWindow(), delta: number, horizontal = false, ignore: unknown = null, pixelwise = false): void {
+  if (windowResizableP_(window, delta, horizontal, ignore, undefined, false, false, pixelwise)) windowResize(window, delta, horizontal, ignore, pixelwise);
+}
+e8.defun("window-resize-no-error", (window: e8.Window, delta: number, horizontal?: e8.Value, ignore?: e8.Value, pixelwise?: e8.Value) => {
+  windowResizeNoError(window ?? undefined, delta, !isNil(horizontal), ignore ?? null, !isNil(pixelwise));
+  return null;
+});
+
+/** Whether the resizing functions leave a window alone, as window--resize-child-windows-skip-p. */
+const windowResizeChildWindowsSkipP = (window: e8.Window): boolean => newNormalIs(window, "ignore", "stuck", "skip");
+
+/**
+ * Sets new normal sizes for a parent's children once one of them,
+ * `window`, is resized by `thisDelta`, as
+ * window--resize-child-windows-normal; `otherDelta` was taken from or
+ * given to the parent's own ancestors.
+ */
+function windowResizeChildWindowsNormal(parent: e8.Window, horizontal: boolean, window: e8.Window, thisDelta: number, trail: Trail, otherDelta: number): void {
+  const parentSize = windowSize(parent, horizontal, true);
+  // When WINDOW goes and its siblings take all of it, its normal size is the delta.
+  let deltaNormal = -thisDelta === windowSize(window, horizontal, true) && otherDelta === 0 ? -e8.windowNormalSize(window, horizontal) : thisDelta / parentSize;
+  let parentNormal = 0;
+  let skip = trail === "after";
+  for (let sub = windowChild(parent); sub !== undefined; sub = windowRight(sub)) {
+    if (sub === window) skip = trail === "before";
+    else if (!skip) parentNormal += e8.windowNormalSize(sub, horizontal);
+  }
+  // Each sibling's share of what WINDOW took or gave.
+  skip = trail === "after";
+  for (let sub = windowChild(parent); sub !== undefined; sub = windowRight(sub)) {
+    if (sub === window) skip = trail === "before";
+    else if (!skip) {
+      const oldNormal = e8.windowNormalSize(sub, horizontal);
+      setWindowNewNormal(sub, Math.min(1, Math.max(oldNormal - (oldNormal / parentNormal) * deltaNormal, 0)));
+    }
+  }
+  if (typeof otherDelta === "number") {
+    // And of what came from or went to the ancestors.
+    deltaNormal = parentSize / (parentSize + otherDelta);
+    skip = trail === "after";
+    for (let sub = windowChild(parent); sub !== undefined; sub = windowRight(sub)) {
+      if (sub === window) skip = trail === "before";
+      else if (!skip) setWindowNewNormal(sub, Math.min(1, Math.max((windowNewNormal(sub) as number) * deltaNormal, 0)));
+    }
+  }
+  // WINDOW has what its siblings leave.
+  let sum = 0;
+  for (let sub = windowChild(parent); sub !== undefined; sub = windowRight(sub)) {
+    if (sub === window) continue;
+    const n = windowNewNormal(sub);
+    sum += typeof n === "number" ? n : e8.windowNormalSize(sub, horizontal);
+  }
+  setWindowNewNormal(window, Math.min(1, Math.max(1 - sum, 0)));
+}
+
+/**
+ * Resizes a parent's children by `delta` units together, as
+ * window--resize-child-windows: those next to `edge` alone if `trail` and
+ * `edge` say so and they can, else all of them a line or column at a time,
+ * shrinking first those largest for their normal sizes and growing those
+ * smallest. Says "normalized" if it set the new normal sizes itself.
+ */
+function windowResizeChildWindows(
+  parent: e8.Window,
+  delta: number,
+  horizontal = false,
+  window?: e8.Window,
+  ignore: unknown = null,
+  trail?: Trail,
+  edge?: number,
+  charSize?: number,
+): "normalized" | undefined {
+  const first = windowChild(parent)!;
+  const last = windowLastChild(parent)!;
+  const parentTotal = windowSize(parent, horizontal, true) + delta;
+  const step = charSize ?? (isNil(e8.variable("window-resize-pixelwise")) ? Math.max(1, Math.round(frameCharSize(horizontal))) : 1);
+  let sub: e8.Window | undefined;
+  const adjacent = (): boolean => {
+    if (edge === undefined || trail === undefined) return false;
+    sub = first;
+    for (;;) {
+      const right: e8.Window | undefined = windowRight(sub!);
+      if (right === undefined) break;
+      if (trail === "before" ? !windowResizeChildWindowsSkipP(right) : windowResizeChildWindowsSkipP(sub!)) sub = right;
+      else break;
+    }
+    const s = sub!;
+    const at = horizontal
+      ? trail === "before"
+        ? windowPixelLeft(s) + e8.windowPixelWidth(s) === edge
+        : windowPixelLeft(s) === edge
+      : trail === "before"
+        ? windowPixelTop(s) + e8.windowPixelHeight(s) === edge
+        : windowPixelTop(s) === edge;
+    return at && windowSizableP(s, delta, horizontal, ignore, true);
+  };
+  if (adjacent()) {
+    // Resize only the window next to EDGE.
+    const s = sub!;
+    windowResizeThisWindow(s, delta, horizontal, ignore, true, trail, edge);
+    if (window !== undefined && e8.windowParent(s) === parent) {
+      setWindowNewNormal(s, e8.windowNewPixel(s) / parentTotal);
+      setWindowNewNormal(window, e8.windowNormalSize(window, horizontal) - ((windowNewNormal(s) as number) - e8.windowNormalSize(s, horizontal)));
+    } else {
+      windowResizeChildWindowsNormal(parent, horizontal, s, 0, trail, delta);
+    }
+    return "normalized";
+  }
+  // Resize all of them in proportion.
+  for (sub = last; sub !== undefined; sub = windowLeft(sub)) {
+    if (windowResizeChildWindowsSkipP(sub)) continue;
+    if (isNil(ignore) && windowSizeFixedP(sub, horizontal, ignore)) {
+      // Leave windows fixed in size alone.
+      setWindowNewNormal(sub, Symbol.for("ignore"));
+    } else if (delta < 0) {
+      // Shrinking: what it can give, and how large it is for its normal size.
+      setWindowNewNormal(sub, [
+        windowMinDelta(sub, horizontal, ignore, trail, true, false, true),
+        windowSize(sub, horizontal, true) / parentTotal - e8.windowNormalSize(sub, horizontal),
+      ]);
+    } else if (delta > 0) {
+      // Growing: how large it is for its normal size.
+      setWindowNewNormal(sub, windowSize(sub, horizontal, true) / parentTotal - e8.windowNormalSize(sub, horizontal));
+    }
+  }
+  let bestWindow: e8.Window | true | undefined = true;
+  if (delta < 0) {
+    while (bestWindow !== undefined && delta !== 0) {
+      bestWindow = undefined;
+      let bestValue: number | undefined;
+      for (sub = last; sub !== undefined; sub = windowLeft(sub)) {
+        const n = windowNewNormal(sub);
+        if (Array.isArray(n) && !(n[0] <= 0) && (bestValue === undefined || n[1] > bestValue)) {
+          bestWindow = sub;
+          bestValue = n[1];
+        }
+      }
+      if (bestWindow !== undefined) {
+        const n = windowNewNormal(bestWindow) as [number, number];
+        const bestDelta = Math.min(n[0], step, -delta);
+        delta += bestDelta;
+        e8.setWindowNewPixel(bestWindow, -bestDelta, true);
+        setWindowNewNormal(
+          bestWindow,
+          n[0] === bestDelta
+            ? Symbol.for("skip") // It cannot shrink any further.
+            : [n[0] - bestDelta, e8.windowNewPixel(bestWindow) / parentTotal - e8.windowNormalSize(bestWindow, horizontal)],
+        );
+      }
+    }
+  } else if (delta > 0) {
+    while (bestWindow !== undefined && delta !== 0) {
+      bestWindow = undefined;
+      let bestValue: number | undefined;
+      for (sub = last; sub !== undefined; sub = windowLeft(sub)) {
+        const n = windowNewNormal(sub);
+        if (typeof n === "number" && (bestValue === undefined || n < bestValue)) {
+          bestWindow = sub;
+          bestValue = n;
+        }
+      }
+      if (bestWindow !== undefined) {
+        const bestDelta = Math.min(delta, step);
+        delta -= bestDelta;
+        e8.setWindowNewPixel(bestWindow, bestDelta, true);
+        setWindowNewNormal(bestWindow, e8.windowNewPixel(bestWindow) / parentTotal - e8.windowNormalSize(bestWindow, horizontal));
+      }
+    }
+  }
+  if (bestWindow !== undefined) {
+    for (sub = last; sub !== undefined; sub = windowLeft(sub)) {
+      const n = windowNewNormal(sub);
+      // Clear the factors so window-resize-apply does not take them for normal sizes.
+      if (Array.isArray(n) || typeof n === "number") setWindowNewNormal(sub);
+      if (!newNormalIs(sub, "ignore")) {
+        // Resize its children by what it changed by.
+        const d = e8.windowNewPixel(sub) - windowSize(sub, horizontal, true);
+        if (!(d === 0 && trail === undefined)) windowResizeThisWindow(sub, d, horizontal, ignore, false, trail, edge);
+      }
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Resizes the windows around one resized by `delta` units, as
+ * window--resize-siblings, but not the window itself: its siblings, then
+ * its parent's for what they could not give, going up the tree. `trail`
+ * and `edge` keep to the windows before or after an edge, as
+ * adjust-window-trailing-edge moves it.
+ */
+function windowResizeSiblings(window: e8.Window, delta: number, horizontal = false, ignore: unknown = null, trail?: Trail, edge?: number, charSize?: number): void {
+  const parent = e8.windowParent(window);
+  if (parent === undefined) return;
+  let sub = windowChild(parent);
+  if (windowCombinedP(sub!, horizontal)) {
+    // In an iso-combination, take DELTA from WINDOW's siblings.
+    let skip = trail === "after";
+    let found = false;
+    for (; sub !== undefined; sub = windowRight(sub)) {
+      if (sub === window) {
+        // WINDOW itself is left alone.
+        setWindowNewNormal(sub, Symbol.for("ignore"));
+        skip = trail === "before";
+      } else if (skip) {
+        setWindowNewNormal(sub, Symbol.for("ignore"));
+      } else if (!windowSizeFixedP(sub, horizontal, ignore)) {
+        found = true;
+      }
+    }
+    let thisDelta: number;
+    if (-delta === windowSize(window, horizontal, true)) {
+      // A deletion, presumably: its siblings take all of it if any can.
+      thisDelta = found ? delta : 0;
+    } else {
+      thisDelta = windowResizable_(window, delta, horizontal, ignore, trail, true, false, true);
+    }
+    // What the parent's ancestors must give.
+    const otherDelta = delta - thisDelta;
+    if (otherDelta !== 0) e8.setWindowNewPixel(parent, otherDelta, true);
+    if (thisDelta === 0) {
+      windowResizeChildWindowsNormal(parent, horizontal, window, thisDelta, trail, otherDelta);
+    } else {
+      if (windowResizeChildWindows(parent, -thisDelta, horizontal, window, ignore, trail, edge, charSize) !== "normalized") {
+        windowResizeChildWindowsNormal(parent, horizontal, window, thisDelta, trail, otherDelta);
+      }
+      delta = otherDelta;
+    }
+  } else {
+    // In an ortho-combination, every sibling changes by DELTA.
+    e8.setWindowNewPixel(parent, delta, true);
+    for (; sub !== undefined; sub = windowRight(sub)) if (sub !== window) windowResizeThisWindow(sub, delta, horizontal, ignore, true);
+  }
+  if (delta !== 0) windowResizeSiblings(parent, delta, horizontal, ignore, trail, edge, charSize);
+}
+
+/**
+ * Resizes a window by `delta` units, adding it to its new size with `add`,
+ * and its children to fit, as window--resize-this-window, but not its
+ * siblings or parent; window-resize-apply gives the new sizes.
+ */
+function windowResizeThisWindow(
+  window: e8.Window,
+  delta: number,
+  horizontal = false,
+  ignore: unknown = null,
+  add = false,
+  trail?: Trail,
+  edge?: number,
+  charSize?: number,
+): void {
+  if (add) e8.setWindowNewPixel(window, delta, true);
+  let sub = windowChild(window);
+  if (sub === undefined) return;
+  if (windowCombinedP(sub, horizontal)) {
+    // In an iso-combination by their normal sizes.
+    windowResizeChildWindows(window, delta, horizontal, undefined, ignore, trail, edge, charSize);
+  } else {
+    // In an ortho-combination each by DELTA.
+    for (; sub !== undefined; sub = windowRight(sub)) windowResizeThisWindow(sub, delta, horizontal, ignore, true, trail, edge, charSize);
+  }
+}
+
+/**
+ * Makes every window on the selected frame at least its least size if it
+ * can, as window--sanitize-window-sizes; says whether all are.
+ */
+export function windowSanitizeWindowSizes(horizontal = false): boolean {
+  let value = true;
+  walkWindowTree((window) => {
+    const delta = windowMinSize(window, horizontal, null, true) - windowSize(window, horizontal, true);
+    if (delta > 0) {
+      if (windowResizableP(window, delta, horizontal, null, true)) windowResize(window, delta, horizontal, null, true);
+      else value = false;
+    }
+  });
+  return value;
+}
+
+/** The window before an edge to move: `window`, or the nearest before it up the tree, as adjust-window-trailing-edge steps left. */
+function stepLeft(left: e8.Window, horizontal: boolean): e8.Window | undefined {
+  const before = windowLeft(left);
+  if (before !== undefined) return before;
+  let w: e8.Window | undefined = left;
+  while ((w = e8.windowParent(w)) !== undefined && !windowCombinedP(w, horizontal));
+  return w && windowLeft(w);
+}
+/** The window after an edge, stepping right as adjust-window-trailing-edge does. */
+function stepRight(right: e8.Window, horizontal: boolean): e8.Window | undefined {
+  const after = windowRight(right);
+  if (after !== undefined) return after;
+  let w: e8.Window | undefined = right;
+  while ((w = e8.windowParent(w)) !== undefined && !windowCombinedP(w, horizontal));
+  return w && windowRight(w);
+}
+
+/**
+ * Moves a window's bottom edge, or right edge with `horizontal`, by
+ * `delta` lines or columns, or with `pixelwise` units, down or right for a
+ * positive one, as adjust-window-trailing-edge: the windows before the
+ * edge and after it change, as far as they can.
+ */
+export function adjustWindowTrailingEdge(window: e8.Window = e8.selectedWindow(), delta: number, horizontal = false, pixelwise = false): void {
+  const frame = e8.windowFrame(window);
+  const minibufferWindow = e8.minibufferWindow();
+  let right: e8.Window | undefined = window;
+  let ignore: unknown = null;
+  if (!pixelwise) {
+    pixelwise = true;
+    delta = Math.round(delta * frameCharSize(horizontal));
+  }
+  // Find the edge to move.
+  while (right !== undefined && (!windowCombinedP(right, horizontal) || windowRight(right) === undefined)) right = e8.windowParent(right);
+  if (
+    right === undefined &&
+    !horizontal &&
+    (isNil(e8.variable("resize-mini-windows")) || minibufferWindow === activeMinibufferWindow()) &&
+    // The minibuffer's window just below it: E8's has no edges of its own.
+    e8.conditionCase(() => e8.windowPixelEdges(minibufferWindow)[1] === e8.windowPixelEdges(window)[3], { error: () => false })
+  ) {
+    windowResizeMiniWindow(minibufferWindow, -delta);
+    return;
+  }
+  let left: e8.Window | undefined = right;
+  if (left === undefined || (right = windowRight(left)) === undefined) {
+    e8.userError(horizontal ? "No window on the right of this one" : "No window below this one");
+  }
+  // The first window before the edge that can be resized.
+  const firstLeft: e8.Window | undefined = left;
+  while (
+    left !== undefined &&
+    (windowSizeFixedP(left, horizontal) || (delta < 0 && windowSize(left, horizontal, true) <= windowMinSize(left, horizontal, null, true)))
+  ) {
+    left = stepLeft(left, horizontal);
+  }
+  if (left === undefined) {
+    // One keeping its size must be resized.
+    ignore = Symbol.for("preserved");
+    left = firstLeft;
+    while (
+      left !== undefined &&
+      (windowSizeFixedP(left, horizontal, ignore) || (delta < 0 && windowSize(left, horizontal, true) <= windowMinSize(left, horizontal, ignore, true)))
+    ) {
+      left = stepLeft(left, horizontal);
+    }
+    if (left === undefined) e8.userError(horizontal ? "No resizable window on the left of this one" : "No resizable window above this one");
+  }
+  // And the first after it.
+  const firstRight: e8.Window | undefined = right;
+  while (
+    right !== undefined &&
+    (windowSizeFixedP(right, horizontal) ||
+      (delta > 0 && windowSize(right, horizontal, true) <= windowMinSize(right, horizontal, Symbol.for("preserved"), true)))
+  ) {
+    right = stepRight(right, horizontal);
+  }
+  if (right === undefined) {
+    ignore = Symbol.for("preserved");
+    right = firstRight;
+    while (
+      right !== undefined &&
+      (windowSizeFixedP(right, horizontal, ignore) || (delta > 0 && windowSize(right, horizontal, true) <= windowMinSize(right, horizontal, ignore, true)))
+    ) {
+      right = stepRight(right, horizontal);
+    }
+    if (right === undefined) e8.userError(horizontal ? "No resizable window on the right of this one" : "No resizable window below this one");
+  }
+  const l = left!;
+  const r = right!;
+  if (delta > 0) {
+    const maxDelta = windowMaxDelta1(l, 0, horizontal, ignore, "after", false, pixelwise);
+    const minDelta = windowMinDelta1(r, -delta, horizontal, ignore, "before", false, pixelwise);
+    // As far as it can if not all the way.
+    if (maxDelta < delta || minDelta > -delta) delta = Math.min(maxDelta, -minDelta);
+    if (delta !== 0) {
+      windowResizeReset(frame, horizontal);
+      // LEFT grows first.
+      const thisDelta = windowResizable_(l, delta, horizontal, ignore, "after", false, false, pixelwise);
+      if (thisDelta !== 0) {
+        windowResizeThisWindow(
+          l,
+          thisDelta,
+          horizontal,
+          ignore,
+          true,
+          "before",
+          horizontal ? windowPixelLeft(l) + e8.windowPixelWidth(l) : windowPixelTop(l) + e8.windowPixelHeight(l),
+        );
+      }
+      // The windows after it shrink.
+      windowResizeSiblings(l, delta, horizontal, ignore, "after", horizontal ? windowPixelLeft(r) : windowPixelTop(r));
+    }
+  } else if (delta < 0) {
+    const maxDelta = windowMaxDelta1(r, 0, horizontal, ignore, "before", false, pixelwise);
+    const minDelta = windowMinDelta1(l, delta, horizontal, ignore, "after", false, pixelwise);
+    if (maxDelta < -delta || minDelta > delta) delta = Math.max(-maxDelta, minDelta);
+    if (delta !== 0) {
+      windowResizeReset(frame, horizontal);
+      // RIGHT grows.
+      const thisDelta = windowResizable_(r, -delta, horizontal, ignore, "before", false, false, pixelwise);
+      if (thisDelta !== 0) windowResizeThisWindow(r, thisDelta, horizontal, ignore, true, "after", horizontal ? windowPixelLeft(r) : windowPixelTop(r));
+      // The windows before it shrink.
+      windowResizeSiblings(
+        r,
+        -delta,
+        horizontal,
+        ignore,
+        "before",
+        horizontal ? windowPixelLeft(l) + e8.windowPixelWidth(l) : windowPixelTop(l) + e8.windowPixelHeight(l),
+      );
+    }
+  }
+  if (delta !== 0 && windowResizeApplyP(frame, horizontal)) {
+    if (e8.windowResizeApply(frame, horizontal)) windowPixelToTotal(frame, horizontal);
+    else e8.signal("error", `Failed adjusting window ${String(window)}`);
+  }
+}
+e8.defun("adjust-window-trailing-edge", (window: e8.Window, delta: number, horizontal?: e8.Value, pixelwise?: e8.Value) => {
+  adjustWindowTrailingEdge(window ?? undefined, delta, !isNil(horizontal), !isNil(pixelwise));
+  return null;
+});
+
+/**
+ * Makes the selected window `delta` lines taller, or columns wider with
+ * `horizontal`, or smaller for a negative one, as enlarge-window: the
+ * commands themselves fail when the windows around cannot give that much;
+ * called otherwise, it goes as far as it can.
+ */
+export function enlargeWindow(delta: number, horizontal = false): void {
+  const minibufferWindow = e8.minibufferWindow();
+  if (windowPreservedSize(undefined, horizontal) !== undefined) windowPreserveSize(undefined, horizontal, null);
+  if (delta === 0) return;
+  if (windowSizeFixedP(undefined, horizontal)) e8.userError("Selected window has fixed size");
+  if (windowMinibufferP(e8.selectedWindow())) {
+    if (horizontal) e8.userError("Cannot resize minibuffer window horizontally");
+    windowResizeMiniWindow(e8.selectedWindow(), Math.round(delta * frameCharSize(false)));
+  } else if (!horizontal && windowFullHeightP() && isNil(e8.variable("resize-mini-windows"))) {
+    windowResizeMiniWindow(minibufferWindow, Math.round(-delta * frameCharSize(false)));
+  } else if (windowResizableP_(undefined, delta, horizontal)) {
+    windowResize(undefined, delta, horizontal);
+  } else if (windowResizableP_(undefined, delta, horizontal, Symbol.for("preserved"))) {
+    windowResize(undefined, delta, horizontal, Symbol.for("preserved"));
+  } else if (e8.thisCommand() === (horizontal ? "enlarge-window-horizontally" : "enlarge-window")) {
+    // Only the commands themselves fail, as Emacs keeps it for other callers.
+    e8.userError(horizontal ? "Cannot enlarge selected window horizontally" : "Cannot enlarge selected window vertically");
+  } else {
+    windowResize(undefined, delta > 0 ? windowMaxDelta(undefined, horizontal) : -windowMinDelta(undefined, horizontal), horizontal);
+  }
+}
+
+/** Makes the selected window `delta` lines shorter, or columns narrower with `horizontal`, as shrink-window. */
+export function shrinkWindow(delta: number, horizontal = false): void {
+  const minibufferWindow = e8.minibufferWindow();
+  if (windowPreservedSize(undefined, horizontal) !== undefined) windowPreserveSize(undefined, horizontal, null);
+  if (delta === 0) return;
+  if (windowSizeFixedP(undefined, horizontal)) e8.userError("Selected window has fixed size");
+  if (windowMinibufferP(e8.selectedWindow())) {
+    if (horizontal) e8.userError("Cannot resize minibuffer window horizontally");
+    windowResizeMiniWindow(e8.selectedWindow(), Math.round(-delta * frameCharSize(false)));
+  } else if (!horizontal && windowFullHeightP() && isNil(e8.variable("resize-mini-windows"))) {
+    windowResizeMiniWindow(minibufferWindow, Math.round(delta * frameCharSize(false)));
+  } else if (windowResizableP_(undefined, -delta, horizontal)) {
+    windowResize(undefined, -delta, horizontal);
+  } else if (windowResizableP_(undefined, -delta, horizontal, Symbol.for("preserved"))) {
+    windowResize(undefined, -delta, horizontal, Symbol.for("preserved"));
+  } else if (e8.thisCommand() === (horizontal ? "shrink-window-horizontally" : "shrink-window")) {
+    e8.userError(horizontal ? "Cannot shrink selected window horizontally" : "Cannot shrink selected window vertically");
+  } else {
+    windowResize(undefined, delta > 0 ? -windowMinDelta(undefined, horizontal) : windowMaxDelta(undefined, horizontal), horizontal);
+  }
+}
+
+const enlargeWindowCommand = e8.defineCommand({
   name: "enlarge-window",
-  doc: "Make the selected window taller by the prefix argument's lines, taking them from its neighbour.",
-  run: () => resize("enlarge-window", false, false),
+  doc: "Make the selected window DELTA lines taller, the prefix argument's, or shorter for a negative one, taking them from the windows around.",
+  params: [{ name: "delta", kind: "count" }],
+  run: (delta: number) => enlargeWindow(delta),
 });
 
 e8.defineCommand({
   name: "shrink-window",
-  doc: "Make the selected window shorter by the prefix argument's lines, giving them to its neighbour.",
-  run: () => resize("shrink-window", false, true),
+  doc: "Make the selected window DELTA lines shorter, the prefix argument's, or taller for a negative one, giving them to the windows around.",
+  params: [{ name: "delta", kind: "count" }],
+  run: (delta: number) => shrinkWindow(delta),
 });
 
 const enlargeWindowHorizontally = e8.defineCommand({
   name: "enlarge-window-horizontally",
-  doc: "Make the selected window wider by the prefix argument's columns, taking them from its neighbour.",
-  run: () => resize("enlarge-window-horizontally", true, false),
+  doc: "Make the selected window DELTA columns wider, the prefix argument's, taking them from the windows around.",
+  params: [{ name: "delta", kind: "count" }],
+  run: (delta: number) => enlargeWindow(delta, true),
 });
 
 const shrinkWindowHorizontally = e8.defineCommand({
   name: "shrink-window-horizontally",
-  doc: "Make the selected window narrower by the prefix argument's columns, giving them to its neighbour.",
-  run: () => resize("shrink-window-horizontally", true, true),
+  doc: "Make the selected window DELTA columns narrower, the prefix argument's, giving them to the windows around.",
+  params: [{ name: "delta", kind: "count" }],
+  run: (delta: number) => shrinkWindow(delta, true),
+});
+
+/** Makes a window as large as it can be without deleting any, as maximize-window. */
+export function maximizeWindow(window: e8.Window = e8.selectedWindow()): void {
+  const pixelwise = !isNil(e8.variable("window-resize-pixelwise"));
+  windowResize(window, windowMaxDelta(window, false, null, undefined, false, false, pixelwise), false, null, pixelwise);
+  windowResize(window, windowMaxDelta(window, true, null, undefined, false, false, pixelwise), true, null, pixelwise);
+}
+e8.defineCommand({
+  name: "maximize-window",
+  doc: "Make the selected window as large as it can be without deleting any windows.",
+  run: () => maximizeWindow(),
+});
+
+/** Makes a window as small as it can be without deleting any, as minimize-window. */
+export function minimizeWindow(window: e8.Window = e8.selectedWindow()): void {
+  const pixelwise = !isNil(e8.variable("window-resize-pixelwise"));
+  windowResize(window, -windowMinDelta(window, false, null, undefined, false, false, pixelwise), false, null, pixelwise);
+  windowResize(window, -windowMinDelta(window, true, null, undefined, false, false, pixelwise), true, null, pixelwise);
+}
+e8.defineCommand({
+  name: "minimize-window",
+  doc: "Make the selected window as small as it can be without deleting any windows.",
+  run: () => minimizeWindow(),
 });
 
 const balanceWindows = e8.defineCommand({
@@ -1646,7 +2678,7 @@ e8.bindKey("C-x 4 C-o", displayBufferCommand);
 e8.bindKey("C-x 4 0", killBufferAndWindow);
 e8.bindKey("C-M-v", scrollOtherWindow);
 e8.bindKey("C-M-S-v", scrollOtherWindowDown);
-e8.bindKey("C-x ^", enlargeWindow);
+e8.bindKey("C-x ^", enlargeWindowCommand);
 e8.bindKey("C-x }", enlargeWindowHorizontally);
 e8.bindKey("C-x {", shrinkWindowHorizontally);
 e8.bindKey("C-x +", balanceWindows);

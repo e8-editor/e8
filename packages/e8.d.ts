@@ -2547,17 +2547,21 @@ declare global {
        */
       "end-of-visual-line": [];
       /**
-       * Make the selected window taller by the prefix argument's lines, taking them from its neighbour.
+       * Make the selected window DELTA lines taller, the prefix argument's, or shorter for a negative one, taking them from the windows around.
+       *
+       * @param delta prefix count
        *
        * Defined in packages/window.ts.
        */
-      "enlarge-window": [];
+      "enlarge-window": [delta?: number];
       /**
-       * Make the selected window wider by the prefix argument's columns, taking them from its neighbour.
+       * Make the selected window DELTA columns wider, the prefix argument's, taking them from the windows around.
+       *
+       * @param delta prefix count
        *
        * Defined in packages/window.ts.
        */
-      "enlarge-window-horizontally": [];
+      "enlarge-window-horizontally": [delta?: number];
       /**
        * Evaluate a TypeScript expression and show its value.
        *
@@ -4114,6 +4118,12 @@ declare global {
        */
       "mark-word": [arg?: PrefixArg | boolean];
       /**
+       * Make the selected window as large as it can be without deleting any windows.
+       *
+       * Defined in packages/window.ts.
+       */
+      "maximize-window": [];
+      /**
        * Complete the minibuffer input as far as it is unambiguous.
        *
        * Which names match the input is up to completion-styles.
@@ -4135,6 +4145,12 @@ declare global {
        * With no completions, the input is finished as it is, unless the prompt must be answered by a completion.
        */
       "minibuffer-force-complete-and-exit": [];
+      /**
+       * Make the selected window as small as it can be without deleting any windows.
+       *
+       * Defined in packages/window.ts.
+       */
+      "minimize-window": [];
       /**
        * Start selecting with the mouse: select the window clicked in and move point there.
        *
@@ -6530,17 +6546,21 @@ declare global {
        */
       "show-paren-mode": [];
       /**
-       * Make the selected window shorter by the prefix argument's lines, giving them to its neighbour.
+       * Make the selected window DELTA lines shorter, the prefix argument's, or taller for a negative one, giving them to the windows around.
+       *
+       * @param delta prefix count
        *
        * Defined in packages/window.ts.
        */
-      "shrink-window": [];
+      "shrink-window": [delta?: number];
       /**
-       * Make the selected window narrower by the prefix argument's columns, giving them to its neighbour.
+       * Make the selected window DELTA columns narrower, the prefix argument's, giving them to the windows around.
+       *
+       * @param delta prefix count
        *
        * Defined in packages/window.ts.
        */
-      "shrink-window-horizontally": [];
+      "shrink-window-horizontally": [delta?: number];
       /**
        * Shrink the selected window to fit its buffer, if the buffer is shorter than the window.
        *
@@ -12248,6 +12268,12 @@ declare global {
        */
       "window-min-width": Value;
       /**
+       * Non-nil means resize windows by the front end's units rather than whole lines and columns.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-resize-pixelwise": Value;
+      /**
        * How many side windows each side may have: [LEFT, TOP, RIGHT, BOTTOM], each a number or nil for any.
        *
        * Defined in packages/window.ts.
@@ -12259,6 +12285,12 @@ declare global {
        * Defined in packages/window.ts.
        */
       "window-sides-vertical": Value;
+      /**
+       * Non-nil in a buffer means windows showing it keep their size: height only their height, width only their width, t both. Emacs changes them only when it has no other choice, as when a neighbouring window is deleted.
+       *
+       * Defined in packages/window.ts.
+       */
+      "window-size-fixed": Value;
       /**
        * Whether continued lines break at spaces and tabs rather than in the middle of a word.
        *
