@@ -67,10 +67,6 @@
   "how": "other",
   "e8": "e8.windowTree"
  },
- "framep": {
-  "how": "derived",
-  "e8": "e8.frameList().includes(f)"
- },
  "funcall-interactively": {
   "how": "replaced",
   "e8": "e8.call"
@@ -278,9 +274,5 @@
  "window-total-width": {
   "how": "other",
   "e8": "e8.windowSize"
- },
- "windowp": {
-  "how": "derived",
-  "e8": "typeof w === 'number'"
  }
 }

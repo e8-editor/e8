@@ -38,6 +38,15 @@ Left out, as no package in the corpus needs them yet: serial processes, datagram
 - A process's record outlives it, for as long as the session. It is small, the plist aside, and Emacs keeps a process object as long as anything refers to it; E8 cannot see what scripts refer to, so it keeps them all. A session that starts a very large number of processes could notice; then records of processes long gone could be dropped, keeping only their status.
 - The agent and e8-mcp go on naming processes by name.
 
+## Carried out
+
+Both stages landed on 2026-11-12, each after `make check`, a review against Emacs's source, and the ported packages' tests:
+
+1. Processes as objects, filters and sentinels set at any time: e8-editor/e8 pull request 110, after e8-editor/e8-with-editor#2, e8-editor/e8-consult#2 and e8-editor/e8-magit#23 moved those ports to the objects.
+2. The rest of process.c and callproc.c: the pull request after it. `process-attributes`, the network interfaces and the real-time signals' names have code for Linux that was type-checked there, not run, until CI on `main` runs it.
+
+What differs from Emacs is in [differences.md](../differences.md)'s process entries: a filter of `t` holds output rather than stopping the read, a pipe process serves one program's standard error, `process-attributes` gives sizes and times as numbers, and the primitives left out above. Process objects and these primitives took process.c from 32 to 52 of its 63 primitives by name ([docs/parity/demand.md](../parity/demand.md)).
+
 ## Dependencies introduced
 
 None.
