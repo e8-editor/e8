@@ -126,7 +126,8 @@ fn sizes_are_the_front_ends_units() {
     assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), "215");
     assert_eq!(eval(&mut ed, &s, "String(e8.resizeWindow(e8.windowList()[1], -1))"), "-1");
     assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), "195");
-    // fit-window-to-buffer fits the text and what of the window is not text, in points.
+    // fit-window-to-buffer fits the text and what of the window is not
+    // text, 164 points, in whole lines as Emacs does: nine, so a line less.
     eval(
         &mut ed,
         &s,
@@ -137,6 +138,9 @@ fn sizes_are_the_front_ends_units() {
         &s,
         r#"((w) => { e8.withCurrentBuffer(e8.getBufferCreate("f"), () => e8.insert("1\n2\n3\n4\n5\n6")); e8.setWindowBuffer(w, "f"); win.fitWindowToBuffer(w); return ""; })(e8.windowList()[1])"#,
     );
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), String::from("175"));
+    // In points with window-resize-pixelwise.
+    eval(&mut ed, &s, r#"(e8.setVariable("window-resize-pixelwise", true), win.fitWindowToBuffer(e8.windowList()[1]), "")"#);
     assert_eq!(eval(&mut ed, &s, "String(e8.windowPixelHeight(e8.windowList()[1]))"), String::from("164"));
 }
 
