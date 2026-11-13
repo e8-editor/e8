@@ -821,7 +821,8 @@ fn popup_menu() {
         harness.step();
         std::thread::sleep(std::time::Duration::from_millis(5));
     }
-    for _ in 0..4 {
+    // Down to the last item, which has a submenu, and right to open it.
+    for _ in 0..3 {
         harness.key_press(Key::ArrowDown);
         harness.step();
     }

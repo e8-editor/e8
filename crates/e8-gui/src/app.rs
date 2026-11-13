@@ -974,10 +974,7 @@ impl WindowLayout {
 impl Layout {
     /// The top left of the frame's windows, which the editor counts places from.
     fn windows_origin(&self) -> Pos2 {
-        // The top left of the text, inside the border the window draws
-        // around it, which is Emacs's internal-border-width and lies
-        // outside the cells `mouse-position` counts.
-        pos2(self.rect.left() + PAD_X, self.tab_rect.map_or(self.rect.top(), |r| r.bottom()) + PAD_Y)
+        pos2(self.rect.left(), self.tab_rect.map_or(self.rect.top(), |r| r.bottom()))
     }
 
     /// Lays a frame out and tells the editor how big each of its windows is.

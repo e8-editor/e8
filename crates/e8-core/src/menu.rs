@@ -104,6 +104,11 @@ pub(crate) struct OpenMenu {
     pub(crate) cursor: usize,
     /// Where the first panel's top left cell goes, in frame cells.
     pub(crate) at: (usize, usize),
+    /// The frame it was laid out for.
+    pub(crate) frame: crate::window::FrameId,
+    /// Whether the echo area is showing an item's help, so it can be
+    /// taken away again.
+    pub(crate) helped: bool,
 }
 
 /// One panel of an open menu, as a front end draws it: its top left cell
@@ -230,15 +235,19 @@ impl Editor {
         let nodes = self.menu_nodes(menu)?;
         let Some(position) = position else { return Ok(Value::Null) };
         if nodes.iter().all(|n| n.title) {
-            return Ok(Value::Null);
+            return Err(Error::new("Empty menu"));
         }
         let by_mouse = position == MenuPosition::Mouse;
         let at = self.menu_place(position);
         let cursor = nodes.iter().position(|n| !n.title).unwrap_or(0);
-        let open = OpenMenu { nodes, path: Vec::new(), cursor, at };
-        self.menu = Some(open);
+        let frame = self.selected_frame();
+        let open = OpenMenu { nodes, path: Vec::new(), cursor, at, frame, helped: false };
+        // A menu opened while another is (from a timer, say) gives the
+        // outer one back when it closes, as each of Emacs's keeps its own
+        // state on the stack.
+        let outer = self.menu.replace(open);
         let answer = self.walk_menu();
-        self.menu = None;
+        self.menu = outer;
         match answer {
             Ok(Some(value)) => Ok(value),
             Ok(None) if by_mouse => Ok(Value::Null),
@@ -284,6 +293,11 @@ impl Editor {
         let tracking = self.variable("track-mouse");
         self.set_variable("track-mouse", Value::Bool(true));
         let answer = self.menu_keys(map);
+        // The last help-echo goes, so that it does not stay after the
+        // menu, as tty_menu_activate takes it away on its way out.
+        if self.menu.as_ref().is_some_and(|m| m.helped) {
+            self.message = None;
+        }
         match tracking {
             Some(value) => self.set_variable("track-mouse", value),
             None => self.set_variable("track-mouse", Value::Null),
@@ -292,22 +306,36 @@ impl Editor {
     }
 
     fn menu_keys(&mut self, map: KeymapId) -> Result<Option<Value>> {
+        let frame = self.menu.as_ref().map(|m| m.frame);
         loop {
-            let Some(typed) = self.read_key_event(ReadKind::KeySequence, "", None)? else { return Ok(None) };
-            let Some(keys) = Key::parse_seq(&typed) else { return Ok(None) };
-            let what = match self.keymaps().lookup(map, &keys) {
-                crate::keymap::Lookup::Command(name) => name,
-                _ => return Ok(None),
+            // One event at a time, as read_menu_command reads one: ESC is
+            // itself here rather than a prefix, and C-g leaves the menu
+            // as `keyboard-quit` does in Emacs's navigation map.
+            let typed = match self.read_key_event(ReadKind::Key, "", None) {
+                Ok(Some(typed)) => typed,
+                Ok(None) => return Ok(None),
+                Err(e) if e.is("quit") => return Ok(None),
+                Err(e) => return Err(e),
+            };
+            // Input that switched frames under the menu's feet leaves it,
+            // as read_menu_input does: its place and faces are no longer
+            // the ones it was laid out for.
+            if frame != Some(self.selected_frame()) {
+                return Ok(None);
+            }
+            let keys = Key::parse_seq(&typed);
+            let what = match keys.as_ref().map(|keys| self.keymaps().lookup(map, keys)) {
+                Some(crate::keymap::Lookup::Command(name)) => name,
+                // A key the navigation map does not bind is ignored and
+                // the menu stays up, as read_menu_input ignores one.
+                _ => continue,
             };
             match what.as_str() {
                 "menu-exit" => return Ok(None),
                 "menu-next-item" => self.menu_move(1),
                 "menu-prev-item" => self.menu_move(-1),
                 "menu-next-menu" => {
-                    if !self.menu_open_submenu() {
-                        // Nothing to open: the answer stays unchosen, as
-                        // moving right at a leaf does nothing in Emacs.
-                    }
+                    self.menu_open_submenu();
                 }
                 "menu-prev-menu" => self.menu_close_submenu(),
                 "menu-select" => {
@@ -317,6 +345,8 @@ impl Editor {
                 }
                 "menu-mouse-movement" => self.menu_follow_pointer(),
                 "menu-mouse-select" => {
+                    // A click away from the menu leaves it, as clicking
+                    // outside a pop-up menu does.
                     if !self.menu_point_at_pointer() {
                         return Ok(None);
                     }
@@ -324,18 +354,32 @@ impl Editor {
                         return Ok(Some(answer));
                     }
                 }
-                "menu-ignore" => {}
-                _ => return Ok(None),
+                _ => {}
             }
             self.menu_show_help();
         }
     }
 
-    /// Shows the item's `:help` in the echo area, as term.c's menus do.
+    /// Shows the item's `:help` in the echo area, as term.c's menus do,
+    /// and takes the last one away where the item has none, so it does not
+    /// outlive the item it belongs to.
     fn menu_show_help(&mut self) {
         let help = self.menu.as_ref().and_then(|m| m.current().get(m.cursor).and_then(|n| n.help.clone()));
-        if let Some(help) = help {
-            self.message = Some(help);
+        let helped = self.menu.as_ref().is_some_and(|m| m.helped);
+        match help {
+            Some(help) => {
+                self.message = Some(help);
+                if let Some(menu) = self.menu.as_mut() {
+                    menu.helped = true;
+                }
+            }
+            None if helped => {
+                self.message = None;
+                if let Some(menu) = self.menu.as_mut() {
+                    menu.helped = false;
+                }
+            }
+            None => {}
         }
     }
 
@@ -350,11 +394,10 @@ impl Editor {
         }
         let mut at = menu.cursor;
         for _ in 0..count {
-            let next = at as isize + by;
-            if next < 0 || next >= count as isize {
-                break;
-            }
-            at = next as usize;
+            // Past either end it starts again at the other, as term.c's
+            // MI_SCROLL_FORWARD and MI_SCROLL_BACK wrap a menu that fits
+            // on the screen.
+            at = (at as isize + by).rem_euclid(count as isize) as usize;
             if !nodes[at].title {
                 break;
             }
@@ -408,9 +451,12 @@ impl Editor {
         }
     }
 
-    /// Puts the cursor where the pointer is, if it is on a panel.
+    /// Puts the cursor where the pointer is, and opens the submenu it
+    /// lands on, as tty_menu_activate opens one the mouse moves onto.
     fn menu_follow_pointer(&mut self) {
-        self.menu_point_at_pointer();
+        if self.menu_point_at_pointer() {
+            self.menu_open_submenu();
+        }
     }
 
     /// Puts the cursor on the item under the pointer. False if the
@@ -460,6 +506,9 @@ pub(crate) const NAVIGATION: &[(&str, &str)] = &[
     ("<down-mouse-3>", "menu-ignore"),
     ("<wheel-down>", "menu-next-item"),
     ("<wheel-up>", "menu-prev-item"),
+    ("<drag-mouse-1>", "menu-mouse-select"),
+    ("<drag-mouse-2>", "menu-mouse-select"),
+    ("<drag-mouse-3>", "menu-mouse-select"),
 ];
 
 impl Editor {
@@ -505,23 +554,24 @@ impl Editor {
             }
             let mut keys = prefix.to_vec();
             keys.push(key);
+            // A `:filter` is given what the item runs and gives back what
+            // it really runs, before anything else is asked about it, as
+            // parse_menu_item applies one: it may turn nothing into a
+            // submenu built as the menu opens.
+            let binding = self.menu_filter(&item.filter, &item.binding)?;
             let enabled = match &item.enable {
                 Some(value) => self.menu_truth(value)?,
-                None => !matches!(*item.binding, Binding::Nil),
+                None => true,
             };
             let button = match &item.button {
                 Some((kind, value)) => Some((*kind, self.menu_truth(value)?)),
                 None => None,
             };
-            let submenu = match *item.binding {
-                Binding::Keymap(sub) => Some(self.menu_filter(&item.filter, sub)?),
+            let children = match binding {
+                Binding::Keymap(sub) => Some(self.keymap_nodes(sub, &keys, depth + 1)?),
                 _ => None,
             };
-            let children = match submenu {
-                Some(sub) => Some(self.keymap_nodes(sub, &keys, depth + 1)?),
-                None => None,
-            };
-            let key_text = match (&item.keys, &*item.binding) {
+            let key_text = match (&item.keys, &binding) {
                 (Some(keys), _) => keys.clone(),
                 (None, Binding::Command(command)) => key_equivalent(&self.where_is_all(command)),
                 _ => String::new(),
@@ -530,7 +580,7 @@ impl Editor {
                 label: item.label.clone(),
                 keys,
                 value: None,
-                enabled: enabled && !matches!(*item.binding, Binding::Nil),
+                enabled: enabled && !matches!(binding, Binding::Nil),
                 title: false,
                 help: item.help.clone(),
                 key_text,
@@ -541,14 +591,21 @@ impl Editor {
         Ok(out)
     }
 
-    /// The keymap a `:filter` gives for a submenu, or the submenu itself.
-    fn menu_filter(&mut self, filter: &Option<Value>, submenu: KeymapId) -> Result<KeymapId> {
-        let Some(filter) = filter else { return Ok(submenu) };
-        let given = self.funcall(filter, &[Value::Keymap(submenu)])?;
-        match given {
-            Value::Keymap(map) => Ok(map),
-            _ => Ok(submenu),
-        }
+    /// What an item runs once its `:filter`, if it has one, has had the
+    /// definition and given back the one to use.
+    fn menu_filter(&mut self, filter: &Option<Value>, binding: &Binding) -> Result<Binding> {
+        let Some(filter) = filter else { return Ok(binding.clone()) };
+        let given = match binding {
+            Binding::Keymap(map) => Value::Keymap(*map),
+            Binding::Command(command) => Value::Str(command.clone()),
+            _ => Value::Null,
+        };
+        Ok(match self.funcall(filter, &[given])? {
+            Value::Keymap(map) => Binding::Keymap(map),
+            Value::Str(command) => Binding::Command(command),
+            Value::Null => Binding::Nil,
+            _ => binding.clone(),
+        })
     }
 
     /// Whether a menu item's property says yes: a function is called, as

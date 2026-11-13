@@ -139,12 +139,84 @@ fn leaving_a_menu_a_key_opened_quits() {
 }
 
 #[test]
-fn a_key_the_navigation_map_does_not_bind_leaves_the_menu() {
+fn a_key_the_navigation_map_does_not_bind_is_ignored() {
     let d = Driven::new(MENU);
     open(&d, "e8.variable(\"test-menu\")", "\"mouse\"");
+    // As read_menu_input ignores one: the menu stays up.
     d.press("x");
-    // Opened by the mouse, leaving it is no quit: the answer is nothing.
+    d.press("C-x");
+    assert!(d.with(|ed| ed.menu_active()));
+    assert_eq!(panels(&d)[0][0], ">Open");
+    // ESC leaves it; opened by the mouse, that is no quit.
+    d.press("ESC");
     assert_eq!(d.variable("test-chosen").as_deref(), Some("\"none\""));
+}
+
+#[test]
+fn the_cursor_wraps_at_the_ends_of_a_panel() {
+    let d = Driven::new(MENU);
+    open(&d, "e8.variable(\"test-menu\")", "\"point\"");
+    d.press("<up>");
+    assert_eq!(panels(&d)[0][2], ">More");
+    d.press("<down>");
+    assert_eq!(panels(&d)[0][0], ">Open");
+}
+
+#[test]
+fn a_filter_gives_what_an_item_really_runs() {
+    let d = Driven::new(
+        r#"
+        const menu = e8.makeSparseKeymap();
+        e8.defineMenuItem(menu, "<recent>", {
+          label: "Recent",
+          filter: () => {
+            const made = e8.makeSparseKeymap();
+            e8.defineMenuItem(made, "<one>", { label: "One", binding: "ignore" });
+            return made;
+          },
+        });
+        e8.setVariable("test-menu", menu);
+        "#,
+    );
+    open(&d, "e8.variable(\"test-menu\")", "\"point\"");
+    // The filter turned an item that ran nothing into a submenu.
+    d.press("<right>");
+    assert_eq!(panels(&d), vec![vec![">Recent".to_string()], vec![">One".into()]]);
+    d.press("RET");
+    assert_eq!(d.variable("test-chosen").as_deref(), Some("\"<recent> <one>\""));
+}
+
+#[test]
+fn an_items_help_shows_in_the_echo_area_and_goes_with_it() {
+    let d = Driven::new(
+        r#"
+        const menu = e8.makeSparseKeymap();
+        e8.defineMenuItem(menu, "<one>", { label: "One", binding: "ignore", help: "Does the first thing" });
+        e8.defineMenuItem(menu, "<two>", { label: "Two", binding: "ignore" });
+        e8.setVariable("test-menu", menu);
+        "#,
+    );
+    open(&d, "e8.variable(\"test-menu\")", "\"mouse\"");
+    d.press("<down>");
+    assert_eq!(d.message().as_deref(), None);
+    d.press("<up>");
+    assert_eq!(d.message().as_deref(), Some("Does the first thing"));
+    // It goes away with the item, and with the menu.
+    d.press("<down>");
+    assert_eq!(d.message().as_deref(), None);
+    d.press("<up> ESC");
+    assert_eq!(d.message().as_deref(), None);
+}
+
+#[test]
+fn an_empty_menu_is_an_error() {
+    let d = Driven::new("");
+    assert!(
+        d.eval_expression(
+            r#"(() => { try { e8.xPopupMenu(["Nothing"], "point"); return "no error"; } catch (e) { return String(e); } })()"#
+        )
+        .contains("Empty menu")
+    );
 }
 
 #[test]
@@ -216,4 +288,27 @@ fn a_click_away_from_the_menu_leaves_it() {
     d.press("<mouse-1>");
     assert!(!d.with(|ed| ed.menu_active()));
     assert_eq!(d.variable("test-chosen").as_deref(), Some("\"none\""));
+}
+
+#[test]
+fn a_menu_opened_while_one_is_open_gives_the_outer_one_back() {
+    let d = Driven::new(MENU);
+    // A timer that pops a second menu up while the first is waiting, as
+    // one a process filter or the agent opens would.
+    d.eval(
+        r#"
+        const other = e8.makeSparseKeymap();
+        e8.defineMenuItem(other, "<other>", { label: "Other", binding: "ignore" });
+        e8.runWithTimer(0.05, null, () => {
+          try { e8.xPopupMenu(other, "point"); } catch { /* it cannot read keys while the first does */ }
+          e8.setVariable("test-inner", "ran");
+        });
+        "#,
+    );
+    open(&d, "e8.variable(\"test-menu\")", "\"point\"");
+    d.until(|_| d.variable("test-inner").is_some());
+    // The first menu is still the one open, and still choosable.
+    assert_eq!(panels(&d), vec![vec![">Open".to_string(), "Save".into(), "More".into()]]);
+    d.press("RET");
+    assert_eq!(d.variable("test-chosen").as_deref(), Some("\"<open>\""));
 }
