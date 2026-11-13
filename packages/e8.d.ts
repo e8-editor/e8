@@ -16488,17 +16488,20 @@ declare global {
      */
     function setWindowFringes(window?: WindowLike | null, left?: number | null, right?: number | null, outsideMargins?: boolean, persistent?: boolean): boolean;
     /**
-     * A window's scroll bars, as window-scroll-bars: E8 draws none, so
-     * the widths are 0 and the kinds are what setWindowScrollBars was
-     * told, as a terminal's window answers.
+     * A window's scroll bars, as window-scroll-bars: its width, its
+     * columns, its vertical kind, its height, its lines, its horizontal
+     * kind and whether they stay whatever buffer it shows. E8 draws
+     * none, so the sizes are 0 and the kinds are what
+     * setWindowScrollBars was told, as a terminal's window answers.
      */
-    function windowScrollBars(window?: WindowLike | null): [width: number, vertical: Value, verticalPersistent: boolean, height: number, horizontal: Value, horizontalPersistent: boolean];
+    function windowScrollBars(window?: WindowLike | null): [width: number, columns: number, vertical: Value, height: number, lines: number, horizontal: Value, persistent: boolean];
     /**
      * Say what a window's scroll bars should be, as
-     * set-window-scroll-bars. E8 draws none, so this is remembered and
-     * given back; true if what was remembered changed.
+     * set-window-scroll-bars: the vertical kind is "left", "right" or
+     * null, the horizontal "bottom" or null. E8 draws none, so this is
+     * remembered and given back; true if what was remembered changed.
      */
-    function setWindowScrollBars(window?: WindowLike | null, width?: number | null, vertical?: Value, height?: number | null, horizontal?: Value): boolean;
+    function setWindowScrollBars(window?: WindowLike | null, width?: number | null, vertical?: Value, height?: number | null, horizontal?: Value, persistent?: boolean): boolean;
     /**
      * The buffer a window showed at the last redisplay, as
      * window-old-buffer; undefined before the first.

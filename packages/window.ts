@@ -1873,15 +1873,10 @@ function windowMinSize1(window: e8.Window, horizontal: boolean, ignore: unknown,
       const minMargins = e8.windowParameter(window, "min-margins");
       const leftMin = Array.isArray(minMargins) && typeof minMargins[0] === "number" ? minMargins[0] : undefined;
       const rightMin = Array.isArray(minMargins) && typeof minMargins[1] === "number" ? minMargins[1] : undefined;
-      // No scroll bars in E8; a divider only where a frame's parameter asks.
-      const divider = e8.windowRightDividerWidth(window);
+      // No scroll bars in E8, and the divider a window really loses is
+      // counted by windowSafeMinSize, not by its frame's parameter.
       const pixelWidth =
-        windowSafeMinSize(window, true, true) +
-        (leftMin ?? leftMargin ?? 0) * charSize +
-        (rightMin ?? rightMargin ?? 0) * charSize +
-        leftFringe +
-        rightFringe +
-        divider;
+        windowSafeMinSize(window, true, true) + (leftMin ?? leftMargin ?? 0) * charSize + (rightMin ?? rightMargin ?? 0) * charSize + leftFringe + rightFringe;
       if (pixelwise) {
         return Math.max(resizePixelwise ? Math.round(pixelWidth) : Math.round(Math.ceil(pixelWidth / charSize) * charSize), ignored ? 0 : windowMinPixelWidth());
       }
@@ -4359,6 +4354,9 @@ function windowStateGet1(window: e8.Window, writable: boolean): e8.Value[] {
     const start = e8.windowStart(window);
     const [leftMargin, rightMargin] = e8.windowMargins(window);
     const fringes = e8.windowFringes(window).map((v) => (v === false ? null : v));
+    // E8 has no scroll bar widths, which Emacs says as nil; the kinds
+    // are the window's, which are the frame's unless it was told.
+    const [, scrollColumns, scrollVertical, , scrollLines, scrollHorizontal, scrollPersistent] = e8.windowScrollBars(window);
     head.push([
       sym("buffer"),
       writable ? buffer : (e8.getBuffer(buffer) ?? buffer),
@@ -4366,8 +4364,9 @@ function windowStateGet1(window: e8.Window, writable: boolean): e8.Value[] {
       [sym("hscroll"), e8.windowHscroll(window)],
       [sym("fringes"), ...fringes],
       [sym("margins"), leftMargin ?? null, ...(rightMargin !== undefined ? [rightMargin] : [])],
-      // E8 has no scroll bars: what Emacs gives a terminal's window.
-      [sym("scroll-bars"), null, 0, true, null, 0, true, null],
+      // E8 draws no scroll bars, but gives back the kinds the window
+      // was told, as window-scroll-bars does.
+      [sym("scroll-bars"), null, scrollColumns, scrollVertical, null, scrollLines, scrollHorizontal, scrollPersistent || null],
       [sym("vscroll"), e8.windowVscroll(window)],
       cons("dedicated", e8.windowDedicatedP(window)),
       [

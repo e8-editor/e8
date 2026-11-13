@@ -382,28 +382,28 @@ natives! {
     /// end's units, as window-pixel-left.
     #[ts = "(window?: WindowLike | null): number"]
     pub fn windowPixelLeft(ed, window: Option<Win>) -> usize {
-        let window = live_window(ed, window)?;
+        let window = valid_window(ed, window)?;
         Ok(ed.window_pixel_left(window).unwrap_or(0))
     }
 
     /// How far a window's top edge is from its frame's, as window-pixel-top.
     #[ts = "(window?: WindowLike | null): number"]
     pub fn windowPixelTop(ed, window: Option<Win>) -> usize {
-        let window = live_window(ed, window)?;
+        let window = valid_window(ed, window)?;
         Ok(ed.window_pixel_top(window).unwrap_or(0))
     }
 
     /// Which column of the frame a window starts at, as window-left-column.
     #[ts = "(window?: WindowLike | null): number"]
     pub fn windowLeftColumn(ed, window: Option<Win>) -> usize {
-        let window = live_window(ed, window)?;
+        let window = valid_window(ed, window)?;
         Ok(ed.window_left_column(window).unwrap_or(0))
     }
 
     /// Which line of the frame a window starts at, as window-top-line.
     #[ts = "(window?: WindowLike | null): number"]
     pub fn windowTopLine(ed, window: Option<Win>) -> usize {
-        let window = live_window(ed, window)?;
+        let window = valid_window(ed, window)?;
         Ok(ed.window_top_line(window).unwrap_or(0))
     }
 
@@ -411,7 +411,7 @@ natives! {
     /// E8 having no tab lines.
     #[ts = "(window?: WindowLike | null): number"]
     pub fn windowTabLineHeight(ed, window: Option<Win>) -> usize {
-        let window = live_window(ed, window)?;
+        let window = valid_window(ed, window)?;
         Ok(ed.window_tab_line_height(window))
     }
 
@@ -420,7 +420,7 @@ natives! {
     /// otherwise.
     #[ts = "(window?: WindowLike | null): number"]
     pub fn windowRightDividerWidth(ed, window: Option<Win>) -> usize {
-        let window = live_window(ed, window)?;
+        let window = valid_window(ed, window)?;
         Ok(ed.window_divider_width(window, false))
     }
 
@@ -428,7 +428,7 @@ natives! {
     /// window-bottom-divider-width.
     #[ts = "(window?: WindowLike | null): number"]
     pub fn windowBottomDividerWidth(ed, window: Option<Win>) -> usize {
-        let window = live_window(ed, window)?;
+        let window = valid_window(ed, window)?;
         Ok(ed.window_divider_width(window, true))
     }
 
@@ -462,31 +462,35 @@ natives! {
         ))
     }
 
-    /// A window's scroll bars, as window-scroll-bars: E8 draws none, so
-    /// the widths are 0 and the kinds are what setWindowScrollBars was
-    /// told, as a terminal's window answers.
-    #[ts = "(window?: WindowLike | null): [width: number, vertical: Value, verticalPersistent: boolean, height: number, horizontal: Value, horizontalPersistent: boolean]"]
+    /// A window's scroll bars, as window-scroll-bars: its width, its
+    /// columns, its vertical kind, its height, its lines, its horizontal
+    /// kind and whether they stay whatever buffer it shows. E8 draws
+    /// none, so the sizes are 0 and the kinds are what
+    /// setWindowScrollBars was told, as a terminal's window answers.
+    #[ts = "(window?: WindowLike | null): [width: number, columns: number, vertical: Value, height: number, lines: number, horizontal: Value, persistent: boolean]"]
     pub fn windowScrollBars(ed, window: Option<Win>) -> Vec<EditorValue> {
         let window = live_window(ed, window)?;
-        let (width, vertical, vp, height, horizontal, hp) = ed.window_scroll_bars(window);
+        let (width, columns, vertical, height, lines, horizontal, persistent) = ed.window_scroll_bars(window);
         Ok(vec![
             EditorValue::Number(width as f64),
-            vertical.unwrap_or(EditorValue::Null),
-            EditorValue::Bool(vp),
+            EditorValue::Number(columns as f64),
+            vertical,
             EditorValue::Number(height as f64),
-            horizontal.unwrap_or(EditorValue::Null),
-            EditorValue::Bool(hp),
+            EditorValue::Number(lines as f64),
+            horizontal,
+            EditorValue::Bool(persistent),
         ])
     }
 
     /// Say what a window's scroll bars should be, as
-    /// set-window-scroll-bars. E8 draws none, so this is remembered and
-    /// given back; true if what was remembered changed.
-    #[ts = "(window?: WindowLike | null, width?: number | null, vertical?: Value, height?: number | null, horizontal?: Value): boolean"]
-    pub fn setWindowScrollBars(ed, window: Option<Win>, width: Option<f64>, vertical: EditorValue, height: Option<f64>, horizontal: EditorValue) -> bool {
+    /// set-window-scroll-bars: the vertical kind is "left", "right" or
+    /// null, the horizontal "bottom" or null. E8 draws none, so this is
+    /// remembered and given back; true if what was remembered changed.
+    #[ts = "(window?: WindowLike | null, width?: number | null, vertical?: Value, height?: number | null, horizontal?: Value, persistent?: boolean): boolean"]
+    pub fn setWindowScrollBars(ed, window: Option<Win>, width: Option<f64>, vertical: EditorValue, height: Option<f64>, horizontal: EditorValue, persistent: Option<bool>) -> bool {
         let window = live_window(ed, window)?;
         let (_, _) = (width, height);
-        Ok(ed.set_window_scroll_bars(window, vertical, horizontal))
+        ed.set_window_scroll_bars(window, vertical, horizontal, persistent.unwrap_or(false))
     }
 
     /// The buffer a window showed at the last redisplay, as
@@ -1539,6 +1543,16 @@ fn terminal_arg(ed: &e8_core::Editor, terminal: Option<Trm>) -> e8_core::Termina
     // A frame's number stands for the terminal it is on; one that is on
     // none keeps its number, which the editor then refuses.
     ed.terminal_named(named).unwrap_or(named)
+}
+
+/// A window given to a native, the selected one by default, checked
+/// valid: an internal window counts, as `decode_valid_window` takes one.
+fn valid_window(ed: &e8_core::Editor, window: Option<Win>) -> Result<e8_core::WindowId, e8_core::Error> {
+    let id = window.map_or(ed.selected_window(), |w| w.0);
+    if ed.window_frame(id).is_none() {
+        return Err(e8_core::Error::signal("wrong-type-argument", "Not a valid window", vec![EditorValue::Symbol("window-valid-p".into()), EditorValue::Window(id)]));
+    }
+    Ok(id)
 }
 
 /// A frame given to a native, the selected one by default, checked live.
