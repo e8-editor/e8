@@ -327,6 +327,8 @@ pub struct Editor {
     /// Internal windows' parameters, as `window-parameter` keeps them;
     /// the window tree goes to front ends, so they are kept here.
     pub(crate) internal_window_parameters: std::collections::HashMap<crate::window::WindowId, std::collections::BTreeMap<String, crate::variables::Value>>,
+    /// The tooltip `x-show-tip` is showing, if one is.
+    pub(crate) tip: Option<crate::menu::Tip>,
     /// The menu `x-popup-menu` has open, while it waits for an answer.
     pub(crate) menu: Option<crate::menu::OpenMenu>,
     /// The frames that are not selected, and every frame's id, newest first.
@@ -499,6 +501,7 @@ impl Editor {
             frame_size_implied: false,
             internal_window_parameters: Default::default(),
             window_new: Default::default(),
+            tip: None,
             menu: None,
             other_frames: Vec::new(),
             frame_order: vec![crate::window::FIRST_FRAME],

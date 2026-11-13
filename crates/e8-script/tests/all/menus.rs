@@ -522,3 +522,96 @@ fn the_buffers_menu_is_made_again_only_when_the_buffers_change() {
     assert!(after.contains("a-new-buffer"), "{after}");
     assert_ne!(before, after);
 }
+
+// --- Dialogs and tooltips (stage 3) -----------------------------------------
+
+#[test]
+fn a_dialog_shows_in_the_middle_of_the_frame_and_gives_the_value_chosen() {
+    let d = Driven::new("");
+    d.start_eval(
+        r#"e8.setVariable("test-chosen", String(e8.xPopupDialog(["Delete this file?", ["Yes", true], ["No", false], null, ["Help", "help"]])));"#,
+    );
+    assert_eq!(
+        panels(&d),
+        vec![vec!["Delete this file?".to_string(), ">Yes".into(), "No".into(), "-".repeat(17), "Help".into()]]
+    );
+    // In the middle of the frame, its text centred.
+    let (x, y, cells) = d.with(|ed| {
+        let panel = &ed.describe_frame(ed.selected_frame(), 1.0).menus[0];
+        (panel.x, panel.y, ed.frame_cells())
+    });
+    assert_eq!(y, cells.1 / 2);
+    assert_eq!(x, (cells.0 - "Delete this file?".len()) / 2);
+    d.press("<down> RET");
+    assert_eq!(d.variable("test-chosen").as_deref(), Some("\"false\""));
+}
+
+#[test]
+fn message_box_shows_the_message_until_it_is_answered() {
+    let d = Driven::new("");
+    d.start_eval(r#"e8.setVariable("test-said", e8.messageBox("Compilation finished") ?? "nothing");"#);
+    assert_eq!(panels(&d), vec![vec!["Compilation finished".to_string(), ">OK".into()]]);
+    d.press("RET");
+    assert_eq!(d.variable("test-said").as_deref(), Some("\"Compilation finished\""));
+}
+
+#[test]
+fn message_or_box_uses_the_echo_area_unless_the_mouse_asked() {
+    let d = Driven::new(
+        r#"
+        e8.defineCommand({ name: "test-say", run: () => e8.messageOrBox("Said") });
+        e8.bindKey("<f8>", "test-say");
+        e8.bindKey("<mouse-1>", "test-say");
+        "#,
+    );
+    d.press("<f8>");
+    assert_eq!(d.message().as_deref(), Some("Said"));
+    assert!(!d.with(|ed| ed.menu_active()));
+    // Asked with the mouse, it is a dialog.
+    d.press("<mouse-1>");
+    assert_eq!(panels(&d), vec![vec!["Said".to_string(), ">OK".into()]]);
+    d.press("RET");
+    // With use-dialog-box off, the echo area again.
+    d.eval(r#"e8.setVariable("use-dialog-box", false);"#);
+    d.press("<mouse-1>");
+    assert!(!d.with(|ed| ed.menu_active()));
+}
+
+#[test]
+fn a_tooltip_shows_over_the_windows_and_goes_when_it_is_hidden() {
+    let d = Driven::new("");
+    d.eval(r#"e8.xShowTip("Insert a file's text at point", [3, 2], 0);"#);
+    let tip = d.with(|ed| {
+        let fd = ed.describe_frame(ed.selected_frame(), 1.0);
+        fd.tip.map(|t| (t.x, t.y, t.rows.iter().map(|r| r.text.trim().to_string()).collect::<Vec<_>>()))
+    });
+    assert_eq!(tip, Some((3, 2, vec!["Insert a file's text at point".to_string()])));
+    assert!(d.with(|ed| ed.tip_shown()));
+    assert_eq!(d.eval_expression("e8.xHideTip()"), "true");
+    assert!(!d.with(|ed| ed.tip_shown()));
+    assert!(d.with(|ed| ed.describe_frame(ed.selected_frame(), 1.0).tip.is_none()));
+}
+
+#[test]
+fn a_tooltip_goes_by_itself_when_its_time_is_up() {
+    let d = Driven::new("");
+    d.eval(r#"e8.xShowTip("Gone soon", [0, 0], 0.05);"#);
+    assert!(d.with(|ed| ed.tip_shown()));
+    d.until(|_| !d.with(|ed| ed.tip_shown()));
+}
+
+#[test]
+fn tooltip_mode_off_says_it_in_the_echo_area() {
+    let d = Driven::new(r#"import("tooltip").then((m: any) => { (globalThis as any).tooltip = m; });"#);
+    d.eval(r#"(globalThis as any).tooltip.tooltipShow("Over here");"#);
+    assert!(d.with(|ed| ed.tip_shown()));
+    d.eval(r#"e8.callWithPrefix(-1, "tooltip-mode"); (globalThis as any).tooltip.tooltipShow("Over here");"#);
+    assert!(!d.with(|ed| ed.tip_shown()));
+    assert_eq!(d.message().as_deref(), Some("Over here"));
+}
+
+#[test]
+fn a_file_dialog_is_never_used() {
+    let d = Driven::new("");
+    assert_eq!(d.eval_expression("e8.nextReadFileUsesDialogP()"), "undefined");
+}

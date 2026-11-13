@@ -1,7 +1,7 @@
 //! Variables, hooks, keymaps, modes and help.
 
 use crate::*;
-use crate::natives::{natives, Field, Fields, Opt, Record, Win};
+use crate::natives::{natives, Field, Fields, Frm, Opt, Record, Win};
 
 natives! {
     /// Give the current buffer its own value, starting from the one it sees now.
@@ -697,6 +697,100 @@ natives! {
         let position = menu_position(ed, &position)?;
         let answer = ed.x_popup_menu(&menu, Some(position))?;
         Ok(Some(answer).filter(|v| !matches!(v, EditorValue::Null)))
+    }
+
+    /// Pop a dialog up in the middle of the frame and give back the value
+    /// of what was chosen, as x-popup-dialog. `contents` is the text it
+    /// shows and then its items, each a label and the value choosing it
+    /// gives, a plain string that cannot be chosen, or null, which is a
+    /// line across the dialog. Leaving it without choosing quits. E8
+    /// draws the dialog as a menu, as Emacs does where the display has no
+    /// dialog box of its own.
+    #[ts = "(contents: [text: string, ...items: ([label: string, value: Value] | string | null)[]], header?: boolean): Value"]
+    pub fn xPopupDialog(ed, contents: Vec<EditorValue>, header: Option<bool>) -> EditorValue {
+        let _ = header;
+        ed.x_popup_dialog(&contents)
+    }
+
+    /// Show a message in a dialog box, as message-box, and give it back.
+    /// With no text, the message in the echo area goes.
+    pub fn messageBox(ed, text: Option<String>) -> Option<String> {
+        let Some(text) = text.filter(|t| !t.is_empty()) else {
+            ed.message("");
+            return Ok(None);
+        };
+        let contents = vec![EditorValue::Str(text.clone()), EditorValue::List(vec![EditorValue::Str("OK".into()), EditorValue::Bool(true)])];
+        ed.x_popup_dialog(&contents)?;
+        Ok(Some(text))
+    }
+
+    /// Whether the command running should ask in a dialog box, as
+    /// use-dialog-box-p: it was invoked by the mouse and `use-dialog-box`
+    /// says to.
+    pub fn useDialogBoxP(ed) -> bool {
+        Ok(ed.use_dialog_box_p())
+    }
+
+    /// Whether the next readFileName will open a file dialog, as
+    /// next-read-file-uses-dialog-p. E8 has none, so it never does.
+    pub fn nextReadFileUsesDialogP(ed) -> Option<bool> {
+        let _ = ed;
+        Ok(None)
+    }
+
+    /// Show a message in a dialog box if the command was invoked with the
+    /// mouse or from a menu and `use-dialog-box` says to, and in the echo
+    /// area otherwise, as message-or-box.
+    pub fn messageOrBox(ed, text: Option<String>) -> Option<String> {
+        if ed.use_dialog_box_p() {
+            return body::messageBox(ed, text);
+        }
+        match text.filter(|t| !t.is_empty()) {
+            Some(text) => {
+                ed.message(text.clone());
+                Ok(Some(text))
+            }
+            None => {
+                ed.message("");
+                Ok(None)
+            }
+        }
+    }
+
+    /// Ask for a font, as x-select-font asks with the display's font
+    /// chooser: E8 asks in the minibuffer, over the font families the
+    /// front end has.
+    #[ts = "(frame?: FrameLike | null, excludeProportional?: boolean): string"]
+    pub fn xSelectFont(ed, frame: Option<Frm>, excludeProportional: Option<bool>) -> String {
+        let _ = frame;
+        let mut families = ed.font_family_list();
+        if excludeProportional.unwrap_or(false) {
+            families.retain(|f| e8_core::is_fixed_family(f));
+        }
+        if families.is_empty() {
+            return Err(Error::new("No fonts to choose from"));
+        }
+        let mut reading = e8_core::Reading::new("Font: ", e8_core::ParamKind::String);
+        reading.collection = Some(families);
+        reading.require_match = true;
+        reading.category = Some("font".into());
+        let answer = ed.read_from_minibuffer(reading)?;
+        Ok(answer.as_str().unwrap_or_default().to_string())
+    }
+
+    /// Show a tooltip, as x-show-tip: where the pointer is, or at a place
+    /// on the frame in columns and lines, until `timeout` seconds have
+    /// passed (5 by default, 0 to leave it) or xHideTip takes it away.
+    #[ts = "(text: string, at?: [x: number, y: number] | null, timeout?: number | null): void"]
+    pub fn xShowTip(ed, text: String, at: Option<Vec<f64>>, timeout: Option<f64>) {
+        let at = at.filter(|a| a.len() == 2).map(|a| (a[0].max(0.0) as usize, a[1].max(0.0) as usize));
+        ed.x_show_tip(&text, at, timeout);
+        Ok(())
+    }
+
+    /// Take the tooltip away, as x-hide-tip; true if one was showing.
+    pub fn xHideTip(ed) -> Option<bool> {
+        Ok(ed.x_hide_tip().then_some(true))
     }
 
     /// Whether a menu is open, as menu-or-popup-active-p.

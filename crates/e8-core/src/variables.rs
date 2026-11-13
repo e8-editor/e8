@@ -1118,6 +1118,11 @@ pub(crate) fn install(ed: &mut Editor) {
     crate::users::define_variables(ed);
     crate::mouse::define_variables(ed);
     ed.define_variable(Variable::new(
+        "use-dialog-box",
+        "Whether a question a command asks with the mouse, or from a menu, is asked in a dialog box rather than the echo area.",
+        Value::Bool(true),
+    ));
+    ed.define_variable(Variable::new(
         "menu-bar-final-items",
         "The menus of the menu bar that go at its right end, by the symbol that names them, as `help-menu` does.",
         Value::List(vec![Value::Symbol("help-menu".into())]),

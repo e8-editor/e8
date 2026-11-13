@@ -7257,6 +7257,22 @@ declare global {
        */
       "toggle-truncate-lines": [];
       /**
+       * Show tooltips. With it off, what would be a tooltip goes to the echo area, as in Emacs.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-mode": [];
+      /**
+       * Show some text as a tooltip where point is.
+       *
+       * @param text text
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-show-at-point": [text: string];
+      /**
        * Leave every recursive edit and minibuffer, back to the top level.
        */
       "top-level": [];
@@ -12545,6 +12561,46 @@ declare global {
        */
       "text-scale-mode-step": Value;
       /**
+       * How long the pointer rests before a tooltip shows.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-delay": Value;
+      /**
+       * How long a tooltip stays before it goes by itself.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-hide-delay": Value;
+      /**
+       * Whether Tooltip mode is on. Use the command tooltip-mode to change it.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-mode": Value;
+      /**
+       * Keymap tooltip-mode-map.
+       */
+      "tooltip-mode-map": Value;
+      /**
+       * How long the pointer rests before the next tooltip of a run shows.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-short-delay": Value;
+      /**
+       * How far right of the pointer a tooltip goes, in columns.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-x-offset": Value;
+      /**
+       * How far below the pointer a tooltip goes, in lines.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-y-offset": Value;
+      /**
        * Non-nil means generate <mouse-movement> events as the mouse moves, as the track-mouse macro binds it.
        */
       "track-mouse": Value;
@@ -12638,6 +12694,10 @@ declare global {
        * nil leaves it to truncate-lines, as visual-line-mode makes it in its buffer, and any other non-nil value truncates lines in every window that shares the frame's width.
        */
       "truncate-partial-width-windows": Value;
+      /**
+       * Whether a question a command asks with the mouse, or from a menu, is asked in a dialog box rather than the echo area.
+       */
+      "use-dialog-box": Value;
       /**
        * Whether questions asked with yes-or-no-p take y or n instead of yes or no and RET.
        */
@@ -14185,6 +14245,10 @@ declare global {
        */
       "tabulated-list-fake-header": FaceAttributes;
       /**
+       * Tooltips, which x-show-tip shows.
+       */
+      "tooltip": FaceAttributes;
+      /**
        * An item of a menu that cannot be chosen, and a menu's titles.
        */
       "tty-menu-disabled-face": FaceAttributes;
@@ -15193,6 +15257,18 @@ declare global {
        */
       "text-scale-mode-on-hook": Value;
       /**
+       * Run after Tooltip mode is turned on or off.
+       */
+      "tooltip-mode-hook": Value;
+      /**
+       * Run after Tooltip mode is turned off.
+       */
+      "tooltip-mode-off-hook": Value;
+      /**
+       * Run after Tooltip mode is turned on.
+       */
+      "tooltip-mode-on-hook": Value;
+      /**
        * Run after View mode is turned on or off.
        */
       "view-mode-hook": Value;
@@ -15533,6 +15609,52 @@ declare global {
      * lines, with the window as a third element).
      */
     function xPopupMenu(menu: Keymap | Keymap[] | Value[], position?: "mouse" | "point" | [x: number, y: number] | [x: number, y: number, window: Window]): Value | undefined;
+    /**
+     * Pop a dialog up in the middle of the frame and give back the value
+     * of what was chosen, as x-popup-dialog. `contents` is the text it
+     * shows and then its items, each a label and the value choosing it
+     * gives, a plain string that cannot be chosen, or null, which is a
+     * line across the dialog. Leaving it without choosing quits. E8
+     * draws the dialog as a menu, as Emacs does where the display has no
+     * dialog box of its own.
+     */
+    function xPopupDialog(contents: [text: string, ...items: ([label: string, value: Value] | string | null)[]], header?: boolean): Value;
+    /**
+     * Show a message in a dialog box, as message-box, and give it back.
+     * With no text, the message in the echo area goes.
+     */
+    function messageBox(text: string | undefined): string | undefined;
+    /**
+     * Whether the command running should ask in a dialog box, as
+     * use-dialog-box-p: it was invoked by the mouse and `use-dialog-box`
+     * says to.
+     */
+    function useDialogBoxP(): boolean;
+    /**
+     * Whether the next readFileName will open a file dialog, as
+     * next-read-file-uses-dialog-p. E8 has none, so it never does.
+     */
+    function nextReadFileUsesDialogP(): boolean | undefined;
+    /**
+     * Show a message in a dialog box if the command was invoked with the
+     * mouse or from a menu and `use-dialog-box` says to, and in the echo
+     * area otherwise, as message-or-box.
+     */
+    function messageOrBox(text: string | undefined): string | undefined;
+    /**
+     * Ask for a font, as x-select-font asks with the display's font
+     * chooser: E8 asks in the minibuffer, over the font families the
+     * front end has.
+     */
+    function xSelectFont(frame?: FrameLike | null, excludeProportional?: boolean): string;
+    /**
+     * Show a tooltip, as x-show-tip: where the pointer is, or at a place
+     * on the frame in columns and lines, until `timeout` seconds have
+     * passed (5 by default, 0 to leave it) or xHideTip takes it away.
+     */
+    function xShowTip(text: string, at?: [x: number, y: number] | null, timeout?: number | null): void;
+    /** Take the tooltip away, as x-hide-tip; true if one was showing. */
+    function xHideTip(): boolean | undefined;
     /** Whether a menu is open, as menu-or-popup-active-p. */
     function menuOrPopupActiveP(): boolean | undefined;
     /**

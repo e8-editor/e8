@@ -1154,8 +1154,8 @@ fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: boo
     draw_menus(&painter, fd, layout, m, t);
 }
 
-/// Draws the panels of an open menu over the windows: a raised card for
-/// each, with its lines in the menu faces (ADR 0076).
+/// Draws the tooltip and the panels of an open menu over the windows: a
+/// raised card for each, with its lines in the menu faces (ADR 0076).
 /// Draws a frame's menu bar: its menus along the top, in the menu faces.
 fn draw_menu_bar(painter: &Painter, items: &[e8_core::MenuBarItem], rect: Rect, m: &Metrics, t: Tokens) {
     let background = items.first().and_then(|i| i.style.background).map_or(t.sunken, color32);
@@ -1173,7 +1173,7 @@ fn draw_menu_bar(painter: &Painter, items: &[e8_core::MenuBarItem], rect: Rect, 
 
 fn draw_menus(painter: &Painter, fd: &FrameDescription, layout: &Layout, m: &Metrics, t: Tokens) {
     let origin = layout.windows_origin();
-    for panel in &fd.menus {
+    for panel in fd.tip.iter().chain(&fd.menus) {
         let min = origin + vec2(panel.x as f32 * m.char_width, panel.y as f32 * m.line_height);
         let size = vec2(panel.width as f32 * m.char_width, panel.rows.len() as f32 * m.line_height);
         let rect = Rect::from_min_size(min, size);

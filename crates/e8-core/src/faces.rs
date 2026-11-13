@@ -1055,6 +1055,7 @@ pub(crate) fn install(ed: &mut Editor) {
         ("fringe", "The fringes beside a window's text, and the bitmaps in them.", fg("faint")),
         ("header-line", "The header line at the top of a window, which `header-line-format` gives; front ends draw it as a bar, as the mode line.", FaceAttrs::default()),
         ("header-line-highlight", "What the mouse is over in the header line, such as a column title to sort by.", inherit("highlight")),
+        ("tooltip", "Tooltips, which x-show-tip shows.", FaceAttrs { foreground: Some("ink-strong".into()), background: Some("sunken".into()), ..Default::default() }),
         ("menu", "Menus, where the front end draws them itself.", FaceAttrs { background: Some("sunken".into()), ..Default::default() }),
         ("tty-menu-enabled-face", "An item of a menu that can be chosen.", inherit("menu")),
         ("tty-menu-disabled-face", "An item of a menu that cannot be chosen, and a menu's titles.", FaceAttrs { foreground: Some("muted".into()), background: Some("sunken".into()), ..Default::default() }),
