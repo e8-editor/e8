@@ -833,3 +833,40 @@ fn popup_menu() {
     }
     harness.snapshot("popup_menu_dark");
 }
+
+/// The menu bar along the top of the frame, with a menu open from it.
+#[test]
+fn menu_bar() {
+    let mut harness = Harness::builder()
+        .with_size(vec2(640.0, 360.0))
+        .with_theme(Theme::Dark)
+        .build_eframe(|cc| {
+            e8_gui::theme::install_fonts(&cc.egui_ctx, false);
+            E8App::threaded(&cc.egui_ctx, |ed| {
+                let scripting = e8_script::Scripting::new(ed).expect("the packages load");
+                ed.type_text("An editor that works the way Emacs works.\n");
+                ed.call("menu-bar-mode", vec![]).expect("the mode is there");
+                Some(scripting)
+            })
+            .silent()
+        });
+    harness.run_steps(3);
+    harness.state_mut().run(|ed| {
+        ed.call_interactively("menu-bar-open").expect("the menu bar opens");
+    });
+    let until = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    while !harness.state_mut().with_editor(|ed| ed.menu_active()) {
+        assert!(std::time::Instant::now() < until, "the menu never opened");
+        harness.step();
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+    for _ in 0..3 {
+        harness.key_press(Key::ArrowDown);
+        harness.step();
+    }
+    for _ in 0..3 {
+        harness.step();
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+    harness.snapshot("menu_bar_dark");
+}

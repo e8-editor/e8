@@ -226,14 +226,17 @@ fn run(
             Event::Mouse(event) => {
                 let (width, height) = *size.lock().unwrap_or_else(|e| e.into_inner());
                 // Where the pointer is, for mouse-position, from the top
-                // left of the frame's windows, below any tab bar.
+                // left of the frame's windows, below any menu or tab bar.
                 let (frame, tracking) = {
                     let published = driver.published();
-                    let frame = published.frames.first().map(|f| (f.frame, f.tab_bar.is_some()));
+                    let frame = published
+                        .frames
+                        .first()
+                        .map(|f| (f.frame, u16::from(f.menu_bar.is_some()) + u16::from(f.tab_bar.is_some())));
                     (frame, published.track_mouse)
                 };
-                if let Some((frame, tab_bar)) = frame {
-                    let row = event.row as f32 - if tab_bar { 1.0 } else { 0.0 };
+                if let Some((frame, bars)) = frame {
+                    let row = event.row as f32 - bars as f32;
                     driver.set_pointer(Some(e8_core::mouse::Pointer { frame, x: event.column as f32, y: row, screen: None }));
                 }
                 // A move with no button down is wanted only while track-mouse is on.
@@ -250,6 +253,10 @@ fn run(
                         Some(ToSend::TabBar(column)) => {
                             let frame = editor.selected_frame();
                             editor.tab_bar_mouse(frame, column, Key::new(e8_core::KeyCode::Mouse(e8_core::MouseKind::Click, 1)));
+                        }
+                        Some(ToSend::MenuBar(column)) => {
+                            let frame = editor.selected_frame();
+                            let _ = editor.menu_bar_mouse(frame, column);
                         }
                         Some(ToSend::Wheel(window, lines)) => editor.wheel_in(window, lines),
                         None => {}
@@ -301,8 +308,13 @@ impl Mouse {
     /// for the caller to send once it lets go of this state: the command a
     /// key runs may wait for more events, which come through here.
     fn handle(&mut self, ed: &mut Editor, event: ratatui::crossterm::event::MouseEvent, width: u16, height: u16) -> Option<ToSend> {
+        let menu_lines = ed.menu_bar_lines(ed.selected_frame()) as u16;
+        // A press on the menu bar opens the menu at its column.
+        if event.row < menu_lines && !self.clicks.is_down() {
+            return (event.kind == MouseEventKind::Down(MouseButton::Left)).then_some(ToSend::MenuBar(event.column as usize));
+        }
         // A press on the tab bar is a click on it, at its column.
-        if event.row < ed.tab_bar_lines(ed.selected_frame()) as u16 && !self.clicks.is_down() {
+        if event.row < menu_lines + ed.tab_bar_lines(ed.selected_frame()) as u16 && !self.clicks.is_down() {
             return (event.kind == MouseEventKind::Down(MouseButton::Left)).then_some(ToSend::TabBar(event.column as usize));
         }
         let target = ui::mouse_target(ed, width, height, event.column, event.row);
@@ -327,6 +339,8 @@ enum ToSend {
     Mouse(e8_core::clicks::Event),
     /// A click on the tab bar, at this column.
     TabBar(usize),
+    /// A click on the menu bar, at this column.
+    MenuBar(usize),
     /// The wheel, in a window or the selected one, this many lines.
     Wheel(Option<e8_core::WindowId>, isize),
 }

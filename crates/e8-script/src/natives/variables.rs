@@ -676,6 +676,13 @@ natives! {
         ))
     }
 
+    /// The keys a keymap itself binds menu items to, in the order they
+    /// were bound: what a menu's items are, for code that changes a menu.
+    #[ts = "(keymap: string | Keymap): string[]"]
+    pub fn keymapMenuKeys(ed, keymap: EditorValue) -> Vec<String> {
+        Ok(ed.menu_item_keys(&keymap)?.iter().map(ToString::to_string).collect())
+    }
+
     /// Pop a menu up and give back what was chosen, as x-popup-menu: a
     /// keymap's menu items, several keymaps' as one menu, or the panes and
     /// items of Emacs's list form, (TITLE (PANE-TITLE [LABEL, VALUE]...)).

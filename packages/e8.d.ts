@@ -4159,6 +4159,138 @@ declare global {
        */
       "maximize-window": [];
       /**
+       * Show a menu bar along the top of each frame. F10 opens it, and a click on it opens the menu under the pointer.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-mode": [];
+      /**
+       * Open the first menu of the menu bar, to walk with the arrows, RET and C-g.
+       */
+      "menu-bar-open": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-0": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-1": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-10": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-11": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-12": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-13": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-14": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-15": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-16": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-17": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-18": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-19": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-2": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-3": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-4": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-5": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-6": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-7": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-8": [];
+      /**
+       * Show the buffer this item of the Buffers menu names.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-select-buffer-9": [];
+      /**
        * Complete the minibuffer input as far as it is unambiguous.
        *
        * Which names match the input is up to completion-styles.
@@ -8188,6 +8320,12 @@ declare global {
        */
       "buffer-undo-list": Value;
       /**
+       * How many buffers the Buffers menu lists before it offers the buffer list instead.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "buffers-menu-max-size": Value;
+      /**
        * Whether searches match upper and lower case letters to each other.
        */
       "case-fold-search": Value;
@@ -10691,6 +10829,20 @@ declare global {
        * The most the echo area grows to for a long minibuffer, such as a vertical list of completions: a fraction of the frame's height, or a number of lines.
        */
       "max-mini-window-height": Value;
+      /**
+       * The menus of the menu bar that go at its right end, by the symbol that names them, as `help-menu` does.
+       */
+      "menu-bar-final-items": Value;
+      /**
+       * Whether Menu-Bar mode is on. Use the command menu-bar-mode to change it.
+       *
+       * Defined in packages/menu-bar.ts.
+       */
+      "menu-bar-mode": Value;
+      /**
+       * Keymap menu-bar-mode-map.
+       */
+      "menu-bar-mode-map": Value;
       /**
        * Keymap menu-navigation-map.
        */
@@ -14689,6 +14841,22 @@ declare global {
        */
       "lisp-data-mode-hook": Value;
       /**
+       * Run after Menu-Bar mode is turned on or off.
+       */
+      "menu-bar-mode-hook": Value;
+      /**
+       * Run after Menu-Bar mode is turned off.
+       */
+      "menu-bar-mode-off-hook": Value;
+      /**
+       * Run after Menu-Bar mode is turned on.
+       */
+      "menu-bar-mode-on-hook": Value;
+      /**
+       * Run before the menu bar is laid out again, for menus whose items change, as the Buffers menu's do.
+       */
+      "menu-bar-update-hook": Value;
+      /**
        * Run when a prompt closes, in the minibuffer, before the answer is used.
        */
       "minibuffer-exit-hook": Value;
@@ -15348,6 +15516,11 @@ declare global {
      * where it binds no menu item.
      */
     function menuItem(keymap: string | Keymap, keys: string): { label: string; binding?: CommandName | Keymap; help?: string; keys?: string } | undefined;
+    /**
+     * The keys a keymap itself binds menu items to, in the order they
+     * were bound: what a menu's items are, for code that changes a menu.
+     */
+    function keymapMenuKeys(keymap: string | Keymap): string[];
     /**
      * Pop a menu up and give back what was chosen, as x-popup-menu: a
      * keymap's menu items, several keymaps' as one menu, or the panes and

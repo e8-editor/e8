@@ -362,6 +362,8 @@ pub struct Editor {
     pub(crate) frame_parameters: std::collections::HashMap<crate::window::FrameId, std::collections::BTreeMap<String, Value>>,
     /// Each frame's tab bar, as the last redisplay formatted it, for frames that show one.
     pub(crate) tab_bars: std::collections::HashMap<crate::window::FrameId, Vec<crate::modeline::ModeLineSegment>>,
+    /// Each frame's menu bar as the last redisplay laid it out.
+    pub(crate) menu_bars: std::collections::HashMap<crate::window::FrameId, Vec<crate::menu::MenuBarItem>>,
     /// How many times each frame has been raised, which front ends follow.
     pub(crate) frame_raises: std::collections::HashMap<crate::window::FrameId, u64>,
     /// Each frame's title, from `frame-title-format`, as redisplay last formatted it.
@@ -515,6 +517,7 @@ impl Editor {
             bell: false,
             frame_parameters: Default::default(),
             tab_bars: Default::default(),
+            menu_bars: Default::default(),
             frame_raises: Default::default(),
             frame_titles: Default::default(),
             tab_bar_column: None,

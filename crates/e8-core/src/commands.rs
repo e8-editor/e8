@@ -105,6 +105,9 @@ fn recursive_editing(ed: &mut Editor) {
         "Edit recursively: go on with commands, with [ ] around the modes in the mode line, until C-M-c goes back to what entered the edit or C-] quits it.",
         |ed, _| ed.recursive_edit(),
     );
+    def(ed, "menu-bar-open", "Open the first menu of the menu bar, to walk with the arrows, RET and C-g.", |ed, _| {
+        ed.menu_bar_open(0)
+    });
     def(ed, "exit-recursive-edit", "Leave the innermost recursive edit or minibuffer, going on with what entered it.", |ed, _| {
         ed.exit_recursive_edit()
     });
@@ -1727,6 +1730,7 @@ fn bind_defaults(ed: &mut Editor) {
         ("C-]", "abort-recursive-edit"),
         ("C-M-c", "exit-recursive-edit"),
         ("M-x", "execute-extended-command"),
+        ("<f10>", "menu-bar-open"),
         ("C-x C-f", "find-file"),
         ("C-x C-SPC", "pop-global-mark"),
         ("C-x C-@", "pop-global-mark"),
