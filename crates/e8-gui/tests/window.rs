@@ -860,13 +860,27 @@ fn menu_bar() {
         harness.step();
         std::thread::sleep(std::time::Duration::from_millis(5));
     }
-    for _ in 0..3 {
+    // Down to the fourth item, waiting for each key to reach the editor,
+    // which is on a thread of its own.
+    let selected = |h: &mut Harness<'_, E8App>| {
+        h.state_mut().with_editor(|ed| {
+            let fd = ed.describe_frame(ed.selected_frame(), 1.0);
+            fd.menus.first().and_then(|panel| panel.rows.iter().position(|row| row.selected))
+        })
+    };
+    for row in 1..4 {
         harness.key_press(Key::ArrowDown);
-        harness.step();
+        let until = std::time::Instant::now() + std::time::Duration::from_secs(10);
+        while selected(&mut harness) != Some(row) {
+            assert!(std::time::Instant::now() < until, "the cursor never reached row {row}");
+            harness.step();
+            std::thread::sleep(std::time::Duration::from_millis(5));
+        }
     }
-    for _ in 0..3 {
+    // The item's help reaches the echo area a frame later.
+    for _ in 0..4 {
         harness.step();
-        std::thread::sleep(std::time::Duration::from_millis(5));
+        std::thread::sleep(std::time::Duration::from_millis(10));
     }
     harness.snapshot("menu_bar_dark");
 }
