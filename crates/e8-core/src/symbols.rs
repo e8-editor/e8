@@ -20,6 +20,9 @@ pub(crate) struct Symbol {
     /// A hook's global functions, when the variable is a hook.
     pub(crate) hook: Vec<HookEntry>,
     pub(crate) function: Option<Definition>,
+    /// Where its function was defined, such as a script file, as Emacs's
+    /// `load-history` records a `defun`; a command keeps its own.
+    pub(crate) function_source: Option<String>,
     pub(crate) plist: Props,
     /// Outermost first.
     pub(crate) advice: Vec<Advice>,
@@ -115,6 +118,34 @@ impl Editor {
         self.symbol_mut(name).function = Some(Definition::Function(function));
     }
 
+    /// Notes where a name's function was defined, as loading a file records
+    /// its `defun`s in Emacs's `load-history`.
+    pub fn set_function_source(&mut self, name: &str, source: Option<String>) {
+        self.symbol_mut(name).function_source = source;
+    }
+
+    /// The file that defined a name, as Emacs's `symbol-file`: its function
+    /// (`defun`), its variable (`defvar`) or its face (`defface`), or with
+    /// no `kind`, whichever it has. Only what a script file defined has one:
+    /// a package E8 ships gives its name in the source tree, as
+    /// `packages/files.ts`.
+    pub fn symbol_file(&self, name: &str, kind: Option<&str>) -> Option<String> {
+        let function = || {
+            let symbol = self.symbols.get(name)?;
+            symbol.function.as_ref()?;
+            symbol.function_source.clone()
+        };
+        let variable = || self.var(name)?.source.clone();
+        let face = || self.face(name)?.source.clone();
+        match kind {
+            None => function().or_else(variable).or_else(face),
+            Some("defun") => function(),
+            Some("defvar") => variable(),
+            Some("defface") => face(),
+            Some(_) => None,
+        }
+    }
+
     /// Makes a name call another's function, or a function, as Emacs's `defalias`.
     pub fn defalias(&mut self, name: &str, definition: &Value) -> Result<()> {
         let definition = match definition {
@@ -205,7 +236,12 @@ impl Editor {
     /// Adds a command, replacing any function or command of the same name.
     pub fn define_command(&mut self, command: Command) {
         let name = command.name.clone();
-        self.symbol_mut(&name).function = Some(Definition::Command(Rc::new(command)));
+        let symbol = self.symbol_mut(&name);
+        // Defined again with no file, it keeps the file it had, as load-history does.
+        if command.source.is_some() {
+            symbol.function_source = command.source.clone();
+        }
+        symbol.function = Some(Definition::Command(Rc::new(command)));
     }
 
     /// The command a name holds, following aliases.

@@ -195,20 +195,23 @@ impl Editor {
         Ok(value)
     }
 
+    /// Refuses to change a read-only buffer, unless `inhibit-read-only`
+    /// says otherwise, as Emacs's `barf-if-buffer-read-only`.
+    pub(crate) fn barf_if_buffer_read_only(&self) -> Result<()> {
+        let b = self.buffer();
+        if b.read_only && !self.variable("inhibit-read-only").is_some_and(|v| v.is_true()) {
+            return Err(Error::signal("buffer-read-only", format!("Buffer is read-only: #<buffer {}>", b.name), vec![Value::Str(b.name.clone())]));
+        }
+        Ok(())
+    }
+
     /// Refuses a change read-only text or a read-only buffer forbids, then
     /// runs the hooks of the text about to change, `before-change-functions`
     /// and those of the overlays there, as Emacs's prepare_to_modify_buffer.
     /// Returns the hooks to call once the change is made.
     fn prepare_to_modify(&mut self, start: usize, end: usize) -> Result<Pending> {
         let inhibit = self.variable("inhibit-read-only").unwrap_or(Value::Null);
-        let b = self.buffer();
-        if b.read_only && !inhibit.is_true() {
-            return Err(Error::signal(
-                "buffer-read-only",
-                format!("Buffer is read-only: #<buffer {}>", b.name),
-                vec![Value::Str(b.name.clone())],
-            ));
-        }
+        self.barf_if_buffer_read_only()?;
         self.verify_interval_modification(start, end, &inhibit)?;
         self.lock_on_first_change()?;
         if self.in_change_hooks || self.modification_hooks_inhibited() {

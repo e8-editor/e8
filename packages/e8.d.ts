@@ -4445,7 +4445,7 @@ declare global {
        *
        * @param drawer text
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-list.ts.
        */
       "org--insert-named-drawer": [drawer: string];
       /**
@@ -4453,7 +4453,7 @@ declare global {
        *
        * @param target text
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org--refile-copy-to": [target: string];
       /**
@@ -4461,7 +4461,7 @@ declare global {
        *
        * @param target text
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org--refile-goto": [target: string];
       /**
@@ -4469,7 +4469,7 @@ declare global {
        *
        * @param target text
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org--refile-to": [target: string];
       /**
@@ -4737,19 +4737,19 @@ declare global {
       /**
        * Indent an empty item, then outdent it a level at a time, then put it back, as repeated TAB does.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-cycle-item-indentation": [];
       /**
        * Change the level of an empty heading: a child of the heading above, then up the levels, as repeated TAB does.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-cycle-level": [];
       /**
        * Change the bullets of the list point is in to the next kind: -, +, *, 1. and 1).
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-cycle-list-bullet": [];
       /**
@@ -4777,7 +4777,7 @@ declare global {
        *
        * @param property text
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-list.ts.
        */
       "org-delete-property": [property: string];
       /**
@@ -4807,13 +4807,13 @@ declare global {
       /**
        * Move the element at point, such as a paragraph or a list, before the one above it.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-drag-element-backward": [];
       /**
        * Move the element at point, such as a paragraph or a list, after the one below it.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-drag-element-forward": [];
       /**
@@ -4877,7 +4877,7 @@ declare global {
       /**
        * Stop or unfold before an edit next to folded text, if the running command is one Org checks.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-fold.ts.
        */
       "org-fold-check-before-invisible-edit-maybe": [];
       /**
@@ -4945,13 +4945,13 @@ declare global {
       /**
        * Make the item point is on a child of the item before it, leaving its children where they are.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-indent-item": [];
       /**
        * Make the item point is on, with the items under it, a child of the item before it.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-indent-item-tree": [];
       /**
@@ -4973,7 +4973,7 @@ declare global {
        *
        * With a prefix argument, insert the entry's property drawer instead.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-list.ts.
        */
       "org-insert-drawer": [];
       /**
@@ -5024,7 +5024,7 @@ declare global {
       /**
        * Fix the indentation, bullets and checkboxes of the list point is in.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-list-repair": [];
       /**
@@ -5088,25 +5088,25 @@ declare global {
       /**
        * Swap the item point is on, with the items under it, with the one after it.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-move-item-down": [];
       /**
        * Swap the item point is on, with the items under it, with the one before it.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-move-item-up": [];
       /**
        * Swap the subtree point is in with the one after it at the same level.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-move-subtree-down": [];
       /**
        * Swap the subtree point is in with the one before it at the same level.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-move-subtree-up": [];
       /**
@@ -5130,7 +5130,7 @@ declare global {
       /**
        * Move to the item after the one point is in.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-next-item": [];
       /**
@@ -5154,13 +5154,13 @@ declare global {
       /**
        * Make the item point is on a sibling of its parent, leaving its children where they are.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-outdent-item": [];
       /**
        * Make the item point is on, with the items under it, a sibling of its parent.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-outdent-item-tree": [];
       /**
@@ -5184,7 +5184,7 @@ declare global {
       /**
        * Move to the item before the one point is in.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-element.ts.
        */
       "org-previous-item": [];
       /**
@@ -5222,13 +5222,13 @@ declare global {
       /**
        * Move the subtree at point under another heading, asking which: one org-refile-targets names, by default a top-level heading of this buffer. It goes in as that heading's last child. With C-u, go to the heading instead.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org-refile": [];
       /**
        * Copy the subtree at point under another heading, asking which, as org-refile does but keeping the original.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org-refile-copy": [];
       /**
@@ -5275,7 +5275,7 @@ declare global {
        * @param property text
        * @param value text
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-list.ts.
        */
       "org-set-property": [property: string, value: string];
       /**
@@ -11120,7 +11120,7 @@ declare global {
       /**
        * Whether outline paths complete a level at a time. E8 completes them whole.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org-outline-path-complete-in-steps": Value;
       /**
@@ -11150,25 +11150,25 @@ declare global {
       /**
        * The targets chosen before, newest first.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org-refile-history": Value;
       /**
        * A function called at each heading that may be a target, which says whether it is one.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org-refile-target-verify-function": Value;
       /**
        * Where C-c C-w can file a subtree, as a list of [files, kind, value]: files nil for this buffer, a file, a list of them, or "org-agenda-files"; kind ":level" for headings of that level, ":maxlevel" for those up to it, ":tag" or ":todo" for those with that tag or state, or ":regexp". Nil means this buffer's top-level headings.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org-refile-targets": Value;
       /**
        * Whether targets are named by their outline paths, Parent/Child, rather than their titles: t, or file, title, full-file-path or buffer-name to start the path with that.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/org-refile.ts.
        */
       "org-refile-use-outline-path": Value;
       /**
@@ -16201,6 +16201,24 @@ declare global {
     function matchData(): Match | undefined;
     /** How many columns text takes on screen, counting wide characters as two (Emacs's string-width). */
     function stringWidth(text: string): number;
+    /** Whether gzip and zlib data can be decompressed, as zlib-available-p: always. */
+    function zlibAvailableP(): true;
+    /**
+     * Replace gzip or zlib data in the region, its characters taken as
+     * bytes, with the data it holds, as raw bytes, as
+     * zlib-decompress-region: true when all of it was, else undefined and
+     * the region as it was, or with `allowPartial` the number of bytes not
+     * decompressed and the region what was.
+     */
+    function zlibDecompressRegion(start: number, end: number, allowPartial?: boolean): true | number | undefined;
+    /**
+     * The file that defined a name, as symbol-file: its function
+     * ("defun"), variable ("defvar") or face ("defface"), or without
+     * `type` whichever it has; undefined for what E8 defines itself. A
+     * package E8 ships gives its file in E8's source, as
+     * "packages/files.ts"; a file of one's own, its absolute name.
+     */
+    function symbolFile(symbol: string, type?: "defun" | "defvar" | "defface" | (string & {})): string | undefined;
     /** What a symbolic link points to, as file-symlink-p, or undefined if the file is not one. */
     function fileSymlinkP(file: string): string | undefined;
     /** Whether `a` was modified after `b`, or exists where `b` does not, as file-newer-than-file-p. */

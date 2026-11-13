@@ -120,6 +120,7 @@ impl rquickjs::loader::Loader for PackageLoader {
             Some(js) => js.to_string(),
             None => strip_module_types(&file, source.into_owned()).map_err(|e| rquickjs::Error::new_loading_message(name, e.to_string()))?,
         };
+        let js = crate::module_js(&file, js);
         rquickjs::Module::declare(ctx.clone(), file, js)
     }
 }

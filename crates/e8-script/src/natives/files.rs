@@ -4,6 +4,39 @@ use crate::natives::{natives, Field, Fields, Opt};
 use crate::*;
 
 natives! {
+    /// Whether gzip and zlib data can be decompressed, as zlib-available-p: always.
+    #[ts = "(): true"]
+    pub fn zlibAvailableP(ed) -> bool {
+        let _ = ed;
+        Ok(true)
+    }
+
+    /// Replace gzip or zlib data in the region, its characters taken as
+    /// bytes, with the data it holds, as raw bytes, as
+    /// zlib-decompress-region: true when all of it was, else undefined and
+    /// the region as it was, or with `allowPartial` the number of bytes not
+    /// decompressed and the region what was.
+    #[ts = "(start: number, end: number, allowPartial?: boolean): true | number | undefined"]
+    pub fn zlibDecompressRegion(ed, start: usize, end: usize, allow_partial: Option<bool>) -> Option<EditorValue> {
+        Ok(match ed.zlib_decompress_region(start, end, allow_partial.unwrap_or(false))? {
+            e8_core::decompress::Decompressed::Whole => Some(EditorValue::Bool(true)),
+            e8_core::decompress::Decompressed::Partly(left) => Some(EditorValue::Number(left as f64)),
+            e8_core::decompress::Decompressed::Failed => None,
+        })
+    }
+
+    /// The file that defined a name, as symbol-file: its function
+    /// ("defun"), variable ("defvar") or face ("defface"), or without
+    /// `type` whichever it has; undefined for what E8 defines itself. A
+    /// package E8 ships gives its file in E8's source, as
+    /// "packages/files.ts"; a file of one's own, its absolute name.
+    #[ts = "(symbol: string, type?: \"defun\" | \"defvar\" | \"defface\" | (string & {})): string | undefined"]
+    pub fn symbolFile(ed, symbol: String, kind: Option<String>) -> Option<String> {
+        Ok(ed.symbol_file(&symbol, kind.as_deref()).map(|file| {
+            if file.starts_with("packages/") { file } else { ed.expand_file_name(&file).display().to_string() }
+        }))
+    }
+
     /// What a symbolic link points to, as file-symlink-p, or undefined if the file is not one.
     pub fn fileSymlinkP(ed, file: String) -> Option<String> {
         ed.file_symlink_p(&file)
