@@ -35,6 +35,7 @@ pub mod completion;
 mod codingfns;
 mod commands;
 pub mod decompress;
+pub mod hashes;
 pub mod display;
 mod editor;
 mod error;
@@ -78,6 +79,8 @@ mod syntax;
 mod textprop;
 pub mod syntax_table;
 mod timers;
+#[cfg_attr(target_arch = "wasm32", path = "tls_stub.rs")]
+pub mod tls;
 pub mod treesitfns;
 mod window;
 mod window_tree;

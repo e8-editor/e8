@@ -1243,6 +1243,54 @@ const API: &str = r##"
     /** Told "deleted\n", "connection broken by remote peer\n", or for a server's new connection "open from HOST\n". */
     sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
     coding?: string | [string, string];
+    /**
+     * TLS once connected, as :tls-parameters: gnutlsBoot's type and
+     * parameters. A connection whose handshake fails is deleted.
+     */
+    tls?: { type?: "gnutls-x509pki"; hostname: string; trustfiles?: string[]; keylist?: [key: string, certificate: string][]; verifyError?: true | ("trustfiles" | "hostname")[] };
+  }
+  /** A certificate, as gnutlsPeerStatus describes each, with GnuTLS's names and formats. */
+  interface GnutlsCertificate {
+    version: number;
+    /** In hex, colons between bytes. */
+    serialNumber: string;
+    /** As "C=US,O=Example,CN=Example CA": the parts in the certificate's order. */
+    issuer: string;
+    /** As "2026-09-26". */
+    validFrom: string;
+    validTo: string;
+    subject: string;
+    /** "RSA", "EC/ECDSA" or "EdDSA (Ed25519)". */
+    publicKeyAlgorithm: string;
+    /** GnuTLS's word for the key's strength: "Legacy", "Medium", "High", "Ultra". */
+    certificateSecurityLevel: string;
+    /** As "RSA-SHA256" or "ECDSA-SHA256". */
+    signatureAlgorithm: string;
+    /** "sha1:" and the hash of the public key, as nsm.el pins keys by. */
+    publicKeyId: string;
+    publicKeyIdSha256: string;
+    /** "sha1:" and the certificate's fingerprint. */
+    certificateId: string;
+    pem: string;
+  }
+  /** A TLS peer, as gnutls-peer-status describes it. */
+  interface GnutlsPeerStatus {
+    /** What verifying it found wrong, last checked first, for gnutlsPeerStatusWarningDescribe; left out when nothing is. */
+    warnings?: string[];
+    /** Its certificates, its own first. */
+    certificates?: GnutlsCertificate[];
+    certificate?: GnutlsCertificate;
+    /** As "ECDHE-RSA". */
+    keyExchange: string;
+    /** "TLS1.3" or "TLS1.2". */
+    protocol: string;
+    /** As "AES-256-GCM". */
+    cipher: string;
+    /** "AEAD" for every cipher E8 offers. */
+    mac: string;
+    encryptThenMac: boolean;
+    /** Before TLS 1.3, whether renegotiating is safe. */
+    safeRenegotiation?: boolean;
   }
   /**
    * Start a program running alongside the editor, as Emacs's make-process,

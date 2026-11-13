@@ -4,6 +4,31 @@ use crate::natives::{natives, Field, Fields, Opt};
 use crate::*;
 
 natives! {
+    /// The hash of a string, or of a buffer's text from `start` to `end`
+    /// (the whole of it by default), as secure-hash: the text's bytes, raw
+    /// bytes as themselves and the rest as UTF-8, by "md5", "sha1",
+    /// "sha224", "sha256", "sha384" or "sha512", in hex, or with `binary`
+    /// as a string of bytes.
+    #[ts = "(algorithm: \"md5\" | \"sha1\" | \"sha224\" | \"sha256\" | \"sha384\" | \"sha512\", object: string | Buffer, start?: number | null, end?: number | null, binary?: boolean): string"]
+    pub fn secureHash(ed, algorithm: String, object: EditorValue, start: Option<usize>, end: Option<usize>, binary: Option<bool>) -> String {
+        let text = hashed_text(ed, &object, start, end)?;
+        let hash = e8_core::hashes::digest(&algorithm, &e8_core::hashes::text_bytes(&text))?;
+        Ok(if binary.unwrap_or(false) { e8_core::coding::string_of_bytes(&hash) } else { e8_core::hashes::hex(&hash) })
+    }
+
+    /// The MD5 hash of a string or a buffer's text, in hex, as md5.
+    #[ts = "(object: string | Buffer, start?: number | null, end?: number | null): string"]
+    pub fn md5(ed, object: EditorValue, start: Option<usize>, end: Option<usize>) -> String {
+        let text = hashed_text(ed, &object, start, end)?;
+        Ok(e8_core::hashes::hex(&e8_core::hashes::digest("md5", &e8_core::hashes::text_bytes(&text))?))
+    }
+
+    /// The algorithms secureHash knows, as secure-hash-algorithms.
+    pub fn secureHashAlgorithms(ed) -> Vec<String> {
+        let _ = ed;
+        Ok(e8_core::hashes::ALGORITHMS.iter().map(|s| s.to_string()).collect())
+    }
+
     /// Whether gzip and zlib data can be decompressed, as zlib-available-p: always.
     #[ts = "(): true"]
     pub fn zlibAvailableP(ed) -> bool {
@@ -465,5 +490,42 @@ fn milliseconds(t: std::time::SystemTime) -> f64 {
     match t.duration_since(std::time::UNIX_EPOCH) {
         Ok(d) => d.as_nanos() as f64 / 1e6,
         Err(e) => -(e.duration().as_nanos() as f64) / 1e6,
+    }
+}
+
+/// What secure-hash and md5 hash: a string, or a buffer's text from
+/// `start` to `end`, its accessible part by default, as fns.c takes them;
+/// a string's from `start` to `end` characters.
+fn hashed_text(ed: &mut e8_core::Editor, object: &EditorValue, start: Option<usize>, end: Option<usize>) -> Result<String, e8_core::Error> {
+    let out_of_range = || e8_core::Error::signal("args-out-of-range", "Args out of range", vec![object.clone()]);
+    match object {
+        EditorValue::Str(s) => {
+            let len = s.chars().count();
+            let (a, b) = (start.unwrap_or(0), end.unwrap_or(len));
+            if a > b || b > len {
+                return Err(out_of_range());
+            }
+            Ok(s.chars().skip(a).take(b - a).collect())
+        }
+        EditorValue::Text(t) => {
+            let s = t.string.clone();
+            let len = s.chars().count();
+            let (a, b) = (start.unwrap_or(0), end.unwrap_or(len));
+            if a > b || b > len {
+                return Err(out_of_range());
+            }
+            Ok(s.chars().skip(a).take(b - a).collect())
+        }
+        EditorValue::Buffer(id) => {
+            let index = ed.buffer_with_id(*id).ok_or_else(|| e8_core::Error::new("Selecting deleted buffer"))?;
+            let b = &ed.buffers()[index];
+            let (a, z) = (start.unwrap_or(b.point_min()), end.unwrap_or(b.point_max()));
+            let (a, z) = (a.min(z), a.max(z));
+            if a < b.point_min() || z > b.point_max() {
+                return Err(out_of_range());
+            }
+            Ok(b.slice(a..z))
+        }
+        _ => Err(e8_core::Error::signal("wrong-type-argument", "Wrong type argument: stringp", vec![object.clone()])),
     }
 }

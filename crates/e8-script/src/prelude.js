@@ -1263,8 +1263,20 @@
         sentinel ?? undefined,
       );
     },
-    makeNetworkProcess({ name, buffer, host, service, family, server = false, filter, sentinel, coding }) {
+    makeNetworkProcess({ name, buffer, host, service, family, server = false, filter, sentinel, coding, tls }) {
       const local = family === "local";
+      // TLS from the start, as :tls-parameters asks: a connection whose
+      // handshake fails is deleted, as Emacs's is.
+      if (tls) {
+        const process = e8.makeNetworkProcess({ name, buffer, host, service, family, server, filter, sentinel, coding });
+        try {
+          e8.gnutlsBoot(process, tls.type ?? "gnutls-x509pki", tls);
+        } catch (e) {
+          e8.deleteProcess(process);
+          throw e;
+        }
+        return process;
+      }
       return native.makeNetworkProcess(
         {
           name: String(name),

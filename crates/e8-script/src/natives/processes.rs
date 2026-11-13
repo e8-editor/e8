@@ -7,6 +7,167 @@ use crate::*;
 use crate::natives::{natives, Fields, Proc, ProcObj, Record, Rest};
 
 natives! {
+    /// What TLS this E8 has, as gnutls-available-p: a list of names, as
+    /// Emacs's of symbols, or undefined where there is none, as on the web.
+    #[ts = "(): string[] | undefined"]
+    pub fn gnutlsAvailableP(ed) -> Option<Vec<String>> {
+        let _ = ed;
+        let caps = e8_core::tls::capabilities();
+        Ok((!caps.is_empty()).then(|| caps.into_iter().map(str::to_string).collect()))
+    }
+
+    /// Start TLS on a network connection, as gnutls-boot: `type` is
+    /// "gnutls-x509pki"; `params` names the host the certificate must
+    /// name, trust files of authorities beyond the system's, key and
+    /// certificate files to offer, and which failures of verifying the
+    /// peer refuse it ("trustfiles", "hostname", or true for both). Waits
+    /// for the handshake; true when done, else an error.
+    #[ts = "(process: ProcessLike, type: \"gnutls-x509pki\" | \"gnutls-anon\", params: { hostname: string; trustfiles?: string[]; keylist?: [key: string, certificate: string][]; verifyError?: true | (\"trustfiles\" | \"hostname\")[] }): true"]
+    pub fn gnutlsBoot(ed, process: Proc, kind: String, params: Fields) -> bool {
+        let name = process.listed_name(ed)?;
+        if kind != "gnutls-x509pki" {
+            return Err(Error::new(format!("gnutls-boot: {kind} is not supported: E8's TLS is gnutls-x509pki only")));
+        }
+        let hostname = params.string("hostname").ok_or_else(|| Error::new("gnutls-boot: invalid :hostname parameter (not a string)"))?;
+        let names = |v: &EditorValue| -> Vec<String> {
+            match v {
+                EditorValue::List(items) => items.iter().filter_map(|i| i.as_str().map(|s| s.trim_start_matches(':').to_string())).collect(),
+                _ => Vec::new(),
+            }
+        };
+        let (verify_chain, verify_hostname) = match params.get("verifyError") {
+            Some(EditorValue::Bool(true)) => (true, true),
+            Some(v) => {
+                let n = names(v);
+                (n.iter().any(|s| s == "trustfiles"), n.iter().any(|s| s == "hostname"))
+            }
+            None => (false, false),
+        };
+        let keylist = match params.get("keylist") {
+            Some(EditorValue::List(pairs)) => pairs
+                .iter()
+                .filter_map(|kv| match kv {
+                    EditorValue::List(kv) => Some((kv.first()?.as_str()?.to_string(), kv.get(1)?.as_str()?.to_string())),
+                    _ => None,
+                })
+                .collect(),
+            _ => Vec::new(),
+        };
+        let tls = e8_core::tls::TlsParams { hostname, trustfiles: params.strings("trustfiles").unwrap_or_default(), keylist, verify_chain, verify_hostname };
+        ed.gnutls_boot(&name, tls)?;
+        Ok(true)
+    }
+
+    /// How far a process's TLS has come, as gnutls-get-initstage: 0 for
+    /// none, 8 while its handshake goes on, 9 once done, 3 once taken down.
+    #[ts = "(process: ProcessLike): number"]
+    pub fn gnutlsGetInitstage(ed, process: Proc) -> u8 {
+        let name = process.listed_name(ed)?;
+        ed.gnutls_get_initstage(&name)
+    }
+
+    /// The peer of a process's TLS once its handshake is done, as
+    /// gnutls-peer-status: what verifying it found wrong ("unknown-ca",
+    /// "no-host-match", ...), its certificates, the peer's first, and the
+    /// protocol, key exchange, cipher and MAC; undefined before.
+    #[ts = "(process: ProcessLike): GnutlsPeerStatus | undefined"]
+    pub fn gnutlsPeerStatus(ed, process: Proc) -> Option<Record> {
+        let name = process.listed_name(ed)?;
+        let Some(status) = ed.gnutls_peer_status(&name)? else { return Ok(None) };
+        let cert = |c: &e8_core::tls::CertificateDetails| {
+            Record::new()
+                .with("version", EditorValue::Number(c.version as f64))
+                .with("serialNumber", c.serial_number.as_str())
+                .with("issuer", c.issuer.as_str())
+                .with("validFrom", c.valid_from.as_str())
+                .with("validTo", c.valid_to.as_str())
+                .with("subject", c.subject.as_str())
+                .with("publicKeyAlgorithm", c.public_key_algorithm.as_str())
+                .with("certificateSecurityLevel", c.certificate_security_level.as_str())
+                .with("signatureAlgorithm", c.signature_algorithm.as_str())
+                .with("publicKeyId", c.public_key_id.as_str())
+                .with("publicKeyIdSha256", c.public_key_id_sha256.as_str())
+                .with("certificateId", c.certificate_id.as_str())
+                .with("pem", c.pem.as_str())
+        };
+        let mut r = Record::new();
+        if !status.warnings.is_empty() {
+            r = r.with("warnings", status.warnings.iter().map(|w| w.to_string()).collect::<Vec<_>>());
+        }
+        if let Some(first) = status.certificates.first() {
+            r = r.with("certificates", status.certificates.iter().map(cert).collect::<Vec<_>>()).with("certificate", cert(first));
+        }
+        r = r
+            .with("keyExchange", status.key_exchange.as_str())
+            .with("protocol", status.protocol.as_str())
+            .with("cipher", status.cipher.as_str())
+            .with("mac", status.mac.as_str())
+            .with("encryptThenMac", EditorValue::Bool(false));
+        if let Some(safe) = status.safe_renegotiation {
+            r = r.with("safeRenegotiation", EditorValue::Bool(safe));
+        }
+        Ok(Some(r))
+    }
+
+    /// What a warning gnutlsPeerStatus gives means, as
+    /// gnutls-peer-status-warning-describe.
+    #[ts = "(warning: string): string | undefined"]
+    pub fn gnutlsPeerStatusWarningDescribe(ed, warning: String) -> Option<String> {
+        let _ = ed;
+        Ok(e8_core::tls::describe_warning(warning.trim_start_matches(':')).map(str::to_string))
+    }
+
+    /// A PEM certificate described as text, as gnutls-format-certificate.
+    pub fn gnutlsFormatCertificate(ed, certificate: String) -> String {
+        let _ = ed;
+        e8_core::tls::format_certificate(&certificate)
+    }
+
+    /// End a process's TLS, telling the peer, as gnutls-bye; `cont` is
+    /// Emacs's, which E8 needs not, as it never waits for the peer's answer.
+    #[ts = "(process: ProcessLike, cont?: boolean): boolean"]
+    pub fn gnutlsBye(ed, process: Proc, cont: Option<bool>) -> bool {
+        let _ = cont;
+        let name = process.listed_name(ed)?;
+        ed.gnutls_bye(&name)
+    }
+
+    /// Take a process's TLS down, as gnutls-deinit.
+    #[ts = "(process: ProcessLike): true"]
+    pub fn gnutlsDeinit(ed, process: Proc) -> bool {
+        let name = process.listed_name(ed)?;
+        ed.gnutls_deinit(&name)?;
+        Ok(true)
+    }
+
+    /// Keep parameters for a later gnutlsBoot of a process, as
+    /// gnutls-asynchronous-parameters.
+    #[ts = "(process: ProcessLike, params: unknown): void"]
+    pub fn gnutlsAsynchronousParameters(ed, process: Proc, params: EditorValue) {
+        let name = process.listed_name(ed)?;
+        ed.gnutls_asynchronous_parameters(&name, params)
+    }
+
+    /// Whether a value gnutlsBoot gave says something went wrong, as
+    /// gnutls-errorp: anything but true and "gnutls-e-again".
+    #[ts = "(error: unknown): boolean"]
+    pub fn gnutlsErrorp(ed, error: EditorValue) -> bool {
+        let _ = ed;
+        Ok(!matches!(&error, EditorValue::Bool(true)) && error.as_str() != Some("gnutls-e-again"))
+    }
+
+    /// What a value gnutlsBoot gave says, as gnutls-error-string.
+    #[ts = "(error: unknown): string"]
+    pub fn gnutlsErrorString(ed, error: EditorValue) -> String {
+        let _ = ed;
+        Ok(match &error {
+            EditorValue::Bool(true) => "Not an error".into(),
+            EditorValue::Str(s) | EditorValue::Symbol(s) if s == "gnutls-e-again" => "Resource temporarily unavailable, try again.".into(),
+            EditorValue::Str(s) | EditorValue::Symbol(s) => s.clone(),
+            _ => "Not an error symbol or code".into(),
+        })
+    }
+
     /// The login name E8 goes by, as user-login-name, or a user id's, or
     /// undefined for an id no account has.
     #[ts = "(uid?: number | null): string | undefined"]
@@ -142,6 +303,7 @@ natives! {
             filter: handler(filter),
             sentinel: handler(sentinel),
             coding: coding_pair(options.get("coding"))?,
+            tls: None,
         };
         let name = ed.make_network_process(spec)?;
         Ok(ProcObj(ed.process_named(&name).expect("just opened")))

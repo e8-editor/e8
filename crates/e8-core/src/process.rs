@@ -234,6 +234,17 @@ pub(crate) struct Process {
     /// make-process's :stderr: the buffer, its own mark, and bytes not
     /// decoded yet.
     stderr: Option<StderrBuffer>,
+    /// A connection's TLS, which `gnutls-boot` starts, and its socket.
+    tls: Option<TlsLink>,
+}
+
+/// What a network connection keeps for TLS: what sits between its socket
+/// and its threads, and a handle on the socket to send the handshake on.
+struct TlsLink {
+    shared: Arc<crate::tls::Shared>,
+    socket: Conn,
+    /// What `gnutls-asynchronous-parameters` kept, for a later `gnutls-boot`.
+    boot_parameters: Option<Value>,
 }
 
 struct StderrBuffer {
@@ -606,6 +617,8 @@ pub struct NetworkSpec {
     pub filter: Option<Value>,
     pub sentinel: Option<Value>,
     pub coding: Option<(Coding, Coding)>,
+    /// TLS to start once connected, as `:tls-parameters` asks.
+    pub tls: Option<crate::tls::TlsParams>,
 }
 
 /// Reads a stream in chunks, sending the bytes on to be decoded. With a
@@ -897,6 +910,7 @@ impl Editor {
             pending: Vec::new(),
             gate,
             stderr,
+            tls: None,
         });
         Ok(name)
     }
@@ -1059,6 +1073,7 @@ impl Editor {
             pending: Vec::new(),
             gate: None,
             stderr: None,
+            tls: None,
         });
         Ok(name)
     }
@@ -1081,6 +1096,7 @@ impl Editor {
         let id = self.processes.next_id;
         self.processes.next_id += 1;
         let mut contact = Contact { host: spec.host.clone(), service: spec.service.clone(), remote: None };
+        let mut tls = None;
         let (kind, stdin, open_streams) = if spec.server {
             let stop = Arc::new(AtomicBool::new(false));
             let tx = self.processes.tx.clone();
@@ -1123,7 +1139,8 @@ impl Editor {
                 #[cfg(not(unix))]
                 None => return Err(Error::new("Local sockets are not supported here")),
             };
-            let stdin = self.connect(id, conn)?;
+            let (stdin, link) = self.connect(id, conn)?;
+            tls = Some(link);
             (Kind::Network(contact), Some(stdin), 1)
         };
         let buffer = spec.buffer.as_ref().map(|name| self.get_buffer_create(name));
@@ -1160,16 +1177,91 @@ impl Editor {
             pending: Vec::new(),
             gate: None,
             stderr: None,
+            tls,
         });
+        // TLS from the start, as :tls-parameters asks.
+        if let Some(params) = spec.tls
+            && let Err(e) = self.gnutls_boot(&name, params)
+        {
+            let _ = self.delete_process(&name);
+            return Err(e);
+        }
         Ok(name)
     }
 
-    /// Starts reading a connection and returns where to send it text.
-    fn connect(&mut self, id: u64, conn: Conn) -> Result<Sender<Option<Vec<u8>>>> {
-        let reader = conn.try_clone()?;
+    /// Starts TLS on a network connection and waits for its handshake, as
+    /// Emacs's `gnutls-boot` does for a connection made without :nowait:
+    /// signals an error if it fails, or if verifying the peer fails as
+    /// `params` says must refuse it. `C-g` stops the wait.
+    pub fn gnutls_boot(&mut self, name: &str, params: crate::tls::TlsParams) -> Result<()> {
+        let p = self.process(name)?;
+        let Some(link) = &p.tls else { return Err(Error::new(format!("gnutls-boot: {name} is not a network connection"))) };
+        let (shared, mut socket) = (link.shared.clone(), link.socket.try_clone()?);
+        shared.start(&params, &mut socket)?;
+        match shared.wait(|| self.maybe_quit())? {
+            Ok(()) => Ok(()),
+            Err(message) => {
+                shared.deinit();
+                Err(Error::signal("gnutls-error", message.clone(), vec![Value::Str(message)]))
+            }
+        }
+    }
+
+    /// The TLS of a process, if it is a network connection.
+    fn tls_of(&self, name: &str) -> Result<Option<Arc<crate::tls::Shared>>> {
+        Ok(self.process(name)?.tls.as_ref().map(|l| l.shared.clone()))
+    }
+
+    /// How far a process's TLS has come, as `gnutls-get-initstage`.
+    pub fn gnutls_get_initstage(&self, name: &str) -> Result<u8> {
+        Ok(self.tls_of(name)?.map_or(crate::tls::stage::EMPTY, |t| t.stage()))
+    }
+
+    /// The peer of a process's TLS, once its handshake is done, as `gnutls-peer-status`.
+    pub fn gnutls_peer_status(&self, name: &str) -> Result<Option<crate::tls::PeerStatus>> {
+        Ok(self.tls_of(name)?.and_then(|t| t.peer_status()))
+    }
+
+    /// Ends a process's TLS, telling the peer, as `gnutls-bye`. Whether
+    /// there was TLS to end.
+    pub fn gnutls_bye(&mut self, name: &str) -> Result<bool> {
+        let p = self.process(name)?;
+        let Some(link) = &p.tls else { return Ok(false) };
+        let mut socket = link.socket.try_clone()?;
+        link.shared.bye(&mut socket).map_err(|e| Error::new(format!("gnutls-bye: {e}")))
+    }
+
+    /// Takes a process's TLS down, as `gnutls-deinit`.
+    pub fn gnutls_deinit(&mut self, name: &str) -> Result<()> {
+        if let Some(t) = self.tls_of(name)? {
+            t.deinit();
+        }
+        Ok(())
+    }
+
+    /// Keeps parameters for a later `gnutls-boot`, as `gnutls-asynchronous-parameters`.
+    pub fn gnutls_asynchronous_parameters(&mut self, name: &str, params: Value) -> Result<()> {
+        if let Some(link) = self.process_mut(name)?.tls.as_mut() {
+            link.boot_parameters = Some(params);
+        }
+        Ok(())
+    }
+
+    /// What `gnutls-asynchronous-parameters` kept for a process.
+    pub fn gnutls_boot_parameters(&self, name: &str) -> Result<Option<Value>> {
+        Ok(self.process(name)?.tls.as_ref().and_then(|l| l.boot_parameters.clone()))
+    }
+
+    /// Starts reading a connection and returns where to send it text, and
+    /// what TLS needs of it: plain until `gnutls-boot` starts TLS.
+    fn connect(&mut self, id: u64, conn: Conn) -> Result<(Sender<Option<Vec<u8>>>, TlsLink)> {
+        let shared = Arc::new(crate::tls::Shared::default());
+        let reader = crate::tls::Reader { raw: conn.try_clone()?, out: conn.try_clone()?, shared: shared.clone() };
         let closer = conn.try_clone()?;
+        let link = TlsLink { shared: shared.clone(), socket: conn.try_clone()?, boot_parameters: None };
         read_stream(id, reader, self.processes.tx.clone(), None, Duration::ZERO, Event::Output);
-        Ok(writer(conn, move || closer.shutdown(std::net::Shutdown::Write)))
+        let out = crate::tls::Writer { raw: conn, shared };
+        Ok((writer(out, move || closer.shutdown(std::net::Shutdown::Write)), link))
     }
 
     /// A connection a server took becomes a process of its own, as Emacs's
@@ -1191,7 +1283,7 @@ impl Editor {
         let name = self.unique_process_name(&label);
         let id = self.processes.next_id;
         self.processes.next_id += 1;
-        let Ok(stdin) = self.connect(id, conn) else { return };
+        let Ok((stdin, link)) = self.connect(id, conn) else { return };
         let (buffer_id, mark) = match buffer_name.map(|n| self.get_buffer_create(&n)) {
             Some(index) => {
                 let b = &mut self.buffers[index];
@@ -1225,6 +1317,7 @@ impl Editor {
             pending: Vec::new(),
             gate: None,
             stderr: None,
+            tls: Some(link),
         });
         if let Some(f) = sentinel
             && let Err(e) = self.funcall(&f, &[Value::Process(id), Value::Str(format!("open from {host}\n"))])

@@ -142,3 +142,21 @@ fn symbol_file_names_the_file_that_defined_it() {
     // Any other kind, as a symbol property Emacs records, has none.
     assert_eq!(eval(&mut ed, &s, r#"e8.symbolFile("my-var", "cl-defmethod") ?? null"#), "null");
 }
+
+#[test]
+fn secure_hash_and_md5_as_emacs_hashes() {
+    let (mut ed, s) = setup();
+    // As Emacs 30 gives them.
+    assert_eq!(
+        eval(&mut ed, &s, r#"[e8.secureHash("sha1", "localhost:443"), e8.md5("héllo"), e8.secureHash("sha1", "hello world", 6, 11), e8.secureHash("sha256", "abc", null, null, true).length]"#),
+        r#"["86e4b43bd38012c7b5666e53e158af0eb27d493f","be50e8478cf24ff3595bc7307fb91b50","7c211433f02071597741e6ff5a8ea34789abbf43",32]"#
+    );
+    assert_eq!(
+        eval(&mut ed, &s, r#"e8.secureHashAlgorithms().map((a) => e8.secureHash(a, "abc"))"#),
+        r#"["900150983cd24fb0d6963f7d28e17f72","a9993e364706816aba3e25717850c26c9cd0d89d","23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7","ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7","ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"]"#
+    );
+    // A buffer's text, from 1 to 3 here, 2 to 4 in Emacs's counting.
+    ed.window_buffer_mut().set_text("abcdef");
+    assert_eq!(eval(&mut ed, &s, r#"e8.secureHash("md5", e8.currentBuffer(), 1, 3)"#), r#""5360af35bde9ebd8f01f492dc059593c""#);
+    assert_eq!(eval(&mut ed, &s, r#"e8.conditionCase(() => e8.secureHash("sha3", "x"), { error: (e) => e.message })"#), r#""Invalid algorithm arg: sha3""#);
+}

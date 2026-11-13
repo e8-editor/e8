@@ -42,6 +42,9 @@ Option 2, as Mark approved on 2026-11-13: TLS is a network dependency of `e8-cor
    - `gnutls-bye`, `gnutls-deinit`, `gnutls-get-initstage`, `gnutls-errorp`, `gnutls-error-string` and `gnutls-asynchronous-parameters`.
    - `gnutls-available-p` lists what the build has.
    - On the web, which has no sockets, `gnutls-available-p` is nil.
+   - The system's authorities come from its PEM bundle, as gnutls.el's `gnutls-trustfiles` lists them, where there is one: reading macOS's keychains took seven seconds before the first handshake, its bundle a moment. The platform's own store is used only where there is no bundle.
+   - Emacs's `gnutls.el`, `network-stream.el` and the core of `nsm.el` come as packages, so `open-network-stream` with `:type tls` opens a connection that the Network Security Manager checks before it is used, asking about a certificate that does not verify or a key that changed, as Emacs's does. Leaving it out would have turned TLS's safety default off.
+   - `secure-hash` and `md5`, from fns.c, came with it, as nsm.el keys hosts by a SHA-1 hash.
 3. **Hashes and ciphers.** `gnutls-digests`, `gnutls-macs`, `gnutls-ciphers`, `gnutls-hash-digest`, `gnutls-hash-mac`, `gnutls-symmetric-encrypt` and `gnutls-symmetric-decrypt`, with the algorithms rustls's crypto provider gives.
 
 ## Consequences
@@ -54,4 +57,7 @@ Option 2, as Mark approved on 2026-11-13: TLS is a network dependency of `e8-cor
 ## Dependencies introduced
 
 - `flate2`, already built into the core through `resvg`, made a direct dependency for decompressing.
-- `rustls` and `rustls-native-certs` (stage 2), for TLS connections verified against the system's certificates.
+- `rustls`, on `ring`, with `rustls-webpki` and `rustls-pki-types` (stage 2): TLS connections, verifying certificates and reading PEM files. `rustls-native-certs` for the platform's store where there is no bundle. All were in the workspace already through the agent's `ureq`, except `rustls-native-certs`, which brings nothing new on macOS.
+- `x509-parser` (stage 2), already in the tree, to describe a peer's certificates as `gnutls-peer-status` does.
+- `md-5`, with `sha1` and `sha2` already in the tree (stage 2), for `secure-hash` and `md5`.
+- `rcgen`, for tests only: certificates for a TLS server in them.
