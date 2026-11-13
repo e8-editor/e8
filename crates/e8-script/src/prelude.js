@@ -743,6 +743,19 @@
     readEvent: (prompt, options) => native.readKeyEvent("event", String(prompt ?? ""), options?.seconds ?? null) ?? undefined,
     readChar: (prompt, options) => native.readKeyEvent("char", String(prompt ?? ""), options?.seconds ?? null) ?? undefined,
     readKeySequence: (prompt) => native.readKeyEvent("sequence", String(prompt ?? ""), null),
+    readKeySequenceVector: (prompt) => e8.readKeySequence(prompt).split(" "),
+    trackMouse: (fn) => e8.letBind({ "track-mouse": true }, fn),
+    // As frame.c's: mouse-position-function, if set, has the last word.
+    mousePosition() {
+      const position = native.mousePosition();
+      const fn = e8.variable("mouse-position-function");
+      return fn ? e8.funcall(fn, position) : position;
+    },
+    mousePixelPosition() {
+      const position = native.mousePixelPosition();
+      const fn = e8.variable("mouse-position-function");
+      return fn ? e8.funcall(fn, position) : position;
+    },
     sleepFor: (seconds) => native.sleepFor(Number(seconds)),
     sitFor(seconds) {
       // As subr.el's sit-for: input already waiting ends it at once, and

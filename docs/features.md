@@ -30,6 +30,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Clicks.
 - Drags.
 - Double and triple clicks and shift-click as Emacs mouse keys (`<mouse-1>`, `<drag-mouse-1>`, `<double-mouse-1>`).
+- The pointer's place and moving it (`mouse-position`, `mouse-pixel-position`, `set-mouse-position`), `track-mouse` with `<mouse-movement>` events, the window and the part of it at a place (`window-at`, `coordinates-in-window-p`), and the raw keys of a key sequence (`this-single-command-raw-keys`, `read-key-sequence-vector`).
 - Long lines continued by default.
 - Who runs E8 and on what, for scripts as Emacs's Lisp asks it (`user-full-name`, `user-login-name`, ids, `system-users`, `num-processors`), and `C-z` and `C-x C-z` (`suspend-frame`) iconifying a window or stopping the terminal for the shell, as `suspend-emacs` does.
 - `truncate-lines`, `visual-line-mode` and `global-visual-line-mode`, and horizontal scrolling as Emacs's: long truncated lines scroll sideways to keep point in sight (`auto-hscroll-mode`, `hscroll-margin`, `hscroll-step`), `C-x <` and `C-x >` (`scroll-left`, `scroll-right`), and `window-hscroll` and `set-window-hscroll` for scripts, with `window-vscroll` and `set-window-vscroll`, which the GUI's smooth scrolling sets, `vertical-motion`, `compute-motion`, `line-number-display-width`, `window-line-height`, `window-lines-pixel-dimensions`, `other-window-for-scrolling` and `window-scroll-functions`.

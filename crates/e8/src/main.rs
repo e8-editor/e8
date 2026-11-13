@@ -225,9 +225,35 @@ fn run(
             }
             Event::Mouse(event) => {
                 let (width, height) = *size.lock().unwrap_or_else(|e| e.into_inner());
+                // Where the pointer is, for mouse-position, from the top
+                // left of the frame's windows, below any tab bar.
+                let (frame, tracking) = {
+                    let published = driver.published();
+                    let frame = published.frames.first().map(|f| (f.frame, f.tab_bar.is_some()));
+                    (frame, published.track_mouse)
+                };
+                if let Some((frame, tab_bar)) = frame {
+                    let row = event.row as f32 - if tab_bar { 1.0 } else { 0.0 };
+                    driver.set_pointer(Some(e8_core::mouse::Pointer { frame, x: event.column as f32, y: row, screen: None }));
+                }
+                // A move with no button down is wanted only while track-mouse is on.
+                if event.kind == MouseEventKind::Moved && !tracking {
+                    continue;
+                }
                 let mouse = mouse.clone();
                 driver.run(move |editor| {
-                    mouse.lock().unwrap_or_else(|e| e.into_inner()).handle(editor, event, width, height);
+                    // Sent once the mouse's state is let go: the command a
+                    // key runs may wait for more events, which come through here.
+                    let send = mouse.lock().unwrap_or_else(|e| e.into_inner()).handle(editor, event, width, height);
+                    match send {
+                        Some(ToSend::Mouse(event)) => e8_core::clicks::send(editor, Some(event)),
+                        Some(ToSend::TabBar(column)) => {
+                            let frame = editor.selected_frame();
+                            editor.tab_bar_mouse(frame, column, Key::new(e8_core::KeyCode::Mouse(e8_core::MouseKind::Click, 1)));
+                        }
+                        Some(ToSend::Wheel(window, lines)) => editor.wheel_in(window, lines),
+                        None => {}
+                    }
                 });
             }
             Event::Resize(width, height) => {
@@ -271,30 +297,38 @@ impl Default for Mouse {
 }
 
 impl Mouse {
-    fn handle(&mut self, ed: &mut Editor, event: ratatui::crossterm::event::MouseEvent, width: u16, height: u16) {
+    /// Takes a mouse report, giving what it sends the editor, if anything,
+    /// for the caller to send once it lets go of this state: the command a
+    /// key runs may wait for more events, which come through here.
+    fn handle(&mut self, ed: &mut Editor, event: ratatui::crossterm::event::MouseEvent, width: u16, height: u16) -> Option<ToSend> {
         // A press on the tab bar is a click on it, at its column.
         if event.row < ed.tab_bar_lines(ed.selected_frame()) as u16 && !self.clicks.is_down() {
-            if event.kind == MouseEventKind::Down(MouseButton::Left) {
-                let frame = ed.selected_frame();
-                ed.tab_bar_mouse(frame, event.column as usize, Key::new(e8_core::KeyCode::Mouse(e8_core::MouseKind::Click, 1)));
-            }
-            return;
+            return (event.kind == MouseEventKind::Down(MouseButton::Left)).then_some(ToSend::TabBar(event.column as usize));
         }
         let target = ui::mouse_target(ed, width, height, event.column, event.row);
         let shift = event.modifiers.contains(KeyModifiers::SHIFT);
+        let tracking = ed.tracking_mouse();
         match event.kind {
             MouseEventKind::Down(MouseButton::Left) => {
-                let Some(target) = target else { return };
                 let time = self.started.elapsed().as_secs_f64();
-                self.clicks.press(ed, time, (event.column, event.row), |a, b| a == b, target, shift);
+                self.clicks.press(time, (event.column, event.row), |a, b| a == b, target?, shift).map(ToSend::Mouse)
             }
-            MouseEventKind::Drag(MouseButton::Left) => self.clicks.moved(ed, target, shift),
-            MouseEventKind::Up(MouseButton::Left) => self.clicks.release(ed, target, shift),
-            MouseEventKind::ScrollDown => ed.wheel_in(target.map(|t| t.0), WHEEL_LINES),
-            MouseEventKind::ScrollUp => ed.wheel_in(target.map(|t| t.0), -WHEEL_LINES),
-            _ => {}
+            MouseEventKind::Drag(MouseButton::Left) | MouseEventKind::Moved => self.clicks.moved(target, shift, tracking).map(ToSend::Mouse),
+            MouseEventKind::Up(MouseButton::Left) => self.clicks.release(target, shift).map(ToSend::Mouse),
+            MouseEventKind::ScrollDown => Some(ToSend::Wheel(target.map(|t| t.0), WHEEL_LINES)),
+            MouseEventKind::ScrollUp => Some(ToSend::Wheel(target.map(|t| t.0), -WHEEL_LINES)),
+            _ => None,
         }
     }
+}
+
+/// What a mouse report sends the editor.
+enum ToSend {
+    Mouse(e8_core::clicks::Event),
+    /// A click on the tab bar, at this column.
+    TabBar(usize),
+    /// The wheel, in a window or the selected one, this many lines.
+    Wheel(Option<e8_core::WindowId>, isize),
 }
 
 /// Translates a terminal key event into the core's key type.

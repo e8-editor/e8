@@ -66,6 +66,10 @@ pub(crate) struct Keyboard {
     pub(crate) lossage_size: usize,
     /// The keys of the command running, or that ran last.
     pub(crate) this_command_keys: Vec<Key>,
+    /// The keys of the sequence being read as they came, before translation.
+    pub(crate) raw_keys: Vec<Key>,
+    /// The keys of the last sequence read as they came, before translation.
+    pub(crate) this_command_raw_keys: Vec<Key>,
     /// What `sleep-for` calls wait on, which `C-g` quits.
     pub(crate) sleeping: Vec<AnswerSlot>,
     /// Keys read so far for a command parameter of kind [`crate::ParamKind::Keys`].
@@ -103,6 +107,8 @@ impl Default for Keyboard {
             lossage: VecDeque::new(),
             lossage_size: LOSSAGE_SIZE,
             this_command_keys: Vec::new(),
+            raw_keys: Vec::new(),
+            this_command_raw_keys: Vec::new(),
             sleeping: Vec::new(),
             reading_keys: None,
             pending_keys: Vec::new(),
@@ -246,6 +252,7 @@ impl Editor {
                     return true;
                 }
                 self.keyboard.this_command_keys = reader.keys.clone();
+                self.keyboard.this_command_raw_keys = reader.keys.clone();
                 Ok(format_keys(&reader.keys))
             }
             ReadKind::Char => match key.code {
@@ -334,6 +341,15 @@ impl Editor {
     /// Keeps the keys of a command about to run.
     pub(crate) fn note_command_keys(&mut self, keys: &[Key]) {
         self.keyboard.this_command_keys = keys.to_vec();
+        self.keyboard.this_command_raw_keys = std::mem::take(&mut self.keyboard.raw_keys);
+    }
+
+    /// The keys of the last key sequence read, by the command loop or
+    /// `read-key-sequence`, as they came before `input-decode-map` and
+    /// `key-translation-map` and Shift translation, as Emacs's
+    /// `this-single-command-raw-keys`; while a prefix waits, those read so far.
+    pub fn this_single_command_raw_keys(&self) -> &[Key] {
+        if self.keyboard.pending_keys.is_empty() { &self.keyboard.this_command_raw_keys } else { &self.keyboard.raw_keys }
     }
 
     /// Whether code waits for a single key, which takes ESC as it comes,

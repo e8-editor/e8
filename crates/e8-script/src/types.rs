@@ -517,6 +517,25 @@ const API: &str = r##"
    * active now, as Emacs's read-key-sequence: "C-x C-f". C-g is a key in it.
    */
   function readKeySequence(prompt?: string): string;
+  /** The same, its keys one by one, as read-key-sequence-vector: ["C-x", "C-f"]. */
+  function readKeySequenceVector(prompt?: string): string[];
+  /**
+   * Run `fn` with the mouse's moves coming as "<mouse-movement>" events,
+   * which readEvent returns and keymaps can bind, as Emacs's track-mouse:
+   * lastMouseEvent() says where each went. It binds the variable
+   * track-mouse, as the macro does.
+   */
+  function trackMouse<T>(fn: () => T): T;
+  /**
+   * The frame the pointer is over and the column and line it is at, from
+   * the top left of the frame's windows as windowEdges counts, as
+   * mouse-position: the selected frame, and no place, until a front end
+   * has seen the pointer. With mouse-position-function set, what that
+   * function returns for it.
+   */
+  function mousePosition(): [frame: Frame, x: number | undefined, y: number | undefined];
+  /** As mousePosition, in the front end's units (points, or cells on a terminal), as mouse-pixel-position. */
+  function mousePixelPosition(): [frame: Frame, x: number | undefined, y: number | undefined];
   /** The keys that ran the command running, its prefix argument's included, as this-command-keys: "C-u C-n". */
   function thisCommandKeys(): string;
   /** The same keys one by one, as this-command-keys-vector. */

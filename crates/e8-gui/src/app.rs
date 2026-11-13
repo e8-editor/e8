@@ -90,6 +90,9 @@ pub struct E8App {
     /// Whether each frame's native window was minimised when last looked
     /// at, to tell the editor when the user restores one, as from the Dock.
     minimised: std::collections::HashMap<FrameId, bool>,
+    /// Where each frame's windows start in its native window, for moving
+    /// the pointer to a place on them.
+    origins: std::collections::HashMap<FrameId, Pos2>,
 }
 
 /// Where the editor runs.
@@ -116,6 +119,39 @@ impl Backend {
         match self {
             Backend::Inline { editor, .. } => editor.handle_key(key),
             Backend::Thread { driver, .. } => driver.key(key),
+        }
+    }
+
+    /// Says where the pointer is, without waking the editor.
+    fn set_pointer(&self, pointer: Option<e8_core::mouse::Pointer>) {
+        match self {
+            Backend::Inline { editor, .. } => editor.set_pointer(pointer),
+            Backend::Thread { driver, .. } => driver.set_pointer(pointer),
+        }
+    }
+
+    /// The pointer left a frame's window: it is over none of the editor's
+    /// frames, unless it is over another already.
+    fn pointer_left(&self, frame: FrameId) {
+        match self {
+            Backend::Inline { editor, .. } => editor.pointer_left(frame),
+            Backend::Thread { driver, .. } => driver.pointer_left(frame),
+        }
+    }
+
+    /// Whether the editor wants the pointer's moves, as `track-mouse` says.
+    fn tracking_mouse(&self) -> bool {
+        match self {
+            Backend::Inline { editor, .. } => editor.tracking_mouse(),
+            Backend::Thread { driver, .. } => driver.published().track_mouse,
+        }
+    }
+
+    /// The pointer moves code asked for since last time.
+    fn take_warps(&mut self) -> Vec<e8_core::mouse::Warp> {
+        match self {
+            Backend::Inline { editor, .. } => editor.take_warps(),
+            Backend::Thread { driver, .. } => std::mem::take(&mut driver.published().warps),
         }
     }
 }
@@ -211,6 +247,7 @@ impl E8App {
             appearance: std::collections::HashMap::new(),
             frame_states: std::collections::HashMap::new(),
             minimised: std::collections::HashMap::new(),
+            origins: std::collections::HashMap::new(),
         }
     }
 
@@ -471,6 +508,7 @@ impl E8App {
         // Where native windows cannot open, embedded in this one instead, as
         // in tests, this window shows the selected frame, as a terminal does.
         if ctx.embed_viewports() {
+            self.warp_pointer(&ctx);
             self.main_frame = selected;
             let main = self.main_frame;
             self.show_frame(ui, main);
@@ -505,12 +543,50 @@ impl E8App {
         }
         let (all, _) = self.frame_list();
         self.follow_frame_states(&ctx, &all);
+        self.warp_pointer(&ctx);
         // A frame newly selected, as by C-x 5 o, gets the focus.
         let (_, selected) = self.frame_list();
         if selected != self.focused_frame {
             self.focused_frame = selected;
             let viewport = if selected == self.main_frame { egui::ViewportId::ROOT } else { frame_viewport(selected) };
             ctx.send_viewport_cmd_to(viewport, ViewportCommand::Focus);
+        }
+    }
+
+    /// Moves the pointer where code asked, as `set-mouse-position` does:
+    /// to a place on a frame's windows, or on the screen.
+    fn warp_pointer(&mut self, ctx: &egui::Context) {
+        for warp in self.backend.take_warps() {
+            match warp {
+                e8_core::mouse::Warp::Frame { frame, x, y, .. } => {
+                    let Some(origin) = self.origins.get(&frame) else { continue };
+                    let viewport = if frame == self.main_frame { egui::ViewportId::ROOT } else { frame_viewport(frame) };
+                    ctx.send_viewport_cmd_to(viewport, ViewportCommand::CursorPosition(*origin + vec2(x, y)));
+                }
+                e8_core::mouse::Warp::Screen { x, y } => {
+                    let Some(inner) = ctx.input(|i| i.viewport().inner_rect) else { continue };
+                    ctx.send_viewport_cmd_to(egui::ViewportId::ROOT, ViewportCommand::CursorPosition(pos2(x, y) - inner.min.to_vec2()));
+                }
+            }
+        }
+    }
+
+    /// Notes where the pointer is over a frame's native window, for
+    /// `mouse-position`: from the top left of its windows, and on the screen.
+    fn note_pointer(&mut self, ctx: &egui::Context, events: &[egui::Event], layout: &Layout) {
+        let origin = layout.windows_origin();
+        self.origins.insert(layout.frame, origin);
+        for event in events {
+            match event {
+                egui::Event::PointerMoved(pos) => {
+                    let screen = ctx.input(|i| i.viewport().inner_rect).map(|r| (r.min.x + pos.x, r.min.y + pos.y));
+                    let at = *pos - origin;
+                    self.backend.set_pointer(Some(e8_core::mouse::Pointer { frame: layout.frame, x: at.x, y: at.y, screen }));
+                }
+                // Leaving this frame's window, unless it already entered another's.
+                egui::Event::PointerGone => self.backend.pointer_left(layout.frame),
+                _ => {}
+            }
         }
     }
 
@@ -584,6 +660,7 @@ impl E8App {
         let selected = frame == self.frame_list().1;
         // Window sizes first, for the commands this frame's keys run.
         let Some(before) = self.layout(ui, frame) else { return None };
+        self.note_pointer(&ctx, &events, &before);
         if selected {
             let time = ctx.input(|i| i.time);
             for event in &events {
@@ -642,17 +719,27 @@ impl E8App {
                 self.button_down = *pressed;
                 (*pos, Some(*pressed), modifiers.shift)
             }
-            // Moves matter only while the button is down, for drags.
-            egui::Event::PointerMoved(pos) if self.button_down => (*pos, None, false),
+            // Moves matter while the button is down, for drags, and while
+            // track-mouse wants them.
+            egui::Event::PointerMoved(pos) if self.button_down || self.backend.tracking_mouse() => (*pos, None, false),
             _ => return,
         };
         let (mouse, layout) = (self.mouse.clone(), layout.clone());
         self.backend.run(move |ed, _| {
-            let mut mouse = mouse.lock().unwrap_or_else(|e| e.into_inner());
-            if pressed.is_none() && !mouse.clicks.is_down() && mouse.resizing.is_none() {
-                return;
+            // Worked out holding the mouse's state, and sent once it is let
+            // go: the command a key runs may wait for more events, which
+            // come through here.
+            let send = {
+                let mut mouse = mouse.lock().unwrap_or_else(|e| e.into_inner());
+                pointer(ed, &mut mouse, pos, pressed, shift, &layout, time)
+            };
+            match send {
+                Some(ToSend::Mouse(event)) => e8_core::clicks::send(ed, Some(event)),
+                Some(ToSend::TabBar(column)) => {
+                    ed.tab_bar_mouse(layout.frame, column, e8_core::Key::new(e8_core::KeyCode::Mouse(e8_core::MouseKind::Click, 1)))
+                }
+                None => {}
             }
-            pointer(ed, &mut mouse, pos, pressed, shift, &layout, time);
         });
     }
 
@@ -707,32 +794,39 @@ impl E8App {
     }
 }
 
+/// What a press, move or release of the primary button sends the editor.
+enum ToSend {
+    Mouse(e8_core::clicks::Event),
+    /// A click on the tab bar, at this column.
+    TabBar(usize),
+}
+
 /// A press, move or release of the primary button, as Emacs's mouse keys,
-/// with the editor: see [`E8App::pointer`].
+/// with the editor: see [`E8App::pointer`]. Gives what to send, for the
+/// caller to send once it lets go of the mouse's state.
 #[allow(clippy::too_many_arguments)]
-fn pointer(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>, shift: bool, layout: &Layout, time: f64) {
+fn pointer(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>, shift: bool, layout: &Layout, time: f64) -> Option<ToSend> {
+    let tracking = ed.tracking_mouse();
+    if pressed.is_none() && !mouse.clicks.is_down() && mouse.resizing.is_none() {
+        return mouse.clicks.moved(hit(ed, layout, pos), false, tracking).map(ToSend::Mouse);
+    }
     // A press on the tab bar is a click on it, at the column under it.
     if let Some(rect) = layout.tab_rect.filter(|r| r.contains(pos))
         && !mouse.clicks.is_down()
     {
-        if pressed == Some(true) {
-            let column = ((pos.x - rect.left() - PAD_X) / layout.m.char_width).max(0.0) as usize;
-            ed.tab_bar_mouse(layout.frame, column, e8_core::Key::new(e8_core::KeyCode::Mouse(e8_core::MouseKind::Click, 1)));
-        }
-        return;
+        let column = ((pos.x - rect.left() - PAD_X) / layout.m.char_width).max(0.0) as usize;
+        return (pressed == Some(true)).then_some(ToSend::TabBar(column));
     }
     if resize_drag(ed, mouse, pos, pressed, layout) {
-        return;
+        return None;
     }
     let target = hit(ed, layout, pos);
     match pressed {
-        Some(true) => {
-            let Some(target) = target else { return };
-            mouse.clicks.press(ed, time, pos, |a, b| a.distance(b) < 4.0, target, shift);
-        }
-        Some(false) => mouse.clicks.release(ed, target, shift),
-        None => mouse.clicks.moved(ed, target, shift),
+        Some(true) => mouse.clicks.press(time, pos, |a, b| a.distance(b) < 4.0, target?, shift),
+        Some(false) => mouse.clicks.release(target, shift),
+        None => mouse.clicks.moved(target, shift, tracking),
     }
+    .map(ToSend::Mouse)
 }
 
 /// Dragging a window's mode line or the divider on its right moves that
@@ -878,6 +972,11 @@ impl WindowLayout {
 }
 
 impl Layout {
+    /// The top left of the frame's windows, which the editor counts places from.
+    fn windows_origin(&self) -> Pos2 {
+        pos2(self.rect.left(), self.tab_rect.map_or(self.rect.top(), |r| r.bottom()))
+    }
+
     /// Lays a frame out and tells the editor how big each of its windows is.
     fn new(ui: &Ui, ed: &mut Editor, frame: FrameId, m: Metrics) -> Layout {
         set_metrics(ed, ui.ctx(), m.char_width, m.line_height);

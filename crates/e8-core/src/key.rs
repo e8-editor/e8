@@ -27,6 +27,9 @@ pub enum KeyCode {
     /// What a click on the tab bar comes after, as Emacs's `tab-bar`
     /// pseudo-event: `<tab-bar> <mouse-1>`.
     TabBar,
+    /// The mouse moving while `track-mouse` is on, as Emacs's
+    /// `mouse-movement` event; where it went is in [`crate::MouseEvent`].
+    MouseMovement,
     /// A mouse button, 1 to 5, as Emacs names its events: `<down-mouse-1>`
     /// when pressed, `<mouse-1>` when released where it was pressed,
     /// `<drag-mouse-1>` after moving, and `<double-mouse-1>` and
@@ -160,6 +163,7 @@ impl Key {
             "<next>" => KeyCode::PageDown,
             "<wheel-up>" => KeyCode::WheelUp,
             "<tab-bar>" => KeyCode::TabBar,
+            "<mouse-movement>" => KeyCode::MouseMovement,
             "<wheel-down>" => KeyCode::WheelDown,
             _ if function_key(rest).is_some() => KeyCode::F(function_key(rest).unwrap_or_default()),
             _ if mouse_event(rest).is_some() => mouse_event(rest)?,
@@ -214,6 +218,7 @@ impl fmt::Display for Key {
             KeyCode::Mouse(kind, n) => return write!(f, "<{}mouse-{n}>", kind.prefix()),
             KeyCode::WheelUp => "<wheel-up>",
             KeyCode::TabBar => "<tab-bar>",
+            KeyCode::MouseMovement => "<mouse-movement>",
             KeyCode::WheelDown => "<wheel-down>",
         };
         f.write_str(name)

@@ -185,6 +185,107 @@ natives! {
         Ok(e8_core::format_keys(ed.this_single_command_keys()))
     }
 
+    /// The keys of the last key sequence read, by the command loop or
+    /// readKeySequence, as they came before input-decode-map,
+    /// key-translation-map and Shift translation, as
+    /// this-single-command-raw-keys.
+    pub fn thisSingleCommandRawKeys(ed) -> Vec<String> {
+        Ok(ed.this_single_command_raw_keys().iter().map(|k| k.to_string()).collect())
+    }
+
+    /// The frame the pointer is over and the column and line it is at:
+    /// what mousePosition gives before mouse-position-function.
+    fn mousePosition(ed) -> EditorValue {
+        let (frame, at) = ed.mouse_position();
+        Ok(position_value(frame, at))
+    }
+
+    /// The frame the pointer is over and where on it in the front end's
+    /// units: what mousePixelPosition gives before mouse-position-function.
+    fn mousePixelPosition(ed) -> EditorValue {
+        let (frame, at) = ed.mouse_pixel_position();
+        Ok(position_value(frame, at))
+    }
+
+    /// Move the pointer to the middle of the character at column `x` and
+    /// line `y` of a frame, from the top left of its windows, as
+    /// set-mouse-position. A terminal cannot move it, and selects the frame.
+    #[ts = "(frame: FrameLike, x: number, y: number): void"]
+    pub fn setMousePosition(ed, frame: Frm, x: i64, y: i64) {
+        ed.set_mouse_position(frame.0, x, y)
+    }
+
+    /// Move the pointer to `x` and `y` in the front end's units on a frame,
+    /// from the top left of its windows, as set-mouse-pixel-position. A
+    /// terminal cannot move it, and selects the frame.
+    #[ts = "(frame: FrameLike, x: number, y: number): void"]
+    pub fn setMousePixelPosition(ed, frame: Frm, x: i64, y: i64) {
+        ed.set_mouse_pixel_position(frame.0, x, y)
+    }
+
+    /// Where the pointer is on the screen, in the front end's units, as
+    /// mouse-absolute-pixel-position, or undefined if it is not known.
+    #[ts = "(): [x: number, y: number] | undefined"]
+    pub fn mouseAbsolutePixelPosition(ed) -> Option<Vec<i64>> {
+        Ok(ed.mouse_absolute_pixel_position().map(|(x, y)| vec![x, y]))
+    }
+
+    /// Move the pointer to `x` and `y` on the screen, as
+    /// set-mouse-absolute-pixel-position: only a graphical E8 can.
+    pub fn setMouseAbsolutePixelPosition(ed, x: i64, y: i64) {
+        ed.set_mouse_absolute_pixel_position(x, y);
+        Ok(())
+    }
+
+    /// Whether the pointer shows over a frame, as frame-pointer-visible-p:
+    /// always, as E8 never hides it.
+    #[ts = "(frame?: FrameLike): boolean"]
+    pub fn framePointerVisibleP(ed, frame: Option<Frm>) -> bool {
+        let frame = frame.map_or(ed.selected_frame(), |f| f.0);
+        if !ed.frame_list().contains(&frame) {
+            return Err(wrong_type("frame-live-p", EditorValue::Frame(frame)));
+        }
+        Ok(true)
+    }
+
+    /// The window at column `x` and line `y` of a frame, the selected one
+    /// by default, counted from the top left of its windows as windowEdges
+    /// counts, its mode line and the minibuffer's window included, as
+    /// window-at.
+    #[ts = "(x: number, y: number, frame?: FrameLike): Window | undefined"]
+    pub fn windowAt(ed, x: f64, y: f64, frame: Option<Frm>) -> Option<Win> {
+        let frame = frame.map_or(ed.selected_frame(), |f| f.0);
+        if !ed.frame_list().contains(&frame) {
+            return Err(wrong_type("frame-live-p", EditorValue::Frame(frame)));
+        }
+        Ok(ed.window_at(x, y, frame).map(|(w, _)| Win(w)))
+    }
+
+    /// Which part of a window, the selected one by default, column `x` and
+    /// line `y` of its frame are on, as coordinates-in-window-p: over its
+    /// text, how far from the window's top left in columns and lines, its
+    /// header line counted; else the part, or undefined if outside it.
+    #[ts = "(coordinates: [x: number, y: number], window?: WindowLike): [x: number, y: number] | \"mode-line\" | \"header-line\" | \"vertical-line\" | \"left-fringe\" | \"right-fringe\" | \"left-margin\" | \"right-margin\" | undefined"]
+    pub fn coordinatesInWindowP(ed, coordinates: Vec<f64>, window: Option<Win>) -> Option<EditorValue> {
+        let window = live_window(ed, window)?;
+        let [x, y] = coordinates[..] else {
+            return Err(wrong_type("consp", EditorValue::List(coordinates.into_iter().map(EditorValue::Number).collect())));
+        };
+        Ok(ed.coordinates_in_window(x, y, window).map(|part| match part {
+            e8_core::mouse::WindowPart::Text(x, y) => EditorValue::List(vec![EditorValue::Number(x), EditorValue::Number(y)]),
+            part => EditorValue::Str(part.name().unwrap_or_default().into()),
+        }))
+    }
+
+    /// Update what the mouse highlights for the pointer at `x` and `y`, as
+    /// display--update-for-mouse-movement: nothing to do, as E8's front
+    /// ends follow the pointer themselves.
+    #[ts = "(x: number, y: number): void"]
+    pub fn displayUpdateForMouseMovement(ed, x: f64, y: f64) {
+        let _ = (ed, x, y);
+        Ok(())
+    }
+
     /// Delete a window, the selected one by default, giving its space to its neighbour.
     #[ts = "(window?: WindowLike): void"]
     pub fn deleteWindow(ed, window: Option<Win>) {
@@ -880,4 +981,14 @@ fn live_window(ed: &e8_core::Editor, window: Option<Win>) -> Result<e8_core::Win
 /// The error Emacs signals for an argument of the wrong type.
 fn wrong_type(predicate: &str, value: EditorValue) -> e8_core::Error {
     e8_core::Error::signal("wrong-type-argument", "Wrong type argument", vec![EditorValue::Symbol(predicate.into()), value])
+}
+
+/// A frame and a place on it, or nothing known, as mouse-position gives
+/// them: `[frame, x, y]`.
+fn position_value(frame: e8_core::FrameId, at: Option<(i64, i64)>) -> EditorValue {
+    let (x, y) = match at {
+        Some((x, y)) => (EditorValue::Number(x as f64), EditorValue::Number(y as f64)),
+        None => (EditorValue::Null, EditorValue::Null),
+    };
+    EditorValue::List(vec![EditorValue::Frame(frame), x, y])
 }
