@@ -107,9 +107,16 @@ fn talk_to(mut sock: std::net::TcpStream, config: Arc<rustls::ServerConfig>, sta
     {
         if starttls {
             sock.write_all(b"READY\n").unwrap();
-            let mut line = [0u8; 9];
-            if sock.read_exact(&mut line).is_err() || &line != b"STARTTLS\n" {
-                return;
+            // Everything until the client asks for TLS is plain text,
+            // however much of it there is; what comes after is the
+            // handshake, so a byte of it read here would lose it.
+            let mut seen = Vec::new();
+            let mut byte = [0u8; 1];
+            while !seen.ends_with(b"STARTTLS\n") {
+                if sock.read_exact(&mut byte).is_err() {
+                    return;
+                }
+                seen.extend_from_slice(&byte);
             }
         }
         let conn = rustls::ServerConnection::new(config).unwrap();
@@ -214,6 +221,10 @@ fn what_verifying_finds_wrong_is_recorded_as_gnutls_warns_of_it() {
 #[test]
 fn a_plain_connection_becomes_tls_and_says_how_far_it_has_come() {
     let (mut ed, s) = setup();
+    // Sending is a thread's work: held back here, so the handshake would
+    // overtake what was sent before it unless it waits, as a connection
+    // told in plain text that TLS follows needs it to.
+    ed.delay_process_writes_for_tests(std::time::Duration::from_millis(200));
     let ca = authority();
     let dir = tempfile::tempdir().unwrap();
     let trust = pem_file(&dir, &ca.pem);
