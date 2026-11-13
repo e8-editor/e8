@@ -46,8 +46,11 @@ interface HostSettings {
   conditions: string[];
 }
 
-const levels = ["low", "medium", "high", "paranoid"];
-const level = (name: unknown): number => Math.max(0, levels.indexOf(String(name)));
+/** How strict a level is, as nsm-level: anything it does not know counts as high. */
+const level = (name: unknown): number => (name === "low" ? 0 : name === "medium" ? 1 : 2);
+
+/** Whether the checks of this level run, as network-security-protocol-checks lists each with its own. */
+const checksAt = (wanted: "medium" | "high"): boolean => level(e8.variable("network-security-level")) >= level(wanted);
 
 function settingsFile(): string | undefined {
   const own = e8.variable("nsm-settings-file");
@@ -103,17 +106,28 @@ function warningsOk(status: e8.GnutlsPeerStatus, settings: HostSettings | undefi
   return (status.warnings ?? []).every((w) => conditions.includes(`:${w}`));
 }
 
-/** Remembers that a host was accepted, for the session or for good, as nsm-save-host. */
-function saveHost(host: string, port: number | string, status: e8.GnutlsPeerStatus | undefined, problems: string[], permanency: "session" | "always"): void {
+/**
+ * Remembers that a host was accepted, for the session or for good, as
+ * nsm-save-host: `what` is "conditions", the problems accepted, or
+ * "fingerprint", the key seen, which keeps the conditions already saved.
+ * The key seen joins those already known, as Emacs's does.
+ */
+function saveHost(host: string, port: number | string, status: e8.GnutlsPeerStatus | undefined, what: "conditions" | "fingerprint", problems: string[], permanency: "session" | "always"): void {
   const id = nsmId(host, port);
-  const key = status && fingerprint(status);
-  const entry: HostSettings = { id, fingerprints: key ? [key] : [":none"], conditions: problems };
-  const name = permanency === "always" ? "nsm-permanent-host-settings" : "nsm-temporary-host-settings";
-  const others = (permanency === "always" ? permanent() : temporary()).filter((s) => s.id !== id);
-  e8.setVariable(name, [...others, entry] as unknown as e8.Value);
+  const old = nsmHostSettings(id);
+  const key = (status && fingerprint(status)) ?? ":none";
+  const fingerprints = [...new Set([...(old?.fingerprints ?? []), key])];
+  const conditions = what === "conditions" ? problems : [...new Set([...(old?.conditions ?? []), ...problems])];
+  const entry: HostSettings = { id, fingerprints, conditions };
+  // Saved for good, it is no longer the session's, as nsm-save-host
+  // removes the temporary setting either way.
+  e8.setVariable("nsm-temporary-host-settings", temporary().filter((s) => s.id !== id) as unknown as e8.Value);
   if (permanency === "always") {
+    e8.setVariable("nsm-permanent-host-settings", [...permanent().filter((s) => s.id !== id), entry] as unknown as e8.Value);
     const file = settingsFile();
     if (file !== undefined) e8.writeTextFile(file, `${JSON.stringify(permanent(), null, 2)}\n`);
+  } else {
+    e8.setVariable("nsm-temporary-host-settings", [...temporary(), entry] as unknown as e8.Value);
   }
 }
 
@@ -148,7 +162,7 @@ function query(host: string, port: number | string, status: e8.GnutlsPeerStatus 
     return false;
   }
   e8.message(answer === "session" ? `Accepting certificate for ${host}:${port} this session only` : `Permanently accepting certificate for ${host}:${port}`);
-  saveHost(host, port, status, problems, answer);
+  saveHost(host, port, status, "conditions", problems, answer);
   return true;
 }
 
@@ -164,7 +178,8 @@ export function nsmVerifyConnection(process: e8.Process, host: string, port: num
   const id = nsmId(host, port);
   const settings = nsmHostSettings(id);
   const status = e8.gnutlsPeerStatus(process);
-  if (level(e8.variable("network-security-level")) === 0) return process;
+  // At "low" nothing is checked, as the checks below are medium's.
+  if (!checksAt("medium")) return process;
   if (status === undefined) {
     // Once encrypted and now not may be someone stripping STARTTLS out.
     const fingerprints = settings?.fingerprints ?? [];
@@ -183,7 +198,7 @@ export function nsmVerifyConnection(process: e8.Process, host: string, port: num
     results.push([":verify-cert", status.warnings.map((w) => e8.gnutlsPeerStatusWarningDescribe(w) ?? w).join("\n")]);
   }
   if (!fingerprintOk(status, settings)) results.push([":same-cert", "fingerprint has changed"]);
-  if (level(e8.variable("network-security-level")) === 3 && (settings?.fingerprints ?? []).length === 0) {
+  if (e8.variable("network-security-level") === "paranoid" && !fingerprintOk(status, settings)) {
     results.push([":not-seen", "Certificate not seen before"]);
   }
   const problems = [...(status.warnings ?? []).map((w) => `:${w}`), ...results.map(([type]) => type)];
@@ -195,7 +210,7 @@ export function nsmVerifyConnection(process: e8.Process, host: string, port: num
       return undefined;
     }
   }
-  if (saveFingerprint && nsmHostSettings(id) === undefined) saveHost(host, port, status, [], "always");
+  if (saveFingerprint && nsmHostSettings(id) === undefined) saveHost(host, port, status, "fingerprint", [], "always");
   return process;
 }
 

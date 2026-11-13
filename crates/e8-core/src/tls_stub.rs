@@ -55,18 +55,22 @@ pub struct CertificateDetails {
 #[derive(Default)]
 pub(crate) struct Shared;
 
-pub(crate) struct Reader<R, W> {
+// The same fields as tls.rs's, which process.rs fills; `shared` is unused here.
+#[allow(dead_code)]
+pub(crate) struct Reader<R> {
     pub(crate) raw: R,
-    pub(crate) out: W,
     pub(crate) shared: std::sync::Arc<Shared>,
 }
 
+/// A connection with no TLS writes its own socket, so the writing thread
+/// tls.rs needs is not started and this only carries what is sent.
 pub(crate) struct Writer<W> {
     pub(crate) raw: W,
+    #[allow(dead_code)]
     pub(crate) shared: std::sync::Arc<Shared>,
 }
 
-impl<R: Read, W> Read for Reader<R, W> {
+impl<R: Read> Read for Reader<R> {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         self.raw.read(buf)
     }
@@ -83,9 +87,11 @@ impl<W: Write> Write for Writer<W> {
 }
 
 impl Shared {
-    pub(crate) fn start(&self, _params: &TlsParams, _out: &mut impl Write) -> Result<()> {
+    pub(crate) fn start(&self, _params: &TlsParams) -> Result<()> {
         Err(Error::new("gnutls-boot: this E8 has no TLS"))
     }
+
+    pub(crate) fn died(&self, _why: &str) {}
 
     pub(crate) fn wait(&self, _quit: impl FnMut() -> Result<()>) -> Result<std::result::Result<(), String>> {
         Ok(Err("this E8 has no TLS".into()))
@@ -95,7 +101,7 @@ impl Shared {
         stage::EMPTY
     }
 
-    pub(crate) fn bye(&self, _out: &mut impl Write) -> std::io::Result<bool> {
+    pub(crate) fn bye(&self) -> std::io::Result<bool> {
         Ok(false)
     }
 

@@ -47,14 +47,47 @@ export function openNetworkStream(name: string, buffer: e8.BufferLike | null, ho
 }
 
 e8.defun("open-network-stream", (name: string, buffer: e8.BufferLike | null, host: string, service: number | string, ...rest: e8.Value[]) => {
-  // Keyword arguments, as Lisp gives them.
+  // Keyword arguments, as Lisp gives them. What E8 does not do, such as
+  // STARTTLS, is refused rather than quietly opened without encryption.
   const params: NetworkStreamParameters = {};
   for (let i = 0; i + 1 < rest.length; i += 2) {
-    const [key, value] = [String(rest[i]).replace(/^:/, ""), rest[i + 1]];
-    if (key === "type") params.type = String(value) as NetworkStreamParameters["type"];
-    else if (key === "coding") params.coding = value as string;
-    else if (key === "warn-unless-encrypted") params.warnUnlessEncrypted = value === true;
+    const key = String(rest[i]).replace(/^:/, "");
+    const value = rest[i + 1];
+    if (value === null || value === undefined || value === false) continue;
+    switch (key) {
+      case "type":
+        params.type = String(value).replace(/^:/, "") as NetworkStreamParameters["type"];
+        break;
+      case "coding":
+        params.coding = value as string | [string, string];
+        break;
+      case "warn-unless-encrypted":
+        params.warnUnlessEncrypted = true;
+        break;
+      case "client-certificate":
+        params.clientCertificate = Array.isArray(value) ? (value.map(String) as [string, string]) : null;
+        break;
+      case "return-list":
+        params.returnList = true;
+        break;
+      case "capability-command":
+        params.capabilityCommand = String(value);
+        break;
+      case "success":
+        params.success = String(value);
+        break;
+      case "noquery":
+      case "end-of-command":
+      case "end-of-capability":
+      case "always-query-capabilities":
+      case "shell-command":
+        break;
+      default:
+        throw new Error(`open-network-stream: :${key} is not supported in E8 yet`);
+    }
   }
   const result = openNetworkStream(name, buffer, host, service, params);
-  return (Array.isArray(result) ? result[0] : result) ?? null;
+  if (!params.returnList) return (result as e8.Process | undefined) ?? null;
+  const [process, rest2] = result as [e8.Process | undefined, { type: string }];
+  return [process ?? null, ":greeting", null, ":capabilities", null, ":type", rest2.type, ":error", null];
 });

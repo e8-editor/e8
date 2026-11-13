@@ -63,10 +63,21 @@ fn identity(name: &str, ca: Option<&Authority>, expired: bool) -> Identity {
     Identity { chain: vec![cert.der().clone()], key: der.into() }
 }
 
+/// What a test's server does once TLS is up.
+#[derive(Clone, Copy, PartialEq)]
+enum Serve {
+    /// Sends each line back in capitals.
+    Lines,
+    /// Sends back whatever comes, as it comes.
+    Echo,
+    /// Sends this many bytes before reading anything, so both ends have
+    /// more to send than the other is taking.
+    Flood(usize),
+}
+
 /// A server on a free port taking every connection: with `starttls`, it says
-/// "READY" and waits for "STARTTLS" in plain text first; then, over TLS,
-/// it sends back each line in capitals. Returns its port.
-fn server(id: Identity, starttls: bool) -> u16 {
+/// "READY" and waits for "STARTTLS" in plain text first. Returns its port.
+fn server_doing(id: Identity, starttls: bool, serve: Serve) -> u16 {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let port = listener.local_addr().unwrap().port();
     let config = rustls::ServerConfig::builder_with_provider(Arc::new(rustls::crypto::ring::default_provider()))
@@ -80,14 +91,19 @@ fn server(id: Identity, starttls: bool) -> u16 {
         for sock in listener.incoming() {
             let Ok(sock) = sock else { return };
             let config = config.clone();
-            std::thread::spawn(move || serve(sock, config, starttls));
+            std::thread::spawn(move || talk_to(sock, config, starttls, serve));
         }
     });
     port
 }
 
-/// Talks to one client, as [`server`] says.
-fn serve(mut sock: std::net::TcpStream, config: Arc<rustls::ServerConfig>, starttls: bool) {
+/// A server sending each line back in capitals.
+fn server(id: Identity, starttls: bool) -> u16 {
+    server_doing(id, starttls, Serve::Lines)
+}
+
+/// Talks to one client, as [`server_doing`] says.
+fn talk_to(mut sock: std::net::TcpStream, config: Arc<rustls::ServerConfig>, starttls: bool, serve: Serve) {
     {
         if starttls {
             sock.write_all(b"READY\n").unwrap();
@@ -98,11 +114,22 @@ fn serve(mut sock: std::net::TcpStream, config: Arc<rustls::ServerConfig>, start
         }
         let conn = rustls::ServerConnection::new(config).unwrap();
         let mut tls = rustls::StreamOwned::new(conn, sock);
+        if let Serve::Flood(size) = serve
+            && tls.write_all(&vec![b'y'; size]).and_then(|_| tls.flush()).is_err()
+        {
+            return;
+        }
         let mut lines = String::new();
-        let mut buf = [0u8; 256];
+        let mut buf = [0u8; 16 * 1024];
         loop {
             match tls.read(&mut buf) {
                 Ok(0) | Err(_) => return,
+                Ok(_) if matches!(serve, Serve::Flood(_)) => {}
+                Ok(n) if serve == Serve::Echo => {
+                    if tls.write_all(&buf[..n]).and_then(|_| tls.flush()).is_err() {
+                        return;
+                    }
+                }
                 Ok(n) => {
                     lines.push_str(&String::from_utf8_lossy(&buf[..n]));
                     while let Some(at) = lines.find('\n') {
@@ -326,4 +353,156 @@ fn the_network_security_manager_asks_about_a_certificate_and_remembers() {
         eval(&mut ed, &s, &format!(r#"(() => {{ const p = e8.makeNetworkProcess({{ name: "pin", host: "127.0.0.1", service: {port}, tls: {{ hostname: "localhost", trustfiles: [{trust:?}] }} }}); return [nsm.nsmVerifyConnection(p, "pinned", 1) ?? null, e8.processList().length]; }})()"#)),
         "[null,0]"
     );
+}
+
+/// Echoes what is sent over TLS and counts what comes back, giving how
+/// many bytes did and whether the connection is still open.
+fn echoed(ed: &mut Editor, s: &Scripting, port: u16, trust: &str, chunk: usize, times: usize) -> String {
+    eval(
+        ed,
+        s,
+        &format!(
+            r#"(() => {{
+              globalThis.got = 0;
+              const p = e8.makeNetworkProcess({{ name: "echo", host: "127.0.0.1", service: {port}, coding: "binary",
+                filter: (_, out) => {{ got += out.length; }}, tls: {{ hostname: "localhost", trustfiles: [{trust:?}] }} }});
+              const want = {chunk} * {times};
+              const text = "x".repeat({chunk});
+              // Sending and taking back what comes at the same time, as a
+              // connection carrying traffic both ways does.
+              for (let i = 0; i < {times}; i++) {{
+                e8.processSendString(p, text);
+                e8.acceptProcessOutput(p, 0);
+              }}
+              for (let i = 0; i < 2000 && got < want; i++) e8.acceptProcessOutput(p, 0.05);
+              const result = [got, e8.processStatus(p)];
+              e8.deleteProcess(p);
+              return result;
+            }})()"#
+        ),
+    )
+}
+
+#[test]
+fn a_send_larger_than_tls_holds_at_once_goes_through_whole() {
+    let (mut ed, s) = setup();
+    let ca = authority();
+    let dir = tempfile::tempdir().unwrap();
+    let trust = pem_file(&dir, &ca.pem);
+    let port = server_doing(identity("localhost", Some(&ca), false), false, Serve::Echo);
+    // More than rustls holds at once (64 KiB), which would otherwise be
+    // refused and close the connection without a word.
+    assert_eq!(echoed(&mut ed, &s, port, &trust, 200_000, 1), r#"[200000,"open"]"#);
+}
+
+#[test]
+fn sending_while_the_peer_sends_back_does_not_stall() {
+    let (mut ed, s) = setup();
+    let ca = authority();
+    let dir = tempfile::tempdir().unwrap();
+    let trust = pem_file(&dir, &ca.pem);
+    // Both ends with more to send than the other is taking, which fills
+    // what the sockets hold: reading must not wait for writing, or
+    // neither end moves again.
+    let port = server_doing(identity("localhost", Some(&ca), false), false, Serve::Flood(4 * 1024 * 1024));
+    let got = eval(
+        &mut ed,
+        &s,
+        &format!(
+            r#"(() => {{
+              globalThis.got = 0;
+              const p = e8.makeNetworkProcess({{ name: "flood", host: "127.0.0.1", service: {port}, coding: "binary",
+                filter: (_, out) => {{ got += out.length; }}, tls: {{ hostname: "localhost", trustfiles: [{trust:?}] }} }});
+              const text = "x".repeat(60000);
+              for (let i = 0; i < 70; i++) {{
+                e8.processSendString(p, text);
+                e8.acceptProcessOutput(p, 0);
+              }}
+              for (let i = 0; i < 600 && got < 4 * 1024 * 1024; i++) e8.acceptProcessOutput(p, 0.05);
+              const result = [got, e8.processStatus(p)];
+              e8.deleteProcess(p);
+              return result;
+            }})()"#
+        ),
+    );
+    assert_eq!(got, r#"[4194304,"open"]"#);
+}
+
+#[test]
+fn a_connection_that_dies_during_the_handshake_fails_rather_than_waiting() {
+    let (mut ed, s) = setup();
+    // A server that closes at once, as a proxy with nothing behind it.
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let port = listener.local_addr().unwrap().port();
+    std::thread::spawn(move || {
+        for sock in listener.incoming().take(2) {
+            drop(sock);
+        }
+    });
+    let failed = eval(
+        &mut ed,
+        &s,
+        &format!(
+            r#"e8.conditionCase(() => e8.makeNetworkProcess({{ name: "dead", host: "127.0.0.1", service: {port}, tls: {{ hostname: "localhost" }} }}), {{ error: (e) => [e.symbol, e8.processList().length] }})"#
+        ),
+    );
+    assert!(failed.starts_with(r#"["gnutls-error",0]"#) || failed.starts_with(r#"["error",0]"#), "{failed}");
+}
+
+#[test]
+fn the_security_level_and_what_is_remembered_follow_nsm() {
+    let (mut ed, s) = setup();
+    let ca = authority();
+    let config = tempfile::tempdir().unwrap();
+    eval(&mut ed, &s, &format!("e8.setVariable(\"user-emacs-directory\", {:?})", format!("{}/", config.path().display())));
+    s.eval_typescript(&mut ed, "load.ts", r#"Promise.all([import("network-stream"), import("nsm")]).then(([a, b]) => { globalThis.ns = a; globalThis.nsm = b; });"#.into()).unwrap();
+    eval(&mut ed, &s, r#"e8.setVariable("nsm-noninteractive", true)"#);
+    // "low" checks nothing, so a certificate that does not verify is used.
+    eval(&mut ed, &s, r#"e8.setVariable("network-security-level", "low")"#);
+    let port = server(identity("localhost", Some(&ca), false), false);
+    assert_eq!(open_stream(&mut ed, &s, port, None), "[true,0]");
+    // A level nsm does not know counts as high, as nsm-level's t does, so
+    // the checks still run: a typo must not turn checking off.
+    eval(&mut ed, &s, r#"e8.setVariable("network-security-level", "Medium")"#);
+    let port = server(identity("localhost", Some(&ca), false), false);
+    assert_eq!(open_stream(&mut ed, &s, port, None), "[false,0]");
+    // Accepted for the session: the session's list keeps it, not the file's.
+    eval(&mut ed, &s, r#"e8.setVariable("network-security-level", "medium")"#);
+    eval(&mut ed, &s, r#"e8.setVariable("nsm-noninteractive", false)"#);
+    ed.set_input_source(|ed| {
+        ed.type_text("session\n");
+        true
+    });
+    let port = server(identity("localhost", Some(&ca), false), false);
+    assert_eq!(open_stream(&mut ed, &s, port, None), "[true,0]");
+    assert_eq!(eval(&mut ed, &s, r#"[e8.variable("nsm-temporary-host-settings").length, e8.variable("nsm-permanent-host-settings").length]"#), "[1,0]");
+    // Accepted for good: it leaves the session's list, as nsm-save-host
+    // removes the temporary setting, and is written with its problems.
+    ed.set_input_source(|ed| {
+        ed.type_text("always\n");
+        true
+    });
+    let port = server(identity("localhost", Some(&ca), false), false);
+    assert_eq!(open_stream(&mut ed, &s, port, None), "[true,0]");
+    let saved = eval(&mut ed, &s, r#"[e8.variable("nsm-temporary-host-settings").length, e8.variable("nsm-permanent-host-settings").length, e8.variable("nsm-permanent-host-settings")[0].conditions, e8.variable("nsm-permanent-host-settings")[0].fingerprints.length]"#);
+    assert_eq!(saved, r#"[1,1,[":unknown-ca",":invalid",":verify-cert"],1]"#);
+    let file = std::fs::read_to_string(config.path().join("network-security.json")).unwrap();
+    assert!(file.contains(":verify-cert"), "{file}");
+}
+
+#[test]
+fn open_network_stream_refuses_what_e8_does_not_do() {
+    let (mut ed, s) = setup();
+    s.eval_typescript(&mut ed, "load.ts", r#"import("network-stream").then((m) => { globalThis.ns = m; });"#.into()).unwrap();
+    // STARTTLS, by its type or by a capability command, and keywords E8
+    // has no answer for: an error, not a connection without encryption.
+    for call in [
+        r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":type", "starttls")"#,
+        r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":capability-command", "CAPABILITY", ":success", "^OK")"#,
+        r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":nowait", true)"#,
+        r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":type", "shell")"#,
+    ] {
+        let got = eval(&mut ed, &s, &format!("e8.conditionCase(() => {call}, {{ error: (e) => e.message }})"));
+        assert!(got.contains("not supported"), "{call}: {got}");
+    }
 }

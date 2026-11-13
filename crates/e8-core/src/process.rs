@@ -242,7 +242,6 @@ pub(crate) struct Process {
 /// and its threads, and a handle on the socket to send the handshake on.
 struct TlsLink {
     shared: Arc<crate::tls::Shared>,
-    socket: Conn,
     /// What `gnutls-asynchronous-parameters` kept, for a later `gnutls-boot`.
     boot_parameters: Option<Value>,
 }
@@ -1196,8 +1195,8 @@ impl Editor {
     pub fn gnutls_boot(&mut self, name: &str, params: crate::tls::TlsParams) -> Result<()> {
         let p = self.process(name)?;
         let Some(link) = &p.tls else { return Err(Error::new(format!("gnutls-boot: {name} is not a network connection"))) };
-        let (shared, mut socket) = (link.shared.clone(), link.socket.try_clone()?);
-        shared.start(&params, &mut socket)?;
+        let shared = link.shared.clone();
+        shared.start(&params)?;
         match shared.wait(|| self.maybe_quit())? {
             Ok(()) => Ok(()),
             Err(message) => {
@@ -1227,8 +1226,7 @@ impl Editor {
     pub fn gnutls_bye(&mut self, name: &str) -> Result<bool> {
         let p = self.process(name)?;
         let Some(link) = &p.tls else { return Ok(false) };
-        let mut socket = link.socket.try_clone()?;
-        link.shared.bye(&mut socket).map_err(|e| Error::new(format!("gnutls-bye: {e}")))
+        link.shared.bye().map_err(|e| Error::new(format!("gnutls-bye: {e}")))
     }
 
     /// Takes a process's TLS down, as `gnutls-deinit`.
@@ -1256,10 +1254,21 @@ impl Editor {
     /// what TLS needs of it: plain until `gnutls-boot` starts TLS.
     fn connect(&mut self, id: u64, conn: Conn) -> Result<(Sender<Option<Vec<u8>>>, TlsLink)> {
         let shared = Arc::new(crate::tls::Shared::default());
-        let reader = crate::tls::Reader { raw: conn.try_clone()?, out: conn.try_clone()?, shared: shared.clone() };
+        let reader = crate::tls::Reader { raw: conn.try_clone()?, shared: shared.clone() };
         let closer = conn.try_clone()?;
-        let link = TlsLink { shared: shared.clone(), socket: conn.try_clone()?, boot_parameters: None };
+        let link = TlsLink { shared: shared.clone(), boot_parameters: None };
         read_stream(id, reader, self.processes.tx.clone(), None, Duration::ZERO, Event::Output);
+        // One thread writes the socket, so neither the reader nor whoever
+        // sends ever waits on it holding the connection's state. On the
+        // web, which has no TLS, the connection writes its own socket.
+        #[cfg(not(target_arch = "wasm32"))]
+        let out = {
+            let writing = shared.clone();
+            let socket = conn;
+            std::thread::spawn(move || crate::tls::Shared::write_loop(writing, socket));
+            crate::tls::Writer { shared }
+        };
+        #[cfg(target_arch = "wasm32")]
         let out = crate::tls::Writer { raw: conn, shared };
         Ok((writer(out, move || closer.shutdown(std::net::Shutdown::Write)), link))
     }

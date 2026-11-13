@@ -16,6 +16,7 @@
 //! [ADR 0075]: ../../../docs/adr/0075-compression-and-tls-as-emacs-has-them.md
 
 use std::io::{Read, Write};
+use std::ops::Not;
 use std::sync::{Arc, Condvar, Mutex};
 
 use rustls::client::danger::{HandshakeSignatureValid, ServerCertVerified, ServerCertVerifier};
@@ -70,15 +71,27 @@ pub(crate) struct Shared {
     state: Mutex<State>,
     /// Signalled when the handshake ends, well or badly.
     changed: Condvar,
-    /// Held while writing to the socket, so records from the reader's
-    /// thread and the writer's go out whole and in order.
-    writing: Mutex<()>,
+    /// What waits to go to the socket, which one thread of its own writes,
+    /// so neither the reader nor the writer ever waits on the socket while
+    /// holding `state`: a peer that stops reading cannot stop the reader.
+    out: Mutex<Out>,
+    /// Signalled when there is something to write, or room for more.
+    writable: Condvar,
+}
+
+#[derive(Default)]
+struct Out {
+    bytes: Vec<u8>,
+    /// Set once nothing more will be written: the thread stops.
+    done: bool,
 }
 
 #[derive(Default)]
 struct State {
     tls: Option<Session>,
     stage: u8,
+    /// Why the connection ended, once it has: its end of file or error.
+    dead: Option<String>,
 }
 
 struct Session {
@@ -90,22 +103,27 @@ struct Session {
 
 impl Default for Shared {
     fn default() -> Shared {
-        Shared { state: Mutex::new(State::default()), changed: Condvar::new(), writing: Mutex::new(()) }
+        Shared { state: Mutex::new(State::default()), changed: Condvar::new(), out: Mutex::new(Out::default()), writable: Condvar::new() }
     }
 }
 
+/// How much is given to rustls at a time: its own buffer holds 64 KiB, and
+/// a write that fills it would be refused, so what is sent goes in pieces,
+/// each turned into records before the next.
+const CHUNK: usize = 16 * 1024;
+/// How much may wait for the socket before a sender waits for room.
+const QUEUED: usize = 1024 * 1024;
+
 /// Reads a connection, passing on plain text: as it comes before TLS
 /// starts, and decrypted after.
-pub(crate) struct Reader<R, W> {
+pub(crate) struct Reader<R> {
     pub(crate) raw: R,
-    /// Where records the reading answers go, as handshake messages.
-    pub(crate) out: W,
     pub(crate) shared: Arc<Shared>,
 }
 
-/// Writes to a connection: as it is before TLS starts, encrypted after.
-pub(crate) struct Writer<W> {
-    pub(crate) raw: W,
+/// Takes what is sent to a connection: as it is before TLS starts,
+/// encrypted after. Both leave the writing to [`Shared::write_loop`].
+pub(crate) struct Writer {
     pub(crate) shared: Arc<Shared>,
 }
 
@@ -114,92 +132,183 @@ impl Shared {
         self.state.lock().unwrap_or_else(|e| e.into_inner())
     }
 
-    /// Writes what the session has to send, holding the write lock taken
-    /// while `state` is still held, so the order is the session's.
-    fn flush(&self, mut state: std::sync::MutexGuard<'_, State>, out: &mut impl Write) -> std::io::Result<()> {
+    fn out(&self) -> std::sync::MutexGuard<'_, Out> {
+        self.out.lock().unwrap_or_else(|e| e.into_inner())
+    }
+
+    /// Queues bytes for the socket. Taken in order, as whoever queues
+    /// holds `state` while making them.
+    fn queue(&self, bytes: &[u8]) {
+        if bytes.is_empty() {
+            return;
+        }
+        self.out().bytes.extend_from_slice(bytes);
+        self.writable.notify_all();
+    }
+
+    /// Queues what the session has to send, `state` held so records go in
+    /// the order the session made them.
+    fn queue_records(&self, state: &mut State) -> std::io::Result<()> {
         let mut records = Vec::new();
         if let Some(s) = state.tls.as_mut() {
             while s.conn.wants_write() {
                 s.conn.write_tls(&mut records)?;
             }
         }
-        let _writing = self.writing.lock().unwrap_or_else(|e| e.into_inner());
-        drop(state);
-        if !records.is_empty() {
-            out.write_all(&records)?;
-            out.flush()?;
-        }
+        self.queue(&records);
         Ok(())
+    }
+
+    /// Writes what is queued to the socket, on a thread of its own, until
+    /// nothing more will come or the socket refuses it.
+    pub(crate) fn write_loop(shared: Arc<Shared>, mut socket: impl Write) {
+        loop {
+            let bytes = {
+                let mut out = shared.out();
+                while out.bytes.is_empty() && !out.done {
+                    out = shared.writable.wait(out).unwrap_or_else(|e| e.into_inner());
+                }
+                if out.bytes.is_empty() {
+                    return;
+                }
+                std::mem::take(&mut out.bytes)
+            };
+            // Room for more, and for whoever waits for it to be written.
+            shared.writable.notify_all();
+            if socket.write_all(&bytes).and_then(|_| socket.flush()).is_err() {
+                shared.died("The connection closed");
+                return;
+            }
+            shared.writable.notify_all();
+        }
+    }
+
+    /// Waits until less than [`QUEUED`] waits for the socket, so sending
+    /// faster than the peer reads fills no more than that.
+    fn wait_for_room(&self) {
+        let mut out = self.out();
+        while out.bytes.len() >= QUEUED && !out.done {
+            out = self.writable.wait(out).unwrap_or_else(|e| e.into_inner());
+        }
+    }
+
+    /// Waits until what was queued has gone to the socket.
+    fn wait_written(&self) {
+        let mut out = self.out();
+        while !out.bytes.is_empty() && !out.done {
+            out = self.writable.wait(out).unwrap_or_else(|e| e.into_inner());
+        }
+    }
+
+    /// Notes that the connection has ended, so nothing waits for a
+    /// handshake that can never finish, and the writing thread stops.
+    pub(crate) fn died(&self, why: &str) {
+        {
+            let mut state = self.lock();
+            if state.dead.is_none() {
+                state.dead = Some(why.to_string());
+            }
+        }
+        self.out().done = true;
+        self.writable.notify_all();
+        self.changed.notify_all();
     }
 }
 
-impl<R: Read, W: Write> Read for Reader<R, W> {
+impl<R: Read> Read for Reader<R> {
     fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         loop {
+            // Plain text rustls holds already, before waiting for more.
             {
                 let mut state = self.shared.lock();
                 if let Some(s) = state.tls.as_mut() {
                     match s.conn.reader().read(buf) {
+                        // The peer's close_notify: the end, as a plain connection's.
+                        Ok(0) => return Ok(0),
                         Ok(n) => return Ok(n),
                         Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {}
                         Err(e) => return Err(e),
                     }
                 }
             }
-            let n = self.raw.read(buf)?;
-            if n == 0 {
-                self.shared.end_handshake(Some("The connection closed during the TLS handshake".into()));
-                return Ok(0);
-            }
+            let n = match self.raw.read(buf) {
+                Ok(0) => {
+                    self.shared.died("The connection closed");
+                    return Ok(0);
+                }
+                Ok(n) => n,
+                Err(e) => {
+                    self.shared.died(&e.to_string());
+                    return Err(e);
+                }
+            };
             let mut state = self.shared.lock();
             let Some(s) = state.tls.as_mut() else { return Ok(n) };
             let mut taken = &buf[..n];
             while !taken.is_empty() {
-                s.conn.read_tls(&mut taken)?;
+                let left = taken.len();
+                if s.conn.read_tls(&mut taken).is_err() || taken.len() == left {
+                    // Nothing taken: after the peer's close_notify, rustls reads no more.
+                    break;
+                }
                 if let Err(e) = s.conn.process_new_packets() {
                     let refusal = s.verification.lock().unwrap_or_else(|e| e.into_inner()).refusal.clone();
                     let message = refusal.unwrap_or_else(|| format!("TLS handshake failed: {e}"));
-                    let handshaking = s.conn.is_handshaking();
                     // The alert saying why goes to the peer.
-                    let _ = self.shared.flush(state, &mut self.out);
-                    if handshaking {
-                        self.shared.end_handshake(Some(message.clone()));
-                    }
+                    let _ = self.shared.queue_records(&mut state);
+                    drop(state);
+                    self.shared.end_handshake(Some(message.clone()));
                     return Err(std::io::Error::other(message));
                 }
             }
-            let ready = !s.conn.is_handshaking() && state.stage == stage::HANDSHAKE_TRIED;
+            let ready = s.conn.is_handshaking().not() && state.stage == stage::HANDSHAKE_TRIED;
             if ready {
                 state.stage = stage::READY;
             }
-            self.shared.flush(state, &mut self.out)?;
+            let queued = self.shared.queue_records(&mut state);
+            drop(state);
             if ready {
                 self.shared.end_handshake(None);
             }
+            queued?;
         }
     }
 }
 
-impl<W: Write> Write for Writer<W> {
+impl Write for Writer {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let mut state = self.shared.lock();
-        match state.tls.as_mut() {
-            None => {
-                let _writing = self.shared.writing.lock().unwrap_or_else(|e| e.into_inner());
-                drop(state);
-                self.raw.write_all(buf)?;
-            }
-            // Before the handshake ends, rustls keeps it until it can go.
-            Some(s) => {
-                s.conn.writer().write_all(buf)?;
-                self.shared.flush(state, &mut self.raw)?;
+        // In pieces, so rustls's own buffer never fills, which would leave
+        // it refusing the rest of what is sent.
+        for chunk in buf.chunks(CHUNK) {
+            self.shared.wait_for_room();
+            let mut state = self.shared.lock();
+            match state.tls.as_mut() {
+                None => {
+                    drop(state);
+                    self.shared.queue(chunk);
+                }
+                // Before the handshake ends, rustls keeps it until it can go.
+                Some(s) => {
+                    s.conn.writer().write_all(chunk)?;
+                    self.shared.queue_records(&mut state)?;
+                }
             }
         }
         Ok(buf.len())
     }
 
     fn flush(&mut self) -> std::io::Result<()> {
-        self.raw.flush()
+        self.shared.wait_written();
+        Ok(())
+    }
+}
+
+impl Drop for Writer {
+    fn drop(&mut self) {
+        // What is left goes before the socket is shut down for writing.
+        self.shared.wait_written();
+        self.shared.out().done = true;
+        self.shared.writable.notify_all();
     }
 }
 
@@ -217,27 +326,32 @@ impl Shared {
         self.changed.notify_all();
     }
 
-    /// Starts TLS over the connection: sends the first handshake message
-    /// to the peer through `out`, a handle on the socket.
-    pub(crate) fn start(&self, params: &TlsParams, out: &mut impl Write) -> Result<()> {
+    /// Starts TLS over the connection: the first handshake message is
+    /// queued for the socket.
+    pub(crate) fn start(&self, params: &TlsParams) -> Result<()> {
         let verification = Arc::new(Mutex::new(Verification::default()));
         let config = client_config(params, verification.clone())?;
         let name = ServerName::try_from(params.hostname.clone()).map_err(|_| Error::new(format!("gnutls-boot: invalid :hostname parameter: {}", params.hostname)))?;
         let conn = ClientConnection::new(Arc::new(config), name).map_err(|e| Error::new(format!("gnutls-boot: {e}")))?;
         let mut state = self.lock();
+        if let Some(why) = &state.dead {
+            return Err(Error::new(format!("gnutls-boot: {why}")));
+        }
         state.tls = Some(Session { conn, verification, failed: None });
         state.stage = stage::HANDSHAKE_TRIED;
-        self.flush(state, out).map_err(|e| Error::new(format!("gnutls-boot: {e}")))
+        self.queue_records(&mut state).map_err(|e| Error::new(format!("gnutls-boot: {e}")))
     }
 
     /// Waits for the handshake to end, checking `quit` meanwhile: what
-    /// failed it, if anything did.
+    /// failed it, if anything did. A connection that ends meanwhile, as
+    /// one a peer closes or resets, ends the wait too.
     pub(crate) fn wait(&self, mut quit: impl FnMut() -> Result<()>) -> Result<std::result::Result<(), String>> {
         let mut state = self.lock();
         loop {
             match &state.tls {
                 Some(s) if s.failed.is_some() => return Ok(Err(s.failed.clone().unwrap_or_default())),
                 Some(_) if state.stage == stage::READY => return Ok(Ok(())),
+                Some(_) if state.dead.is_some() => return Ok(Err(state.dead.clone().unwrap_or_default())),
                 Some(_) => {}
                 None => return Ok(Err("TLS was taken down".into())),
             }
@@ -254,11 +368,11 @@ impl Shared {
     }
 
     /// Sends the peer the alert that ends TLS, as `gnutls-bye`.
-    pub(crate) fn bye(&self, out: &mut impl Write) -> std::io::Result<bool> {
+    pub(crate) fn bye(&self) -> std::io::Result<bool> {
         let mut state = self.lock();
         let Some(s) = state.tls.as_mut() else { return Ok(false) };
         s.conn.send_close_notify();
-        self.flush(state, out)?;
+        self.queue_records(&mut state)?;
         Ok(true)
     }
 
