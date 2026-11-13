@@ -113,6 +113,15 @@ zlib and `symbol-file` ([ADR 0075](../adr/0075-compression-and-tls-as-emacs-has-
 
 The ranking is now led by **menus** (0.46, `x-popup-menu`), then frames (0.34) and the window tree's rest (0.30).
 
+TLS ([ADR 0075](../adr/0075-compression-and-tls-as-emacs-has-them.md), stages 2 and 3) landed on 2026-11-13. Measured again on the same corpus:
+
+- **By name**, 604 of the 877 editor primitives, as before: GnuTLS's are platform primitives.
+- **Packages needing nothing missing**: 248 of 295 MELPA packages, 56 of 77 daily ones, and 19 of Emacs's 49, from 16.
+- **Still needed** by at least one package: 115 editor and 60 platform primitives, from 115 and 71.
+- **Compression and TLS** are off the list: every primitive of the group is there.
+
+The ranking is now led by **menus** (0.46, `x-popup-menu`), then frames (0.34), the window tree's rest (0.30), charsets and codings (0.23) and keyboard odds (0.22).
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
