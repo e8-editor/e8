@@ -1,7 +1,7 @@
 //! Variables, hooks, keymaps, modes and help.
 
 use crate::*;
-use crate::natives::{natives, Field, Fields, Opt, Record};
+use crate::natives::{natives, Field, Fields, Opt, Record, Win};
 
 natives! {
     /// Give the current buffer its own value, starting from the one it sees now.
@@ -613,6 +613,90 @@ natives! {
         Ok(ed.keymaps().binding_of(ed.keymap_of(&keymap)?, &parsed).and_then(binding_value))
     }
 
+    /// Bind a key sequence in a keymap to a menu item, as Emacs's
+    /// (define-key MAP KEYS (menu-item LABEL DEFINITION . PROPERTIES)).
+    /// Items show in the order they were bound; binding one again keeps
+    /// its place. `binding` is the command it runs, the keymap of its
+    /// submenu, or null for a line that cannot be chosen. `enable` and
+    /// `visible` may each be a value or a function to call, as Emacs
+    /// evaluates the form they hold; `button` makes it a radio or toggle
+    /// button, shown on when its value says so; `keys` is the key text
+    /// shown beside it, looked up from the command without one; `filter`
+    /// is given the submenu and gives the one to show.
+    #[ts = "(keymap: string | Keymap, keys: string, item: { label: string; binding?: CommandName | DefinedCommand | Keymap | null; enable?: Value | (() => unknown); visible?: Value | (() => unknown); help?: string; keys?: string; button?: [\"toggle\" | \"radio\", Value | (() => unknown)]; filter?: (menu: Keymap) => Keymap }): void"]
+    pub fn defineMenuItem(ed, keymap: EditorValue, keys: String, item: Fields) {
+        let parsed = Key::parse_seq(&keys).ok_or_else(|| Error::new(format!("Invalid key sequence: {keys:?}")))?;
+        let label = item.string("label").ok_or_else(|| Error::new("A menu item needs a label"))?;
+        let binding = match item.get("binding") {
+            None => e8_core::Binding::Nil,
+            Some(EditorValue::Keymap(map)) => e8_core::Binding::Keymap(*map),
+            Some(command) => match command.as_str() {
+                Some(name) => e8_core::Binding::Command(name.to_string()),
+                None => return Err(Error::new(format!("Not a command or keymap: {command}"))),
+            },
+        };
+        let button = match item.get("button") {
+            Some(EditorValue::List(pair)) if pair.len() == 2 => {
+                let kind = match pair[0].as_str() {
+                    Some("toggle") => e8_core::ButtonKind::Toggle,
+                    Some("radio") => e8_core::ButtonKind::Radio,
+                    _ => return Err(Error::new("A menu item's button is toggle or radio")),
+                };
+                Some((kind, pair[1].clone()))
+            }
+            None => None,
+            Some(other) => return Err(Error::new(format!("Not a menu button: {other}"))),
+        };
+        let menu_item = e8_core::MenuItem {
+            label,
+            binding: Box::new(binding),
+            order: 0,
+            enable: item.get("enable").cloned(),
+            visible: item.get("visible").cloned(),
+            help: item.string("help"),
+            keys: item.string("keys"),
+            button,
+            filter: item.get("filter").cloned(),
+        };
+        ed.define_menu_item(&keymap, &parsed, menu_item)
+    }
+
+    /// What a keymap's own menu item at a key sequence says, or undefined
+    /// where it binds no menu item.
+    #[ts = "(keymap: string | Keymap, keys: string): { label: string; binding?: CommandName | Keymap; help?: string; keys?: string } | undefined"]
+    pub fn menuItem(ed, keymap: EditorValue, keys: String) -> Option<Record> {
+        let parsed = Key::parse_seq(&keys).ok_or_else(|| Error::new(format!("Invalid key sequence: {keys:?}")))?;
+        let Some(item) = ed.menu_item_at(&keymap, &parsed)? else { return Ok(None) };
+        Ok(Some(
+            Record::new()
+                .with("label", EditorValue::Str(item.label.clone()))
+                .with("binding", binding_value(item.binding.as_ref().clone()))
+                .with("help", item.help.clone().map(EditorValue::Str))
+                .with("keys", item.keys.clone().map(EditorValue::Str)),
+        ))
+    }
+
+    /// Pop a menu up and give back what was chosen, as x-popup-menu: a
+    /// keymap's menu items, several keymaps' as one menu, or the panes and
+    /// items of Emacs's list form, (TITLE (PANE-TITLE [LABEL, VALUE]...)).
+    /// A menu made of keymaps gives the keys that reach the item chosen,
+    /// to look up in the menu with lookupKey; a menu made of lists gives
+    /// the item's value. Leaving a menu opened by a key quits; one opened
+    /// by the mouse gives undefined. The menu goes where the pointer is,
+    /// where point shows, or at a place in a window ([x, y] in columns and
+    /// lines, with the window as a third element).
+    #[ts = "(menu: Keymap | Keymap[] | Value[], position?: \"mouse\" | \"point\" | [x: number, y: number] | [x: number, y: number, window: Window]): Value | undefined"]
+    pub fn xPopupMenu(ed, menu: EditorValue, position: EditorValue) -> Option<EditorValue> {
+        let position = menu_position(ed, &position)?;
+        let answer = ed.x_popup_menu(&menu, Some(position))?;
+        Ok(Some(answer).filter(|v| !matches!(v, EditorValue::Null)))
+    }
+
+    /// Whether a menu is open, as menu-or-popup-active-p.
+    pub fn menuOrPopupActiveP(ed) -> Option<bool> {
+        Ok(ed.menu_active().then_some(true))
+    }
+
     fn useLocalMap(ed, keymap: EditorValue) {
         ed.use_local_map(Some(&keymap).filter(|k| !matches!(k, EditorValue::Null)))
     }
@@ -866,13 +950,38 @@ pub(crate) fn attributes_record(a: &e8_core::fileops::FileAttributes) -> Record 
         .with("inode", a.inode as f64)
 }
 
+/// Where a menu goes, as `xPopupMenu` takes it: the words "mouse" and
+/// "point", or a place in a window, as Emacs's ((X Y) WINDOW).
+fn menu_position(ed: &e8_core::Editor, position: &EditorValue) -> e8_core::Result<e8_core::MenuPosition> {
+    match position {
+        EditorValue::Null => Ok(e8_core::MenuPosition::Mouse),
+        EditorValue::Str(word) if word == "mouse" => Ok(e8_core::MenuPosition::Mouse),
+        EditorValue::Str(word) if word == "point" => Ok(e8_core::MenuPosition::Point),
+        EditorValue::List(place) if place.len() == 2 || place.len() == 3 => {
+            let number = |v: &EditorValue| v.as_number().ok_or_else(|| Error::new("A menu's place is [x, y]"));
+            let window = match place.get(2) {
+                Some(value) => Some(Win::from_value(value).ok_or_else(|| Error::new("Not a window"))?.0),
+                None => None,
+            };
+            if let Some(window) = window
+                && (ed.window_frame(window).is_none() || ed.window_internal_p(window))
+            {
+                return Err(Error::new("Window is not live"));
+            }
+            Ok(e8_core::MenuPosition::At { x: number(&place[0])?, y: number(&place[1])?, window })
+        }
+        other => Err(Error::new(format!("Not a place for a menu: {other}"))),
+    }
+}
+
 /// A binding as scripts see it: a command's name, a prefix keymap, or the
-/// keys of a keyboard macro; none for nil.
+/// keys of a keyboard macro; none for nil. A menu item is looked through
+/// to what it runs, as keymap.c's get_keyelt looks through one.
 fn binding_value(binding: e8_core::Binding) -> Option<EditorValue> {
-    match binding {
+    match binding.definition().clone() {
         e8_core::Binding::Command(c) => Some(EditorValue::Str(c)),
         e8_core::Binding::Keymap(m) => Some(EditorValue::Keymap(m)),
         e8_core::Binding::Keys(k) => Some(EditorValue::List(k.iter().map(|k| EditorValue::Str(k.to_string())).collect())),
-        e8_core::Binding::Nil => None,
+        e8_core::Binding::Menu(_) | e8_core::Binding::Nil => None,
     }
 }

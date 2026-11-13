@@ -69,6 +69,9 @@ pub struct FrameDescription {
     pub fringe_bitmaps: HashMap<String, FringeBitmap>,
     /// Each image's pixels, by its id, for the images the windows show.
     pub images: HashMap<u64, Option<Arc<Rgba>>>,
+    /// The panels of the menu that is open, over everything else, the
+    /// outermost first; empty with no menu open (ADR 0076).
+    pub menus: Vec<crate::menu::MenuPanel>,
 }
 
 /// The styles of the faces a front end draws its own parts in, such as
@@ -327,6 +330,7 @@ impl Editor {
             default_style: style(&["default"]),
             fringe_bitmaps: bitmaps,
             images,
+            menus: if frame == self.selected_frame() { self.menu_panels(dark) } else { Vec::new() },
         }
     }
 }

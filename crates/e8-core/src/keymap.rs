@@ -22,8 +22,74 @@ pub enum Binding {
     Keys(Vec<Key>),
     /// A prefix key: the keys after it are looked up in that keymap.
     Keymap(KeymapId),
+    /// A menu item: a label, what choosing it runs, and the rest of what
+    /// Emacs's `(menu-item ...)` says about it.
+    Menu(Box<MenuItem>),
     /// Nothing, hiding the parents' binding, as `(define-key map key nil)`.
     Nil,
+}
+
+impl Binding {
+    /// What a binding runs, a menu item's item looked through, as Emacs
+    /// looks through a `menu-item` to the real definition.
+    pub fn definition(&self) -> &Binding {
+        match self {
+            Binding::Menu(item) => item.binding.definition(),
+            other => other,
+        }
+    }
+}
+
+/// What kind of button a menu item shows, as a `menu-item`'s `:button` says.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ButtonKind {
+    /// One of a set, shown `(*)` when on, as `:radio` is.
+    Radio,
+    /// On or off by itself, shown `[X]` when on, as `:toggle` is.
+    Toggle,
+}
+
+/// A menu item, as Emacs's `(KEY menu-item LABEL DEFINITION . PROPERTIES)`.
+/// Where Emacs holds a Lisp form to evaluate, E8 holds a value, which may
+/// be a function to call, as a variable's value may be one.
+#[derive(Clone, Debug, PartialEq)]
+pub struct MenuItem {
+    pub label: String,
+    /// What choosing it runs: a command, a submenu keymap, or `Nil` for a
+    /// line that cannot be chosen.
+    pub binding: Box<Binding>,
+    /// When it was bound. Items show in that order, as a menu is written.
+    pub order: u64,
+    /// Whether it can be chosen, as `:enable`.
+    pub enable: Option<crate::variables::Value>,
+    /// Whether it is in the menu at all, as `:visible`.
+    pub visible: Option<crate::variables::Value>,
+    /// What it does, for the echo area, as `:help`.
+    pub help: Option<String>,
+    /// The keys shown beside it, as `:keys`; without one, the keys that
+    /// run its command are looked up, as Emacs looks them up.
+    pub keys: Option<String>,
+    /// Whether it is a radio or toggle button, and what says it is on.
+    pub button: Option<(ButtonKind, crate::variables::Value)>,
+    /// Given the submenu it is bound to, gives the one to show, as `:filter`.
+    pub filter: Option<crate::variables::Value>,
+}
+
+impl MenuItem {
+    /// An item with a label and what it runs, and nothing else said.
+    pub fn new(label: &str, binding: Binding) -> MenuItem {
+        MenuItem {
+            label: label.to_string(),
+            binding: Box::new(binding),
+            order: 0,
+            enable: None,
+            visible: None,
+            help: None,
+            keys: None,
+            button: None,
+            filter: None,
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default)]
@@ -56,6 +122,8 @@ const DEPTH: usize = 32;
 #[derive(Debug, Default)]
 pub struct Keymaps {
     maps: Vec<Map>,
+    /// How many menu items have been bound, which orders them.
+    next_order: u64,
 }
 
 impl Keymaps {
@@ -88,6 +156,15 @@ impl Keymaps {
         for (key, binding) in original.bindings {
             let binding = match binding {
                 Binding::Keymap(sub) if !shared(sub) => Binding::Keymap(self.copy_into(sub, shared, copied)),
+                Binding::Menu(item) => {
+                    let mut item = item;
+                    if let Binding::Keymap(sub) = *item.binding
+                        && !shared(sub)
+                    {
+                        item.binding = Box::new(Binding::Keymap(self.copy_into(sub, shared, copied)));
+                    }
+                    Binding::Menu(item)
+                }
                 other => other,
             };
             self.maps[new].bindings.insert(key, binding);
@@ -170,7 +247,9 @@ impl Keymaps {
         for &m in maps {
             let mut bound = false;
             for x in self.chain(m) {
-                match x.bindings.get(key) {
+                // A menu item is looked through to what it runs, as
+                // keymap.c's get_keyelt looks through one.
+                match x.bindings.get(key).map(Binding::definition) {
                     Some(Binding::Keymap(k)) => out.push(Binding::Keymap(*k)),
                     Some(b @ (Binding::Command(_) | Binding::Keys(_))) => {
                         if !bound {
@@ -186,7 +265,8 @@ impl Keymaps {
                         bound = true;
                         break;
                     }
-                    None => continue,
+                    // A menu item is looked through, so one is never left here.
+                    Some(Binding::Menu(_)) | None => continue,
                 }
                 bound = true;
             }
@@ -204,7 +284,7 @@ impl Keymaps {
         let (last, prefix) = keys.split_last().expect("empty key sequence");
         let mut map = map;
         for key in prefix {
-            map = match self.maps[map].bindings.get(key) {
+            map = match self.maps[map].bindings.get(key).map(Binding::definition) {
                 Some(Binding::Keymap(m)) => *m,
                 _ => {
                     let new = self.make(None);
@@ -216,12 +296,40 @@ impl Keymaps {
         self.maps[map].bindings.insert(*last, binding);
     }
 
+    /// Binds a menu item, as Emacs binds `(menu-item LABEL ...)`. Items
+    /// show in the order they were bound; one that replaces another keeps
+    /// its place, as `define-key` replaces a binding where it stands.
+    pub fn bind_menu(&mut self, map: KeymapId, keys: &[Key], mut item: MenuItem) {
+        item.order = match self.binding_at(map, keys) {
+            Some(Binding::Menu(old)) => old.order,
+            _ => {
+                self.next_order += 1;
+                self.next_order
+            }
+        };
+        self.bind(map, keys, Binding::Menu(Box::new(item)));
+    }
+
+    /// What a keymap itself binds a key sequence to, menu items not
+    /// looked through and its parents not asked.
+    pub fn binding_at(&self, map: KeymapId, keys: &[Key]) -> Option<&Binding> {
+        let (last, prefix) = keys.split_last()?;
+        let mut map = map;
+        for key in prefix {
+            match self.maps[map].bindings.get(key).map(Binding::definition) {
+                Some(Binding::Keymap(m)) => map = *m,
+                _ => return None,
+            }
+        }
+        self.maps[map].bindings.get(last)
+    }
+
     /// Takes a key sequence's binding out of a keymap, so its parents' shows.
     pub fn unbind(&mut self, map: KeymapId, keys: &[Key]) {
         let (last, prefix) = keys.split_last().expect("empty key sequence");
         let mut map = map;
         for key in prefix {
-            map = match self.maps[map].bindings.get(key) {
+            map = match self.maps[map].bindings.get(key).map(Binding::definition) {
                 Some(Binding::Keymap(m)) => *m,
                 _ => return,
             };
@@ -280,11 +388,11 @@ impl Keymaps {
     }
 
     pub fn lookup(&self, map: KeymapId, keys: &[Key]) -> Lookup {
-        match self.binding_of(map, keys) {
-            Some(Binding::Command(c)) => Lookup::Command(c),
-            Some(Binding::Keys(k)) => Lookup::Keys(k),
+        match self.binding_of(map, keys).as_ref().map(Binding::definition) {
+            Some(Binding::Command(c)) => Lookup::Command(c.clone()),
+            Some(Binding::Keys(k)) => Lookup::Keys(k.clone()),
             Some(Binding::Keymap(_)) => Lookup::Prefix,
-            Some(Binding::Nil) | None => Lookup::Unbound,
+            Some(Binding::Menu(_) | Binding::Nil) | None => Lookup::Unbound,
         }
     }
 
@@ -330,7 +438,7 @@ impl Keymaps {
                     self.collect(*m, prefix, path, out);
                     path.pop();
                 }
-                Binding::Keymap(_) | Binding::Nil => {}
+                Binding::Keymap(_) | Binding::Menu(_) | Binding::Nil => {}
             }
             prefix.pop();
         }

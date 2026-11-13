@@ -1747,6 +1747,10 @@ fn bind_defaults(ed: &mut Editor) {
         ed.keymaps_mut().bind_str(map, "<home>", "beginning-of-buffer");
         ed.keymaps_mut().bind_str(map, "<end>", "end-of-buffer");
     }
+    let map = ed.define_keymap(crate::menu::NAVIGATION_MAP, None);
+    for (keys, what) in crate::menu::NAVIGATION {
+        ed.keymaps_mut().bind_str(map, keys, what);
+    }
     ed.define_keymap(crate::minibuffer::MUST_MATCH_MAP, None);
     for keys in ["RET", "C-j", "C-m"] {
         let keys = Key::parse_seq(keys).expect("valid keys");

@@ -122,6 +122,15 @@ TLS ([ADR 0075](../adr/0075-compression-and-tls-as-emacs-has-them.md), stages 2 
 
 The ranking is now led by **menus** (0.46, `x-popup-menu`), then frames (0.34), the window tree's rest (0.30), charsets and codings (0.23) and keyboard odds (0.22).
 
+Menu keymaps and `x-popup-menu` ([ADR 0076](../adr/0076-menus-as-emacs-has-them.md), stage 1) landed on 2026-11-13. Measured again on the same corpus:
+
+- **By name**, 604 of the 877 editor primitives, as before: menus are platform primitives, of which 25 now have Emacs's name, from 23.
+- **Packages needing nothing missing**: 252 of 295 MELPA packages, from 248; 57 of 77 daily ones, from 56; 20 of Emacs's 49, from 19. yasnippet, treemacs, lsp-treemacs and slime lacked only `x-popup-menu`, and Emacs's eglot only that.
+- **Still needed** by at least one package: 115 editor and 58 platform primitives, from 115 and 60.
+- **Menus** fell from 0.46 to 0.15, and no package is held up by the group alone. What is left of it is the dialogs and tooltips of stage 3: `x-popup-dialog`, `message-box`, `message-or-box`, `next-read-file-uses-dialog-p`, `x-show-tip`, `x-hide-tip` and `x-select-font`.
+
+The ranking is now led by **frames** (0.34: frame parameters, visibility and frames' own minibuffer windows), then the window tree's rest (0.30), charsets and codings (0.23), keyboard odds (0.22) and XML (0.19).
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.

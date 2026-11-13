@@ -10692,6 +10692,10 @@ declare global {
        */
       "max-mini-window-height": Value;
       /**
+       * Keymap menu-navigation-map.
+       */
+      "menu-navigation-map": Value;
+      /**
        * Earlier answers to minibuffer prompts for text, newest first.
        */
       "minibuffer-history": Value;
@@ -13593,6 +13597,10 @@ declare global {
        */
       "link": FaceAttributes;
       /**
+       * Menus, where the front end draws them itself.
+       */
+      "menu": FaceAttributes;
+      /**
        * The minibuffer's prompt.
        */
       "minibuffer-prompt": FaceAttributes;
@@ -14024,6 +14032,18 @@ declare global {
        * Defined in packages/tabulated-list.ts.
        */
       "tabulated-list-fake-header": FaceAttributes;
+      /**
+       * An item of a menu that cannot be chosen, and a menu's titles.
+       */
+      "tty-menu-disabled-face": FaceAttributes;
+      /**
+       * An item of a menu that can be chosen.
+       */
+      "tty-menu-enabled-face": FaceAttributes;
+      /**
+       * The item of a menu the cursor is on.
+       */
+      "tty-menu-selected-face": FaceAttributes;
       /**
        * Underlined text.
        */
@@ -15310,6 +15330,38 @@ declare global {
      * keys are looked up in them, as current-minor-mode-maps.
      */
     function currentMinorModeMaps(): Keymap[];
+    /**
+     * Bind a key sequence in a keymap to a menu item, as Emacs's
+     * (define-key MAP KEYS (menu-item LABEL DEFINITION . PROPERTIES)).
+     * Items show in the order they were bound; binding one again keeps
+     * its place. `binding` is the command it runs, the keymap of its
+     * submenu, or null for a line that cannot be chosen. `enable` and
+     * `visible` may each be a value or a function to call, as Emacs
+     * evaluates the form they hold; `button` makes it a radio or toggle
+     * button, shown on when its value says so; `keys` is the key text
+     * shown beside it, looked up from the command without one; `filter`
+     * is given the submenu and gives the one to show.
+     */
+    function defineMenuItem(keymap: string | Keymap, keys: string, item: { label: string; binding?: CommandName | DefinedCommand | Keymap | null; enable?: Value | (() => unknown); visible?: Value | (() => unknown); help?: string; keys?: string; button?: ["toggle" | "radio", Value | (() => unknown)]; filter?: (menu: Keymap) => Keymap }): void;
+    /**
+     * What a keymap's own menu item at a key sequence says, or undefined
+     * where it binds no menu item.
+     */
+    function menuItem(keymap: string | Keymap, keys: string): { label: string; binding?: CommandName | Keymap; help?: string; keys?: string } | undefined;
+    /**
+     * Pop a menu up and give back what was chosen, as x-popup-menu: a
+     * keymap's menu items, several keymaps' as one menu, or the panes and
+     * items of Emacs's list form, (TITLE (PANE-TITLE [LABEL, VALUE]...)).
+     * A menu made of keymaps gives the keys that reach the item chosen,
+     * to look up in the menu with lookupKey; a menu made of lists gives
+     * the item's value. Leaving a menu opened by a key quits; one opened
+     * by the mouse gives undefined. The menu goes where the pointer is,
+     * where point shows, or at a place in a window ([x, y] in columns and
+     * lines, with the window as a third element).
+     */
+    function xPopupMenu(menu: Keymap | Keymap[] | Value[], position?: "mouse" | "point" | [x: number, y: number] | [x: number, y: number, window: Window]): Value | undefined;
+    /** Whether a menu is open, as menu-or-popup-active-p. */
+    function menuOrPopupActiveP(): boolean | undefined;
     /**
      * Edit recursively, as Emacs's recursive-edit: the editor goes on taking
      * commands, with [ ] around the modes in the mode line, until C-M-c

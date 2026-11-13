@@ -57,6 +57,7 @@ mod memory_fs;
 mod minibuffer;
 mod modes;
 mod mouse;
+mod menus;
 mod mouse_positions;
 mod org;
 mod org_select;

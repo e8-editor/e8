@@ -124,10 +124,40 @@ pub fn draw(frame: &mut Frame, fd: &FrameDescription) {
         }
     }
     let echo_cursor = draw_echo_area(frame, fd, echo_area).filter(|_| fd.minibuffer_selected);
+    // A menu is drawn over everything else, and keeps the cursor on the
+    // item it is on, as term.c's menus do.
+    // Cells count from the top left of the frame's windows, below the tab bar.
+    let windows_top = screen.y + u16::from(fd.tab_bar.is_some());
+    if let Some(cursor) = draw_menus(frame, fd, Rect { y: windows_top, height: screen.bottom() - windows_top, ..screen }) {
+        frame.set_cursor_position(cursor);
+        return;
+    }
     // A window whose cursor internal-show-cursor hid shows none.
     if echo_cursor.is_some() || cursor_shown {
         frame.set_cursor_position(echo_cursor.unwrap_or(window_cursor));
     }
+}
+
+/// Draws the panels of the menu that is open over the windows, and gives
+/// where the cursor goes: the left of the line the menu is on.
+fn draw_menus(frame: &mut Frame, fd: &FrameDescription, screen: Rect) -> Option<Position> {
+    let mut cursor = None;
+    for panel in &fd.menus {
+        for (i, row) in panel.rows.iter().enumerate() {
+            let (x, y) = (screen.x + panel.x as u16, screen.y + panel.y as u16);
+            let y = y + i as u16;
+            if y >= screen.bottom() {
+                break;
+            }
+            let width = (panel.width as u16).min(screen.right().saturating_sub(x));
+            let style = terminal_style(&row.style, fd.dark);
+            frame.render_widget(Paragraph::new(Line::styled(row.text.clone(), style)).style(style), Rect::new(x, y, width, 1));
+            if row.selected {
+                cursor = Some(Position::new(x, y));
+            }
+        }
+    }
+    cursor
 }
 
 /// A window's rows as a mouse event finds them, with their glyphs, and how

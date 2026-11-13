@@ -1129,6 +1129,33 @@ fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: boo
         let echo_cursor = if focused && fd.minibuffer_selected { CursorStyle::Filled } else { CursorStyle::Hollow };
         draw_echo_area(&painter, fd, layout.echo_rect, m, t, echo_cursor);
     }
+    draw_menus(&painter, fd, layout, m, t);
+}
+
+/// Draws the panels of an open menu over the windows: a raised card for
+/// each, with its lines in the menu faces (ADR 0076).
+fn draw_menus(painter: &Painter, fd: &FrameDescription, layout: &Layout, m: &Metrics, t: Tokens) {
+    let origin = layout.windows_origin();
+    for panel in &fd.menus {
+        let min = origin + vec2(panel.x as f32 * m.char_width, panel.y as f32 * m.line_height);
+        let size = vec2(panel.width as f32 * m.char_width, panel.rows.len() as f32 * m.line_height);
+        let rect = Rect::from_min_size(min, size);
+        // Exactly the cells it holds, so a submenu does not cover the
+        // `>` of the item that opened it.
+        painter.rect_filled(rect, 0.0, t.sunken);
+        painter.rect_stroke(rect, 0.0, Stroke::new(1.0, t.line), egui::StrokeKind::Inside);
+        for (i, row) in panel.rows.iter().enumerate() {
+            let line = Rect::from_min_size(min + vec2(0.0, i as f32 * m.line_height), vec2(size.x, m.line_height));
+            if let Some(background) = row.style.background {
+                painter.rect_filled(line, 0.0, color32(background));
+            }
+            let color = row.style.foreground.map_or(t.ink, color32);
+            let mut job = LayoutJob::default();
+            job.append(&row.text, 0.0, text_format(m, color));
+            let galley = painter.layout_job(job);
+            painter.galley(pos2(line.left(), line.center().y - galley.size().y / 2.0), galley, color);
+        }
+    }
 }
 
 /// What is under a point of the window, for a mouse event: an editor
