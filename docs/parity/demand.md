@@ -140,6 +140,15 @@ The menu bar ([ADR 0076](../adr/0076-menus-as-emacs-has-them.md), stage 2) lande
 
 The ranking is now led by **frames** (0.34: frame parameters, visibility and frames' own minibuffer windows), then the window tree's rest (0.30), charsets and codings (0.23), keyboard odds (0.22) and XML (0.19).
 
+Frames and the window tree ([ADR 0077](../adr/0077-frames-and-the-window-tree-as-emacs-has-them.md), three pull requests) landed on 2026-11-13. Measured again on the same corpus:
+
+- **By name**, 664 of the 877 editor primitives (76%), from 607, and 43 of the 169 platform ones, from 29: frame.c has 55 of its 64 and window.c 105 of its 117, and terminal.c's objects are there.
+- **Packages needing nothing missing**: 265 of 295 MELPA packages, from 252; 62 of 77 daily ones, from 57; 23 of Emacs's 49, from 20. ace-window, posframe, pdf-tools, persp-mode, visual-fill-column, writeroom-mode, winum, forge, with-editor, window-purpose, cfrs, doom-themes and spacemacs-theme lacked these two groups and nothing else, and Emacs's dired, edebug, erc, server and which-key with them.
+- **Still needed** by at least one package: 72 editor and 42 platform primitives, from 113 and 54.
+- **Frames and the window tree** are off the list. What is left of them is named in the ADR: `handle-switch-frame` and `frame-after-make-frame`, which want an event and a hook E8 has not; display tables on a window, which would change nothing while E8 honours only a table's selective-display slot; and `resize-mini-window-internal`.
+
+The ranking is now led by **charsets and codings** (0.23), then keyboard odds (0.22: `current-idle-time`), XML (0.19: `libxml-parse-html-region`, the most needed missing primitive now), the macOS front end's own (0.18) and keymaps' rest (0.17).
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.

@@ -1454,7 +1454,7 @@
       return [left === 0 ? undefined : left, right === 0 ? undefined : right];
     },
     setWindowMargins: (window, left, right) => native.setWindowMargins(window ?? native.selectedWindow(), left ?? 0, right ?? 0),
-    windowFringes: () => (native.windowFringes() ? [8, 8, false, false] : [0, 0, false, false]),
+    windowFringes: (window) => native.windowFringeWidths(window === undefined ? null : window),
     internalShowCursor: (window, show) => native.showWindowCursor(window ?? native.selectedWindow(), Boolean(show)),
     internalShowCursorP: (window) => native.windowCursorShown(window ?? native.selectedWindow()),
     defineFringeBitmap(bitmap, bits, height, width, align = "center") {
@@ -1495,6 +1495,16 @@
       return native.setWindowConfiguration(configuration.__e8WindowConfiguration) || undefined;
     },
     windowConfigurationP: (value) => value instanceof WindowConfiguration,
+    windowConfigurationFrame(configuration) {
+      if (!(configuration instanceof WindowConfiguration)) throw new TypeError("windowConfigurationFrame takes a window configuration");
+      return native.windowConfigurationFrame(configuration.__e8WindowConfiguration);
+    },
+    windowConfigurationEqualP(a, b) {
+      if (!(a instanceof WindowConfiguration) || !(b instanceof WindowConfiguration)) {
+        throw new TypeError("windowConfigurationEqualP takes two window configurations");
+      }
+      return native.windowConfigurationsEqual(a.__e8WindowConfiguration, b.__e8WindowConfiguration);
+    },
     freeWindowConfiguration(configuration) {
       if (!(configuration instanceof WindowConfiguration)) throw new TypeError("freeWindowConfiguration takes a window configuration");
       configurationsFreed.unregister(configuration.__e8ConfigurationToken);

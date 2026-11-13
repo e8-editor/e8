@@ -30,6 +30,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Clicks.
 - Drags.
 - Double and triple clicks and shift-click as Emacs mouse keys (`<mouse-1>`, `<drag-mouse-1>`, `<double-mouse-1>`).
+- Windows' places on the frame (`window-pixel-left`, `window-pixel-top`, `window-left-column`, `window-top-line`), fringes of their own (`set-window-fringes`, which the window obeys), a cursor of their own (`set-window-cursor-type`), what they were at the last redisplay (`window-old-buffer`, `window-old-point`, `old-selected-window`), and window configurations compared (`window-configuration-frame`, `window-configuration-equal-p`).
 - Terminals as objects (`terminal-list`, `terminal-live-p`, `frame-terminal`, `terminal-name`, `terminal-parameter`, `set-terminal-parameter`, `delete-terminal`, `tty-type`, `tty-display-color-p`, `controlling-tty-p`, `suspend-tty`, `resume-tty`): one terminal, which every frame is on.
 - Frames' geometry (`frame-text-width`, `frame-native-width`, `frame-position`, `set-frame-position`, `set-frame-size`, `frame-parameters`, `modify-frame-parameters`, the widths around a frame's text), where a frame's keys go (`redirect-frame-focus`, `frame-focus`), `lower-frame` and `x-parse-geometry`.
 - Dialogs and tooltips (`x-popup-dialog`, `message-box`, `message-or-box`, `use-dialog-box-p`, `x-show-tip`, `x-hide-tip`, `tooltip-mode`, `x-select-font`), drawn as menus are, in a terminal as in the window, as Emacs emulates a dialog with a menu where the display has none.

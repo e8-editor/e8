@@ -349,6 +349,10 @@ pub struct Editor {
     pub(crate) frame_requests: Vec<crate::frame::FrameRequest>,
     /// Where each frame's keys go, as `redirect-frame-focus` says.
     pub(crate) frame_focus: std::collections::HashMap<crate::window::FrameId, crate::window::FrameId>,
+    /// The window selected at the last redisplay, as `old-selected-window`.
+    pub(crate) old_selected_window: Option<crate::window::WindowId>,
+    /// Each frame's selected window at the last redisplay.
+    pub(crate) old_frame_windows: std::collections::HashMap<crate::window::FrameId, crate::window::WindowId>,
     /// The frame selected before the one that is, as `old-selected-frame`.
     pub(crate) old_selected_frame: Option<crate::window::FrameId>,
     /// The frames whose window state change flag is set.
@@ -552,6 +556,8 @@ impl Editor {
             frame_geometries: Default::default(),
             frame_requests: Vec::new(),
             frame_focus: Default::default(),
+            old_selected_window: None,
+            old_frame_windows: Default::default(),
             old_selected_frame: None,
             frame_state_changes: Vec::new(),
             tab_bar_column: None,

@@ -46,8 +46,20 @@ pub(crate) struct Window {
     /// the buffer it then showed; otherwise the buffer's `left-margin-width`
     /// and `right-margin-width` count, as `set-window-buffer` takes them.
     pub(crate) margins: Option<(u64, usize, usize)>,
+    /// The fringe widths `set-window-fringes` gave it, in the front end's
+    /// units, with the buffer they were set for unless they are to stay
+    /// whatever it shows, and whether they go outside its margins.
+    pub(crate) fringes: Option<WindowFringeWidths>,
+    /// What `set-window-scroll-bars` was told, which E8 keeps and gives
+    /// back, drawing no scroll bars: the vertical kind and the horizontal.
+    pub(crate) scroll_bars: Option<(Value, Value, bool)>,
+    /// What the window was at the last redisplay, for `window-old-buffer`
+    /// and its kin.
+    pub(crate) old: Option<OldWindow>,
     /// Whether its cursor is drawn, as `internal-show-cursor` sets it.
     pub(crate) cursor_shown: bool,
+    /// What its cursor looks like, as `set-window-cursor-type` gave it.
+    pub(crate) cursor_type: Option<Value>,
     /// How far it is scrolled horizontally.
     pub(crate) hscroll: crate::scroll::Hscroll,
     /// How far it is scrolled up past its start, in the front end's units.
@@ -70,7 +82,11 @@ impl Window {
             prev_buffers: Vec::new(),
             next_buffers: Vec::new(),
             margins: None,
+            fringes: None,
+            scroll_bars: None,
+            old: None,
             cursor_shown: true,
+            cursor_type: None,
             hscroll: Default::default(),
             vscroll: Default::default(),
             scrolled_to: None,
@@ -108,6 +124,11 @@ struct SavedWindow {
     prev_buffers: Vec<(u64, usize, usize)>,
     next_buffers: Vec<u64>,
     hscroll: crate::scroll::Hscroll,
+    /// Its margins, fringes and scroll bars, which save_window_save
+    /// keeps and set-window-configuration puts back.
+    margins: Option<(u64, usize, usize)>,
+    fringes: Option<WindowFringeWidths>,
+    scroll_bars: Option<(Value, Value, bool)>,
 }
 
 /// What switching a window to another buffer does with the one it leaves,
@@ -129,6 +150,28 @@ pub struct WindowNew {
     pub pixel: Option<i64>,
     pub total: Option<i64>,
     pub normal: Option<Option<f64>>,
+}
+
+/// What a window was at the last redisplay, as Emacs keeps a window's
+/// old buffer, point and sizes for `window-state-change-functions`.
+#[derive(Clone, Copy, Debug)]
+pub(crate) struct OldWindow {
+    pub(crate) buffer: u64,
+    pub(crate) point: usize,
+    /// Its whole size and its text area's, in the front end's units.
+    pub(crate) pixel: (usize, usize),
+    pub(crate) body: (usize, usize),
+}
+
+/// The fringe widths a window was given, in the front end's units.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub(crate) struct WindowFringeWidths {
+    /// The buffer they were set for, or none to keep them whatever the
+    /// window shows, as `set-window-fringes`'s PERSISTENT says.
+    pub(crate) buffer: Option<u64>,
+    pub(crate) left: Option<f32>,
+    pub(crate) right: Option<f32>,
+    pub(crate) outside_margins: bool,
 }
 
 /// A frame that is not selected: its windows and which of them was
@@ -509,7 +552,8 @@ impl Editor {
         let lines = self.total_cells(rect).1;
         let header = if self.window_wants_header_line(id, lines) { chrome.header_line } else { 0.0 };
         let mode = if self.window_shows_mode_line(id) { chrome.mode_line } else { 0.0 };
-        let across = chrome.fringes + if rect.divider { chrome.divider } else { 0.0 };
+        let (left, right, ..) = self.window_fringe_widths(id);
+        let across = (left + right) as f32 + if rect.divider { chrome.divider } else { 0.0 };
         (header + chrome.text_top, mode, across)
     }
 
@@ -528,9 +572,11 @@ impl Editor {
         let (mut x0, mut y0, mut x1, mut y1) = (rect.x, rect.y, rect.x + rect.width, rect.y + rect.height);
         if body && self.window(id).is_some() {
             let (above, below, across) = self.window_chrome_units(id, &rect);
-            let fringes = self.text_metrics().window_chrome().fringes;
-            x0 += fringes / 2.0;
-            x1 = (x1 - (across - fringes / 2.0)).max(x0);
+            // The window's own left fringe, as window-body-edges counts
+            // from WINDOW_LEFT_FRINGE_WIDTH.
+            let (left_fringe, ..) = self.window_fringe_widths(id);
+            x0 += left_fringe as f32;
+            x1 = (x1 - (across - left_fringe as f32)).max(x0);
             y0 += above;
             y1 = (y1 - below).max(y0);
         }
@@ -1463,6 +1509,57 @@ impl Editor {
         }
     }
 
+    /// What a window's fringes are, as `set-window-fringes` set them.
+    /// The widths are the front end's units; none means the frame's own.
+    pub fn window_fringe_widths(&self, id: WindowId) -> (usize, usize, bool, bool) {
+        let chrome = self.text_metrics().window_chrome();
+        let (mut left, mut right) = (chrome.fringes / 2.0, chrome.fringes / 2.0);
+        let (mut outside, mut persistent) = (false, false);
+        if let Some(w) = self.window(id)
+            && let Some(set) = &w.fringes
+            && set.buffer.is_none_or(|b| b == w.buffer)
+        {
+            left = set.left.unwrap_or(left);
+            right = set.right.unwrap_or(right);
+            outside = set.outside_margins;
+            persistent = set.buffer.is_none();
+        }
+        (left as usize, right as usize, outside, persistent)
+    }
+
+    /// Gives a window fringes of its own, as `set-window-fringes`: widths
+    /// in the front end's units, none for the frame's own; `persistent`
+    /// keeps them whatever buffer the window shows. True if they changed.
+    pub fn set_window_fringes(&mut self, id: WindowId, left: Option<f32>, right: Option<f32>, outside_margins: bool, persistent: bool) -> bool {
+        // Nothing on a terminal, as set_window_fringes returns at once
+        // for a frame that is no window frame.
+        if !self.text_metrics().fringes() {
+            return false;
+        }
+        let (was_left, was_right, was_outside, _) = self.window_fringe_widths(id);
+        let Some(w) = self.window(id) else { return false };
+        let buffer = (!persistent).then_some(w.buffer);
+        let fringes = WindowFringeWidths { buffer, left, right, outside_margins };
+        // Fringes a window has no room for are left as they were, as
+        // set_window_fringes leaves them.
+        let room = self.window_pixel_rect(id).map_or(0.0, |r| r.width);
+        let least = self.window_safe_min_units(true) as f32;
+        let (want_left, want_right) = (left.unwrap_or(was_left as f32), right.unwrap_or(was_right as f32));
+        if room - want_left - want_right < least {
+            return false;
+        }
+        let Some(w) = self.window_mut(id) else { return false };
+        w.fringes = Some(fringes);
+        // Changed, as set-window-fringes says, when a width or the side
+        // the margins are on did.
+        let (now_left, now_right, now_outside, _) = self.window_fringe_widths(id);
+        if (now_left, now_right, now_outside) == (was_left, was_right, was_outside) {
+            return false;
+        }
+        self.relayout();
+        true
+    }
+
     /// A window's left and right margins in columns, as Emacs's
     /// `window-margins`: as `set-window-margins` set them while it shows the
     /// same buffer, else its buffer's `left-margin-width` and
@@ -1673,7 +1770,11 @@ impl Editor {
             let b = &mut self.buffers[index];
             let point_pos = if id == selected { b.point() } else { b.window_point(id).unwrap_or(b.point()) };
             let (start, point) = (b.make_marker(start_pos, false), b.make_marker(point_pos, false));
-            windows.push(SavedWindow { id, buffer, start, point, width, height, parameters, dedicated, prev_buffers, next_buffers, hscroll });
+            let (margins, fringes, scroll_bars) = self
+                .window(id)
+                .map(|w| (w.margins, w.fringes, w.scroll_bars.clone()))
+                .unwrap_or_default();
+            windows.push(SavedWindow { id, buffer, start, point, width, height, parameters, dedicated, prev_buffers, next_buffers, hscroll, margins, fringes, scroll_bars });
         }
         let current = self.buffers[self.current].id;
         self.next_window_configuration += 1;
@@ -1709,7 +1810,11 @@ impl Editor {
             .iter()
             .map(|w| (w.id, w.buffer, self.marker_position(w.start).map(|(n, p)| (n.to_string(), p)), self.marker_position(w.point).map(|(n, p)| (n.to_string(), p)), w.width, w.height))
             .collect();
-        let extras: Vec<_> = config.windows.iter().map(|w| (w.parameters.clone(), w.dedicated.clone(), w.prev_buffers.clone(), w.next_buffers.clone(), w.hscroll)).collect();
+        let extras: Vec<_> = config
+            .windows
+            .iter()
+            .map(|w| (w.parameters.clone(), w.dedicated.clone(), w.prev_buffers.clone(), w.next_buffers.clone(), w.hscroll, w.margins, w.fringes, w.scroll_bars.clone()))
+            .collect();
         // The selected window's point and start go to its buffer first, as
         // they would on selecting another.
         let old = self.selected_window;
@@ -1726,7 +1831,7 @@ impl Editor {
             }
         }
         let fallback = self.other_buffer().and_then(|n| self.find_buffer(n)).unwrap_or(0);
-        for ((id, buffer, start, point, width, height), (parameters, dedicated, prev, next, hscroll)) in saved.into_iter().zip(extras) {
+        for ((id, buffer, start, point, width, height), (parameters, dedicated, prev, next, hscroll, margins, fringes, scroll_bars)) in saved.into_iter().zip(extras) {
             let index = self.buffer_with_id(buffer).unwrap_or(fallback);
             let buffer = self.buffers[index].id;
             if let Some(w) = self.window(id) {
@@ -1741,6 +1846,7 @@ impl Editor {
             (w.width, w.height) = (width, height);
             (w.parameters, w.dedicated, w.next_buffers) = (parameters, dedicated, next);
             w.hscroll = crate::scroll::Hscroll { buffer, ..hscroll };
+            (w.margins, w.fringes, w.scroll_bars) = (margins, fringes, scroll_bars);
             // An entry the window still has has followed edits since; one
             // it dropped comes back as it was.
             let mut entries = Vec::new();
@@ -2101,6 +2207,214 @@ impl Editor {
         if let Some(w) = self.window_mut(selected) {
             w.height = lines.max(1);
         }
+    }
+}
+
+/// The rest of window.c's tree for window.el: where a window sits on its
+/// frame, what it was at the last redisplay, and the scroll bars and
+/// dividers E8 draws none of (ADR 0077).
+impl Editor {
+    /// How far a window's left edge is from the frame's, in the front
+    /// end's units, as `window-pixel-left`.
+    pub fn window_pixel_left(&self, id: WindowId) -> Option<usize> {
+        self.window_pixel_rect(id).map(|r| r.x.max(0.0) as usize)
+    }
+
+    /// How far a window's top edge is from the frame's, in the front
+    /// end's units, as `window-pixel-top`.
+    pub fn window_pixel_top(&self, id: WindowId) -> Option<usize> {
+        self.window_pixel_rect(id).map(|r| r.y.max(0.0) as usize)
+    }
+
+    /// Which column of the frame a window starts at, as
+    /// `window-left-column`.
+    pub fn window_left_column(&self, id: WindowId) -> Option<usize> {
+        self.window_edges(id, false).map(|(left, ..)| left)
+    }
+
+    /// Which line of the frame a window starts at, as `window-top-line`.
+    pub fn window_top_line(&self, id: WindowId) -> Option<usize> {
+        self.window_edges(id, false).map(|(_, top, ..)| top)
+    }
+
+    /// How tall a window's tab line is, as `window-tab-line-height`: none,
+    /// E8 having no tab lines.
+    pub fn window_tab_line_height(&self, _id: WindowId) -> usize {
+        0
+    }
+
+    /// The width of the divider at a window's right or foot, as
+    /// `window-right-divider-width` and `window-bottom-divider-width`:
+    /// its frame's, which is 0 unless a parameter says otherwise.
+    pub fn window_divider_width(&self, id: WindowId, bottom: bool) -> usize {
+        let Some(frame) = self.window_frame(id) else { return 0 };
+        // None for a window with nothing to its right, as Emacs's
+        // WINDOW_RIGHT_DIVIDER_WIDTH is 0 for the rightmost.
+        if !bottom && !self.window_pixel_rect(id).is_some_and(|r| r.divider) {
+            return 0;
+        }
+        self.frame_divider_width(frame, bottom)
+    }
+
+    /// What a window's scroll bars are, as `window-scroll-bars`: the
+    /// widths are 0 and the kinds what `set-window-scroll-bars` was told,
+    /// E8 drawing none, as a terminal's window has none.
+    pub fn window_scroll_bars(&self, id: WindowId) -> (usize, usize, Value, usize, usize, Value, bool) {
+        let set = self.window(id).and_then(|w| w.scroll_bars.clone());
+        // The kinds are the frame's by default, which Emacs says as `t`.
+        let (vertical, horizontal, persistent) = set.unwrap_or((Value::Bool(true), Value::Bool(true), false));
+        (0, 0, vertical, 0, 0, horizontal, persistent)
+    }
+
+    /// Says what a window's scroll bars should be, as
+    /// `set-window-scroll-bars`. E8 draws none, so this is remembered and
+    /// given back; true if what was remembered changed.
+    pub fn set_window_scroll_bars(&mut self, id: WindowId, vertical: Value, horizontal: Value, persistent: bool) -> Result<bool> {
+        // The kinds Emacs takes, as Fset_window_scroll_bars checks them.
+        let kind = |value: &Value, kinds: &[&str], what: &str| match value {
+            Value::Null | Value::Bool(_) => Ok(()),
+            other => match other.as_str() {
+                Some(name) if kinds.contains(&name) => Ok(()),
+                _ => Err(Error::new(format!("Invalid type of {what} scroll bar"))),
+            },
+        };
+        kind(&vertical, &["left", "right"], "vertical")?;
+        kind(&horizontal, &["bottom"], "horizontal")?;
+        let was = self.window(id).and_then(|w| w.scroll_bars.clone());
+        let now = Some((vertical, horizontal, persistent));
+        let Some(w) = self.window_mut(id) else { return Ok(false) };
+        w.scroll_bars = now.clone();
+        Ok(was != now)
+    }
+
+    /// The buffer a window showed at the last redisplay, as
+    /// `window-old-buffer`, by name; none if it showed none.
+    pub fn window_old_buffer(&self, id: WindowId) -> Option<String> {
+        let old = self.window(id)?.old.as_ref()?.buffer;
+        self.buffer_with_id(old).map(|index| self.buffers[index].name.clone())
+    }
+
+    /// Where point was in a window at the last redisplay, as
+    /// `window-old-point`.
+    pub fn window_old_point(&self, id: WindowId) -> Option<usize> {
+        Some(self.window(id)?.old.as_ref()?.point)
+    }
+
+    /// How big a window was at the last redisplay, in the front end's
+    /// units, as `window-old-pixel-width` and `-height`, and its text
+    /// area's size, as `window-old-body-pixel-width` and `-height`.
+    pub fn window_old_sizes(&self, id: WindowId) -> Option<((usize, usize), (usize, usize))> {
+        let old = self.window(id)?.old.as_ref()?;
+        Some((old.pixel, old.body))
+    }
+
+    /// The window that was selected at the last redisplay, as
+    /// `old-selected-window`.
+    pub fn old_selected_window(&self) -> Option<WindowId> {
+        self.old_selected_window
+    }
+
+    /// A frame's selected window at the last redisplay, as
+    /// `frame-old-selected-window`.
+    pub fn frame_old_selected_window(&self, frame: FrameId) -> Option<WindowId> {
+        self.old_frame_windows.get(&frame).copied()
+    }
+
+    /// Remembers what every window shows now, for the `*-old-*`
+    /// accessors, as `run_window_change_functions` keeps it.
+    pub(crate) fn remember_old_windows(&mut self) {
+        let frames = self.frame_list();
+        let mut olds = Vec::new();
+        for frame in &frames {
+            for view in self.frame_windows(*frame) {
+                let id = view.id;
+                let (buffer, point) = (view.buffer.id(), view.point);
+                let pixel = self.window_pixel_size(id).map_or((0, 0), |(w, h)| (w as usize, h as usize));
+                let body = self.window_body_pixel_size(id).map_or((0, 0), |(w, h)| (w as usize, h as usize));
+                olds.push((id, OldWindow { buffer, point, pixel, body }));
+            }
+        }
+        // Only a window that has none yet, or where something other than
+        // point changed, is written down again: Emacs records them when
+        // a window change happened, and moving point is not one, so
+        // `window-old-point` keeps the point of the last change.
+        let changed = olds.iter().any(|(id, now)| match self.window(*id).and_then(|w| w.old.as_ref()) {
+            Some(old) => (old.buffer, old.pixel, old.body) != (now.buffer, now.pixel, now.body),
+            None => true,
+        }) || self.old_selected_window != Some(self.selected_window);
+        if changed {
+            for (id, old) in olds {
+                if let Some(w) = self.window_mut(id) {
+                    w.old = Some(old);
+                }
+            }
+        }
+        self.old_selected_window = Some(self.selected_window);
+        for frame in &frames {
+            if let Some(window) = self.frame_selected_window(*frame) {
+                self.old_frame_windows.insert(*frame, window);
+            }
+        }
+        self.old_frame_windows.retain(|frame, _| frames.contains(frame));
+    }
+
+    /// How wide a window's vertical scroll bar is, as
+    /// `window-scroll-bar-width`, and how tall its horizontal one, as
+    /// `window-scroll-bar-height`: none, E8 drawing no scroll bars.
+    pub fn window_scroll_bar_size(&self, _id: WindowId, _horizontal: bool) -> usize {
+        0
+    }
+
+    /// What a window's cursor looks like, as `window-cursor-type`: what
+    /// `set-window-cursor-type` gave it, or nothing for its buffer's.
+    pub fn window_cursor_type(&self, id: WindowId) -> Option<Value> {
+        self.window(id).and_then(|w| w.cursor_type.clone())
+    }
+
+    /// Gives a window a cursor of its own, as `set-window-cursor-type`;
+    /// nothing gives it back its buffer's.
+    pub fn set_window_cursor_type(&mut self, id: WindowId, cursor: Value) -> Value {
+        if let Some(w) = self.window_mut(id) {
+            w.cursor_type = match cursor {
+                Value::Null => None,
+                value => Some(value),
+            };
+        }
+        self.window_cursor_type(id).unwrap_or(Value::Null)
+    }
+
+    /// Runs `window-configuration-change-hook`, as
+    /// `run-window-configuration-change-hook` does.
+    pub fn run_window_configuration_change_hook(&mut self) -> Result<()> {
+        self.run_hooks("window-configuration-change-hook")
+    }
+
+    /// The frame a window configuration was taken on, as
+    /// `window-configuration-frame`.
+    pub fn window_configuration_frame(&self, id: u64) -> Option<FrameId> {
+        self.window_configurations.get(&id).map(|c| c.frame)
+    }
+
+    /// Whether two window configurations have the same windows showing
+    /// the same buffers at the same places, as
+    /// `window-configuration-equal-p`: what is current and the minibuffer
+    /// are not compared, as `compare_window_configurations` leaves them out.
+    pub fn window_configurations_equal(&self, a: u64, b: u64) -> bool {
+        let (Some(a), Some(b)) = (self.window_configurations.get(&a), self.window_configurations.get(&b)) else {
+            return false;
+        };
+        if a.frame != b.frame || a.tree != b.tree || a.selected != b.selected || a.windows.len() != b.windows.len() {
+            return false;
+        }
+        // The buffer that was current counts, as compare_window_configurations
+        // compares it; point, where each window starts and whether a
+        // window is dedicated do not, which it leaves out.
+        if a.current != b.current {
+            return false;
+        }
+        a.windows.iter().zip(&b.windows).all(|(x, y)| {
+            x.id == y.id && x.buffer == y.buffer && x.width == y.width && x.height == y.height && x.margins == y.margins && x.fringes == y.fringes && x.scroll_bars == y.scroll_bars
+        })
     }
 }
 

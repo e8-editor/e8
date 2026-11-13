@@ -296,13 +296,19 @@ impl Editor {
         }
         let (lmargin, rmargin) = if minibuffer { (0, 0) } else { self.window_margins(window) };
         let (lmargin, rmargin) = (lmargin as f32 * cw, rmargin as f32 * cw);
-        let fringe = if minibuffer { 0.0 } else { chrome.fringes / 2.0 };
+        // The window's own fringes, as set-window-fringes gave them.
+        let (left_fringe, right_fringe) = if minibuffer {
+            (0.0, 0.0)
+        } else {
+            let (l, r, ..) = self.window_fringe_widths(window);
+            (l as f32, r as f32)
+        };
         let divider = if rect.divider { chrome.divider } else { 0.0 };
         // [fringe][margin][text][margin][fringe], as the front ends lay it out.
-        let text_left = left + fringe + lmargin;
-        let text_right = (right - divider - fringe - rmargin).max(text_left);
+        let text_left = left + left_fringe + lmargin;
+        let text_right = (right - divider - right_fringe - rmargin).max(text_left);
         if x < text_left {
-            return Some(if lmargin > 0.0 && x >= left + fringe { WindowPart::LeftMargin } else { WindowPart::LeftFringe });
+            return Some(if lmargin > 0.0 && x >= left + left_fringe { WindowPart::LeftMargin } else { WindowPart::LeftFringe });
         }
         if x >= text_right {
             return Some(if rmargin > 0.0 && x < text_right + rmargin { WindowPart::RightMargin } else { WindowPart::RightFringe });

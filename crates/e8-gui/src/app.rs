@@ -1095,14 +1095,14 @@ impl Layout {
         let echo_lines = if frame == ed.selected_frame() { ed.mini_window_height(frame_lines) } else { 1 };
         let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
         let (menu_bar, tab_bar) = (ed.menu_bar_lines(frame) > 0, ed.tab_bar_lines(frame) > 0);
-        let mut layout = Layout::compute(frame, rect, m.clone(), &tree, menu_bar, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
+        let mut layout = Layout::compute(frame, rect, m.clone(), &tree, menu_bar, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| fringe_widths(ed, id), &|id| ed.window_shows_mode_line(id));
         // The frame in cells, which the windows' sizes count in: a new size
         // is shared among them first, as Emacs's normal sizes share it, and
         // they are laid out as the tree then says.
         if frame == ed.selected_frame() && ed.frame_units() != layout.frame_units {
             ed.set_frame_pixel_size(layout.frame_units.0, layout.frame_units.1);
             let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
-            layout = Layout::compute(frame, rect, m, &tree, menu_bar, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
+            layout = Layout::compute(frame, rect, m, &tree, menu_bar, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| fringe_widths(ed, id), &|id| ed.window_shows_mode_line(id));
         } else if frame == ed.selected_frame() {
             // The same size, still given, so the frame's size counts as the front end's.
             ed.set_frame_pixel_size(layout.frame_units.0, layout.frame_units.1);
@@ -1130,6 +1130,7 @@ impl Layout {
             frame_lines,
             &|id, lines| lines > 2 && window(id).is_some_and(|w| w.header_line.is_some()),
             &|id| window(id).map_or((0, 0), |w| w.margins),
+            &|id| window(id).map_or((PAD_X, PAD_X), |w| (w.fringes_width.0 as f32, w.fringes_width.1 as f32)),
             &|id| window(id).is_none_or(|w| w.shows_mode_line),
         )
     }
@@ -1146,6 +1147,7 @@ impl Layout {
         frame_lines: usize,
         wants_header: &dyn Fn(WindowId, usize) -> bool,
         margins_of: &dyn Fn(WindowId) -> (usize, usize),
+        fringes_of: &dyn Fn(WindowId) -> (f32, f32),
         shows_mode_line: &dyn Fn(WindowId) -> bool,
     ) -> Layout {
         let bar_height = m.line_height + 2.0 * BAR_PAD;
@@ -1173,7 +1175,10 @@ impl Layout {
                 // [fringe][margin][text][margin][fringe], as Emacs lays a window out.
                 let (left, right) = margins_of(r.id);
                 let (top, bottom) = (text_top + PAD_Y, mode_rect.top());
-                let inner = (rect.left() + PAD_X, rect.right() - PAD_X);
+                // The window's own fringes, as set-window-fringes gave
+                // them, or the frame's.
+                let (left_fringe, right_fringe) = fringes_of(r.id);
+                let inner = (rect.left() + left_fringe, rect.right() - right_fringe);
                 let left_margin = (inner.0 + left as f32 * m.char_width).min(inner.1 - m.char_width);
                 let right_margin = (inner.1 - right as f32 * m.char_width).max(left_margin + m.char_width);
                 let text_rect = Rect::from_min_max(pos2(left_margin, top), pos2(right_margin, bottom));
@@ -1284,6 +1289,12 @@ fn draw_menus(painter: &Painter, fd: &FrameDescription, layout: &Layout, m: &Met
             painter.galley(pos2(line.left(), line.center().y - galley.size().y / 2.0), galley, color);
         }
     }
+}
+
+/// A window's fringe widths, as the editor keeps them.
+fn fringe_widths(ed: &Editor, id: WindowId) -> (f32, f32) {
+    let (left, right, ..) = ed.window_fringe_widths(id);
+    (left as f32, right as f32)
 }
 
 /// What is under a point of the window, for a mouse event: an editor

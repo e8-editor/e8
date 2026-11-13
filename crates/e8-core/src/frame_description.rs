@@ -143,6 +143,9 @@ pub struct WindowDescription {
     pub cursor_shown: bool,
     /// Its left and right margins' widths in columns.
     pub margins: (usize, usize),
+    /// Its left and right fringes' widths, in the front end's units, as
+    /// `set-window-fringes` gave them or the frame's own (ADR 0077).
+    pub fringes_width: (usize, usize),
     /// Whether its buffer breaks long lines between words, as
     /// `word-wrap` says, which shows no continuation mark on a terminal.
     pub word_wrap: bool,
@@ -280,6 +283,10 @@ impl Editor {
                 fringe_styles,
                 cursor_shown: self.window_cursor_shown(view.id),
                 margins: self.window_margins(view.id),
+                fringes_width: {
+                    let (left, right, ..) = self.window_fringe_widths(view.id);
+                    (left, right)
+                },
                 word_wrap: self.variable_in(b, "word-wrap").is_some_and(|v| v.is_true()),
                 mode_line: styled(self.mode_line(view.id)),
                 shows_mode_line: self.window_shows_mode_line(view.id),

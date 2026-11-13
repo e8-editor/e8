@@ -378,6 +378,244 @@ natives! {
         Ok(Frm(ed.selected_frame()))
     }
 
+    /// How far a window's left edge is from its frame's, in the front
+    /// end's units, as window-pixel-left.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowPixelLeft(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_pixel_left(window).unwrap_or(0))
+    }
+
+    /// How far a window's top edge is from its frame's, as window-pixel-top.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowPixelTop(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_pixel_top(window).unwrap_or(0))
+    }
+
+    /// Which column of the frame a window starts at, as window-left-column.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowLeftColumn(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_left_column(window).unwrap_or(0))
+    }
+
+    /// Which line of the frame a window starts at, as window-top-line.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowTopLine(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_top_line(window).unwrap_or(0))
+    }
+
+    /// How tall a window's tab line is, as window-tab-line-height: none,
+    /// E8 having no tab lines.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowTabLineHeight(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_tab_line_height(window))
+    }
+
+    /// The width of the divider at a window's right, as
+    /// window-right-divider-width: its frame's, 0 unless a parameter says
+    /// otherwise.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowRightDividerWidth(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_divider_width(window, false))
+    }
+
+    /// The height of the divider at a window's foot, as
+    /// window-bottom-divider-width.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowBottomDividerWidth(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_divider_width(window, true))
+    }
+
+    /// A window's fringes, as window-fringes: their widths in the front
+    /// end's units, whether they go outside its margins, and whether they
+    /// stay whatever buffer it shows.
+    #[ts = "(window?: WindowLike | null): [left: number, right: number, outsideMargins: boolean, persistent: boolean]"]
+    pub fn windowFringeWidths(ed, window: Option<Win>) -> Vec<EditorValue> {
+        let window = live_window(ed, window)?;
+        let (left, right, outside, persistent) = ed.window_fringe_widths(window);
+        Ok(vec![
+            EditorValue::Number(left as f64),
+            EditorValue::Number(right as f64),
+            EditorValue::Bool(outside),
+            EditorValue::Bool(persistent),
+        ])
+    }
+
+    /// Give a window fringes of its own, as set-window-fringes: widths in
+    /// the front end's units, null for its frame's own. With `persistent`
+    /// they stay whatever buffer it shows. True if they changed.
+    #[ts = "(window?: WindowLike | null, left?: number | null, right?: number | null, outsideMargins?: boolean, persistent?: boolean): boolean"]
+    pub fn setWindowFringes(ed, window: Option<Win>, left: Option<f64>, right: Option<f64>, outside_margins: Option<bool>, persistent: Option<bool>) -> bool {
+        let window = live_window(ed, window)?;
+        Ok(ed.set_window_fringes(
+            window,
+            left.map(|n| n.max(0.0) as f32),
+            right.map(|n| n.max(0.0) as f32),
+            outside_margins.unwrap_or(false),
+            persistent.unwrap_or(false),
+        ))
+    }
+
+    /// A window's scroll bars, as window-scroll-bars: its width, its
+    /// columns, its vertical kind, its height, its lines, its horizontal
+    /// kind and whether they stay whatever buffer it shows. E8 draws
+    /// none, so the sizes are 0 and the kinds are what
+    /// setWindowScrollBars was told, as a terminal's window answers.
+    #[ts = "(window?: WindowLike | null): [width: number, columns: number, vertical: Value, height: number, lines: number, horizontal: Value, persistent: boolean]"]
+    pub fn windowScrollBars(ed, window: Option<Win>) -> Vec<EditorValue> {
+        let window = live_window(ed, window)?;
+        let (width, columns, vertical, height, lines, horizontal, persistent) = ed.window_scroll_bars(window);
+        Ok(vec![
+            EditorValue::Number(width as f64),
+            EditorValue::Number(columns as f64),
+            vertical,
+            EditorValue::Number(height as f64),
+            EditorValue::Number(lines as f64),
+            horizontal,
+            EditorValue::Bool(persistent),
+        ])
+    }
+
+    /// Say what a window's scroll bars should be, as
+    /// set-window-scroll-bars: the vertical kind is "left", "right" or
+    /// null, the horizontal "bottom" or null. E8 draws none, so this is
+    /// remembered and given back; true if what was remembered changed.
+    #[ts = "(window?: WindowLike | null, width?: number | null, vertical?: Value, height?: number | null, horizontal?: Value, persistent?: boolean): boolean"]
+    pub fn setWindowScrollBars(ed, window: Option<Win>, width: Option<f64>, vertical: EditorValue, height: Option<f64>, horizontal: EditorValue, persistent: Option<bool>) -> bool {
+        let window = live_window(ed, window)?;
+        let (_, _) = (width, height);
+        ed.set_window_scroll_bars(window, vertical, horizontal, persistent.unwrap_or(false))
+    }
+
+    /// The buffer a window showed at the last redisplay, as
+    /// window-old-buffer; undefined before the first.
+    #[ts = "(window?: WindowLike | null): string | undefined"]
+    pub fn windowOldBuffer(ed, window: Option<Win>) -> Option<String> {
+        let window = live_window(ed, window)?;
+        Ok(ed.window_old_buffer(window))
+    }
+
+    /// Where point was in a window at the last redisplay, as window-old-point.
+    #[ts = "(window?: WindowLike | null): number | undefined"]
+    pub fn windowOldPoint(ed, window: Option<Win>) -> Option<usize> {
+        let window = live_window(ed, window)?;
+        Ok(ed.window_old_point(window))
+    }
+
+    /// How wide a window was at the last redisplay, in the front end's
+    /// units, as window-old-pixel-width.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowOldPixelWidth(ed, window: Option<Win>) -> usize {
+        let window = live_window(ed, window)?;
+        Ok(ed.window_old_sizes(window).map_or(0, |(pixel, _)| pixel.0))
+    }
+
+    /// How tall it was, as window-old-pixel-height.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowOldPixelHeight(ed, window: Option<Win>) -> usize {
+        let window = live_window(ed, window)?;
+        Ok(ed.window_old_sizes(window).map_or(0, |(pixel, _)| pixel.1))
+    }
+
+    /// How wide its text area was, as window-old-body-pixel-width.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowOldBodyPixelWidth(ed, window: Option<Win>) -> usize {
+        let window = live_window(ed, window)?;
+        Ok(ed.window_old_sizes(window).map_or(0, |(_, body)| body.0))
+    }
+
+    /// How tall its text area was, as window-old-body-pixel-height.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowOldBodyPixelHeight(ed, window: Option<Win>) -> usize {
+        let window = live_window(ed, window)?;
+        Ok(ed.window_old_sizes(window).map_or(0, |(_, body)| body.1))
+    }
+
+    /// The window selected at the last redisplay, as old-selected-window.
+    pub fn oldSelectedWindow(ed) -> Option<Win> {
+        Ok(ed.old_selected_window().map(Win))
+    }
+
+    /// A frame's selected window at the last redisplay, as
+    /// frame-old-selected-window.
+    #[ts = "(frame?: FrameLike | null): Window | undefined"]
+    pub fn frameOldSelectedWindow(ed, frame: Option<Frm>) -> Option<Win> {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_old_selected_window(frame).map(Win))
+    }
+
+    /// How wide a window's vertical scroll bar is, as
+    /// window-scroll-bar-width: none, E8 drawing no scroll bars.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowScrollBarWidth(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_scroll_bar_size(window, false))
+    }
+
+    /// How tall a window's horizontal scroll bar is, as
+    /// window-scroll-bar-height: none.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowScrollBarHeight(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_scroll_bar_size(window, true))
+    }
+
+    /// How wide a frame's tool bar is, as tool-bar-pixel-width: none, E8
+    /// having no tool bar.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn toolBarPixelWidth(ed, frame: Option<Frm>) -> usize {
+        let _ = live_frame(ed, frame)?;
+        Ok(0)
+    }
+
+    /// What a window's cursor looks like, as window-cursor-type: what
+    /// setWindowCursorType gave it, or undefined for its buffer's.
+    #[ts = "(window?: WindowLike | null): Value | undefined"]
+    pub fn windowCursorType(ed, window: Option<Win>) -> Option<EditorValue> {
+        let window = live_window(ed, window)?;
+        Ok(ed.window_cursor_type(window))
+    }
+
+    /// Give a window a cursor of its own, as set-window-cursor-type;
+    /// null gives it back its buffer's.
+    #[ts = "(window: WindowLike | undefined | null, cursor: Value): Value"]
+    pub fn setWindowCursorType(ed, window: Option<Win>, cursor: EditorValue) -> EditorValue {
+        let window = live_window(ed, window)?;
+        Ok(ed.set_window_cursor_type(window, cursor))
+    }
+
+    /// Run window-configuration-change-hook, as
+    /// run-window-configuration-change-hook does.
+    #[ts = "(frame?: FrameLike | null): void"]
+    pub fn runWindowConfigurationChangeHook(ed, frame: Option<Frm>) {
+        let _ = frame;
+        ed.run_window_configuration_change_hook()
+    }
+
+    /// Note that a frame was invisible, as frame--set-was-invisible:
+    /// E8 keeps nothing of the kind, so this is remembered as a frame's
+    /// parameter and given back.
+    #[ts = "(frame: FrameLike | undefined | null, wasInvisible: boolean): void"]
+    pub fn frameSetWasInvisible(ed, frame: Option<Frm>, was_invisible: bool) {
+        let frame = live_frame(ed, frame)?;
+        ed.set_frame_parameter(frame, "was-invisible", EditorValue::Bool(was_invisible))
+    }
+
+    /// Look at a frame's fonts again, as reconsider-frame-fonts: E8's
+    /// front ends measure as they draw, so this only redisplays.
+    #[ts = "(frame?: FrameLike | null): void"]
+    pub fn reconsiderFrameFonts(ed, frame: Option<Frm>) {
+        let _ = live_frame(ed, frame)?;
+        ed.redisplay();
+        Ok(())
+    }
+
     /// Every terminal there is, as terminal-list: E8 draws through one
     /// front end, so there is one.
     pub fn terminalList(ed) -> Vec<Trm> {
@@ -1371,6 +1609,16 @@ fn terminal_arg(ed: &e8_core::Editor, terminal: Option<Trm>) -> e8_core::Termina
     // A frame's number stands for the terminal it is on; one that is on
     // none keeps its number, which the editor then refuses.
     ed.terminal_named(named).unwrap_or(named)
+}
+
+/// A window given to a native, the selected one by default, checked
+/// valid: an internal window counts, as `decode_valid_window` takes one.
+fn valid_window(ed: &e8_core::Editor, window: Option<Win>) -> Result<e8_core::WindowId, e8_core::Error> {
+    let id = window.map_or(ed.selected_window(), |w| w.0);
+    if ed.window_frame(id).is_none() {
+        return Err(e8_core::Error::signal("wrong-type-argument", "Not a valid window", vec![EditorValue::Symbol("window-valid-p".into()), EditorValue::Window(id)]));
+    }
+    Ok(id)
 }
 
 /// A frame given to a native, the selected one by default, checked live.
