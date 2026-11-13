@@ -96,6 +96,15 @@ The user and the system as Emacs has them ([ADR 0073](../adr/0073-the-user-and-t
 
 The ranking is now led by **mouse events** (0.51: `track-mouse`, `mouse-position`, `set-mouse-position`), then zlib and TLS (0.48, through `symbol-file`), menus (0.46, `x-popup-menu`) and frames (0.34).
 
+Mouse events ([ADR 0074](../adr/0074-mouse-events-as-emacs-has-them.md)) landed on 2026-11-13. Measured again on the same corpus:
+
+- **By name**, 604 of the 877 editor primitives (69%), from 595.
+- **Packages needing nothing missing**: 240 of 295 MELPA packages, from 238; 53 of 77 daily ones, from 52; 13 of Emacs's 49, from 10.
+- **Still needed** by at least one package: 115 editor and 73 platform primitives, from 125 and 75; 102 editor primitives are needed by nothing.
+- **Mouse events** are off the list: every primitive of the group is there, macOS's two under E8's own names.
+
+The ranking is now led by **zlib and TLS** (0.48: `zlib-available-p`, through `symbol-file`, and `gnutls-available-p`), then menus (0.46, `x-popup-menu`) and frames (0.34).
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
