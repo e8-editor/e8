@@ -356,6 +356,17 @@ const API: &str = r##"
     /** Whether it is still there, as frame-live-p. */
     readonly live: boolean;
   }
+  /**
+   * A terminal, as Emacs's terminal objects: the display a frame is shown
+   * on, carrying parameters a package can hang state off. E8 draws
+   * through one front end, so there is one (ADR 0077).
+   */
+  interface Terminal {
+    /** Its number, as Emacs numbers terminals. */
+    readonly id: number;
+    /** What kind of display it is, as terminal-live-p; undefined once deleted. */
+    readonly live: true | "ns" | "x" | "w32" | undefined;
+  }
   /** A window, or its number while packages move to the objects. */
   type WindowLike = Window | number;
   /** A frame, or its number while packages move to the objects. */

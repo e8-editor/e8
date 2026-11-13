@@ -358,7 +358,7 @@ fn print(value: &Value, noescape: bool, process_name: ProcessName, out: &mut Str
             Some(name) => out.push_str(&format!("#<process {name}>")),
             None => out.push_str(&value.to_string()),
         },
-        Value::Window(_) | Value::Frame(_) => out.push_str(&value.to_string()),
+        Value::Window(_) | Value::Frame(_) | Value::Terminal(_) => out.push_str(&value.to_string()),
         other => out.push_str(&format!("#<{other:?}>")),
     }
 }

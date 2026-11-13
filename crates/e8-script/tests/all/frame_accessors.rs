@@ -290,3 +290,119 @@ fn a_frames_window_state_change_flag_is_set_and_cleared() {
     assert_eq!(eval(&mut ed, &s, "(e8.setFrameWindowStateChange(undefined, true), String(e8.frameWindowStateChange()))"), "true");
     assert_eq!(eval(&mut ed, &s, "(e8.setFrameWindowStateChange(undefined, false), String(e8.frameWindowStateChange()))"), "false");
 }
+
+// --- Terminals as objects (ADR 0077, stage 2) -------------------------------
+
+#[test]
+fn there_is_one_terminal_and_every_frame_is_on_it() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.t = e8.terminalList(), globalThis.f = e8.makeFrame(),
+            JSON.stringify([t.length, e8.frameTerminal() === t[0], e8.frameTerminal(f) === t[0], String(t[0])]))"#,
+    );
+    assert_eq!(got, "[1,true,true,\"#<terminal 1>\"]");
+    // Headless draws no images, so it is a terminal, as framep says.
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalLiveP(globalThis.t[0]))"), "true");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalLiveP(e8.selectedFrame()))"), "true");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalLiveP(\"rubbish\"))"), "undefined");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalList()[0].live)"), "true");
+}
+
+#[test]
+fn a_terminal_keeps_the_parameters_a_package_hangs_off_it() {
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.terminalParameter(undefined, "mine"))"#), "undefined");
+    // Setting gives back what it was, as set-terminal-parameter does.
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.setTerminalParameter(undefined, "mine", "first"))"#), "undefined");
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.setTerminalParameter(undefined, "mine", "second"))"#), "first");
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.terminalParameter(undefined, "mine"))"#), "second");
+    assert_eq!(eval(&mut ed, &s, r#"JSON.stringify(e8.terminalParameters())"#), r#"{"mine":"second"}"#);
+    // A frame says which terminal, as Emacs's TERMINAL arguments take
+    // one, and a frame's number does too.
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.terminalParameter(e8.selectedFrame(), "mine"))"#), "second");
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.terminalParameter(e8.selectedFrame().id, "mine"))"#), "second");
+    // Set to null, it is still a parameter, as store_terminal_param keeps
+    // one; it is taking it out that Emacs has no way of.
+    eval(&mut ed, &s, r#"(e8.setTerminalParameter(undefined, "mine", null), 1)"#);
+    assert_eq!(eval(&mut ed, &s, r#"JSON.stringify("mine" in e8.terminalParameters())"#), "true");
+    // A frame that has been deleted is on no terminal, as its own is gone.
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.f = e8.makeFrame(), e8.deleteFrame(globalThis.f), String(e8.terminalLiveP(globalThis.f)))"#,
+    );
+    assert_eq!(got, "undefined");
+}
+
+#[test]
+fn a_terminals_device_and_colours_are_what_the_front_end_said() {
+    let (mut ed, s) = setup();
+    // Nothing said: no device, no TERM, no colours.
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalName())"), "undefined");
+    assert_eq!(eval(&mut ed, &s, "String(e8.ttyType())"), "undefined");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.ttyDisplayColorP(), e8.ttyDisplayColorCells()])"), "[false,0]");
+    ed.set_terminal_device(Some("/dev/ttys003".into()), Some("xterm-256color".into()));
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalName())"), "/dev/ttys003");
+    assert_eq!(eval(&mut ed, &s, "String(e8.ttyType())"), "xterm-256color");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.ttyDisplayColorP(), e8.ttyDisplayColorCells()])"), "[true,256]");
+    assert_eq!(eval(&mut ed, &s, "String(e8.controllingTtyP())"), "true");
+    // With no device at all, as a headless editor has none, it is not a
+    // controlling tty either.
+    ed.set_terminal_device(None, None);
+    assert_eq!(eval(&mut ed, &s, "String(e8.controllingTtyP())"), "false");
+}
+
+#[test]
+fn the_sole_terminal_cannot_be_deleted_unless_forced() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(() => { try { e8.deleteTerminal(); return "deleted"; } catch (e) { return String(e); } })()"#,
+    );
+    assert!(got.contains("sole active display terminal"), "{got}");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalList().length)"), "1");
+    // Forced, it goes, and the editor has nothing to draw on.
+    eval(&mut ed, &s, "(e8.deleteTerminal(undefined, true), 1)");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalList().length)"), "0");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalLiveP(e8.selectedFrame()))"), "undefined");
+    assert!(ed.should_quit());
+    // Deleting it again is nothing to do, as Fdelete_terminal gives nil
+    // for a terminal it cannot decode.
+    eval(&mut ed, &s, "(e8.deleteTerminal(undefined, true), 1)");
+}
+
+#[test]
+fn the_tty_hooks_are_run_with_the_terminal() {
+    let (mut ed, s) = setup();
+    ed.set_terminal_device(Some("/dev/ttys003".into()), Some("xterm".into()));
+    eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.said = [], e8.addHook("delete-terminal-functions", (t: unknown) => globalThis.said.push(String(t))), 1)"#,
+    );
+    eval(&mut ed, &s, "(e8.deleteTerminal(undefined, true), 1)");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(globalThis.said)"), "[\"#<terminal 1>\"]");
+}
+
+#[test]
+fn a_terminal_prints_as_emacs_prints_one() {
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, "e8.prin1ToString(e8.frameTerminal())"), "#<terminal 1>");
+}
+
+#[test]
+fn a_frame_made_on_the_terminal_is_not_selected_and_knows_it() {
+    let (mut ed, s) = setup();
+    ed.set_terminal_device(Some("/dev/ttys003".into()), Some("xterm-256color".into()));
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.was = e8.selectedFrame(), globalThis.f = e8.makeTerminalFrame(),
+            JSON.stringify([e8.selectedFrame() === globalThis.was, globalThis.f !== globalThis.was,
+              String(e8.frameParameter(globalThis.f, "tty")), String(e8.frameParameter(globalThis.f, "tty-type"))]))"#,
+    );
+    assert_eq!(got, r#"[true,true,"/dev/ttys003","xterm-256color"]"#);
+}

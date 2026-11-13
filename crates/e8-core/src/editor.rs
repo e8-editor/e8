@@ -336,6 +336,8 @@ pub struct Editor {
     pub(crate) tip: Option<crate::menu::Tip>,
     /// The menu `x-popup-menu` has open, while it waits for an answer.
     pub(crate) menu: Option<crate::menu::OpenMenu>,
+    /// The display the editor draws on, as `terminal-list` gives it.
+    pub(crate) terminal: crate::terminal::Terminal,
     /// The frames that are not selected, and every frame's id, newest first.
     pub(crate) other_frames: Vec<crate::window::Frame>,
     pub(crate) frame_order: Vec<crate::window::FrameId>,
@@ -522,6 +524,7 @@ impl Editor {
             from_menu: false,
             tip: None,
             menu: None,
+            terminal: Default::default(),
             other_frames: Vec::new(),
             frame_order: vec![crate::window::FIRST_FRAME],
             selected_frame: crate::window::FIRST_FRAME,
@@ -2791,6 +2794,21 @@ impl Editor {
             new_top = line;
         }
         self.window_buffer_mut().top_line = new_top;
+    }
+
+    /// What kind of display the editor draws on, as `window-system`
+    /// names it: none on a terminal.
+    pub fn window_system(&self) -> Option<&'static str> {
+        if !self.text_metrics().images() {
+            return None;
+        }
+        Some(if cfg!(target_os = "macos") {
+            "ns"
+        } else if cfg!(windows) {
+            "w32"
+        } else {
+            "x"
+        })
     }
 
     pub fn should_quit(&self) -> bool {

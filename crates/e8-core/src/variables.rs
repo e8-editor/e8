@@ -38,6 +38,8 @@ pub enum Value {
     Marker(u64),
     /// A window, by its id, live or deleted, as Emacs's window objects.
     Window(u64),
+    /// A terminal, by its number, as Emacs's terminal objects (ADR 0077).
+    Terminal(u64),
     /// A frame, by its id, live or deleted, as Emacs's frame objects.
     Frame(u64),
     /// A process, by its id, listed or gone, as Emacs's process objects
@@ -229,6 +231,7 @@ impl fmt::Display for Value {
             Value::Treesit(crate::treesitfns::TsObject::Node(_)) => write!(f, "#<treesit-node>"),
             Value::Marker(id) => write!(f, "#<marker {id}>"),
             Value::Window(id) => write!(f, "#<window {id}>"),
+            Value::Terminal(id) => write!(f, "#<terminal {id}>"),
             Value::Frame(id) => write!(f, "#<frame F{}>", id.saturating_sub(crate::window::FIRST_FRAME) + 1),
             Value::Process(id) => write!(f, "#<process {id}>"),
             Value::Font(font) => write!(f, "#<{} {}>", font.kind.name(), font.xlfd_name(true)),
