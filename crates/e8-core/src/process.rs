@@ -202,7 +202,7 @@ pub(crate) struct Process {
     child: Option<Child>,
     /// Text for its standard input, written on a thread of its own so a
     /// process that does not read cannot stop the editor; None closes it.
-    stdin: Option<Sender<Option<Vec<u8>>>>,
+    stdin: Option<Sender<Option<ToProcess>>>,
     pid: u32,
     /// Output streams still open.
     open_streams: usize,
@@ -350,14 +350,32 @@ impl Write for Conn {
     }
 }
 
+/// What is sent to a process's thread: text, or a marker it answers, so
+/// the editor can wait until everything sent before has gone.
+enum ToProcess {
+    Bytes(Vec<u8>),
+    Sent(SyncSender<()>),
+}
+
 /// Writes what a process is sent on a thread of its own, so a process that
 /// does not read cannot stop the editor; `close` runs at end of file.
-fn writer(mut out: impl Write + Send + 'static, close: impl FnOnce() + Send + 'static) -> Sender<Option<Vec<u8>>> {
-    let (tx, rx) = channel::<Option<Vec<u8>>>();
+fn writer(delay: Arc<Mutex<Duration>>, mut out: impl Write + Send + 'static, close: impl FnOnce() + Send + 'static) -> Sender<Option<ToProcess>> {
+    let (tx, rx) = channel::<Option<ToProcess>>();
     std::thread::spawn(move || {
-        while let Ok(Some(bytes)) = rx.recv() {
-            if out.write_all(&bytes).and_then(|_| out.flush()).is_err() {
-                break;
+        while let Ok(Some(item)) = rx.recv() {
+            let waiting = *delay.lock().unwrap_or_else(|e| e.into_inner());
+            if !waiting.is_zero() {
+                std::thread::sleep(waiting);
+            }
+            match item {
+                ToProcess::Bytes(bytes) => {
+                    if out.write_all(&bytes).and_then(|_| out.flush()).is_err() {
+                        break;
+                    }
+                }
+                ToProcess::Sent(answer) => {
+                    let _ = answer.send(());
+                }
             }
         }
         drop(out);
@@ -409,6 +427,9 @@ pub(crate) struct Processes {
     watching: Option<u64>,
     /// How long each read of a program's output is held back, for tests.
     read_delay: Duration,
+    /// How long the thread that writes to a process waits before taking
+    /// what is sent, for tests that what goes out keeps its order.
+    write_delay: Arc<Mutex<Duration>>,
     /// What is kept of processes that have gone from the list, by id, so
     /// their objects still answer, as Emacs's process objects do.
     gone: std::collections::HashMap<u64, Gone>,
@@ -468,7 +489,7 @@ impl Default for Processes {
     fn default() -> Processes {
         let (tx, rx) = sync_channel(QUEUED_CHUNKS);
         let tx = EventSender { tx, wake: Arc::new(Mutex::new(None)) };
-        Processes { list: Vec::new(), tx, rx, next_id: 1, held: Default::default(), outputs_seen: 0, watching: None, read_delay: Duration::ZERO, gone: Default::default(), waiting_for_user_input: false, waits_reading_keys: Vec::new() }
+        Processes { list: Vec::new(), tx, rx, next_id: 1, held: Default::default(), outputs_seen: 0, watching: None, read_delay: Duration::ZERO, write_delay: Arc::new(Mutex::new(Duration::ZERO)), gone: Default::default(), waiting_for_user_input: false, waits_reading_keys: Vec::new() }
     }
 }
 
@@ -834,11 +855,11 @@ impl Editor {
             #[cfg(unix)]
             Some((master, slave, tty)) => {
                 let input = std::fs::File::from(master.try_clone()?);
-                (Some(writer(input, || {})), Kind::Pty { master: std::fs::File::from(master), tty, _slave: slave })
+                (Some(writer(self.processes.write_delay.clone(), input, || {})), Kind::Pty { master: std::fs::File::from(master), tty, _slave: slave })
             }
             #[cfg(not(unix))]
             Some(_) => unreachable!(),
-            None => (child.stdin.take().map(|input| writer(input, || {})), Kind::Pipe),
+            None => (child.stdin.take().map(|input| writer(self.processes.write_delay.clone(), input, || {})), Kind::Pipe),
         };
         let gate = OutputGate {
             lock: Arc::new(Mutex::new(())),
@@ -1057,7 +1078,7 @@ impl Editor {
             child: None,
             // What is sent to it goes nowhere, as in Emacs, where nothing
             // reads the pipe it writes to.
-            stdin: Some(writer(std::io::sink(), || {})),
+            stdin: Some(writer(self.processes.write_delay.clone(), std::io::sink(), || {})),
             pid: 0,
             open_streams: 1,
             filter: spec.filter,
@@ -1196,6 +1217,15 @@ impl Editor {
         let p = self.process(name)?;
         let Some(link) = &p.tls else { return Err(Error::new(format!("gnutls-boot: {name} is not a network connection"))) };
         let shared = link.shared.clone();
+        // What was sent before goes first: a connection becoming TLS has
+        // just been told so in plain text, as STARTTLS does, and sending
+        // is a thread's work, which the handshake must not overtake.
+        if let Some(stdin) = &p.stdin {
+            let (sent, done) = sync_channel(0);
+            if stdin.send(Some(ToProcess::Sent(sent))).is_ok() {
+                let _ = done.recv_timeout(Duration::from_secs(30));
+            }
+        }
         shared.start(&params)?;
         match shared.wait(|| self.maybe_quit())? {
             Ok(()) => Ok(()),
@@ -1252,7 +1282,7 @@ impl Editor {
 
     /// Starts reading a connection and returns where to send it text, and
     /// what TLS needs of it: plain until `gnutls-boot` starts TLS.
-    fn connect(&mut self, id: u64, conn: Conn) -> Result<(Sender<Option<Vec<u8>>>, TlsLink)> {
+    fn connect(&mut self, id: u64, conn: Conn) -> Result<(Sender<Option<ToProcess>>, TlsLink)> {
         let shared = Arc::new(crate::tls::Shared::default());
         let reader = crate::tls::Reader { raw: conn.try_clone()?, shared: shared.clone() };
         let closer = conn.try_clone()?;
@@ -1270,7 +1300,7 @@ impl Editor {
         };
         #[cfg(target_arch = "wasm32")]
         let out = crate::tls::Writer { raw: conn, shared };
-        Ok((writer(out, move || closer.shutdown(std::net::Shutdown::Write)), link))
+        Ok((writer(self.processes.write_delay.clone(), out, move || closer.shutdown(std::net::Shutdown::Write)), link))
     }
 
     /// A connection a server took becomes a process of its own, as Emacs's
@@ -1514,7 +1544,7 @@ impl Editor {
         let p = self.process_mut(name)?;
         let bytes = p.coding.1.encode_lossy(text).0;
         let stdin = p.stdin.as_ref().ok_or_else(|| Error::new(format!("Process {name} not running")))?;
-        stdin.send(Some(bytes)).map_err(|_| Error::new(format!("Process {name} not running")))
+        stdin.send(Some(ToProcess::Bytes(bytes))).map_err(|_| Error::new(format!("Process {name} not running")))
     }
 
     /// Makes a process see the end of its input, as process-send-eof: the
@@ -1528,7 +1558,7 @@ impl Editor {
         #[cfg(unix)]
         if matches!(p.kind, Kind::Pty { .. }) {
             if let Some(stdin) = &p.stdin {
-                let _ = stdin.send(Some(vec![4]));
+                let _ = stdin.send(Some(ToProcess::Bytes(vec![4])));
             }
             return Ok(());
         }
@@ -1625,7 +1655,7 @@ impl Editor {
                     _ => None,
                 };
                 if let (Some(c), Some(stdin)) = (c, &p.stdin) {
-                    let _ = stdin.send(Some(vec![c]));
+                    let _ = stdin.send(Some(ToProcess::Bytes(vec![c])));
                     return Ok(());
                 }
             }
@@ -1717,6 +1747,13 @@ impl Editor {
         if let Some(err) = p.stderr {
             self.delete_marker(err.mark);
         }
+    }
+
+    /// Holds back what the thread writing to a process takes, so a test
+    /// can see whether what goes out after it keeps its place in the queue.
+    #[doc(hidden)]
+    pub fn delay_process_writes_for_tests(&mut self, delay: Duration) {
+        *self.processes.write_delay.lock().unwrap_or_else(|e| e.into_inner()) = delay;
     }
 
     /// Holds back each read of a program's output started after this, as a

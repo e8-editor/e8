@@ -40,6 +40,67 @@ pub fn text_bytes(text: &str) -> Vec<u8> {
     out
 }
 
+/// GnuTLS's number for each algorithm, as `gnutls-macs` and
+/// `gnutls-digests` give it; GnuTLS numbers both the same.
+pub fn gnutls_id(algorithm: &str) -> Option<u32> {
+    Some(match algorithm {
+        "md5" => 2,
+        "sha1" => 3,
+        "sha224" => 9,
+        "sha256" => 6,
+        "sha384" => 7,
+        "sha512" => 8,
+        _ => return None,
+    })
+}
+
+/// How long each algorithm's hash is, in bytes.
+pub fn length(algorithm: &str) -> Option<usize> {
+    Some(match algorithm {
+        "md5" => 16,
+        "sha1" => 20,
+        "sha224" => 28,
+        "sha256" => 32,
+        "sha384" => 48,
+        "sha512" => 64,
+        _ => return None,
+    })
+}
+
+/// GnuTLS's name for an algorithm, as `gnutls-digests` and `gnutls-macs`
+/// list them: SHA1, SHA256 and the rest in capitals.
+pub fn gnutls_name(algorithm: &str) -> String {
+    algorithm.to_uppercase()
+}
+
+/// The algorithm a GnuTLS name stands for, as `gnutls-hash-mac` takes it.
+pub fn by_gnutls_name(name: &str) -> Option<&'static str> {
+    ALGORITHMS.iter().copied().find(|a| a.eq_ignore_ascii_case(name))
+}
+
+/// The MAC of `bytes` with `key`, as `gnutls-hash-mac`: HMAC on the hash
+/// `algorithm` names, as GnuTLS's MACs of those names are.
+pub fn mac(algorithm: &str, key: &[u8], bytes: &[u8]) -> Result<Vec<u8>> {
+    use hmac::Mac;
+    /// HMAC on one hash, as the generic bounds are more trouble than the match.
+    macro_rules! hmac_of {
+        ($d:ty) => {{
+            let mut mac = <hmac::Hmac<$d>>::new_from_slice(key).expect("HMAC takes a key of any length");
+            mac.update(bytes);
+            mac.finalize().into_bytes().to_vec()
+        }};
+    }
+    Ok(match algorithm {
+        "md5" => hmac_of!(md5::Md5),
+        "sha1" => hmac_of!(sha1::Sha1),
+        "sha224" => hmac_of!(sha2::Sha224),
+        "sha256" => hmac_of!(sha2::Sha256),
+        "sha384" => hmac_of!(sha2::Sha384),
+        "sha512" => hmac_of!(sha2::Sha512),
+        other => return Err(Error::new(format!("GnuTLS MAC is invalid or not found: {other}"))),
+    })
+}
+
 /// Bytes in lower-case hex, as `secure-hash` gives them unless BINARY.
 pub fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|b| format!("{b:02x}")).collect()

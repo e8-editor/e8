@@ -127,3 +127,20 @@ pub fn certificate_details(_der: &[u8]) -> Option<CertificateDetails> {
 pub fn capabilities() -> Vec<&'static str> {
     Vec::new()
 }
+
+pub struct Cipher {
+    pub name: &'static str,
+    pub id: u32,
+    pub tag_size: usize,
+    pub block_size: usize,
+    pub key_size: usize,
+    pub iv_size: usize,
+}
+
+pub fn ciphers() -> Vec<Cipher> {
+    Vec::new()
+}
+
+pub fn symmetric(_encrypting: bool, cipher: &str, _key: &[u8], _iv: &[u8], _input: &[u8], _aad: &[u8]) -> Result<(Vec<u8>, Vec<u8>)> {
+    Err(Error::new(format!("GnuTLS cipher is invalid or not found: {cipher}")))
+}

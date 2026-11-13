@@ -777,3 +777,81 @@ pub fn format_certificate(pem: &str) -> Result<String> {
 pub fn capabilities() -> Vec<&'static str> {
     vec!["gnutls", "gnutls3", "ClientHello Extensions", "Server Name Indication", "ALPN", "Supported Versions", "Key Share", "Signature Algorithms", "Extended Master Secret"]
 }
+
+/// A symmetric cipher, as `gnutls-ciphers` describes each. E8 has the
+/// AEAD ciphers rustls's own cryptography gives, under GnuTLS's names and
+/// ids. Code that takes the last of them, as auth-source does, gets
+/// AES-256-GCM; GnuTLS's own last is AES-256-CBC, which E8 does not have,
+/// so what one obfuscates the other cannot read.
+pub struct Cipher {
+    pub name: &'static str,
+    pub id: u32,
+    pub tag_size: usize,
+    pub block_size: usize,
+    pub key_size: usize,
+    pub iv_size: usize,
+}
+
+/// The ciphers there are, as `gnutls-ciphers` lists them: the one to
+/// reach for last, as Emacs's code takes `(car (last (gnutls-ciphers)))`.
+pub fn ciphers() -> Vec<Cipher> {
+    vec![
+        Cipher { name: "CHACHA20-POLY1305", id: 23, tag_size: 16, block_size: 64, key_size: 32, iv_size: 12 },
+        Cipher { name: "AES-128-GCM", id: 10, tag_size: 16, block_size: 16, key_size: 16, iv_size: 12 },
+        Cipher { name: "AES-256-GCM", id: 11, tag_size: 16, block_size: 16, key_size: 32, iv_size: 12 },
+    ]
+}
+
+fn algorithm(name: &str) -> Option<&'static ring::aead::Algorithm> {
+    Some(match name {
+        "CHACHA20-POLY1305" => &ring::aead::CHACHA20_POLY1305,
+        "AES-128-GCM" => &ring::aead::AES_128_GCM,
+        "AES-256-GCM" => &ring::aead::AES_256_GCM,
+        _ => return None,
+    })
+}
+
+/// Encrypts or decrypts with a symmetric cipher, as
+/// `gnutls-symmetric-encrypt` and `gnutls-symmetric-decrypt`: the text and
+/// the nonce used, which `iv` being empty asks to be made here, as Emacs's
+/// `iv-auto` does. Encrypting puts the tag after the text, as GnuTLS does.
+pub fn symmetric(encrypting: bool, cipher: &str, key: &[u8], iv: &[u8], input: &[u8], aad: &[u8]) -> Result<(Vec<u8>, Vec<u8>)> {
+    use ring::aead::{Aad, LessSafeKey, Nonce, UnboundKey};
+    let invalid = || Error::new(format!("GnuTLS cipher is invalid or not found: {cipher}"));
+    let algorithm = algorithm(cipher).ok_or_else(invalid)?;
+    let wanted = ciphers().into_iter().find(|c| c.name == cipher).ok_or_else(invalid)?;
+    if key.len() != wanted.key_size {
+        return Err(Error::new(format!("GnuTLS cipher {cipher} needs a key of {} bytes, not {}", wanted.key_size, key.len())));
+    }
+    // An empty nonce asks for one of its own, as Emacs's `iv-auto` does,
+    // which only makes sense for text being encrypted.
+    if iv.is_empty() && !encrypting {
+        return Err(Error::new(format!("GnuTLS cipher {cipher} needs a nonce of {} bytes, not 0", wanted.iv_size)));
+    }
+    let nonce = if iv.is_empty() {
+        let mut bytes = vec![0u8; wanted.iv_size];
+        ring::rand::SecureRandom::fill(&ring::rand::SystemRandom::new(), &mut bytes).map_err(|_| Error::new("GnuTLS could not make a nonce"))?;
+        bytes
+    } else {
+        iv.to_vec()
+    };
+    if nonce.len() != wanted.iv_size {
+        return Err(Error::new(format!("GnuTLS cipher {cipher} needs a nonce of {} bytes, not {}", wanted.iv_size, nonce.len())));
+    }
+    let key = LessSafeKey::new(UnboundKey::new(algorithm, key).map_err(|_| invalid())?);
+    // The key E8 copied is wiped once used, as gnutls.c clears the string
+    // it was given. What the caller holds is still the caller's.
+    let once = || Nonce::try_assume_unique_for_key(&nonce).expect("as many bytes as the cipher wants");
+    let mut text = input.to_vec();
+    if encrypting {
+        key.seal_in_place_append_tag(once(), Aad::from(aad), &mut text)
+            .map_err(|_| Error::new(format!("GnuTLS AEAD cipher {cipher} encryption failed")))?;
+    } else {
+        let len = key
+            .open_in_place(once(), Aad::from(aad), &mut text)
+            .map_err(|_| Error::new(format!("GnuTLS AEAD cipher {cipher} decryption failed")))?
+            .len();
+        text.truncate(len);
+    }
+    Ok((text, nonce))
+}
