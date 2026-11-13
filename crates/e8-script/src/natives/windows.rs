@@ -1,7 +1,7 @@
 //! Windows and frames.
 
 use crate::EditorValue;
-use crate::natives::{Frm, Opt, Record, Win, natives};
+use crate::natives::{Fields, Frm, Opt, Record, Win, natives};
 
 natives! {
     fn splitWindow(ed, window: Option<Win>, side_by_side: bool, size: Option<i64>, before: Opt<bool>) -> Win {
@@ -376,6 +376,257 @@ natives! {
 
     pub fn selectedFrame(ed) -> Frm {
         Ok(Frm(ed.selected_frame()))
+    }
+
+    /// Every parameter of a frame, the selected frame's by default, as
+    /// frame-parameters: those set on it and those the editor works out,
+    /// as an object by name.
+    #[ts = "(frame?: FrameLike | null): { [name: string]: Value }"]
+    pub fn frameParameters(ed, frame: Option<Frm>) -> Record {
+        let frame = live_frame(ed, frame)?;
+        let mut record = Record::new();
+        for (name, value) in ed.frame_parameters(frame) {
+            record = record.with(Box::leak(name.into_boxed_str()), value);
+        }
+        Ok(record)
+    }
+
+    /// Set several of a frame's parameters at once, as
+    /// modify-frame-parameters.
+    #[ts = "(frame: FrameLike | undefined | null, parameters: { [name: string]: Value }): void"]
+    pub fn modifyFrameParameters(ed, frame: Option<Frm>, parameters: Fields) {
+        let frame = live_frame(ed, frame)?;
+        let named: Vec<(String, EditorValue)> = parameters.0.into_iter().collect();
+        ed.modify_frame_parameters(frame, &named)
+    }
+
+    /// The width of a frame's text area, the part its windows divide, in
+    /// the front end's units, as frame-text-width.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameTextWidth(ed, frame: Option<Frm>) -> usize {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_text_size(frame).0)
+    }
+
+    /// The height of a frame's text area, in the front end's units, as
+    /// frame-text-height.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameTextHeight(ed, frame: Option<Frm>) -> usize {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_text_size(frame).1)
+    }
+
+    /// The width of the whole frame, its border and bars included, in the
+    /// front end's units, as frame-native-width; a terminal's is its columns.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameNativeWidth(ed, frame: Option<Frm>) -> usize {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_native_size(frame).0)
+    }
+
+    /// The height of the whole frame, in the front end's units, as
+    /// frame-native-height.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameNativeHeight(ed, frame: Option<Frm>) -> usize {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_native_size(frame).1)
+    }
+
+    /// How many columns a frame has, as frame-total-cols.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameTotalCols(ed, frame: Option<Frm>) -> usize {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_width(frame))
+    }
+
+    /// How many lines a frame has, its echo area left out, as frame-total-lines.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameTotalLines(ed, frame: Option<Frm>) -> usize {
+        let frame = live_frame(ed, frame)?;
+        let height = ed.frame_text_size(frame).1;
+        Ok(ed.units_to_cells(height as f32, false))
+    }
+
+    /// Where a frame's top left corner is on the screen, in the front
+    /// end's units, as frame-position; [0, 0] on a terminal.
+    #[ts = "(frame?: FrameLike | null): [left: number, top: number]"]
+    pub fn framePosition(ed, frame: Option<Frm>) -> Vec<f64> {
+        let frame = live_frame(ed, frame)?;
+        let (x, y) = ed.frame_position(frame);
+        Ok(vec![x as f64, y as f64])
+    }
+
+    /// Ask the front end to put a frame's top left corner there, as
+    /// set-frame-position. A terminal cannot move itself and does nothing.
+    #[ts = "(frame: FrameLike | undefined | null, x: number, y: number): void"]
+    pub fn setFramePosition(ed, frame: Option<Frm>, x: f64, y: f64) {
+        let frame = live_frame(ed, frame)?;
+        ed.request_frame_position(frame, x, y)
+    }
+
+    /// Ask the front end to make a frame's text area this many columns
+    /// and lines, as set-frame-size; with `pixelwise`, in the front end's
+    /// units. A terminal cannot resize itself and does nothing.
+    #[ts = "(frame: FrameLike | undefined | null, width: number, height: number, pixelwise?: boolean): void"]
+    pub fn setFrameSize(ed, frame: Option<Frm>, width: f64, height: f64, pixelwise: Option<bool>) {
+        let frame = live_frame(ed, frame)?;
+        ed.request_frame_size(frame, width, height, pixelwise.unwrap_or(false))
+    }
+
+    /// Ask the front end to make a frame this many columns wide, as set-frame-width.
+    #[ts = "(frame: FrameLike | undefined | null, width: number, pixelwise?: boolean): void"]
+    pub fn setFrameWidth(ed, frame: Option<Frm>, width: f64, pixelwise: Option<bool>) {
+        let frame = live_frame(ed, frame)?;
+        let pixelwise = pixelwise.unwrap_or(false);
+        let height = if pixelwise { ed.frame_text_size(frame).1 as f64 } else { ed.units_to_cells(ed.frame_text_size(frame).1 as f32, false) as f64 };
+        ed.request_frame_size(frame, width, height, pixelwise)
+    }
+
+    /// Ask the front end to make a frame this many lines tall, as set-frame-height.
+    #[ts = "(frame: FrameLike | undefined | null, height: number, pixelwise?: boolean): void"]
+    pub fn setFrameHeight(ed, frame: Option<Frm>, height: f64, pixelwise: Option<bool>) {
+        let frame = live_frame(ed, frame)?;
+        let pixelwise = pixelwise.unwrap_or(false);
+        let width = if pixelwise { ed.frame_text_size(frame).0 as f64 } else { ed.frame_width(frame) as f64 };
+        ed.request_frame_size(frame, width, height, pixelwise)
+    }
+
+    /// How many of the screen's own pixels one of the front end's units
+    /// is, as frame-scale-factor.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameScaleFactor(ed, frame: Option<Frm>) -> f64 {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_scale_factor(frame))
+    }
+
+    /// The width of the border a frame draws around its windows, as
+    /// frame-internal-border-width; none in E8.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameInternalBorderWidth(ed, frame: Option<Frm>) -> usize {
+        let _ = live_frame(ed, frame)?;
+        Ok(ed.frame_internal_border_width())
+    }
+
+    /// The width of a window's two fringes together, as frame-fringe-width:
+    /// none on a terminal.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameFringeWidth(ed, frame: Option<Frm>) -> usize {
+        let _ = live_frame(ed, frame)?;
+        Ok(ed.frame_fringe_width())
+    }
+
+    /// The width of a frame's scroll bars, as frame-scroll-bar-width: none,
+    /// E8 drawing no scroll bars.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameScrollBarWidth(ed, frame: Option<Frm>) -> usize {
+        let _ = live_frame(ed, frame)?;
+        Ok(ed.frame_scroll_bar_width())
+    }
+
+    /// The height of a frame's horizontal scroll bars, as
+    /// frame-scroll-bar-height: none.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameScrollBarHeight(ed, frame: Option<Frm>) -> usize {
+        let _ = live_frame(ed, frame)?;
+        Ok(ed.frame_scroll_bar_height())
+    }
+
+    /// The width of the divider between windows side by side, as
+    /// frame-right-divider-width: a column on a terminal, none in a window.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameRightDividerWidth(ed, frame: Option<Frm>) -> usize {
+        let _ = live_frame(ed, frame)?;
+        Ok(ed.frame_divider_width(false))
+    }
+
+    /// The height of the divider below a window, as
+    /// frame-bottom-divider-width: none, a mode line standing between them.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameBottomDividerWidth(ed, frame: Option<Frm>) -> usize {
+        let _ = live_frame(ed, frame)?;
+        Ok(ed.frame_divider_width(true))
+    }
+
+    /// The width of a child frame's border, as
+    /// frame-child-frame-border-width: none, E8 having no child frames.
+    #[ts = "(frame?: FrameLike | null): number | undefined"]
+    pub fn frameChildFrameBorderWidth(ed, frame: Option<Frm>) -> Option<usize> {
+        let _ = live_frame(ed, frame)?;
+        Ok(None)
+    }
+
+    /// Send a frame's keys to another, as redirect-frame-focus; with no
+    /// second frame, it has its own keys again.
+    #[ts = "(frame?: FrameLike | null, to?: FrameLike | null): void"]
+    pub fn redirectFrameFocus(ed, frame: Option<Frm>, to: Option<Frm>) {
+        let frame = live_frame(ed, frame)?;
+        ed.redirect_frame_focus(frame, to.map(|f| f.0))
+    }
+
+    /// Where a frame's keys go, as frame-focus, or undefined where they
+    /// are its own.
+    #[ts = "(frame?: FrameLike | null): Frame | undefined"]
+    pub fn frameFocus(ed, frame: Option<Frm>) -> Option<Frm> {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_focus(frame).map(Frm))
+    }
+
+    /// Put a frame behind the others, as lower-frame.
+    #[ts = "(frame?: FrameLike | null): void"]
+    pub fn lowerFrame(ed, frame: Option<Frm>) {
+        let frame = live_frame(ed, frame)?;
+        ed.lower_frame(frame)
+    }
+
+    /// The frame that was selected before this one, as old-selected-frame.
+    pub fn oldSelectedFrame(ed) -> Option<Frm> {
+        Ok(ed.old_selected_frame().map(Frm))
+    }
+
+    /// Whether a frame's window state change flag is set, as
+    /// frame-window-state-change.
+    #[ts = "(frame?: FrameLike | null): boolean"]
+    pub fn frameWindowStateChange(ed, frame: Option<Frm>) -> bool {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_window_state_change(frame))
+    }
+
+    /// Set or clear that flag, as set-frame-window-state-change.
+    #[ts = "(frame?: FrameLike | null, changed?: boolean): boolean"]
+    pub fn setFrameWindowStateChange(ed, frame: Option<Frm>, changed: Option<bool>) -> bool {
+        let frame = live_frame(ed, frame)?;
+        let changed = changed.unwrap_or(false);
+        ed.set_frame_window_state_change(frame, changed)?;
+        Ok(changed)
+    }
+
+    /// Whether a frame is an ancestor of another, as frame-ancestor-p:
+    /// never, E8 having no child frames.
+    #[ts = "(ancestor?: FrameLike | null, descendant?: FrameLike | null): boolean"]
+    pub fn frameAncestorP(ed, ancestor: Option<Frm>, descendant: Option<Frm>) -> bool {
+        let (ancestor, descendant) = (live_frame(ed, ancestor)?, live_frame(ed, descendant)?);
+        Ok(ed.frame_ancestor_p(ancestor, descendant))
+    }
+
+    /// What a geometry string says, as x-parse-geometry: "80x24+10-20"
+    /// gives its width, height and place, one counted from the other edge
+    /// as ["-", N].
+    #[ts = "(spec: string): { [name: string]: Value }"]
+    pub fn xParseGeometry(ed, spec: String) -> Record {
+        let _ = ed;
+        let mut record = Record::new();
+        for (name, value) in e8_core::parse_geometry(&spec) {
+            record = record.with(Box::leak(name.into_boxed_str()), value);
+        }
+        Ok(record)
+    }
+
+    /// What the display's resource database says, as x-get-resource:
+    /// nothing, E8 reading none.
+    #[ts = "(attribute: string, klass: string): string | undefined"]
+    pub fn xGetResource(ed, attribute: String, klass: String) -> Option<String> {
+        let (_, _, _) = (ed, attribute, klass);
+        Ok(None)
     }
 
     /// A frame's parameter, the selected frame's by default, as frame-parameter:
@@ -970,6 +1221,15 @@ natives! {
 
 /// A window given, or the selected one, if it is live; else the error
 /// Emacs's decode_live_window signals.
+/// A frame given to a native, the selected one by default, checked live.
+fn live_frame(ed: &e8_core::Editor, frame: Option<Frm>) -> Result<e8_core::FrameId, e8_core::Error> {
+    let id = frame.map_or(ed.selected_frame(), |f| f.0);
+    if !ed.frame_list().contains(&id) {
+        return Err(e8_core::Error::signal("wrong-type-argument", "Not a live frame", vec![EditorValue::Symbol("frame-live-p".into()), EditorValue::Frame(id)]));
+    }
+    Ok(id)
+}
+
 fn live_window(ed: &e8_core::Editor, window: Option<Win>) -> Result<e8_core::WindowId, e8_core::Error> {
     let id = window.map_or(ed.selected_window(), |w| w.0);
     if ed.window_frame(id).is_none() || ed.window_internal_p(id) {

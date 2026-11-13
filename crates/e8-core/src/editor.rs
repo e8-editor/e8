@@ -339,6 +339,18 @@ pub struct Editor {
     /// The frames that are not selected, and every frame's id, newest first.
     pub(crate) other_frames: Vec<crate::window::Frame>,
     pub(crate) frame_order: Vec<crate::window::FrameId>,
+    /// What each front end has told the editor about its frames: how big
+    /// the whole of one is and where it sits (ADR 0077).
+    pub(crate) frame_geometries: std::collections::HashMap<crate::window::FrameId, crate::frame::FrameGeometry>,
+    /// What front ends have been asked to do to frames, which they do as
+    /// they draw.
+    pub(crate) frame_requests: Vec<crate::frame::FrameRequest>,
+    /// Where each frame's keys go, as `redirect-frame-focus` says.
+    pub(crate) frame_focus: std::collections::HashMap<crate::window::FrameId, crate::window::FrameId>,
+    /// The frame selected before the one that is, as `old-selected-frame`.
+    pub(crate) old_selected_frame: Option<crate::window::FrameId>,
+    /// The frames whose window state change flag is set.
+    pub(crate) frame_state_changes: Vec<crate::window::FrameId>,
     pub(crate) selected_frame: crate::window::FrameId,
     pub(crate) next_frame_id: crate::window::FrameId,
     pub(crate) quit: bool,
@@ -534,6 +546,11 @@ impl Editor {
             menu_bars: Default::default(),
             frame_raises: Default::default(),
             frame_titles: Default::default(),
+            frame_geometries: Default::default(),
+            frame_requests: Vec::new(),
+            frame_focus: Default::default(),
+            old_selected_frame: None,
+            frame_state_changes: Vec::new(),
             tab_bar_column: None,
             window_configurations: Default::default(),
             next_window_configuration: 0,

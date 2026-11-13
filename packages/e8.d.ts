@@ -16449,6 +16449,138 @@ declare global {
     function selectFrame(frame: FrameLike): void;
     function selectedFrame(): Frame;
     /**
+     * Every parameter of a frame, the selected frame's by default, as
+     * frame-parameters: those set on it and those the editor works out,
+     * as an object by name.
+     */
+    function frameParameters(frame?: FrameLike | null): { [name: string]: Value };
+    /**
+     * Set several of a frame's parameters at once, as
+     * modify-frame-parameters.
+     */
+    function modifyFrameParameters(frame: FrameLike | undefined | null, parameters: { [name: string]: Value }): void;
+    /**
+     * The width of a frame's text area, the part its windows divide, in
+     * the front end's units, as frame-text-width.
+     */
+    function frameTextWidth(frame?: FrameLike | null): number;
+    /**
+     * The height of a frame's text area, in the front end's units, as
+     * frame-text-height.
+     */
+    function frameTextHeight(frame?: FrameLike | null): number;
+    /**
+     * The width of the whole frame, its border and bars included, in the
+     * front end's units, as frame-native-width; a terminal's is its columns.
+     */
+    function frameNativeWidth(frame?: FrameLike | null): number;
+    /**
+     * The height of the whole frame, in the front end's units, as
+     * frame-native-height.
+     */
+    function frameNativeHeight(frame?: FrameLike | null): number;
+    /** How many columns a frame has, as frame-total-cols. */
+    function frameTotalCols(frame?: FrameLike | null): number;
+    /** How many lines a frame has, its echo area left out, as frame-total-lines. */
+    function frameTotalLines(frame?: FrameLike | null): number;
+    /**
+     * Where a frame's top left corner is on the screen, in the front
+     * end's units, as frame-position; [0, 0] on a terminal.
+     */
+    function framePosition(frame?: FrameLike | null): [left: number, top: number];
+    /**
+     * Ask the front end to put a frame's top left corner there, as
+     * set-frame-position. A terminal cannot move itself and does nothing.
+     */
+    function setFramePosition(frame: FrameLike | undefined | null, x: number, y: number): void;
+    /**
+     * Ask the front end to make a frame's text area this many columns
+     * and lines, as set-frame-size; with `pixelwise`, in the front end's
+     * units. A terminal cannot resize itself and does nothing.
+     */
+    function setFrameSize(frame: FrameLike | undefined | null, width: number, height: number, pixelwise?: boolean): void;
+    /** Ask the front end to make a frame this many columns wide, as set-frame-width. */
+    function setFrameWidth(frame: FrameLike | undefined | null, width: number, pixelwise?: boolean): void;
+    /** Ask the front end to make a frame this many lines tall, as set-frame-height. */
+    function setFrameHeight(frame: FrameLike | undefined | null, height: number, pixelwise?: boolean): void;
+    /**
+     * How many of the screen's own pixels one of the front end's units
+     * is, as frame-scale-factor.
+     */
+    function frameScaleFactor(frame?: FrameLike | null): number;
+    /**
+     * The width of the border a frame draws around its windows, as
+     * frame-internal-border-width; none in E8.
+     */
+    function frameInternalBorderWidth(frame?: FrameLike | null): number;
+    /**
+     * The width of a window's two fringes together, as frame-fringe-width:
+     * none on a terminal.
+     */
+    function frameFringeWidth(frame?: FrameLike | null): number;
+    /**
+     * The width of a frame's scroll bars, as frame-scroll-bar-width: none,
+     * E8 drawing no scroll bars.
+     */
+    function frameScrollBarWidth(frame?: FrameLike | null): number;
+    /**
+     * The height of a frame's horizontal scroll bars, as
+     * frame-scroll-bar-height: none.
+     */
+    function frameScrollBarHeight(frame?: FrameLike | null): number;
+    /**
+     * The width of the divider between windows side by side, as
+     * frame-right-divider-width: a column on a terminal, none in a window.
+     */
+    function frameRightDividerWidth(frame?: FrameLike | null): number;
+    /**
+     * The height of the divider below a window, as
+     * frame-bottom-divider-width: none, a mode line standing between them.
+     */
+    function frameBottomDividerWidth(frame?: FrameLike | null): number;
+    /**
+     * The width of a child frame's border, as
+     * frame-child-frame-border-width: none, E8 having no child frames.
+     */
+    function frameChildFrameBorderWidth(frame?: FrameLike | null): number | undefined;
+    /**
+     * Send a frame's keys to another, as redirect-frame-focus; with no
+     * second frame, it has its own keys again.
+     */
+    function redirectFrameFocus(frame?: FrameLike | null, to?: FrameLike | null): void;
+    /**
+     * Where a frame's keys go, as frame-focus, or undefined where they
+     * are its own.
+     */
+    function frameFocus(frame?: FrameLike | null): Frame | undefined;
+    /** Put a frame behind the others, as lower-frame. */
+    function lowerFrame(frame?: FrameLike | null): void;
+    /** The frame that was selected before this one, as old-selected-frame. */
+    function oldSelectedFrame(): Frame | undefined;
+    /**
+     * Whether a frame's window state change flag is set, as
+     * frame-window-state-change.
+     */
+    function frameWindowStateChange(frame?: FrameLike | null): boolean;
+    /** Set or clear that flag, as set-frame-window-state-change. */
+    function setFrameWindowStateChange(frame?: FrameLike | null, changed?: boolean): boolean;
+    /**
+     * Whether a frame is an ancestor of another, as frame-ancestor-p:
+     * never, E8 having no child frames.
+     */
+    function frameAncestorP(ancestor?: FrameLike | null, descendant?: FrameLike | null): boolean;
+    /**
+     * What a geometry string says, as x-parse-geometry: "80x24+10-20"
+     * gives its width, height and place, one counted from the other edge
+     * as ["-", N].
+     */
+    function xParseGeometry(spec: string): { [name: string]: Value };
+    /**
+     * What the display's resource database says, as x-get-resource:
+     * nothing, E8 reading none.
+     */
+    function xGetResource(attribute: string, klass: string): string | undefined;
+    /**
      * A frame's parameter, the selected frame's by default, as frame-parameter:
      * one set with setFrameParameter, or tab-bar-lines.
      */
