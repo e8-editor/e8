@@ -62,7 +62,7 @@ natives! {
     /// none, 8 while its handshake goes on, 9 once done, 3 once taken down.
     #[ts = "(process: ProcessLike): number"]
     pub fn gnutlsGetInitstage(ed, process: Proc) -> u8 {
-        let name = process.listed_name(ed)?;
+        let Some(name) = gone_or_name(ed, &process) else { return Ok(e8_core::tls::stage::EMPTY) };
         ed.gnutls_get_initstage(&name)
     }
 
@@ -72,7 +72,7 @@ natives! {
     /// protocol, key exchange, cipher and MAC; undefined before.
     #[ts = "(process: ProcessLike): GnutlsPeerStatus | undefined"]
     pub fn gnutlsPeerStatus(ed, process: Proc) -> Option<Record> {
-        let name = process.listed_name(ed)?;
+        let Some(name) = gone_or_name(ed, &process) else { return Ok(None) };
         let Some(status) = ed.gnutls_peer_status(&name)? else { return Ok(None) };
         let cert = |c: &e8_core::tls::CertificateDetails| {
             Record::new()
@@ -128,14 +128,14 @@ natives! {
     #[ts = "(process: ProcessLike, cont?: boolean): boolean"]
     pub fn gnutlsBye(ed, process: Proc, cont: Option<bool>) -> bool {
         let _ = cont;
-        let name = process.listed_name(ed)?;
+        let Some(name) = gone_or_name(ed, &process) else { return Ok(false) };
         ed.gnutls_bye(&name)
     }
 
     /// Take a process's TLS down, as gnutls-deinit.
     #[ts = "(process: ProcessLike): true"]
     pub fn gnutlsDeinit(ed, process: Proc) -> bool {
-        let name = process.listed_name(ed)?;
+        let Some(name) = gone_or_name(ed, &process) else { return Ok(false) };
         ed.gnutls_deinit(&name)?;
         Ok(true)
     }
@@ -144,7 +144,7 @@ natives! {
     /// gnutls-asynchronous-parameters.
     #[ts = "(process: ProcessLike, params: unknown): void"]
     pub fn gnutlsAsynchronousParameters(ed, process: Proc, params: EditorValue) {
-        let name = process.listed_name(ed)?;
+        let Some(name) = gone_or_name(ed, &process) else { return Ok(()) };
         ed.gnutls_asynchronous_parameters(&name, params)
     }
 
@@ -859,4 +859,11 @@ fn process_primitive(ed: &mut Editor, op: &str, process: &Proc, args: &[EditorVa
         }
         _ => return Err(e8_core::Error::new(format!("No process primitive {op}"))),
     })
+}
+
+/// A listed process's name, or nothing for one that has gone: asking a
+/// connection that has closed about its TLS answers rather than failing,
+/// as Emacs's gnutls-peer-status gives nil for a process with no session.
+fn gone_or_name(ed: &e8_core::Editor, process: &Proc) -> Option<String> {
+    process.listed_name(ed).ok()
 }

@@ -265,6 +265,15 @@ fn the_rest_of_gnutls_answers_as_emacs_does() {
     assert!(text.contains(r#"\tSubject: CN=E8 Test CA,O=E8 Test\n"#), "{text}");
     // A process that is not a connection has no TLS to start.
     assert!(eval(&mut ed, &s, r#"e8.conditionCase(() => e8.gnutlsBoot(e8.makePipeProcess({ name: "pipe" }), "gnutls-x509pki", { hostname: "x" }), { error: (e) => e.message })"#).contains("not a network connection"));
+    // A connection that has closed answers rather than failing, as Emacs's
+    // gnutls-peer-status gives nil for a process with no session.
+    let gone = eval(
+        &mut ed,
+        &s,
+        r#"(() => { const p = e8.makePipeProcess({ name: "gone" }); e8.deleteProcess(p);
+          return [e8.gnutlsPeerStatus(p) ?? null, e8.gnutlsGetInitstage(p), e8.gnutlsBye(p), e8.gnutlsDeinit(p)]; })()"#,
+    );
+    assert_eq!(gone, "[null,0,false,false]");
     assert!(eval(&mut ed, &s, r#"e8.conditionCase(() => e8.gnutlsBoot("pipe", "gnutls-anon", { hostname: "x" }), { error: (e) => e.message })"#).contains("gnutls-x509pki only"));
 }
 
