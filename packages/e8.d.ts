@@ -12573,6 +12573,12 @@ declare global {
        */
       "tooltip-hide-delay": Value;
       /**
+       * When the last tooltip went, in seconds since the epoch.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-hide-time": Value;
+      /**
        * Whether Tooltip mode is on. Use the command tooltip-mode to change it.
        *
        * Defined in packages/tooltip.ts.
@@ -12583,19 +12589,25 @@ declare global {
        */
       "tooltip-mode-map": Value;
       /**
+       * How soon after a tooltip went the next one shows after tooltip-short-delay rather than tooltip-delay.
+       *
+       * Defined in packages/tooltip.ts.
+       */
+      "tooltip-recent-seconds": Value;
+      /**
        * How long the pointer rests before the next tooltip of a run shows.
        *
        * Defined in packages/tooltip.ts.
        */
       "tooltip-short-delay": Value;
       /**
-       * How far right of the pointer a tooltip goes, in columns.
+       * How far right of the pointer a tooltip goes, in columns, where Emacs counts pixels.
        *
        * Defined in packages/tooltip.ts.
        */
       "tooltip-x-offset": Value;
       /**
-       * How far below the pointer a tooltip goes, in lines.
+       * How far below the pointer a tooltip goes, in lines, where Emacs counts pixels.
        *
        * Defined in packages/tooltip.ts.
        */
@@ -12698,6 +12710,10 @@ declare global {
        * Whether a question a command asks with the mouse, or from a menu, is asked in a dialog box rather than the echo area.
        */
       "use-dialog-box": Value;
+      /**
+       * Set while a command should ask in a dialog box however it was invoked, as a package forcing one binds it.
+       */
+      "use-dialog-box-override": Value;
       /**
        * Whether questions asked with yes-or-no-p take y or n instead of yes or no and RET.
        */
@@ -15648,11 +15664,14 @@ declare global {
      */
     function xSelectFont(frame?: FrameLike | null, excludeProportional?: boolean): string;
     /**
-     * Show a tooltip, as x-show-tip: where the pointer is, or at a place
-     * on the frame in columns and lines, until `timeout` seconds have
-     * passed (5 by default, 0 to leave it) or xHideTip takes it away.
+     * Show a tooltip, as x-show-tip: where the pointer is, at the place
+     * point shows ("point"), or at a place on the frame in columns and
+     * lines, until `timeout` seconds have passed (5 by default, 0 to
+     * leave it) or xHideTip takes it away. `offset` moves it from the
+     * pointer, a column right and a line down by default, as
+     * tooltip-x-offset and tooltip-y-offset move Emacs's.
      */
-    function xShowTip(text: string, at?: [x: number, y: number] | null, timeout?: number | null): void;
+    function xShowTip(text: string, at?: [x: number, y: number] | "point" | null, timeout?: number | null, offset?: [dx: number, dy: number] | null): void;
     /** Take the tooltip away, as x-hide-tip; true if one was showing. */
     function xHideTip(): boolean | undefined;
     /** Whether a menu is open, as menu-or-popup-active-p. */

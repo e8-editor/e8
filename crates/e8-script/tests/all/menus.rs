@@ -615,3 +615,72 @@ fn a_file_dialog_is_never_used() {
     let d = Driven::new("");
     assert_eq!(d.eval_expression("e8.nextReadFileUsesDialogP()"), "undefined");
 }
+
+#[test]
+fn a_question_the_mouse_or_a_menu_asked_is_asked_in_a_dialog() {
+    let d = Driven::new(
+        r#"
+        e8.defineCommand({ name: "test-ask", run: () => e8.setVariable("test-said", e8.yOrNP("Really?") ? "yes" : "no") });
+        e8.bindKey("<f8>", "test-ask");
+        e8.bindKey("<mouse-1>", "test-ask");
+        "#,
+    );
+    // From a key, it is the echo area, as always.
+    d.press("<f8>");
+    assert!(d.prompt().is_some_and(|p| p.starts_with("Really?")), "{:?}", d.prompt());
+    d.press("y");
+    // From the mouse, it is a dialog, as subr.el's y-or-n-p asks with one.
+    d.press("<mouse-1>");
+    assert_eq!(panels(&d), vec![vec!["Really?".to_string(), ">Yes".into(), "No".into()]]);
+    d.press("<down> RET");
+    assert_eq!(d.variable("test-said").as_deref(), Some("\"no\""));
+}
+
+#[test]
+fn a_tooltip_shown_again_is_not_cut_short_by_the_first_ones_timer() {
+    let d = Driven::new("");
+    d.eval(r#"e8.xShowTip("Saved", [5, 5], 0.05);"#);
+    // The same text again, to stay: the first timer must not take it.
+    d.eval(r#"e8.xShowTip("Saved", [5, 5], 0);"#);
+    d.with(|ed| ed.run_timers());
+    std::thread::sleep(std::time::Duration::from_millis(120));
+    d.with(|ed| ed.run_timers());
+    assert!(d.with(|ed| ed.tip_shown()), "the second tooltip stayed");
+}
+
+#[test]
+fn a_menu_takes_a_tooltip_away_and_typing_hides_it() {
+    let d = Driven::new(MENU);
+    d.eval(r#"e8.xShowTip("Over here", [1, 1], 0);"#);
+    assert!(d.with(|ed| ed.tip_shown()));
+    open(&d, "e8.variable(\"test-menu\")", "\"point\"");
+    assert!(!d.with(|ed| ed.tip_shown()), "a menu hides a tooltip, as x_popup_menu_1 does");
+    d.press("C-g");
+    // tooltip.ts takes one away at the next command, as tooltip-mode's
+    // pre-command-hook does.
+    d.eval(r#"e8.xShowTip("Over here", [1, 1], 0);"#);
+    d.press("a");
+    assert!(!d.with(|ed| ed.tip_shown()));
+}
+
+#[test]
+fn a_dialogs_text_is_shown_as_it_is() {
+    let d = Driven::new("");
+    d.start_eval(r#"e8.setVariable("test-chosen", String(e8.xPopupDialog(["--- nothing to commit ---", ["--force", "force"]])));"#);
+    // `--` is a separator among a keymap menu's items, not in a dialog.
+    assert_eq!(panels(&d), vec![vec!["--- nothing to commit ---".to_string(), ">--force".into()]]);
+    d.press("RET");
+    assert_eq!(d.variable("test-chosen").as_deref(), Some("\"force\""));
+}
+
+#[test]
+fn message_box_with_nothing_takes_the_message_away_without_logging_it() {
+    let d = Driven::new("");
+    d.eval(r#"e8.message("Something");"#);
+    assert_eq!(d.message().as_deref(), Some("Something"));
+    assert_eq!(d.eval_expression("e8.messageBox()"), "undefined");
+    assert_eq!(d.message(), None);
+    let logged = d.with(|ed| ed.messages().len());
+    assert_eq!(d.eval_expression("e8.messageBox()"), "undefined");
+    assert_eq!(d.with(|ed| ed.messages().len()), logged, "nothing more was logged");
+}

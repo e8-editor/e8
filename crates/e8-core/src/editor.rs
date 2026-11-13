@@ -327,6 +327,11 @@ pub struct Editor {
     /// Internal windows' parameters, as `window-parameter` keeps them;
     /// the window tree goes to front ends, so they are kept here.
     pub(crate) internal_window_parameters: std::collections::HashMap<crate::window::WindowId, std::collections::BTreeMap<String, crate::variables::Value>>,
+    /// How many tooltips have been shown, which tells one from another.
+    pub(crate) tips_shown: u64,
+    /// Whether a command a menu chose is running, so that what it asks
+    /// it asks in a dialog, as Emacs's `from--tty-menu-p` says.
+    pub(crate) from_menu: bool,
     /// The tooltip `x-show-tip` is showing, if one is.
     pub(crate) tip: Option<crate::menu::Tip>,
     /// The menu `x-popup-menu` has open, while it waits for an answer.
@@ -501,6 +506,8 @@ impl Editor {
             frame_size_implied: false,
             internal_window_parameters: Default::default(),
             window_new: Default::default(),
+            tips_shown: 0,
+            from_menu: false,
             tip: None,
             menu: None,
             other_frames: Vec::new(),
@@ -2606,6 +2613,12 @@ impl Editor {
     /// The message in the echo area, if any. It clears on the next key.
     pub fn echo(&self) -> Option<&str> {
         self.message.as_deref()
+    }
+
+    /// Takes the message in the echo area away, logging nothing, as
+    /// Emacs's `message` with nil does through `message1 (0)`.
+    pub fn clear_message(&mut self) {
+        self.message = None;
     }
 
     /// Shows a message in the echo area and logs it, as Emacs's `message`

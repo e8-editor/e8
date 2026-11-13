@@ -890,6 +890,6 @@ fn menu_bar() {
 fn tooltip() {
     let mut ed = sample();
     let _scripting = e8_script::Scripting::new(&mut ed).unwrap();
-    ed.x_show_tip("Follow this link\nwith RET", Some((10, 3)), Some(0.0));
+    ed.x_show_tip("Follow this link\nwith RET", Some((10, 3)), (1, 1), Some(0.0));
     harness(ed, Theme::Dark).snapshot("tooltip_dark");
 }

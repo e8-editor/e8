@@ -1118,6 +1118,11 @@ pub(crate) fn install(ed: &mut Editor) {
     crate::users::define_variables(ed);
     crate::mouse::define_variables(ed);
     ed.define_variable(Variable::new(
+        "use-dialog-box-override",
+        "Set while a command should ask in a dialog box however it was invoked, as a package forcing one binds it.",
+        Value::Null,
+    ));
+    ed.define_variable(Variable::new(
         "use-dialog-box",
         "Whether a question a command asks with the mouse, or from a menu, is asked in a dialog box rather than the echo area.",
         Value::Bool(true),

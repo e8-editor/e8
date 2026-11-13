@@ -716,7 +716,7 @@ natives! {
     /// With no text, the message in the echo area goes.
     pub fn messageBox(ed, text: Option<String>) -> Option<String> {
         let Some(text) = text.filter(|t| !t.is_empty()) else {
-            ed.message("");
+            ed.clear_message();
             return Ok(None);
         };
         let contents = vec![EditorValue::Str(text.clone()), EditorValue::List(vec![EditorValue::Str("OK".into()), EditorValue::Bool(true)])];
@@ -751,7 +751,7 @@ natives! {
                 Ok(Some(text))
             }
             None => {
-                ed.message("");
+                ed.clear_message();
                 Ok(None)
             }
         }
@@ -778,13 +778,24 @@ natives! {
         Ok(answer.as_str().unwrap_or_default().to_string())
     }
 
-    /// Show a tooltip, as x-show-tip: where the pointer is, or at a place
-    /// on the frame in columns and lines, until `timeout` seconds have
-    /// passed (5 by default, 0 to leave it) or xHideTip takes it away.
-    #[ts = "(text: string, at?: [x: number, y: number] | null, timeout?: number | null): void"]
-    pub fn xShowTip(ed, text: String, at: Option<Vec<f64>>, timeout: Option<f64>) {
-        let at = at.filter(|a| a.len() == 2).map(|a| (a[0].max(0.0) as usize, a[1].max(0.0) as usize));
-        ed.x_show_tip(&text, at, timeout);
+    /// Show a tooltip, as x-show-tip: where the pointer is, at the place
+    /// point shows ("point"), or at a place on the frame in columns and
+    /// lines, until `timeout` seconds have passed (5 by default, 0 to
+    /// leave it) or xHideTip takes it away. `offset` moves it from the
+    /// pointer, a column right and a line down by default, as
+    /// tooltip-x-offset and tooltip-y-offset move Emacs's.
+    #[ts = "(text: string, at?: [x: number, y: number] | \"point\" | null, timeout?: number | null, offset?: [dx: number, dy: number] | null): void"]
+    pub fn xShowTip(ed, text: String, at: EditorValue, timeout: Option<f64>, offset: Option<Vec<f64>>) {
+        let at = match &at {
+            EditorValue::Str(word) if word == "point" => Some(ed.point_cell().unwrap_or((0, 0))),
+            EditorValue::List(place) if place.len() == 2 => {
+                let number = |v: &EditorValue| v.as_number().unwrap_or(0.0).max(0.0) as usize;
+                Some((number(&place[0]), number(&place[1])))
+            }
+            _ => None,
+        };
+        let offset = offset.filter(|o| o.len() == 2).map_or((1, 1), |o| (o[0] as i64, o[1] as i64));
+        ed.x_show_tip(&text, at, offset, timeout);
         Ok(())
     }
 
