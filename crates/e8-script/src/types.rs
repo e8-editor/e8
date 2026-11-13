@@ -1249,6 +1249,32 @@ const API: &str = r##"
      */
     tls?: { type?: "gnutls-x509pki"; hostname: string; trustfiles?: string[]; keylist?: [key: string, certificate: string][]; verifyError?: true | ("trustfiles" | "hostname")[] };
   }
+  /** A symmetric cipher, as gnutlsCiphers describes each. */
+  interface GnutlsCipher {
+    /** GnuTLS's name, as "AES-256-GCM". */
+    name: string;
+    cipherId: number;
+    type: "gnutls-symmetric-cipher";
+    cipherAeadCapable: boolean;
+    cipherTagsize: number;
+    cipherBlocksize: number;
+    cipherKeysize: number;
+    cipherIvsize: number;
+  }
+  /** A MAC, as gnutlsMacs describes each. */
+  interface GnutlsMac {
+    name: string;
+    type: "gnutls-mac-algorithm";
+    macAlgorithmLength: number;
+    macAlgorithmKeysize: number;
+    macAlgorithmNoncesize: number;
+  }
+  /** A hash, as gnutlsDigests describes each. */
+  interface GnutlsDigest {
+    name: string;
+    type: "gnutls-digest-algorithm";
+    digestAlgorithmLength: number;
+  }
   /** A certificate, as gnutlsPeerStatus describes each, with GnuTLS's names and formats. */
   interface GnutlsCertificate {
     version: number;

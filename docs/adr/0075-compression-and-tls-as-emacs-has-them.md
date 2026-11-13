@@ -46,7 +46,7 @@ Option 2, as Mark approved on 2026-11-13: TLS is a network dependency of `e8-cor
    - Emacs's `gnutls.el`, `network-stream.el` and the core of `nsm.el` come as packages, so `open-network-stream` with `:type tls` opens a connection that the Network Security Manager checks before it is used, asking about a certificate that does not verify or a key that changed, as Emacs's does. Leaving it out would have turned TLS's safety default off.
    - One thread of its own writes each connection's socket. Reading and sending only queue what the session makes, holding the connection's state, so neither waits on the socket while holding it: a peer that stops reading cannot stop the editor's reader, and traffic both ways cannot wedge. What is sent goes to rustls in pieces, as its own buffer holds 64 KiB and refuses a write that would fill it.
    - `secure-hash` and `md5`, from fns.c, came with it, as nsm.el keys hosts by a SHA-1 hash.
-3. **Hashes and ciphers.** `gnutls-digests`, `gnutls-macs`, `gnutls-ciphers`, `gnutls-hash-digest`, `gnutls-hash-mac`, `gnutls-symmetric-encrypt` and `gnutls-symmetric-decrypt`, with the algorithms rustls's crypto provider gives.
+3. **Hashes and ciphers.** `gnutls-digests`, `gnutls-macs` and `gnutls-hash-digest`, `gnutls-hash-mac` on the hashes `secure-hash` has (MD5, SHA-1 and SHA-2), and `gnutls-ciphers`, `gnutls-symmetric-encrypt` and `gnutls-symmetric-decrypt` with the AEAD ciphers rustls's own cryptography gives: CHACHA20-POLY1305, AES-128-GCM and AES-256-GCM, strongest last, as auth-source takes the last of them. Of the corpus only pg-el (SCRAM authentication, through `gnutls-hash-mac`) and Emacs's auth-source (obfuscating secrets in memory) need these.
 
 ## Consequences
 

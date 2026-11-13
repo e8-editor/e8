@@ -33,6 +33,8 @@ resvg = { version = "0.49", default-features = false, features = ["svgz"] }
 flate2 = "1"
 # Hashes for secure-hash and md5, as fns.c gives them; sha1 and sha2 already in the tree.
 md-5 = "0.10"
+# MACs for gnutls-hash-mac, on the hashes above (ADR 0075).
+hmac = "0.12"
 sha1 = "0.10"
 sha2 = "0.10"
 

@@ -515,3 +515,51 @@ fn open_network_stream_refuses_what_e8_does_not_do() {
         assert!(got.contains("not supported"), "{call}: {got}");
     }
 }
+
+#[test]
+fn hashes_macs_and_ciphers_as_gnutls_gives_them() {
+    let (mut ed, s) = setup();
+    // HMAC-SHA256("key", "message") and SHA256("message"), as Emacs 30 gives them.
+    assert_eq!(
+        eval(&mut ed, &s, r#"[...e8.gnutlsHashMac("SHA256", "key", "message")].map((c) => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")"#),
+        r#""6e9ef29b75fffc5b7abae527d58fdadb2fe42e7219011976917343065f58ed4a""#
+    );
+    assert_eq!(
+        eval(&mut ed, &s, r#"[...e8.gnutlsHashDigest("SHA256", "message")].map((c) => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")"#),
+        r#""ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d""#
+    );
+    // The same as secureHash, which hashes the same bytes.
+    assert_eq!(eval(&mut ed, &s, r#"e8.gnutlsHashDigest("SHA1", "héllo") === e8.secureHash("sha1", "héllo", null, null, true)"#), "true");
+    // What each is, as gnutls-macs and gnutls-digests describe SHA256.
+    assert_eq!(
+        eval(&mut ed, &s, r#"[e8.gnutlsMacs().find((m) => m.name === "SHA256"), e8.gnutlsDigests().find((d) => d.name === "SHA256")]"#),
+        r#"[{"name":"SHA256","type":"gnutls-mac-algorithm","macAlgorithmLength":32,"macAlgorithmKeysize":32,"macAlgorithmNoncesize":0},{"name":"SHA256","type":"gnutls-digest-algorithm","digestAlgorithmLength":32}]"#
+    );
+    // The ciphers, strongest last, as auth-source takes the last one; its
+    // sizes are AES-256-GCM's, as Emacs 30 gives them.
+    assert_eq!(
+        eval(&mut ed, &s, r#"[e8.gnutlsCiphers().map((c) => c.name), e8.gnutlsCiphers().at(-1)]"#),
+        r#"[["CHACHA20-POLY1305","AES-128-GCM","AES-256-GCM"],{"name":"AES-256-GCM","cipherId":11,"type":"gnutls-symmetric-cipher","cipherAeadCapable":true,"cipherTagsize":16,"cipherBlocksize":16,"cipherKeysize":32,"cipherIvsize":12}]"#
+    );
+    // A round trip, as auth-source obfuscates a secret: a nonce of its
+    // own, the tag after the text, and the text back again.
+    let round = eval(
+        &mut ed,
+        &s,
+        r#"(() => {
+          const c = e8.gnutlsCiphers().at(-1);
+          const key = "k".repeat(c.cipherKeysize);
+          const [text, iv] = e8.gnutlsSymmetricEncrypt(c.name, key, "", "hello world!!!!!");
+          const [back] = e8.gnutlsSymmetricDecrypt(c.name, key, iv, text);
+          const [wrong] = e8.gnutlsSymmetricEncrypt(c.name, key, "", "hello world!!!!!");
+          return [text.length, iv.length, back, text !== wrong,
+            e8.conditionCase(() => e8.gnutlsSymmetricDecrypt(c.name, key, iv, `${text.slice(0, -1)}x`), { error: (e) => e.message }),
+            e8.conditionCase(() => e8.gnutlsSymmetricEncrypt(c.name, "short", "", "x"), { error: (e) => e.message }),
+            e8.conditionCase(() => e8.gnutlsSymmetricEncrypt("AES-256-CBC", key, "", "x"), { error: (e) => e.message })];
+        })()"#,
+    );
+    assert_eq!(
+        round,
+        r#"[32,12,"hello world!!!!!",true,"GnuTLS AEAD cipher AES-256-GCM decryption failed","GnuTLS cipher AES-256-GCM needs a key of 32 bytes, not 5","GnuTLS cipher is invalid or not found: AES-256-CBC"]"#
+    );
+}

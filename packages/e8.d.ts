@@ -15379,6 +15379,36 @@ declare global {
      */
     function gnutlsAvailableP(): string[] | undefined;
     /**
+     * The symmetric ciphers there are, as gnutls-ciphers: each with
+     * GnuTLS's name and id, and the sizes of its tag, block, key and
+     * nonce. E8 has the AEAD ciphers its TLS gives, strongest last.
+     */
+    function gnutlsCiphers(): GnutlsCipher[];
+    /** The MACs there are, as gnutls-macs: HMAC on each hash E8 has. */
+    function gnutlsMacs(): GnutlsMac[];
+    /** The hashes there are, as gnutls-digests. */
+    function gnutlsDigests(): GnutlsDigest[];
+    /**
+     * The MAC of `input` with `key`, as gnutls-hash-mac: HMAC by a name
+     * gnutlsMacs gives ("SHA256"). The text's bytes, as secureHash takes
+     * them, and the MAC as a string of bytes.
+     */
+    function gnutlsHashMac(method: string, key: string, input: string): string;
+    /**
+     * The hash of `input`, as gnutls-hash-digest, by a name gnutlsDigests
+     * gives, as a string of bytes.
+     */
+    function gnutlsHashDigest(method: string, input: string): string;
+    /**
+     * Encrypt `input` with a cipher gnutlsCiphers gives, as
+     * gnutls-symmetric-encrypt: the text with its tag after it, and the
+     * nonce used, which an empty `iv` asks to be made here, as Emacs's
+     * `iv-auto` does. Strings of bytes, as secureHash's `binary` gives.
+     */
+    function gnutlsSymmetricEncrypt(cipher: string, key: string, iv: string, input: string, aeadAuth?: string): [text: string, iv: string];
+    /** Decrypt what gnutlsSymmetricEncrypt gave, as gnutls-symmetric-decrypt. */
+    function gnutlsSymmetricDecrypt(cipher: string, key: string, iv: string, input: string, aeadAuth?: string): [text: string, iv: string];
+    /**
      * Start TLS on a network connection, as gnutls-boot: `type` is
      * "gnutls-x509pki"; `params` names the host the certificate must
      * name, trust files of authorities beyond the system's, key and
@@ -17807,6 +17837,32 @@ declare global {
        * parameters. A connection whose handshake fails is deleted.
        */
       tls?: { type?: "gnutls-x509pki"; hostname: string; trustfiles?: string[]; keylist?: [key: string, certificate: string][]; verifyError?: true | ("trustfiles" | "hostname")[] };
+    }
+    /** A symmetric cipher, as gnutlsCiphers describes each. */
+    interface GnutlsCipher {
+      /** GnuTLS's name, as "AES-256-GCM". */
+      name: string;
+      cipherId: number;
+      type: "gnutls-symmetric-cipher";
+      cipherAeadCapable: boolean;
+      cipherTagsize: number;
+      cipherBlocksize: number;
+      cipherKeysize: number;
+      cipherIvsize: number;
+    }
+    /** A MAC, as gnutlsMacs describes each. */
+    interface GnutlsMac {
+      name: string;
+      type: "gnutls-mac-algorithm";
+      macAlgorithmLength: number;
+      macAlgorithmKeysize: number;
+      macAlgorithmNoncesize: number;
+    }
+    /** A hash, as gnutlsDigests describes each. */
+    interface GnutlsDigest {
+      name: string;
+      type: "gnutls-digest-algorithm";
+      digestAlgorithmLength: number;
     }
     /** A certificate, as gnutlsPeerStatus describes each, with GnuTLS's names and formats. */
     interface GnutlsCertificate {

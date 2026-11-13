@@ -16,6 +16,99 @@ natives! {
         Ok((!caps.is_empty()).then(|| caps.into_iter().map(str::to_string).collect()))
     }
 
+    /// The symmetric ciphers there are, as gnutls-ciphers: each with
+    /// GnuTLS's name and id, and the sizes of its tag, block, key and
+    /// nonce. E8 has the AEAD ciphers its TLS gives, strongest last.
+    #[ts = "(): GnutlsCipher[]"]
+    pub fn gnutlsCiphers(ed) -> Vec<Record> {
+        let _ = ed;
+        Ok(e8_core::tls::ciphers()
+            .into_iter()
+            .map(|c| {
+                Record::new()
+                    .with("name", c.name)
+                    .with("cipherId", EditorValue::Number(c.id as f64))
+                    .with("type", "gnutls-symmetric-cipher")
+                    .with("cipherAeadCapable", EditorValue::Bool(c.tag_size > 0))
+                    .with("cipherTagsize", EditorValue::Number(c.tag_size as f64))
+                    .with("cipherBlocksize", EditorValue::Number(c.block_size as f64))
+                    .with("cipherKeysize", EditorValue::Number(c.key_size as f64))
+                    .with("cipherIvsize", EditorValue::Number(c.iv_size as f64))
+            })
+            .collect())
+    }
+
+    /// The MACs there are, as gnutls-macs: HMAC on each hash E8 has.
+    #[ts = "(): GnutlsMac[]"]
+    pub fn gnutlsMacs(ed) -> Vec<Record> {
+        let _ = ed;
+        Ok(e8_core::hashes::ALGORITHMS
+            .iter()
+            .map(|a| {
+                let length = e8_core::hashes::length(a).unwrap_or(0);
+                Record::new()
+                    .with("name", e8_core::hashes::gnutls_name(a))
+                    .with("type", "gnutls-mac-algorithm")
+                    .with("macAlgorithmLength", EditorValue::Number(length as f64))
+                    .with("macAlgorithmKeysize", EditorValue::Number(length as f64))
+                    .with("macAlgorithmNoncesize", EditorValue::Number(0.0))
+            })
+            .collect())
+    }
+
+    /// The hashes there are, as gnutls-digests.
+    #[ts = "(): GnutlsDigest[]"]
+    pub fn gnutlsDigests(ed) -> Vec<Record> {
+        let _ = ed;
+        Ok(e8_core::hashes::ALGORITHMS
+            .iter()
+            .map(|a| {
+                Record::new()
+                    .with("name", e8_core::hashes::gnutls_name(a))
+                    .with("type", "gnutls-digest-algorithm")
+                    .with("digestAlgorithmLength", EditorValue::Number(e8_core::hashes::length(a).unwrap_or(0) as f64))
+            })
+            .collect())
+    }
+
+    /// The MAC of `input` with `key`, as gnutls-hash-mac: HMAC by a name
+    /// gnutlsMacs gives ("SHA256"). The text's bytes, as secureHash takes
+    /// them, and the MAC as a string of bytes.
+    #[ts = "(method: string, key: string, input: string): string"]
+    pub fn gnutlsHashMac(ed, method: String, key: String, input: String) -> String {
+        let _ = ed;
+        let algorithm = e8_core::hashes::by_gnutls_name(&method).ok_or_else(|| e8_core::Error::new(format!("GnuTLS MAC is invalid or not found: {method}")))?;
+        let mac = e8_core::hashes::mac(algorithm, &e8_core::hashes::text_bytes(&key), &e8_core::hashes::text_bytes(&input))?;
+        Ok(e8_core::coding::string_of_bytes(&mac))
+    }
+
+    /// The hash of `input`, as gnutls-hash-digest, by a name gnutlsDigests
+    /// gives, as a string of bytes.
+    #[ts = "(method: string, input: string): string"]
+    pub fn gnutlsHashDigest(ed, method: String, input: String) -> String {
+        let _ = ed;
+        let algorithm = e8_core::hashes::by_gnutls_name(&method).ok_or_else(|| e8_core::Error::new(format!("GnuTLS digest is invalid or not found: {method}")))?;
+        let hash = e8_core::hashes::digest(algorithm, &e8_core::hashes::text_bytes(&input))?;
+        Ok(e8_core::coding::string_of_bytes(&hash))
+    }
+
+    /// Encrypt `input` with a cipher gnutlsCiphers gives, as
+    /// gnutls-symmetric-encrypt: the text with its tag after it, and the
+    /// nonce used, which an empty `iv` asks to be made here, as Emacs's
+    /// `iv-auto` does. Strings of bytes, as secureHash's `binary` gives.
+    #[ts = "(cipher: string, key: string, iv: string, input: string, aeadAuth?: string): [text: string, iv: string]"]
+    pub fn gnutlsSymmetricEncrypt(ed, cipher: String, key: String, iv: String, input: String, aead_auth: Option<String>) -> Vec<String> {
+        let _ = ed;
+        symmetric(true, &cipher, &key, &iv, &input, aead_auth.as_deref())
+    }
+
+    /// Decrypt what gnutlsSymmetricEncrypt gave, as gnutls-symmetric-decrypt.
+    #[ts = "(cipher: string, key: string, iv: string, input: string, aeadAuth?: string): [text: string, iv: string]"]
+    pub fn gnutlsSymmetricDecrypt(ed, cipher: String, key: String, iv: String, input: String, aead_auth: Option<String>) -> Vec<String> {
+        let _ = ed;
+        symmetric(false, &cipher, &key, &iv, &input, aead_auth.as_deref())
+    }
+
     /// Start TLS on a network connection, as gnutls-boot: `type` is
     /// "gnutls-x509pki"; `params` names the host the certificate must
     /// name, trust files of authorities beyond the system's, key and
@@ -866,4 +959,12 @@ fn process_primitive(ed: &mut Editor, op: &str, process: &Proc, args: &[EditorVa
 /// as Emacs's gnutls-peer-status gives nil for a process with no session.
 fn gone_or_name(ed: &e8_core::Editor, process: &Proc) -> Option<String> {
     process.listed_name(ed).ok()
+}
+
+/// Encrypts or decrypts for the two natives, taking strings of bytes and
+/// giving them, as gnutls.c takes and gives unibyte strings.
+fn symmetric(encrypting: bool, cipher: &str, key: &str, iv: &str, input: &str, aad: Option<&str>) -> Result<Vec<String>, e8_core::Error> {
+    let bytes = |s: &str| e8_core::coding::bytes_of_string(s).ok_or_else(|| e8_core::Error::new("GnuTLS takes bytes, and this is text"));
+    let (text, nonce) = e8_core::tls::symmetric(encrypting, cipher, &bytes(key)?, &bytes(iv)?, &bytes(input)?, &bytes(aad.unwrap_or(""))?)?;
+    Ok(vec![e8_core::coding::string_of_bytes(&text), e8_core::coding::string_of_bytes(&nonce)])
 }
