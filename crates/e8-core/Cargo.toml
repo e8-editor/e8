@@ -31,6 +31,10 @@ image = { version = "0.25", default-features = false, features = ["png", "jpeg",
 resvg = { version = "0.49", default-features = false, features = ["svgz"] }
 # Decompressing gzip and zlib data, as Emacs's zlib-decompress-region (ADR 0075); resvg already brings it.
 flate2 = "1"
+# Hashes for secure-hash and md5, as fns.c gives them; sha1 and sha2 already in the tree.
+md-5 = "0.10"
+sha1 = "0.10"
+sha2 = "0.10"
 
 # Neither has a web build: the browser has no shared libraries or trash.
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -38,6 +42,16 @@ flate2 = "1"
 libloading = "0.8"
 # Moving deleted files to the system's trash, as Finder or a desktop's file manager does.
 trash = "5"
+# TLS for network processes, as Emacs's gnutls.c gives it (ADR 0075): rustls
+# on ring, as the agent's ureq already builds it, verifying against the
+# system's certificates and any trust files given, and x509-parser to
+# describe a peer's certificates as gnutls-peer-status does.
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-native-certs = "0.8"
+ring = "0.17"
+rustls-pki-types = { version = "1", features = ["std"] }
+webpki = { package = "rustls-webpki", version = "0.103", default-features = false, features = ["ring", "std"] }
+x509-parser = "0.18"
 
 [target.'cfg(unix)'.dependencies]
 # Owner and group names for file listings.

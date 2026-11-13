@@ -34,3 +34,6 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 regex = "1"
 tempfile = "3.27.0"
+# A TLS server, and its certificates, for the TLS tests.
+rcgen = "0.14"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }

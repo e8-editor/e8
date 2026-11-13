@@ -9530,6 +9530,42 @@ declare global {
        */
       "global-visual-line-mode-map": Value;
       /**
+       * GnuTLS's priority string for TLS connections. E8's TLS has none, so this is kept but not used.
+       *
+       * Defined in packages/gnutls.ts.
+       */
+      "gnutls-algorithm-priority": Value;
+      /**
+       * Files of revoked certificates. E8's TLS reads none, so this is kept but not used.
+       *
+       * Defined in packages/gnutls.ts.
+       */
+      "gnutls-crlfiles": Value;
+      /**
+       * How much GnuTLS logs. E8's TLS logs nothing, so this is kept but not used.
+       *
+       * Defined in packages/gnutls.ts.
+       */
+      "gnutls-log-level": Value;
+      /**
+       * The fewest bits of a Diffie-Hellman prime to accept. E8's TLS uses only elliptic curves, so this is kept but not used.
+       *
+       * Defined in packages/gnutls.ts.
+       */
+      "gnutls-min-prime-bits": Value;
+      /**
+       * Files of authorities to trust as well as the system's, those that do not exist left out: as in Emacs, where each system keeps its bundle.
+       *
+       * Defined in packages/gnutls.ts.
+       */
+      "gnutls-trustfiles": Value;
+      /**
+       * Which failures to verify a TLS peer refuse the connection: t for all, or a list of (HOST-REGEXP CHECKS), CHECKS being t or a list of :trustfiles and :hostname. Nil refuses none, leaving the Network Security Manager to ask.
+       *
+       * Defined in packages/gnutls.ts.
+       */
+      "gnutls-verify-error": Value;
+      /**
        * How far Go indents each level.
        *
        * Defined in packages/treesit-modes.ts.
@@ -10734,6 +10770,12 @@ declare global {
        */
       "narrow-to-defun-include-comments": Value;
       /**
+       * How hard network connections are checked: low checks nothing, medium (the default) asks about certificates that do not verify or whose key changed, high and paranoid as medium in E8, paranoid also asking about each certificate not seen before.
+       *
+       * Defined in packages/nsm.ts.
+       */
+      "network-security-level": Value;
+      /**
        * The function, named with e8.defun, that visits the next message's place in this buffer, as next-error calls it, in this buffer: with a count, and whether to start over.
        *
        * Defined in packages/compile.ts.
@@ -10767,6 +10809,30 @@ declare global {
        * Defined in packages/fill.ts.
        */
       "normal-auto-fill-function": Value;
+      /**
+       * Whether there is no user to ask, so a connection with a problem is refused, as in batch mode.
+       *
+       * Defined in packages/nsm.ts.
+       */
+      "nsm-noninteractive": Value;
+      /**
+       * What was accepted for good, as read from nsm-settings-file.
+       *
+       * Defined in packages/nsm.ts.
+       */
+      "nsm-permanent-host-settings": Value;
+      /**
+       * Where certificates accepted for good are kept: network-security.json in user-emacs-directory if nil.
+       *
+       * Defined in packages/nsm.ts.
+       */
+      "nsm-settings-file": Value;
+      /**
+       * What was accepted this session, host by host.
+       *
+       * Defined in packages/nsm.ts.
+       */
+      "nsm-temporary-host-settings": Value;
       /**
        * Functions run after occur makes *Occur*.
        *
@@ -15308,6 +15374,58 @@ declare global {
     /** Whether a file's auto-save file is newer than the file. */
     function hasNewerAutoSave(file: string): boolean;
     /**
+     * What TLS this E8 has, as gnutls-available-p: a list of names, as
+     * Emacs's of symbols, or undefined where there is none, as on the web.
+     */
+    function gnutlsAvailableP(): string[] | undefined;
+    /**
+     * Start TLS on a network connection, as gnutls-boot: `type` is
+     * "gnutls-x509pki"; `params` names the host the certificate must
+     * name, trust files of authorities beyond the system's, key and
+     * certificate files to offer, and which failures of verifying the
+     * peer refuse it ("trustfiles", "hostname", or true for both). Waits
+     * for the handshake; true when done, else an error.
+     */
+    function gnutlsBoot(process: ProcessLike, type: "gnutls-x509pki" | "gnutls-anon", params: { hostname: string; trustfiles?: string[]; keylist?: [key: string, certificate: string][]; verifyError?: true | ("trustfiles" | "hostname")[] }): true;
+    /**
+     * How far a process's TLS has come, as gnutls-get-initstage: 0 for
+     * none, 8 while its handshake goes on, 9 once done, 3 once taken down.
+     */
+    function gnutlsGetInitstage(process: ProcessLike): number;
+    /**
+     * The peer of a process's TLS once its handshake is done, as
+     * gnutls-peer-status: what verifying it found wrong ("unknown-ca",
+     * "no-host-match", ...), its certificates, the peer's first, and the
+     * protocol, key exchange, cipher and MAC; undefined before.
+     */
+    function gnutlsPeerStatus(process: ProcessLike): GnutlsPeerStatus | undefined;
+    /**
+     * What a warning gnutlsPeerStatus gives means, as
+     * gnutls-peer-status-warning-describe.
+     */
+    function gnutlsPeerStatusWarningDescribe(warning: string): string | undefined;
+    /** A PEM certificate described as text, as gnutls-format-certificate. */
+    function gnutlsFormatCertificate(certificate: string): string;
+    /**
+     * End a process's TLS, telling the peer, as gnutls-bye; `cont` is
+     * Emacs's, which E8 needs not, as it never waits for the peer's answer.
+     */
+    function gnutlsBye(process: ProcessLike, cont?: boolean): boolean;
+    /** Take a process's TLS down, as gnutls-deinit. */
+    function gnutlsDeinit(process: ProcessLike): true;
+    /**
+     * Keep parameters for a later gnutlsBoot of a process, as
+     * gnutls-asynchronous-parameters.
+     */
+    function gnutlsAsynchronousParameters(process: ProcessLike, params: unknown): void;
+    /**
+     * Whether a value gnutlsBoot gave says something went wrong, as
+     * gnutls-errorp: anything but true and "gnutls-e-again".
+     */
+    function gnutlsErrorp(error: unknown): boolean;
+    /** What a value gnutlsBoot gave says, as gnutls-error-string. */
+    function gnutlsErrorString(error: unknown): string;
+    /**
      * The login name E8 goes by, as user-login-name, or a user id's, or
      * undefined for an id no account has.
      */
@@ -16201,6 +16319,18 @@ declare global {
     function matchData(): Match | undefined;
     /** How many columns text takes on screen, counting wide characters as two (Emacs's string-width). */
     function stringWidth(text: string): number;
+    /**
+     * The hash of a string, or of a buffer's text from `start` to `end`
+     * (the whole of it by default), as secure-hash: the text's bytes, raw
+     * bytes as themselves and the rest as UTF-8, by "md5", "sha1",
+     * "sha224", "sha256", "sha384" or "sha512", in hex, or with `binary`
+     * as a string of bytes.
+     */
+    function secureHash(algorithm: "md5" | "sha1" | "sha224" | "sha256" | "sha384" | "sha512", object: string | Buffer, start?: number | null, end?: number | null, binary?: boolean): string;
+    /** The MD5 hash of a string or a buffer's text, in hex, as md5. */
+    function md5(object: string | Buffer, start?: number | null, end?: number | null): string;
+    /** The algorithms secureHash knows, as secure-hash-algorithms. */
+    function secureHashAlgorithms(): string[];
     /** Whether gzip and zlib data can be decompressed, as zlib-available-p: always. */
     function zlibAvailableP(): true;
     /**
@@ -17672,6 +17802,54 @@ declare global {
       /** Told "deleted\n", "connection broken by remote peer\n", or for a server's new connection "open from HOST\n". */
       sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
       coding?: string | [string, string];
+      /**
+       * TLS once connected, as :tls-parameters: gnutlsBoot's type and
+       * parameters. A connection whose handshake fails is deleted.
+       */
+      tls?: { type?: "gnutls-x509pki"; hostname: string; trustfiles?: string[]; keylist?: [key: string, certificate: string][]; verifyError?: true | ("trustfiles" | "hostname")[] };
+    }
+    /** A certificate, as gnutlsPeerStatus describes each, with GnuTLS's names and formats. */
+    interface GnutlsCertificate {
+      version: number;
+      /** In hex, colons between bytes. */
+      serialNumber: string;
+      /** As "C=US,O=Example,CN=Example CA": the parts in the certificate's order. */
+      issuer: string;
+      /** As "2026-09-26". */
+      validFrom: string;
+      validTo: string;
+      subject: string;
+      /** "RSA", "EC/ECDSA" or "EdDSA (Ed25519)". */
+      publicKeyAlgorithm: string;
+      /** GnuTLS's word for the key's strength: "Legacy", "Medium", "High", "Ultra". */
+      certificateSecurityLevel: string;
+      /** As "RSA-SHA256" or "ECDSA-SHA256". */
+      signatureAlgorithm: string;
+      /** "sha1:" and the hash of the public key, as nsm.el pins keys by. */
+      publicKeyId: string;
+      publicKeyIdSha256: string;
+      /** "sha1:" and the certificate's fingerprint. */
+      certificateId: string;
+      pem: string;
+    }
+    /** A TLS peer, as gnutls-peer-status describes it. */
+    interface GnutlsPeerStatus {
+      /** What verifying it found wrong, last checked first, for gnutlsPeerStatusWarningDescribe; left out when nothing is. */
+      warnings?: string[];
+      /** Its certificates, its own first. */
+      certificates?: GnutlsCertificate[];
+      certificate?: GnutlsCertificate;
+      /** As "ECDHE-RSA". */
+      keyExchange: string;
+      /** "TLS1.3" or "TLS1.2". */
+      protocol: string;
+      /** As "AES-256-GCM". */
+      cipher: string;
+      /** "AEAD" for every cipher E8 offers. */
+      mac: string;
+      encryptThenMac: boolean;
+      /** Before TLS 1.3, whether renegotiating is safe. */
+      safeRenegotiation?: boolean;
     }
     /**
      * Start a program running alongside the editor, as Emacs's make-process,

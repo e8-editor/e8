@@ -82,6 +82,7 @@ mod tab_bar;
 mod tabulated_list;
 mod textprop;
 mod themes;
+mod tls;
 mod transient;
 mod treesit;
 mod undo_list;
