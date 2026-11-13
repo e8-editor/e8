@@ -386,7 +386,7 @@ natives! {
         let frame = live_frame(ed, frame)?;
         let mut record = Record::new();
         for (name, value) in ed.frame_parameters(frame) {
-            record = record.with(Box::leak(name.into_boxed_str()), value);
+            record = record.with(name, value);
         }
         Ok(record)
     }
@@ -443,8 +443,7 @@ natives! {
     #[ts = "(frame?: FrameLike | null): number"]
     pub fn frameTotalLines(ed, frame: Option<Frm>) -> usize {
         let frame = live_frame(ed, frame)?;
-        let height = ed.frame_text_size(frame).1;
-        Ok(ed.units_to_cells(height as f32, false))
+        Ok(ed.units_to_cells(ed.frame_text_size(frame).1 as f32, false))
     }
 
     /// Where a frame's top left corner is on the screen, in the front
@@ -473,19 +472,21 @@ natives! {
         ed.request_frame_size(frame, width, height, pixelwise.unwrap_or(false))
     }
 
-    /// Ask the front end to make a frame this many columns wide, as set-frame-width.
-    #[ts = "(frame: FrameLike | undefined | null, width: number, pixelwise?: boolean): void"]
-    pub fn setFrameWidth(ed, frame: Option<Frm>, width: f64, pixelwise: Option<bool>) {
-        let frame = live_frame(ed, frame)?;
+    /// Ask the front end to make a frame this many columns wide, as
+    /// set-frame-width; `pretend` is taken and set aside, as it is for a
+    /// terminal Emacs is not drawing on.
+    #[ts = "(frame: FrameLike | undefined | null, width: number, pretend?: boolean | null, pixelwise?: boolean): void"]
+    pub fn setFrameWidth(ed, frame: Option<Frm>, width: f64, pretend: Option<bool>, pixelwise: Option<bool>) {
+        let (frame, _) = (live_frame(ed, frame)?, pretend);
         let pixelwise = pixelwise.unwrap_or(false);
         let height = if pixelwise { ed.frame_text_size(frame).1 as f64 } else { ed.units_to_cells(ed.frame_text_size(frame).1 as f32, false) as f64 };
         ed.request_frame_size(frame, width, height, pixelwise)
     }
 
     /// Ask the front end to make a frame this many lines tall, as set-frame-height.
-    #[ts = "(frame: FrameLike | undefined | null, height: number, pixelwise?: boolean): void"]
-    pub fn setFrameHeight(ed, frame: Option<Frm>, height: f64, pixelwise: Option<bool>) {
-        let frame = live_frame(ed, frame)?;
+    #[ts = "(frame: FrameLike | undefined | null, height: number, pretend?: boolean | null, pixelwise?: boolean): void"]
+    pub fn setFrameHeight(ed, frame: Option<Frm>, height: f64, pretend: Option<bool>, pixelwise: Option<bool>) {
+        let (frame, _) = (live_frame(ed, frame)?, pretend);
         let pixelwise = pixelwise.unwrap_or(false);
         let width = if pixelwise { ed.frame_text_size(frame).0 as f64 } else { ed.frame_width(frame) as f64 };
         ed.request_frame_size(frame, width, height, pixelwise)
@@ -535,16 +536,16 @@ natives! {
     /// frame-right-divider-width: a column on a terminal, none in a window.
     #[ts = "(frame?: FrameLike | null): number"]
     pub fn frameRightDividerWidth(ed, frame: Option<Frm>) -> usize {
-        let _ = live_frame(ed, frame)?;
-        Ok(ed.frame_divider_width(false))
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_divider_width(frame, false))
     }
 
     /// The height of the divider below a window, as
     /// frame-bottom-divider-width: none, a mode line standing between them.
     #[ts = "(frame?: FrameLike | null): number"]
     pub fn frameBottomDividerWidth(ed, frame: Option<Frm>) -> usize {
-        let _ = live_frame(ed, frame)?;
-        Ok(ed.frame_divider_width(true))
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.frame_divider_width(frame, true))
     }
 
     /// The width of a child frame's border, as
@@ -559,7 +560,7 @@ natives! {
     /// second frame, it has its own keys again.
     #[ts = "(frame?: FrameLike | null, to?: FrameLike | null): void"]
     pub fn redirectFrameFocus(ed, frame: Option<Frm>, to: Option<Frm>) {
-        let frame = live_frame(ed, frame)?;
+        let frame = frame.map_or(ed.selected_frame(), |f| f.0);
         ed.redirect_frame_focus(frame, to.map(|f| f.0))
     }
 
@@ -616,7 +617,7 @@ natives! {
         let _ = ed;
         let mut record = Record::new();
         for (name, value) in e8_core::parse_geometry(&spec) {
-            record = record.with(Box::leak(name.into_boxed_str()), value);
+            record = record.with(name, value);
         }
         Ok(record)
     }

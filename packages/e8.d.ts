@@ -16499,10 +16499,14 @@ declare global {
      * units. A terminal cannot resize itself and does nothing.
      */
     function setFrameSize(frame: FrameLike | undefined | null, width: number, height: number, pixelwise?: boolean): void;
-    /** Ask the front end to make a frame this many columns wide, as set-frame-width. */
-    function setFrameWidth(frame: FrameLike | undefined | null, width: number, pixelwise?: boolean): void;
+    /**
+     * Ask the front end to make a frame this many columns wide, as
+     * set-frame-width; `pretend` is taken and set aside, as it is for a
+     * terminal Emacs is not drawing on.
+     */
+    function setFrameWidth(frame: FrameLike | undefined | null, width: number, pretend?: boolean | null, pixelwise?: boolean): void;
     /** Ask the front end to make a frame this many lines tall, as set-frame-height. */
-    function setFrameHeight(frame: FrameLike | undefined | null, height: number, pixelwise?: boolean): void;
+    function setFrameHeight(frame: FrameLike | undefined | null, height: number, pretend?: boolean | null, pixelwise?: boolean): void;
     /**
      * How many of the screen's own pixels one of the front end's units
      * is, as frame-scale-factor.

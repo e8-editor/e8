@@ -361,7 +361,7 @@ impl Ret for Record {
         let object = v8::Object::new(scope);
         for (name, field) in self.0 {
             let value = field.give(scope)?;
-            super::set(scope, object, name, value);
+            super::set(scope, object, &name, value);
         }
         Ok(object.into())
     }

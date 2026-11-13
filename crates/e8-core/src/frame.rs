@@ -58,11 +58,25 @@ impl Editor {
         self.frame_geometries.insert(frame, geometry);
     }
 
-    /// The size of the frame's text area, which its windows and echo area
-    /// divide, in the front end's units, as `frame-text-width` and
-    /// `frame-text-height`.
+    /// The size of the frame's text area, in the front end's units, as
+    /// `frame-text-width` and `frame-text-height`: everything the frame
+    /// holds but the border around it — its windows, the echo area and
+    /// its bars, as Emacs's text height holds the minibuffer window.
     pub fn frame_text_size(&self, frame: FrameId) -> (usize, usize) {
-        self.frame_units_of(frame)
+        let (width, height) = self.frame_units_of(frame);
+        (width, height + self.frame_outside_windows(frame))
+    }
+
+    /// How much of a frame, in the front end's units, its text area holds
+    /// beside the windows: the echo area and the bars above them.
+    fn frame_outside_windows(&self, frame: FrameId) -> usize {
+        let lines = self.menu_bar_lines(frame) + self.tab_bar_lines(frame) + self.frame_echo_lines(frame);
+        (lines as f32 * self.cell().1) as usize
+    }
+
+    /// How many lines a frame's echo area takes.
+    fn frame_echo_lines(&self, frame: FrameId) -> usize {
+        if frame == self.selected_frame() { self.mini_window_lines().max(1) } else { 1 }
     }
 
     /// The size of the whole frame, in the front end's units, as
@@ -94,7 +108,7 @@ impl Editor {
     /// `set-frame-position`.
     pub fn request_frame_position(&mut self, frame: FrameId, x: f64, y: f64) -> Result<()> {
         self.live_frame(frame)?;
-        self.frame_requests.push(FrameRequest::Position { frame, x, y });
+        self.ask_front_end(FrameRequest::Position { frame, x, y });
         Ok(())
     }
 
@@ -105,19 +119,30 @@ impl Editor {
         self.live_frame(frame)?;
         let (cw, ch) = self.cell();
         let (width, height) = if pixelwise { (width, height) } else { (width * cw as f64, height * ch as f64) };
-        self.frame_requests.push(FrameRequest::Size { frame, width, height });
+        self.ask_front_end(FrameRequest::Size { frame, width, height });
         Ok(())
     }
 
-    /// Puts a frame behind the others, as `lower-frame`: the front end
-    /// carries it out, and the frame goes to the end of the frame list, as
-    /// frame.c's `Flower_frame` moves it.
+    /// Asks the front end to put a frame behind the others, as
+    /// `lower-frame`. The frames' order is left alone, as `Flower_frame`
+    /// leaves `frame-list` alone, so `other-frame` still goes round them
+    /// in the order they were made.
     pub fn lower_frame(&mut self, frame: FrameId) -> Result<()> {
         self.live_frame(frame)?;
-        self.frame_order.retain(|f| *f != frame);
-        self.frame_order.push(frame);
-        self.frame_requests.push(FrameRequest::Lower { frame });
+        self.ask_front_end(FrameRequest::Lower { frame });
         Ok(())
+    }
+
+    /// Keeps what a front end has been asked to do, dropping the oldest
+    /// where no front end is taking them, as a headless editor's never
+    /// does, so a script asking again and again cannot fill memory.
+    fn ask_front_end(&mut self, request: FrameRequest) {
+        const MOST: usize = 64;
+        self.frame_requests.push(request);
+        if self.frame_requests.len() > MOST {
+            let over = self.frame_requests.len() - MOST;
+            self.frame_requests.drain(..over);
+        }
     }
 
     /// What front ends have been asked to do to frames since they last
@@ -159,9 +184,15 @@ impl Editor {
 
     /// The width of the divider between windows side by side, as
     /// `frame-right-divider-width`, and of the one below a window, as
-    /// `frame-bottom-divider-width`, which is none.
-    pub fn frame_divider_width(&self, bottom: bool) -> usize {
-        if bottom { 0 } else { self.text_metrics().window_chrome().divider as usize }
+    /// `frame-bottom-divider-width`: a frame's parameters, 0 unless set,
+    /// as Emacs's are. A terminal's vertical border between windows is
+    /// not a divider, and is not counted here, as Emacs does not count it.
+    pub fn frame_divider_width(&self, frame: FrameId, bottom: bool) -> usize {
+        let name = if bottom { "bottom-divider-width" } else { "right-divider-width" };
+        match self.frame_parameter(frame, name) {
+            Some(Value::Number(n)) if n > 0.0 => n as usize,
+            _ => 0,
+        }
     }
 
     /// Where a frame's keys go, as `frame-focus`: the frame
@@ -170,10 +201,23 @@ impl Editor {
         self.frame_focus.get(&frame).copied()
     }
 
+    /// Moves to `now` every redirection that pointed at `was`, as
+    /// `do_switch_frame` does when another frame is selected: a frame
+    /// borrowing the selected frame's minibuffer borrows the new one's.
+    pub(crate) fn follow_selected_frame(&mut self, was: FrameId, now: FrameId) {
+        for (from, to) in self.frame_focus.iter_mut() {
+            if *to == was && *from != now {
+                *to = now;
+            }
+        }
+        self.frame_focus.retain(|from, to| from != to);
+    }
+
     /// Sends a frame's keys to another, as `redirect-frame-focus`; with
-    /// none, the frame has its own keys again.
+    /// none, the frame has its own keys again. The frame itself need not
+    /// be live, as frame.c's does not check: a frame about to be deleted
+    /// may give its keys away.
     pub fn redirect_frame_focus(&mut self, frame: FrameId, to: Option<FrameId>) -> Result<()> {
-        self.live_frame(frame)?;
         match to {
             Some(to) => {
                 self.live_frame(to)?;
@@ -186,7 +230,7 @@ impl Editor {
         Ok(())
     }
 
-    /// The frame that was selected before this one, as
+    /// The frame selected when the windows last changed, as
     /// `old-selected-frame`.
     pub fn old_selected_frame(&self) -> Option<FrameId> {
         self.old_selected_frame
@@ -235,17 +279,21 @@ impl Editor {
             ("tab-bar-lines".to_string(), Value::Number(self.tab_bar_lines(frame) as f64)),
             ("parent-frame".to_string(), Value::Null),
         ];
-        // What was set on the frame wins, as its own value.
-        if let Some(set) = self.frame_parameters.get(&frame) {
-            for (name, value) in set {
-                match out.iter_mut().find(|(n, _)| n == name) {
-                    Some(slot) => slot.1 = value.clone(),
-                    None => out.push((name.clone(), value.clone())),
-                }
+        // What the editor works out wins over what was set, as
+        // `Fframe_parameters` stores it over the frame's own list.
+        let mut all: Vec<(String, Value)> = self
+            .frame_parameters
+            .get(&frame)
+            .map(|set| set.iter().map(|(n, v)| (n.clone(), v.clone())).collect())
+            .unwrap_or_default();
+        for (name, value) in out {
+            match all.iter_mut().find(|(n, _)| *n == name) {
+                Some(slot) => slot.1 = value,
+                None => all.push((name, value)),
             }
         }
-        out.sort_by(|a, b| a.0.cmp(&b.0));
-        out
+        all.sort_by(|a, b| a.0.cmp(&b.0));
+        all
     }
 
     /// Sets several of a frame's parameters, as `modify-frame-parameters`.
@@ -258,12 +306,17 @@ impl Editor {
 }
 
 /// What a geometry string says, as `x-parse-geometry` reads one:
-/// `80x24+10-20` gives a width, a height and a place, a negative one
-/// counted from the other edge as `(- N)`.
+/// `=80x24+10-20` gives a width, a height and a place. A place is a
+/// number, counted from the right or the bottom when it is negative, and
+/// `["-", 0]` for `-0`, which X tells from `+0` and a number cannot, as
+/// frame.c gives `(left - 0)` for it.
 pub fn parse_geometry(spec: &str) -> Vec<(String, Value)> {
-    let mut out = Vec::new();
-    let bytes: Vec<char> = spec.chars().collect();
+    let chars: Vec<char> = spec.chars().collect();
     let mut i = 0;
+    // The leading `=` X's geometry strings may have.
+    if chars.first() == Some(&'=') {
+        i += 1;
+    }
     let number = |chars: &[char], at: &mut usize| -> Option<i64> {
         let start = *at;
         while *at < chars.len() && chars[*at].is_ascii_digit() {
@@ -271,32 +324,35 @@ pub fn parse_geometry(spec: &str) -> Vec<(String, Value)> {
         }
         chars[start..*at].iter().collect::<String>().parse().ok()
     };
-    // The size, `WIDTHxHEIGHT`, if it comes first.
-    if i < bytes.len() && bytes[i].is_ascii_digit() {
-        let width = number(&bytes, &mut i);
-        if let (Some(width), Some('x' | 'X')) = (width, bytes.get(i).copied()) {
-            i += 1;
-            if let Some(height) = number(&bytes, &mut i) {
-                out.push(("width".to_string(), Value::Number(width as f64)));
-                out.push(("height".to_string(), Value::Number(height as f64)));
+    let mut out = Vec::new();
+    // `WIDTH`, or `WIDTHxHEIGHT`.
+    if chars.get(i).is_some_and(char::is_ascii_digit) {
+        if let Some(width) = number(&chars, &mut i) {
+            out.push(("width".to_string(), Value::Number(width as f64)));
+            if matches!(chars.get(i), Some('x' | 'X')) {
+                i += 1;
+                if let Some(height) = number(&chars, &mut i) {
+                    out.push(("height".to_string(), Value::Number(height as f64)));
+                }
             }
         }
     }
     // Then `+X+Y`, `-X-Y` and their mixtures.
     for name in ["left", "top"] {
-        let Some(sign) = bytes.get(i).copied().filter(|c| *c == '+' || *c == '-') else { break };
+        let Some(sign) = chars.get(i).copied().filter(|c| *c == '+' || *c == '-') else { break };
         i += 1;
-        // `--10` is ten from the other edge, as X's geometry has it.
-        let negative = bytes.get(i).copied() == Some('-');
+        // `--10` is ten from the far edge, as X's geometry has it.
+        let negative = chars.get(i) == Some(&'-');
         if negative {
             i += 1;
         }
-        let Some(n) = number(&bytes, &mut i) else { break };
-        let value = if sign == '-' {
-            // From the right or bottom edge, as Emacs's `(- N)`, whose
-            // symbol is a string here so the place can be read as data.
-            Value::List(vec![Value::Str("-".into()), Value::Number(n as f64)])
-        } else if negative {
+        let Some(n) = number(&chars, &mut i) else { break };
+        let n = if negative { -n } else { n };
+        let far = sign == '-';
+        let value = if far && n == 0 {
+            // `-0` is the far edge itself, which a number cannot say.
+            Value::List(vec![Value::Str("-".into()), Value::Number(0.0)])
+        } else if far {
             Value::Number(-n as f64)
         } else {
             Value::Number(n as f64)

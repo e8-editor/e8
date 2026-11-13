@@ -67,6 +67,9 @@ pub struct E8App {
     /// What the editor was last told about each frame's native window, so
     /// it is told again only when it changes.
     geometries: std::collections::HashMap<FrameId, e8_core::FrameGeometry>,
+    /// How much taller each frame's window is than its text area, for
+    /// carrying out a resize.
+    chromes: std::collections::HashMap<FrameId, f32>,
     /// Each frame's last title, and the frame last selected, to focus its
     /// window when another is selected.
     titles: std::collections::HashMap<FrameId, String>,
@@ -257,6 +260,7 @@ impl E8App {
             main_frame: e8_core::FIRST_FRAME,
             cell: (8.0, 16.0),
             geometries: Default::default(),
+            chromes: Default::default(),
             titles: std::collections::HashMap::new(),
             focused_frame: e8_core::FIRST_FRAME,
             flash_until: None,
@@ -592,25 +596,20 @@ impl E8App {
                 e8_core::FrameRequest::Size { width, height, .. } => {
                     ViewportCommand::InnerSize(vec2(width as f32, height as f32 + self.chrome_height(frame)))
                 }
-                e8_core::FrameRequest::Lower { .. } => {
-                    // egui has no "lower"; the frame goes behind by
-                    // giving up the focus, which is as near as it gets.
-                    ViewportCommand::Focus
-                }
+                // egui can raise a window but not put one behind another,
+                // so a lowered frame is left as it is (ADR 0077).
+                e8_core::FrameRequest::Lower { .. } => continue,
             };
-            if matches!(request, e8_core::FrameRequest::Lower { .. }) {
-                continue;
-            }
             ctx.send_viewport_cmd_to(viewport, command);
         }
     }
 
-    /// How much taller than its text area a frame is: its echo area and
-    /// its bars, which `set-frame-size` counts outside the text.
-    fn chrome_height(&mut self, frame: FrameId) -> f32 {
-        let Some(fd) = self.frames.iter().find(|f| f.frame == frame) else { return 0.0 };
-        let bars = f32::from(u8::from(fd.menu_bar.is_some()) + u8::from(fd.tab_bar.is_some()));
-        (bars + fd.echo_lines as f32) * self.cell.1 + 2.0 * BAR_PAD
+    /// How much taller the frame's native window is than the text area
+    /// `set-frame-size` sets: its title bar, as the window draws one, and
+    /// the rounding the layout left. Measured as the frame is laid out,
+    /// so it holds however the window is drawn.
+    fn chrome_height(&self, frame: FrameId) -> f32 {
+        self.chromes.get(&frame).copied().unwrap_or(0.0)
     }
 
     /// Moves the pointer where code asked, as `set-mouse-position` does:
@@ -660,8 +659,11 @@ impl E8App {
         });
         let Some(inner) = inner else { return };
         let outer = outer.unwrap_or(inner);
+        // The native size is the frame's own area, as Emacs's is on GTK
+        // and NS: what the window manager draws around it is not in it,
+        // though the position is the outer frame's, as `frame-position` is.
         let geometry = e8_core::FrameGeometry {
-            native: (outer.width(), outer.height()),
+            native: (inner.width(), inner.height()),
             position: (outer.min.x, outer.min.y),
             scale,
         };
@@ -678,6 +680,11 @@ impl E8App {
         let m = Metrics::of(ui);
         self.cell = (m.char_width, m.line_height);
         self.note_frame_geometry(ui.ctx(), frame);
+        // How much of the window is not the frame's text area: its title
+        // bar, as the window draws one. Measured here, where both are known.
+        if let Some(inner) = ui.ctx().input(|i| i.viewport().inner_rect) {
+            self.chromes.insert(frame, (inner.height() - ui.max_rect().height()).max(0.0));
+        }
         match &mut self.backend {
             Backend::Inline { editor, .. } => Some(Layout::new(ui, editor, frame, m)),
             Backend::Thread { driver, .. } => {

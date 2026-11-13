@@ -288,10 +288,11 @@ impl Editor {
         b.set_window_point(old, point);
         b.set_window_start(old, top);
         let frame = self.other_frames.remove(k);
-        self.old_selected_frame = Some(self.selected_frame);
-        // Selecting a frame gives it its own keys again, as frame.c's
-        // `select-frame` changes a frame's focus redirection.
-        self.frame_focus.remove(&id);
+        // A frame that sent its keys to the frame that was selected sends
+        // them to this one now, as do_switch_frame moves a redirection,
+        // so a frame borrowing a minibuffer borrows the one in front.
+        let was = self.selected_frame;
+        self.follow_selected_frame(was, id);
         self.other_frames.push(Frame {
             id: self.selected_frame,
             tree: std::mem::replace(&mut self.window_tree, frame.tree),
