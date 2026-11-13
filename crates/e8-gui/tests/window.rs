@@ -779,3 +779,56 @@ fn transient_menu() {
     ed.press("<f5> - v").unwrap();
     harness(ed, Theme::Dark).snapshot("transient_menu_dark");
 }
+
+/// A pop-up menu over the windows, with a submenu open beside it: drawn
+/// as a raised card of cells, as the terminal draws one (ADR 0076).
+#[test]
+fn popup_menu() {
+    let mut harness = Harness::builder()
+        .with_size(vec2(640.0, 360.0))
+        .with_theme(Theme::Dark)
+        .build_eframe(|cc| {
+            e8_gui::theme::install_fonts(&cc.egui_ctx, false);
+            E8App::threaded(&cc.egui_ctx, |ed| {
+                ed.type_text("An editor that works the way Emacs works,\nwith menus you can see.\n");
+                None
+            })
+            .silent()
+        });
+    harness.run_steps(2);
+    harness.state_mut().run(|ed| {
+        let menu = ed.define_keymap("test-menu", None);
+        let file = ed.keymaps_mut().make(None);
+        let item = |label: &str, command: &str| e8_core::MenuItem::new(label, e8_core::Binding::Command(command.into()));
+        let bind = |ed: &mut e8_core::Editor, map, keys: &str, item| {
+            let keys = e8_core::Key::parse_seq(keys).expect("keys");
+            ed.keymaps_mut().bind_menu(map, &keys, item);
+        };
+        bind(ed, menu, "<open>", item("Open File...", "find-file"));
+        bind(ed, menu, "<save>", item("Save", "save-buffer"));
+        let mut greyed = item("Revert Buffer", "ignore");
+        greyed.enable = Some(e8_core::Value::Bool(false));
+        bind(ed, menu, "<revert>", greyed);
+        bind(ed, menu, "<more>", e8_core::MenuItem::new("More", e8_core::Binding::Keymap(file)));
+        bind(ed, file, "<quit>", item("Quit", "save-buffers-kill-terminal"));
+        // Opened by the mouse, so leaving it is no quit; the keys that
+        // walk it are sent by the test.
+        let _ = ed.x_popup_menu(&e8_core::Value::Keymap(menu), Some(e8_core::MenuPosition::At { x: 4.0, y: 1.0, window: None }));
+    });
+    let until = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    while !harness.state_mut().with_editor(|ed| ed.menu_active()) {
+        assert!(std::time::Instant::now() < until, "the menu never opened");
+        harness.step();
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+    for _ in 0..4 {
+        harness.key_press(Key::ArrowDown);
+        harness.step();
+    }
+    harness.key_press(Key::ArrowRight);
+    for _ in 0..4 {
+        harness.step();
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+    harness.snapshot("popup_menu_dark");
+}

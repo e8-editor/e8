@@ -1,4 +1,5 @@
 use std::fmt;
+use std::sync::Mutex;
 
 /// A key, independent of any terminal library.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -30,12 +31,53 @@ pub enum KeyCode {
     /// The mouse moving while `track-mouse` is on, as Emacs's
     /// `mouse-movement` event; where it went is in [`crate::MouseEvent`].
     MouseMovement,
+    /// A key that is a plain symbol, as most of Emacs's events are: the
+    /// menu bar's `<menu-bar> <file> <open-file>` and the pseudo-events a
+    /// click on a part of the frame comes after. It cannot be typed.
+    Symbol(SymbolKey),
     /// A mouse button, 1 to 5, as Emacs names its events: `<down-mouse-1>`
     /// when pressed, `<mouse-1>` when released where it was pressed,
     /// `<drag-mouse-1>` after moving, and `<double-mouse-1>` and
     /// `<triple-mouse-1>` for repeated clicks. Where the event happened is
     /// in [`crate::MouseEvent`].
     Mouse(MouseKind, u8),
+}
+
+/// A symbol used as a key, by the order it was first named. Symbols are
+/// few, live as long as the program, and are compared by this number, so
+/// looking a key up costs no more than any other.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub struct SymbolKey(u32);
+
+/// Every symbol named as a key so far, in the order they were named.
+static SYMBOL_KEYS: Mutex<Vec<String>> = Mutex::new(Vec::new());
+
+impl SymbolKey {
+    /// The key for a symbol's name, naming it if it is new.
+    pub fn new(name: &str) -> SymbolKey {
+        let mut names = SYMBOL_KEYS.lock().unwrap_or_else(|e| e.into_inner());
+        match names.iter().position(|n| n == name) {
+            Some(i) => SymbolKey(i as u32),
+            None => {
+                names.push(name.to_string());
+                SymbolKey(names.len() as u32 - 1)
+            }
+        }
+    }
+
+    /// Its name, without the angle brackets it is written in.
+    pub fn name(self) -> String {
+        let names = SYMBOL_KEYS.lock().unwrap_or_else(|e| e.into_inner());
+        names.get(self.0 as usize).cloned().unwrap_or_default()
+    }
+}
+
+/// Whether a name may stand between angle brackets as a symbol key: Emacs
+/// writes any symbol that way, but a name with a space in it could not be
+/// read back as one key.
+fn symbol_name(s: &str) -> Option<&str> {
+    let inner = s.strip_prefix('<')?.strip_suffix('>')?;
+    (!inner.is_empty() && !inner.contains(['<', '>']) && !inner.chars().any(char::is_whitespace)).then_some(inner)
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -167,6 +209,9 @@ impl Key {
             "<wheel-down>" => KeyCode::WheelDown,
             _ if function_key(rest).is_some() => KeyCode::F(function_key(rest).unwrap_or_default()),
             _ if mouse_event(rest).is_some() => mouse_event(rest)?,
+            // Any other name in angle brackets is a symbol, as Emacs reads
+            // one that names no key of its own.
+            _ if symbol_name(rest).is_some() => KeyCode::Symbol(SymbolKey::new(symbol_name(rest)?)),
             _ => {
                 let mut chars = rest.chars();
                 let c = chars.next()?;
@@ -220,6 +265,7 @@ impl fmt::Display for Key {
             KeyCode::TabBar => "<tab-bar>",
             KeyCode::MouseMovement => "<mouse-movement>",
             KeyCode::WheelDown => "<wheel-down>",
+            KeyCode::Symbol(s) => return write!(f, "<{}>", s.name()),
         };
         f.write_str(name)
     }
@@ -251,9 +297,23 @@ mod tests {
         assert_eq!(Key::parse("S"), Some(Key::char('S')));
         assert_eq!(Key::parse("C-<return>"), Key::parse("C-RET"));
         assert_eq!(Key::parse("<backtab>"), Key::parse("S-TAB"));
-        assert_eq!(Key::parse("<f0>"), None);
         assert_eq!(Key::parse("M-"), None);
         assert_eq!(Key::parse("ab"), None);
+    }
+
+    #[test]
+    fn a_name_that_is_no_key_of_its_own_is_a_symbol() {
+        for s in ["<menu-bar>", "<file>", "<f0>", "<f36>", "<mouse-6>", "C-<menu-bar>"] {
+            let key = Key::parse(s).unwrap_or_else(|| panic!("failed to parse {s}"));
+            assert!(matches!(key.code, KeyCode::Symbol(_)), "{s} is {key:?}");
+            assert_eq!(key.to_string(), s);
+        }
+        assert_eq!(Key::parse("<menu-bar>"), Key::parse("<menu-bar>"));
+        assert_ne!(Key::parse("<menu-bar>"), Key::parse("<file>"));
+        // A name that could not be read back as one key is not a symbol.
+        assert_eq!(Key::parse("<a b>"), None);
+        assert_eq!(Key::parse("<>"), None);
+        assert_eq!(Key::parse_seq("<menu-bar> <file> o").unwrap().len(), 3);
     }
 
     #[test]

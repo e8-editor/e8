@@ -175,6 +175,23 @@ impl Editor {
         Ok(())
     }
 
+    /// Binds a key sequence in a keymap to a menu item, as Emacs binds
+    /// `(menu-item LABEL DEFINITION . PROPERTIES)`.
+    pub fn define_menu_item(&mut self, keymap: &Value, keys: &[Key], item: crate::keymap::MenuItem) -> Result<()> {
+        let map = self.keymap_of(keymap)?;
+        self.keymaps.bind_menu(map, keys, item);
+        Ok(())
+    }
+
+    /// The menu item a keymap binds a key sequence to, if it binds one.
+    pub fn menu_item_at(&self, keymap: &Value, keys: &[Key]) -> Result<Option<&crate::keymap::MenuItem>> {
+        let map = self.keymap_of(keymap)?;
+        Ok(match self.keymaps.binding_at(map, keys) {
+            Some(Binding::Menu(item)) => Some(item.as_ref()),
+            _ => None,
+        })
+    }
+
     /// Binds a key sequence in a named keymap.
     pub fn bind_key_in(&mut self, keymap: &str, keys: &[Key], command: &str) -> Result<()> {
         self.define_key(&Value::Str(keymap.into()), keys, Some(&Value::Str(command.into())))
@@ -208,11 +225,11 @@ impl Editor {
         for map in self.current_active_maps() {
             let Some(crate::keymap::Binding::Keymap(sub)) = self.keymaps.binding_of(map, prefix) else { continue };
             for (key, binding) in self.keymaps.direct_bindings(sub) {
-                let shown = match binding {
-                    crate::keymap::Binding::Command(c) => Some(Some(c)),
+                let shown = match binding.definition() {
+                    crate::keymap::Binding::Command(c) => Some(Some(c.clone())),
                     crate::keymap::Binding::Keys(_) => Some(Some("Keyboard Macro".to_string())),
                     crate::keymap::Binding::Keymap(_) => Some(None),
-                    crate::keymap::Binding::Nil => None,
+                    crate::keymap::Binding::Menu(_) | crate::keymap::Binding::Nil => None,
                 };
                 // nil in an earlier map hides the key from later ones too.
                 out.entry(key).or_insert_with(|| shown.clone().unwrap_or(Some(String::new())));

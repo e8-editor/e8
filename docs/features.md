@@ -30,6 +30,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Clicks.
 - Drags.
 - Double and triple clicks and shift-click as Emacs mouse keys (`<mouse-1>`, `<drag-mouse-1>`, `<double-mouse-1>`).
+- Pop-up menus (`x-popup-menu`): menu keymaps whose bindings are `menu-item`s, with submenus, `:enable`, `:visible`, `:help`, `:filter` and radio and toggle buttons, drawn over the windows in a terminal as in the GUI, walked with the arrows, `RET`, `C-g` and the mouse as Emacs's terminal menus are, and `menu-or-popup-active-p`.
 - The pointer's place and moving it (`mouse-position`, `mouse-pixel-position`, `set-mouse-position`), `track-mouse` with `<mouse-movement>` events, the window and the part of it at a place (`window-at`, `coordinates-in-window-p`), and the raw keys of a key sequence (`this-single-command-raw-keys`, `read-key-sequence-vector`).
 - Long lines continued by default.
 - Who runs E8 and on what, for scripts as Emacs's Lisp asks it (`user-full-name`, `user-login-name`, ids, `system-users`, `num-processors`), and `C-z` and `C-x C-z` (`suspend-frame`) iconifying a window or stopping the terminal for the shell, as `suspend-emacs` does.
