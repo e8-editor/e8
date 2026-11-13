@@ -268,7 +268,7 @@ impl Editor {
         let (width, height) = self.frame_units_of(frame);
         let (columns, lines) = (self.units_to_cells(width as f32, true), self.units_to_cells(height as f32, false));
         let (left, top) = self.frame_position(frame);
-        let mut out: Vec<(String, Value)> = vec![
+        let out: Vec<(String, Value)> = vec![
             ("width".to_string(), Value::Number(columns as f64)),
             ("height".to_string(), Value::Number(lines as f64)),
             ("left".to_string(), Value::Number(left as f64)),
@@ -326,14 +326,14 @@ pub fn parse_geometry(spec: &str) -> Vec<(String, Value)> {
     };
     let mut out = Vec::new();
     // `WIDTH`, or `WIDTHxHEIGHT`.
-    if chars.get(i).is_some_and(char::is_ascii_digit) {
-        if let Some(width) = number(&chars, &mut i) {
-            out.push(("width".to_string(), Value::Number(width as f64)));
-            if matches!(chars.get(i), Some('x' | 'X')) {
-                i += 1;
-                if let Some(height) = number(&chars, &mut i) {
-                    out.push(("height".to_string(), Value::Number(height as f64)));
-                }
+    if chars.get(i).is_some_and(char::is_ascii_digit)
+        && let Some(width) = number(&chars, &mut i)
+    {
+        out.push(("width".to_string(), Value::Number(width as f64)));
+        if matches!(chars.get(i), Some('x' | 'X')) {
+            i += 1;
+            if let Some(height) = number(&chars, &mut i) {
+                out.push(("height".to_string(), Value::Number(height as f64)));
             }
         }
     }
