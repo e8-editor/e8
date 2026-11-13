@@ -63,6 +63,10 @@
   "how": "replaced",
   "e8": "JavaScript template strings"
  },
+ "frame--set-was-invisible": {
+  "how": "other",
+  "e8": "e8.frameSetWasInvisible"
+ },
  "frame-parameters": {
   "how": "other",
   "e8": "e8.frameParameter"

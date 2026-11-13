@@ -58,6 +58,8 @@ pub(crate) struct Window {
     pub(crate) old: Option<OldWindow>,
     /// Whether its cursor is drawn, as `internal-show-cursor` sets it.
     pub(crate) cursor_shown: bool,
+    /// What its cursor looks like, as `set-window-cursor-type` gave it.
+    pub(crate) cursor_type: Option<Value>,
     /// How far it is scrolled horizontally.
     pub(crate) hscroll: crate::scroll::Hscroll,
     /// How far it is scrolled up past its start, in the front end's units.
@@ -84,6 +86,7 @@ impl Window {
             scroll_bars: None,
             old: None,
             cursor_shown: true,
+            cursor_type: None,
             hscroll: Default::default(),
             vscroll: Default::default(),
             scrolled_to: None,
@@ -2353,6 +2356,37 @@ impl Editor {
             }
         }
         self.old_frame_windows.retain(|frame, _| frames.contains(frame));
+    }
+
+    /// How wide a window's vertical scroll bar is, as
+    /// `window-scroll-bar-width`, and how tall its horizontal one, as
+    /// `window-scroll-bar-height`: none, E8 drawing no scroll bars.
+    pub fn window_scroll_bar_size(&self, _id: WindowId, _horizontal: bool) -> usize {
+        0
+    }
+
+    /// What a window's cursor looks like, as `window-cursor-type`: what
+    /// `set-window-cursor-type` gave it, or nothing for its buffer's.
+    pub fn window_cursor_type(&self, id: WindowId) -> Option<Value> {
+        self.window(id).and_then(|w| w.cursor_type.clone())
+    }
+
+    /// Gives a window a cursor of its own, as `set-window-cursor-type`;
+    /// nothing gives it back its buffer's.
+    pub fn set_window_cursor_type(&mut self, id: WindowId, cursor: Value) -> Value {
+        if let Some(w) = self.window_mut(id) {
+            w.cursor_type = match cursor {
+                Value::Null => None,
+                value => Some(value),
+            };
+        }
+        self.window_cursor_type(id).unwrap_or(Value::Null)
+    }
+
+    /// Runs `window-configuration-change-hook`, as
+    /// `run-window-configuration-change-hook` does.
+    pub fn run_window_configuration_change_hook(&mut self) -> Result<()> {
+        self.run_hooks("window-configuration-change-hook")
     }
 
     /// The frame a window configuration was taken on, as

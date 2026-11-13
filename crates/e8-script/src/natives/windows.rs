@@ -550,6 +550,72 @@ natives! {
         Ok(ed.frame_old_selected_window(frame).map(Win))
     }
 
+    /// How wide a window's vertical scroll bar is, as
+    /// window-scroll-bar-width: none, E8 drawing no scroll bars.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowScrollBarWidth(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_scroll_bar_size(window, false))
+    }
+
+    /// How tall a window's horizontal scroll bar is, as
+    /// window-scroll-bar-height: none.
+    #[ts = "(window?: WindowLike | null): number"]
+    pub fn windowScrollBarHeight(ed, window: Option<Win>) -> usize {
+        let window = valid_window(ed, window)?;
+        Ok(ed.window_scroll_bar_size(window, true))
+    }
+
+    /// How wide a frame's tool bar is, as tool-bar-pixel-width: none, E8
+    /// having no tool bar.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn toolBarPixelWidth(ed, frame: Option<Frm>) -> usize {
+        let _ = live_frame(ed, frame)?;
+        Ok(0)
+    }
+
+    /// What a window's cursor looks like, as window-cursor-type: what
+    /// setWindowCursorType gave it, or undefined for its buffer's.
+    #[ts = "(window?: WindowLike | null): Value | undefined"]
+    pub fn windowCursorType(ed, window: Option<Win>) -> Option<EditorValue> {
+        let window = live_window(ed, window)?;
+        Ok(ed.window_cursor_type(window))
+    }
+
+    /// Give a window a cursor of its own, as set-window-cursor-type;
+    /// null gives it back its buffer's.
+    #[ts = "(window: WindowLike | undefined | null, cursor: Value): Value"]
+    pub fn setWindowCursorType(ed, window: Option<Win>, cursor: EditorValue) -> EditorValue {
+        let window = live_window(ed, window)?;
+        Ok(ed.set_window_cursor_type(window, cursor))
+    }
+
+    /// Run window-configuration-change-hook, as
+    /// run-window-configuration-change-hook does.
+    #[ts = "(frame?: FrameLike | null): void"]
+    pub fn runWindowConfigurationChangeHook(ed, frame: Option<Frm>) {
+        let _ = frame;
+        ed.run_window_configuration_change_hook()
+    }
+
+    /// Note that a frame was invisible, as frame--set-was-invisible:
+    /// E8 keeps nothing of the kind, so this is remembered as a frame's
+    /// parameter and given back.
+    #[ts = "(frame: FrameLike | undefined | null, wasInvisible: boolean): void"]
+    pub fn frameSetWasInvisible(ed, frame: Option<Frm>, was_invisible: bool) {
+        let frame = live_frame(ed, frame)?;
+        ed.set_frame_parameter(frame, "was-invisible", EditorValue::Bool(was_invisible))
+    }
+
+    /// Look at a frame's fonts again, as reconsider-frame-fonts: E8's
+    /// front ends measure as they draw, so this only redisplays.
+    #[ts = "(frame?: FrameLike | null): void"]
+    pub fn reconsiderFrameFonts(ed, frame: Option<Frm>) {
+        let _ = live_frame(ed, frame)?;
+        ed.redisplay();
+        Ok(())
+    }
+
     /// Every terminal there is, as terminal-list: E8 draws through one
     /// front end, so there is one.
     pub fn terminalList(ed) -> Vec<Trm> {

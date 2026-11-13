@@ -16528,6 +16528,47 @@ declare global {
      */
     function frameOldSelectedWindow(frame?: FrameLike | null): Window | undefined;
     /**
+     * How wide a window's vertical scroll bar is, as
+     * window-scroll-bar-width: none, E8 drawing no scroll bars.
+     */
+    function windowScrollBarWidth(window?: WindowLike | null): number;
+    /**
+     * How tall a window's horizontal scroll bar is, as
+     * window-scroll-bar-height: none.
+     */
+    function windowScrollBarHeight(window?: WindowLike | null): number;
+    /**
+     * How wide a frame's tool bar is, as tool-bar-pixel-width: none, E8
+     * having no tool bar.
+     */
+    function toolBarPixelWidth(frame?: FrameLike | null): number;
+    /**
+     * What a window's cursor looks like, as window-cursor-type: what
+     * setWindowCursorType gave it, or undefined for its buffer's.
+     */
+    function windowCursorType(window?: WindowLike | null): Value | undefined;
+    /**
+     * Give a window a cursor of its own, as set-window-cursor-type;
+     * null gives it back its buffer's.
+     */
+    function setWindowCursorType(window: WindowLike | undefined | null, cursor: Value): Value;
+    /**
+     * Run window-configuration-change-hook, as
+     * run-window-configuration-change-hook does.
+     */
+    function runWindowConfigurationChangeHook(frame?: FrameLike | null): void;
+    /**
+     * Note that a frame was invisible, as frame--set-was-invisible:
+     * E8 keeps nothing of the kind, so this is remembered as a frame's
+     * parameter and given back.
+     */
+    function frameSetWasInvisible(frame: FrameLike | undefined | null, wasInvisible: boolean): void;
+    /**
+     * Look at a frame's fonts again, as reconsider-frame-fonts: E8's
+     * front ends measure as they draw, so this only redisplays.
+     */
+    function reconsiderFrameFonts(frame?: FrameLike | null): void;
+    /**
      * Every terminal there is, as terminal-list: E8 draws through one
      * front end, so there is one.
      */

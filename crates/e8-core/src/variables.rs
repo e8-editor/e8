@@ -1141,6 +1141,7 @@ pub(crate) fn install(ed: &mut Editor) {
         ("post-self-insert-hook", "Run after typing a character inserts it, as electric-pair-mode and electric-indent-mode use."),
         ("pre-command-hook", "Run before each command that keys run. A function can change this-command, and that command runs instead."),
         ("post-command-hook", "Run after each command that keys run."),
+        ("window-configuration-change-hook", "Run when a frame's windows change: one is split, deleted, resized or shows another buffer."),
         ("menu-bar-update-hook", "Run before the menu bar is laid out again, for menus whose items change, as the Buffers menu's do."),
         ("minibuffer-setup-hook", "Run when a prompt opens, in the minibuffer."),
         ("minibuffer-exit-hook", "Run when a prompt closes, in the minibuffer, before the answer is used."),

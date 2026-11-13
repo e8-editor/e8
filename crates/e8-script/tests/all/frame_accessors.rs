@@ -561,3 +561,27 @@ fn window_configurations_know_their_frame_and_compare() {
     );
     assert_eq!(got, "true");
 }
+
+#[test]
+fn a_window_can_have_a_cursor_of_its_own_and_no_scroll_bar_sizes() {
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.windowScrollBarWidth(), e8.windowScrollBarHeight(), e8.toolBarPixelWidth()])"), "[0,0,0]");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowCursorType())"), "undefined");
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.setWindowCursorType(undefined, "bar"))"#), "bar");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowCursorType())"), "bar");
+    // Null gives it back its buffer's.
+    assert_eq!(eval(&mut ed, &s, "String(e8.setWindowCursorType(undefined, null))"), "null");
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowCursorType())"), "undefined");
+}
+
+#[test]
+fn the_window_configuration_change_hook_can_be_run() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.ran = 0, e8.addHook("window-configuration-change-hook", () => { globalThis.ran += 1; }),
+            e8.runWindowConfigurationChangeHook(), String(globalThis.ran))"#,
+    );
+    assert_eq!(got, "1");
+}
