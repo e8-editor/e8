@@ -78,15 +78,33 @@ fn decompressing_is_an_edit_that_text_not_bytes_refuses() {
     assert_eq!(ed.window_buffer().len(), 520);
     ed.press("C-/").unwrap();
     assert_eq!(ed.window_buffer().text().to_string(), gz);
-    // Text that is not bytes, as Emacs refuses a multibyte buffer: an error.
-    ed.window_buffer_mut().set_text("→ not bytes");
-    assert_eq!(eval(&mut ed, &s, "e8.conditionCase(() => e8.zlibDecompressRegion(0, 5), { error: (e) => e.message })"), r#""The region holds characters that are not bytes""#);
+    // Text that is not bytes, as Emacs refuses a multibyte buffer: an
+    // error, é from UTF-8 as well as →, though é's code is below 256.
+    for text in ["→ not bytes", "é not bytes"] {
+        ed.window_buffer_mut().set_text(text);
+        assert_eq!(eval(&mut ed, &s, "e8.conditionCase(() => e8.zlibDecompressRegion(0, 5), { error: (e) => e.message })"), r#""The region holds characters that are not bytes""#);
+    }
+    // Outside the accessible part, and a read-only buffer, as Emacs: errors, bad data or not.
+    ed.window_buffer_mut().set_text("junk data");
     assert_eq!(eval(&mut ed, &s, "e8.conditionCase(() => e8.zlibDecompressRegion(0, 500), { error: (e) => e.symbol })"), r#""args-out-of-range""#);
+    assert_eq!(eval(&mut ed, &s, "e8.conditionCase(() => (e8.narrowToRegion(0, 4), e8.zlibDecompressRegion(0, 9)), { error: (e) => e.symbol })"), r#""args-out-of-range""#);
+    eval(&mut ed, &s, "e8.widen()");
+    ed.window_buffer_mut().read_only = true;
+    assert_eq!(eval(&mut ed, &s, "e8.conditionCase(() => e8.zlibDecompressRegion(0, 9), { error: (e) => e.symbol })"), r#""buffer-read-only""#);
 }
 
 #[test]
 fn symbol_file_names_the_file_that_defined_it() {
     let (mut ed, s) = setup();
+    // Each package its own file, those a package imports included, as each
+    // Lisp file has its load-history entry: org.ts imports org-list.ts.
+    assert_eq!(eval(&mut ed, &s, r#"e8.symbolFile("org-set-property")"#), r#""packages/org-list.ts""#);
+    // A package required while a file loads: its own file, not the requirer's.
+    let req = tempfile::tempdir().unwrap();
+    let requirer = req.path().join("requirer.ts");
+    std::fs::write(&requirer, r#"e8.require("ert");"#).unwrap();
+    s.load_file(&mut ed, &requirer).unwrap();
+    assert_eq!(eval(&mut ed, &s, r#"e8.symbolFile("ert")"#), r#""packages/ert.ts""#);
     // A package E8 ships: its file in E8's source.
     assert_eq!(
         eval(&mut ed, &s, r#"[e8.symbolFile("mouse-set-point"), e8.symbolFile("only-global-abbrevs", "defvar"), e8.symbolFile("ansi-color-red", "defface")]"#),
@@ -110,8 +128,17 @@ fn symbol_file_names_the_file_that_defined_it() {
     let got = eval(&mut ed, &s, r#"["my-fn", "my-var", "my-face", "my-command"].map((n) => [e8.symbolFile(n), e8.symbolFile(n, "defun") ?? null, e8.symbolFile(n, "defvar") ?? null, e8.symbolFile(n, "defface") ?? null])"#);
     let p = format!("{path:?}");
     assert_eq!(got.replace(&p, "F").replace(&format!("{:?}", file.display().to_string()), "F"), "[[F,F,null,null],[F,null,F,null],[F,null,null,F],[F,F,null,null]]");
-    // Defined again with no file, as at M-:, it has none.
-    assert_eq!(eval(&mut ed, &s, r#"(e8.defun("my-fn", () => 2), e8.symbolFile("my-fn", "defun") ?? null)"#), "null");
+    // Defined again with no file, as at M-:, it keeps its file, as load-history does.
+    assert_eq!(
+        eval(&mut ed, &s, r#"(e8.defun("my-fn", () => 2), e8.defineCommand({ name: "my-command", run: () => {} }), [e8.symbolFile("my-fn", "defun"), e8.symbolFile("my-command")])"#).replace(&p, "F").replace(&format!("{:?}", file.display().to_string()), "F"),
+        "[F,F]"
+    );
+    // An alias records the file that made it.
+    let other = dir.path().join("other.ts");
+    std::fs::write(&other, r#"e8.defalias("my-alias", "car"); e8.defalias("my-fn", "cdr");"#).unwrap();
+    s.load_file(&mut ed, &other).unwrap();
+    let got = eval(&mut ed, &s, r#"[e8.symbolFile("my-alias"), e8.symbolFile("my-fn")]"#);
+    assert!(got.matches("other.ts").count() == 2, "{got}");
     // Any other kind, as a symbol property Emacs records, has none.
     assert_eq!(eval(&mut ed, &s, r#"e8.symbolFile("my-var", "cl-defmethod") ?? null"#), "null");
 }

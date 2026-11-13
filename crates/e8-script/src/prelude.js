@@ -211,6 +211,8 @@
   // A script object's identity as an editor value, the same each time, kept
   // beside the object rather than on it.
   const objectIds = new WeakMap();
+  // Each module's body says where it starts and ends (lib.rs's module_js).
+  globalThis.__e8Loading = (file, entering) => native.loadingFile(file, entering);
   let nextObjectId = 1;
   globalThis.__e8ObjectId = (object) => {
     let id = objectIds.get(object);

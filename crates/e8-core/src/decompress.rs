@@ -1,7 +1,6 @@
 //! Decompressing gzip and zlib data in a buffer, as Emacs's decompress.c
 //! does ([ADR 0075]). E8's buffers are all multibyte: the region's
-//! characters are taken as bytes, ASCII and raw bytes (and characters
-//! below 256, as a unibyte string's are), and what comes out goes in as
+//! characters are taken as bytes, ASCII and raw bytes, and what comes out goes in as
 //! ASCII and raw bytes, which `decode-coding-region` then decodes, as an
 //! Emacs unibyte buffer made multibyte would show them.
 //!
@@ -9,7 +8,7 @@
 
 use flate2::{Crc, Decompress, FlushDecompress, Status};
 
-use crate::coding::{bytes_of_string, raw_byte_char};
+use crate::coding::{char_raw_byte, raw_byte_char};
 use crate::editor::Editor;
 use crate::error::{Error, Result};
 
@@ -32,7 +31,10 @@ pub enum Decompressed {
 pub fn inflate(input: &[u8]) -> (Vec<u8>, usize, bool) {
     let mut out = Vec::new();
     if input.len() >= 2 && input[0] == 0x1f && input[1] == 0x8b {
-        let Some(header) = gzip_header(input) else { return (out, 0, false) };
+        let header = match gzip_header(input) {
+            Ok(header) => header,
+            Err(read) => return (out, read, false),
+        };
         let (used, ended) = deflate(&input[header..], false, &mut out);
         if !ended {
             return (out, header + used, false);
@@ -41,15 +43,21 @@ pub fn inflate(input: &[u8]) -> (Vec<u8>, usize, bool) {
         // read before it is checked, as zlib reads them, so a wrong one
         // leaves only what follows it unread.
         let at = header + used;
-        let Some(trailer) = input.get(at..at + 8) else { return (out, input.len(), false) };
         let mut crc = Crc::new();
         crc.update(&out);
-        let word = |i: usize| u32::from_le_bytes(trailer[i..i + 4].try_into().expect("four bytes"));
-        if word(0) != crc.sum() {
-            return (out, at + 4, false);
+        let word = |i: usize| input.get(at + i..at + i + 4).map(|b| u32::from_le_bytes(b.try_into().expect("four bytes")));
+        match word(0) {
+            None => return (out, input.len(), false),
+            Some(sum) if sum != crc.sum() => return (out, at + 4, false),
+            Some(_) => {}
         }
-        let ok = word(4) == out.len() as u32;
-        (out, at + 8, ok)
+        match word(4) {
+            None => (out, input.len(), false),
+            Some(len) => {
+                let whole = len == out.len() as u32;
+                (out, at + 8, whole)
+            }
+        }
     } else {
         let (used, ended) = deflate(input, true, &mut out);
         (out, used, ended)
@@ -74,30 +82,42 @@ fn deflate(input: &[u8], zlib: bool, out: &mut Vec<u8>) -> (usize, bool) {
     }
 }
 
-/// How long a gzip member's header is, as RFC 1952 lays it out, if it is whole.
-fn gzip_header(input: &[u8]) -> Option<usize> {
+/// How long a gzip member's header is, as RFC 1952 lays it out and zlib
+/// reads it; else how much of it zlib has read when it fails: the method
+/// and flags are checked once read, the header's own CRC once its two
+/// bytes are, and a header cut short is read to its end.
+fn gzip_header(input: &[u8]) -> std::result::Result<usize, usize> {
     const FHCRC: u8 = 2;
     const FEXTRA: u8 = 4;
     const FNAME: u8 = 8;
     const FCOMMENT: u8 = 16;
-    if input.get(2) != Some(&8) {
-        return None;
+    let whole = input.len();
+    let (Some(&method), Some(&flags)) = (input.get(2), input.get(3)) else { return Err(whole) };
+    // Deflate is the only method, and the top three flags are reserved.
+    if method != 8 || flags & 0xe0 != 0 {
+        return Err(4);
     }
-    let flags = *input.get(3)?;
     let mut at = 10;
     if flags & FEXTRA != 0 {
-        let len = u16::from_le_bytes([*input.get(at)?, *input.get(at + 1)?]) as usize;
-        at += 2 + len;
+        let (Some(&lo), Some(&hi)) = (input.get(at), input.get(at + 1)) else { return Err(whole) };
+        at += 2 + u16::from_le_bytes([lo, hi]) as usize;
     }
     for flag in [FNAME, FCOMMENT] {
         if flags & flag != 0 {
-            at += input.get(at..)?.iter().position(|&b| b == 0)? + 1;
+            let Some(end) = input.get(at..).and_then(|rest| rest.iter().position(|&b| b == 0)) else { return Err(whole) };
+            at += end + 1;
         }
     }
     if flags & FHCRC != 0 {
+        let Some(sum) = input.get(at..at + 2) else { return Err(whole) };
+        let mut crc = Crc::new();
+        crc.update(&input[..at]);
         at += 2;
+        if u16::from_le_bytes([sum[0], sum[1]]) != (crc.sum() & 0xffff) as u16 {
+            return Err(at);
+        }
     }
-    (at <= input.len()).then_some(at)
+    if at > whole { Err(whole) } else { Ok(at) }
 }
 
 impl Editor {
@@ -107,16 +127,22 @@ impl Editor {
     /// decompressed. Point stays where it was, or at the end if the buffer
     /// shrank past it.
     pub fn zlib_decompress_region(&mut self, start: usize, end: usize, allow_partial: bool) -> Result<Decompressed> {
-        let len = self.buffer().len();
         let (start, end) = (start.min(end), start.max(end));
-        if end > len {
+        // Within the accessible part, as validate_region checks, and a
+        // buffer that may change, as modify_text checks first.
+        let (begv, zv) = (self.buffer().point_min(), self.buffer().point_max());
+        if start < begv || end > zv {
             return Err(Error::signal("args-out-of-range", "Args out of range", vec![crate::Value::Number(start as f64), crate::Value::Number(end as f64)]));
         }
         let text = self.buffer().slice(start..end);
-        let Some(bytes) = bytes_of_string(&text) else {
+        // ASCII and raw bytes, as a unibyte buffer holds: other characters,
+        // such as é decoded from UTF-8, are text, which zlib cannot read.
+        let bytes: Option<Vec<u8>> = text.chars().map(|c| if c.is_ascii() { Some(c as u8) } else { char_raw_byte(c) }).collect();
+        let Some(bytes) = bytes else {
             // Where Emacs refuses a multibyte buffer, E8 refuses text that is not bytes.
             return Err(Error::new("The region holds characters that are not bytes"));
         };
+        self.barf_if_buffer_read_only()?;
         let (out, used, whole) = inflate(&bytes);
         let result = match (whole, allow_partial) {
             (true, _) => Decompressed::Whole,
@@ -161,5 +187,39 @@ mod tests {
         bad[32] ^= 0xff;
         let (out, used, ended) = inflate(&bad);
         assert_eq!((out.len(), used, ended), (text.len(), 34, false));
+        // The wrong CRC with the length cut short: the CRC still read and refused, 1 of 35 left.
+        assert_eq!(inflate(&bad[..35]).1, 34);
+    }
+
+    /// Headers zlib refuses, and how much of each it has read by then.
+    #[test]
+    fn gzip_headers_are_read_as_zlib_reads_them() {
+        let gz = hex("1f8b08000000000002ffcb38bc3227275fa13cbf2827852b6394335239007b3307f008020000");
+        let with = |f: &dyn Fn(&mut Vec<u8>)| {
+            let mut g = gz.clone();
+            f(&mut g);
+            inflate(&g)
+        };
+        // A method other than deflate, or a reserved flag: refused once read, 4 bytes in.
+        assert_eq!(with(&|g| g[2] = 7).1..=with(&|g| g[2] = 7).1, 4..=4);
+        assert!(!with(&|g| g[3] |= 0x20).2);
+        assert_eq!(with(&|g| g[3] |= 0x20).1, 4);
+        // The header's own CRC: checked once its two bytes are read.
+        let hcrc = |right: bool| {
+            with(&|g| {
+                g[3] |= 2;
+                let mut crc = flate2::Crc::new();
+                crc.update(&g[..10]);
+                let sum = (crc.sum() & 0xffff) as u16 ^ if right { 0 } else { 1 };
+                g.splice(10..10, sum.to_le_bytes());
+            })
+        };
+        assert!(hcrc(true).2);
+        assert_eq!((hcrc(false).1, hcrc(false).2), (12, false));
+        // A file name with no end: all of it read, as zlib reads what it is given.
+        let mut cut = gz[..10].to_vec();
+        cut[3] |= 8;
+        cut.extend_from_slice(b"abc");
+        assert_eq!(inflate(&cut), (Vec::new(), 13, false));
     }
 }

@@ -115,9 +115,7 @@ impl Editor {
     /// command of that name stops being one, as a `defun` without an
     /// interactive spec makes it; advice on the name stays.
     pub fn defun(&mut self, name: &str, function: Function) {
-        let symbol = self.symbol_mut(name);
-        symbol.function = Some(Definition::Function(function));
-        symbol.function_source = None;
+        self.symbol_mut(name).function = Some(Definition::Function(function));
     }
 
     /// Notes where a name's function was defined, as loading a file records
@@ -132,9 +130,10 @@ impl Editor {
     /// a package E8 ships gives its name in the source tree, as
     /// `packages/files.ts`.
     pub fn symbol_file(&self, name: &str, kind: Option<&str>) -> Option<String> {
-        let function = || match self.symbols.get(name)?.function.as_ref()? {
-            Definition::Command(c) => c.source.clone(),
-            _ => self.symbols.get(name)?.function_source.clone(),
+        let function = || {
+            let symbol = self.symbols.get(name)?;
+            symbol.function.as_ref()?;
+            symbol.function_source.clone()
         };
         let variable = || self.var(name)?.source.clone();
         let face = || self.face(name)?.source.clone();
@@ -237,7 +236,12 @@ impl Editor {
     /// Adds a command, replacing any function or command of the same name.
     pub fn define_command(&mut self, command: Command) {
         let name = command.name.clone();
-        self.symbol_mut(&name).function = Some(Definition::Command(Rc::new(command)));
+        let symbol = self.symbol_mut(&name);
+        // Defined again with no file, it keeps the file it had, as load-history does.
+        if command.source.is_some() {
+            symbol.function_source = command.source.clone();
+        }
+        symbol.function = Some(Definition::Command(Rc::new(command)));
     }
 
     /// The command a name holds, following aliases.

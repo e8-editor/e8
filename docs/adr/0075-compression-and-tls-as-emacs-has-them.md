@@ -29,9 +29,11 @@ Option 2, as Mark approved on 2026-11-13: TLS is a network dependency of `e8-cor
 1. **Compression and `symbol-file`.**
    - `zlib-available-p` is always true.
    - `zlib-decompress-region` decompresses gzip and zlib data as decompress.c does: as far as zlib reads, the checksums checked, and ALLOW-PARTIAL's count of bytes left as zlib leaves them.
-     - E8's buffers are all multibyte, so the region's characters are taken as bytes: ASCII, raw bytes, and characters below 256.
+     - E8's buffers are all multibyte, so the region's characters are taken as bytes: ASCII and raw bytes. Other text is refused, as Emacs refuses a multibyte buffer.
      - What comes out goes in as ASCII and raw bytes, which `decode-coding-region` decodes.
-   - `symbol-file` names the file that defined a function, variable or face, from what E8 records as each is defined. Functions made with `e8.defun` now record theirs, as commands, variables and faces already did.
+   - `symbol-file` names the file that defined a function, variable or face, from what E8 records as each is defined. Functions made with `e8.defun` and `e8.defalias` now record theirs, as commands, variables and faces already did.
+     - Each module's body is credited to its own file, as each Lisp file has its own `load-history` entry, whether it is loaded, imported by a package or required.
+     - Defined again with no file, as from `M-:`, a name keeps the file it had.
      - A package E8 ships names its file in E8's source (`packages/files.ts`). A file of one's own gives its absolute name.
 2. **TLS connections.**
    - `gnutls-boot` on a network process, and `makeNetworkProcess`'s `tls` option, as `:tls-parameters` is.

@@ -251,6 +251,51 @@ thread_local! {
     static LOADING: RefCell<Vec<String>> = const { RefCell::new(Vec::new()) };
 }
 
+/// A module's JavaScript, its body credited to its file: what it defines
+/// records that file, as each Lisp file's own `load-history` entry does,
+/// whether it is imported by a package, required, or loaded itself. A
+/// module's body runs whole before the next one's, so marking where it
+/// starts and ends is enough. On the first line, so lines keep their numbers.
+pub(crate) fn module_js(file: &str, js: String) -> String {
+    let mut name = String::from("\"");
+    for c in file.chars() {
+        match c {
+            '"' | '\\' => {
+                name.push('\\');
+                name.push(c);
+            }
+            c if (c as u32) < 0x20 || c == '\u{2028}' || c == '\u{2029}' => name += &format!("\\u{:04x}", c as u32),
+            c => name.push(c),
+        }
+    }
+    name.push('"');
+    format!("__e8Loading({name}, true);{js}\n;__e8Loading({name}, false);\n")
+}
+
+/// Notes that a file starts or stops being loaded. Stopping takes it, and
+/// anything a failure left after it, off the stack.
+pub(crate) fn note_loading(file: &str, entering: bool) {
+    LOADING.with_borrow_mut(|files| {
+        if entering {
+            files.push(file.to_string());
+        } else if let Some(at) = files.iter().rposition(|f| f == file) {
+            files.truncate(at);
+        }
+    });
+}
+
+/// Runs `f` with `file` being loaded, the stack as it was afterwards
+/// whatever `f` left on it.
+fn loading<T>(file: String, f: impl FnOnce() -> T) -> T {
+    let depth = LOADING.with_borrow_mut(|files| {
+        files.push(file);
+        files.len() - 1
+    });
+    let result = f();
+    LOADING.with_borrow_mut(|files| files.truncate(depth));
+    result
+}
+
 /// The JavaScript engine and the `e8` API. Clones share one engine.
 #[derive(Clone)]
 pub struct Scripting {
@@ -279,11 +324,9 @@ impl Scripting {
         // Each package is an ES module, imported in this order; one that
         // imports another not yet loaded loads it first, as require does.
         for (name, _) in PACKAGES {
-            LOADING.with_borrow_mut(|files| files.push(name.to_string()));
-            if let Err(e) = scripting.engine.import(ed, name) {
+            if let Err(e) = loading(name.to_string(), || scripting.engine.import(ed, name)) {
                 failures.push(e);
             }
-            LOADING.with_borrow_mut(|files| files.pop());
         }
         Ok((scripting, failures))
     }
@@ -297,10 +340,7 @@ impl Scripting {
     pub fn load_file(&self, ed: &mut Editor, path: &Path) -> Result<()> {
         let name = abbreviate_path(path);
         let source = fs::read_to_string(path).map_err(|e| Error::new(format!("{name}: {e}")))?;
-        LOADING.with_borrow_mut(|files| files.push(name.clone()));
-        let result = self.eval_typescript(ed, &name, source);
-        LOADING.with_borrow_mut(|files| files.pop());
-        result
+        loading(name.clone(), || self.eval_typescript(ed, &name, source))
     }
 
     /// Imports a TypeScript file as an ES module, as `e8 --batch -l`
@@ -318,10 +358,7 @@ impl Scripting {
         }
         prepare_require(ed, "");
         let name = path.display().to_string();
-        LOADING.with_borrow_mut(|files| files.push(abbreviate_path(&path)));
-        let result = self.engine.import(ed, &name);
-        LOADING.with_borrow_mut(|files| files.pop());
-        result
+        loading(abbreviate_path(&path), || self.engine.import(ed, &name))
     }
 
     /// Runs TypeScript source as a script. `filename` is used in error locations.

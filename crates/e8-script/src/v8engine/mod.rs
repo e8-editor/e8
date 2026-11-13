@@ -335,6 +335,7 @@ fn compile_module<'s>(scope: &mut v8::PinScope<'s, '_>, name: &str) -> std::resu
         None => strip_module_types(&file, source.into_owned())
             .map_err(|e| Failure::thrown("SyntaxError", e.message().to_string(), None, None, Vec::new()))?,
     };
+    let js = crate::module_js(&file, js);
     let text = string(scope, &js);
     let origin = origin(scope, &file, true);
     let mut source = v8::script_compiler::Source::new(text, Some(&origin));

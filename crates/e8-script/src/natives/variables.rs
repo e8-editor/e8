@@ -457,11 +457,21 @@ natives! {
 
     /// Functions named for code to call, as Emacs's defun, funcall and
     /// fboundp; a function is a value, so a variable or property can hold one.
+    /// Notes that a module's body starts or ends running, for what it defines.
+    fn loadingFile(ed, file: String, entering: bool) {
+        let _ = ed;
+        crate::note_loading(&file, entering);
+        Ok(())
+    }
+
     fn defun(ed, name: String, f: e8_core::Function) {
         let function = f;
         let function = function.with_name(&name);
         ed.defun(&name, function);
-        ed.set_function_source(&name, crate::LOADING.with_borrow(|files| files.last().cloned()));
+        // Defined again with no file, as at M-:, it keeps the file it had, as load-history does.
+        if let Some(file) = crate::LOADING.with_borrow(|files| files.last().cloned()) {
+            ed.set_function_source(&name, Some(file));
+        }
         Ok(())
     }
 
@@ -491,7 +501,11 @@ natives! {
     }
 
     fn defalias(ed, name: String, definition: EditorValue) {
-        ed.defalias(&name, &definition)
+        ed.defalias(&name, &definition)?;
+        if let Some(file) = crate::LOADING.with_borrow(|files| files.last().cloned()) {
+            ed.set_function_source(&name, Some(file));
+        }
+        Ok(())
     }
 
     fn funcall(ed, f: EditorValue, args: Vec<EditorValue>) -> EditorValue {
