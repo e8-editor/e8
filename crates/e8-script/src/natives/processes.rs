@@ -48,6 +48,7 @@ natives! {
                 let length = e8_core::hashes::length(a).unwrap_or(0);
                 Record::new()
                     .with("name", e8_core::hashes::gnutls_name(a))
+                    .with("macAlgorithmId", EditorValue::Number(e8_core::hashes::gnutls_id(a).unwrap_or(0) as f64))
                     .with("type", "gnutls-mac-algorithm")
                     .with("macAlgorithmLength", EditorValue::Number(length as f64))
                     .with("macAlgorithmKeysize", EditorValue::Number(length as f64))
@@ -65,6 +66,7 @@ natives! {
             .map(|a| {
                 Record::new()
                     .with("name", e8_core::hashes::gnutls_name(a))
+                    .with("digestAlgorithmId", EditorValue::Number(e8_core::hashes::gnutls_id(a).unwrap_or(0) as f64))
                     .with("type", "gnutls-digest-algorithm")
                     .with("digestAlgorithmLength", EditorValue::Number(e8_core::hashes::length(a).unwrap_or(0) as f64))
             })
@@ -72,23 +74,26 @@ natives! {
     }
 
     /// The MAC of `input` with `key`, as gnutls-hash-mac: HMAC by a name
-    /// gnutlsMacs gives ("SHA256"). The text's bytes, as secureHash takes
-    /// them, and the MAC as a string of bytes.
+    /// gnutlsMacs gives ("SHA256"). Both are bytes, as what this gives
+    /// back is, so one MAC is the key of the next, as SCRAM chains them;
+    /// text is encoded first, with encodeCodingString.
     #[ts = "(method: string, key: string, input: string): string"]
     pub fn gnutlsHashMac(ed, method: String, key: String, input: String) -> String {
         let _ = ed;
         let algorithm = e8_core::hashes::by_gnutls_name(&method).ok_or_else(|| e8_core::Error::new(format!("GnuTLS MAC is invalid or not found: {method}")))?;
-        let mac = e8_core::hashes::mac(algorithm, &e8_core::hashes::text_bytes(&key), &e8_core::hashes::text_bytes(&input))?;
-        Ok(e8_core::coding::string_of_bytes(&mac))
+        let mut key = crypto_bytes(&key)?;
+        let mac = e8_core::hashes::mac(algorithm, &key, &crypto_bytes(&input)?);
+        wipe(&mut key);
+        Ok(e8_core::coding::string_of_bytes(&mac?))
     }
 
     /// The hash of `input`, as gnutls-hash-digest, by a name gnutlsDigests
-    /// gives, as a string of bytes.
+    /// gives. Bytes, as gnutlsHashMac takes and gives them.
     #[ts = "(method: string, input: string): string"]
     pub fn gnutlsHashDigest(ed, method: String, input: String) -> String {
         let _ = ed;
         let algorithm = e8_core::hashes::by_gnutls_name(&method).ok_or_else(|| e8_core::Error::new(format!("GnuTLS digest is invalid or not found: {method}")))?;
-        let hash = e8_core::hashes::digest(algorithm, &e8_core::hashes::text_bytes(&input))?;
+        let hash = e8_core::hashes::digest(algorithm, &crypto_bytes(&input)?)?;
         Ok(e8_core::coding::string_of_bytes(&hash))
     }
 
@@ -961,10 +966,30 @@ fn gone_or_name(ed: &e8_core::Editor, process: &Proc) -> Option<String> {
     process.listed_name(ed).ok()
 }
 
+/// What GnuTLS's own functions take: bytes, as `string_of_bytes` gives
+/// them and `secureHash`'s `binary` does. Text is not bytes until it is
+/// encoded, which the caller does, as auth-source encodes before
+/// encrypting; saying so beats hashing one encoding where Emacs hashes
+/// another.
+fn crypto_bytes(s: &str) -> Result<Vec<u8>, e8_core::Error> {
+    e8_core::coding::bytes_of_string(s)
+        .ok_or_else(|| e8_core::Error::new("GnuTLS takes bytes, and this is text: encode it first, as with encodeCodingString"))
+}
+
+/// Forgets a key E8 copied, as gnutls.c clears the string it was given.
+fn wipe(bytes: &mut [u8]) {
+    for b in bytes.iter_mut() {
+        // Written through a pointer, so it is not optimised away.
+        unsafe { std::ptr::write_volatile(b, 0) };
+    }
+}
+
 /// Encrypts or decrypts for the two natives, taking strings of bytes and
 /// giving them, as gnutls.c takes and gives unibyte strings.
 fn symmetric(encrypting: bool, cipher: &str, key: &str, iv: &str, input: &str, aad: Option<&str>) -> Result<Vec<String>, e8_core::Error> {
-    let bytes = |s: &str| e8_core::coding::bytes_of_string(s).ok_or_else(|| e8_core::Error::new("GnuTLS takes bytes, and this is text"));
-    let (text, nonce) = e8_core::tls::symmetric(encrypting, cipher, &bytes(key)?, &bytes(iv)?, &bytes(input)?, &bytes(aad.unwrap_or(""))?)?;
+    let mut key = crypto_bytes(key)?;
+    let made = e8_core::tls::symmetric(encrypting, cipher, &key, &crypto_bytes(iv)?, &crypto_bytes(input)?, &crypto_bytes(aad.unwrap_or(""))?);
+    wipe(&mut key);
+    let (text, nonce) = made?;
     Ok(vec![e8_core::coding::string_of_bytes(&text), e8_core::coding::string_of_bytes(&nonce)])
 }

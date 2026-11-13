@@ -1264,6 +1264,7 @@ const API: &str = r##"
   /** A MAC, as gnutlsMacs describes each. */
   interface GnutlsMac {
     name: string;
+    macAlgorithmId: number;
     type: "gnutls-mac-algorithm";
     macAlgorithmLength: number;
     macAlgorithmKeysize: number;
@@ -1272,6 +1273,7 @@ const API: &str = r##"
   /** A hash, as gnutlsDigests describes each. */
   interface GnutlsDigest {
     name: string;
+    digestAlgorithmId: number;
     type: "gnutls-digest-algorithm";
     digestAlgorithmLength: number;
   }

@@ -15390,13 +15390,14 @@ declare global {
     function gnutlsDigests(): GnutlsDigest[];
     /**
      * The MAC of `input` with `key`, as gnutls-hash-mac: HMAC by a name
-     * gnutlsMacs gives ("SHA256"). The text's bytes, as secureHash takes
-     * them, and the MAC as a string of bytes.
+     * gnutlsMacs gives ("SHA256"). Both are bytes, as what this gives
+     * back is, so one MAC is the key of the next, as SCRAM chains them;
+     * text is encoded first, with encodeCodingString.
      */
     function gnutlsHashMac(method: string, key: string, input: string): string;
     /**
      * The hash of `input`, as gnutls-hash-digest, by a name gnutlsDigests
-     * gives, as a string of bytes.
+     * gives. Bytes, as gnutlsHashMac takes and gives them.
      */
     function gnutlsHashDigest(method: string, input: string): string;
     /**
@@ -17853,6 +17854,7 @@ declare global {
     /** A MAC, as gnutlsMacs describes each. */
     interface GnutlsMac {
       name: string;
+      macAlgorithmId: number;
       type: "gnutls-mac-algorithm";
       macAlgorithmLength: number;
       macAlgorithmKeysize: number;
@@ -17861,6 +17863,7 @@ declare global {
     /** A hash, as gnutlsDigests describes each. */
     interface GnutlsDigest {
       name: string;
+      digestAlgorithmId: number;
       type: "gnutls-digest-algorithm";
       digestAlgorithmLength: number;
     }

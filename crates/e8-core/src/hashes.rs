@@ -40,6 +40,20 @@ pub fn text_bytes(text: &str) -> Vec<u8> {
     out
 }
 
+/// GnuTLS's number for each algorithm, as `gnutls-macs` and
+/// `gnutls-digests` give it; GnuTLS numbers both the same.
+pub fn gnutls_id(algorithm: &str) -> Option<u32> {
+    Some(match algorithm {
+        "md5" => 2,
+        "sha1" => 3,
+        "sha224" => 9,
+        "sha256" => 6,
+        "sha384" => 7,
+        "sha512" => 8,
+        _ => return None,
+    })
+}
+
 /// How long each algorithm's hash is, in bytes.
 pub fn length(algorithm: &str) -> Option<usize> {
     Some(match algorithm {

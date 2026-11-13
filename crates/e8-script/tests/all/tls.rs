@@ -528,12 +528,36 @@ fn hashes_macs_and_ciphers_as_gnutls_gives_them() {
         eval(&mut ed, &s, r#"[...e8.gnutlsHashDigest("SHA256", "message")].map((c) => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")"#),
         r#""ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d""#
     );
-    // The same as secureHash, which hashes the same bytes.
-    assert_eq!(eval(&mut ed, &s, r#"e8.gnutlsHashDigest("SHA1", "héllo") === e8.secureHash("sha1", "héllo", null, null, true)"#), "true");
+    // The same as secureHash for text that is bytes already; text that is
+    // not must be encoded first, as these take bytes, not characters.
+    assert_eq!(eval(&mut ed, &s, r#"e8.gnutlsHashDigest("SHA1", "hello") === e8.secureHash("sha1", "hello", null, null, true)"#), "true");
+    assert_eq!(
+        eval(&mut ed, &s, r#"[e8.gnutlsHashDigest("SHA1", e8.encodeCodingString("héllo", "utf-8")) === e8.secureHash("sha1", "héllo", null, null, true),
+          e8.conditionCase(() => e8.gnutlsHashMac("SHA256", "→", "x"), { error: (e) => e.message })]"#),
+        r#"[true,"GnuTLS takes bytes, and this is text: encode it first, as with encodeCodingString"]"#
+    );
+    // Chained as SCRAM authentication chains them, each MAC the key of the
+    // next: every byte of a key counts, as Emacs 30 gives these.
+    let hex = r#"(b) => [...b].map((c) => c.charCodeAt(0).toString(16).padStart(2, "0")).join("")"#;
+    assert_eq!(
+        eval(&mut ed, &s, &format!(r#"(() => {{ const hex = {hex};
+          const salted = e8.secureHash("sha256", "salt", null, null, true);
+          const clientKey = e8.gnutlsHashMac("SHA256", salted, "Client Key");
+          const storedKey = e8.gnutlsHashDigest("SHA256", clientKey);
+          return [hex(clientKey), hex(storedKey), hex(e8.gnutlsHashMac("SHA256", storedKey, "auth message"))]; }})()"#)),
+        r#"["77213d4931f7308589b67ba8f37fc73d687c537eb9c7ab10f29d8e9d658da277","56a7f23c2bc54ebd3fba3fc5808cc1efae7641e180974e28701d908d2a5224a1","9432758e198fff243cbfca62ab6a7a2df2957e94481b417e2f725e4ed3c746b4"]"#
+    );
+    // Every byte value goes through whole, as Emacs 30 hashes the same 256.
+    assert_eq!(
+        eval(&mut ed, &s, &format!(r#"(() => {{ const hex = {hex};
+          const all = String.fromCharCode(...Array.from({{ length: 256 }}, (_, i) => i));
+          return [hex(e8.gnutlsHashDigest("SHA256", all)), hex(e8.gnutlsHashMac("SHA256", all, all))]; }})()"#)),
+        r#"["40aff2e9d2d8922e47afd4648e6967497158785fbd1da870e7110266bf944880","b61f300e0fd3a9479cc09fa8709a30dba518182dd7cb3e492e9a888fd87b3697"]"#
+    );
     // What each is, as gnutls-macs and gnutls-digests describe SHA256.
     assert_eq!(
         eval(&mut ed, &s, r#"[e8.gnutlsMacs().find((m) => m.name === "SHA256"), e8.gnutlsDigests().find((d) => d.name === "SHA256")]"#),
-        r#"[{"name":"SHA256","type":"gnutls-mac-algorithm","macAlgorithmLength":32,"macAlgorithmKeysize":32,"macAlgorithmNoncesize":0},{"name":"SHA256","type":"gnutls-digest-algorithm","digestAlgorithmLength":32}]"#
+        r#"[{"name":"SHA256","macAlgorithmId":6,"type":"gnutls-mac-algorithm","macAlgorithmLength":32,"macAlgorithmKeysize":32,"macAlgorithmNoncesize":0},{"name":"SHA256","digestAlgorithmId":6,"type":"gnutls-digest-algorithm","digestAlgorithmLength":32}]"#
     );
     // The ciphers, strongest last, as auth-source takes the last one; its
     // sizes are AES-256-GCM's, as Emacs 30 gives them.
@@ -553,13 +577,14 @@ fn hashes_macs_and_ciphers_as_gnutls_gives_them() {
           const [back] = e8.gnutlsSymmetricDecrypt(c.name, key, iv, text);
           const [wrong] = e8.gnutlsSymmetricEncrypt(c.name, key, "", "hello world!!!!!");
           return [text.length, iv.length, back, text !== wrong,
-            e8.conditionCase(() => e8.gnutlsSymmetricDecrypt(c.name, key, iv, `${text.slice(0, -1)}x`), { error: (e) => e.message }),
+            e8.conditionCase(() => e8.gnutlsSymmetricDecrypt(c.name, key, iv, `${text.slice(0, -1)}${String.fromCharCode(text.charCodeAt(text.length - 1) ^ 1)}`), { error: (e) => e.message }),
+            e8.conditionCase(() => e8.gnutlsSymmetricDecrypt(c.name, key, "", text), { error: (e) => e.message }),
             e8.conditionCase(() => e8.gnutlsSymmetricEncrypt(c.name, "short", "", "x"), { error: (e) => e.message }),
             e8.conditionCase(() => e8.gnutlsSymmetricEncrypt("AES-256-CBC", key, "", "x"), { error: (e) => e.message })];
         })()"#,
     );
     assert_eq!(
         round,
-        r#"[32,12,"hello world!!!!!",true,"GnuTLS AEAD cipher AES-256-GCM decryption failed","GnuTLS cipher AES-256-GCM needs a key of 32 bytes, not 5","GnuTLS cipher is invalid or not found: AES-256-CBC"]"#
+        r#"[32,12,"hello world!!!!!",true,"GnuTLS AEAD cipher AES-256-GCM decryption failed","GnuTLS cipher AES-256-GCM needs a nonce of 12 bytes, not 0","GnuTLS cipher AES-256-GCM needs a key of 32 bytes, not 5","GnuTLS cipher is invalid or not found: AES-256-CBC"]"#
     );
 }

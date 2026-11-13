@@ -780,7 +780,9 @@ pub fn capabilities() -> Vec<&'static str> {
 
 /// A symmetric cipher, as `gnutls-ciphers` describes each. E8 has the
 /// AEAD ciphers rustls's own cryptography gives, under GnuTLS's names and
-/// ids; the last of them is the strongest, as auth-source takes that one.
+/// ids. Code that takes the last of them, as auth-source does, gets
+/// AES-256-GCM; GnuTLS's own last is AES-256-CBC, which E8 does not have,
+/// so what one obfuscates the other cannot read.
 pub struct Cipher {
     pub name: &'static str,
     pub id: u32,
@@ -790,7 +792,8 @@ pub struct Cipher {
     pub iv_size: usize,
 }
 
-/// The ciphers there are, weakest first, as `gnutls-ciphers` lists them.
+/// The ciphers there are, as `gnutls-ciphers` lists them: the one to
+/// reach for last, as Emacs's code takes `(car (last (gnutls-ciphers)))`.
 pub fn ciphers() -> Vec<Cipher> {
     vec![
         Cipher { name: "CHACHA20-POLY1305", id: 23, tag_size: 16, block_size: 64, key_size: 32, iv_size: 12 },
@@ -820,7 +823,11 @@ pub fn symmetric(encrypting: bool, cipher: &str, key: &[u8], iv: &[u8], input: &
     if key.len() != wanted.key_size {
         return Err(Error::new(format!("GnuTLS cipher {cipher} needs a key of {} bytes, not {}", wanted.key_size, key.len())));
     }
-    // An empty nonce is `iv-auto`: one of its own, given back with the text.
+    // An empty nonce asks for one of its own, as Emacs's `iv-auto` does,
+    // which only makes sense for text being encrypted.
+    if iv.is_empty() && !encrypting {
+        return Err(Error::new(format!("GnuTLS cipher {cipher} needs a nonce of {} bytes, not 0", wanted.iv_size)));
+    }
     let nonce = if iv.is_empty() {
         let mut bytes = vec![0u8; wanted.iv_size];
         ring::rand::SecureRandom::fill(&ring::rand::SystemRandom::new(), &mut bytes).map_err(|_| Error::new("GnuTLS could not make a nonce"))?;
@@ -832,6 +839,8 @@ pub fn symmetric(encrypting: bool, cipher: &str, key: &[u8], iv: &[u8], input: &
         return Err(Error::new(format!("GnuTLS cipher {cipher} needs a nonce of {} bytes, not {}", wanted.iv_size, nonce.len())));
     }
     let key = LessSafeKey::new(UnboundKey::new(algorithm, key).map_err(|_| invalid())?);
+    // The key E8 copied is wiped once used, as gnutls.c clears the string
+    // it was given. What the caller holds is still the caller's.
     let once = || Nonce::try_assume_unique_for_key(&nonce).expect("as many bytes as the cipher wants");
     let mut text = input.to_vec();
     if encrypting {
