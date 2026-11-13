@@ -190,7 +190,9 @@ fn run(
             // clear asks the terminal where its cursor is too.
             let _ = terminal.draw(|frame| frame.render_widget(ratatui::widgets::Clear, frame.area()));
             driver.run(|editor| {
-                if let Err(e) = editor.run_hooks("suspend-resume-hook") {
+                // The terminal is the editor's again, as resume-tty takes
+                // one back, and suspend-resume-hook runs.
+                if let Err(e) = editor.resumed_from_suspend() {
                     editor.message(format!("Error in suspend-resume-hook: {e}"));
                 }
             });

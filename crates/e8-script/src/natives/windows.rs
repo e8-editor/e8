@@ -404,14 +404,14 @@ natives! {
     /// where the front end knows one.
     #[ts = "(terminal?: Terminal | FrameLike | null): string | undefined"]
     pub fn terminalName(ed, terminal: Option<Trm>) -> Option<String> {
-        ed.terminal_name(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+        ed.terminal_name(terminal_arg(ed, terminal))
     }
 
     /// Every parameter of a terminal, as terminal-parameters.
     #[ts = "(terminal?: Terminal | FrameLike | null): { [name: string]: Value }"]
     pub fn terminalParameters(ed, terminal: Option<Trm>) -> Record {
         let mut record = Record::new();
-        for (name, value) in ed.terminal_parameters(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))? {
+        for (name, value) in ed.terminal_parameters(terminal_arg(ed, terminal))? {
             record = record.with(name, value);
         }
         Ok(record)
@@ -420,13 +420,16 @@ natives! {
     /// One parameter of a terminal, as terminal-parameter.
     #[ts = "(terminal: Terminal | FrameLike | undefined | null, name: string): Value | undefined"]
     pub fn terminalParameter(ed, terminal: Option<Trm>, name: String) -> Option<EditorValue> {
-        ed.terminal_parameter(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0), &name)
+        ed.terminal_parameter(terminal_arg(ed, terminal), &name)
     }
 
     /// Set one, as set-terminal-parameter, and give back what it was.
     #[ts = "(terminal: Terminal | FrameLike | undefined | null, name: string, value: Value): Value | undefined"]
     pub fn setTerminalParameter(ed, terminal: Option<Trm>, name: String, value: EditorValue) -> Option<EditorValue> {
-        ed.set_terminal_parameter(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0), &name, value)
+        {
+        let terminal = terminal_arg(ed, terminal);
+        ed.set_terminal_parameter(terminal, &name, value)
+    }
     }
 
     /// Delete a terminal, as delete-terminal. E8 has one, so this is
@@ -435,34 +438,37 @@ natives! {
     /// to draw on and asks to exit.
     #[ts = "(terminal?: Terminal | FrameLike | null, force?: boolean): void"]
     pub fn deleteTerminal(ed, terminal: Option<Trm>, force: Option<bool>) {
-        ed.delete_terminal(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0), force.unwrap_or(false))
+        {
+        let terminal = terminal_arg(ed, terminal);
+        ed.delete_terminal(terminal, force.unwrap_or(false))
+    }
     }
 
     /// What TERM says a terminal is, as tty-type; undefined in a window.
     #[ts = "(terminal?: Terminal | FrameLike | null): string | undefined"]
     pub fn ttyType(ed, terminal: Option<Trm>) -> Option<String> {
-        ed.tty_type(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+        ed.tty_type(terminal_arg(ed, terminal))
     }
 
     /// Whether a terminal shows colours, as tty-display-color-p; false in
     /// a window, which is no text terminal.
     #[ts = "(terminal?: Terminal | FrameLike | null): boolean"]
     pub fn ttyDisplayColorP(ed, terminal: Option<Trm>) -> bool {
-        ed.tty_display_color_p(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+        ed.tty_display_color_p(terminal_arg(ed, terminal))
     }
 
     /// How many colours a terminal shows, as tty-display-color-cells; 0
     /// in a window.
     #[ts = "(terminal?: Terminal | FrameLike | null): number"]
     pub fn ttyDisplayColorCells(ed, terminal: Option<Trm>) -> usize {
-        ed.tty_display_color_cells(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+        ed.tty_display_color_cells(terminal_arg(ed, terminal))
     }
 
     /// Whether a terminal is the one the editor was started from, as
     /// controlling-tty-p; false in a window.
     #[ts = "(terminal?: Terminal | FrameLike | null): boolean"]
     pub fn controllingTtyP(ed, terminal: Option<Trm>) -> bool {
-        ed.controlling_tty_p(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+        ed.controlling_tty_p(terminal_arg(ed, terminal))
     }
 
     /// Let go of a terminal, as suspend-tty: the editor stops, as
@@ -470,24 +476,42 @@ natives! {
     /// if it was not let go of already.
     #[ts = "(terminal?: Terminal | FrameLike | null): boolean"]
     pub fn suspendTty(ed, terminal: Option<Trm>) -> bool {
-        ed.suspend_tty(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+        {
+        let terminal = terminal_arg(ed, terminal);
+        ed.suspend_tty(terminal)
+    }
     }
 
     /// Take a terminal back, as resume-tty. True if it had been let go of.
     #[ts = "(terminal?: Terminal | FrameLike | null): boolean"]
     pub fn resumeTty(ed, terminal: Option<Trm>) -> bool {
-        ed.resume_tty(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+        {
+        let terminal = terminal_arg(ed, terminal);
+        ed.resume_tty(terminal)
+    }
     }
 
     /// Make a frame on a terminal, as make-terminal-frame: E8 has one
     /// terminal, so this is makeFrame with its parameters.
     #[ts = "(parameters?: { [name: string]: Value } | null): Frame"]
     pub fn makeTerminalFrame(ed, parameters: Option<Fields>) -> Frm {
+        let was = ed.selected_frame();
         let frame = ed.make_frame(None)?;
-        if let Some(parameters) = parameters {
-            let named: Vec<(String, EditorValue)> = parameters.0.into_iter().collect();
-            ed.modify_frame_parameters(frame, &named)?;
+        let mut named: Vec<(String, EditorValue)> = parameters.map(|p| p.0.into_iter().collect()).unwrap_or_default();
+        // The terminal's own parameters, as Fmake_terminal_frame stores
+        // them, under what the caller gave.
+        for (name, value) in [
+            ("tty".to_string(), ed.terminal_name(e8_core::THE_TERMINAL)?.map_or(EditorValue::Null, EditorValue::Str)),
+            ("tty-type".to_string(), ed.tty_type(e8_core::THE_TERMINAL)?.map_or(EditorValue::Null, EditorValue::Str)),
+            ("minibuffer".to_string(), EditorValue::Bool(true)),
+        ] {
+            if !named.iter().any(|(n, _)| *n == name) {
+                named.push((name, value));
+            }
         }
+        ed.modify_frame_parameters(frame, &named)?;
+        // Made, not selected, as Fmake_terminal_frame leaves it.
+        ed.select_frame(was)?;
         Ok(Frm(frame))
     }
 
@@ -1331,13 +1355,22 @@ natives! {
 
 /// A window given, or the selected one, if it is live; else the error
 /// Emacs's decode_live_window signals.
-/// The terminal a value names, or none where it is no terminal.
+/// The terminal a value names, or none where it names no live terminal:
+/// a terminal, a frame on it, or nothing for the one there is.
 fn terminal_of(ed: &e8_core::Editor, value: &EditorValue) -> Option<e8_core::TerminalId> {
-    let _ = ed;
     match value {
         EditorValue::Null => Some(e8_core::THE_TERMINAL),
-        other => Trm::from_value(other).map(|t| t.0),
+        other => Trm::from_value(other).and_then(|t| ed.terminal_named(t.0)),
     }
+}
+
+/// The terminal a native was given, the one there is by default, which
+/// may be named by a frame on it.
+fn terminal_arg(ed: &e8_core::Editor, terminal: Option<Trm>) -> e8_core::TerminalId {
+    let named = terminal.map_or(e8_core::THE_TERMINAL, |t| t.0);
+    // A frame's number stands for the terminal it is on; one that is on
+    // none keeps its number, which the editor then refuses.
+    ed.terminal_named(named).unwrap_or(named)
 }
 
 /// A frame given to a native, the selected one by default, checked live.

@@ -40,13 +40,19 @@ impl Editor {
         if self.terminal.deleted { Vec::new() } else { vec![THE_TERMINAL] }
     }
 
+    /// The terminal a number names: the terminal itself, or a frame on
+    /// it, as Emacs's `decode_terminal` takes a terminal or a frame. A
+    /// frame that has been deleted is on no terminal, as its own is gone.
+    pub fn terminal_named(&self, id: TerminalId) -> Option<TerminalId> {
+        let live = if id >= crate::window::FIRST_FRAME { self.frame_list().contains(&id) } else { id == THE_TERMINAL };
+        (live && !self.terminal.deleted).then_some(THE_TERMINAL)
+    }
+
     /// What kind of display a terminal is, as `terminal-live-p` gives it:
     /// the same answer `framep` gives for a frame on it, and none for a
     /// terminal that has been deleted or a number that is no terminal.
     pub fn terminal_live_p(&self, terminal: TerminalId) -> Option<Value> {
-        if terminal != THE_TERMINAL || self.terminal.deleted {
-            return None;
-        }
+        self.terminal_named(terminal)?;
         Some(match self.window_system() {
             Some(system) => Value::Symbol(system.to_string()),
             None => Value::Bool(true),
@@ -86,10 +92,9 @@ impl Editor {
     /// Sets one, as `set-terminal-parameter`, and gives back what it was.
     pub fn set_terminal_parameter(&mut self, terminal: TerminalId, name: &str, value: Value) -> Result<Option<Value>> {
         self.live_terminal(terminal)?;
-        Ok(match value {
-            Value::Null => self.terminal.parameters.remove(name),
-            value => self.terminal.parameters.insert(name.to_string(), value),
-        })
+        // Nil is stored like any value, as store_terminal_param stores
+        // it: a parameter set to nil is not a parameter never set.
+        Ok(self.terminal.parameters.insert(name.to_string(), value))
     }
 
     /// Deletes a terminal, as `delete-terminal`: E8 has one, so deleting
@@ -98,9 +103,19 @@ impl Editor {
     /// with it, which leaves the editor with nothing to draw on, so the
     /// editor is asked to quit, as deleting Emacs's last terminal ends it.
     pub fn delete_terminal(&mut self, terminal: TerminalId, force: bool) -> Result<()> {
-        self.live_terminal(terminal)?;
+        // A terminal already deleted is nothing to do, as
+        // `Fdelete_terminal` gives nil for one it cannot decode.
+        let Some(terminal) = self.terminal_named(terminal) else { return Ok(()) };
         if !force {
             return Err(Error::new("Attempt to delete the sole active display terminal"));
+        }
+        let _ = self.run_hook_with_args("delete-terminal-functions", &[Value::Terminal(terminal)]);
+        // Its frames go with it, as delete_terminal deletes every frame
+        // on it; the last goes as the editor exits, which it now will.
+        for frame in self.frame_list() {
+            if self.frame_list().len() > 1 {
+                let _ = self.delete_frame(Some(frame));
+            }
         }
         self.terminal.deleted = true;
         self.quit = true;
@@ -131,7 +146,9 @@ impl Editor {
     /// `controlling-tty-p`; nil in a window.
     pub fn controlling_tty_p(&self, terminal: TerminalId) -> Result<bool> {
         self.live_terminal(terminal)?;
-        Ok(self.window_system().is_none() && !self.terminal.deleted)
+        // A terminal to be the controlling one, as decode_tty_terminal
+        // asks for: a headless editor and a window have none.
+        Ok(self.window_system().is_none() && self.terminal.name.is_some())
     }
 
     /// Whether a terminal has been let go of, as `suspend-tty` leaves it.
@@ -148,9 +165,11 @@ impl Editor {
         if self.terminal.suspended {
             return Ok(false);
         }
+        // The hook runs first, as term.c's does, since it may want the
+        // tty as it still is; an error in it stops the suspend.
+        self.run_hook_with_args("suspend-tty-functions", &[Value::Terminal(THE_TERMINAL)])?;
         self.suspend_emacs()?;
         self.terminal.suspended = true;
-        let _ = self.run_hooks("suspend-tty-functions");
         Ok(true)
     }
 
@@ -162,8 +181,19 @@ impl Editor {
             return Ok(false);
         }
         self.terminal.suspended = false;
-        let _ = self.run_hooks("resume-tty-functions");
+        self.run_hook_with_args("resume-tty-functions", &[Value::Terminal(THE_TERMINAL)])?;
         Ok(true)
+    }
+
+    /// The editor is drawing again after being stopped, which a front end
+    /// says when the shell continues it: the terminal is the editor's
+    /// again, and `suspend-resume-hook` runs.
+    pub fn resumed_from_suspend(&mut self) -> Result<()> {
+        if self.terminal.suspended {
+            self.terminal.suspended = false;
+            let _ = self.run_hook_with_args("resume-tty-functions", &[Value::Terminal(THE_TERMINAL)]);
+        }
+        self.run_hooks("suspend-resume-hook")
     }
 
     /// How many colours the display shows, as a terminal's `TERM` says.
@@ -176,6 +206,7 @@ impl Editor {
         }
     }
 
+    /// The one terminal, checked live, as `decode_live_terminal` does.
     fn live_terminal(&self, terminal: TerminalId) -> Result<()> {
         if self.terminal_live_p(terminal).is_some() {
             return Ok(());

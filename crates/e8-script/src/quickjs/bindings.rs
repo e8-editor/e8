@@ -100,17 +100,16 @@ impl Conv for Win {
     }
 }
 
-/// A Frame, or a frame's number.
+/// A Terminal, a frame on it, or a terminal's number.
 impl Conv for Trm {
-    fn conv<'js>(ctx: &Ctx<'js>, value: Value<'js>) -> rquickjs::Result<Self> {
-        let value = super::value_from_js(ctx, value)?;
-        match Trm::from_value(&value) {
-            Some(t) => Ok(t),
-            None => Err(type_error(ctx, &format!("Not a terminal: {value}"))),
-        }
+    type Js<'js> = Value<'js>;
+    fn conv<'js>(ctx: &Ctx<'js>, js: Self::Js<'js>) -> rquickjs::Result<Self> {
+        let value = super::value_from_js(ctx, js)?;
+        Trm::from_value(&value).ok_or_else(|| rquickjs::Exception::throw_type(ctx, &format!("Not a terminal: {value}")))
     }
 }
 
+/// A Frame, or a frame's number.
 impl Conv for Frm {
     type Js<'js> = Value<'js>;
     fn conv<'js>(ctx: &Ctx<'js>, js: Self::Js<'js>) -> rquickjs::Result<Self> {

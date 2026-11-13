@@ -16452,7 +16452,7 @@ declare global {
      * Every terminal there is, as terminal-list: E8 draws through one
      * front end, so there is one.
      */
-    function terminalList(): Value[];
+    function terminalList(): Terminal[];
     /**
      * What kind of display a terminal is, as terminal-live-p: "ns", "x"
      * or "w32" in a window, true on a terminal, undefined once it has

@@ -245,7 +245,9 @@ impl Trm {
     pub fn from_value(value: &EditorValue) -> Option<Trm> {
         match value {
             EditorValue::Terminal(id) => Some(Trm(*id)),
-            EditorValue::Frame(_) => Some(Trm(e8_core::THE_TERMINAL)),
+            // A frame keeps its own number here, so the editor can see
+            // whether it is live before saying which terminal it is on.
+            EditorValue::Frame(id) => Some(Trm(*id)),
             EditorValue::Number(n) => id_of(*n).map(Trm),
             _ => None,
         }
@@ -496,6 +498,7 @@ fn ts_type(ty: &str) -> String {
         "f64" | "i64" | "i32" | "u64" | "u32" | "u8" | "usize" => "number",
         "Prefix" => "PrefixArg",
         "Win" => "Window",
+        "Trm" => "Terminal",
         "Frm" => "Frame",
         "Proc" | "ProcObj" => "Process",
         "Text" | "e8_core::Text" => "string | PropertizedString",
