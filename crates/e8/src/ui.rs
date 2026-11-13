@@ -163,11 +163,12 @@ fn draw_menu_bar(frame: &mut Frame, fd: &FrameDescription, items: &[e8_core::Men
     }
 }
 
-/// Draws the panels of the menu that is open over the windows, and gives
-/// where the cursor goes: the left of the line the menu is on.
+/// Draws the tooltip and the panels of the menu that is open over the
+/// windows, and gives where the cursor goes: the left of the line the
+/// menu is on.
 fn draw_menus(frame: &mut Frame, fd: &FrameDescription, screen: Rect) -> Option<Position> {
     let mut cursor = None;
-    for panel in &fd.menus {
+    for panel in fd.tip.iter().chain(&fd.menus) {
         for (i, row) in panel.rows.iter().enumerate() {
             let (x, y) = (screen.x + panel.x as u16, screen.y + panel.y as u16);
             let y = y + i as u16;

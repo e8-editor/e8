@@ -72,6 +72,8 @@ pub struct FrameDescription {
     pub fringe_bitmaps: HashMap<String, FringeBitmap>,
     /// Each image's pixels, by its id, for the images the windows show.
     pub images: HashMap<u64, Option<Arc<Rgba>>>,
+    /// The tooltip that is showing, over everything else, if one is.
+    pub tip: Option<crate::menu::MenuPanel>,
     /// The panels of the menu that is open, over everything else, the
     /// outermost first; empty with no menu open (ADR 0076).
     pub menus: Vec<crate::menu::MenuPanel>,
@@ -333,6 +335,7 @@ impl Editor {
             default_style: style(&["default"]),
             fringe_bitmaps: bitmaps,
             images,
+            tip: if frame == self.selected_frame() { self.tip_panel(dark) } else { None },
             menus: if frame == self.selected_frame() { self.menu_panels(dark) } else { Vec::new() },
             menu_bar: self.menu_bar(frame).map(|items| {
                 let (enabled, disabled) = (style(&["tty-menu-enabled-face"]), style(&["tty-menu-disabled-face"]));

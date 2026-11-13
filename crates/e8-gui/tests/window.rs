@@ -884,3 +884,12 @@ fn menu_bar() {
     }
     harness.snapshot("menu_bar_dark");
 }
+
+/// A tooltip over the text, drawn as a menu's panel is.
+#[test]
+fn tooltip() {
+    let mut ed = sample();
+    let _scripting = e8_script::Scripting::new(&mut ed).unwrap();
+    ed.x_show_tip("Follow this link\nwith RET", Some((10, 3)), (1, 1), Some(0.0));
+    harness(ed, Theme::Dark).snapshot("tooltip_dark");
+}

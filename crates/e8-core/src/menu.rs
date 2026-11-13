@@ -284,11 +284,34 @@ impl Editor {
     pub fn x_popup_menu(&mut self, menu: &Value, position: Option<MenuPosition>) -> Result<Value> {
         let nodes = self.menu_nodes(menu)?;
         let Some(position) = position else { return Ok(Value::Null) };
+        let by_mouse = position == MenuPosition::Mouse;
+        let at = self.menu_place(position);
+        self.show_menu(nodes, at, by_mouse)
+    }
+
+    /// Pops a dialog up in the middle of the frame and gives back the
+    /// value of what was chosen, as Emacs's `x-popup-dialog`: where the
+    /// display has no dialog box of its own, menu.c's
+    /// `emulate_dialog_with_menu` shows the same menu, which is what E8
+    /// always does. `CONTENTS` is `(DIALOG ITEM...)`, each item a label
+    /// and its value, a plain string that cannot be chosen, or nothing,
+    /// which is a line across the dialog.
+    pub fn x_popup_dialog(&mut self, contents: &[Value]) -> Result<Value> {
+        let nodes = dialog_nodes(contents);
+        let (columns, lines) = self.frame_cells();
+        let title = contents.first().and_then(Value::as_str).map_or(0, |t| t.chars().count());
+        // Its title centred, as emulate_dialog_with_menu centres one.
+        let at = (columns.saturating_sub(title) / 2, lines / 2);
+        self.show_menu(nodes, at, false)
+    }
+
+    /// Shows a menu's lines and waits for an answer.
+    fn show_menu(&mut self, nodes: Vec<Node>, at: (usize, usize), by_mouse: bool) -> Result<Value> {
         if nodes.iter().all(|n| n.title) {
             return Err(Error::new("Empty menu"));
         }
-        let by_mouse = position == MenuPosition::Mouse;
-        let at = self.menu_place(position);
+        // A tooltip showing goes first, as x_popup_menu_1 hides one.
+        self.x_hide_tip();
         let cursor = nodes.iter().position(|n| !n.title).unwrap_or(0);
         let frame = self.selected_frame();
         let open = OpenMenu { nodes, path: Vec::new(), cursor, firsts: vec![0], at, frame, helped: false, bar: None };
@@ -330,7 +353,10 @@ impl Editor {
     }
 
     /// The frame cell point shows in, if it is in sight.
-    fn point_cell(&self) -> Option<(usize, usize)> {
+    ///
+    /// Counted from the top left of the frame's windows, as
+    /// `mouse-position` counts, so a tooltip or a menu can go there.
+    pub fn point_cell(&self) -> Option<(usize, usize)> {
         let window = self.selected_window();
         let posn = self.posn_at_point(self.buffer().point(), window)?;
         let (left, top, _, _) = self.window_edges(window, true)?;
@@ -923,7 +949,14 @@ impl Editor {
     fn run_menu_choice(&mut self, keys: &Value) -> Result<()> {
         let Some(keys) = keys.as_str().and_then(Key::parse_seq) else { return Ok(()) };
         match self.lookup(&keys) {
-            crate::keymap::Lookup::Command(name) => self.call_interactively(&name),
+            crate::keymap::Lookup::Command(name) => {
+                // What it asks it asks in a dialog, as a command a TTY
+                // menu ran does while `from--tty-menu-p` is set.
+                let outer = std::mem::replace(&mut self.from_menu, true);
+                let ran = self.call_interactively(&name);
+                self.from_menu = outer;
+                ran
+            }
             _ => Ok(()),
         }
     }
@@ -957,5 +990,128 @@ fn last_names(value: Value) -> Vec<String> {
         Value::List(items) => items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect(),
         Value::Str(name) | Value::Symbol(name) => vec![name],
         _ => Vec::new(),
+    }
+}
+
+/// The lines of a dialog's `(DIALOG ITEM...)` contents: its text first,
+/// then each item, which is a label and its value, a plain string that
+/// cannot be chosen, or nothing, which is a line across the dialog, as
+/// menu.c takes a dialog's items.
+fn dialog_nodes(contents: &[Value]) -> Vec<Node> {
+    let mut out = Vec::new();
+    if let Some(text) = contents.first() {
+        for line in text.as_str().unwrap_or_default().lines() {
+            out.push(Node { separator: false, ..Node::line(line, true) });
+        }
+    }
+    for item in contents.iter().skip(1) {
+        match item {
+            Value::List(pair) if pair.len() == 2 => {
+                let label = pair[0].as_str().map_or_else(|| pair[0].to_string(), str::to_string);
+                out.push(Node { enabled: true, value: Some(pair[1].clone()), separator: false, ..Node::line(&label, false) });
+            }
+            // Where the items are split between the sides of Emacs's
+            // dialog, a line goes across this one.
+            Value::Null => out.push(Node::line("--", true)),
+            other => {
+                let label = other.as_str().map_or_else(|| other.to_string(), str::to_string);
+                // A dialog's own text is shown as it is: `--` means a
+                // separator in a keymap menu's items, not here.
+                out.push(Node { separator: false, ..Node::line(&label, true) });
+            }
+        }
+    }
+    out
+}
+
+/// A tooltip, while it shows.
+#[derive(Clone, Debug)]
+pub(crate) struct Tip {
+    text: String,
+    /// Its top left cell, in frame cells.
+    at: (usize, usize),
+    /// Which tooltip this is, so that the timer that hides it takes away
+    /// only the one it was made for, as Emacs keeps one `tip-timer` and
+    /// cancels it when another tooltip is shown.
+    shown: u64,
+}
+
+impl Editor {
+    /// Shows a tooltip, as `x-show-tip`: at the pointer by default, or at
+    /// a place on the frame, taken away after `timeout` seconds, 5 by
+    /// default, or by `x-hide-tip`.
+    pub fn x_show_tip(&mut self, text: &str, at: Option<(usize, usize)>, offset: (i64, i64), timeout: Option<f64>) {
+        let at = at.unwrap_or_else(|| match self.mouse_position() {
+            (_, Some((x, y))) => ((x + offset.0).max(0) as usize, (y + offset.1).max(0) as usize),
+            _ => (0, 0),
+        });
+        self.tips_shown += 1;
+        let shown = self.tips_shown;
+        self.tip = Some(Tip { text: text.to_string(), at, shown });
+        let seconds = timeout.unwrap_or(5.0);
+        if seconds > 0.0 {
+            self.run_with_timer(
+                seconds,
+                None,
+                std::rc::Rc::new(move |ed: &mut Editor, _: &[Value]| {
+                    // Only the tooltip this timer was made for: another
+                    // shown since has a timer of its own.
+                    if ed.tip.as_ref().is_some_and(|t| t.shown == shown) {
+                        ed.tip = None;
+                    }
+                    Ok(())
+                }),
+            );
+        }
+    }
+
+    /// Whether the command running should ask in a dialog box, as
+    /// `use-dialog-box-p`: it was invoked by the mouse, or from a menu,
+    /// and `use-dialog-box` says to.
+    pub fn use_dialog_box_p(&self) -> bool {
+        if self.variable("use-dialog-box-override").is_some_and(|v| v.is_true()) {
+            return true;
+        }
+        // The last key of the sequence that ran the command, as
+        // `last-nonmenu-event` holds it, or a menu, as from--tty-menu-p.
+        let by_mouse = self.from_menu
+            || self
+                .keyboard
+                .this_command_keys
+                .last()
+                .is_some_and(|k| matches!(k.code, crate::key::KeyCode::Mouse(..)));
+        by_mouse && self.variable("use-dialog-box").is_none_or(|v| v.is_true())
+    }
+
+    /// Takes the tooltip away, as `x-hide-tip`; true if one was showing.
+    pub fn x_hide_tip(&mut self) -> bool {
+        self.tip.take().is_some()
+    }
+
+    /// Whether a tooltip is showing.
+    pub fn tip_shown(&self) -> bool {
+        self.tip.is_some()
+    }
+
+    /// The tooltip as a front end draws it: a panel of its lines, in the
+    /// `tooltip` face, kept on the frame.
+    pub(crate) fn tip_panel(&self, dark: bool) -> Option<MenuPanel> {
+        let tip = self.tip.as_ref()?;
+        let style = self.style_for(&["tooltip".to_string()], dark);
+        let lines: Vec<&str> = tip.text.lines().collect();
+        let width = lines.iter().map(|l| l.chars().count()).max().unwrap_or(0) + 2;
+        let (columns, frame_lines) = self.frame_cells();
+        let x = tip.at.0.min(columns.saturating_sub(width));
+        let y = tip.at.1.min(frame_lines.saturating_sub(lines.len().min(frame_lines)));
+        let rows = lines
+            .iter()
+            .take(frame_lines.saturating_sub(y))
+            .map(|line| MenuRow {
+                text: format!(" {:width$}", line, width = width - 1),
+                style: style.clone(),
+                selected: false,
+            })
+            .collect();
+        Some(MenuPanel { x, y, width, rows })
     }
 }

@@ -1,6 +1,6 @@
 # 0076. Menus as Emacs has them: menu keymaps, x-popup-menu, and a menu bar
 
-Status: accepted · 2026-11-13
+Status: accepted · 2026-11-13 (done: pull requests 122, 123 and the next)
 
 ## Context
 
@@ -41,6 +41,7 @@ Option 3, in three pull requests, each behind `make check` on both engines, a re
 - Keys gain a kind that cannot be typed, so code that walks key sequences must expect one; `<tab-bar>`, which is such an event already, keeps its own code for now.
 - The editor draws menus itself, so a terminal has them, snapshots show them, and tests drive them by key sequence; it also means a menu looks like E8 rather than like the platform.
 - A menu's `:enable` and `:visible` are functions rather than forms, which `easymenu.ts` writes for a port.
+- A dialog and a tooltip are drawn the same way, so a terminal has both, as Emacs's terminals have dialogs but no tooltips. Nothing shows a tooltip by itself until E8 has `help-echo`.
 
 ## Dependencies introduced
 

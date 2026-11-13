@@ -29,11 +29,26 @@ impl Editor {
     /// Asks a question answered by typing "yes" or "no" and RET, as Emacs's
     /// `yes-or-no-p`, and returns whether the answer was yes.
     pub fn yes_or_no_p(&mut self, question: &str) -> Result<bool> {
+        if self.use_dialog_box_p() {
+            return self.ask_in_dialog(question);
+        }
         // As Emacs 28's use-short-answers: y or n will do.
         if self.variable("use-short-answers").is_some_and(|v| v.is_true()) {
             return self.y_or_n_p(question);
         }
         Ok(self.read_answer(question, &["yes", "no"])? == "yes")
+    }
+
+    /// Asks a yes or no question in a dialog, as subr.el's `y-or-n-p` and
+    /// `yes-or-no-p` ask with `x-popup-dialog` when `use-dialog-box-p`
+    /// says the mouse or a menu asked.
+    fn ask_in_dialog(&mut self, question: &str) -> Result<bool> {
+        let contents = vec![
+            crate::variables::Value::Str(question.to_string()),
+            crate::variables::Value::List(vec![crate::variables::Value::Str("Yes".into()), crate::variables::Value::Bool(true)]),
+            crate::variables::Value::List(vec![crate::variables::Value::Str("No".into()), crate::variables::Value::Bool(false)]),
+        ];
+        Ok(self.x_popup_dialog(&contents)?.is_true())
     }
 
     /// Asks a question answered by typing one of `answers` and RET, as
@@ -51,6 +66,9 @@ impl Editor {
     /// Asks a question answered by typing y or n, as Emacs's `y-or-n-p`,
     /// and returns whether the answer was y.
     pub fn y_or_n_p(&mut self, question: &str) -> Result<bool> {
+        if self.use_dialog_box_p() {
+            return self.ask_in_dialog(question);
+        }
         Ok(self.ask(question, Some(vec!['y', 'n']), Vec::new(), "(y or n) ".into())? == "y")
     }
 
