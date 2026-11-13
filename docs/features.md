@@ -30,6 +30,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Clicks.
 - Drags.
 - Double and triple clicks and shift-click as Emacs mouse keys (`<mouse-1>`, `<drag-mouse-1>`, `<double-mouse-1>`).
+- Frames' geometry (`frame-text-width`, `frame-native-width`, `frame-position`, `set-frame-position`, `set-frame-size`, `frame-parameters`, `modify-frame-parameters`, the widths around a frame's text), where a frame's keys go (`redirect-frame-focus`, `frame-focus`), `lower-frame` and `x-parse-geometry`.
 - Dialogs and tooltips (`x-popup-dialog`, `message-box`, `message-or-box`, `use-dialog-box-p`, `x-show-tip`, `x-hide-tip`, `tooltip-mode`, `x-select-font`), drawn as menus are, in a terminal as in the window, as Emacs emulates a dialog with a menu where the display has none.
 - A menu bar (`menu-bar-mode`, off until you turn it on): File, Edit, Options, Buffers, Tools and Help as `menu-bar.el` has them, a mode's own menus from its keymap's `[menu-bar]` bindings, `F10` to open it, the arrows and `RET` to walk it and a click to open the menu under the pointer, in a terminal as in the window; `easymenu.ts` for writing a mode's menu as data, and `menu-bar-final-items` and `menu-bar-update-hook` as Emacs has them.
 - Pop-up menus (`x-popup-menu`): menu keymaps whose bindings are `menu-item`s, with submenus, `:enable`, `:visible`, `:help`, `:filter` and radio and toggle buttons, drawn over the windows in a terminal as in the GUI, walked with the arrows, `RET`, `C-g` and the mouse as Emacs's terminal menus are, and `menu-or-popup-active-p`.

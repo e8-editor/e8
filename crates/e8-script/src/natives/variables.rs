@@ -761,10 +761,10 @@ natives! {
     /// chooser: E8 asks in the minibuffer, over the font families the
     /// front end has.
     #[ts = "(frame?: FrameLike | null, excludeProportional?: boolean): string"]
-    pub fn xSelectFont(ed, frame: Option<Frm>, excludeProportional: Option<bool>) -> String {
+    pub fn xSelectFont(ed, frame: Option<Frm>, exclude_proportional: Option<bool>) -> String {
         let _ = frame;
         let mut families = ed.font_family_list();
-        if excludeProportional.unwrap_or(false) {
+        if exclude_proportional.unwrap_or(false) {
             families.retain(|f| e8_core::is_fixed_family(f));
         }
         if families.is_empty() {

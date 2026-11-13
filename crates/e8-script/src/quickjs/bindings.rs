@@ -269,7 +269,7 @@ impl Ret for Record {
     fn give<'js>(self, ctx: &Ctx<'js>) -> rquickjs::Result<Value<'js>> {
         let object = rquickjs::Object::new(ctx.clone())?;
         for (name, field) in self.0 {
-            object.set(name, field.give(ctx)?)?;
+            object.set(name.as_ref(), field.give(ctx)?)?;
         }
         Ok(object.into_value())
     }

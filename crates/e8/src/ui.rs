@@ -82,6 +82,17 @@ fn areas_of(
 /// Tells the editor how big each window is on a screen of this size, so
 /// scrolling knows. Call before drawing.
 pub fn layout_windows(ed: &mut Editor, width: u16, height: u16) {
+    // A terminal's whole frame is its screen, in characters, as Emacs's
+    // native size is on a terminal, and it sits at the screen's corner.
+    let frame = ed.selected_frame();
+    ed.set_frame_geometry(
+        frame,
+        e8_core::FrameGeometry { native: (width as f32, height as f32), position: (0.0, 0.0), scale: 1.0 },
+    );
+    // A terminal cannot move or resize itself, so what code asked for is
+    // taken and dropped, as Emacs's `set-frame-position` does nothing on
+    // a text terminal.
+    ed.take_frame_requests();
     ed.set_minibuffer_width(width as usize);
     let echo = ed.mini_window_height(height as usize) as u16;
     let tab_lines = (ed.menu_bar_lines(ed.selected_frame()) + ed.tab_bar_lines(ed.selected_frame())) as u16;

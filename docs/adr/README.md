@@ -78,3 +78,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0074](0074-mouse-events-as-emacs-has-them.md) Mouse events as Emacs has them: the pointer's place, track-mouse, and window parts
 - [0075](0075-compression-and-tls-as-emacs-has-them.md) Compression and TLS as Emacs has them: zlib, symbol-file, and gnutls
 - [0076](0076-menus-as-emacs-has-them.md) Menus as Emacs has them: menu keymaps, x-popup-menu, and a menu bar
+- [0077](0077-frames-and-the-window-tree-as-emacs-has-them.md) Frames and the window tree as Emacs has them: geometry, terminals, and what window.c has left

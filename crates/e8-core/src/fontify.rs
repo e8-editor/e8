@@ -167,6 +167,9 @@ impl Editor {
         self.fontify_windows(&settled);
         self.update_mode_lines();
         self.flush_image_messages();
+        // Which frame was selected at this redisplay, for
+        // `old-selected-frame`, as run_window_change_functions keeps it.
+        self.old_selected_frame = Some(self.selected_frame());
     }
 
     /// Fontifies what every frame's windows show, but those `settled`

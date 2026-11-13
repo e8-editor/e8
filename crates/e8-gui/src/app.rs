@@ -61,6 +61,15 @@ pub struct E8App {
     agent_client: std::sync::Arc<std::sync::Mutex<e8_mcp::Client>>,
     /// The frame this native window shows; the others get windows of their own.
     main_frame: FrameId,
+    /// The last character cell measured, for sizing a frame code asks to
+    /// resize in columns and lines.
+    cell: (f32, f32),
+    /// What the editor was last told about each frame's native window, so
+    /// it is told again only when it changes.
+    geometries: std::collections::HashMap<FrameId, e8_core::FrameGeometry>,
+    /// How much taller each frame's window is than its text area, for
+    /// carrying out a resize.
+    chromes: std::collections::HashMap<FrameId, f32>,
     /// Each frame's last title, and the frame last selected, to focus its
     /// window when another is selected.
     titles: std::collections::HashMap<FrameId, String>,
@@ -154,6 +163,19 @@ impl Backend {
             Backend::Thread { driver, .. } => std::mem::take(&mut driver.published().warps),
         }
     }
+
+    /// What code asked be done to frames since last time.
+    fn take_frame_requests(&mut self) -> Vec<e8_core::FrameRequest> {
+        match self {
+            Backend::Inline { editor, .. } => editor.take_frame_requests(),
+            Backend::Thread { driver, .. } => std::mem::take(&mut driver.published().frame_requests),
+        }
+    }
+
+    /// Tells the editor how big a frame is as a whole and where it sits.
+    fn set_frame_geometry(&mut self, frame: FrameId, geometry: e8_core::FrameGeometry) {
+        self.run(move |ed, _| ed.set_frame_geometry(frame, geometry));
+    }
 }
 
 /// The state of the primary button, for turning presses and moves into
@@ -236,6 +258,9 @@ impl E8App {
             #[cfg(not(target_arch = "wasm32"))]
             agent_client: Default::default(),
             main_frame: e8_core::FIRST_FRAME,
+            cell: (8.0, 16.0),
+            geometries: Default::default(),
+            chromes: Default::default(),
             titles: std::collections::HashMap::new(),
             focused_frame: e8_core::FIRST_FRAME,
             flash_until: None,
@@ -544,6 +569,7 @@ impl E8App {
         let (all, _) = self.frame_list();
         self.follow_frame_states(&ctx, &all);
         self.warp_pointer(&ctx);
+        self.carry_out_frame_requests(&ctx);
         // A frame newly selected, as by C-x 5 o, gets the focus.
         let (_, selected) = self.frame_list();
         if selected != self.focused_frame {
@@ -551,6 +577,39 @@ impl E8App {
             let viewport = if selected == self.main_frame { egui::ViewportId::ROOT } else { frame_viewport(selected) };
             ctx.send_viewport_cmd_to(viewport, ViewportCommand::Focus);
         }
+    }
+
+    /// Moves and resizes frames where code asked, as `set-frame-position`
+    /// and `set-frame-size` do, and puts one behind the others (ADR 0077).
+    fn carry_out_frame_requests(&mut self, ctx: &egui::Context) {
+        for request in self.backend.take_frame_requests() {
+            let frame = match request {
+                e8_core::FrameRequest::Position { frame, .. } => frame,
+                e8_core::FrameRequest::Size { frame, .. } => frame,
+                e8_core::FrameRequest::Lower { frame } => frame,
+            };
+            let viewport = if frame == self.main_frame { egui::ViewportId::ROOT } else { frame_viewport(frame) };
+            let command = match request {
+                e8_core::FrameRequest::Position { x, y, .. } => ViewportCommand::OuterPosition(pos2(x as f32, y as f32)),
+                // The text area asked for, plus what the window draws
+                // around it, as `set-frame-size` sets the text size.
+                e8_core::FrameRequest::Size { width, height, .. } => {
+                    ViewportCommand::InnerSize(vec2(width as f32, height as f32 + self.chrome_height(frame)))
+                }
+                // egui can raise a window but not put one behind another,
+                // so a lowered frame is left as it is (ADR 0077).
+                e8_core::FrameRequest::Lower { .. } => continue,
+            };
+            ctx.send_viewport_cmd_to(viewport, command);
+        }
+    }
+
+    /// How much taller the frame's native window is than the text area
+    /// `set-frame-size` sets: its title bar, as the window draws one, and
+    /// the rounding the layout left. Measured as the frame is laid out,
+    /// so it holds however the window is drawn.
+    fn chrome_height(&self, frame: FrameId) -> f32 {
+        self.chromes.get(&frame).copied().unwrap_or(0.0)
     }
 
     /// Moves the pointer where code asked, as `set-mouse-position` does:
@@ -590,10 +649,42 @@ impl E8App {
         }
     }
 
+    /// Tells the editor how big this frame's native window is and where it
+    /// sits on the screen, for `frame-native-width`, `frame-position` and
+    /// their kin, as it tells it where the pointer is (ADR 0077).
+    fn note_frame_geometry(&mut self, ctx: &egui::Context, frame: FrameId) {
+        let (outer, inner, scale) = ctx.input(|i| {
+            let v = i.viewport();
+            (v.outer_rect, v.inner_rect, i.pixels_per_point)
+        });
+        let Some(inner) = inner else { return };
+        let outer = outer.unwrap_or(inner);
+        // The native size is the frame's own area, as Emacs's is on GTK
+        // and NS: what the window manager draws around it is not in it,
+        // though the position is the outer frame's, as `frame-position` is.
+        let geometry = e8_core::FrameGeometry {
+            native: (inner.width(), inner.height()),
+            position: (outer.min.x, outer.min.y),
+            scale,
+        };
+        if self.geometries.get(&frame) == Some(&geometry) {
+            return;
+        }
+        self.geometries.insert(frame, geometry);
+        self.backend.set_frame_geometry(frame, geometry);
+    }
+
     /// Lays a frame out: from the editor, telling it each window's size,
     /// or from its last description, sending the sizes to its thread.
     fn layout(&mut self, ui: &Ui, frame: FrameId) -> Option<Layout> {
         let m = Metrics::of(ui);
+        self.cell = (m.char_width, m.line_height);
+        self.note_frame_geometry(ui.ctx(), frame);
+        // How much of the window is not the frame's text area: its title
+        // bar, as the window draws one. Measured here, where both are known.
+        if let Some(inner) = ui.ctx().input(|i| i.viewport().inner_rect) {
+            self.chromes.insert(frame, (inner.height() - ui.max_rect().height()).max(0.0));
+        }
         match &mut self.backend {
             Backend::Inline { editor, .. } => Some(Layout::new(ui, editor, frame, m)),
             Backend::Thread { driver, .. } => {

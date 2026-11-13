@@ -79,6 +79,9 @@ pub struct Published {
     /// Pointer moves code asked for, as `set-mouse-position` makes, for the
     /// front end to take.
     pub warps: Vec<crate::mouse::Warp>,
+    /// What code asked be done to frames, as `set-frame-position` does,
+    /// for the front end to carry out (ADR 0077).
+    pub frame_requests: Vec<crate::frame::FrameRequest>,
 }
 
 /// A handle on the editor's thread.
@@ -372,6 +375,7 @@ impl<D: FnMut(&mut Editor) -> Vec<FrameDescription>> CommandLoop<D> {
             p.suspends = ed.suspend_requests();
             p.track_mouse = ed.tracking_mouse();
             p.warps.extend(ed.take_warps());
+            p.frame_requests.extend(ed.take_frame_requests());
         }
         (self.wake)();
     }

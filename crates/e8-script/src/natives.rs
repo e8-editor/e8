@@ -298,16 +298,18 @@ pub(crate) struct ProcObj(pub u64);
 pub(crate) struct Posn(pub Option<e8_core::layout::Posn>);
 
 /// An object a native returns, as plain data: its properties in order.
+/// A name is usually a literal, and may be made as the object is, as a
+/// frame's parameters are.
 #[derive(Default)]
-pub(crate) struct Record(pub Vec<(&'static str, Field)>);
+pub(crate) struct Record(pub Vec<(std::borrow::Cow<'static, str>, Field)>);
 
 impl Record {
     pub fn new() -> Self {
         Record::default()
     }
 
-    pub fn with(mut self, name: &'static str, value: impl Into<Field>) -> Self {
-        self.0.push((name, value.into()));
+    pub fn with(mut self, name: impl Into<std::borrow::Cow<'static, str>>, value: impl Into<Field>) -> Self {
+        self.0.push((name.into(), value.into()));
         self
     }
 }
