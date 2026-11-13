@@ -59,6 +59,7 @@ mod minibuffer;
 mod modeline;
 pub use modeline::ModeLineSegment;
 mod modes;
+pub mod mouse;
 mod permissions;
 mod prefix;
 pub mod process;

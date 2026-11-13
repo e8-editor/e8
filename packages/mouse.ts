@@ -122,6 +122,18 @@ const extendRegion = e8.defineCommand({
   },
 });
 
+const ignorePreservingKillRegion = e8.defineCommand({
+  name: "ignore-preserving-kill-region",
+  doc:
+    "Do nothing, as ignore does, but keep a kill command the last one, so a kill after it still appends.\n\n" +
+    "Bound to <mouse-movement>, which comes while track-mouse is on.",
+  run: () => {
+    if (e8.lastCommand() === "kill-region") e8.setThisCommand("kill-region");
+  },
+});
+
+// Mouse movement does nothing unless something binds it, as in Emacs.
+e8.bindKey("<mouse-movement>", ignorePreservingKillRegion);
 e8.bindKey("<down-mouse-1>", dragRegion);
 e8.bindKey("<mouse-1>", setPoint);
 e8.bindKey("<drag-mouse-1>", setRegion);

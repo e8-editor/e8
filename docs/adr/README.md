@@ -75,3 +75,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0071](0071-scrolling-as-emacs-has-it.md) Scrolling as Emacs has it: horizontal and pixel scrolling kept by the window, and screen lines
 - [0072](0072-files-as-emacs-has-them.md) Files as Emacs has them: the rest of fileio.c, dired.c and filelock.c
 - [0073](0073-the-user-and-the-system-as-emacs-has-them.md) The user and the system as Emacs has them: names, ids, processors, and suspending
+- [0074](0074-mouse-events-as-emacs-has-them.md) Mouse events as Emacs has them: the pointer's place, track-mouse, and window parts

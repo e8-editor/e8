@@ -21,6 +21,9 @@ pub struct Clicks<P> {
     /// Where the button went down, while it is down.
     pressed: Option<Target>,
     dragged: bool,
+    /// Whether the drag came as `<mouse-movement>` events, `track-mouse`
+    /// being on, so its `<drag-mouse-1>` comes once, at the release.
+    tracked: bool,
     /// When and where the last press was, and how many clicks it made.
     last_press: Option<(f64, P, u8)>,
     clicks: u8,
@@ -28,7 +31,7 @@ pub struct Clicks<P> {
 
 impl<P> Default for Clicks<P> {
     fn default() -> Clicks<P> {
-        Clicks { pressed: None, dragged: false, last_press: None, clicks: 0 }
+        Clicks { pressed: None, dragged: false, tracked: false, last_press: None, clicks: 0 }
     }
 }
 
@@ -53,6 +56,7 @@ impl<P: Copy> Clicks<P> {
         self.last_press = Some((time, at, self.clicks));
         self.pressed = Some(target);
         self.dragged = false;
+        self.tracked = false;
         if self.clicks == 1 {
             let (window, position) = target;
             ed.mouse(key(MouseKind::Down, shift), MouseEvent { window, position, start: None });
@@ -60,11 +64,23 @@ impl<P: Copy> Clicks<P> {
     }
 
     /// The pointer moved, with the button down or not, over `target`.
+    /// While `track-mouse` is on, a move is a `<mouse-movement>` event, and
+    /// a drag's `<drag-mouse-1>` waits for the release, as in Emacs; else
+    /// E8 sends `<drag-mouse-1>` as the drag goes, for the region to follow.
     pub fn moved(&mut self, ed: &mut Editor, target: Option<Target>, shift: bool) {
-        let (Some(start), Some((window, position))) = (self.pressed, target) else { return };
+        let Some((window, position)) = target else { return };
+        let Some(start) = self.pressed else {
+            ed.mouse_moved(MouseEvent { window, position, start: None });
+            return;
+        };
         if self.dragged || start != (window, position) {
             self.dragged = true;
-            ed.mouse(key(MouseKind::Drag, shift), MouseEvent { window, position, start: Some(start) });
+            if ed.tracking_mouse() {
+                self.tracked = true;
+                ed.mouse_moved(MouseEvent { window, position, start: None });
+            } else {
+                ed.mouse(key(MouseKind::Drag, shift), MouseEvent { window, position, start: Some(start) });
+            }
         }
     }
 
@@ -73,6 +89,10 @@ impl<P: Copy> Clicks<P> {
     pub fn release(&mut self, ed: &mut Editor, target: Option<Target>, shift: bool) {
         let Some(start) = self.pressed.take() else { return };
         if self.dragged {
+            if std::mem::take(&mut self.tracked) {
+                let (window, position) = target.unwrap_or(start);
+                ed.mouse(key(MouseKind::Drag, shift), MouseEvent { window, position, start: Some(start) });
+            }
             return;
         }
         let kind = match self.clicks {

@@ -336,6 +336,10 @@ pub struct Editor {
     /// How many times `suspend-emacs` asked the front end to stop the
     /// process, for a terminal to see each request once.
     pub(crate) suspend_requests: u64,
+    /// Where a front end last saw the pointer, which it writes itself.
+    pub(crate) pointer: crate::mouse::PointerCell,
+    /// Pointer moves code asked for, for the front end.
+    pub(crate) warps: Vec<crate::mouse::Warp>,
     /// The status the program exits with once `quit` is set, as `kill-emacs`'s argument.
     pub(crate) exit_status: i32,
     /// Running without a frame, as `emacs --batch`: messages go to standard error.
@@ -495,6 +499,8 @@ impl Editor {
             window_use: 0,
             quit: false,
             suspend_requests: 0,
+            pointer: Default::default(),
+            warps: Vec::new(),
             exit_status: 0,
             noninteractive: false,
             question: None,
@@ -1483,8 +1489,11 @@ impl Editor {
         if self.running == 0 {
             self.current_from_selected_window();
         }
+        // Movement is not kept in macros or the lossage, as Emacs keeps it out.
+        let movement = key.code == KeyCode::MouseMovement;
         // While a keyboard macro is being defined, record the keys typed.
         if self.executing_macro == 0
+            && !movement
             && let Some(keys) = &mut self.defining_macro
         {
             let starts_sequence =
@@ -1494,12 +1503,12 @@ impl Editor {
             }
             keys.push(key);
         }
-        let typed = self.executing_macro == 0;
+        let typed = self.executing_macro == 0 && !movement;
         if typed {
             self.note_input();
             self.record_lossage_key(key);
         }
-        self.dispatch_key(key);
+        self.dispatch_raw_key(key);
         if typed {
             self.count_key_for_auto_save();
         }
@@ -1508,7 +1517,7 @@ impl Editor {
         if !self.keyboard.reading_unread {
             self.keyboard.reading_unread = true;
             while let Some(key) = self.keyboard.unread_keys.pop_front() {
-                self.dispatch_key(key);
+                self.dispatch_raw_key(key);
             }
             self.keyboard.reading_unread = false;
         }
@@ -1520,6 +1529,20 @@ impl Editor {
         for key in keys.iter().rev() {
             self.keyboard.unread_keys.push_front(*key);
         }
+    }
+
+    /// Dispatches a key as it came, before any translation, noting it
+    /// among the raw keys of the sequence being read, as Emacs's
+    /// read_key_sequence keeps raw_keybuf for `this-single-command-raw-keys`.
+    fn dispatch_raw_key(&mut self, key: Key) {
+        let starts_sequence = self.keyboard.pending_keys.is_empty() && !self.keyboard.esc_prefix && self.keyboard.reading_keys.is_none();
+        if !self.reading_single_key() {
+            if starts_sequence {
+                self.keyboard.raw_keys.clear();
+            }
+            self.keyboard.raw_keys.push(key);
+        }
+        self.dispatch_key(key);
     }
 
     fn dispatch_key(&mut self, mut key: Key) {
@@ -1601,6 +1624,13 @@ impl Editor {
                 self.keyboard.pending_keys.pop();
                 self.keyboard.shift_translated = true;
                 self.dispatch_key(key.unshifted());
+            }
+            // Movement nothing binds is dropped, as Emacs's global map
+            // binds it to ignore-preserving-kill-region, which E8's mouse
+            // package binds it to as well; after a prefix it is undefined.
+            Lookup::Unbound if key.code == KeyCode::MouseMovement && self.keyboard.pending_keys.len() == 1 => {
+                self.keyboard.pending_keys.clear();
+                self.keyboard.raw_keys.clear();
             }
             // As in Emacs, an unbound button press is dropped, and an unbound
             // drag or repeated click acts as a plain click.

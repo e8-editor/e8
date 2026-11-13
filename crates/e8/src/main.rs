@@ -225,6 +225,21 @@ fn run(
             }
             Event::Mouse(event) => {
                 let (width, height) = *size.lock().unwrap_or_else(|e| e.into_inner());
+                // Where the pointer is, for mouse-position, from the top
+                // left of the frame's windows, below any tab bar.
+                let (frame, tracking) = {
+                    let published = driver.published();
+                    let frame = published.frames.first().map(|f| (f.frame, f.tab_bar.is_some()));
+                    (frame, published.track_mouse)
+                };
+                if let Some((frame, tab_bar)) = frame {
+                    let row = event.row as f32 - if tab_bar { 1.0 } else { 0.0 };
+                    driver.set_pointer(Some(e8_core::mouse::Pointer { frame, x: event.column as f32, y: row, screen: None }));
+                }
+                // A move with no button down is wanted only while track-mouse is on.
+                if event.kind == MouseEventKind::Moved && !tracking {
+                    continue;
+                }
                 let mouse = mouse.clone();
                 driver.run(move |editor| {
                     mouse.lock().unwrap_or_else(|e| e.into_inner()).handle(editor, event, width, height);
@@ -288,7 +303,7 @@ impl Mouse {
                 let time = self.started.elapsed().as_secs_f64();
                 self.clicks.press(ed, time, (event.column, event.row), |a, b| a == b, target, shift);
             }
-            MouseEventKind::Drag(MouseButton::Left) => self.clicks.moved(ed, target, shift),
+            MouseEventKind::Drag(MouseButton::Left) | MouseEventKind::Moved => self.clicks.moved(ed, target, shift),
             MouseEventKind::Up(MouseButton::Left) => self.clicks.release(ed, target, shift),
             MouseEventKind::ScrollDown => ed.wheel_in(target.map(|t| t.0), WHEEL_LINES),
             MouseEventKind::ScrollUp => ed.wheel_in(target.map(|t| t.0), -WHEEL_LINES),

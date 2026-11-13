@@ -474,7 +474,7 @@ impl Editor {
     }
 
     /// A frame's windows' part in the front end's units.
-    fn frame_units_of(&self, frame: FrameId) -> (usize, usize) {
+    pub(crate) fn frame_units_of(&self, frame: FrameId) -> (usize, usize) {
         if frame == self.selected_frame {
             return self.frame_units();
         }

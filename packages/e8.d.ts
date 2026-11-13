@@ -3274,6 +3274,14 @@ declare global {
        */
       "ignore": [];
       /**
+       * Do nothing, as ignore does, but keep a kill command the last one, so a kill after it still appends.
+       *
+       * Bound to <mouse-movement>, which comes while track-mouse is on.
+       *
+       * Defined in packages/mouse.ts.
+       */
+      "ignore-preserving-kill-region": [];
+      /**
        * Decrease the image size at point by a factor of 1 minus N divided by 10, 20% without a prefix argument.
        *
        * @param n raw prefix argument
@@ -10712,6 +10720,10 @@ declare global {
        */
       "mode-require-final-newline": Value;
       /**
+       * If non-nil, a function mouse-position and mouse-pixel-position call with what they would return, returning what it returns.
+       */
+      "mouse-position-function": Value;
+      /**
        * Keymap narrow-map.
        */
       "narrow-map": Value;
@@ -12310,6 +12322,10 @@ declare global {
        * Defined in packages/face-remap.ts.
        */
       "text-scale-mode-step": Value;
+      /**
+       * Non-nil means generate <mouse-movement> events as the mouse moves, as the track-mouse macro binds it.
+       */
+      "track-mouse": Value;
       /**
        * A function that gives the name of a defun node, or nil.
        *
@@ -15832,6 +15848,60 @@ declare global {
      * else the keys of the command running.
      */
     function thisSingleCommandKeys(): string;
+    /**
+     * The keys of the last key sequence read, by the command loop or
+     * readKeySequence, as they came before input-decode-map,
+     * key-translation-map and Shift translation, as
+     * this-single-command-raw-keys.
+     */
+    function thisSingleCommandRawKeys(): string[];
+    /**
+     * Move the pointer to the middle of the character at column `x` and
+     * line `y` of a frame, from the top left of its windows, as
+     * set-mouse-position. A terminal cannot move it, and selects the frame.
+     */
+    function setMousePosition(frame: FrameLike, x: number, y: number): void;
+    /**
+     * Move the pointer to `x` and `y` in the front end's units on a frame,
+     * from the top left of its windows, as set-mouse-pixel-position. A
+     * terminal cannot move it, and selects the frame.
+     */
+    function setMousePixelPosition(frame: FrameLike, x: number, y: number): void;
+    /**
+     * Where the pointer is on the screen, in the front end's units, as
+     * mouse-absolute-pixel-position, or undefined if it is not known.
+     */
+    function mouseAbsolutePixelPosition(): [x: number, y: number] | undefined;
+    /**
+     * Move the pointer to `x` and `y` on the screen, as
+     * set-mouse-absolute-pixel-position: only a graphical E8 can.
+     */
+    function setMouseAbsolutePixelPosition(x: number, y: number): void;
+    /**
+     * Whether the pointer shows over a frame, as frame-pointer-visible-p:
+     * always, as E8 never hides it.
+     */
+    function framePointerVisibleP(frame?: FrameLike): boolean;
+    /**
+     * The window at column `x` and line `y` of a frame, the selected one
+     * by default, counted from the top left of its windows as windowEdges
+     * counts, its mode line and the minibuffer's window included, as
+     * window-at.
+     */
+    function windowAt(x: number, y: number, frame?: FrameLike): Window | undefined;
+    /**
+     * Which part of a window, the selected one by default, column `x` and
+     * line `y` of its frame are on, as coordinates-in-window-p: over its
+     * text, how far from the window's top left in columns and lines, its
+     * header line counted; else the part, or undefined if outside it.
+     */
+    function coordinatesInWindowP(coordinates: [x: number, y: number], window?: WindowLike): [x: number, y: number] | "mode-line" | "header-line" | "vertical-line" | "left-fringe" | "right-fringe" | "left-margin" | "right-margin" | undefined;
+    /**
+     * Update what the mouse highlights for the pointer at `x` and `y`, as
+     * display--update-for-mouse-movement: nothing to do, as E8's front
+     * ends follow the pointer themselves.
+     */
+    function displayUpdateForMouseMovement(x: number, y: number): void;
     /** Delete a window, the selected one by default, giving its space to its neighbour. */
     function deleteWindow(window?: WindowLike): void;
     /**
@@ -16858,6 +16928,25 @@ declare global {
      * active now, as Emacs's read-key-sequence: "C-x C-f". C-g is a key in it.
      */
     function readKeySequence(prompt?: string): string;
+    /** The same, its keys one by one, as read-key-sequence-vector: ["C-x", "C-f"]. */
+    function readKeySequenceVector(prompt?: string): string[];
+    /**
+     * Run `fn` with the mouse's moves coming as "<mouse-movement>" events,
+     * which readEvent returns and keymaps can bind, as Emacs's track-mouse:
+     * lastMouseEvent() says where each went. It binds the variable
+     * track-mouse, as the macro does.
+     */
+    function trackMouse<T>(fn: () => T): T;
+    /**
+     * The frame the pointer is over and the column and line it is at, from
+     * the top left of the frame's windows as windowEdges counts, as
+     * mouse-position: the selected frame, and no place, until a front end
+     * has seen the pointer. With mouse-position-function set, what that
+     * function returns for it.
+     */
+    function mousePosition(): [frame: Frame, x: number | undefined, y: number | undefined];
+    /** As mousePosition, in the front end's units (points, or cells on a terminal), as mouse-pixel-position. */
+    function mousePixelPosition(): [frame: Frame, x: number | undefined, y: number | undefined];
     /** The keys that ran the command running, its prefix argument's included, as this-command-keys: "C-u C-n". */
     function thisCommandKeys(): string;
     /** The same keys one by one, as this-command-keys-vector. */

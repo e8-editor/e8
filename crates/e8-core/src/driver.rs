@@ -73,6 +73,12 @@ pub struct Published {
     /// How many times the editor asked to be suspended, as `suspend-emacs`
     /// does: a terminal stops the process each time it goes up.
     pub suspends: u64,
+    /// Whether the front end sends the pointer's moves as
+    /// `<mouse-movement>` events, as `track-mouse` says.
+    pub track_mouse: bool,
+    /// Pointer moves code asked for, as `set-mouse-position` makes, for the
+    /// front end to take.
+    pub warps: Vec<crate::mouse::Warp>,
 }
 
 /// A handle on the editor's thread.
@@ -84,6 +90,7 @@ pub struct Driver {
     /// How many inputs this handle has sent.
     sent: AtomicU64,
     idle: Arc<Idle>,
+    pointer: crate::mouse::PointerCell,
 }
 
 /// How many inputs the loop has taken, and whether it is waiting for the
@@ -147,9 +154,14 @@ impl Driver {
         let idle = Arc::new(Idle::default());
         let loop_idle = idle.clone();
         let waker = input.clone();
+        // The pointer's place, which the front end writes and the editor
+        // reads when code asks, made here as the quit flag is.
+        let pointer = crate::mouse::PointerCell::default();
+        let editor_pointer = pointer.clone();
         let body = move || {
             let mut ed = Editor::new();
             ed.quitting = quitting;
+            ed.set_pointer_cell(editor_pointer);
             // Process output wakes the loop, rather than waiting for its next timer.
             let waker = Mutex::new(waker);
             ed.set_process_waker(Arc::new(move || {
@@ -165,7 +177,13 @@ impl Driver {
             spawn(Box::new(body));
             None
         };
-        Driver { input, quit, published, thread, sent: AtomicU64::new(0), idle }
+        Driver { input, quit, published, thread, sent: AtomicU64::new(0), idle, pointer }
+    }
+
+    /// Says where the pointer is, as the front end sees it move, without
+    /// waking the editor: code reads it when it asks, as `mouse-position`.
+    pub fn set_pointer(&self, pointer: Option<crate::mouse::Pointer>) {
+        *self.pointer.lock().unwrap_or_else(|e| e.into_inner()) = pointer;
     }
 
     /// Sends input to the editor's thread.
@@ -347,6 +365,8 @@ impl<D: FnMut(&mut Editor) -> Vec<FrameDescription>> CommandLoop<D> {
             p.visible_bell = ed.variable("visible-bell").is_some_and(|v| v.is_true());
             p.exit = ed.should_quit();
             p.suspends = ed.suspend_requests();
+            p.track_mouse = ed.tracking_mouse();
+            p.warps.extend(ed.take_warps());
         }
         (self.wake)();
     }
