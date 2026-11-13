@@ -4,7 +4,7 @@
 use e8_core::Value as EditorValue;
 use rquickjs::{Coerced, Ctx, FromJs, IntoJs, Value};
 
-use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Opt, PlistOrValue, Posn, Prefix, Proc, ProcObj, Record, Rest, Win};
+use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Trm, Opt, PlistOrValue, Posn, Prefix, Proc, ProcObj, Record, Rest, Win};
 
 /// A value a native takes, converted from the script's.
 pub(crate) trait Conv: Sized {
@@ -101,6 +101,16 @@ impl Conv for Win {
 }
 
 /// A Frame, or a frame's number.
+impl Conv for Trm {
+    fn conv<'js>(ctx: &Ctx<'js>, value: Value<'js>) -> rquickjs::Result<Self> {
+        let value = super::value_from_js(ctx, value)?;
+        match Trm::from_value(&value) {
+            Some(t) => Ok(t),
+            None => Err(type_error(ctx, &format!("Not a terminal: {value}"))),
+        }
+    }
+}
+
 impl Conv for Frm {
     type Js<'js> = Value<'js>;
     fn conv<'js>(ctx: &Ctx<'js>, js: Self::Js<'js>) -> rquickjs::Result<Self> {
@@ -133,6 +143,12 @@ impl Ret for Win {
 impl Ret for Frm {
     fn give<'js>(self, ctx: &Ctx<'js>) -> rquickjs::Result<Value<'js>> {
         super::value_to_js(ctx, &EditorValue::Frame(self.0))
+    }
+}
+
+impl Ret for Trm {
+    fn give<'js>(self, ctx: &Ctx<'js>) -> rquickjs::Result<Value<'js>> {
+        super::value_to_js(ctx, &EditorValue::Terminal(self.0))
     }
 }
 

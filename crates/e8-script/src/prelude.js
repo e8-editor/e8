@@ -145,6 +145,36 @@
       return this.toString();
     }
   }
+  /** A terminal as an object, as Emacs's terminal objects: the same object each time. */
+  const terminals = new Map();
+  class Terminal {
+    constructor(id) {
+      Object.defineProperty(this, "__e8TerminalId", { value: id });
+      Object.freeze(this);
+    }
+    get id() {
+      return this.__e8TerminalId;
+    }
+    /** What kind of display it is, as terminal-live-p, or undefined once deleted. */
+    get live() {
+      return native.terminalLiveP(this);
+    }
+    /** As Emacs prints a terminal: #<terminal 1>. */
+    toString() {
+      return `#<terminal ${this.__e8TerminalId}>`;
+    }
+    toJSON() {
+      return this.toString();
+    }
+  }
+  globalThis.__e8Terminal = (id) => {
+    let t = terminals.get(id);
+    if (t === undefined) {
+      t = new Terminal(id);
+      terminals.set(id, t);
+    }
+    return t;
+  };
   globalThis.__e8Frame = (id) => {
     let f = frames.get(id);
     if (f === undefined) {

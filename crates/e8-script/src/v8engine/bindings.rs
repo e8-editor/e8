@@ -5,7 +5,7 @@
 use e8_core::Value as EditorValue;
 
 use super::{Js, Thrown, number, string};
-use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Opt, PlistOrValue, Posn, Prefix, Proc, ProcObj, Record, Rest, Win};
+use crate::natives::{Any, ArgText, FaceAttrValues, Field, Fields, Frm, Trm, Opt, PlistOrValue, Posn, Prefix, Proc, ProcObj, Record, Rest, Win};
 
 type Scope<'s, 'i> = v8::PinScope<'s, 'i>;
 type Value<'s> = v8::Local<'s, v8::Value>;
@@ -147,6 +147,17 @@ impl Conv for Win {
     }
 }
 
+/// A Terminal, a frame on it, or a terminal's number.
+impl Conv for Trm {
+    fn conv<'s>(scope: &mut Scope<'s, '_>, value: Value<'s>) -> Result<Self, Thrown> {
+        let value = super::value_from_js(scope, value)?;
+        match Trm::from_value(&value) {
+            Some(t) => Ok(t),
+            None => Err(type_error(scope, &format!("Not a terminal: {value}"))),
+        }
+    }
+}
+
 /// A Frame, or a frame's number.
 impl Conv for Frm {
     fn conv<'s>(scope: &mut Scope<'s, '_>, value: Value<'s>) -> Result<Self, Thrown> {
@@ -184,6 +195,12 @@ impl Ret for Win {
 impl Ret for Frm {
     fn give<'s>(self, scope: &mut Scope<'s, '_>) -> Js<'s> {
         super::value_to_js(scope, &EditorValue::Frame(self.0))
+    }
+}
+
+impl Ret for Trm {
+    fn give<'s>(self, scope: &mut Scope<'s, '_>) -> Js<'s> {
+        super::value_to_js(scope, &EditorValue::Terminal(self.0))
     }
 }
 

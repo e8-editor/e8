@@ -538,3 +538,24 @@ mod imp {
         None
     }
 }
+
+/// The device this process's standard input is, as `terminal-name` gives
+/// it: `/dev/ttys003` and the like, and none where it is no terminal. A
+/// front end on a terminal tells the editor, which cannot know.
+#[cfg(unix)]
+pub fn tty_name() -> Option<String> {
+    // SAFETY: ttyname gives a pointer into static storage, or null where
+    // the descriptor is no terminal.
+    let name = unsafe { libc::ttyname(0) };
+    if name.is_null() {
+        return None;
+    }
+    // SAFETY: a null-terminated string from the C library.
+    unsafe { std::ffi::CStr::from_ptr(name) }.to_str().ok().map(str::to_string)
+}
+
+/// Nothing, where the system has no tty names.
+#[cfg(not(unix))]
+pub fn tty_name() -> Option<String> {
+    None
+}

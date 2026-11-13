@@ -290,3 +290,66 @@ fn a_frames_window_state_change_flag_is_set_and_cleared() {
     assert_eq!(eval(&mut ed, &s, "(e8.setFrameWindowStateChange(undefined, true), String(e8.frameWindowStateChange()))"), "true");
     assert_eq!(eval(&mut ed, &s, "(e8.setFrameWindowStateChange(undefined, false), String(e8.frameWindowStateChange()))"), "false");
 }
+
+// --- Terminals as objects (ADR 0077, stage 2) -------------------------------
+
+#[test]
+fn there_is_one_terminal_and_every_frame_is_on_it() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.t = e8.terminalList(), globalThis.f = e8.makeFrame(),
+            JSON.stringify([t.length, e8.frameTerminal() === t[0], e8.frameTerminal(f) === t[0], String(t[0])]))"#,
+    );
+    assert_eq!(got, "[1,true,true,\"#<terminal 1>\"]");
+    // Headless draws no images, so it is a terminal, as framep says.
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalLiveP(globalThis.t[0]))"), "true");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalLiveP(e8.selectedFrame()))"), "true");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalLiveP(\"rubbish\"))"), "undefined");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalList()[0].live)"), "true");
+}
+
+#[test]
+fn a_terminal_keeps_the_parameters_a_package_hangs_off_it() {
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.terminalParameter(undefined, "mine"))"#), "undefined");
+    // Setting gives back what it was, as set-terminal-parameter does.
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.setTerminalParameter(undefined, "mine", "first"))"#), "undefined");
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.setTerminalParameter(undefined, "mine", "second"))"#), "first");
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.terminalParameter(undefined, "mine"))"#), "second");
+    assert_eq!(eval(&mut ed, &s, r#"JSON.stringify(e8.terminalParameters())"#), r#"{"mine":"second"}"#);
+    // A frame says which terminal, as Emacs's TERMINAL arguments take one.
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.terminalParameter(e8.selectedFrame(), "mine"))"#), "second");
+}
+
+#[test]
+fn a_terminals_device_and_colours_are_what_the_front_end_said() {
+    let (mut ed, s) = setup();
+    // Nothing said: no device, no TERM, no colours.
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalName())"), "undefined");
+    assert_eq!(eval(&mut ed, &s, "String(e8.ttyType())"), "undefined");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.ttyDisplayColorP(), e8.ttyDisplayColorCells()])"), "[false,0]");
+    ed.set_terminal_device(Some("/dev/ttys003".into()), Some("xterm-256color".into()));
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalName())"), "/dev/ttys003");
+    assert_eq!(eval(&mut ed, &s, "String(e8.ttyType())"), "xterm-256color");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.ttyDisplayColorP(), e8.ttyDisplayColorCells()])"), "[true,256]");
+    assert_eq!(eval(&mut ed, &s, "String(e8.controllingTtyP())"), "true");
+}
+
+#[test]
+fn the_sole_terminal_cannot_be_deleted_unless_forced() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(() => { try { e8.deleteTerminal(); return "deleted"; } catch (e) { return String(e); } })()"#,
+    );
+    assert!(got.contains("sole active display terminal"), "{got}");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalList().length)"), "1");
+    // Forced, it goes, and the editor has nothing to draw on.
+    eval(&mut ed, &s, "(e8.deleteTerminal(undefined, true), 1)");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalList().length)"), "0");
+    assert_eq!(eval(&mut ed, &s, "String(e8.terminalLiveP(e8.selectedFrame()))"), "undefined");
+    assert!(ed.should_quit());
+}

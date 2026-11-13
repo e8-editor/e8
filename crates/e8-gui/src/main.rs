@@ -60,6 +60,8 @@ fn main() -> eframe::Result {
                 if let Some(clipboard) = e8_gui::clipboard::SystemClipboard::new() {
                     editor.set_clipboard(Box::new(clipboard));
                 }
+                // The display the window is on, for `terminal-name`.
+                editor.set_terminal_device(Some("display".to_string()), None);
                 let scripting = config::setup_with(editor, !no_init, e8_agent::install);
                 for file in files {
                     if let Err(e) = editor.call("find-file", vec![Arg::Str(expand_file_name(&file).display().to_string())]) {

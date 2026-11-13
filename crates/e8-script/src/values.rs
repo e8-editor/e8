@@ -144,6 +144,10 @@ pub(crate) fn value_to_js<S: Scope>(s: &mut S, value: &EditorValue) -> Result<S:
             let id = s.number(*id as f64);
             s.call_global("__e8Frame", vec![id])?
         }
+        EditorValue::Terminal(id) => {
+            let id = s.number(*id as f64);
+            s.call_global("__e8Terminal", vec![id])?
+        }
         // The prelude's Process for the id, the same object each time.
         EditorValue::Process(id) => {
             let id = s.number(*id as f64);
@@ -236,6 +240,9 @@ pub(crate) fn convert_from_js<S: Scope>(s: &mut S, value: S::Value) -> Result<Op
     }
     if let Some(id) = number_property(s, &object, "__e8FrameId")? {
         return Ok(Some(EditorValue::Frame(id as u64)));
+    }
+    if let Some(id) = number_property(s, &object, "__e8TerminalId")? {
+        return Ok(Some(EditorValue::Terminal(id as u64)));
     }
     if let Some(id) = number_property(s, &object, "__e8ProcessId")? {
         return Ok(Some(EditorValue::Process(id as u64)));

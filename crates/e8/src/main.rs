@@ -73,6 +73,8 @@ fn main() -> io::Result<()> {
     let published = wake.clone();
     let driver = Driver::spawn(
         move |editor| {
+            // What the editor draws on, for `terminal-name` and `tty-type`.
+            editor.set_terminal_device(e8_core::sysdep::tty_name(), env::var("TERM").ok());
             let scripting = config::setup_with(editor, !no_init, e8_agent::install);
             for file in files {
                 if let Err(e) = editor.call("find-file", vec![Arg::Str(expand_file_name(&file).display().to_string())]) {

@@ -215,6 +215,11 @@ pub(crate) struct PlistOrValue(pub EditorValue);
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct Win(pub u64);
 
+/// A terminal, as scripts give and get one: a `Terminal` object, a frame,
+/// or nothing for the selected frame's, as Emacs's TERMINAL arguments take.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) struct Trm(pub e8_core::TerminalId);
+
 /// A frame, as scripts give and get one: a `Frame` object, or its number.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(crate) struct Frm(pub u64);
@@ -229,6 +234,19 @@ impl Win {
         match value {
             EditorValue::Window(id) => Some(Win(*id)),
             EditorValue::Number(n) => id_of(*n).filter(|id| *id < e8_core::FIRST_FRAME).map(Win),
+            _ => None,
+        }
+    }
+}
+
+impl Trm {
+    /// A terminal, a frame on it, or a number, as Emacs's TERMINAL
+    /// arguments take any of them.
+    pub fn from_value(value: &EditorValue) -> Option<Trm> {
+        match value {
+            EditorValue::Terminal(id) => Some(Trm(*id)),
+            EditorValue::Frame(_) => Some(Trm(e8_core::THE_TERMINAL)),
+            EditorValue::Number(n) => id_of(*n).map(Trm),
             _ => None,
         }
     }

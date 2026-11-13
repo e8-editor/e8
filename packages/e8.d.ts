@@ -16449,6 +16449,67 @@ declare global {
     function selectFrame(frame: FrameLike): void;
     function selectedFrame(): Frame;
     /**
+     * Every terminal there is, as terminal-list: E8 draws through one
+     * front end, so there is one.
+     */
+    function terminalList(): Value[];
+    /**
+     * What kind of display a terminal is, as terminal-live-p: "ns", "x"
+     * or "w32" in a window, true on a terminal, undefined once it has
+     * been deleted or for anything that is no terminal.
+     */
+    function terminalLiveP(terminal?: Terminal | FrameLike | null): true | "ns" | "x" | "w32" | undefined;
+    /** The terminal a frame is shown on, as frame-terminal. */
+    function frameTerminal(frame?: FrameLike | null): Terminal;
+    /**
+     * The device a terminal draws on, as terminal-name: a tty's name
+     * where the front end knows one.
+     */
+    function terminalName(terminal?: Terminal | FrameLike | null): string | undefined;
+    /** Every parameter of a terminal, as terminal-parameters. */
+    function terminalParameters(terminal?: Terminal | FrameLike | null): { [name: string]: Value };
+    /** One parameter of a terminal, as terminal-parameter. */
+    function terminalParameter(terminal: Terminal | FrameLike | undefined | null, name: string): Value | undefined;
+    /** Set one, as set-terminal-parameter, and give back what it was. */
+    function setTerminalParameter(terminal: Terminal | FrameLike | undefined | null, name: string, value: Value): Value | undefined;
+    /**
+     * Delete a terminal, as delete-terminal. E8 has one, so this is
+     * refused unless `force` says otherwise, as Emacs refuses to delete
+     * the sole active display terminal; forced, the editor has nothing
+     * to draw on and asks to exit.
+     */
+    function deleteTerminal(terminal?: Terminal | FrameLike | null, force?: boolean): void;
+    /** What TERM says a terminal is, as tty-type; undefined in a window. */
+    function ttyType(terminal?: Terminal | FrameLike | null): string | undefined;
+    /**
+     * Whether a terminal shows colours, as tty-display-color-p; false in
+     * a window, which is no text terminal.
+     */
+    function ttyDisplayColorP(terminal?: Terminal | FrameLike | null): boolean;
+    /**
+     * How many colours a terminal shows, as tty-display-color-cells; 0
+     * in a window.
+     */
+    function ttyDisplayColorCells(terminal?: Terminal | FrameLike | null): number;
+    /**
+     * Whether a terminal is the one the editor was started from, as
+     * controlling-tty-p; false in a window.
+     */
+    function controllingTtyP(terminal?: Terminal | FrameLike | null): boolean;
+    /**
+     * Let go of a terminal, as suspend-tty: the editor stops, as
+     * suspend-emacs stops it, and its frames are left as they are. True
+     * if it was not let go of already.
+     */
+    function suspendTty(terminal?: Terminal | FrameLike | null): boolean;
+    /** Take a terminal back, as resume-tty. True if it had been let go of. */
+    function resumeTty(terminal?: Terminal | FrameLike | null): boolean;
+    /**
+     * Make a frame on a terminal, as make-terminal-frame: E8 has one
+     * terminal, so this is makeFrame with its parameters.
+     */
+    function makeTerminalFrame(parameters?: { [name: string]: Value } | null): Frame;
+    /**
      * Every parameter of a frame, the selected frame's by default, as
      * frame-parameters: those set on it and those the editor works out,
      * as an object by name.
@@ -17447,6 +17508,17 @@ declare global {
       readonly id: number;
       /** Whether it is still there, as frame-live-p. */
       readonly live: boolean;
+    }
+    /**
+     * A terminal, as Emacs's terminal objects: the display a frame is shown
+     * on, carrying parameters a package can hang state off. E8 draws
+     * through one front end, so there is one (ADR 0077).
+     */
+    interface Terminal {
+      /** Its number, as Emacs numbers terminals. */
+      readonly id: number;
+      /** What kind of display it is, as terminal-live-p; undefined once deleted. */
+      readonly live: true | "ns" | "x" | "w32" | undefined;
     }
     /** A window, or its number while packages move to the objects. */
     type WindowLike = Window | number;

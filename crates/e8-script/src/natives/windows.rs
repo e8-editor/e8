@@ -1,7 +1,7 @@
 //! Windows and frames.
 
 use crate::EditorValue;
-use crate::natives::{Fields, Frm, Opt, Record, Win, natives};
+use crate::natives::{Fields, Frm, Opt, Record, Trm, Win, natives};
 
 natives! {
     fn splitWindow(ed, window: Option<Win>, side_by_side: bool, size: Option<i64>, before: Opt<bool>) -> Win {
@@ -376,6 +376,119 @@ natives! {
 
     pub fn selectedFrame(ed) -> Frm {
         Ok(Frm(ed.selected_frame()))
+    }
+
+    /// Every terminal there is, as terminal-list: E8 draws through one
+    /// front end, so there is one.
+    pub fn terminalList(ed) -> Vec<Trm> {
+        Ok(ed.terminal_list().into_iter().map(Trm).collect())
+    }
+
+    /// What kind of display a terminal is, as terminal-live-p: "ns", "x"
+    /// or "w32" in a window, true on a terminal, undefined once it has
+    /// been deleted or for anything that is no terminal.
+    #[ts = "(terminal?: Terminal | FrameLike | null): true | \"ns\" | \"x\" | \"w32\" | undefined"]
+    pub fn terminalLiveP(ed, terminal: EditorValue) -> Option<EditorValue> {
+        let Some(terminal) = terminal_of(ed, &terminal) else { return Ok(None) };
+        Ok(ed.terminal_live_p(terminal))
+    }
+
+    /// The terminal a frame is shown on, as frame-terminal.
+    #[ts = "(frame?: FrameLike | null): Terminal"]
+    pub fn frameTerminal(ed, frame: Option<Frm>) -> Trm {
+        let frame = live_frame(ed, frame)?;
+        Ok(Trm(ed.frame_terminal(frame)))
+    }
+
+    /// The device a terminal draws on, as terminal-name: a tty's name
+    /// where the front end knows one.
+    #[ts = "(terminal?: Terminal | FrameLike | null): string | undefined"]
+    pub fn terminalName(ed, terminal: Option<Trm>) -> Option<String> {
+        ed.terminal_name(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+    }
+
+    /// Every parameter of a terminal, as terminal-parameters.
+    #[ts = "(terminal?: Terminal | FrameLike | null): { [name: string]: Value }"]
+    pub fn terminalParameters(ed, terminal: Option<Trm>) -> Record {
+        let mut record = Record::new();
+        for (name, value) in ed.terminal_parameters(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))? {
+            record = record.with(name, value);
+        }
+        Ok(record)
+    }
+
+    /// One parameter of a terminal, as terminal-parameter.
+    #[ts = "(terminal: Terminal | FrameLike | undefined | null, name: string): Value | undefined"]
+    pub fn terminalParameter(ed, terminal: Option<Trm>, name: String) -> Option<EditorValue> {
+        ed.terminal_parameter(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0), &name)
+    }
+
+    /// Set one, as set-terminal-parameter, and give back what it was.
+    #[ts = "(terminal: Terminal | FrameLike | undefined | null, name: string, value: Value): Value | undefined"]
+    pub fn setTerminalParameter(ed, terminal: Option<Trm>, name: String, value: EditorValue) -> Option<EditorValue> {
+        ed.set_terminal_parameter(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0), &name, value)
+    }
+
+    /// Delete a terminal, as delete-terminal. E8 has one, so this is
+    /// refused unless `force` says otherwise, as Emacs refuses to delete
+    /// the sole active display terminal; forced, the editor has nothing
+    /// to draw on and asks to exit.
+    #[ts = "(terminal?: Terminal | FrameLike | null, force?: boolean): void"]
+    pub fn deleteTerminal(ed, terminal: Option<Trm>, force: Option<bool>) {
+        ed.delete_terminal(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0), force.unwrap_or(false))
+    }
+
+    /// What TERM says a terminal is, as tty-type; undefined in a window.
+    #[ts = "(terminal?: Terminal | FrameLike | null): string | undefined"]
+    pub fn ttyType(ed, terminal: Option<Trm>) -> Option<String> {
+        ed.tty_type(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+    }
+
+    /// Whether a terminal shows colours, as tty-display-color-p; false in
+    /// a window, which is no text terminal.
+    #[ts = "(terminal?: Terminal | FrameLike | null): boolean"]
+    pub fn ttyDisplayColorP(ed, terminal: Option<Trm>) -> bool {
+        ed.tty_display_color_p(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+    }
+
+    /// How many colours a terminal shows, as tty-display-color-cells; 0
+    /// in a window.
+    #[ts = "(terminal?: Terminal | FrameLike | null): number"]
+    pub fn ttyDisplayColorCells(ed, terminal: Option<Trm>) -> usize {
+        ed.tty_display_color_cells(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+    }
+
+    /// Whether a terminal is the one the editor was started from, as
+    /// controlling-tty-p; false in a window.
+    #[ts = "(terminal?: Terminal | FrameLike | null): boolean"]
+    pub fn controllingTtyP(ed, terminal: Option<Trm>) -> bool {
+        ed.controlling_tty_p(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+    }
+
+    /// Let go of a terminal, as suspend-tty: the editor stops, as
+    /// suspend-emacs stops it, and its frames are left as they are. True
+    /// if it was not let go of already.
+    #[ts = "(terminal?: Terminal | FrameLike | null): boolean"]
+    pub fn suspendTty(ed, terminal: Option<Trm>) -> bool {
+        ed.suspend_tty(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+    }
+
+    /// Take a terminal back, as resume-tty. True if it had been let go of.
+    #[ts = "(terminal?: Terminal | FrameLike | null): boolean"]
+    pub fn resumeTty(ed, terminal: Option<Trm>) -> bool {
+        ed.resume_tty(terminal.map_or(e8_core::THE_TERMINAL, |t| t.0))
+    }
+
+    /// Make a frame on a terminal, as make-terminal-frame: E8 has one
+    /// terminal, so this is makeFrame with its parameters.
+    #[ts = "(parameters?: { [name: string]: Value } | null): Frame"]
+    pub fn makeTerminalFrame(ed, parameters: Option<Fields>) -> Frm {
+        let frame = ed.make_frame(None)?;
+        if let Some(parameters) = parameters {
+            let named: Vec<(String, EditorValue)> = parameters.0.into_iter().collect();
+            ed.modify_frame_parameters(frame, &named)?;
+        }
+        Ok(Frm(frame))
     }
 
     /// Every parameter of a frame, the selected frame's by default, as
@@ -952,12 +1065,8 @@ natives! {
     /// window on macOS, "x" elsewhere, "w32" on Windows, undefined on a terminal.
     #[ts = "(frame?: FrameLike): \"ns\" | \"x\" | \"w32\" | undefined"]
     pub fn windowSystem(ed, frame: Option<Frm>) -> Option<String> {
-        let frame = frame.map(|x| x.0);
         let _ = frame;
-        if !ed.text_metrics().images() {
-            return Ok(None);
-        }
-        Ok(Some(if cfg!(target_os = "macos") { "ns" } else if cfg!(windows) { "w32" } else { "x" }.to_string()))
+        Ok(ed.window_system().map(str::to_string))
     }
 
     /// A window's total size, its mode line, header line and divider
@@ -1222,6 +1331,15 @@ natives! {
 
 /// A window given, or the selected one, if it is live; else the error
 /// Emacs's decode_live_window signals.
+/// The terminal a value names, or none where it is no terminal.
+fn terminal_of(ed: &e8_core::Editor, value: &EditorValue) -> Option<e8_core::TerminalId> {
+    let _ = ed;
+    match value {
+        EditorValue::Null => Some(e8_core::THE_TERMINAL),
+        other => Trm::from_value(other).map(|t| t.0),
+    }
+}
+
 /// A frame given to a native, the selected one by default, checked live.
 fn live_frame(ed: &e8_core::Editor, frame: Option<Frm>) -> Result<e8_core::FrameId, e8_core::Error> {
     let id = frame.map_or(ed.selected_frame(), |f| f.0);
