@@ -105,6 +105,14 @@ Mouse events ([ADR 0074](../adr/0074-mouse-events-as-emacs-has-them.md)) landed 
 
 The ranking is now led by **zlib and TLS** (0.48: `zlib-available-p`, through `symbol-file`, and `gnutls-available-p`), then menus (0.46, `x-popup-menu`) and frames (0.34).
 
+zlib and `symbol-file` ([ADR 0075](../adr/0075-compression-and-tls-as-emacs-has-them.md), stage 1) landed on 2026-11-13. Measured again on the same corpus:
+
+- **By name**, 604 of the 877 editor primitives, as before: zlib's are platform primitives.
+- **Packages needing nothing missing**: 248 of 295 MELPA packages, from 240; 56 of 77 daily ones, from 53; 16 of Emacs's 49, from 13.
+- **TLS** is what is left of the group (0.11): `gnutls-available-p` and its kin, all that Emacs's `auth`, `network` and `url` lack.
+
+The ranking is now led by **menus** (0.46, `x-popup-menu`), then frames (0.34) and the window tree's rest (0.30).
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.

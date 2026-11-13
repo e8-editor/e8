@@ -22,6 +22,7 @@ mod codings;
 mod comint;
 mod commands;
 mod compile;
+mod compression;
 mod dabbrev;
 mod desktop;
 mod diff;

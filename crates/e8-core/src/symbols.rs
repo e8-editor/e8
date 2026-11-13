@@ -20,6 +20,9 @@ pub(crate) struct Symbol {
     /// A hook's global functions, when the variable is a hook.
     pub(crate) hook: Vec<HookEntry>,
     pub(crate) function: Option<Definition>,
+    /// Where its function was defined, such as a script file, as Emacs's
+    /// `load-history` records a `defun`; a command keeps its own.
+    pub(crate) function_source: Option<String>,
     pub(crate) plist: Props,
     /// Outermost first.
     pub(crate) advice: Vec<Advice>,
@@ -112,7 +115,36 @@ impl Editor {
     /// command of that name stops being one, as a `defun` without an
     /// interactive spec makes it; advice on the name stays.
     pub fn defun(&mut self, name: &str, function: Function) {
-        self.symbol_mut(name).function = Some(Definition::Function(function));
+        let symbol = self.symbol_mut(name);
+        symbol.function = Some(Definition::Function(function));
+        symbol.function_source = None;
+    }
+
+    /// Notes where a name's function was defined, as loading a file records
+    /// its `defun`s in Emacs's `load-history`.
+    pub fn set_function_source(&mut self, name: &str, source: Option<String>) {
+        self.symbol_mut(name).function_source = source;
+    }
+
+    /// The file that defined a name, as Emacs's `symbol-file`: its function
+    /// (`defun`), its variable (`defvar`) or its face (`defface`), or with
+    /// no `kind`, whichever it has. Only what a script file defined has one:
+    /// a package E8 ships gives its name in the source tree, as
+    /// `packages/files.ts`.
+    pub fn symbol_file(&self, name: &str, kind: Option<&str>) -> Option<String> {
+        let function = || match self.symbols.get(name)?.function.as_ref()? {
+            Definition::Command(c) => c.source.clone(),
+            _ => self.symbols.get(name)?.function_source.clone(),
+        };
+        let variable = || self.var(name)?.source.clone();
+        let face = || self.face(name)?.source.clone();
+        match kind {
+            None => function().or_else(variable).or_else(face),
+            Some("defun") => function(),
+            Some("defvar") => variable(),
+            Some("defface") => face(),
+            Some(_) => None,
+        }
     }
 
     /// Makes a name call another's function, or a function, as Emacs's `defalias`.

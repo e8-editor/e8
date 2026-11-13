@@ -34,6 +34,7 @@ mod command;
 pub mod completion;
 mod codingfns;
 mod commands;
+pub mod decompress;
 pub mod display;
 mod editor;
 mod error;

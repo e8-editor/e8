@@ -16201,6 +16201,24 @@ declare global {
     function matchData(): Match | undefined;
     /** How many columns text takes on screen, counting wide characters as two (Emacs's string-width). */
     function stringWidth(text: string): number;
+    /** Whether gzip and zlib data can be decompressed, as zlib-available-p: always. */
+    function zlibAvailableP(): true;
+    /**
+     * Replace gzip or zlib data in the region, its characters taken as
+     * bytes, with the data it holds, as raw bytes, as
+     * zlib-decompress-region: true when all of it was, else undefined and
+     * the region as it was, or with `allowPartial` the number of bytes not
+     * decompressed and the region what was.
+     */
+    function zlibDecompressRegion(start: number, end: number, allowPartial?: boolean): true | number | undefined;
+    /**
+     * The file that defined a name, as symbol-file: its function
+     * ("defun"), variable ("defvar") or face ("defface"), or without
+     * `type` whichever it has; undefined for what E8 defines itself. A
+     * package E8 ships gives its file in E8's source, as
+     * "packages/files.ts"; a file of one's own, its absolute name.
+     */
+    function symbolFile(symbol: string, type?: "defun" | "defvar" | "defface" | (string & {})): string | undefined;
     /** What a symbolic link points to, as file-symlink-p, or undefined if the file is not one. */
     function fileSymlinkP(file: string): string | undefined;
     /** Whether `a` was modified after `b`, or exists where `b` does not, as file-newer-than-file-p. */

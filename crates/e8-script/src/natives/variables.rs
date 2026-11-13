@@ -461,6 +461,7 @@ natives! {
         let function = f;
         let function = function.with_name(&name);
         ed.defun(&name, function);
+        ed.set_function_source(&name, crate::LOADING.with_borrow(|files| files.last().cloned()));
         Ok(())
     }
 
