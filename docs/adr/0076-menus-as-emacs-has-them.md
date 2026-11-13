@@ -1,6 +1,6 @@
 # 0076. Menus as Emacs has them: menu keymaps, x-popup-menu, and a menu bar
 
-Status: accepted · 2026-11-13
+Status: accepted · 2026-11-13 (done: pull requests 122, 123 and the next)
 
 ## Context
 

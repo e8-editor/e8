@@ -131,6 +131,15 @@ Menu keymaps and `x-popup-menu` ([ADR 0076](../adr/0076-menus-as-emacs-has-them.
 
 The ranking is now led by **frames** (0.34: frame parameters, visibility and frames' own minibuffer windows), then the window tree's rest (0.30), charsets and codings (0.23), keyboard odds (0.22) and XML (0.19).
 
+The menu bar ([ADR 0076](../adr/0076-menus-as-emacs-has-them.md), stage 2) landed on 2026-11-13, and dialogs and tooltips (stage 3) the same day. Measured again on the same corpus:
+
+- **By name**, 607 of the 877 editor primitives, from 604, and 29 of the 169 platform ones, from 23 before the group: `x-popup-menu`, `x-popup-dialog`, `message-box`, `x-show-tip`, `x-hide-tip`, `x-select-font` and `menu-or-popup-active-p`.
+- **Packages needing nothing missing**: 252 of 295 MELPA packages, 57 of 77 daily ones and 20 of Emacs's 49, as after stage 1: the dialogs and tooltips held no package up by themselves.
+- **Still needed** by at least one package: 113 editor and 54 platform primitives, from 115 and 58.
+- **Menus** are off the list: every primitive of the group is there. pos-tip now lacks only the macOS front end's own functions.
+
+The ranking is now led by **frames** (0.34: frame parameters, visibility and frames' own minibuffer windows), then the window tree's rest (0.30), charsets and codings (0.23), keyboard odds (0.22) and XML (0.19).
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
