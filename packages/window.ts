@@ -1873,9 +1873,15 @@ function windowMinSize1(window: e8.Window, horizontal: boolean, ignore: unknown,
       const minMargins = e8.windowParameter(window, "min-margins");
       const leftMin = Array.isArray(minMargins) && typeof minMargins[0] === "number" ? minMargins[0] : undefined;
       const rightMin = Array.isArray(minMargins) && typeof minMargins[1] === "number" ? minMargins[1] : undefined;
-      // No scroll bars or right dividers in E8.
+      // No scroll bars in E8; a divider only where a frame's parameter asks.
+      const divider = e8.windowRightDividerWidth(window);
       const pixelWidth =
-        windowSafeMinSize(window, true, true) + (leftMin ?? leftMargin ?? 0) * charSize + (rightMin ?? rightMargin ?? 0) * charSize + leftFringe + rightFringe;
+        windowSafeMinSize(window, true, true) +
+        (leftMin ?? leftMargin ?? 0) * charSize +
+        (rightMin ?? rightMargin ?? 0) * charSize +
+        leftFringe +
+        rightFringe +
+        divider;
       if (pixelwise) {
         return Math.max(resizePixelwise ? Math.round(pixelWidth) : Math.round(Math.ceil(pixelWidth / charSize) * charSize), ignored ? 0 : windowMinPixelWidth());
       }

@@ -257,6 +257,19 @@ natives! {
         ed.set_window_configuration(id)
     }
 
+    /// The frame a window configuration was taken on, as
+    /// window-configuration-frame.
+    fn windowConfigurationFrame(ed, id: u64) -> Option<crate::natives::Frm> {
+        Ok(ed.window_configuration_frame(id).map(crate::natives::Frm))
+    }
+
+    /// Whether two window configurations have the same windows showing
+    /// the same buffers at the same places, as
+    /// window-configuration-equal-p.
+    fn windowConfigurationsEqual(ed, a: u64, b: u64) -> bool {
+        Ok(ed.window_configurations_equal(a, b))
+    }
+
     /// Not a safe point, as collection's cleanup calls it: a quit pending
     /// then must not stop the configuration being freed.
     #[safe_point = false]

@@ -406,3 +406,104 @@ fn a_frame_made_on_the_terminal_is_not_selected_and_knows_it() {
     );
     assert_eq!(got, r#"[true,true,"/dev/ttys003","xterm-256color"]"#);
 }
+
+// --- The window tree's rest (ADR 0077, stage 3) -----------------------------
+
+#[test]
+fn a_window_knows_where_it_sits_on_its_frame() {
+    let (mut ed, s) = setup();
+    ed.set_frame_size(80, 24);
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.a = e8.selectedWindow(), globalThis.b = e8.splitWindow(undefined, "right"),
+            JSON.stringify([e8.windowLeftColumn(a), e8.windowTopLine(a), e8.windowLeftColumn(b), e8.windowTopLine(b)]))"#,
+    );
+    assert_eq!(got, "[0,0,40,0]");
+    // Headless a cell is 1 by 1, so the units follow the columns.
+    let got = eval(&mut ed, &s, "JSON.stringify([e8.windowPixelLeft(globalThis.b), e8.windowPixelTop(globalThis.b)])");
+    assert_eq!(got, "[40,0]");
+    // No tab lines, and a divider only where a frame's parameter asks.
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.windowTabLineHeight(), e8.windowRightDividerWidth(), e8.windowBottomDividerWidth()])"), "[0,0,0]");
+    eval(&mut ed, &s, r#"(e8.setFrameParameter(undefined, "right-divider-width", 3), 1)"#);
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowRightDividerWidth())"), "3");
+}
+
+#[test]
+fn a_window_can_be_given_fringes_of_its_own() {
+    let (mut ed, s) = setup();
+    ed.set_frame_size(80, 24);
+    // Headless draws no fringes, as a terminal does not.
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.windowFringes())"), "[0,0,false,false]");
+    // Given some, the text area loses them.
+    let before = eval(&mut ed, &s, "String(e8.windowBodyPixelWidth())");
+    assert_eq!(eval(&mut ed, &s, "String(e8.setWindowFringes(undefined, 5, 4))"), "true");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.windowFringes())"), "[5,4,false,false]");
+    let after = eval(&mut ed, &s, "String(e8.windowBodyPixelWidth())");
+    assert_eq!(before.parse::<i64>().unwrap() - after.parse::<i64>().unwrap(), 9);
+    // Setting them again to the same is no change, as set-window-fringes says.
+    assert_eq!(eval(&mut ed, &s, "String(e8.setWindowFringes(undefined, 5, 4))"), "false");
+    // They go when the window shows another buffer, unless they persist.
+    eval(&mut ed, &s, r#"(e8.getBufferCreate("other"), e8.setWindowBuffer(undefined, "other"), 1)"#);
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.windowFringes())"), "[0,0,false,false]");
+    eval(&mut ed, &s, "(e8.setWindowFringes(undefined, 6, 6, false, true), 1)");
+    eval(&mut ed, &s, r#"(e8.setWindowBuffer(undefined, "*scratch*"), 1)"#);
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.windowFringes())"), "[6,6,false,true]");
+}
+
+#[test]
+fn scroll_bars_are_remembered_and_none_are_drawn() {
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.windowScrollBars())"), "[0,null,false,0,null,false]");
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.setWindowScrollBars(undefined, 10, "left", 0, null))"#), "true");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.windowScrollBars())"), r#"[0,"left",false,0,null,false]"#);
+    // Widths stay 0, E8 drawing none, as a terminal's window answers.
+    assert_eq!(eval(&mut ed, &s, r#"String(e8.setWindowScrollBars(undefined, 10, "left", 0, null))"#), "false");
+}
+
+#[test]
+fn what_a_window_was_at_the_last_redisplay_is_kept() {
+    let (mut ed, s) = setup();
+    ed.set_frame_size(80, 24);
+    // Before any redisplay there is nothing to tell.
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowOldBuffer())"), "undefined");
+    ed.redisplay();
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowOldBuffer())"), "*scratch*");
+    assert_eq!(eval(&mut ed, &s, "String(e8.oldSelectedWindow() === e8.selectedWindow())"), "true");
+    assert_eq!(eval(&mut ed, &s, "String(e8.frameOldSelectedWindow() === e8.selectedWindow())"), "true");
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.windowOldPixelWidth(), e8.windowOldPixelHeight()])"), "[80,24]");
+    // Showing another buffer does not change what it was until redisplay.
+    eval(&mut ed, &s, r#"(e8.getBufferCreate("other"), e8.setWindowBuffer(undefined, "other"), 1)"#);
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowOldBuffer())"), "*scratch*");
+    ed.redisplay();
+    assert_eq!(eval(&mut ed, &s, "String(e8.windowOldBuffer())"), "other");
+}
+
+#[test]
+fn window_configurations_know_their_frame_and_compare() {
+    let (mut ed, s) = setup();
+    ed.set_frame_size(80, 24);
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(globalThis.c1 = e8.currentWindowConfiguration(),
+            JSON.stringify([e8.windowConfigurationFrame(globalThis.c1) === e8.selectedFrame(),
+              e8.windowConfigurationEqualP(globalThis.c1, e8.currentWindowConfiguration())]))"#,
+    );
+    assert_eq!(got, "[true,true]");
+    // Split, and they differ; put back, and they are the same again.
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.splitWindow(), globalThis.c2 = e8.currentWindowConfiguration(),
+            String(e8.windowConfigurationEqualP(globalThis.c1, globalThis.c2)))"#,
+    );
+    assert_eq!(got, "false");
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.setWindowConfiguration(globalThis.c1),
+            String(e8.windowConfigurationEqualP(globalThis.c1, e8.currentWindowConfiguration())))"#,
+    );
+    assert_eq!(got, "true");
+}

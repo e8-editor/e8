@@ -16449,6 +16449,82 @@ declare global {
     function selectFrame(frame: FrameLike): void;
     function selectedFrame(): Frame;
     /**
+     * How far a window's left edge is from its frame's, in the front
+     * end's units, as window-pixel-left.
+     */
+    function windowPixelLeft(window?: WindowLike | null): number;
+    /** How far a window's top edge is from its frame's, as window-pixel-top. */
+    function windowPixelTop(window?: WindowLike | null): number;
+    /** Which column of the frame a window starts at, as window-left-column. */
+    function windowLeftColumn(window?: WindowLike | null): number;
+    /** Which line of the frame a window starts at, as window-top-line. */
+    function windowTopLine(window?: WindowLike | null): number;
+    /**
+     * How tall a window's tab line is, as window-tab-line-height: none,
+     * E8 having no tab lines.
+     */
+    function windowTabLineHeight(window?: WindowLike | null): number;
+    /**
+     * The width of the divider at a window's right, as
+     * window-right-divider-width: its frame's, 0 unless a parameter says
+     * otherwise.
+     */
+    function windowRightDividerWidth(window?: WindowLike | null): number;
+    /**
+     * The height of the divider at a window's foot, as
+     * window-bottom-divider-width.
+     */
+    function windowBottomDividerWidth(window?: WindowLike | null): number;
+    /**
+     * A window's fringes, as window-fringes: their widths in the front
+     * end's units, whether they go outside its margins, and whether they
+     * stay whatever buffer it shows.
+     */
+    function windowFringeWidths(window?: WindowLike | null): [left: number, right: number, outsideMargins: boolean, persistent: boolean];
+    /**
+     * Give a window fringes of its own, as set-window-fringes: widths in
+     * the front end's units, null for its frame's own. With `persistent`
+     * they stay whatever buffer it shows. True if they changed.
+     */
+    function setWindowFringes(window?: WindowLike | null, left?: number | null, right?: number | null, outsideMargins?: boolean, persistent?: boolean): boolean;
+    /**
+     * A window's scroll bars, as window-scroll-bars: E8 draws none, so
+     * the widths are 0 and the kinds are what setWindowScrollBars was
+     * told, as a terminal's window answers.
+     */
+    function windowScrollBars(window?: WindowLike | null): [width: number, vertical: Value, verticalPersistent: boolean, height: number, horizontal: Value, horizontalPersistent: boolean];
+    /**
+     * Say what a window's scroll bars should be, as
+     * set-window-scroll-bars. E8 draws none, so this is remembered and
+     * given back; true if what was remembered changed.
+     */
+    function setWindowScrollBars(window?: WindowLike | null, width?: number | null, vertical?: Value, height?: number | null, horizontal?: Value): boolean;
+    /**
+     * The buffer a window showed at the last redisplay, as
+     * window-old-buffer; undefined before the first.
+     */
+    function windowOldBuffer(window?: WindowLike | null): string | undefined;
+    /** Where point was in a window at the last redisplay, as window-old-point. */
+    function windowOldPoint(window?: WindowLike | null): number | undefined;
+    /**
+     * How wide a window was at the last redisplay, in the front end's
+     * units, as window-old-pixel-width.
+     */
+    function windowOldPixelWidth(window?: WindowLike | null): number;
+    /** How tall it was, as window-old-pixel-height. */
+    function windowOldPixelHeight(window?: WindowLike | null): number;
+    /** How wide its text area was, as window-old-body-pixel-width. */
+    function windowOldBodyPixelWidth(window?: WindowLike | null): number;
+    /** How tall its text area was, as window-old-body-pixel-height. */
+    function windowOldBodyPixelHeight(window?: WindowLike | null): number;
+    /** The window selected at the last redisplay, as old-selected-window. */
+    function oldSelectedWindow(): Window | undefined;
+    /**
+     * A frame's selected window at the last redisplay, as
+     * frame-old-selected-window.
+     */
+    function frameOldSelectedWindow(frame?: FrameLike | null): Window | undefined;
+    /**
      * Every terminal there is, as terminal-list: E8 draws through one
      * front end, so there is one.
      */
@@ -18711,7 +18787,7 @@ declare global {
     /** Set a window's margins while it shows its buffer, as set-window-margins. Returns whether they changed. */
     function setWindowMargins(window: WindowLike | undefined, left?: number, right?: number): boolean;
     /** A window's fringe widths and whether they are outside the margins, as window-fringes: 8 each in the GUI, none on a terminal. */
-    function windowFringes(window?: WindowLike): [number, number, boolean, boolean];
+    function windowFringes(window?: WindowLike): [left: number, right: number, outsideMargins: boolean, persistent: boolean];
     /** Show or hide a window's cursor, as internal-show-cursor. */
     function internalShowCursor(window: WindowLike | undefined, show: boolean): void;
     /** Whether a window's cursor shows, as internal-show-cursor-p. */
@@ -18782,6 +18858,14 @@ declare global {
      */
     function setWindowConfiguration(configuration: WindowConfiguration): true | undefined;
     function windowConfigurationP(value: unknown): value is WindowConfiguration;
+    /** The frame a window configuration was taken on, as window-configuration-frame. */
+    function windowConfigurationFrame(configuration: WindowConfiguration): Frame | undefined;
+    /**
+     * Whether two window configurations have the same windows showing the
+     * same buffers at the same places, as window-configuration-equal-p:
+     * what was current and the minibuffer are not compared.
+     */
+    function windowConfigurationEqualP(a: WindowConfiguration, b: WindowConfiguration): boolean;
     /**
      * Let the editor forget a window configuration now, with the markers it
      * keeps in buffers, rather than when the collector frees it: for code

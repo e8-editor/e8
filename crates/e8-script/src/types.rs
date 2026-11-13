@@ -1558,7 +1558,7 @@ const API: &str = r##"
   /** Set a window's margins while it shows its buffer, as set-window-margins. Returns whether they changed. */
   function setWindowMargins(window: WindowLike | undefined, left?: number, right?: number): boolean;
   /** A window's fringe widths and whether they are outside the margins, as window-fringes: 8 each in the GUI, none on a terminal. */
-  function windowFringes(window?: WindowLike): [number, number, boolean, boolean];
+  function windowFringes(window?: WindowLike): [left: number, right: number, outsideMargins: boolean, persistent: boolean];
   /** Show or hide a window's cursor, as internal-show-cursor. */
   function internalShowCursor(window: WindowLike | undefined, show: boolean): void;
   /** Whether a window's cursor shows, as internal-show-cursor-p. */
@@ -1629,6 +1629,14 @@ const API: &str = r##"
    */
   function setWindowConfiguration(configuration: WindowConfiguration): true | undefined;
   function windowConfigurationP(value: unknown): value is WindowConfiguration;
+  /** The frame a window configuration was taken on, as window-configuration-frame. */
+  function windowConfigurationFrame(configuration: WindowConfiguration): Frame | undefined;
+  /**
+   * Whether two window configurations have the same windows showing the
+   * same buffers at the same places, as window-configuration-equal-p:
+   * what was current and the minibuffer are not compared.
+   */
+  function windowConfigurationEqualP(a: WindowConfiguration, b: WindowConfiguration): boolean;
   /**
    * Let the editor forget a window configuration now, with the markers it
    * keeps in buffers, rather than when the collector frees it: for code
