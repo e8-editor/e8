@@ -1,6 +1,6 @@
 # 0077. Frames and the window tree as Emacs has them: geometry, terminals, and what window.c has left
 
-Status: accepted · 2026-11-13
+Status: accepted · 2026-11-13 (done: pull requests 125, 126 and the next)
 
 ## Context
 
