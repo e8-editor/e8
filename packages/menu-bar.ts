@@ -4,7 +4,7 @@
 // and a click on it opens the menu under the pointer. Unlike Emacs, E8
 // shows no menu bar until menu-bar-mode is on (docs/differences.md).
 
-import { easyMenuCreateMenu, easyMenuDefine, separator, type MenuItem } from "easymenu";
+import { easyMenuDefine, easyMenuFill, separator, type MenuItem } from "easymenu";
 import { truthy } from "subr";
 
 // --- The menus ---------------------------------------------------------------
@@ -96,26 +96,48 @@ for (let i = 0; i < MOST_BUFFERS; i += 1) {
   });
 }
 
-/** Makes the Buffers menu again, as menu-bar-update-buffers does. */
+/** The keymap the Buffers menu lives in, made once and filled again. */
+const buffersMenu = e8.makeSparseKeymap();
+
+e8.defineMenuItem("global-map", "<menu-bar> <buffer>", { label: "Buffers", binding: buffersMenu, help: "Go to one of the buffers" });
+
+/** What the menu is showing now, so it is made again only when it changes. */
+let listed = "";
+
+/**
+ * Makes the Buffers menu again, as menu-bar-update-buffers does: only
+ * when the buffers it lists have changed, as Emacs's
+ * frame-or-buffer-changed-p asks, and never while a menu is open, whose
+ * items would move under the pointer.
+ */
 function updateBuffersMenu(): void {
+  if (e8.menuOrPopupActiveP()) {
+    return;
+  }
   const max = e8.variable("buffers-menu-max-size");
   const buffers = listedBuffers();
   const limit = Math.min(typeof max === "number" ? max : buffers.length, MOST_BUFFERS);
-  shown = buffers.slice(0, limit);
-  const items: MenuItem[] = shown.map((name, i) => ({
+  const now = buffers.slice(0, limit);
+  const key = `${now.join("\u0000")}/${buffers.length}`;
+  if (key === listed) {
+    return;
+  }
+  listed = key;
+  shown = now;
+  const items: MenuItem[] = now.map((name, i) => ({
     label: name,
     key: `buffer-${i}`,
     command: `menu-bar-select-buffer-${i}` as e8.CommandName,
   }));
-  if (buffers.length > shown.length) {
+  if (buffers.length > now.length) {
     items.push(separator, { label: "List All Buffers", command: "list-buffers" });
   }
   items.push(separator, { label: "Select Buffer...", command: "switch-to-buffer" });
-  e8.defineMenuItem("global-map", "<menu-bar> <buffer>", {
-    label: "Buffers",
-    binding: easyMenuCreateMenu("Buffers", items),
-    help: "Go to one of the buffers",
-  });
+  // The same keymap filled again, since keymaps are never freed.
+  for (const old of e8.keymapMenuKeys(buffersMenu)) {
+    e8.keymapUnset(buffersMenu, old, true);
+  }
+  easyMenuFill(buffersMenu, items);
 }
 
 e8.addHook("menu-bar-update-hook", updateBuffersMenu);

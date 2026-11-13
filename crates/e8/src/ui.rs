@@ -133,8 +133,9 @@ pub fn draw(frame: &mut Frame, fd: &FrameDescription) {
     // A menu is drawn over everything else, and keeps the cursor on the
     // item it is on, as term.c's menus do.
     // Cells count from the top left of the frame's windows, below the bars.
-    let windows_top = screen.y + u16::from(fd.menu_bar.is_some()) + u16::from(fd.tab_bar.is_some());
-    if let Some(cursor) = draw_menus(frame, fd, Rect { y: windows_top, height: screen.bottom() - windows_top, ..screen }) {
+    let windows_top = (screen.y + u16::from(fd.menu_bar.is_some()) + u16::from(fd.tab_bar.is_some())).min(screen.bottom());
+    let below = Rect { y: windows_top, height: screen.bottom() - windows_top, ..screen };
+    if let Some(cursor) = draw_menus(frame, fd, below) {
         frame.set_cursor_position(cursor);
         return;
     }

@@ -262,6 +262,13 @@ impl Editor {
         let id = self.next_frame_id;
         self.other_frames.push(Frame { id, tree: WindowTree::Leaf(window), selected_window: window, frame_size: self.frame_size, frame_size_implied: self.frame_size_implied });
         self.frame_order.insert(0, id);
+        // A new frame shows a menu bar if the others do, as Emacs's
+        // `menu-bar-mode` puts `menu-bar-lines` in `default-frame-alist`
+        // so that frames made later have one.
+        let lines = self.menu_bar_lines(self.selected_frame);
+        if lines > 0 {
+            self.frame_parameters.entry(id).or_default().insert("menu-bar-lines".to_string(), Value::Number(lines as f64));
+        }
         self.select_frame(id)?;
         Ok(id)
     }

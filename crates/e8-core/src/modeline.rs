@@ -136,9 +136,7 @@ impl Editor {
         self.tab_bars = bars;
         // Each frame's menu bar, from the keymaps in use, as update_menu_bar
         // lays Emacs's out at redisplay.
-        for frame in self.frame_list() {
-            self.update_menu_bar(frame);
-        }
+        self.update_menu_bars();
         // Each frame's title, as Emacs formats frame-title-format for its selected window.
         let mut titles = HashMap::new();
         for frame in self.frame_list() {

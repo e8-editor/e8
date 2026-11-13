@@ -59,6 +59,15 @@ function keyOf(item: MenuItem, taken: Set<string>): string {
  */
 export function easyMenuCreateMenu(_name: string | null, items: MenuItem[]): e8.Keymap {
   const menu = e8.makeSparseKeymap();
+  easyMenuFill(menu, items);
+  return menu;
+}
+
+/**
+ * Put a menu's items in a keymap that is already there, for a menu made
+ * again as its items change, so that no keymap is made for each.
+ */
+export function easyMenuFill(menu: e8.Keymap, items: MenuItem[]): void {
   const taken = new Set<string>();
   for (const item of items) {
     const key = `<${keyOf(item, taken)}>`;
@@ -74,7 +83,6 @@ export function easyMenuCreateMenu(_name: string | null, items: MenuItem[]): e8.
       filter: item.filter,
     });
   }
-  return menu;
 }
 
 /**
@@ -91,23 +99,34 @@ export function easyMenuDefine(key: string, maps: (string | e8.Keymap)[], doc: s
   return made;
 }
 
-/** The keys of a menu path, such as ["File", "Open"], in a menu keymap. */
-function pathKeys(map: string | e8.Keymap, path: string[]): string | undefined {
-  let keys = "";
-  let here: string | e8.Keymap = map;
-  for (const name of path) {
-    const found = itemKeyNamed(here, name);
-    if (found === undefined) {
+/**
+ * The keymap a path of menu names leads to: a keymap that binds
+ * `<menu-bar>`, as a mode map or the global map does, is looked in there,
+ * as easy-menu-get-map pushes `menu-bar` onto the path. An empty path
+ * gives the menu bar itself.
+ */
+function menuAt(map: string | e8.Keymap, path: string[]): e8.Keymap | undefined {
+  const bar = e8.lookupKey(map, "<menu-bar>");
+  let here: e8.Keymap = e8.keymapp(bar) ? bar : (map as e8.Keymap);
+  if (typeof map === "string" && !e8.keymapp(bar)) {
+    const named = e8.variable(map);
+    if (!e8.keymapp(named)) {
       return undefined;
     }
-    keys = keys === "" ? found : `${keys} ${found}`;
-    const next = e8.lookupKey(map, keys);
+    here = named;
+  }
+  for (const name of path) {
+    const key = itemKeyNamed(here, name);
+    if (key === undefined) {
+      return undefined;
+    }
+    const next = e8.lookupKey(here, key);
     if (!e8.keymapp(next)) {
       return undefined;
     }
     here = next;
   }
-  return keys;
+  return here;
 }
 
 /** The key of the item of a menu keymap whose label is `name`. */
@@ -125,11 +144,10 @@ function itemKeyNamed(map: string | e8.Keymap, name: string): string | undefined
  * easy-menu-add-item does: ["File"] puts it in the File menu.
  */
 export function easyMenuAddItem(map: string | e8.Keymap, path: string[], item: MenuItem): void {
-  const prefix = pathKeys(map, path);
-  if (prefix === undefined) {
+  const into = menuAt(map, path);
+  if (into === undefined) {
     e8.signal("error", `No menu ${path.join("/")}`);
   }
-  const into = path.length === 0 ? map : (e8.lookupKey(map, prefix ?? "") as e8.Keymap);
   const taken = new Set(e8.keymapMenuKeys(into).map((k) => k.replace(/^<|>$/g, "")));
   const key = `<${keyOf(item, taken)}>`;
   const binding = item.items ? easyMenuCreateMenu(item.label, item.items) : (item.command ?? null);
@@ -147,21 +165,16 @@ export function easyMenuAddItem(map: string | e8.Keymap, path: string[], item: M
 
 /** Whether a menu has an item of that name under a path, as easy-menu-item-present-p. */
 export function easyMenuItemPresentP(map: string | e8.Keymap, path: string[], name: string): boolean {
-  const prefix = pathKeys(map, path);
-  if (prefix === undefined) {
-    return false;
-  }
-  const into = path.length === 0 ? map : (e8.lookupKey(map, prefix) as e8.Keymap);
-  return truthy(itemKeyNamed(into, name));
+  const into = menuAt(map, path);
+  return into !== undefined && truthy(itemKeyNamed(into, name));
 }
 
 /** Take an item of that name out of a menu, as easy-menu-remove-item. */
 export function easyMenuRemoveItem(map: string | e8.Keymap, path: string[], name: string): void {
-  const prefix = pathKeys(map, path);
-  if (prefix === undefined) {
+  const into = menuAt(map, path);
+  if (into === undefined) {
     return;
   }
-  const into = path.length === 0 ? map : (e8.lookupKey(map, prefix) as e8.Keymap);
   const key = itemKeyNamed(into, name);
   if (key !== undefined) {
     e8.keymapUnset(into, key, true);

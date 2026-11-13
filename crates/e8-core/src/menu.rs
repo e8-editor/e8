@@ -121,6 +121,9 @@ pub(crate) struct OpenMenu {
     pub(crate) path: Vec<usize>,
     /// Which line of the innermost panel the cursor is on.
     pub(crate) cursor: usize,
+    /// The first line each open panel shows, outermost first, for a panel
+    /// taller than the frame, as term.c keeps `first_item` for each.
+    pub(crate) firsts: Vec<usize>,
     /// Where the first panel's top left cell goes, in frame cells.
     pub(crate) at: (usize, usize),
     /// The frame it was laid out for.
@@ -202,14 +205,20 @@ impl OpenMenu {
             let x0 = x.min(frame.0.saturating_sub(width));
             let y0 = y.min(frame.1.saturating_sub(nodes.len().min(frame.1)));
             let count = nodes.len().min(frame.1.saturating_sub(y0)).max(1);
-            // The lines shown hold the cursor, the panel scrolled to it.
-            let cursor = if level == deepest { self.cursor } else { self.path[level] };
-            let first = cursor.saturating_sub(count - 1).min(nodes.len().saturating_sub(count));
+            // How far it is scrolled, kept as it is moved, and never past
+            // the end.
+            let _ = deepest;
+            let first = self.firsts.get(level).copied().unwrap_or(0).min(nodes.len().saturating_sub(count));
             out.push(Place { x: x0, y: y0, width, first, count });
             x = x0;
             y = y0;
         }
         out
+    }
+
+    /// How many lines the panel of a level shows.
+    fn shown(&self, frame: (usize, usize), level: usize) -> usize {
+        self.places(frame).get(level).map_or(1, |p| p.count)
     }
 
     /// The item at a cell of the frame, as the panels lie: which level and
@@ -282,7 +291,7 @@ impl Editor {
         let at = self.menu_place(position);
         let cursor = nodes.iter().position(|n| !n.title).unwrap_or(0);
         let frame = self.selected_frame();
-        let open = OpenMenu { nodes, path: Vec::new(), cursor, at, frame, helped: false, bar: None };
+        let open = OpenMenu { nodes, path: Vec::new(), cursor, firsts: vec![0], at, frame, helped: false, bar: None };
         // A menu opened while another is (from a timer, say) gives the
         // outer one back when it closes, as each of Emacs's keeps its own
         // state on the stack.
@@ -457,6 +466,29 @@ impl Editor {
         if let Some(menu) = self.menu.as_mut() {
             menu.cursor = at;
         }
+        self.menu_scroll_to_cursor();
+    }
+
+    /// Scrolls the panel the cursor is in so that it shows, as term.c
+    /// scrolls by `first_item` when the cursor reaches an edge.
+    fn menu_scroll_to_cursor(&mut self) {
+        let cells = self.frame_cells();
+        let Some(menu) = self.menu.as_ref() else { return };
+        let level = menu.path.len();
+        let (cursor, count) = (menu.cursor, menu.shown(cells, level));
+        let first = menu.firsts.get(level).copied().unwrap_or(0);
+        let moved = if cursor < first {
+            cursor
+        } else if cursor >= first + count {
+            cursor + 1 - count
+        } else {
+            first
+        };
+        if let Some(menu) = self.menu.as_mut()
+            && let Some(slot) = menu.firsts.get_mut(level)
+        {
+            *slot = moved;
+        }
     }
 
     /// Opens the submenu the cursor is on, if it has one.
@@ -470,6 +502,7 @@ impl Editor {
         let first = children.iter().position(|n| !n.title).unwrap_or(0);
         menu.path.push(at);
         menu.cursor = first;
+        menu.firsts.push(0);
         true
     }
 
@@ -479,6 +512,7 @@ impl Editor {
         let Some(menu) = self.menu.as_mut() else { return };
         if let Some(at) = menu.path.pop() {
             menu.cursor = at;
+            menu.firsts.truncate(menu.path.len() + 1);
         }
     }
 
@@ -517,6 +551,7 @@ impl Editor {
         let Some(menu) = self.menu.as_mut() else { return false };
         let Some((level, line)) = menu.at_cell(cells, x.max(0) as usize, y.max(0) as usize) else { return false };
         menu.path.truncate(level);
+        menu.firsts.truncate(level + 1);
         if menu.current().get(line).is_some_and(|n| !n.title) {
             menu.cursor = line;
         }
@@ -651,7 +686,8 @@ impl Editor {
             Binding::Command(command) => Value::Str(command.clone()),
             _ => Value::Null,
         };
-        Ok(match self.funcall(filter, &[given])? {
+        let Ok(filtered) = self.funcall(filter, &[given]) else { return Ok(binding.clone()) };
+        Ok(match filtered {
             Value::Keymap(map) => Binding::Keymap(map),
             Value::Str(command) => Binding::Command(command),
             Value::Null => Binding::Nil,
@@ -663,7 +699,9 @@ impl Editor {
     /// Emacs evaluates the form a property holds.
     fn menu_truth(&mut self, value: &Value) -> Result<bool> {
         match value {
-            Value::Function(_) => Ok(self.funcall(value, &[])?.is_true()),
+            // A property that fails counts as nil, as
+            // menu_item_eval_property catches an error and gives nil.
+            Value::Function(_) => Ok(self.funcall(value, &[]).map(|v| v.is_true()).unwrap_or(false)),
             other => Ok(other.is_true()),
         }
     }
@@ -749,22 +787,44 @@ impl Editor {
         self.menu_bars.get(&frame).map(Vec::as_slice)
     }
 
-    /// Lays a frame's menu bar out again, as redisplay updates Emacs's:
-    /// `menu-bar-update-hook` first, as `update_menu_bar` runs it, then
-    /// the `<menu-bar>` bindings of the keymaps in use.
-    pub(crate) fn update_menu_bar(&mut self, frame: crate::window::FrameId) {
-        if self.menu_bar_lines(frame) == 0 {
-            self.menu_bars.remove(&frame);
+    /// Lays every frame's menu bar out again, as redisplay updates
+    /// Emacs's: `menu-bar-update-hook` once, as xdisp.c's
+    /// `update_menu_bar` runs it once for a redisplay, then each frame's
+    /// bar from the `<menu-bar>` bindings of the keymaps its own window's
+    /// buffer uses.
+    pub(crate) fn update_menu_bars(&mut self) {
+        let frames: Vec<crate::window::FrameId> = self.frame_list().into_iter().filter(|f| self.menu_bar_lines(*f) > 0).collect();
+        self.menu_bars.retain(|frame, _| frames.contains(frame));
+        if frames.is_empty() {
             return;
         }
+        // Called again while it runs, as a hook that redisplays would,
+        // it does nothing, as update_menu_bar does while
+        // inhibit-menubar-update is set.
+        if self.updating_menu_bar {
+            return;
+        }
+        self.updating_menu_bar = true;
         let _ = self.run_hooks("menu-bar-update-hook");
-        let items = match self.menu_bar_nodes() {
-            Ok(nodes) => bar_items(&nodes),
-            // A menu bar that cannot be built shows nothing, as Emacs
-            // inhibits quitting and errors while it builds one.
-            Err(_) => Vec::new(),
+        for frame in frames {
+            let items = self.frame_menu_bar(frame);
+            self.menu_bars.insert(frame, items);
+        }
+        self.updating_menu_bar = false;
+    }
+
+    /// One frame's menu bar, laid out with its own window's buffer
+    /// current, as `update_menu_bar` makes it current for each frame.
+    fn frame_menu_bar(&mut self, frame: crate::window::FrameId) -> Vec<MenuBarItem> {
+        let name = self.frame_selected_window(frame).and_then(|w| self.window_buffer_name(w)).map(str::to_string);
+        let index = name.and_then(|name| self.find_buffer(&name));
+        let nodes = match index {
+            Some(index) => self.with_current_buffer(index, Editor::menu_bar_nodes),
+            None => self.menu_bar_nodes(),
         };
-        self.menu_bars.insert(frame, items);
+        // A menu bar that cannot be built shows nothing, as Emacs
+        // inhibits errors while it builds one.
+        nodes.as_deref().map(bar_items).unwrap_or_default()
     }
 
     /// The menus of the menu bar, each with its items below it: the
@@ -780,9 +840,21 @@ impl Editor {
         let mut out: Vec<Node> = Vec::new();
         for map in maps {
             let Some(Binding::Keymap(menu)) = self.keymaps().binding_of(map, &[bar]) else { continue };
-            for node in self.keymap_nodes(menu, &[bar], 0)? {
+            for mut node in self.keymap_nodes(menu, &[bar], 0)? {
                 match out.iter().position(|n| n.keys == node.keys) {
-                    Some(i) => out[i] = node,
+                    // Both maps' items show, the more local map's first,
+                    // as keyboard.c's menu_bar_item keeps the keymaps of
+                    // both under the key it already has.
+                    Some(i) => {
+                        if let (Some(theirs), Some(ours)) = (out[i].children.as_ref(), node.children.as_mut()) {
+                            for old in theirs {
+                                if !ours.iter().any(|n| n.keys == old.keys) {
+                                    ours.push(old.clone());
+                                }
+                            }
+                        }
+                        out[i] = node;
+                    }
                     None => out.push(node),
                 }
             }
@@ -806,12 +878,13 @@ impl Editor {
         if self.menu_bar_lines(frame) == 0 {
             return Err(Error::new("No menu bar"));
         }
-        self.update_menu_bar(frame);
         let nodes = self.menu_bar_nodes()?;
         let items = bar_items(&nodes);
         if items.is_empty() {
             return Err(Error::new("Empty menu"));
         }
+        // What is drawn is what the menu was opened from.
+        self.menu_bars.insert(frame, items.clone());
         let mut at = index.min(items.len() - 1);
         loop {
             let Some(children) = nodes.get(at).and_then(|n| n.children.clone()) else { return Ok(()) };
@@ -820,7 +893,7 @@ impl Editor {
             }
             let cursor = children.iter().position(|n| !n.title).unwrap_or(0);
             // Below the bar, at the menu's own column.
-            let open = OpenMenu { nodes: children, path: Vec::new(), cursor, at: (items[at].column, 1), frame, helped: false, bar: Some(at) };
+            let open = OpenMenu { nodes: children, path: Vec::new(), cursor, firsts: vec![0], at: (items[at].column, 0), frame, helped: false, bar: Some(at) };
             let outer = self.menu.replace(open);
             let answer = self.walk_menu();
             self.menu = outer;
