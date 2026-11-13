@@ -1489,7 +1489,8 @@ impl Editor {
         if self.running == 0 {
             self.current_from_selected_window();
         }
-        // Movement is not kept in macros or the lossage, as Emacs keeps it out.
+        // Movement is not kept in macros, as Emacs keeps it out, nor in the
+        // lossage, where Emacs keeps a window's first and last.
         let movement = key.code == KeyCode::MouseMovement;
         // While a keyboard macro is being defined, record the keys typed.
         if self.executing_macro == 0

@@ -186,6 +186,11 @@ impl Driver {
         *self.pointer.lock().unwrap_or_else(|e| e.into_inner()) = pointer;
     }
 
+    /// The pointer left a frame's window, as [`Editor::pointer_left`].
+    pub fn pointer_left(&self, frame: crate::window::FrameId) {
+        crate::mouse::left(&self.pointer, frame);
+    }
+
     /// Sends input to the editor's thread.
     pub fn send(&self, input: Input) {
         self.sent.fetch_add(1, Ordering::SeqCst);

@@ -55,6 +55,14 @@ pub struct Pointer {
 /// Where the front ends write the pointer's place, and the editor reads it.
 pub type PointerCell = Arc<Mutex<Option<Pointer>>>;
 
+/// Forgets the pointer's place if it is over `frame`.
+pub(crate) fn left(cell: &PointerCell, frame: FrameId) {
+    let mut pointer = cell.lock().unwrap_or_else(|e| e.into_inner());
+    if pointer.is_some_and(|p| p.frame == frame) {
+        *pointer = None;
+    }
+}
+
 /// A request to move the pointer, as `set-mouse-position` makes, for the
 /// front end.
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -118,6 +126,12 @@ impl Editor {
         *self.pointer.lock().unwrap_or_else(|e| e.into_inner()) = pointer;
     }
 
+    /// The pointer left `frame`'s window: it is over none of the editor's
+    /// frames, unless a front end has already seen it over another.
+    pub fn pointer_left(&self, frame: FrameId) {
+        left(&self.pointer, frame);
+    }
+
     /// Where the pointer is, if it is over a live frame.
     fn pointer(&self) -> Option<Pointer> {
         let pointer = *self.pointer.lock().unwrap_or_else(|e| e.into_inner());
@@ -177,8 +191,10 @@ impl Editor {
         // the middle of the cell, kept on the frame.
         let (x, y) = if chars {
             let (cw, lh) = self.cell();
+            // The whole frame, its minibuffer's lines too, as FRAME_PIXEL_HEIGHT.
             let (width, height) = self.frame_units_of(frame);
-            ((x * cw + (cw / 2.0).floor()).clamp(0.0, width as f32), (y * lh + (lh / 2.0).floor()).clamp(0.0, height as f32))
+            let height = height as f32 + self.mini_window_lines() as f32 * lh;
+            ((x * cw + (cw / 2.0).floor()).clamp(0.0, width as f32), (y * lh + (lh / 2.0).floor()).clamp(0.0, height))
         } else {
             (x, y)
         };
@@ -220,8 +236,7 @@ impl Editor {
     /// of its windows, and the part of it there, as Emacs's `window-at`
     /// finds it: the frame's windows in order, then its minibuffer's.
     pub fn window_at(&self, x: f64, y: f64, frame: FrameId) -> Option<(WindowId, WindowPart)> {
-        let (cw, lh) = self.cell();
-        let (ux, uy) = ((x * cw as f64) as f32, (y * lh as f64) as f32);
+        let (ux, uy) = self.canon_to_units(x, y);
         let mut windows: Vec<WindowId> = self.frame_windows(frame).iter().map(|v| v.id).collect();
         if self.window_frame(MINIBUFFER_WINDOW) == Some(frame) {
             windows.push(MINIBUFFER_WINDOW);
@@ -233,8 +248,15 @@ impl Editor {
     /// or none if the place is not in it, as Emacs's
     /// `coordinates-in-window-p`.
     pub fn coordinates_in_window(&self, x: f64, y: f64, window: WindowId) -> Option<WindowPart> {
+        let (ux, uy) = self.canon_to_units(x, y);
+        self.part_at(window, ux, uy)
+    }
+
+    /// Columns and lines as the front end's units, whole ones, truncated
+    /// toward zero as Emacs's FRAME_PIXEL_X_FROM_CANON_X truncates them.
+    fn canon_to_units(&self, x: f64, y: f64) -> (f32, f32) {
         let (cw, lh) = self.cell();
-        self.part_at(window, (x * cw as f64) as f32, (y * lh as f64) as f32)
+        ((x * cw as f64).trunc() as f32, (y * lh as f64).trunc() as f32)
     }
 
     /// The part of a window at a place in its frame's units, as window.c's

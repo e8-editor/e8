@@ -4,7 +4,7 @@
 //! on, and the raw keys of a key sequence. What Emacs gives was recorded
 //! from Emacs 30 in a terminal 80 columns by 25 lines, without a menu bar.
 
-use e8_core::clicks::Clicks;
+use e8_core::clicks::{Clicks, send};
 use e8_core::mouse::{Pointer, Warp};
 use e8_core::{Editor, MouseEvent};
 use e8_script::Scripting;
@@ -70,7 +70,8 @@ fn window_at_and_coordinates_in_window_as_emacs_finds_them() {
         &mut ed,
         &s,
         r#"([[0, 0], [5, 2], [28, 2], [29, 2], [30, 2], [31, 2], [29, 5], [28, 5], [5, 5], [5, 6], [29, 6], [40, 23],
-          [40, 22], [79, 0], [0, 24], [10, 24], [5, 12], [2.5, 1.5], [-1, 0], [80, 0], [30, 24]]
+          [40, 22], [79, 0], [0, 24], [10, 24], [5, 12], [2.5, 1.5], [-1, 0], [80, 0], [30, 24],
+          [28.5, 2], [29.5, 5], [-0.5, 0], [-0.5, -0.5], [29.9, 1], [5, 5.9], [79.5, 1]]
           .map(([x, y]) => [name(e8.windowAt(x, y)), ...[L, R, B, M].map((w) => e8.coordinatesInWindowP([x, y], w) ?? null)]))"#,
     );
     let expected = r#"[["L",[0,0],null,null,null],["L",[5,2],null,null,null],["L",[28,2],null,null,null],
@@ -79,7 +80,8 @@ fn window_at_and_coordinates_in_window_as_emacs_finds_them() {
         ["B",null,null,[5,0],null],["B",null,null,"vertical-line",null],["R",null,"mode-line",null,null],
         ["R",null,[10,22],null,null],["R",null,[49,0],null,null],["M",null,null,null,[0,0]],["M",null,null,null,[10,0]],
         ["B",null,null,[5,6],null],["L",[2,1],null,null,null],[null,null,null,null,null],[null,null,null,null,null],
-        ["M",null,null,null,[30,0]]]"#;
+        ["M",null,null,null,[30,0]],["L",[28,2],null,null,null],["L","mode-line",null,null,null],["L",[0,0],null,null,null],
+        ["L",[0,0],null,null,null],["L","vertical-line",null,null,null],["L","mode-line",null,null,null],["R",null,[49,1],null,null]]"#;
     assert_eq!(got, expected.split_whitespace().collect::<String>());
     // Margins and a header line, in the right window.
     let got = eval(
@@ -102,17 +104,14 @@ fn window_at_and_coordinates_in_window_as_emacs_finds_them() {
 fn a_window_has_its_parts_in_points_and_fringes() {
     let (mut ed, s) = setup();
     ed.set_text_metrics(std::sync::Arc::new(Window));
-    // 80 columns of 10 points and 24 lines of 20.
+    // 80 columns of 10 points and 24 lines of 20, fringes of 8 points.
     ed.set_frame_pixel_size(800, 480);
     eval(&mut ed, &s, SPLIT);
-    let chrome = ed.text_metrics().window_chrome();
-    let fringe = chrome.fringes / 20.0;
-    // Columns from the frame's left: inside the left fringe, the text, and
-    // the right window's text, as fractions of a column.
-    let got = eval(&mut ed, &s, &format!("([[0.05, 2], [{x}, 2], [35, 2]].map((c) => [name(e8.windowAt(...c)), e8.coordinatesInWindowP(c, e8.windowAt(...c)) ?? null]))", x = fringe + 1.0));
-    let text_x = |x: f32, left: f32| ((x - left) * 10.0 - chrome.fringes / 2.0) / 10.0;
-    let expected = format!(r#"[["L","left-fringe"],["L",[{},2]],["R",[{},2]]]"#, text_x(fringe + 1.0, 0.0), text_x(35.0, 30.0));
-    assert_eq!(got, expected);
+    // Inside the left fringe, then 10 points into the text, and 42 into the right window's.
+    assert_eq!(
+        eval(&mut ed, &s, "[[0.5, 2], [1.8, 2], [35, 2]].map((c) => [name(e8.windowAt(...c)), e8.coordinatesInWindowP(c, e8.windowAt(...c)) ?? null])"),
+        r#"[["L","left-fringe"],["L",[1,2]],["R",[4.2,2]]]"#
+    );
     // The border between windows is the last column's worth before the edge, as on a window system.
     assert_eq!(eval(&mut ed, &s, "e8.coordinatesInWindowP([29.5, 2], L)"), r#""vertical-line""#);
 }
@@ -144,6 +143,7 @@ fn the_pointer_is_where_the_front_end_last_saw_it() {
     eval(&mut ed, &s, &format!("e8.deleteFrame({other})"));
     assert_eq!(eval(&mut ed, &s, probe), "[[true,null,null],[true,null,null]]");
     assert_eq!(eval(&mut ed, &s, "e8.framePointerVisibleP()"), "true");
+    assert_eq!(eval(&mut ed, &s, &format!("e8.conditionCase(() => e8.framePointerVisibleP({other}), {{ error: (e) => e.symbol }})")), r#""wrong-type-argument""#);
 }
 
 #[test]
@@ -164,12 +164,14 @@ fn moving_the_pointer_asks_a_window_and_selects_a_terminal_frame() {
     eval(&mut ed, &s, &format!("e8.setMousePosition({f1}, 3, 4)"));
     assert_eq!(eval(&mut ed, &s, "([e8.mousePosition().slice(1), e8.mousePixelPosition().slice(1), e8.mouseAbsolutePixelPosition()])"), "[[3,4],[35,90],[135,140]]");
     assert_eq!(ed.selected_frame(), f1);
-    eval(&mut ed, &s, &format!("e8.setMousePosition({f1}, 1000, -5), e8.setMousePixelPosition({f1}, 7, 8), e8.setMouseAbsolutePixelPosition(5, 6)"));
+    eval(&mut ed, &s, &format!("e8.setMousePosition({f1}, 1000, -5), e8.setMousePosition({f1}, 0, 1000), e8.setMousePixelPosition({f1}, 7, 8), e8.setMouseAbsolutePixelPosition(5, 6)"));
     assert_eq!(
         ed.take_warps(),
         [
             Warp::Frame { frame: f1, x: 35.0, y: 90.0, chars: false },
             Warp::Frame { frame: f1, x: 800.0, y: 0.0, chars: false },
+            // Kept on the frame, its echo area's line too.
+            Warp::Frame { frame: f1, x: 5.0, y: 500.0, chars: false },
             Warp::Frame { frame: f1, x: 7.0, y: 8.0, chars: false },
             Warp::Screen { x: 5.0, y: 6.0 },
         ]
@@ -205,19 +207,28 @@ fn movement_comes_as_events_only_while_track_mouse_is_on() {
     eval(&mut ed, &s, r#"(globalThis.drags = [], e8.bindKey("<drag-mouse-1>", e8.defineCommand({ name: "test-drag", run: () => drags.push(e8.lastMouseEvent()) })), true)"#);
     let window = ed.selected_window();
     let mut clicks: Clicks<i32> = Clicks::default();
-    clicks.press(&mut ed, 0.0, 0, |a, b| a == b, (window, Some(1)), false);
-    clicks.moved(&mut ed, Some((window, Some(5))), false);
-    clicks.moved(&mut ed, Some((window, Some(7))), false);
-    assert_eq!(eval(&mut ed, &s, "([moves, drags.length])"), "[[4,5,7],0]");
-    clicks.release(&mut ed, Some((window, Some(8))), false);
-    assert_eq!(eval(&mut ed, &s, "([moves, drags.map((d) => [d.start.position, d.position])])"), "[[4,5,7],[[1,8]]]");
+    let t = ed.tracking_mouse();
+    send(&mut ed, clicks.press(0.0, 0, |a, b| a == b, (window, Some(1)), false));
+    send(&mut ed, clicks.moved(Some((window, Some(5))), false, t));
+    send(&mut ed, clicks.moved(Some((window, Some(7))), false, t));
+    assert_eq!(eval(&mut ed, &s, "[moves, drags.length]"), "[[4,5,7],0]");
+    // Released off the text, the drag ends where the pointer last was over it.
+    send(&mut ed, clicks.release(None, false));
+    assert_eq!(eval(&mut ed, &s, "[moves, drags.map((d) => [d.start.position, d.position])]"), "[[4,5,7],[[1,7]]]");
+    // Tracking ended with the button down: the drag still ends once, at the release.
+    send(&mut ed, clicks.press(3.0, 0, |a, b| a == b, (window, Some(1)), false));
+    send(&mut ed, clicks.moved(Some((window, Some(2))), false, true));
+    send(&mut ed, clicks.moved(Some((window, Some(3))), false, false));
+    send(&mut ed, clicks.release(Some((window, Some(3))), false));
+    assert_eq!(eval(&mut ed, &s, "[moves, drags.map((d) => [d.start.position, d.position])]"), "[[4,5,7,2],[[1,7],[1,3]]]");
     // Without track-mouse, drags come as they go and movement not at all.
     eval(&mut ed, &s, r#"e8.setVariable("track-mouse", null)"#);
-    clicks.press(&mut ed, 5.0, 0, |a, b| a == b, (window, Some(1)), false);
-    clicks.moved(&mut ed, Some((window, Some(5))), false);
-    clicks.release(&mut ed, Some((window, Some(5))), false);
-    clicks.moved(&mut ed, Some((window, Some(6))), false);
-    assert_eq!(eval(&mut ed, &s, "([moves, drags.length])"), "[[4,5,7],2]");
+    let t = ed.tracking_mouse();
+    send(&mut ed, clicks.press(5.0, 0, |a, b| a == b, (window, Some(1)), false));
+    send(&mut ed, clicks.moved(Some((window, Some(5))), false, t));
+    send(&mut ed, clicks.release(Some((window, Some(5))), false));
+    send(&mut ed, clicks.moved(Some((window, Some(6))), false, t));
+    assert_eq!(eval(&mut ed, &s, "[moves, drags.length]"), "[[4,5,7,2],3]");
 }
 
 #[test]
@@ -279,4 +290,42 @@ fn raw_keys_are_the_keys_before_translation() {
         eval(&mut ed, &s, "(seen)"),
         r#"[["<f8>",["<f9>"],["<f8>"]],["<f8>",["S-<f8>"],["<f8>"]],["<f8>",["<f8>"],["<f8>"]],[["C-x","C-f"],["C-x","C-f"]]]"#
     );
+}
+
+#[test]
+fn a_drag_tracked_by_its_command_gets_each_move_and_its_end() {
+    // A command bound to <down-mouse-1> that follows the drag, as Emacs's
+    // mouse-drag-track does, while the clicks' state is behind a lock, as
+    // both front ends keep it: each event is sent after the lock is let
+    // go, as the command waits for the next.
+    let d = Driven::new(
+        r#"e8.bindKey("<down-mouse-1>", e8.defineCommand({
+          name: "test-drag-track",
+          run: () => e8.trackMouse(() => {
+            const seen = [];
+            for (let event = e8.readEvent(); ; event = e8.readEvent()) {
+              seen.push(`${event}@${e8.lastMouseEvent().position}`);
+              if (event !== "<mouse-movement>") break;
+            }
+            e8.insert(seen.join(" "));
+          }),
+        }));"#,
+    );
+    d.type_text("hello world");
+    let clicks = std::sync::Arc::new(std::sync::Mutex::new(Clicks::<i32>::default()));
+    type Step = Box<dyn FnOnce(&mut Clicks<i32>, e8_core::WindowId, bool) -> Option<e8_core::clicks::Event> + Send>;
+    let step = |f: Step| {
+        let clicks = clicks.clone();
+        d.0.run(move |ed| {
+            let (window, tracking) = (ed.selected_window(), ed.tracking_mouse());
+            let event = f(&mut clicks.lock().unwrap(), window, tracking);
+            send(ed, event);
+        });
+        d.0.settle();
+    };
+    step(Box::new(|c, w, _| c.press(0.0, 0, |a, b| a == b, (w, Some(1)), false)));
+    step(Box::new(|c, w, t| c.moved(Some((w, Some(3))), false, t)));
+    step(Box::new(|c, w, t| c.moved(Some((w, Some(4))), false, t)));
+    step(Box::new(|c, w, _| c.release(Some((w, Some(4))), false)));
+    assert_eq!(d.text(), "hello world<mouse-movement>@3 <mouse-movement>@4 <drag-mouse-1>@4");
 }

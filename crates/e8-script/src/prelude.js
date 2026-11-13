@@ -743,10 +743,7 @@
     readEvent: (prompt, options) => native.readKeyEvent("event", String(prompt ?? ""), options?.seconds ?? null) ?? undefined,
     readChar: (prompt, options) => native.readKeyEvent("char", String(prompt ?? ""), options?.seconds ?? null) ?? undefined,
     readKeySequence: (prompt) => native.readKeyEvent("sequence", String(prompt ?? ""), null),
-    readKeySequenceVector(prompt) {
-      e8.readKeySequence(prompt);
-      return native.thisSingleCommandRawKeys();
-    },
+    readKeySequenceVector: (prompt) => e8.readKeySequence(prompt).split(" "),
     trackMouse: (fn) => e8.letBind({ "track-mouse": true }, fn),
     // As frame.c's: mouse-position-function, if set, has the last word.
     mousePosition() {

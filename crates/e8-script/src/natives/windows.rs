@@ -242,7 +242,10 @@ natives! {
     #[ts = "(frame?: FrameLike): boolean"]
     pub fn framePointerVisibleP(ed, frame: Option<Frm>) -> bool {
         let frame = frame.map_or(ed.selected_frame(), |f| f.0);
-        Ok(ed.frame_list().contains(&frame))
+        if !ed.frame_list().contains(&frame) {
+            return Err(wrong_type("frame-live-p", EditorValue::Frame(frame)));
+        }
+        Ok(true)
     }
 
     /// The window at column `x` and line `y` of a frame, the selected one
