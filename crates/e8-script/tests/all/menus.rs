@@ -586,6 +586,14 @@ fn a_tooltip_shows_over_the_windows_and_goes_when_it_is_hidden() {
         fd.tip.map(|t| (t.x, t.y, t.rows.iter().map(|r| r.text.trim().to_string()).collect::<Vec<_>>()))
     });
     assert_eq!(tip, Some((3, 2, vec!["Insert a file's text at point".to_string()])));
+    // Every line is the panel's width, so the box is square whatever the
+    // lines hold.
+    d.eval(r#"e8.xShowTip("Follow this link\nwith RET", [1, 1], 0);"#);
+    let shape = d.with(|ed| {
+        let panel = ed.describe_frame(ed.selected_frame(), 1.0).tip.expect("a tooltip");
+        (panel.width, panel.rows.iter().map(|row| row.text.chars().count()).collect::<Vec<_>>())
+    });
+    assert!(shape.1.iter().all(|w| *w == shape.0), "{shape:?}");
     assert!(d.with(|ed| ed.tip_shown()));
     assert_eq!(d.eval_expression("e8.xHideTip()"), "true");
     assert!(!d.with(|ed| ed.tip_shown()));
