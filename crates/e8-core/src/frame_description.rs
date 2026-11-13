@@ -59,6 +59,9 @@ pub struct FrameDescription {
     pub echo: Echo,
     /// The tab bar along its top, if it shows one, as the mode line is drawn.
     pub tab_bar: Option<Vec<(ModeLineSegment, Style)>>,
+    /// The menu bar above the tab bar, if it shows one: the menus it
+    /// holds, laid out left to right in frame columns (ADR 0076).
+    pub menu_bar: Option<Vec<crate::menu::MenuBarItem>>,
     /// The faces of the parts a front end draws in its own look, where a
     /// theme has given them colours of their own.
     pub chrome: Chrome,
@@ -331,6 +334,16 @@ impl Editor {
             fringe_bitmaps: bitmaps,
             images,
             menus: if frame == self.selected_frame() { self.menu_panels(dark) } else { Vec::new() },
+            menu_bar: self.menu_bar(frame).map(|items| {
+                let (enabled, disabled) = (style(&["tty-menu-enabled-face"]), style(&["tty-menu-disabled-face"]));
+                items
+                    .iter()
+                    .map(|item| crate::menu::MenuBarItem {
+                        style: if item.enabled { enabled.clone() } else { disabled.clone() },
+                        ..item.clone()
+                    })
+                    .collect()
+            }),
         }
     }
 }

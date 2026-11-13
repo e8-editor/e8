@@ -100,7 +100,7 @@ pub use fileio::{auto_save_file_name, backup_file_name};
 pub use files::{abbreviate_dir, abbreviate_path, expand_file_name, expand_file_name_in, expand_file_name_string};
 pub use key::{Key, KeyCode, MouseKind, format_keys};
 pub use keymap::{Binding, ButtonKind, KeymapId, Keymaps, Lookup, MenuItem};
-pub use menu::{MenuPanel, MenuPosition, MenuRow};
+pub use menu::{MenuBarItem, MenuPanel, MenuPosition, MenuRow};
 pub use minibuffer::{MinibufferInfo, Reading, file_name_all_completions};
 pub use modes::MinorMode;
 pub use prefix::{PrefixArg, prefix_numeric_value};

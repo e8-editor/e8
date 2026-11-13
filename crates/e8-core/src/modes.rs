@@ -192,6 +192,23 @@ impl Editor {
         })
     }
 
+    /// The keys a keymap itself binds menu items to, in the order they
+    /// were bound, each as the one key it is.
+    pub fn menu_item_keys(&self, keymap: &Value) -> Result<Vec<Key>> {
+        let map = self.keymap_of(keymap)?;
+        let mut items: Vec<(Key, u64)> = self
+            .keymaps
+            .own_bindings(map)
+            .into_iter()
+            .filter_map(|(key, binding)| match binding {
+                Binding::Menu(item) => Some((key, item.order)),
+                _ => None,
+            })
+            .collect();
+        items.sort_by_key(|(_, order)| *order);
+        Ok(items.into_iter().map(|(key, _)| key).collect())
+    }
+
     /// Binds a key sequence in a named keymap.
     pub fn bind_key_in(&mut self, keymap: &str, keys: &[Key], command: &str) -> Result<()> {
         self.define_key(&Value::Str(keymap.into()), keys, Some(&Value::Str(command.into())))

@@ -310,6 +310,11 @@ impl Keymaps {
         self.bind(map, keys, Binding::Menu(Box::new(item)));
     }
 
+    /// What a keymap itself binds, its parents' bindings left out.
+    pub fn own_bindings(&self, map: KeymapId) -> Vec<(Key, Binding)> {
+        self.maps[map].bindings.iter().map(|(key, binding)| (*key, binding.clone())).collect()
+    }
+
     /// What a keymap itself binds a key sequence to, menu items not
     /// looked through and its parents not asked.
     pub fn binding_at(&self, map: KeymapId, keys: &[Key]) -> Option<&Binding> {

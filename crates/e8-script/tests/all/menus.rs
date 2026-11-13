@@ -312,3 +312,213 @@ fn a_menu_opened_while_one_is_open_gives_the_outer_one_back() {
     d.press("RET");
     assert_eq!(d.variable("test-chosen").as_deref(), Some("\"<open>\""));
 }
+
+/// The menu bar on, with a mode's own menu in a local keymap beside the
+/// menus menu-bar.ts puts in the global one.
+const BAR: &str = r#"
+e8.call("menu-bar-mode");
+const map = e8.makeSparseKeymap();
+e8.defineMenuItem(map, "<menu-bar> <test>", { label: "Test", binding: e8.makeSparseKeymap() });
+const test = e8.lookupKey(map, "<menu-bar> <test>") as e8.Keymap;
+e8.defineMenuItem(test, "<one>", { label: "One", binding: "test-one" });
+e8.defineMenuItem(test, "<two>", { label: "Two", binding: "test-two" });
+e8.defineCommand({ name: "test-one", run: () => e8.setVariable("test-ran", "one") });
+e8.defineCommand({ name: "test-two", run: () => e8.setVariable("test-ran", "two") });
+e8.useLocalMap(map);
+"#;
+
+/// The menu bar as it is laid out: each menu's label, and where the one
+/// named starts.
+fn bar(d: &Driven) -> Vec<String> {
+    d.with(|ed| {
+        ed.redisplay();
+        ed.menu_bar(ed.selected_frame()).unwrap_or(&[]).iter().map(|i| i.label.clone()).collect()
+    })
+}
+
+/// Which column a menu of the bar starts at.
+fn bar_column(d: &Driven, label: &str) -> usize {
+    let label = label.to_string();
+    d.with(move |ed| {
+        ed.menu_bar(ed.selected_frame()).unwrap_or(&[]).iter().find(|i| i.label == label).map(|i| i.column).expect("a menu of that name")
+    })
+}
+
+#[test]
+fn the_menu_bar_lists_the_menus_of_the_keymaps_in_use() {
+    let d = Driven::new(BAR);
+    // The global map's menus, as menu-bar.ts puts them, then the local
+    // map's, with Help last as menu-bar-final-items says.
+    assert_eq!(
+        bar(&d),
+        vec!["File".to_string(), "Edit".into(), "Options".into(), "Buffers".into(), "Tools".into(), "Test".into(), "Help".into()]
+    );
+    // Without a menu bar there is nothing to lay out.
+    d.eval(r#"e8.callWithPrefix(-1, "menu-bar-mode");"#);
+    assert!(bar(&d).is_empty());
+}
+
+#[test]
+fn the_buffers_menu_is_made_again_as_the_bar_is_laid_out() {
+    let d = Driven::new(BAR);
+    bar(&d);
+    assert!(d.eval_expression(r#"e8.keymapMenuKeys(e8.lookupKey("global-map", "<menu-bar> <buffer>"))"#).contains("buffer-0"));
+    d.eval(r#"e8.getBufferCreate("a-new-buffer");"#);
+    bar(&d);
+    let labels = d.eval_expression(
+        r#"e8.keymapMenuKeys(e8.lookupKey("global-map", "<menu-bar> <buffer>")).map((k: string) => e8.menuItem(e8.lookupKey("global-map", "<menu-bar> <buffer>"), k)?.label).join("|")"#,
+    );
+    assert!(labels.contains("a-new-buffer"), "{labels}");
+}
+
+#[test]
+fn opening_the_menu_bar_and_choosing_an_item_runs_its_command() {
+    let d = Driven::new(BAR);
+    bar(&d);
+    let column = bar_column(&d, "Test");
+    d.start(move |ed| {
+        let frame = ed.selected_frame();
+        let _ = ed.menu_bar_mouse(frame, column);
+    });
+    assert_eq!(panels(&d), vec![vec![">One".to_string(), "Two".into()]]);
+    // The menu opens right below the bar, at its own column.
+    assert_eq!(d.with(|ed| { let m = &ed.describe_frame(ed.selected_frame(), 1.0).menus[0]; (m.x, m.y) }), (column, 0));
+    d.press("<down> RET");
+    assert_eq!(d.variable("test-ran").as_deref(), Some("\"two\""));
+    assert!(!d.with(|ed| ed.menu_active()));
+}
+
+#[test]
+fn f10_opens_the_first_menu_and_right_and_left_go_to_the_next() {
+    let d = Driven::new(BAR);
+    let labels = bar(&d);
+    d.press("<f10>");
+    // F10 opens the first menu, File.
+    assert_eq!(panels(&d)[0][0], ">Visit New File...");
+    // Right goes along the bar, round to the first past the end.
+    for _ in 0..labels.len() - 1 {
+        d.press("<right>");
+    }
+    assert_eq!(panels(&d)[0][0], ">Describe Key...");
+    d.press("<right>");
+    assert_eq!(panels(&d)[0][0], ">Visit New File...");
+    d.press("<left> RET");
+    // Describe Key asks for a key, which C-g leaves.
+    assert_eq!(d.message().as_deref(), Some("Describe key: "));
+    d.press("C-g");
+}
+
+#[test]
+fn a_menu_taller_than_the_frame_scrolls_to_the_cursor() {
+    let d = Driven::new(
+        r#"
+        const menu = e8.makeSparseKeymap();
+        for (let i = 0; i < 40; i += 1) {
+          e8.defineMenuItem(menu, `<i${i}>`, { label: `Item ${i}`, binding: "ignore" });
+        }
+        e8.setVariable("test-menu", menu);
+        "#,
+    );
+    open(&d, "e8.variable(\"test-menu\")", "[0, 0]");
+    let lines = d.with(|ed| ed.frame_cells().1);
+    let shown = |d: &Driven| panels(d)[0].clone();
+    assert_eq!(shown(&d).len(), lines, "the panel fills the frame");
+    assert_eq!(shown(&d)[0], ">Item 0");
+    // Moving past the last line shown scrolls the panel.
+    for _ in 0..lines {
+        d.press("<down>");
+    }
+    assert_eq!(shown(&d).last().unwrap(), &format!(">Item {lines}"));
+    assert_eq!(shown(&d).len(), lines);
+    // The pointer picks the line it is on and the panel stays where it
+    // is, so RET chooses what the pointer was over, not what that line
+    // would hold had the panel scrolled under it.
+    let fifth = shown(&d)[5].clone();
+    point_at(&d, 2.0, 5.0);
+    d.press("<mouse-movement>");
+    assert_eq!(shown(&d)[5], format!(">{fifth}"));
+    d.press("RET");
+    let chosen = fifth.trim_start_matches('>').trim_start_matches("Item ").to_string();
+    assert_eq!(d.variable("test-chosen").as_deref(), Some(format!("\"<i{chosen}>\"").as_str()));
+}
+
+#[test]
+fn easymenu_adds_and_takes_items_out_of_a_menu_by_its_path() {
+    let d = Driven::new(BAR);
+    bar(&d);
+    d.eval(r#"import("easymenu").then((m: any) => { (globalThis as any).easymenu = m; });"#);
+    d.eval(
+        r#"
+        const m = (globalThis as any).easymenu;
+        m.easyMenuAddItem("global-map", ["File"], { label: "Touch", command: "ignore" });
+        e8.setVariable("test-present", m.easyMenuItemPresentP("global-map", ["File"], "Touch") ? "yes" : "no");
+        e8.setVariable("test-missing", m.easyMenuItemPresentP("global-map", ["Nowhere"], "Touch") ? "yes" : "no");
+        "#,
+    );
+    assert_eq!(d.variable("test-present").as_deref(), Some("\"yes\""));
+    assert_eq!(d.variable("test-missing").as_deref(), Some("\"no\""));
+    // It is the last item of the File menu, where it was added.
+    let column = bar_column(&d, "File");
+    d.start(move |ed| {
+        let frame = ed.selected_frame();
+        let _ = ed.menu_bar_mouse(frame, column);
+    });
+    assert_eq!(panels(&d)[0].last().unwrap(), "Touch");
+    d.press("C-g");
+    d.eval(
+        r#"
+        const m = (globalThis as any).easymenu;
+        m.easyMenuRemoveItem("global-map", ["File"], "Touch");
+        e8.setVariable("test-present", m.easyMenuItemPresentP("global-map", ["File"], "Touch") ? "yes" : "no");
+        "#,
+    );
+    assert_eq!(d.variable("test-present").as_deref(), Some("\"no\""));
+}
+
+#[test]
+fn a_modes_menu_adds_to_the_global_menu_of_the_same_name() {
+    let d = Driven::new(BAR);
+    d.eval(
+        r#"
+        const map = e8.makeSparseKeymap();
+        e8.defineMenuItem(map, "<menu-bar> <file>", { label: "File", binding: e8.makeSparseKeymap() });
+        const file = e8.lookupKey(map, "<menu-bar> <file>") as e8.Keymap;
+        e8.defineMenuItem(file, "<mine>", { label: "Mine", binding: "ignore" });
+        e8.useLocalMap(map);
+        "#,
+    );
+    bar(&d);
+    // One File menu, with the mode's item and the global ones.
+    assert_eq!(bar(&d).iter().filter(|l| *l == "File").count(), 1);
+    let column = bar_column(&d, "File");
+    d.start(move |ed| {
+        let frame = ed.selected_frame();
+        let _ = ed.menu_bar_mouse(frame, column);
+    });
+    let items = panels(&d)[0].clone();
+    assert_eq!(items[0], ">Mine");
+    assert!(items.iter().any(|i| i == "Save"), "{items:?}");
+    d.press("C-g");
+}
+
+#[test]
+fn the_buffers_menu_is_made_again_only_when_the_buffers_change() {
+    let d = Driven::new(BAR);
+    let menu = r#"e8.lookupKey("global-map", "<menu-bar> <buffer>")"#;
+    bar(&d);
+    let first = d.eval_expression(&format!("String({menu})"));
+    bar(&d);
+    assert_eq!(d.eval_expression(&format!("String({menu})")), first, "the same keymap, not a new one");
+    let labels = |d: &Driven| {
+        d.eval_expression(&format!(
+            "e8.keymapMenuKeys({menu}).map((k: string) => e8.menuItem({menu}, k)?.label).join(\"|\")"
+        ))
+    };
+    let before = labels(&d);
+    assert!(before.contains("*scratch*"), "{before}");
+    d.eval(r#"e8.getBufferCreate("a-new-buffer");"#);
+    bar(&d);
+    let after = labels(&d);
+    assert!(after.contains("a-new-buffer"), "{after}");
+    assert_ne!(before, after);
+}

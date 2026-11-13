@@ -1117,12 +1117,18 @@ pub(crate) fn install(ed: &mut Editor) {
     crate::scroll::define_variables(ed);
     crate::users::define_variables(ed);
     crate::mouse::define_variables(ed);
+    ed.define_variable(Variable::new(
+        "menu-bar-final-items",
+        "The menus of the menu bar that go at its right end, by the symbol that names them, as `help-menu` does.",
+        Value::List(vec![Value::Symbol("help-menu".into())]),
+    ));
     ed.define_variable(Variable::new(crate::modes::GLOBAL_MAP, "The keymap that applies everywhere, after the minibuffer's and the modes' keymaps.", Value::Keymap(ed.global_map)));
     ed.define_variable(Variable::new(crate::modes::MINIBUFFER_MAP, "The keymap while a prompt is open, before the modes' and the global keymap.", Value::Keymap(ed.minibuffer_map)));
     for (name, doc) in [
         ("post-self-insert-hook", "Run after typing a character inserts it, as electric-pair-mode and electric-indent-mode use."),
         ("pre-command-hook", "Run before each command that keys run. A function can change this-command, and that command runs instead."),
         ("post-command-hook", "Run after each command that keys run."),
+        ("menu-bar-update-hook", "Run before the menu bar is laid out again, for menus whose items change, as the Buffers menu's do."),
         ("minibuffer-setup-hook", "Run when a prompt opens, in the minibuffer."),
         ("minibuffer-exit-hook", "Run when a prompt closes, in the minibuffer, before the answer is used."),
         (

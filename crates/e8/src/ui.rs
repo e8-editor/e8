@@ -27,7 +27,7 @@ struct WindowArea {
 /// Divides the screen above the echo area among the windows, as the editor
 /// says they divide it.
 fn window_areas(ed: &Editor, width: u16, height: u16) -> Vec<WindowArea> {
-    let tab_lines = ed.tab_bar_lines(ed.selected_frame()) as u16;
+    let tab_lines = (ed.menu_bar_lines(ed.selected_frame()) + ed.tab_bar_lines(ed.selected_frame())) as u16;
     areas_of(ed.window_tree(), tab_lines, ed.mini_window_lines(), &|id, h| ed.window_wants_header_line(id, h), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id), width, height)
 }
 
@@ -37,7 +37,8 @@ fn described_areas(fd: &FrameDescription, width: u16, height: u16) -> Vec<Window
     let header = |id, h: usize| h > 2 && window(id).is_some_and(|w| w.header_line.is_some());
     let margins = |id| window(id).map_or((0, 0), |w| w.margins);
     let mode_line = |id| window(id).is_none_or(|w| w.shows_mode_line);
-    areas_of(&fd.tree, u16::from(fd.tab_bar.is_some()), fd.echo_lines, &header, &margins, &mode_line, width, height)
+    let bars = u16::from(fd.menu_bar.is_some()) + u16::from(fd.tab_bar.is_some());
+    areas_of(&fd.tree, bars, fd.echo_lines, &header, &margins, &mode_line, width, height)
 }
 
 fn areas_of(
@@ -50,7 +51,7 @@ fn areas_of(
     width: u16,
     height: u16,
 ) -> Vec<WindowArea> {
-    // The tab bar takes the top lines, the echo area the bottom ones.
+    // The menu bar and the tab bar take the top lines, the echo area the bottom ones.
     let height = height.saturating_sub(echo_lines as u16 + tab_lines).max(2);
     tree
         .rects(0.0, tab_lines as f32, width as f32, height as f32, (1.0, 1.0))
@@ -83,7 +84,7 @@ fn areas_of(
 pub fn layout_windows(ed: &mut Editor, width: u16, height: u16) {
     ed.set_minibuffer_width(width as usize);
     let echo = ed.mini_window_height(height as usize) as u16;
-    let tab_lines = ed.tab_bar_lines(ed.selected_frame()) as u16;
+    let tab_lines = (ed.menu_bar_lines(ed.selected_frame()) + ed.tab_bar_lines(ed.selected_frame())) as u16;
     ed.set_frame_size(width as usize, height.saturating_sub(echo + tab_lines).max(2) as usize);
     for area in window_areas(ed, width, height) {
         ed.set_window_size(area.id, area.text.width as usize, area.text.height as usize);
@@ -102,8 +103,13 @@ pub fn draw(frame: &mut Frame, fd: &FrameDescription) {
     let echo = (fd.echo_lines as u16).min(screen.height);
     let echo_area = Rect::new(screen.x, screen.bottom().saturating_sub(echo), screen.width, echo);
     let areas = described_areas(fd, screen.width, screen.height);
+    let mut top = screen.y;
+    if let Some(menu_bar) = &fd.menu_bar {
+        draw_menu_bar(frame, fd, menu_bar, Rect::new(screen.x, top, screen.width, 1.min(screen.height)));
+        top += 1;
+    }
     if let Some(tab_bar) = &fd.tab_bar {
-        draw_tab_bar(frame, tab_bar, Rect::new(screen.x, screen.y, screen.width, 1.min(screen.height)));
+        draw_tab_bar(frame, tab_bar, Rect::new(screen.x, top, screen.width, 1.min(screen.height.saturating_sub(top - screen.y))));
     }
     let mut window_cursor = Position::new(0, 0);
     let mut cursor_shown = false;
@@ -126,15 +132,34 @@ pub fn draw(frame: &mut Frame, fd: &FrameDescription) {
     let echo_cursor = draw_echo_area(frame, fd, echo_area).filter(|_| fd.minibuffer_selected);
     // A menu is drawn over everything else, and keeps the cursor on the
     // item it is on, as term.c's menus do.
-    // Cells count from the top left of the frame's windows, below the tab bar.
-    let windows_top = screen.y + u16::from(fd.tab_bar.is_some());
-    if let Some(cursor) = draw_menus(frame, fd, Rect { y: windows_top, height: screen.bottom() - windows_top, ..screen }) {
+    // Cells count from the top left of the frame's windows, below the bars.
+    let windows_top = (screen.y + u16::from(fd.menu_bar.is_some()) + u16::from(fd.tab_bar.is_some())).min(screen.bottom());
+    let below = Rect { y: windows_top, height: screen.bottom() - windows_top, ..screen };
+    if let Some(cursor) = draw_menus(frame, fd, below) {
         frame.set_cursor_position(cursor);
         return;
     }
     // A window whose cursor internal-show-cursor hid shows none.
     if echo_cursor.is_some() || cursor_shown {
         frame.set_cursor_position(echo_cursor.unwrap_or(window_cursor));
+    }
+}
+
+/// Draws a frame's menu bar: its menus along the top line, in the menu
+/// faces, as term.c draws Emacs's on a terminal.
+fn draw_menu_bar(frame: &mut Frame, fd: &FrameDescription, items: &[e8_core::MenuBarItem], rect: Rect) {
+    if let Some(first) = items.first() {
+        frame.buffer_mut().set_style(rect, terminal_style(&first.style, fd.dark));
+    }
+    for item in items {
+        let x = rect.x + item.column as u16;
+        if x >= rect.right() {
+            break;
+        }
+        let style = terminal_style(&item.style, fd.dark);
+        let text = format!(" {} ", item.label);
+        let width = (item.width as u16).min(rect.right() - x);
+        frame.render_widget(Paragraph::new(Line::styled(text, style)).style(style), Rect::new(x, rect.y, width, 1));
     }
 }
 

@@ -738,6 +738,9 @@ impl E8App {
                 Some(ToSend::TabBar(column)) => {
                     ed.tab_bar_mouse(layout.frame, column, e8_core::Key::new(e8_core::KeyCode::Mouse(e8_core::MouseKind::Click, 1)))
                 }
+                Some(ToSend::MenuBar(column)) => {
+                    let _ = ed.menu_bar_mouse(layout.frame, column);
+                }
                 None => {}
             }
         });
@@ -799,6 +802,8 @@ enum ToSend {
     Mouse(e8_core::clicks::Event),
     /// A click on the tab bar, at this column.
     TabBar(usize),
+    /// A click on the menu bar, at this column.
+    MenuBar(usize),
 }
 
 /// A press, move or release of the primary button, as Emacs's mouse keys,
@@ -809,6 +814,13 @@ fn pointer(ed: &mut Editor, mouse: &mut Mouse, pos: Pos2, pressed: Option<bool>,
     let tracking = ed.tracking_mouse();
     if pressed.is_none() && !mouse.clicks.is_down() && mouse.resizing.is_none() {
         return mouse.clicks.moved(hit(ed, layout, pos), false, tracking).map(ToSend::Mouse);
+    }
+    // A press on the menu bar opens the menu at the column under it.
+    if let Some(rect) = layout.menu_rect.filter(|r| r.contains(pos))
+        && !mouse.clicks.is_down()
+    {
+        let column = ((pos.x - rect.left()) / layout.m.char_width).max(0.0) as usize;
+        return (pressed == Some(true)).then_some(ToSend::MenuBar(column));
     }
     // A press on the tab bar is a click on it, at the column under it.
     if let Some(rect) = layout.tab_rect.filter(|r| r.contains(pos))
@@ -937,6 +949,7 @@ struct Layout {
     frame: FrameId,
     rect: Rect,
     /// The tab bar across the top, when the frame shows one.
+    menu_rect: Option<Rect>,
     tab_rect: Option<Rect>,
     windows: Vec<WindowLayout>,
     echo_rect: Rect,
@@ -974,7 +987,8 @@ impl WindowLayout {
 impl Layout {
     /// The top left of the frame's windows, which the editor counts places from.
     fn windows_origin(&self) -> Pos2 {
-        pos2(self.rect.left(), self.tab_rect.map_or(self.rect.top(), |r| r.bottom()))
+        let top = self.tab_rect.or(self.menu_rect).map_or(self.rect.top(), |r| r.bottom());
+        pos2(self.rect.left(), top)
     }
 
     /// Lays a frame out and tells the editor how big each of its windows is.
@@ -989,15 +1003,15 @@ impl Layout {
         // lines, such as a vertical list of completions.
         let echo_lines = if frame == ed.selected_frame() { ed.mini_window_height(frame_lines) } else { 1 };
         let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
-        let tab_bar = ed.tab_bar_lines(frame) > 0;
-        let mut layout = Layout::compute(frame, rect, m.clone(), &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
+        let (menu_bar, tab_bar) = (ed.menu_bar_lines(frame) > 0, ed.tab_bar_lines(frame) > 0);
+        let mut layout = Layout::compute(frame, rect, m.clone(), &tree, menu_bar, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
         // The frame in cells, which the windows' sizes count in: a new size
         // is shared among them first, as Emacs's normal sizes share it, and
         // they are laid out as the tree then says.
         if frame == ed.selected_frame() && ed.frame_units() != layout.frame_units {
             ed.set_frame_pixel_size(layout.frame_units.0, layout.frame_units.1);
             let tree = ed.frame_tree(frame).cloned().unwrap_or(e8_core::WindowTree::Leaf(0));
-            layout = Layout::compute(frame, rect, m, &tree, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
+            layout = Layout::compute(frame, rect, m, &tree, menu_bar, tab_bar, echo_lines, frame_lines, &|id, lines| ed.window_wants_header_line(id, lines), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id));
         } else if frame == ed.selected_frame() {
             // The same size, still given, so the frame's size counts as the front end's.
             ed.set_frame_pixel_size(layout.frame_units.0, layout.frame_units.1);
@@ -1019,6 +1033,7 @@ impl Layout {
             rect,
             m,
             &fd.tree,
+            fd.menu_bar.is_some(),
             fd.tab_bar.is_some(),
             echo_lines,
             frame_lines,
@@ -1034,6 +1049,7 @@ impl Layout {
         rect: Rect,
         m: Metrics,
         tree: &e8_core::WindowTree,
+        menu_bar: bool,
         tab_bar: bool,
         echo_lines: usize,
         frame_lines: usize,
@@ -1044,9 +1060,12 @@ impl Layout {
         let bar_height = m.line_height + 2.0 * BAR_PAD;
         let echo_height = bar_height + (echo_lines - 1) as f32 * m.line_height;
         let echo_rect = Rect::from_min_max(pos2(rect.left(), rect.bottom() - echo_height), rect.max);
-        // The tab bar takes a bar's height from the top, as the mode line does at a window's foot.
-        let tab_rect = tab_bar.then(|| Rect::from_min_size(rect.min, vec2(rect.width(), bar_height)));
-        let windows_top = tab_rect.map_or(rect.top(), |r| r.bottom());
+        // The menu bar takes a bar's height from the top, the tab bar the
+        // next, as the mode line takes one at a window's foot.
+        let menu_rect = menu_bar.then(|| Rect::from_min_size(rect.min, vec2(rect.width(), bar_height)));
+        let below_menu = menu_rect.map_or(rect.top(), |r| r.bottom());
+        let tab_rect = tab_bar.then(|| Rect::from_min_size(pos2(rect.left(), below_menu), vec2(rect.width(), bar_height)));
+        let windows_top = tab_rect.map_or(below_menu, |r| r.bottom());
         let frame_height = echo_rect.top() - windows_top;
         // The windows' sizes are points, as the core keeps them; a window
         // without a mode line has its height for text.
@@ -1079,7 +1098,7 @@ impl Layout {
             })
             .collect();
         let frame_units = (rect.width().floor().max(1.0) as usize, frame_height.floor().max(1.0) as usize);
-        Layout { frame, rect, tab_rect, windows, echo_rect, m, frame_units, frame_lines }
+        Layout { frame, rect, menu_rect, tab_rect, windows, echo_rect, m, frame_units, frame_lines }
     }
 
     /// What it tells the editor, the frame's size too if it is selected.
@@ -1099,6 +1118,9 @@ fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: boo
     painter.rect_filled(layout.rect, 0.0, t.bg);
     let m = &layout.m;
     let in_minibuffer = fd.minibuffer_selected;
+    if let (Some(rect), Some(menu_bar)) = (layout.menu_rect, &fd.menu_bar) {
+        draw_menu_bar(&painter, menu_bar, rect, m, t);
+    }
     if let (Some(rect), Some(tab_bar)) = (layout.tab_rect, &fd.tab_bar) {
         draw_tab_bar(&painter, tab_bar, rect, m, t, &fd.chrome);
     }
@@ -1134,6 +1156,21 @@ fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: boo
 
 /// Draws the panels of an open menu over the windows: a raised card for
 /// each, with its lines in the menu faces (ADR 0076).
+/// Draws a frame's menu bar: its menus along the top, in the menu faces.
+fn draw_menu_bar(painter: &Painter, items: &[e8_core::MenuBarItem], rect: Rect, m: &Metrics, t: Tokens) {
+    let background = items.first().and_then(|i| i.style.background).map_or(t.sunken, color32);
+    painter.rect_filled(rect, 0.0, background);
+    painter.hline(rect.x_range(), rect.bottom() - 0.5, Stroke::new(1.0, t.line));
+    for item in items {
+        let color = item.style.foreground.map_or(t.ink, color32);
+        let mut job = LayoutJob::default();
+        job.append(&format!(" {} ", item.label), 0.0, text_format(m, color));
+        let galley = painter.layout_job(job);
+        let x = rect.left() + item.column as f32 * m.char_width;
+        painter.with_clip_rect(rect).galley(pos2(x, rect.center().y - galley.size().y / 2.0), galley, color);
+    }
+}
+
 fn draw_menus(painter: &Painter, fd: &FrameDescription, layout: &Layout, m: &Metrics, t: Tokens) {
     let origin = layout.windows_origin();
     for panel in &fd.menus {

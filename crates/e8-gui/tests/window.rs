@@ -833,3 +833,54 @@ fn popup_menu() {
     }
     harness.snapshot("popup_menu_dark");
 }
+
+/// The menu bar along the top of the frame, with a menu open from it.
+#[test]
+fn menu_bar() {
+    let mut harness = Harness::builder()
+        .with_size(vec2(640.0, 360.0))
+        .with_theme(Theme::Dark)
+        .build_eframe(|cc| {
+            e8_gui::theme::install_fonts(&cc.egui_ctx, false);
+            E8App::threaded(&cc.egui_ctx, |ed| {
+                let scripting = e8_script::Scripting::new(ed).expect("the packages load");
+                ed.type_text("An editor that works the way Emacs works.\n");
+                ed.call("menu-bar-mode", vec![]).expect("the mode is there");
+                Some(scripting)
+            })
+            .silent()
+        });
+    harness.run_steps(3);
+    harness.state_mut().run(|ed| {
+        ed.call_interactively("menu-bar-open").expect("the menu bar opens");
+    });
+    let until = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    while !harness.state_mut().with_editor(|ed| ed.menu_active()) {
+        assert!(std::time::Instant::now() < until, "the menu never opened");
+        harness.step();
+        std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+    // Down to the fourth item, waiting for each key to reach the editor,
+    // which is on a thread of its own.
+    let selected = |h: &mut Harness<'_, E8App>| {
+        h.state_mut().with_editor(|ed| {
+            let fd = ed.describe_frame(ed.selected_frame(), 1.0);
+            fd.menus.first().and_then(|panel| panel.rows.iter().position(|row| row.selected))
+        })
+    };
+    for row in 1..4 {
+        harness.key_press(Key::ArrowDown);
+        let until = std::time::Instant::now() + std::time::Duration::from_secs(10);
+        while selected(&mut harness) != Some(row) {
+            assert!(std::time::Instant::now() < until, "the cursor never reached row {row}");
+            harness.step();
+            std::thread::sleep(std::time::Duration::from_millis(5));
+        }
+    }
+    // The item's help reaches the echo area a frame later.
+    for _ in 0..4 {
+        harness.step();
+        std::thread::sleep(std::time::Duration::from_millis(10));
+    }
+    harness.snapshot("menu_bar_dark");
+}
