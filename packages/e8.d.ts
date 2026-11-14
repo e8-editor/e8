@@ -16702,6 +16702,43 @@ declare global {
     function frameTotalCols(frame?: FrameLike | null): number;
     /** How many lines a frame has, its echo area left out, as frame-total-lines. */
     function frameTotalLines(frame?: FrameLike | null): number;
+    /** The display's size in the front end's units: pixels in a window, characters on a terminal (x-display-pixel-width and -height). */
+    function xDisplayPixelWidth(display?: Value): number;
+    function xDisplayPixelHeight(display?: Value): number;
+    /** The display's size in millimetres, or undefined where the front end does not say (x-display-mm-width and -height). */
+    function xDisplayMmWidth(display?: Value): number | undefined;
+    function xDisplayMmHeight(display?: Value): number | undefined;
+    /** How many bits a pixel has, as x-display-planes. */
+    function xDisplayPlanes(display?: Value): number;
+    /** How many colours the display shows, as x-display-color-cells. */
+    function xDisplayColorCells(display?: Value): number;
+    /** Whether the editor draws in a window rather than on a terminal, which decides what display-pixel-width and its kin ask. */
+    function displayIsAWindow(): boolean;
+    /** How many screens the display has: one, as x-display-screens. */
+    function xDisplayScreens(display?: Value): number;
+    /** How the display holds colours, as x-display-visual-class. */
+    function xDisplayVisualClass(display?: Value): string;
+    /** Whether the display shows colour, as xw-display-color-p and display-color-p. */
+    function xwDisplayColorP(display?: Value): boolean;
+    /** Whether the display shows shades of grey but no colour, as x-display-grayscale-p. */
+    function xDisplayGrayscaleP(display?: Value): boolean;
+    /** Whether the display keeps what a window covers, as x-display-backing-store: never. */
+    function xDisplayBackingStore(display?: Value): string;
+    /** Whether the display saves what a window covers, as x-display-save-under: no. */
+    function xDisplaySaveUnder(display?: Value): boolean;
+    /** The display's version, as x-server-version gives the window system's: E8's own. */
+    function xServerVersion(display?: Value): [number, number, number];
+    /** The displays E8 draws on, as x-display-list: the one its front end has. */
+    function xDisplayList(): string[];
+    /** Each monitor the display is made of, as display-monitor-attributes-list. */
+    function displayMonitorAttributesList(display?: Value): [string, Value][][];
+    /** A frame's outside edges on the screen, as frame-edges: left, top, right, bottom. */
+    function frameEdges(frame?: FrameLike | null, which?: "outer-edges" | "native-edges" | "inner-edges" | null): [number, number, number, number];
+    /** The size of the window the system draws around a frame, title bar and all, as frame-outer-width and -height. */
+    function frameOuterWidth(frame?: FrameLike | null): number;
+    function frameOuterHeight(frame?: FrameLike | null): number;
+    /** Runs an AppleScript through osascript and gives back what it said, as ns-do-applescript; only macOS has it. */
+    function nsDoApplescript(script: string): string;
     /**
      * Where a frame's top left corner is on the screen, in the front
      * end's units, as frame-position; [0, 0] on a terminal.
@@ -18193,6 +18230,14 @@ declare global {
     function copyFace(oldFace: FaceName | (string & {}), newFace: string): string;
     /** Whether a colour is one E8 can show, as color-defined-p. */
     function colorDefinedP(color: string): boolean;
+    /** Whether the display has a colour by this name, as xw-color-defined-p. */
+    function xwColorDefinedP(color: string): boolean;
+    /** A colour's red, green and blue, each 0 to 65535, as xw-color-values. */
+    function xwColorValues(color: string): [number, number, number] | undefined;
+    /** Refused: E8 draws through one front end and has no second display to open (x-open-connection). */
+    function xOpenConnection(display: string): never;
+    /** Refused: E8's display is its front end's and is not closed (x-close-connection). */
+    function xCloseConnection(display: string): never;
     /** Whether a colour can be shown, as color-supported-p: every colour can. */
     function colorSupportedP(color: string): boolean;
     /** Signal quit if C-g was typed and inhibit-quit is nil, as maybe_quit. Loops check it themselves every 1024 iterations, and every call into the editor does. */

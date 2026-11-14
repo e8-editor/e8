@@ -87,11 +87,29 @@ pub fn layout_windows(ed: &mut Editor, width: u16, height: u16) {
     let frame = ed.selected_frame();
     ed.set_frame_geometry(
         frame,
-        e8_core::FrameGeometry { native: (width as f32, height as f32), position: (0.0, 0.0), scale: 1.0 },
+        e8_core::FrameGeometry { native: (width as f32, height as f32), position: (0.0, 0.0), scale: 1.0, outer: (0.0, 0.0) },
     );
     // A terminal cannot move or resize itself, so what code asked for is
     // taken and dropped, as Emacs's `set-frame-position` does nothing on
     // a text terminal.
+    // A terminal's display is its screen, in characters, with the colours
+    // TERM says it has; Emacs's display-pixel-width answers the frame's
+    // width on a terminal too. Built only when it has changed, as this
+    // runs before every redraw.
+    let cells = ed.tty_display_color_cells(e8_core::THE_TERMINAL).unwrap_or(0);
+    let whole = (0.0, 0.0, width as f64, height as f64);
+    let display = e8_core::Display {
+        size: (width as f64, height as f64),
+        mm_size: None,
+        planes: (cells as f64).log2().max(1.0) as usize,
+        color: cells > 2,
+        grayscale: false,
+        monitors: vec![e8_core::Monitor { geometry: whole, workarea: whole, mm_size: None, name: "terminal".into() }],
+        is_a_window: false,
+    };
+    if ed.display() != display {
+        ed.set_display(display);
+    }
     ed.take_frame_requests();
     ed.set_minibuffer_width(width as usize);
     let echo = ed.mini_window_height(height as usize) as u16;

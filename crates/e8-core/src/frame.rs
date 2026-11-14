@@ -26,11 +26,17 @@ pub struct FrameGeometry {
     /// How many of the screen's own pixels one of the front end's units
     /// is, as `frame-scale-factor`.
     pub scale: f32,
+    /// The window the system draws around the frame, title bar and all,
+    /// in the front end's units, or `(0, 0)` where there is none, as on a
+    /// terminal; `frame-outer-width` and its kin give it ([ADR 0081]).
+    ///
+    /// [ADR 0081]: ../../../../docs/adr/0081-the-display-as-emacs-asks-about-it.md
+    pub outer: (f32, f32),
 }
 
 impl Default for FrameGeometry {
     fn default() -> FrameGeometry {
-        FrameGeometry { native: (0.0, 0.0), position: (0.0, 0.0), scale: 1.0 }
+        FrameGeometry { native: (0.0, 0.0), position: (0.0, 0.0), scale: 1.0, outer: (0.0, 0.0) }
     }
 }
 
@@ -360,4 +366,190 @@ pub fn parse_geometry(spec: &str) -> Vec<(String, Value)> {
         out.push((name.to_string(), value));
     }
     out
+}
+
+/// Which of a frame's edges `frame-edges` gives.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Edges {
+    /// The frame itself, which is `frame-edges`'s default.
+    Native,
+    /// The window the system draws around it, title bar and all.
+    Outer,
+    /// The frame without the bars above its windows.
+    Inner,
+}
+
+/// One screen the display is made of, as `display-monitor-attributes-list`
+/// describes it, in the front end's own units ([ADR 0081]).
+///
+/// [ADR 0081]: ../../../../docs/adr/0081-the-display-as-emacs-asks-about-it.md
+#[derive(Clone, Debug, PartialEq)]
+pub struct Monitor {
+    /// Its whole area: left, top, width, height.
+    pub geometry: (f64, f64, f64, f64),
+    /// What is left of it once the system's own bars are taken off.
+    pub workarea: (f64, f64, f64, f64),
+    /// How big it is in millimetres, or `None` where the system does not
+    /// say, which Emacs answers as a pair of nils.
+    pub mm_size: Option<(f64, f64)>,
+    pub name: String,
+}
+
+/// What a front end knows about the display it draws on and the editor
+/// does not, which it writes in as it writes a frame's geometry.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Display {
+    /// Its size, in the front end's units: pixels in a window, characters
+    /// on a terminal, as Emacs's `display-pixel-width` answers there.
+    pub size: (f64, f64),
+    /// How big it is in millimetres, or `None` where nothing says.
+    pub mm_size: Option<(f64, f64)>,
+    /// How many bits a pixel has, as `x-display-planes`.
+    pub planes: usize,
+    /// Whether it shows colour, as `display-color-p`.
+    pub color: bool,
+    /// Whether it shows shades of grey but no colour, as `display-grayscale-p`.
+    pub grayscale: bool,
+    pub monitors: Vec<Monitor>,
+    /// Whether it is a window rather than a terminal's screen, which
+    /// `display-graphic-p` answers from.
+    pub is_a_window: bool,
+}
+
+impl Default for Display {
+    fn default() -> Display {
+        Display { size: (0.0, 0.0), mm_size: None, planes: 24, color: true, grayscale: false, monitors: Vec::new(), is_a_window: false }
+    }
+}
+
+impl Editor {
+    /// What a front end has told the editor about the display, with a
+    /// frame's own size standing in for what it has not.
+    pub fn display(&self) -> Display {
+        let mut display = self.display.clone();
+        if display.size.0 <= 0.0 || display.size.1 <= 0.0 {
+            let (width, height) = self.frame_native_size(self.selected_frame());
+            display.size = (width as f64, height as f64);
+        }
+        if display.monitors.is_empty() {
+            let whole = (0.0, 0.0, display.size.0, display.size.1);
+            display.monitors = vec![Monitor { geometry: whole, workarea: whole, mm_size: display.mm_size, name: "display".into() }];
+        }
+        display
+    }
+
+    /// Tells the editor about the display; a front end calls this as it draws.
+    pub fn set_display(&mut self, display: Display) {
+        self.display = display;
+    }
+
+    /// Whether the editor draws in a window rather than on a terminal,
+    /// which is what tells `display-pixel-width` which question to ask,
+    /// as Emacs's `display-graphic-p` does.
+    pub fn display_is_a_window(&self) -> bool {
+        self.frame_geometry(self.selected_frame()).scale > 0.0 && self.display.is_a_window
+    }
+
+    /// Each monitor with the frames on it, as
+    /// `display-monitor-attributes-list` gives them: a monitor holds a
+    /// frame whose top left corner is in it.
+    pub fn monitor_attributes(&self) -> Vec<(Monitor, Vec<FrameId>)> {
+        let display = self.display();
+        let frames = self.frame_list();
+        display
+            .monitors
+            .iter()
+            .enumerate()
+            .map(|(i, monitor)| {
+                let on = frames.iter().copied().filter(|&frame| self.dominating_monitor(&display.monitors, frame) == i).collect();
+                (monitor.clone(), on)
+            })
+            .collect()
+    }
+
+    /// Which monitor a frame is on, as Emacs's "dominated by": the one it
+    /// has the most of itself in, and where it has none of itself in any,
+    /// the nearest, so every frame is on exactly one.
+    fn dominating_monitor(&self, monitors: &[Monitor], frame: FrameId) -> usize {
+        let (x, y) = self.frame_position(frame);
+        let (width, height) = self.frame_native_size(frame);
+        let (left, top) = (x as f64, y as f64);
+        let (right, bottom) = (left + width as f64, top + height as f64);
+        let overlap = |(ml, mt, mw, mh): (f64, f64, f64, f64)| {
+            let across = (right.min(ml + mw) - left.max(ml)).max(0.0);
+            let down = (bottom.min(mt + mh) - top.max(mt)).max(0.0);
+            across * down
+        };
+        let distance = |(ml, mt, mw, mh): (f64, f64, f64, f64)| {
+            let across = (ml - right).max(left - (ml + mw)).max(0.0);
+            let down = (mt - bottom).max(top - (mt + mh)).max(0.0);
+            across * across + down * down
+        };
+        let best = monitors.iter().enumerate().max_by(|(_, a), (_, b)| {
+            overlap(a.geometry).total_cmp(&overlap(b.geometry)).then(distance(b.geometry).total_cmp(&distance(a.geometry)))
+        });
+        best.map_or(0, |(i, _)| i)
+    }
+
+    /// A frame's edges on the screen: left, top, right, bottom, in the
+    /// front end's units, with the right and bottom outside the frame, as
+    /// `frame-edges` gives them.
+    ///
+    /// `native` is the frame itself, which is the default; `outer` is the
+    /// window the system draws around it, title bar and all; `inner`
+    /// leaves off the bars drawn above the frame's windows.
+    pub fn frame_edges(&self, frame: FrameId, which: Edges) -> (i64, i64, i64, i64) {
+        let (left, top) = self.frame_position(frame);
+        let (width, height) = self.frame_native_size(frame);
+        match which {
+            Edges::Native => (left, top, left + width as i64, top + height as i64),
+            Edges::Outer => {
+                let (outer_width, outer_height) = self.frame_outer_size(frame);
+                (left, top, left + outer_width as i64, top + outer_height as i64)
+            }
+            Edges::Inner => {
+                // The bars above the windows, as Emacs insets the inner
+                // edges by the tool bar and the internal border.
+                let bars = self.menu_bar_lines(frame) + self.tab_bar_lines(frame);
+                let bars = self.cells_to_units(bars, false) as i64;
+                (left, top + bars, left + width as i64, top + height as i64)
+            }
+        }
+    }
+
+    /// The size of the window the system draws around a frame, as
+    /// `frame-outer-width` and `frame-outer-height`: the frame itself and
+    /// what is drawn around it, which a front end writes in.
+    pub fn frame_outer_size(&self, frame: FrameId) -> (usize, usize) {
+        let outer = self.frame_geometry(frame).outer;
+        let (width, height) = self.frame_native_size(frame);
+        if outer.0 > 0.0 && outer.1 > 0.0 { (outer.0 as usize, outer.1 as usize) } else { (width, height) }
+    }
+}
+
+impl Editor {
+    /// Runs an AppleScript and gives back what it said, as
+    /// `ns-do-applescript`, through `osascript`. Only macOS has it, as
+    /// Emacs has it only in its NS back end.
+    pub fn do_applescript(&mut self, script: &str) -> Result<String> {
+        if !cfg!(target_os = "macos") {
+            return Err(Error::new("ns-do-applescript is only available on macOS"));
+        }
+        let command = vec!["osascript".to_string(), "-e".to_string(), script.to_string()];
+        // What the script logs goes to standard error, which Emacs's own
+        // call never sees, so it is thrown away rather than joined on.
+        let spec = crate::process::CallSpec {
+            command: &command,
+            directory: None,
+            input: None,
+            wait: true,
+            stderr: crate::process::CallStderr::Discard,
+        };
+        let result = self.call_process_with(spec)?;
+        let output = String::from_utf8_lossy(&result.output).into_owned();
+        if result.status != crate::process::Status::Exit(0) {
+            return Err(Error::signal("error", format!("AppleScript error: {}", output.trim()), Vec::new()));
+        }
+        Ok(output.trim_end_matches('\n').to_string())
+    }
 }

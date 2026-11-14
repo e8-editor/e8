@@ -821,6 +821,158 @@ natives! {
         Ok(ed.units_to_cells(ed.frame_text_size(frame).1 as f32, false))
     }
 
+    /// The display's size in the front end's units: pixels in a window, characters on a terminal (x-display-pixel-width and -height).
+    #[ts = "(display?: Value): number"]
+    pub fn xDisplayPixelWidth(ed, _display: Opt<EditorValue>) -> f64 {
+        Ok(ed.display().size.0)
+    }
+
+    #[ts = "(display?: Value): number"]
+    pub fn xDisplayPixelHeight(ed, _display: Opt<EditorValue>) -> f64 {
+        Ok(ed.display().size.1)
+    }
+
+    /// The display's size in millimetres, or undefined where the front end does not say (x-display-mm-width and -height).
+    #[ts = "(display?: Value): number | undefined"]
+    pub fn xDisplayMmWidth(ed, _display: Opt<EditorValue>) -> Option<f64> {
+        Ok(ed.display().mm_size.map(|(w, _)| w))
+    }
+
+    #[ts = "(display?: Value): number | undefined"]
+    pub fn xDisplayMmHeight(ed, _display: Opt<EditorValue>) -> Option<f64> {
+        Ok(ed.display().mm_size.map(|(_, h)| h))
+    }
+
+    /// How many bits a pixel has, as x-display-planes.
+    #[ts = "(display?: Value): number"]
+    pub fn xDisplayPlanes(ed, _display: Opt<EditorValue>) -> usize {
+        Ok(ed.display().planes)
+    }
+
+    /// How many colours the display shows, as x-display-color-cells.
+    #[ts = "(display?: Value): number"]
+    pub fn xDisplayColorCells(ed, _display: Opt<EditorValue>) -> f64 {
+        let display = ed.display();
+        Ok(if display.color { 2f64.powi(display.planes.min(24) as i32) } else { 2.0 })
+    }
+
+    /// Whether the editor draws in a window rather than on a terminal, which decides what display-pixel-width and its kin ask.
+    pub fn displayIsAWindow(ed) -> bool {
+        Ok(ed.display_is_a_window())
+    }
+
+    /// How many screens the display has: one, as x-display-screens.
+    #[ts = "(display?: Value): number"]
+    pub fn xDisplayScreens(_ed, _display: Opt<EditorValue>) -> usize {
+        Ok(1)
+    }
+
+    /// How the display holds colours, as x-display-visual-class.
+    #[ts = "(display?: Value): string"]
+    pub fn xDisplayVisualClass(ed, _display: Opt<EditorValue>) -> String {
+        Ok(if ed.display().color { "true-color" } else { "static-gray" }.to_string())
+    }
+
+    /// Whether the display shows colour, as xw-display-color-p and display-color-p.
+    #[ts = "(display?: Value): boolean"]
+    pub fn xwDisplayColorP(ed, _display: Opt<EditorValue>) -> bool {
+        Ok(ed.display().color)
+    }
+
+    /// Whether the display shows shades of grey but no colour, as x-display-grayscale-p.
+    #[ts = "(display?: Value): boolean"]
+    pub fn xDisplayGrayscaleP(ed, _display: Opt<EditorValue>) -> bool {
+        let display = ed.display();
+        Ok(display.grayscale && !display.color)
+    }
+
+    /// Whether the display keeps what a window covers, as x-display-backing-store: never.
+    #[ts = "(display?: Value): string"]
+    pub fn xDisplayBackingStore(_ed, _display: Opt<EditorValue>) -> String {
+        Ok("not-useful".to_string())
+    }
+
+    /// Whether the display saves what a window covers, as x-display-save-under: no.
+    #[ts = "(display?: Value): boolean"]
+    pub fn xDisplaySaveUnder(_ed, _display: Opt<EditorValue>) -> bool {
+        Ok(false)
+    }
+
+    /// The display's version, as x-server-version gives the window system's: E8's own.
+    #[ts = "(display?: Value): [number, number, number]"]
+    pub fn xServerVersion(_ed, _display: Opt<EditorValue>) -> Vec<f64> {
+        let number = |s: Option<&str>| s.and_then(|s| s.parse().ok()).unwrap_or(0.0);
+        let mut parts = env!("CARGO_PKG_VERSION").split('.');
+        Ok(vec![number(parts.next()), number(parts.next()), number(parts.next())])
+    }
+
+    /// The displays E8 draws on, as x-display-list: the one its front end has.
+    pub fn xDisplayList(_ed) -> Vec<String> {
+        Ok(vec!["e8".to_string()])
+    }
+
+    /// Each monitor the display is made of, as display-monitor-attributes-list.
+    #[ts = "(display?: Value): [string, Value][][]"]
+    pub fn displayMonitorAttributesList(ed, _display: Opt<EditorValue>) -> EditorValue {
+        let rect = |(a, b, c, d): (f64, f64, f64, f64)| {
+            EditorValue::List(vec![EditorValue::Number(a), EditorValue::Number(b), EditorValue::Number(c), EditorValue::Number(d)])
+        };
+        let monitors = ed
+            .monitor_attributes()
+            .into_iter()
+            .map(|(monitor, frames)| {
+                // A pair of nils where nothing says, as frame.el's own
+                // fallback gives, rather than nothing at all.
+                let (mm_w, mm_h) = monitor.mm_size.map_or((EditorValue::Null, EditorValue::Null), |(w, h)| {
+                    (EditorValue::Number(w), EditorValue::Number(h))
+                });
+                let pair = |name: &str, value: EditorValue| EditorValue::List(vec![EditorValue::Str(name.into()), value]);
+                // In the order frame.c's make_monitor_attribute_list conses them.
+                EditorValue::List(vec![
+                    pair("name", EditorValue::Str(monitor.name)),
+                    pair("geometry", rect(monitor.geometry)),
+                    pair("workarea", rect(monitor.workarea)),
+                    pair("mm-size", EditorValue::List(vec![mm_w, mm_h])),
+                    pair("frames", EditorValue::List(frames.into_iter().map(EditorValue::Frame).collect())),
+                    pair("source", EditorValue::Str("e8".into())),
+                ])
+            })
+            .collect();
+        Ok(EditorValue::List(monitors))
+    }
+
+    /// A frame's outside edges on the screen, as frame-edges: left, top, right, bottom.
+    #[ts = "(frame?: FrameLike | null, which?: \"outer-edges\" | \"native-edges\" | \"inner-edges\" | null): [number, number, number, number]"]
+    pub fn frameEdges(ed, frame: Option<Frm>, which: Opt<String>) -> Vec<f64> {
+        let frame = live_frame(ed, frame)?;
+        let which = match which.0.as_deref() {
+            Some("outer-edges") => e8_core::Edges::Outer,
+            Some("inner-edges") => e8_core::Edges::Inner,
+            // native-edges is the default, as ns-frame-edges reads nil.
+            _ => e8_core::Edges::Native,
+        };
+        let (left, top, right, bottom) = ed.frame_edges(frame, which);
+        Ok(vec![left as f64, top as f64, right as f64, bottom as f64])
+    }
+
+    /// The size of the window the system draws around a frame, title bar and all, as frame-outer-width and -height.
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameOuterWidth(ed, frame: Option<Frm>) -> usize {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.units_to_cells(ed.frame_outer_size(frame).0 as f32, true))
+    }
+
+    #[ts = "(frame?: FrameLike | null): number"]
+    pub fn frameOuterHeight(ed, frame: Option<Frm>) -> usize {
+        let frame = live_frame(ed, frame)?;
+        Ok(ed.units_to_cells(ed.frame_outer_size(frame).1 as f32, false))
+    }
+
+    /// Runs an AppleScript through osascript and gives back what it said, as ns-do-applescript; only macOS has it.
+    pub fn nsDoApplescript(ed, script: String) -> String {
+        ed.do_applescript(&script)
+    }
+
     /// Where a frame's top left corner is on the screen, in the front
     /// end's units, as frame-position; [0, 0] on a terminal.
     #[ts = "(frame?: FrameLike | null): [left: number, top: number]"]

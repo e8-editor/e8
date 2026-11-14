@@ -67,6 +67,8 @@ pub struct E8App {
     /// What the editor was last told about each frame's native window, so
     /// it is told again only when it changes.
     geometries: std::collections::HashMap<FrameId, e8_core::FrameGeometry>,
+    /// What was last told to the editor about the screen (ADR 0081).
+    display: Option<e8_core::Display>,
     /// How much taller each frame's window is than its text area, for
     /// carrying out a resize.
     chromes: std::collections::HashMap<FrameId, f32>,
@@ -176,6 +178,10 @@ impl Backend {
     fn set_frame_geometry(&mut self, frame: FrameId, geometry: e8_core::FrameGeometry) {
         self.run(move |ed, _| ed.set_frame_geometry(frame, geometry));
     }
+
+    fn set_display(&mut self, display: e8_core::Display) {
+        self.run(move |ed, _| ed.set_display(display));
+    }
 }
 
 /// The state of the primary button, for turning presses and moves into
@@ -260,6 +266,7 @@ impl E8App {
             main_frame: e8_core::FIRST_FRAME,
             cell: (8.0, 16.0),
             geometries: Default::default(),
+            display: None,
             chromes: Default::default(),
             titles: std::collections::HashMap::new(),
             focused_frame: e8_core::FIRST_FRAME,
@@ -657,6 +664,7 @@ impl E8App {
             let v = i.viewport();
             (v.outer_rect, v.inner_rect, i.pixels_per_point)
         });
+        self.note_display(ctx);
         let Some(inner) = inner else { return };
         let outer = outer.unwrap_or(inner);
         // The native size is the frame's own area, as Emacs's is on GTK
@@ -666,12 +674,39 @@ impl E8App {
             native: (inner.width(), inner.height()),
             position: (outer.min.x, outer.min.y),
             scale,
+            outer: (outer.width(), outer.height()),
         };
         if self.geometries.get(&frame) == Some(&geometry) {
             return;
         }
         self.geometries.insert(frame, geometry);
         self.backend.set_frame_geometry(frame, geometry);
+    }
+
+    /// Tells the editor about the screen the window is on, for
+    /// `display-pixel-width` and `display-monitor-attributes-list`
+    /// ([ADR 0081]). egui knows one monitor, the window's own.
+    ///
+    /// [ADR 0081]: ../../../../docs/adr/0081-the-display-as-emacs-asks-about-it.md
+    fn note_display(&mut self, ctx: &egui::Context) {
+        let Some(size) = ctx.input(|i| i.viewport().monitor_size) else { return };
+        let whole = (0.0, 0.0, size.x as f64, size.y as f64);
+        let display = e8_core::Display {
+            size: (size.x as f64, size.y as f64),
+            mm_size: None,
+            planes: 24,
+            color: true,
+            grayscale: false,
+            // egui knows one monitor, and nothing of the system's own bars,
+            // so the work area is the whole of it (ADR 0081).
+            monitors: vec![e8_core::Monitor { geometry: whole, workarea: whole, mm_size: None, name: "display".into() }],
+            is_a_window: true,
+        };
+        if self.display.as_ref() == Some(&display) {
+            return;
+        }
+        self.display = Some(display.clone());
+        self.backend.set_display(display);
     }
 
     /// Lays a frame out: from the editor, telling it each window's size,

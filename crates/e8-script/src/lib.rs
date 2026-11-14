@@ -104,6 +104,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/subr.ts", include_str!("../../../packages/subr.ts")),
     ("packages/simple.ts", include_str!("../../../packages/simple.ts")),
     ("packages/bindings.ts", include_str!("../../../packages/bindings.ts")),
+    ("packages/frame.ts", include_str!("../../../packages/frame.ts")),
     ("packages/iso-transl.ts", include_str!("../../../packages/iso-transl.ts")),
     ("packages/paragraphs.ts", include_str!("../../../packages/paragraphs.ts")),
     ("packages/page.ts", include_str!("../../../packages/page.ts")),
