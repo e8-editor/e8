@@ -166,6 +166,76 @@ natives! {
         Ok(ed.this_command_keys().iter().map(|k| k.to_string()).collect::<Vec<_>>())
     }
 
+    fn currentIdleTime(ed) -> Option<f64> {
+        Ok(ed.current_idle_time())
+    }
+
+    fn clearThisCommandKeys(ed, keep_record: Opt<bool>) {
+        ed.clear_this_command_keys(keep_record.0.unwrap_or(false));
+        Ok(())
+    }
+
+    fn setThisCommandKeys(ed, keys: String) {
+        ed.set_this_command_keys(&keys)
+    }
+
+    fn commandErrorDefaultFunction(ed, message: String, context: Opt<String>, condition: Opt<String>) {
+        ed.command_error_default_function(&message, context.0.as_deref().unwrap_or(""), condition.0.as_deref())
+    }
+
+    /// Selects the frame a ["focus-in", frame] event names, as internal-handle-focus-in.
+    #[ts = "(event: Value[]): void"]
+    pub fn internalHandleFocusIn(ed, event: Vec<EditorValue>) {
+        ed.internal_handle_focus_in(&event)
+    }
+
+    /// How the terminal is read: [interrupt, flow, meta, quitChar], as current-input-mode.
+    #[ts = "(): [boolean, boolean, Value, number]"]
+    pub fn currentInputMode(ed) -> EditorValue {
+        let mode = ed.current_input_mode();
+        Ok(EditorValue::List(vec![
+            EditorValue::Bool(mode.interrupt),
+            EditorValue::Bool(mode.flow),
+            mode.meta,
+            EditorValue::Number(mode.quit as f64),
+        ]))
+    }
+
+    /// Sets how the terminal is read, as set-input-mode; only the quit character changes anything in E8.
+    #[ts = "(interrupt: boolean, flow: boolean, meta: Value, quit?: number | null): void"]
+    pub fn setInputMode(ed, interrupt: bool, flow: bool, meta: EditorValue, quit: Opt<EditorValue>) {
+        let mut mode = ed.current_input_mode();
+        mode.interrupt = interrupt;
+        mode.flow = flow;
+        mode.meta = meta;
+        match quit.0 {
+            Some(EditorValue::Number(q)) if (0.0..0o400 as f64).contains(&q) => mode.quit = q as u32,
+            Some(EditorValue::Number(_)) => return Err(Error::new("QUIT must be an ASCII character")),
+            _ => {}
+        }
+        ed.set_input_mode(mode);
+        Ok(())
+    }
+
+    /// Starts writing every key typed to a file, closing the one open; no name closes it (open-dribble-file).
+    pub fn openDribbleFile(ed, name: Opt<String>) {
+        ed.open_dribble_file(name.0.as_deref())
+    }
+
+    /// Puts an event into the keyboard macro being defined, as store-kbd-macro-event; ignored when none is.
+    pub fn storeKbdMacroEvent(ed, key: String) {
+        ed.store_kbd_macro_event(&key)
+    }
+
+    /// A character with a modifier folded into it, as char-resolve-modifiers: C-a is 1, C-? is 127.
+    pub fn charResolveModifiers(_ed, code: i64) -> f64 {
+        match u32::try_from(code).ok() {
+            Some(code) => Ok(e8_core::keyboard::char_resolve_modifiers(code) as f64),
+            // Emacs gives back what is no character of its own, as it is.
+            None => Ok(code as f64),
+        }
+    }
+
     fn lossageSize(ed, size: Opt<usize>) -> usize {
         if let Some(size) = size.0 {
             ed.set_lossage_size(size)?;

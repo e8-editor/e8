@@ -841,6 +841,27 @@
       return false;
     },
     thisCommandKeys: () => native.thisCommandKeys().join(" "),
+    currentIdleTime: () => native.currentIdleTime() ?? undefined,
+    clearThisCommandKeys: (keepRecord = false) => native.clearThisCommandKeys(Boolean(keepRecord)),
+    setThisCommandKeys: (keys) => native.setThisCommandKeys(String(keys)),
+    commandErrorDefaultFunction: (message, context = "", condition = null) =>
+      native.commandErrorDefaultFunction(String(message), String(context), condition === null ? null : String(condition)),
+    setInputInterruptMode: (interrupt) => {
+      const [, flow, meta, quit] = native.currentInputMode();
+      native.setInputMode(Boolean(interrupt), flow, meta, quit);
+    },
+    setOutputFlowControl: (flow) => {
+      const [interrupt, , meta, quit] = native.currentInputMode();
+      native.setInputMode(interrupt, Boolean(flow), meta, quit);
+    },
+    setInputMetaMode: (meta) => {
+      const [interrupt, flow, , quit] = native.currentInputMode();
+      native.setInputMode(interrupt, flow, meta ?? null, quit);
+    },
+    setQuitChar: (quit) => {
+      const [interrupt, flow, meta] = native.currentInputMode();
+      native.setInputMode(interrupt, flow, meta, quit);
+    },
     thisCommandKeysVector: () => native.thisCommandKeys(),
     lossageSize: (size) => (size === undefined ? native.lossageSize() : native.lossageSize(size)),
     inputPendingP: () => native.inputPendingP() || undefined,

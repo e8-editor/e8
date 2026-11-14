@@ -2,6 +2,12 @@
 //! command, the keys that ran it, the keys typed lately, and recursive edits.
 
 use crate::driven::Driven;
+
+/// What an expression gives, a string unquoted as the test reads it.
+fn value(ed: &mut Editor, s: &Scripting, code: &str) -> String {
+    let got = s.eval_expression(ed, code).unwrap_or_else(|e| panic!("{code}: {e}"));
+    serde_json::from_str::<String>(&got).unwrap_or(got)
+}
 use e8_core::Editor;
 use e8_script::Scripting;
 
@@ -219,4 +225,105 @@ fn c_q_reads_a_character_or_its_octal_code() {
     // C-S-DEL kills the whole line, as C-S-<backspace> does in Emacs.
     ed.press("C-S-DEL").unwrap();
     assert_eq!(text(&ed), "");
+}
+
+#[test]
+fn the_idle_time_is_nil_while_a_key_is_handled_and_seconds_once_it_is_not() {
+    let (mut ed, s) = setup();
+    // A command sees nil while it runs, as Emacs's does.
+    s.eval_expression(
+        &mut ed,
+        r#"e8.bindKey("C-c i", e8.defineCommand({ name: "test-idle", run: () => e8.insert(`${e8.currentIdleTime() ?? "nil"}`) }))"#,
+    )
+    .unwrap();
+    ed.press("C-c i").unwrap();
+    assert_eq!(text(&ed), "nil");
+    // Between keys it is a number of seconds, as run-with-idle-timer counts them.
+    let idle = s.eval_expression(&mut ed, "typeof e8.currentIdleTime()").unwrap();
+    assert_eq!(idle, r#""number""#);
+    assert_eq!(s.eval_expression(&mut ed, "e8.currentIdleTime() >= 0").unwrap(), "true");
+}
+
+#[test]
+fn this_commands_keys_are_cleared_and_set_as_emacs_sets_them() {
+    let (mut ed, s) = setup();
+    ed.press("C-c").unwrap();
+    ed.press("k").unwrap();
+    let eval = |ed: &mut Editor, code: &str| value(ed, &s, code);
+    assert_eq!(eval(&mut ed, "e8.recentKeys().length > 0"), "true");
+    // Keeping the record leaves the keys typed lately; not keeping it forgets them.
+    eval(&mut ed, "e8.clearThisCommandKeys(true)");
+    assert_eq!(eval(&mut ed, "JSON.stringify([e8.thisCommandKeys(), e8.recentKeys().length > 0])"), r#"["",true]"#);
+    eval(&mut ed, "e8.clearThisCommandKeys()");
+    assert_eq!(eval(&mut ed, "JSON.stringify([e8.thisCommandKeys(), e8.recentKeys().length])"), r#"["",0]"#);
+    eval(&mut ed, r#"e8.setThisCommandKeys("C-x C-f")"#);
+    assert_eq!(eval(&mut ed, "JSON.stringify([e8.thisCommandKeys(), e8.thisCommandKeysVector()])"), r#"["C-x C-f",["C-x","C-f"]]"#);
+}
+
+#[test]
+fn the_input_mode_is_what_e8_does_and_keeps_what_it_is_given() {
+    let (mut ed, s) = setup();
+    let eval = |ed: &mut Editor, code: &str| value(ed, &s, code);
+    // Emacs on a terminal: (t nil t 7).
+    assert_eq!(eval(&mut ed, "JSON.stringify(e8.currentInputMode())"), "[true,false,true,7]");
+    eval(&mut ed, "e8.setQuitChar(3)");
+    eval(&mut ed, "e8.setOutputFlowControl(true)");
+    eval(&mut ed, "e8.setInputMetaMode(null)");
+    assert_eq!(eval(&mut ed, "JSON.stringify(e8.currentInputMode())"), "[true,true,null,3]");
+    eval(&mut ed, "e8.setInputMode(false, false, 'encoded', 7)");
+    assert_eq!(eval(&mut ed, "JSON.stringify(e8.currentInputMode())"), r#"[false,false,"encoded",7]"#);
+}
+
+#[test]
+fn a_character_takes_a_modifier_into_itself_as_emacs_resolves_it() {
+    let (mut ed, s) = setup();
+    let got = value(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+             0x20 | (1 << 26), 0x20 | (1 << 25), 0x20 | (1 << 26) | (1 << 27),
+             0x09 | (1 << 25), 0x31 | (1 << 25), 0x00 | (1 << 25),
+             0x20 | (1 << 23) | (1 << 25), 0x20 | (1 << 26) | (1 << 25),
+             0x61 | (1 << 26), 0x3f | (1 << 26), 0x5b | (1 << 26),
+             0x61, 0x41 | (1 << 25), 0x61 | (1 << 25), 0x61 | (1 << 27),
+             0x61 | (1 << 26) | (1 << 25), 0xe9 | (1 << 26), 0xe9 | (1 << 25),
+             0x40 | (1 << 26), 0x30 | (1 << 26),
+           ].map(e8.charResolveModifiers))"#,
+    );
+    // Every one checked against GNU Emacs 30.2's char-resolve-modifiers:
+    // C-SPC is 0, S-SPC is a space, Shift goes from a control character,
+    // C-a is 1, C-? is 127, C-[ is 27, a letter upcases, and a character
+    // that is no ASCII one keeps its modifiers.
+    assert_eq!(
+        got,
+        "[0,32,134217728,9,33554481,0,8388640,0,1,127,27,97,65,65,134217825,1,67109097,33554665,0,67108912]"
+    );
+}
+
+#[test]
+fn every_key_typed_goes_to_the_dribble_file() {
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("keys.txt");
+    value(&mut ed, &s, &format!("e8.openDribbleFile({:?})", path.display().to_string()));
+    ed.press("C-c").unwrap();
+    ed.press("k").unwrap();
+    ed.press("a").unwrap();
+    // A plain character as itself, anything else in angle brackets, where
+    // Emacs writes a character's byte and a symbol's name.
+    assert_eq!(std::fs::read_to_string(&path).unwrap(), "<C-c>ka");
+    // Closing it leaves what was written and takes no more.
+    value(&mut ed, &s, "e8.openDribbleFile()");
+    ed.press("b").unwrap();
+    assert_eq!(std::fs::read_to_string(&path).unwrap(), "<C-c>ka");
+}
+
+#[test]
+fn an_error_the_command_loop_did_not_handle_is_reported_as_emacs_reports_it() {
+    let (mut ed, s) = setup();
+    s.eval_expression(&mut ed, r#"e8.commandErrorDefaultFunction("boom", "In foo: ")"#).unwrap();
+    assert_eq!(ed.echo(), Some("In foo: boom"));
+    // A focus-in event wants a frame; anything else is an error.
+    assert!(s.eval_expression(&mut ed, r#"e8.internalHandleFocusIn(["focus-in"])"#).is_err());
+    s.eval_expression(&mut ed, r#"e8.internalHandleFocusIn(["focus-in", e8.selectedFrame()])"#).unwrap();
 }
