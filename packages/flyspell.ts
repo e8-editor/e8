@@ -43,7 +43,11 @@ defvar("flyspell-large-region", 1000, "Regions bigger than this, in characters, 
 defvar("flyspell-prog-text-faces", ["font-lock-string-face", "font-lock-comment-face", "font-lock-doc-face"], "The faces of text flyspell-prog-mode checks.");
 e8.defineVariable({ name: "flyspell-generic-check-word-predicate", value: null, local: true, doc: "A function that says whether the word before point is to be checked, as flyspell-prog-mode sets." });
 defvar("flyspell-delayed-commands", ["self-insert-command", "delete-backward-char", "backward-or-forward-delete-char", "delete-char", "backward-delete-char-untabify"], "Commands after which the word is checked only after flyspell-delay seconds of quiet.");
-defvar("flyspell-deplacement-commands", ["next-line", "previous-line", "scroll-up", "scroll-down", "scroll-up-command", "scroll-down-command"], "Commands after which the word is checked only if the command before was another.");
+// Wheel and trackpad scrolling are deplacement as scroll-up and scroll-down
+// are: point moves only to stay in the window, and checking a word on
+// every step of a scroll made scrolling a long file lag. Emacs's list
+// predates mwheel-scroll, which calls scroll-up and scroll-down.
+defvar("flyspell-deplacement-commands", ["next-line", "previous-line", "scroll-up", "scroll-down", "scroll-up-command", "scroll-down-command", "mwheel-scroll", "scroll-up-line", "scroll-down-line"], "Commands after which the word is checked only if the command before was another.");
 e8.defineHook("flyspell-incorrect-hook", "Functions called with the start, end and corrections of a misspelling before it is marked; one that returns true stops it being marked.");
 e8.defineHook("flyspell-prog-mode-hook", "Functions called when flyspell-prog-mode starts.");
 
