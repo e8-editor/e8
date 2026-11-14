@@ -160,6 +160,17 @@ The five groups that led the ranking landed on 2026-11-14 in pull requests 128 t
 
 The ranking is now led by **keymaps' rest** and **minibuffer odds**, both 0.17 and both small: `keymap-prompt` and `map-keymap-internal` for the first, `read-variable` and `abort-minibuffers` for the second. Then tree-sitter's rest (0.12), face and font internals (0.11), and nothing else above 0.09. Seven packages each wait on keymaps and on the minibuffer alone — flycheck, transient, counsel, magit, helm, ivy and swiper among them.
 
+## After keymaps and the minibuffer
+
+Keymaps' rest ([ADR 0082](../adr/0082-keymaps-rest-as-emacs-has-them.md)) and the minibuffer's odds ([ADR 0083](../adr/0083-the-minibuffers-odds-as-emacs-has-them.md)) landed on 2026-11-14 in pull requests 138 and 139. Measured again on the same corpus:
+
+- **By name**, 716 of the 877 editor primitives (82%), from 707: keymap.c has 22 of its 29, and minibuf.c 15 of its 22.
+- **Packages needing nothing missing**: 290 of 295 MELPA packages, from 281; 71 of 77 daily ones, from 69; 34 of Emacs's 49, from 27. ivy, swiper, flycheck, transient, counsel, helm and magit now need nothing E8 lacks.
+- **Still needed** by at least one package: 47 editor and 20 platform primitives, from 56 and 20.
+- **The minibuffer group is gone**, and keymaps fell from 0.17 to 0.02: `describe-vector` and `help--describe-vector`, which only Emacs's own `describe-syntax` and `describe-categories` call.
+
+The ranking is now led by **tree-sitter's rest** (0.12: `treesit-induce-sparse-tree`, `treesit-search-forward`, `treesit-node-match-p`, `treesit-search-subtree`, included ranges and parser notifiers), then face and font internals (0.11: `internal-char-font`, which nerd-icons alone waits on), and nothing else above 0.09. Five MELPA packages are left that need anything at all.
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
@@ -192,7 +203,7 @@ The 35 one-liners are a piece of their own, smaller than any: giving `eobp`, `bo
 
 ## Results
 
-As measured again after the user and the system (ADR 0073), with what E8 has on main at that point.
+As measured again after keymaps' rest and the minibuffer's odds (ADRs 0082 and 0083), with what E8 has on main at that point.
 
 ### Missing primitives by demand
 
@@ -200,206 +211,73 @@ Score: the share of each corpus's packages that need the primitive, directly or 
 
 | # | primitive | C file | score | emacs | melpa | daily | through |
 |---|---|---|---|---|---|---|---|
-| 1 | `zlib-available-p` | decompress.c (platform) | 0.40 | 10 / 4 / 11 | 11 / 0 / 14 | 6 / 3 / 7 | `symbol-file` |
-| 2 | `x-popup-menu` | menu.c (platform) | 0.33 | 11 / 15 / 3 | 7 / 12 / 0 | 3 / 4 / 0 | `cal-menu-x-popup-menu` |
-| 3 | `this-single-command-raw-keys` | keyboard.c | 0.18 | 6 / 11 / 0 | 2 / 1 / 1 | 2 / 5 / 0 | `momentary-string-display` |
-| 4 | `libxml-parse-html-region` | xml.c (platform) | 0.16 | 3 / 8 / 0 | 6 / 7 / 0 | 3 / 3 / 0 |  |
-| 5 | `internal--track-mouse` | keyboard.c | 0.14 | 6 / 0 / 11 | 4 / 0 / 5 |  | `track-mouse` |
-| 6 | `read-key-sequence-vector` | keyboard.c | 0.14 | 2 / 2 / 0 | 5 / 5 / 0 | 3 / 3 / 0 |  |
-| 7 | `mouse-position` | frame.c | 0.13 | 5 / 9 / 0 | 2 / 2 / 0 | 1 / 1 / 0 |  |
-| 8 | `window-configuration-frame` | window.c | 0.13 | 2 / 2 / 0 | 3 / 3 / 0 | 3 / 3 / 0 |  |
-| 9 | `mouse-pixel-position` | frame.c | 0.12 | 4 / 10 / 0 | 5 / 7 / 0 | 1 / 1 / 0 |  |
-| 10 | `current-idle-time` | keyboard.c | 0.12 | 3 / 5 / 0 | 2 / 5 / 0 | 2 / 4 / 0 |  |
-| 11 | `set-mouse-position` | frame.c | 0.11 | 4 / 5 / 0 | 2 / 2 / 0 | 1 / 1 / 0 |  |
-| 12 | `gnutls-available-p` | gnutls.c (platform) | 0.11 | 4 / 14 / 0 |  | 1 / 2 / 0 |  |
-| 13 | `libxml-parse-xml-region` | xml.c (platform) | 0.10 | 2 / 2 / 0 | 3 / 4 / 0 | 2 / 3 / 0 |  |
-| 14 | `treesit-induce-sparse-tree` | treesit.c | 0.09 | 2 / 4 / 0 |  | 2 / 2 / 0 |  |
-| 15 | `keymap-prompt` | keymap.c | 0.09 | 4 / 2 / 2 | 3 / 5 / 1 |  | `keymap-canonicalize` |
-| 16 | `redirect-frame-focus` | frame.c | 0.09 | 3 / 3 / 0 | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 17 | `libxml-available-p` | xml.c (platform) | 0.09 | 1 / 1 / 0 | 5 / 6 / 0 | 2 / 2 / 0 |  |
-| 18 | `terminal-live-p` | terminal.c (platform) | 0.09 | 4 / 11 / 0 | 2 / 3 / 0 |  |  |
-| 19 | `terminal-parameter` | terminal.c (platform) | 0.09 | 4 / 30 / 0 | 1 / 2 / 0 |  |  |
-| 20 | `read-variable` | minibuf.c | 0.08 | 4 / 6 / 0 |  |  |  |
-| 21 | `frame-terminal` | terminal.c (platform) | 0.08 | 2 / 6 / 0 | 3 / 8 / 0 | 1 / 1 / 0 |  |
-| 22 | `ns-do-applescript` | nsfns.m (platform) | 0.08 | 1 / 1 / 0 | 1 / 1 / 0 | 2 / 2 / 0 |  |
-| 23 | `terminal-name` | terminal.c (platform) | 0.07 | 2 / 2 / 0 | 2 / 2 / 0 | 1 / 1 / 0 |  |
-| 24 | `window-tab-line-height` | window.c | 0.07 | 2 / 7 / 0 | 2 / 2 / 0 | 1 / 1 / 0 |  |
-| 25 | `treesit-search-forward` | treesit.c | 0.07 | 1 / 5 / 0 |  | 2 / 5 / 0 |  |
-| 26 | `make-char` | charset.c | 0.07 | 2 / 2 / 0 | 1 / 1 / 0 | 1 / 14 / 0 |  |
-| 27 | `map-keymap-internal` | keymap.c | 0.07 | 2 / 2 / 0 | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 28 | `find-operation-coding-system` | coding.c | 0.07 | 3 / 3 / 0 | 2 / 2 / 0 |  |  |
-| 29 | `frame-fringe-width` | frame.c | 0.07 | 2 / 3 / 0 |  | 1 / 2 / 0 |  |
-| 30 | `frame-scroll-bar-width` | frame.c | 0.07 | 2 / 3 / 0 |  | 1 / 2 / 0 |  |
-| 31 | `treesit-node-match-p` | treesit.c | 0.07 | 2 / 10 / 0 |  | 1 / 8 / 0 |  |
-| 32 | `treesit-search-subtree` | treesit.c | 0.07 | 2 / 11 / 0 |  | 1 / 4 / 0 |  |
-| 33 | `window-at` | window.c | 0.07 | 2 / 2 / 0 |  | 1 / 1 / 0 |  |
-| 34 | `frame-text-height` | frame.c | 0.06 | 3 / 9 / 0 | 1 / 1 / 0 |  |  |
-| 35 | `frame-text-width` | frame.c | 0.06 | 3 / 9 / 0 | 1 / 1 / 0 |  |  |
-| 36 | `set-terminal-parameter` | terminal.c (platform) | 0.06 | 3 / 18 / 0 | 1 / 2 / 0 |  |  |
-| 37 | `window-pixel-left` | window.c | 0.06 | 3 / 20 / 0 | 1 / 1 / 0 |  |  |
-| 38 | `window-pixel-top` | window.c | 0.06 | 3 / 21 / 0 | 1 / 1 / 0 |  |  |
-| 39 | `internal-char-font` | font.c | 0.06 | 3 / 4 / 0 |  |  |  |
-| 40 | `tty-display-color-p` | term.c (platform) | 0.06 | 3 / 5 / 0 |  |  |  |
-| 41 | `tty-type` | term.c (platform) | 0.06 | 3 / 3 / 0 |  |  |  |
-| 42 | `unicode-property-table-internal` | chartab.c | 0.06 | 3 / 3 / 0 |  |  |  |
-| 43 | `x-get-resource` | frame.c | 0.06 | 3 / 4 / 0 |  |  |  |
-| 44 | `x-popup-dialog` | menu.c (platform) | 0.06 | 3 / 3 / 0 |  |  |  |
-| 45 | `set-window-fringes` | window.c | 0.06 | 2 / 2 / 0 | 5 / 8 / 0 |  |  |
-| 46 | `abort-minibuffers` | minibuf.c | 0.05 | 1 / 1 / 0 | 2 / 2 / 0 | 1 / 1 / 0 |  |
-| 47 | `set-mouse-pixel-position` | frame.c | 0.05 | 1 / 1 / 0 | 2 / 4 / 0 | 1 / 1 / 0 |  |
-| 48 | `frame-position` | frame.c | 0.05 | 2 / 3 / 0 | 2 / 5 / 0 |  |  |
-| 49 | `window-scroll-bar-width` | window.c | 0.05 | 2 / 4 / 0 | 2 / 2 / 0 |  |  |
-| 50 | `buffer-last-name` | buffer.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
-| 51 | `category-set-mnemonics` | category.c | 0.05 | 1 / 2 / 0 |  | 1 / 1 / 0 |  |
-| 52 | `set-network-process-option` | process.c | 0.05 | 1 / 2 / 0 |  | 1 / 1 / 0 |  |
-| 53 | `treesit-compiled-query-p` | treesit.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
-| 54 | `treesit-parser-add-notifier` | treesit.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
-| 55 | `treesit-parser-included-ranges` | treesit.c | 0.05 | 1 / 3 / 0 |  | 1 / 2 / 0 |  |
-| 56 | `treesit-parser-set-included-ranges` | treesit.c | 0.05 | 1 / 4 / 0 |  | 1 / 3 / 0 |  |
-| 57 | `treesit-query-expand` | treesit.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
-| 58 | `treesit-query-language` | treesit.c | 0.05 | 1 / 5 / 0 |  | 1 / 5 / 0 |  |
-| 59 | `treesit-query-p` | treesit.c | 0.05 | 1 / 2 / 0 |  | 1 / 2 / 0 |  |
-| 60 | `treesit-subtree-stat` | treesit.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
-| 61 | `zlib-decompress-region` | decompress.c (platform) | 0.05 | 1 / 1 / 0 |  | 1 / 3 / 0 |  |
-| 62 | `next-read-file-uses-dialog-p` | fileio.c | 0.04 | 2 / 2 / 0 | 1 / 1 / 0 |  |  |
-| 63 | `x-display-pixel-height` | nsfns.m (platform) | 0.04 | 2 / 3 / 0 | 1 / 3 / 0 |  |  |
-| 64 | `x-display-pixel-width` | nsfns.m (platform) | 0.04 | 2 / 3 / 0 | 1 / 3 / 0 |  |  |
-| 65 | `buffer-swap-text` | buffer.c | 0.04 | 2 / 2 / 0 |  |  |  |
-| 66 | `frame--face-hash-table` | xfaces.c | 0.04 | 2 / 2 / 0 |  |  |  |
-| 67 | `frame-native-height` | frame.c | 0.04 | 2 / 5 / 0 |  |  |  |
-| 68 | `frame-native-width` | frame.c | 0.04 | 2 / 5 / 0 |  |  |  |
-| 69 | `frame-right-divider-width` | frame.c | 0.04 | 2 / 3 / 0 |  |  |  |
-| 70 | `gnutls-peer-status` | gnutls.c (platform) | 0.04 | 2 / 2 / 0 |  |  |  |
-| 71 | `message-box` | editfns.c | 0.04 | 2 / 2 / 0 |  |  |  |
-| 72 | `send-string-to-terminal` | dispnew.c | 0.04 | 2 / 3 / 0 |  |  |  |
-| 73 | `suspend-tty` | term.c (platform) | 0.04 | 2 / 2 / 0 |  |  |  |
-| 74 | `window-display-table` | window.c | 0.04 | 2 / 2 / 0 |  |  |  |
-| 75 | `x-display-grayscale-p` | nsfns.m (platform) | 0.04 | 2 / 2 / 0 |  |  |  |
-| 76 | `x-display-list` | nsfns.m (platform) | 0.04 | 2 / 4 / 0 |  |  |  |
-| 77 | `x-open-connection` | nsfns.m (platform) | 0.04 | 2 / 2 / 0 |  |  |  |
-| 78 | `clear-this-command-keys` | keyboard.c | 0.04 | 1 / 4 / 0 | 5 / 9 / 0 |  |  |
-| 79 | `internal-complete-buffer` | minibuf.c | 0.03 | 1 / 1 / 0 | 4 / 9 / 0 |  |  |
-| 80 | `set-frame-height` | frame.c | 0.03 | 1 / 1 / 0 | 3 / 3 / 0 |  |  |
-| 81 | `sqlite-available-p` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 82 | `sqlite-close` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 83 | `sqlite-open` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 84 | `sqlite-select` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 85 | `describe-buffer-bindings` | keymap.c | 0.03 | 1 / 1 / 0 | 2 / 2 / 0 |  |  |
-| 86 | `set-frame-position` | frame.c | 0.03 | 1 / 1 / 0 | 2 / 2 / 0 |  |  |
-| 87 | `set-frame-width` | frame.c | 0.03 | 1 / 1 / 0 | 2 / 2 / 0 |  |  |
-| 88 | `gnutls-hash-mac` | gnutls.c (platform) | 0.03 |  |  | 1 / 6 / 0 |  |
-| 89 | `treesit-pattern-expand` | treesit.c | 0.03 |  |  | 1 / 1 / 0 |  |
-| 90 | `delete-terminal` | terminal.c (platform) | 0.02 | 1 / 3 / 0 | 1 / 1 / 0 |  |  |
-| 91 | `find-charset-string` | charset.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 92 | `keyboard-coding-system` | coding.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 93 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 94 | `set--this-command-keys` | keyboard.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 95 | `terminal-coding-system` | coding.c | 0.02 | 1 / 2 / 0 | 1 / 1 / 0 |  |  |
-| 96 | `tty-display-color-cells` | term.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 97 | `window-right-divider-width` | window.c | 0.02 | 1 / 2 / 0 | 1 / 1 / 0 |  |  |
-| 98 | `window-scroll-bar-height` | window.c | 0.02 | 1 / 3 / 0 | 1 / 1 / 0 |  |  |
-| 99 | `x-show-tip` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 100 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 101 | `char-resolve-modifiers` | character.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 102 | `charset-after` | charset.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 103 | `command-error-default-function` | keyboard.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 104 | `controlling-tty-p` | term.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 105 | `coordinates-in-window-p` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 106 | `describe-vector` | keymap.c | 0.02 | 1 / 4 / 0 |  |  |  |
-| 107 | `display--line-is-continued-p` | xdisp.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 108 | `display--update-for-mouse-movement` | dispnew.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 109 | `face-attributes-as-vector` | xfaces.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 110 | `find-charset-region` | charset.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 111 | `font-face-attributes` | font.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 112 | `fontset-list` | fontset.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 113 | `frame--set-was-invisible` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 114 | `frame-after-make-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 115 | `frame-ancestor-p` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 116 | `frame-bottom-divider-width` | frame.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 117 | `frame-internal-border-width` | frame.c | 0.02 | 1 / 4 / 0 |  |  |  |
-| 118 | `frame-scroll-bar-height` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 119 | `frame-total-cols` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 120 | `frame-total-lines` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 121 | `gnutls-boot` | gnutls.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 122 | `gnutls-ciphers` | gnutls.c (platform) | 0.02 | 1 / 2 / 0 |  |  |  |
-| 123 | `gnutls-error-string` | gnutls.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 124 | `gnutls-errorp` | gnutls.c (platform) | 0.02 | 1 / 2 / 0 |  |  |  |
-| 125 | `gnutls-format-certificate` | gnutls.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 126 | `gnutls-peer-status-warning-describe` | gnutls.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 127 | `gnutls-symmetric-decrypt` | gnutls.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 128 | `gnutls-symmetric-encrypt` | gnutls.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 129 | `handle-switch-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 130 | `help--describe-vector` | keymap.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 131 | `innermost-minibuffer-p` | minibuf.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 132 | `internal-copy-lisp-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 133 | `internal-describe-syntax-value` | syntax.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 134 | `internal-face-x-get-resource` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 135 | `internal-get-lisp-face-attribute` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 136 | `internal-handle-focus-in` | keyboard.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 137 | `internal-lisp-face-empty-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 138 | `internal-lisp-face-equal-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 139 | `internal-lisp-face-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 140 | `internal-make-lisp-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 141 | `internal-merge-in-global-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 142 | `internal-set-alternative-font-family-alist` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 143 | `internal-set-alternative-font-registry-alist` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 144 | `internal-set-font-selection-order` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 145 | `internal-set-lisp-face-attribute` | xfaces.c | 0.02 | 1 / 3 / 0 |  |  |  |
-| 146 | `internal-set-lisp-face-attribute-from-resource` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 147 | `keymap--get-keyelt` | keymap.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 148 | `kqueue-add-watch` | kqueue.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 149 | `make-serial-process` | process.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 150 | `make-terminal-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 151 | `marker-last-position` | marker.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 152 | `menu-or-popup-active-p` | nsmenu.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 153 | `minibuffer-innermost-command-loop-p` | minibuf.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 154 | `ns-display-monitor-attributes-list` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 155 | `ns-frame-edges` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 156 | `ns-frame-geometry` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 157 | `ns-frame-list-z-order` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 158 | `ns-frame-restack` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 159 | `ns-mouse-absolute-pixel-position` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 160 | `ns-set-mouse-absolute-pixel-position` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 161 | `old-selected-window` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 162 | `process-thread` | process.c | 0.02 | 1 / 3 / 0 |  |  |  |
-| 163 | `resize-mini-window-internal` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 164 | `resume-tty` | term.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 165 | `set-window-display-table` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 166 | `set-window-scroll-bars` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 167 | `store-kbd-macro-event` | macros.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 168 | `window-bottom-divider-width` | window.c | 0.02 | 1 / 3 / 0 |  |  |  |
-| 169 | `window-configuration-equal-p` | window.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 170 | `window-left-column` | window.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 171 | `window-old-buffer` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 172 | `window-old-pixel-height` | window.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 173 | `window-old-pixel-width` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 174 | `window-scroll-bars` | window.c | 0.02 | 1 / 3 / 0 |  |  |  |
-| 175 | `window-top-line` | window.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 176 | `x-close-connection` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 177 | `x-create-frame` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 178 | `x-display-backing-store` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 179 | `x-display-color-cells` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 180 | `x-display-mm-height` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 181 | `x-display-mm-width` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 182 | `x-display-planes` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 183 | `x-display-save-under` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 184 | `x-display-screens` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 185 | `x-display-visual-class` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 186 | `x-hide-tip` | nsfns.m (platform) | 0.02 | 1 / 2 / 0 |  |  |  |
-| 187 | `x-parse-geometry` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 188 | `x-select-font` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 189 | `x-server-version` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 190 | `xw-color-defined-p` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 191 | `xw-color-values` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 192 | `xw-display-color-p` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 193 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 194 | `coding-system-plist` | coding.c | 0.00 |  | 1 / 1 / 0 |  |  |
-| 195 | `frame-scale-factor` | frame.c | 0.00 |  | 1 / 1 / 0 |  |  |
-| 196 | `set-fontset-font` | fontset.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 197 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 198 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 199 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 200 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 1 | `treesit-induce-sparse-tree` | treesit.c | 0.09 | 2 / 4 / 0 |  | 2 / 2 / 0 |  |
+| 2 | `treesit-search-forward` | treesit.c | 0.07 | 1 / 5 / 0 |  | 2 / 5 / 0 |  |
+| 3 | `treesit-node-match-p` | treesit.c | 0.07 | 2 / 10 / 0 |  | 1 / 8 / 0 |  |
+| 4 | `treesit-search-subtree` | treesit.c | 0.07 | 2 / 11 / 0 |  | 1 / 4 / 0 |  |
+| 5 | `internal-char-font` | font.c | 0.06 | 3 / 4 / 0 |  |  |  |
+| 6 | `buffer-last-name` | buffer.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
+| 7 | `set-network-process-option` | process.c | 0.05 | 1 / 2 / 0 |  | 1 / 1 / 0 |  |
+| 8 | `treesit-compiled-query-p` | treesit.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
+| 9 | `treesit-parser-add-notifier` | treesit.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
+| 10 | `treesit-parser-included-ranges` | treesit.c | 0.05 | 1 / 3 / 0 |  | 1 / 2 / 0 |  |
+| 11 | `treesit-parser-set-included-ranges` | treesit.c | 0.05 | 1 / 4 / 0 |  | 1 / 3 / 0 |  |
+| 12 | `treesit-query-expand` | treesit.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
+| 13 | `treesit-query-language` | treesit.c | 0.05 | 1 / 5 / 0 |  | 1 / 5 / 0 |  |
+| 14 | `treesit-query-p` | treesit.c | 0.05 | 1 / 2 / 0 |  | 1 / 2 / 0 |  |
+| 15 | `treesit-subtree-stat` | treesit.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
+| 16 | `buffer-swap-text` | buffer.c | 0.04 | 2 / 2 / 0 |  |  |  |
+| 17 | `frame--face-hash-table` | xfaces.c | 0.04 | 2 / 2 / 0 |  |  |  |
+| 18 | `send-string-to-terminal` | dispnew.c | 0.04 | 2 / 3 / 0 |  |  |  |
+| 19 | `window-display-table` | window.c | 0.04 | 2 / 2 / 0 |  |  |  |
+| 20 | `sqlite-available-p` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
+| 21 | `sqlite-close` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
+| 22 | `sqlite-open` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
+| 23 | `sqlite-select` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
+| 24 | `treesit-pattern-expand` | treesit.c | 0.03 |  |  | 1 / 1 / 0 |  |
+| 25 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 26 | `set--this-command-keys` | keyboard.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 27 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 28 | `describe-vector` | keymap.c | 0.02 | 1 / 4 / 0 |  |  |  |
+| 29 | `display--line-is-continued-p` | xdisp.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 30 | `face-attributes-as-vector` | xfaces.c | 0.02 | 1 / 2 / 0 |  |  |  |
+| 31 | `font-face-attributes` | font.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 32 | `fontset-list` | fontset.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 33 | `frame-after-make-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 34 | `handle-switch-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 35 | `help--describe-vector` | keymap.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 36 | `internal-copy-lisp-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 37 | `internal-describe-syntax-value` | syntax.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 38 | `internal-face-x-get-resource` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 39 | `internal-get-lisp-face-attribute` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 40 | `internal-lisp-face-empty-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 41 | `internal-lisp-face-equal-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 42 | `internal-lisp-face-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 43 | `internal-make-lisp-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 44 | `internal-merge-in-global-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 45 | `internal-set-alternative-font-family-alist` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 46 | `internal-set-alternative-font-registry-alist` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 47 | `internal-set-font-selection-order` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 48 | `internal-set-lisp-face-attribute` | xfaces.c | 0.02 | 1 / 3 / 0 |  |  |  |
+| 49 | `internal-set-lisp-face-attribute-from-resource` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 50 | `kqueue-add-watch` | kqueue.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 51 | `make-serial-process` | process.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 52 | `marker-last-position` | marker.c | 0.02 | 1 / 2 / 0 |  |  |  |
+| 53 | `ns-display-monitor-attributes-list` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 54 | `ns-frame-edges` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 55 | `ns-frame-geometry` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 56 | `ns-frame-list-z-order` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 57 | `ns-frame-restack` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 58 | `process-thread` | process.c | 0.02 | 1 / 3 / 0 |  |  |  |
+| 59 | `resize-mini-window-internal` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 60 | `set-window-display-table` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 61 | `x-create-frame` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 62 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 63 | `set-fontset-font` | fontset.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 64 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 65 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 66 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 67 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
 
 ### By piece of work
 
@@ -407,26 +285,20 @@ Packages needing at least one primitive of the group, per corpus, and those for 
 
 | group | needed | score | emacs | melpa | daily | all they lack |
 |---|---|---|---|---|---|---|
-| mouse | 12 | 0.51 | 15 | 14 | 6 | 5: gnuplot, highlight, ediff (Emacs), project (Emacs), speedbar (Emacs) |
-| tls-zlib | 13 | 0.48 | 13 | 11 | 7 | 14: pkg-info, haskell-mode, evil-tutor, consult, smex, marginalia, ert-runner, helpful |
-| menus | 8 | 0.46 | 17 | 9 | 3 | 5: yasnippet, treemacs, lsp-treemacs, slime, eglot (Emacs) |
-| frames | 37 | 0.34 | 11 | 11 | 3 | 6: ace-window, cfrs, winum, window-purpose, spacemacs-theme, server (Emacs) |
-| window-tree | 21 | 0.30 | 8 | 11 | 4 | 5: persp-mode, doom-themes, visual-fill-column, forge, writeroom-mode |
-| charsets-codings | 10 | 0.23 | 9 | 6 | 1 | 2: wgrep, geiser |
-| keyboard | 5 | 0.22 | 7 | 8 | 2 | 1: company |
-| xml | 3 | 0.19 | 3 | 8 | 4 | 4: cider, pip-requirements, devdocs, gh-md |
-| macos-x | 25 | 0.18 | 6 | 2 | 2 | 0:  |
-| keymaps | 6 | 0.17 | 6 | 6 | 1 | 2: transient, helm-descbinds |
-| minibuffer | 5 | 0.17 | 6 | 5 | 1 | 2: ivy, swiper |
-| treesit | 13 | 0.12 | 2 | 0 | 3 | 1: treesit (Emacs) |
+| treesit | 13 | 0.12 | 2 | 0 | 3 | 2: prog-modes (Emacs), treesit (Emacs) |
 | faces-fonts | 19 | 0.11 | 5 | 1 | 0 | 1: nerd-icons |
-| process-objects | 3 | 0.09 | 3 | 0 | 1 | 0:  |
-| buffer-text | 3 | 0.09 | 3 | 0 | 1 | 0:  |
-| other | 4 | 0.08 | 4 | 0 | 0 | 0:  |
-| xwidgets | 7 | 0.05 | 2 | 2 | 0 | 0:  |
+| process-objects | 3 | 0.09 | 3 | 0 | 1 | 1: term (Emacs) |
+| buffer-text | 3 | 0.09 | 3 | 0 | 1 | 1: vc (Emacs) |
+| window-tree | 3 | 0.08 | 4 | 0 | 0 | 2: dired (Emacs), erc (Emacs) |
+| other | 2 | 0.06 | 3 | 0 | 0 | 0:  |
+| xwidgets | 7 | 0.05 | 2 | 2 | 0 | 4: lsp-ui, evil-collection, eww (Emacs), image (Emacs) |
+| macos-x | 6 | 0.04 | 2 | 0 | 0 | 0:  |
+| frames | 2 | 0.04 | 2 | 0 | 0 | 0:  |
 | sqlite | 4 | 0.03 | 0 | 1 | 1 | 1: emacsql |
-| files | 1 | 0.02 | 1 | 0 | 0 | 0:  |
+| keyboard | 1 | 0.02 | 1 | 1 | 0 | 1: embark |
+| files | 1 | 0.02 | 1 | 0 | 0 | 1: files (Emacs) |
 | syntax-tables | 1 | 0.02 | 1 | 0 | 0 | 0:  |
+| keymaps | 2 | 0.02 | 1 | 0 | 0 | 0:  |
 
 ### One-liners over what E8 has
 
@@ -441,11 +313,6 @@ Those whose expansion or body calls a primitive E8 lacks: packages using each, p
 
 | wrapper | emacs | melpa | daily | brings |
 |---|---|---|---|---|
-| `symbol-file` | 8 | 11 | 5 | `zlib-available-p` |
-| `track-mouse` | 6 | 4 |  | `internal--track-mouse` |
-| `keymap-canonicalize` | 2 | 1 |  | `keymap-prompt` |
-| `cal-menu-x-popup-menu` | 1 |  |  | `x-popup-menu` |
-| `momentary-string-display` |  | 1 |  | `this-single-command-raw-keys` |
 
 ### MELPA packages nearest to needing nothing E8 lacks
 
@@ -456,10 +323,15 @@ Among MELPA's 150 most downloaded, those defining commands (three or more `inter
 | dash | 6,571,380 |  |  |  |
 | avy | 2,555,368 |  |  |  |
 | hydra | 2,181,296 |  |  |  |
+| ace-window | 2,092,232 |  |  |  |
+| ivy | 1,922,624 |  |  |  |
 | diminish | 1,739,448 |  |  |  |
 | web-mode | 1,625,641 |  |  |  |
 | hl-todo | 1,463,567 |  |  |  |
+| auto-complete | 1,419,858 |  |  |  |
 | iedit | 1,407,261 |  |  |  |
+| swiper | 1,352,474 |  |  |  |
+| posframe | 1,346,628 |  |  |  |
 | yaml-mode | 1,340,155 |  |  |  |
 | highlight-indentation | 1,336,453 |  |  |  |
 | aggressive-indent | 1,308,083 |  |  |  |
@@ -471,19 +343,14 @@ Among MELPA's 150 most downloaded, those defining commands (three or more `inter
 | paredit | 1,098,226 |  |  |  |
 | auto-highlight-symbol | 1,067,739 |  |  |  |
 | hungry-delete | 1,066,132 |  |  |  |
+| persp-mode | 1,050,123 |  |  |  |
 | helm-make | 1,046,315 |  |  |  |
 | indent-guide | 1,017,888 |  |  |  |
 | ws-butler | 1,005,643 |  |  |  |
 | golden-ratio | 1,001,650 |  |  |  |
 | eval-sexp-fu | 990,156 |  |  |  |
 | lorem-ipsum | 930,747 |  |  |  |
-| eyebrowse | 913,884 |  |  |  |
-| move-text | 907,212 |  |  |  |
-| column-enforce-mode | 837,233 |  |  |  |
-| neotree | 814,366 |  |  |  |
-| log4e | 783,678 |  |  |  |
-| fill-column-indicator | 771,956 |  |  |  |
 
-### Missing and needed by nothing in the corpus (103)
+### Missing and needed by nothing in the corpus (59)
 
-`bitmap-spec-p`, `cancel-kbd-macro-events`, `charset-id-internal`, `charset-plist`, `clear-charset-maps`, `clear-composition-cache`, `clear-face-cache`, `clear-font-cache`, `close-font`, `coding-system-put`, `compose-region-internal`, `compose-string-internal`, `composition-get-gstring`, `composition-sort-rules`, `current-input-mode`, `declare-equiv-charset`, `decode-big5-char`, `decode-sjis-char`, `define-charset-alias`, `define-charset-internal`, `define-coding-system-alias`, `define-coding-system-internal`, `encode-big5-char`, `encode-sjis-char`, `find-coding-systems-region-internal`, `find-composition-internal`, `font-get-glyphs`, `font-match-p`, `font-shape-gstring`, `font-variation-glyphs`, `frame-child-frame-border-width`, `frame-focus`, `frame-font-cache`, `frame-old-selected-window`, `frame-pointer-visible-p`, `frame-window-state-change`, `gap-position`, `gap-size`, `get-unicode-property-internal`, `get-unused-iso-final-char`, `internal--labeled-narrow-to-region`, `internal--labeled-widen`, `internal--set-buffer-modified-tick`, `internal-default-interrupt-process`, `internal-default-signal-process`, `iso-charset`, `lookup-image-map`, `lower-frame`, `make-category-set`, `map-charset-chars`, `message-or-box`, `multibyte-char-to-unibyte`, `newline-cache-check`, `old-selected-frame`, `open-dribble-file`, `open-font`, `open-termscript`, `optimize-char-table`, `posix-looking-at`, `posix-search-backward`, `posix-search-forward`, `posix-string-match`, `process-datagram-address`, `put-unicode-property-internal`, `re--describe-compiled`, `read-non-nil-coding-system`, `reconsider-frame-fonts`, `run-window-configuration-change-hook`, `serial-process-configure`, `set-buffer-redisplay`, `set-charset-plist`, `set-charset-priority`, `set-frame-window-state-change`, `set-input-interrupt-mode`, `set-input-meta-mode`, `set-input-mode`, `set-keyboard-coding-system-internal`, `set-minibuffer-window`, `set-output-flow-control`, `set-process-datagram-address`, `set-process-thread`, `set-quit-char`, `set-safe-terminal-coding-system-internal`, `set-terminal-coding-system-internal`, `set-window-cursor-type`, `sort-charsets`, `split-char`, `text-char-description`, `tool-bar-pixel-width`, `translate-region-internal`, `treesit-language-abi-version`, `treesit-library-abi-version`, `treesit-parser-notifiers`, `treesit-parser-remove-notifier`, `tty-suppress-bold-inverse-default-colors`, `unibyte-char-to-multibyte`, `unify-charset`, `window-cursor-type`, `window-old-body-pixel-height`, `window-old-body-pixel-width`, `window-old-point`, `x-family-fonts`, `x-load-color-file`
+`bitmap-spec-p`, `cancel-kbd-macro-events`, `clear-composition-cache`, `clear-face-cache`, `clear-font-cache`, `close-font`, `compose-region-internal`, `compose-string-internal`, `composition-get-gstring`, `composition-sort-rules`, `declare-equiv-charset`, `define-charset-alias`, `define-charset-internal`, `define-coding-system-alias`, `define-coding-system-internal`, `find-coding-systems-region-internal`, `find-composition-internal`, `font-get-glyphs`, `font-match-p`, `font-shape-gstring`, `font-variation-glyphs`, `frame-font-cache`, `gap-position`, `gap-size`, `get-unused-iso-final-char`, `internal--labeled-narrow-to-region`, `internal--labeled-widen`, `internal--set-buffer-modified-tick`, `internal-default-interrupt-process`, `internal-default-signal-process`, `iso-charset`, `lookup-image-map`, `map-charset-chars`, `newline-cache-check`, `open-font`, `open-termscript`, `optimize-char-table`, `posix-looking-at`, `posix-search-backward`, `posix-search-forward`, `posix-string-match`, `process-datagram-address`, `re--describe-compiled`, `read-non-nil-coding-system`, `serial-process-configure`, `set-buffer-redisplay`, `set-minibuffer-window`, `set-process-datagram-address`, `set-process-thread`, `set-safe-terminal-coding-system-internal`, `text-char-description`, `translate-region-internal`, `treesit-language-abi-version`, `treesit-library-abi-version`, `treesit-parser-notifiers`, `treesit-parser-remove-notifier`, `tty-suppress-bold-inverse-default-colors`, `x-family-fonts`, `x-load-color-file`
