@@ -130,8 +130,19 @@ const API: &str = r##"
    * the parent keymap's binding, or with `remove` taken out, so it shows.
    */
   function keymapUnset(keymap: string | Keymap, keys: string, remove?: boolean): void;
-  /** A new keymap with no bindings, inheriting `parent`'s, as make-sparse-keymap and set-keymap-parent. */
-  function makeSparseKeymap(parent?: string | Keymap | null): Keymap;
+  /**
+   * A new keymap with no bindings, inheriting `parent`'s, as
+   * make-sparse-keymap and set-keymap-parent; `prompt` is what the echo
+   * area shows while a key is read in it, as make-sparse-keymap's PROMPT.
+   */
+  function makeSparseKeymap(parent?: string | Keymap | null, prompt?: string | null): Keymap;
+  /**
+   * Calls `fn` with each key a keymap itself binds and its binding, a
+   * prefix's being its keymap and "t" standing for what it runs for any
+   * other key, then returns its parent, which it leaves alone, as
+   * map-keymap-internal.
+   */
+  function mapKeymapInternal(fn: (key: string, binding: string | Keymap | string[]) => void, keymap: string | Keymap): Keymap | undefined;
   /** Whether a value is a keymap, as keymapp. */
   function keymapp(value: unknown): value is Keymap;
   /** The keymap a keymap inherits from, as keymap-parent. */

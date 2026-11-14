@@ -80,20 +80,6 @@ function insertBindings(bindings: [string, string][]): void {
 
 // --- Commands and keys, after help-fns.el and help.el -----------------------
 
-/** What the active keymaps bind, the first map's binding of each key winning, flattened through the prefix maps. */
-function activeBindings(): [string, string][] {
-  const seen = new Set<string>();
-  const out: [string, string][] = [];
-  for (const map of e8.currentActiveMaps()) {
-    for (const [keys, command] of e8.keymapBindings(map)) {
-      if (seen.has(keys)) continue;
-      seen.add(keys);
-      out.push([keys, command]);
-    }
-  }
-  return out;
-}
-
 /** The keys that run a command now, as where-is lists them: in the window's buffer, its modes' first. */
 function keysFor(command: string): string[] {
   return e8.whereIsInternal(command);
@@ -219,28 +205,340 @@ export function modeMap(mode: string): string | undefined {
   return e8.keymapp(e8.variable(name)) ? name : undefined;
 }
 
+// --- Listing a buffer's keys, after keymap.c's describe-buffer-bindings
+// and help.el's describe-map (ADR 0082) ------------------------------------
+
+/** A binding as describe-map has it: a command, a prefix's keymap, or keys a key is translated to. */
+type Definition = string | e8.Keymap | string[];
+
+/** A key description's parts: its modifiers, and its base key, a function key keeping its brackets. */
+function splitKey(key: string): [string[], string] {
+  // A function key, its modifiers before the bracket or inside it: C-<f1>, <C-f1>, <mouse-1>.
+  const fkey = /^((?:[AsHSCM]-)*)<((?:[AsHSCM]-)*)(.+)>$/.exec(key);
+  if (fkey) return [(fkey[1] + fkey[2]).split("-").filter((m) => m !== ""), `<${fkey[3]}>`];
+  const parts = key.split("-");
+  // "C--" is C with "-", and "-" alone is "-".
+  const base = parts.length > 1 && parts[parts.length - 1] === "" ? "-" : parts.pop()!;
+  if (base === "-" && parts[parts.length - 1] === "") parts.pop();
+  return [parts.filter((m) => m !== ""), base];
+}
+
+const NAMED_CHARS: Record<string, number> = { SPC: 32, TAB: 9, RET: 13, ESC: 27, DEL: 127, NUL: 0, LFD: 10 };
+const MODIFIER_BITS: Record<string, number> = { A: 2 ** 22, s: 2 ** 23, H: 2 ** 24, S: 2 ** 25, C: 2 ** 26, M: 2 ** 27 };
+
+/**
+ * A key as Emacs orders events in describe-map: a character with its
+ * modifiers as the integer Emacs reads it as, before any function key,
+ * which sort by their symbols' names (help--describe-map-compare).
+ */
+function eventOrder(key: string): [number, number, string] {
+  const [mods, base] = splitKey(key);
+  const char = NAMED_CHARS[base] ?? ([...base].length === 1 ? base.codePointAt(0)! : undefined);
+  if (char === undefined) return [1, 0, [...mods, base.replace(/^<|>$/g, "")].join("-")];
+  let code = char;
+  let bits = 0;
+  for (const m of mods) {
+    if (m === "C" && ((code >= 64 && code <= 95) || (code >= 97 && code <= 122))) code &= 31;
+    else bits += MODIFIER_BITS[m] ?? 0;
+  }
+  return [0, code + bits, ""];
+}
+
+/** Version order, as string-version-lessp, for function keys' names. */
+function versionLess(a: string, b: string): number {
+  // Written out, as QuickJS's localeCompare knows no numeric option.
+  const digit = (s: string, i: number) => i < s.length && s.charCodeAt(i) >= 48 && s.charCodeAt(i) <= 57;
+  let i = 0;
+  let j = 0;
+  while (i < a.length && j < b.length) {
+    if (digit(a, i) && digit(b, j)) {
+      let ei = i;
+      let ej = j;
+      while (digit(a, ei)) ei++;
+      while (digit(b, ej)) ej++;
+      const na = Number(a.slice(i, ei));
+      const nb = Number(b.slice(j, ej));
+      if (na !== nb) return na - nb;
+      i = ei;
+      j = ej;
+    } else {
+      const d = a.charCodeAt(i) - b.charCodeAt(j);
+      if (d !== 0) return d;
+      i++;
+      j++;
+    }
+  }
+  return a.length - i - (b.length - j);
+}
+
+function eventCompare(a: string, b: string): number {
+  const [ka, na, sa] = eventOrder(a);
+  const [kb, nb, sb] = eventOrder(b);
+  if (ka !== kb) return ka - kb;
+  return ka === 0 ? na - nb : versionLess(sa, sb);
+}
+
+/** Whether a key is a meta character, which Emacs keeps in the ESC map. */
+function metaKey(key: string): boolean {
+  const [mods, base] = splitKey(key);
+  return mods.includes("M") && (NAMED_CHARS[base] !== undefined || [...base].length === 1);
+}
+
+/** A key as key-description writes it: ESC TAB, which E8 calls M-TAB, is C-M-i. */
+const shownKey = (key: string): string => (key === "M-TAB" ? "C-M-i" : key);
+
+/** The keys a keymap binds, its own first and then its parents' it does not shadow, as Emacs reads a keymap's list. */
+function keymapEvents(map: e8.Keymap): [string, Definition][] {
+  const seen = new Set<string>();
+  const out: [string, Definition][] = [];
+  let at: e8.Keymap | undefined = map;
+  for (let depth = 0; at !== undefined && depth < 32; depth++) {
+    at = e8.mapKeymapInternal((key, binding) => {
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push([key, binding]);
+    }, at);
+  }
+  return out;
+}
+
+/** Whether two definitions are the same, as equal compares them: a keymap only to itself. */
+function sameDefinition(a: Definition, b: Definition): boolean {
+  if (e8.keymapp(a) || e8.keymapp(b)) return a === b;
+  if (Array.isArray(a) || Array.isArray(b)) return JSON.stringify(a) === JSON.stringify(b);
+  return a === b;
+}
+
+/** How a definition reads in a listing, as help--describe-command writes it. */
+function describeDefinition(definition: Definition, translation: boolean): string {
+  if (Array.isArray(definition)) return translation ? definition.join(" ") : "Keyboard Macro";
+  if (e8.keymapp(definition)) return "Prefix Command";
+  return String(definition);
+}
+
+/**
+ * Pads each key out to the column every key in a block shares, as
+ * describe-map--align-section does: 16, 24 or 32, with tabs where they
+ * reach and spaces after; past that, one past the longest key, or a
+ * definition too wide for the window on a line of its own.
+ */
+function alignBlock(rows: [string, string][]): string {
+  const widest = Math.max(...rows.map(([key]) => key.length));
+  const fill = (width: number) => (key: string) => {
+    const tabs = Math.floor(width / 8) - Math.floor(key.length / 8);
+    return tabs > 0 ? "\t".repeat(tabs) + " ".repeat(width % 8) : " ".repeat(width - key.length);
+  };
+  // A definition's width is its first line's, as a remap's note follows on the next.
+  const defWidth = (definition: string) => definition.split("\n")[0].length;
+  let pad: (key: string, definition: string) => string;
+  if (widest < 32) {
+    const f = fill(widest < 16 ? 16 : widest < 24 ? 24 : 32);
+    pad = (key) => f(key);
+  } else {
+    const windowWidth = e8.windowTotalWidth();
+    const maxDef = Math.max(...rows.map(([, d]) => defWidth(d)));
+    if (maxDef + Math.max(16, widest) < windowWidth) {
+      const f = fill(Math.max(16, widest) + 1);
+      pad = (key) => f(key);
+    } else {
+      pad = (key, definition) =>
+        key.length + defWidth(definition) < windowWidth ? " ".repeat(widest + 1 - key.length) : "\n\t\t";
+    }
+  }
+  return rows.map(([key, definition]) => `${key}${pad(key, definition)}${definition}\n`).join("");
+}
+
+/** The first binding of a key among maps, as lookup-key in a list of keymaps finds it. */
+function firstBinding(maps: e8.Keymap[], key: string): Definition | undefined {
+  for (const map of maps) {
+    const found = e8.lookupKey(map, key);
+    if (found !== undefined && found !== null) return found;
+  }
+  return undefined;
+}
+
+/**
+ * The lines describing one keymap reached by a prefix, as describe-map:
+ * its keys in Emacs's order, a run of characters bound alike as one line,
+ * prefix keys left out, and keys the shadowing maps, already narrowed to
+ * this prefix, bind left out. With `metaOnly`, only the meta characters,
+ * as the ESC map holds them.
+ */
+function describeMap(map: e8.Keymap, prefix: string, translation: boolean, shadow: e8.Keymap[], metaOnly = false): string {
+  const events = keymapEvents(map).filter(([key, definition]) => {
+    if (key === "t" || key === "<menu-bar>") return false;
+    if (metaOnly && !metaKey(key)) return false;
+    // `undefined' says a key is meant to do nothing; a partial listing leaves it out.
+    if (!translation && definition === "undefined") return false;
+    const there = firstBinding(shadow, key);
+    return there === undefined || (e8.keymapp(definition) && e8.keymapp(there));
+  });
+  // Emacs keeps a meta character's binding in an ESC map, which lists as
+  // a block of its own: the same keys, under their prefix, after the rest.
+  const plain = events.filter(([key]) => !metaKey(key));
+  const metas = events.filter(([key]) => metaKey(key));
+  const blocks = [plain, metas].map((block) => describeBlock(block, prefix, translation)).filter((text) => text !== "");
+  return blocks.map((text) => `\n${text}`).join("");
+}
+
+/** One block's lines, its keys in Emacs's order, a run of characters bound alike as one line, prefix keys left out. */
+function describeBlock(events: [string, Definition][], prefix: string, translation: boolean): string {
+  const full = (key: string) => (prefix === "" ? shownKey(key) : `${prefix} ${shownKey(key)}`);
+  const sorted = events.map(([key, definition]) => ({ key, definition, order: eventOrder(key) }));
+  sorted.sort((a, b) => eventCompare(a.key, b.key));
+  const rows: [string, string][] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    const { key, definition, order } = sorted[i];
+    // A run of characters, each the next one up, bound to the same thing.
+    let end = i;
+    if (order[0] === 0) {
+      while (end + 1 < sorted.length) {
+        const next = sorted[end + 1];
+        if (next.order[0] !== 0 || next.order[1] !== sorted[end].order[1] + 1 || !sameDefinition(next.definition, definition)) break;
+        end++;
+      }
+    }
+    // A prefix key shows only as the keys under it.
+    if (end === i && e8.keymapp(definition)) continue;
+    let text = describeDefinition(definition, translation);
+    let shown = end === i ? full(key) : `${full(key)} .. ${full(sorted[end].key)}`;
+    // Under <remap>, the key that runs the command remapped to, and the remapping after it.
+    if (prefix === "<remap>" && typeof definition === "string" && definition !== "self-insert-command") {
+      const keys = e8.whereIsInternal(definition).filter((k) => !k.startsWith("<remap>"));
+      if (keys.length > 0) {
+        text += `\n  (Remapped via ${full(key)})`;
+        shown = keys[0];
+      }
+    }
+    rows.push([shown, text]);
+    i = end;
+  }
+  return rows.length === 0 ? "" : alignBlock(rows);
+}
+
+/**
+ * What the shadowing map binds a prefix to, as lookup-key gives it: a
+ * keymap or command, the number of keys that reach a command when the
+ * prefix runs past one, or undefined.
+ */
+function shadowLookup(map: e8.Keymap, keys: string): Definition | number | undefined {
+  const parts = keys.split(" ");
+  for (let i = 1; i < parts.length; i++) {
+    const at = e8.lookupKey(map, parts.slice(0, i).join(" "));
+    if (at === undefined || at === null) return undefined;
+    if (!e8.keymapp(at)) return i;
+  }
+  return e8.lookupKey(map, keys) ?? undefined;
+}
+
+/**
+ * The bindings of a keymap and every keymap reached from it, under a
+ * title, as help--describe-map-tree: nothing at all, title included,
+ * where no line is left to show.
+ */
+function describeMapTree(map: e8.Keymap, title: string, prefix: string | undefined, shadow: e8.Keymap[], translation: boolean): string {
+  // E8 keeps meta characters as M- keys, not in an ESC map: under ESC
+  // are the meta keys and the maps they lead to.
+  const esc = prefix === "ESC";
+  const all = prefix === undefined || esc ? e8.accessibleKeymaps(map) : e8.accessibleKeymaps(map, prefix);
+  const maps = all.filter(([keys]) => {
+    const first = keys.split(" ")[0];
+    // Menu bar bindings are left out, as describe-buffer-bindings asks.
+    if (first === "<menu-bar>") return false;
+    return !esc || keys === "" || metaKey(first);
+  });
+  let body = "";
+  for (const [keys, sub] of maps) {
+    // The shadowing maps' own maps under this prefix, as sub-shadows: a
+    // command there shadows the whole map, and a prefix running past a
+    // command leaves nothing to shadow it.
+    let under: e8.Keymap[] = [];
+    let hidden = false;
+    for (const other of shadow) {
+      const found = keys === "" ? other : shadowLookup(other, keys);
+      if (found === undefined) continue;
+      if (e8.keymapp(found)) {
+        under.push(found);
+        continue;
+      }
+      if (under.length === 0) {
+        if (typeof found === "number") under = [];
+        else hidden = true;
+      }
+      break;
+    }
+    if (hidden) continue;
+    body += describeMap(sub, keys, translation, under, esc && keys === "");
+  }
+  if (body === "") return "";
+  const width = Math.max(1, e8.windowTotalWidth() - 1);
+  const heading = `${title}${prefix ? ` Starting With ${prefix}` : ""}:\n\nKey             Binding\n${"-".repeat(width)}\n`;
+  return heading + body.replace(/^\n/, "");
+}
+
+/** The keymap a text property at point names, if it is one. */
+function propertyMap(name: string): e8.Keymap | undefined {
+  const value = e8.getTextProperty(e8.point(), name);
+  return e8.keymapp(value) ? value : undefined;
+}
+
+/**
+ * Inserts in the current buffer the keys `buffer` has and what they run,
+ * as keymap.c's describe-buffer-bindings: the key translations, a keymap
+ * at point, each minor mode's that is on, the
+ * major mode's, the global map's, and the input translations, each
+ * section after the first beginning with a page break, and a key an
+ * earlier section binds left out of the later ones. With `prefix`, only
+ * the keys under it.
+ */
+export function describeBufferBindings(buffer: string | e8.Buffer, prefix?: string | null): void {
+  const pfx = prefix === null || prefix === "" ? undefined : prefix;
+  const sections: [string, e8.Keymap, boolean][] = [];
+  e8.withCurrentBuffer(buffer, () => {
+    const keymapProp = propertyMap("keymap");
+    if (keymapProp !== undefined) sections.push(["`keymap' Property Bindings", keymapProp, false]);
+    // Each minor mode's map, named by the mode whose MODE-map holds it;
+    // keymap objects are the same object for the same keymap.
+    const modes = e8.enabledMinorModes();
+    for (const map of e8.currentMinorModeMaps()) {
+      const mode = modes.find((m) => e8.variable(`${m}-map`) === map);
+      sections.push([mode === undefined ? "Minor Mode Bindings" : `\`${mode}' Minor Mode Bindings`, map, false]);
+    }
+    const local = propertyMap("local-map") ?? e8.currentLocalMap();
+    if (local !== undefined) {
+      const own = local === e8.currentLocalMap() && propertyMap("local-map") === undefined;
+      sections.push([own ? `\`${String(e8.variable("major-mode"))}' Major Mode Bindings` : "`local-map' Property Bindings", local, false]);
+    }
+  });
+  const shadow: e8.Keymap[] = [];
+  const parts: string[] = [];
+  // Every title but the key translations' starts with a page break, as
+  // keymap.c writes them, whether or not a section came before.
+  const add = (title: string, map: e8.Keymap, translation: boolean, shadows: boolean) => {
+    const text = describeMapTree(map, title, pfx, translation ? [] : [...shadow], translation);
+    if (text !== "") parts.push(text);
+    if (shadows) shadow.push(map);
+  };
+  const translations = e8.variable("key-translation-map");
+  if (e8.keymapp(translations)) add("Key translations", translations, true, false);
+  for (const [title, map] of sections) add(`\f\n${title}`, map, false, true);
+  add("\f\nGlobal Bindings", e8.currentGlobalMap(), false, true);
+  const decoding = e8.variable("input-decode-map");
+  if (e8.keymapp(decoding)) add("\f\nInput decoding map translations", decoding, true, false);
+  e8.insert(parts.join(""));
+}
+
+e8.defun("describe-buffer-bindings", (buffer: string | e8.Buffer, prefix?: string | null) => {
+  describeBufferBindings(buffer, prefix);
+  return null;
+});
+
 const describeBindings = e8.defineCommand({
   name: "describe-bindings",
   doc: "List the keys and the commands they run in the current buffer: the major mode's, each minor mode's that is on, and the global ones.",
   run: () => {
-    const major = String(e8.variable("major-mode"));
-    const sections: [string, string | e8.Keymap][] = [];
-    const majorMap = modeMap(major);
-    if (majorMap !== undefined) sections.push(["Major Mode Bindings", majorMap]);
-    for (const minor of e8.enabledMinorModes()) {
-      const map = modeMap(minor);
-      if (map !== undefined) sections.push([`${minor} Minor Mode Bindings`, map]);
-    }
-    sections.push(["Global Bindings", e8.currentGlobalMap()]);
-    withHelpWindow(() => {
-      for (const [title, map] of sections) {
-        const bindings = e8.keymapBindings(map).sort(([a], [b]) => keyLess(a, b));
-        if (bindings.length === 0) continue;
-        e8.insert(`${title}:\n`);
-        insertBindings(bindings);
-        e8.insert("\n");
-      }
-    });
+    const buffer = e8.currentBuffer();
+    withHelpWindow(() => describeBufferBindings(buffer));
   },
 });
 
@@ -250,14 +548,14 @@ e8.defineCommand({
     "List the keys that start with the prefix typed before C-h, and the commands they run.\n\n" +
     "The command loop runs this when C-h or <f1> follows a prefix key that does not bind it, as Emacs's prefix-help-command.",
   run: () => {
+    // As Emacs's describe-prefix-bindings, describe-bindings with the
+    // prefix typed before C-h.
     const typed = e8.thisCommandKeysVector();
     const prefix = typed.slice(0, -1).join(" ");
-    const under = activeBindings()
-      .filter(([keys]) => keys.startsWith(`${prefix} `))
-      .sort(([a], [b]) => keyLess(a, b));
+    const buffer = e8.currentBuffer();
     withHelpWindow(() => {
-      e8.insert(`Key bindings starting with ${prefix}:\n\n`);
-      insertBindings(under);
+      describeBufferBindings(buffer, prefix);
+      if (e8.bufferSize() < 10) e8.insert(`No commands with a binding that start with ${prefix}.`);
     });
   },
 });

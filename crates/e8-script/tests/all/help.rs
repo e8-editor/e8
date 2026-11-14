@@ -90,12 +90,17 @@ fn describe_bindings_lists_the_modes_and_global_keys() {
     ed.call("org-mode", vec![]).unwrap();
     ed.press("C-h b").unwrap();
     let text = help(&ed);
-    let major = text.find("Major Mode Bindings:\n").expect("the major mode's section");
-    let global = text.find("Global Bindings:\n").expect("the global section");
+    // As Emacs's describe-buffer-bindings lays it out: each section after
+    // a page break, the key column padded with tabs.
+    let major = text.find("\x0C\n`org-mode' Major Mode Bindings:\n").expect("the major mode's section");
+    let global = text.find("\x0C\nGlobal Bindings:\n").expect("the global section");
     assert!(major < global, "{text}");
-    assert!(text[major..global].contains("C-c C-c         org-ctrl-c-ctrl-c\n"), "{text}");
-    assert!(text[global..].contains("C-x C-f         find-file\n"), "{text}");
-    assert!(text.contains("Key             Binding\n---             -------\n"), "{text}");
+    assert!(text[major..global].contains("\nC-c C-c\t"), "{text}");
+    assert!(text[major..global].contains("\torg-ctrl-c-ctrl-c\n"), "{text}");
+    assert!(text[global..].contains("\nC-x C-f\t"), "{text}");
+    // A line of dashes the window's width less one, as make-separator-line draws it.
+    let rule = text.split("Key             Binding\n").nth(1).and_then(|rest| rest.lines().next()).unwrap_or_default();
+    assert!(rule.len() > 20 && rule.chars().all(|c| c == '-'), "{text}");
 }
 
 #[test]
@@ -103,13 +108,14 @@ fn c_h_after_a_prefix_lists_the_keys_under_it() {
     let (mut ed, _s) = setup();
     ed.press("C-x C-h").unwrap();
     let text = help(&ed);
-    assert!(text.starts_with("Key bindings starting with C-x:\n\nKey             Binding\n"), "{text}");
-    assert!(text.contains("C-x C-f         find-file\n"), "{text}");
-    assert!(text.contains("C-x 4 f         find-file-other-window\n"), "{text}");
+    // As Emacs's describe-prefix-bindings, the buffer's bindings under the prefix.
+    assert!(text.contains("Global Bindings Starting With C-x:\n\nKey             Binding\n"), "{text}");
+    assert!(text.contains("\nC-x C-f\t"), "{text}");
+    assert!(text.contains("\nC-x 4 f\t"), "{text}");
     assert!(!text.contains("C-h k"), "only the keys under the prefix: {text}");
     // <f1> is help too, and a prefix that binds C-h itself keeps its binding.
     ed.press("C-x 4 <f1>").unwrap();
-    assert!(help(&ed).starts_with("Key bindings starting with C-x 4:\n"), "{}", help(&ed));
+    assert!(help(&ed).contains("Global Bindings Starting With C-x 4:\n"), "{}", help(&ed));
     ed.press("C-c @ C-h").unwrap();
     assert_ne!(ed.echo(), Some("C-c @ C-h is undefined"));
 }
