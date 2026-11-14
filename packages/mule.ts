@@ -164,3 +164,54 @@ export function selectSafeCodingSystem(): void {
 e8.bindKey("C-x RET f", "set-buffer-file-coding-system");
 e8.bindKey("C-x RET r", "revert-buffer-with-coding-system");
 e8.bindKey("C-x RET c", "universal-coding-system-argument");
+
+/** Reads a coding system's name, asking again until one is given, as read-non-nil-coding-system. */
+export function readNonNilCodingSystem(prompt: string): string {
+  for (;;) {
+    const name = e8.completingRead(prompt, e8.codingSystemList(), { history: "coding-system-history" });
+    if (name !== "") return e8.checkCodingSystem(name) as string;
+  }
+}
+e8.defun("read-non-nil-coding-system", (prompt: string) => readNonNilCodingSystem(prompt));
+
+/**
+ * Defines a coding system, as mule.el's define-coding-system: `props`
+ * alternate keywords and values, `:coding-type` and `:mnemonic` first among
+ * them, with `:charset-list` for a charset coding, `:bom` for UTF-8 and
+ * UTF-16, `:endian` for UTF-16 and `:eol-type` to fix its line ends. The
+ * rest go on its plist, for coding-system-get.
+ */
+export function defineCodingSystem(name: string, docstring: string, ...props: e8.Value[]): void {
+  const get = (key: string): e8.Value => {
+    for (let i = 0; i + 1 < props.length; i += 2) if (props[i] === key) return props[i + 1];
+    return null;
+  };
+  const type = get(":coding-type");
+  if (type === null) e8.signal("error", `Coding system type is not specified: ${name}`);
+  const plist: e8.Value[] = [...props, ":name", name, ":docstring", docstring];
+  const typeArgs: e8.Value[] = type === "utf-8" ? [get(":bom")] : type === "utf-16" ? [get(":bom"), get(":endian")] : [];
+  e8.defineCodingSystemInternal(
+    name,
+    get(":mnemonic") ?? "-",
+    type,
+    get(":charset-list"),
+    get(":ascii-compatible-p"),
+    get(":decode-translation-table"),
+    get(":encode-translation-table"),
+    get(":post-read-conversion"),
+    get(":pre-write-conversion"),
+    get(":default-char"),
+    get(":for-unibyte"),
+    plist,
+    get(":eol-type"),
+    ...typeArgs,
+  );
+  // What coding-system-get gives back: the properties as given, and its
+  // doc, but for those the coding system itself answers.
+  const own = [":mnemonic", ":coding-type", ":name", ":mime-charset"];
+  for (let i = 0; i + 1 < plist.length; i += 2) {
+    const key = plist[i];
+    if (typeof key === "string" && !own.includes(key)) e8.codingSystemPut(name, key, plist[i + 1]);
+  }
+}
+e8.defun("define-coding-system", (name: string, docstring: string, ...props: e8.Value[]) => defineCodingSystem(name, docstring, ...props));

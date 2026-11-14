@@ -32,7 +32,7 @@ pub mod image;
 pub mod coding;
 mod command;
 pub mod completion;
-mod codingfns;
+pub mod codingfns;
 mod commands;
 pub mod decompress;
 pub mod hashes;

@@ -132,6 +132,10 @@ enum Kind {
     Iso2022Seven,
     /// Bytes as they are, text as the bytes Emacs keeps it in.
     RawText,
+    /// Each character as its code point in the first of these charsets
+    /// that has it, as a coding of Emacs's `charset` type writes it: a
+    /// byte for a one-dimensional charset, more for others.
+    Charsets(&'static [&'static str]),
 }
 
 /// A coding system without its line ends, as Emacs's base coding systems.
@@ -149,11 +153,14 @@ pub struct System {
     /// Whether its line ends are fixed, as `no-conversion`'s are: it has no
     /// `-unix`, `-dos` and `-mac` forms.
     fixed_eol: bool,
+    /// The line ends a coding whose line ends are fixed has, as a defined
+    /// coding's `:eol-type` makes them.
+    own_eol: Eol,
 }
 
 macro_rules! system {
     ($name:literal, [$($alias:literal),*], $mnemonic:literal, $type:literal, $mime:expr, $kind:expr) => {
-        System { name: $name, aliases: &[$($alias),*], mnemonic: $mnemonic, coding_type: $type, mime_charset: $mime, kind: $kind, fixed_eol: false }
+        System { name: $name, aliases: &[$($alias),*], mnemonic: $mnemonic, coding_type: $type, mime_charset: $mime, kind: $kind, fixed_eol: false, own_eol: Eol::Unix }
     };
 }
 
@@ -215,7 +222,7 @@ static SYSTEMS: &[System] = &[
     system!("korean-iso-8bit", ["euc-kr", "euc-korea", "ks_c_5601-1987"], 'K', "iso-2022", Some("euc-kr"), Kind::Multi(e::EUC_KR, Variant::Euc94)),
     system!("korean-cp949", ["cp949"], 'K', "charset", None, Kind::Multi(e::EUC_KR, Variant::Plain)),
     system!("raw-text", [], 't', "raw-text", None, Kind::RawText),
-    System { name: "no-conversion", aliases: &["binary"], mnemonic: '=', coding_type: "raw-text", mime_charset: None, kind: Kind::RawText, fixed_eol: true },
+    System { name: "no-conversion", aliases: &["binary"], mnemonic: '=', coding_type: "raw-text", mime_charset: None, kind: Kind::RawText, fixed_eol: true, own_eol: Eol::Unix },
 ];
 
 /// A coding system with its line ends, as Emacs names them: `utf-8-unix`,
@@ -244,9 +251,10 @@ impl Coding {
     /// The coding system a name names, with or without its line ends, by
     /// any of its aliases, as `check-coding-system` accepts it.
     pub fn parse(name: &str) -> Option<Coding> {
-        let find = |base: &str| SYSTEMS.iter().position(|s| s.name == base || s.aliases.contains(&base));
+        let find = find_system;
         if let Some(system) = find(name) {
-            let eol = SYSTEMS[system].fixed_eol.then_some(Eol::Unix);
+            let sys = system_at(system);
+            let eol = sys.fixed_eol.then_some(sys.own_eol);
             return Some(Coding { system, eol });
         }
         let (base, suffix) = name.rsplit_once('-')?;
@@ -257,7 +265,7 @@ impl Coding {
             _ => return None,
         };
         let system = find(base)?;
-        (!SYSTEMS[system].fixed_eol).then_some(Coding { system, eol: Some(eol) })
+        (!system_at(system).fixed_eol).then_some(Coding { system, eol: Some(eol) })
     }
 
     /// The coding system a name names, or Emacs's error for it.
@@ -271,7 +279,7 @@ impl Coding {
     }
 
     pub fn system(&self) -> &'static System {
-        &SYSTEMS[self.system]
+        system_at(self.system)
     }
 
     /// The name Emacs gives this coding system, as `buffer-file-coding-system` shows it.
@@ -285,12 +293,14 @@ impl Coding {
 
     /// Every base coding system's name, then each alias, for completing them.
     pub fn names() -> impl Iterator<Item = &'static str> {
-        SYSTEMS.iter().map(|s| s.name).chain(SYSTEMS.iter().flat_map(|s| s.aliases.iter().copied()))
+        let systems: Vec<&'static System> = (0..system_count()).map(system_at).collect();
+        let names: Vec<&'static str> = systems.iter().map(|s| s.name).chain(systems.iter().flat_map(|s| s.aliases.iter().copied())).chain(MORE_ALIASES.with(|a| a.borrow().iter().map(|(n, _)| *n).collect::<Vec<_>>())).collect();
+        names.into_iter()
     }
 
     /// The base coding systems, as `(coding-system-list t)`.
     pub fn base_systems() -> impl Iterator<Item = Coding> {
-        (0..SYSTEMS.len()).map(|system| Coding { system, eol: None })
+        (0..system_count()).map(|system| Coding { system, eol: None })
     }
 
     /// This coding system with other line ends, or undecided ones, as
@@ -328,6 +338,7 @@ impl Coding {
             Kind::Single(table, c1) => c.is_ascii() || single_encode(table, c1, c).is_some(),
             Kind::Multi(encoding, variant) => c.is_ascii() || multi_encode_char(encoding, variant, c).is_some(),
             Kind::Iso2022Seven => c.is_ascii() || iso2022_designation(c).is_some(),
+            Kind::Charsets(charsets) => charset_code(charsets, c).is_some(),
         }
     }
 
@@ -373,11 +384,12 @@ impl Coding {
             Kind::Multi(encoding, variant) => decode_multi(encoding, variant, bytes),
             Kind::Iso2022Seven => decode_iso2022_seven(bytes),
             Kind::RawText => bytes.iter().map(|&b| raw_byte_char(b)).collect(),
+            Kind::Charsets(charsets) => decode_charsets(charsets, bytes).0,
         };
-        if coding.system().fixed_eol {
+        if coding.system().fixed_eol && coding.system().own_eol == Eol::Unix {
             return (text, coding);
         }
-        let eol = coding.eol.unwrap_or_else(|| detect_eol(&text));
+        let eol = if coding.system().fixed_eol { coding.system().own_eol } else { coding.eol.unwrap_or_else(|| detect_eol(&text)) };
         let text = match eol {
             Eol::Unix => text,
             Eol::Dos => text.replace("\r\n", "\n"),
@@ -403,9 +415,10 @@ impl Coding {
             let base = if text.chars().all(|c| c.is_ascii() || char_raw_byte(c).is_some()) { self.system } else { 2 };
             coding = Coding { system: base, eol: self.eol };
         }
-        let text = match (coding.system().fixed_eol, coding.eol) {
-            (false, Some(Eol::Dos)) => text.replace('\n', "\r\n").into(),
-            (false, Some(Eol::Mac)) => text.replace('\n', "\r").into(),
+        let eol = if coding.system().fixed_eol { Some(coding.system().own_eol) } else { coding.eol };
+        let text = match eol {
+            Some(Eol::Dos) => text.replace('\n', "\r\n").into(),
+            Some(Eol::Mac) => text.replace('\n', "\r").into(),
             _ => std::borrow::Cow::Borrowed(text),
         };
         let default = coding.default_char();
@@ -449,6 +462,23 @@ impl Coding {
                 encode_iso2022_seven(&text, default, &mut out);
                 true
             }
+            Kind::Charsets(charsets) => {
+                let mut ok = true;
+                for c in text.chars() {
+                    match charset_code(charsets, c) {
+                        Some((code, dimension)) => out.extend((0..dimension).rev().map(|i| (code >> (8 * i)) as u8)),
+                        None => match char_raw_byte(c) {
+                            Some(b) => out.push(b),
+                            None if strict => {
+                                ok = false;
+                                break;
+                            }
+                            None => out.push(default),
+                        },
+                    }
+                }
+                ok
+            }
         };
         encoded.then_some((out, coding))
     }
@@ -459,6 +489,173 @@ impl Coding {
     pub fn encode(&self, text: &str) -> (Vec<u8>, Coding) {
         self.encode_text(text, true).unwrap_or_else(|| Coding { system: 2, eol: self.eol }.encode_lossy(text))
     }
+}
+
+thread_local! {
+    /// The coding systems `define-coding-system-internal` defined, after
+    /// E8's own, each kept for the life of the thread, as Emacs keeps a
+    /// coding system for its life.
+    static DEFINED: std::cell::RefCell<Vec<&'static System>> = const { std::cell::RefCell::new(Vec::new()) };
+    /// Other names `define-coding-system-alias` gave coding systems, each
+    /// with the coding it names.
+    static MORE_ALIASES: std::cell::RefCell<Vec<(&'static str, usize)>> = const { std::cell::RefCell::new(Vec::new()) };
+}
+
+/// How many base coding systems there are, E8's own and those defined.
+fn system_count() -> usize {
+    SYSTEMS.len() + DEFINED.with(|d| d.borrow().len())
+}
+
+/// A base coding system by its index among E8's own and those defined.
+fn system_at(i: usize) -> &'static System {
+    match SYSTEMS.get(i) {
+        Some(s) => s,
+        None => DEFINED.with(|d| d.borrow()[i - SYSTEMS.len()]),
+    }
+}
+
+/// The index of the base coding system a name or an alias names.
+fn find_system(name: &str) -> Option<usize> {
+    (0..system_count())
+        .find(|&i| {
+            let s = system_at(i);
+            s.name == name || s.aliases.contains(&name)
+        })
+        .or_else(|| MORE_ALIASES.with(|a| a.borrow().iter().find(|(n, _)| *n == name).map(|(_, i)| *i)))
+}
+
+/// The code point of a character in the first charset that has it, and
+/// how many bytes that charset writes a code point in.
+fn charset_code(charsets: &[&str], c: char) -> Option<(u32, u32)> {
+    charsets.iter().find_map(|name| Some((crate::charset::encode_char(c, name)?, crate::charset::charset_dimension(name)?)))
+}
+
+/// Bytes decoded through charsets, each code point read in the first
+/// charset whose dimension it fits and that has a character there, a
+/// byte none has kept as a raw byte; and whether every byte was decoded.
+fn decode_charsets(charsets: &[&str], bytes: &[u8]) -> (String, bool) {
+    let mut out = String::with_capacity(bytes.len());
+    let mut clean = true;
+    let mut i = 0;
+    while i < bytes.len() {
+        let found = charsets.iter().find_map(|name| {
+            let dimension = crate::charset::charset_dimension(name)? as usize;
+            let code = bytes.get(i..i + dimension)?.iter().fold(0u32, |code, &b| code << 8 | u32::from(b));
+            crate::charset::decode_char(name, code).map(|c| (c, dimension))
+        });
+        match found {
+            Some((c, n)) => {
+                out.push(c);
+                i += n;
+            }
+            None => {
+                out.push(raw_byte_char(bytes[i]));
+                clean = false;
+                i += 1;
+            }
+        }
+    }
+    (out, clean)
+}
+
+/// What a coding system is to be, as `define-coding-system-internal`
+/// takes it.
+#[derive(Clone, Debug)]
+pub struct Definition {
+    pub name: String,
+    pub mnemonic: char,
+    /// Emacs's `:coding-type`: `charset`, `utf-8`, `utf-16`, `raw-text`,
+    /// `undecided`, or one E8 writes through its charsets (`iso-2022`,
+    /// `shift-jis`, `big5`, `emacs-mule`, `ccl`).
+    pub coding_type: String,
+    pub charsets: Vec<String>,
+    pub mime_charset: Option<String>,
+    /// Its line ends if `:eol-type` fixes them.
+    pub eol: Option<Eol>,
+    /// For UTF-8 and UTF-16: whether a signature is written (`Some(true)`),
+    /// neither written nor expected (`Some(false)`), or taken away if there
+    /// (`None`), as `:bom` says with t, nil or a cons.
+    pub bom: Option<bool>,
+    /// For UTF-16: whether it is big-endian, as `:endian` says.
+    pub big_endian: bool,
+    pub aliases: Vec<String>,
+}
+
+fn leak(s: &str) -> &'static str {
+    Box::leak(s.to_string().into_boxed_str())
+}
+
+/// Defines a coding system, or defines it again, as
+/// `define-coding-system-internal`. A coding E8 writes itself under that
+/// name is not replaced.
+pub fn define_system(def: &Definition) -> std::result::Result<(), String> {
+    if def.name.is_empty() {
+        return Err("A coding system needs a name".into());
+    }
+    if let Some(i) = find_system(&def.name)
+        && i < SYSTEMS.len()
+    {
+        return Ok(());
+    }
+    for name in &def.charsets {
+        if !crate::charset::charsetp(name) {
+            return Err(format!("Invalid charset: {name}"));
+        }
+    }
+    let bom = match def.bom {
+        Some(true) => Bom::Yes,
+        Some(false) => Bom::No,
+        None => Bom::Detect,
+    };
+    let charsets = || -> &'static [&'static str] { Box::leak(def.charsets.iter().map(|c| leak(c)).collect::<Vec<_>>().into_boxed_slice()) };
+    let kind = match def.coding_type.as_str() {
+        "utf-8" => Kind::Utf8(bom),
+        "utf-16" => Kind::Utf16 { big_endian: def.big_endian, bom },
+        "raw-text" => Kind::RawText,
+        "undecided" => Kind::Undecided,
+        "charset" | "iso-2022" | "shift-jis" | "big5" | "emacs-mule" | "ccl" if !def.charsets.is_empty() => Kind::Charsets(charsets()),
+        "charset" | "iso-2022" | "shift-jis" | "big5" | "emacs-mule" | "ccl" => Kind::RawText,
+        other => return Err(format!("Invalid coding system type: {other}")),
+    };
+    let system: &'static System = Box::leak(Box::new(System {
+        name: leak(&def.name),
+        aliases: Box::leak(def.aliases.iter().map(|a| leak(a)).collect::<Vec<_>>().into_boxed_slice()),
+        mnemonic: def.mnemonic,
+        coding_type: leak(&def.coding_type),
+        mime_charset: def.mime_charset.as_deref().map(leak),
+        kind,
+        fixed_eol: def.eol.is_some(),
+        own_eol: def.eol.unwrap_or(Eol::Unix),
+    }));
+    DEFINED.with(|d| {
+        let mut d = d.borrow_mut();
+        match d.iter().position(|s| s.name == def.name) {
+            Some(i) => d[i] = system,
+            None => d.push(system),
+        }
+    });
+    Ok(())
+}
+
+/// Gives a coding system another name, as `define-coding-system-alias`.
+/// `Err` names a coding that is none.
+pub fn define_alias(alias: &str, coding: &str) -> std::result::Result<(), String> {
+    let target = Coding::parse(coding).ok_or_else(|| coding.to_string())?;
+    if find_system(alias).is_some() {
+        return Ok(());
+    }
+    MORE_ALIASES.with(|a| a.borrow_mut().push((leak(alias), target.system)));
+    Ok(())
+}
+
+/// A base coding system's names: its own, then its aliases, those
+/// `define-coding-system-alias` gave it last.
+pub fn system_names(coding: Coding) -> Vec<&'static str> {
+    let s = coding.system();
+    let mut names = vec![s.name];
+    names.extend(s.aliases.iter().copied());
+    MORE_ALIASES.with(|a| names.extend(a.borrow().iter().filter(|(_, i)| *i == coding.system).map(|(n, _)| *n)));
+    names
 }
 
 thread_local! {
@@ -501,6 +698,7 @@ impl Coding {
             Kind::Utf8(_) => std::str::from_utf8(bytes.strip_prefix(UTF8_SIGNATURE).unwrap_or(bytes)).is_ok(),
             Kind::Latin1 => true,
             Kind::Single(encoding, _) | Kind::Multi(encoding, _) => decode_cleanly(encoding, bytes),
+            Kind::Charsets(charsets) => decode_charsets(charsets, bytes).1,
             Kind::Undecided | Kind::Utf16 { .. } | Kind::Ascii | Kind::Iso2022Seven | Kind::RawText => false,
         }
     }

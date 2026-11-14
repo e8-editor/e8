@@ -46,6 +46,7 @@ mod search;
 mod sqlite;
 mod composite;
 mod codds;
+mod codingdefs;
 mod text;
 mod treesit;
 pub(crate) mod variables;
@@ -423,6 +424,7 @@ const TABLES: &[&[Native]] = &[
     sqlite::TABLE,
     composite::TABLE,
     codds::TABLE,
+    codingdefs::TABLE,
     xwidget::TABLE,
 ];
 
@@ -451,6 +453,7 @@ pub(crate) fn install<'js>(ctx: &rquickjs::Ctx<'js>, native: &rquickjs::Object<'
     sqlite::install(ctx, native, api)?;
     composite::install(ctx, native, api)?;
     codds::install(ctx, native, api)?;
+    codingdefs::install(ctx, native, api)?;
     xwidget::install(ctx, native, api)?;
     Ok(())
 }
@@ -475,6 +478,7 @@ pub(crate) fn install<'s>(scope: &mut v8::PinScope<'s, '_>, native: v8::Local<'s
     sqlite::install(scope, native, api);
     composite::install(scope, native, api);
     codds::install(scope, native, api);
+    codingdefs::install(scope, native, api);
     xwidget::install(scope, native, api);
 }
 

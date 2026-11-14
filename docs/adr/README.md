@@ -95,3 +95,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0091](0091-posix-searches-as-emacs-has-them.md) POSIX searches as Emacs has them: the longest match
 - [0092](0092-compositions-as-emacs-has-them.md) Compositions as Emacs has them: the composition property, find-composition and prettify-symbols-mode
 - [0093](0093-the-c-cores-last-odds.md) The C core's last odds: how E8 was started, terminals, events, image maps
+- [0094](0094-defining-coding-systems.md) Defining coding systems: define-coding-system, aliases and charset codings

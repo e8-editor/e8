@@ -18104,6 +18104,14 @@ declare global {
     function newlineCacheCheck(buffer?: BufferLike | null): undefined;
     /** The variable watcher Emacs puts on variables that redisplay a buffer when set, as set-buffer-redisplay: E8 redisplays after every command anyway. */
     function setBufferRedisplay(symbol: string, newval: Value, op: Value, where: Value): undefined;
+    /** Define a coding system from Emacs's arguments in their order, as define-coding-system-internal: name, mnemonic, coding type, charset list, ASCII compatibility, translation tables, conversions, default character, for-unibyte, plist, eol type, then the type's own (UTF-8's bom; UTF-16's bom and endianness). E8 writes utf-8, utf-16, raw-text, undecided and charset codings, and others through their charsets. */
+    function defineCodingSystemInternal(...args: Value[]): undefined;
+    /** Give a coding system another name, as define-coding-system-alias. */
+    function defineCodingSystemAlias(alias: CodingSystem, codingSystem: CodingSystem): undefined;
+    /** The base coding systems that can write the text from `from` to `to`, or of the string `from`, leaving out those in `exclude`, as find-coding-systems-region-internal: true where the text is all ASCII. */
+    function findCodingSystemsRegionInternal(from: number | string, to: number | null, exclude?: CodingSystem[] | null): CodingSystem[] | true;
+    /** Set the coding system for writing to the terminal when it is safe, as set-safe-terminal-coding-system-internal: E8's terminal writes UTF-8, so the coding is checked and kept in safe-terminal-coding-system. */
+    function setSafeTerminalCodingSystemInternal(codingSystem: CodingSystem | null): undefined;
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */
