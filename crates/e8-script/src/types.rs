@@ -1102,6 +1102,13 @@ const API: &str = r##"
   /** A node's property, as treesit-node-check: "named", "missing", "extra", "has-error", "has-changes", "live" or "outdated". */
   function treesitNodeCheck(node: TreesitNode, property: string): boolean;
   function treesitNodeEq(a: TreesitNode | undefined | null, b: TreesitNode | undefined | null): boolean;
+  /** An SQLite database or set, as Emacs's sqlite objects: the same object each time. */
+  class Sqlite {
+    private constructor();
+    readonly __e8SqliteId: number;
+  }
+  /** Whether an object is an SQLite database or set, as sqlitep. */
+  function sqlitep(object: unknown): object is Sqlite;
   /** A compiled query, as Emacs's treesit-compiled-query objects: the same object each time. */
   class TreesitCompiledQuery {
     private constructor();

@@ -79,6 +79,7 @@ mod screen_lines;
 mod scripts;
 mod search;
 mod sessions;
+mod sqlite;
 mod subr;
 mod symbols;
 mod syntax_tables;

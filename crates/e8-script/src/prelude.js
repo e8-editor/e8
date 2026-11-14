@@ -223,6 +223,31 @@
     }
     return p;
   };
+  /**
+   * An SQLite database or set, as Emacs's sqlite objects (ADR 0087): the
+   * same object each time.
+   */
+  const sqliteObjects = new Map();
+  class Sqlite {
+    constructor(id) {
+      Object.defineProperty(this, "__e8SqliteId", { value: id });
+      Object.freeze(this);
+    }
+    toString() {
+      return native.sqliteDescription(this) ?? "#<sqlite>";
+    }
+    toJSON() {
+      return this.toString();
+    }
+  }
+  globalThis.__e8Sqlite = (id) => {
+    let o = sqliteObjects.get(id);
+    if (o === undefined) {
+      o = new Sqlite(id);
+      sqliteObjects.set(id, o);
+    }
+    return o;
+  };
   /** Whether a process, as processInfo describes it, is running, as process-live-p. */
   const processLive = (info) => info !== undefined && info !== null && info.listed && ["run", "open", "listen", "connect", "stop"].includes(info.status);
   /**
@@ -1034,6 +1059,8 @@
     TreesitParser,
     TreesitNode,
     TreesitCompiledQuery,
+    Sqlite,
+    sqlitep: (object) => object instanceof Sqlite,
     treesitParserP: (x) => x instanceof TreesitParser,
     treesitNodeP: (x) => x instanceof TreesitNode,
     treesitParserCreate: (language, buffer, noReuse = false, tag) =>

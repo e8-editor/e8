@@ -254,6 +254,8 @@ pub struct Editor {
     pub(crate) face_settings: crate::xfaces::FaceSettings,
     /// The fontsets, as fontset.c keeps them.
     pub(crate) fontsets: crate::fontset::Fontsets,
+    /// The SQLite databases and sets scripts hold (ADR 0087).
+    pub(crate) sqlite: crate::sqlite::Sqlite,
     /// Whether the system the front end runs on looks dark, for choosing
     /// faces' colours where no theme gives the default face a background
     /// and `frame-background-mode` is unset; dark until a front end says.
@@ -521,6 +523,7 @@ impl Editor {
             faces: BTreeMap::new(),
             face_settings: Default::default(),
             fontsets: Default::default(),
+            sqlite: Default::default(),
             system_dark: true,
             quitting: Default::default(),
             command_loop: None,

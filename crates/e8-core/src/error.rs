@@ -24,6 +24,9 @@ const ERRORS: &[(&str, &str)] = &[
     ("user-error", "error"),
     // treesit.c's, each a `treesit-error`; Emacs 30 leaves
     // `treesit-predicate-not-found` undefined, which E8 makes one too.
+    // sqlite.c's, as Emacs defines them.
+    ("sqlite-error", "error"),
+    ("sqlite-locked-error", "sqlite-error"),
     ("treesit-error", "error"),
     ("treesit-query-error", "treesit-error"),
     ("treesit-parse-error", "treesit-error"),
