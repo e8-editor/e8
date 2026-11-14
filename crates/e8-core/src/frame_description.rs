@@ -41,6 +41,9 @@ pub struct FrameDescription {
     pub title: String,
     /// Whether its styles are for a dark background.
     pub dark: bool,
+    /// Whether the text terminal it is on draws no underlines, as
+    /// `tty-no-underline` says.
+    pub no_underline: bool,
     /// How its windows divide it.
     pub tree: crate::window::WindowTree,
     /// How many lines the echo area takes, more for a minibuffer showing
@@ -324,6 +327,7 @@ impl Editor {
             frame,
             title,
             dark,
+            no_underline: self.terminal_no_underline(),
             tree: self.frame_tree(frame).cloned().unwrap_or(crate::window::WindowTree::Leaf(0)),
             echo_lines: if selected { self.mini_window_lines() } else { 1 },
             selected,

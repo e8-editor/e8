@@ -45,6 +45,7 @@ mod processes;
 mod search;
 mod sqlite;
 mod composite;
+mod codds;
 mod text;
 mod treesit;
 pub(crate) mod variables;
@@ -421,6 +422,7 @@ const TABLES: &[&[Native]] = &[
     buftext::TABLE,
     sqlite::TABLE,
     composite::TABLE,
+    codds::TABLE,
     xwidget::TABLE,
 ];
 
@@ -448,6 +450,7 @@ pub(crate) fn install<'js>(ctx: &rquickjs::Ctx<'js>, native: &rquickjs::Object<'
     buftext::install(ctx, native, api)?;
     sqlite::install(ctx, native, api)?;
     composite::install(ctx, native, api)?;
+    codds::install(ctx, native, api)?;
     xwidget::install(ctx, native, api)?;
     Ok(())
 }
@@ -471,6 +474,7 @@ pub(crate) fn install<'s>(scope: &mut v8::PinScope<'s, '_>, native: v8::Local<'s
     buftext::install(scope, native, api);
     sqlite::install(scope, native, api);
     composite::install(scope, native, api);
+    codds::install(scope, native, api);
     xwidget::install(scope, native, api);
 }
 

@@ -86,6 +86,7 @@ mod search;
 mod sessions;
 mod sqlite;
 mod compositions;
+mod c_core_odds;
 mod subr;
 mod symbols;
 mod syntax_tables;

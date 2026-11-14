@@ -784,6 +784,8 @@ fn pane_nodes(items: &[Value]) -> Vec<Node> {
 #[derive(Clone, Debug, PartialEq)]
 pub struct MenuBarItem {
     pub label: String,
+    /// The symbol it is bound to under `<menu-bar>`, as `file`.
+    pub symbol: Option<String>,
     /// Where its label starts, in frame columns.
     pub column: usize,
     /// How many columns it takes, the space around the label included.
@@ -931,6 +933,19 @@ impl Editor {
         }
     }
 
+    /// The symbol of the menu bar menu at a place on a frame, in the front
+    /// end's units, as `menu-bar-menu-at-x-y`: none outside the menu bar.
+    /// The blank after a label counts as its menu's, as in Emacs.
+    pub fn menu_bar_menu_at(&self, frame: crate::window::FrameId, x: f64, y: f64) -> Option<String> {
+        let (cw, lh) = self.cell();
+        let (column, row) = ((x / f64::from(cw)).floor(), (y / f64::from(lh)).floor());
+        if row < 0.0 || row >= self.menu_bar_lines(frame) as f64 || column < 0.0 {
+            return None;
+        }
+        let column = column as usize;
+        self.menu_bar(frame)?.iter().rev().find(|i| i.column <= column).and_then(|i| i.symbol.clone())
+    }
+
     /// Opens the menu of the menu bar at a column of a frame, as clicking
     /// the menu bar does.
     pub fn menu_bar_mouse(&mut self, frame: crate::window::FrameId, column: usize) -> Result<()> {
@@ -977,7 +992,8 @@ fn bar_items(nodes: &[Node]) -> Vec<MenuBarItem> {
         .filter(|node| !node.title)
         .map(|node| {
             let width = node.label.chars().count() + 2 * BAR_PAD;
-            let item = MenuBarItem { label: node.label.clone(), column, width, enabled: node.enabled, style: Default::default() };
+            let symbol = node.keys.last().map(|k| crate::format_keys(std::slice::from_ref(k)).trim_matches(['<', '>']).to_string());
+            let item = MenuBarItem { label: node.label.clone(), symbol, column, width, enabled: node.enabled, style: Default::default() };
             column += width;
             item
         })

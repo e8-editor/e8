@@ -18068,6 +18068,42 @@ declare global {
     function clearCompositionCache(): void;
     /** Composition rules sorted by how far back each looks, its second element, furthest first, as composition-sort-rules. */
     function compositionSortRules(rules: Value[][]): Value[][];
+    /** The name E8 was run as, as invocation-name: the program's file name without its directory. */
+    function invocationName(): string;
+    /** The directory E8's program is in, ending in a slash, as invocation-directory. */
+    function invocationDirectory(): string;
+    /** Tell the process that started a daemon that it is ready, as daemon-initialized: E8 is never one, so this signals as Emacs does when not run as a daemon. */
+    function daemonInitialized(): never;
+    /** The processor time E8 has used, in seconds, as get-internal-run-time. */
+    function getInternalRunTime(): number;
+    /** The first element of an image map whose area has the point x, y on it, as lookup-image-map: each element [area, id, plist], an area a rect, circle or poly as Emacs writes them. */
+    function lookupImageMap(map: Value[] | null, x: number, y: number): Value | undefined;
+    /** Whether a GnuTLS error is fatal, as gnutls-error-fatalp: an error code, or a symbol naming one; true for none but the errors a connection goes on after. */
+    function gnutlsErrorFatalp(error: number | string | boolean): boolean;
+    /** An event symbol's base and its modifiers, as internal-event-symbol-parse-modifiers: "C-M-x" is ["x", "meta", "control"], the highest modifier first. */
+    function internalEventSymbolParseModifiers(symbol: string | symbol): string[];
+    /** The event a list of modifiers and a base names, as event-convert-list, written as a key: ["control", "a"] or ["control", 97] is "C-a", ["down", "mouse-1"] is "<down-mouse-1>"; Emacs gives a number for a character, which E8's keys write as their description. */
+    function eventConvertList(event: (string | symbol | number)[]): string;
+    /** The frame on top of a text terminal, as tty-top-frame: the selected one; undefined in a window. */
+    function ttyTopFrame(terminal?: Terminal | FrameLike | null): Frame | undefined;
+    /** Say a text terminal cannot underline, as tty-no-underline: E8's terminal then draws none. */
+    function ttyNoUnderline(terminal?: Terminal | FrameLike | null): undefined;
+    /** The text terminal's output buffer size, 0 for the system's, as tty--output-buffer-size. */
+    function ttyOutputBufferSize(terminal?: Terminal | FrameLike | null): number;
+    /** Set the text terminal's output buffer size, as tty--set-output-buffer-size; E8 writes each frame whole, so it is only kept. */
+    function ttySetOutputBufferSize(size: number, terminal?: Terminal | FrameLike | null): undefined;
+    /** Take the keys of the command running out of the keyboard macro being defined, as cancel-kbd-macro-events. */
+    function cancelKbdMacroEvents(): undefined;
+    /** Say which window the minibuffer shows in, as set-minibuffer-window: E8 has one minibuffer window, the only one this takes; gives it. */
+    function setMinibufferWindow(window: WindowLike): Window;
+    /** The symbol of the menu bar menu at a place on a frame, in its units, as menu-bar-menu-at-x-y; undefined outside the menu bar. */
+    function menuBarMenuAtXY(x: number, y: number, frame?: FrameLike | null): string | undefined;
+    /** Open a file every byte sent to the terminal also goes to, as open-termscript; on anything but a text terminal it signals as Emacs's does. E8's terminal does not write one yet. */
+    function openTermscript(file: string | null): undefined;
+    /** Whether the newline cache agrees with the buffer, as newline-cache-check: E8 keeps no newline cache, so there is nothing to disagree. */
+    function newlineCacheCheck(buffer?: BufferLike | null): undefined;
+    /** The variable watcher Emacs puts on variables that redisplay a buffer when set, as set-buffer-redisplay: E8 redisplays after every command anyway. */
+    function setBufferRedisplay(symbol: string, newval: Value, op: Value, where: Value): undefined;
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */
