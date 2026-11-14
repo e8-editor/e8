@@ -81,7 +81,108 @@ fn number_arg(args: &[Value], i: usize) -> Result<usize> {
     args.get(i).and_then(Value::as_number).map(|n| n.max(0.0) as usize).ok_or_else(|| Error::new("Wrong type argument: integer-or-marker-p"))
 }
 
+/// The operations `find-operation-coding-system` knows, each with which
+/// of its arguments names the target and which alist to look it up in, as
+/// coding.c puts `target-idx` on each.
+const OPERATIONS: [(&str, usize, &str); 6] = [
+    ("insert-file-contents", 0, "file-coding-system-alist"),
+    ("write-region", 2, "file-coding-system-alist"),
+    ("call-process", 0, "process-coding-system-alist"),
+    ("call-process-region", 2, "process-coding-system-alist"),
+    ("start-process", 2, "process-coding-system-alist"),
+    ("open-network-stream", 3, "network-coding-system-alist"),
+];
+
 impl Editor {
+    /// Which coding systems an operation on a target gets, as
+    /// `find-operation-coding-system`: the pair for decoding and encoding
+    /// from `file-coding-system-alist` and its kin, or `None` where none
+    /// of them matches.
+    ///
+    /// An entry's value is a coding system, a pair of them, or a function
+    /// called with the whole argument list, as coding.c reads it.
+    pub fn find_operation_coding_system(&mut self, operation: &str, args: &[Value]) -> Result<Option<(Value, Value)>> {
+        let Some(&(_, target_idx, alist)) = OPERATIONS.iter().find(|(name, _, _)| *name == operation) else {
+            return Err(Error::new(format!("Invalid first argument: {operation}")));
+        };
+        let Some(target) = args.get(target_idx) else {
+            return Err(Error::new(format!("Too few arguments for operation `{operation}'")));
+        };
+        // insert-file-contents takes (FILENAME . BUFFER) as well as a name.
+        let target = match target {
+            Value::List(pair) if operation == "insert-file-contents" && !pair.is_empty() => pair[0].clone(),
+            other => other.clone(),
+        };
+        let valid = match &target {
+            Value::Str(_) => true,
+            Value::Number(_) | Value::Bool(true) => operation == "open-network-stream",
+            _ => false,
+        };
+        if !valid {
+            let message = format!("Invalid argument {} of operation `{operation}'", target_idx + 1);
+            return Err(Error::new(message));
+        }
+        let Some(Value::List(entries)) = self.variable(alist) else { return Ok(None) };
+        for entry in entries {
+            let Value::List(pair) = &entry else { continue };
+            let (Some(key), Some(value)) = (pair.first(), pair.get(1)) else { continue };
+            let matches = match (key, &target) {
+                // Only a string is a regexp, as coding.c checks STRINGP.
+                (Value::Str(re), Value::Str(name)) => self.string_match(re, name, 0, false)?.is_some(),
+                (Value::Number(port), Value::Number(wanted)) => port == wanted,
+                _ => false,
+            };
+            if !matches {
+                continue;
+            }
+            // A pair written out, `[regexp, decoding, encoding]`, as Emacs
+            // prints `(REGEXP DECODING . ENCODING)`.
+            let value = if pair.len() > 2 { Value::List(pair[1..3].to_vec()) } else { value.clone() };
+            return self.coding_pair(value, operation, args);
+        }
+        Ok(None)
+    }
+
+    /// What an entry of one of the coding alists stands for: a pair of
+    /// coding systems as it is, a coding system for both, or what a
+    /// function of the whole argument list gives back.
+    fn coding_pair(&mut self, value: Value, operation: &str, args: &[Value]) -> Result<Option<(Value, Value)>> {
+        if let Value::List(pair) = &value {
+            let (Some(decode), Some(encode)) = (pair.first(), pair.get(1)) else { return Ok(None) };
+            return Ok(Some((decode.clone(), encode.clone())));
+        }
+        if let Some(name) = value.as_str() {
+            if Coding::parse(name).is_some() {
+                return Ok(Some((value.clone(), value)));
+            }
+            if !self.fboundp(name) {
+                return Ok(None);
+            }
+        } else if !matches!(value, Value::Function(_)) {
+            return Ok(None);
+        }
+        // A function in the alist may read a file itself, which would ask
+        // the alist again; Emacs stops such nesting with an error rather
+        // than running out of stack.
+        if self.coding_alist_depth >= 16 {
+            return Err(Error::signal("excessive-lisp-nesting", "Lisp nesting exceeds `max-lisp-eval-depth'", Vec::new()));
+        }
+        // The function is given the arguments this call was given, with
+        // the operation first, as coding.c hands it its own list.
+        let whole = std::iter::once(Value::Symbol(operation.to_string())).chain(args.iter().cloned()).collect::<Vec<_>>();
+        self.coding_alist_depth += 1;
+        let answer = self.funcall(&value, &[Value::List(whole)]);
+        self.coding_alist_depth -= 1;
+        let answer = answer?;
+        match &answer {
+            Value::List(pair) if pair.len() >= 2 => Ok(Some((pair[0].clone(), pair[1].clone()))),
+            _ => match answer.as_str().filter(|n| Coding::parse(n).is_some()) {
+                Some(_) => Ok(Some((answer.clone(), answer))),
+                None => Ok(None),
+            },
+        }
+    }
+
     /// The text between two positions, in either order, or Emacs's error
     /// for a region that is not within the buffer.
     fn region_text(&self, start: usize, end: usize) -> Result<String> {
@@ -92,6 +193,14 @@ impl Editor {
         }
         Ok(self.buffer().slice(from..to))
     }
+}
+
+/// Whether ASCII text is its own bytes in a coding system, as Emacs's
+/// `:ascii-compatible-p` says. Those that choose their coding as they go,
+/// and ISO 2022's escape sequences, are not, though ASCII comes through.
+fn ascii_compatible(system: &crate::coding::System) -> bool {
+    !matches!(system.name, "prefer-utf-8" | "utf-8-auto" | "iso-2022-jp" | "iso-2022-7bit")
+        && Coding::named(system.name).encode_lossy("a").0 == [0x61]
 }
 
 /// Emacs's error for a name that is no charset.
@@ -403,6 +512,75 @@ impl Editor {
                     0x80..=0xFF => Value::Str(raw_byte_char(b as u8).to_string()),
                     _ => return Err(Error::new("Wrong type argument: characterp")),
                 }
+            }
+            "find-operation-coding-system" => {
+                let operation = text_arg(args, 0)?;
+                match self.find_operation_coding_system(&operation, &args[1..])? {
+                    Some((decode, encode)) => Value::List(vec![decode, encode]),
+                    None => Value::Null,
+                }
+            }
+            "keyboard-coding-system" | "terminal-coding-system" => {
+                // Emacs takes a terminal; E8 has one, so it is ignored.
+                let variable = if name == "keyboard-coding-system" { "keyboard-coding-system" } else { "terminal-coding-system" };
+                match self.variable(variable).and_then(|v| v.as_str().and_then(Coding::parse)) {
+                    Some(c) => Value::Str(c.name()),
+                    None => Value::Null,
+                }
+            }
+            "set-keyboard-coding-system-internal" | "set-terminal-coding-system-internal" => {
+                let variable = if name.starts_with("set-keyboard") { "keyboard-coding-system" } else { "terminal-coding-system" };
+                let value = match args.first().filter(|v| v.is_true()) {
+                    Some(_) => Value::Str(coding(0)?.name()),
+                    None => Value::Null,
+                };
+                self.set_variable(variable, value);
+                Value::Null
+            }
+            "coding-system-plist" => {
+                let c = coding(0)?;
+                let system = c.system();
+                let str = |s: &str| Value::Str(s.to_string());
+                let mut plist = vec![
+                    str(":name"),
+                    str(system.name),
+                    str(":coding-type"),
+                    str(system.coding_type),
+                    str(":mnemonic"),
+                    Value::Number(system.mnemonic as u32 as f64),
+                    str(":ascii-compatible-p"),
+                    Value::Bool(ascii_compatible(system)),
+                ];
+                if let Some(mime) = system.mime_charset {
+                    plist.extend([str(":mime-charset"), str(mime)]);
+                }
+                // What a script put wins over what E8 works out, as it
+                // replaces the property in Emacs's own plist.
+                for (key, value) in self.coding_plists.iter().filter(|(n, _)| n == system.name).flat_map(|(_, p)| p.clone()) {
+                    match plist.chunks(2).position(|p| p[0].as_str() == Some(&key)) {
+                        Some(i) => plist[i * 2 + 1] = value,
+                        None => plist.extend([Value::Str(key), value]),
+                    }
+                }
+                Value::List(plist)
+            }
+            "coding-system-put" => {
+                let c = coding(0)?;
+                let key = text_arg(args, 1)?;
+                let value = args.get(2).cloned().unwrap_or(Value::Null);
+                let name = c.system().name.to_string();
+                let plist = match self.coding_plists.iter_mut().find(|(n, _)| *n == name) {
+                    Some((_, plist)) => plist,
+                    None => {
+                        self.coding_plists.push((name, Vec::new()));
+                        &mut self.coding_plists.last_mut().expect("just pushed").1
+                    }
+                };
+                match plist.iter_mut().find(|(k, _)| *k == key) {
+                    Some((_, v)) => *v = value,
+                    None => plist.push((key, value)),
+                }
+                Value::Null
             }
             "clear-charset-maps" | "unify-charset" => Value::Null,
             _ => return Err(Error::new(format!("No coding primitive {name}"))),

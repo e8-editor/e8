@@ -1017,6 +1017,31 @@ pub(crate) fn install(ed: &mut Editor) {
         ),
         Variable::new("last-coding-system-used", "The coding system the last file read or written, or text decoded or encoded, used.", Value::Null),
         Variable::new(
+            "file-coding-system-alist",
+            "Which coding system to read and write a file in, by its name: an alist of an Emacs regexp and a coding system, a pair of them for reading and writing, or a function to call.",
+            Value::List(Vec::new()),
+        ),
+        Variable::new(
+            "process-coding-system-alist",
+            "Which coding systems to talk to a program in, by its name: an alist of an Emacs regexp and a coding system, a pair of them for decoding and encoding, or a function to call.",
+            Value::List(Vec::new()),
+        ),
+        Variable::new(
+            "network-coding-system-alist",
+            "Which coding systems to talk over a network connection in, by its service name or port: an alist of an Emacs regexp or a port number and a coding system, a pair of them, or a function to call.",
+            Value::List(Vec::new()),
+        ),
+        Variable::new(
+            "keyboard-coding-system",
+            "How the terminal's keyboard input is decoded; set-keyboard-coding-system sets it.",
+            "utf-8-unix",
+        ),
+        Variable::new(
+            "terminal-coding-system",
+            "How text is encoded for the terminal's display; set-terminal-coding-system sets it.",
+            "utf-8-unix",
+        ),
+        Variable::new(
             "inhibit-field-text-motion",
             "Whether motion commands and constrain-to-field ignore fields, the stretches of text with one `field` property.",
             false,

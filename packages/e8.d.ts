@@ -9452,6 +9452,10 @@ declare global {
        */
       "file-auto-mode-skip": Value;
       /**
+       * Which coding system to read and write a file in, by its name: an alist of an Emacs regexp and a coding system, a pair of them for reading and writing, or a function to call.
+       */
+      "file-coding-system-alist": Value;
+      /**
        * The pairs (VAR . VALUE) this buffer's file set as its local variables.
        *
        * Defined in packages/files.ts.
@@ -10749,6 +10753,10 @@ declare global {
        */
       "key-translation-map": Value;
       /**
+       * How the terminal's keyboard input is decoded; set-keyboard-coding-system sets it.
+       */
+      "keyboard-coding-system": Value;
+      /**
        * Whether killing read-only text only says it was copied to the kill ring, rather than signalling an error.
        */
       "kill-read-only-ok": Value;
@@ -10941,6 +10949,10 @@ declare global {
        * Defined in packages/lisp.ts.
        */
       "narrow-to-defun-include-comments": Value;
+      /**
+       * Which coding systems to talk over a network connection in, by its service name or port: an alist of an Emacs regexp or a port number and a coding system, a pair of them, or a function to call.
+       */
+      "network-coding-system-alist": Value;
       /**
        * How hard network connections are checked: low checks nothing, medium (the default) asks about certificates that do not verify or whose key changed, high and paranoid as medium in E8, paranoid also asking about each certificate not seen before.
        *
@@ -11727,6 +11739,10 @@ declare global {
        */
       "pop-up-windows": Value;
       /**
+       * Which coding systems to talk to a program in, by its name: an alist of an Emacs regexp and a coding system, a pair of them for decoding and encoding, or a function to call.
+       */
+      "process-coding-system-alist": Value;
+      /**
        * Whether programs started with make-process talk through a pseudo-terminal, t, or pipes, nil.
        */
       "process-connection-type": Value;
@@ -12512,6 +12528,10 @@ declare global {
        * Where temporary files are made.
        */
       "temporary-file-directory": Value;
+      /**
+       * How text is encoded for the terminal's display; set-terminal-coding-system sets it.
+       */
+      "terminal-coding-system": Value;
       /**
        * How Text mode completes words from the plain word list ispell uses: `completion-at-point' offers them to C-M-i through completion-at-point-functions; t binds C-M-i to ispell-complete-word instead; nil does neither.
        *
@@ -19428,6 +19448,34 @@ declare global {
     function clearCharsetMaps(): void;
     /** Does nothing: E8's charsets are unified already (unify-charset). */
     function unifyCharset(charset: string): void;
+    /**
+     * Which coding systems an operation on a target gets, as
+     * find-operation-coding-system: [decoding, encoding] from
+     * file-coding-system-alist, process-coding-system-alist or
+     * network-coding-system-alist, or undefined where none matches. The
+     * arguments after the operation are the ones the operation itself takes.
+     */
+    function findOperationCodingSystem(
+      operation: "insert-file-contents" | "write-region" | "call-process" | "call-process-region" | "start-process" | "open-network-stream",
+      ...args: Value[]
+    ): [CodingSystem, CodingSystem] | undefined;
+    /** How the terminal's keyboard input is decoded, as keyboard-coding-system. */
+    function keyboardCodingSystem(): CodingSystem | undefined;
+    /** How text is encoded for the terminal, as terminal-coding-system. */
+    function terminalCodingSystem(): CodingSystem | undefined;
+    /** Sets how the keyboard's input is decoded, as set-keyboard-coding-system-internal. */
+    function setKeyboardCodingSystemInternal(cs: CodingSystem | null): void;
+    /** Sets how text is encoded for the terminal, as set-terminal-coding-system-internal. */
+    function setTerminalCodingSystemInternal(cs: CodingSystem | null): void;
+    /**
+     * What E8 knows of a coding system, as coding-system-plist: its
+     * ":name", ":coding-type", ":mnemonic", ":ascii-compatible-p" and
+     * ":mime-charset", with what codingSystemPut put beside them. Emacs's
+     * ":docstring", ":category" and ":charset-list" are not there.
+     */
+    function codingSystemPlist(cs: CodingSystem): { [property: string]: Value };
+    /** Puts a property on a coding system, as coding-system-put; the five E8 works out for itself are kept. */
+    function codingSystemPut(cs: CodingSystem, prop: string, value: Value): void;
     /** Starts recording changes for undo, afresh, as buffer-enable-undo. */
     function bufferEnableUndo(buffer?: string | Buffer): void;
     /** Stops recording changes for undo and forgets them, as buffer-disable-undo. */

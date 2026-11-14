@@ -32,15 +32,18 @@ Option 2. The charsets stay static; the coding systems stay static too, but gain
    - `unicode-property-table-internal`, `get-unicode-property-internal` and `put-unicode-property-internal`, for the properties E8 holds data for — the bidi ones, from the tables ADR 0047 brought — and nil for the rest, as Emacs answers nil for a property whose table it cannot load.
    - `clear-charset-maps` and `unify-charset` do nothing: E8's charsets are built, and already unified.
 2. **Coding systems chosen by name.**
-   - `file-coding-system-alist`, `process-coding-system-alist` and `network-coding-system-alist`, read by `find-operation-coding-system` as coding.c reads them, and honoured where Emacs honours them: reading and writing a file, and a process's own coding.
-   - `keyboard-coding-system`, `terminal-coding-system` and the two `set-...-internal` that set them.
-   - `coding-system-plist`, `coding-system-put` and `define-coding-system-alias`.
+   - `file-coding-system-alist`, `process-coding-system-alist` and `network-coding-system-alist`, read by `find-operation-coding-system` as coding.c reads them: an Emacs regexp against the target, or a port number, and a coding system, a pair of them, or a function of the whole argument list.
+   - `file-coding-system-alist` is honoured where Emacs honours it, in the order fileio.c asks: `coding-system-for-read` first, then the file's own `coding:` cookie, then the name, then the bytes; and for writing, `coding-system-for-write` first, then the name — but only for a buffer with no `buffer-file-coding-system` of its own, so saving a visited file keeps the coding it was read in, as `choose_write_coding_system` does. The other two alists are read by `find-operation-coding-system` but not yet by `make-process` and `open-network-stream`.
+   - An entry's value may be written out, `[REGEXP, DECODING, ENCODING]`, as Emacs prints `(REGEXP DECODING . ENCODING)`, and a function it names is given the whole argument list, as coding.c gives it. A function that reads a file itself cannot nest more than sixteen deep.
+   - `keyboard-coding-system`, `terminal-coding-system` and the two `set-...-internal` that set them; E8 has one terminal, so the terminal argument is ignored.
+   - `coding-system-plist` and `coding-system-put`. `define-coding-system-alias` is left out: E8's coding systems are a static table, and an alias would have to be process-wide.
 
 ## Consequences
 
 - helm-core, doom-modeline, wgrep, geiser and Emacs's `package` lack nothing more from this group.
-- A configuration can say which coding a file or a program gets, which E8 could not express before.
-- `define-charset`, `define-charset-internal`, `define-coding-system-internal`, `iso-charset`, `declare-equiv-charset`, `get-unused-iso-final-char` and `map-charset-chars` are left out: they define or enumerate charsets, which E8's static table does not do. Nothing in the corpus calls them.
+- A configuration can say which coding a file gets by its name, which E8 could not express before; a program's and a connection's are found but not yet used.
+- A coding system's plist holds what E8 knows: no `:docstring`, `:category` or `:charset-list`. Recorded in [differences.md](../differences.md).
+- `define-charset`, `define-charset-internal`, `define-coding-system-internal`, `define-coding-system-alias`, `iso-charset`, `declare-equiv-charset`, `get-unused-iso-final-char` and `map-charset-chars` are left out: they define or enumerate charsets, which E8's static table does not do. Nothing in the corpus calls them.
 - A charset's plist holds what E8 knows, not Emacs's full one: no `:docstring`, `:iso-final-char`, `:emacs-mule-id` or `:unify-map`. Its dimensions and code spaces are Emacs's. Recorded in [differences.md](../differences.md).
 
 ## Dependencies introduced

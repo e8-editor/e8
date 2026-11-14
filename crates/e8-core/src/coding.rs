@@ -634,16 +634,34 @@ pub fn visiting(bytes: &[u8]) -> Coding {
     auto_coding(bytes).unwrap_or_else(|| detect(bytes)[0])
 }
 
-/// Decodes a file's bytes in `coding` if given, as `coding-system-for-read`
-/// gives one, else in the coding `visiting` finds, looking at them once.
-pub fn decode_file(bytes: &[u8], coding: Option<Coding>) -> (String, Coding) {
-    match coding {
-        Some(coding) => coding.decode(bytes),
-        None => {
-            let found = visiting(bytes);
-            if matches!(found.system().kind, Kind::Undecided) { found.decode_as(bytes) } else { found.decode(bytes) }
-        }
+/// Which coding to read a file with, before its bytes are looked at:
+/// `forced` is `coding-system-for-read`, which wins over everything, and
+/// `by_name` is what `file-coding-system-alist` says for its name, which
+/// Emacs uses only where the file itself does not say ([ADR 0078]).
+///
+/// [ADR 0078]: ../../../../docs/adr/0078-charsets-and-codings-as-emacs-has-them.md
+#[derive(Clone, Copy, Debug, Default)]
+pub struct FileCoding {
+    pub forced: Option<Coding>,
+    pub by_name: Option<Coding>,
+}
+
+impl From<Option<Coding>> for FileCoding {
+    fn from(forced: Option<Coding>) -> FileCoding {
+        FileCoding { forced, by_name: None }
     }
+}
+
+/// Decodes a file's bytes: in `coding-system-for-read` if it names one,
+/// else in what the file itself says, else in what its name asks for,
+/// else in what its bytes look like, looking at them once.
+pub fn decode_file(bytes: &[u8], coding: impl Into<FileCoding>) -> (String, Coding) {
+    let coding = coding.into();
+    let found = match coding.forced.or_else(|| auto_coding(bytes)).or(coding.by_name) {
+        Some(coding) => coding,
+        None => detect(bytes)[0],
+    };
+    if matches!(found.system().kind, Kind::Undecided) { found.decode_as(bytes) } else { found.decode(bytes) }
 }
 
 /// Lines end as DOS if every line feed follows a carriage return, as Mac
