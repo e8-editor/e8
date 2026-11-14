@@ -72,6 +72,9 @@ pub struct ImageGlyph {
     pub failed: bool,
     /// The `:background` its transparent parts are filled with.
     pub background: Option<Color>,
+    /// The xwidget it stands for, whose web view the front end puts where
+    /// the glyph is, in place of pixels (ADR 0089).
+    pub xwidget: Option<u64>,
 }
 
 impl ImageGlyph {
@@ -452,6 +455,7 @@ impl Editor {
                 slice: [0.0, 0.0, FAILED_IMAGE_SIZE, FAILED_IMAGE_SIZE],
                 failed: true,
                 background: None,
+                xwidget: None,
             },
             kind,
             source: None,
@@ -703,6 +707,34 @@ impl Editor {
     pub(crate) fn image_row_height(&self, b: &Buffer, row: &Row) -> Option<f32> {
         let (ascent, descent) = self.row_ascent_descent(b, row)?;
         Some((ascent + descent) / self.metrics.char_height())
+    }
+
+    /// What a `display` property with an xwidget shows at `pos`: `None` if
+    /// it holds none; `Some(None)` where the front end shows no web views,
+    /// so the text shows; else a glyph of the xwidget's size.
+    pub(crate) fn xwidget_display_at(&self, b: &Buffer, pos: usize, line_end: usize, value: &Value, style: Style) -> Option<Option<(usize, Vec<Segment>)>> {
+        let id = crate::xwidget::xwidget_display(value)?;
+        let Some((width, height)) = self.xwidget_size(id).filter(|_| self.metrics.xwidgets()) else { return Some(None) };
+        let mut end = pos;
+        while end < line_end && b.char_property(end, "display") == Some(value) {
+            end = b.next_char_property_change(end).min(line_end).max(end + 1);
+        }
+        let (w, h) = (width as f32, height as f32);
+        let glyph = ImageGlyph {
+            id: u64::MAX - id,
+            width: w,
+            height: h,
+            hmargin: 0.0,
+            vmargin: 0.0,
+            relief: 0.0,
+            ascent: ImageAscent::Percent(50.0),
+            slice: [0.0, 0.0, w, h],
+            failed: false,
+            background: None,
+            xwidget: Some(id),
+        };
+        let segment = Segment { string: true, covers: Some(end), image: Some(Arc::new(glyph)), ..Segment::text(pos, IMAGE_CHAR.to_string(), style) };
+        Some(Some((end, vec![segment])))
     }
 
     /// What a `display` property with an image shows at `pos`: `None` if it

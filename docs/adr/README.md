@@ -90,4 +90,6 @@ One record per decision, in the order they were made; a later one can change an 
 - [0086](0086-the-odds-of-processes-buffer-text-and-windows.md) The odds of processes, buffer text and windows: socket options, serial ports, buffer-swap-text, labeled restrictions, window display tables
 - [0087](0087-sqlite-as-emacs-has-it.md) SQLite as Emacs has it
 - [0088](0088-the-last-odds-frames-file-notifications-and-descriptions.md) The last odds: frames, file notifications and descriptions
+- [0089](0089-xwidgets-as-emacs-has-them.md) xwidgets as Emacs has them: web views on macOS and Linux
+- [0090](0090-the-c-cores-primitives-by-their-names.md) The C core's primitives by their names: format, characters, buffers, windows and keys
 - [0091](0091-posix-searches-as-emacs-has-them.md) POSIX searches as Emacs has them: the longest match

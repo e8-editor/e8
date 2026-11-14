@@ -11,6 +11,11 @@ use std::time::Duration;
 use e8_core::Editor;
 use e8_script::Scripting;
 
+
+/// Whether a pseudo-terminal keeps the character size and parity set on it,
+/// as a serial port does: not on Linux, whose pty driver forces 8 bits.
+const PTY_KEEPS_SIZE_AND_PARITY: bool = !cfg!(target_os = "linux");
+
 fn setup() -> (Editor, Scripting) {
     let mut ed = Editor::new();
     let s = Scripting::new(&mut ed).unwrap();
@@ -388,12 +393,20 @@ fn configuring_a_serial_port_sets_its_termios() {
     assert_eq!(res(&mut ed, &s, "e8.processContact(ser, true)"), contact(r#"1200,":bytesize",7,":parity","odd",":stopbits",2,":flowcontrol","sw",":summary","7O2""#));
     let t = termios(&slave);
     assert_eq!(speed(&t), 1200);
-    assert_eq!(t.c_cflag & libc::CSIZE, libc::CS7);
-    assert_eq!(t.c_cflag & (libc::PARENB | libc::PARODD | libc::CSTOPB), libc::PARENB | libc::PARODD | libc::CSTOPB);
+    // Linux's pseudo-terminals keep 8 bits and no parity whatever is set
+    // (the kernel's pty_set_termios clears CSIZE and PARENB), so a real
+    // port's size and parity show there only on macOS.
+    if PTY_KEEPS_SIZE_AND_PARITY {
+        assert_eq!(t.c_cflag & libc::CSIZE, libc::CS7);
+        assert_eq!(t.c_cflag & (libc::PARENB | libc::PARODD | libc::CSTOPB), libc::PARENB | libc::PARODD | libc::CSTOPB);
+    } else {
+        assert_eq!(t.c_cflag & (libc::PARODD | libc::CSTOPB), libc::PARODD | libc::CSTOPB);
+    }
     assert_eq!(t.c_iflag & (libc::IXON | libc::IXOFF | libc::INPCK), libc::IXON | libc::IXOFF | libc::INPCK);
     eval(&mut ed, &s, r#"e8.serialProcessConfigure({ process: ser, parity: "even" });"#);
     assert_eq!(res(&mut ed, &s, "e8.processContact(ser, true)"), contact(r#"1200,":bytesize",7,":parity","even",":stopbits",2,":flowcontrol","sw",":summary","7E2""#));
-    assert_eq!(termios(&slave).c_cflag & (libc::PARENB | libc::PARODD), libc::PARENB);
+    let even = if PTY_KEEPS_SIZE_AND_PARITY { libc::PARENB } else { 0 };
+    assert_eq!(termios(&slave).c_cflag & (libc::PARENB | libc::PARODD), even);
     eval(&mut ed, &s, r#"e8.serialProcessConfigure({ process: ser, flowcontrol: "hw" });"#);
     assert_eq!(res(&mut ed, &s, "e8.processContact(ser, true)"), contact(r#"1200,":bytesize",7,":parity","even",":stopbits",2,":flowcontrol","hw",":summary","7E2""#));
     let t = termios(&slave);

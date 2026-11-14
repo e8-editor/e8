@@ -63,6 +63,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Margins (`left-margin-width`, `(margin left-margin)` display specs) and fringes in the GUI (continuation arrows, `(left-fringe BITMAP)` specs, `define-fringe-bitmap`, `indicate-empty-lines`, `indicate-buffer-boundaries`, `fringe-indicator-alist`).
 - The overlay arrow (`overlay-arrow-position`, a triangle in the fringe or `=>` on a terminal, marking `next-error`'s message).
 - Fonts as values (`font-spec`, `font-get`, `font-xlfd-name`, `face-font`, `font-at`, `font-family-list`, `list-fonts`, `x-list-fonts`, `x-family-fonts`, `char-displayable-p`, `internal-char-font`, `font-face-attributes`, `font-match-p`, `open-font`, `font-get-glyphs`), and fontsets (`set-fontset-font`, `fontset-font`, `new-fontset`, `query-fontset`, `fontset-list`).
+- Web pages in buffers, as Emacs's xwidgets, in the GUI on macOS and Linux (`xwidget-webkit-browse-url`, `make-xwidget`, `xwidget-webkit-execute-script`).
 - File notifications on macOS (`file-notify-add-watch`, `kqueue-add-watch`).
 - POSIX searches, which take the longest match (`posix-search-forward`, `posix-string-match`).
 - SQLite databases (`sqlite-open`, `sqlite-execute`, `sqlite-select` with sets, transactions, `sqlite-pragma`), as Emacs's sqlite.c.

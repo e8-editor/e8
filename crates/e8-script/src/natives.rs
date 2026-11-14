@@ -36,6 +36,7 @@
 mod bidi;
 mod buftext;
 mod chartab;
+mod cnames;
 mod editor;
 mod faces;
 mod files;
@@ -47,6 +48,7 @@ mod text;
 mod treesit;
 pub(crate) mod variables;
 mod windows;
+mod xwidget;
 
 use e8_core::{PrefixArg, Value as EditorValue};
 
@@ -413,9 +415,11 @@ const TABLES: &[&[Native]] = &[
     files::TABLE,
     chartab::TABLE,
     images::TABLE,
+    cnames::TABLE,
     faces::TABLE,
     buftext::TABLE,
     sqlite::TABLE,
+    xwidget::TABLE,
 ];
 
 /// Every native in the tables.
@@ -437,9 +441,11 @@ pub(crate) fn install<'js>(ctx: &rquickjs::Ctx<'js>, native: &rquickjs::Object<'
     files::install(ctx, native, api)?;
     chartab::install(ctx, native, api)?;
     images::install(ctx, native, api)?;
+    cnames::install(ctx, native, api)?;
     faces::install(ctx, native, api)?;
     buftext::install(ctx, native, api)?;
     sqlite::install(ctx, native, api)?;
+    xwidget::install(ctx, native, api)?;
     Ok(())
 }
 
@@ -457,9 +463,11 @@ pub(crate) fn install<'s>(scope: &mut v8::PinScope<'s, '_>, native: v8::Local<'s
     files::install(scope, native, api);
     chartab::install(scope, native, api);
     images::install(scope, native, api);
+    cnames::install(scope, native, api);
     faces::install(scope, native, api);
     buftext::install(scope, native, api);
     sqlite::install(scope, native, api);
+    xwidget::install(scope, native, api);
 }
 
 /// The declarations in `e8.d.ts` of the public natives.
