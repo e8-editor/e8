@@ -89,6 +89,7 @@ pub mod treesitfns;
 mod treesitsearch;
 pub mod xfaces;
 pub mod sqlite;
+mod kqueue;
 mod window;
 mod window_tree;
 mod variables;

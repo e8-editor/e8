@@ -1059,3 +1059,179 @@ e8.bindKey("C-h ?", helpForHelp);
 e8.bindKey("C-h C-h", helpForHelp);
 // <f1> is help too, as in Emacs: the same prefix map as C-h.
 e8.bindKey("<f1>", e8.variable("help-map") as e8.Keymap);
+
+// keymap.c's describe-vector and help--describe-vector, and syntax.c's
+// internal-describe-syntax-value, which describe-syntax and
+// describe-categories are written on (ADR 0088).
+
+/** An event as key-description writes it alone: C-@ to C-z, TAB, RET, ESC, SPC, DEL, else the character. */
+function eventDescription(n: number): string {
+  const named: Record<number, string> = { 0: "C-@", 9: "TAB", 13: "RET", 27: "ESC", 32: "SPC", 127: "DEL" };
+  if (named[n] !== undefined) return named[n];
+  if (n < 32) return `C-${String.fromCodePoint(n + 96)}`;
+  return String.fromCodePoint(n);
+}
+
+/** A vector's or char-table's entries as describe_vector walks them: each run of equal values, from the lowest index. */
+function vectorRuns(vector: e8.Value[] | e8.CharTable): [number, number, e8.Value][] {
+  if (Array.isArray(vector)) {
+    const runs: [number, number, e8.Value][] = [];
+    for (let i = 0; i < vector.length; i++) {
+      const v = vector[i];
+      if (v === null || v === undefined) continue;
+      let j = i;
+      while (j + 1 < vector.length && vector[j + 1] !== null && vector[j + 1] !== undefined && e8.prin1ToString(vector[j + 1]) === e8.prin1ToString(v)) j++;
+      runs.push([i, j, v]);
+      i = j;
+    }
+    return runs;
+  }
+  const ranges: [number, number, e8.Value][] = [];
+  e8.mapCharTable((key, value) => {
+    if (value === null || value === undefined) return;
+    const [from, to] = typeof key === "number" ? [key, key] : key;
+    ranges.push([from, to, value]);
+  }, vector);
+  ranges.sort((a, b) => a[0] - b[0]);
+  // Adjacent ranges of one value are one run, as char_table_ref_and_range finds it.
+  const runs: [number, number, e8.Value][] = [];
+  for (const r of ranges) {
+    const last = runs[runs.length - 1];
+    if (last !== undefined && last[1] + 1 === r[0] && last[2] === r[2]) last[1] = r[1];
+    else runs.push([...r]);
+  }
+  return runs;
+}
+
+/**
+ * Inserts a description of a vector's or char-table's entries, as
+ * keymap.c's describe_vector: a newline first, then each run of equal
+ * entries as its first key, " .. " and its last, and the entry described.
+ */
+function describeVectorWith(
+  vector: e8.Value[] | e8.CharTable,
+  prefix: string,
+  describe: (value: e8.Value) => void,
+  options: { partial?: boolean; shadow?: e8.Keymap[]; entireMap?: e8.Keymap; mentionShadow?: boolean; keymap?: boolean } = {},
+): void {
+  if (!Array.isArray(vector) && !e8.charTableP(vector)) e8.signal("wrong-type-argument", `Wrong type argument: vector-or-char-table-p, ${e8.prin1ToString(vector)}`, [Symbol.for("vector-or-char-table-p"), vector]);
+  const elementPrefix = !options.keymap && prefix !== "" ? `${prefix} ` : "";
+  const keyText = (n: number) => (options.keymap && prefix !== "" ? `${prefix} ${eventDescription(n)}` : elementPrefix + eventDescription(n));
+  let first = true;
+  for (const [start, end, definition] of vectorRuns(vector)) {
+    if (options.partial && typeof definition === "string" && e8.get(definition, "suppress-keymap")) continue;
+    let shadowedBy: e8.Value | undefined;
+    if (options.shadow && options.shadow.length > 0) {
+      for (const map of options.shadow) {
+        shadowedBy = e8.lookupKey(map, eventDescription(start)) ?? undefined;
+        if (shadowedBy !== undefined) break;
+      }
+      if (shadowedBy !== undefined && shadowedBy !== definition && !options.mentionShadow) continue;
+    }
+    if (options.entireMap && e8.lookupKey(options.entireMap, eventDescription(start)) !== definition) continue;
+    if (first) {
+      e8.insert("\n");
+      first = false;
+    }
+    e8.insert(keyText(start));
+    if (end !== start) e8.insert(` .. ${keyText(end)}`);
+    describe(definition);
+    if (shadowedBy !== undefined && shadowedBy !== definition) {
+      e8.gotoChar(e8.point() - 1);
+      e8.insert(typeof shadowedBy === "string" ? `  (currently shadowed by \`${shadowedBy}')` : "  (currently shadowed)");
+      e8.gotoChar(e8.point() + 1);
+    }
+  }
+}
+
+/** Describe-vector's default describer: princ at column 16, then a newline, as describe_vector_princ. */
+const princAt16 = (describer: (value: e8.Value) => void) => (value: e8.Value) => {
+  // At column 16, or a space past the key, as indent-to with a minimum of 1.
+  if (e8.currentColumn() >= 15) e8.insert(" ");
+  else e8.indentTo(16);
+  describer(value);
+  e8.insert("\n");
+};
+
+const princ = (value: e8.Value) => e8.insert(e8.prin1ToString(value, true));
+
+/** Inserts a description of a vector's or char-table's entries, each through DESCRIBER (princ by default), as describe-vector. */
+export function describeVector(vector: e8.Value[] | e8.CharTable, describer?: ((value: e8.Value) => void) | string | null): void {
+  const describe = describer === undefined || describer === null ? princ : (v: e8.Value) => e8.funcall(describer as any, v);
+  describeVectorWith(vector, "", princAt16(describe));
+}
+e8.defun("describe-vector", describeVector);
+
+/** Inserts a description of a keymap's vector or char-table under a prefix, as help--describe-vector, which describe-map uses. */
+export function helpDescribeVector(
+  vector: e8.Value[] | e8.CharTable,
+  prefix: string | null,
+  describer: ((value: e8.Value) => void) | string,
+  partial: boolean,
+  shadow: e8.Keymap[] | null,
+  entireMap: e8.Keymap | null,
+  mentionShadow: boolean,
+): void {
+  describeVectorWith(vector, prefix ?? "", (v) => e8.funcall(describer as any, v), {
+    partial: Boolean(partial),
+    shadow: shadow ?? undefined,
+    entireMap: entireMap ?? undefined,
+    mentionShadow: Boolean(mentionShadow),
+    keymap: true,
+  });
+}
+e8.defun("help--describe-vector", helpDescribeVector);
+
+/** The letters of syntax classes, as syntax.c's syntax_code_spec, and what each means. */
+const SYNTAX_SPEC = " .w_()'\"$\\/<>@!|";
+const SYNTAX_MEANING = ["whitespace", "punctuation", "word", "symbol", "open", "close", "prefix", "string", "math", "escape", "charquote", "comment", "endcomment", "inherit", "comment fence", "string fence"];
+
+/**
+ * Inserts a description of a raw syntax descriptor, as syntax.c's
+ * internal-describe-syntax-value: its class's letter, its match, its
+ * flags, and what they mean; "default" for nil, "invalid" for what is none.
+ */
+export function internalDescribeSyntaxValue(syntax: e8.Value): e8.Value {
+  if (syntax === null || syntax === undefined) {
+    e8.insert("default");
+    return syntax;
+  }
+  if (e8.charTableP(syntax)) {
+    e8.insert("deeper char-table ...");
+    return syntax;
+  }
+  const pair = syntax as [e8.Value, e8.Value];
+  const [first, matchValue] = Array.isArray(pair) ? pair : [undefined, undefined];
+  const match = typeof matchValue === "string" ? matchValue.codePointAt(0) : typeof matchValue === "number" ? matchValue : undefined;
+  if (typeof first !== "number" || !Number.isInteger(first) || (matchValue !== null && matchValue !== undefined && match === undefined)) {
+    e8.insert("invalid");
+    return syntax;
+  }
+  const code = first & 0o377;
+  if (code >= SYNTAX_MEANING.length) {
+    e8.insert("invalid");
+    return syntax;
+  }
+  const flag = (bit: number) => (first & (1 << bit)) !== 0;
+  const [start1, start2, end1, end2, prefix, styleB, nested, styleC] = [16, 17, 18, 19, 20, 21, 22, 23].map(flag);
+  const matchChar = match === undefined ? undefined : String.fromCodePoint(match);
+  let text = SYNTAX_SPEC[code] + (matchChar ?? " ");
+  text += (start1 ? "1" : "") + (start2 ? "2" : "") + (end1 ? "3" : "") + (end2 ? "4" : "") + (prefix ? "p" : "") + (styleB ? "b" : "") + (styleC ? "c" : "") + (nested ? "n" : "");
+  text += `\twhich means: ${SYNTAX_MEANING[code]}`;
+  if (matchChar !== undefined) text += `, matches ${matchChar}`;
+  if (start1) text += ",\n\t  is the first character of a comment-start sequence";
+  if (start2) text += ",\n\t  is the second character of a comment-start sequence";
+  if (end1) text += ",\n\t  is the first character of a comment-end sequence";
+  if (end2) text += ",\n\t  is the second character of a comment-end sequence";
+  if (styleB) text += " (comment style b)";
+  if (styleC) text += " (comment style c)";
+  if (nested) text += " (nestable)";
+  if (prefix) text += ",\n\t  is a prefix character for ‘backward-prefix-chars’";
+  e8.insert(text);
+  return syntax;
+}
+e8.defun("internal-describe-syntax-value", internalDescribeSyntaxValue);
+
+// keyboard.c's and xdisp.c's internal functions by their Lisp names.
+e8.defun("set--this-command-keys", (keys: string) => e8.setThisCommandKeysFromChars(keys));
+e8.defun("display--line-is-continued-p", () => e8.displayLineIsContinuedP());

@@ -309,6 +309,7 @@ impl Editor {
         let id = self.next_frame_id;
         self.other_frames.push(Frame { id, tree: WindowTree::Leaf(window), selected_window: window, frame_size: self.frame_size, frame_size_implied: self.frame_size_implied });
         self.frame_order.insert(0, id);
+        self.frame_stack.insert(0, id);
         // A new frame shows a menu bar if the others do, as Emacs's
         // `menu-bar-mode` puts `menu-bar-lines` in `default-frame-alist`
         // so that frames made later have one.
@@ -386,6 +387,8 @@ impl Editor {
         self.frame_order.retain(|f| *f != id);
         self.frame_parameters.remove(&id);
         self.frame_raises.remove(&id);
+        self.frame_stack.retain(|f| *f != id);
+        self.frames_unmade.retain(|f| *f != id);
         self.frame_geometries.remove(&id);
         self.frame_focus.remove(&id);
         self.frame_focus.retain(|_, to| *to != id);
@@ -2148,6 +2151,8 @@ impl Editor {
     pub fn raise_frame(&mut self, frame: FrameId) -> Result<()> {
         self.set_frame_visibility(frame, Value::Bool(true))?;
         *self.frame_raises.entry(frame).or_insert(0) += 1;
+        self.frame_stack.retain(|f| *f != frame);
+        self.frame_stack.insert(0, frame);
         Ok(())
     }
 

@@ -256,6 +256,8 @@ pub struct Editor {
     pub(crate) fontsets: crate::fontset::Fontsets,
     /// The SQLite databases and sets scripts hold (ADR 0087).
     pub(crate) sqlite: crate::sqlite::Sqlite,
+    /// The files and directories watched with kqueue-add-watch, as kqueue.c keeps them.
+    pub(crate) kqueue: crate::kqueue::Kqueue,
     /// Whether the system the front end runs on looks dark, for choosing
     /// faces' colours where no theme gives the default face a background
     /// and `frame-background-mode` is unset; dark until a front end says.
@@ -419,6 +421,8 @@ pub struct Editor {
     pub(crate) fringe_bitmaps: crate::fringe::FringeBitmaps,
     /// Whether `ding` rang the bell since a front end last looked.
     bell: bool,
+    /// What `send-string-to-terminal` sent, for the terminal front end to write.
+    terminal_output: String,
     /// Each frame's parameters, as Emacs's `frame-parameter` reads them.
     pub(crate) frame_parameters: std::collections::HashMap<crate::window::FrameId, std::collections::BTreeMap<String, Value>>,
     /// Each frame's tab bar, as the last redisplay formatted it, for frames that show one.
@@ -430,6 +434,12 @@ pub struct Editor {
     pub(crate) menu_bars: std::collections::HashMap<crate::window::FrameId, Vec<crate::menu::MenuBarItem>>,
     /// How many times each frame has been raised, which front ends follow.
     pub(crate) frame_raises: std::collections::HashMap<crate::window::FrameId, u64>,
+    /// The frames from the topmost to the bottommost, as raising, lowering
+    /// and restacking leave them (`frame-list-z-order`).
+    pub(crate) frame_stack: Vec<crate::window::FrameId>,
+    /// Frames `frame-after-make-frame` has not marked made, for which
+    /// `window-configuration-change-hook` is not run.
+    pub(crate) frames_unmade: Vec<crate::window::FrameId>,
     /// Each frame's title, from `frame-title-format`, as redisplay last formatted it.
     pub(crate) frame_titles: std::collections::HashMap<crate::window::FrameId, String>,
     /// The column of the tab bar the last mouse event was on, if it was on the tab bar.
@@ -462,6 +472,42 @@ impl Editor {
     /// Whether the bell rang since the last call, for a front end to sound it.
     pub fn take_bell(&mut self) -> bool {
         std::mem::take(&mut self.bell)
+    }
+
+    /// Sends text to the terminal as it is, as `send-string-to-terminal`:
+    /// in batch to standard output, on a terminal for the front end to
+    /// write before it next draws; a graphical frame's display is no
+    /// terminal, as Emacs says.
+    pub fn send_string_to_terminal(&mut self, text: &str) -> crate::error::Result<()> {
+        if self.noninteractive {
+            use std::io::Write;
+            let mut out = std::io::stdout();
+            let _ = out.write_all(text.as_bytes()).and_then(|_| out.flush());
+            return Ok(());
+        }
+        if self.window_system().is_some() {
+            return Err(crate::error::Error::new("Device 1 is not a termcap terminal device"));
+        }
+        self.terminal_output.push_str(text);
+        Ok(())
+    }
+
+    /// What was sent to the terminal since the last call, for the terminal
+    /// front end to write.
+    pub fn take_terminal_output(&mut self) -> String {
+        std::mem::take(&mut self.terminal_output)
+    }
+
+    /// Whether the screen line point is on goes on in the next, as
+    /// `display--line-is-continued-p`: a long line wrapping in the window.
+    pub fn display_line_is_continued_p(&self) -> bool {
+        let window = self.selected_window();
+        let b = self.window_buffer();
+        let point = b.point();
+        let wrap = self.wrap_in(window, b);
+        let rows = self.rows_from(b, self.row_line_in(b, b.line_of(point)), usize::MAX, 1, Some(true), wrap);
+        let tab_width = self.tab_width_in(b);
+        crate::display::row_showing(&rows, point, tab_width).is_some_and(|k| rows[k].continued)
     }
 }
 
@@ -524,6 +570,7 @@ impl Editor {
             face_settings: Default::default(),
             fontsets: Default::default(),
             sqlite: Default::default(),
+            kqueue: Default::default(),
             system_dark: true,
             quitting: Default::default(),
             command_loop: None,
@@ -595,11 +642,14 @@ impl Editor {
             header_lines: Default::default(),
             fringe_bitmaps: Default::default(),
             bell: false,
+            terminal_output: String::new(),
             frame_parameters: Default::default(),
             tab_bars: Default::default(),
             updating_menu_bar: false,
             menu_bars: Default::default(),
             frame_raises: Default::default(),
+            frame_stack: vec![crate::window::FIRST_FRAME],
+            frames_unmade: Vec::new(),
             frame_titles: Default::default(),
             frame_geometries: Default::default(),
             frame_requests: Vec::new(),
