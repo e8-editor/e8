@@ -57,6 +57,10 @@ check: tidy
 	cargo clippy --all-targets
 	$(QUICKJS) cargo nextest run --workspace $(QUICKJS_FEATURES)
 	$(QUICKJS) cargo clippy --all-targets $(QUICKJS_FEATURES)
+	# The web build reaches files through the tree in memory rather than
+	# std, which nothing above compiles; checking it here keeps the
+	# website's build from being where that is found out (ADR 0066).
+	cargo check -q -p e8-script --features e8-core/memory-fs
 
 # Cargo never deletes what a debug build leaves once a build has moved
 # on: each change to a crate links its test programs again under a new

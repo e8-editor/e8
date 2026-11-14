@@ -108,8 +108,9 @@ pub(crate) struct Keyboard {
     ///
     /// [ADR 0079]: ../../../../docs/adr/0079-the-keyboards-odds-and-ends.md
     pub(crate) input_mode: InputMode,
-    /// The file `open-dribble-file` writes every key typed to.
-    pub(crate) dribble: Option<std::fs::File>,
+    /// The file `open-dribble-file` writes every key typed to, in the
+    /// file system the editor uses, which is a tree in memory on the web.
+    pub(crate) dribble: Option<fs::File>,
 }
 
 /// How a terminal reads keys, as `current-input-mode` lists it.
@@ -540,7 +541,9 @@ impl Editor {
         // made afresh and readable only by its owner, as Emacs makes it.
         let mut options = fs::File::options();
         options.write(true).create_new(true);
-        #[cfg(unix)]
+        // Only the real file system has permissions; the tree in memory
+        // the web build uses has none, as vfs.rs's own cfgs read.
+        #[cfg(all(unix, not(any(target_arch = "wasm32", feature = "memory-fs"))))]
         {
             use std::os::unix::fs::OpenOptionsExt;
             options.mode(0o600);
