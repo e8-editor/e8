@@ -4747,3 +4747,6 @@ e8.addHook("post-command-hook", () => {
   // window.c's run_window_configuration_change_hook.
   e8.runWindowConfigurationChangeHook();
 });
+
+// Its script name reads as `zorder` once camelCased, so the Lisp name is given here too.
+e8.defun("ns-frame-list-z-order", (display?: e8.Value) => e8.nsFrameListZOrder(display as any));

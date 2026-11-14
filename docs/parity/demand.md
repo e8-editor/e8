@@ -214,6 +214,16 @@ SQLite ([ADR 0087](../adr/0087-sqlite-as-emacs-has-it.md)) landed on 2026-11-14 
 
 What is left is xwidgets (0.05: lsp-ui, evil-collection, eww, image), which would need a web view in the GUI's window ([ADR 0087](../adr/0087-sqlite-as-emacs-has-it.md) leaves them out), the macOS display's frame queries (0.04), frames' last two (0.04) and odds of 0.06 or less.
 
+## After the last odds
+
+The last odds ([ADR 0088](../adr/0088-the-last-odds-frames-file-notifications-and-descriptions.md)) landed on 2026-11-14 in pull request 150. Measured again on the same corpus:
+
+- **By name**, 790 of the 877 editor primitives (90%) and 96 of the 169 platform ones (57%).
+- **Packages needing nothing missing**: all 77 daily ones; 293 of 295 MELPA packages, from 292; 47 of Emacs's 49, from 41.
+- **Still needed** by at least one package: no editor primitive, and 7 platform ones, all xwidgets.
+
+What is left is xwidgets alone (0.05): lsp-ui and evil-collection among MELPA's packages, eww and image among Emacs's, which [ADR 0087](../adr/0087-sqlite-as-emacs-has-it.md) leaves out as they need a web view in the GUI's window. The 32 editor primitives still missing are ones nothing in the corpus calls.
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
@@ -246,7 +256,7 @@ The 35 one-liners are a piece of their own, smaller than any: giving `eobp`, `bo
 
 ## Results
 
-As measured again after SQLite (ADR 0087), with what E8 has on main at that point.
+As measured again after the last odds (ADR 0088), with what E8 has on main at that point.
 
 ### Missing primitives by demand
 
@@ -254,28 +264,13 @@ Score: the share of each corpus's packages that need the primitive, directly or 
 
 | # | primitive | C file | score | emacs | melpa | daily | through |
 |---|---|---|---|---|---|---|---|
-| 1 | `send-string-to-terminal` | dispnew.c | 0.04 | 2 / 3 / 0 |  |  |  |
-| 2 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 3 | `set--this-command-keys` | keyboard.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 4 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 5 | `describe-vector` | keymap.c | 0.02 | 1 / 4 / 0 |  |  |  |
-| 6 | `display--line-is-continued-p` | xdisp.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 7 | `frame-after-make-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 8 | `handle-switch-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 9 | `help--describe-vector` | keymap.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 10 | `internal-describe-syntax-value` | syntax.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 11 | `kqueue-add-watch` | kqueue.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 12 | `ns-display-monitor-attributes-list` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 13 | `ns-frame-edges` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 14 | `ns-frame-geometry` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 15 | `ns-frame-list-z-order` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 16 | `ns-frame-restack` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 17 | `x-create-frame` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 18 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 19 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 20 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 21 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 22 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 1 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 2 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 3 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 4 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 5 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 6 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 7 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
 
 ### By piece of work
 
@@ -283,14 +278,7 @@ Packages needing at least one primitive of the group, per corpus, and those for 
 
 | group | needed | score | emacs | melpa | daily | all they lack |
 |---|---|---|---|---|---|---|
-| other | 2 | 0.06 | 3 | 0 | 0 | 1: mouse (Emacs) |
 | xwidgets | 7 | 0.05 | 2 | 2 | 0 | 4: lsp-ui, evil-collection, eww (Emacs), image (Emacs) |
-| macos-x | 6 | 0.04 | 2 | 0 | 0 | 1: font-lock (Emacs) |
-| frames | 2 | 0.04 | 2 | 0 | 0 | 0:  |
-| keyboard | 1 | 0.02 | 1 | 1 | 0 | 1: embark |
-| files | 1 | 0.02 | 1 | 0 | 0 | 1: files (Emacs) |
-| keymaps | 2 | 0.02 | 1 | 0 | 0 | 0:  |
-| syntax-tables | 1 | 0.02 | 1 | 0 | 0 | 0:  |
 
 ### One-liners over what E8 has
 
@@ -343,6 +331,6 @@ Among MELPA's 150 most downloaded, those defining commands (three or more `inter
 | golden-ratio | 1,001,650 |  |  |  |
 | eval-sexp-fu | 990,156 |  |  |  |
 
-### Missing and needed by nothing in the corpus (33)
+### Missing and needed by nothing in the corpus (32)
 
-`cancel-kbd-macro-events`, `clear-composition-cache`, `compose-region-internal`, `compose-string-internal`, `composition-get-gstring`, `composition-sort-rules`, `declare-equiv-charset`, `define-charset-alias`, `define-charset-internal`, `define-coding-system-alias`, `define-coding-system-internal`, `find-coding-systems-region-internal`, `find-composition-internal`, `get-unused-iso-final-char`, `internal--labeled-narrow-to-region`, `internal--labeled-widen`, `internal--set-buffer-modified-tick`, `iso-charset`, `lookup-image-map`, `map-charset-chars`, `newline-cache-check`, `open-termscript`, `optimize-char-table`, `posix-looking-at`, `posix-search-backward`, `posix-search-forward`, `posix-string-match`, `re--describe-compiled`, `read-non-nil-coding-system`, `set-buffer-redisplay`, `set-minibuffer-window`, `set-safe-terminal-coding-system-internal`, `text-char-description`
+`cancel-kbd-macro-events`, `clear-composition-cache`, `compose-region-internal`, `compose-string-internal`, `composition-get-gstring`, `composition-sort-rules`, `declare-equiv-charset`, `define-charset-alias`, `define-charset-internal`, `define-coding-system-alias`, `define-coding-system-internal`, `find-coding-systems-region-internal`, `find-composition-internal`, `get-unused-iso-final-char`, `internal--labeled-narrow-to-region`, `internal--labeled-widen`, `internal--set-buffer-modified-tick`, `iso-charset`, `lookup-image-map`, `map-charset-chars`, `newline-cache-check`, `open-termscript`, `optimize-char-table`, `posix-looking-at`, `posix-search-backward`, `posix-search-forward`, `posix-string-match`, `re--describe-compiled`, `read-non-nil-coding-system`, `set-buffer-redisplay`, `set-minibuffer-window`, `set-safe-terminal-coding-system-internal`
