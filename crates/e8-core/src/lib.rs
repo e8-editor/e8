@@ -88,6 +88,7 @@ pub mod treesitfns;
 mod window;
 mod window_tree;
 mod variables;
+pub mod xml;
 pub mod vfs;
 
 pub use buffer::{Buffer, UndoStep};

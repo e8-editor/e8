@@ -16,6 +16,27 @@ fn font_value(font: e8_core::Font) -> EditorValue {
 }
 
 natives! {
+    /// Whether E8 can parse HTML and XML, as libxml-available-p; always true.
+    pub fn libxmlAvailableP(_ed) -> bool {
+        Ok(true)
+    }
+
+    /// The HTML in a region as the tree [tag, attrs, ...children], as libxml-parse-html-region.
+    #[ts = "(start?: number | null, end?: number | null, baseUrl?: string | null, discardComments?: boolean): DomNode | undefined"]
+    pub fn libxmlParseHtmlRegion(ed, start: Opt<usize>, end: Opt<usize>, _base_url: Opt<EditorValue>, discard: Opt<bool>) -> EditorValue {
+        let (start, end) = (start.0.unwrap_or_else(|| ed.buffer().point_min()), end.0.unwrap_or_else(|| ed.buffer().point_max()));
+        let text = ed.region_text(start, end)?;
+        Ok(e8_core::xml::parse_html(&text, discard.0.unwrap_or(false)).unwrap_or(EditorValue::Null))
+    }
+
+    /// The XML in a region as the tree [tag, attrs, ...children], or undefined where it is not well formed, as libxml-parse-xml-region.
+    #[ts = "(start?: number | null, end?: number | null, baseUrl?: string | null, discardComments?: boolean): DomNode | undefined"]
+    pub fn libxmlParseXmlRegion(ed, start: Opt<usize>, end: Opt<usize>, _base_url: Opt<EditorValue>, discard: Opt<bool>) -> EditorValue {
+        let (start, end) = (start.0.unwrap_or_else(|| ed.buffer().point_min()), end.0.unwrap_or_else(|| ed.buffer().point_max()));
+        let text = ed.region_text(start, end)?;
+        Ok(e8_core::xml::parse_xml(&text, discard.0.unwrap_or(false)).unwrap_or(EditorValue::Null))
+    }
+
     /// `face` is a face's name or an anonymous face, a list of attributes.
     fn addFaceTextProperty(ed, start: usize, end: usize, face: EditorValue, append: bool) {
         // Recorded for undo, as add-face-text-property is.

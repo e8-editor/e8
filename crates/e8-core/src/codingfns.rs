@@ -185,9 +185,10 @@ impl Editor {
 
     /// The text between two positions, in either order, or Emacs's error
     /// for a region that is not within the buffer.
-    fn region_text(&self, start: usize, end: usize) -> Result<String> {
+    pub fn region_text(&self, start: usize, end: usize) -> Result<String> {
         let (from, to) = (start.min(end), start.max(end));
-        if to > self.buffer().len() {
+        // The accessible portion, as validate_region clips to it.
+        if from < self.buffer().point_min() || to > self.buffer().point_max() {
             let data = vec![Value::Number(start as f64), Value::Number(end as f64)];
             return Err(Error::signal("args-out-of-range", format!("Args out of range: {start}, {end}"), data));
         }

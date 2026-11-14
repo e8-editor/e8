@@ -91,6 +91,7 @@ mod user_system;
 mod view;
 mod which_key;
 mod windows;
+mod xml;
 mod windmove;
 mod window_balance;
 mod window_split;
