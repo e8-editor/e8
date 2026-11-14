@@ -439,3 +439,166 @@ fn the_minibuffer_grows_for_lines_an_overlay_shows_when_its_height_lets_it() {
     d.press("C-g");
     assert_eq!(d.with(|ed| ed.max_mini_window_lines(30)), 7);
 }
+
+/// internal-complete-buffer answers as GNU Emacs 30.2's does for the same
+/// buffers.
+#[test]
+fn buffer_names_complete_as_internal_complete_buffer_does() {
+    let (mut ed, s) = setup();
+    let got = s
+        .eval_expression(
+            &mut ed,
+            r#"(() => {
+              for (const n of ["foo", "foobar", " hidden", "Bar"]) e8.getBufferCreate(n);
+              const c = (string, flag, pred = null) => e8.funcall("internal-complete-buffer", string, pred, flag);
+              const seen = [];
+              const fs = (b) => { seen.push(Array.isArray(b) && b[0] === e8.bufferName(b[1])); return b[0].startsWith("f"); };
+              return JSON.stringify([
+                c("fo", null), c("fo", true), c("foo", null), c("foobar", null), c("foo", "lambda"), c("fox", "lambda"),
+                c("x", null), c("", true).includes(" hidden"), c("", true).includes("Bar"), c(" ", true).includes(" hidden"),
+                c("", "metadata"), c("", "boundaries") ?? null, c("", true, fs), seen.every((ok) => ok),
+              ]);
+            })()"#,
+        )
+        .unwrap();
+    let got: String = serde_json::from_str(&got).unwrap();
+    assert_eq!(
+        got,
+        r#"["foo",["foo","foobar"],"foo",true,true,false,null,false,true,true,["metadata",["category","buffer"],["cycle-sort-function","identity"]],null,["foo","foobar"],true]"#
+    );
+}
+
+#[test]
+fn c_g_aborts_the_minibuffer_and_an_outer_one_asks_first() {
+    let d = Driven::new(
+        r#"
+        e8.defineVariable({ name: "seen", value: null });
+        e8.defineCommand({ name: "zz-insert", params: [{ name: "text", kind: "string", prompt: "Text: " }], run: (text: string) => e8.insert(text) });
+        e8.bindKey("C-c i", "zz-insert");
+        let outer = "";
+        e8.defineCommand({ name: "zz-note-outer", run: () => { outer = e8.bufferName(); } });
+        e8.defineCommand({ name: "zz-abort-outer", run: () => e8.withCurrentBuffer(outer, () => e8.call("abort-minibuffers")) });
+        e8.defineCommand({ name: "zz-predicates", run: () => e8.setVariable("seen", JSON.stringify([
+          e8.innermostMinibufferP(), e8.innermostMinibufferP(outer), e8.minibufferInnermostCommandLoopP(outer), e8.innermostMinibufferP("*scratch*"),
+          e8.lookupKey("minibuffer-local-map", "C-g")])) });
+        e8.bindKey("C-c o", "zz-note-outer");
+        e8.bindKey("C-c a", "zz-abort-outer");
+        e8.bindKey("C-c p", "zz-predicates");
+        "#,
+    );
+    // Outside a minibuffer, as Emacs says.
+    d.mx("abort-minibuffers");
+    assert_eq!(d.message().as_deref(), Some("Not in a minibuffer"));
+    // C-g in the minibuffer runs abort-minibuffers, as in Emacs 28 and later.
+    d.press("M-x");
+    d.press("C-g");
+    assert_eq!(d.prompt(), None);
+    assert_eq!(d.message().as_deref(), Some("Quit"));
+
+    d.with(|ed| ed.set_default("enable-recursive-minibuffers", Value::Bool(true)));
+    d.press("M-x");
+    d.press("C-c o");
+    d.press("C-c i");
+    assert_eq!(d.with(|ed| ed.minibuffer_depth()), 2);
+    d.press("C-c p");
+    assert_eq!(d.variable("seen").as_deref(), Some(r#""[true,false,true,false,\"abort-minibuffers\"]""#));
+    // From the outer minibuffer: asked, and no keeps both.
+    d.press("C-c a");
+    assert_eq!(d.prompt().as_deref(), Some("Abort 2 minibuffer levels? (yes or no) "));
+    d.type_text("no\n");
+    assert_eq!(d.with(|ed| ed.minibuffer_depth()), 2);
+    // Yes quits both.
+    d.press("C-c a");
+    d.type_text("yes\n");
+    assert_eq!(d.with(|ed| ed.minibuffer_depth()), 0);
+    assert_eq!(d.prompt(), None);
+}
+
+#[test]
+fn read_variable_completes_a_variables_name() {
+    let d = Driven::new(
+        r#"
+        e8.defineCommand({ name: "zz-read", run: () => e8.insert(String(e8.funcall("read-variable", "Variable: ", "fill-column"))) });
+        e8.bindKey("C-c v", "zz-read");
+        "#,
+    );
+    d.press("C-c v");
+    assert_eq!(d.prompt().as_deref(), Some("Variable: "));
+    // Empty input is the default, given as a name.
+    d.press("RET");
+    d.press("C-c v");
+    d.type_text("tab-wid");
+    d.press("TAB RET");
+    assert_eq!(d.text(), "fill-columntab-width");
+    assert_eq!(d.with(|ed| strings(ed, "custom-variable-history")), ["tab-width", "fill-column"]);
+}
+
+/// Folding case, internal-complete-buffer takes the case Emacs 30.2's
+/// try-completion takes, and never stops halfway through a character.
+#[test]
+fn buffer_names_complete_in_the_case_emacs_picks() {
+    let (mut ed, s) = setup();
+    let got = s
+        .eval_expression(
+            &mut ed,
+            r#"(() => {
+              const answers = (names, inputs, fold) => {
+                const made = names.map((n) => (e8.getBufferCreate(n), n));
+                e8.setVariable("completion-ignore-case", fold);
+                const out = inputs.map((i) => e8.funcall("internal-complete-buffer", i, (b) => made.includes(b[0]), null));
+                e8.setVariable("completion-ignore-case", false);
+                return out;
+              };
+              return JSON.stringify([
+                answers(["foo", "foobar", "FOO", "Foox"], ["FO"], true),
+                answers(["Bar", "bar"], ["ba"], true),
+                answers(["fab", "fxo"], ["F"], true),
+                answers(["a😀x", "a😁y"], ["a"], false),
+              ]);
+            })()"#,
+        )
+        .unwrap();
+    let got: String = serde_json::from_str(&got).unwrap();
+    assert_eq!(got, r#"[["FOO"],["bar"],["F"],["a"]]"#);
+}
+
+/// C-g in the minibuffer signals minibuffer-quit, a kind of quit, which a
+/// keyboard macro goes on past, as Emacs's does.
+#[test]
+fn quitting_the_minibuffer_signals_minibuffer_quit_and_a_macro_goes_on() {
+    let (mut ed, _s) = setup();
+    ed.execute_kbd_macro("x M-x C-g a b", 1).unwrap();
+    assert_eq!(ed.buffer().slice(0..ed.buffer().len()), "xab");
+    let d = Driven::new(
+        r#"
+        e8.defineVariable({ name: "caught", value: null });
+        e8.defineCommand({ name: "zz-read", run: () => {
+          e8.conditionCase(() => e8.readString("Text: "), { "minibuffer-quit": () => e8.setVariable("caught", "mq") });
+        } });
+        e8.bindKey("C-c r", "zz-read");
+        "#,
+    );
+    d.press("C-c r");
+    d.press("C-g");
+    assert_eq!(d.variable("caught").as_deref(), Some(r#""mq""#));
+
+}
+
+/// M-x abort-minibuffers from inside a minibuffer quits it, the one M-x's
+/// own minibuffer was opened inside.
+#[test]
+fn abort_minibuffers_from_m_x_quits_the_minibuffer_it_was_typed_in() {
+    let d = Driven::new(
+        r#"
+        e8.defineVariable({ name: "answer", value: null });
+        e8.defineCommand({ name: "zz-ask", run: () => e8.setVariable("answer", e8.readString("L1: ")) });
+        "#,
+    );
+    d.with(|ed| ed.set_default("enable-recursive-minibuffers", Value::Bool(true)));
+    d.mx("zz-ask");
+    d.type_text("one");
+    d.mx("abort-minibuffers");
+    assert_eq!(d.prompt(), None);
+    assert_eq!(d.with(|ed| ed.minibuffer_depth()), 0);
+    assert_eq!(d.variable("answer").as_deref(), Some("null"));
+}

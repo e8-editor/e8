@@ -222,3 +222,105 @@ export function testCompletion(input: string): boolean {
   const boundaries = completionMetadataGet("boundaries");
   return e8.testCompletion(boundaries ? input.slice(Math.min(boundaries(input), input.length)) : input);
 }
+
+// --- Completing buffer names and reading a variable, as minibuf.c does (ADR 0083)
+
+/**
+ * Completes `string` against the buffers' names, as Emacs's
+ * internal-complete-buffer, the table read-buffer completes against:
+ * with `flag` nil, the longest text all the matches start with, true when
+ * `string` is the only match itself and nil when none matches, as
+ * try-completion; with true, the matches, as all-completions, leaving out
+ * the buffers whose names start with a space for empty input unless they
+ * are all there is; with "lambda", whether `string` is a buffer's name, as
+ * test-completion; with "metadata", the table's category. `predicate`, if
+ * given, is called with each buffer as a name and the buffer, as
+ * `[name, buffer]`, as Emacs passes the buffer list's entries.
+ */
+export function internalCompleteBuffer(string: string, predicate: unknown, flag: unknown): e8.Value {
+  if (flag === "metadata") return ["metadata", ["category", "buffer"], ["cycle-sort-function", "identity"]];
+  const fold = truthyValue(e8.variable("completion-ignore-case"));
+  const norm = (s: string) => (fold ? s.toLowerCase() : s);
+  const all = e8.bufferList();
+  const accepts = (name: string) =>
+    predicate === undefined || predicate === null || predicate === false || truthyValue(e8.funcall(predicate as string, [name, e8.getBuffer(name)]));
+  const matches = all.filter((name) => norm(name).startsWith(norm(string)) && accepts(name));
+  if (flag === "lambda") return matches.some((name) => norm(name) === norm(string));
+  if (flag === true) {
+    if (string.length > 0) return matches;
+    const shown = matches.filter((name) => !name.startsWith(" "));
+    // Only buffers whose names start with a space, and all of them: none is left out.
+    return shown.length === 0 && matches.length === all.length ? matches : shown;
+  }
+  if (flag !== undefined && flag !== null && flag !== false) return null;
+  return tryCompletionOf(string, matches, fold);
+}
+
+/**
+ * The longest text the matches all start with, as Emacs's try-completion
+ * works it out from them: true for `string` itself as the only match, and,
+ * folding case, the case of a match exact but for case, else of one that
+ * keeps the case typed, and what was typed when nothing is added.
+ */
+function tryCompletionOf(string: string, matches: string[], fold: boolean): string | boolean | null {
+  const chars = (s: string) => [...s];
+  const same = (a: string, b: string, ignoreCase: boolean) => a === b || (ignoreCase && a.toLowerCase() === b.toLowerCase());
+  // How many characters two strings agree on, from the start, up to `n`.
+  const agree = (a: string[], b: string[], n: number, ignoreCase: boolean) => {
+    let i = 0;
+    while (i < n && same(a[i], b[i], ignoreCase)) i++;
+    return i;
+  };
+  const typed = chars(string);
+  const keepsCase = (s: string[]) => s.length >= typed.length && agree(s, typed, typed.length, false) === typed.length;
+  let best: string[] | undefined;
+  let bestSize = 0;
+  let count = 0;
+  for (const match of matches) {
+    const m = chars(match);
+    if (best === undefined) {
+      best = m;
+      bestSize = m.length;
+      count = 1;
+      continue;
+    }
+    const compare = Math.min(bestSize, m.length);
+    const size = agree(best, m, compare, fold);
+    const old = best;
+    if (fold) {
+      const exact = size === m.length;
+      if ((exact && size < best.length) || (exact === (size === best.length) && keepsCase(m) && !keepsCase(best))) best = m;
+    }
+    // The same string is not counted twice.
+    if (bestSize !== m.length || bestSize !== size || (fold && agree(old, m, compare, false) !== compare)) count += count <= 1 ? 1 : 0;
+    bestSize = size;
+  }
+  if (best === undefined) return null;
+  if (fold && bestSize === typed.length && best.length > bestSize) return string;
+  if (count === 1 && best.join("") === string) return true;
+  return best.slice(0, bestSize).join("");
+}
+e8.defun("internal-complete-buffer", internalCompleteBuffer);
+
+/** Whether a Lisp value is true, nil and false being false. */
+function truthyValue(value: unknown): boolean {
+  return value !== undefined && value !== null && value !== false;
+}
+
+/**
+ * Reads a variable's name in the minibuffer and returns it, as Emacs's
+ * read-variable: completing against the variables, one of which must be
+ * chosen, with `defaultValue`, or the first of a list of them, for empty
+ * input. Emacs offers only user options, which E8 does not tell apart, so
+ * every variable is offered.
+ */
+export function readVariable(prompt: string, defaultValue?: string | string[] | null): string {
+  const first = Array.isArray(defaultValue) ? defaultValue[0] : defaultValue;
+  return e8.completingRead(prompt, [...e8.variableNames()].sort(), {
+    requireMatch: true,
+    history: "custom-variable-history",
+    ...(first ? { default: first } : {}),
+  });
+}
+e8.defun("read-variable", readVariable);
+e8.defineVariable({ name: "custom-variable-history", doc: "Variable names read-variable was answered with, newest first.", value: [] });

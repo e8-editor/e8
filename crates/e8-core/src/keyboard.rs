@@ -470,6 +470,66 @@ impl Editor {
         Err(Error::signal("quit", "Quit", Vec::new()))
     }
 
+    /// The buffers of the minibuffers open, the outermost first, as the
+    /// active part of Emacs's `minibuffer-list`.
+    pub fn active_minibuffers(&self) -> Vec<u64> {
+        let mut ids: Vec<u64> = self.outer_prompts.iter().map(|outer| outer.minibuffer).collect();
+        if self.prompt.is_some() {
+            ids.push(self.minibuffer_id);
+        }
+        ids
+    }
+
+    /// How deep the open minibuffer whose buffer is `id` is, the outermost
+    /// being 1, or 0 when it is no open minibuffer, as Emacs's
+    /// `this_minibuffer_depth`.
+    pub fn this_minibuffer_depth(&self, id: u64) -> usize {
+        self.active_minibuffers().iter().position(|&m| m == id).map_or(0, |i| i + 1)
+    }
+
+    /// Whether the buffer `id` is the innermost open minibuffer, as Emacs's
+    /// `innermost-minibuffer-p`.
+    pub fn innermost_minibuffer_p(&self, id: u64) -> bool {
+        let depth = self.this_minibuffer_depth(id);
+        depth > 0 && depth == self.minibuffer_depth()
+    }
+
+    /// Whether the buffer `id` is an open minibuffer that no recursive edit
+    /// was entered inside, as Emacs's `minibuffer-innermost-command-loop-p`.
+    pub fn minibuffer_innermost_command_loop_p(&self, id: u64) -> bool {
+        let depth = self.this_minibuffer_depth(id);
+        depth > 0 && self.keyboard.recursive_edits.last().is_none_or(|edit| edit.minibuffers < depth)
+    }
+
+    /// Quits the current buffer's minibuffer and every one opened inside
+    /// it, as Emacs's `abort-minibuffers`, asking first when that is more
+    /// than the innermost.
+    pub fn abort_minibuffers(&mut self) -> Result<()> {
+        let id = self.buffer().id;
+        let depth = self.this_minibuffer_depth(id);
+        if depth == 0 {
+            return Err(Error::new("Not in a minibuffer"));
+        }
+        if !self.minibuffer_innermost_command_loop_p(id) {
+            return Err(Error::new("Not in most nested command loop"));
+        }
+        let level = self.minibuffer_depth();
+        let levels = level - depth + 1;
+        if levels > 1 && !self.yes_or_no_p(&format!("Abort {levels} minibuffer levels? "))? {
+            return Ok(());
+        }
+        for _ in 0..levels {
+            // The prompt an inner one opened inside comes back, to be quit
+            // in turn, as does the one M-x's own minibuffer opened inside
+            // when this runs from M-x.
+            self.resume_outer_minibuffer();
+            self.abort_with(minibuffer_quit);
+        }
+        // As minibuffer-quit-recursive-edit: the read signals
+        // minibuffer-quit, which leaves typeahead and a keyboard macro going.
+        Err(minibuffer_quit())
+    }
+
     /// Leaves every recursive edit and minibuffer, back to the top level,
     /// as Emacs's `top-level`.
     pub fn top_level(&mut self) {
@@ -654,4 +714,10 @@ impl Editor {
         // a switch-frame event for any other; E8 selects it here.
         if self.selected_frame() == frame { Ok(()) } else { self.select_frame(frame) }
     }
+}
+
+/// The error a minibuffer quit by `abort-minibuffers` signals, as Emacs's
+/// `minibuffer-quit`, a kind of `quit`.
+fn minibuffer_quit() -> Error {
+    Error::signal("minibuffer-quit", "Quit", Vec::new())
 }

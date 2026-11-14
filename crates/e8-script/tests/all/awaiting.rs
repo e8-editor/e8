@@ -135,7 +135,9 @@ fn quitting_a_prompt_unwinds_the_command() {
     d.press("C-g");
     assert_eq!(d.prompt(), None);
     assert_eq!(d.message().as_deref(), Some("Quit"));
-    assert_eq!(d.eval_expression("log"), r#"["waiting with inside","caught quit","cleaned up"]"#);
+    // C-g in the minibuffer runs abort-minibuffers, whose quit is
+    // minibuffer-quit, a kind of quit, as in Emacs.
+    assert_eq!(d.eval_expression("log"), r#"["waiting with inside","caught minibuffer-quit quit","cleaned up"]"#);
     assert_eq!(d.eval_expression("e8.variable('test-bound')"), "\"outside\"");
 }
 

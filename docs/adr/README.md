@@ -84,3 +84,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0080](0080-xml-and-html-as-emacs-parses-them.md) XML and HTML as Emacs parses them: libxml-parse-html-region
 - [0081](0081-the-display-as-emacs-asks-about-it.md) The display as Emacs asks about it: x-display-*, monitors, and AppleScript
 - [0082](0082-keymaps-rest-as-emacs-has-them.md) Keymaps' rest as Emacs has them: prompts, map-keymap-internal, and describe-buffer-bindings
+- [0083](0083-the-minibuffers-odds-as-emacs-has-them.md) The minibuffer's odds as Emacs has them: abort-minibuffers, internal-complete-buffer, read-variable

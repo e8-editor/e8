@@ -66,7 +66,7 @@ impl Reading {
 /// answer, put back when the inner one closes.
 pub(crate) struct OuterPrompt {
     prompt: Prompt,
-    minibuffer: u64,
+    pub(crate) minibuffer: u64,
     pending_call: Option<crate::editor::PendingCall>,
     question: Option<crate::questions::Question>,
     window_selected: bool,

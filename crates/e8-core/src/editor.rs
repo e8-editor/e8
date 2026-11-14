@@ -895,6 +895,12 @@ impl Editor {
     /// Cancels any prompt and pending command, as `C-g` does. Code waiting
     /// for the prompt's answer is told it was quit, as are those sleeping.
     pub(crate) fn abort(&mut self) {
+        self.abort_with(crate::quit::quit_error);
+    }
+
+    /// As [`Editor::abort`], telling those waiting with the error `error`
+    /// makes, as `abort-minibuffers` tells them with `minibuffer-quit`.
+    pub(crate) fn abort_with(&mut self, error: fn() -> Error) {
         let prompt = self.close_prompt().and_then(|p| p.answer);
         let question = self.drop_question().map(|q| q.answer);
         self.pending_call = None;
@@ -903,7 +909,10 @@ impl Editor {
         self.transient_map = None;
         self.prefix_arg = None;
         let sleeping = std::mem::take(&mut self.keyboard.sleeping);
-        for slot in prompt.into_iter().chain(question).chain(sleeping) {
+        if let Some(slot) = prompt {
+            slot.borrow_mut().get_or_insert(Err(error()));
+        }
+        for slot in question.into_iter().chain(sleeping) {
             slot.borrow_mut().get_or_insert(Err(crate::quit::quit_error()));
         }
     }
@@ -1236,6 +1245,11 @@ impl Editor {
                 let Some(key) = self.next_typed_ahead() else { break };
                 self.handle_key(key);
                 if let Some(e) = self.take_error() {
+                    // Leaving a minibuffer goes on with the macro, as
+                    // Emacs's cmd_error does for minibuffer-quit.
+                    if e.symbol() == "minibuffer-quit" {
+                        continue;
+                    }
                     // The rest of the macro goes with it.
                     let left = self.keyboard.typeahead.len().saturating_sub(before);
                     self.keyboard.typeahead.drain(..left);
