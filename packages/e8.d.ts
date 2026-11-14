@@ -1197,6 +1197,15 @@ declare global {
        */
       "completion-at-point": [];
       /**
+       * Show the text in the region as its characters drawn together, or as other characters when code gives them.
+       *
+       * @param start region start
+       * @param end region end
+       *
+       * Defined in packages/composite.ts.
+       */
+      "compose-region": [start: number, end: number];
+      /**
        * Copy the directory-local variables to the file's Local Variables list.
        *
        * Defined in packages/files-x.ts.
@@ -1337,6 +1346,15 @@ declare global {
        * Defined in packages/dabbrev.ts.
        */
       "dabbrev-expand": [arg?: PrefixArg | boolean];
+      /**
+       * Show the text in the region as itself again, taking off its compositions.
+       *
+       * @param start region start
+       * @param end region end
+       *
+       * Defined in packages/composite.ts.
+       */
+      "decompose-region": [start: number, end: number];
       /**
        * Break the line and indent the new one, continuing a comment point is in, as comment-indent-new-line does.
        *
@@ -2936,6 +2954,14 @@ declare global {
        * Defined in packages/display-line-numbers.ts.
        */
       "global-display-line-numbers-mode": [];
+      /**
+       * Turn Prettify Symbols mode on in every buffer whose prettify-symbols-alist names any symbols.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "global-prettify-symbols-mode": [];
       /**
        * Bind a key sequence to a command in the global keymap, as Emacs's global-set-key: every buffer sees it unless a local binding shadows it.
        *
@@ -5990,6 +6016,14 @@ declare global {
        * Defined in packages/register.ts.
        */
       "prepend-to-register": [start: number, end: number, del?: PrefixArg | boolean];
+      /**
+       * Show the symbols prettify-symbols-alist names as other characters, such as lambda as λ, leaving the text itself as it is.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "prettify-symbols-mode": [];
       /**
        * Show in the selected window the buffer it showed before this one, as switch-to-prev-buffer.
        *
@@ -9682,6 +9716,16 @@ declare global {
        */
       "global-mode-string": Value;
       /**
+       * Whether Global-Prettify-Symbols mode is on. Use the command global-prettify-symbols-mode to change it.
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "global-prettify-symbols-mode": Value;
+      /**
+       * Keymap global-prettify-symbols-mode-map.
+       */
+      "global-prettify-symbols-mode-map": Value;
+      /**
        * Whether Global-Subword mode is on. Use the command global-subword-mode to change it.
        *
        * Defined in packages/subword.ts.
@@ -11762,6 +11806,34 @@ declare global {
        * Defined in packages/window.ts.
        */
       "pop-up-windows": Value;
+      /**
+       * The symbols Prettify Symbols mode shows as other characters, as [symbol, character] pairs: the character a code point or a string, or characters and composition rules alternating.
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "prettify-symbols-alist": Value;
+      /**
+       * The function that says whether a symbol found from start to end is shown prettily, called with start, end and the symbol; by default, unless it is part of a longer word or symbol, or in a string or comment.
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "prettify-symbols-compose-predicate": Value;
+      /**
+       * Whether Prettify-Symbols mode is on in this buffer. Use the command prettify-symbols-mode to change it.
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "prettify-symbols-mode": Value;
+      /**
+       * Keymap prettify-symbols-mode-map.
+       */
+      "prettify-symbols-mode-map": Value;
+      /**
+       * Whether a symbol is shown as itself while point is on it: null, true, or right-edge to count point just after it too. E8 does not look at it yet.
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "prettify-symbols-unprettify-at-point": Value;
       /**
        * Which coding systems to talk to a program in, by its name: an alist of an Emacs regexp and a coding system, a pair of them for decoding and encoding, or a function to call.
        */
@@ -14753,6 +14825,18 @@ declare global {
        */
       "global-display-line-numbers-mode-on-hook": Value;
       /**
+       * Run after Global-Prettify-Symbols mode is turned on or off.
+       */
+      "global-prettify-symbols-mode-hook": Value;
+      /**
+       * Run after Global-Prettify-Symbols mode is turned off.
+       */
+      "global-prettify-symbols-mode-off-hook": Value;
+      /**
+       * Run after Global-Prettify-Symbols mode is turned on.
+       */
+      "global-prettify-symbols-mode-on-hook": Value;
+      /**
        * Run after Global-Subword mode is turned on or off.
        */
       "global-subword-mode-hook": Value;
@@ -15124,6 +15208,18 @@ declare global {
        * Run before each command that keys run. A function can change this-command, and that command runs instead.
        */
       "pre-command-hook": Value;
+      /**
+       * Run after Prettify-Symbols mode is turned on or off.
+       */
+      "prettify-symbols-mode-hook": Value;
+      /**
+       * Run after Prettify-Symbols mode is turned off.
+       */
+      "prettify-symbols-mode-off-hook": Value;
+      /**
+       * Run after Prettify-Symbols mode is turned on.
+       */
+      "prettify-symbols-mode-on-hook": Value;
       /**
        * Run after entering Prog mode, after the hooks of the modes it is built on.
        */
@@ -17683,6 +17779,18 @@ declare global {
     function sqliteMoreP(set: Sqlite): boolean;
     /** Finish a set, freeing its statement, as sqlite-finalize. */
     function sqliteFinalize(set: Sqlite): boolean;
+    /** Compose the text from start to end, as compose-region-internal: put a `composition` property showing it as `components` (a character, a string, or characters and composition rules alternating), or as itself drawn together with none; `modfunc` is called when the text changes. */
+    function composeRegionInternal(start: number, end: number, components?: number | string | Value[] | null, modfunc?: Value | null): void;
+    /** The string with the characters from start to end composed, as compose-string-internal; Emacs changes the string itself, which a script's strings cannot be. */
+    function composeStringInternal(string: string | Value, start: number, end: number, components?: number | string | Value[] | null, modfunc?: Value | null): Value;
+    /** The composition at pos, or the nearest between it and limit, as find-composition-internal: [start, end, true], [start, end, null] when its property is not a valid one, or with detail [start, end, components, relative, modfunc, width]; undefined if there is none. */
+    function findCompositionInternal(pos: number, limit?: number | null, string?: string | Value | null, detail?: boolean | null): Value[] | undefined;
+    /** The glyph string for the text from `from` to `to`, as composition-get-gstring: [[font, chars...], null, glyphs...], each glyph [from, to, char, code, width, lbearing, rbearing, ascent, descent] counting from 0 in the text; E8 shapes nothing, so each character is a glyph of its own. */
+    function compositionGetGstring(from: number, to: number, fontObject: Value, string?: string | Value | null): Value[];
+    /** Forget the glyph strings worked out for compositions, as clear-composition-cache; E8 keeps none. */
+    function clearCompositionCache(): void;
+    /** Composition rules sorted by how far back each looks, its second element, furthest first, as composition-sort-rules. */
+    function compositionSortRules(rules: Value[][]): Value[][];
 
     type CommandName = keyof Commands;
 

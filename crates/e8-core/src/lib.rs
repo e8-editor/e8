@@ -90,6 +90,7 @@ mod treesitsearch;
 pub mod xfaces;
 pub mod sqlite;
 mod kqueue;
+pub mod composite;
 mod window;
 mod window_tree;
 mod variables;

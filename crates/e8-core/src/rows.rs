@@ -957,7 +957,9 @@ impl Editor {
         dark: Option<bool>,
         styles: &mut HashMap<Vec<String>, Style>,
     ) -> Option<(usize, Vec<Segment>)> {
-        let value = b.char_property(pos, "display")?.clone();
+        let Some(value) = b.char_property(pos, "display").cloned() else {
+            return self.composition_display_at(b, pos, line_end, dark, styles);
+        };
         if crate::image::image_display(&value).is_some() {
             return self.image_display_at(b, pos, line_end, &value, self.display_style(b, pos, dark, styles)).flatten();
         }
@@ -1011,6 +1013,19 @@ impl Editor {
             _ => Value::Str(text),
         };
         Some((end, self.string_segments(b, pos, &shown, Some(end), &base, dark, styles)))
+    }
+
+    /// A composition starting at `pos`, drawn as its components in place
+    /// of the text it covers (composite.c, ADR 0092).
+    fn composition_display_at(&self, b: &Buffer, pos: usize, line_end: usize, dark: Option<bool>, styles: &mut HashMap<Vec<String>, Style>) -> Option<(usize, Vec<Segment>)> {
+        b.text_property(pos, "composition")?;
+        let found = b.composition_at(pos)?;
+        if found.start != pos || found.end > line_end {
+            return None;
+        }
+        let glyphs = crate::composite::composition_glyphs(found.prop.as_ref()?, &b.slice(found.start..found.end))?;
+        let base = self.faces_at(b, pos);
+        Some((found.end, self.string_segments(b, pos, &Value::Str(glyphs), Some(found.end), &base, dark, styles)))
     }
 
     /// The style of the text at a position, for an image shown in its

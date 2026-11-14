@@ -83,6 +83,7 @@ mod scripts;
 mod search;
 mod sessions;
 mod sqlite;
+mod compositions;
 mod subr;
 mod symbols;
 mod syntax_tables;

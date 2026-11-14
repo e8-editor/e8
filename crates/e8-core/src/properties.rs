@@ -51,6 +51,32 @@ impl Text {
         self
     }
 
+    /// Sets a property on the characters in `range`, keeping the others,
+    /// as put-text-property on a string.
+    pub fn put_property(&mut self, range: Range<usize>, name: &str, value: Value) {
+        if range.is_empty() {
+            return;
+        }
+        let mut cuts: Vec<usize> = vec![range.start, range.end];
+        for (r, _) in &self.props {
+            cuts.extend([r.start, r.end]);
+        }
+        cuts.sort_unstable();
+        cuts.dedup();
+        let mut runs = Vec::new();
+        for w in cuts.windows(2) {
+            let (a, b) = (w[0], w[1]);
+            let mut props = self.properties_at(a).cloned().unwrap_or_default();
+            if a >= range.start && b <= range.end {
+                props.insert(name.to_string(), value.clone());
+            }
+            if !props.is_empty() {
+                runs.push((a..b, props));
+            }
+        }
+        self.props = runs;
+    }
+
     /// The properties of the character at `i`, if it has any.
     pub fn properties_at(&self, i: usize) -> Option<&Props> {
         self.props.iter().find(|(r, _)| r.contains(&i)).map(|(_, p)| p)
