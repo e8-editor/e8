@@ -1200,6 +1200,8 @@
       native.gotoChar(m.end);
       return m.end;
     },
+    searchForwardRegexp: (regexp, options) => e8.reSearchForward(regexp, options),
+    searchBackwardRegexp: (regexp, options) => e8.reSearchBackward(regexp, options),
     reSearchBackward(regexp, { bound, noerror = false, caseFold } = {}) {
       if (bound !== undefined && bound !== null && bound > native.point()) e8.signal("error", "Invalid search bound (wrong side of point)");
       const m = e8.search(regexp, { regexp: true, backward: true, bound, caseFold });

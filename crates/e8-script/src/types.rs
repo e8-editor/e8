@@ -1938,6 +1938,10 @@ const API: &str = r##"
   function reSearchForward(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
   /** Search back for an Emacs regexp and move point to the start of the match, as re-search-backward. */
   function reSearchBackward(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
+  /** The same as reSearchForward, by its other name, as search-forward-regexp. */
+  function searchForwardRegexp(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
+  /** The same as reSearchBackward, by its other name, as search-backward-regexp. */
+  function searchBackwardRegexp(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
   /** Where the last match, or its group `n`, starts, as match-beginning. */
   function matchBeginning(n?: number): number | undefined;
   /** Where the last match, or its group `n`, ends, as match-end. */

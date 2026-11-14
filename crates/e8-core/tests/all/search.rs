@@ -54,7 +54,7 @@ fn a_backward_literal_search_far_from_its_match_is_quick() {
     let mut ed = Editor::new();
     let text = format!("foo foofoo{}", "x".repeat(1 << 20));
     ed.buffer_mut().set_text(&text);
-    let backward = e8_core::SearchOptions { regexp: false, backward: true, case_fold: false, bound: None };
+    let backward = e8_core::SearchOptions { regexp: false, backward: true, case_fold: false, bound: None, posix: false };
     let start = std::time::Instant::now();
     let found = ed.search("foo", text.len(), &backward).unwrap().unwrap();
     assert_eq!((found.start, found.end), (7, 10), "the match that starts last");
@@ -75,7 +75,7 @@ fn literal_searches_copy_only_windows_of_the_text() {
     let chunk = format!("{}needle", "x".repeat(4090));
     let text = chunk.repeat(8_000);
     ed.buffer_mut().set_text(&text);
-    let forward = e8_core::SearchOptions { regexp: false, backward: false, case_fold: false, bound: None };
+    let forward = e8_core::SearchOptions { regexp: false, backward: false, case_fold: false, bound: None, posix: false };
     let started = std::time::Instant::now();
     let (mut from, mut found) = (0, 0);
     while let Some(m) = ed.search("needle", from, &forward).unwrap() {
