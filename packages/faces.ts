@@ -6,6 +6,8 @@
 
 // xfaces.c's table of a frame's faces, by its Lisp name.
 e8.defun("frame--face-hash-table", (frame?: e8.Frame) => e8.frameFaceHashTable(frame));
+// Its script name reads as `x-get` once camelCased, so the Lisp name is given here too.
+e8.defun("internal-face-x-get-resource", (resource: string, klass: string, frame?: e8.Frame) => e8.internalFaceXGetResource(resource, klass, frame));
 
 const unspecified = (v: e8.Value): e8.Value | undefined => (v === "unspecified" || v === undefined || v === null ? undefined : v);
 
