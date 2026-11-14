@@ -1580,6 +1580,23 @@ impl Editor {
         self.buffers.iter().find(|b| b.id == id).map(|b| b.name.clone())
     }
 
+    /// Gives a process another buffer, or none, as `set-process-buffer`:
+    /// its output goes at the new buffer's end from now on.
+    pub fn set_process_buffer(&mut self, name: &str, buffer: Option<u64>) -> Result<()> {
+        let mark = match buffer.and_then(|id| self.buffers.iter_mut().find(|b| b.id == id)) {
+            Some(b) => {
+                let end = b.len();
+                Some(b.make_marker(end, false))
+            }
+            None => None,
+        };
+        let id = self.process(name)?.id;
+        let p = self.processes.list.iter_mut().find(|p| p.id == id).expect("listed");
+        p.buffer = buffer;
+        p.mark = mark;
+        Ok(())
+    }
+
     /// The marker where a process's output goes, as process-mark.
     pub fn process_mark(&self, name: &str) -> Option<u64> {
         self.process(name).ok()?.mark

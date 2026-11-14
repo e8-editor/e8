@@ -248,6 +248,45 @@
     }
     return o;
   };
+  /**
+   * An xwidget, a web view shown in a buffer, and an xwidget's view in a
+   * window, as Emacs's xwidget and xwidget-view objects (ADR 0089): the
+   * same object each time.
+   */
+  const xwidgetObjects = new Map();
+  class Xwidget {
+    constructor(id) {
+      Object.defineProperty(this, "__e8XwidgetId", { value: id });
+      Object.freeze(this);
+    }
+    toString() {
+      return `#<xwidget ${this.__e8XwidgetId}>`;
+    }
+    toJSON() {
+      return this.toString();
+    }
+  }
+  class XwidgetView {
+    constructor(id) {
+      Object.defineProperty(this, "__e8XwidgetViewId", { value: id });
+      Object.freeze(this);
+    }
+    toString() {
+      return `#<xwidget-view ${this.__e8XwidgetViewId}>`;
+    }
+    toJSON() {
+      return this.toString();
+    }
+  }
+  globalThis.__e8Xwidget = (kind, id) => {
+    const key = `${kind}:${id}`;
+    let o = xwidgetObjects.get(key);
+    if (o === undefined) {
+      o = kind === "view" ? new XwidgetView(id) : new Xwidget(id);
+      xwidgetObjects.set(key, o);
+    }
+    return o;
+  };
   /** Whether a process, as processInfo describes it, is running, as process-live-p. */
   const processLive = (info) => info !== undefined && info !== null && info.listed && ["run", "open", "listen", "connect", "stop"].includes(info.status);
   /**
@@ -1060,6 +1099,8 @@
     TreesitNode,
     TreesitCompiledQuery,
     Sqlite,
+    Xwidget,
+    XwidgetView,
     sqlitep: (object) => object instanceof Sqlite,
     treesitParserP: (x) => x instanceof TreesitParser,
     treesitNodeP: (x) => x instanceof TreesitNode,
@@ -1200,6 +1241,8 @@
       native.gotoChar(m.end);
       return m.end;
     },
+    searchForwardRegexp: (regexp, options) => e8.reSearchForward(regexp, options),
+    searchBackwardRegexp: (regexp, options) => e8.reSearchBackward(regexp, options),
     reSearchBackward(regexp, { bound, noerror = false, caseFold } = {}) {
       if (bound !== undefined && bound !== null && bound > native.point()) e8.signal("error", "Invalid search bound (wrong side of point)");
       const m = e8.search(regexp, { regexp: true, backward: true, bound, caseFold });

@@ -257,7 +257,7 @@ const API: &str = r##"
    * What variables, hooks and text properties hold, as Emacs's values: a
    * function too, as a lambda in a variable, kept as itself.
    */
-  type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | Process | PropertizedString | Keymap | CharTable | Marker | Font;
+  type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | Process | PropertizedString | Keymap | CharTable | Marker | Font | Xwidget | XwidgetView | Sqlite;
   /**
    * A keymap, as Emacs's keymaps are values: bound to a prefix key in
    * another keymap it is that key's prefix map, shared wherever it is
@@ -1102,6 +1102,16 @@ const API: &str = r##"
   /** A node's property, as treesit-node-check: "named", "missing", "extra", "has-error", "has-changes", "live" or "outdated". */
   function treesitNodeCheck(node: TreesitNode, property: string): boolean;
   function treesitNodeEq(a: TreesitNode | undefined | null, b: TreesitNode | undefined | null): boolean;
+  /** An xwidget, a web view shown in a buffer, as Emacs's xwidget objects: the same object each time. */
+  class Xwidget {
+    private constructor();
+    readonly __e8XwidgetId: number;
+  }
+  /** Where a window shows an xwidget, as Emacs's xwidget-view objects. */
+  class XwidgetView {
+    private constructor();
+    readonly __e8XwidgetViewId: number;
+  }
   /** An SQLite database or set, as Emacs's sqlite objects: the same object each time. */
   class Sqlite {
     private constructor();
@@ -1938,6 +1948,10 @@ const API: &str = r##"
   function reSearchForward(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
   /** Search back for an Emacs regexp and move point to the start of the match, as re-search-backward. */
   function reSearchBackward(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
+  /** The same as reSearchForward, by its other name, as search-forward-regexp. */
+  function searchForwardRegexp(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
+  /** The same as reSearchBackward, by its other name, as search-backward-regexp. */
+  function searchBackwardRegexp(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
   /** Where the last match, or its group `n`, starts, as match-beginning. */
   function matchBeginning(n?: number): number | undefined;
   /** Where the last match, or its group `n`, ends, as match-end. */

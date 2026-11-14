@@ -256,6 +256,8 @@ pub struct Editor {
     pub(crate) fontsets: crate::fontset::Fontsets,
     /// The SQLite databases and sets scripts hold (ADR 0087).
     pub(crate) sqlite: crate::sqlite::Sqlite,
+    /// The xwidgets and their views (ADR 0089).
+    pub(crate) xwidgets: crate::xwidget::Xwidgets,
     /// The files and directories watched with kqueue-add-watch, as kqueue.c keeps them.
     pub(crate) kqueue: crate::kqueue::Kqueue,
     /// Whether the system the front end runs on looks dark, for choosing
@@ -558,6 +560,7 @@ impl Editor {
             face_settings: Default::default(),
             fontsets: Default::default(),
             sqlite: Default::default(),
+            xwidgets: Default::default(),
             kqueue: Default::default(),
             system_dark: true,
             quitting: Default::default(),
@@ -736,6 +739,15 @@ impl Editor {
     /// called from code. Commands use it to decide whether to show a message.
     pub fn called_interactively(&self) -> bool {
         self.interactive
+    }
+
+    /// Calls a function as keys would, so `called-interactively-p` is true
+    /// in it, as `funcall-interactively`.
+    pub fn funcall_interactively(&mut self, function: &Value, args: &[Value]) -> crate::error::Result<Value> {
+        let was = std::mem::replace(&mut self.interactive, true);
+        let result = self.funcall(function, args);
+        self.interactive = was;
+        result
     }
 
     /// The command that is running, or about to run while `pre-command-hook` runs.
@@ -2386,6 +2398,7 @@ impl Editor {
         });
         let current = if self.current == index { other } else { self.buffers[self.current].id };
         self.release_lock_of(index);
+        self.kill_buffer_xwidgets(self.buffers[index].id);
         let mut removed = self.buffers.remove(index);
         self.dead_buffer_names.insert(removed.id, removed.name.clone());
         // Its markers point nowhere now.

@@ -697,6 +697,14 @@ declare global {
        */
       "beginning-of-defun": [arg?: number];
       /**
+       * Move point to the beginning of the line; with N, of the line N - 1 lines on, as beginning-of-line.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/simple.ts.
+       */
+      "beginning-of-line": [n?: number];
+      /**
        * Move point to the start of the screen line it is on, which is not the start of its line where a long line continues.
        *
        * Defined in packages/simple.ts.
@@ -2589,6 +2597,14 @@ declare global {
        * Defined in packages/lisp.ts.
        */
       "end-of-defun": [arg?: number];
+      /**
+       * Move point to the end of the line; with N, of the line N - 1 lines on, as end-of-line.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/simple.ts.
+       */
+      "end-of-line": [n?: number];
       /**
        * Move point to the end of the screen line it is on.
        *
@@ -6574,6 +6590,14 @@ declare global {
        */
       "savehist-save": [];
       /**
+       * Scroll the text down N lines, or nearly a screen without a prefix argument, as scroll-down.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/simple.ts.
+       */
+      "scroll-down": [n?: PrefixArg | boolean];
+      /**
        * Scroll the text down by nearly a screen, showing earlier lines.
        *
        * With a numeric prefix argument, scroll that many lines; with C-- alone, scroll the other way.
@@ -6613,6 +6637,14 @@ declare global {
        * @param arg raw prefix argument
        */
       "scroll-right": [arg?: PrefixArg | boolean];
+      /**
+       * Scroll the text up N lines, or nearly a screen without a prefix argument, as scroll-up.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/simple.ts.
+       */
+      "scroll-up": [n?: PrefixArg | boolean];
       /**
        * Scroll the text up by nearly a screen, showing later lines.
        *
@@ -7951,6 +7983,143 @@ declare global {
        * Defined in packages/xref.ts.
        */
       "xref-show-location-at-point": [];
+      /**
+       * Make the web view the size of the window.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-adjust-size-to-window": [];
+      /**
+       * Go back in the web view's history.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-back": [];
+      /**
+       * Browse URL in a web view, a new session with NEW-SESSION; a URL with no scheme is taken as https.
+       *
+       * @param url text
+       * @param new-session raw prefix argument
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-browse-url": [url: string, newSession?: PrefixArg | boolean];
+      /**
+       * Put the page's selection on the kill ring.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-copy-selection-as-kill": [];
+      /**
+       * Show the page's URL and put it on the kill ring.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-current-url": [];
+      /**
+       * Go forward in the web view's history.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-forward": [];
+      /**
+       * A web page in a buffer, shown by a WebKit xwidget: g browses a URL, b and f go back and forward, r reloads, + and - zoom, w copies the URL and SPC and DEL scroll.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-mode": [];
+      /**
+       * Load the page again.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-reload": [];
+      /**
+       * Scroll the page left by N characters.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-backward": [n?: number];
+      /**
+       * Scroll to the bottom of the page.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-bottom": [];
+      /**
+       * Scroll the page down by N pixels, the window's height without a prefix argument.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-down": [n?: PrefixArg | boolean];
+      /**
+       * Scroll the page down by N lines.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-down-line": [n?: number];
+      /**
+       * Scroll the page right by N characters.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-forward": [n?: number];
+      /**
+       * Scroll to the top of the page.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-top": [];
+      /**
+       * Scroll the page up by N pixels, the window's height without a prefix argument.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-up": [n?: PrefixArg | boolean];
+      /**
+       * Scroll the page up by N lines.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-up-line": [n?: number];
+      /**
+       * Search the page for text, as xwidget-webkit-search does with the web view's own search.
+       *
+       * @param query text
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-search": [query: string];
+      /**
+       * Stop loading the page.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-stop": [];
+      /**
+       * Zoom the page in.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-zoom-in": [];
+      /**
+       * Zoom the page out.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-zoom-out": [];
       /**
        * Insert the most recent kill, leaving the mark at its start.
        *
@@ -13253,6 +13422,28 @@ declare global {
        */
       "xref-show-xrefs-function": Value;
       /**
+       * How xwidget-webkit buffers are named: %T is the page's title, %U its URI.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-buffer-name-format": Value;
+      /**
+       * The file xwidget-webkit-browse-url keeps cookies in, or nil to keep none.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-cookie-file": Value;
+      /**
+       * Where xwidget-webkit saves what it downloads.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-download-dir": Value;
+      /**
+       * Keymap xwidget-webkit-mode-map.
+       */
+      "xwidget-webkit-mode-map": Value;
+      /**
        * The text properties yanking leaves out of what it inserts, or t for all of them, as Emacs's insert-for-yank removes them.
        */
       "yank-excluded-properties": Value;
@@ -15504,6 +15695,10 @@ declare global {
        * Functions that give the name of the xref backend for the current buffer, tried in turn, as defineXrefBackend names them.
        */
       "xref-backend-functions": Value;
+      /**
+       * Run after entering xwidget-webkit mode, after the hooks of the modes it is built on.
+       */
+      "xwidget-webkit-mode-hook": Value;
     }
 
     /**
@@ -17370,6 +17565,16 @@ declare global {
     function foldCaseFor(pattern: string, interactive?: boolean): boolean;
     /** Read these keys next, after the running command, as if typed again (Emacs's unread-command-events). */
     function unreadKeys(keys: string): void;
+    /** The longest match of a regexp starting at a position, point by default, as posix-looking-at; sets the match data. */
+    function posixLookingAt(regexp: string, position?: number | null, caseFold?: boolean | null): boolean;
+    /** Where a regexp's longest match at the first place one starts is in a string, from `start`, as posix-string-match; sets the match data. */
+    function posixStringMatch(regexp: string, string: string, start?: number | null, caseFold?: boolean | null): number | undefined;
+    /** Search forward for a regexp's longest match at the first place one starts, as posix-search-forward: point moves to its end. Signals search-failed unless `noerror`. */
+    function posixSearchForward(regexp: string, bound?: number | null, noerror?: boolean, count?: number): number | undefined;
+    /** Search backward for a regexp's longest match at the nearest place one starts, as posix-search-backward: point moves to its start. */
+    function posixSearchBackward(regexp: string, bound?: number | null, noerror?: boolean, count?: number): number | undefined;
+    /** Move the match data's positions by `n`, as match-data--translate. */
+    function matchDataTranslate(n: number): undefined;
     /** The last successful search's match. */
     function matchData(): Match | undefined;
     /** How many columns text takes on screen, counting wide characters as two (Emacs's string-width). */
@@ -17661,6 +17866,78 @@ declare global {
     function imageFlush(spec: Value): void;
     /** Forget every image, or those of a file name, as clear-image-cache. */
     function clearImageCache(filter?: Value): void;
+    /** A string of one character, as char-to-string. */
+    function charToString(char: number): string;
+    /** A string's first character, 0 for an empty string, as string-to-char. */
+    function stringToChar(string: string): number;
+    /** A unibyte string of one byte, as byte-to-string. */
+    function byteToString(byte: number): string;
+    /** Whether two characters are the same, ignoring case where case-fold-search is set, as char-equal. */
+    function charEqual(c1: number, c2: number): boolean;
+    /** The character after point, 0 at the end of the accessible text, as following-char. */
+    function followingChar(): number;
+    /** The character before point, 0 at the start of the accessible text, as preceding-char. */
+    function precedingChar(): number;
+    /** Format values as Lisp's format: %s as princ, %S as prin1, %d %o %x %X %c %e %f %g, with field numbers, flags, width and precision. */
+    function format(format: string, ...args: Value[]): string;
+    /** Format as format, with the format string's grave accents and apostrophes curved as text-quoting-style says, as format-message. */
+    function formatMessage(format: string, ...args: Value[]): string;
+    /** The message for a count, as ngettext: E8 translates none, so the first for 1 and the plural otherwise. */
+    function ngettext(msgid: string, msgidPlural: string, n: number): string;
+    /** Whether a buffer, the current one by default, is modified, as buffer-modified-p. */
+    function bufferModifiedP(buffer?: Buffer | string | null): boolean;
+    /** Mark the current buffer modified or not, without locking its file, as restore-buffer-modified-p; gives the flag. */
+    function restoreBufferModifiedP(flag: Value): Value;
+    /** Make a buffer current without showing it, as set-buffer; gives the buffer. */
+    function setBuffer(buffer: Buffer | string): Buffer;
+    /** The buffer visiting exactly a file name, expanded, as get-file-buffer; undefined if none. */
+    function getFileBuffer(filename: string): Buffer | undefined;
+    /** Ask for the mode lines to be shown again, as force-mode-line-update: E8 shows them again at every redisplay. */
+    function forceModeLineUpdate(all?: Value): Value;
+    /** Set whether the current buffer is multibyte, as set-buffer-multibyte: E8's buffers always hold characters, so this only sets enable-multibyte-characters. Gives the flag. */
+    function setBufferMultibyte(flag: Value): Value;
+    /** Whether a buffer, the current one by default, is a minibuffer, as minibufferp; with `live`, an active one. */
+    function minibufferp(buffer?: Buffer | string | null, live?: boolean): boolean;
+    /** The prompt of the innermost minibuffer, as minibuffer-prompt; undefined when none is open. */
+    function minibufferPrompt(): string | undefined;
+    /** The minibuffer's text after its prompt, without properties, as minibuffer-contents-no-properties. */
+    function minibufferContentsNoProperties(): string;
+    /** The first element of a list whose car (or which itself) is a string equal to a key, ignoring case with `caseFold`, as assoc-string. */
+    function assocString(key: string | symbol, list: Value[], caseFold?: boolean): Value | undefined;
+    /** The lines a window's text area holds, as window-body-height; with `pixelwise`, its height in the front end's units. */
+    function windowBodyHeight(window?: WindowLike | null, pixelwise?: boolean): number;
+    /** The columns a window's text area holds, as window-body-width; with `pixelwise`, its width in the front end's units. */
+    function windowBodyWidth(window?: WindowLike | null, pixelwise?: boolean): number;
+    /** The lines of text a window shows, as window-text-height; with `pixelwise`, in the front end's units. */
+    function windowTextHeight(window?: WindowLike | null, pixelwise?: boolean): number;
+    /** The columns of text a window shows, as window-text-width; with `pixelwise`, in the front end's units. */
+    function windowTextWidth(window?: WindowLike | null, pixelwise?: boolean): number;
+    /** Make a window its frame's selected one, as set-frame-selected-window; gives the window. */
+    function setFrameSelectedWindow(frame: Frame | null, window: WindowLike, norecord?: boolean): Window;
+    /** How many columns a character takes, as char-width. */
+    function charWidth(char: number): number;
+    /** Whether an object is a character code, as characterp. */
+    function characterp(object: unknown): boolean;
+    /** The largest character code, as max-char: Unicode's with `unicode`. */
+    function maxChar(unicode?: boolean): number;
+    /** A string of characters, as string. */
+    function string(...characters: number[]): string;
+    /** A unibyte string of bytes, as unibyte-string. */
+    function unibyteString(...bytes: number[]): string;
+    /** A key sequence in Emacs's notation, after a prefix's, as key-description: events as characters with modifier bits, symbols, or a string. */
+    function keyDescription(keys: string | Value[], prefix?: string | Value[] | null): string;
+    /** One event in Emacs's notation, as single-key-description; with `noAngles`, a function key without its angle brackets. */
+    function singleKeyDescription(key: Value, noAngles?: boolean): string;
+    /** Give a process another buffer, or none with null, as set-process-buffer; gives the buffer. */
+    function setProcessBuffer(process: ProcessLike, buffer: Buffer | string | null): Buffer | undefined;
+    /** Mark the end of a change for undo, as undo-boundary. */
+    function undoBoundary(): boolean | undefined;
+    /** A file name, a prefix and characters making it one no file has, as make-temp-name. */
+    function makeTempName(prefix: string): string;
+    /** Run a function as a command keys would, so called-interactively-p is true in it, as funcall-interactively. */
+    function funcallInteractively(fn: string | ((...args: any[]) => any), ...args: Value[]): Value;
+    /** Pack a char-table's ranges, as optimize-char-table: E8's are kept packed. */
+    function optimizeCharTable(table: CharTable, test?: Value): undefined;
     /** Make a face with every attribute unspecified, or empty an existing one, as internal-make-lisp-face; gives its vector. */
     function internalMakeLispFace(face: string | symbol, frame?: Frame | boolean | number | null): Value[];
     /** A face's vector if face is a face, as internal-lisp-face-p, else undefined. */
@@ -17791,6 +18068,78 @@ declare global {
     function clearCompositionCache(): void;
     /** Composition rules sorted by how far back each looks, its second element, furthest first, as composition-sort-rules. */
     function compositionSortRules(rules: Value[][]): Value[][];
+    /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
+    function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
+    /** Whether an object is an xwidget, as xwidgetp. */
+    function xwidgetp(object: unknown): object is Xwidget;
+    /** Whether an object is an xwidget not yet killed, as xwidget-live-p. */
+    function xwidgetLiveP(object: unknown): boolean;
+    /** Whether an object is an xwidget's view in a window, as xwidget-view-p. */
+    function xwidgetViewP(object: unknown): object is XwidgetView;
+    /** The live xwidgets in a buffer, as get-buffer-xwidgets. */
+    function getBufferXwidgets(buffer: Buffer | string): Xwidget[];
+    /** The URI a web view shows, as xwidget-webkit-uri. */
+    function xwidgetWebkitUri(xwidget: Xwidget): string;
+    /** The title of the page a web view shows, as xwidget-webkit-title. */
+    function xwidgetWebkitTitle(xwidget: Xwidget): string;
+    /** How far a page has loaded, from 0 to 1, as xwidget-webkit-estimated-load-progress. */
+    function xwidgetWebkitEstimatedLoadProgress(xwidget: Xwidget): number;
+    /** Load a URI in a web view, as xwidget-webkit-goto-uri. */
+    function xwidgetWebkitGotoUri(xwidget: Xwidget, uri: string): undefined;
+    /** Show HTML in a web view, as xwidget-webkit-load-html. */
+    function xwidgetWebkitLoadHtml(xwidget: Xwidget, text: string, baseUri?: string | null): undefined;
+    /** Go back (-1), forward (1) or reload (0) in a web view's history, as xwidget-webkit-goto-history. */
+    function xwidgetWebkitGotoHistory(xwidget: Xwidget, relPos: number): undefined;
+    /** Change a page's zoom by an amount added to its zoom level, as xwidget-webkit-zoom. */
+    function xwidgetWebkitZoom(xwidget: Xwidget, factor: number): undefined;
+    /** Run JavaScript in a page, as xwidget-webkit-execute-script; its result comes to `fun`, if given, through a javascript-callback xwidget event. */
+    function xwidgetWebkitExecuteScript(xwidget: Xwidget, script: string, fun?: ((result: Value) => void) | string | null): undefined;
+    /** Resize an xwidget, as xwidget-resize. */
+    function xwidgetResize(xwidget: Xwidget, newWidth: number, newHeight: number): undefined;
+    /** The size an xwidget asks for, as xwidget-size-request: [width, height]. */
+    function xwidgetSizeRequest(xwidget: Xwidget): [number, number];
+    /** An xwidget's type, title, width and height, as xwidget-info. */
+    function xwidgetInfo(xwidget: Xwidget): [symbol, Value, number, number];
+    /** Where a view is in its window, as xwidget-view-info: [x, y, clipRight, clipBottom, clipTop, clipLeft], right and bottom as how far its visible part reaches, top and left as how much is cut off. */
+    function xwidgetViewInfo(view: XwidgetView): number[];
+    /** A view's xwidget, as xwidget-view-model. */
+    function xwidgetViewModel(view: XwidgetView): Xwidget;
+    /** A view's window, as xwidget-view-window. */
+    function xwidgetViewWindow(view: XwidgetView): Window;
+    /** Take a view off the screen, as delete-xwidget-view. */
+    function deleteXwidgetView(view: XwidgetView): undefined;
+    /** An xwidget's view in a window, the selected one by default, as xwidget-view-lookup. */
+    function xwidgetViewLookup(xwidget: Xwidget, window?: Window | null): XwidgetView | undefined;
+    /** An xwidget's property list, as xwidget-plist. */
+    function xwidgetPlist(xwidget: Xwidget): Value[];
+    /** Set an xwidget's property list, as set-xwidget-plist. */
+    function setXwidgetPlist(xwidget: Xwidget, plist: Value[] | null): Value[];
+    /** An xwidget's buffer, as xwidget-buffer. */
+    function xwidgetBuffer(xwidget: Xwidget): Buffer;
+    /** Move an xwidget to another buffer, as set-xwidget-buffer. */
+    function setXwidgetBuffer(xwidget: Xwidget, buffer: Buffer | string): undefined;
+    /** Whether exiting asks about an xwidget, as xwidget-query-on-exit-flag. */
+    function xwidgetQueryOnExitFlag(xwidget: Xwidget): boolean;
+    /** Set whether exiting asks about an xwidget, as set-xwidget-query-on-exit-flag; gives the flag. */
+    function setXwidgetQueryOnExitFlag(xwidget: Xwidget, flag: Value): Value;
+    /** Search a page for text, as xwidget-webkit-search. */
+    function xwidgetWebkitSearch(query: string, xwidget: Xwidget, caseInsensitive?: boolean, backwards?: boolean, wrapAround?: boolean): undefined;
+    /** Go to the next match of a search, as xwidget-webkit-next-result. */
+    function xwidgetWebkitNextResult(xwidget: Xwidget): undefined;
+    /** Go to the previous match of a search, as xwidget-webkit-previous-result. */
+    function xwidgetWebkitPreviousResult(xwidget: Xwidget): undefined;
+    /** End a search, as xwidget-webkit-finish-search. */
+    function xwidgetWebkitFinishSearch(xwidget: Xwidget): undefined;
+    /** Stop loading a page, as xwidget-webkit-stop-loading. */
+    function xwidgetWebkitStopLoading(xwidget: Xwidget): undefined;
+    /** Keep a web view's cookies in a file, as xwidget-webkit-set-cookie-storage-file. */
+    function xwidgetWebkitSetCookieStorageFile(xwidget: Xwidget, file: string): undefined;
+    /** A web view's history around the page shown, as xwidget-webkit-back-forward-list: the current item, those back and those forward, each [index, title, uri]. */
+    function xwidgetWebkitBackForwardList(xwidget: Xwidget, limit?: number | null): Value[];
+    /** Kill an xwidget, as kill-xwidget. */
+    function killXwidget(xwidget: Xwidget): undefined;
+    /** Send an input event to an xwidget, as xwidget-perform-lispy-event: E8's web views take input natively, so this only checks the xwidget. */
+    function xwidgetPerformLispyEvent(xwidget: Xwidget, event: Value, frame?: Frame | null): undefined;
 
     type CommandName = keyof Commands;
 
@@ -18025,7 +18374,7 @@ declare global {
      * What variables, hooks and text properties hold, as Emacs's values: a
      * function too, as a lambda in a variable, kept as itself.
      */
-    type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | Process | PropertizedString | Keymap | CharTable | Marker | Font;
+    type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | Process | PropertizedString | Keymap | CharTable | Marker | Font | Xwidget | XwidgetView | Sqlite;
     /**
      * A keymap, as Emacs's keymaps are values: bound to a prefix key in
      * another keymap it is that key's prefix map, shared wherever it is
@@ -18870,6 +19219,16 @@ declare global {
     /** A node's property, as treesit-node-check: "named", "missing", "extra", "has-error", "has-changes", "live" or "outdated". */
     function treesitNodeCheck(node: TreesitNode, property: string): boolean;
     function treesitNodeEq(a: TreesitNode | undefined | null, b: TreesitNode | undefined | null): boolean;
+    /** An xwidget, a web view shown in a buffer, as Emacs's xwidget objects: the same object each time. */
+    class Xwidget {
+      private constructor();
+      readonly __e8XwidgetId: number;
+    }
+    /** Where a window shows an xwidget, as Emacs's xwidget-view objects. */
+    class XwidgetView {
+      private constructor();
+      readonly __e8XwidgetViewId: number;
+    }
     /** An SQLite database or set, as Emacs's sqlite objects: the same object each time. */
     class Sqlite {
       private constructor();
@@ -19706,6 +20065,10 @@ declare global {
     function reSearchForward(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
     /** Search back for an Emacs regexp and move point to the start of the match, as re-search-backward. */
     function reSearchBackward(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
+    /** The same as reSearchForward, by its other name, as search-forward-regexp. */
+    function searchForwardRegexp(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
+    /** The same as reSearchBackward, by its other name, as search-backward-regexp. */
+    function searchBackwardRegexp(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
     /** Where the last match, or its group `n`, starts, as match-beginning. */
     function matchBeginning(n?: number): number | undefined;
     /** Where the last match, or its group `n`, ends, as match-end. */

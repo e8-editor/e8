@@ -1106,7 +1106,22 @@ impl Regexp {
         self.run(h, start, limit, &mut self.scratch())
     }
 
+    /// The longest match starting exactly at `start`, as POSIX asks and
+    /// Emacs's `posix-looking-at` finds it.
+    pub fn match_at_posix(&self, h: &dyn Haystack, start: usize, limit: usize) -> Result<Option<Groups>> {
+        self.run_mode(h, start, limit, &mut self.scratch(), true)
+    }
+
     fn run(&self, h: &dyn Haystack, start: usize, limit: usize, scratch: &mut Scratch) -> Result<Option<Groups>> {
+        self.run_mode(h, start, limit, scratch, false)
+    }
+
+    /// The matcher. With `posix`, a match found is kept if it is the
+    /// longest yet and the matcher backtracks on for a longer one, as
+    /// re_match_2_internal does with its best registers, the first of
+    /// equal length winning.
+    fn run_mode(&self, h: &dyn Haystack, start: usize, limit: usize, scratch: &mut Scratch, posix: bool) -> Result<Option<Groups>> {
+        let mut best: Option<Groups> = None;
         let Scratch { slots, loops, stack } = scratch;
         slots.iter_mut().for_each(|s| *s = None);
         loops.iter_mut().for_each(|l| *l = usize::MAX);
@@ -1209,13 +1224,20 @@ impl Regexp {
                 Inst::Match => {
                     let mut groups: Groups = (0..=self.groups).map(|g| slots[2 * g].zip(slots[2 * g + 1])).collect();
                     groups[0] = Some((start, pos));
-                    return Ok(Some(groups));
+                    if !posix {
+                        return Ok(Some(groups));
+                    }
+                    let longer = best.as_ref().is_none_or(|b| b[0].is_some_and(|(_, end)| pos > end));
+                    if longer {
+                        best = Some(groups);
+                    }
+                    false
                 }
             };
             if !ok {
                 loop {
                     match stack.pop() {
-                        None => return Ok(None),
+                        None => return Ok(best),
                         Some(Frame::Slot { slot, old }) => slots[slot] = old,
                         Some(Frame::Loop { register, old }) => loops[register] = old,
                         Some(Frame::Branch { pc: p, pos: at }) => {
@@ -1249,6 +1271,15 @@ impl Regexp {
     /// The first match starting at or after `from` and reading nothing at
     /// or after `limit`, as re-search-forward finds it.
     pub fn search_forward(&self, h: &dyn Haystack, from: usize, limit: usize) -> Result<Option<Groups>> {
+        self.search_forward_mode(h, from, limit, false)
+    }
+
+    /// The longest match at the first place one starts, as `posix-search-forward`.
+    pub fn search_forward_posix(&self, h: &dyn Haystack, from: usize, limit: usize) -> Result<Option<Groups>> {
+        self.search_forward_mode(h, from, limit, true)
+    }
+
+    fn search_forward_mode(&self, h: &dyn Haystack, from: usize, limit: usize, posix: bool) -> Result<Option<Groups>> {
         let limit = limit.min(h.max());
         let fast = self.fastmap(h);
         let mut scratch = self.scratch();
@@ -1275,7 +1306,7 @@ impl Regexp {
                     None => return Ok(None),
                 }
             }
-            if let Some(groups) = self.run(h, start, limit, &mut scratch)? {
+            if let Some(groups) = self.run_mode(h, start, limit, &mut scratch, posix)? {
                 return Ok(Some(groups));
             }
             start += 1;
@@ -1286,6 +1317,15 @@ impl Regexp {
     /// The match starting nearest before `from`, at or after `bound`, that
     /// does not go past `from`, as re-search-backward finds it.
     pub fn search_backward(&self, h: &dyn Haystack, from: usize, bound: usize) -> Result<Option<Groups>> {
+        self.search_backward_mode(h, from, bound, false)
+    }
+
+    /// The longest match at the nearest place before `from` one starts, as `posix-search-backward`.
+    pub fn search_backward_posix(&self, h: &dyn Haystack, from: usize, bound: usize) -> Result<Option<Groups>> {
+        self.search_backward_mode(h, from, bound, true)
+    }
+
+    fn search_backward_mode(&self, h: &dyn Haystack, from: usize, bound: usize, posix: bool) -> Result<Option<Groups>> {
         let from = from.min(h.max());
         let bound = bound.max(h.min());
         let fast = self.fastmap(h);
@@ -1322,7 +1362,7 @@ impl Regexp {
                     None => return Ok(None),
                 }
             }
-            if let Some(groups) = self.run(h, start, from, &mut scratch)? {
+            if let Some(groups) = self.run_mode(h, start, from, &mut scratch, posix)? {
                 return Ok(Some(groups));
             }
             if start == 0 {

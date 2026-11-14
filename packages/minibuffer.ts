@@ -324,3 +324,19 @@ export function readVariable(prompt: string, defaultValue?: string | string[] | 
 }
 e8.defun("read-variable", readVariable);
 e8.defineVariable({ name: "custom-variable-history", doc: "Variable names read-variable was answered with, newest first.", value: [] });
+
+// minibuf.c's readers by their names (ADR 0090).
+
+/** Reads a buffer's name with completion, as read-buffer: DEF the default, REQUIRE-MATCH as completing-read's. */
+export function readBuffer(prompt: string, def?: string | e8.Buffer | null, requireMatch?: e8.Value, predicate?: (name: string) => boolean): string {
+  const fallback = def === null || def === undefined ? undefined : typeof def === "string" ? def : (def.name ?? undefined);
+  const names = e8.bufferList().filter((n) => predicate === undefined || predicate(n));
+  return e8.completingRead(prompt, names, { requireMatch: requireMatch !== null && requireMatch !== undefined && requireMatch !== false, default: fallback });
+}
+e8.defun("read-buffer", readBuffer);
+
+/** Reads a command's name with completion, as read-command. */
+export function readCommand(prompt: string, def?: string | null): string {
+  return e8.completingRead(prompt, e8.commandNames(), { requireMatch: true, default: def ?? undefined });
+}
+e8.defun("read-command", readCommand);
