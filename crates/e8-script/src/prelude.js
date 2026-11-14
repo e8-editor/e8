@@ -1794,6 +1794,7 @@
     },
     fontp: (object, kind) => object instanceof Font && (kind === undefined || object.__e8FontKind === kind),
     faceFont: (face) => native.faceFont(symbolName(face)) ?? undefined,
+    frameFaceHashTable: (frame) => new Map(native.frameFaceHashTable(frame ?? null)),
     fontAt: (pos) => native.fontAt(pos) ?? undefined,
     findFont: (spec) => native.listFonts(spec, 1)[0],
     fontInfo: (name) => native.fontInfo(String(name)) ?? undefined,

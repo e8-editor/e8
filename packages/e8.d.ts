@@ -17405,6 +17405,74 @@ declare global {
     function imageFlush(spec: Value): void;
     /** Forget every image, or those of a file name, as clear-image-cache. */
     function clearImageCache(filter?: Value): void;
+    /** Make a face with every attribute unspecified, or empty an existing one, as internal-make-lisp-face; gives its vector. */
+    function internalMakeLispFace(face: string | symbol, frame?: Frame | boolean | number | null): Value[];
+    /** A face's vector if face is a face, as internal-lisp-face-p, else undefined. */
+    function internalLispFaceP(face: string | symbol, frame?: Frame | boolean | number | null): Value[] | undefined;
+    /** Make `to` a face with `from`'s attributes, as internal-copy-lisp-face; gives `to`. `frame` t copies the global definitions, else it must be a frame, as in Emacs. */
+    function internalCopyLispFace(from: string | symbol, to: string | symbol, frame: Frame | boolean | null, newFrame?: Frame | null): string | symbol;
+    /** Set one of a face's attributes with xfaces.c's checks, as internal-set-lisp-face-attribute; makes the face if there is none and gives its name. */
+    function internalSetLispFaceAttribute(face: string | symbol, attribute: string | symbol, value: Value, frame?: Frame | boolean | number | null): string | symbol;
+    /** One of a face's own attributes, as internal-get-lisp-face-attribute. */
+    function internalGetLispFaceAttribute(face: string | symbol, attribute: string | symbol, frame?: Frame | boolean | null): Value;
+    /** Whether two faces' attributes are all equal, as internal-lisp-face-equal-p. */
+    function internalLispFaceEqualP(face1: string | symbol, face2: string | symbol, frame?: Frame | boolean | null): boolean;
+    /** Whether a face sets no attribute, as internal-lisp-face-empty-p. */
+    function internalLispFaceEmptyP(face: string | symbol, frame?: Frame | boolean | null): boolean;
+    /** Merge a face's global definition into its definition on a frame, as internal-merge-in-global-face: one and the same in E8, so this only checks the face exists. */
+    function internalMergeInGlobalFace(face: string | symbol, frame: Frame): undefined;
+    /** Set an attribute from an X resource's string, as internal-set-lisp-face-attribute-from-resource. */
+    function internalSetLispFaceAttributeFromResource(face: string | symbol, attribute: string | symbol, value: string, frame?: Frame | null): string | symbol;
+    /** An X resource's value for a frame, as internal-face-x-get-resource: E8 reads no X resources, so always undefined. */
+    function internalFaceXGetResource(resource: string, klass: string, frame?: Frame | null): string | undefined;
+    /** The vector of attributes a face reference gives, as face-attributes-as-vector: a face's name, a plist, or a list of them. */
+    function faceAttributesAsVector(plist: Value): Value[];
+    /** Set the order fonts are matched in, as internal-set-font-selection-order: `:width`, `:height`, `:weight` and `:slant` in some order. */
+    function internalSetFontSelectionOrder(order: Value[]): undefined;
+    /** Set the families to try in place of others, as internal-set-alternative-font-family-alist; gives the alist kept, its names symbols. */
+    function internalSetAlternativeFontFamilyAlist(alist: string[][]): Value[][];
+    /** Set the registries to try in place of others, as internal-set-alternative-font-registry-alist; gives the alist kept, downcased. */
+    function internalSetAlternativeFontRegistryAlist(alist: string[][]): string[][];
+    /** Whether object is a bitmap spec, as bitmap-spec-p: a file name, or [width, height, data] with data long enough. */
+    function bitmapSpecP(object: Value): boolean;
+    /** Forget resolved faces, as clear-face-cache. */
+    function clearFaceCache(thoroughly?: boolean): undefined;
+    /** Whether a terminal shows bold faces in its default colours swapped, as tty-suppress-bold-inverse-default-colors; gives suppress. */
+    function ttySuppressBoldInverseDefaultColors(suppress: Value): Value;
+    /** The colours a file names, a line each as `R G B NAME`, as x-load-color-file: [name, rgb] pairs, the last line first; undefined if there is no such file. */
+    function xLoadColorFile(filename: string): [string, number][] | undefined;
+    /** The fonts of a family, with `*` and `?`, or all, as x-family-fonts: [family, width, pointSize, weight, slant, fixedP, full, registry] each. */
+    function xFamilyFonts(family?: string | null, frame?: Frame | null): Value[][];
+    /** The font a character is shown in and its glyph code, as internal-char-font: the character at a position, or `ch` there, or `ch` in the default face with no position; undefined on a terminal or where no font has it. */
+    function internalCharFont(position: number | null, ch?: number | string | null): [Font, number] | undefined;
+    /** The face attributes a font gives, as font-face-attributes: a plist of `:family`, `:height`, `:weight`, `:slant` and `:width`, each where the font has it. */
+    function fontFaceAttributes(font: Font | string, frame?: Frame | null): Value[];
+    /** Open a font entity, as open-font: at an integer size in pixels, a float in points, or the entity's own; undefined on a terminal. */
+    function openFont(fontEntity: Font, size?: number | null, frame?: Frame | null): Font | undefined;
+    /** Close an open font, as close-font; E8's front ends keep their fonts open. */
+    function closeFont(fontObject: Font, frame?: Frame | null): undefined;
+    /** An open font's glyphs for the characters from `from` to `to` in the current buffer, or in a string or array of characters, as font-get-glyphs: each [from, to, c, code, width, lbearing, rbearing, ascent, descent, null], or null where the font has none. */
+    function fontGetGlyphs(fontObject: Font, from: number, to: number, object?: string | number[] | null): (Value[] | null)[] | undefined;
+    /** Whether a font spec matches a font, as font-match-p. */
+    function fontMatchP(spec: Font, font: Font): boolean;
+    /** The variation glyphs a font has for a character, as font-variation-glyphs: [selector, glyph] pairs; E8's front ends report none. */
+    function fontVariationGlyphs(fontObject: Font, character: number | string): [number, number][];
+    /** Shape a glyph-string, as font-shape-gstring: E8's front ends shape text as they draw it, so this gives undefined, as Emacs does for a font that cannot shape. */
+    function fontShapeGstring(gstring: Value[], direction?: string | symbol | null): Value[] | undefined;
+    /** A frame's font cache, as frame-font-cache, for debugging: E8 keeps none, so undefined. */
+    function frameFontCache(frame?: Frame | null): undefined;
+    /** Clear every frame's font cache, as clear-font-cache. */
+    function clearFontCache(): undefined;
+    /** The fontsets' names, the newest first, as fontset-list. */
+    function fontsetList(): string[];
+    /** The name of the fontset a pattern matches, as query-fontset: with `*` and `?`, a short name such as "fontset-default", or with `regexp` an Emacs regexp. */
+    function queryFontset(pattern: string, regexp?: boolean): string | undefined;
+    /** Make a fontset give a font for characters, as set-fontset-font: a character from U+0080, a range [from, to], a script or charset symbol, or null for the rest; `add` "prepend" or "append" keeps the fonts it gave. The font is a font spec, [family, registry], a name, or null for none. A fontset of true or null is the default one. */
+    function setFontsetFont(fontset: string | boolean | null, characters: Value, fontSpec: Value, frame?: Frame | null, add?: string | symbol | null): undefined;
+    /** The font a fontset gives a character, as fontset-font, as [family, registry]; with `all`, every one. */
+    function fontsetFont(name: string | boolean | null, ch: number, all?: boolean): Value;
+    /** Make a fontset from an XLFD name and [target, font] pairs, as new-fontset; gives its name. */
+    function newFontset(name: string, fontlist: Value[]): string;
 
     type CommandName = keyof Commands;
 
@@ -18295,6 +18363,8 @@ declare global {
     function fontp(object: unknown, kind?: "font-spec" | "font-entity" | "font-object"): boolean;
     /** The name of the font a face is drawn in, as face-font, or undefined on a terminal. */
     function faceFont(face: FaceName | (string & {})): string | undefined;
+    /** Each face and its vector, as frame--face-hash-table holds them: a snapshot, not the editor's own table. */
+    function frameFaceHashTable(frame?: Frame | null): Map<string, Value[]>;
     /** The open font the text at a position is drawn in, as font-at, or undefined on a terminal. */
     function fontAt(pos: number): Font | undefined;
     /** The font that best matches a spec, as find-font. */

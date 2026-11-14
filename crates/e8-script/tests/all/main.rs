@@ -33,6 +33,7 @@ mod editorconfig;
 mod elisp;
 mod eglot;
 mod face_attributes;
+mod face_internals;
 mod faces;
 mod file_management;
 mod file_primitives;

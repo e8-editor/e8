@@ -86,3 +86,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0082](0082-keymaps-rest-as-emacs-has-them.md) Keymaps' rest as Emacs has them: prompts, map-keymap-internal, and describe-buffer-bindings
 - [0083](0083-the-minibuffers-odds-as-emacs-has-them.md) The minibuffer's odds as Emacs has them: abort-minibuffers, internal-complete-buffer, read-variable
 - [0084](0084-tree-sitters-rest-as-emacs-has-it.md) Tree-sitter's rest as Emacs has it: searches, query objects, included ranges and notifiers
+- [0085](0085-face-and-font-internals-as-emacs-has-them.md) Face and font internals as Emacs has them: Lisp faces, font objects and fontsets

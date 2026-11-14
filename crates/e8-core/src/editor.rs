@@ -244,6 +244,10 @@ pub struct Editor {
     /// Every symbol's value, function, properties and advice.
     pub(crate) symbols: BTreeMap<String, crate::symbols::Symbol>,
     pub(crate) faces: BTreeMap<String, Face>,
+    /// The font selection order and alternatives xfaces.c's primitives set.
+    pub(crate) face_settings: crate::xfaces::FaceSettings,
+    /// The fontsets, as fontset.c keeps them.
+    pub(crate) fontsets: crate::fontset::Fontsets,
     /// Whether the system the front end runs on looks dark, for choosing
     /// faces' colours where no theme gives the default face a background
     /// and `frame-background-mode` is unset; dark until a front end says.
@@ -507,6 +511,8 @@ impl Editor {
             minor_modes: Vec::new(),
             symbols: BTreeMap::new(),
             faces: BTreeMap::new(),
+            face_settings: Default::default(),
+            fontsets: Default::default(),
             system_dark: true,
             quitting: Default::default(),
             command_loop: None,
