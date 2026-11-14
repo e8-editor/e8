@@ -55,7 +55,7 @@ Option 1.
 - Themes and packages can set faces as Emacs's do, with colour names, and put attribute lists on text.
 - Merging faces now copies twice as many fields, so a resolved style is kept per list of faces and background until any face changes (`Editor::style_cache`), where before every redisplay worked each out again. An anonymous face costs a lookup by its plist each time it is met, which is rare outside ansi-color's output.
 - Not yet:
-  - font primitives (`face-font`, `x-list-fonts`, `x-family-fonts`);
+  - font primitives (`face-font`, `x-list-fonts`, `x-family-fonts`), since given by [ADR 0048](0048-overlay-arrows-fringe-indicators-and-fonts.md) and [ADR 0085](0085-face-and-font-internals-as-emacs-has-them.md), which also gives xfaces.c's Lisp-face primitives;
   - stipples;
   - the double, dotted and dashed underline styles, which draw as plain lines;
   - the raised and pressed box styles, which draw as plain boxes;

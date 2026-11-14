@@ -62,7 +62,8 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Header lines (`header-line-format`).
 - Margins (`left-margin-width`, `(margin left-margin)` display specs) and fringes in the GUI (continuation arrows, `(left-fringe BITMAP)` specs, `define-fringe-bitmap`, `indicate-empty-lines`, `indicate-buffer-boundaries`, `fringe-indicator-alist`).
 - The overlay arrow (`overlay-arrow-position`, a triangle in the fringe or `=>` on a terminal, marking `next-error`'s message).
-- Fonts as values (`font-spec`, `font-get`, `font-xlfd-name`, `face-font`, `font-at`, `font-family-list`, `list-fonts`, `x-list-fonts`, `char-displayable-p`).
+- Fonts as values (`font-spec`, `font-get`, `font-xlfd-name`, `face-font`, `font-at`, `font-family-list`, `list-fonts`, `x-list-fonts`, `x-family-fonts`, `char-displayable-p`, `internal-char-font`, `font-face-attributes`, `font-match-p`, `open-font`, `font-get-glyphs`), and fontsets (`set-fontset-font`, `fontset-font`, `new-fontset`, `query-fontset`, `fontset-list`).
+- The Lisp-face primitives faces.el is written on (`internal-make-lisp-face`, `internal-set-lisp-face-attribute` with xfaces.c's checks, `internal-get-lisp-face-attribute`, `internal-lisp-face-equal-p`, `face-attributes-as-vector`, `frame--face-hash-table`, `internal-set-font-selection-order`, `x-load-color-file`).
 - Images (`(image ...)` display specs on text, overlays, strings and in the margins, PNG, JPEG, GIF and SVG, `create-image`, `insert-image`, `put-image`, `insert-sliced-image`, `image-size`, `image-increase-size` and `image-rotate` on `i +` and `i r`, and `image-mode` for visited image files: drawn in the GUI, rows as tall as their images, and shown as their text in the terminal, as Emacs's terminals show them).
 - The bell (`ding`, `visible-bell`, the system beep on macOS).
 - Text properties.

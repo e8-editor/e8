@@ -100,3 +100,48 @@ fn open_fonts_tell_their_metrics() {
     assert!(ed.char_displayable_p('a') && !ed.char_displayable_p('\u{e000}'));
     assert!(!ed.font_has_char_p(&spec, '\u{e000}'));
 }
+
+#[test]
+fn characters_are_found_in_fonts_as_internal_char_font_finds_them() {
+    let mut ed = editor();
+    // With no position, the default face's font, and the character's own code.
+    let (font, code) = ed.internal_char_font(None, Some('a' as u32)).unwrap().expect("a font");
+    assert_eq!((font.kind, font.get(":family"), code), (FontKind::Object, sym("Mono"), 97));
+    assert_eq!(ed.internal_char_font(None, Some(0xe000)).unwrap(), None, "no font has it");
+    // At a position, in the faces there.
+    ed.type_text("abc");
+    ed.buffer_mut().put_text_property(1..2, "face", Value::Str("bold".into()));
+    let (font, code) = ed.internal_char_font(Some(1), None).unwrap().unwrap();
+    assert_eq!((font.get(":weight"), code), (sym("bold"), 'b' as u32));
+    let err = ed.internal_char_font(Some(3), None).unwrap_err();
+    assert_eq!(err.symbol(), "args-out-of-range");
+    // A buffer in no window has no fonts, as in Emacs.
+    ed.get_buffer_create("hidden");
+    ed.set_current_buffer("hidden").unwrap();
+    ed.insert("x").unwrap();
+    assert_eq!(ed.internal_char_font(Some(0), None).unwrap(), None);
+}
+
+#[test]
+fn glyphs_families_and_opened_fonts() {
+    let ed = editor();
+    let mut entity = Font::new(FontKind::Entity);
+    entity.put(":family", Value::Str("Sans".into())).unwrap();
+    let font = ed.open_font_entity(&entity, Some(24.0)).expect("opened");
+    assert_eq!((font.kind, font.get(":family"), font.get(":size")), (FontKind::Object, sym("Sans"), Value::Number(24.0)));
+    // Size 0 is 120 pixels, as font.c has it.
+    assert_eq!(ed.open_font_entity(&entity, Some(0.0)).unwrap().get(":size"), Value::Number(120.0));
+    // Its face attributes, as font-face-attributes: 24 pixels, a point a pixel as on Emacs's Mac frames.
+    assert_eq!(font.face_attributes()[..4], [sym(":family"), Value::Str("Sans".into()), sym(":height"), Value::Number(240.0)]);
+    let glyphs = ed.font_get_glyphs(&font, &['a', '\u{e000}']);
+    let n = Value::Number;
+    assert_eq!(glyphs[0], Value::List(vec![n(0.0), n(0.0), n(97.0), n(97.0), n(1.0), n(0.0), n(1.0), n(10.0), n(2.0), Value::Null]));
+    assert_eq!(glyphs[1], Value::Null);
+    // x-family-fonts, sorted by width, height, weight and slant, then family.
+    let fonts = ed.x_family_fonts(Some("m*"));
+    assert_eq!(fonts.len(), 4);
+    let Value::List(first) = &fonts[0] else { panic!() };
+    assert_eq!(first[..6], [Value::Str("Mono".into()), sym("normal"), n(0.0), sym("regular"), sym("normal"), Value::Bool(true)]);
+    let Value::List(last) = &fonts[3] else { panic!() };
+    assert_eq!((last[3].clone(), last[4].clone()), (sym("bold"), sym("italic")));
+}

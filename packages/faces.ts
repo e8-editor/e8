@@ -4,6 +4,9 @@
 // list-colors-display. The primitives (faceAttribute, setFaceAttribute,
 // colorValues and the rest) are the core's, as xfaces.c's are.
 
+// xfaces.c's table of a frame's faces, by its Lisp name.
+e8.defun("frame--face-hash-table", (frame?: e8.Frame) => e8.frameFaceHashTable(frame));
+
 const unspecified = (v: e8.Value): e8.Value | undefined => (v === "unspecified" || v === undefined || v === null ? undefined : v);
 
 /** A face's foreground colour, as face-foreground: its own, or with `inherit` what it inherits too. */

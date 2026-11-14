@@ -13,7 +13,7 @@ use crate::variables::Value;
 
 /// Emacs's `font-weight-table`, `font-slant-table` and `font-width-table`:
 /// each style's numeric value and its names.
-const WEIGHTS: &[(u32, &[&str])] = &[
+pub(crate) const WEIGHTS: &[(u32, &[&str])] = &[
     (0, &["thin"]),
     (40, &["ultra-light", "ultralight", "extra-light", "extralight"]),
     (50, &["light"]),
@@ -26,14 +26,14 @@ const WEIGHTS: &[(u32, &[&str])] = &[
     (210, &["black", "heavy"]),
     (250, &["ultra-heavy", "ultraheavy"]),
 ];
-const SLANTS: &[(u32, &[&str])] = &[
+pub(crate) const SLANTS: &[(u32, &[&str])] = &[
     (0, &["reverse-oblique", "ro"]),
     (10, &["reverse-italic", "ri"]),
     (100, &["normal", "r", "unspecified"]),
     (200, &["italic", "i", "ot"]),
     (210, &["oblique", "o"]),
 ];
-const WIDTHS: &[(u32, &[&str])] = &[
+pub(crate) const WIDTHS: &[(u32, &[&str])] = &[
     (50, &["ultra-condensed", "ultracondensed"]),
     (63, &["extra-condensed", "extracondensed"]),
     (75, &["condensed", "compressed", "narrow"]),
@@ -44,6 +44,11 @@ const WIDTHS: &[(u32, &[&str])] = &[
     (150, &["extra-expanded", "extraexpanded"]),
     (200, &["ultra-expanded", "ultraexpanded", "wide"]),
 ];
+
+/// Points to an inch, as font.h counts them, and the dots to an inch of
+/// E8's frames: those of Emacs's frames on macOS, where a point is a pixel.
+const PT_PER_INCH: f64 = 72.27;
+const FRAME_RES: f64 = 72.27;
 
 /// Spacings, as font.h numbers them.
 const PROPORTIONAL: f64 = 0.0;
@@ -336,7 +341,79 @@ impl Font {
     }
 }
 
-fn style_value(table: &[(u32, &[&str])], name: &str) -> Option<u32> {
+impl Font {
+    /// Whether a spec matches a font, as font.c's `font_match_p`: the
+    /// foundry, family, adstyle and registry each the same where both have
+    /// one, the weight, slant and width the same where the font has them,
+    /// and the size the same where the spec has one and the font a size.
+    /// The spacing is not compared, as Emacs does not; nor, in E8, the
+    /// `:script` and `:lang` a spec may ask for.
+    pub fn match_p(&self, font: &Font) -> bool {
+        let differ = |a: &Option<String>, b: &Option<String>| matches!((a, b), (Some(a), Some(b)) if a != b);
+        if differ(&self.foundry, &font.foundry)
+            || differ(&self.family, &font.family)
+            || differ(&self.adstyle, &font.adstyle)
+            || differ(&self.registry, &font.registry)
+        {
+            return false;
+        }
+        let style_differs = |table: &[(u32, &[&str])], a: &Option<String>, b: &Option<String>| match (a, b) {
+            (Some(a), Some(b)) => style_value(table, a) != style_value(table, b),
+            _ => false,
+        };
+        if style_differs(WEIGHTS, &self.weight, &font.weight)
+            || style_differs(SLANTS, &self.slant, &font.slant)
+            || style_differs(WIDTHS, &self.width, &font.width)
+        {
+            return false;
+        }
+        let pixels = |s: FontSize| match s {
+            FontSize::Pixels(n) => n,
+            // A size in points is in pixels at 72 dots an inch, as E8's frames have it.
+            FontSize::Points(n) => n.round(),
+        };
+        match (self.size, font.size) {
+            (Some(want), Some(have)) if pixels(have) > 0.0 => {
+                pixels(want) == pixels(have) && self.dpi.is_none_or(|d| font.dpi == Some(d)) && self.avgwidth.is_none_or(|a| font.avgwidth == Some(a))
+            }
+            _ => true,
+        }
+    }
+
+    /// The face attributes a font gives, as `font-face-attributes`: its
+    /// family, height in tenths of a point, weight, slant and width, each
+    /// only if it has one.
+    pub fn face_attributes(&self) -> Vec<Value> {
+        let mut out = Vec::new();
+        if let Some(family) = &self.family {
+            out.extend([Value::Symbol(":family".into()), Value::Str(family.clone())]);
+        }
+        match self.size {
+            Some(FontSize::Pixels(n)) => {
+                let dpi = self.dpi.unwrap_or(FRAME_RES);
+                out.extend([Value::Symbol(":height".into()), Value::Number((n * 10.0 * PT_PER_INCH / dpi + 0.5).trunc())]);
+            }
+            Some(FontSize::Points(n)) => out.extend([Value::Symbol(":height".into()), Value::Number(10.0 * n.trunc())]),
+            None => {}
+        }
+        // Each style as the face attribute its numeric value names.
+        for (key, value, table) in [(":weight", &self.weight, WEIGHTS), (":slant", &self.slant, SLANTS), (":width", &self.width, WIDTHS)] {
+            if let Some(name) = value.as_deref().and_then(|v| style_for_face(table, v)) {
+                out.extend([Value::Symbol(key.into()), Value::Symbol(name.into())]);
+            }
+        }
+        out
+    }
+}
+
+/// A style's name as a face attribute gives it, as font.c's
+/// `FONT_*_FOR_FACE`: the first name of its numeric value.
+fn style_for_face(table: &[(u32, &[&'static str])], name: &str) -> Option<&'static str> {
+    let n = style_value(table, name)?;
+    table.iter().find(|(v, _)| *v == n).map(|(_, names)| names[0])
+}
+
+pub(crate) fn style_value(table: &[(u32, &[&str])], name: &str) -> Option<u32> {
     table.iter().find(|(_, names)| names.contains(&name)).map(|(n, _)| *n)
 }
 
@@ -446,6 +523,14 @@ fn parse_xlfd(font: &mut Font, name: &str) -> Result<()> {
     Ok(())
 }
 
+/// A font spec from a font's name, as font.c's `font_spec_from_name`;
+/// none for a name it cannot parse.
+pub fn font_spec_from_name(name: &str) -> Option<Font> {
+    let mut font = Font::new(FontKind::Spec);
+    parse_name(&mut font, name).ok()?;
+    Some(font)
+}
+
 /// Makes a font spec from a property list, as `font-spec`.
 pub fn font_spec(plist: &[Value]) -> Result<Font> {
     if plist.len() % 2 == 1 {
@@ -457,7 +542,7 @@ pub fn font_spec(plist: &[Value]) -> Result<Font> {
 
 /// Whether an XLFD pattern, with `*` for any run and `?` for any one
 /// character, matches a name, ignoring case, as `x-list-fonts` matches.
-fn xlfd_matches(pattern: &str, name: &str) -> bool {
+pub(crate) fn xlfd_matches(pattern: &str, name: &str) -> bool {
     let (p, n): (Vec<char>, Vec<char>) = (pattern.to_lowercase().chars().collect(), name.to_lowercase().chars().collect());
     let (mut pi, mut ni, mut star, mut mark) = (0, 0, None, 0);
     while ni < n.len() {
@@ -573,19 +658,8 @@ impl Editor {
     /// size, maximum width, ascent, descent, space width and average
     /// width. E8's front ends keep no file name.
     pub fn query_font(&self, font: &Font) -> Option<Vec<Value>> {
-        let family = font.family.clone()?;
-        let default = self.metrics.font_metrics(&FontSpec::default_font())?.size;
-        let size = match font.size {
-            Some(FontSize::Pixels(n) | FontSize::Points(n)) if default > 0.0 => n as f32 / default,
-            _ => 1.0,
-        };
-        let spec = FontSpec {
-            family: (!crate::faces::is_fixed_family(&family)).then_some(family),
-            scale: size,
-            bold: font.weight.as_deref().and_then(|w| style_value(WEIGHTS, w)).is_some_and(|w| w >= 180),
-            italic: font.slant.as_deref().and_then(|s| style_value(SLANTS, s)).is_some_and(|s| s >= 200),
-        };
-        let (open, m) = self.open_font(&spec)?;
+        font.family.as_ref()?;
+        let (open, m) = self.open_font(&self.spec_of(font))?;
         let n = |v: f32| Value::Number(f64::from(v.round()));
         Some(vec![
             open.name.map_or(Value::Null, Value::Str),
@@ -627,6 +701,161 @@ impl Editor {
             Value::Null,
             q[8].clone(),
         ])
+    }
+
+    /// The open font a spec, entity or object stands for, as a front end
+    /// draws it, for the font.c primitives that open fonts.
+    fn spec_of(&self, font: &Font) -> FontSpec {
+        let default = self.metrics.font_metrics(&FontSpec::default_font()).map_or(0.0, |m| m.size);
+        let scale = match font.size {
+            Some(FontSize::Pixels(n) | FontSize::Points(n)) if default > 0.0 && n > 0.0 => n as f32 / default,
+            _ => 1.0,
+        };
+        FontSpec {
+            family: font.family.clone().filter(|f| !crate::faces::is_fixed_family(f)),
+            scale,
+            bold: font.weight.as_deref().and_then(|w| style_value(WEIGHTS, w)).is_some_and(|w| w >= 180),
+            italic: font.slant.as_deref().and_then(|s| style_value(SLANTS, s)).is_some_and(|s| s >= 200),
+        }
+    }
+
+    /// Opens a font entity at a size, as `open-font`: an integer size in
+    /// pixels, a float in points, 0 for 120 pixels, none for the entity's own;
+    /// none on a terminal.
+    pub fn open_font_entity(&self, entity: &Font, size: Option<f64>) -> Option<Font> {
+        let mut want = entity.clone();
+        if let Some(size) = size {
+            // An integer is pixels, a float points (POINT_TO_PIXEL), and 0 is 120 pixels, as font.c has it.
+            let pixels = if size == 0.0 {
+                120.0
+            } else if size.fract() == 0.0 {
+                size
+            } else {
+                (size * FRAME_RES / PT_PER_INCH + 0.5).trunc()
+            };
+            want.size = Some(FontSize::Pixels(pixels));
+        }
+        let (mut font, _) = self.open_font(&self.spec_of(&want))?;
+        if let Some(family) = &entity.family
+            && self.font_family_list().iter().any(|f| f == family)
+        {
+            font.family = Some(family.clone());
+            font.name = Some(Font { kind: FontKind::Entity, ..font.clone() }.xlfd_name(false));
+        }
+        Some(font)
+    }
+
+    /// An open font's glyphs for characters, as `font-get-glyphs`: for
+    /// each, `[FROM TO C CODE WIDTH LBEARING RBEARING ASCENT DESCENT nil]`,
+    /// or nil where the font has none. E8's front ends give no glyph
+    /// codes, so a glyph's code is its character's.
+    pub fn font_get_glyphs(&self, font: &Font, chars: &[char]) -> Vec<Value> {
+        let spec = self.spec_of(font);
+        let metrics = self.metrics.font_metrics(&spec);
+        chars
+            .iter()
+            .enumerate()
+            .map(|(i, &c)| {
+                let Some(m) = metrics.as_ref().filter(|_| self.metrics.has_glyph(&spec, c)) else { return Value::Null };
+                let width = f64::from(self.metrics.advance(&spec, c).round());
+                let n = |v: f64| Value::Number(v);
+                Value::List(vec![
+                    n(i as f64),
+                    n(i as f64),
+                    n(f64::from(c as u32)),
+                    n(f64::from(c as u32)),
+                    n(width),
+                    n(0.0),
+                    n(width),
+                    n(f64::from(m.ascent.round())),
+                    n(f64::from(m.descent.round())),
+                    Value::Null,
+                ])
+            })
+            .collect()
+    }
+
+    /// The font a character is shown in and its glyph code, as
+    /// `internal-char-font`: the character at a position in the current
+    /// buffer, or CH there, in the faces there, or CH in the default face
+    /// with no position. None on a terminal, where the buffer is in no
+    /// window, or where no font has a glyph for it. The code is the
+    /// character's, as `font-get-glyphs` gives it.
+    pub fn internal_char_font(&self, pos: Option<usize>, ch: Option<u32>) -> Result<Option<(Font, u32)>> {
+        let (c, faces) = match pos {
+            None => {
+                let c = ch.ok_or_else(|| crate::xfaces::wrong_type("characterp", &Value::Null))?;
+                (c, vec!["default".to_string()])
+            }
+            Some(pos) => {
+                let b = self.buffer();
+                if pos < b.point_min() || pos >= b.point_max() {
+                    return Err(Error::signal(
+                        "args-out-of-range",
+                        format!("Args out of range: {}, {}, {}", pos + 1, b.point_min() + 1, b.point_max() + 1),
+                        vec![Value::Number(pos as f64 + 1.0), Value::Number(b.point_min() as f64 + 1.0), Value::Number(b.point_max() as f64 + 1.0)],
+                    ));
+                }
+                let c = match ch {
+                    Some(c) => c,
+                    None => b.char_at(pos).map_or(0, |c| c as u32),
+                };
+                let id = self.buffer().id;
+                let shown = self.window_list().into_iter().any(|w| self.window(w).is_some_and(|w| w.buffer == id));
+                if !shown {
+                    return Ok(None);
+                }
+                let mut faces = self.faces_at(b, pos);
+                faces.push("default".into());
+                (c, faces)
+            }
+        };
+        let Some(c) = char::from_u32(c) else { return Ok(None) };
+        let spec = self.face_font_spec(&faces);
+        if !self.metrics.has_glyph(&spec, c) {
+            return Ok(None);
+        }
+        Ok(self.open_font(&spec).map(|(font, _)| (font, c as u32)))
+    }
+
+    /// The fonts of a family, or all, as `x-family-fonts`: for each,
+    /// `[FAMILY WIDTH POINT-SIZE WEIGHT SLANT FIXED-P FULL REGISTRY]`,
+    /// sorted by the font selection order and then by family. E8's fonts
+    /// scale, so their point size is 0.
+    pub fn x_family_fonts(&self, family: Option<&str>) -> Vec<Value> {
+        let mut fonts: Vec<Font> =
+            self.list_fonts(&Font::new(FontKind::Spec), None).into_iter().filter(|f| family.is_none_or(|p| f.family.as_deref().is_some_and(|name| xlfd_matches(p, name)))).collect();
+        let order = self.face_settings().font_sort_order.clone();
+        let key = |f: &Font| {
+            let mut key: Vec<u32> = order
+                .iter()
+                .map(|attr| match attr.as_str() {
+                    ":width" => f.width.as_deref().and_then(|w| style_value(WIDTHS, w)).unwrap_or(0),
+                    ":weight" => f.weight.as_deref().and_then(|w| style_value(WEIGHTS, w)).unwrap_or(0),
+                    ":slant" => f.slant.as_deref().and_then(|s| style_value(SLANTS, s)).unwrap_or(0),
+                    _ => 0,
+                })
+                .collect();
+            key.push(0);
+            (key, f.family.clone())
+        };
+        fonts.sort_by_key(key);
+        fonts
+            .into_iter()
+            .map(|f| {
+                let sym = |s: &Option<String>| s.as_ref().map_or(Value::Null, |s| Value::Symbol(s.clone()));
+                Value::List(vec![
+                    f.family.clone().map_or(Value::Null, Value::Str),
+                    sym(&f.width),
+                    Value::Number(0.0),
+                    sym(&f.weight),
+                    sym(&f.slant),
+                    Value::Bool(f.spacing.is_some_and(|s| s != PROPORTIONAL)),
+                    Value::Str(f.xlfd_name(true)),
+                    sym(&f.registry),
+                ])
+            })
+            .collect()
     }
 
     /// Whether a font has a glyph for a character, as `font-has-char-p`.

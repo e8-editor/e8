@@ -913,6 +913,8 @@ const API: &str = r##"
   function fontp(object: unknown, kind?: "font-spec" | "font-entity" | "font-object"): boolean;
   /** The name of the font a face is drawn in, as face-font, or undefined on a terminal. */
   function faceFont(face: FaceName | (string & {})): string | undefined;
+  /** Each face and its vector, as frame--face-hash-table holds them: a snapshot, not the editor's own table. */
+  function frameFaceHashTable(frame?: Frame | null): Map<string, Value[]>;
   /** The open font the text at a position is drawn in, as font-at, or undefined on a terminal. */
   function fontAt(pos: number): Font | undefined;
   /** The font that best matches a spec, as find-font. */

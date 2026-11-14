@@ -239,7 +239,7 @@ pub enum Decoration {
 impl Decoration {
     /// A decoration as Emacs gives one: t, nil, a colour, or a plist with
     /// `:color` and `:style`.
-    fn from_value(value: &Value) -> Decoration {
+    pub(crate) fn from_value(value: &Value) -> Decoration {
         match value {
             Value::Null | Value::Bool(false) => Decoration::Off,
             Value::Str(c) | Value::Symbol(c) if c != "t" => Decoration::On { color: Some(c.clone()), style: None },
@@ -253,7 +253,7 @@ impl Decoration {
         }
     }
 
-    fn to_value(&self) -> Value {
+    pub(crate) fn to_value(&self) -> Value {
         match self {
             Decoration::Off => Value::Null,
             Decoration::On { color: None, style: None } => Value::Bool(true),
@@ -286,7 +286,7 @@ pub enum FaceBox {
 }
 
 impl FaceBox {
-    fn from_value(value: &Value) -> FaceBox {
+    pub(crate) fn from_value(value: &Value) -> FaceBox {
         match value {
             Value::Null | Value::Bool(false) => FaceBox::Off,
             Value::Number(n) => FaceBox::On { width: *n as i32, color: None, style: None },
@@ -304,7 +304,7 @@ impl FaceBox {
         }
     }
 
-    fn to_value(&self) -> Value {
+    pub(crate) fn to_value(&self) -> Value {
         match self {
             FaceBox::Off => Value::Null,
             FaceBox::On { width: 1, color: None, style: None } => Value::Bool(true),
@@ -337,8 +337,10 @@ pub fn is_italic_slant(slant: &str) -> bool {
     matches!(slant, "italic" | "oblique" | "reverse-italic" | "reverse-oblique")
 }
 
-/// The attributes Emacs's faces have, in the order `face-attributes-as-vector` gives them.
-pub const FACE_ATTRIBUTES: [&str; 18] = [
+/// The attributes Emacs's faces have, in the order a Lisp face's vector
+/// holds them after its first slot (xfaces.c's `LFACE_*_INDEX`), as
+/// `face-attributes-as-vector` and `internal-lisp-face-p` give them.
+pub const FACE_ATTRIBUTES: [&str; 19] = [
     ":family",
     ":foundry",
     ":width",
@@ -355,8 +357,9 @@ pub const FACE_ATTRIBUTES: [&str; 18] = [
     ":box",
     ":font",
     ":inherit",
-    ":extend",
+    ":fontset",
     ":distant-foreground",
+    ":extend",
 ];
 
 /// Some of a face's attributes, as Emacs's. `None` is `unspecified`,
@@ -386,6 +389,8 @@ pub struct FaceAttrs {
     pub extend: Option<bool>,
     pub stipple: Option<String>,
     pub font: Option<String>,
+    /// The fontset's name, as `:fontset`.
+    pub fontset: Option<String>,
     /// The faces to take attributes this one does not set from, earlier
     /// ones first.
     pub inherit: Option<Vec<String>>,
@@ -416,6 +421,7 @@ impl FaceAttrs {
             extend: over.extend.or(self.extend),
             stipple: pick(&over.stipple, &self.stipple),
             font: pick(&over.font, &self.font),
+            fontset: pick(&over.fontset, &self.fontset),
             inherit: pick(&over.inherit, &self.inherit),
         }
     }
@@ -478,6 +484,7 @@ impl FaceAttrs {
             ":extend" => self.extend = flag(),
             ":stipple" => self.stipple = text(),
             ":font" => self.font = text(),
+            ":fontset" => self.fontset = text(),
             ":inherit" => {
                 self.inherit = match value {
                     _ if unspecified => None,
@@ -520,8 +527,10 @@ impl FaceAttrs {
             ":extend" => flag(self.extend),
             ":stipple" => text(&self.stipple),
             ":font" => text(&self.font),
+            ":fontset" => text(&self.fontset),
             ":inherit" => match &self.inherit {
                 None => unspecified(),
+                Some(list) if list.is_empty() => Value::Null,
                 Some(list) if list.len() == 1 => Value::Str(list[0].clone()),
                 Some(list) => Value::List(list.iter().map(|s| Value::Str(s.clone())).collect()),
             },
