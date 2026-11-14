@@ -318,6 +318,26 @@ fn included_ranges_and_notifiers_as_emacs_gives_them() {
         r#"[[[2,8],[11,19]],"(document (array (number) (number)) (object (pair key: (string (string_content)) value: (number))))","treesit-range-invalid","treesit-range-invalid",null,"document"]"#
     );
 
+    // The ranges stay in characters across an edit before them, as Emacs's.
+    let (mut ed, s) = setup();
+    ed.window_buffer_mut().set_text("x [1, 2] y");
+    let got = with_treesit(
+        &mut ed,
+        &s,
+        r#"
+        const p = e8.treesitParserCreate("json");
+        e8.treesitParserSetIncludedRanges(p, [[2, 8]]);
+        const before = e8.treesitNodeString(e8.treesitParserRootNode(p));
+        e8.gotoChar(0);
+        e8.insert("éé");
+        const root = e8.treesitParserRootNode(p);
+        return [before, e8.treesitNodeString(root), e8.treesitSearchSubtree(root, null as any) ?? null, e8.treesitNodeMatchP(root, null as any, true),
+          e8.conditionCase(() => e8.treesitInduceSparseTree(root, "x", 3 as any), { "wrong-type-argument": () => "wrong-type-argument" })];
+        "#,
+    );
+    // Emacs 30.2: ("(document (array (number) (number)))" "(document (ERROR (UNEXPECTED 'x') (number)))" nil nil wrong-type-argument)
+    assert_eq!(got, r#"["(document (array (number) (number)))","(document (ERROR (UNEXPECTED 'x') (number)))",null,false,"wrong-type-argument"]"#);
+
     let (mut ed, s) = setup();
     ed.window_buffer_mut().set_text("fn main() {}\n");
     let got = with_treesit(

@@ -1033,6 +1033,7 @@
     treesitSetFontLockRules: (language, rules) => treesit("treesit--set-font-lock-rules", String(language), rules.map(([query, override]) => [String(query), override ?? null])),
     TreesitParser,
     TreesitNode,
+    TreesitCompiledQuery,
     treesitParserP: (x) => x instanceof TreesitParser,
     treesitNodeP: (x) => x instanceof TreesitNode,
     treesitParserCreate: (language, buffer, noReuse = false, tag) =>

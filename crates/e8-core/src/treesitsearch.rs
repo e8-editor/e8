@@ -102,17 +102,16 @@ impl Editor {
     /// The predicate `treesit-thing-settings` gives a thing in a language.
     fn ts_thing(&self, thing: &str, language: &str) -> Option<Value> {
         let Some(Value::List(settings)) = self.variable("treesit-thing-settings") else { return None };
-        settings.iter().find_map(|entry| {
-            let Value::List(entry) = entry else { return None };
-            let (Some(Value::Str(lang) | Value::Symbol(lang)), Some(Value::List(things))) = (entry.first(), entry.get(1)) else { return None };
-            if lang != language {
-                return None;
-            }
-            things.iter().find_map(|t| match t {
-                Value::List(t) if matches!(t.first(), Some(Value::Str(n) | Value::Symbol(n)) if n == thing) => t.get(1).cloned(),
-                _ => None,
-            })
-        })
+        // The language's first entry only, and in it the thing's first, as `assq` finds them.
+        let things = settings.iter().find_map(|entry| match entry {
+            Value::List(entry) if matches!(entry.first(), Some(Value::Str(l) | Value::Symbol(l)) if l == language) => Some(entry.get(1)),
+            _ => None,
+        })??;
+        let Value::List(things) = things else { return None };
+        things.iter().find_map(|t| match t {
+            Value::List(t) if matches!(t.first(), Some(Value::Str(n) | Value::Symbol(n)) if n == thing) => Some(t.get(1).cloned()),
+            _ => None,
+        })?
     }
 
     /// Checks a predicate's form before a walk, as
@@ -125,6 +124,9 @@ impl Editor {
             let message = "Predicate recursion level exceeded: it must not exceed 100 levels";
             return Err(Error::signal("treesit-invalid-predicate", message, vec![Value::Str(message.into())]));
         }
+        // nil is a symbol in Lisp, a thing never defined.
+        let nil = Value::Symbol("nil".into());
+        let pred = if pred.is_nil() { &nil } else { pred };
         match pred {
             Value::Str(_) => Ok(()),
             p if self.ts_functionp(p) => Ok(()),
@@ -270,6 +272,12 @@ impl Editor {
     /// `process` makes of it, and the matching nodes below it; the top's
     /// node is null, and the whole is null if nothing matches.
     pub(crate) fn treesit_induce_sparse_tree(&mut self, root: &NodeRef, pred: &Value, process: Option<&Value>, depth: Option<i64>) -> Result<Value> {
+        if let Some(f) = process
+            && !self.ts_functionp(f)
+            && !matches!(f, Value::Str(name) if self.fboundp(name))
+        {
+            return Err(Error::signal("wrong-type-argument", format!("Wrong type argument: functionp, {f}"), vec![Value::Symbol("functionp".into()), f.clone()]));
+        }
         let Some(walk) = self.ts_walk_from(root, pred)? else { return Ok(Value::Null) };
         let node = node_at_path(&walk.tree, &root.path).expect("ts_walk checked it");
         let mut top = Vec::new();

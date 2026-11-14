@@ -46,7 +46,7 @@ Option 2. Rust is for what Emacs does in C (ADR 0005).
 - **Faster walks.** A walk on QuickJS no longer calls a primitive per node.
 - **Recorded in [differences.md](../differences.md):**
   - Lisp vectors in queries are written as arrays starting with `Symbol.for("[")`.
-  - Notifiers run after the primitive or command that parsed, not from inside redisplay.
+  - Notifiers run after the primitive or command that parsed, so a parse highlighting made is told late.
   - Emacs 30.2 never defines `treesit-predicate-not-found` as an error, so `condition-case` on `error` does not catch it there. E8 does catch it.
 - **Not done:**
   - Highlighting does not yet follow `treesit-range-settings`, so an embedded language's parser is not highlighted.

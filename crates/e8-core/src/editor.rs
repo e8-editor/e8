@@ -270,6 +270,8 @@ pub struct Editor {
     /// The queries `treesit-query-compile` made objects of, as language
     /// and source, which a query object is the index of.
     pub(crate) treesit_query_objects: Vec<(String, String)>,
+    /// Whether parser notifiers are being called, so they are not called again inside.
+    pub(crate) treesit_notifying: bool,
     pub(crate) next_hook_id: u64,
     /// Whether the running command was started by keys or M-x rather than
     /// called from code (Emacs's `called-interactively-p`).
@@ -515,6 +517,7 @@ impl Editor {
             grammars: crate::syntax::builtin_grammars().into_iter().collect(),
             treesit_queries: Default::default(),
             treesit_query_objects: Vec::new(),
+            treesit_notifying: false,
             next_hook_id: 0,
             interactive: false,
             prefix_arg: None,

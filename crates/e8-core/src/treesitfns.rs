@@ -474,7 +474,7 @@ impl Editor {
             "treesit-query-p" => Value::Bool(matches!(arg(0), Some(Value::Treesit(TsObject::Query(_)) | Value::Str(_))) || matches!(arg(0), Some(Value::List(l)) if !l.is_empty())),
             "treesit-compiled-query-p" => Value::Bool(matches!(arg(0), Some(Value::Treesit(TsObject::Query(_))))),
             "treesit-query-language" => match arg(0) {
-                Some(Value::Treesit(TsObject::Query(id))) => Value::Str(self.treesit_query_objects[*id as usize].0.clone()),
+                Some(v @ Value::Treesit(TsObject::Query(id))) => Value::Str(self.treesit_query_objects.get(*id as usize).ok_or_else(|| wrong_type("treesit-compiled-query-p", Some(v)))?.0.clone()),
                 v => return Err(wrong_type("treesit-compiled-query-p", v)),
             },
             "treesit-pattern-expand" => Value::Str(pattern_expand(arg(0).unwrap_or(&Value::Null))),
@@ -496,6 +496,10 @@ impl Editor {
                 let (b, p) = parser(0)?;
                 let (b, p) = self.ts_parser(b, p)?;
                 let ranges = arg(1).cloned().unwrap_or(Value::Null);
+                // The same ranges again are left as they are, before any check, as Emacs's.
+                if self.buffers[b].parsers[p].included_ranges() == ranges {
+                    return Ok(Value::Null);
+                }
                 let (min, max) = (self.buffers[b].point_min(), self.buffers[b].point_max());
                 let invalid = || Error::signal("treesit-range-invalid", "RANGE is either overlapping, out-of-order or out-of-range", vec![ranges.clone()]);
                 let mut spans = Vec::new();
@@ -576,6 +580,11 @@ impl Editor {
     /// changed, and the parser, as Emacs does after it parses again; an
     /// error in one is muted, as Emacs's `safe_calln` mutes it.
     pub(crate) fn run_treesit_notifiers(&mut self) {
+        // Not again from inside a notifier, whose own parses wait for the
+        // next call, as Emacs calls them while `within_reparse` is set.
+        if self.treesit_notifying {
+            return;
+        }
         let mut calls = Vec::new();
         for buffer in &self.buffers {
             for parser in &buffer.parsers {
@@ -587,9 +596,11 @@ impl Editor {
                 }
             }
         }
+        self.treesit_notifying = true;
         for (f, ranges, parser) in calls {
             let _ = self.funcall(&f, &[ranges, parser]);
         }
+        self.treesit_notifying = false;
     }
 
     /// Compiles a query for a language, checking its predicates, as
@@ -637,7 +648,7 @@ impl Editor {
         let language = self.buffers[b].parsers[p].language.clone();
         let source = match arg(1) {
             Some(Value::Treesit(TsObject::Query(id))) => {
-                let (query_language, source) = self.treesit_query_objects[*id as usize].clone();
+                let (query_language, source) = self.treesit_query_objects.get(*id as usize).cloned().ok_or_else(|| wrong_type("treesit-query-p", arg(1)))?;
                 if query_language != language {
                     return Err(error("treesit-query-error", format!("The query is for {query_language}, the node {language}")));
                 }

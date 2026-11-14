@@ -125,6 +125,21 @@ pub(crate) fn builtin_grammars() -> Vec<(&'static str, Grammar)> {
     ]
 }
 
+/// Spans of characters as tree-sitter's ranges, in bytes clipped to the
+/// text; only bytes count, as Emacs gives tree-sitter dummy points.
+fn byte_ranges(text: &Rope, spans: &[(usize, usize)]) -> Vec<tree_sitter::Range> {
+    let chars = text.len_chars();
+    spans
+        .iter()
+        .map(|&(beg, end)| tree_sitter::Range {
+            start_byte: text.char_to_byte(beg.min(chars)),
+            end_byte: text.char_to_byte(end.min(chars)),
+            start_point: Point::default(),
+            end_point: Point::default(),
+        })
+        .collect()
+}
+
 /// A buffer's syntax tree, and the parser that keeps it, as Emacs's
 /// tree-sitter parser objects.
 pub(crate) struct SyntaxTree {
@@ -150,6 +165,10 @@ pub(crate) struct SyntaxTree {
     /// The ranges `treesit-parser-set-included-ranges` last set, as given,
     /// or nil for the whole buffer.
     ranges: RefCell<Value>,
+    /// Those ranges in characters, which each parse turns into bytes again,
+    /// clipped to the text, as Emacs's `treesit_sync_visible_region` does,
+    /// since an edit before a range moves its bytes.
+    spans: RefCell<Vec<(usize, usize)>>,
     /// The functions told what each parse changed, newest first, as
     /// `treesit-parser-add-notifier` adds them.
     pub(crate) notifiers: RefCell<Vec<Value>>,
@@ -177,6 +196,7 @@ impl SyntaxTree {
             query: grammar.highlights()?,
             rules: RefCell::new(None),
             ranges: RefCell::new(Value::Null),
+            spans: RefCell::new(Vec::new()),
             notifiers: RefCell::new(Vec::new()),
             pending_notifications: RefCell::new(Vec::new()),
         })
@@ -206,6 +226,10 @@ impl SyntaxTree {
         if self.stale.get() || self.tree.borrow().is_none() {
             let old = self.tree.borrow().clone();
             let len = text.len_bytes();
+            if !self.spans.borrow().is_empty() {
+                let ranges = byte_ranges(text, &self.spans.borrow());
+                let _ = self.parser.borrow_mut().set_included_ranges(&ranges);
+            }
             let mut read = |byte: usize, _: Point| -> &[u8] {
                 if byte >= len {
                     return &[];
@@ -237,23 +261,11 @@ impl SyntaxTree {
     /// for none, as `treesit-parser-set-included-ranges`, keeping `given`
     /// to give back; the next parse uses them.
     pub(crate) fn set_included_ranges(&self, text: &Rope, spans: &[(usize, usize)], given: Value) -> std::result::Result<(), ()> {
-        if *self.ranges.borrow() == given {
-            return Ok(());
-        }
-        let ranges: Vec<tree_sitter::Range> = spans
-            .iter()
-            .map(|&(beg, end)| tree_sitter::Range {
-                start_byte: text.char_to_byte(beg),
-                end_byte: text.char_to_byte(end),
-                // Only bytes count, as Emacs gives tree-sitter dummy points.
-                start_point: Point::default(),
-                end_point: Point::default(),
-            })
-            .collect();
-        self.parser.borrow_mut().set_included_ranges(&ranges).map_err(|_| ())?;
+        // Kept before tree-sitter is asked, as Emacs keeps them.
         *self.ranges.borrow_mut() = given;
+        *self.spans.borrow_mut() = spans.to_vec();
         self.stale.set(true);
-        Ok(())
+        self.parser.borrow_mut().set_included_ranges(&byte_ranges(text, spans)).map_err(|_| ())
     }
 
     /// The ranges last set, as given, or nil.
