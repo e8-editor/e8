@@ -16053,6 +16053,12 @@ declare global {
      * if it has none. Undefined if there is no such interface.
      */
     function networkInterfaceInfo(ifname: string): [number[] | null, number[] | null, number[] | null, [number, number[]] | null, string[]] | undefined;
+    /** Whether E8 can parse HTML and XML, as libxml-available-p; always true. */
+    function libxmlAvailableP(): boolean;
+    /** The HTML in a region as the tree [tag, attrs, ...children], as libxml-parse-html-region. */
+    function libxmlParseHtmlRegion(start?: number | null, end?: number | null, baseUrl?: string | null, discardComments?: boolean): DomNode | undefined;
+    /** The XML in a region as the tree [tag, attrs, ...children], or undefined where it is not well formed, as libxml-parse-xml-region. */
+    function libxmlParseXmlRegion(start?: number | null, end?: number | null, baseUrl?: string | null, discardComments?: boolean): DomNode | undefined;
     function removeTextProperty(start: number, end: number, name: string): void;
     /**
      * Start a group of changes to the current buffer that can be taken back as
@@ -19360,6 +19366,13 @@ declare global {
      * lines end, or undecided ones without -unix, -dos or -mac.
      */
     type CodingSystem = string;
+    /**
+     * A parsed HTML or XML node, as libxml-parse-html-region gives it and
+     * dom.el walks it: the tag, its attributes or null, then its children,
+     * each a node or the text it holds. A comment is ["comment", null, text].
+     * The attributes are an alist, as Emacs's are: pairs of name and value.
+     */
+    type DomNode = [string, [string, string][] | null, ...(DomNode | string)[]];
     /** Whether a name names a coding system, by any of its aliases, as coding-system-p. */
     function codingSystemP(cs: unknown): boolean;
     /** The coding system a name names, undefined for null, or a coding-system-error, as check-coding-system. */

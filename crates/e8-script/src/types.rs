@@ -2045,6 +2045,13 @@ const API: &str = r##"
    * lines end, or undecided ones without -unix, -dos or -mac.
    */
   type CodingSystem = string;
+  /**
+   * A parsed HTML or XML node, as libxml-parse-html-region gives it and
+   * dom.el walks it: the tag, its attributes or null, then its children,
+   * each a node or the text it holds. A comment is ["comment", null, text].
+   * The attributes are an alist, as Emacs's are: pairs of name and value.
+   */
+  type DomNode = [string, [string, string][] | null, ...(DomNode | string)[]];
   /** Whether a name names a coding system, by any of its aliases, as coding-system-p. */
   function codingSystemP(cs: unknown): boolean;
   /** The coding system a name names, undefined for null, or a coding-system-error, as check-coding-system. */
