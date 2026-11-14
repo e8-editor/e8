@@ -181,8 +181,9 @@ impl<'a> Sink<'a> {
 /// What the window keeps of each view it made.
 #[derive(Default)]
 struct View {
-    /// Whether a page has finished loading, before which scripts wait, as
-    /// wry would run them without giving back their results.
+    /// Whether a page has finished loading, before which scripts whose
+    /// results are wanted wait, as wry would run them without giving back
+    /// their results.
     ready: bool,
     held: Vec<XwidgetRequest>,
     /// The last search, for the next and previous results: the query,
@@ -232,11 +233,24 @@ impl Default for XwidgetHost {
 
 /// A script wrapped so its result always serializes, as WebKit's own
 /// conversion would fail on a DOM node or a cycle: such values are nil, as
-/// `webkit_js_to_lisp` makes what it cannot convert.
+/// `webkit_js_to_lisp` makes what it cannot convert. A single expression
+/// is wrapped as it is, so pages whose Content Security Policy forbids
+/// `eval` still give its value; several statements go through `eval` for
+/// the last one's value, and where the page forbids that, run as a
+/// function's body, giving what it returns.
 fn wrapped(script: &str) -> String {
-    let source = serde_json::to_string(script).unwrap_or_else(|_| "\"\"".into());
+    let trimmed = script.trim().trim_end_matches(';').trim_end();
+    let value = if !trimmed.is_empty() && !trimmed.contains(';') && !trimmed.contains('\n') {
+        format!("try {{ v = ({trimmed}\n); }} catch (e) {{ return null; }}")
+    } else {
+        let source = serde_json::to_string(script).unwrap_or_else(|_| "\"\"".into());
+        format!(
+            "try {{ v = (0, eval)({source}); }} catch (e) {{ if (!(e instanceof EvalError)) return null; \
+             try {{ v = (function () {{ {script}\n }})(); }} catch (e2) {{ return null; }} }}"
+        )
+    };
     format!(
-        "(() => {{ let v; try {{ v = (0, eval)({source}); }} catch (e) {{ return null; }} \
+        "(() => {{ let v; {value} \
          if (v === undefined) return null; \
          try {{ return JSON.parse(JSON.stringify(v)) ?? null; }} catch (e) {{ return null; }} }})()"
     )
@@ -270,9 +284,15 @@ impl XwidgetHost {
             Ok(backend) => self.backend = Some(backend),
             Err(e) => {
                 self.failed = true;
+                self.pending.clear();
                 self.messages.push(format!("xwidgets: no web views: {e}"));
             }
         }
+    }
+
+    /// Whether any web view exists.
+    pub fn has_views(&self) -> bool {
+        !self.views.is_empty()
     }
 
     /// Whether native views go in the window: there are views, embedded in it.
@@ -282,6 +302,10 @@ impl XwidgetHost {
 
     /// Carries out what the editor asked, or keeps it for when there are views.
     pub fn request(&mut self, requests: Vec<XwidgetRequest>) {
+        // With no web views to be had, nothing waits for them.
+        if self.failed {
+            return;
+        }
         self.pending.extend(requests);
         if self.backend.is_some() {
             for request in std::mem::take(&mut self.pending) {
@@ -388,7 +412,9 @@ impl XwidgetHost {
             XwidgetRequest::GotoUri { uri, .. } => backend.load_url(id, &uri),
             // wry loads HTML without a base URI.
             XwidgetRequest::LoadHtml { html, .. } => backend.load_html(id, &html),
-            XwidgetRequest::ExecuteScript { .. } if !view.ready => view.held.push(request),
+            // wry drops a callback for a script run before the first page
+            // has loaded, so those wait; others it queues itself.
+            XwidgetRequest::ExecuteScript { callback: Some(_), .. } if !view.ready => view.held.push(request),
             XwidgetRequest::ExecuteScript { script, callback, .. } => match callback {
                 Some(callback) => backend.eval(id, &wrapped(&script), Some(callback)),
                 None => backend.eval(id, &script, None),
@@ -603,12 +629,15 @@ pub(crate) mod platform {
                     new_window(Report::NewWindow { id, uri });
                     NewWindowResponse::Deny
                 })
-                // Lisp's download-callback saves the file, as Emacs's
-                // xwidget-webkit-save-as-file does, so the view does not.
+                // The view saves a download in ~/Downloads, the default
+                // xwidget-webkit-download-dir, and Lisp hears where.
                 .with_download_started_handler(move |url, path| {
-                    let file_name = path.file_name().map(|f| f.to_string_lossy().into_owned()).unwrap_or_default();
-                    download(Report::Download { id, url, file_name });
-                    false
+                    let name = path.file_name().map(|f| f.to_os_string()).unwrap_or_else(|| "download".into());
+                    if let Some(home) = std::env::var_os("HOME") {
+                        *path = std::path::Path::new(&home).join("Downloads").join(name);
+                    }
+                    download(Report::Download { id, url, file_name: path.to_string_lossy().into_owned() });
+                    true
                 })
         }
     }
@@ -727,10 +756,17 @@ pub(crate) mod platform {
             // AppKit's loop, which the window runs, runs WKWebView's too;
             // GTK's runs only when asked.
             #[cfg(target_os = "linux")]
-            while gtk::events_pending() {
-                gtk::main_iteration_do(false);
-            }
-            cfg!(target_os = "linux") && !self.views.is_empty()
+            let busy = {
+                let mut busy = false;
+                while gtk::events_pending() {
+                    gtk::main_iteration_do(false);
+                    busy = true;
+                }
+                busy
+            };
+            #[cfg(not(target_os = "linux"))]
+            let busy = false;
+            busy
         }
 
         fn focus_editor(&mut self) {
@@ -867,21 +903,30 @@ mod tests {
             fake.take(),
             vec!["load 1 https://example.com", "html 1 <p>hi</p>", "zoom 1 1.5", "reload 1", "eval 1 history.go(-1)", "eval 1 window.stop()"]
         );
-        // Scripts wait for a page to finish loading, then run in order.
+        // A script whose result is wanted waits for a page to finish
+        // loading; others wry queues itself.
         host.request(vec![
             XwidgetRequest::ExecuteScript { id: 1, script: "a()".into(), callback: None },
             XwidgetRequest::ExecuteScript { id: 1, script: "1 + 1".into(), callback: Some(7) },
         ]);
-        assert!(fake.take().is_empty());
+        assert_eq!(fake.take(), vec!["eval 1 a()"]);
         report(Report::Finished { id: 1, uri: "https://example.com/".into() });
         host.begin();
         let log = fake.take();
-        assert_eq!(log[0], "eval 1 a()");
-        assert!(log[1].starts_with("eval 1 cb7 (() =>") && log[1].contains("\"1 + 1\""), "{log:?}");
+        // A single expression is wrapped as it is, with no eval, which a
+        // page's Content Security Policy may forbid.
+        assert!(log[0].starts_with("eval 1 cb7 (() =>") && log[0].contains("v = (1 + 1") && !log[0].contains("eval)("), "{log:?}");
         host.request(vec![XwidgetRequest::ExecuteScript { id: 1, script: "b()".into(), callback: None }]);
         assert_eq!(fake.take(), vec!["eval 1 b()"]);
         host.request(vec![XwidgetRequest::Kill { id: 1 }, XwidgetRequest::Stop { id: 1 }]);
         assert_eq!(fake.take(), vec!["destroy 1"]);
+    }
+
+    #[test]
+    fn statements_go_through_eval_with_a_fallback() {
+        let script = wrapped("var a = 1; a + 1;");
+        assert!(script.contains("(0, eval)(\"var a = 1; a + 1;\")") && script.contains("EvalError") && script.contains("(function () { var a = 1; a + 1;"), "{script}");
+        assert!(wrapped("document.title;").contains("v = (document.title\n)"));
     }
 
     #[test]

@@ -42,6 +42,9 @@ pub struct Xwidget {
     /// The pages visited, oldest first, and which is shown.
     pub history: Vec<(String, String)>,
     pub history_index: usize,
+    /// A move through the history asked for and not yet reported, which
+    /// the next page committed is.
+    pub history_move: Option<i64>,
     pub searching: bool,
     pub cookie_file: Option<String>,
 }
@@ -202,6 +205,7 @@ impl Editor {
             zoom: 1.0,
             history: Vec::new(),
             history_index: 0,
+            history_move: None,
             searching: false,
             cookie_file: None,
         });
@@ -264,6 +268,8 @@ impl Editor {
     /// Loads HTML, as `xwidget-webkit-load-html`.
     pub fn xwidget_webkit_load_html(&mut self, xw: &Value, html: &str, base_uri: Option<&str>) -> Result<()> {
         let id = self.webkit(xw)?;
+        // A page of its own can load others, so the agent asks as for a URI.
+        self.check_permission("show HTML in a web page")?;
         self.xwidgets.requests.push(XwidgetRequest::LoadHtml { id, html: html.to_string(), base_uri: base_uri.map(str::to_string) });
         Ok(())
     }
@@ -277,6 +283,7 @@ impl Editor {
         if offset != 0 && (target < 0 || target >= x.history.len() as i64) {
             return Err(Error::new("There is no item at this index"));
         }
+        self.xwidget_mut(id).expect("live").history_move = (offset != 0).then_some(offset);
         self.xwidgets.requests.push(XwidgetRequest::GotoHistory { id, offset });
         Ok(())
     }
@@ -297,6 +304,8 @@ impl Editor {
     /// function, its result comes to it through a `javascript-callback` event.
     pub fn xwidget_webkit_execute_script(&mut self, xw: &Value, script: &str, function: Option<Value>) -> Result<()> {
         let id = self.webkit(xw)?;
+        // A page's JavaScript can load any page, so the agent asks first.
+        self.check_permission("run JavaScript in a web page")?;
         let callback = function.map(|f| {
             self.xwidgets.next_callback += 1;
             self.xwidgets.callbacks.insert(self.xwidgets.next_callback, (id, f));
@@ -518,12 +527,21 @@ impl Editor {
                     x.page_title = title.clone();
                 }
                 if status == "load-committed" {
-                    // A new page, after the one shown; what was forward goes.
-                    let next = if x.history.is_empty() { 0 } else { x.history_index + 1 };
-                    if x.history.get(x.history_index).is_none_or(|(u, _)| *u != uri) {
-                        x.history.truncate(next);
-                        x.history.push((uri, title));
-                        x.history_index = x.history.len() - 1;
+                    let target = x.history_move.take().map(|offset| x.history_index as i64 + offset);
+                    match target {
+                        // A move back or forward asked for: the page there.
+                        Some(t) if t >= 0 && (t as usize) < x.history.len() => {
+                            x.history_index = t as usize;
+                            x.history[t as usize].0 = uri;
+                        }
+                        _ if x.history.get(x.history_index).is_some_and(|(u, _)| *u == uri) => {}
+                        // A new page, after the one shown; what was forward goes.
+                        _ => {
+                            let next = if x.history.is_empty() { 0 } else { x.history_index + 1 };
+                            x.history.truncate(next);
+                            x.history.push((uri, title));
+                            x.history_index = x.history.len() - 1;
+                        }
                     }
                 }
                 if status == "load-finished" {

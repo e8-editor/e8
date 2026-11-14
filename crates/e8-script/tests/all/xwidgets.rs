@@ -112,7 +112,12 @@ fn pages_report_back_through_xwidget_events() {
     // The history around the page shown: (0 "B" uri), back to A, nothing forward.
     assert_eq!(r("return e8.xwidgetWebkitBackForwardList(xw);"), r#"[[0,"B","https://b.test/"],[[-1,"A","https://a.test/"]],[]]"#);
     assert_eq!(r("return e8.xwidgetWebkitGotoHistory(xw, 1);"), "ERR There is no item at this index");
+    // Back to A, which the page then commits, and forward again to B.
     assert_eq!(r("e8.xwidgetWebkitGotoHistory(xw, -1); return null;"), "null");
+    ed.xwidget_event(XwidgetEvent::LoadChanged { id: 1, status: "load-committed".into(), uri: "https://a.test/".into(), title: "A".into() });
+    let mut r = |code: &str| run(&mut ed, &s, code);
+    assert_eq!(r("return e8.xwidgetWebkitBackForwardList(xw);"), r#"[[0,"A","https://a.test/"],[],[[1,"B","https://b.test/"]]]"#);
+    assert_eq!(r("e8.xwidgetWebkitGotoHistory(xw, 1); return null;"), "null");
     // A script's result comes to its function through a javascript-callback event.
     r(r#"globalThis.got = null; e8.funcall("xwidget-put", xw, Symbol.for("callback"), Symbol.for("xwidget-webkit-callback")); e8.xwidgetWebkitExecuteScript(xw, "1 + 1", (v: any) => { got = v; }); return null;"#);
     let requests = ed.take_xwidget_requests();
@@ -167,7 +172,10 @@ fn killing_a_buffer_kills_its_xwidgets() {
     let (mut ed, s) = setup();
     run(&mut ed, &s, r#"globalThis.b = e8.getBufferCreate("web"); globalThis.xw = e8.makeXwidget(Symbol.for("webkit"), "t", 10, 10, null, "web"); return null;"#);
     ed.take_xwidget_requests();
-    assert_eq!(run(&mut ed, &s, r#"e8.call("kill-buffer", "web"); return e8.xwidgetLiveP(xw);"#), "false");
+    // Killing asks first while an xwidget asks on exit, as xwidget.el's query does.
+    let killed = run(&mut ed, &s, r#"e8.call("kill-buffer", "web"); return e8.xwidgetLiveP(xw);"#);
+    assert!(killed.starts_with("ERR"), "{killed}");
+    assert_eq!(run(&mut ed, &s, r#"e8.setXwidgetQueryOnExitFlag(xw, null); e8.call("kill-buffer", "web"); return e8.xwidgetLiveP(xw);"#), "false");
     assert_eq!(ed.take_xwidget_requests(), vec![XwidgetRequest::Kill { id: 1 }]);
 }
 

@@ -542,9 +542,12 @@ impl E8App {
             self.message(message);
         }
         // GTK's loop runs between frames, so frames keep coming while it
-        // has views; and a view waits for the window's handle next frame.
+        // has views: soon while it is busy, less often while idle; and a
+        // view waits for the window's handle next frame.
         if again || self.xwidgets.wants_backend() {
             ctx.request_repaint_after(std::time::Duration::from_millis(16));
+        } else if cfg!(target_os = "linux") && self.xwidgets.has_views() {
+            ctx.request_repaint_after(std::time::Duration::from_millis(50));
         }
     }
 

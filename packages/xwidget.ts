@@ -171,16 +171,14 @@ function showIdOrNamedElement(xw: e8.Xwidget, name: string): void {
 
 e8.defineVariable({ name: "xwidget-webkit-download-dir", value: "~/Downloads/", doc: "Where xwidget-webkit saves what it downloads." });
 
-/** Asks where to save a download, as xwidget-webkit-save-as-file. */
+/** Says where a download goes: the web view saves it in ~/Downloads, as xwidget-webkit-download-dir is by default. */
 function saveAsFile(url: string, _mimeType: string, fileName: string): void {
-  const dir = String(e8.variable("xwidget-webkit-download-dir") ?? "~/Downloads/");
-  const target = e8.readFileName(`Download ${url} to: `, { dir, initial: fileName });
-  e8.message(`Downloading ${url} to ${target} is left to the web view`);
+  e8.message(`Downloading ${url} to ${fileName}`);
 }
 
 /** Makes a buffer for a new session showing URL, as xwidget-webkit--create-new-session-buffer. */
 function createNewSessionBuffer(url: string, callback?: e8.Value): e8.Buffer {
-  const name = e8.generateNewBufferName(e8.bufferName());
+  const name = e8.generateNewBufferName("*xwidget-webkit*");
   const current = xwidgetWebkitCurrentSession();
   const [width, height] = [insideWidth(), insideHeight()];
   const buffer = e8.getBufferCreate(name);
@@ -312,3 +310,12 @@ e8.defineMajorMode({
     e8.setVariable("truncate-lines", true);
   },
 });
+
+/** Asks before killing a buffer with xwidgets that ask on exit, as xwidget-kill-buffer-query-function. */
+export function xwidgetKillBufferQueryFunction(): boolean {
+  const xwidgets = e8.getBufferXwidgets(e8.bufferName());
+  if (xwidgets.length === 0 || !xwidgets.some((x) => e8.xwidgetQueryOnExitFlag(x))) return true;
+  return e8.yesOrNoP(`Buffer ${JSON.stringify(e8.bufferName())} has xwidgets; kill it? `);
+}
+e8.defun("xwidget-kill-buffer-query-function", xwidgetKillBufferQueryFunction);
+e8.addHook("kill-buffer-query-functions", xwidgetKillBufferQueryFunction);
