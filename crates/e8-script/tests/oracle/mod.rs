@@ -402,6 +402,21 @@ pub fn run(case: &Case) -> State {
             std::fs::create_dir_all(path.parent().expect("inside the case's directory")).expect("a case's directory can be made");
             write_case_file(&path, text);
         }
+        // An auto-save file stands for work done after the file was saved,
+        // so it must be the newer of the two. Writing it last is not
+        // enough where the file system's times are coarser than the gap
+        // between the two writes, which is how a case about recovering
+        // failed on one of CI's machines and not the others, so the files
+        // it saves are dated back explicitly.
+        let saved: Vec<&String> = case.files.keys().filter(|n| n.starts_with('#') && n.ends_with('#')).collect();
+        if !saved.is_empty() {
+            let earlier = std::time::SystemTime::now() - std::time::Duration::from_secs(2);
+            for name in case.files.keys().filter(|n| !saved.contains(n) && !n.ends_with('/')) {
+                if let Ok(file) = std::fs::File::options().write(true).open(dir.path().join(name)) {
+                    let _ = file.set_times(std::fs::FileTimes::new().set_modified(earlier));
+                }
+            }
+        }
     }
     let found = case.find.as_ref().map(|name| {
         let dir = dir.as_ref().expect("find makes a directory");
