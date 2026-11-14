@@ -135,8 +135,103 @@ impl Editor {
     /// in the order they were made.
     pub fn lower_frame(&mut self, frame: FrameId) -> Result<()> {
         self.live_frame(frame)?;
+        self.frame_stack.retain(|f| *f != frame);
+        self.frame_stack.push(frame);
         self.ask_front_end(FrameRequest::Lower { frame });
         Ok(())
+    }
+
+    /// The frames from the topmost to the bottommost, as
+    /// `frame-list-z-order`: a new frame and a raised one go on top, a
+    /// lowered one to the bottom, and `frame-restack` puts one by another.
+    pub fn frame_z_order(&self) -> Vec<FrameId> {
+        let mut order: Vec<FrameId> = self.frame_stack.iter().copied().filter(|f| self.frame_order.contains(f)).collect();
+        for frame in &self.frame_order {
+            if !order.contains(frame) {
+                order.push(*frame);
+            }
+        }
+        order
+    }
+
+    /// Puts `frame` just below `other`, or just above it with `above`, as
+    /// `frame-restack`: where `other` is among the rest stays as it was.
+    pub fn restack_frame(&mut self, frame: FrameId, other: FrameId, above: bool) -> Result<()> {
+        self.live_frame(frame)?;
+        self.live_frame(other)?;
+        if frame == other {
+            return Ok(());
+        }
+        let mut order = self.frame_z_order();
+        order.retain(|f| *f != frame);
+        let at = order.iter().position(|f| *f == other).expect("live");
+        order.insert(if above { at } else { at + 1 }, frame);
+        self.frame_stack = order;
+        Ok(())
+    }
+
+    /// Marks a frame made, or not, as `frame-after-make-frame`: only for
+    /// a made frame is `window-configuration-change-hook` run. Every frame
+    /// is made but one `x-create-frame` has just made, as in Emacs, whose
+    /// `make-frame` marks its new frame made once it is set up.
+    pub fn frame_after_make_frame(&mut self, frame: FrameId, made: bool) -> Result<()> {
+        self.live_frame(frame)?;
+        self.frames_unmade.retain(|f| *f != frame);
+        if !made {
+            self.frames_unmade.push(frame);
+        }
+        Ok(())
+    }
+
+    /// Whether a frame is made, as `frame-after-make-frame` last said.
+    pub fn frame_made(&self, frame: FrameId) -> bool {
+        !self.frames_unmade.contains(&frame)
+    }
+
+    /// Runs `window-configuration-change-hook` for a frame, as window.c's
+    /// `run_window_configuration_change_hook`: not for a frame not yet made.
+    pub fn run_window_configuration_change_hook_for(&mut self, frame: FrameId) -> Result<()> {
+        self.live_frame(frame)?;
+        if !self.frame_made(frame) {
+            return Ok(());
+        }
+        self.run_window_configuration_change_hook()
+    }
+
+    /// Selects the frame a switch-frame event names, as
+    /// `handle-switch-frame`: the event is `(switch-frame FRAME)` or the
+    /// frame itself, as `do_switch_frame` takes both. Runs
+    /// `mouse-leave-buffer-hook` and keeps the prefix argument for the next
+    /// command, as frame.c does. Gives the frame, or none for a dead one,
+    /// which a late event may name.
+    pub fn handle_switch_frame(&mut self, event: &Value) -> Result<Option<FrameId>> {
+        let prefix = self.current_prefix_arg();
+        self.set_prefix_arg(prefix);
+        self.run_hooks("mouse-leave-buffer-hook")?;
+        let named = match event {
+            Value::List(items) if items.len() >= 2 && items[0].as_str() == Some("switch-frame") => &items[1],
+            other => other,
+        };
+        let Value::Frame(frame) = named else {
+            return Err(Error::signal("wrong-type-argument", "Wrong type argument: framep", vec![Value::Symbol("framep".into()), named.clone()]));
+        };
+        if !self.frame_order.contains(frame) {
+            return Ok(None);
+        }
+        self.select_frame(*frame)?;
+        Ok(Some(*frame))
+    }
+
+    /// What the system draws around a frame, in the front end's units, as
+    /// nsfns.m's `frame_geometry` has it: the width of the border on each
+    /// side and the height of the title bar above, taken from how much
+    /// bigger the outer window is than the frame. A fullscreen frame has
+    /// neither, as there, its outer window being itself.
+    pub fn frame_decorations(&self, frame: FrameId) -> (usize, usize) {
+        let (outer_width, outer_height) = self.frame_outer_size(frame);
+        let (width, height) = self.frame_native_size(frame);
+        let border = outer_width.saturating_sub(width) / 2;
+        (border, outer_height.saturating_sub(height + 2 * border))
     }
 
     /// Keeps what a front end has been asked to do, dropping the oldest
@@ -498,31 +593,41 @@ impl Editor {
     /// `native` is the frame itself, which is the default; `outer` is the
     /// window the system draws around it, title bar and all; `inner`
     /// leaves off the bars drawn above the frame's windows.
+    ///
+    /// The frame's position is the outer window's top left, as the front
+    /// end writes it and Emacs's `left_pos` and `top_pos` are, so the
+    /// frame itself starts below the title bar and inside the border, as
+    /// nsfns.m's `frame_geometry` works it out.
     pub fn frame_edges(&self, frame: FrameId, which: Edges) -> (i64, i64, i64, i64) {
         let (left, top) = self.frame_position(frame);
-        let (width, height) = self.frame_native_size(frame);
+        let (outer_width, outer_height) = self.frame_outer_size(frame);
+        let (border, title) = self.frame_decorations(frame);
+        let (border, title) = (border as i64, title as i64);
+        let (right, bottom) = (left + outer_width as i64 - border, top + outer_height as i64 - border);
         match which {
-            Edges::Native => (left, top, left + width as i64, top + height as i64),
-            Edges::Outer => {
-                let (outer_width, outer_height) = self.frame_outer_size(frame);
-                (left, top, left + outer_width as i64, top + outer_height as i64)
-            }
+            Edges::Native => (left + border, top + border + title, right, bottom),
+            Edges::Outer => (left, top, left + outer_width as i64, top + outer_height as i64),
             Edges::Inner => {
                 // The bars above the windows, as Emacs insets the inner
                 // edges by the tool bar and the internal border.
                 let bars = self.menu_bar_lines(frame) + self.tab_bar_lines(frame);
                 let bars = self.cells_to_units(bars, false) as i64;
-                (left, top + bars, left + width as i64, top + height as i64)
+                (left + border, top + border + title + bars, right, bottom)
             }
         }
     }
 
     /// The size of the window the system draws around a frame, as
     /// `frame-outer-width` and `frame-outer-height`: the frame itself and
-    /// what is drawn around it, which a front end writes in.
+    /// what is drawn around it, which a front end writes in. A fullscreen
+    /// frame has nothing around it, as nsfns.m's `frame_geometry` says.
     pub fn frame_outer_size(&self, frame: FrameId) -> (usize, usize) {
         let outer = self.frame_geometry(frame).outer;
         let (width, height) = self.frame_native_size(frame);
+        let fullscreen = self.frame_parameter(frame, "fullscreen");
+        if matches!(fullscreen.as_ref().and_then(Value::as_str), Some("fullboth" | "fullscreen")) {
+            return (width, height);
+        }
         if outer.0 > 0.0 && outer.1 > 0.0 { (outer.0 as usize, outer.1 as usize) } else { (width, height) }
     }
 }

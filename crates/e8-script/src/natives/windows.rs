@@ -607,17 +607,60 @@ natives! {
     /// run-window-configuration-change-hook does.
     #[ts = "(frame?: FrameLike | null): void"]
     pub fn runWindowConfigurationChangeHook(ed, frame: Option<Frm>) {
-        let _ = frame;
-        ed.run_window_configuration_change_hook()
+        let frame = live_frame(ed, frame)?;
+        ed.run_window_configuration_change_hook_for(frame)
     }
 
     /// Note that a frame was invisible, as frame--set-was-invisible:
     /// E8 keeps nothing of the kind, so this is remembered as a frame's
-    /// parameter and given back.
-    #[ts = "(frame: FrameLike | undefined | null, wasInvisible: boolean): void"]
-    pub fn frameSetWasInvisible(ed, frame: Option<Frm>, was_invisible: bool) {
+    /// parameter. Gives the flag, as Emacs gives t or nil.
+    #[ts = "(frame: FrameLike | undefined | null, wasInvisible: boolean): boolean"]
+    pub fn frameSetWasInvisible(ed, frame: Option<Frm>, was_invisible: bool) -> bool {
         let frame = live_frame(ed, frame)?;
-        ed.set_frame_parameter(frame, "was-invisible", EditorValue::Bool(was_invisible))
+        ed.set_frame_parameter(frame, "was-invisible", EditorValue::Bool(was_invisible))?;
+        Ok(was_invisible)
+    }
+
+    /// Mark a frame made, or not, as frame-after-make-frame: for a frame
+    /// not made, window-configuration-change-hook is not run. make-frame
+    /// marks the frame x-create-frame gives it made. Gives `made` back.
+    #[ts = "(frame: FrameLike | undefined | null, made: Value): Value"]
+    pub fn frameAfterMakeFrame(ed, frame: Option<Frm>, made: EditorValue) -> EditorValue {
+        let frame = live_frame(ed, frame)?;
+        ed.frame_after_make_frame(frame, made.is_true())?;
+        Ok(made)
+    }
+
+    /// Select the frame a switch-frame event names, as
+    /// handle-switch-frame: the event is ["switch-frame", frame] or the
+    /// frame itself. Runs mouse-leave-buffer-hook and keeps the prefix
+    /// argument for the next command. Gives the frame, or undefined for
+    /// one deleted since.
+    #[ts = "(event: Frame | [\"switch-frame\", Frame] | Value): Frame | undefined"]
+    pub fn handleSwitchFrame(ed, event: EditorValue) -> Option<Frm> {
+        Ok(ed.handle_switch_frame(&event)?.map(Frm))
+    }
+
+    /// Make a frame in a window, as x-create-frame, which make-frame's
+    /// frame-creation-function calls on a window system: a frame showing
+    /// the current buffer, with these parameters, not selected and not yet
+    /// marked made (frame-after-make-frame). Only in a window, as Emacs's
+    /// errs where the window system is not in use.
+    #[ts = "(parameters?: { [name: string]: Value } | null): Frame"]
+    pub fn xCreateFrame(ed, parameters: Option<Fields>) -> Frm {
+        if !ed.display_is_a_window() {
+            return Err(e8_core::Error::new("Nextstep windows are not in use or not initialized"));
+        }
+        let was = ed.selected_frame();
+        let frame = ed.make_frame(None)?;
+        let mut named: Vec<(String, EditorValue)> = parameters.map(|p| p.0.into_iter().collect()).unwrap_or_default();
+        if !named.iter().any(|(n, _)| n == "minibuffer") {
+            named.push(("minibuffer".to_string(), EditorValue::Bool(true)));
+        }
+        let made = ed.modify_frame_parameters(frame, &named).and_then(|()| ed.frame_after_make_frame(frame, false));
+        ed.select_frame(was)?;
+        made?;
+        Ok(Frm(frame))
     }
 
     /// Look at a frame's fonts again, as reconsider-frame-fonts: E8's
@@ -927,31 +970,20 @@ natives! {
     /// Each monitor the display is made of, as display-monitor-attributes-list.
     #[ts = "(display?: Value): [string, Value][][]"]
     pub fn displayMonitorAttributesList(ed, _display: Opt<EditorValue>) -> EditorValue {
-        let rect = |(a, b, c, d): (f64, f64, f64, f64)| {
-            EditorValue::List(vec![EditorValue::Number(a), EditorValue::Number(b), EditorValue::Number(c), EditorValue::Number(d)])
-        };
-        let monitors = ed
-            .monitor_attributes()
-            .into_iter()
-            .map(|(monitor, frames)| {
-                // A pair of nils where nothing says, as frame.el's own
-                // fallback gives, rather than nothing at all.
-                let (mm_w, mm_h) = monitor.mm_size.map_or((EditorValue::Null, EditorValue::Null), |(w, h)| {
-                    (EditorValue::Number(w), EditorValue::Number(h))
-                });
-                let pair = |name: &str, value: EditorValue| EditorValue::List(vec![EditorValue::Str(name.into()), value]);
-                // In the order frame.c's make_monitor_attribute_list conses them.
-                EditorValue::List(vec![
-                    pair("name", EditorValue::Str(monitor.name)),
-                    pair("geometry", rect(monitor.geometry)),
-                    pair("workarea", rect(monitor.workarea)),
-                    pair("mm-size", EditorValue::List(vec![mm_w, mm_h])),
-                    pair("frames", EditorValue::List(frames.into_iter().map(EditorValue::Frame).collect())),
-                    pair("source", EditorValue::Str("e8".into())),
-                ])
-            })
-            .collect();
-        Ok(EditorValue::List(monitors))
+        Ok(monitor_attributes(ed, "e8"))
+    }
+
+    /// Each monitor the display is made of, as macOS's
+    /// ns-display-monitor-attributes-list, which frame.el's
+    /// display-monitor-attributes-list calls there: as that, with "NS" as
+    /// the source, and none where E8 is on a terminal, as Emacs gives nil
+    /// for a display that is not a Nextstep one.
+    #[ts = "(terminal?: Value): [string, Value][][]"]
+    pub fn nsDisplayMonitorAttributesList(ed, _terminal: Opt<EditorValue>) -> EditorValue {
+        if !ed.display_is_a_window() {
+            return Ok(EditorValue::List(Vec::new()));
+        }
+        Ok(monitor_attributes(ed, "NS"))
     }
 
     /// A frame's outside edges on the screen, as frame-edges: left, top, right, bottom.
@@ -966,6 +998,67 @@ natives! {
         };
         let (left, top, right, bottom) = ed.frame_edges(frame, which);
         Ok(vec![left as f64, top as f64, right as f64, bottom as f64])
+    }
+
+    /// A frame's edges, as macOS's ns-frame-edges, which frame.el's
+    /// frame-edges calls there: as frameEdges, `type` "outer-edges",
+    /// "inner-edges", or the native edges for anything else.
+    #[ts = "(frame?: FrameLike | null, type?: Value): [number, number, number, number]"]
+    pub fn nsFrameEdges(ed, frame: Option<Frm>, kind: Opt<EditorValue>) -> Vec<f64> {
+        let frame = live_frame(ed, frame)?;
+        let which = match kind.0.as_ref().and_then(EditorValue::as_str) {
+            Some("outer-edges") => e8_core::Edges::Outer,
+            Some("inner-edges") => e8_core::Edges::Inner,
+            _ => e8_core::Edges::Native,
+        };
+        let (left, top, right, bottom) = ed.frame_edges(frame, which);
+        Ok(vec![left as f64, top as f64, right as f64, bottom as f64])
+    }
+
+    /// A frame's geometry, as macOS's ns-frame-geometry, which frame.el's
+    /// frame-geometry calls there: an alist of [name, value] pairs, in
+    /// the front end's units, outer-position, outer-size,
+    /// external-border-size, title-bar-size, menu-bar-external,
+    /// menu-bar-size, tool-bar-external, tool-bar-position, tool-bar-size,
+    /// tab-bar-size and internal-border-width.
+    #[ts = "(frame?: FrameLike | null): [string, Value][]"]
+    pub fn nsFrameGeometry(ed, frame: Option<Frm>) -> EditorValue {
+        let frame = live_frame(ed, frame)?;
+        Ok(ns_frame_geometry(ed, frame))
+    }
+
+    /// The frames from the topmost to the bottommost, as macOS's
+    /// ns-frame-list-z-order, which frame.el's frame-list-z-order calls
+    /// there: a new or raised frame is on top, a lowered one at the
+    /// bottom. Given a live frame, its child frames, which E8 has none of;
+    /// none on a terminal, as Emacs has no Nextstep windows there.
+    #[ts = "(terminal?: Value): Frame[]"]
+    pub fn nsFrameListZOrder(ed, terminal: Opt<EditorValue>) -> Vec<Frm> {
+        if let Some(EditorValue::Frame(id)) = terminal.0
+            && ed.frame_list().contains(&id)
+        {
+            return Ok(Vec::new());
+        }
+        if !ed.display_is_a_window() {
+            return Ok(Vec::new());
+        }
+        Ok(ed.frame_z_order().into_iter().map(Frm).collect())
+    }
+
+    /// Put `frame1` just below `frame2`, or just above it with `above`, as
+    /// macOS's ns-frame-restack, which frame.el's frame-restack calls
+    /// there; true when done. Where `frame2` is among the rest stays, and
+    /// frameListZOrder shows it. On a terminal it cannot, as Emacs cannot
+    /// without Nextstep windows.
+    #[ts = "(frame1: FrameLike, frame2: FrameLike, above?: Value): boolean"]
+    pub fn nsFrameRestack(ed, frame1: Frm, frame2: Frm, above: Opt<EditorValue>) -> bool {
+        let frame1 = live_frame(ed, Some(frame1))?;
+        let frame2 = live_frame(ed, Some(frame2))?;
+        if !ed.display_is_a_window() {
+            return Err(e8_core::Error::new("Cannot restack frames"));
+        }
+        ed.restack_frame(frame1, frame2, above.0.is_some_and(|a| a.is_true()))?;
+        Ok(true)
     }
 
     /// The size of the window the system draws around a frame, title bar and all, as frame-outer-width and -height.
@@ -1813,6 +1906,71 @@ fn valid_window(ed: &e8_core::Editor, window: Option<Win>) -> Result<e8_core::Wi
         return Err(e8_core::Error::signal("wrong-type-argument", "Not a valid window", vec![EditorValue::Symbol("window-valid-p".into()), EditorValue::Window(id)]));
     }
     Ok(id)
+}
+
+/// Each monitor with its attributes, as frame.c's
+/// `make_monitor_attribute_list` conses them, `source` saying where they
+/// came from.
+fn monitor_attributes(ed: &e8_core::Editor, source: &str) -> EditorValue {
+    let rect = |(a, b, c, d): (f64, f64, f64, f64)| {
+        EditorValue::List(vec![EditorValue::Number(a), EditorValue::Number(b), EditorValue::Number(c), EditorValue::Number(d)])
+    };
+    let monitors = ed
+        .monitor_attributes()
+        .into_iter()
+        .map(|(monitor, frames)| {
+            // A pair of nils where nothing says, as frame.el's own
+            // fallback gives, rather than nothing at all.
+            let (mm_w, mm_h) = monitor.mm_size.map_or((EditorValue::Null, EditorValue::Null), |(w, h)| {
+                (EditorValue::Number(w), EditorValue::Number(h))
+            });
+            let pair = |name: &str, value: EditorValue| EditorValue::List(vec![EditorValue::Str(name.into()), value]);
+            // In the order frame.c's make_monitor_attribute_list conses them.
+            EditorValue::List(vec![
+                pair("name", EditorValue::Str(monitor.name)),
+                pair("geometry", rect(monitor.geometry)),
+                pair("workarea", rect(monitor.workarea)),
+                pair("mm-size", EditorValue::List(vec![mm_w, mm_h])),
+                pair("frames", EditorValue::List(frames.into_iter().map(EditorValue::Frame).collect())),
+                pair("source", EditorValue::Str(source.into())),
+            ])
+        })
+        .collect();
+    EditorValue::List(monitors)
+}
+
+/// A frame's geometry as nsfns.m's `frame_geometry` lists it, in the
+/// front end's units, with the tab bar xfns.c's lists too. E8's menu bar
+/// and tab bar are drawn in the frame, as X's are without a toolkit, and
+/// E8 has no tool bar and no internal border.
+fn ns_frame_geometry(ed: &e8_core::Editor, frame: e8_core::FrameId) -> EditorValue {
+    let n = |x: f64| EditorValue::Number(x);
+    let two = |a: f64, b: f64| EditorValue::List(vec![n(a), n(b)]);
+    let entry = |name: &str, value: EditorValue| EditorValue::List(vec![EditorValue::Str(name.into()), value]);
+    let (left, top) = ed.frame_position(frame);
+    let (outer_width, outer_height) = ed.frame_outer_size(frame);
+    let (width, _) = ed.frame_native_size(frame);
+    let (border, title) = ed.frame_decorations(frame);
+    // A bar across the frame is as wide as it is, as X's are, and as
+    // tall as its lines.
+    let bar = |lines: usize| {
+        let height = ed.cells_to_units(lines, false) as f64;
+        two(if lines > 0 { width as f64 } else { 0.0 }, height)
+    };
+    let tool_bar_position = ed.frame_parameter(frame, "tool-bar-position").unwrap_or(EditorValue::Str("top".into()));
+    EditorValue::List(vec![
+        entry("outer-position", two(left as f64, top as f64)),
+        entry("outer-size", two(outer_width as f64, outer_height as f64)),
+        entry("external-border-size", two(border as f64, border as f64)),
+        entry("title-bar-size", two(0.0, title as f64)),
+        entry("menu-bar-external", EditorValue::Null),
+        entry("menu-bar-size", bar(ed.menu_bar_lines(frame))),
+        entry("tool-bar-external", EditorValue::Null),
+        entry("tool-bar-position", tool_bar_position),
+        entry("tool-bar-size", two(0.0, 0.0)),
+        entry("tab-bar-size", bar(ed.tab_bar_lines(frame))),
+        entry("internal-border-width", n(ed.frame_internal_border_width() as f64)),
+    ])
 }
 
 /// A frame given to a native, the selected one by default, checked live.

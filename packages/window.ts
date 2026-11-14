@@ -4743,5 +4743,7 @@ e8.addHook("post-command-hook", () => {
   const now = windowsNow();
   if (now === lastConfiguration) return;
   lastConfiguration = now;
-  e8.runHooks("window-configuration-change-hook");
+  // Not for a frame frame-after-make-frame has not marked made, as
+  // window.c's run_window_configuration_change_hook.
+  e8.runWindowConfigurationChangeHook();
 });

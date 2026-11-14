@@ -361,6 +361,32 @@ impl Editor {
     /// The keys that ran the command running, as Emacs's
     /// `this-command-keys`: not those of its prefix argument, which ran
     /// commands of their own; after `read-key-sequence`, the sequence it read.
+    /// Makes `this-command-keys` give the keys a string's characters are,
+    /// as Lisp's `set--this-command-keys` takes them: a character with its
+    /// 8th bit set is Meta and the character below, as in a key string.
+    pub fn set_this_command_keys_from_chars(&mut self, keys: &str) {
+        use crate::key::Key;
+        let key = |n: u32| -> Option<Key> {
+            Some(match n {
+                0 => Key::parse("C-@")?,
+                9 => Key::parse("TAB")?,
+                13 => Key::parse("RET")?,
+                27 => Key::parse("ESC")?,
+                127 => Key::parse("DEL")?,
+                1..=31 => Key::char(char::from_u32(n + 0x60)?).ctrl(),
+                _ => Key::char(char::from_u32(n)?),
+            })
+        };
+        self.keyboard.this_command_keys = keys
+            .chars()
+            .filter_map(|c| {
+                let n = c as u32;
+                if (0x80..0x100).contains(&n) { key(n - 0x80).map(Key::meta) } else { key(n) }
+            })
+            .collect();
+        self.keyboard.this_command_raw_keys = self.keyboard.this_command_keys.clone();
+    }
+
     pub fn this_command_keys(&self) -> &[Key] {
         &self.keyboard.this_command_keys
     }

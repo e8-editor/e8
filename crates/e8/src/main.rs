@@ -150,7 +150,7 @@ fn run(
     let mut suspended = 0;
     loop {
         // What the editor last published, whatever it is doing now.
-        let (description, bell, suspend) = {
+        let (description, bell, suspend, raw) = {
             let mut published = driver.published();
             if published.exit {
                 return Ok(());
@@ -161,8 +161,16 @@ fn run(
             let fresh = published.generation != drawn || suspend;
             drawn = published.generation;
             let bell = std::mem::take(&mut published.bell).then_some(published.visible_bell);
-            (published.frames.first().filter(|_| fresh).cloned(), bell, suspend)
+            let raw = std::mem::take(&mut published.terminal_output);
+            (published.frames.first().filter(|_| fresh).cloned(), bell, suspend, raw)
         };
+        // What send-string-to-terminal sent, as it is, before the next frame.
+        if !raw.is_empty() {
+            use std::io::Write;
+            let mut out = io::stdout();
+            out.write_all(raw.as_bytes())?;
+            out.flush()?;
+        }
         if suspend {
             // As Emacs's suspend-emacs: the terminal as the shell left it,
             // stopped until fg, then E8's screen again.

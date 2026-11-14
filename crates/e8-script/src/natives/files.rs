@@ -483,6 +483,30 @@ natives! {
         let short = abbreviate_path(Path::new(&file));
         Ok(if file.ends_with('/') && !short.ends_with('/') { short + "/" } else { short })
     }
+
+    /// Watch a file or directory for the events `flags` names ("create",
+    /// "delete", "write", "extend", "attrib", "link", "rename", "revoke"),
+    /// calling `callback` with `[descriptor, actions, file, file1?]` for
+    /// each, as kqueue-add-watch; a directory's events also name the files
+    /// created, deleted, renamed and written in it. Returns the watch's
+    /// descriptor. Signals file-notify-error where there is no kqueue, as
+    /// on Linux and the web.
+    #[ts = "(file: string, flags: (\"create\" | \"delete\" | \"write\" | \"extend\" | \"attrib\" | \"link\" | \"rename\" | \"revoke\" | (string & {}))[] | null, callback: ((event: [number, string[], string, string?]) => void) | string): number"]
+    pub fn kqueueAddWatch(ed, file: EditorValue, flags: EditorValue, callback: EditorValue) -> EditorValue {
+        ed.kqueue_add_watch(&file, &flags, &callback)
+    }
+
+    /// Stop a watch kqueueAddWatch made, as kqueue-rm-watch: true, or a file-notify-error if it is not one.
+    #[ts = "(descriptor: number): true"]
+    pub fn kqueueRmWatch(ed, descriptor: EditorValue) -> bool {
+        ed.kqueue_rm_watch(&descriptor)
+    }
+
+    /// Whether a watch is in place, as kqueue-valid-p: not once removed, or once what it watched was deleted or renamed.
+    #[ts = "(descriptor: number): true | undefined"]
+    pub fn kqueueValidP(ed, descriptor: EditorValue) -> Option<bool> {
+        Ok(ed.kqueue_valid_p(&descriptor).then_some(true))
+    }
 }
 
 /// A time as milliseconds since 1970, to the nanosecond as far as a number holds it.

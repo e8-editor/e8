@@ -261,4 +261,43 @@ natives! {
     fn insertForYank(ed, text: e8_core::Text) {
         ed.insert_for_yank(text)
     }
+
+    /// A character in Emacs's notation, as text-char-description: a control character as ^A, ^? for DEL, any other as itself.
+    #[ts = "(character: number): string"]
+    pub fn textCharDescription(_ed, character: EditorValue) -> String {
+        let n = match &character {
+            EditorValue::Number(n) if n.fract() == 0.0 && *n >= 0.0 && *n <= 4194303.0 => *n as u32,
+            other => return Err(e8_core::xfaces::wrong_type("characterp", other)),
+        };
+        Ok(match n {
+            0..=31 => format!("^{}", char::from_u32(n + 64).unwrap_or('?')),
+            127 => "^?".to_string(),
+            // A raw byte, as Emacs's eight-bit characters.
+            0x3FFF80.. => e8_core::coding::raw_byte_char((n - 0x3FFF00) as u8).to_string(),
+            _ => char::from_u32(n).map(String::from).unwrap_or_default(),
+        })
+    }
+
+    /// Send text to the terminal as it is, as send-string-to-terminal: in batch to standard output; an error on a graphical frame.
+    #[ts = "(string: string, terminal?: Terminal | Frame | null): undefined"]
+    pub fn sendStringToTerminal(ed, text: EditorValue, _terminal: Opt<EditorValue>) -> Option<bool> {
+        let s = match &text {
+            EditorValue::Str(s) => s.clone(),
+            EditorValue::Text(t) => t.string.clone(),
+            other => return Err(e8_core::xfaces::wrong_type("stringp", other)),
+        };
+        ed.send_string_to_terminal(&s)?;
+        Ok(None)
+    }
+
+    /// Make thisCommandKeys give the keys a string's characters are, as Lisp's set--this-command-keys takes them.
+    #[ts = "(keys: string): undefined"]
+    pub fn setThisCommandKeysFromChars(ed, keys: EditorValue) -> Option<bool> {
+        let s = match &keys {
+            EditorValue::Str(s) => s.clone(),
+            other => return Err(e8_core::xfaces::wrong_type("stringp", other)),
+        };
+        ed.set_this_command_keys_from_chars(&s);
+        Ok(None)
+    }
 }

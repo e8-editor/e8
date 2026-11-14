@@ -2660,6 +2660,12 @@ declare global {
        */
       "fido-vertical-mode": [];
       /**
+       * Remove all existing file notification watches from Emacs.
+       *
+       * Defined in packages/filenotify.ts.
+       */
+      "file-notify-rm-all-watches": [];
+      /**
        * Fill the paragraph at or after point, breaking lines so none passes fill-column, or each paragraph in the region if it is active.
        *
        * With a prefix argument, justify as well, so the lines end at fill-column too. The lines keep the prefix the paragraph's lines share, as adaptive-fill-mode finds it.
@@ -9484,6 +9490,12 @@ declare global {
        */
       "file-name-history": Value;
       /**
+       * Use for debug messages.
+       *
+       * Defined in packages/filenotify.ts.
+       */
+      "file-notify-debug": Value;
+      /**
        * Whether saving writes a new file and then renames it over the old one, so a failed save cannot leave the file half written. It breaks hard links.
        */
       "file-precious-flag": Value;
@@ -15476,6 +15488,12 @@ declare global {
      * after C-u or M-5. Pass prefixArg() to hand on the running command's.
      */
     function callWithPrefix<N extends CommandName | DefinedCommand>(prefix: PrefixArg, name: N, ...args: N extends CommandName ? Commands[N] : Value[]): void;
+    /** A character in Emacs's notation, as text-char-description: a control character as ^A, ^? for DEL, any other as itself. */
+    function textCharDescription(character: number): string;
+    /** Send text to the terminal as it is, as send-string-to-terminal: in batch to standard output; an error on a graphical frame. */
+    function sendStringToTerminal(string: string, terminal?: Terminal | Frame | null): undefined;
+    /** Make thisCommandKeys give the keys a string's characters are, as Lisp's set--this-command-keys takes them. */
+    function setThisCommandKeysFromChars(keys: string): undefined;
     /** Give the current buffer its own value, starting from the one it sees now. */
     function makeLocalVariable(name: VariableName | (string & {})): void;
     /** Remove the current buffer's own value, so it sees the global one again. */
@@ -16683,9 +16701,31 @@ declare global {
     /**
      * Note that a frame was invisible, as frame--set-was-invisible:
      * E8 keeps nothing of the kind, so this is remembered as a frame's
-     * parameter and given back.
+     * parameter. Gives the flag, as Emacs gives t or nil.
      */
-    function frameSetWasInvisible(frame: FrameLike | undefined | null, wasInvisible: boolean): void;
+    function frameSetWasInvisible(frame: FrameLike | undefined | null, wasInvisible: boolean): boolean;
+    /**
+     * Mark a frame made, or not, as frame-after-make-frame: for a frame
+     * not made, window-configuration-change-hook is not run. make-frame
+     * marks the frame x-create-frame gives it made. Gives `made` back.
+     */
+    function frameAfterMakeFrame(frame: FrameLike | undefined | null, made: Value): Value;
+    /**
+     * Select the frame a switch-frame event names, as
+     * handle-switch-frame: the event is ["switch-frame", frame] or the
+     * frame itself. Runs mouse-leave-buffer-hook and keeps the prefix
+     * argument for the next command. Gives the frame, or undefined for
+     * one deleted since.
+     */
+    function handleSwitchFrame(event: Frame | ["switch-frame", Frame] | Value): Frame | undefined;
+    /**
+     * Make a frame in a window, as x-create-frame, which make-frame's
+     * frame-creation-function calls on a window system: a frame showing
+     * the current buffer, with these parameters, not selected and not yet
+     * marked made (frame-after-make-frame). Only in a window, as Emacs's
+     * errs where the window system is not in use.
+     */
+    function xCreateFrame(parameters?: { [name: string]: Value } | null): Frame;
     /**
      * Look at a frame's fonts again, as reconsider-frame-fonts: E8's
      * front ends measure as they draw, so this only redisplays.
@@ -16817,8 +16857,47 @@ declare global {
     function xDisplayList(): string[];
     /** Each monitor the display is made of, as display-monitor-attributes-list. */
     function displayMonitorAttributesList(display?: Value): [string, Value][][];
+    /**
+     * Each monitor the display is made of, as macOS's
+     * ns-display-monitor-attributes-list, which frame.el's
+     * display-monitor-attributes-list calls there: as that, with "NS" as
+     * the source, and none where E8 is on a terminal, as Emacs gives nil
+     * for a display that is not a Nextstep one.
+     */
+    function nsDisplayMonitorAttributesList(terminal?: Value): [string, Value][][];
     /** A frame's outside edges on the screen, as frame-edges: left, top, right, bottom. */
     function frameEdges(frame?: FrameLike | null, which?: "outer-edges" | "native-edges" | "inner-edges" | null): [number, number, number, number];
+    /**
+     * A frame's edges, as macOS's ns-frame-edges, which frame.el's
+     * frame-edges calls there: as frameEdges, `type` "outer-edges",
+     * "inner-edges", or the native edges for anything else.
+     */
+    function nsFrameEdges(frame?: FrameLike | null, type?: Value): [number, number, number, number];
+    /**
+     * A frame's geometry, as macOS's ns-frame-geometry, which frame.el's
+     * frame-geometry calls there: an alist of [name, value] pairs, in
+     * the front end's units, outer-position, outer-size,
+     * external-border-size, title-bar-size, menu-bar-external,
+     * menu-bar-size, tool-bar-external, tool-bar-position, tool-bar-size,
+     * tab-bar-size and internal-border-width.
+     */
+    function nsFrameGeometry(frame?: FrameLike | null): [string, Value][];
+    /**
+     * The frames from the topmost to the bottommost, as macOS's
+     * ns-frame-list-z-order, which frame.el's frame-list-z-order calls
+     * there: a new or raised frame is on top, a lowered one at the
+     * bottom. Given a live frame, its child frames, which E8 has none of;
+     * none on a terminal, as Emacs has no Nextstep windows there.
+     */
+    function nsFrameListZOrder(terminal?: Value): Frame[];
+    /**
+     * Put `frame1` just below `frame2`, or just above it with `above`, as
+     * macOS's ns-frame-restack, which frame.el's frame-restack calls
+     * there; true when done. Where `frame2` is among the rest stays, and
+     * frameListZOrder shows it. On a terminal it cannot, as Emacs cannot
+     * without Nextstep windows.
+     */
+    function nsFrameRestack(frame1: FrameLike, frame2: FrameLike, above?: Value): boolean;
     /** The size of the window the system draws around a frame, title bar and all, as frame-outer-width and -height. */
     function frameOuterWidth(frame?: FrameLike | null): number;
     function frameOuterHeight(frame?: FrameLike | null): number;
@@ -17428,6 +17507,20 @@ declare global {
     function fileNameAbsoluteP(file: string): boolean;
     /** A file name with the home directory written as ~, as Emacs's abbreviate-file-name. */
     function abbreviateFileName(file: string): string;
+    /**
+     * Watch a file or directory for the events `flags` names ("create",
+     * "delete", "write", "extend", "attrib", "link", "rename", "revoke"),
+     * calling `callback` with `[descriptor, actions, file, file1?]` for
+     * each, as kqueue-add-watch; a directory's events also name the files
+     * created, deleted, renamed and written in it. Returns the watch's
+     * descriptor. Signals file-notify-error where there is no kqueue, as
+     * on Linux and the web.
+     */
+    function kqueueAddWatch(file: string, flags: ("create" | "delete" | "write" | "extend" | "attrib" | "link" | "rename" | "revoke" | (string & {}))[] | null, callback: ((event: [number, string[], string, string?]) => void) | string): number;
+    /** Stop a watch kqueueAddWatch made, as kqueue-rm-watch: true, or a file-notify-error if it is not one. */
+    function kqueueRmWatch(descriptor: number): true;
+    /** Whether a watch is in place, as kqueue-valid-p: not once removed, or once what it watched was deleted or renamed. */
+    function kqueueValidP(descriptor: number): true | undefined;
     /** A category table with no categories, as make-category-table. */
     function makeCategoryTable(): CharTable;
     /** What a char-table is for, as char-table-subtype: "case-table", "category-table" or what make-char-table was given. */
