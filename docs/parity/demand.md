@@ -204,6 +204,16 @@ The odds of processes, buffer text and windows ([ADR 0086](../adr/0086-the-odds-
 
 What is left is led by groups of 0.06 or less: a few odds (`send-string-to-terminal`, `display--line-is-continued-p`, for mouse), xwidgets (0.05: lsp-ui, eww, image), the macOS display's frame queries (0.04), frames' last two (0.04), and SQLite (0.03, for emacsql), most of them platform primitives.
 
+## After SQLite
+
+SQLite ([ADR 0087](../adr/0087-sqlite-as-emacs-has-it.md)) landed on 2026-11-14 in pull request 148. Measured again on the same corpus:
+
+- **By name**, 781 of the 877 editor primitives (89%), as before, and 87 of the 169 platform ones (51%): sqlite.c has all 17.
+- **Packages needing nothing missing**: all 77 daily ones, from 76; 292 of 295 MELPA packages, from 291 (emacsql); 41 of Emacs's 49, as before.
+- **Still needed** by at least one package: 8 editor and 14 platform primitives, from 8 and 18.
+
+What is left is xwidgets (0.05: lsp-ui, evil-collection, eww, image), which would need a web view in the GUI's window ([ADR 0087](../adr/0087-sqlite-as-emacs-has-it.md) leaves them out), the macOS display's frame queries (0.04), frames' last two (0.04) and odds of 0.06 or less.
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
@@ -236,7 +246,7 @@ The 35 one-liners are a piece of their own, smaller than any: giving `eobp`, `bo
 
 ## Results
 
-As measured again after the odds of processes, buffer text and windows (ADR 0086), with what E8 has on main at that point.
+As measured again after SQLite (ADR 0087), with what E8 has on main at that point.
 
 ### Missing primitives by demand
 
@@ -245,31 +255,27 @@ Score: the share of each corpus's packages that need the primitive, directly or 
 | # | primitive | C file | score | emacs | melpa | daily | through |
 |---|---|---|---|---|---|---|---|
 | 1 | `send-string-to-terminal` | dispnew.c | 0.04 | 2 / 3 / 0 |  |  |  |
-| 2 | `sqlite-available-p` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 3 | `sqlite-close` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 4 | `sqlite-open` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 5 | `sqlite-select` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 6 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 7 | `set--this-command-keys` | keyboard.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 8 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 9 | `describe-vector` | keymap.c | 0.02 | 1 / 4 / 0 |  |  |  |
-| 10 | `display--line-is-continued-p` | xdisp.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 11 | `frame-after-make-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 12 | `handle-switch-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 13 | `help--describe-vector` | keymap.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 14 | `internal-describe-syntax-value` | syntax.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 15 | `kqueue-add-watch` | kqueue.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 16 | `ns-display-monitor-attributes-list` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 17 | `ns-frame-edges` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 18 | `ns-frame-geometry` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 19 | `ns-frame-list-z-order` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 20 | `ns-frame-restack` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 21 | `x-create-frame` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 22 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 23 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 24 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 25 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 26 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 2 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 3 | `set--this-command-keys` | keyboard.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 4 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 5 | `describe-vector` | keymap.c | 0.02 | 1 / 4 / 0 |  |  |  |
+| 6 | `display--line-is-continued-p` | xdisp.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 7 | `frame-after-make-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 8 | `handle-switch-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 9 | `help--describe-vector` | keymap.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 10 | `internal-describe-syntax-value` | syntax.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 11 | `kqueue-add-watch` | kqueue.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 12 | `ns-display-monitor-attributes-list` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 13 | `ns-frame-edges` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 14 | `ns-frame-geometry` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 15 | `ns-frame-list-z-order` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 16 | `ns-frame-restack` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 17 | `x-create-frame` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 18 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 19 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 20 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 21 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 22 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
 
 ### By piece of work
 
@@ -281,7 +287,6 @@ Packages needing at least one primitive of the group, per corpus, and those for 
 | xwidgets | 7 | 0.05 | 2 | 2 | 0 | 4: lsp-ui, evil-collection, eww (Emacs), image (Emacs) |
 | macos-x | 6 | 0.04 | 2 | 0 | 0 | 1: font-lock (Emacs) |
 | frames | 2 | 0.04 | 2 | 0 | 0 | 0:  |
-| sqlite | 4 | 0.03 | 0 | 1 | 1 | 1: emacsql |
 | keyboard | 1 | 0.02 | 1 | 1 | 0 | 1: embark |
 | files | 1 | 0.02 | 1 | 0 | 0 | 1: files (Emacs) |
 | keymaps | 2 | 0.02 | 1 | 0 | 0 | 0:  |
