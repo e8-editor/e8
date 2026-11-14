@@ -296,6 +296,7 @@ impl Editor {
         let Some(view) = self.frame_list().into_iter().flat_map(|f| self.frame_windows(f)).find(|v| v.id == window) else { return Vec::new() };
         let lines = self.window(window).map_or(24, |w| w.height).max(1) + extra;
         let b = view.buffer;
+        let _drawing = RowsWindow::set(self, window);
         let wrap = self.wrap_in(window, b);
         if self.metrics.uniform() {
             return self.rows_in(b, view.top_line, lines, dark, wrap);
@@ -476,5 +477,25 @@ impl Editor {
     pub fn default_font_height(&self) -> f32 {
         let style = self.style_for_in(self.buffer(), &[], true);
         if self.on_grid(&style) { self.metrics.char_height() } else { self.metrics.line_height(&FontSpec::of(&style)) }
+    }
+}
+
+/// Notes which window rows are being made for while it lives
+/// (`Editor::rows_window`), and puts back what was noted before.
+pub(crate) struct RowsWindow<'a> {
+    ed: &'a Editor,
+    before: Option<WindowId>,
+}
+
+impl<'a> RowsWindow<'a> {
+    pub(crate) fn set(ed: &'a Editor, window: WindowId) -> RowsWindow<'a> {
+        let before = ed.rows_window.replace(Some(window));
+        RowsWindow { ed, before }
+    }
+}
+
+impl Drop for RowsWindow<'_> {
+    fn drop(&mut self) {
+        self.ed.rows_window.set(self.before);
     }
 }

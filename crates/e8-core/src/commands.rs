@@ -1197,7 +1197,7 @@ fn editing(ed: &mut Editor) {
         "Restrict editing in this buffer to the region: the rest is hidden and out of reach until widen (C-x n w).",
         |ed, _| {
             let region = region(ed.buffer())?;
-            ed.buffer_mut().narrow(region.start, region.end);
+            ed.buffer_mut().narrow_within_labels(region.start, region.end);
             Ok(())
         },
     );
@@ -1208,7 +1208,7 @@ fn editing(ed: &mut Editor) {
         |ed, _| ed.pop_global_mark(),
     );
     def(ed, "widen", "Remove the restriction on this buffer, making all of it accessible again.", |ed, _| {
-        ed.buffer_mut().widen();
+        ed.buffer_mut().widen_within_labels();
         Ok(())
     });
     def(ed, "mark-whole-buffer", "Put point at the beginning of the buffer and the mark at the end.", |ed, _| {
@@ -1592,7 +1592,10 @@ fn files_and_buffers(ed: &mut Editor) {
                 } else {
                     return Err(Error::new(format!("Buffer name \u{2018}{name}\u{2019} is in use")));
                 };
-                ed.buffer_mut().name = name;
+                let b = ed.buffer_mut();
+                if b.name != name {
+                    b.last_name = Some(std::mem::replace(&mut b.name, name));
+                }
                 Ok(())
             },
         )

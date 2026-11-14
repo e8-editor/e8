@@ -579,13 +579,13 @@ natives! {
 
     /// Restrict editing and display to a range, as narrow-to-region.
     pub fn narrowToRegion(ed, start: usize, end: usize) {
-        ed.buffer_mut().narrow(start, end);
+        ed.buffer_mut().narrow_within_labels(start, end);
         Ok(())
     }
 
     /// Make the whole buffer accessible again, as widen.
     pub fn widen(ed) {
-        ed.buffer_mut().widen();
+        ed.buffer_mut().widen_within_labels();
         Ok(())
     }
 

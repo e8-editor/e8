@@ -67,6 +67,9 @@ pub(crate) struct Window {
     /// The buffer `window-scroll-functions` last ran for, and a marker in
     /// it at the start they ran for, which edits move as they move the text.
     pub(crate) scrolled_to: Option<(u64, u64)>,
+    /// Its own display table, as `set-window-display-table` gave it,
+    /// which counts before the buffer's and the standard one.
+    pub(crate) display_table: Value,
 }
 
 impl Window {
@@ -90,6 +93,7 @@ impl Window {
             hscroll: Default::default(),
             vscroll: Default::default(),
             scrolled_to: None,
+            display_table: Value::Null,
         }
     }
 }
@@ -1165,6 +1169,27 @@ impl Editor {
         Ok(size)
     }
 
+    /// Resizes the minibuffer window to the new total size set on it, as
+    /// `resize-mini-window-internal`, which `window--resize-mini-window`
+    /// calls once it has set the sizes; gives t. Redisplay sizes it again
+    /// to what it shows as `resize-mini-windows` says, as Emacs's does.
+    pub fn resize_mini_window_internal(&mut self, id: WindowId) -> Result<()> {
+        if id != MINIBUFFER_WINDOW {
+            if self.window(id).is_none() {
+                return Err(crate::xfaces::wrong_type("window-live-p", &Value::Window(id)));
+            }
+            return Err(Error::new("Not a valid minibuffer window"));
+        }
+        let lines = self.window_new.get(&id).and_then(|n| n.total).unwrap_or(0);
+        if lines <= 0 {
+            return Err(Error::new("Cannot resize mini window"));
+        }
+        self.mini_window_lines = lines as usize;
+        self.echo_area_lines = lines as usize;
+        self.window_new.remove(&id);
+        Ok(())
+    }
+
     /// A window's new normal size, as `window-new-normal`: its normal size
     /// until one is set, and nil once window--resize-reset clears it.
     pub fn window_new_normal(&self, id: WindowId) -> Option<f64> {
@@ -1600,6 +1625,21 @@ impl Editor {
         let Some(w) = self.window(id) else { return true };
         let hidden = self.buffers.iter().find(|b| b.id() == w.buffer).is_some_and(|b| matches!(self.variable_in(b, "cursor-type"), Some(Value::Null | Value::Bool(false))));
         w.cursor_shown && !hidden
+    }
+
+    /// The display table a window uses, as `window-display-table`: its own,
+    /// nil if it has none. `wrong-type-argument window-live-p` for a window
+    /// that is not live.
+    pub fn window_display_table(&self, id: WindowId) -> Result<Value> {
+        self.window(id).map(|w| w.display_table.clone()).ok_or_else(|| crate::xfaces::wrong_type("window-live-p", &Value::Window(id)))
+    }
+
+    /// Gives a window a display table, or none with nil, as
+    /// `set-window-display-table`.
+    pub fn set_window_display_table(&mut self, id: WindowId, table: Value) -> Result<()> {
+        let w = self.window_mut(id).ok_or_else(|| crate::xfaces::wrong_type("window-live-p", &Value::Window(id)))?;
+        w.display_table = table;
+        Ok(())
     }
 
     /// Shows or hides a window's cursor, as `internal-show-cursor`.

@@ -158,6 +158,12 @@ pub struct Editor {
     /// Markers that point nowhere, kept so they can be pointed again, as an
     /// Emacs marker object outlives where it points.
     detached_markers: Vec<crate::buffer::Marker>,
+    /// Each killed buffer's name when it was killed, by its id, as
+    /// `buffer-last-name` gives it.
+    pub(crate) dead_buffer_names: std::collections::HashMap<u64, String>,
+    /// The window whose rows are being made, for what depends on the
+    /// window as well as the buffer, as its display table.
+    pub(crate) rows_window: std::cell::Cell<Option<crate::window::WindowId>>,
     /// Whether any buffer has shared its text, so changes must be passed on.
     pub(crate) has_indirect_buffers: bool,
     /// How many commands have started, so code waiting for one it called
@@ -469,6 +475,8 @@ impl Editor {
             processes: Default::default(),
             executed: 0,
             detached_markers: Vec::new(),
+            dead_buffer_names: Default::default(),
+            rows_window: Default::default(),
             has_indirect_buffers: false,
             running: 0,
             remapped_from: None,
@@ -1942,6 +1950,10 @@ impl Editor {
         self.buffers.iter_mut().find(|b| b.name == name)
     }
 
+    pub fn buffers_mut(&mut self) -> &mut [Buffer] {
+        &mut self.buffers
+    }
+
     pub fn buffers(&self) -> &[Buffer] {
         &self.buffers
     }
@@ -2060,6 +2072,12 @@ impl Editor {
             None => self.detached_markers.push(marker),
         }
         Ok(())
+    }
+
+    /// Where a marker is, or where it last was once it points nowhere or
+    /// its buffer is killed, as `marker-last-position`; none for no marker.
+    pub fn marker_last_position(&self, id: u64) -> Option<usize> {
+        self.marker_position(id).map(|(_, p)| p).or_else(|| self.detached_markers.iter().find(|m| m.id == id).map(|m| m.pos))
     }
 
     /// Forgets a marker altogether, once nothing can refer to it.
@@ -2249,6 +2267,38 @@ impl Editor {
 
     /// Kills a buffer even if it has unsaved changes, as answering yes to
     /// kill-buffer's question does. Its auto-save file stays, for recovering.
+    /// The name a buffer had before it was last renamed or killed, as
+    /// `buffer-last-name`: by its id, live or killed.
+    pub fn buffer_last_name(&self, id: u64) -> Option<String> {
+        match self.buffer_with_id(id) {
+            // A buffer never renamed gives the name it was made with, as Emacs's.
+            Some(i) => Some(self.buffers[i].last_name.clone().unwrap_or_else(|| self.buffers[i].name.clone())),
+            None => self.dead_buffer_names.get(&id).cloned(),
+        }
+    }
+
+    /// Swaps the current buffer's text with another live buffer's, as
+    /// `buffer-swap-text`, with its errors for dead and indirect buffers.
+    /// Windows showing either start again at its beginning, as Emacs's do.
+    pub fn buffer_swap_text(&mut self, other: u64) -> Result<()> {
+        let Some(j) = self.buffer_with_id(other) else { return Err(Error::new("Cannot swap a dead buffer's text")) };
+        let i = self.current;
+        let (a, b) = (self.buffers[i].id, self.buffers[j].id);
+        if self.buffers[i].base.is_some() || self.buffers[j].base.is_some() {
+            return Err(Error::new("Cannot swap indirect buffers's text"));
+        }
+        if self.buffers.iter().any(|x| x.base == Some(a) || x.base == Some(b)) {
+            return Err(Error::new("One of the buffers to swap has indirect buffers"));
+        }
+        if i != j {
+            let (lo, hi) = (i.min(j), i.max(j));
+            let (left, right) = self.buffers.split_at_mut(hi);
+            left[lo].swap_text(&mut right[0]);
+        }
+        self.style_cache.borrow_mut().clear();
+        Ok(())
+    }
+
     pub fn kill_buffer_unsaved(&mut self, name: &str) -> Result<()> {
         let index = self
             .find_buffer(name)
@@ -2296,6 +2346,7 @@ impl Editor {
         let current = if self.current == index { other } else { self.buffers[self.current].id };
         self.release_lock_of(index);
         let mut removed = self.buffers.remove(index);
+        self.dead_buffer_names.insert(removed.id, removed.name.clone());
         // Its markers point nowhere now.
         self.detached_markers.extend(removed.take_markers());
         let other_index = self.buffer_with_id(other).expect("live");

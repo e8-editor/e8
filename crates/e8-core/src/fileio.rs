@@ -522,7 +522,9 @@ impl Editor {
         let b = &self.buffers[self.current];
         let name = if b.name == name { name } else { self.unique_buffer_name(&name) };
         let b = &mut self.buffers[self.current];
-        b.name = name;
+        if b.name != name {
+            b.last_name = Some(std::mem::replace(&mut b.name, name));
+        }
         b.path = Some(path.to_path_buf());
         crate::files::set_file_default_directory(b, path);
         if !along_with_file {
