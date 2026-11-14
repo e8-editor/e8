@@ -1255,6 +1255,35 @@ natives! {
         Ok(ed.window_hscroll(live_window(ed, window)?))
     }
 
+    /// The display table a window uses, the selected one by default, as window-display-table: its own, undefined if it has none.
+    #[ts = "(window?: WindowLike | null): Value"]
+    pub fn windowDisplayTable(ed, window: Option<Win>) -> Option<EditorValue> {
+        let id = live_window(ed, window)?;
+        Ok(match ed.window_display_table(id)? {
+            EditorValue::Null => None,
+            table => Some(table),
+        })
+    }
+
+    /// Give a window a display table, or none with null, as set-window-display-table; gives the table.
+    #[ts = "(window: WindowLike | null | undefined, table: Value): Value"]
+    pub fn setWindowDisplayTable(ed, window: Option<Win>, table: EditorValue) -> Option<EditorValue> {
+        let id = live_window(ed, window)?;
+        // Any value is kept, as Emacs keeps it; only a char-table is used.
+        ed.set_window_display_table(id, table.clone())?;
+        Ok(match table {
+            EditorValue::Null => None,
+            t => Some(t),
+        })
+    }
+
+    /// Resize the minibuffer window to the new total size set on it, as resize-mini-window-internal; true.
+    #[ts = "(window: WindowLike): boolean"]
+    pub fn resizeMiniWindowInternal(ed, window: Win) -> bool {
+        ed.resize_mini_window_internal(window.0)?;
+        Ok(true)
+    }
+
     /// Scrolls a window, the selected one by default, `columns` to the
     /// left, as set-window-hscroll: a negative number is 0. Redisplay
     /// leaves it until point moves, then scrolls to keep point in sight as

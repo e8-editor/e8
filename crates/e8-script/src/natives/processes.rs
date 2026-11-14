@@ -827,6 +827,134 @@ natives! {
         }))
     }
 
+    /// Set a socket option on a network connection or server, as
+    /// set-network-process-option: `option` is its keyword, ":keepalive",
+    /// ":reuseaddr", ":linger" (a number of seconds, or whether), ":broadcast",
+    /// ":dontroute" or ":oobinline", with ":priority" and ":bindtodevice" on
+    /// Linux, as Emacs's system gives them. True once set, when
+    /// processContact gives it by its key; an error for an option the
+    /// system has not, or undefined with `noError`.
+    #[ts = "(process: ProcessLike, option: string, value: unknown, noError?: boolean | null): true | undefined"]
+    pub fn setNetworkProcessOption(ed, process: EditorValue, option: EditorValue, value: EditorValue, no_error: Option<EditorValue>) -> Option<bool> {
+        let id = process_arg(&process)?.id(ed)?;
+        let option = match &option {
+            EditorValue::Str(s) | EditorValue::Symbol(s) => s.clone(),
+            v => return Err(wrong_type("symbolp", v)),
+        };
+        let set = ed.set_network_process_option(id, &option, &value, no_error.is_some_and(|v| v.is_true()))?;
+        Ok(set.then_some(true))
+    }
+
+    /// The thread a process is locked to, as process-thread: undefined, as
+    /// E8 has no Lisp threads, where Emacs gives the thread that made it.
+    #[ts = "(process: ProcessLike): undefined"]
+    pub fn processThread(ed, process: EditorValue) -> Option<bool> {
+        process_arg(&process)?.id(ed)?;
+        Ok(None)
+    }
+
+    /// Lock a process to a thread, as set-process-thread: E8 has no Lisp
+    /// threads, so only null, which unlocks it, is taken, and given back.
+    #[ts = "(process: ProcessLike, thread: null | undefined): undefined"]
+    pub fn setProcessThread(ed, process: EditorValue, thread: Option<EditorValue>) -> Option<bool> {
+        process_arg(&process)?.id(ed)?;
+        match thread {
+            Some(t) if !t.is_nil() => Err(wrong_type("threadp", &t)),
+            _ => Ok(None),
+        }
+    }
+
+    /// A datagram process's address, as process-datagram-address:
+    /// undefined, as E8 has no datagram (UDP) processes, which is what
+    /// Emacs gives for any other process.
+    #[ts = "(process: ProcessLike): undefined"]
+    pub fn processDatagramAddress(ed, process: EditorValue) -> Option<bool> {
+        process_arg(&process)?.id(ed)?;
+        Ok(None)
+    }
+
+    /// Set a datagram process's address, as set-process-datagram-address:
+    /// undefined, "error setting address", as E8 has no datagram (UDP)
+    /// processes and Emacs gives that for any other process.
+    #[ts = "(process: ProcessLike, address: unknown): undefined"]
+    pub fn setProcessDatagramAddress(ed, process: EditorValue, address: EditorValue) -> Option<bool> {
+        let _ = address;
+        process_arg(&process)?.id(ed)?;
+        Ok(None)
+    }
+
+    /// Interrupt a process, as internal-default-interrupt-process, what
+    /// interrupt-process does by default: SIGINT to its process group, or
+    /// with `currentGroup` to the job in the foreground on its terminal.
+    /// The process is a process, a process's or buffer's name, a buffer, or
+    /// null for the current buffer's; an error for one that is not a
+    /// program, or has ended. Gives the process.
+    #[ts = "(process?: ProcessLike | BufferLike | null, currentGroup?: boolean | null): Process"]
+    pub fn internalDefaultInterruptProcess(ed, process: Option<EditorValue>, current_group: Option<EditorValue>) -> ProcObj {
+        let id = ed.get_process(&process.unwrap_or(EditorValue::Null))?;
+        ed.internal_default_interrupt_process(id, current_group.is_some_and(|v| v.is_true()))?;
+        Ok(ProcObj(id))
+    }
+
+    /// Send a signal to a process, as internal-default-signal-process,
+    /// what signal-process does by default: to its process id alone, as
+    /// kill(2) does. The process is a process, a buffer or null for the
+    /// current buffer's, a process id, or a string: a process's name, or a
+    /// process id written out, else undefined. `sigcode` is a number or a
+    /// name, "INT" or "SIGINT". Gives 0 if sent, -1 if not; an error for a
+    /// process with no id of its own, as a connection.
+    #[ts = "(process: ProcessLike | BufferLike | number | null, sigcode: number | string, remote?: unknown): number | undefined"]
+    pub fn internalDefaultSignalProcess(ed, process: EditorValue, sigcode: EditorValue, remote: Option<EditorValue>) -> Option<i32> {
+        let _ = remote;
+        let integer = |n: f64| (n.fract() == 0.0 && n >= i32::MIN as f64 && n <= i32::MAX as f64).then_some(n as i32);
+        let pid = match &process {
+            EditorValue::Str(_) | EditorValue::Text(_) => {
+                let name = process.as_str().unwrap_or_default();
+                match ed.process_named(name) {
+                    Some(id) => ed.process_pid_to_signal(id)?,
+                    None => match name.parse::<i64>().ok().and_then(|n| i32::try_from(n).ok()) {
+                        Some(pid) => Some(pid),
+                        None => return Ok(None),
+                    },
+                }
+            }
+            EditorValue::Number(n) => Some(integer(*n).ok_or_else(|| wrong_type("integerp", &process))?),
+            other => {
+                let id = ed.get_process(other)?;
+                ed.process_pid_to_signal(id)?
+            }
+        };
+        let signal = match &sigcode {
+            EditorValue::Number(n) => integer(*n).ok_or_else(|| wrong_type("fixnump", &sigcode))?,
+            EditorValue::Str(name) | EditorValue::Symbol(name) => {
+                e8_core::process::signal_number(name).ok_or_else(|| Error::new(format!("Undefined signal name {name}")))?
+            }
+            v => return Err(wrong_type("symbolp", v)),
+        };
+        // A process that has ended is not signalled, as its id may be
+        // another's by now: as kill(2) on one that has gone.
+        Ok(Some(pid.map_or(-1, |pid| e8_core::process::kill_pid(pid, signal))))
+    }
+
+    fn makeSerialProcess(ed, args: Fields, filter: Option<EditorValue>, sentinel: Option<EditorValue>) -> Option<ProcObj> {
+        let coding = coding_pair(args.get("coding"))?;
+        let pairs = args.0.into_iter().map(|(k, v)| (format!(":{k}"), v)).collect();
+        Ok(ed.make_serial_process(pairs, handler(filter), handler(sentinel), coding)?.map(ProcObj))
+    }
+
+    /// Configure a serial process's port, as serial-process-configure:
+    /// `speed` in bits per second, `bytesize` 7 or 8 (null for 8), `parity`
+    /// null, "odd" or "even", `stopbits` 1 or 2 (null for 1), and
+    /// `flowcontrol` null, "hw" (RTS/CTS) or "sw" (XON/XOFF); what is left
+    /// out stays as it was. The process is `process`, or the one named
+    /// `name`, writing to `buffer`, or named `port`, or the current
+    /// buffer's. Nothing is done to a port made with a `speed` of null.
+    #[ts = "(args: { process?: ProcessLike; name?: string; buffer?: BufferLike; port?: string; speed?: number; bytesize?: 7 | 8 | null; parity?: \"odd\" | \"even\" | null; stopbits?: 1 | 2 | null; flowcontrol?: \"hw\" | \"sw\" | null }): void"]
+    pub fn serialProcessConfigure(ed, args: Fields) {
+        let pairs: Vec<(String, EditorValue)> = args.0.into_iter().map(|(k, v)| (format!(":{k}"), v)).collect();
+        ed.serial_process_configure(&pairs)
+    }
+
     fn callProcess(ed, command: Vec<String>, directory: Option<String>, input: Option<String>) -> Record {
         let (code, output) = ed.call_process(&command, directory.as_deref(), input.as_deref())?;
         Ok(Record::new().with("exit", code).with("output", output))
@@ -888,6 +1016,26 @@ fn handler(value: Option<EditorValue>) -> Option<EditorValue> {
     value.filter(|v| !v.is_nil())
 }
 
+/// A process as process.c's CHECK_PROCESS takes one: a process object,
+/// or, as E8's functions take one, its name; wrong-type-argument processp
+/// for anything else.
+fn process_arg(value: &EditorValue) -> e8_core::Result<Proc> {
+    match value {
+        EditorValue::Process(id) => Ok(Proc::Id(*id)),
+        EditorValue::Str(_) | EditorValue::Text(_) => Ok(Proc::Name(value.as_str().unwrap_or_default().to_string())),
+        v => Err(wrong_type("processp", v)),
+    }
+}
+
+fn wrong_type(predicate: &str, value: &EditorValue) -> e8_core::Error {
+    Error::signal("wrong-type-argument", format!("Wrong type argument: {predicate}, {value}"), vec![EditorValue::Symbol(predicate.into()), value.clone()])
+}
+
+/// A plist kept as pairs, as a script gets one: key and value in turn.
+fn flat_plist(pairs: Vec<(String, EditorValue)>) -> EditorValue {
+    EditorValue::List(pairs.into_iter().flat_map(|(k, v)| [EditorValue::Str(k), v]).collect())
+}
+
 /// The signal a name gives, as signal-process takes them: "SIGINT", "int", or a number.
 fn signal_number(value: Option<&EditorValue>) -> Option<i32> {
     match value? {
@@ -910,7 +1058,7 @@ fn process_primitive(ed: &mut Editor, op: &str, process: &Proc, args: &[EditorVa
             return Ok(process.id_if_any(ed).and_then(|id| ed.process_info(id)).map_or(EditorValue::Null, |p| EditorValue::Str(p.kind.into())));
         }
         // A signal to a process that has gone does nothing, as to one that has exited.
-        "signal-process" if matches!(process, Proc::Id(id) if ed.listed_process_name(*id).is_none()) => return Ok(EditorValue::Null),
+        "signal-process" | "stop-process" | "continue-process" if matches!(process, Proc::Id(id) if ed.listed_process_name(*id).is_none()) => return Ok(EditorValue::Null),
         _ => {}
     }
     let name = match process {
@@ -932,6 +1080,28 @@ fn process_primitive(ed: &mut Editor, op: &str, process: &Proc, args: &[EditorVa
             EditorValue::Null
         }
         "process-tty-name" => ed.process_tty_name(name).map_or(EditorValue::Null, EditorValue::Str),
+        // A serial port's: [port, speed], all of it with true, as Emacs's
+        // plist, or a part by key.
+        "process-contact" if ed.process_named(name).and_then(|id| ed.serial_contact(id)).is_some() => {
+            let contact = ed.process_named(name).and_then(|id| ed.serial_contact(id)).unwrap_or_default();
+            let get = |key: &str| contact.iter().find(|(k, _)| k == key).map_or(EditorValue::Null, |(_, v)| v.clone());
+            match args.first() {
+                None | Some(EditorValue::Null) => EditorValue::List(vec![get(":port"), get(":speed")]),
+                Some(EditorValue::Bool(true)) => flat_plist(contact),
+                Some(key) => get(&format!(":{}", key.as_str().unwrap_or_default().trim_start_matches(':'))),
+            }
+        }
+        "stop-process" | "continue-process" => {
+            let id = process.id(ed)?;
+            let stop = op == "stop-process";
+            // A serial port is kept from being read, or read again; a
+            // program is signalled.
+            if !ed.set_serial_stopped(id, stop) {
+                let signal = e8_core::process::signal_number(if stop { "TSTP" } else { "CONT" }).unwrap_or(0);
+                ed.signal_process_group(name, signal, flag(0))?;
+            }
+            EditorValue::Process(id)
+        }
         "process-contact" => match ed.process_contact(name) {
             None => EditorValue::Bool(true),
             Some((c, server)) => {
@@ -942,7 +1112,8 @@ fn process_primitive(ed: &mut Editor, op: &str, process: &Proc, args: &[EditorVa
                     Some("service") => EditorValue::Str(c.service),
                     Some("remote") => s(c.remote),
                     Some("server") => EditorValue::Bool(server),
-                    Some(_) => EditorValue::Null,
+                    // An option set-network-process-option set.
+                    Some(k) => c.options.iter().find(|(o, _)| o.trim_start_matches(':') == k).map_or(EditorValue::Null, |(_, v)| v.clone()),
                 }
             }
         },

@@ -34,6 +34,7 @@
 //! in each engine's module, on what values.rs shares.
 
 mod bidi;
+mod buftext;
 mod chartab;
 mod editor;
 mod faces;
@@ -412,6 +413,7 @@ const TABLES: &[&[Native]] = &[
     chartab::TABLE,
     images::TABLE,
     faces::TABLE,
+    buftext::TABLE,
 ];
 
 /// Every native in the tables.
@@ -434,6 +436,7 @@ pub(crate) fn install<'js>(ctx: &rquickjs::Ctx<'js>, native: &rquickjs::Object<'
     chartab::install(ctx, native, api)?;
     images::install(ctx, native, api)?;
     faces::install(ctx, native, api)?;
+    buftext::install(ctx, native, api)?;
     Ok(())
 }
 
@@ -452,6 +455,7 @@ pub(crate) fn install<'s>(scope: &mut v8::PinScope<'s, '_>, native: v8::Local<'s
     chartab::install(scope, native, api);
     images::install(scope, native, api);
     faces::install(scope, native, api);
+    buftext::install(scope, native, api);
 }
 
 /// The declarations in `e8.d.ts` of the public natives.

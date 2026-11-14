@@ -200,7 +200,10 @@ impl Editor {
                 // A row more than fits, which a front end scrolling smoothly shows in part.
                 let height = self.window(id).map_or(24, |w| w.height) + 1;
                 let wrap = self.wrap_in(id, view.buffer);
-                let rows = self.rows_from(view.buffer, view.top_line, height, usize::MAX, None, wrap);
+                let rows = {
+                    let _drawing = crate::layout::RowsWindow::set(self, id);
+                    self.rows_from(view.buffer, view.top_line, height, usize::MAX, None, wrap)
+                };
                 if rows.is_empty() {
                     break;
                 }

@@ -16070,6 +16070,67 @@ declare global {
      * if it has none. Undefined if there is no such interface.
      */
     function networkInterfaceInfo(ifname: string): [number[] | null, number[] | null, number[] | null, [number, number[]] | null, string[]] | undefined;
+    /**
+     * Set a socket option on a network connection or server, as
+     * set-network-process-option: `option` is its keyword, ":keepalive",
+     * ":reuseaddr", ":linger" (a number of seconds, or whether), ":broadcast",
+     * ":dontroute" or ":oobinline", with ":priority" and ":bindtodevice" on
+     * Linux, as Emacs's system gives them. True once set, when
+     * processContact gives it by its key; an error for an option the
+     * system has not, or undefined with `noError`.
+     */
+    function setNetworkProcessOption(process: ProcessLike, option: string, value: unknown, noError?: boolean | null): true | undefined;
+    /**
+     * The thread a process is locked to, as process-thread: undefined, as
+     * E8 has no Lisp threads, where Emacs gives the thread that made it.
+     */
+    function processThread(process: ProcessLike): undefined;
+    /**
+     * Lock a process to a thread, as set-process-thread: E8 has no Lisp
+     * threads, so only null, which unlocks it, is taken, and given back.
+     */
+    function setProcessThread(process: ProcessLike, thread: null | undefined): undefined;
+    /**
+     * A datagram process's address, as process-datagram-address:
+     * undefined, as E8 has no datagram (UDP) processes, which is what
+     * Emacs gives for any other process.
+     */
+    function processDatagramAddress(process: ProcessLike): undefined;
+    /**
+     * Set a datagram process's address, as set-process-datagram-address:
+     * undefined, "error setting address", as E8 has no datagram (UDP)
+     * processes and Emacs gives that for any other process.
+     */
+    function setProcessDatagramAddress(process: ProcessLike, address: unknown): undefined;
+    /**
+     * Interrupt a process, as internal-default-interrupt-process, what
+     * interrupt-process does by default: SIGINT to its process group, or
+     * with `currentGroup` to the job in the foreground on its terminal.
+     * The process is a process, a process's or buffer's name, a buffer, or
+     * null for the current buffer's; an error for one that is not a
+     * program, or has ended. Gives the process.
+     */
+    function internalDefaultInterruptProcess(process?: ProcessLike | BufferLike | null, currentGroup?: boolean | null): Process;
+    /**
+     * Send a signal to a process, as internal-default-signal-process,
+     * what signal-process does by default: to its process id alone, as
+     * kill(2) does. The process is a process, a buffer or null for the
+     * current buffer's, a process id, or a string: a process's name, or a
+     * process id written out, else undefined. `sigcode` is a number or a
+     * name, "INT" or "SIGINT". Gives 0 if sent, -1 if not; an error for a
+     * process with no id of its own, as a connection.
+     */
+    function internalDefaultSignalProcess(process: ProcessLike | BufferLike | number | null, sigcode: number | string, remote?: unknown): number | undefined;
+    /**
+     * Configure a serial process's port, as serial-process-configure:
+     * `speed` in bits per second, `bytesize` 7 or 8 (null for 8), `parity`
+     * null, "odd" or "even", `stopbits` 1 or 2 (null for 1), and
+     * `flowcontrol` null, "hw" (RTS/CTS) or "sw" (XON/XOFF); what is left
+     * out stays as it was. The process is `process`, or the one named
+     * `name`, writing to `buffer`, or named `port`, or the current
+     * buffer's. Nothing is done to a port made with a `speed` of null.
+     */
+    function serialProcessConfigure(args: { process?: ProcessLike; name?: string; buffer?: BufferLike; port?: string; speed?: number; bytesize?: 7 | 8 | null; parity?: "odd" | "even" | null; stopbits?: 1 | 2 | null; flowcontrol?: "hw" | "sw" | null }): void;
     /** Whether E8 can parse HTML and XML, as libxml-available-p; always true. */
     function libxmlAvailableP(): boolean;
     /** The HTML in a region as the tree [tag, attrs, ...children], as libxml-parse-html-region. */
@@ -16908,6 +16969,12 @@ declare global {
      * to the left, as window-hscroll.
      */
     function windowHscroll(window?: WindowLike | null): number;
+    /** The display table a window uses, the selected one by default, as window-display-table: its own, undefined if it has none. */
+    function windowDisplayTable(window?: WindowLike | null): Value;
+    /** Give a window a display table, or none with null, as set-window-display-table; gives the table. */
+    function setWindowDisplayTable(window: WindowLike | null | undefined, table: Value): Value;
+    /** Resize the minibuffer window to the new total size set on it, as resize-mini-window-internal; true. */
+    function resizeMiniWindowInternal(window: WindowLike): boolean;
     /**
      * Scrolls a window, the selected one by default, `columns` to the
      * left, as set-window-hscroll: a negative number is 0. Redisplay
@@ -17473,6 +17540,24 @@ declare global {
     function fontsetFont(name: string | boolean | null, ch: number, all?: boolean): Value;
     /** Make a fontset from an XLFD name and [target, font] pairs, as new-fontset; gives its name. */
     function newFontset(name: string, fontlist: Value[]): string;
+    /** The name a buffer had before it was last renamed or killed, as buffer-last-name; undefined if it never was. */
+    function bufferLastName(buffer?: Buffer | string | null): string | undefined;
+    /** Swap the current buffer's text with another's, as buffer-swap-text: the text with its properties, overlays, markers, point, mark, narrowing, undo history and modified state. */
+    function bufferSwapText(buffer: Buffer | string): undefined;
+    /** A marker's position, or where it last was once its buffer is killed or it points nowhere, as marker-last-position. */
+    function markerLastPosition(marker: Marker | number): number;
+    /** Where the current buffer's gap is, as gap-position: E8's buffers keep their text in a rope with no gap, so its end. */
+    function gapPosition(): number;
+    /** How big the current buffer's gap is, as gap-size: 0, as E8's buffers have none. */
+    function gapSize(): number;
+    /** Narrow to start and end and label the restriction, as internal--labeled-narrow-to-region, which with-restriction uses. */
+    function internalLabeledNarrowToRegion(start: number, end: number, label: Value): undefined;
+    /** Take off the innermost restriction if `label` labels it, and widen, as internal--labeled-widen, which without-restriction uses. */
+    function internalLabeledWiden(label: Value): undefined;
+    /** Make a buffer's buffer-modified-tick give `tick`, as internal--set-buffer-modified-tick. */
+    function internalSetBufferModifiedTick(tick: number, buffer?: Buffer | string | null): undefined;
+    /** Translate the characters from start to end by a table, as translate-region-internal: a string whose Nth character is the one for code N, or a char-table of characters. Gives how many changed. */
+    function translateRegionInternal(start: number, end: number, table: string | CharTable): number;
 
     type CommandName = keyof Commands;
 
@@ -18823,6 +18908,32 @@ declare global {
       | BufferLike
       | [":file", string]
       | [true | null | number | BufferLike | [":file", string], null | true | string];
+    /** What makeSerialProcess opens, as make-serial-process takes it: processContact gives it back, with what configuring set. */
+    interface SerialProcessDefinition {
+      /** The port's file, as "/dev/ttyS0". */
+      port: string;
+      /** Bits per second; null leaves the port as it is, configured no further. */
+      speed: number | null;
+      /** Its name, the port's by default. */
+      name?: string;
+      /** Its buffer, its name's by default. */
+      buffer?: BufferLike;
+      /** 7 or 8, null for 8. */
+      bytesize?: 7 | 8 | null;
+      parity?: "odd" | "even" | null;
+      /** 1 or 2, null for 1. */
+      stopbits?: 1 | 2 | null;
+      /** RTS/CTS ("hw") or XON/XOFF ("sw"), or none. */
+      flowcontrol?: "hw" | "sw" | null;
+      coding?: string | [string, string];
+      /** Exit without asking while it is open. */
+      noquery?: boolean;
+      /** Start stopped, as stopProcess leaves it. */
+      stop?: boolean;
+      plist?: Value[];
+      filter?: ((process: Process, output: string) => void) | string | symbol | true | null;
+      sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
+    }
     /** What makeNetworkProcess opens, as make-network-process takes it. */
     interface NetworkProcessDefinition {
       name: string;
@@ -18938,11 +19049,21 @@ declare global {
      */
     function makePipeProcess(definition: PipeProcessDefinition): Process;
     /**
+     * Open a serial port as a process, as make-serial-process, and return
+     * it: its type "serial", its status "open", "stop" while stopProcess
+     * keeps it from being read, or "closed" once deleted; it has no process
+     * id and is not signalled. What it reads goes to its buffer or filter,
+     * and processSendString writes to it. Configured as
+     * serialProcessConfigure does. Asks the agent's permission. Undefined
+     * for no arguments, as Emacs gives nil.
+     */
+    function makeSerialProcess(definition?: SerialProcessDefinition): Process | undefined;
+    /**
      * "run", "exit" or "signal", for a connection "open" or "closed", for a
      * server "listen", or undefined for a name no listed process has. A
      * process that has gone answers still, as these all do.
      */
-    function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | undefined;
+    function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | "stop" | undefined;
     /** Whether a process is running, or a connection or server open, as process-live-p. */
     function processLiveP(process: ProcessLike): boolean;
     /** How a process's output is decoded and its input encoded, as process-coding-system. */
@@ -18950,20 +19071,26 @@ declare global {
     function setProcessCodingSystem(process: ProcessLike, decoding?: string, encoding?: string): void;
     /** The name of a process's terminal, as process-tty-name, if it talks through one. */
     function processTtyName(process: ProcessLike): string | undefined;
-    /** "real" for a program, "network" for a connection or server, "pipe" for a pipe process, as process-type. */
-    function processType(process: ProcessLike): "real" | "network" | "pipe" | undefined;
-    /** [host, service] for a connection, a part of it by key ("host", "service", "remote", "server"), or true for a program, as process-contact. */
-    function processContact(process: ProcessLike, key?: string): Value;
+    /** "real" for a program, "network" for a connection or server, "pipe" for a pipe process, "serial" for a serial port, as process-type. */
+    function processType(process: ProcessLike): "real" | "network" | "pipe" | "serial" | undefined;
+    /**
+     * [host, service] for a connection, a part of it by key ("host",
+     * "service", "remote", "server", or an option setNetworkProcessOption
+     * set), or true for a program, as process-contact. For a serial port
+     * [port, speed], a part by key, or with true all of it, key and value
+     * in turn (":port", ":speed", ..., ":summary").
+     */
+    function processContact(process: ProcessLike, key?: string | true): Value;
     /** Tell a process's terminal its size, as set-process-window-size; false without one. */
     function setProcessWindowSize(process: ProcessLike, height: number, width: number): boolean;
     /** Send the text between two positions to a process, as process-send-region. */
     function processSendRegion(process: ProcessLike, start: number, end: number): void;
     /** Send SIGQUIT, as quit-process; with currentGroup, to the job in the foreground on its terminal. */
     function quitProcess(process: ProcessLike, currentGroup?: boolean): void;
-    /** Stop a process, as stop-process. */
-    function stopProcess(process: ProcessLike, currentGroup?: boolean): void;
-    /** Let a stopped process go on, as continue-process. */
-    function continueProcess(process: ProcessLike, currentGroup?: boolean): void;
+    /** Stop a process, as stop-process: SIGTSTP to a program; a serial port is left unread. Gives the process. */
+    function stopProcess(process: ProcessLike, currentGroup?: boolean): Process | undefined;
+    /** Let a stopped process go on, as continue-process: SIGCONT to a program; a serial port is read again, what came meanwhile thrown away. Gives the process. */
+    function continueProcess(process: ProcessLike, currentGroup?: boolean): Process | undefined;
     /** The exit code, or the signal that ended it. */
     function processExitStatus(process: ProcessLike): number | undefined;
     /** Its name, as process-name. */

@@ -25,7 +25,7 @@ enum Entry {
     /// The buffer and point, by a marker, as `save-excursion` keeps them.
     Excursion { buffer: u64, marker: u64 },
     /// A buffer's narrowing, by markers at its edges, or none.
-    Restriction { buffer: u64, edges: Option<(u64, u64)> },
+    Restriction { buffer: u64, edges: Option<(u64, u64)>, labeled: Vec<crate::buffer::Labeled> },
     /// A buffer's undo history, `buffer-undo-list`, kept as it is.
     Undo { buffer: u64, binding: crate::buffer::UndoBinding },
 }
@@ -94,7 +94,8 @@ impl Editor {
             let (min, max) = (b.point_min(), b.point_max());
             (b.make_marker(min, false), b.make_marker(max, true))
         });
-        self.push_binding(Entry::Restriction { buffer, edges })
+        let labeled = self.buffer().labeled.clone();
+        self.push_binding(Entry::Restriction { buffer, edges, labeled })
     }
 
     /// How many entries the stack holds, for [`unbind_to`](Editor::unbind_to).
@@ -155,7 +156,7 @@ impl Editor {
                     self.buffer_mut().set_point(p);
                 }
             }
-            Entry::Restriction { buffer, edges } => {
+            Entry::Restriction { buffer, edges, labeled } => {
                 let Some(index) = self.buffer_with_id(buffer) else {
                     if let Some((beg, end)) = edges {
                         self.delete_marker(beg);
@@ -173,6 +174,16 @@ impl Editor {
                     self.delete_marker(beg);
                     self.delete_marker(end);
                     self.buffer_mut().narrow(start, stop.max(start));
+                }
+                // The labeled restrictions as they were, as Emacs's
+                // labeled_restrictions_restore puts them back; the markers
+                // of those made since go.
+                let b = self.buffer_mut();
+                let now = std::mem::replace(&mut b.labeled, labeled);
+                let gone: Vec<_> = now.into_iter().filter(|l| !b.labeled.contains(l)).collect();
+                for l in gone {
+                    b.remove_marker(l.start);
+                    b.remove_marker(l.end);
                 }
                 self.back_to(back);
             }

@@ -27,6 +27,12 @@ use crate::editor::Editor;
 use crate::error::{Error, Result};
 use crate::variables::Value;
 
+#[cfg(unix)]
+mod serial;
+mod odds;
+
+pub use odds::kill_pid;
+
 /// How a process stands, as Emacs's `process-status`.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Status {
@@ -175,6 +181,9 @@ pub(crate) enum Kind {
     /// end is its output. The editor keeps that end until a program is
     /// given it as its standard error, so the pipe ends when the program does.
     PipeProcess(Option<std::io::PipeWriter>),
+    /// A serial port, as make-serial-process opens one.
+    #[cfg(unix)]
+    Serial(serial::Port),
 }
 
 /// Where a network process connects or listens.
@@ -186,6 +195,9 @@ pub struct Contact {
     pub service: String,
     /// For a connection a server accepted, who connected.
     pub remote: Option<String>,
+    /// The socket options set-network-process-option has set, by name
+    /// with its colon, as Emacs keeps them in the contact.
+    pub options: Vec<(String, Value)>,
 }
 
 pub(crate) struct Process {
@@ -236,6 +248,10 @@ pub(crate) struct Process {
     stderr: Option<StderrBuffer>,
     /// A connection's TLS, which `gnutls-boot` starts, and its socket.
     tls: Option<TlsLink>,
+    /// A connection's or server's socket, a descriptor of its own, for
+    /// set-network-process-option.
+    #[cfg(unix)]
+    socket: Option<std::os::fd::OwnedFd>,
 }
 
 /// What a network connection keeps for TLS: what sits between its socket
@@ -313,6 +329,15 @@ impl Conn {
         })
     }
 
+    /// A descriptor of its own on the socket, for setting its options.
+    #[cfg(unix)]
+    fn own_socket(&self) -> Option<std::os::fd::OwnedFd> {
+        match self {
+            Conn::Tcp(s) => own_socket(s),
+            Conn::Local(s) => own_socket(s),
+        }
+    }
+
     fn shutdown(&self, how: std::net::Shutdown) {
         let _ = match self {
             Conn::Tcp(s) => s.shutdown(how),
@@ -320,6 +345,13 @@ impl Conn {
             Conn::Local(s) => s.shutdown(how),
         };
     }
+}
+
+/// A descriptor of its own on a socket, kept while the threads that read
+/// and write it hold theirs.
+#[cfg(unix)]
+fn own_socket(s: &impl std::os::fd::AsFd) -> Option<std::os::fd::OwnedFd> {
+    s.as_fd().try_clone_to_owned().ok()
 }
 
 impl Read for Conn {
@@ -559,6 +591,12 @@ fn hang_up(p: &mut Process) {
             return;
         }
         Kind::Network(_) => {
+            p.stdin = None;
+            return;
+        }
+        #[cfg(unix)]
+        Kind::Serial(port) => {
+            port.close();
             p.stdin = None;
             return;
         }
@@ -931,6 +969,8 @@ impl Editor {
             gate,
             stderr,
             tls: None,
+            #[cfg(unix)]
+            socket: None,
         });
         Ok(name)
     }
@@ -986,6 +1026,8 @@ impl Editor {
         };
         match &p.kind {
             Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_) => Err(Error::new(format!("Process {} is not a subprocess", p.name))),
+            #[cfg(unix)]
+            Kind::Serial(_) => Err(Error::new(format!("Process {} is not a subprocess", p.name))),
             #[cfg(unix)]
             Kind::Pty { master, .. } => {
                 use std::os::fd::AsRawFd;
@@ -1094,6 +1136,8 @@ impl Editor {
             gate: None,
             stderr: None,
             tls: None,
+            #[cfg(unix)]
+            socket: None,
         });
         Ok(name)
     }
@@ -1115,8 +1159,10 @@ impl Editor {
         };
         let id = self.processes.next_id;
         self.processes.next_id += 1;
-        let mut contact = Contact { host: spec.host.clone(), service: spec.service.clone(), remote: None };
+        let mut contact = Contact { host: spec.host.clone(), service: spec.service.clone(), remote: None, options: Vec::new() };
         let mut tls = None;
+        #[cfg(unix)]
+        let socket;
         let (kind, stdin, open_streams) = if spec.server {
             let stop = Arc::new(AtomicBool::new(false));
             let tx = self.processes.tx.clone();
@@ -1128,12 +1174,17 @@ impl Editor {
                     let listener = std::net::TcpListener::bind(format!("{host}:{port}")).map_err(failed)?;
                     contact.service = listener.local_addr().map(|a| a.port().to_string()).unwrap_or(contact.service);
                     listener.set_nonblocking(true)?;
+                    #[cfg(unix)]
+                    {
+                        socket = own_socket(&listener);
+                    }
                     std::thread::spawn(move || accept_loop(id, &tx, &flag, || listener.accept().map(|(s, a)| (Conn::Tcp(s), a.to_string()))));
                 }
                 #[cfg(unix)]
                 None => {
                     let listener = std::os::unix::net::UnixListener::bind(&spec.service).map_err(failed)?;
                     listener.set_nonblocking(true)?;
+                    socket = own_socket(&listener);
                     let mut n = 0;
                     std::thread::spawn(move || {
                         accept_loop(id, &tx, &flag, || {
@@ -1159,6 +1210,10 @@ impl Editor {
                 #[cfg(not(unix))]
                 None => return Err(Error::new("Local sockets are not supported here")),
             };
+            #[cfg(unix)]
+            {
+                socket = conn.own_socket();
+            }
             let (stdin, link) = self.connect(id, conn)?;
             tls = Some(link);
             (Kind::Network(contact), Some(stdin), 1)
@@ -1198,6 +1253,8 @@ impl Editor {
             gate: None,
             stderr: None,
             tls,
+            #[cfg(unix)]
+            socket,
         });
         // TLS from the start, as :tls-parameters asks.
         if let Some(params) = spec.tls
@@ -1322,6 +1379,8 @@ impl Editor {
         let name = self.unique_process_name(&label);
         let id = self.processes.next_id;
         self.processes.next_id += 1;
+        #[cfg(unix)]
+        let socket = conn.own_socket();
         let Ok((stdin, link)) = self.connect(id, conn) else { return };
         let (buffer_id, mark) = match buffer_name.map(|n| self.get_buffer_create(&n)) {
             Some(index) => {
@@ -1357,6 +1416,8 @@ impl Editor {
             gate: None,
             stderr: None,
             tls: Some(link),
+            #[cfg(unix)]
+            socket,
         });
         if let Some(f) = sentinel
             && let Err(e) = self.funcall(&f, &[Value::Process(id), Value::Str(format!("open from {host}\n"))])
@@ -1556,6 +1617,10 @@ impl Editor {
             return Err(Error::new(format!("Process {name} not running: {}", p.status.event().trim_end())));
         }
         #[cfg(unix)]
+        if p.is_serial() {
+            return self.drain_serial(name);
+        }
+        #[cfg(unix)]
         if matches!(p.kind, Kind::Pty { .. }) {
             if let Some(stdin) = &p.stdin {
                 let _ = stdin.send(Some(ToProcess::Bytes(vec![4])));
@@ -1692,7 +1757,7 @@ impl Editor {
         }
         let i = self.processes.list.iter().position(|p| p.name == name).expect("found above");
         let mut p = self.processes.list.remove(i);
-        let network = matches!(p.kind, Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_));
+        let network = matches!(p.kind, Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_)) || p.is_serial();
         if network {
             hang_up(&mut p);
         }
@@ -1816,8 +1881,9 @@ impl Editor {
                 }
                 continue;
             }
-            // A connection ends when the other side closes it.
-            if matches!(p.kind, Kind::Network(_)) {
+            // A connection ends when the other side closes it, and a
+            // serial port when it can no longer be read.
+            if matches!(p.kind, Kind::Network(_)) || p.is_serial() {
                 if p.open_streams == 0 {
                     p.status = Status::Exit(256);
                     p.stdin = None;
@@ -2427,6 +2493,13 @@ impl Process {
         false
     }
 
+    fn is_serial(&self) -> bool {
+        #[cfg(unix)]
+        return matches!(self.kind, Kind::Serial(_));
+        #[cfg(not(unix))]
+        false
+    }
+
     /// The event its sentinel is told, as Emacs's status_message words it: a
     /// connection is "deleted" or "connection broken by remote peer".
     fn event(&self) -> String {
@@ -2438,19 +2511,33 @@ impl Process {
     }
 
     /// What it is, as process-type: "real" for a program, "network" for a
-    /// connection or server, "pipe" for a pipe process.
+    /// connection or server, "pipe" for a pipe process, "serial" for a
+    /// serial port.
     fn kind_name(&self) -> &'static str {
         match self.kind {
             Kind::Network(_) | Kind::Server(..) => "network",
             Kind::PipeProcess(_) => "pipe",
+            #[cfg(unix)]
+            Kind::Serial(_) => "serial",
             _ => "real",
         }
     }
 
     /// Its status as process-status names it: a connection is "open" or
-    /// "closed", a server "listen".
+    /// "closed", a server "listen"; a serial port "open", "stop" while
+    /// stop-process keeps it from being read, or "closed".
     fn status_name(&self) -> &'static str {
         match (&self.kind, self.status) {
+            #[cfg(unix)]
+            (Kind::Serial(port), Status::Run) => {
+                if port.is_stopped() {
+                    "stop"
+                } else {
+                    "open"
+                }
+            }
+            #[cfg(unix)]
+            (Kind::Serial(_), _) => "closed",
             (Kind::Server(..), Status::Run) => "listen",
             (Kind::Network(_) | Kind::PipeProcess(_), Status::Run) => "open",
             (Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_), _) => "closed",

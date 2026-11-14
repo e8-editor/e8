@@ -298,6 +298,25 @@ pub struct Buffer {
     /// Whether changes from another buffer sharing the text are being made,
     /// which are not recorded again.
     pub(crate) mirroring: bool,
+    /// The name it had before it was last renamed or killed, as
+    /// `buffer-last-name`.
+    pub(crate) last_name: Option<String>,
+    /// Restrictions `with-restriction` labeled, innermost last, each with
+    /// markers on its edges; the first is the narrowing there was when the
+    /// first was made, with no label (Emacs's `outermost-restriction`).
+    pub(crate) labeled: Vec<Labeled>,
+    /// What `internal--set-buffer-modified-tick` added to the tick Lisp
+    /// sees, leaving the one the editor's caches follow alone.
+    tick_offset: i64,
+}
+
+/// A labeled restriction: its label, none for the outermost, and markers
+/// on its edges.
+#[derive(Clone, Debug, PartialEq)]
+pub(crate) struct Labeled {
+    pub(crate) label: Option<Value>,
+    pub(crate) start: u64,
+    pub(crate) end: u64,
 }
 
 /// A buffer's undo history, moving between the buffers sharing its text.
@@ -418,6 +437,9 @@ impl Buffer {
             base: None,
             shared: None,
             mirroring: false,
+            last_name: None,
+            labeled: Vec::new(),
+            tick_offset: 0,
         }
     }
 
@@ -789,7 +811,122 @@ impl Buffer {
     /// How many times the text or its properties have changed, as Emacs's
     /// `buffer-modified-tick`: text property changes that modify the buffer count too.
     pub fn modified_tick_with_properties(&self) -> u64 {
-        self.tick + self.property_ticks
+        (self.tick + self.property_ticks).saturating_add_signed(self.tick_offset)
+    }
+
+    /// Makes `buffer-modified-tick` give `tick` from now, as
+    /// `internal--set-buffer-modified-tick`; the tick the editor's caches
+    /// follow still only grows.
+    pub fn set_modified_tick(&mut self, tick: u64) {
+        self.tick_offset = tick as i64 - (self.tick + self.property_ticks) as i64;
+    }
+
+    /// The edges of the innermost labeled restriction, if there is one.
+    pub(crate) fn labeled_bounds(&self) -> Option<(usize, usize)> {
+        let l = self.labeled.last()?;
+        Some((self.marker(l.start)?, self.marker(l.end)?))
+    }
+
+    /// Narrows as Lisp's `narrow-to-region` does: within the innermost
+    /// labeled restriction, if there is one.
+    pub fn narrow_within_labels(&mut self, start: usize, end: usize) {
+        let (mut s, mut e) = (start.min(end), start.max(end));
+        if let Some((lo, hi)) = self.labeled_bounds() {
+            s = s.clamp(lo, hi);
+            e = e.clamp(lo, hi);
+        }
+        self.narrow(s, e);
+    }
+
+    /// Widens as Lisp's `widen` does: to the innermost labeled restriction
+    /// if there is one, which once only the outermost is left ends the
+    /// labeled restrictions.
+    pub fn widen_within_labels(&mut self) {
+        match self.labeled_bounds() {
+            None => self.widen(),
+            Some((lo, hi)) => {
+                self.widen();
+                self.narrow(lo, hi);
+                if self.labeled.last().is_some_and(|l| l.label.is_none()) {
+                    self.labeled.pop();
+                }
+            }
+        }
+    }
+
+    /// Narrows and labels the restriction, as
+    /// `internal--labeled-narrow-to-region`.
+    pub fn labeled_narrow(&mut self, start: usize, end: usize, label: Value) {
+        let (min, max) = (self.point_min(), self.point_max());
+        let outermost = Labeled { label: None, start: self.make_marker(min, false), end: self.make_marker(max, false) };
+        self.narrow_within_labels(start, end);
+        if self.labeled.is_empty() {
+            self.labeled.push(outermost);
+        } else {
+            self.remove_marker(outermost.start);
+            self.remove_marker(outermost.end);
+        }
+        let (min, max) = (self.point_min(), self.point_max());
+        let labeled = Labeled { label: Some(label), start: self.make_marker(min, false), end: self.make_marker(max, false) };
+        self.labeled.push(labeled);
+    }
+
+    /// Takes off the innermost restriction if `label` labels it, and
+    /// widens, as `internal--labeled-widen`.
+    pub fn labeled_widen(&mut self, label: &Value) {
+        if self.labeled.last().is_some_and(|l| l.label.as_ref() == Some(label)) {
+            self.labeled.pop();
+        }
+        self.widen_within_labels();
+    }
+
+    /// Swaps this buffer's text with another's, as `buffer-swap-text`: the
+    /// text with its properties, overlays, markers, point, mark, narrowing,
+    /// undo history and modified state. Names, files, modes and variables
+    /// stay. Both buffers' ticks move past either's, so nothing cached for
+    /// one is taken for the other, and both are then modified, as in Emacs.
+    pub(crate) fn swap_text(&mut self, other: &mut Buffer) {
+        use std::mem::swap;
+        swap(&mut self.text, &mut other.text);
+        swap(&mut self.has_rtl, &mut other.has_rtl);
+        swap(&mut self.point, &mut other.point);
+        swap(&mut self.mark, &mut other.mark);
+        swap(&mut self.mark_active, &mut other.mark_active);
+        swap(&mut self.restriction, &mut other.restriction);
+        swap(&mut self.labeled, &mut other.labeled);
+        swap(&mut self.changed, &mut other.changed);
+        swap(&mut self.modified, &mut other.modified);
+        swap(&mut self.save_generation, &mut other.save_generation);
+        swap(&mut self.undo_groups, &mut other.undo_groups);
+        swap(&mut self.open_group, &mut other.open_group);
+        swap(&mut self.typed_run, &mut other.typed_run);
+        swap(&mut self.open_unmodified_at, &mut other.open_unmodified_at);
+        swap(&mut self.undo_disabled, &mut other.undo_disabled);
+        swap(&mut self.boundary_point, &mut other.boundary_point);
+        swap(&mut self.open_point, &mut other.open_point);
+        swap(&mut self.pending_undo, &mut other.pending_undo);
+        swap(&mut self.undo_no_redo, &mut other.undo_no_redo);
+        swap(&mut self.selective_undo, &mut other.selective_undo);
+        swap(&mut self.properties, &mut other.properties);
+        swap(&mut self.overlays, &mut other.overlays);
+        swap(&mut self.markers, &mut other.markers);
+        let tick = self.tick.max(other.tick) + 1;
+        let props = self.property_ticks.max(other.property_ticks);
+        for b in [&mut *self, &mut *other] {
+            b.tick = tick;
+            b.property_ticks = props;
+            b.tick_offset = 0;
+            // Both count as changed, as Emacs's modiff moves past either's save.
+            b.modified = true;
+            b.window_points.clear();
+            b.top_line = 0;
+            b.last_window_start = 0;
+            b.syntax_propertized = 0;
+            b.ppss_cache.borrow_mut().clear();
+            b.fontified.clear();
+            b.pending_changes.clear();
+            b.parsers.iter().for_each(|p| p.reset());
+        }
     }
 
     /// Inserts text at point, leaving point after it.
@@ -844,13 +981,22 @@ impl Buffer {
     /// where they are, and the characters keep their properties. Undoing it
     /// in a buffer that was unmodified leaves point at the change.
     pub(crate) fn subst_char(&mut self, start: usize, end: usize, from: char, to: char) -> Result<()> {
+        self.translate_chars(start, end, |_, c| (c == from).then_some(to)).map(|_| ())
+    }
+
+    /// Replaces each character between `start` and `end` that `map` gives
+    /// another for, in place, as `subst_char` does, as Emacs's
+    /// `translate-region-internal`; gives how many changed.
+    pub(crate) fn translate_chars(&mut self, start: usize, end: usize, map: impl Fn(usize, char) -> Option<char>) -> Result<usize> {
         let end = end.min(self.len());
-        let positions: Vec<usize> = (start..end).filter(|&p| self.char_at(p) == Some(from)).collect();
-        if positions.is_empty() {
-            return Ok(());
+        let changes: Vec<(usize, char, char)> =
+            (start..end).filter_map(|p| self.char_at(p).and_then(|c| map(p, c).filter(|&to| to != c).map(|to| (p, c, to)))).collect();
+        if changes.is_empty() {
+            return Ok(0);
         }
         self.check_writable()?;
-        for p in positions {
+        let count = changes.len();
+        for (p, from, to) in changes {
             let props = self.properties.save(p, p + 1);
             let edit_start = (!self.parsers.is_empty()).then(|| (point_at(&self.text, p), point_at(&self.text, p + 1)));
             self.text.remove(p..p + 1);
@@ -891,7 +1037,7 @@ impl Buffer {
                 self.open_group.push(edit);
             }
         }
-        Ok(())
+        Ok(count)
     }
 
     /// Changes the character at `pos` into `text`, as casing does: one

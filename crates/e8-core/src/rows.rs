@@ -781,8 +781,11 @@ impl Editor {
     /// standard one's, in its own faces, as Emacs draws the glyphs there;
     /// else "...".
     fn ellipsis_segments(&self, b: &Buffer, pos: usize, dark: Option<bool>, styles: &mut HashMap<Vec<String>, Style>) -> Vec<Segment> {
-        let slot = ["buffer-display-table", "standard-display-table"].iter().find_map(|name| match self.variable_in(b, name) {
-            Some(Value::CharTable(id)) => self.char_table_extra_slot(id, 4).ok().filter(|v| v.as_str().is_some_and(|s| !s.is_empty())),
+        // The window's own display table first, as Emacs's window_display_table.
+        let window_table = self.rows_window.get().and_then(|w| self.window(w)).map(|w| w.display_table.clone());
+        let tables = std::iter::once(window_table).chain(["buffer-display-table", "standard-display-table"].iter().map(|name| self.variable_in(b, name)));
+        let slot = tables.flatten().find_map(|table| match table {
+            Value::CharTable(id) => self.char_table_extra_slot(id, 4).ok().filter(|v| v.as_str().is_some_and(|s| !s.is_empty())),
             _ => None,
         });
         let base = self.ellipsis_faces(b, pos);

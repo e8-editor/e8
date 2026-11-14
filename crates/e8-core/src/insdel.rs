@@ -581,3 +581,37 @@ impl Editor {
     }
 }
 
+
+impl Editor {
+    /// Translates the characters from `start` to `end` by a table, as
+    /// `translate-region-internal`: a string, whose Nth character is the
+    /// one for the character with code N, or a char-table of characters.
+    /// The hooks see the stretch from the first character changed to the
+    /// last. Gives how many changed.
+    pub fn translate_region(&mut self, start: usize, end: usize, table: &Value) -> Result<usize> {
+        let map = |c: char| -> Option<char> {
+            match table {
+                Value::Str(s) => s.chars().nth(c as usize),
+                Value::Text(t) => t.string.chars().nth(c as usize),
+                Value::CharTable(id) => match self.char_table_get(*id, c as u32) {
+                    Value::Number(n) => char::from_u32(n as u32),
+                    Value::Str(s) if s.chars().count() == 1 => s.chars().next(),
+                    _ => None,
+                },
+                _ => None,
+            }
+        };
+        let b = self.buffer();
+        let (start, end) = (start.min(end).max(b.point_min()), start.max(end).min(b.point_max()));
+        let changes: Vec<(usize, char)> = (start..end).filter_map(|p| b.char_at(p).and_then(|c| map(c).filter(|&to| to != c).map(|to| (p, to)))).collect();
+        let (Some(&(first, _)), Some(&(last, _))) = (changes.first(), changes.last()) else { return Ok(0) };
+        let table: std::collections::HashMap<usize, char> = changes.into_iter().collect();
+        self.modify(first, last + 1, |b, s, e| {
+            let pending = b.pending_changes.len();
+            let count = b.translate_chars(s, e, |p, _| table.get(&p).copied());
+            b.pending_changes.truncate(pending);
+            b.pending_changes.push((s, e, e - s));
+            count
+        })
+    }
+}

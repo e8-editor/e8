@@ -1445,12 +1445,20 @@
     processTtyName: (process) => native.processPrimitive("process-tty-name", process) ?? undefined,
     processType: (process) => native.processPrimitive("process-type", process) ?? undefined,
     processContact: (process, key) =>
-      key === undefined ? native.processPrimitive("process-contact", process) : native.processPrimitive("process-contact", process, String(key)) ?? undefined,
+      key === undefined
+        ? native.processPrimitive("process-contact", process)
+        : native.processPrimitive("process-contact", process, key === true ? true : String(key)) ?? undefined,
+    // Its filter and sentinel are given apart, as functions.
+    makeSerialProcess(args) {
+      if (args === undefined || args === null) return undefined;
+      const { filter, sentinel, ...rest } = args;
+      return native.makeSerialProcess(rest, filter ?? undefined, sentinel ?? undefined) ?? undefined;
+    },
     setProcessWindowSize: (process, height, width) => native.processPrimitive("set-process-window-size", process, height, width),
     processSendRegion: (process, start, end) => native.processSendString(process, native.bufferText(Math.min(start, end), Math.max(start, end))),
     quitProcess: (process, currentGroup = false) => native.processPrimitive("signal-process", process, "QUIT", Boolean(currentGroup)),
-    stopProcess: (process, currentGroup = false) => native.processPrimitive("signal-process", process, "TSTP", Boolean(currentGroup)),
-    continueProcess: (process, currentGroup = false) => native.processPrimitive("signal-process", process, "CONT", Boolean(currentGroup)),
+    stopProcess: (process, currentGroup = false) => native.processPrimitive("stop-process", process, Boolean(currentGroup)) ?? undefined,
+    continueProcess: (process, currentGroup = false) => native.processPrimitive("continue-process", process, Boolean(currentGroup)) ?? undefined,
     processName: (process) => native.processInfo(process)?.name,
     processStatus: (process) => native.processInfo(process)?.status,
     processExitStatus: (process) => native.processInfo(process)?.exitStatus ?? undefined,

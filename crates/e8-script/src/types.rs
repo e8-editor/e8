@@ -1373,6 +1373,32 @@ const API: &str = r##"
     | BufferLike
     | [":file", string]
     | [true | null | number | BufferLike | [":file", string], null | true | string];
+  /** What makeSerialProcess opens, as make-serial-process takes it: processContact gives it back, with what configuring set. */
+  interface SerialProcessDefinition {
+    /** The port's file, as "/dev/ttyS0". */
+    port: string;
+    /** Bits per second; null leaves the port as it is, configured no further. */
+    speed: number | null;
+    /** Its name, the port's by default. */
+    name?: string;
+    /** Its buffer, its name's by default. */
+    buffer?: BufferLike;
+    /** 7 or 8, null for 8. */
+    bytesize?: 7 | 8 | null;
+    parity?: "odd" | "even" | null;
+    /** 1 or 2, null for 1. */
+    stopbits?: 1 | 2 | null;
+    /** RTS/CTS ("hw") or XON/XOFF ("sw"), or none. */
+    flowcontrol?: "hw" | "sw" | null;
+    coding?: string | [string, string];
+    /** Exit without asking while it is open. */
+    noquery?: boolean;
+    /** Start stopped, as stopProcess leaves it. */
+    stop?: boolean;
+    plist?: Value[];
+    filter?: ((process: Process, output: string) => void) | string | symbol | true | null;
+    sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
+  }
   /** What makeNetworkProcess opens, as make-network-process takes it. */
   interface NetworkProcessDefinition {
     name: string;
@@ -1488,11 +1514,21 @@ const API: &str = r##"
    */
   function makePipeProcess(definition: PipeProcessDefinition): Process;
   /**
+   * Open a serial port as a process, as make-serial-process, and return
+   * it: its type "serial", its status "open", "stop" while stopProcess
+   * keeps it from being read, or "closed" once deleted; it has no process
+   * id and is not signalled. What it reads goes to its buffer or filter,
+   * and processSendString writes to it. Configured as
+   * serialProcessConfigure does. Asks the agent's permission. Undefined
+   * for no arguments, as Emacs gives nil.
+   */
+  function makeSerialProcess(definition?: SerialProcessDefinition): Process | undefined;
+  /**
    * "run", "exit" or "signal", for a connection "open" or "closed", for a
    * server "listen", or undefined for a name no listed process has. A
    * process that has gone answers still, as these all do.
    */
-  function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | undefined;
+  function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | "stop" | undefined;
   /** Whether a process is running, or a connection or server open, as process-live-p. */
   function processLiveP(process: ProcessLike): boolean;
   /** How a process's output is decoded and its input encoded, as process-coding-system. */
@@ -1500,20 +1536,26 @@ const API: &str = r##"
   function setProcessCodingSystem(process: ProcessLike, decoding?: string, encoding?: string): void;
   /** The name of a process's terminal, as process-tty-name, if it talks through one. */
   function processTtyName(process: ProcessLike): string | undefined;
-  /** "real" for a program, "network" for a connection or server, "pipe" for a pipe process, as process-type. */
-  function processType(process: ProcessLike): "real" | "network" | "pipe" | undefined;
-  /** [host, service] for a connection, a part of it by key ("host", "service", "remote", "server"), or true for a program, as process-contact. */
-  function processContact(process: ProcessLike, key?: string): Value;
+  /** "real" for a program, "network" for a connection or server, "pipe" for a pipe process, "serial" for a serial port, as process-type. */
+  function processType(process: ProcessLike): "real" | "network" | "pipe" | "serial" | undefined;
+  /**
+   * [host, service] for a connection, a part of it by key ("host",
+   * "service", "remote", "server", or an option setNetworkProcessOption
+   * set), or true for a program, as process-contact. For a serial port
+   * [port, speed], a part by key, or with true all of it, key and value
+   * in turn (":port", ":speed", ..., ":summary").
+   */
+  function processContact(process: ProcessLike, key?: string | true): Value;
   /** Tell a process's terminal its size, as set-process-window-size; false without one. */
   function setProcessWindowSize(process: ProcessLike, height: number, width: number): boolean;
   /** Send the text between two positions to a process, as process-send-region. */
   function processSendRegion(process: ProcessLike, start: number, end: number): void;
   /** Send SIGQUIT, as quit-process; with currentGroup, to the job in the foreground on its terminal. */
   function quitProcess(process: ProcessLike, currentGroup?: boolean): void;
-  /** Stop a process, as stop-process. */
-  function stopProcess(process: ProcessLike, currentGroup?: boolean): void;
-  /** Let a stopped process go on, as continue-process. */
-  function continueProcess(process: ProcessLike, currentGroup?: boolean): void;
+  /** Stop a process, as stop-process: SIGTSTP to a program; a serial port is left unread. Gives the process. */
+  function stopProcess(process: ProcessLike, currentGroup?: boolean): Process | undefined;
+  /** Let a stopped process go on, as continue-process: SIGCONT to a program; a serial port is read again, what came meanwhile thrown away. Gives the process. */
+  function continueProcess(process: ProcessLike, currentGroup?: boolean): Process | undefined;
   /** The exit code, or the signal that ended it. */
   function processExitStatus(process: ProcessLike): number | undefined;
   /** Its name, as process-name. */
