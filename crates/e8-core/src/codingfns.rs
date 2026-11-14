@@ -251,7 +251,7 @@ impl Editor {
                 let c = coding(0)?;
                 // Each with the line ends asked about, as `utf-8-unix`'s are `mule-utf-8-unix` and on.
                 let suffix = c.name()[c.system().name.len()..].to_string();
-                strings(std::iter::once(c.system().name).chain(c.system().aliases.iter().copied()).map(|n| format!("{n}{suffix}")))
+                strings(coding::system_names(c.with_eol(None)).into_iter().map(|n| format!("{n}{suffix}")))
             }
             "coding-system-base" => Value::Str(coding(0)?.system().name.to_string()),
             "set-coding-system-priority" => {
@@ -290,6 +290,18 @@ impl Editor {
             "coding-system-get" => {
                 let c = coding(0)?;
                 let prop = text_arg(args, 1)?;
+                // What coding-system-put put wins, as it replaces the property in Emacs's plist.
+                let bare = prop.trim_start_matches(':');
+                let put = self
+                    .coding_plists
+                    .iter()
+                    .filter(|(n, _)| n == c.system().name)
+                    .flat_map(|(_, p)| p.iter())
+                    .find(|(k, _)| k.trim_start_matches(':') == bare)
+                    .map(|(_, v)| v.clone());
+                if let Some(value) = put {
+                    return Ok(value);
+                }
                 match prop.trim_start_matches(':') {
                     "mime-charset" => c.system().mime_charset.map_or(Value::Null, |m| Value::Str(m.to_string())),
                     "mnemonic" => Value::Str(c.system().mnemonic.to_string()),

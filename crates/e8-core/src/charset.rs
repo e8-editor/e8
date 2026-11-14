@@ -137,6 +137,11 @@ fn find(name: &str) -> Option<&'static Charset> {
     CHARSETS.iter().find(|c| c.name == name)
 }
 
+/// How many bytes a charset writes a code point in, as its `:dimension`.
+pub fn charset_dimension(name: &str) -> Option<u32> {
+    find(name).map(|c| c.map.dimension())
+}
+
 /// Whether a charset by this name exists, as `charsetp`.
 pub fn charsetp(name: &str) -> bool {
     find(name).is_some()
