@@ -69,8 +69,7 @@ mod native {
                 if self.is_statement && !self.db.is_null() {
                     ffi::sqlite3_finalize(self.stmt);
                 } else if !self.is_statement && !self.db.is_null() {
-                    // Closed once its sets are finalized too, whichever goes first.
-                    ffi::sqlite3_close_v2(self.db);
+                    ffi::sqlite3_close(self.db);
                 }
             }
         }
@@ -182,6 +181,16 @@ mod native {
             Value::Null => Ok(Vec::new()),
             Value::List(items) => Ok(items.clone()),
             _ => Err(plain("VALUES must be a list or a vector")),
+        }
+    }
+
+    impl Drop for Sqlite {
+        /// Sets go first, as a database with statements left will not close.
+        fn drop(&mut self) {
+            let sets: Vec<u64> = self.objects.iter().filter(|(_, o)| o.is_statement).map(|(id, _)| *id).collect();
+            for id in sets {
+                self.objects.remove(&id);
+            }
         }
     }
 
