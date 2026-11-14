@@ -18112,6 +18112,18 @@ declare global {
     function findCodingSystemsRegionInternal(from: number | string, to: number | null, exclude?: CodingSystem[] | null): CodingSystem[] | true;
     /** Set the coding system for writing to the terminal when it is safe, as set-safe-terminal-coding-system-internal: E8's terminal writes UTF-8, so the coding is checked and kept in safe-terminal-coding-system. */
     function setSafeTerminalCodingSystemInternal(codingSystem: CodingSystem | null): undefined;
+    /** Define a charset from Emacs's arguments in their order, as define-charset-internal: name, dimension, code space, min and max code, ISO final and revision, emacs-mule id, ASCII compatibility, supplementary, invalid code, code offset, map, subset, superset, unify map and plist. E8 maps codes by :code-offset, :subset and :superset; a :map file it does not read gives no characters. */
+    function defineCharsetInternal(...args: Value[]): undefined;
+    /** Give a charset another name, as define-charset-alias. */
+    function defineCharsetAlias(alias: string, charset: string): undefined;
+    /** Make a charset the one ISO 2022 names by a dimension, 94 or 96 characters and a final character, as declare-equiv-charset. */
+    function declareEquivCharset(dimension: number, chars: number, finalChar: number | string, charset: string): undefined;
+    /** The charset ISO 2022 names by a dimension, 94 or 96 characters and a final character, as iso-charset; undefined if none. */
+    function isoCharset(dimension: number, chars: number, finalChar: number | string): string | undefined;
+    /** The first of ISO 2022's private final characters, 0 to ?, that no charset of a dimension and 94 or 96 characters has, as get-unused-iso-final-char; undefined if all are taken. */
+    function getUnusedIsoFinalChar(dimension: number, chars: number): number | undefined;
+    /** The ranges of characters a charset's codes from `from` to `to` hold, each [first, last], for map-charset-chars. */
+    function charsetCharRanges(charset: string, from?: number | null, to?: number | null): [number, number][];
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */

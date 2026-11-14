@@ -215,3 +215,54 @@ export function defineCodingSystem(name: string, docstring: string, ...props: e8
   }
 }
 e8.defun("define-coding-system", (name: string, docstring: string, ...props: e8.Value[]) => defineCodingSystem(name, docstring, ...props));
+
+/**
+ * Defines a charset, as mule.el's define-charset: `props` alternate
+ * keywords and values, `:code-space` (a vector of each dimension's least
+ * and greatest byte, least significant first) and one of `:code-offset`,
+ * `:subset` (parent, least and greatest code, offset) or `:superset`
+ * (charsets, each alone or with the offset of its codes) among them, with
+ * `:iso-final-char` to give ISO 2022 a name for it.
+ */
+export function defineCharset(name: string, docstring: string, ...props: e8.Value[]): void {
+  const get = (key: string): e8.Value => {
+    for (let i = 0; i + 1 < props.length; i += 2) if (props[i] === key) return props[i + 1];
+    return null;
+  };
+  const codeSpace = (get(":code-space") as number[] | null) ?? [0, 255, 0, 255, 0, 255, 0, 255];
+  const dimension = (get(":dimension") as number | null) ?? codeSpace.length / 2;
+  const plist: e8.Value[] = [":name", name, ":docstring", docstring, ...props, ":dimension", dimension, ":code-space", codeSpace];
+  const finalChar = get(":iso-final-char");
+  e8.defineCharsetInternal(
+    name,
+    dimension,
+    codeSpace,
+    get(":min-code"),
+    get(":max-code"),
+    typeof finalChar === "string" ? finalChar.codePointAt(0)! : finalChar,
+    get(":iso-revision-number"),
+    get(":emacs-mule-id"),
+    get(":ascii-compatible-p"),
+    get(":supplementary-p"),
+    get(":invalid-code"),
+    get(":code-offset"),
+    get(":map"),
+    get(":subset"),
+    get(":superset"),
+    get(":unify-map"),
+    plist,
+  );
+}
+e8.defun("define-charset", (name: string, docstring: string, ...props: e8.Value[]) => defineCharset(name, docstring, ...props));
+
+/**
+ * Calls `fn` with each range of characters a charset holds, as
+ * [first, last], and `arg`, as map-charset-chars: its codes from `fromCode`
+ * to `toCode`, all of them by default.
+ */
+export function mapCharsetChars(fn: string | ((range: [number, number], arg: e8.Value) => unknown), charset: string, arg: e8.Value = null, fromCode?: number | null, toCode?: number | null): void {
+  for (const range of e8.charsetCharRanges(charset, fromCode, toCode)) e8.funcall(fn, range, arg);
+}
+e8.defun("map-charset-chars", (fn: string | ((range: [number, number], arg: e8.Value) => unknown), charset: string, arg?: e8.Value, fromCode?: number | null, toCode?: number | null) =>
+  mapCharsetChars(fn, charset, arg ?? null, fromCode, toCode),
+);

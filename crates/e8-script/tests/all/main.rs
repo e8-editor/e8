@@ -88,6 +88,7 @@ mod sqlite;
 mod compositions;
 mod c_core_odds;
 mod coding_definitions;
+mod charset_definitions;
 mod subr;
 mod symbols;
 mod syntax_tables;
