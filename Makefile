@@ -21,17 +21,19 @@ else
 APP     ?= target/E8.app
 endif
 
+# Turning V8 off turns off the GUI's other default, its web views
+# (ADR 0089), which the app keeps.
 ifeq ($(ENGINE),v8)
 FEATURES :=
 else
-FEATURES := --no-default-features --features $(ENGINE)
+FEATURES := --no-default-features --features $(ENGINE),e8-gui/xwidgets
 endif
 
 # QuickJS builds in a target directory of its own: the two engines turn on
 # different features of crates they share, so building one in the other's
 # directory would rebuild most of the workspace each time.
 QUICKJS := CARGO_TARGET_DIR=target/quickjs
-QUICKJS_FEATURES := --no-default-features --features quickjs
+QUICKJS_FEATURES := --no-default-features --features quickjs,e8-gui/xwidgets
 
 .PHONY: app clean-app check tidy
 

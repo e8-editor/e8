@@ -72,6 +72,9 @@ pub struct FrameDescription {
     pub fringe_bitmaps: HashMap<String, FringeBitmap>,
     /// Each image's pixels, by its id, for the images the windows show.
     pub images: HashMap<u64, Option<Arc<Rgba>>>,
+    /// Each xwidget the windows show and its label, the page's title, for
+    /// a front end that draws a box where it cannot embed the view (ADR 0089).
+    pub xwidget_labels: HashMap<u64, String>,
     /// The tooltip that is showing, over everything else, if one is.
     pub tip: Option<crate::menu::MenuPanel>,
     /// The panels of the menu that is open, over everything else, the
@@ -225,6 +228,7 @@ impl Editor {
         let style = |faces: &[&str]| self.style_for(&faces.iter().map(|f| f.to_string()).collect::<Vec<_>>(), dark);
         let mut bitmaps = HashMap::new();
         let mut images = HashMap::new();
+        let mut xwidget_labels = HashMap::new();
         let mut windows = Vec::new();
         for view in self.frame_windows(frame) {
             let b = view.buffer;
@@ -255,7 +259,14 @@ impl Editor {
             for row in &rows {
                 for seg in row.row.segments.iter().chain(row.row.margins.iter().flatten()) {
                     if let Some(image) = &seg.image {
-                        images.entry(image.id).or_insert_with(|| self.image_rgba(image.id, scale));
+                        match image.xwidget {
+                            Some(id) => {
+                                xwidget_labels.entry(id).or_insert_with(|| self.xwidget_label(id).unwrap_or_default());
+                            }
+                            None => {
+                                images.entry(image.id).or_insert_with(|| self.image_rgba(image.id, scale));
+                            }
+                        }
                     }
                 }
             }
@@ -342,6 +353,7 @@ impl Editor {
             default_style: style(&["default"]),
             fringe_bitmaps: bitmaps,
             images,
+            xwidget_labels,
             tip: if frame == self.selected_frame() { self.tip_panel(dark) } else { None },
             menus: if frame == self.selected_frame() { self.menu_panels(dark) } else { Vec::new() },
             menu_bar: self.menu_bar(frame).map(|items| {

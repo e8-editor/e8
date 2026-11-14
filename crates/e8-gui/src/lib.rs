@@ -11,5 +11,6 @@ pub mod modeline;
 #[cfg(unix)]
 pub mod shell_path;
 pub mod theme;
+mod xwidgets;
 
 pub use app::{E8App, transparent_title_bar};
