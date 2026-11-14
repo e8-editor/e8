@@ -149,6 +149,17 @@ Frames and the window tree ([ADR 0077](../adr/0077-frames-and-the-window-tree-as
 
 The ranking is now led by **charsets and codings** (0.23), then keyboard odds (0.22: `current-idle-time`), XML (0.19: `libxml-parse-html-region`, the most needed missing primitive now), the macOS front end's own (0.18) and keymaps' rest (0.17).
 
+## After charsets, the keyboard, XML and the display
+
+The five groups that led the ranking landed on 2026-11-14 in pull requests 128 to 132: charsets and coding systems ([ADR 0078](../adr/0078-charsets-and-codings-as-emacs-has-them.md), two stages), the keyboard's odds and ends ([ADR 0079](../adr/0079-the-keyboards-odds-and-ends.md)), XML and HTML ([ADR 0080](../adr/0080-xml-and-html-as-emacs-parses-them.md)) and the display's own questions ([ADR 0081](../adr/0081-the-display-as-emacs-asks-about-it.md)). Measured again on the same corpus:
+
+- **By name**, 707 of the 877 editor primitives (81%), from 664, and 65 of the 169 platform ones, from 43: charset.c has 15 of its 19, coding.c 36 of its 42, keyboard.c 48 of its 54, xml.c all three, and nsfns.m 20 of its 26.
+- **Packages needing nothing missing**: 281 of 295 MELPA packages, from 265; 69 of 77 daily ones, from 62; 27 of Emacs's 49, from 23. Fourteen MELPA packages are left that need anything at all.
+- **Still needed** by at least one package: 56 editor and 20 platform primitives, from 72 and 42.
+- **`libxml-parse-html-region` is gone from the top**, and with it the only group that needed a parser; `frame.ts` now holds frame.el's own wrappers, which is what Lisp calls rather than the back end's names.
+
+The ranking is now led by **keymaps' rest** and **minibuffer odds**, both 0.17 and both small: `keymap-prompt` and `map-keymap-internal` for the first, `read-variable` and `abort-minibuffers` for the second. Then tree-sitter's rest (0.12), face and font internals (0.11), and nothing else above 0.09. Seven packages each wait on keymaps and on the minibuffer alone — flycheck, transient, counsel, magit, helm, ivy and swiper among them.
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
