@@ -229,6 +229,7 @@ impl fmt::Display for Value {
             Value::CharTable(id) => write!(f, "#<char-table {id}>"),
             Value::Treesit(crate::treesitfns::TsObject::Parser { parser, .. }) => write!(f, "#<treesit-parser {parser}>"),
             Value::Treesit(crate::treesitfns::TsObject::Node(_)) => write!(f, "#<treesit-node>"),
+            Value::Treesit(crate::treesitfns::TsObject::Query(_)) => write!(f, "#<treesit-compiled-query>"),
             Value::Marker(id) => write!(f, "#<marker {id}>"),
             Value::Window(id) => write!(f, "#<window {id}>"),
             Value::Terminal(id) => write!(f, "#<terminal {id}>"),

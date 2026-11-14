@@ -97,33 +97,9 @@ export function thingDefinition(thing: string, language?: string): Predicate | u
   return undefined;
 }
 
-class MissingThing extends Error {}
-
-function matches(node: Node, pred: Predicate, language: string): boolean {
-  if (typeof pred === "string") return e8.stringMatch(pred, e8.treesitNodeType(node) ?? "") !== undefined;
-  if (typeof pred === "function") return !nil(pred(node));
-  if (typeof pred === "symbol") {
-    const definition = thingDefinition(pred.description ?? "", language);
-    if (definition === undefined) throw new MissingThing(pred.description);
-    return matches(node, definition, language);
-  }
-  const [head, ...rest] = pred;
-  if (head === "not") return !matches(node, rest[0]!, language);
-  if (head === "or") return rest.some((p) => matches(node, p, language));
-  if (typeof head === "string" && typeof rest[0] === "function") return matches(node, head, language) && matches(node, rest[0], language);
-  return e8.signal("treesit-invalid-predicate", "Invalid predicate, see treesit-thing-settings for valid forms of predicate", [String(pred)]);
-}
-
 /** Whether a node matches a predicate, as treesit-node-match-p; a missing thing is an error unless ignoreMissing. */
 export function nodeMatchP(node: Node | undefined, pred: Predicate, ignoreMissing = false): boolean {
-  if (node === undefined) return false;
-  try {
-    return matches(node, pred, e8.treesitParserLanguage(e8.treesitNodeParser(node)));
-  } catch (e) {
-    if (!(e instanceof MissingThing)) throw e;
-    if (ignoreMissing) return false;
-    return e8.signal("treesit-predicate-not-found", "Cannot find the definition of the predicate in treesit-thing-settings", [e.message]);
-  }
+  return e8.treesitNodeMatchP(node, pred, ignoreMissing);
 }
 
 /** The first ancestor that matches, the node itself too with includeNode, as treesit-parent-until. */
@@ -190,54 +166,18 @@ export function nodeEnclosedP(smaller: Span, larger: Span, strict: boolean | "pa
 
 // Searching, as treesit.c's treesit-search-forward and treesit-search-subtree.
 
-/** The next or previous sibling, named only if named. */
-const sibling = (n: Node, forward: boolean, named: boolean): Node | undefined =>
-  forward ? e8.treesitNodeNextSibling(n, named) : e8.treesitNodePrevSibling(n, named);
-
-/** The first or last child, named only if named. */
-const edgeChild = (n: Node, forward: boolean, named: boolean): Node | undefined =>
-  e8.treesitNodeChild(n, forward ? 0 : -1, named);
-
 /**
  * The next node after start that matches, leaves first and then their
  * parents, not looking into start's own subtree, as treesit-search-forward.
  * Only named nodes unless all.
  */
 export function searchForward(start: Node, pred: Predicate, backward = false, all = false): Node | undefined {
-  const [forward, named] = [!backward, !all];
-  const match = (n: Node) => (!named || e8.treesitNodeCheck(n, "named")) && nodeMatchP(n, pred, true);
-  let cursor = start;
-  let initial = true;
-  for (;;) {
-    if (!initial && match(cursor)) return cursor;
-    initial = false;
-    let next = sibling(cursor, forward, named);
-    while (next === undefined) {
-      const parent = e8.treesitNodeParent(cursor);
-      if (parent === undefined) return undefined;
-      cursor = parent;
-      if (match(cursor)) return cursor;
-      next = sibling(cursor, forward, named);
-    }
-    cursor = next;
-    for (let child = edgeChild(cursor, forward, false); child !== undefined; child = edgeChild(cursor, forward, false)) cursor = child;
-  }
+  return e8.treesitSearchForward(start, pred, backward, all);
 }
 
 /** The first node in a subtree that matches, depth first, to depth levels, as treesit-search-subtree. */
 export function searchSubtree(node: Node, pred: Predicate, backward = false, all = false, depth = 1000): Node | undefined {
-  const named = !all;
-  const visit = (n: Node, limit: number): Node | undefined => {
-    if ((!named || e8.treesitNodeCheck(n, "named")) && nodeMatchP(n, pred, true)) return n;
-    if (limit === 0) return undefined;
-    const children = nodeChildren(n, named);
-    for (const child of backward ? children.reverse() : children) {
-      const found = visit(child, limit - 1);
-      if (found !== undefined) return found;
-    }
-    return undefined;
-  };
-  return visit(node, depth);
+  return e8.treesitSearchSubtree(node, pred, backward, all, depth);
 }
 
 /** Searches on from a node, going to the end of the one found, or its start with start, as treesit-search-forward-goto. */
@@ -660,26 +600,22 @@ e8.defineVariable({
   local: true,
 });
 
-/** A node and the matching nodes below it, as treesit-induce-sparse-tree makes them. */
-type Sparse = [Node | undefined, Sparse[]];
+/** A node and the matching nodes below it, [node, ...children], as treesit-induce-sparse-tree makes them. */
+type Sparse = [Node | null | undefined, ...Sparse[]];
 
 /** The nodes under `root` that match, as a tree of their own, as treesit-induce-sparse-tree. */
-export function induceSparseTree(root: Node, pred: Predicate, depth = 1000): Sparse {
-  const visit = (n: Node, limit: number): Sparse[] => {
-    const below = limit === 0 ? [] : nodeChildren(n).flatMap((c) => visit(c, limit - 1));
-    return nodeMatchP(n, pred, true) ? [[n, below]] : below;
-  };
-  const below = nodeChildren(root).flatMap((c) => visit(c, depth - 1));
-  return nodeMatchP(root, pred, true) ? [root, below] : [undefined, below];
+export function induceSparseTree(root: Node, pred: Predicate, depth = 1000): Sparse | undefined {
+  return e8.treesitInduceSparseTree(root, pred, null, depth) as Sparse | undefined;
 }
 
 type ImenuEntry = [string, number | ImenuEntry[]];
 
 /** An index from a sparse tree, as treesit--simple-imenu-1: a defun with defuns inside is a submenu, " " itself. */
-function simpleImenu1(tree: Sparse, pred: ((n: Node) => unknown) | null, nameFn: ((n: Node) => string | null) | null): ImenuEntry[] {
-  const [node, children] = tree;
+function simpleImenu1(tree: Sparse | undefined, pred: ((n: Node) => unknown) | null, nameFn: ((n: Node) => string | null) | null): ImenuEntry[] {
+  if (tree === undefined) return [];
+  const [node, ...children] = tree;
   const subtrees = children.flatMap((c) => simpleImenu1(c, pred, nameFn));
-  if (node === undefined) return subtrees;
+  if (node === undefined || node === null) return subtrees;
   if (pred && nil(pred(node))) return subtrees;
   const name = (nameFn ? nameFn(node) : defunName(node)) ?? "Anonymous";
   const start = e8.treesitNodeStart(node)!;

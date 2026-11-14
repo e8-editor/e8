@@ -22,6 +22,18 @@ pub struct Error {
 /// parent condition, as `define-error` makes them.
 const ERRORS: &[(&str, &str)] = &[
     ("user-error", "error"),
+    // treesit.c's, each a `treesit-error`; Emacs 30 leaves
+    // `treesit-predicate-not-found` undefined, which E8 makes one too.
+    ("treesit-error", "error"),
+    ("treesit-query-error", "treesit-error"),
+    ("treesit-parse-error", "treesit-error"),
+    ("treesit-range-invalid", "treesit-error"),
+    ("treesit-load-language-error", "treesit-error"),
+    ("treesit-node-outdated", "treesit-error"),
+    ("treesit-node-buffer-killed", "treesit-error"),
+    ("treesit-parser-deleted", "treesit-error"),
+    ("treesit-invalid-predicate", "treesit-error"),
+    ("treesit-predicate-not-found", "treesit-error"),
     ("scan-error", "error"),
     ("search-failed", "error"),
     ("invalid-regexp", "error"),

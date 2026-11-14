@@ -147,6 +147,15 @@ pub(crate) struct SyntaxTree {
     /// grammar's query once a mode gives them, as Emacs's
     /// treesit-font-lock-settings do.
     rules: RefCell<Option<Rules>>,
+    /// The ranges `treesit-parser-set-included-ranges` last set, as given,
+    /// or nil for the whole buffer.
+    ranges: RefCell<Value>,
+    /// The functions told what each parse changed, newest first, as
+    /// `treesit-parser-add-notifier` adds them.
+    pub(crate) notifiers: RefCell<Vec<Value>>,
+    /// What parses changed, as lists of [start, end], waiting for the
+    /// editor to tell the notifiers.
+    pub(crate) pending_notifications: RefCell<Vec<Value>>,
 }
 
 impl SyntaxTree {
@@ -167,6 +176,9 @@ impl SyntaxTree {
             stale: Cell::new(true),
             query: grammar.highlights()?,
             rules: RefCell::new(None),
+            ranges: RefCell::new(Value::Null),
+            notifiers: RefCell::new(Vec::new()),
+            pending_notifications: RefCell::new(Vec::new()),
         })
     }
 
@@ -202,11 +214,51 @@ impl SyntaxTree {
                 &chunk.as_bytes()[byte - start..]
             };
             let tree = self.parser.borrow_mut().parse_with_options(&mut read, old.as_ref(), None);
+            // What changed, for the notifiers: the whole buffer on a first
+            // parse, as Emacs tells them.
+            if !self.notifiers.borrow().is_empty()
+                && let Some(new) = &tree
+            {
+                let span = |a: usize, b: usize| Value::List(vec![Value::Number(a as f64), Value::Number(b as f64)]);
+                let changed = match &old {
+                    Some(old) => old.changed_ranges(new).map(|r| span(text.byte_to_char(r.start_byte.min(len)), text.byte_to_char(r.end_byte.min(len)))).collect(),
+                    None => vec![span(0, text.len_chars())],
+                };
+                self.pending_notifications.borrow_mut().push(Value::List(changed));
+            }
             *self.tree.borrow_mut() = tree;
             self.stale.set(false);
             self.generation.set(self.generation.get() + 1);
         }
         self.tree.borrow().clone()
+    }
+
+    /// Limits the parser to spans of the text, or lets it parse all of it
+    /// for none, as `treesit-parser-set-included-ranges`, keeping `given`
+    /// to give back; the next parse uses them.
+    pub(crate) fn set_included_ranges(&self, text: &Rope, spans: &[(usize, usize)], given: Value) -> std::result::Result<(), ()> {
+        if *self.ranges.borrow() == given {
+            return Ok(());
+        }
+        let ranges: Vec<tree_sitter::Range> = spans
+            .iter()
+            .map(|&(beg, end)| tree_sitter::Range {
+                start_byte: text.char_to_byte(beg),
+                end_byte: text.char_to_byte(end),
+                // Only bytes count, as Emacs gives tree-sitter dummy points.
+                start_point: Point::default(),
+                end_point: Point::default(),
+            })
+            .collect();
+        self.parser.borrow_mut().set_included_ranges(&ranges).map_err(|_| ())?;
+        *self.ranges.borrow_mut() = given;
+        self.stale.set(true);
+        Ok(())
+    }
+
+    /// The ranges last set, as given, or nil.
+    pub(crate) fn included_ranges(&self) -> Value {
+        self.ranges.borrow().clone()
     }
 
     /// Highlights with a mode's font-lock rules, in order, in place of the

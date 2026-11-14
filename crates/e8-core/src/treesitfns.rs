@@ -26,11 +26,65 @@ pub struct NodeRef {
     pub path: Vec<u32>,
 }
 
-/// A tree-sitter object as a value: a parser of a buffer, or a node.
+/// A tree-sitter object as a value: a parser of a buffer, a node, or a
+/// compiled query, by its number among the queries compiled.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TsObject {
     Parser { buffer: u64, parser: u64 },
     Node(NodeRef),
+    Query(u64),
+}
+
+/// A query's text in tree-sitter's syntax, as Emacs's
+/// `treesit-pattern-expand` writes a pattern given as Lisp: keywords as
+/// tree-sitter's operators, a list as `(...)`, a list whose first element
+/// is the symbol `[` as `[...]`, which stands for Lisp's vector, a string
+/// quoted, and a symbol as its name.
+pub fn pattern_expand(pattern: &Value) -> String {
+    match pattern {
+        Value::Symbol(s) => match s.as_str() {
+            ":anchor" => ".",
+            ":?" => "?",
+            ":*" => "*",
+            ":+" => "+",
+            ":equal" => "#equal",
+            ":match" => "#match",
+            ":pred" => "#pred",
+            name => name,
+        }
+        .to_string(),
+        Value::List(items) => match items.split_first() {
+            Some((Value::Symbol(open), rest)) if open == "[" => format!("[{}]", query_expand(rest)),
+            _ => format!("({})", query_expand(items)),
+        },
+        Value::Str(s) => {
+            let mut out = String::from("\"");
+            for c in s.chars() {
+                match c {
+                    '\0' => out.push_str("\\0"),
+                    '\n' => out.push_str("\\n"),
+                    '\r' => out.push_str("\\r"),
+                    '\t' => out.push_str("\\t"),
+                    '"' | '\\' => {
+                        out.push('\\');
+                        out.push(c);
+                    }
+                    c => out.push(c),
+                }
+            }
+            out.push('"');
+            out
+        }
+        Value::Null | Value::Bool(false) => "nil".into(),
+        Value::Bool(true) => "t".into(),
+        Value::Number(n) if n.fract() == 0.0 => format!("{}", *n as i64),
+        other => format!("{other}"),
+    }
+}
+
+/// A query given as Lisp patterns as one string, as `treesit-query-expand`.
+pub fn query_expand(patterns: &[Value]) -> String {
+    patterns.iter().map(pattern_expand).collect::<Vec<_>>().join(" ")
 }
 
 fn error(symbol: &str, message: impl Into<String>) -> Error {
@@ -42,7 +96,7 @@ fn wrong_type(what: &str, v: Option<&Value>) -> Error {
 }
 
 /// The child indices from the root to `node`.
-fn path_of(node: Node) -> Vec<u32> {
+pub(crate) fn path_of(node: Node) -> Vec<u32> {
     let mut path = Vec::new();
     let mut child = node;
     while let Some(parent) = child.parent() {
@@ -148,7 +202,7 @@ impl Editor {
 
     /// Calls `f` with a node, its parser and its buffer, the node found again
     /// in the parser's tree.
-    fn with_node<T>(&self, r: &NodeRef, f: impl FnOnce(&Buffer, &SyntaxTree, Node) -> Result<T>) -> Result<T> {
+    pub(crate) fn with_node<T>(&self, r: &NodeRef, f: impl FnOnce(&Buffer, &SyntaxTree, Node) -> Result<T>) -> Result<T> {
         let (b, p) = self.ts_parser(r.buffer, r.parser)?;
         let (buffer, parser) = (&self.buffers[b], &self.buffers[b].parsers[p]);
         // A node is out of date once its tree is parsed again, which asking
@@ -210,8 +264,14 @@ impl Editor {
     }
 
     /// Runs one of the tree-sitter primitives by its Lisp name, as scripts
-    /// call them.
+    /// call them, then the notifiers of any parser it parsed again.
     pub fn treesit_primitive(&mut self, name: &str, args: &[Value]) -> Result<Value> {
+        let result = self.treesit_primitive_1(name, args);
+        self.run_treesit_notifiers();
+        result
+    }
+
+    fn treesit_primitive_1(&mut self, name: &str, args: &[Value]) -> Result<Value> {
         let arg = |i: usize| args.get(i).filter(|v| **v != Value::Null);
         let flag = |i: usize| arg(i).is_some_and(Value::is_true);
         let node = |i: usize| -> Result<NodeRef> {
@@ -392,14 +452,144 @@ impl Editor {
                 _ => Value::Bool(false),
             },
             "treesit-query-compile" => {
+                if let Some(q @ Value::Treesit(TsObject::Query(_))) = arg(1) {
+                    return Ok(q.clone());
+                }
                 let language = text(0)?;
-                let source = text(1)?;
-                self.compiled_query(&language, &source)?;
-                Value::Str(source)
+                let source = query_source(arg(1))?;
+                // Compiled now only if EAGER, else when first used, as Emacs's.
+                if flag(2) {
+                    self.compiled_query(&language, &source)?;
+                }
+                let key = (language, source);
+                let id = match self.treesit_query_objects.iter().position(|q| *q == key) {
+                    Some(i) => i,
+                    None => {
+                        self.treesit_query_objects.push(key);
+                        self.treesit_query_objects.len() - 1
+                    }
+                };
+                Value::Treesit(TsObject::Query(id as u64))
             }
+            "treesit-query-p" => Value::Bool(matches!(arg(0), Some(Value::Treesit(TsObject::Query(_)) | Value::Str(_))) || matches!(arg(0), Some(Value::List(l)) if !l.is_empty())),
+            "treesit-compiled-query-p" => Value::Bool(matches!(arg(0), Some(Value::Treesit(TsObject::Query(_))))),
+            "treesit-query-language" => match arg(0) {
+                Some(Value::Treesit(TsObject::Query(id))) => Value::Str(self.treesit_query_objects[*id as usize].0.clone()),
+                v => return Err(wrong_type("treesit-compiled-query-p", v)),
+            },
+            "treesit-pattern-expand" => Value::Str(pattern_expand(arg(0).unwrap_or(&Value::Null))),
+            "treesit-query-expand" => match arg(0) {
+                None => Value::Str(String::new()),
+                Some(Value::List(patterns)) => Value::Str(query_expand(patterns)),
+                v => return Err(wrong_type("listp", v)),
+            },
             "treesit-query-capture" => self.query_capture(args)?,
+            "treesit-library-abi-version" => num(if flag(0) { tree_sitter::MIN_COMPATIBLE_LANGUAGE_VERSION } else { tree_sitter::LANGUAGE_VERSION }),
+            "treesit-language-abi-version" => {
+                let language = text(0)?;
+                match self.ensure_grammar(&language) {
+                    Ok(()) => num(self.grammars.get(language.as_str()).expect("just ensured").language.abi_version()),
+                    Err(_) => Value::Null,
+                }
+            }
+            "treesit-parser-set-included-ranges" => {
+                let (b, p) = parser(0)?;
+                let (b, p) = self.ts_parser(b, p)?;
+                let ranges = arg(1).cloned().unwrap_or(Value::Null);
+                let (min, max) = (self.buffers[b].point_min(), self.buffers[b].point_max());
+                let invalid = || Error::signal("treesit-range-invalid", "RANGE is either overlapping, out-of-order or out-of-range", vec![ranges.clone()]);
+                let mut spans = Vec::new();
+                match &ranges {
+                    Value::Null => {}
+                    Value::List(items) => {
+                        let mut last = min;
+                        for item in items {
+                            let Value::List(pair) = item else { return Err(wrong_type("consp", Some(item))) };
+                            let (Some(beg), Some(end)) = (pair.first().and_then(Value::as_number), pair.get(1).and_then(Value::as_number)) else {
+                                return Err(wrong_type("fixnump", Some(item)));
+                            };
+                            let (beg, end) = (beg as i64, end as i64);
+                            if !(last as i64 <= beg && beg <= end && end <= max as i64) {
+                                return Err(invalid());
+                            }
+                            last = end as usize;
+                            spans.push((beg as usize, end as usize));
+                        }
+                    }
+                    v => return Err(wrong_type("consp", Some(v))),
+                }
+                let buffer = &self.buffers[b];
+                buffer.parsers[p].set_included_ranges(buffer.text(), &spans, ranges.clone()).map_err(|()| {
+                    Error::signal("treesit-range-invalid", "Something went wrong when setting ranges", vec![ranges.clone()])
+                })?;
+                Value::Null
+            }
+            "treesit-parser-included-ranges" => {
+                let (b, p) = parser(0)?;
+                let (b, p) = self.ts_parser(b, p)?;
+                self.buffers[b].parsers[p].included_ranges()
+            }
+            "treesit-parser-notifiers" => {
+                let (b, p) = parser(0)?;
+                let (b, p) = self.ts_parser(b, p)?;
+                // Oldest first, as Emacs gives its newest-first list reversed.
+                Value::List(self.buffers[b].parsers[p].notifiers.borrow().iter().rev().cloned().collect())
+            }
+            "treesit-parser-add-notifier" | "treesit-parser-remove-notifier" => {
+                let (b, p) = parser(0)?;
+                let (b, p) = self.ts_parser(b, p)?;
+                // A function's name, not a lambda, as Emacs asks.
+                let function = match arg(1) {
+                    Some(Value::Str(n) | Value::Symbol(n)) => Value::Symbol(n.clone()),
+                    v => return Err(wrong_type("symbolp", v)),
+                };
+                let mut notifiers = self.buffers[b].parsers[p].notifiers.borrow_mut();
+                let at = notifiers.iter().position(|f| *f == function);
+                match (name, at) {
+                    ("treesit-parser-add-notifier", None) => notifiers.insert(0, function),
+                    ("treesit-parser-remove-notifier", Some(i)) => {
+                        notifiers.remove(i);
+                    }
+                    _ => {}
+                }
+                Value::Null
+            }
+            "treesit-node-match-p" => match arg(0) {
+                None => Value::Null,
+                Some(_) => Value::Bool(self.treesit_node_match_p(&node(0)?, arg(1).unwrap_or(&Value::Null), flag(2))?),
+            },
+            "treesit-search-subtree" => {
+                let depth = arg(4).map(|_| number(4)).transpose()?;
+                self.treesit_search_subtree(&node(0)?, arg(1).unwrap_or(&Value::Null), flag(2), flag(3), depth)?
+            }
+            "treesit-search-forward" => self.treesit_search_forward(&node(0)?, arg(1).unwrap_or(&Value::Null), flag(2), flag(3))?,
+            "treesit-induce-sparse-tree" => {
+                let depth = arg(3).map(|_| number(3)).transpose()?;
+                self.treesit_induce_sparse_tree(&node(0)?, arg(1).unwrap_or(&Value::Null), arg(2), depth)?
+            }
+            "treesit-subtree-stat" => self.treesit_subtree_stat(&node(0)?)?,
             _ => return Err(Error::new(format!("No tree-sitter primitive {name}"))),
         })
+    }
+
+    /// Calls each parser's notifiers with the ranges its parses since
+    /// changed, and the parser, as Emacs does after it parses again; an
+    /// error in one is muted, as Emacs's `safe_calln` mutes it.
+    pub(crate) fn run_treesit_notifiers(&mut self) {
+        let mut calls = Vec::new();
+        for buffer in &self.buffers {
+            for parser in &buffer.parsers {
+                for ranges in parser.pending_notifications.take() {
+                    let object = Value::Treesit(TsObject::Parser { buffer: buffer.id(), parser: parser.id });
+                    for f in parser.notifiers.borrow().iter() {
+                        calls.push((f.clone(), ranges.clone(), object.clone()));
+                    }
+                }
+            }
+        }
+        for (f, ranges, parser) in calls {
+            let _ = self.funcall(&f, &[ranges, parser]);
+        }
     }
 
     /// Compiles a query for a language, checking its predicates, as
@@ -441,11 +631,20 @@ impl Editor {
             }
             v => return Err(wrong_type("treesit-node-p", v)),
         };
-        let source = arg(1).and_then(Value::as_str).ok_or_else(|| wrong_type("treesit-query-p", arg(1)))?.to_string();
         let (beg, end) = (arg(2).and_then(Value::as_number), arg(3).and_then(Value::as_number));
         let (node_only, grouped) = (arg(4).is_some_and(Value::is_true), arg(5).is_some_and(Value::is_true));
         let (b, p) = self.ts_parser(root.buffer, root.parser)?;
         let language = self.buffers[b].parsers[p].language.clone();
+        let source = match arg(1) {
+            Some(Value::Treesit(TsObject::Query(id))) => {
+                let (query_language, source) = self.treesit_query_objects[*id as usize].clone();
+                if query_language != language {
+                    return Err(error("treesit-query-error", format!("The query is for {query_language}, the node {language}")));
+                }
+                source
+            }
+            q => query_source(q)?,
+        };
         let query = self.compiled_query(&language, &source)?;
         // The matches, each its captures as (name, node, text), by index too
         // for the predicates still to check, which may call script functions,
@@ -515,6 +714,15 @@ impl Editor {
             }
         }
         Ok(Value::List(out))
+    }
+}
+
+/// A query's source: a string as it is, Lisp patterns expanded.
+fn query_source(query: Option<&Value>) -> Result<String> {
+    match query {
+        Some(Value::Str(s)) => Ok(s.clone()),
+        Some(Value::List(patterns)) if !patterns.is_empty() => Ok(query_expand(patterns)),
+        v => Err(wrong_type("treesit-query-p", v)),
     }
 }
 

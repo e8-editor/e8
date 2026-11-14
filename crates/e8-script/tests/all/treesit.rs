@@ -211,6 +211,140 @@ fn parsers_and_nodes_out_of_date() {
     assert_eq!(got, r#"[1,true,false,2,2,3,1,"rust",null,false,true,"function_item","line_comment",true,"outdated",false,2]"#);
 }
 
+#[test]
+fn predicates_searches_and_sparse_trees_as_emacs_gives_them() {
+    let (mut ed, s) = setup();
+    ed.window_buffer_mut().set_text(RUST);
+    s.eval_typescript(&mut ed, "pred.ts", r#"e8.defun("long-p", (n: e8.TreesitNode) => e8.treesitNodeEnd(n)! - e8.treesitNodeStart(n)! > 3);"#.into()).unwrap();
+    let got = with_treesit(
+        &mut ed,
+        &s,
+        r#"
+        const p = e8.treesitParserCreate("rust");
+        const root = e8.treesitParserRootNode(p);
+        const fn = e8.treesitNodeChild(root, 0)!;
+        const text = (n: any) => (n === undefined ? null : t.nodeText(n, true));
+        const type = (n: any) => (n === undefined ? null : e8.treesitNodeType(n));
+        const types = (tree: any): any => (tree === undefined || tree === null ? null : typeof tree === "string" ? tree : Array.isArray(tree) ? tree.map(types) : e8.treesitNodeType(tree));
+        const caught = (f: () => unknown) => e8.conditionCase(f, { "treesit-predicate-not-found": () => "not-found", "treesit-invalid-predicate": () => "invalid" });
+        e8.setVariable("treesit-thing-settings", [["rust", [["defun", "function_item"], ["num", "integer_literal"],
+          ["both", ["or", "integer_literal", "identifier"]], ["notid", ["not", "identifier"]], ["bad", 3]]]] as any);
+        const at = t.nodeAt(15);
+        return [
+          e8.treesitNodeMatchP(fn, "function"), e8.treesitNodeMatchP(fn, Symbol.for("defun")), e8.treesitNodeMatchP(fn, Symbol.for("nosuch"), true),
+          caught(() => e8.treesitNodeMatchP(fn, Symbol.for("nosuch"))), caught(() => e8.treesitNodeMatchP(fn, [Symbol.for("foo"), Symbol.for("bar")])),
+          caught(() => e8.treesitNodeMatchP(fn, Symbol.for("bad"), true)), e8.treesitNodeMatchP(fn, ["not", "identifier"]),
+          e8.treesitNodeMatchP(fn, ["function", Symbol.for("long-p")]), e8.treesitNodeMatchP(undefined, "x"),
+          text(e8.treesitSearchSubtree(root, Symbol.for("num"))), text(e8.treesitSearchSubtree(root, Symbol.for("num"), true)),
+          type(e8.treesitSearchSubtree(root, Symbol.for("nosuch"))), type(e8.treesitSearchSubtree(root, "block", false, false, 1)),
+          type(e8.treesitSearchSubtree(root, "block", false, false, 2)),
+          text(e8.treesitSearchForward(at, Symbol.for("both"))), text(e8.treesitSearchForward(at, Symbol.for("both"), true)),
+          type(e8.treesitSearchForward(at, "(", false, true)), type(e8.treesitSearchForward(at, "(", true, true)),
+          type(e8.treesitSearchForward(at, "(")),
+          types(e8.treesitInduceSparseTree(root, Symbol.for("defun"))),
+          types(e8.treesitInduceSparseTree(root, Symbol.for("both"), (n) => e8.treesitNodeType(n), 4)),
+          types(e8.treesitInduceSparseTree(root, "source_file\\|block", null, 2)),
+          types(e8.treesitInduceSparseTree(root, "nosuch")),
+          e8.treesitSubtreeStat(root), e8.treesitSubtreeStat(fn),
+          // treesit.ts's functions are these.
+          text(t.searchSubtree(root, Symbol.for("num"))), types(t.induceSparseTree(root, Symbol.for("defun"))),
+        ];
+        "#,
+    );
+    // Emacs 30.2: (t t nil treesit-predicate-not-found treesit-invalid-predicate treesit-invalid-predicate t t nil
+    //  "1" "2" nil nil "block" "x" "main" "(" "(" nil (nil ("function_item") ("function_item"))
+    //  (nil ("identifier") ("identifier") ("integer_literal") ("identifier")) (nil ("source_file" ("block") ("block"))) nil
+    //  (6 5 35) (5 5 25))
+    assert_eq!(
+        got,
+        r#"[true,true,false,"not-found","invalid","invalid",true,true,false,"1","2",null,null,"block","x","main","(","(",null,[null,["function_item"],["function_item"]],[null,["identifier"],["identifier"],["integer_literal"],["identifier"]],[null,["source_file",["block"],["block"]]],null,[6,5,35],[5,5,25],"1",[null,["function_item"],["function_item"]]]"#
+    );
+}
+
+#[test]
+fn queries_as_objects_and_lisp_as_emacs_gives_them() {
+    let (mut ed, s) = setup();
+    ed.window_buffer_mut().set_text(RUST);
+    let got = with_treesit(
+        &mut ed,
+        &s,
+        r#"
+        const root = e8.treesitParserRootNode(e8.treesitParserCreate("rust"));
+        const text = (n: any) => t.nodeText(n, true);
+        const S = Symbol.for;
+        const q = e8.treesitQueryCompile("rust", "(integer_literal) @n");
+        return [
+          e8.treesitQueryP("x"), e8.treesitQueryP([[S("identifier")], S("@i")]), e8.treesitQueryP(3),
+          [e8.treesitCompiledQueryP(q), e8.treesitQueryLanguage(q), e8.treesitQueryCapture(root, q, null, null, true).map(text)],
+          e8.treesitQueryCompile("rust", q) === q,
+          e8.conditionCase(() => e8.treesitQueryCompile("rust", "(nosuch) @n", true), { "treesit-query-error": () => "treesit-query-error" }),
+          e8.treesitCompiledQueryP(e8.treesitQueryCompile("rust", "(nosuch) @n")),
+          e8.treesitQueryExpand([[S("function_item"), S("name:"), [S("identifier")], S("@name")], [S("["), [S("integer_literal")], "fn"],
+            S(":anchor"), [S("_")], [[S("identifier")], S("@id"), [S(":match"), "^f", S("@id")]]]),
+          e8.treesitPatternExpand(S(":*")), e8.treesitPatternExpand('a"b\n'),
+          e8.treesitQueryCapture(root, [[[S("identifier")], S("@id"), [S(":match"), "^o", S("@id")]]], null, null, true).map(text),
+          e8.treesitLibraryAbiVersion(), e8.treesitLibraryAbiVersion(true), e8.treesitLanguageAbiVersion("rust"),
+          e8.treesitLanguageAbiVersion("nosuch") ?? null,
+        ];
+        "#,
+    );
+    // Emacs 30.2: (t t nil (t rust ("1" "2")) treesit-query-error t
+    //  "(function_item name: (identifier) @name) [(integer_literal) \"fn\"] . (_) ((identifier) @id (#match \"^f\" @id))"
+    //  "*" "\"a\\\"b\\n\"" ("other") 15 13 14 nil); the Rust grammar E8 compiles in is ABI 15, Emacs's installed one 14.
+    assert_eq!(
+        got,
+        r#"[true,true,false,[true,"rust",["1","2"]],true,"treesit-query-error",true,"(function_item name: (identifier) @name) [(integer_literal) \"fn\"] . (_) ((identifier) @id (#match \"^f\" @id))","*","\"a\\\"b\\n\"",["other"],15,13,15,null]"#
+    );
+}
+
+#[test]
+fn included_ranges_and_notifiers_as_emacs_gives_them() {
+    let (mut ed, s) = setup();
+    ed.window_buffer_mut().set_text("x [1, 2] y {\"a\": 3} z");
+    let got = with_treesit(
+        &mut ed,
+        &s,
+        r#"
+        const p = e8.treesitParserCreate("json");
+        e8.treesitParserSetIncludedRanges(p, [[2, 8], [11, 19]]);
+        const invalid = (ranges: any) => e8.conditionCase(() => e8.treesitParserSetIncludedRanges(p, ranges), { "treesit-range-invalid": () => "treesit-range-invalid" });
+        return [e8.treesitParserIncludedRanges(p), e8.treesitNodeString(e8.treesitParserRootNode(p)), invalid([[4, 8], [2, 3]]), invalid([[2, 98]]),
+          (e8.treesitParserSetIncludedRanges(p, null), e8.treesitParserIncludedRanges(p) ?? null), e8.treesitNodeType(e8.treesitParserRootNode(p))];
+        "#,
+    );
+    // Emacs 30.2: (((3 . 9) (12 . 20)) "(document (array (number) (number)) (object (pair ...)))" treesit-range-invalid treesit-range-invalid nil "document")
+    assert_eq!(
+        got,
+        r#"[[[2,8],[11,19]],"(document (array (number) (number)) (object (pair key: (string (string_content)) value: (number))))","treesit-range-invalid","treesit-range-invalid",null,"document"]"#
+    );
+
+    let (mut ed, s) = setup();
+    ed.window_buffer_mut().set_text("fn main() {}\n");
+    let got = with_treesit(
+        &mut ed,
+        &s,
+        r#"
+        const seen: unknown[] = [];
+        e8.defun("probe-note", (ranges: unknown) => { seen.push(ranges); });
+        e8.defun("probe-ignore", () => {});
+        const p = e8.treesitParserCreate("rust");
+        e8.treesitParserAddNotifier(p, "probe-note");
+        e8.treesitParserAddNotifier(p, "probe-note");
+        e8.treesitParserAddNotifier(p, Symbol.for("probe-ignore"));
+        const names = () => e8.treesitParserNotifiers(p).map((f) => f.description);
+        const before = names();
+        e8.treesitParserRootNode(p);
+        e8.gotoChar(e8.pointMax());
+        e8.insert("fn z() {}\n");
+        e8.treesitParserRootNode(p);
+        e8.treesitParserRemoveNotifier(p, "probe-ignore");
+        return [before, names(), seen];
+        "#,
+    );
+    // Emacs 30.2: (probe-note ignore) ((probe-note) (((1 . 14)) ((14 . 23))))
+    assert_eq!(got, r#"[["probe-note","probe-ignore"],["probe-note"],[[[0,13]],[[13,22]]]]"#);
+}
+
 /// Each run of the same style in the first rows, with its text.
 fn face_runs(ed: &mut Editor) -> Vec<(String, e8_core::Style)> {
     ed.redisplay();

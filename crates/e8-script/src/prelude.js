@@ -303,9 +303,28 @@
       return `#<treesit-node ${native.treesitPrimitive("treesit-node-type", this)}>`;
     }
   }
+  /** A compiled query, as Emacs's treesit-compiled-query objects: the same object each time. */
+  class TreesitCompiledQuery {
+    constructor(id) {
+      Object.defineProperty(this, "__e8TreesitQuery", { value: id });
+      Object.freeze(this);
+    }
+    toJSON() {
+      return "#<treesit-compiled-query>";
+    }
+  }
   const treesitParsers = new Map();
+  const treesitQueries = new Map();
   globalThis.__e8Treesit = (kind, raw) => {
     if (kind === "node") return new TreesitNode(raw);
+    if (kind === "query") {
+      let q = treesitQueries.get(raw[0]);
+      if (q === undefined) {
+        q = new TreesitCompiledQuery(raw[0]);
+        treesitQueries.set(raw[0], q);
+      }
+      return q;
+    }
     const key = raw.join(":");
     let p = treesitParsers.get(key);
     if (p === undefined) {
@@ -1041,9 +1060,29 @@
       treesit("treesit-node-descendant-for-range", node, beg, end, Boolean(named)),
     treesitNodeCheck: (node, property) => treesit("treesit-node-check", node, String(property)),
     treesitNodeEq: (a, b) => (a === null || a === undefined || b === null || b === undefined ? a === b : treesit("treesit-node-eq", a, b)),
-    treesitQueryCompile: (language, query) => treesit("treesit-query-compile", String(language), String(query)),
+    treesitQueryCompile: (language, query, eager = false) => treesit("treesit-query-compile", String(language), query, Boolean(eager)),
     treesitQueryCapture: (node, query, beg, end, nodeOnly = false, grouped = false) =>
-      treesit("treesit-query-capture", node, String(query), beg ?? null, end ?? null, Boolean(nodeOnly), Boolean(grouped)),
+      treesit("treesit-query-capture", node, query, beg ?? null, end ?? null, Boolean(nodeOnly), Boolean(grouped)),
+    treesitQueryP: (x) => treesit("treesit-query-p", x),
+    treesitCompiledQueryP: (x) => x instanceof TreesitCompiledQuery,
+    treesitQueryLanguage: (query) => treesit("treesit-query-language", query),
+    treesitPatternExpand: (pattern) => treesit("treesit-pattern-expand", pattern),
+    treesitQueryExpand: (query) => treesit("treesit-query-expand", query),
+    treesitLibraryAbiVersion: (minCompatible = false) => treesit("treesit-library-abi-version", Boolean(minCompatible)),
+    treesitLanguageAbiVersion: (language) => treesit("treesit-language-abi-version", String(language)),
+    treesitParserSetIncludedRanges: (parser, ranges) => treesit("treesit-parser-set-included-ranges", parser, ranges ?? null),
+    treesitParserIncludedRanges: (parser) => treesit("treesit-parser-included-ranges", parser),
+    treesitParserNotifiers: (parser) => treesit("treesit-parser-notifiers", parser),
+    treesitParserAddNotifier: (parser, fn) => treesit("treesit-parser-add-notifier", parser, typeof fn === "symbol" ? fn : String(fn)),
+    treesitParserRemoveNotifier: (parser, fn) => treesit("treesit-parser-remove-notifier", parser, typeof fn === "symbol" ? fn : String(fn)),
+    treesitNodeMatchP: (node, predicate, ignoreMissing = false) => Boolean(treesit("treesit-node-match-p", node ?? null, predicate, Boolean(ignoreMissing))),
+    treesitSearchSubtree: (node, predicate, backward = false, all = false, depth) =>
+      treesit("treesit-search-subtree", node, predicate, Boolean(backward), Boolean(all), depth ?? null),
+    treesitSearchForward: (start, predicate, backward = false, all = false) =>
+      treesit("treesit-search-forward", start, predicate, Boolean(backward), Boolean(all)),
+    treesitInduceSparseTree: (root, predicate, processFn, depth) =>
+      treesit("treesit-induce-sparse-tree", root, predicate, processFn ?? null, depth ?? null),
+    treesitSubtreeStat: (node) => treesit("treesit-subtree-stat", node),
 
     addFaceTextProperty: (start, end, face, { append = false } = {}) =>
       native.addFaceTextProperty(start, end, Array.isArray(face) ? face : String(face), Boolean(append)),
