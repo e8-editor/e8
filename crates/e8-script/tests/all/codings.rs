@@ -145,3 +145,182 @@ fn preferring_a_coding_system_puts_it_first_where_the_bytes_fit() {
     );
     assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.codingSystemPriorityList(true))"), r#"["japanese-shift-jis"]"#);
 }
+
+#[test]
+fn a_character_splits_into_its_charset_and_position_codes_as_emacs_does() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.splitChar("中"), e8.splitChar("a"), e8.splitChar("ÿ"),
+          e8.makeChar("ascii"), e8.makeChar("iso-8859-1"), e8.makeChar("japanese-jisx0208"),
+          e8.makeChar("japanese-jisx0208", 36), e8.makeChar("japanese-jisx0208", 36, 42),
+          e8.makeChar("ascii", 97), e8.makeChar("latin-iso8859-1", 65), e8.makeChar("unicode", 0, 48, 66),
+          e8.makeChar("big5"), e8.makeChar("big5", 164), e8.makeChar("chinese-gbk"),
+          e8.makeChar("japanese-jisx0208", 164, 162), e8.makeChar("ascii", 97, 1, 2), e8.makeChar("katakana-jisx0201"),
+        ])"#,
+    );
+    // Emacs: (unicode 0 78 45) (ascii 97) (unicode 0 0 255) 0 0 12288 12353
+    // 12362 97 193 12354, then 12288 19968 19970 12354 97 65377 — a charset's
+    // own least code fills the dimensions left out, an ISO charset takes the
+    // low seven bits of each code, and codes past the dimension are ignored.
+    assert_eq!(
+        got,
+        r#"[["unicode",0,78,45],["ascii",97],["unicode",0,0,255],"\u0000","\u0000","　","ぁ","お","a","Á","あ","　","一","丂","あ","a","｡"]"#
+    );
+}
+
+#[test]
+fn a_charset_is_named_described_and_ordered_as_emacs_names_it() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.findCharsetString(""), e8.findCharsetString("aé中"),
+          e8.sortCharsets(["unicode", "ascii", "big5"]),
+          e8.charsetIdInternal("ascii"), e8.charsetIdInternal("unicode"), e8.charsetIdInternal("nope") ?? null,
+          e8.charsetPlist("ascii"), e8.charsetPlist("japanese-jisx0208")[":dimension"],
+        ])"#,
+    );
+    // Emacs: nil (ascii unicode) (ascii unicode big5) 0 2 nil; its ascii plist says :dimension 1,
+    // :ascii-compatible-p t, :code-space [0 127 0 0 0 0 0 0], and holds more E8 does not.
+    assert_eq!(
+        got,
+        r#"[[],["ascii","unicode"],["ascii","unicode","big5"],0,2,null,{":name":"ascii",":dimension":1,":ascii-compatible-p":true,":code-space":[0,127]},2]"#
+    );
+}
+
+#[test]
+fn a_charset_keeps_what_a_script_puts_on_it() {
+    let (mut ed, s) = setup();
+    eval(&mut ed, &s, r#"e8.setCharsetPlist("ascii", { ":short-name": "ASCII", ":dimension": 9 })"#);
+    let got = eval(&mut ed, &s, r#"JSON.stringify([e8.charsetPlist("ascii")[":short-name"], e8.charsetPlist("ascii")[":dimension"]])"#);
+    // What E8 works out for itself wins, as the computed frame parameters do.
+    assert_eq!(got, r#"["ASCII",1]"#);
+}
+
+#[test]
+fn preferring_a_charset_makes_char_charset_name_it() {
+    let (mut ed, s) = setup();
+    let before = eval(&mut ed, &s, r#"JSON.stringify([e8.charCharset("é"), e8.splitChar("é"), e8.charsetPriorityList(true)])"#);
+    assert_eq!(before, r#"["unicode",["unicode",0,0,233],["ascii"]]"#);
+    eval(&mut ed, &s, r#"e8.setCharsetPriority("iso-8859-1")"#);
+    let after = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.charCharset("é"), e8.splitChar("é"), e8.charCharset("中"), e8.charsetPriorityList(true),
+          e8.charCharset("a"), e8.splitChar("a"), e8.findCharsetString("abc"),
+        ])"#,
+    );
+    // Emacs answers iso-8859-1 for é once it is preferred, unicode for a
+    // character no preferred charset holds, and ascii for ASCII whatever is
+    // preferred, as CHAR_CHARSET answers before walking the list at all.
+    assert_eq!(
+        after,
+        r#"["iso-8859-1",["iso-8859-1",233],"unicode",["iso-8859-1"],"ascii",["ascii",97],["ascii"]]"#
+    );
+}
+
+#[test]
+fn a_restriction_is_walked_in_the_order_it_is_given() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([e8.charCharset("é", ["unicode", "iso-8859-1"]), e8.charCharset("é", ["iso-8859-1", "unicode"])])"#,
+    );
+    // Emacs: unicode, then iso-8859-1 — charset.c walks the list it is handed.
+    assert_eq!(got, r#"["unicode","iso-8859-1"]"#);
+}
+
+#[test]
+fn what_is_no_charset_and_no_region_is_refused_as_emacs_refuses_it() {
+    let (mut ed, s) = setup();
+    let mut fails = |ed: &mut Editor, code: &str| s.eval_expression(ed, code).is_err();
+    assert!(fails(&mut ed, r#"e8.setCharsetPriority("nope")"#));
+    assert!(fails(&mut ed, r#"e8.sortCharsets(["ascii", "nope"])"#));
+    assert!(fails(&mut ed, r#"e8.setCharsetPlist("nope", {})"#));
+    assert!(fails(&mut ed, r#"e8.charsetPlist("nope")"#));
+    assert!(fails(&mut ed, r#"e8.makeChar("nope", 1)"#));
+    // A region past the end signals rather than stopping the editor.
+    assert!(fails(&mut ed, "e8.findCharsetRegion(10, 20)"));
+    assert!(fails(&mut ed, "e8.findCodingSystemsRegion(10, 20)"));
+    assert!(fails(&mut ed, r#"e8.detectCodingRegion(10, 20)"#));
+    // Nothing of that went through.
+    assert_eq!(eval(&mut ed, &s, r#"JSON.stringify(e8.charsetPriorityList(true))"#), r#"["ascii"]"#);
+}
+
+#[test]
+fn a_region_and_a_position_name_their_charsets_as_emacs_does() {
+    let (mut ed, s) = setup();
+    ed.type_text("aé中");
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.findCharsetRegion(0, 3), e8.findCharsetRegion(0, 1),
+          e8.charsetAfter(0), e8.charsetAfter(1), e8.charsetAfter(99) ?? null, e8.charsetAfter() ?? null,
+        ])"#,
+    );
+    // Emacs: (ascii unicode) (ascii) ascii unicode nil nil, point being at the end.
+    assert_eq!(got, r#"[["ascii","unicode"],["ascii"],"ascii","unicode",null,null]"#);
+}
+
+#[test]
+fn shift_jis_and_big5_codes_are_characters_as_emacs_reads_them() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.decodeSjisChar(0x8140), e8.encodeSjisChar("あ"), e8.decodeBig5Char(0xa140), e8.encodeBig5Char("中"),
+          e8.decodeSjisChar(65), e8.decodeSjisChar(0xb1), e8.decodeBig5Char(65), e8.encodeSjisChar("a"), e8.encodeBig5Char("a"),
+          e8.multibyteCharToUnibyte("a"), e8.multibyteCharToUnibyte("é"), e8.multibyteCharToUnibyte("中"),
+          e8.unibyteCharToMultibyte(65), e8.encodeChar(e8.unibyteCharToMultibyte(233), "eight-bit"),
+        ])"#,
+    );
+    // Emacs: 12288 33440 12288 42148, then 65 65393 65 97 97 — ASCII and Shift
+    // JIS's half-width katakana are one byte — then 97 233 -1 65 233.
+    assert_eq!(got, r#"["　",33440,"　",42148,"A","ｱ","A",97,97,97,233,-1,"A",233]"#);
+}
+
+#[test]
+fn a_unicode_property_has_the_char_table_emacs_hands_out() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.unicodePropertyTableInternal("bogus") === undefined,
+          e8.unicodePropertyTableInternal("bidi-class") === e8.unicodePropertyTableInternal("bidi-class"),
+          e8.getUnicodePropertyInternal(e8.unicodePropertyTableInternal("bidi-class"), "a"),
+          e8.getUnicodePropertyInternal(e8.unicodePropertyTableInternal("bidi-class"), "א"),
+          e8.getUnicodePropertyInternal(e8.unicodePropertyTableInternal("mirroring"), "("),
+          e8.getUnicodePropertyInternal(e8.unicodePropertyTableInternal("bracket-type"), "("),
+          e8.getUnicodePropertyInternal(e8.unicodePropertyTableInternal("mirrored"), "a"),
+          e8.getUnicodePropertyInternal(e8.unicodePropertyTableInternal("mirrored"), "("),
+          e8.getUnicodePropertyInternal(e8.unicodePropertyTableInternal("bracket-type"), "a"),
+          e8.getUnicodePropertyInternal(e8.unicodePropertyTableInternal("mirroring"), "a") ?? null,
+        ])"#,
+    );
+    // Emacs: nil for a property with no table; "L", "R", 41, "o", then "N",
+    // "Y" and "n" — mirrored and bracket-type cover every character — and nil
+    // for a character with no mirror.
+    assert_eq!(got, r#"[true,true,"L","R",41,"o","N","Y","n",null]"#);
+}
+
+#[test]
+fn a_category_set_is_its_mnemonics() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.categorySetMnemonics(e8.charCategorySet("a")), e8.makeCategorySet("la"), e8.makeCategorySet("alla"),
+        ])"#,
+    );
+    assert_eq!(got, r#"[".Lalr","al","al"]"#);
+}

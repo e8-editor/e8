@@ -724,6 +724,30 @@
     charCharset: (ch, restriction) => coding("char-charset", String(ch), restriction === undefined ? null : [...restriction].map(String)) ?? undefined,
     encodeChar: (ch, charset) => coding("encode-char", String(ch), String(charset)) ?? undefined,
     decodeChar: (charset, code) => coding("decode-char", String(charset), code) ?? undefined,
+    charsetIdInternal: (charset) => coding("charset-id-internal", String(charset)) ?? undefined,
+    setCharsetPriority: (...charsets) => coding("set-charset-priority", ...charsets.map(String)),
+    sortCharsets: (charsets) => coding("sort-charsets", [...charsets].map(String)),
+    charsetPlist: (charset) => {
+      const flat = coding("charset-plist", String(charset));
+      const plist = {};
+      for (let i = 0; i + 1 < flat.length; i += 2) plist[String(flat[i])] = flat[i + 1];
+      return plist;
+    },
+    setCharsetPlist: (charset, plist) =>
+      coding("set-charset-plist", String(charset), Object.entries(plist ?? {}).flatMap(([k, v]) => [k, v])),
+    makeChar: (charset, ...codes) => coding("make-char", String(charset), ...codes),
+    splitChar: (ch) => coding("split-char", ch) ?? undefined,
+    findCharsetString: (string) => coding("find-charset-string", String(string)),
+    findCharsetRegion: (start, end) => coding("find-charset-region", start, end),
+    charsetAfter: (pos = null) => coding("charset-after", pos) ?? undefined,
+    decodeSjisChar: (code) => coding("decode-sjis-char", code),
+    encodeSjisChar: (ch) => coding("encode-sjis-char", ch),
+    decodeBig5Char: (code) => coding("decode-big5-char", code),
+    encodeBig5Char: (ch) => coding("encode-big5-char", ch),
+    multibyteCharToUnibyte: (ch) => coding("multibyte-char-to-unibyte", ch),
+    unibyteCharToMultibyte: (byte) => coding("unibyte-char-to-multibyte", byte),
+    clearCharsetMaps: () => coding("clear-charset-maps"),
+    unifyCharset: (charset) => coding("unify-charset", String(charset)),
     bufferEnableUndo: (buffer) =>
       buffer === undefined ? native.setUndoEnabled(true) : e8.withCurrentBuffer(buffer, () => native.setUndoEnabled(true)),
     bufferDisableUndo: (buffer) =>

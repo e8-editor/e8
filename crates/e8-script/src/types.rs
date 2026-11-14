@@ -2100,6 +2100,51 @@ const API: &str = r##"
   function encodeChar(ch: string, charset: string): number | undefined;
   /** The character at a code point of a charset, as decode-char. */
   function decodeChar(charset: string, code: number): string | undefined;
+  /** A charset's place in the table, as charset-id-internal. */
+  function charsetIdInternal(charset: string): number | undefined;
+  /** Prefer these charsets, in this order, when char-charset and split-char name one, as set-charset-priority. */
+  function setCharsetPriority(...charsets: string[]): void;
+  /** Charset names sorted by the priority order, as sort-charsets. */
+  function sortCharsets(charsets: string[]): string[];
+  /**
+   * What E8 knows of a charset, as charset-plist: its ":name",
+   * ":dimension", ":ascii-compatible-p" and ":code-space", with what
+   * setCharsetPlist put kept beside them. Emacs's other properties, its
+   * docstring and ISO registration among them, E8 does not hold.
+   */
+  function charsetPlist(charset: string): { [property: string]: Value };
+  /** Puts properties on a charset, as set-charset-plist; the four E8 works out for itself are kept. */
+  function setCharsetPlist(charset: string, plist: { [property: string]: Value }): void;
+  /**
+   * The character a charset's position codes name, as make-char: the
+   * bytes of its code point, most significant first; those left out are
+   * the least of their own dimension.
+   */
+  function makeChar(charset: string, ...codes: number[]): string;
+  /** A character's charset and the bytes of its code point in it, most significant first, as split-char. */
+  function splitChar(ch: string | number): [string, ...number[]] | undefined;
+  /** The charsets a string uses, as find-charset-string. */
+  function findCharsetString(string: string): string[];
+  /** The charsets a region uses, as find-charset-region. */
+  function findCharsetRegion(start: number, end: number): string[];
+  /** The charset of the character at a position, point's by default, as charset-after. */
+  function charsetAfter(pos?: number | null): string | undefined;
+  /** The character a Shift JIS code stands for, as decode-sjis-char. */
+  function decodeSjisChar(code: number): string;
+  /** A character's Shift JIS code, as encode-sjis-char. */
+  function encodeSjisChar(ch: string | number): number;
+  /** The character a Big5 code stands for, as decode-big5-char. */
+  function decodeBig5Char(code: number): string;
+  /** A character's Big5 code, as encode-big5-char. */
+  function encodeBig5Char(ch: string | number): number;
+  /** The byte Emacs keeps a character as, or -1 for one it keeps as more, as multibyte-char-to-unibyte. */
+  function multibyteCharToUnibyte(ch: string | number): number;
+  /** The character a byte stands for, a raw-byte character above 0x7F, as unibyte-char-to-multibyte. */
+  function unibyteCharToMultibyte(byte: number): string;
+  /** Does nothing: E8's charsets are built, not loaded from maps (clear-charset-maps). */
+  function clearCharsetMaps(): void;
+  /** Does nothing: E8's charsets are unified already (unify-charset). */
+  function unifyCharset(charset: string): void;
   /** Starts recording changes for undo, afresh, as buffer-enable-undo. */
   function bufferEnableUndo(buffer?: string | Buffer): void;
   /** Stops recording changes for undo and forgets them, as buffer-disable-undo. */

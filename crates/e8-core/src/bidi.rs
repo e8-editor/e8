@@ -101,6 +101,29 @@ pub fn mirrored(c: char) -> bool {
     i > 0 && u <= MIRRORED[i - 1].1
 }
 
+/// What every character with no run of its own has, and the runs of those
+/// that have one, of a Unicode property.
+pub type PropertyRuns = (crate::variables::Value, Vec<(u32, u32, crate::variables::Value)>);
+
+/// A Unicode property's values, for the char-table
+/// `unicode-property-table-internal` hands out, or `None` for a property
+/// E8 holds no data for. `mirrored` and `bracket-type` cover every
+/// character, as Emacs's tables do; the others leave out what has no
+/// value, which is nil.
+pub fn property_runs(property: &str) -> Option<PropertyRuns> {
+    use crate::variables::Value;
+    let str = |s: &str| Value::Str(s.to_string());
+    let one = |c: u32, v: Value| (c, c, v);
+    Some(match property {
+        "bidi-class" => (Value::Null, BIDI_CLASS.iter().map(|&(from, to, class)| (from, to, str(CLASS_NAMES[class as usize]))).collect()),
+        "mirroring" => (Value::Null, MIRRORING.iter().map(|&(from, to)| one(from, Value::Number(to as f64))).collect()),
+        "mirrored" => (str("N"), MIRRORED.iter().map(|&(from, to)| (from, to, str("Y"))).collect()),
+        "paired-bracket" => (Value::Null, BRACKETS.iter().map(|&(from, pair, _)| one(from, Value::Number(pair as f64))).collect()),
+        "bracket-type" => (str("n"), BRACKETS.iter().map(|&(from, _, opens)| one(from, str(if opens { "o" } else { "c" }))).collect()),
+        _ => return None,
+    })
+}
+
 /// Whether text may need reordering in a left-to-right paragraph: whether
 /// it has a right-to-left character, an Arabic digit, or a directional
 /// control. Text without any of them, which is all text below U+0590,

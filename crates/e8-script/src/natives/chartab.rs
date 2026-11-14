@@ -147,6 +147,47 @@ natives! {
         Ok(ed.char_category_set(c))
     }
 
+    /// A category set's designators as a string, as category-set-mnemonics; E8 keeps a set as that string already.
+    pub fn categorySetMnemonics(_ed, set: String) -> String {
+        Ok(set)
+    }
+
+    /// The category set some designators make, as make-category-set; signals for a character that designates none.
+    pub fn makeCategorySet(_ed, mnemonics: String) -> String {
+        let mut out = String::new();
+        for d in mnemonics.chars() {
+            if !(' '..='~').contains(&d) {
+                return Err(Error::signal("error", format!("Invalid category mnemonic: {d}"), Vec::new()));
+            }
+            if !out.contains(d) {
+                out.push(d);
+            }
+        }
+        let mut designators: Vec<char> = out.chars().collect();
+        designators.sort_unstable();
+        Ok(designators.into_iter().collect())
+    }
+
+    /// The char-table of a Unicode property, as unicode-property-table-internal, or undefined for one E8 holds no data for.
+    #[ts = "(property: string): CharTable | undefined"]
+    pub fn unicodePropertyTableInternal(ed, property: String) -> Option<EditorValue> {
+        Ok(ed.unicode_property_table(&property).map(ct))
+    }
+
+    /// A character's value in a Unicode property's table, as get-unicode-property-internal.
+    #[ts = "(table: CharTable, c: CharCode): Value"]
+    pub fn getUnicodePropertyInternal(ed, t: EditorValue, c: EditorValue) -> EditorValue {
+        let c = char_code(&c).ok_or_else(|| type_error("Expected a character"))?;
+        Ok(ed.char_table_get(table(t)?, c))
+    }
+
+    /// Gives a character a value in a Unicode property's table, as put-unicode-property-internal.
+    #[ts = "(table: CharTable, c: CharCode, value: Value): void"]
+    pub fn putUnicodePropertyInternal(ed, t: EditorValue, c: EditorValue, v: EditorValue) {
+        let c = char_code(&c).ok_or_else(|| type_error("Expected a character"))?;
+        ed.char_table_set(table(t)?, c, v)
+    }
+
     fn modifyCategoryEntry(ed, range: EditorValue, d: String, t: Opt<EditorValue>, reset: Opt<bool>) {
         let range = char_range(&range).ok_or_else(|| type_error("A range is a character or [from, to]"))?;
         let t = optional(t)?;

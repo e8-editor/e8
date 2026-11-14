@@ -251,4 +251,26 @@ impl Editor {
         }
         Ok(out)
     }
+
+    /// The char-table of a Unicode property, as
+    /// `unicode-property-table-internal`: the same table each time it is
+    /// asked for, and `None` for a property E8 holds no data for, as
+    /// Emacs answers nil for one whose table it cannot load.
+    ///
+    /// E8 holds the bidi properties ([ADR 0047]), and no others.
+    ///
+    /// [ADR 0047]: ../../../../docs/adr/0047-bidirectional-text.md
+    pub fn unicode_property_table(&mut self, property: &str) -> Option<CharTableId> {
+        if let Some(id) = self.unicode_property_tables.get(property) {
+            return Some(*id);
+        }
+        let (default, runs) = crate::bidi::property_runs(property)?;
+        let mut table = CharTable::new(property, default, 0);
+        for (first, last, value) in runs {
+            table.set_range(first, last, value);
+        }
+        let id = self.add_char_table(table);
+        self.unicode_property_tables.insert(property.to_string(), id);
+        Some(id)
+    }
 }
