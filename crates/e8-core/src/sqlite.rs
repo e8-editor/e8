@@ -69,7 +69,8 @@ mod native {
                 if self.is_statement && !self.db.is_null() {
                     ffi::sqlite3_finalize(self.stmt);
                 } else if !self.is_statement && !self.db.is_null() {
-                    ffi::sqlite3_close(self.db);
+                    // Closed once its sets are finalized too, whichever goes first.
+                    ffi::sqlite3_close_v2(self.db);
                 }
             }
         }
