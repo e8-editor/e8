@@ -31,6 +31,11 @@ pub(crate) struct Terminal {
     pub(crate) deleted: bool,
     /// Whether `suspend-tty` has let go of it.
     pub(crate) suspended: bool,
+    /// Whether `tty-no-underline` said it cannot underline.
+    pub(crate) no_underline: bool,
+    /// Its output buffer's size, as `tty--set-output-buffer-size` sets
+    /// it: 0 for the system's.
+    pub(crate) output_buffer_size: usize,
 }
 
 impl Editor {
@@ -149,6 +154,57 @@ impl Editor {
         // A terminal to be the controlling one, as decode_tty_terminal
         // asks for: a headless editor and a window have none.
         Ok(self.window_system().is_none() && self.terminal.name.is_some())
+    }
+
+    /// Whether a terminal is a text terminal E8 draws on: not a window,
+    /// nor a headless editor, which has no device, as Emacs's batch
+    /// terminal is no termcap one.
+    fn is_tty(&self) -> bool {
+        self.window_system().is_none() && self.terminal.name.is_some()
+    }
+
+    /// The frame on top of a text terminal, as `tty-top-frame`: the
+    /// selected frame, as a terminal shows one frame at a time; none for
+    /// any other terminal.
+    pub fn tty_top_frame(&self, terminal: TerminalId) -> Result<Option<FrameId>> {
+        self.live_terminal(terminal)?;
+        Ok(self.is_tty().then(|| self.selected_frame()))
+    }
+
+    /// Says a text terminal cannot underline, as `tty-no-underline`: the
+    /// terminal front end then draws no underlines. Nothing on another terminal.
+    pub fn tty_no_underline(&mut self, terminal: TerminalId) -> Result<()> {
+        self.live_terminal(terminal)?;
+        if self.is_tty() {
+            self.terminal.no_underline = true;
+        }
+        Ok(())
+    }
+
+    /// Whether `tty-no-underline` was said, for the frame description.
+    pub(crate) fn terminal_no_underline(&self) -> bool {
+        self.terminal.no_underline
+    }
+
+    /// A text terminal's output buffer size, as `tty--output-buffer-size`.
+    pub fn tty_output_buffer_size(&self, terminal: TerminalId) -> Result<usize> {
+        self.live_terminal(terminal)?;
+        if !self.is_tty() {
+            return Err(Error::new("Not a tty terminal"));
+        }
+        Ok(self.terminal.output_buffer_size)
+    }
+
+    /// Sets a text terminal's output buffer size, as
+    /// `tty--set-output-buffer-size`. The terminal front end writes each
+    /// frame whole, so the size is kept for asking but changes nothing.
+    pub fn set_tty_output_buffer_size(&mut self, terminal: TerminalId, size: usize) -> Result<()> {
+        self.live_terminal(terminal)?;
+        if !self.is_tty() {
+            return Err(Error::new("Not a tty terminal"));
+        }
+        self.terminal.output_buffer_size = size;
+        Ok(())
     }
 
     /// Whether a terminal has been let go of, as `suspend-tty` leaves it.

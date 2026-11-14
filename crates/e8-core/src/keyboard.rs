@@ -662,6 +662,15 @@ impl Editor {
         }
     }
 
+    /// Takes the keys of the command running out of the keyboard macro
+    /// being defined, as `cancel-kbd-macro-events`.
+    pub fn cancel_kbd_macro_events(&mut self) {
+        let n = self.keyboard.this_command_keys.len();
+        if let Some(keys) = &mut self.defining_macro {
+            keys.truncate(keys.len().saturating_sub(n));
+        }
+    }
+
     /// Puts an event into the keyboard macro being defined, as
     /// `store-kbd-macro-event`; it is ignored when none is.
     pub fn store_kbd_macro_event(&mut self, key: &str) -> Result<()> {

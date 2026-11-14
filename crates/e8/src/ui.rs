@@ -120,8 +120,14 @@ pub fn layout_windows(ed: &mut Editor, width: u16, height: u16) {
     }
 }
 
+thread_local! {
+    /// Whether the frame being drawn is on a terminal `tty-no-underline` said cannot underline.
+    static NO_UNDERLINE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
 /// Draws a frame as the core described it, asking the editor nothing.
 pub fn draw(frame: &mut Frame, fd: &FrameDescription) {
+    NO_UNDERLINE.with(|n| n.set(fd.no_underline));
     let screen = frame.area();
     // A theme's background for the default face fills the screen, as on
     // Emacs's terminal frames, not only behind text.
@@ -397,7 +403,8 @@ fn row_line(
         // A face that extends fills the rest of the row with its background.
         let fill = right - col.max(left);
         let bg = terminal_style(extend, dark).bg.unwrap_or(Color::Reset);
-        let style = if extend.underline { Style::new().bg(bg).add_modifier(Modifier::UNDERLINED) } else { Style::new().bg(bg) };
+        let underline = extend.underline && !NO_UNDERLINE.with(std::cell::Cell::get);
+        let style = if underline { Style::new().bg(bg).add_modifier(Modifier::UNDERLINED) } else { Style::new().bg(bg) };
         push(&mut spans, &" ".repeat(fill), style);
     }
     // A continued line ends with a backslash in the last column, as in
@@ -462,6 +469,7 @@ fn rtl_row_line(row: &Row, glyphs: &[Glyph], width: usize, region: Option<&Range
 /// A face's style for the terminal. Translucent colours are blended over the
 /// palette's background, as the graphical front end draws them.
 fn terminal_style(style: &FaceStyle, dark: bool) -> Style {
+    let underline = style.underline && !NO_UNDERLINE.with(std::cell::Cell::get);
     let bg = palette("bg", dark).expect("the palette has bg");
     let rgb = |c: FaceColor| {
         let mix = |fg: u8, bg: u8| ((fg as u16 * c.a as u16 + bg as u16 * (255 - c.a as u16)) / 255) as u8;
@@ -474,13 +482,13 @@ fn terminal_style(style: &FaceStyle, dark: bool) -> Style {
     if let Some(c) = style.background {
         out = out.bg(rgb(c));
     }
-    if let Some(c) = style.underline_color.filter(|_| style.underline) {
+    if let Some(c) = style.underline_color.filter(|_| underline) {
         out = out.underline_color(rgb(c));
     }
     for (on, modifier) in [
         (style.bold, Modifier::BOLD),
         (style.italic, Modifier::ITALIC),
-        (style.underline, Modifier::UNDERLINED),
+        (underline, Modifier::UNDERLINED),
         (style.strike, Modifier::CROSSED_OUT),
     ] {
         if on {

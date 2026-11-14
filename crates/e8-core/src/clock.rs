@@ -38,3 +38,26 @@ pub fn temp_dir() -> std::path::PathBuf {
     #[cfg(not(target_arch = "wasm32"))]
     std::env::temp_dir()
 }
+
+/// The processor time this process has used, in seconds, as Emacs's
+/// `get-internal-run-time` asks getrusage: user and system time together.
+/// On the web, which cannot ask, the time since the editor started.
+pub fn run_time() -> f64 {
+    #[cfg(unix)]
+    {
+        let mut usage = std::mem::MaybeUninit::<libc::rusage>::zeroed();
+        // SAFETY: getrusage fills the struct it is given.
+        if unsafe { libc::getrusage(libc::RUSAGE_SELF, usage.as_mut_ptr()) } == 0 {
+            // SAFETY: filled by the successful call above.
+            let u = unsafe { usage.assume_init() };
+            let secs = |t: libc::timeval| t.tv_sec as f64 + t.tv_usec as f64 / 1e6;
+            return secs(u.ru_utime) + secs(u.ru_stime);
+        }
+        0.0
+    }
+    #[cfg(not(unix))]
+    {
+        static START: std::sync::OnceLock<Instant> = std::sync::OnceLock::new();
+        START.get_or_init(Instant::now).elapsed().as_secs_f64()
+    }
+}

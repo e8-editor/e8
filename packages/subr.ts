@@ -753,3 +753,15 @@ e8.defun("internal--labeled-narrow-to-region", (start: number, end: number, labe
 e8.defun("internal--labeled-widen", (label: e8.Value) => e8.internalLabeledWiden(label));
 e8.defun("internal--set-buffer-modified-tick", (tick: number, buffer?: e8.Buffer | string | null) => e8.internalSetBufferModifiedTick(tick, buffer));
 e8.defun("frame--set-was-invisible", (frame: e8.Frame | null, wasInvisible: boolean) => e8.frameSetWasInvisible(frame, wasInvisible));
+// The rest of the C core's odds by their Lisp names (ADR 0093).
+e8.defun("tty--output-buffer-size", (terminal?: e8.Terminal | null) => e8.ttyOutputBufferSize(terminal));
+e8.defun("tty--set-output-buffer-size", (size: number, terminal?: e8.Terminal | null) => e8.ttySetOutputBufferSize(size, terminal));
+e8.defun("menu-bar-menu-at-x-y", (x: number, y: number, frame?: e8.Frame | null) => e8.menuBarMenuAtXY(x, y, frame));
+// What Emacs runs on mouse movement to update the mouse highlight; E8 works that out at redisplay.
+e8.defun("display--update-for-mouse-movement", (_x: number, _y: number) => undefined);
+// track-mouse's body, run with the mouse's movements reported, as internal--track-mouse.
+e8.defun("internal--track-mouse", (body: () => unknown) => e8.trackMouse(() => e8.funcall(body)));
+e8.defun("re--describe-compiled", (_regexp: string, _raw?: boolean) => e8.signal("error", "Not available: rebuild with --enable-checking"));
+// Lisp's interactive spec, which called as a function does nothing, as Emacs's special form.
+e8.defun("interactive", () => undefined);
+e8.defun("match-data--translate", (n: number) => e8.matchDataTranslate(n));
