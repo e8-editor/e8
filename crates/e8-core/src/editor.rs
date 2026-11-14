@@ -177,6 +177,14 @@ pub struct Editor {
     /// for them; till then, and while unchanged, the generated tables stand in.
     pub(crate) standard_case_table: Option<crate::chartab::CharTableId>,
     pub(crate) standard_category_table: Option<crate::chartab::CharTableId>,
+    /// The char-table of each Unicode property asked for, as Emacs's
+    /// `unicode-property-table-internal` hands out the same table again.
+    pub(crate) unicode_property_tables: std::collections::HashMap<String, crate::chartab::CharTableId>,
+    /// The order a script put the charsets in and what it put on them,
+    /// which Emacs keeps in its charset table ([ADR 0078]).
+    ///
+    /// [ADR 0078]: ../../../../docs/adr/0078-charsets-and-codings-as-emacs-has-them.md
+    pub(crate) charsets: crate::charset::Charsets,
     /// The last case and category tables worked out for lookups, with what identified them.
     pub(crate) case_maps_cache: std::cell::RefCell<Option<crate::casetab::CaseMapsCache>>,
     pub(crate) category_maps_cache: std::cell::RefCell<Option<crate::category::CategoryMapsCache>>,
@@ -451,6 +459,8 @@ impl Editor {
             next_char_table: 0,
             standard_case_table: None,
             standard_category_table: None,
+            unicode_property_tables: Default::default(),
+            charsets: Default::default(),
             case_maps_cache: Default::default(),
             category_maps_cache: Default::default(),
             metrics: std::sync::Arc::new(crate::layout::CellMetrics),

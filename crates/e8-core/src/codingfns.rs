@@ -81,6 +81,39 @@ fn number_arg(args: &[Value], i: usize) -> Result<usize> {
     args.get(i).and_then(Value::as_number).map(|n| n.max(0.0) as usize).ok_or_else(|| Error::new("Wrong type argument: integer-or-marker-p"))
 }
 
+impl Editor {
+    /// The text between two positions, in either order, or Emacs's error
+    /// for a region that is not within the buffer.
+    fn region_text(&self, start: usize, end: usize) -> Result<String> {
+        let (from, to) = (start.min(end), start.max(end));
+        if to > self.buffer().len() {
+            let data = vec![Value::Number(start as f64), Value::Number(end as f64)];
+            return Err(Error::signal("args-out-of-range", format!("Args out of range: {start}, {end}"), data));
+        }
+        Ok(self.buffer().slice(from..to))
+    }
+}
+
+/// Emacs's error for a name that is no charset.
+fn invalid_charset(name: &str) -> Error {
+    Error::signal("error", format!("Invalid charset: {name}"), vec![Value::Str(name.to_string())])
+}
+
+/// An argument as one character, as the primitives that take a character do.
+fn char_arg(args: &[Value], i: usize) -> Result<char> {
+    match args.get(i) {
+        Some(Value::Number(n)) => char::from_u32(*n as u32).ok_or_else(|| Error::new("Wrong type argument: characterp")),
+        Some(v) => v.as_str().and_then(|s| s.chars().next()).ok_or_else(|| Error::new("Wrong type argument: characterp")),
+        None => Err(Error::new("Wrong number of arguments")),
+    }
+}
+
+/// A charset name as an argument, or Emacs's error for one that is no charset.
+fn charset_arg(args: &[Value], i: usize) -> Result<&'static str> {
+    let name = text_arg(args, i)?;
+    charset::canonical_name(&name).ok_or_else(|| invalid_charset(&name))
+}
+
 fn given(args: &[Value], i: usize) -> bool {
     args.get(i).is_some_and(Value::is_true)
 }
@@ -168,8 +201,8 @@ impl Editor {
             "encode-coding-region" | "decode-coding-region" => {
                 let c = coding(2)?;
                 let (start, end) = (number_arg(args, 0)?, number_arg(args, 1)?);
-                let (start, end) = (start.min(end), start.max(end).min(self.buffer().len()));
-                let text = self.buffer().slice(start..end);
+                let text = self.region_text(start, end)?;
+                let (start, end) = (start.min(end), start.max(end));
                 let (new, used) = if name == "encode-coding-region" {
                     let (bytes, used) = c.encode_lossy(&text);
                     (bytes.into_iter().map(raw_byte_char).collect::<String>(), used)
@@ -185,8 +218,7 @@ impl Editor {
                     (string_bytes(&text_arg(args, 0)?), given(args, 1))
                 } else {
                     let (start, end) = (number_arg(args, 0)?, number_arg(args, 1)?);
-                    let b = self.buffer();
-                    (text_bytes(&b.slice(start.min(end)..start.max(end).min(b.len()))), given(args, 2))
+                    (text_bytes(&self.region_text(start, end)?), given(args, 2))
                 };
                 let found = coding::detect(&bytes);
                 // With the line ends found too, as Emacs gives them.
@@ -196,16 +228,15 @@ impl Editor {
             }
             "find-coding-systems-string" => strings(find_coding_systems(&text_arg(args, 0)?)),
             "find-coding-systems-region" => {
-                let (start, end) = (number_arg(args, 0)?, number_arg(args, 1)?);
-                let b = self.buffer();
-                strings(find_coding_systems(&b.slice(start.min(end)..start.max(end).min(b.len()))))
+                let text = self.region_text(number_arg(args, 0)?, number_arg(args, 1)?)?;
+                strings(find_coding_systems(&text))
             }
             "unencodable-char-position" => {
                 let (start, end, c) = (number_arg(args, 0)?, number_arg(args, 1)?, coding(2)?);
                 let count = args.get(3).and_then(Value::as_number).map(|n| n as usize);
                 let text = match args.get(4).and_then(Value::as_str) {
                     Some(s) => s.chars().skip(start).take(end.saturating_sub(start)).collect(),
-                    None => self.buffer().slice(start..end.min(self.buffer().len())),
+                    None => self.region_text(start, end)?,
                 };
                 let found = unencodable(&text, start, c, count.unwrap_or(1));
                 match count {
@@ -215,7 +246,7 @@ impl Editor {
             }
             "check-coding-systems-region" => {
                 let (start, end) = (number_arg(args, 0)?, number_arg(args, 1)?);
-                let text = self.buffer().slice(start.min(end)..start.max(end).min(self.buffer().len()));
+                let text = self.region_text(start, end)?;
                 let names: Vec<String> = match args.get(2) {
                     Some(Value::List(items)) => items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect(),
                     _ => Vec::new(),
@@ -230,9 +261,9 @@ impl Editor {
                 if failing.is_empty() { Value::Null } else { Value::List(failing) }
             }
             "charsetp" => Value::Bool(args.first().and_then(Value::as_str).is_some_and(charset::charsetp)),
-            "charset-list" => strings(charset::charset_list().into_iter().map(String::from)),
+            "charset-list" => strings(self.charsets.charset_list().into_iter().map(String::from)),
             "charset-priority-list" => {
-                let all = charset::charset_list();
+                let all = self.charsets.charset_list();
                 strings(if given(args, 0) { all[..1].to_vec() } else { all }.into_iter().map(String::from))
             }
             "char-charset" => {
@@ -241,7 +272,7 @@ impl Editor {
                     Some(Value::List(items)) => Some(items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect()),
                     _ => None,
                 };
-                charset::char_charset(c, restriction.as_deref()).map_or(Value::Null, |n| Value::Str(n.to_string()))
+                self.charsets.char_charset(c, restriction.as_deref()).map_or(Value::Null, |n| Value::Str(n.to_string()))
             }
             "encode-char" => {
                 let c = text_arg(args, 0)?.chars().next().ok_or_else(|| Error::new("Wrong type argument: characterp"))?;
@@ -258,6 +289,122 @@ impl Editor {
                 }
                 charset::decode_char(&set, number_arg(args, 1)? as u32).map_or(Value::Null, |c| Value::Str(c.to_string()))
             }
+            "charset-id-internal" => charset::charset_id(&text_arg(args, 0)?).map_or(Value::Null, num),
+            "set-charset-priority" => {
+                let names: Vec<&'static str> = (0..args.len()).map(|i| charset_arg(args, i)).collect::<Result<_>>()?;
+                self.charsets.set_priority(&names);
+                Value::Null
+            }
+            "sort-charsets" => {
+                let items = match args.first() {
+                    Some(Value::List(items)) => items.clone(),
+                    _ => return Err(Error::signal("wrong-type-argument", "Wrong type argument: listp", Vec::new())),
+                };
+                let mut names = Vec::new();
+                for item in &items {
+                    let name = item.as_str().unwrap_or_default();
+                    if !charset::charsetp(name) {
+                        let message = format!("Wrong type argument: charsetp, {name}");
+                        return Err(Error::signal("wrong-type-argument", message, vec![item.clone()]));
+                    }
+                    names.push(name.to_string());
+                }
+                strings(self.charsets.sort_charsets(&names))
+            }
+            "charset-plist" => match self.charsets.charset_plist(&text_arg(args, 0)?) {
+                Some(plist) => Value::List(plist.into_iter().flat_map(|(k, v)| [Value::Str(k), v]).collect()),
+                None => return Err(invalid_charset(&text_arg(args, 0)?)),
+            },
+            "set-charset-plist" => {
+                let name = charset_arg(args, 0)?;
+                let items = match args.get(1) {
+                    Some(Value::List(items)) => items.clone(),
+                    Some(Value::Null) | None => Vec::new(),
+                    Some(_) => return Err(Error::signal("wrong-type-argument", "Wrong type argument: listp", Vec::new())),
+                };
+                let mut props = Vec::new();
+                for pair in items.chunks(2) {
+                    if let [key, value] = pair {
+                        let key = key.as_str().map(str::to_string).unwrap_or_default();
+                        props.push((key, value.clone()));
+                    }
+                }
+                self.charsets.set_charset_plist(name, props);
+                Value::Null
+            }
+            "make-char" => {
+                let set = charset_arg(args, 0)?.to_string();
+                // The codes given, up to the first one left out.
+                let codes: Vec<u32> = args[1..].iter().take_while(|v| v.is_true()).map(|v| v.as_number().unwrap_or(-1.0) as i64 as u32).collect();
+                match charset::make_char(&set, &codes) {
+                    Some(c) => Value::Str(c.to_string()),
+                    None => return Err(Error::signal("args-out-of-range", format!("Args out of range: {set}"), vec![Value::Str(set)])),
+                }
+            }
+            "split-char" => {
+                let c = char_arg(args, 0)?;
+                match self.charsets.split_char(c) {
+                    Some((set, codes)) => Value::List(std::iter::once(Value::Str(set.to_string())).chain(codes.into_iter().map(|n| num(n as usize))).collect()),
+                    None => Value::Null,
+                }
+            }
+            "find-charset-string" => strings(self.charsets.find_charsets(&text_arg(args, 0)?).into_iter().map(String::from)),
+            "find-charset-region" => {
+                let text = self.region_text(number_arg(args, 0)?, number_arg(args, 1)?)?;
+                strings(self.charsets.find_charsets(&text).into_iter().map(String::from))
+            }
+            "charset-after" => {
+                let pos = match args.first() {
+                    Some(v) if v.is_true() => number_arg(args, 0)?,
+                    _ => self.buffer().point(),
+                };
+                let b = self.buffer();
+                match (pos < b.len()).then(|| b.slice(pos..pos + 1)).and_then(|s| s.chars().next()) {
+                    Some(c) => self.charsets.char_charset(c, None).map_or(Value::Null, |n| Value::Str(n.to_string())),
+                    None => Value::Null,
+                }
+            }
+            "decode-sjis-char" | "decode-big5-char" => {
+                let coding = if name == "decode-big5-char" { "chinese-big5" } else { "japanese-shift-jis" };
+                let code = number_arg(args, 0)? as u32;
+                // The code is the coding's own bytes: one for ASCII and for
+                // Shift JIS's half-width katakana, two otherwise.
+                let bytes: Vec<u8> = if code <= 0xFF { vec![code as u8] } else { vec![(code >> 8) as u8, code as u8] };
+                let (text, _) = Coding::named(coding).with_eol(Some(Eol::Unix)).decode(&bytes);
+                match text.chars().next().filter(|_| text.chars().count() == 1) {
+                    Some(c) if coding::char_raw_byte(c).is_none() => Value::Str(c.to_string()),
+                    _ => return Err(Error::signal("error", format!("Invalid code: {code}"), vec![])),
+                }
+            }
+            "encode-sjis-char" | "encode-big5-char" => {
+                let coding = if name == "encode-big5-char" { "chinese-big5" } else { "japanese-shift-jis" };
+                let c = char_arg(args, 0)?;
+                let coding = Coding::named(coding);
+                match coding.can_encode(c).then(|| coding.encode_lossy(&c.to_string()).0) {
+                    Some(bytes) if bytes.len() == 1 => num(bytes[0] as usize),
+                    Some(bytes) if bytes.len() == 2 => num(((bytes[0] as usize) << 8) | bytes[1] as usize),
+                    _ => return Err(Error::signal("error", format!("Can't encode character: {c}"), vec![])),
+                }
+            }
+            "multibyte-char-to-unibyte" => {
+                // The byte Emacs would keep it as: ASCII, a raw byte, or
+                // what iso-8859-1 writes it as; -1 for anything else.
+                let c = char_arg(args, 0)?;
+                match coding::char_raw_byte(c) {
+                    Some(b) => num(b as usize),
+                    None if (c as u32) < 0x100 => num(c as usize),
+                    None => Value::Number(-1.0),
+                }
+            }
+            "unibyte-char-to-multibyte" => {
+                let b = number_arg(args, 0)? as u32;
+                match b {
+                    0..=0x7F => Value::Str(char::from_u32(b).unwrap_or('?').to_string()),
+                    0x80..=0xFF => Value::Str(raw_byte_char(b as u8).to_string()),
+                    _ => return Err(Error::new("Wrong type argument: characterp")),
+                }
+            }
+            "clear-charset-maps" | "unify-charset" => Value::Null,
             _ => return Err(Error::new(format!("No coding primitive {name}"))),
         })
     }

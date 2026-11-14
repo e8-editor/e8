@@ -30,6 +30,42 @@ struct Charset {
     map: Map,
 }
 
+impl Map {
+    /// How many bytes a code point of this charset takes, as Emacs's
+    /// `:dimension`: one for a single-byte set, two for a 94×94 or
+    /// double-byte one, three for Unicode.
+    fn dimension(self) -> u32 {
+        match self {
+            Map::Unicode(limit) if limit <= 0xFF => 1,
+            Map::Unicode(limit) if limit <= 0xFFFF => 2,
+            Map::Unicode(_) | Map::Emacs => 3,
+            Map::EightBit | Map::Bytes(..) | Map::Katakana => 1,
+            Map::Euc(..) | Map::Double(_) => 2,
+        }
+    }
+
+    /// The least and greatest value of each dimension's byte, as Emacs's
+    /// `:code-space` holds them, least first.
+    fn code_space(self) -> Vec<(u32, u32)> {
+        match self {
+            Map::Unicode(limit) => (0..self.dimension()).map(|i| (0, (limit >> (8 * i)) & 0xFF)).collect(),
+            Map::Emacs => vec![(0, 0xFF), (0, 0xFF), (0, 0x3F)],
+            Map::EightBit => vec![(0x80, 0xFF)],
+            Map::Bytes(_, upper) => vec![if upper { (0x20, 0x7F) } else { (0, 0xFF) }],
+            Map::Euc(..) => vec![(0x21, 0x7E), (0x21, 0x7E)],
+            Map::Double("chinese-gbk") => vec![(0x40, 0xFE), (0x81, 0xFE)],
+            Map::Double(_) => vec![(0x40, 0xFE), (0xA1, 0xFE)],
+            Map::Katakana => vec![(0x21, 0x7E)],
+        }
+    }
+
+    /// Whether ISO 2022 registered the charset, which is what makes Emacs
+    /// take only the low seven bits of each of `make-char`'s codes.
+    fn iso_registered(self) -> bool {
+        matches!(self, Map::Unicode(0x7F) | Map::Bytes(_, true) | Map::Euc(..) | Map::Katakana)
+    }
+}
+
 macro_rules! charsets {
     ($(($name:literal, $map:expr)),* $(,)?) => { &[$(Charset { name: $name, map: $map }),*] };
 }
@@ -106,9 +142,144 @@ pub fn charsetp(name: &str) -> bool {
     find(name).is_some()
 }
 
-/// The charsets, as `charset-list` gives them, in priority order.
-pub fn charset_list() -> Vec<&'static str> {
-    CHARSETS.iter().map(|c| c.name).collect()
+/// A charset's properties, as `charset-plist` gives them.
+pub type Plist = Vec<(String, crate::variables::Value)>;
+
+/// What an editor keeps of the charsets: the order a script put them in
+/// and the properties it put on them. Emacs keeps both in its charset
+/// table; E8's table is static, so they live beside it, on the editor.
+#[derive(Debug, Default)]
+pub struct Charsets {
+    /// The charsets `set-charset-priority` put first, most preferred first;
+    /// the rest keep the table's own order.
+    preferred: Vec<&'static str>,
+    /// What `set-charset-plist` put, by charset name.
+    plists: Vec<(&'static str, Plist)>,
+}
+
+impl Charsets {
+    /// The charsets, as `charset-list` gives them, in priority order.
+    pub fn charset_list(&self) -> Vec<&'static str> {
+        let first = &self.preferred;
+        first.iter().copied().chain(CHARSETS.iter().map(|c| c.name).filter(|n| !first.contains(n))).collect()
+    }
+
+    /// Puts charsets first in the priority order, as `set-charset-priority`.
+    pub fn set_priority(&mut self, names: &[&'static str]) {
+        let was: Vec<&'static str> = self.preferred.iter().copied().filter(|n| !names.contains(n)).collect();
+        self.preferred = names.iter().copied().chain(was).collect();
+    }
+
+    /// Charset names sorted by the priority order, as `sort-charsets`.
+    pub fn sort_charsets(&self, names: &[String]) -> Vec<String> {
+        let order = self.charset_list();
+        let place = |n: &String| find(n).and_then(|c| order.iter().position(|o| *o == c.name)).unwrap_or(usize::MAX);
+        let mut names = names.to_vec();
+        names.sort_by_key(place);
+        names
+    }
+
+    /// What E8 knows of a charset as a property list, as `charset-plist`:
+    /// its name, dimension, whether it holds ASCII, and its code space,
+    /// with what `set-charset-plist` put kept after them.
+    pub fn charset_plist(&self, name: &str) -> Option<Plist> {
+        use crate::variables::Value;
+        let set = find(name)?;
+        let num = |n: u32| Value::Number(n as f64);
+        let space: Vec<Value> = set.map.code_space().into_iter().flat_map(|(lo, hi)| [num(lo), num(hi)]).collect();
+        let ascii = encode_char('a', set.name) == Some(0x61);
+        let mut plist = vec![
+            (":name".to_string(), Value::Str(set.name.to_string())),
+            (":dimension".to_string(), num(set.map.dimension())),
+            (":ascii-compatible-p".to_string(), Value::Bool(ascii)),
+            (":code-space".to_string(), Value::List(space)),
+        ];
+        let put = self.plists.iter().find(|(n, _)| *n == set.name).map(|(_, v)| v.clone());
+        plist.extend(put.unwrap_or_default());
+        Some(plist)
+    }
+
+    /// Puts properties on a charset, as `set-charset-plist` does with a
+    /// whole plist; the four E8 works out for itself are not stored.
+    pub fn set_charset_plist(&mut self, name: &str, props: Plist) -> Option<()> {
+        let set = find(name)?.name;
+        let own = [":name", ":dimension", ":ascii-compatible-p", ":code-space"];
+        let props: Vec<_> = props.into_iter().filter(|(k, _)| !own.contains(&k.as_str())).collect();
+        match self.plists.iter_mut().find(|(n, _)| *n == set) {
+            Some((_, v)) => *v = props,
+            None => self.plists.push((set, props)),
+        }
+        Some(())
+    }
+
+    /// A character's charset and the bytes of its code point in it, most
+    /// significant first, as `split-char`.
+    pub fn split_char(&self, c: char) -> Option<(&'static str, Vec<u32>)> {
+        let name = self.char_charset(c, None)?;
+        let code = encode_char(c, name)?;
+        let dimension = find(name)?.map.dimension();
+        let codes = (0..dimension).rev().map(|i| (code >> (8 * i)) & 0xFF).collect();
+        Some((name, codes))
+    }
+
+    /// The charsets some text uses, in the charsets' own order, as
+    /// `find-charset-string` and `find-charset-region` list them.
+    pub fn find_charsets(&self, text: &str) -> Vec<&'static str> {
+        let mut found: Vec<&'static str> = Vec::new();
+        for c in text.chars() {
+            if let Some(name) = self.char_charset(c, None).filter(|n| !found.contains(n)) {
+                found.push(name);
+            }
+        }
+        let order = self.charset_list();
+        found.sort_by_key(|n| order.iter().position(|o| o == n).unwrap_or(usize::MAX));
+        found
+    }
+}
+
+/// A charset's place in the table, as `charset-id-internal`.
+pub fn charset_id(name: &str) -> Option<usize> {
+    let name = find(name)?.name;
+    CHARSETS.iter().position(|c| c.name == name)
+}
+
+/// The charset a name names, under its own name, or `None`.
+pub fn canonical_name(name: &str) -> Option<&'static str> {
+    find(name).map(|c| c.name)
+}
+
+/// The character a charset's position codes name, as `make-char`: the
+/// codes are the bytes of the code point, most significant first, and
+/// missing ones are the least of their dimension.
+pub fn make_char(charset: &str, codes: &[u32]) -> Option<char> {
+    let set = find(charset)?;
+    let space = set.map.code_space();
+    let dimension = space.len();
+    if codes.iter().any(|&c| c > 0xFF) {
+        return None;
+    }
+    // Codes past the dimension are ignored, as charset.c reads only as
+    // many as the charset has.
+    let codes = &codes[..codes.len().min(dimension)];
+    if codes.is_empty() {
+        // With no code, the charset's least code, or 0 where it holds ASCII.
+        let least = space.iter().rev().fold(0, |code, (lo, _)| (code << 8) | lo);
+        return decode_char(set.name, if encode_char('a', set.name) == Some(0x61) { 0 } else { least });
+    }
+    // The codes are most significant first, the dimensions least first,
+    // so code N stands for dimension `dimension - N`; those not given are
+    // the least of their own dimension.
+    let mut code = 0u32;
+    for (j, (lo, _)) in space.iter().enumerate().rev() {
+        let given = codes.get(dimension - 1 - j).copied();
+        code = (code << 8) | given.unwrap_or(*lo);
+    }
+    // An ISO charset takes the low seven bits of each byte, so EUC's high
+    // bytes name the same character as the ISO ones, as charset.c masks them.
+    if set.map.iso_registered() {
+        code &= 0x7F7F_7F7F;
+    }
+    decode_char(set.name, code)
 }
 
 /// The single byte a coding writes `c` as, if it writes it as one.
@@ -196,12 +367,25 @@ pub fn decode_char(charset: &str, code: u32) -> Option<char> {
 /// The charset of a character, as `char-charset`: `ascii`, `eight-bit`
 /// for a raw byte, else `unicode`, as Emacs's priorities give them; with
 /// `restriction`, the first of those charsets that has it.
-pub fn char_charset(c: char, restriction: Option<&[String]>) -> Option<&'static str> {
-    match restriction {
-        Some(names) => CHARSETS.iter().find(|cs| names.iter().any(|n| find(n).is_some_and(|f| f.name == cs.name)) && encode_char(c, cs.name).is_some()).map(|cs| cs.name),
-        None if c.is_ascii() => Some("ascii"),
-        None if char_raw_byte(c).is_some() => Some("eight-bit"),
-        None => Some("unicode"),
+impl Charsets {
+    pub fn char_charset(&self, c: char, restriction: Option<&[String]>) -> Option<&'static str> {
+        // A restriction is walked in the order it is given, as charset.c
+        // walks the list it is handed.
+        if let Some(names) = restriction {
+            return names.iter().filter_map(|n| find(n)).find(|set| encode_char(c, set.name).is_some()).map(|set| set.name);
+        }
+        // ASCII is `ascii` whatever is preferred, as Emacs's CHAR_CHARSET
+        // answers before it walks the list at all.
+        if c.is_ascii() {
+            return Some("ascii");
+        }
+        // Then the first charset a script preferred that holds the
+        // character, as Emacs walks the preferred head of its ordered list;
+        // past that head Emacs answers `unicode`, whatever else holds it.
+        if let Some(name) = self.preferred.iter().copied().find(|n| encode_char(c, n).is_some()) {
+            return Some(name);
+        }
+        if char_raw_byte(c).is_some() { Some("eight-bit") } else { Some("unicode") }
     }
 }
 
@@ -227,8 +411,9 @@ mod tests {
         assert_eq!(decode_char("eight-bit", 233), Some(raw_byte_char(0xE9)));
         assert_eq!(decode_char("ucs", 233), Some('é'));
         assert_eq!(decode_char("japanese-jisx0212", 0x3021), Some('丂'));
-        assert_eq!(char_charset('a', None), Some("ascii"));
-        assert_eq!(char_charset('é', None), Some("unicode"));
+        let charsets = Charsets::default();
+        assert_eq!(charsets.char_charset('a', None), Some("ascii"));
+        assert_eq!(charsets.char_charset('é', None), Some("unicode"));
         assert!(charsetp("japanese-jisx0208") && !charsetp("nope"));
     }
 }
