@@ -290,11 +290,6 @@ natives! {
         Ok(None)
     }
 
-    /// Whether the screen line point is on goes on in the next, a long line wrapping, as display--line-is-continued-p.
-    pub fn displayLineIsContinuedP(ed) -> bool {
-        Ok(ed.display_line_is_continued_p())
-    }
-
     /// Make thisCommandKeys give the keys a string's characters are, as Lisp's set--this-command-keys takes them.
     #[ts = "(keys: string): undefined"]
     pub fn setThisCommandKeysFromChars(ed, keys: EditorValue) -> Option<bool> {

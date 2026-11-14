@@ -15492,8 +15492,6 @@ declare global {
     function textCharDescription(character: number): string;
     /** Send text to the terminal as it is, as send-string-to-terminal: in batch to standard output; an error on a graphical frame. */
     function sendStringToTerminal(string: string, terminal?: Terminal | Frame | null): undefined;
-    /** Whether the screen line point is on goes on in the next, a long line wrapping, as display--line-is-continued-p. */
-    function displayLineIsContinuedP(): boolean;
     /** Make thisCommandKeys give the keys a string's characters are, as Lisp's set--this-command-keys takes them. */
     function setThisCommandKeysFromChars(keys: string): undefined;
     /** Give the current buffer its own value, starting from the one it sees now. */

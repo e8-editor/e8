@@ -32,7 +32,7 @@ Each as Emacs has it.
 - **The odds.**
   - `set--this-command-keys` takes Lisp's string of characters, a character with its 8th bit set being Meta. E8's `setThisCommandKeys` keeps taking key descriptions.
   - `send-string-to-terminal` writes to standard output in batch. On a terminal it is handed to the terminal front end, which writes it before it next draws, as the bell already is. On a graphical frame it signals, as Emacs's does.
-  - `display--line-is-continued-p` asks whether point's row wraps.
+  - `display--line-is-continued-p` is the Lisp name of E8's `displayLineIsContinuedP`.
   - The names with `--` are defined under their Lisp names in help.ts.
 - **Frames** (`frame.rs`, `window.rs`):
   - **Made frames.** A frame `x-create-frame` makes is not yet made, as nsfns.m leaves it, so `window-configuration-change-hook` does not run for it until `frame-after-make-frame` says so.

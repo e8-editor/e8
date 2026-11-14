@@ -497,18 +497,6 @@ impl Editor {
     pub fn take_terminal_output(&mut self) -> String {
         std::mem::take(&mut self.terminal_output)
     }
-
-    /// Whether the screen line point is on goes on in the next, as
-    /// `display--line-is-continued-p`: a long line wrapping in the window.
-    pub fn display_line_is_continued_p(&self) -> bool {
-        let window = self.selected_window();
-        let b = self.window_buffer();
-        let point = b.point();
-        let wrap = self.wrap_in(window, b);
-        let rows = self.rows_from(b, self.row_line_in(b, b.line_of(point)), usize::MAX, 1, Some(true), wrap);
-        let tab_width = self.tab_width_in(b);
-        crate::display::row_showing(&rows, point, tab_width).is_some_and(|k| rows[k].continued)
-    }
 }
 
 impl Editor {
