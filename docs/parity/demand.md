@@ -182,6 +182,17 @@ Tree-sitter's rest ([ADR 0084](../adr/0084-tree-sitters-rest-as-emacs-has-it.md)
 
 The ranking is now led by **face and font internals** (0.11: `internal-char-font`, which nerd-icons alone waits on, `frame--face-hash-table`, `face-attributes-as-vector`), then three groups at 0.08 to 0.09 that Emacs's own libraries need most: processes' odds (`set-network-process-option`, for term), buffer text (`buffer-swap-text`, `buffer-last-name`, for vc) and the window tree's (`window-display-table`, for dired and erc). Every other group is 0.06 or less.
 
+## After face and font internals
+
+Face and font internals ([ADR 0085](../adr/0085-face-and-font-internals-as-emacs-has-them.md)) landed on 2026-11-14 in pull request 144. Measured again on the same corpus:
+
+- **By name**, 763 of the 877 editor primitives (87%), from 733: xfaces.c has all 30 of its 30, and font.c all 22.
+- **Packages needing nothing missing**: 291 of 295 MELPA packages, from 290 (nerd-icons); 74 of 77 daily ones and 36 of Emacs's 49, as before.
+- **Still needed** by at least one package: 17 editor and 18 platform primitives, from 34 and 20.
+- **The face and font group is gone**; `fontset-info`, which nothing in the corpus calls, is the one fontset.c primitive left.
+
+The ranking is now led by three groups at 0.08 to 0.09 that Emacs's own libraries need most: processes' odds (`set-network-process-option`, for term and gnus), buffer text (`buffer-last-name`, `buffer-swap-text`, for vc) and the window tree's (`window-display-table`, for dired and erc). Every other group is 0.06 or less.
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
@@ -214,7 +225,7 @@ The 35 one-liners are a piece of their own, smaller than any: giving `eobp`, `bo
 
 ## Results
 
-As measured again after tree-sitter's rest (ADR 0084), with what E8 has on main at that point.
+As measured again after face and font internals (ADR 0085), with what E8 has on main at that point.
 
 ### Missing primitives by demand
 
@@ -222,60 +233,41 @@ Score: the share of each corpus's packages that need the primitive, directly or 
 
 | # | primitive | C file | score | emacs | melpa | daily | through |
 |---|---|---|---|---|---|---|---|
-| 1 | `internal-char-font` | font.c | 0.06 | 3 / 4 / 0 |  |  |  |
-| 2 | `buffer-last-name` | buffer.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
-| 3 | `set-network-process-option` | process.c | 0.05 | 1 / 2 / 0 |  | 1 / 1 / 0 |  |
-| 4 | `buffer-swap-text` | buffer.c | 0.04 | 2 / 2 / 0 |  |  |  |
-| 5 | `frame--face-hash-table` | xfaces.c | 0.04 | 2 / 2 / 0 |  |  |  |
-| 6 | `send-string-to-terminal` | dispnew.c | 0.04 | 2 / 3 / 0 |  |  |  |
-| 7 | `window-display-table` | window.c | 0.04 | 2 / 2 / 0 |  |  |  |
-| 8 | `sqlite-available-p` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 9 | `sqlite-close` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 10 | `sqlite-open` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 11 | `sqlite-select` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
-| 12 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 13 | `set--this-command-keys` | keyboard.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 14 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 15 | `describe-vector` | keymap.c | 0.02 | 1 / 4 / 0 |  |  |  |
-| 16 | `display--line-is-continued-p` | xdisp.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 17 | `face-attributes-as-vector` | xfaces.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 18 | `font-face-attributes` | font.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 19 | `fontset-list` | fontset.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 20 | `frame-after-make-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 21 | `handle-switch-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 22 | `help--describe-vector` | keymap.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 23 | `internal-copy-lisp-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 24 | `internal-describe-syntax-value` | syntax.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 25 | `internal-face-x-get-resource` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 26 | `internal-get-lisp-face-attribute` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 27 | `internal-lisp-face-empty-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 28 | `internal-lisp-face-equal-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 29 | `internal-lisp-face-p` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 30 | `internal-make-lisp-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 31 | `internal-merge-in-global-face` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 32 | `internal-set-alternative-font-family-alist` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 33 | `internal-set-alternative-font-registry-alist` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 34 | `internal-set-font-selection-order` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 35 | `internal-set-lisp-face-attribute` | xfaces.c | 0.02 | 1 / 3 / 0 |  |  |  |
-| 36 | `internal-set-lisp-face-attribute-from-resource` | xfaces.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 37 | `kqueue-add-watch` | kqueue.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 38 | `make-serial-process` | process.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 39 | `marker-last-position` | marker.c | 0.02 | 1 / 2 / 0 |  |  |  |
-| 40 | `ns-display-monitor-attributes-list` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 41 | `ns-frame-edges` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 42 | `ns-frame-geometry` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 43 | `ns-frame-list-z-order` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 44 | `ns-frame-restack` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 45 | `process-thread` | process.c | 0.02 | 1 / 3 / 0 |  |  |  |
-| 46 | `resize-mini-window-internal` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 47 | `set-window-display-table` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
-| 48 | `x-create-frame` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 49 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 50 | `set-fontset-font` | fontset.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 51 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 52 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 53 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 54 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 1 | `buffer-last-name` | buffer.c | 0.05 | 1 / 1 / 0 |  | 1 / 1 / 0 |  |
+| 2 | `set-network-process-option` | process.c | 0.05 | 1 / 2 / 0 |  | 1 / 1 / 0 |  |
+| 3 | `buffer-swap-text` | buffer.c | 0.04 | 2 / 2 / 0 |  |  |  |
+| 4 | `send-string-to-terminal` | dispnew.c | 0.04 | 2 / 3 / 0 |  |  |  |
+| 5 | `window-display-table` | window.c | 0.04 | 2 / 2 / 0 |  |  |  |
+| 6 | `sqlite-available-p` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
+| 7 | `sqlite-close` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
+| 8 | `sqlite-open` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
+| 9 | `sqlite-select` | sqlite.c (platform) | 0.03 |  | 1 / 1 / 0 | 1 / 1 / 0 |  |
+| 10 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 11 | `set--this-command-keys` | keyboard.c | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 12 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
+| 13 | `describe-vector` | keymap.c | 0.02 | 1 / 4 / 0 |  |  |  |
+| 14 | `display--line-is-continued-p` | xdisp.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 15 | `frame-after-make-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 16 | `handle-switch-frame` | frame.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 17 | `help--describe-vector` | keymap.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 18 | `internal-describe-syntax-value` | syntax.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 19 | `kqueue-add-watch` | kqueue.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 20 | `make-serial-process` | process.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 21 | `marker-last-position` | marker.c | 0.02 | 1 / 2 / 0 |  |  |  |
+| 22 | `ns-display-monitor-attributes-list` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 23 | `ns-frame-edges` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 24 | `ns-frame-geometry` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 25 | `ns-frame-list-z-order` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 26 | `ns-frame-restack` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 27 | `process-thread` | process.c | 0.02 | 1 / 3 / 0 |  |  |  |
+| 28 | `resize-mini-window-internal` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 29 | `set-window-display-table` | window.c | 0.02 | 1 / 1 / 0 |  |  |  |
+| 30 | `x-create-frame` | nsfns.m (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 31 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
+| 32 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 33 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 34 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+| 35 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
 
 ### By piece of work
 
@@ -283,13 +275,12 @@ Packages needing at least one primitive of the group, per corpus, and those for 
 
 | group | needed | score | emacs | melpa | daily | all they lack |
 |---|---|---|---|---|---|---|
-| faces-fonts | 19 | 0.11 | 5 | 1 | 0 | 1: nerd-icons |
-| process-objects | 3 | 0.09 | 3 | 0 | 1 | 1: term (Emacs) |
+| process-objects | 3 | 0.09 | 3 | 0 | 1 | 2: gnus (Emacs), term (Emacs) |
 | buffer-text | 3 | 0.09 | 3 | 0 | 1 | 1: vc (Emacs) |
 | window-tree | 3 | 0.08 | 4 | 0 | 0 | 2: dired (Emacs), erc (Emacs) |
-| other | 2 | 0.06 | 3 | 0 | 0 | 0:  |
+| other | 2 | 0.06 | 3 | 0 | 0 | 1: mouse (Emacs) |
 | xwidgets | 7 | 0.05 | 2 | 2 | 0 | 4: lsp-ui, evil-collection, eww (Emacs), image (Emacs) |
-| macos-x | 6 | 0.04 | 2 | 0 | 0 | 0:  |
+| macos-x | 6 | 0.04 | 2 | 0 | 0 | 1: font-lock (Emacs) |
 | frames | 2 | 0.04 | 2 | 0 | 0 | 0:  |
 | sqlite | 4 | 0.03 | 0 | 1 | 1 | 1: emacsql |
 | keyboard | 1 | 0.02 | 1 | 1 | 0 | 1: embark |
@@ -338,6 +329,7 @@ Among MELPA's 150 most downloaded, those defining commands (three or more `inter
 | popwin | 1,172,453 |  |  |  |
 | ace-link | 1,170,739 |  |  |  |
 | paredit | 1,098,226 |  |  |  |
+| doom-modeline | 1,077,915 |  |  |  |
 | auto-highlight-symbol | 1,067,739 |  |  |  |
 | hungry-delete | 1,066,132 |  |  |  |
 | persp-mode | 1,050,123 |  |  |  |
@@ -346,8 +338,7 @@ Among MELPA's 150 most downloaded, those defining commands (three or more `inter
 | ws-butler | 1,005,643 |  |  |  |
 | golden-ratio | 1,001,650 |  |  |  |
 | eval-sexp-fu | 990,156 |  |  |  |
-| lorem-ipsum | 930,747 |  |  |  |
 
-### Missing and needed by nothing in the corpus (55)
+### Missing and needed by nothing in the corpus (42)
 
-`bitmap-spec-p`, `cancel-kbd-macro-events`, `clear-composition-cache`, `clear-face-cache`, `clear-font-cache`, `close-font`, `compose-region-internal`, `compose-string-internal`, `composition-get-gstring`, `composition-sort-rules`, `declare-equiv-charset`, `define-charset-alias`, `define-charset-internal`, `define-coding-system-alias`, `define-coding-system-internal`, `find-coding-systems-region-internal`, `find-composition-internal`, `font-get-glyphs`, `font-match-p`, `font-shape-gstring`, `font-variation-glyphs`, `frame-font-cache`, `gap-position`, `gap-size`, `get-unused-iso-final-char`, `internal--labeled-narrow-to-region`, `internal--labeled-widen`, `internal--set-buffer-modified-tick`, `internal-default-interrupt-process`, `internal-default-signal-process`, `iso-charset`, `lookup-image-map`, `map-charset-chars`, `newline-cache-check`, `open-font`, `open-termscript`, `optimize-char-table`, `posix-looking-at`, `posix-search-backward`, `posix-search-forward`, `posix-string-match`, `process-datagram-address`, `re--describe-compiled`, `read-non-nil-coding-system`, `serial-process-configure`, `set-buffer-redisplay`, `set-minibuffer-window`, `set-process-datagram-address`, `set-process-thread`, `set-safe-terminal-coding-system-internal`, `text-char-description`, `translate-region-internal`, `tty-suppress-bold-inverse-default-colors`, `x-family-fonts`, `x-load-color-file`
+`cancel-kbd-macro-events`, `clear-composition-cache`, `compose-region-internal`, `compose-string-internal`, `composition-get-gstring`, `composition-sort-rules`, `declare-equiv-charset`, `define-charset-alias`, `define-charset-internal`, `define-coding-system-alias`, `define-coding-system-internal`, `find-coding-systems-region-internal`, `find-composition-internal`, `gap-position`, `gap-size`, `get-unused-iso-final-char`, `internal--labeled-narrow-to-region`, `internal--labeled-widen`, `internal--set-buffer-modified-tick`, `internal-default-interrupt-process`, `internal-default-signal-process`, `iso-charset`, `lookup-image-map`, `map-charset-chars`, `newline-cache-check`, `open-termscript`, `optimize-char-table`, `posix-looking-at`, `posix-search-backward`, `posix-search-forward`, `posix-string-match`, `process-datagram-address`, `re--describe-compiled`, `read-non-nil-coding-system`, `serial-process-configure`, `set-buffer-redisplay`, `set-minibuffer-window`, `set-process-datagram-address`, `set-process-thread`, `set-safe-terminal-coding-system-internal`, `text-char-description`, `translate-region-internal`
