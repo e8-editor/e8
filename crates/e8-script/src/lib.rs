@@ -128,6 +128,7 @@ const PACKAGES: &[(&str, &str)] = &[
     // Before the modes that give help-guide their guides, which import it.
     ("packages/help.ts", include_str!("../../../packages/help.ts")),
     ("packages/help-guide.ts", include_str!("../../../packages/help-guide.ts")),
+    ("packages/composite.ts", include_str!("../../../packages/composite.ts")),
     ("packages/prog-mode.ts", include_str!("../../../packages/prog-mode.ts")),
     ("packages/lisp-mode.ts", include_str!("../../../packages/lisp-mode.ts")),
     ("packages/elisp-mode.ts", include_str!("../../../packages/elisp-mode.ts")),

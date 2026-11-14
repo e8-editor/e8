@@ -92,6 +92,7 @@ pub mod xfaces;
 pub mod sqlite;
 pub mod xwidget;
 mod kqueue;
+pub mod composite;
 mod window;
 mod window_tree;
 mod variables;
