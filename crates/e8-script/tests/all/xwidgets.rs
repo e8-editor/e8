@@ -153,7 +153,7 @@ fn views_come_from_where_the_front_end_places_them() {
     assert_eq!(run(&mut ed, &s, "return e8.xwidgetViewLookup(xw) ?? null;"), "null");
     ed.xwidget_event(XwidgetEvent::Placed { xwidget: 1, window, rect: [10.0, 20.0, 100.0, 50.0], clip: [0.0, 5.0, 0.0, 0.0] });
     let mut r = |code: &str| run(&mut ed, &s, code);
-    assert_eq!(r("const v = e8.xwidgetViewLookup(xw)!; return [e8.xwidgetViewP(v), e8.xwidgetViewInfo(v), e8.xwidgetViewModel(v) === xw, e8.xwidgetViewWindow(v) === e8.selectedWindow()];"), "[true,[10,20,100,50,0,5,0,0],true,true]");
+    assert_eq!(r("const v = e8.xwidgetViewLookup(xw)!; return [e8.xwidgetViewP(v), e8.xwidgetViewInfo(v), e8.xwidgetViewModel(v) === xw, e8.xwidgetViewWindow(v) === e8.selectedWindow()];"), "[true,[10,20,100,45,0,0],true,true]");
     ed.take_xwidget_requests();
     assert_eq!(run(&mut ed, &s, "e8.deleteXwidgetView(e8.xwidgetViewLookup(xw)!); return e8.xwidgetViewLookup(xw) ?? null;"), "null");
     assert_eq!(ed.take_xwidget_requests(), vec![XwidgetRequest::DeleteView { id: 1, window }]);

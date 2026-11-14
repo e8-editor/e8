@@ -213,4 +213,10 @@ impl TextMetrics for EguiMetrics {
     fn images(&self) -> bool {
         true
     }
+
+    /// Web views where wry has them, macOS and Linux, with the `xwidgets`
+    /// feature (ADR 0089).
+    fn xwidgets(&self) -> bool {
+        crate::xwidgets::SUPPORTED
+    }
 }

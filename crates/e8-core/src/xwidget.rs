@@ -331,12 +331,17 @@ impl Editor {
         Ok(Value::List(vec![symbol(&x.kind), x.title.clone(), Value::Number(f64::from(x.width)), Value::Number(f64::from(x.height))]))
     }
 
-    /// A view's place, as `xwidget-view-info`: x, y, width and height in
-    /// its window, and how much is clipped off right, bottom, top and left.
+    /// A view's place, as `xwidget-view-info`: `[X Y CLIP_RIGHT
+    /// CLIP_BOTTOM CLIP_TOP CLIP_LEFT]`, the right and bottom clips as how
+    /// far the visible part reaches and the top and left as how much is cut
+    /// off, as xwidget.c keeps them: the width and height, and 0 and 0,
+    /// when none of it is clipped.
     pub fn xwidget_view_info(&self, view: &Value) -> Result<Value> {
         let v = self.view(view)?;
         let n = |x: f32| Value::Number(f64::from(x.round()));
-        Ok(Value::List(v.rect.iter().chain(v.clip.iter()).map(|&x| n(x)).collect()))
+        let [x, y, w, h] = v.rect;
+        let [right, bottom, top, left] = v.clip;
+        Ok(Value::List(vec![n(x), n(y), n(w - right), n(h - bottom), n(top), n(left)]))
     }
 
     /// A view's xwidget, as `xwidget-view-model`.

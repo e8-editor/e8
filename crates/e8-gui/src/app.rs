@@ -104,6 +104,8 @@ pub struct E8App {
     /// Where each frame's windows start in its native window, for moving
     /// the pointer to a place on them.
     origins: std::collections::HashMap<FrameId, Pos2>,
+    /// xwidgets' web views, put where the frames show them (ADR 0089).
+    xwidgets: crate::xwidgets::XwidgetHost,
 }
 
 /// Where the editor runs.
@@ -174,6 +176,14 @@ impl Backend {
         }
     }
 
+    /// What code asked of xwidgets' web views since last time.
+    fn take_xwidget_requests(&mut self) -> Vec<e8_core::xwidget::XwidgetRequest> {
+        match self {
+            Backend::Inline { editor, .. } => editor.take_xwidget_requests(),
+            Backend::Thread { driver, .. } => std::mem::take(&mut driver.published().xwidget_requests),
+        }
+    }
+
     /// Tells the editor how big a frame is as a whole and where it sits.
     fn set_frame_geometry(&mut self, frame: FrameId, geometry: e8_core::FrameGeometry) {
         self.run(move |ed, _| ed.set_frame_geometry(frame, geometry));
@@ -196,7 +206,15 @@ struct Mouse {
 }
 
 impl eframe::App for E8App {
-    fn ui(&mut self, ui: &mut Ui, _frame: &mut eframe::Frame) {
+    fn ui(&mut self, ui: &mut Ui, frame: &mut eframe::Frame) {
+        // Web views go in the main window, made once an xwidget wants one.
+        #[cfg(all(feature = "xwidgets", any(target_os = "macos", target_os = "linux")))]
+        if self.xwidgets.wants_backend() {
+            let ctx = ui.ctx().clone();
+            let report = self.xwidgets.reporter(move || ctx.request_repaint());
+            self.xwidgets.attach(crate::xwidgets::platform::web_views(&*frame, report));
+        }
+        let _ = frame;
         self.show(ui);
     }
 }
@@ -280,6 +298,7 @@ impl E8App {
             frame_states: std::collections::HashMap::new(),
             minimised: std::collections::HashMap::new(),
             origins: std::collections::HashMap::new(),
+            xwidgets: Default::default(),
         }
     }
 
@@ -505,6 +524,44 @@ impl E8App {
     /// frame here, and each other frame in a native window of its own.
     pub fn show(&mut self, ui: &mut Ui) {
         let ctx = ui.ctx().clone();
+        self.begin_xwidgets(&ctx);
+        if self.show_frames(ui) {
+            let events = self.xwidgets.end(ctx.pixels_per_point());
+            self.send_xwidget_events(events);
+        }
+    }
+
+    /// Carries out what code asked of xwidgets' web views, and passes on
+    /// what their pages reported, before the frames are drawn.
+    fn begin_xwidgets(&mut self, ctx: &egui::Context) {
+        let requests = self.backend.take_xwidget_requests();
+        self.xwidgets.request(requests);
+        let (events, again) = self.xwidgets.begin();
+        self.send_xwidget_events(events);
+        for message in std::mem::take(&mut self.xwidgets.messages) {
+            self.message(message);
+        }
+        // GTK's loop runs between frames, so frames keep coming while it
+        // has views; and a view waits for the window's handle next frame.
+        if again || self.xwidgets.wants_backend() {
+            ctx.request_repaint_after(std::time::Duration::from_millis(16));
+        }
+    }
+
+    fn send_xwidget_events(&mut self, events: Vec<crate::xwidgets::Event>) {
+        if events.is_empty() {
+            return;
+        }
+        self.backend.run(move |editor, _| {
+            for event in events {
+                editor.xwidget_event(event.into_core());
+            }
+        });
+    }
+
+    /// Handles input and draws each frame; whether any frame was drawn.
+    fn show_frames(&mut self, ui: &mut Ui) -> bool {
+        let ctx = ui.ctx().clone();
         // Font families faces named load now, and the editor measures in
         // them from the next frame, once egui has them.
         if std::mem::take(&mut self.fonts_loaded) {
@@ -535,7 +592,7 @@ impl E8App {
                     Input::Command(name) => self.backend.run(move |editor, _| editor.command_execute(name)),
                 }
             }
-            return;
+            return false;
         }
         // Where native windows cannot open, embedded in this one instead, as
         // in tests, this window shows the selected frame, as a terminal does.
@@ -544,7 +601,7 @@ impl E8App {
             self.main_frame = selected;
             let main = self.main_frame;
             self.show_frame(ui, main);
-            return;
+            return true;
         }
         if !frames.contains(&self.main_frame) {
             self.main_frame = *frames.last().expect("there is always a frame");
@@ -584,6 +641,7 @@ impl E8App {
             let viewport = if selected == self.main_frame { egui::ViewportId::ROOT } else { frame_viewport(selected) };
             ctx.send_viewport_cmd_to(viewport, ViewportCommand::Focus);
         }
+        true
     }
 
     /// Moves and resizes frames where code asked, as `set-frame-position`
@@ -777,6 +835,9 @@ impl E8App {
                     | egui::Event::MouseWheel { .. }
             )
         });
+        if events.iter().any(|e| matches!(e, egui::Event::PointerButton { pressed: true, .. })) {
+            self.xwidgets.clicked_editor();
+        }
         if input && frame != self.frame_list().1 {
             self.backend.run(move |editor, _| {
                 let _ = editor.select_frame(frame);
@@ -831,7 +892,11 @@ impl E8App {
         self.update_title(&ctx, frame, &description.title);
         // The selected frame's window types into it, so only it shows filled cursors.
         let focused = ctx.input(|i| i.focused) && frame_selected;
-        draw(ui, &description, &layout, t, focused);
+        // Native web views go in the main window, and only where they sit in it.
+        let native = self.xwidgets.embeds() && ctx.viewport_id() == egui::ViewportId::ROOT;
+        let mut sink = crate::xwidgets::Sink::new(&description.xwidget_labels, native);
+        draw(ui, &description, &layout, t, focused, &mut sink);
+        self.xwidgets.drawn(sink.placements);
         Some(t)
     }
 
@@ -1244,7 +1309,7 @@ impl Layout {
 }
 
 /// Draws a frame as the core described it, asking the editor nothing.
-fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: bool) {
+fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: bool, xwidgets: &mut crate::xwidgets::Sink) {
     let painter = ui.painter().clone();
     painter.rect_filled(layout.rect, 0.0, t.bg);
     let m = &layout.m;
@@ -1268,7 +1333,7 @@ fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: boo
         // Text stops at the text area's edge, leaving the margins and fringes beside it.
         let clip = Rect::from_min_max(pos2(w.text_rect.left(), top), pos2(w.text_rect.right(), w.mode_rect.top()));
         let view = View { area: w.text_rect, clip, scroll_offset: window.vscroll, margins: w.margins, fringes: w.fringes };
-        draw_buffer(&painter, fd, window, &view, m, t, cursor);
+        draw_buffer(&painter, fd, window, &view, m, t, cursor, xwidgets);
         draw_mode_line(&painter, window, w.mode_rect, m, t, &fd.chrome);
         if let Some(header) = w.header_rect {
             draw_header_line(&painter, window, header, m, t, &fd.chrome);
@@ -1370,6 +1435,7 @@ fn draw_buffer(
     m: &Metrics,
     t: Tokens,
     style: CursorStyle,
+    xwidgets: &mut crate::xwidgets::Sink,
 ) {
     // As many rows as fill the window, one partly shown when scrolled between lines.
     let described = &window.rows;
@@ -1512,7 +1578,9 @@ fn draw_buffer(
         };
         let x = area.left() - shift[i] + offsets[i];
         clipped.galley(pos2(x, y), galley.clone(), t.ink);
-        draw_row_images(&clipped, fd, &described[i], pos2(x, row_top(i)), m, t);
+        draw_row_images(&clipped, fd, &described[i], pos2(x, row_top(i)), m, t, &mut |painter, xwidget, rect| {
+            xwidgets.glyph(painter, window.id, view.area.min, xwidget, rect, t)
+        });
         draw_apart(&clipped, rows[i], laid_out[i].1, galley, pos2(x, y), default_style, m, t);
         // Where the text's background starts, egui drawing it over each glyph's logical rectangle.
         let text_top = y + galley.rows.first().and_then(|r| r.row.glyphs.first().map(|g| g.logical_rect().top() + r.pos.y)).unwrap_or(0.0);
@@ -2097,7 +2165,8 @@ fn galley_baseline(galley: &Galley) -> f32 {
 
 /// Draws the images a row shows over the room its galley left for them,
 /// each on the row's baseline as its ascent says.
-fn draw_row_images(painter: &Painter, fd: &FrameDescription, row: &RowDescription, origin: Pos2, m: &Metrics, t: Tokens) {
+/// An xwidget's glyph stands for its web view instead, which `xwidget` places.
+fn draw_row_images(painter: &Painter, fd: &FrameDescription, row: &RowDescription, origin: Pos2, m: &Metrics, t: Tokens, xwidget: &mut dyn FnMut(&Painter, u64, Rect)) {
     if !row.row.segments.iter().any(|s| s.image.is_some()) {
         return;
     }
@@ -2108,7 +2177,11 @@ fn draw_row_images(painter: &Painter, fd: &FrameDescription, row: &RowDescriptio
         if let Some(img) = &seg.image {
             let ink = seg.style.foreground.map(color32).unwrap_or(t.ink);
             let top = row.segment_tops.get(glyph.segment).copied().unwrap_or(0.0);
-            image::draw_image(painter, fd, img, pos2(origin.x + x * m.char_width, origin.y + top), ink);
+            let top_left = pos2(origin.x + x * m.char_width, origin.y + top);
+            match img.xwidget {
+                Some(id) => xwidget(painter, id, crate::xwidgets::glyph_rect(img.width, img.height, top_left)),
+                None => image::draw_image(painter, fd, img, top_left, ink),
+            }
         }
         x += width;
     }

@@ -17878,7 +17878,7 @@ declare global {
     function xwidgetSizeRequest(xwidget: Xwidget): [number, number];
     /** An xwidget's type, title, width and height, as xwidget-info. */
     function xwidgetInfo(xwidget: Xwidget): [symbol, Value, number, number];
-    /** Where a view is in its window, as xwidget-view-info: x, y, width, height, and how much is clipped off right, bottom, top and left. */
+    /** Where a view is in its window, as xwidget-view-info: [x, y, clipRight, clipBottom, clipTop, clipLeft], right and bottom as how far its visible part reaches, top and left as how much is cut off. */
     function xwidgetViewInfo(view: XwidgetView): number[];
     /** A view's xwidget, as xwidget-view-model. */
     function xwidgetViewModel(view: XwidgetView): Xwidget;

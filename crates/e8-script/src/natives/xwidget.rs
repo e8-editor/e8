@@ -154,7 +154,7 @@ natives! {
         ed.xwidget_info(&xw)
     }
 
-    /// Where a view is in its window, as xwidget-view-info: x, y, width, height, and how much is clipped off right, bottom, top and left.
+    /// Where a view is in its window, as xwidget-view-info: [x, y, clipRight, clipBottom, clipTop, clipLeft], right and bottom as how far its visible part reaches, top and left as how much is cut off.
     #[ts = "(view: XwidgetView): number[]"]
     pub fn xwidgetViewInfo(ed, view: EditorValue) -> EditorValue {
         ed.xwidget_view_info(&view)

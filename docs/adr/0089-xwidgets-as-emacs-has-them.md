@@ -55,6 +55,8 @@ The GUI (`e8-gui/src/xwidgets.rs`, the `xwidgets` feature, on by default) carrie
 - **Input.** A view takes keys and clicks natively once clicked. Clicking E8's text gives them back to E8.
 - **Events.** `wry`'s handlers report pages starting and finishing loading, titles, navigation, new-window requests and downloads, and script results through `evaluate_script_with_callback`. Each goes to the editor's thread as `Input::Run` with `xwidget_event`.
 
+How it was checked on macOS: `cargo run -p e8-gui --example xwidget_smoke` opens the window, makes an xwidget, loads a page and runs a script, and the events come back in WebKit's order: decide-policy, load-started, load-committed, load-finished, and the script's result. The Linux paths are checked by building on macOS against their code and by reading it; CI builds them on Linux.
+
 ### xwidget.el
 
 `xwidget.ts` ports xwidget.el: `xwidget-insert`, `xwidget-at`, `xwidget-webkit-browse-url`, `xwidget-webkit-mode` with its keys, the callback that names the buffer after the page, back, forward, reload, zoom, scrolling by JavaScript, and searching.
@@ -77,4 +79,5 @@ The GUI (`e8-gui/src/xwidgets.rs`, the `xwidgets` feature, on by default) carrie
 ## Dependencies introduced
 
 - **`wry`** (pinned at 0.57.1) in e8-gui, behind the `xwidgets` feature, for native web views: WKWebView on macOS and WebKitGTK on Linux, which it links there.
-- **`gtk`**, which `wry` uses on Linux to start GTK and run its loop.
+- **`gtk`** (0.18, the version `wry` 0.57.1 uses) on Linux, to start GTK and run its loop.
+- **`serde_json`** in e8-gui, already in the workspace, to read scripts' results.
