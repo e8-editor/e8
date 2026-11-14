@@ -374,7 +374,7 @@ natives! {
             let mut name = prefix.clone();
             for _ in 0..6 {
                 name.push(LETTERS[(seed % LETTERS.len() as u128) as usize] as char);
-                seed = seed / LETTERS.len() as u128 + seed.wrapping_mul(6364136223846793005);
+                seed = (seed / LETTERS.len() as u128).wrapping_add(seed.wrapping_mul(6364136223846793005));
             }
             if !e8_core::vfs::path_exists(std::path::Path::new(&name)) {
                 return Ok(name);
