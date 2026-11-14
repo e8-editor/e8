@@ -103,6 +103,12 @@ impl Editor {
         self.timers.due.retain(|&d| d != id);
     }
 
+    /// How long since the last key, in seconds, which idle timers count
+    /// from and `current-idle-time` gives.
+    pub(crate) fn idle_seconds(&self) -> f64 {
+        self.now().saturating_duration_since(self.timers.last_input).as_secs_f64()
+    }
+
     /// Notes a key typed: idle time starts again.
     pub(crate) fn note_input(&mut self) {
         self.timers.last_input = self.now();

@@ -15498,6 +15498,18 @@ declare global {
     function bufferFileName(): string | undefined;
     /** How deep in recursive edits and minibuffers the editor is, as recursion-depth. */
     function recursionDepth(): number;
+    /** Selects the frame a ["focus-in", frame] event names, as internal-handle-focus-in. */
+    function internalHandleFocusIn(event: Value[]): void;
+    /** How the terminal is read: [interrupt, flow, meta, quitChar], as current-input-mode. */
+    function currentInputMode(): [boolean, boolean, Value, number];
+    /** Sets how the terminal is read, as set-input-mode; only the quit character changes anything in E8. */
+    function setInputMode(interrupt: boolean, flow: boolean, meta: Value, quit?: number | null): void;
+    /** Starts writing every key typed to a file, closing the one open; no name closes it (open-dribble-file). */
+    function openDribbleFile(name?: string): void;
+    /** Puts an event into the keyboard macro being defined, as store-kbd-macro-event; ignored when none is. */
+    function storeKbdMacroEvent(key: string): void;
+    /** A character with a modifier folded into it, as char-resolve-modifiers: C-a is 1, C-? is 127. */
+    function charResolveModifiers(code: number): number;
     /** Forget keys waiting to be read, as discard-input. */
     function discardInput(): void;
     /**
@@ -17852,6 +17864,27 @@ declare global {
     function mousePixelPosition(): [frame: Frame, x: number | undefined, y: number | undefined];
     /** The keys that ran the command running, its prefix argument's included, as this-command-keys: "C-u C-n". */
     function thisCommandKeys(): string;
+    /** How long the editor has been idle, in seconds, or undefined while a key is being handled, as current-idle-time. */
+    function currentIdleTime(): number | undefined;
+    /** Forgets the keys thisCommandKeys gives, and the keys typed lately too unless keepRecord, as clear-this-command-keys. */
+    function clearThisCommandKeys(keepRecord?: boolean): void;
+    /** Makes thisCommandKeys give these keys, a key sequence's description, as set--this-command-keys. */
+    function setThisCommandKeys(keys: string): void;
+    /**
+     * Reports an error the command loop did not handle, as
+     * command-error-default-function: in the echo area, with the bell, and
+     * what was typed ahead thrown away unless the condition is
+     * "minibuffer-quit".
+     */
+    function commandErrorDefaultFunction(message: string, context?: string, condition?: string | null): void;
+    /** Sets how the terminal reads keys without changing the rest, as set-input-interrupt-mode. */
+    function setInputInterruptMode(interrupt: boolean): void;
+    /** Sets ^S/^Q flow control without changing the rest, as set-output-flow-control. */
+    function setOutputFlowControl(flow: boolean): void;
+    /** Sets how the eighth bit is read without changing the rest, as set-input-meta-mode. */
+    function setInputMetaMode(meta: Value): void;
+    /** Sets the character that quits, 7 for C-g, as set-quit-char. */
+    function setQuitChar(quit: number): void;
     /** The same keys one by one, as this-command-keys-vector. */
     function thisCommandKeysVector(): string[];
     /** How many keys recentKeys keeps, 300 to begin with, setting it to `size` if given, as lossage-size. */

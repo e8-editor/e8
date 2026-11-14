@@ -286,7 +286,7 @@ pub struct Editor {
     /// another, as M-x does, the innermost is the one repeated.
     repeatable_count: u64,
     /// The keys typed so far while defining a keyboard macro.
-    defining_macro: Option<Vec<Key>>,
+    pub(crate) defining_macro: Option<Vec<Key>>,
     /// Where in the macro the key sequence being typed began, so ending the
     /// macro can leave out the keys that ended it.
     macro_sequence_start: usize,
@@ -1572,11 +1572,18 @@ impl Editor {
         if typed {
             self.note_input();
             self.record_lossage_key(key);
+            self.write_to_dribble(key);
         }
+        // While a key is being handled the editor is not idle, as Emacs's
+        // idleness starts only once it waits for the next one.
+        let was_handling = std::mem::replace(&mut self.keyboard.handling_key, true);
         self.dispatch_raw_key(key);
+        self.keyboard.handling_key = was_handling;
+        // The rest of handle_key runs keys too, so it counts as handling one.
         if typed {
             self.count_key_for_auto_save();
         }
+        self.keyboard.handling_key = true;
         self.resume_outer_minibuffer();
         // Keys a command gave back are read next, but not recorded again.
         if !self.keyboard.reading_unread {
@@ -1586,6 +1593,7 @@ impl Editor {
             }
             self.keyboard.reading_unread = false;
         }
+        self.keyboard.handling_key = was_handling;
     }
 
     /// Makes keys the next ones read, after the command running now, as
@@ -2700,7 +2708,7 @@ impl Editor {
     }
 
     /// Shows a command's error, logged as interactive Emacs logs it.
-    fn show_error(&mut self, text: String) {
+    pub(crate) fn show_error(&mut self, text: String) {
         self.log_message(&text, true);
         self.message = Some(text);
     }

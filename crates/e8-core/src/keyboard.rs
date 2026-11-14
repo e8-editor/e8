@@ -13,6 +13,7 @@
 use std::collections::VecDeque;
 
 use crate::editor::{AnswerSlot, Editor};
+use crate::vfs as fs;
 use crate::error::{Error, Result};
 use crate::key::{Key, KeyCode, format_keys};
 use crate::keymap::Lookup;
@@ -97,6 +98,35 @@ pub(crate) struct Keyboard {
     /// answers. It returns false when it has nothing more.
     pub(crate) input_source: Option<crate::editor::InputSource>,
     pub(crate) reading_unread: bool,
+    /// Whether a key is being handled, so the editor is not idle, as
+    /// Emacs's `timer_idleness_start_time` is unset while it reads one.
+    pub(crate) handling_key: bool,
+    /// How the terminal is read, as `current-input-mode` says: interrupts
+    /// rather than CBREAK, `^S`/`^Q` flow control, the eighth bit as meta,
+    /// and the key that quits. E8's front ends read keys themselves, so
+    /// only the quit key changes anything ([ADR 0079]).
+    ///
+    /// [ADR 0079]: ../../../../docs/adr/0079-the-keyboards-odds-and-ends.md
+    pub(crate) input_mode: InputMode,
+    /// The file `open-dribble-file` writes every key typed to.
+    pub(crate) dribble: Option<std::fs::File>,
+}
+
+/// How a terminal reads keys, as `current-input-mode` lists it.
+#[derive(Clone, Debug)]
+pub struct InputMode {
+    pub interrupt: bool,
+    pub flow: bool,
+    /// `true`, `"encoded"`, or nil for ignoring the eighth bit.
+    pub meta: Value,
+    /// The character that quits, `C-g` to begin with.
+    pub quit: u32,
+}
+
+impl Default for InputMode {
+    fn default() -> InputMode {
+        InputMode { interrupt: true, flow: false, meta: Value::Bool(true), quit: 7 }
+    }
 }
 
 impl Default for Keyboard {
@@ -121,6 +151,9 @@ impl Default for Keyboard {
             waits: Vec::new(),
             input_source: None,
             reading_unread: false,
+            handling_key: false,
+            input_mode: InputMode::default(),
+            dribble: None,
         }
     }
 }
@@ -450,5 +483,172 @@ impl Editor {
         }
         self.update_mode_lines();
         self.message("Back to top level");
+    }
+}
+
+impl Editor {
+    /// How long the editor has been idle, in seconds, or `None` while a
+    /// key is being handled, as Emacs's `current-idle-time` is nil while
+    /// it is not idle ([ADR 0079]).
+    ///
+    /// [ADR 0079]: ../../../../docs/adr/0079-the-keyboards-odds-and-ends.md
+    pub fn current_idle_time(&self) -> Option<f64> {
+        (!self.keyboard.handling_key).then(|| self.idle_seconds())
+    }
+
+    /// Forgets the keys `this-command-keys` gives, and, unless
+    /// `keep_record`, the keys typed lately too, as
+    /// `clear-this-command-keys`.
+    pub fn clear_this_command_keys(&mut self, keep_record: bool) {
+        // Emacs clears the command's keys and, without KEEP-RECORD, the
+        // keys typed lately; `this-single-command-raw-keys` it keeps.
+        self.keyboard.this_command_keys.clear();
+        if !keep_record {
+            self.keyboard.lossage.clear();
+        }
+    }
+
+    /// Makes `this-command-keys` give these keys, as
+    /// `set--this-command-keys`; a key sequence's description, as
+    /// `this-command-keys` gives one.
+    pub fn set_this_command_keys(&mut self, keys: &str) -> Result<()> {
+        let keys = Key::parse_seq(keys).ok_or_else(|| Error::new(format!("Not a key sequence: {keys}")))?;
+        self.keyboard.this_command_keys = keys.clone();
+        self.keyboard.this_command_raw_keys = keys;
+        Ok(())
+    }
+
+    /// How the terminal is read, as `current-input-mode`.
+    pub fn current_input_mode(&self) -> InputMode {
+        self.keyboard.input_mode.clone()
+    }
+
+    /// Sets how the terminal is read, as `set-input-mode` and the four
+    /// that set one part each. Only the quit key changes anything.
+    pub fn set_input_mode(&mut self, mode: InputMode) {
+        self.keyboard.input_mode = mode;
+    }
+
+    /// Starts writing every key typed to a file, closing the one open, as
+    /// `open-dribble-file`; no name closes it.
+    pub fn open_dribble_file(&mut self, name: Option<&str>) -> Result<()> {
+        self.keyboard.dribble = None;
+        let Some(name) = name else { return Ok(()) };
+        let path = self.expand_file_name(name);
+        self.check_permission(&format!("write {}", crate::files::abbreviate_path(&path)))?;
+        // The file records every key typed, passwords among them, so it is
+        // made afresh and readable only by its owner, as Emacs makes it.
+        let mut options = fs::File::options();
+        options.write(true).create_new(true);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::OpenOptionsExt;
+            options.mode(0o600);
+        }
+        if fs::symlink_metadata(&path).is_ok() {
+            let _ = fs::remove_file(&path);
+        }
+        let file = options.open(&path).map_err(|e| crate::fileops::file_error("Opening output file", &e, &[&path]))?;
+        self.keyboard.dribble = Some(file);
+        Ok(())
+    }
+
+    /// Writes a key to the dribble file, if one is open. A file that
+    /// cannot be written is closed, as Emacs stops dribbling on an error.
+    pub(crate) fn write_to_dribble(&mut self, key: Key) {
+        use std::io::Write;
+        let Some(file) = self.keyboard.dribble.as_mut() else { return };
+        // A plain character as itself, anything else as `<description>`,
+        // as keyboard.c writes a character's byte and a symbol's name.
+        let described = format_keys(std::slice::from_ref(&key));
+        let text = match key.printable() {
+            Some(c) if described == c.to_string() => described,
+            _ => format!("<{described}>"),
+        };
+        if write!(file, "{text}").and_then(|()| file.flush()).is_err() {
+            self.keyboard.dribble = None;
+        }
+    }
+
+    /// Puts an event into the keyboard macro being defined, as
+    /// `store-kbd-macro-event`; it is ignored when none is.
+    pub fn store_kbd_macro_event(&mut self, key: &str) -> Result<()> {
+        let key = Key::parse(key).ok_or_else(|| Error::new(format!("Not a key: {key}")))?;
+        if let Some(keys) = &mut self.defining_macro {
+            keys.push(key);
+        }
+        Ok(())
+    }
+}
+
+/// A character with a modifier folded into it, as `char-resolve-modifiers`:
+/// Shift upper-cases a letter and is dropped on a control character or
+/// space; Control makes `C-a` 1, `C-?` 127 and `C-SPC` 0. A character
+/// that is no ASCII one takes no modifier into itself, as character.c's
+/// `char_resolve_modifier_mask` leaves it.
+pub fn char_resolve_modifiers(code: u32) -> u32 {
+    const CTRL: u32 = 1 << 26;
+    const SHIFT: u32 = 1 << 25;
+    let mut code = code;
+    // A character that is no ASCII one keeps its modifiers.
+    if code & !MODIFIER_MASK > 0x7F {
+        return code;
+    }
+    let low = |c: u32| c & 0o377;
+    if code & SHIFT != 0 {
+        // Shift means something only on a letter; on a control character
+        // or space it is dropped, and elsewhere it stays.
+        if (0x41..=0x5A).contains(&low(code)) {
+            code &= !SHIFT;
+        } else if (0x61..=0x7A).contains(&low(code)) {
+            code = (code & !SHIFT) - 0x20;
+        } else if code & !MODIFIER_MASK <= 0x20 {
+            code &= !SHIFT;
+        }
+    }
+    if code & CTRL != 0 {
+        if low(code) == 0x20 {
+            code &= !0o177 & !CTRL;
+        } else if low(code) == 0x3F {
+            code = 0o177 | (code & !0o177 & !CTRL);
+        } else if (0o101..=0o132).contains(&(code & 0o137)) || (0o100..=0o137).contains(&(code & 0o177)) {
+            code &= 0o37 | (!0o177 & !CTRL);
+        }
+    }
+    code
+}
+
+/// The bits above a character's own code that hold its modifiers, as
+/// Emacs's `CHAR_MODIFIER_MASK`: alt, super, hyper, shift, control, meta.
+const MODIFIER_MASK: u32 = (1 << 22) | (1 << 23) | (1 << 24) | (1 << 25) | (1 << 26) | (1 << 27);
+
+impl Editor {
+    /// Reports an error the command loop did not handle: its message in
+    /// the echo area with `context` before it, and the bell, as Emacs's
+    /// `command-error-default-function` does. `--batch` writes it to
+    /// standard error instead, as Emacs's does with no frame up.
+    pub fn command_error_default_function(&mut self, message: &str, context: &str, condition: Option<&str>) -> Result<()> {
+        // Leaving a minibuffer only rings; any other error throws away
+        // what was typed ahead first, as keyboard.c does.
+        if condition == Some("minibuffer-quit") {
+            self.message(format!("{context}{message}"));
+            return self.ding();
+        }
+        self.discard_input();
+        self.show_error(format!("{context}{message}"));
+        self.ding()
+    }
+
+    /// Selects the frame a focus-in event names, as
+    /// `internal-handle-focus-in` does; anything else is an error.
+    pub fn internal_handle_focus_in(&mut self, event: &[Value]) -> Result<()> {
+        let kind = event.first().and_then(Value::as_str);
+        let frame = match (kind, event.get(1)) {
+            (Some("focus-in"), Some(Value::Frame(id))) => *id,
+            _ => return Err(Error::new("invalid focus-in event")),
+        };
+        // Emacs leaves a frame that is already selected alone, and makes
+        // a switch-frame event for any other; E8 selects it here.
+        if self.selected_frame() == frame { Ok(()) } else { self.select_frame(frame) }
     }
 }
