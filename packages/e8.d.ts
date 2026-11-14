@@ -297,6 +297,12 @@ declare global {
        */
       "abbrev-mode": [];
       /**
+       * Quit the current minibuffer, and what it was read for.
+       *
+       * In a minibuffer with others opened inside it, ask first, then quit them all.
+       */
+      "abort-minibuffers": [];
+      /**
        * Quit the innermost recursive edit or minibuffer, and what entered it.
        */
       "abort-recursive-edit": [];
@@ -8664,6 +8670,12 @@ declare global {
        */
       "custom-safe-themes": Value;
       /**
+       * Variable names read-variable was answered with, newest first.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "custom-variable-history": Value;
+      /**
        * What M-SPC does each time in a row: just-one-space, delete-all-space, delete-space-after, delete-space-before or restore.
        *
        * Defined in packages/simple.ts.
@@ -16472,6 +16484,13 @@ declare global {
     function minibufferSelectedWindow(): Window | undefined;
     /** How many minibuffers are open, one inside another, as minibuffer-depth. */
     function minibufferDepth(): number;
+    /** Whether a buffer, the current one by default, is the innermost open minibuffer, as innermost-minibuffer-p. */
+    function innermostMinibufferP(buffer?: string): boolean;
+    /**
+     * Whether a buffer, the current one by default, is an open minibuffer
+     * no recursive edit was entered inside, as minibuffer-innermost-command-loop-p.
+     */
+    function minibufferInnermostCommandLoopP(buffer?: string): boolean;
     /**
      * What waits for the user's input now, a prompt or a command reading a
      * key, as a number no other has had, or undefined when nothing waits.

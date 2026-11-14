@@ -315,6 +315,19 @@ natives! {
         Ok(ed.minibuffer_depth())
     }
 
+    /// Whether a buffer, the current one by default, is the innermost open minibuffer, as innermost-minibuffer-p.
+    #[ts = "(buffer?: string): boolean"]
+    pub fn innermostMinibufferP(ed, buffer: Opt<String>) -> bool {
+        Ok(minibuffer_id(ed, buffer.0).is_some_and(|id| ed.innermost_minibuffer_p(id)))
+    }
+
+    /// Whether a buffer, the current one by default, is an open minibuffer
+    /// no recursive edit was entered inside, as minibuffer-innermost-command-loop-p.
+    #[ts = "(buffer?: string): boolean"]
+    pub fn minibufferInnermostCommandLoopP(ed, buffer: Opt<String>) -> bool {
+        Ok(minibuffer_id(ed, buffer.0).is_some_and(|id| ed.minibuffer_innermost_command_loop_p(id)))
+    }
+
     /// What waits for the user's input now, a prompt or a command reading a
     /// key, as a number no other has had, or undefined when nothing waits.
     /// Code that asks the user from a timer, as agent-shell asks for an
@@ -1803,4 +1816,13 @@ fn position_value(frame: e8_core::FrameId, at: Option<(i64, i64)>) -> EditorValu
         None => (EditorValue::Null, EditorValue::Null),
     };
     EditorValue::List(vec![EditorValue::Frame(frame), x, y])
+}
+
+/// The id of a buffer named, or the current buffer's, for the minibuffer
+/// predicates, which say no of a buffer that does not exist.
+fn minibuffer_id(ed: &e8_core::Editor, buffer: Option<String>) -> Option<u64> {
+    match buffer {
+        Some(name) => ed.buffers().iter().find(|b| b.name == name).map(|b| b.id()),
+        None => Some(ed.buffer().id()),
+    }
 }

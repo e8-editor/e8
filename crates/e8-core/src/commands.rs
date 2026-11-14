@@ -114,6 +114,12 @@ fn recursive_editing(ed: &mut Editor) {
     def(ed, "abort-recursive-edit", "Quit the innermost recursive edit or minibuffer, and what entered it.", |ed, _| {
         ed.abort_recursive_edit()
     });
+    def(
+        ed,
+        "abort-minibuffers",
+        "Quit the current minibuffer, and what it was read for.\n\nIn a minibuffer with others opened inside it, ask first, then quit them all.",
+        |ed, _| ed.abort_minibuffers(),
+    );
     def(ed, "top-level", "Leave every recursive edit and minibuffer, back to the top level.", |ed, _| {
         ed.top_level();
         Ok(())
@@ -1798,7 +1804,7 @@ fn bind_defaults(ed: &mut Editor) {
         ("RET", "exit-minibuffer"),
         ("C-j", "exit-minibuffer"),
         ("TAB", "minibuffer-complete"),
-        ("C-g", "keyboard-quit"),
+        ("C-g", "abort-minibuffers"),
         ("M-p", "previous-history-element"),
         ("M-n", "next-history-element"),
         ("<up>", "previous-history-element"),
