@@ -129,7 +129,9 @@ fn glyphs_families_and_opened_fonts() {
     entity.put(":family", Value::Str("Sans".into())).unwrap();
     let font = ed.open_font_entity(&entity, Some(24.0)).expect("opened");
     assert_eq!((font.kind, font.get(":family"), font.get(":size")), (FontKind::Object, sym("Sans"), Value::Number(24.0)));
-    // Its face attributes, as font-face-attributes: 24 pixels at 72 dots an inch.
+    // Size 0 is 120 pixels, as font.c has it.
+    assert_eq!(ed.open_font_entity(&entity, Some(0.0)).unwrap().get(":size"), Value::Number(120.0));
+    // Its face attributes, as font-face-attributes: 24 pixels, a point a pixel as on Emacs's Mac frames.
     assert_eq!(font.face_attributes()[..4], [sym(":family"), Value::Str("Sans".into()), sym(":height"), Value::Number(240.0)]);
     let glyphs = ed.font_get_glyphs(&font, &['a', '\u{e000}']);
     let n = Value::Number;

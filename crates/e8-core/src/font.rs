@@ -13,7 +13,7 @@ use crate::variables::Value;
 
 /// Emacs's `font-weight-table`, `font-slant-table` and `font-width-table`:
 /// each style's numeric value and its names.
-const WEIGHTS: &[(u32, &[&str])] = &[
+pub(crate) const WEIGHTS: &[(u32, &[&str])] = &[
     (0, &["thin"]),
     (40, &["ultra-light", "ultralight", "extra-light", "extralight"]),
     (50, &["light"]),
@@ -26,14 +26,14 @@ const WEIGHTS: &[(u32, &[&str])] = &[
     (210, &["black", "heavy"]),
     (250, &["ultra-heavy", "ultraheavy"]),
 ];
-const SLANTS: &[(u32, &[&str])] = &[
+pub(crate) const SLANTS: &[(u32, &[&str])] = &[
     (0, &["reverse-oblique", "ro"]),
     (10, &["reverse-italic", "ri"]),
     (100, &["normal", "r", "unspecified"]),
     (200, &["italic", "i", "ot"]),
     (210, &["oblique", "o"]),
 ];
-const WIDTHS: &[(u32, &[&str])] = &[
+pub(crate) const WIDTHS: &[(u32, &[&str])] = &[
     (50, &["ultra-condensed", "ultracondensed"]),
     (63, &["extra-condensed", "extracondensed"]),
     (75, &["condensed", "compressed", "narrow"]),
@@ -44,6 +44,11 @@ const WIDTHS: &[(u32, &[&str])] = &[
     (150, &["extra-expanded", "extraexpanded"]),
     (200, &["ultra-expanded", "ultraexpanded", "wide"]),
 ];
+
+/// Points to an inch, as font.h counts them, and the dots to an inch of
+/// E8's frames: those of Emacs's frames on macOS, where a point is a pixel.
+const PT_PER_INCH: f64 = 72.27;
+const FRAME_RES: f64 = 72.27;
 
 /// Spacings, as font.h numbers them.
 const PROPORTIONAL: f64 = 0.0;
@@ -385,8 +390,8 @@ impl Font {
         }
         match self.size {
             Some(FontSize::Pixels(n)) => {
-                let dpi = self.dpi.unwrap_or(72.0);
-                out.extend([Value::Symbol(":height".into()), Value::Number((n * 10.0 * 72.0 / dpi).trunc())]);
+                let dpi = self.dpi.unwrap_or(FRAME_RES);
+                out.extend([Value::Symbol(":height".into()), Value::Number((n * 10.0 * PT_PER_INCH / dpi + 0.5).trunc())]);
             }
             Some(FontSize::Points(n)) => out.extend([Value::Symbol(":height".into()), Value::Number(10.0 * n.trunc())]),
             None => {}
@@ -408,7 +413,7 @@ fn style_for_face(table: &[(u32, &[&'static str])], name: &str) -> Option<&'stat
     table.iter().find(|(v, _)| *v == n).map(|(_, names)| names[0])
 }
 
-fn style_value(table: &[(u32, &[&str])], name: &str) -> Option<u32> {
+pub(crate) fn style_value(table: &[(u32, &[&str])], name: &str) -> Option<u32> {
     table.iter().find(|(_, names)| names.contains(&name)).map(|(n, _)| *n)
 }
 
@@ -653,19 +658,8 @@ impl Editor {
     /// size, maximum width, ascent, descent, space width and average
     /// width. E8's front ends keep no file name.
     pub fn query_font(&self, font: &Font) -> Option<Vec<Value>> {
-        let family = font.family.clone()?;
-        let default = self.metrics.font_metrics(&FontSpec::default_font())?.size;
-        let size = match font.size {
-            Some(FontSize::Pixels(n) | FontSize::Points(n)) if default > 0.0 => n as f32 / default,
-            _ => 1.0,
-        };
-        let spec = FontSpec {
-            family: (!crate::faces::is_fixed_family(&family)).then_some(family),
-            scale: size,
-            bold: font.weight.as_deref().and_then(|w| style_value(WEIGHTS, w)).is_some_and(|w| w >= 180),
-            italic: font.slant.as_deref().and_then(|s| style_value(SLANTS, s)).is_some_and(|s| s >= 200),
-        };
-        let (open, m) = self.open_font(&spec)?;
+        font.family.as_ref()?;
+        let (open, m) = self.open_font(&self.spec_of(font))?;
         let n = |v: f32| Value::Number(f64::from(v.round()));
         Some(vec![
             open.name.map_or(Value::Null, Value::Str),
@@ -726,12 +720,20 @@ impl Editor {
     }
 
     /// Opens a font entity at a size, as `open-font`: an integer size in
-    /// pixels, a float in points, 0 for 12 points, none for the entity's own;
+    /// pixels, a float in points, 0 for 120 pixels, none for the entity's own;
     /// none on a terminal.
     pub fn open_font_entity(&self, entity: &Font, size: Option<f64>) -> Option<Font> {
         let mut want = entity.clone();
         if let Some(size) = size {
-            want.size = Some(if size == 0.0 { FontSize::Pixels(12.0) } else { FontSize::Pixels(size.round()) });
+            // An integer is pixels, a float points (POINT_TO_PIXEL), and 0 is 120 pixels, as font.c has it.
+            let pixels = if size == 0.0 {
+                120.0
+            } else if size.fract() == 0.0 {
+                size
+            } else {
+                (size * FRAME_RES / PT_PER_INCH + 0.5).trunc()
+            };
+            want.size = Some(FontSize::Pixels(pixels));
         }
         let (mut font, _) = self.open_font(&self.spec_of(&want))?;
         if let Some(family) = &entity.family

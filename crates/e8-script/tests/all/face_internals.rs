@@ -231,6 +231,8 @@ fn fonts_without_a_window_system_and_fontsets() {
     );
     assert_eq!(p(r#"e8.fontFaceAttributes(e8.fontSpec(":size", 14, ":weight", Symbol.for("book")))"#), "[:height 140 :weight regular]");
     assert_eq!(p(r#"e8.fontFaceAttributes("-*-Courier-normal-normal-normal-*-14-*-*-*-m-0-iso10646-1")"#), r#"[:family "Courier" :height 140 :weight regular :slant normal :width normal]"#);
+    // A font's own dpi, as PIXEL_TO_POINT counts 72.27 points an inch.
+    assert_eq!(p(r#"e8.fontFaceAttributes(e8.fontSpec(":size", 14, ":dpi", 72))"#), "[:height 141]");
     assert_eq!(p("e8.fontFaceAttributes(3)"), "(ERR error Invalid font object: 3)");
     // Fontsets, as fontset.c keeps them.
     assert_eq!(p("e8.fontsetList()"), r#"["-*-*-*-*-*-*-*-*-*-*-*-*-fontset-default"]"#);

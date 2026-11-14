@@ -95,7 +95,7 @@ fn plist_pairs(items: &[Value]) -> impl Iterator<Item = (&Value, Option<&Value>)
     items.chunks(2).map(|pair| (&pair[0], pair.get(1)))
 }
 
-fn is_nil(value: &Value) -> bool {
+pub(crate) fn is_nil(value: &Value) -> bool {
     matches!(value, Value::Null | Value::Bool(false)) || matches!(value, Value::Symbol(s) if s == "nil")
 }
 
@@ -103,24 +103,16 @@ fn is_t(value: &Value) -> bool {
     matches!(value, Value::Bool(true)) || matches!(value, Value::Symbol(s) if s == "t")
 }
 
-/// The style tables' names, as font.c's `FONT_*_NAME_NUMERIC` find them.
+/// Whether a style's name is in font.c's tables, as its
+/// `FONT_*_NAME_NUMERIC` finds one.
 fn style_known(attribute: &str, name: &str) -> bool {
-    const WEIGHTS: &[&str] = &[
-        "thin", "ultra-light", "ultralight", "extra-light", "extralight", "light", "semi-light", "semilight", "demilight", "regular", "normal",
-        "unspecified", "book", "medium", "semi-bold", "semibold", "demibold", "demi-bold", "demi", "bold", "extra-bold", "extrabold",
-        "ultra-bold", "ultrabold", "black", "heavy", "ultra-heavy", "ultraheavy",
-    ];
-    const SLANTS: &[&str] = &["reverse-oblique", "ro", "reverse-italic", "ri", "normal", "r", "unspecified", "italic", "i", "ot", "oblique", "o"];
-    const WIDTHS: &[&str] = &[
-        "ultra-condensed", "ultracondensed", "extra-condensed", "extracondensed", "condensed", "compressed", "narrow", "semi-condensed",
-        "semicondensed", "demicondensed", "normal", "medium", "regular", "unspecified", "semi-expanded", "semiexpanded", "demiexpanded",
-        "expanded", "extra-expanded", "extraexpanded", "ultra-expanded", "ultraexpanded", "wide",
-    ];
-    match attribute {
-        ":weight" => WEIGHTS.contains(&name),
-        ":slant" => SLANTS.contains(&name),
-        _ => WIDTHS.contains(&name),
-    }
+    use crate::font::{SLANTS, WEIGHTS, WIDTHS, style_value};
+    let table = match attribute {
+        ":weight" => WEIGHTS,
+        ":slant" => SLANTS,
+        _ => WIDTHS,
+    };
+    style_value(table, name).is_some()
 }
 
 /// A face height laid over 10, as xfaces.c tests a height it is given.
@@ -479,7 +471,6 @@ impl Editor {
                     None => return Err(invalid("Invalid fontset name", v)),
                 }
             }
-            (":stipple", v) if is_nil(v) => unspecified(),
             (":inherit", v) if is_nil(v) => Value::List(Vec::new()),
             _ => value,
         };
@@ -531,16 +522,12 @@ impl Editor {
     pub fn face_attributes_as_vector(&self, reference: &Value) -> Value {
         let dark = self.dark_background();
         let mut merged_face = false;
-        let attrs = self.merge_face_ref(reference, dark, &mut merged_face, 0);
-        let mut attrs = attrs;
+        let mut attrs = self.merge_face_ref(reference, dark, &mut merged_face, 0);
         if merged_face {
             attrs.inherit = Some(Vec::new());
         }
         let mut items = vec![unspecified()];
-        items.extend(FACE_ATTRIBUTES.iter().map(|key| match (*key, &attrs.inherit) {
-            (":inherit", Some(list)) if list.is_empty() => Value::Null,
-            _ => lisp_attribute(&attrs, key),
-        }));
+        items.extend(FACE_ATTRIBUTES.iter().map(|key| lisp_attribute(&attrs, key)));
         Value::List(items)
     }
 

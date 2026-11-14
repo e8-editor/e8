@@ -530,6 +530,7 @@ impl FaceAttrs {
             ":fontset" => text(&self.fontset),
             ":inherit" => match &self.inherit {
                 None => unspecified(),
+                Some(list) if list.is_empty() => Value::Null,
                 Some(list) if list.len() == 1 => Value::Str(list[0].clone()),
                 Some(list) => Value::List(list.iter().map(|s| Value::Str(s.clone())).collect()),
             },

@@ -10,6 +10,7 @@ use crate::editor::Editor;
 use crate::error::{Error, Result};
 use crate::font::{Font, FontKind};
 use crate::variables::Value;
+use crate::xfaces::is_nil;
 
 /// The default fontset's name, as Emacs names it.
 pub const DEFAULT_FONTSET: &str = "-*-*-*-*-*-*-*-*-*-*-*-*-fontset-default";
@@ -43,10 +44,6 @@ impl Default for Fontsets {
 
 fn error(message: impl Into<String>) -> Error {
     Error::new(message)
-}
-
-fn is_nil(value: &Value) -> bool {
-    matches!(value, Value::Null | Value::Bool(false))
 }
 
 fn char_of(value: &Value) -> Result<u32> {
@@ -225,7 +222,7 @@ impl Editor {
             _ => Vec::new(),
         };
         let name_value = Value::Str(self.fontsets.0[index].name.clone());
-        for entry in entries.iter().rev() {
+        for entry in &entries {
             let Value::List(pair) = entry else { continue };
             let (Some(target), Some(font)) = (pair.first(), pair.get(1)) else { continue };
             // ASCII is the fontset's own font, for characters below U+0080.
