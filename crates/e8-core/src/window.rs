@@ -2211,6 +2211,26 @@ impl Editor {
         Some(((r.width - across).max(0.0), (r.height - above - below).max(0.0)))
     }
 
+    /// Makes a window its frame's selected one, as `set-frame-selected-window`:
+    /// on the selected frame, the selected window, else the one the frame
+    /// selects when it is selected.
+    pub fn set_frame_selected_window(&mut self, frame: FrameId, window: WindowId, norecord: bool) -> Result<()> {
+        if self.window_frame(window) != Some(frame) {
+            return Err(Error::new("In `set-frame-selected-window', WINDOW is not on FRAME"));
+        }
+        if frame == self.selected_frame {
+            if norecord { self.select_window_norecord(window) } else { self.select_window(window) }
+        } else {
+            match self.other_frames.iter_mut().find(|f| f.id == frame) {
+                Some(f) => {
+                    f.selected_window = window;
+                    Ok(())
+                }
+                None => Err(Error::new("No such frame")),
+            }
+        }
+    }
+
     /// A frame's selected window.
     pub fn frame_selected_window(&self, frame: FrameId) -> Option<WindowId> {
         if frame == self.selected_frame {

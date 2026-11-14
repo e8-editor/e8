@@ -17,6 +17,7 @@ mod bookmark;
 mod buff_menu;
 mod buffer_text_odds;
 mod buffer_primitives;
+mod c_core_names;
 mod changes;
 mod chartab;
 mod codings;

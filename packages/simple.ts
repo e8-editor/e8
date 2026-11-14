@@ -1670,3 +1670,19 @@ function processKillBufferQueryFunction(): boolean {
 
 e8.defun("process-kill-buffer-query-function", processKillBufferQueryFunction);
 e8.addHook("kill-buffer-query-functions", processKillBufferQueryFunction);
+
+// cmds.c's and window.c's commands by Emacs's own names (ADR 0090).
+for (const [name, doc, run] of [
+  ["beginning-of-line", "Move point to the beginning of the line; with N, of the line N - 1 lines on, as beginning-of-line.", (n: number) => {
+    if (n !== 1) forwardLine(n - 1);
+    e8.gotoChar(e8.lineBeginningPosition());
+  }],
+  ["end-of-line", "Move point to the end of the line; with N, of the line N - 1 lines on, as end-of-line.", (n: number) => {
+    if (n !== 1) forwardLine(n - 1);
+    e8.gotoChar(e8.lineEndPosition());
+  }],
+  ["scroll-up", "Scroll the text up N lines, or nearly a screen without a prefix argument, as scroll-up.", (n: e8.Value) => (e8.call as any)("scroll-up-command", n)],
+  ["scroll-down", "Scroll the text down N lines, or nearly a screen without a prefix argument, as scroll-down.", (n: e8.Value) => (e8.call as any)("scroll-down-command", n)],
+] as [string, string, (n: any) => void][]) {
+  e8.defineCommand({ name, doc, params: [{ name: "n", kind: name.startsWith("scroll") ? "prefix" : "count" }], run });
+}
