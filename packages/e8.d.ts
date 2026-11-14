@@ -7918,6 +7918,143 @@ declare global {
        */
       "xref-show-location-at-point": [];
       /**
+       * Make the web view the size of the window.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-adjust-size-to-window": [];
+      /**
+       * Go back in the web view's history.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-back": [];
+      /**
+       * Browse URL in a web view, a new session with NEW-SESSION; a URL with no scheme is taken as https.
+       *
+       * @param url text
+       * @param new-session raw prefix argument
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-browse-url": [url: string, newSession?: PrefixArg | boolean];
+      /**
+       * Put the page's selection on the kill ring.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-copy-selection-as-kill": [];
+      /**
+       * Show the page's URL and put it on the kill ring.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-current-url": [];
+      /**
+       * Go forward in the web view's history.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-forward": [];
+      /**
+       * A web page in a buffer, shown by a WebKit xwidget: g browses a URL, b and f go back and forward, r reloads, + and - zoom, w copies the URL and SPC and DEL scroll.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-mode": [];
+      /**
+       * Load the page again.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-reload": [];
+      /**
+       * Scroll the page left by N characters.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-backward": [n?: number];
+      /**
+       * Scroll to the bottom of the page.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-bottom": [];
+      /**
+       * Scroll the page down by N pixels, the window's height without a prefix argument.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-down": [n?: PrefixArg | boolean];
+      /**
+       * Scroll the page down by N lines.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-down-line": [n?: number];
+      /**
+       * Scroll the page right by N characters.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-forward": [n?: number];
+      /**
+       * Scroll to the top of the page.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-top": [];
+      /**
+       * Scroll the page up by N pixels, the window's height without a prefix argument.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-up": [n?: PrefixArg | boolean];
+      /**
+       * Scroll the page up by N lines.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-scroll-up-line": [n?: number];
+      /**
+       * Search the page for text, as xwidget-webkit-search does with the web view's own search.
+       *
+       * @param query text
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-search": [query: string];
+      /**
+       * Stop loading the page.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-stop": [];
+      /**
+       * Zoom the page in.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-zoom-in": [];
+      /**
+       * Zoom the page out.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-zoom-out": [];
+      /**
        * Insert the most recent kill, leaving the mark at its start.
        *
        * With a numeric prefix argument N, insert the Nth most recent kill. With plain C-u, leave point at the start and the mark at the end.
@@ -13181,6 +13318,28 @@ declare global {
        */
       "xref-show-xrefs-function": Value;
       /**
+       * How xwidget-webkit buffers are named: %T is the page's title, %U its URI.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-buffer-name-format": Value;
+      /**
+       * The file xwidget-webkit-browse-url keeps cookies in, or nil to keep none.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-cookie-file": Value;
+      /**
+       * Where xwidget-webkit saves what it downloads.
+       *
+       * Defined in packages/xwidget.ts.
+       */
+      "xwidget-webkit-download-dir": Value;
+      /**
+       * Keymap xwidget-webkit-mode-map.
+       */
+      "xwidget-webkit-mode-map": Value;
+      /**
        * The text properties yanking leaves out of what it inserts, or t for all of them, as Emacs's insert-for-yank removes them.
        */
       "yank-excluded-properties": Value;
@@ -15408,6 +15567,10 @@ declare global {
        * Functions that give the name of the xref backend for the current buffer, tried in turn, as defineXrefBackend names them.
        */
       "xref-backend-functions": Value;
+      /**
+       * Run after entering xwidget-webkit mode, after the hooks of the modes it is built on.
+       */
+      "xwidget-webkit-mode-hook": Value;
     }
 
     /**
@@ -17683,6 +17846,78 @@ declare global {
     function sqliteMoreP(set: Sqlite): boolean;
     /** Finish a set, freeing its statement, as sqlite-finalize. */
     function sqliteFinalize(set: Sqlite): boolean;
+    /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
+    function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
+    /** Whether an object is an xwidget, as xwidgetp. */
+    function xwidgetp(object: unknown): object is Xwidget;
+    /** Whether an object is an xwidget not yet killed, as xwidget-live-p. */
+    function xwidgetLiveP(object: unknown): boolean;
+    /** Whether an object is an xwidget's view in a window, as xwidget-view-p. */
+    function xwidgetViewP(object: unknown): object is XwidgetView;
+    /** The live xwidgets in a buffer, as get-buffer-xwidgets. */
+    function getBufferXwidgets(buffer: Buffer | string): Xwidget[];
+    /** The URI a web view shows, as xwidget-webkit-uri. */
+    function xwidgetWebkitUri(xwidget: Xwidget): string;
+    /** The title of the page a web view shows, as xwidget-webkit-title. */
+    function xwidgetWebkitTitle(xwidget: Xwidget): string;
+    /** How far a page has loaded, from 0 to 1, as xwidget-webkit-estimated-load-progress. */
+    function xwidgetWebkitEstimatedLoadProgress(xwidget: Xwidget): number;
+    /** Load a URI in a web view, as xwidget-webkit-goto-uri. */
+    function xwidgetWebkitGotoUri(xwidget: Xwidget, uri: string): undefined;
+    /** Show HTML in a web view, as xwidget-webkit-load-html. */
+    function xwidgetWebkitLoadHtml(xwidget: Xwidget, text: string, baseUri?: string | null): undefined;
+    /** Go back (-1), forward (1) or reload (0) in a web view's history, as xwidget-webkit-goto-history. */
+    function xwidgetWebkitGotoHistory(xwidget: Xwidget, relPos: number): undefined;
+    /** Change a page's zoom by an amount added to its zoom level, as xwidget-webkit-zoom. */
+    function xwidgetWebkitZoom(xwidget: Xwidget, factor: number): undefined;
+    /** Run JavaScript in a page, as xwidget-webkit-execute-script; its result comes to `fun`, if given, through a javascript-callback xwidget event. */
+    function xwidgetWebkitExecuteScript(xwidget: Xwidget, script: string, fun?: ((result: Value) => void) | string | null): undefined;
+    /** Resize an xwidget, as xwidget-resize. */
+    function xwidgetResize(xwidget: Xwidget, newWidth: number, newHeight: number): undefined;
+    /** The size an xwidget asks for, as xwidget-size-request: [width, height]. */
+    function xwidgetSizeRequest(xwidget: Xwidget): [number, number];
+    /** An xwidget's type, title, width and height, as xwidget-info. */
+    function xwidgetInfo(xwidget: Xwidget): [symbol, Value, number, number];
+    /** Where a view is in its window, as xwidget-view-info: x, y, width, height, and how much is clipped off right, bottom, top and left. */
+    function xwidgetViewInfo(view: XwidgetView): number[];
+    /** A view's xwidget, as xwidget-view-model. */
+    function xwidgetViewModel(view: XwidgetView): Xwidget;
+    /** A view's window, as xwidget-view-window. */
+    function xwidgetViewWindow(view: XwidgetView): Window;
+    /** Take a view off the screen, as delete-xwidget-view. */
+    function deleteXwidgetView(view: XwidgetView): undefined;
+    /** An xwidget's view in a window, the selected one by default, as xwidget-view-lookup. */
+    function xwidgetViewLookup(xwidget: Xwidget, window?: Window | null): XwidgetView | undefined;
+    /** An xwidget's property list, as xwidget-plist. */
+    function xwidgetPlist(xwidget: Xwidget): Value[];
+    /** Set an xwidget's property list, as set-xwidget-plist. */
+    function setXwidgetPlist(xwidget: Xwidget, plist: Value[] | null): Value[];
+    /** An xwidget's buffer, as xwidget-buffer. */
+    function xwidgetBuffer(xwidget: Xwidget): Buffer;
+    /** Move an xwidget to another buffer, as set-xwidget-buffer. */
+    function setXwidgetBuffer(xwidget: Xwidget, buffer: Buffer | string): undefined;
+    /** Whether exiting asks about an xwidget, as xwidget-query-on-exit-flag. */
+    function xwidgetQueryOnExitFlag(xwidget: Xwidget): boolean;
+    /** Set whether exiting asks about an xwidget, as set-xwidget-query-on-exit-flag; gives the flag. */
+    function setXwidgetQueryOnExitFlag(xwidget: Xwidget, flag: Value): Value;
+    /** Search a page for text, as xwidget-webkit-search. */
+    function xwidgetWebkitSearch(query: string, xwidget: Xwidget, caseInsensitive?: boolean, backwards?: boolean, wrapAround?: boolean): undefined;
+    /** Go to the next match of a search, as xwidget-webkit-next-result. */
+    function xwidgetWebkitNextResult(xwidget: Xwidget): undefined;
+    /** Go to the previous match of a search, as xwidget-webkit-previous-result. */
+    function xwidgetWebkitPreviousResult(xwidget: Xwidget): undefined;
+    /** End a search, as xwidget-webkit-finish-search. */
+    function xwidgetWebkitFinishSearch(xwidget: Xwidget): undefined;
+    /** Stop loading a page, as xwidget-webkit-stop-loading. */
+    function xwidgetWebkitStopLoading(xwidget: Xwidget): undefined;
+    /** Keep a web view's cookies in a file, as xwidget-webkit-set-cookie-storage-file. */
+    function xwidgetWebkitSetCookieStorageFile(xwidget: Xwidget, file: string): undefined;
+    /** A web view's history around the page shown, as xwidget-webkit-back-forward-list: the current item, those back and those forward, each [index, title, uri]. */
+    function xwidgetWebkitBackForwardList(xwidget: Xwidget, limit?: number | null): Value[];
+    /** Kill an xwidget, as kill-xwidget. */
+    function killXwidget(xwidget: Xwidget): undefined;
+    /** Send an input event to an xwidget, as xwidget-perform-lispy-event: E8's web views take input natively, so this only checks the xwidget. */
+    function xwidgetPerformLispyEvent(xwidget: Xwidget, event: Value, frame?: Frame | null): undefined;
 
     type CommandName = keyof Commands;
 
@@ -17917,7 +18152,7 @@ declare global {
      * What variables, hooks and text properties hold, as Emacs's values: a
      * function too, as a lambda in a variable, kept as itself.
      */
-    type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | Process | PropertizedString | Keymap | CharTable | Marker | Font;
+    type Value = null | boolean | number | string | symbol | Value[] | ((...args: any[]) => any) | Buffer | Window | Frame | Process | PropertizedString | Keymap | CharTable | Marker | Font | Xwidget | XwidgetView | Sqlite;
     /**
      * A keymap, as Emacs's keymaps are values: bound to a prefix key in
      * another keymap it is that key's prefix map, shared wherever it is
@@ -18762,6 +18997,16 @@ declare global {
     /** A node's property, as treesit-node-check: "named", "missing", "extra", "has-error", "has-changes", "live" or "outdated". */
     function treesitNodeCheck(node: TreesitNode, property: string): boolean;
     function treesitNodeEq(a: TreesitNode | undefined | null, b: TreesitNode | undefined | null): boolean;
+    /** An xwidget, a web view shown in a buffer, as Emacs's xwidget objects: the same object each time. */
+    class Xwidget {
+      private constructor();
+      readonly __e8XwidgetId: number;
+    }
+    /** Where a window shows an xwidget, as Emacs's xwidget-view objects. */
+    class XwidgetView {
+      private constructor();
+      readonly __e8XwidgetViewId: number;
+    }
     /** An SQLite database or set, as Emacs's sqlite objects: the same object each time. */
     class Sqlite {
       private constructor();

@@ -149,6 +149,15 @@ pub(crate) fn value_to_js<S: Scope>(s: &mut S, value: &EditorValue) -> Result<S:
             let id = s.number(*id as f64);
             s.call_global("__e8Terminal", vec![id])?
         }
+        EditorValue::Xwidget(object) => {
+            let (kind, id) = match object {
+                e8_core::xwidget::XwObject::Widget(id) => ("xwidget", *id),
+                e8_core::xwidget::XwObject::View(id) => ("view", *id),
+            };
+            let kind = s.string(kind)?;
+            let id = s.number(id as f64);
+            s.call_global("__e8Xwidget", vec![kind, id])?
+        }
         EditorValue::Sqlite(id) => {
             let id = s.number(*id as f64);
             s.call_global("__e8Sqlite", vec![id])?
@@ -248,6 +257,12 @@ pub(crate) fn convert_from_js<S: Scope>(s: &mut S, value: S::Value) -> Result<Op
     }
     if let Some(id) = number_property(s, &object, "__e8TerminalId")? {
         return Ok(Some(EditorValue::Terminal(id as u64)));
+    }
+    if let Some(id) = number_property(s, &object, "__e8XwidgetId")? {
+        return Ok(Some(EditorValue::Xwidget(e8_core::xwidget::XwObject::Widget(id as u64))));
+    }
+    if let Some(id) = number_property(s, &object, "__e8XwidgetViewId")? {
+        return Ok(Some(EditorValue::Xwidget(e8_core::xwidget::XwObject::View(id as u64))));
     }
     if let Some(id) = number_property(s, &object, "__e8SqliteId")? {
         return Ok(Some(EditorValue::Sqlite(id as u64)));

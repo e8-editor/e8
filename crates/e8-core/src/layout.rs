@@ -124,6 +124,12 @@ pub trait TextMetrics: Send + Sync {
     fn images(&self) -> bool {
         false
     }
+    /// Whether frames show xwidgets' web views, as Emacs's graphical
+    /// frames do when it has xwidgets (ADR 0089). Without, `make-xwidget`
+    /// signals and an xwidget's display property shows its text.
+    fn xwidgets(&self) -> bool {
+        false
+    }
 }
 
 /// An open font, as a front end draws in it: its family's name, and its
