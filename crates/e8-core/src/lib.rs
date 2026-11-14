@@ -88,6 +88,7 @@ pub mod tls;
 pub mod treesitfns;
 mod treesitsearch;
 pub mod xfaces;
+pub mod sqlite;
 mod window;
 mod window_tree;
 mod variables;

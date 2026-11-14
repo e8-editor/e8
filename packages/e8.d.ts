@@ -17558,6 +17558,38 @@ declare global {
     function internalSetBufferModifiedTick(tick: number, buffer?: Buffer | string | null): undefined;
     /** Translate the characters from start to end by a table, as translate-region-internal: a string whose Nth character is the one for code N, or a char-table of characters. Gives how many changed. */
     function translateRegionInternal(start: number, end: number, table: string | CharTable): number;
+    /** Whether SQLite is there, as sqlite-available-p: everywhere but the web. */
+    function sqliteAvailableP(): boolean;
+    /** The version of the SQLite compiled in, as sqlite-version. */
+    function sqliteVersion(): string;
+    /** Open a database, as sqlite-open: a file, made if there is none, or one of its own in memory with none; undefined if SQLite cannot open it. */
+    function sqliteOpen(file?: string | null): Sqlite | undefined;
+    /** Close a database, as sqlite-close; true. */
+    function sqliteClose(db: Sqlite): boolean;
+    /** Run the first statement of a query with values bound to its `?`s, as sqlite-execute: how many rows it changed, or the rows it gives. */
+    function sqliteExecute(db: Sqlite, query: string, values?: Value[] | null): number | Value[][];
+    /** The rows a query selects, as sqlite-select: with returnType "full" the column names first, with "set" a set to step through with sqliteNext. */
+    function sqliteSelect(db: Sqlite, query: string, values?: Value[] | null, returnType?: "full" | "set" | symbol | null): Value[][] | Sqlite;
+    /** Run every statement in a string, as sqlite-execute-batch: true, or false if one fails. */
+    function sqliteExecuteBatch(db: Sqlite, statements: string): boolean;
+    /** Begin a transaction, as sqlite-transaction. */
+    function sqliteTransaction(db: Sqlite): boolean;
+    /** Commit a transaction, as sqlite-commit. */
+    function sqliteCommit(db: Sqlite): boolean;
+    /** Roll a transaction back, as sqlite-rollback. */
+    function sqliteRollback(db: Sqlite): boolean;
+    /** Run a pragma, as sqlite-pragma. */
+    function sqlitePragma(db: Sqlite, pragma: string): boolean;
+    /** Load a module on Emacs's allowlist into a database, as sqlite-load-extension. */
+    function sqliteLoadExtension(db: Sqlite, module: string): boolean;
+    /** The next row of a set, as sqlite-next; undefined once there are none. */
+    function sqliteNext(set: Sqlite): Value[] | undefined;
+    /** A set's column names, as sqlite-columns. */
+    function sqliteColumns(set: Sqlite): string[];
+    /** Whether a set may have rows left, as sqlite-more-p. */
+    function sqliteMoreP(set: Sqlite): boolean;
+    /** Finish a set, freeing its statement, as sqlite-finalize. */
+    function sqliteFinalize(set: Sqlite): boolean;
 
     type CommandName = keyof Commands;
 
@@ -18637,6 +18669,13 @@ declare global {
     /** A node's property, as treesit-node-check: "named", "missing", "extra", "has-error", "has-changes", "live" or "outdated". */
     function treesitNodeCheck(node: TreesitNode, property: string): boolean;
     function treesitNodeEq(a: TreesitNode | undefined | null, b: TreesitNode | undefined | null): boolean;
+    /** An SQLite database or set, as Emacs's sqlite objects: the same object each time. */
+    class Sqlite {
+      private constructor();
+      readonly __e8SqliteId: number;
+    }
+    /** Whether an object is an SQLite database or set, as sqlitep. */
+    function sqlitep(object: unknown): object is Sqlite;
     /** A compiled query, as Emacs's treesit-compiled-query objects: the same object each time. */
     class TreesitCompiledQuery {
       private constructor();
