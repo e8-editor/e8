@@ -47,6 +47,8 @@ pub enum Value {
     Process(u64),
     /// An SQLite database or set, by its id, as Emacs's sqlite objects (ADR 0087).
     Sqlite(u64),
+    /// An xwidget or its view, as Emacs's (ADR 0089).
+    Xwidget(crate::xwidget::XwObject),
     /// A font spec, entity or object, as Emacs's font vectors.
     Font(Box<crate::font::Font>),
     /// A script's own object, such as an org-roam node, which the editor
@@ -238,6 +240,8 @@ impl fmt::Display for Value {
             Value::Frame(id) => write!(f, "#<frame F{}>", id.saturating_sub(crate::window::FIRST_FRAME) + 1),
             Value::Process(id) => write!(f, "#<process {id}>"),
             Value::Sqlite(id) => write!(f, "#<sqlite {id}>"),
+            Value::Xwidget(crate::xwidget::XwObject::Widget(id)) => write!(f, "#<xwidget {id}>"),
+            Value::Xwidget(crate::xwidget::XwObject::View(id)) => write!(f, "#<xwidget-view {id}>"),
             Value::Font(font) => write!(f, "#<{} {}>", font.kind.name(), font.xlfd_name(true)),
             Value::Object(object) => write!(f, "{object:?}"),
         }

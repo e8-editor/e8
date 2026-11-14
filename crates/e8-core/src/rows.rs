@@ -961,6 +961,9 @@ impl Editor {
         if crate::image::image_display(&value).is_some() {
             return self.image_display_at(b, pos, line_end, &value, self.display_style(b, pos, dark, styles)).flatten();
         }
+        if crate::xwidget::xwidget_display(&value).is_some() {
+            return self.xwidget_display_at(b, pos, line_end, &value, self.display_style(b, pos, dark, styles)).flatten();
+        }
         if let Some(fringe) = fringe_spec(&value) {
             // The text is replaced by nothing; the bitmap shows in the fringe.
             let mut end = pos;

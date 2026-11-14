@@ -98,6 +98,7 @@ mod user_system;
 mod view;
 mod which_key;
 mod windows;
+mod xwidgets;
 mod xml;
 mod windmove;
 mod window_balance;
