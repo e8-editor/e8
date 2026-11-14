@@ -703,3 +703,53 @@ export function keymapGetKeyelt(object: e8.Value, _autoload?: boolean): e8.Value
   return object;
 }
 e8.defun("keymap--get-keyelt", keymapGetKeyelt);
+
+// The C core's primitives by their own names where Lisp code calls them
+// with their arguments as Lisp gives them (ADR 0090).
+
+/** Runs a function, then makes the buffer that was current current again, as save-current-buffer. */
+export function saveCurrentBuffer<T>(fn: () => T): T {
+  return e8.withCurrentBuffer(e8.currentBuffer(), fn);
+}
+e8.defun("save-current-buffer", saveCurrentBuffer);
+
+/** Inserts text before markers there, inheriting the properties around it, as insert-before-markers-and-inherit. */
+export function insertBeforeMarkersAndInherit(...texts: (string | e8.PropertizedString)[]): void {
+  for (const text of texts) {
+    // The text takes the properties the inheriting insertion gives it, and
+    // goes in again before the markers there, as insert-before-markers puts it.
+    const start = e8.point();
+    e8.insertAndInherit(text);
+    const inherited = e8.bufferSubstring(start, e8.point());
+    e8.deleteRegion(start, e8.point());
+    e8.insertBeforeMarkers(inherited);
+  }
+}
+e8.defun("insert-before-markers-and-inherit", insertBeforeMarkersAndInherit);
+
+/** Calls a function for each event a keymap and its parents bind and its binding, as map-keymap. */
+export function mapKeymap(fn: (event: string, binding: e8.Value) => void, keymap: string | e8.Keymap): void {
+  const seen = new Set<string>();
+  let at: string | e8.Keymap | undefined = keymap;
+  for (let depth = 0; at !== undefined && at !== null && depth < 32; depth++) {
+    e8.mapKeymapInternal((key, binding) => {
+      if (seen.has(key)) return;
+      seen.add(key);
+      fn(key, binding);
+    }, at);
+    at = e8.keymapParent(at) ?? undefined;
+  }
+}
+e8.defun("map-keymap", mapKeymap);
+
+/** A new keymap, as make-keymap: E8's keymaps are all sparse, the full ones too. */
+export function makeKeymap(prompt?: string | null): e8.Keymap {
+  return e8.makeSparseKeymap(null, prompt ?? null);
+}
+e8.defun("make-keymap", makeKeymap);
+
+// Internal functions by their Lisp names, which camelCase cannot write.
+e8.defun("internal--labeled-narrow-to-region", (start: number, end: number, label: e8.Value) => e8.internalLabeledNarrowToRegion(start, end, label));
+e8.defun("internal--labeled-widen", (label: e8.Value) => e8.internalLabeledWiden(label));
+e8.defun("internal--set-buffer-modified-tick", (tick: number, buffer?: e8.Buffer | string | null) => e8.internalSetBufferModifiedTick(tick, buffer));
+e8.defun("frame--set-was-invisible", (frame: e8.Frame | null, wasInvisible: boolean) => e8.frameSetWasInvisible(frame, wasInvisible));

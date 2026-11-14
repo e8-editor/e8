@@ -719,7 +719,7 @@ impl Editor {
     /// The buffer whose values size the echo area: the minibuffer's while a
     /// prompt is open, as a completion UI such as vertico sets
     /// `max-mini-window-height` there, else the selected window's.
-    fn mini_window_buffer(&self) -> &Buffer {
+    pub fn mini_window_buffer(&self) -> &Buffer {
         if self.prompt.is_some() { self.minibuffer() } else { self.window_buffer() }
     }
 

@@ -697,6 +697,14 @@ declare global {
        */
       "beginning-of-defun": [arg?: number];
       /**
+       * Move point to the beginning of the line; with N, of the line N - 1 lines on, as beginning-of-line.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/simple.ts.
+       */
+      "beginning-of-line": [n?: number];
+      /**
        * Move point to the start of the screen line it is on, which is not the start of its line where a long line continues.
        *
        * Defined in packages/simple.ts.
@@ -2571,6 +2579,14 @@ declare global {
        * Defined in packages/lisp.ts.
        */
       "end-of-defun": [arg?: number];
+      /**
+       * Move point to the end of the line; with N, of the line N - 1 lines on, as end-of-line.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/simple.ts.
+       */
+      "end-of-line": [n?: number];
       /**
        * Move point to the end of the screen line it is on.
        *
@@ -6540,6 +6556,14 @@ declare global {
        */
       "savehist-save": [];
       /**
+       * Scroll the text down N lines, or nearly a screen without a prefix argument, as scroll-down.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/simple.ts.
+       */
+      "scroll-down": [n?: PrefixArg | boolean];
+      /**
        * Scroll the text down by nearly a screen, showing earlier lines.
        *
        * With a numeric prefix argument, scroll that many lines; with C-- alone, scroll the other way.
@@ -6579,6 +6603,14 @@ declare global {
        * @param arg raw prefix argument
        */
       "scroll-right": [arg?: PrefixArg | boolean];
+      /**
+       * Scroll the text up N lines, or nearly a screen without a prefix argument, as scroll-up.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/simple.ts.
+       */
+      "scroll-up": [n?: PrefixArg | boolean];
       /**
        * Scroll the text up by nearly a screen, showing later lines.
        *
@@ -17728,6 +17760,78 @@ declare global {
     function imageFlush(spec: Value): void;
     /** Forget every image, or those of a file name, as clear-image-cache. */
     function clearImageCache(filter?: Value): void;
+    /** A string of one character, as char-to-string. */
+    function charToString(char: number): string;
+    /** A string's first character, 0 for an empty string, as string-to-char. */
+    function stringToChar(string: string): number;
+    /** A unibyte string of one byte, as byte-to-string. */
+    function byteToString(byte: number): string;
+    /** Whether two characters are the same, ignoring case where case-fold-search is set, as char-equal. */
+    function charEqual(c1: number, c2: number): boolean;
+    /** The character after point, 0 at the end of the accessible text, as following-char. */
+    function followingChar(): number;
+    /** The character before point, 0 at the start of the accessible text, as preceding-char. */
+    function precedingChar(): number;
+    /** Format values as Lisp's format: %s as princ, %S as prin1, %d %o %x %X %c %e %f %g, with field numbers, flags, width and precision. */
+    function format(format: string, ...args: Value[]): string;
+    /** Format as format, with the format string's grave accents and apostrophes curved as text-quoting-style says, as format-message. */
+    function formatMessage(format: string, ...args: Value[]): string;
+    /** The message for a count, as ngettext: E8 translates none, so the first for 1 and the plural otherwise. */
+    function ngettext(msgid: string, msgidPlural: string, n: number): string;
+    /** Whether a buffer, the current one by default, is modified, as buffer-modified-p. */
+    function bufferModifiedP(buffer?: Buffer | string | null): boolean;
+    /** Mark the current buffer modified or not, without locking its file, as restore-buffer-modified-p; gives the flag. */
+    function restoreBufferModifiedP(flag: Value): Value;
+    /** Make a buffer current without showing it, as set-buffer; gives the buffer. */
+    function setBuffer(buffer: Buffer | string): Buffer;
+    /** The buffer visiting exactly a file name, expanded, as get-file-buffer; undefined if none. */
+    function getFileBuffer(filename: string): Buffer | undefined;
+    /** Ask for the mode lines to be shown again, as force-mode-line-update: E8 shows them again at every redisplay. */
+    function forceModeLineUpdate(all?: Value): Value;
+    /** Set whether the current buffer is multibyte, as set-buffer-multibyte: E8's buffers always hold characters, so this only sets enable-multibyte-characters. Gives the flag. */
+    function setBufferMultibyte(flag: Value): Value;
+    /** Whether a buffer, the current one by default, is a minibuffer, as minibufferp; with `live`, an active one. */
+    function minibufferp(buffer?: Buffer | string | null, live?: boolean): boolean;
+    /** The prompt of the innermost minibuffer, as minibuffer-prompt; undefined when none is open. */
+    function minibufferPrompt(): string | undefined;
+    /** The minibuffer's text after its prompt, without properties, as minibuffer-contents-no-properties. */
+    function minibufferContentsNoProperties(): string;
+    /** The first element of a list whose car (or which itself) is a string equal to a key, ignoring case with `caseFold`, as assoc-string. */
+    function assocString(key: string | symbol, list: Value[], caseFold?: boolean): Value | undefined;
+    /** The lines a window's text area holds, as window-body-height; with `pixelwise`, its height in the front end's units. */
+    function windowBodyHeight(window?: WindowLike | null, pixelwise?: boolean): number;
+    /** The columns a window's text area holds, as window-body-width; with `pixelwise`, its width in the front end's units. */
+    function windowBodyWidth(window?: WindowLike | null, pixelwise?: boolean): number;
+    /** The lines of text a window shows, as window-text-height; with `pixelwise`, in the front end's units. */
+    function windowTextHeight(window?: WindowLike | null, pixelwise?: boolean): number;
+    /** The columns of text a window shows, as window-text-width; with `pixelwise`, in the front end's units. */
+    function windowTextWidth(window?: WindowLike | null, pixelwise?: boolean): number;
+    /** Make a window its frame's selected one, as set-frame-selected-window; gives the window. */
+    function setFrameSelectedWindow(frame: Frame | null, window: WindowLike, norecord?: boolean): Window;
+    /** How many columns a character takes, as char-width. */
+    function charWidth(char: number): number;
+    /** Whether an object is a character code, as characterp. */
+    function characterp(object: unknown): boolean;
+    /** The largest character code, as max-char: Unicode's with `unicode`. */
+    function maxChar(unicode?: boolean): number;
+    /** A string of characters, as string. */
+    function string(...characters: number[]): string;
+    /** A unibyte string of bytes, as unibyte-string. */
+    function unibyteString(...bytes: number[]): string;
+    /** A key sequence in Emacs's notation, after a prefix's, as key-description: events as characters with modifier bits, symbols, or a string. */
+    function keyDescription(keys: string | Value[], prefix?: string | Value[] | null): string;
+    /** One event in Emacs's notation, as single-key-description; with `noAngles`, a function key without its angle brackets. */
+    function singleKeyDescription(key: Value, noAngles?: boolean): string;
+    /** Give a process another buffer, or none with null, as set-process-buffer; gives the buffer. */
+    function setProcessBuffer(process: ProcessLike, buffer: Buffer | string | null): Buffer | undefined;
+    /** Mark the end of a change for undo, as undo-boundary. */
+    function undoBoundary(): boolean | undefined;
+    /** A file name, a prefix and characters making it one no file has, as make-temp-name. */
+    function makeTempName(prefix: string): string;
+    /** Run a function as a command keys would, so called-interactively-p is true in it, as funcall-interactively. */
+    function funcallInteractively(fn: string | ((...args: any[]) => any), ...args: Value[]): Value;
+    /** Pack a char-table's ranges, as optimize-char-table: E8's are kept packed. */
+    function optimizeCharTable(table: CharTable, test?: Value): undefined;
     /** Make a face with every attribute unspecified, or empty an existing one, as internal-make-lisp-face; gives its vector. */
     function internalMakeLispFace(face: string | symbol, frame?: Frame | boolean | number | null): Value[];
     /** A face's vector if face is a face, as internal-lisp-face-p, else undefined. */

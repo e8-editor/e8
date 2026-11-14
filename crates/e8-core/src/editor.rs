@@ -741,6 +741,15 @@ impl Editor {
         self.interactive
     }
 
+    /// Calls a function as keys would, so `called-interactively-p` is true
+    /// in it, as `funcall-interactively`.
+    pub fn funcall_interactively(&mut self, function: &Value, args: &[Value]) -> crate::error::Result<Value> {
+        let was = std::mem::replace(&mut self.interactive, true);
+        let result = self.funcall(function, args);
+        self.interactive = was;
+        result
+    }
+
     /// The command that is running, or about to run while `pre-command-hook` runs.
     pub fn this_command(&self) -> Option<&str> {
         self.this_command.as_deref()

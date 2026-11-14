@@ -41,6 +41,7 @@ mod editor;
 mod error;
 mod faces;
 pub mod fontset;
+pub mod format;
 mod filefns;
 pub mod filelock;
 mod fileio;
