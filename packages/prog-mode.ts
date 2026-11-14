@@ -153,7 +153,8 @@ e8.defineMinorMode({
   onChange: (enabled) => {
     if (enabled) {
       e8.addHook("jit-lock-functions", prettify, { local: true });
-      prettify(e8.pointMin(), e8.pointMax());
+      // Composed as it comes into view, as font-lock does for Emacs's.
+      e8.call("font-lock-flush");
     } else {
       e8.removeHook("jit-lock-functions", prettify, { local: true });
       e8.withSilentModifications(() => {
