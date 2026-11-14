@@ -160,6 +160,7 @@ fn searching(ed: &mut Editor) {
                     backward: backward != (n < 0),
                     case_fold: crate::search::fold_case_for(ed, &pattern, false),
                     bound: None,
+                    posix: false,
                 };
                 match ed.search_buffer(&pattern, &options, n.unsigned_abs() as usize)? {
                     Some(_) => Ok(()),

@@ -24,6 +24,9 @@ pub struct SearchOptions {
     /// How far the search may go: a match must lie before it searching
     /// forward, or after it searching backward.
     pub bound: Option<usize>,
+    /// Whether a regexp takes its longest match at the place it starts, as
+    /// the posix- searches do, rather than its first (ADR 0091).
+    pub posix: bool,
 }
 
 /// A match: where it starts and ends, and where each group matched.
@@ -386,9 +389,11 @@ impl Editor {
                 if options.bound.is_some_and(|bound| from < bound) {
                     return Ok(None);
                 }
-                re.search_backward(&h, from, options.bound.map_or(min, |bound| bound.clamp(min, max)))?
+                let bound = options.bound.map_or(min, |bound| bound.clamp(min, max));
+                if options.posix { re.search_backward_posix(&h, from, bound)? } else { re.search_backward(&h, from, bound)? }
             } else {
-                re.search_forward(&h, from, options.bound.map_or(max, |bound| bound.clamp(min, max)))?
+                let bound = options.bound.map_or(max, |bound| bound.clamp(min, max));
+                if options.posix { re.search_forward_posix(&h, from, bound)? } else { re.search_forward(&h, from, bound)? }
             };
             Ok(found.map(to_match))
         })
@@ -465,13 +470,24 @@ impl Editor {
     /// The match of an Emacs regexp starting exactly at `pos` in the
     /// current buffer, as Emacs's `looking-at` finds it.
     pub fn looking_at(&self, pattern: &str, pos: usize, case_fold: bool) -> Result<Option<Match>> {
+        self.looking_at_mode(pattern, pos, case_fold, false)
+    }
+
+    /// The longest match of an Emacs regexp starting exactly at `pos`, as
+    /// `posix-looking-at` finds it.
+    pub fn posix_looking_at(&self, pattern: &str, pos: usize, case_fold: bool) -> Result<Option<Match>> {
+        self.looking_at_mode(pattern, pos, case_fold, true)
+    }
+
+    fn looking_at_mode(&self, pattern: &str, pos: usize, case_fold: bool, posix: bool) -> Result<Option<Match>> {
         crate::regexp::with_tables(self.search_tables(), || {
             let b = self.buffer();
             let re = Regexp::cached(pattern, case_fold)?;
             let (class, fixed) = self.syntax_classes(b);
             let h = BufferHaystack::new(b, &class, fixed).quitting(&self.quitting);
             let pos = pos.clamp(b.point_min(), b.point_max());
-            Ok(re.match_at(&h, pos, b.point_max())?.map(to_match))
+            let found = if posix { re.match_at_posix(&h, pos, b.point_max())? } else { re.match_at(&h, pos, b.point_max())? };
+            Ok(found.map(to_match))
         })
     }
 
@@ -479,6 +495,16 @@ impl Editor {
     /// its groups, in characters, as Emacs's `string-match`, the current
     /// buffer's syntax table giving the classes.
     pub fn string_match(&self, pattern: &str, text: &str, start: usize, case_fold: bool) -> Result<Option<Match>> {
+        self.string_match_mode(pattern, text, start, case_fold, false)
+    }
+
+    /// Where an Emacs regexp's longest match at the first place one starts
+    /// is in a string, as `posix-string-match`.
+    pub fn posix_string_match(&self, pattern: &str, text: &str, start: usize, case_fold: bool) -> Result<Option<Match>> {
+        self.string_match_mode(pattern, text, start, case_fold, true)
+    }
+
+    fn string_match_mode(&self, pattern: &str, text: &str, start: usize, case_fold: bool, posix: bool) -> Result<Option<Match>> {
         crate::regexp::with_tables(self.search_tables(), || {
             let re = Regexp::cached(pattern, case_fold)?;
             let b = self.buffer();
@@ -489,7 +515,8 @@ impl Editor {
             if start > len {
                 return Err(Error::signal("args-out-of-range", format!("Args out of range: {text:?}, {start}"), Vec::new()));
             }
-            Ok(re.search_forward(&h, start, len)?.map(to_match))
+            let found = if posix { re.search_forward_posix(&h, start, len)? } else { re.search_forward(&h, start, len)? };
+            Ok(found.map(to_match))
         })
     }
 

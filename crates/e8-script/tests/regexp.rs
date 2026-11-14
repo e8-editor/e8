@@ -41,7 +41,7 @@ fn e8(case: &Case) -> Value {
     let found = if case.backward {
         ed.buffer_mut().set_text(&case.s);
         let end = ed.buffer().len();
-        ed.search(&case.re, end, &e8_core::SearchOptions { regexp: true, backward: true, case_fold: case.fold, bound: None })
+        ed.search(&case.re, end, &e8_core::SearchOptions { regexp: true, backward: true, case_fold: case.fold, bound: None, posix: false })
     } else {
         ed.string_match(&case.re, &case.s, 0, case.fold)
     };

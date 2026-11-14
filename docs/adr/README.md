@@ -92,3 +92,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0088](0088-the-last-odds-frames-file-notifications-and-descriptions.md) The last odds: frames, file notifications and descriptions
 - [0089](0089-xwidgets-as-emacs-has-them.md) xwidgets as Emacs has them: web views on macOS and Linux
 - [0090](0090-the-c-cores-primitives-by-their-names.md) The C core's primitives by their names: format, characters, buffers, windows and keys
+- [0091](0091-posix-searches-as-emacs-has-them.md) POSIX searches as Emacs has them: the longest match

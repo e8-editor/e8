@@ -17469,6 +17469,16 @@ declare global {
     function foldCaseFor(pattern: string, interactive?: boolean): boolean;
     /** Read these keys next, after the running command, as if typed again (Emacs's unread-command-events). */
     function unreadKeys(keys: string): void;
+    /** The longest match of a regexp starting at a position, point by default, as posix-looking-at; sets the match data. */
+    function posixLookingAt(regexp: string, position?: number | null, caseFold?: boolean | null): boolean;
+    /** Where a regexp's longest match at the first place one starts is in a string, from `start`, as posix-string-match; sets the match data. */
+    function posixStringMatch(regexp: string, string: string, start?: number | null, caseFold?: boolean | null): number | undefined;
+    /** Search forward for a regexp's longest match at the first place one starts, as posix-search-forward: point moves to its end. Signals search-failed unless `noerror`. */
+    function posixSearchForward(regexp: string, bound?: number | null, noerror?: boolean, count?: number): number | undefined;
+    /** Search backward for a regexp's longest match at the nearest place one starts, as posix-search-backward: point moves to its start. */
+    function posixSearchBackward(regexp: string, bound?: number | null, noerror?: boolean, count?: number): number | undefined;
+    /** Move the match data's positions by `n`, as match-data--translate. */
+    function matchDataTranslate(n: number): undefined;
     /** The last successful search's match. */
     function matchData(): Match | undefined;
     /** How many columns text takes on screen, counting wide characters as two (Emacs's string-width). */
@@ -19947,6 +19957,10 @@ declare global {
     function reSearchForward(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
     /** Search back for an Emacs regexp and move point to the start of the match, as re-search-backward. */
     function reSearchBackward(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
+    /** The same as reSearchForward, by its other name, as search-forward-regexp. */
+    function searchForwardRegexp(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
+    /** The same as reSearchBackward, by its other name, as search-backward-regexp. */
+    function searchBackwardRegexp(regexp: string, options?: { bound?: number; noerror?: boolean; caseFold?: boolean }): number | undefined;
     /** Where the last match, or its group `n`, starts, as match-beginning. */
     function matchBeginning(n?: number): number | undefined;
     /** Where the last match, or its group `n`, ends, as match-end. */
