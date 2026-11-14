@@ -119,7 +119,7 @@ impl Difference {
     }
 }
 
-pub(crate) fn read_file(path: &Path, coding: Option<Coding>) -> Result<(String, Coding)> {
+pub(crate) fn read_file(path: &Path, coding: impl Into<crate::coding::FileCoding>) -> Result<(String, Coding)> {
     let bytes = fs::read(path).map_err(|e| crate::fileops::file_error("Opening input file", &e, &[path]))?;
     Ok(crate::coding::decode_file(&bytes, coding))
 }
@@ -244,6 +244,45 @@ impl Buffer {
 }
 
 impl Editor {
+    /// Which coding to read a file by this name with: `coding-system-for-read`
+    /// if it names one, and what `file-coding-system-alist` says for the
+    /// name, which the file's own `coding:` cookie wins over, as Emacs's
+    /// `insert-file-contents` asks `set-auto-coding` first.
+    ///
+    /// `args` are `insert-file-contents`'s own arguments, the file's name
+    /// first, which a function in the alist is handed.
+    pub(crate) fn file_coding_for_read(&mut self, args: &[Value]) -> Result<crate::coding::FileCoding> {
+        let forced = self.coding_for_read();
+        if forced.is_some() {
+            return Ok(crate::coding::FileCoding { forced, by_name: None });
+        }
+        let found = self.find_operation_coding_system("insert-file-contents", args)?;
+        let by_name = found.and_then(|(decode, _)| decode.as_str().and_then(Coding::parse)).filter(|c| !c.is_undecided());
+        Ok(crate::coding::FileCoding { forced, by_name })
+    }
+
+    /// The coding to write a file by this name with: `coding-system-for-write`
+    /// first, then, for a buffer with no `buffer-file-coding-system` of its
+    /// own, what `file-coding-system-alist` says for the name, then the
+    /// buffer's own, as Emacs's choose_write_coding_system decides. A
+    /// buffer visiting a file has its own, so saving keeps the coding it
+    /// was read in.
+    ///
+    /// `args` are `write-region`'s own arguments, the file's name third,
+    /// which a function in the alist is handed.
+    pub(crate) fn file_coding_for_write(&mut self, args: &[Value]) -> Result<Coding> {
+        let forced = self.variable("coding-system-for-write").and_then(|v| v.as_str().and_then(Coding::parse));
+        let has_own = self.buffer().locals.contains_key("buffer-file-coding-system");
+        if forced.is_none() && !has_own {
+            let found = self.find_operation_coding_system("write-region", args)?;
+            if let Some(coding) = found.and_then(|(_, encode)| encode.as_str().and_then(Coding::parse)).filter(|c| !c.is_undecided()) {
+                let own = self.coding_for_write();
+                return Ok(coding.with_eol(Some(coding.eol.or(own.eol).unwrap_or(Eol::Unix))));
+            }
+        }
+        Ok(self.coding_for_write())
+    }
+
     /// The coding `coding-system-for-read` says to read files with, if any.
     pub(crate) fn coding_for_read(&self) -> Option<Coding> {
         self.variable("coding-system-for-read").and_then(|v| v.as_str().and_then(Coding::parse))
@@ -274,7 +313,7 @@ impl Editor {
 
     /// Decodes a visited file into a new buffer, noting its coding and
     /// modification time. A missing file gives an empty buffer.
-    pub(crate) fn read_visited_file(path: &Path, coding: Option<Coding>) -> Result<Buffer> {
+    pub(crate) fn read_visited_file(path: &Path, coding: impl Into<crate::coding::FileCoding>) -> Result<Buffer> {
         // A new file is written with buffer-file-coding-system's default.
         let (text, coding) = match fs::metadata(path) {
             Ok(_) => read_file(path, coding).map(|(text, coding)| (text, Some(coding)))?,
@@ -316,7 +355,9 @@ impl Editor {
             return self.write_region(crate::filefns::WriteSource::Buffer, &name, false, crate::filefns::Visit::Yes, false);
         }
         self.check_permission(&format!("write {}", crate::files::abbreviate_path(&path)))?;
-        let coding = self.coding_for_write();
+        // save-buffer writes the whole buffer, visiting it, as Emacs's does.
+        let whole = [Value::Null, Value::Null, Value::Str(name.clone()), Value::Null, Value::Bool(true), Value::Null];
+        let coding = self.file_coding_for_write(&whole)?;
         let b = &mut self.buffers[self.current];
         // Through symbolic links to the file itself, as Emacs's file-chase-links.
         let real = fs::canonicalize(&path).unwrap_or_else(|_| path.clone());
@@ -372,7 +413,11 @@ impl Editor {
     /// and point within what changed keeps its place in proportion. The
     /// change can be undone. Read-only buffers are reverted too.
     pub fn replace_with_file(&mut self, path: &Path) -> Result<Coding> {
-        let (new, coding) = read_file(path, self.coding_for_read())?;
+        // Reverting reads the whole file, replacing what is there.
+        let name = Value::Str(path.display().to_string());
+        let whole = [name, Value::Null, Value::Null, Value::Null, Value::Bool(true)];
+        let coding = self.file_coding_for_read(&whole)?;
+        let (new, coding) = read_file(path, coding)?;
         let b = &mut self.buffers[self.current];
         b.widen();
         let change = Difference::between(b.text().slice(..), &new);

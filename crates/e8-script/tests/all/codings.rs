@@ -324,3 +324,144 @@ fn a_category_set_is_its_mnemonics() {
     );
     assert_eq!(got, r#"[".Lalr","al","al"]"#);
 }
+
+#[test]
+fn an_operation_finds_its_coding_from_the_alists_as_emacs_does() {
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"(e8.setVariable("file-coding-system-alist", [
+             ["\\.bat\\'", "windows-1252"],
+             ["\\.pair\\'", ["utf-16", "utf-8"]],
+             ["\\.fn\\'", "my-pick"],
+           ]),
+           e8.setVariable("process-coding-system-alist", [["grep", ["iso-latin-1", "iso-latin-1"]]]),
+           e8.defun("my-pick", (args) => (JSON.stringify(args).includes("yes") ? "koi8-r" : "undecided")),
+           true)"#,
+    );
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([
+          e8.findOperationCodingSystem("insert-file-contents", "/tmp/x.bat"),
+          e8.findOperationCodingSystem("write-region", 0, 1, "/tmp/x.pair"),
+          e8.findOperationCodingSystem("insert-file-contents", "/tmp/yes.fn"),
+          e8.findOperationCodingSystem("insert-file-contents", "/tmp/no.fn"),
+          e8.findOperationCodingSystem("insert-file-contents", "/tmp/plain.txt") ?? null,
+          e8.findOperationCodingSystem("start-process", "n", null, "grep"),
+        ])"#,
+    );
+    // Emacs gives the pair as a cons; E8 as a two-element list.
+    assert_eq!(
+        got,
+        r#"[["windows-1252","windows-1252"],["utf-16","utf-8"],["koi8-r","koi8-r"],["undecided","undecided"],null,["iso-latin-1","iso-latin-1"]]"#
+    );
+}
+
+#[test]
+fn a_file_is_read_and_written_in_the_coding_its_name_asks_for() {
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("note.lat");
+    std::fs::write(&path, [0xE9, 0x0A]).unwrap();
+    let name = path.display().to_string();
+    eval(&mut ed, &s, r#"e8.setVariable("file-coding-system-alist", [["\\.lat\\'", "iso-latin-1"]])"#);
+    ed.call("find-file", vec![e8_core::Arg::Str(name.clone())]).unwrap();
+    // Read as Latin-1, so the byte is é rather than a raw byte.
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.bufferText(), e8.variable('buffer-file-coding-system')])"), r#"["é\n","iso-latin-1-unix"]"#);
+    // And written back as the one byte it was.
+    eval(&mut ed, &s, "(e8.gotoChar(0), e8.insert('a'), true)");
+    ed.call("save-buffer", Vec::new()).unwrap();
+    assert_eq!(std::fs::read(&path).unwrap(), [b'a', 0xE9, 0x0A]);
+}
+
+#[test]
+fn a_file_says_its_own_coding_over_the_one_its_name_asks_for() {
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("a.el2");
+    std::fs::write(&path, b";; -*- coding: iso-latin-1 -*-\n\xe9\n").unwrap();
+    eval(&mut ed, &s, r#"e8.setVariable("file-coding-system-alist", [["\\.el2\\'", "utf-8"]])"#);
+    ed.call("find-file", vec![e8_core::Arg::Str(path.display().to_string())]).unwrap();
+    // Emacs: iso-latin-1-unix — set-auto-coding is asked before the alist.
+    assert_eq!(eval(&mut ed, &s, "e8.variable('buffer-file-coding-system')"), "iso-latin-1-unix");
+}
+
+#[test]
+fn saving_a_visited_file_keeps_the_coding_it_was_read_in() {
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("b.txt");
+    std::fs::write(&path, b"\xe9\n").unwrap();
+    // The alist leaves reading to detection and asks for UTF-8 on writing.
+    eval(&mut ed, &s, r#"e8.setVariable("file-coding-system-alist", [["\\.txt\\'", ["undecided", "utf-8"]]])"#);
+    ed.call("find-file", vec![e8_core::Arg::Str(path.display().to_string())]).unwrap();
+    assert_eq!(eval(&mut ed, &s, "e8.variable('buffer-file-coding-system')"), "iso-latin-1-unix");
+    eval(&mut ed, &s, "(e8.gotoChar(0), e8.insert('a'), true)");
+    ed.call("save-buffer", Vec::new()).unwrap();
+    // Emacs writes the one byte again: a buffer visiting a file has a
+    // buffer-file-coding-system of its own, which the alist does not reach.
+    assert_eq!(std::fs::read(&path).unwrap(), [b'a', 0xE9, 0x0A]);
+    // A buffer with none of its own does take the alist's.
+    let other = dir.path().join("c.txt");
+    ed.call("switch-to-buffer", vec![e8_core::Arg::Str("*scratch*".into())]).unwrap();
+    ed.type_text("é");
+    eval(&mut ed, &s, &format!("e8.writeRegion(0, e8.pointMax(), {:?})", other.display().to_string()));
+    assert_eq!(std::fs::read(&other).unwrap(), "é".as_bytes());
+}
+
+#[test]
+fn an_alist_entry_may_be_written_out_or_hold_a_lambda() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.setVariable("file-coding-system-alist", [
+             ["\\.q\\'", "raw-text", "raw-text-unix"],
+             ["\\.w\\'", () => "koi8-r"],
+           ]),
+           JSON.stringify([
+             e8.findOperationCodingSystem("insert-file-contents", "/tmp/x.q"),
+             e8.findOperationCodingSystem("insert-file-contents", "/tmp/x.w"),
+           ]))"#,
+    );
+    // Emacs reads (REGEXP DECODING . ENCODING) as the pair it prints as;
+    // a lambda it ignores, where E8 calls it, as a variable's value may be
+    // a function anywhere else in E8.
+    assert_eq!(got, r#"[["raw-text","raw-text-unix"],["koi8-r","koi8-r"]]"#);
+}
+
+#[test]
+fn a_coding_system_has_the_plist_emacs_gives_it() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.codingSystemPut("utf-8", ":mine", 42),
+           JSON.stringify([e8.codingSystemPlist("iso-latin-1"), e8.codingSystemPlist("utf-8")[":mine"],
+                           e8.codingSystemPlist("utf-16")[":ascii-compatible-p"],
+                           e8.codingSystemPlist("iso-2022-jp")[":ascii-compatible-p"],
+                           e8.codingSystemPlist("prefer-utf-8")[":ascii-compatible-p"],
+                           (e8.codingSystemPut("utf-8", ":mime-charset", "zz"), e8.codingSystemPlist("utf-8")[":mime-charset"])]))"#,
+    );
+    // Emacs's iso-latin-1 plist says :ascii-compatible-p t, :name iso-latin-1,
+    // :coding-type charset, :mnemonic 49 and :mime-charset iso-8859-1, with a
+    // :category, :docstring and :charset-list E8 does not hold.
+    assert_eq!(
+        got,
+        r#"[{":name":"iso-latin-1",":coding-type":"charset",":mnemonic":49,":ascii-compatible-p":true,":mime-charset":"iso-8859-1"},42,false,false,false,"zz"]"#
+    );
+}
+
+#[test]
+fn the_terminal_says_how_it_reads_and_writes_text() {
+    let (mut ed, s) = setup();
+    let got = eval(&mut ed, &s, "JSON.stringify([e8.keyboardCodingSystem(), e8.terminalCodingSystem()])");
+    // Emacs on a UTF-8 terminal: utf-8-unix for both.
+    assert_eq!(got, r#"["utf-8-unix","utf-8-unix"]"#);
+    eval(&mut ed, &s, r#"e8.setTerminalCodingSystemInternal("iso-latin-1")"#);
+    eval(&mut ed, &s, r#"e8.setKeyboardCodingSystemInternal(null)"#);
+    let after = eval(&mut ed, &s, "JSON.stringify([e8.keyboardCodingSystem() ?? null, e8.terminalCodingSystem()])");
+    assert_eq!(after, r#"[null,"iso-latin-1"]"#);
+}

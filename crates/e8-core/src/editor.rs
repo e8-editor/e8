@@ -185,6 +185,12 @@ pub struct Editor {
     ///
     /// [ADR 0078]: ../../../../docs/adr/0078-charsets-and-codings-as-emacs-has-them.md
     pub(crate) charsets: crate::charset::Charsets,
+    /// What `coding-system-put` put on a coding system, by its base name,
+    /// which Emacs keeps on the coding system itself ([ADR 0078]).
+    pub(crate) coding_plists: Vec<(String, Vec<(String, crate::variables::Value)>)>,
+    /// How deep a function from one of the coding alists is nested, so one
+    /// that reads a file itself cannot run out of stack.
+    pub(crate) coding_alist_depth: usize,
     /// The last case and category tables worked out for lookups, with what identified them.
     pub(crate) case_maps_cache: std::cell::RefCell<Option<crate::casetab::CaseMapsCache>>,
     pub(crate) category_maps_cache: std::cell::RefCell<Option<crate::category::CategoryMapsCache>>,
@@ -461,6 +467,8 @@ impl Editor {
             standard_category_table: None,
             unicode_property_tables: Default::default(),
             charsets: Default::default(),
+            coding_plists: Vec::new(),
+            coding_alist_depth: 0,
             case_maps_cache: Default::default(),
             category_maps_cache: Default::default(),
             metrics: std::sync::Arc::new(crate::layout::CellMetrics),
@@ -2369,7 +2377,10 @@ impl Editor {
             if fs::path_is_dir(path) {
                 return Err(Error::new(format!("{} is a directory", path.display())));
             }
-            let mut buffer = Self::read_visited_file(path, self.coding_for_read())?;
+            // insert-file-contents's arguments as find-file gives them.
+            let whole = [crate::variables::Value::Str(path.display().to_string()), crate::variables::Value::Bool(true)];
+            let coding = self.file_coding_for_read(&whole)?;
+            let mut buffer = Self::read_visited_file(path, coding)?;
             buffer.name = self.unique_buffer_name(&buffer.name);
             // As Emacs's after-find-file, a backup file, whose name ends in ~
             // as backup-file-name-p says, or one that cannot be written is

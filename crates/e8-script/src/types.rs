@@ -2145,6 +2145,34 @@ const API: &str = r##"
   function clearCharsetMaps(): void;
   /** Does nothing: E8's charsets are unified already (unify-charset). */
   function unifyCharset(charset: string): void;
+  /**
+   * Which coding systems an operation on a target gets, as
+   * find-operation-coding-system: [decoding, encoding] from
+   * file-coding-system-alist, process-coding-system-alist or
+   * network-coding-system-alist, or undefined where none matches. The
+   * arguments after the operation are the ones the operation itself takes.
+   */
+  function findOperationCodingSystem(
+    operation: "insert-file-contents" | "write-region" | "call-process" | "call-process-region" | "start-process" | "open-network-stream",
+    ...args: Value[]
+  ): [CodingSystem, CodingSystem] | undefined;
+  /** How the terminal's keyboard input is decoded, as keyboard-coding-system. */
+  function keyboardCodingSystem(): CodingSystem | undefined;
+  /** How text is encoded for the terminal, as terminal-coding-system. */
+  function terminalCodingSystem(): CodingSystem | undefined;
+  /** Sets how the keyboard's input is decoded, as set-keyboard-coding-system-internal. */
+  function setKeyboardCodingSystemInternal(cs: CodingSystem | null): void;
+  /** Sets how text is encoded for the terminal, as set-terminal-coding-system-internal. */
+  function setTerminalCodingSystemInternal(cs: CodingSystem | null): void;
+  /**
+   * What E8 knows of a coding system, as coding-system-plist: its
+   * ":name", ":coding-type", ":mnemonic", ":ascii-compatible-p" and
+   * ":mime-charset", with what codingSystemPut put beside them. Emacs's
+   * ":docstring", ":category" and ":charset-list" are not there.
+   */
+  function codingSystemPlist(cs: CodingSystem): { [property: string]: Value };
+  /** Puts a property on a coding system, as coding-system-put; the five E8 works out for itself are kept. */
+  function codingSystemPut(cs: CodingSystem, prop: string, value: Value): void;
   /** Starts recording changes for undo, afresh, as buffer-enable-undo. */
   function bufferEnableUndo(buffer?: string | Buffer): void;
   /** Stops recording changes for undo and forgets them, as buffer-disable-undo. */

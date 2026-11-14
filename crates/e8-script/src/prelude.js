@@ -748,6 +748,18 @@
     unibyteCharToMultibyte: (byte) => coding("unibyte-char-to-multibyte", byte),
     clearCharsetMaps: () => coding("clear-charset-maps"),
     unifyCharset: (charset) => coding("unify-charset", String(charset)),
+    findOperationCodingSystem: (operation, ...args) => coding("find-operation-coding-system", symbolName(operation), ...args) ?? undefined,
+    keyboardCodingSystem: () => coding("keyboard-coding-system") ?? undefined,
+    terminalCodingSystem: () => coding("terminal-coding-system") ?? undefined,
+    setKeyboardCodingSystemInternal: (cs) => coding("set-keyboard-coding-system-internal", cs == null ? null : String(cs)),
+    setTerminalCodingSystemInternal: (cs) => coding("set-terminal-coding-system-internal", cs == null ? null : String(cs)),
+    codingSystemPlist: (cs) => {
+      const flat = coding("coding-system-plist", String(cs));
+      const plist = {};
+      for (let i = 0; i + 1 < flat.length; i += 2) plist[String(flat[i])] = flat[i + 1];
+      return plist;
+    },
+    codingSystemPut: (cs, prop, value) => coding("coding-system-put", String(cs), String(prop), value ?? null),
     bufferEnableUndo: (buffer) =>
       buffer === undefined ? native.setUndoEnabled(true) : e8.withCurrentBuffer(buffer, () => native.setUndoEnabled(true)),
     bufferDisableUndo: (buffer) =>

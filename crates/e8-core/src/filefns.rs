@@ -676,7 +676,17 @@ impl Editor {
             (None, None) => &bytes[..],
             (b, e) => &bytes[b.unwrap_or(0).min(bytes.len())..e.unwrap_or(bytes.len()).min(bytes.len()).max(b.unwrap_or(0).min(bytes.len()))],
         };
-        let (text, coding) = crate::coding::decode_file(bytes, self.coding_for_read());
+        // insert-file-contents's own arguments, as a function in
+        // file-coding-system-alist is handed them.
+        let whole = [
+            s(&file),
+            Value::Bool(visit),
+            beg.map_or(Value::Null, |n| Value::Number(n as f64)),
+            end.map_or(Value::Null, |n| Value::Number(n as f64)),
+            Value::Bool(replace),
+        ];
+        let read_coding = self.file_coding_for_read(&whole)?;
+        let (text, coding) = crate::coding::decode_file(bytes, read_coding);
         self.set_variable("last-coding-system-used", Value::Str(coding.name()));
         let n = text.chars().count();
         if replace {
@@ -726,6 +736,7 @@ impl Editor {
             Visit::Name(n) => s(n),
         };
         let args = vec![source_value.0, source_value.1, s(&file), Value::Bool(append), visit_value, Value::Null, Value::Bool(mustbenew)];
+        let write_args = args.clone();
         if let Some(r) = self.handled("write-region", &file, args) {
             return r.map(drop);
         }
@@ -734,7 +745,7 @@ impl Editor {
         if mustbenew && fs::symlink_metadata(&path).is_ok() {
             return Err(Error::signal("file-already-exists", format!("File exists: {file}"), vec![s("File exists"), s(&file)]));
         }
-        let write_coding = self.coding_for_write();
+        let write_coding = self.file_coding_for_write(&write_args)?;
         let b = self.buffer();
         let text = match &source {
             WriteSource::Buffer => b.slice(0..b.len()),
