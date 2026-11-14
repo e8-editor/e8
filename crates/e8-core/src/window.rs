@@ -589,6 +589,12 @@ impl Editor {
         self.to_cells(units, horizontal)
     }
 
+    /// A size in cells in the front end's units, the other way round.
+    pub fn cells_to_units(&self, cells: usize, horizontal: bool) -> f32 {
+        let (cw, lh) = self.cell();
+        cells as f32 * if horizontal { cw } else { lh }
+    }
+
     /// A frame's title, as the last redisplay formatted `frame-title-format`.
     pub fn frame_title(&self, frame: FrameId) -> Option<String> {
         self.frame_titles.get(&frame).cloned()

@@ -1752,6 +1752,12 @@
     fontHasCharP: (font, c) => native.fontHasCharP(font, typeof c === "number" ? String.fromCodePoint(c) : String(c)),
     charDisplayableP: (c) => native.charDisplayableP(typeof c === "number" ? String.fromCodePoint(c) : String(c)),
     colorDefinedP: (color) => native.colorValues(String(color)) != null,
+    // The window system's own names for the colour questions, as nsfns.m
+    // and xfns.c give them.
+    xwColorDefinedP: (color) => native.colorValues(String(color)) != null,
+    xwColorValues: (color) => native.colorValues(String(color)) ?? undefined,
+    xOpenConnection: (display) => e8.signal("error", `Cannot connect to another display: ${display}`),
+    xCloseConnection: (display) => e8.signal("error", `Cannot close E8's display: ${display}`),
     colorSupportedP: (color) => native.colorValues(String(color)) != null,
     colorDistance(color1, color2) {
       const d = native.colorDistance(String(color1), String(color2));

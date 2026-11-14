@@ -191,6 +191,11 @@ pub struct Editor {
     /// How deep a function from one of the coding alists is nested, so one
     /// that reads a file itself cannot run out of stack.
     pub(crate) coding_alist_depth: usize,
+    /// What a front end has told the editor about the display it draws
+    /// on ([ADR 0081]).
+    ///
+    /// [ADR 0081]: ../../../../docs/adr/0081-the-display-as-emacs-asks-about-it.md
+    pub(crate) display: crate::frame::Display,
     /// The last case and category tables worked out for lookups, with what identified them.
     pub(crate) case_maps_cache: std::cell::RefCell<Option<crate::casetab::CaseMapsCache>>,
     pub(crate) category_maps_cache: std::cell::RefCell<Option<crate::category::CategoryMapsCache>>,
@@ -469,6 +474,7 @@ impl Editor {
             charsets: Default::default(),
             coding_plists: Vec::new(),
             coding_alist_depth: 0,
+            display: Default::default(),
             case_maps_cache: Default::default(),
             category_maps_cache: Default::default(),
             metrics: std::sync::Arc::new(crate::layout::CellMetrics),

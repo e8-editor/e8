@@ -872,6 +872,14 @@ const API: &str = r##"
   function copyFace(oldFace: FaceName | (string & {}), newFace: string): string;
   /** Whether a colour is one E8 can show, as color-defined-p. */
   function colorDefinedP(color: string): boolean;
+  /** Whether the display has a colour by this name, as xw-color-defined-p. */
+  function xwColorDefinedP(color: string): boolean;
+  /** A colour's red, green and blue, each 0 to 65535, as xw-color-values. */
+  function xwColorValues(color: string): [number, number, number] | undefined;
+  /** Refused: E8 draws through one front end and has no second display to open (x-open-connection). */
+  function xOpenConnection(display: string): never;
+  /** Refused: E8's display is its front end's and is not closed (x-close-connection). */
+  function xCloseConnection(display: string): never;
   /** Whether a colour can be shown, as color-supported-p: every colour can. */
   function colorSupportedP(color: string): boolean;
   /** Signal quit if C-g was typed and inhibit-quit is nil, as maybe_quit. Loops check it themselves every 1024 iterations, and every call into the editor does. */

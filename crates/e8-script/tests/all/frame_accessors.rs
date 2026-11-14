@@ -134,7 +134,7 @@ fn a_frames_sizes_are_its_text_its_whole_self_and_its_characters() {
     // Until a front end says otherwise, the whole frame is its text.
     assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.frameNativeWidth(), e8.frameNativeHeight()])"), "[80,25]");
     let frame = ed.selected_frame();
-    ed.set_frame_geometry(frame, e8_core::FrameGeometry { native: (100.0, 30.0), position: (12.0, 34.0), scale: 2.0 });
+    ed.set_frame_geometry(frame, e8_core::FrameGeometry { native: (100.0, 30.0), position: (12.0, 34.0), scale: 2.0, outer: (0.0, 0.0) });
     assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.frameNativeWidth(), e8.frameNativeHeight()])"), "[100,30]");
     assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.framePosition())"), "[12,34]");
     assert_eq!(eval(&mut ed, &s, "e8.frameScaleFactor()"), "2");
@@ -584,4 +584,112 @@ fn the_window_configuration_change_hook_can_be_run() {
             e8.runWindowConfigurationChangeHook(), String(globalThis.ran))"#,
     );
     assert_eq!(got, "1");
+}
+
+#[test]
+fn the_display_answers_from_what_the_front_end_wrote() {
+    let (mut ed, s) = setup();
+    let eval = |ed: &mut Editor, code: &str| {
+        let got = s.eval_expression(ed, code).unwrap_or_else(|e| panic!("{code}: {e}"));
+        serde_json::from_str::<String>(&got).unwrap_or(got)
+    };
+    // With nothing written in, the display is the frame, as a headless
+    // editor has no screen of its own.
+    let frame = eval(&mut ed, "JSON.stringify([e8.frameNativeWidth(), e8.frameNativeHeight()])");
+    let display = eval(&mut ed, "JSON.stringify([e8.xDisplayPixelWidth(), e8.xDisplayPixelHeight()])");
+    assert_eq!(frame, display);
+    // What every back end answers for itself, as Emacs's does.
+    assert_eq!(eval(&mut ed, "JSON.stringify(e8.xDisplayScreens())"), "1");
+    assert_eq!(eval(&mut ed, "JSON.stringify([e8.xwDisplayColorP(), e8.xDisplayGrayscaleP()])"), "[true,false]");
+    assert_eq!(eval(&mut ed, "JSON.stringify([e8.xDisplayPlanes(), e8.xDisplayColorCells()])"), "[24,16777216]");
+    assert_eq!(eval(&mut ed, "JSON.stringify(e8.xDisplayVisualClass())"), r#""true-color""#);
+    assert_eq!(eval(&mut ed, "JSON.stringify([e8.xDisplayBackingStore(), e8.xDisplaySaveUnder()])"), r#"["not-useful",false]"#);
+    assert_eq!(eval(&mut ed, "JSON.stringify([e8.xDisplayMmWidth() ?? null, e8.xDisplayList()])"), r#"[null,["e8"]]"#);
+    assert_eq!(eval(&mut ed, "e8.xServerVersion().length"), "3");
+    // There is one display, and no other to open or close.
+    assert!(s.eval_expression(&mut ed, r#"e8.xOpenConnection(":1")"#).is_err());
+    assert!(s.eval_expression(&mut ed, r#"e8.xCloseConnection("e8")"#).is_err());
+}
+
+#[test]
+fn each_monitor_says_which_frames_are_on_it() {
+    let (mut ed, s) = setup();
+    let eval = |ed: &mut Editor, code: &str| {
+        let got = s.eval_expression(ed, code).unwrap_or_else(|e| panic!("{code}: {e}"));
+        serde_json::from_str::<String>(&got).unwrap_or(got)
+    };
+    assert_eq!(eval(&mut ed, "JSON.stringify(e8.displayMonitorAttributesList().length)"), "1");
+    // Emacs's alist, in the order nsfns.m builds it.
+    assert_eq!(
+        eval(&mut ed, "JSON.stringify(e8.displayMonitorAttributesList()[0].map((p) => p[0]))"),
+        r#"["name","geometry","workarea","mm-size","frames","source"]"#
+    );
+    // An unknown size in millimetres is a pair of nils, as frame.el's own
+    // fallback gives, not nothing at all.
+    assert_eq!(eval(&mut ed, r#"JSON.stringify(e8.displayMonitorAttributesList()[0][3])"#), r#"["mm-size",[null,null]]"#);
+    // The one frame is on the one monitor, wherever it sits: Emacs puts
+    // every frame on exactly one, the nearest where it overlaps none.
+    assert_eq!(eval(&mut ed, "JSON.stringify(e8.displayMonitorAttributesList()[0][4][1].length)"), "1");
+    eval(&mut ed, "e8.setFramePosition(null, -5000, -5000)");
+    assert_eq!(eval(&mut ed, "JSON.stringify(e8.displayMonitorAttributesList()[0][4][1].length)"), "1");
+}
+
+#[test]
+fn a_frames_edges_are_its_corners_on_the_screen() {
+    let (mut ed, s) = setup();
+    let eval = |ed: &mut Editor, code: &str| {
+        let got = s.eval_expression(ed, code).unwrap_or_else(|e| panic!("{code}: {e}"));
+        serde_json::from_str::<String>(&got).unwrap_or(got)
+    };
+    let edges = eval(&mut ed, "JSON.stringify(e8.frameEdges())");
+    let expected = eval(
+        &mut ed,
+        "JSON.stringify([e8.framePosition()[0], e8.framePosition()[1], e8.frameNativeWidth(), e8.frameNativeHeight()])",
+    );
+    assert_eq!(edges, expected);
+    // The outer edges are the window the system draws, which a terminal
+    // and a headless editor have none of, so they are the frame's own.
+    assert_eq!(eval(&mut ed, r#"JSON.stringify(e8.frameEdges(null, "outer-edges"))"#), edges);
+    assert_eq!(eval(&mut ed, r#"JSON.stringify(e8.frameEdges(null, "native-edges"))"#), edges);
+    // The inner edges start below the bars drawn above the windows.
+    let inner = eval(&mut ed, r#"JSON.stringify(e8.frameEdges(null, "inner-edges"))"#);
+    assert_eq!(inner, edges);
+    eval(&mut ed, "e8.setFrameParameter(null, 'menu-bar-lines', 1)");
+    let with_bar = eval(&mut ed, r#"JSON.stringify(e8.frameEdges(null, "inner-edges"))"#);
+    assert_ne!(with_bar, eval(&mut ed, r#"JSON.stringify(e8.frameEdges(null, "native-edges"))"#));
+}
+
+#[test]
+fn a_colour_is_asked_about_by_the_window_systems_own_names() {
+    let (mut ed, s) = setup();
+    let eval = |ed: &mut Editor, code: &str| {
+        let got = s.eval_expression(ed, code).unwrap_or_else(|e| panic!("{code}: {e}"));
+        serde_json::from_str::<String>(&got).unwrap_or(got)
+    };
+    // Emacs: t, nil, (65535 0 0).
+    assert_eq!(eval(&mut ed, r#"JSON.stringify([e8.xwColorDefinedP("red"), e8.xwColorDefinedP("nosuch")])"#), "[true,false]");
+    assert_eq!(eval(&mut ed, r#"JSON.stringify(e8.xwColorValues("red"))"#), "[65535,0,0]");
+    assert_eq!(eval(&mut ed, r#"JSON.stringify(e8.xwColorValues("nosuch") ?? null)"#), "null");
+}
+
+#[test]
+fn frame_el_asks_the_terminal_where_there_is_no_window() {
+    let (mut ed, s) = setup();
+    let eval = |ed: &mut Editor, code: &str| {
+        let got = s.eval_expression(ed, code).unwrap_or_else(|e| panic!("{code}: {e}"));
+        serde_json::from_str::<String>(&got).unwrap_or(got)
+    };
+    // A headless editor is no window, so frame.el's wrappers ask the
+    // frame and the terminal, as Emacs's do on a text terminal.
+    assert_eq!(eval(&mut ed, "e8.displayIsAWindow()"), "false");
+    let call = |name: &str| format!(r#"JSON.stringify(e8.funcall("{name}"))"#);
+    assert_eq!(eval(&mut ed, &call("display-pixel-width")), eval(&mut ed, "JSON.stringify(e8.frameWidth())"));
+    assert_eq!(eval(&mut ed, &call("display-pixel-height")), eval(&mut ed, "JSON.stringify(e8.frameHeight())"));
+    assert_eq!(eval(&mut ed, &call("display-color-cells")), eval(&mut ed, "JSON.stringify(e8.ttyDisplayColorCells())"));
+    assert_eq!(eval(&mut ed, &call("display-color-p")), eval(&mut ed, "JSON.stringify(e8.ttyDisplayColorP())"));
+    assert_eq!(eval(&mut ed, &call("display-screens")), "1");
+    assert_eq!(eval(&mut ed, r#"JSON.stringify(e8.funcall("display-mm-width") ?? null)"#), "null");
+    // Every frame is on a monitor, so frame-monitor-workarea answers.
+    assert_eq!(eval(&mut ed, r#"JSON.stringify(e8.funcall("frame-monitor-workarea").length)"#), "4");
+    assert_eq!(eval(&mut ed, &call("display-monitor-attributes-list")), eval(&mut ed, "JSON.stringify(e8.displayMonitorAttributesList())"));
 }
