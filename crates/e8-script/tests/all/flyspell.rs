@@ -73,3 +73,24 @@ fn ispell_word_offers_corrections_in_choices() {
     assert!(!ed.buffers().iter().any(|b| b.name == "*Choices*"), "killed afterwards, as ispell-word does");
     assert_eq!(ed.window_list().len(), 1, "the choices window goes");
 }
+
+#[test]
+fn scrolling_with_the_wheel_checks_no_word_while_it_goes_on() {
+    // A misspelling on every line, so wherever point is moved to keep it
+    // in the window, it leaves one.
+    let text: String = (0..80).map(|n| format!("wrod number {n}\n")).collect();
+    let Some((mut ed, s)) = setup(&text) else { return };
+    ed.set_viewport_height(10);
+    ed.press("M-x f l y s p e l l - m o d e RET").unwrap();
+    ed.press("M-<").unwrap();
+    // The first step may check the word point leaves, as after any other
+    // command; after that the wheel is a movement repeated, as
+    // scroll-up and scroll-down are for Emacs's flyspell.
+    ed.wheel(1);
+    let first = marked(&mut ed, &s).split(' ').filter(|w| !w.is_empty()).count();
+    for _ in 0..20 {
+        ed.wheel(1);
+    }
+    let after = marked(&mut ed, &s).split(' ').filter(|w| !w.is_empty()).count();
+    assert_eq!(after, first, "words were checked during the scroll: {}", marked(&mut ed, &s));
+}

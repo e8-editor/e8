@@ -577,13 +577,47 @@ fn scroll_screen_down(ed: &mut Editor) -> Result<()> {
     Ok(())
 }
 
+/// The last line whose rows all show in the window when it starts at
+/// `top`: counted in screen rows where every row is a line high, and by
+/// the rows' own heights otherwise, as redisplay measures whether point
+/// is in view (`Editor::ensure_point_visible`). A line taller than the
+/// whole window is the last line there is room for.
+///
+/// Counting lines instead, as this once did, puts the bottom far below
+/// the window wherever lines are continued over several rows, so point
+/// left there is out of sight and redisplay recentres on it, pulling the
+/// window back to where it was.
+fn last_whole_line(ed: &Editor, b: &Buffer, top: usize) -> usize {
+    let wrap = ed.wrap_in(ed.selected_window, b);
+    let height = ed.viewport_height();
+    let uniform = ed.text_metrics().uniform();
+    let (mut line, mut used, mut last) = (top, 0.0_f32, top);
+    loop {
+        let rows = if uniform {
+            ed.screen_height_in(b, line, wrap) as f32
+        } else {
+            ed.screen_rows_of(b, line, wrap).iter().map(|r| ed.row_height(b, r)).sum()
+        };
+        if used + rows > height as f32 && line != top {
+            break;
+        }
+        used += rows;
+        last = line;
+        let (next, moved) = ed.move_rows_in(b, line, 1);
+        if moved == 0 || used >= height as f32 {
+            break;
+        }
+        line = next;
+    }
+    last
+}
+
 /// Scrolls the window by `lines`, positive towards the end of the buffer,
 /// until the last line is at the top. Point stays put unless it would leave
 /// the window; then it moves to the nearest visible line, keeping its column
 /// across repeated scrolls as line moves do. Returns whether anything scrolled.
 fn scroll_lines(ed: &mut Editor, lines: isize) -> bool {
     let continuing = ed.last_command().is_some_and(|c| SCROLL_KEEPS_COLUMN.contains(&c));
-    let height = ed.viewport_height();
     let b = ed.window_buffer();
     let goal = match ed.goal_column {
         Some(goal) if continuing => goal,
@@ -596,7 +630,7 @@ fn scroll_lines(ed: &mut Editor, lines: isize) -> bool {
     if moved == 0 {
         return false;
     }
-    let bottom = ed.move_rows_in(b, top, height as i64 - 1).0;
+    let bottom = last_whole_line(ed, b, top);
     let point_row = ed.row_line_in(b, b.line_of(b.point()));
     let target = point_row.clamp(top, bottom);
     let b = ed.window_buffer_mut();
