@@ -662,9 +662,36 @@ natives! {
         Ok(EditorValue::List(ed.current_minor_mode_maps().into_iter().map(EditorValue::Keymap).collect()))
     }
 
-    fn makeSparseKeymap(ed, parent: EditorValue) -> EditorValue {
+    fn makeSparseKeymap(ed, parent: EditorValue, prompt: Opt<String>) -> EditorValue {
         let parent = keymap_or_none(ed, &parent)?;
-        Ok(EditorValue::Keymap(ed.keymaps_mut().make(parent)))
+        let map = ed.keymaps_mut().make(parent);
+        ed.keymaps_mut().set_prompt(map, prompt.0);
+        Ok(EditorValue::Keymap(map))
+    }
+
+    /// A keymap's prompt, its own or the first its parents have, as
+    /// keymap-prompt; undefined for one with none, or for what is no keymap.
+    #[ts = "(keymap: unknown): string | undefined"]
+    pub fn keymapPrompt(ed, keymap: EditorValue) -> Option<String> {
+        let Ok(map) = ed.keymap_of(&keymap) else { return Ok(None) };
+        Ok(ed.keymaps().prompt(map).map(str::to_string))
+    }
+
+    /// What a keymap itself binds, its parents not asked: each key and
+    /// its binding, a prefix's being its keymap, with "t" for what it
+    /// runs for any other key. map-keymap-internal walks these.
+    fn keymapOwnBindings(ed, keymap: EditorValue) -> Vec<EditorValue> {
+        let map = ed.keymap_of(&keymap)?;
+        let maps = ed.keymaps();
+        let mut out: Vec<EditorValue> = maps
+            .own_bindings(map)
+            .into_iter()
+            .filter_map(|(key, binding)| binding_value(binding).map(|v| EditorValue::List(vec![EditorValue::Str(key.to_string()), v])))
+            .collect();
+        if let Some(default) = maps.own_default(map) {
+            out.push(EditorValue::List(vec![EditorValue::Str("t".into()), EditorValue::Str(default.to_string())]));
+        }
+        Ok(out)
     }
 
     fn keymapParent(ed, keymap: EditorValue) -> Option<EditorValue> {

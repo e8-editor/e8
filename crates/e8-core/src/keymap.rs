@@ -102,6 +102,12 @@ struct Map {
     /// them, as an Emacs keymap's `[remap COMMAND]` bindings.
     remaps: BTreeMap<String, String>,
     parent: Option<KeymapId>,
+    /// What the echo area shows while a key is read in this keymap, as an
+    /// Emacs keymap's overall prompt string, which `make-sparse-keymap`
+    /// takes ([ADR 0082]).
+    ///
+    /// [ADR 0082]: ../../../../docs/adr/0082-keymaps-rest-as-emacs-has-them.md
+    prompt: Option<String>,
 }
 
 /// The result of looking up a key sequence.
@@ -135,6 +141,26 @@ impl Keymaps {
 
     pub fn parent(&self, map: KeymapId) -> Option<KeymapId> {
         self.maps[map].parent
+    }
+
+    /// Gives a keymap its prompt, or takes it away.
+    pub fn set_prompt(&mut self, map: KeymapId, prompt: Option<String>) {
+        self.maps[map].prompt = prompt;
+    }
+
+    /// A keymap's prompt, as `keymap-prompt`: its own, else the first its
+    /// parents have, as Emacs looks along the keymap's list into the
+    /// parent at its tail.
+    pub fn prompt(&self, map: KeymapId) -> Option<&str> {
+        let mut at = Some(map);
+        for _ in 0..DEPTH {
+            let m = &self.maps[at?];
+            if let Some(prompt) = &m.prompt {
+                return Some(prompt);
+            }
+            at = m.parent;
+        }
+        None
     }
 
     /// A copy of a keymap, as Emacs's `copy-keymap`: its bindings, default,
@@ -313,6 +339,12 @@ impl Keymaps {
     /// What a keymap itself binds, its parents' bindings left out.
     pub fn own_bindings(&self, map: KeymapId) -> Vec<(Key, Binding)> {
         self.maps[map].bindings.iter().map(|(key, binding)| (*key, binding.clone())).collect()
+    }
+
+    /// What a keymap itself runs for any key it binds nothing to, as its
+    /// `[t]` binding, its parents not asked.
+    pub fn own_default(&self, map: KeymapId) -> Option<&str> {
+        self.maps[map].default.as_deref()
     }
 
     /// What a keymap itself binds a key sequence to, menu items not

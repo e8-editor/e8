@@ -83,3 +83,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0079](0079-the-keyboards-odds-and-ends.md) The keyboard's odds and ends: idle time, this-command-keys, and input modes
 - [0080](0080-xml-and-html-as-emacs-parses-them.md) XML and HTML as Emacs parses them: libxml-parse-html-region
 - [0081](0081-the-display-as-emacs-asks-about-it.md) The display as Emacs asks about it: x-display-*, monitors, and AppleScript
+- [0082](0082-keymaps-rest-as-emacs-has-them.md) Keymaps' rest as Emacs has them: prompts, map-keymap-internal, and describe-buffer-bindings

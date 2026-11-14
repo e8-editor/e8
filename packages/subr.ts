@@ -691,3 +691,15 @@ e8.addHook("kill-buffer-hook", () => {
   const id = e8.currentBuffer().id;
   for (const values of perBufferValues) values.delete(id);
 });
+
+/**
+ * What a key's binding stands for, as keymap.c's keymap--get-keyelt: a
+ * menu item's definition, `["menu-item", label, definition, ...]`, and
+ * anything else as it is, as E8's lookups already look through the menu
+ * items keymaps hold (ADR 0082).
+ */
+export function keymapGetKeyelt(object: e8.Value, _autoload?: boolean): e8.Value {
+  if (Array.isArray(object) && object[0] === "menu-item" && object.length >= 3) return object[2];
+  return object;
+}
+e8.defun("keymap--get-keyelt", keymapGetKeyelt);

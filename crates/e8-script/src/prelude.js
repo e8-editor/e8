@@ -615,7 +615,16 @@
     bindKey: (keys, command, keymap) => native.bindKey(String(keys), bindingArg(command), keymap === undefined ? native.currentGlobalMap() : keymapArg(keymap)),
     defineKey: (keymap, keys, binding) => native.bindKey(String(keys), bindingArg(binding), keymapArg(keymap)),
     keymapUnset: (keymap, keys, remove = false) => native.keymapUnset(keymapArg(keymap), String(keys), Boolean(remove)),
-    makeSparseKeymap: (parent) => native.makeSparseKeymap(parent === undefined || parent === null ? null : keymapArg(parent)),
+    makeSparseKeymap: (parent, prompt) => {
+      const p = parent === undefined || parent === null ? null : keymapArg(parent);
+      // Left out rather than passed as null, which would arrive as a string.
+      return prompt === undefined || prompt === null ? native.makeSparseKeymap(p) : native.makeSparseKeymap(p, String(prompt));
+    },
+    mapKeymapInternal: (fn, keymap) => {
+      const map = keymapArg(keymap);
+      for (const [key, binding] of native.keymapOwnBindings(map)) fn(key, binding);
+      return native.keymapParent(map) ?? undefined;
+    },
     keymapp: (value) => value instanceof Keymap,
     keymapParent: (keymap) => native.keymapParent(keymapArg(keymap)),
     setKeymapParent: (keymap, parent) => native.setKeymapParent(keymapArg(keymap), parent === undefined || parent === null ? null : keymapArg(parent)),

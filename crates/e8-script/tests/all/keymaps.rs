@@ -275,3 +275,175 @@ fn binding_keys_and_describing_them_follow_the_global_map_in_use() {
     assert_eq!(got, "null");
 }
 
+
+#[test]
+fn a_keymap_carries_the_prompt_it_was_made_with() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(() => {
+            const up = e8.makeSparseKeymap(null, "Up");
+            const child = e8.makeSparseKeymap(up);
+            const own = e8.makeSparseKeymap(up, "Own");
+            return JSON.stringify([
+              e8.keymapPrompt(e8.makeSparseKeymap(null, "Pick")), e8.keymapPrompt(e8.makeSparseKeymap()) ?? null,
+              e8.keymapPrompt(child), e8.keymapPrompt(own), e8.keymapPrompt(42) ?? null, e8.keymapPrompt(null) ?? null,
+              e8.keymapPrompt(e8.copyKeymap(own)),
+            ]);
+          })()"#,
+    );
+    // Emacs: "Pick" nil "Up" "Own" nil nil, and a copy keeps its prompt.
+    assert_eq!(got, r#"["Pick",null,"Up","Own",null,null,"Own"]"#);
+}
+
+#[test]
+fn map_keymap_internal_walks_a_keymaps_own_keys_and_hands_back_its_parent() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(() => {
+            const parent = e8.makeSparseKeymap();
+            e8.defineKey(parent, "z", "zap-to-char");
+            const map = e8.makeSparseKeymap(parent);
+            e8.defineKey(map, "a", "forward-char");
+            e8.defineKey(map, "C-x f", "find-file");
+            const seen = [];
+            const back = e8.mapKeymapInternal((key, binding) => seen.push([key, e8.keymapp(binding) ? "MAP" : binding]), map);
+            const none = e8.mapKeymapInternal(() => {}, parent);
+            return JSON.stringify([seen.sort(), back === parent, none ?? null]);
+          })()"#,
+    );
+    // Emacs: ((24 MAP) (97 forward-char)) — the prefix as its keymap, the
+    // parent's z not visited — and the parent handed back, nil for none.
+    // Emacs visits the newest binding first; E8 keeps a keymap's keys in
+    // order, so only which keys are visited is compared.
+    assert_eq!(got, r#"[[["C-x","MAP"],["a","forward-char"]],true,null]"#);
+}
+
+#[test]
+fn keymap_get_keyelt_looks_through_a_menu_item() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"JSON.stringify([e8.funcall("keymap--get-keyelt", "forward-char", null), e8.funcall("keymap--get-keyelt", ["menu-item", "Open", "find-file"], null)])"#,
+    );
+    // Emacs: forward-char, find-file.
+    assert_eq!(got, r#"["forward-char","find-file"]"#);
+}
+
+#[test]
+fn describe_buffer_bindings_writes_what_emacs_writes() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(() => {
+            const m = e8.makeSparseKeymap();
+            e8.defineKey(m, "C-c a", "forward-char");
+            e8.defineKey(m, "C-c b", "backward-char");
+            e8.defineKey(m, "C-c C-x z", "zap-to-char");
+            e8.defineKey(m, "C-c <f5>", "recompile");
+            e8.defineKey(m, "C-c <f12>", "recompile");
+            for (const c of ["1", "2", "3", "4"]) e8.defineKey(m, `C-c ${c}`, "digit-argument");
+            e8.defineKey(m, "C-c M-q", "fill-paragraph");
+            e8.defineKey(m, "C-c x", "undefined");
+            e8.defineKey(m, "C-c l", ["a", "b", "c"]);
+            e8.useLocalMap(m);
+            const buffer = e8.currentBuffer();
+            const text = e8.withCurrentBuffer(e8.getBufferCreate("*out*"), () => {
+              e8.funcall("describe-buffer-bindings", buffer, "C-c");
+              return e8.bufferText();
+            });
+            return JSON.stringify([text, e8.windowTotalWidth() - 1]);
+          })()"#,
+    );
+    let (got, width): (String, usize) = serde_json::from_str(&got).unwrap();
+    // GNU Emacs 30.2's text for the same keymap, its rule the window's width: a
+    // run of characters as one line, `undefined' left out, function keys in
+    // version order, the meta key and the prefix map as blocks of their own.
+    let rule = "-".repeat(width);
+    let expected = format!(
+        "\x0c\n`fundamental-mode' Major Mode Bindings Starting With C-c:\n\nKey             Binding\n{rule}\n\
+         C-c 1 .. C-c 4\tdigit-argument\nC-c a\t\tforward-char\nC-c b\t\tbackward-char\nC-c l\t\tKeyboard Macro\n\
+         C-c <f5>\trecompile\nC-c <f12>\trecompile\n\nC-c M-q\t\tfill-paragraph\n\nC-c C-x z\tzap-to-char\n"
+    );
+    assert_eq!(got, expected);
+}
+
+#[test]
+fn describe_buffer_bindings_shadows_runs_and_meta_keys_as_emacs_does() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(() => {
+            e8.defineMinorMode({ name: "foo-mode", bindings: { "<f9> a": "kill-word" } });
+            e8.call("foo-mode");
+            const m = e8.makeSparseKeymap();
+            e8.defineKey(m, "<f9> a", "kill-line");
+            e8.defineKey(m, "<f9> c", "yank");
+            for (const k of ["C-a", "C-b", "C-c"]) e8.defineKey(m, `<f9> ${k}`, "forward-char");
+            for (const k of ["M-a", "M-b", "M-c"]) e8.defineKey(m, `<f9> ${k}`, "backward-char");
+            e8.defineKey(m, "<f9> x q", "upcase-word");
+            e8.defineKey(m, "<f9> y q", "downcase-word");
+            e8.defineKey(m, "<f9> M-TAB", "complete-symbol");
+            e8.defineKey(m, "C-x C-f", "forward-char");
+            e8.defineKey(m, "C-x 4", "backward-char");
+            e8.useLocalMap(m);
+            const buffer = e8.currentBuffer();
+            const describe = (prefix) => e8.withCurrentBuffer(e8.getBufferCreate("*out*"), () => {
+              e8.deleteRegion(e8.pointMin(), e8.pointMax());
+              e8.funcall("describe-buffer-bindings", buffer, prefix);
+              return e8.bufferText();
+            });
+            return JSON.stringify([describe("<f9>"), describe("C-x"), e8.windowTotalWidth() - 1]);
+          })()"#,
+    );
+    let (f9, cx, width): (String, String, usize) = serde_json::from_str(&got).unwrap();
+    let rule = "-".repeat(width);
+    // GNU Emacs 30.2's text, but for the order of the blocks under <f9>,
+    // which Emacs lists newest first: the minor mode's key shadows the
+    // major mode's, the minor mode's title is quoted, runs of control and
+    // meta characters are one line each, and ESC TAB reads C-M-i.
+    let expected = format!(
+        "\x0c\n`foo-mode' Minor Mode Bindings Starting With <f9>:\n\nKey             Binding\n{rule}\n<f9> a\t\tkill-word\n\
+         \x0c\n`fundamental-mode' Major Mode Bindings Starting With <f9>:\n\nKey             Binding\n{rule}\n\
+         <f9> C-a .. <f9> C-c\tforward-char\n<f9> c\t\t\tyank\n\n<f9> C-M-i\t\tcomplete-symbol\n<f9> M-a .. <f9> M-c\tbackward-char\n\n\
+         <f9> x q\tupcase-word\n\n<f9> y q\tdowncase-word\n"
+    );
+    assert_eq!(f9, expected);
+    // Under a prefix, a local key shadows the global one, and a local
+    // command on C-x 4 hides every global key under it.
+    let global = &cx[cx.find("Global Bindings Starting With C-x:").expect("the global section")..];
+    assert!(global.contains("\nC-x C-s\t\tsave-buffer\n"), "{cx}");
+    assert!(!global.contains("\nC-x C-f\t"), "{cx}");
+    assert!(!global.contains("\nC-x 4 "), "{cx}");
+}
+
+#[test]
+fn keys_under_esc_are_the_meta_keys() {
+    let (mut ed, s) = setup();
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(() => {
+            const m = e8.makeSparseKeymap();
+            e8.defineKey(m, "M-a", "forward-char");
+            e8.defineKey(m, "C-M-q", "yank");
+            e8.useLocalMap(m);
+            const buffer = e8.currentBuffer();
+            return e8.withCurrentBuffer(e8.getBufferCreate("*out*"), () => {
+              e8.funcall("describe-buffer-bindings", buffer, "ESC");
+              return e8.bufferText();
+            });
+          })()"#,
+    );
+    // As Emacs lists its ESC map's keys: the meta characters, and only them.
+    assert!(got.contains("Major Mode Bindings Starting With ESC:\n"), "{got}");
+    assert!(got.contains("\nC-M-q\t\tyank\nM-a\t\tforward-char\n"), "{got}");
+    assert!(got.contains("\nM-q\t\tfill-paragraph\n"), "{got}");
+    assert!(!got.contains("\nC-x "), "{got}");
+}

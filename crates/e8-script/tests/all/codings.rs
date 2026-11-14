@@ -239,7 +239,7 @@ fn a_restriction_is_walked_in_the_order_it_is_given() {
 #[test]
 fn what_is_no_charset_and_no_region_is_refused_as_emacs_refuses_it() {
     let (mut ed, s) = setup();
-    let mut fails = |ed: &mut Editor, code: &str| s.eval_expression(ed, code).is_err();
+    let fails = |ed: &mut Editor, code: &str| s.eval_expression(ed, code).is_err();
     assert!(fails(&mut ed, r#"e8.setCharsetPriority("nope")"#));
     assert!(fails(&mut ed, r#"e8.sortCharsets(["ascii", "nope"])"#));
     assert!(fails(&mut ed, r#"e8.setCharsetPlist("nope", {})"#));
