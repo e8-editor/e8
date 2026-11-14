@@ -130,13 +130,13 @@ e8.defun("python--treesit-defun-name", (node: e8.TreesitNode) => {
 /** How an item is labelled, as python-imenu-format-item-label: "name (def)". */
 const pythonLabel = (type: string, name: string) => `${name} (${type})`;
 
-type PythonSparse = [e8.TreesitNode | undefined, PythonSparse[]];
+type PythonSparse = [e8.TreesitNode | null | undefined, ...PythonSparse[]];
 type PythonEntry = [string, number | PythonEntry[]];
 
 /** The index from a sparse tree of definitions, as python--imenu-treesit-create-index-1. */
-function pythonImenu1([node, children]: PythonSparse): PythonEntry[] {
+function pythonImenu1([node, ...children]: PythonSparse): PythonEntry[] {
   const subtrees = children.flatMap(pythonImenu1);
-  if (node === undefined) return subtrees;
+  if (node === undefined || node === null) return subtrees;
   const type = e8.treesitNodeType(node) === "class_definition" ? "class" : "def";
   const name = defunName(node) ?? "Anonymous";
   const start = e8.treesitNodeStart(node)!;
@@ -146,8 +146,8 @@ function pythonImenu1([node, children]: PythonSparse): PythonEntry[] {
 }
 
 e8.defun("python-imenu-treesit-create-index", () => {
-  const tree = induceSparseTree(bufferRootNode("python"), "^\\(?:function\\|class\\)_definition$", 1000) as PythonSparse;
-  return pythonImenu1(tree) as unknown as e8.Value;
+  const tree = induceSparseTree(bufferRootNode("python"), "^\\(?:function\\|class\\)_definition$", 1000) as PythonSparse | undefined;
+  return (tree === undefined ? [] : pythonImenu1(tree)) as unknown as e8.Value;
 });
 
 // --- Python's blocks for hideshow, as python.el's python-nav functions -------
@@ -469,7 +469,7 @@ const JSON_RULES = [
 /** JSX's rules for older or newer grammars, as js-jsx--treesit-indent-compatibility-bb1f97b chooses them. */
 function jsxCompatibility(): unknown[] {
   const fragment = e8.conditionCase(
-    () => (e8.treesitQueryCompile("javascript", "(jsx_fragment) @capture"), true),
+    () => (e8.treesitQueryCompile("javascript", "(jsx_fragment) @capture", true), true),
     { error: () => false },
   );
   return fragment
@@ -584,7 +584,7 @@ const GO_BUILTINS = [
 
 /** Whether the grammar has a node type, as go-ts-mode--iota-query-supported-p asks. */
 const goHas = (type: string): boolean =>
-  e8.conditionCase(() => (e8.treesitQueryCompile("go", `(${type}) @cap`), true), { error: () => false });
+  e8.conditionCase(() => (e8.treesitQueryCompile("go", `(${type}) @cap`, true), true), { error: () => false });
 
 const quoted = (names: string[]) => names.map((n) => JSON.stringify(n)).join(" ");
 

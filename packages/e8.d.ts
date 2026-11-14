@@ -18482,8 +18482,42 @@ declare global {
     /** A node's property, as treesit-node-check: "named", "missing", "extra", "has-error", "has-changes", "live" or "outdated". */
     function treesitNodeCheck(node: TreesitNode, property: string): boolean;
     function treesitNodeEq(a: TreesitNode | undefined | null, b: TreesitNode | undefined | null): boolean;
-    /** Compiles a query, checking it, as treesit-query-compile; queries are strings in tree-sitter's syntax. */
-    function treesitQueryCompile(language: string, query: string): string;
+    /** A compiled query, as Emacs's treesit-compiled-query objects: the same object each time. */
+    class TreesitCompiledQuery {
+      private constructor();
+      readonly __e8TreesitQuery: number;
+    }
+    /**
+     * A query: tree-sitter's syntax as a string, Lisp patterns as treesitPatternExpand
+     * takes them, or a compiled query, as treesit-query-p accepts.
+     */
+    type TreesitQuery = string | unknown[] | TreesitCompiledQuery;
+    /**
+     * A predicate on nodes, as treesit-thing-settings holds them: an Emacs regexp
+     * matched against a node's type, a function called with the node, a thing's
+     * name as Symbol.for("defun"), ["not", p], ["or", p...], or [regexp, function].
+     */
+    type TreesitPredicate = string | symbol | ((node: TreesitNode) => unknown) | readonly unknown[];
+    /**
+     * A query compiled for a language, as treesit-query-compile: checked now with
+     * eager, else when first used. A compiled query comes back as it is.
+     */
+    function treesitQueryCompile(language: string, query: TreesitQuery, eager?: boolean): TreesitCompiledQuery;
+    /** Whether a value is a query: a string, Lisp patterns or a compiled query, as treesit-query-p. */
+    function treesitQueryP(x: unknown): boolean;
+    function treesitCompiledQueryP(x: unknown): x is TreesitCompiledQuery;
+    /** The language a compiled query is for, as treesit-query-language. */
+    function treesitQueryLanguage(query: TreesitCompiledQuery): string;
+    /**
+     * A pattern given as Lisp in tree-sitter's syntax, as treesit-pattern-expand:
+     * symbols by name (Symbol.for("@name"), Symbol.for("field:")), the keywords
+     * :anchor, :?, :*, :+, :equal, :match and :pred as operators, a list in
+     * parentheses, a list starting with Symbol.for("[") in brackets, as Lisp's
+     * vector, and a string quoted.
+     */
+    function treesitPatternExpand(pattern: unknown): string;
+    /** Lisp patterns as one query string, as treesit-query-expand. */
+    function treesitQueryExpand(query: unknown[]): string;
     /**
      * The captures of a query in a node, a parser's tree, or the buffer's tree
      * for a language, as treesit-query-capture: [name, node] pairs, or nodes
@@ -18493,7 +18527,7 @@ declare global {
      */
     function treesitQueryCapture(
       node: TreesitNode | TreesitParser | string,
-      query: string,
+      query: TreesitQuery,
       beg?: number | null,
       end?: number | null,
       nodeOnly?: false,
@@ -18501,12 +18535,71 @@ declare global {
     ): [string, TreesitNode][];
     function treesitQueryCapture(
       node: TreesitNode | TreesitParser | string,
-      query: string,
+      query: TreesitQuery,
       beg: number | null | undefined,
       end: number | null | undefined,
       nodeOnly: true,
       grouped?: boolean,
     ): TreesitNode[];
+    /** The newest grammar ABI tree-sitter loads, or the oldest with minCompatible, as treesit-library-abi-version. */
+    function treesitLibraryAbiVersion(minCompatible?: boolean): number;
+    /** The ABI a language's grammar was made for, or undefined without one, as treesit-language-abi-version. */
+    function treesitLanguageAbiVersion(language: string): number | undefined;
+    /**
+     * Limits a parser to [start, end] spans of the buffer, in order and not
+     * overlapping, or lets it parse all of it for null, as
+     * treesit-parser-set-included-ranges; treesit-range-invalid otherwise.
+     */
+    function treesitParserSetIncludedRanges(parser: TreesitParser, ranges: [number, number][] | null): void;
+    /** The spans a parser was last limited to, or undefined, as treesit-parser-included-ranges. */
+    function treesitParserIncludedRanges(parser: TreesitParser): [number, number][] | undefined;
+    /** The functions told what a parser's parses change, oldest first, as treesit-parser-notifiers. */
+    function treesitParserNotifiers(parser: TreesitParser): symbol[];
+    /**
+     * Has a function, by name, told what each parse of a parser changes, as
+     * treesit-parser-add-notifier: it is called with the [start, end] spans
+     * that changed, the whole buffer on a first parse, and the parser.
+     */
+    function treesitParserAddNotifier(parser: TreesitParser, fn: string | symbol): void;
+    function treesitParserRemoveNotifier(parser: TreesitParser, fn: string | symbol): void;
+    /**
+     * Whether a node matches a predicate, as treesit-node-match-p: false for no
+     * node; a thing treesit-thing-settings does not define is
+     * treesit-predicate-not-found unless ignoreMissing.
+     */
+    function treesitNodeMatchP(node: TreesitNode | undefined | null, predicate: TreesitPredicate, ignoreMissing?: boolean): boolean;
+    /**
+     * The first node in a subtree that matches, depth first, the node itself
+     * first, to depth levels (1000 by default), named ones only unless all,
+     * as treesit-search-subtree.
+     */
+    function treesitSearchSubtree(
+      node: TreesitNode,
+      predicate: TreesitPredicate,
+      backward?: boolean,
+      all?: boolean,
+      depth?: number | null,
+    ): TreesitNode | undefined;
+    /**
+     * The next node after start that matches, leaves first and then their
+     * parents, not looking into start's own subtree, named ones only unless
+     * all, as treesit-search-forward.
+     */
+    function treesitSearchForward(start: TreesitNode, predicate: TreesitPredicate, backward?: boolean, all?: boolean): TreesitNode | undefined;
+    /**
+     * The nodes under root that match, as a tree of their own, as
+     * treesit-induce-sparse-tree: each [node, ...children], the node what
+     * processFn makes of it if given, the top's node null when root does not
+     * match; undefined if nothing does. To depth levels, 1000 by default.
+     */
+    function treesitInduceSparseTree(
+      root: TreesitNode,
+      predicate: TreesitPredicate,
+      processFn?: ((node: TreesitNode) => unknown) | null,
+      depth?: number | null,
+    ): unknown[] | undefined;
+    /** [deepest level, most children of a node, number of nodes] of a subtree, as treesit-subtree-stat. */
+    function treesitSubtreeStat(node: TreesitNode): [number, number, number];
 
     /**
      * Add a face to the face property of the text from start to end, keeping

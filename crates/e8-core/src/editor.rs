@@ -267,6 +267,11 @@ pub struct Editor {
     pub(crate) grammars: BTreeMap<&'static str, crate::syntax::Grammar>,
     /// Tree-sitter queries compiled so far, by language and source.
     pub(crate) treesit_queries: std::collections::HashMap<(String, String), std::rc::Rc<tree_sitter::Query>>,
+    /// The queries `treesit-query-compile` made objects of, as language
+    /// and source, which a query object is the index of.
+    pub(crate) treesit_query_objects: Vec<(String, String)>,
+    /// Whether parser notifiers are being called, so they are not called again inside.
+    pub(crate) treesit_notifying: bool,
     pub(crate) next_hook_id: u64,
     /// Whether the running command was started by keys or M-x rather than
     /// called from code (Emacs's `called-interactively-p`).
@@ -511,6 +516,8 @@ impl Editor {
             images: Default::default(),
             grammars: crate::syntax::builtin_grammars().into_iter().collect(),
             treesit_queries: Default::default(),
+            treesit_query_objects: Vec::new(),
+            treesit_notifying: false,
             next_hook_id: 0,
             interactive: false,
             prefix_arg: None,
@@ -1548,6 +1555,8 @@ impl Editor {
         self.previous_amalgamating = self.amalgamating_now;
         self.this_command = self.last_command.clone();
         self.refresh_dynamic_collection();
+        // Parses since the last primitive, as highlighting's, are told too.
+        self.run_treesit_notifiers();
         if let Err(e) = self.run_hooks("post-command-hook") {
             self.message(format!("Error in post-command-hook: {e}"));
         }

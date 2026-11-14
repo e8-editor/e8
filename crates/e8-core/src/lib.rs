@@ -85,6 +85,7 @@ mod timers;
 #[cfg_attr(target_arch = "wasm32", path = "tls_stub.rs")]
 pub mod tls;
 pub mod treesitfns;
+mod treesitsearch;
 mod window;
 mod window_tree;
 mod variables;

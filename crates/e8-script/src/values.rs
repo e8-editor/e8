@@ -123,6 +123,7 @@ pub(crate) fn value_to_js<S: Scope>(s: &mut S, value: &EditorValue) -> Result<S:
                 e8_core::treesitfns::TsObject::Node(r) => {
                     ("node", [r.buffer as f64, r.parser as f64, r.generation as f64].into_iter().chain(r.path.iter().map(|&i| i as f64)).collect())
                 }
+                e8_core::treesitfns::TsObject::Query(id) => ("query", vec![*id as f64]),
             };
             let kind = s.string(kind)?;
             let raw = raw.into_iter().map(|n| s.number(n)).collect();
@@ -254,6 +255,9 @@ pub(crate) fn convert_from_js<S: Scope>(s: &mut S, value: S::Value) -> Result<Op
         && raw.len() == 2
     {
         return Ok(Some(EditorValue::Treesit(e8_core::treesitfns::TsObject::Parser { buffer: raw[0] as u64, parser: raw[1] as u64 })));
+    }
+    if let Some(id) = number_property(s, &object, "__e8TreesitQuery")? {
+        return Ok(Some(EditorValue::Treesit(e8_core::treesitfns::TsObject::Query(id as u64))));
     }
     if let Some(raw) = numbers_property(s, &object, "__e8TreesitNode")?
         && raw.len() >= 3

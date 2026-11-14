@@ -59,11 +59,11 @@ A package can write a tree-sitter mode as Emacs's are written, rules and all, an
 - Scripts reach treesit.ts's functions by `import("treesit")`, as `init.ts` is not a module.
 
 Not done yet:
-- **Embedded languages:** `treesit-parser-set-included-ranges`, so no `treesit-range-settings`.
+- **Embedded languages:** `treesit-range-settings`. `treesit-parser-set-included-ranges` came with [ADR 0084](0084-tree-sitters-rest-as-emacs-has-it.md).
 - **Highlighting** by `treesit-font-lock-rules`: highlighting still uses each grammar's own query.
 - **Sentences** by `treesit-thing-settings`: `forward-sentence-function` is not set. Sexps came later: `forward-sexp` now goes through `forward-sexp-function`, which `treesit-forward-sexp` is when a mode defines a sexp thing, as js-ts-mode does, so `C-M-f`, `C-M-b` and `C-M-k` move by its nodes. Seven more cases check them.
-- **Lisp-form queries** (`treesit-query-expand`); queries are strings.
-- **The rest of treesit.c:** parser notifiers, `treesit-induce-sparse-tree`, Imenu and Outline from the tree, and `treesit-explore-mode`.
+- **Lisp-form queries** came with [ADR 0084](0084-tree-sitters-rest-as-emacs-has-it.md).
+- **The rest of treesit.c:** Outline from the tree and `treesit-explore-mode`. Imenu came later, and parser notifiers and `treesit-induce-sparse-tree` with [ADR 0084](0084-tree-sitters-rest-as-emacs-has-it.md).
 - **Narrowing:** Emacs parses only a narrowed buffer's accessible part; E8 parses all of it.
 
 ## Dependencies introduced
