@@ -515,6 +515,25 @@ fn c_g_aborts_the_minibuffer_and_an_outer_one_asks_first() {
 }
 
 #[test]
+fn top_level_leaves_every_minibuffer() {
+    let d = Driven::new(
+        r#"
+        e8.defineCommand({ name: "zz-insert", params: [{ name: "text", kind: "string", prompt: "Text: " }], run: (text: string) => e8.insert(text) });
+        e8.bindKey("C-c i", "zz-insert");
+        "#,
+    );
+    d.with(|ed| ed.set_default("enable-recursive-minibuffers", Value::Bool(true)));
+    d.press("M-x");
+    d.press("C-c i");
+    d.press("C-c i");
+    assert_eq!(d.with(|ed| ed.minibuffer_depth()), 3);
+    d.mx("top-level");
+    assert_eq!(d.with(|ed| ed.minibuffer_depth()), 0);
+    assert_eq!(d.prompt(), None);
+    assert_eq!(d.message().as_deref(), Some("Back to top level"));
+}
+
+#[test]
 fn read_variable_completes_a_variables_name() {
     let d = Driven::new(
         r#"

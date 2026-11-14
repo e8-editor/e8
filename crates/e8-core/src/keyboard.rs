@@ -533,7 +533,10 @@ impl Editor {
     /// Leaves every recursive edit and minibuffer, back to the top level,
     /// as Emacs's `top-level`.
     pub fn top_level(&mut self) {
+        // Each abort closes only the open prompt, so the outer one is
+        // brought back before the next, as in `abort_minibuffers`.
         for _ in 0..self.minibuffer_depth() {
+            self.resume_outer_minibuffer();
             self.abort();
         }
         while let Some(edit) = self.keyboard.recursive_edits.pop() {
