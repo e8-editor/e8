@@ -339,3 +339,46 @@ fn deleting_the_others_inside_a_window_selects_its_last() {
     );
     assert_eq!(got, "2");
 }
+
+/// A window's measures as the GUI's: characters 8 by 16, bars a line and
+/// 12 points of room tall, and 12 points above the text.
+struct Padded;
+
+impl e8_core::layout::TextMetrics for Padded {
+    fn advance(&self, _font: &e8_core::layout::FontSpec, _c: char) -> f32 {
+        8.0
+    }
+    fn line_height(&self, _font: &e8_core::layout::FontSpec) -> f32 {
+        16.0
+    }
+    fn char_width(&self) -> f32 {
+        8.0
+    }
+    fn char_height(&self) -> f32 {
+        16.0
+    }
+    fn window_chrome(&self) -> e8_core::layout::WindowChrome {
+        e8_core::layout::WindowChrome { mode_line: 28.0, header_line: 28.0, text_top: 12.0, fringes: 0.0, divider: 0.0 }
+    }
+}
+
+#[test]
+fn a_root_split_emacs_takes_is_not_refused_for_the_guis_taller_bars() {
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Padded));
+    ed.set_frame_pixel_size(800, 600);
+    // Three lines, as vundo asks for its tree, are 48 points, less than a
+    // bar, the room above the text and a line: the window grows to hold
+    // the line, as Emacs's three lines hold two.
+    assert_eq!(
+        eval(&mut ed, &s, r#"((w) => JSON.stringify([e8.windowPixelHeight(w), e8.windowBodyPixelHeight(w), e8.windowPixelHeight(ws()[0])]))(e8.splitRootWindow("below", -3))"#),
+        "[56,16,544]"
+    );
+    // Less than Emacs's two lines is still too small.
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Padded));
+    ed.set_frame_pixel_size(800, 600);
+    assert_eq!(eval(&mut ed, &s, r#"err(() => e8.splitRootWindow("below", -1))"#), "Size of new window too small");
+    // The old window, given its size, grows the same way.
+    assert_eq!(eval(&mut ed, &s, r#"(e8.splitRootWindow("below", 3), JSON.stringify(ws().map((w) => e8.windowPixelHeight(w))))"#), "[56,544]");
+}
