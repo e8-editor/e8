@@ -108,4 +108,5 @@ One record per decision, in the order they were made; a later one can change an 
 - [0104](0104-running-a-buffers-typescript.md) Running a buffer's TypeScript: eval-buffer, eval-region and read-char-exclusive
 - [0105](0105-fontset-info.md) fontset-info: a fontset as a char-table
 - [0106](0106-the-graphical-profile.md) E8's graphical profile: the rosette, the wordmark and the colours
-- [0107](0107-spell-checking-off-the-editor-thread.md) Spell checking off the editor thread: answers remembered, checks after commands that do not wait, helpers for large regions
+- [0107](0107-the-brand-palette-as-the-default-look.md) The brand palette as the default look: Midnight, Lavender and Ivory in place of ArtCraft's blue
+- [0108](0108-spell-checking-off-the-editor-thread.md) Spell checking off the editor thread: answers remembered, checks after commands that do not wait, helpers for large regions

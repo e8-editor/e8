@@ -25,6 +25,10 @@
 //! set of [`Param`] and [`Ret`] implementations and another arm of the
 //! macro; the entries stay as they are.
 //!
+//! QuickJS's binding takes at most seven parameters besides `ed`; an entry
+//! with more builds on V8 and not on QuickJS, so it takes its trailing
+//! optional ones as `Rest<EditorValue>`, as `compareStrings` does.
+//!
 //! Every call is a safe point, where a quit asked for is signalled, except
 //! for an entry marked `#[safe_point = false]`, which must run while a quit
 //! unwinds (`unbind`) or reads the quit flag itself.

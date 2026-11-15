@@ -1,4 +1,4 @@
-# 0107. Spell checking off the editor thread
+# 0108. Spell checking off the editor thread
 
 Status: accepted · 2026-11-15
 

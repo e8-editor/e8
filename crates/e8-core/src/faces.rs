@@ -4,7 +4,7 @@
 //! inherits the rest from the faces its `:inherit` names. Faces can differ
 //! between light and dark backgrounds, and text can carry an anonymous
 //! face, a list of attributes in its `face` property. Colours are names
-//! from E8's palette, which follows ArtCraft's, the names Emacs knows,
+//! from E8's palette, made from its brand colours, the names Emacs knows,
 //! or Emacs's colour specs: `#rgb` to `#rrrrggggbbbb`, `rgb:R/G/B` and
 //! `rgbi:R/G/B`, and `#rrggbbaa` with alpha.
 
@@ -133,33 +133,39 @@ pub fn color_gray_p(values: [u16; 3]) -> bool {
     (r < 5000 && g < 5000 && b < 5000) || (close(r, g) && close(g, b) && close(b, r))
 }
 
-/// E8's palette, after the ArtCraft Launcher's theme
-/// (github.com/storytold/craft-launcher, MIT OR Apache-2.0): each name has a
-/// dark and a light value.
+/// E8's palette, from its brand colours (ADR 0107): Midnight `#260B40`,
+/// Lavender `#A477F5`, Ivory `#F8F4EB`, Jade `#71C7B1`, Amber `#E7B86B` and
+/// Rose `#D994A8`. Each name has a dark and a light value; the dark page is
+/// a greyer violet than Midnight, which is kept for wells.
 const PALETTE: &[(&str, Color, Color)] = &[
     // The page: the buffer's background.
-    ("bg", Color::rgb(0x121316), Color::rgb(0xf2f1ee)),
-    // Wells, such as the mode line.
-    ("sunken", Color::rgb(0x060607), Color::rgb(0xe9e8e4)),
+    ("bg", Color::rgb(0x17121f), Color::rgb(0xf8f4eb)),
+    // Wells, such as the mode line: Midnight in the dark.
+    ("sunken", Color::rgb(0x260b40), Color::rgb(0xece6d8)),
     // Text.
-    ("ink", Color::rgb(0xf2f1ee), Color::rgb(0x101014)),
-    // Emphasis.
-    ("ink-strong", Color::rgb(0xffffff), Color::rgb(0x000000)),
+    ("ink", Color::rgb(0xeae5da), Color::rgb(0x2b1a40)),
+    // Emphasis: Ivory in the dark.
+    ("ink-strong", Color::rgb(0xf8f4eb), Color::rgb(0x1a0730)),
     // Secondary text.
-    ("muted", Color::rgba(0xf2f1ee, 153), Color::rgba(0x101014, 158)),
-    // Tertiary text.
-    ("faint", Color::rgba(0xf2f1ee, 97), Color::rgba(0x101014, 107)),
+    ("muted", Color::rgba(0xeae5da, 164), Color::rgba(0x2b1a40, 180)),
+    // Tertiary text, such as comments.
+    ("faint", Color::rgba(0xeae5da, 124), Color::rgba(0x2b1a40, 146)),
     // Hairline rules.
-    ("line", Color::rgba(0xf2f1ee, 38), Color::rgba(0x101014, 41)),
-    // The brand blue, for surfaces.
-    ("accent", Color::rgb(0x2d81ff), Color::rgb(0x2d81ff)),
-    // The brand blue, for text.
-    ("accent-ink", Color::rgb(0x74aaff), Color::rgb(0x1659c4)),
-    // The active region: the brand blue, translucent.
-    ("selection", Color::rgba(0x2d81ff, 92), Color::rgba(0x2d81ff, 64)),
-    ("good", Color::rgb(0x3fd6b8), Color::rgb(0x0a7563)),
-    ("warn", Color::rgb(0xffc14d), Color::rgb(0x8a5800)),
-    ("bad", Color::rgb(0xff6259), Color::rgb(0xb3261e)),
+    ("line", Color::rgba(0xeae5da, 38), Color::rgba(0x2b1a40, 41)),
+    // Lavender, for surfaces; text on it is Midnight.
+    ("accent", Color::rgb(0xa477f5), Color::rgb(0xa477f5)),
+    // Lavender, for text: links, keywords, prompts.
+    ("accent-ink", Color::rgb(0xb899f8), Color::rgb(0x6a3fd0)),
+    // The active region: Lavender, translucent.
+    ("selection", Color::rgba(0xa477f5, 84), Color::rgba(0xa477f5, 64)),
+    // Jade: success, strings.
+    ("good", Color::rgb(0x71c7b1), Color::rgb(0x1c7662)),
+    // Amber: warnings, types.
+    ("warn", Color::rgb(0xe7b86b), Color::rgb(0x835600)),
+    // Errors.
+    ("bad", Color::rgb(0xf2708e), Color::rgb(0xb3264e)),
+    // Rose: constants and numbers.
+    ("rose", Color::rgb(0xd994a8), Color::rgb(0xa23a61)),
 ];
 
 /// A palette colour by name.
@@ -1078,13 +1084,13 @@ pub(crate) fn install(ed: &mut Editor) {
         ("font-lock-function-name-face", "Names of functions being defined.", bold("ink-strong")),
         ("font-lock-variable-name-face", "Names of variables being defined.", fg("ink-strong")),
         ("font-lock-type-face", "Type names.", fg("warn")),
-        ("font-lock-constant-face", "Constants.", fg("bad")),
+        ("font-lock-constant-face", "Constants.", fg("rose")),
         ("font-lock-warning-face", "Things to notice.", inherit("error")),
         ("font-lock-function-call-face", "Names of functions being called.", inherit("font-lock-function-name-face")),
         ("font-lock-variable-use-face", "Names of variables being used.", inherit("font-lock-variable-name-face")),
         ("font-lock-property-name-face", "Names of properties and fields.", inherit("font-lock-variable-name-face")),
         ("font-lock-property-use-face", "Properties and fields being used.", inherit("font-lock-property-name-face")),
-        ("font-lock-number-face", "Numbers.", fg("bad")),
+        ("font-lock-number-face", "Numbers.", fg("rose")),
         ("font-lock-escape-face", "Escape sequences in strings.", inherit("font-lock-builtin-face")),
         ("font-lock-operator-face", "Operators.", FaceAttrs::default()),
         ("font-lock-punctuation-face", "Punctuation.", FaceAttrs::default()),
@@ -1102,7 +1108,7 @@ mod tests {
 
     #[test]
     fn colors_come_from_the_palette_or_hex() {
-        assert_eq!(Color::parse("accent", true), Some(Color::rgb(0x2d81ff)));
+        assert_eq!(Color::parse("accent", true), Some(Color::rgb(0xa477f5)));
         assert_eq!(Color::parse("#102030", true), Some(Color::rgb(0x102030)));
         assert_eq!(Color::parse("#10203080", true), Some(Color::rgba(0x102030, 0x80)));
         assert_eq!(Color::parse("nope", true), None);

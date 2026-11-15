@@ -41,7 +41,7 @@ fn edits_update_the_highlighting() {
     let (mut ed, _scripting) = setup();
     ed.window_buffer_mut().set_text("let x = 1;\n");
     ed.call("rust-ts-mode", vec![]).unwrap();
-    assert_eq!(color_of(&ed, "1"), palette("bad", true), "numbers");
+    assert_eq!(color_of(&ed, "1"), palette("rose", true), "numbers");
     // Replacing the number with a string highlights the string.
     ed.press("M-< C-u 9 C-f DEL").unwrap();
     ed.type_text("\"one\"");

@@ -671,7 +671,7 @@ function formatWord(word: string): string {
 // each word for as long as what it accepts stays the same, can be asked
 // about a word without waiting for the answer, and starts helpers, more
 // checkers with the same arguments, to check a large region on several
-// processors at once ([ADR 0107](../docs/adr/0107-spell-checking-off-the-editor-thread.md)).
+// processors at once ([ADR 0108](../docs/adr/0108-spell-checking-off-the-editor-thread.md)).
 // Hunspell takes 5 to 50 ms to answer for a word it does not know, as it
 // looks for corrections, and a word it knows takes 0.02 ms.
 
