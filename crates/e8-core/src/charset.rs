@@ -23,6 +23,36 @@ enum Map {
     Double(&'static str),
     /// JIS X 0201's katakana, codes 21 to 5F.
     Katakana,
+    /// A charset a script defined with `define-charset-internal`.
+    Defined(&'static Defined),
+}
+
+/// A charset `define-charset-internal` defined: its code space and how
+/// its code points map to characters (ADR 0095).
+#[derive(Debug)]
+pub struct Defined {
+    /// Each dimension's least and greatest byte, least significant first.
+    code_space: Vec<(u32, u32)>,
+    min_code: u32,
+    max_code: u32,
+    iso_final: Option<u8>,
+    how: How,
+}
+
+/// How a defined charset's code points become characters.
+#[derive(Debug)]
+enum How {
+    /// The character is `offset` plus the code's distance from the least
+    /// code, as `:code-offset`.
+    Offset(u32),
+    /// Another charset's codes from `min` to `max`, each this charset's
+    /// code less `offset`, as `:subset`.
+    Subset { parent: &'static str, min: u32, max: u32, offset: u32 },
+    /// The codes of other charsets, each moved by its offset, the first
+    /// that has a character winning, as `:superset`.
+    Superset(Vec<(&'static str, u32)>),
+    /// Characters from a map file, which E8 does not read: none.
+    Unmapped,
 }
 
 struct Charset {
@@ -41,6 +71,7 @@ impl Map {
             Map::Unicode(_) | Map::Emacs => 3,
             Map::EightBit | Map::Bytes(..) | Map::Katakana => 1,
             Map::Euc(..) | Map::Double(_) => 2,
+            Map::Defined(d) => d.code_space.len() as u32,
         }
     }
 
@@ -56,13 +87,17 @@ impl Map {
             Map::Double("chinese-gbk") => vec![(0x40, 0xFE), (0x81, 0xFE)],
             Map::Double(_) => vec![(0x40, 0xFE), (0xA1, 0xFE)],
             Map::Katakana => vec![(0x21, 0x7E)],
+            Map::Defined(d) => d.code_space.clone(),
         }
     }
 
     /// Whether ISO 2022 registered the charset, which is what makes Emacs
     /// take only the low seven bits of each of `make-char`'s codes.
     fn iso_registered(self) -> bool {
-        matches!(self, Map::Unicode(0x7F) | Map::Bytes(_, true) | Map::Euc(..) | Map::Katakana)
+        match self {
+            Map::Defined(d) => d.iso_final.is_some(),
+            _ => matches!(self, Map::Unicode(0x7F) | Map::Bytes(_, true) | Map::Euc(..) | Map::Katakana),
+        }
     }
 }
 
@@ -132,9 +167,183 @@ static CHARSETS: &[Charset] = charsets![
 /// Emacs's other names for charsets.
 const ALIASES: [(&str, &str); 3] = [("ucs", "unicode"), ("iso-10646-1", "unicode"), ("latin-1", "iso-8859-1")];
 
+thread_local! {
+    /// The charsets `define-charset-internal` defined, newest last, kept
+    /// for the life of the thread, as Emacs keeps a charset for its life.
+    static DEFINED: std::cell::RefCell<Vec<&'static Charset>> = const { std::cell::RefCell::new(Vec::new()) };
+    /// Other names `define-charset-alias` gave charsets.
+    static MORE_ALIASES: std::cell::RefCell<Vec<(&'static str, &'static str)>> = const { std::cell::RefCell::new(Vec::new()) };
+    /// The charsets ISO 2022 names by dimension, 94 or 96 characters and
+    /// final byte, as charset.c's iso_charset_table: E8's own, then those
+    /// defined or declared, the last one winning.
+    static ISO: std::cell::RefCell<Vec<IsoName>> = std::cell::RefCell::new(ISO_FINALS.to_vec());
+}
+
+/// A charset as ISO 2022 names it: by dimension, 94 or 96 characters and final byte.
+type IsoName = ((u32, u32, u8), &'static str);
+
+/// The ISO 2022 finals of E8's own charsets, as Emacs registers them.
+const ISO_FINALS: [IsoName; 21] = [
+    ((1, 94, b'B'), "ascii"),
+    ((1, 96, b'A'), "latin-iso8859-1"),
+    ((1, 96, b'B'), "latin-iso8859-2"),
+    ((1, 96, b'C'), "latin-iso8859-3"),
+    ((1, 96, b'D'), "latin-iso8859-4"),
+    ((1, 96, b'L'), "cyrillic-iso8859-5"),
+    ((1, 96, b'F'), "greek-iso8859-7"),
+    ((1, 96, b'H'), "hebrew-iso8859-8"),
+    ((1, 96, b'M'), "latin-iso8859-9"),
+    ((1, 96, b'V'), "latin-iso8859-10"),
+    ((1, 96, b'T'), "thai-iso8859-11"),
+    ((1, 96, b'Y'), "latin-iso8859-13"),
+    ((1, 96, b'_'), "latin-iso8859-14"),
+    ((1, 96, b'b'), "latin-iso8859-15"),
+    ((1, 96, b'f'), "latin-iso8859-16"),
+    ((1, 96, b'T'), "thai-tis620"),
+    ((2, 94, b'A'), "chinese-gb2312"),
+    ((2, 94, b'B'), "japanese-jisx0208"),
+    ((2, 94, b'D'), "japanese-jisx0212"),
+    ((2, 94, b'C'), "korean-ksc5601"),
+    ((1, 94, b'I'), "katakana-jisx0201"),
+];
+
 fn find(name: &str) -> Option<&'static Charset> {
     let name = ALIASES.iter().find(|(alias, _)| *alias == name).map_or(name, |(_, n)| n);
-    CHARSETS.iter().find(|c| c.name == name)
+    let name = MORE_ALIASES.with(|a| a.borrow().iter().find(|(alias, _)| *alias == name).map(|(_, n)| *n)).unwrap_or(name);
+    CHARSETS.iter().find(|c| c.name == name).or_else(|| DEFINED.with(|d| d.borrow().iter().find(|c| c.name == name).copied()))
+}
+
+/// The charsets defined, newest first, as `charset-list` puts them.
+fn defined_names() -> Vec<&'static str> {
+    DEFINED.with(|d| d.borrow().iter().rev().map(|c| c.name).collect())
+}
+
+/// What a charset is to be, as `define-charset-internal` takes it.
+#[derive(Clone, Debug, Default)]
+pub struct Definition {
+    pub name: String,
+    /// Each dimension's least and greatest byte, least significant first.
+    pub code_space: Vec<(u32, u32)>,
+    pub min_code: Option<u32>,
+    pub max_code: Option<u32>,
+    pub iso_final: Option<u8>,
+    pub code_offset: Option<u32>,
+    /// `:subset`: the parent, its least and greatest codes, and the offset.
+    pub subset: Option<(String, u32, u32, u32)>,
+    /// `:superset`: each charset with the offset of its codes.
+    pub superset: Option<Vec<(String, u32)>>,
+}
+
+fn leak(s: &str) -> &'static str {
+    Box::leak(s.to_string().into_boxed_str())
+}
+
+/// Defines a charset, or defines it again, as `define-charset-internal`.
+/// A charset E8 has built in under that name is left as it is. `Err`
+/// says why it cannot be defined.
+pub fn define_charset(def: &Definition) -> Result<(), String> {
+    if CHARSETS.iter().any(|c| c.name == def.name) {
+        return Ok(());
+    }
+    if def.code_space.is_empty() || def.code_space.len() > 4 || def.code_space.iter().any(|(lo, hi)| lo > hi || *hi > 0xFF) {
+        return Err("Invalid code space".into());
+    }
+    let parent = |name: &str| canonical_name(name).ok_or_else(|| format!("Invalid charset: {name}"));
+    let how = if let Some((name, min, max, offset)) = &def.subset {
+        How::Subset { parent: parent(name)?, min: *min, max: *max, offset: *offset }
+    } else if let Some(list) = &def.superset {
+        How::Superset(list.iter().map(|(n, o)| Ok((parent(n)?, *o))).collect::<Result<_, String>>()?)
+    } else if let Some(offset) = def.code_offset {
+        How::Offset(offset)
+    } else {
+        How::Unmapped
+    };
+    let least = def.code_space.iter().rev().fold(0, |code, (lo, _)| (code << 8) | lo);
+    let greatest = def.code_space.iter().rev().fold(0, |code, (_, hi)| (code << 8) | hi);
+    let defined: &'static Defined = Box::leak(Box::new(Defined {
+        code_space: def.code_space.clone(),
+        min_code: def.min_code.unwrap_or(least),
+        max_code: def.max_code.unwrap_or(greatest),
+        iso_final: def.iso_final,
+        how,
+    }));
+    let charset: &'static Charset = Box::leak(Box::new(Charset { name: leak(&def.name), map: Map::Defined(defined) }));
+    DEFINED.with(|d| {
+        let mut d = d.borrow_mut();
+        d.retain(|c| c.name != def.name);
+        d.push(charset);
+    });
+    if let Some(final_byte) = def.iso_final {
+        let (lo, hi) = def.code_space[0];
+        declare_iso(def.code_space.len() as u32, if hi - lo + 1 == 96 { 96 } else { 94 }, final_byte, charset.name);
+    }
+    Ok(())
+}
+
+/// Gives a charset another name, as `define-charset-alias`; false if it names none.
+pub fn define_alias(alias: &str, charset: &str) -> bool {
+    let Some(target) = canonical_name(charset) else { return false };
+    MORE_ALIASES.with(|a| {
+        let mut a = a.borrow_mut();
+        a.retain(|(n, _)| *n != alias);
+        a.push((leak(alias), target));
+    });
+    true
+}
+
+fn declare_iso(dimension: u32, chars: u32, final_byte: u8, charset: &'static str) {
+    ISO.with(|t| {
+        let mut t = t.borrow_mut();
+        t.retain(|(key, _)| *key != (dimension, chars, final_byte));
+        t.push(((dimension, chars, final_byte), charset));
+    });
+}
+
+/// Makes ISO 2022's charset of a dimension, 94 or 96 characters and final
+/// byte this one, as `declare-equiv-charset`; false if it names none.
+pub fn declare_equiv_charset(dimension: u32, chars: u32, final_byte: u8, charset: &str) -> bool {
+    let Some(name) = canonical_name(charset) else { return false };
+    declare_iso(dimension, chars, final_byte, name);
+    true
+}
+
+/// The charset ISO 2022 names by a dimension, 94 or 96 characters and a
+/// final byte, as `iso-charset`.
+pub fn iso_charset(dimension: u32, chars: u32, final_byte: u8) -> Option<&'static str> {
+    ISO.with(|t| t.borrow().iter().rev().find(|(key, _)| *key == (dimension, chars, final_byte)).map(|(_, n)| *n))
+}
+
+/// The first final byte of ISO 2022's private ones, `0` to `?`, that no
+/// charset of a dimension and 94 or 96 characters has, as
+/// `get-unused-iso-final-char`.
+pub fn unused_iso_final(dimension: u32, chars: u32) -> Option<u8> {
+    (b'0'..=b'?').find(|&f| iso_charset(dimension, chars, f).is_none())
+}
+
+/// The ranges of characters a charset's codes from `from` to `to` hold,
+/// each as its first and last character, as `map-charset-chars` calls its
+/// function with them.
+pub fn charset_char_ranges(charset: &str, from: Option<u32>, to: Option<u32>) -> Option<Vec<(char, char)>> {
+    let set = find(charset)?;
+    let space = set.map.code_space();
+    let least = space.iter().rev().fold(0, |code, (lo, _)| (code << 8) | lo);
+    let greatest = space.iter().rev().fold(0, |code, (_, hi)| (code << 8) | hi);
+    let (from, to) = (from.unwrap_or(least).max(least), to.unwrap_or(greatest).min(greatest));
+    let in_space = |code: u32| space.iter().enumerate().all(|(i, &(lo, hi))| (lo..=hi).contains(&((code >> (8 * i)) & 0xFF)));
+    let mut ranges: Vec<(char, char)> = Vec::new();
+    let mut code = from;
+    while code <= to {
+        if in_space(code)
+            && let Some(c) = decode_char(set.name, code)
+        {
+            match ranges.last_mut() {
+                Some((_, last)) if *last as u32 + 1 == c as u32 => *last = c,
+                _ => ranges.push((c, c)),
+            }
+        }
+        code += 1;
+    }
+    Some(ranges)
 }
 
 /// How many bytes a charset writes a code point in, as its `:dimension`.
@@ -166,7 +375,8 @@ impl Charsets {
     /// The charsets, as `charset-list` gives them, in priority order.
     pub fn charset_list(&self) -> Vec<&'static str> {
         let first = &self.preferred;
-        first.iter().copied().chain(CHARSETS.iter().map(|c| c.name).filter(|n| !first.contains(n))).collect()
+        let rest = defined_names().into_iter().chain(CHARSETS.iter().map(|c| c.name));
+        first.iter().copied().chain(rest.filter(|n| !first.contains(n))).collect()
     }
 
     /// Puts charsets first in the priority order, as `set-charset-priority`.
@@ -245,7 +455,7 @@ impl Charsets {
 /// A charset's place in the table, as `charset-id-internal`.
 pub fn charset_id(name: &str) -> Option<usize> {
     let name = find(name)?.name;
-    CHARSETS.iter().position(|c| c.name == name)
+    CHARSETS.iter().position(|c| c.name == name).or_else(|| DEFINED.with(|d| d.borrow().iter().position(|c| c.name == name)).map(|i| CHARSETS.len() + i))
 }
 
 /// The charset a name names, under its own name, or `None`.
@@ -332,6 +542,15 @@ pub fn encode_char(c: char, charset: &str) -> Option<u32> {
             }
         }
         Map::Katakana => (0xFF61..=0xFF9F).contains(&n).then(|| n - 0xFF61 + 0x21),
+        Map::Defined(d) => {
+            let code = match &d.how {
+                How::Offset(offset) => n.checked_sub(*offset).map(|k| k + d.min_code),
+                How::Subset { parent, min, max, offset } => encode_char(c, parent).filter(|p| (min..=max).contains(&p)).map(|p| p + offset),
+                How::Superset(list) => list.iter().find_map(|(name, offset)| encode_char(c, name).map(|p| p + offset)),
+                How::Unmapped => None,
+            }?;
+            (d.min_code..=d.max_code).contains(&code).then_some(code)
+        }
     }
 }
 
@@ -366,6 +585,17 @@ pub fn decode_char(charset: &str, code: u32) -> Option<char> {
         }
         Map::Double(coding) => (code > 0xFF && code <= 0xFFFF).then(|| decode(coding, &[(code >> 8) as u8, code as u8])).flatten(),
         Map::Katakana => (0x21..=0x5F).contains(&code).then(|| char::from_u32(0xFF61 + code - 0x21)).flatten(),
+        Map::Defined(d) => {
+            if !(d.min_code..=d.max_code).contains(&code) {
+                return None;
+            }
+            match &d.how {
+                How::Offset(offset) => char::from_u32(offset + (code - d.min_code)),
+                How::Subset { parent, min, max, offset } => code.checked_sub(*offset).filter(|p| (min..=max).contains(&p)).and_then(|p| decode_char(parent, p)),
+                How::Superset(list) => list.iter().find_map(|(name, offset)| code.checked_sub(*offset).and_then(|p| decode_char(name, p))),
+                How::Unmapped => None,
+            }
+        }
     }
 }
 
