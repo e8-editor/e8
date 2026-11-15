@@ -881,6 +881,29 @@ fn transient_menu() {
     harness(ed, Theme::Dark).snapshot("transient_menu_dark");
 }
 
+/// Draws frames until the window shows what the editor, on a thread of
+/// its own, made of everything sent to it. The editor's answer to a
+/// question is ahead of the window, which draws what the editor last
+/// described: a snapshot taken a few frames after the answer showed the
+/// menu a key behind when the machine was busy.
+fn draw_settled(h: &mut Harness<'_, E8App>) {
+    let until = std::time::Instant::now() + std::time::Duration::from_secs(30);
+    loop {
+        // The frame sends the keys waiting, and may send more itself, as
+        // the window's size, so the editor is asked again after each.
+        h.step();
+        if h.state_mut().settle() {
+            return;
+        }
+        assert!(std::time::Instant::now() < until, "the window never drew what the editor shows");
+    }
+}
+
+/// The row selected in each menu panel the window last drew.
+fn selected_rows(h: &mut Harness<'_, E8App>) -> Vec<Option<usize>> {
+    h.state_mut().drawn_menus().iter().map(|panel| panel.rows.iter().position(|row| row.selected)).collect()
+}
+
 /// A pop-up menu over the windows, with a submenu open beside it: drawn
 /// as a raised card of cells, as the terminal draws one (ADR 0076).
 #[test]
@@ -916,22 +939,14 @@ fn popup_menu() {
         // walk it are sent by the test.
         let _ = ed.x_popup_menu(&e8_core::Value::Keymap(menu), Some(e8_core::MenuPosition::At { x: 4.0, y: 1.0, window: None }));
     });
-    let until = std::time::Instant::now() + std::time::Duration::from_secs(10);
-    while !harness.state_mut().with_editor(|ed| ed.menu_active()) {
-        assert!(std::time::Instant::now() < until, "the menu never opened");
-        harness.step();
-        std::thread::sleep(std::time::Duration::from_millis(5));
-    }
+    draw_settled(&mut harness);
+    assert!(harness.state_mut().with_editor(|ed| ed.menu_active()), "the menu opened");
     // Down to the last item, which has a submenu, and right to open it.
-    for _ in 0..3 {
-        harness.key_press(Key::ArrowDown);
-        harness.step();
+    for key in [Key::ArrowDown, Key::ArrowDown, Key::ArrowDown, Key::ArrowRight] {
+        harness.key_press(key);
+        draw_settled(&mut harness);
     }
-    harness.key_press(Key::ArrowRight);
-    for _ in 0..4 {
-        harness.step();
-        std::thread::sleep(std::time::Duration::from_millis(5));
-    }
+    assert_eq!(selected_rows(&mut harness), [Some(3), Some(0)]);
     harness.snapshot("popup_menu_dark");
 }
 
@@ -955,34 +970,14 @@ fn menu_bar() {
     harness.state_mut().run(|ed| {
         ed.call_interactively("menu-bar-open").expect("the menu bar opens");
     });
-    let until = std::time::Instant::now() + std::time::Duration::from_secs(10);
-    while !harness.state_mut().with_editor(|ed| ed.menu_active()) {
-        assert!(std::time::Instant::now() < until, "the menu never opened");
-        harness.step();
-        std::thread::sleep(std::time::Duration::from_millis(5));
-    }
-    // Down to the fourth item, waiting for each key to reach the editor,
-    // which is on a thread of its own.
-    let selected = |h: &mut Harness<'_, E8App>| {
-        h.state_mut().with_editor(|ed| {
-            let fd = ed.describe_frame(ed.selected_frame(), 1.0);
-            fd.menus.first().and_then(|panel| panel.rows.iter().position(|row| row.selected))
-        })
-    };
-    for row in 1..4 {
+    draw_settled(&mut harness);
+    assert!(harness.state_mut().with_editor(|ed| ed.menu_active()), "the menu opened");
+    // Down to the fourth item, whose help goes in the echo area.
+    for _ in 0..3 {
         harness.key_press(Key::ArrowDown);
-        let until = std::time::Instant::now() + std::time::Duration::from_secs(10);
-        while selected(&mut harness) != Some(row) {
-            assert!(std::time::Instant::now() < until, "the cursor never reached row {row}");
-            harness.step();
-            std::thread::sleep(std::time::Duration::from_millis(5));
-        }
+        draw_settled(&mut harness);
     }
-    // The item's help reaches the echo area a frame later.
-    for _ in 0..4 {
-        harness.step();
-        std::thread::sleep(std::time::Duration::from_millis(10));
-    }
+    assert_eq!(selected_rows(&mut harness), [Some(3)]);
     harness.snapshot("menu_bar_dark");
 }
 
