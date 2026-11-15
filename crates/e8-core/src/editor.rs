@@ -434,6 +434,9 @@ pub struct Editor {
     bell: bool,
     /// What `send-string-to-terminal` sent, for the terminal front end to write.
     terminal_output: String,
+    /// Whether a front end has said it draws in a window, before it has
+    /// measured its fonts, so `window-system` answers while init.ts runs.
+    in_a_window: bool,
     /// Each frame's parameters, as Emacs's `frame-parameter` reads them.
     pub(crate) frame_parameters: std::collections::HashMap<crate::window::FrameId, std::collections::BTreeMap<String, Value>>,
     /// Each frame's tab bar, as the last redisplay formatted it, for frames that show one.
@@ -647,6 +650,7 @@ impl Editor {
             fringe_bitmaps: Default::default(),
             bell: false,
             terminal_output: String::new(),
+            in_a_window: false,
             frame_parameters: Default::default(),
             tab_bars: Default::default(),
             updating_menu_bar: false,
@@ -3013,10 +3017,18 @@ impl Editor {
         self.window_buffer_mut().top_line = new_top;
     }
 
+    /// Says the editor draws in a window, as a graphical front end does
+    /// before init.ts runs: its fonts are measured only once it first
+    /// draws, but Emacs's init already sees `window-system`, and the
+    /// desktop puts the frame back where it was.
+    pub fn set_in_a_window(&mut self) {
+        self.in_a_window = true;
+    }
+
     /// What kind of display the editor draws on, as `window-system`
     /// names it: none on a terminal.
     pub fn window_system(&self) -> Option<&'static str> {
-        if !self.text_metrics().images() {
+        if !self.in_a_window && !self.text_metrics().images() {
             return None;
         }
         Some(if cfg!(target_os = "macos") {

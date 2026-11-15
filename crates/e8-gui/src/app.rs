@@ -248,6 +248,8 @@ impl E8App {
         let driver = Driver::spawn(
             move |editor| {
                 crate::modeline::install(editor);
+                // A window, before init.ts asks `window-system`.
+                editor.set_in_a_window();
                 Box::new(setup(editor))
             },
             move |editor| {

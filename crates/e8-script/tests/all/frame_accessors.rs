@@ -693,3 +693,41 @@ fn frame_el_asks_the_terminal_where_there_is_no_window() {
     assert_eq!(eval(&mut ed, r#"JSON.stringify(e8.funcall("frame-monitor-workarea").length)"#), "4");
     assert_eq!(eval(&mut ed, &call("display-monitor-attributes-list")), eval(&mut ed, "JSON.stringify(e8.displayMonitorAttributesList())"));
 }
+
+/// A window's measures: characters 8 by 16, and bars a line and 12
+/// points of room tall, as the GUI draws its mode lines and echo area.
+struct Padded;
+
+impl e8_core::layout::TextMetrics for Padded {
+    fn advance(&self, _font: &e8_core::layout::FontSpec, _c: char) -> f32 {
+        8.0
+    }
+    fn line_height(&self, _font: &e8_core::layout::FontSpec) -> f32 {
+        16.0
+    }
+    fn char_width(&self) -> f32 {
+        8.0
+    }
+    fn char_height(&self) -> f32 {
+        16.0
+    }
+    fn window_chrome(&self) -> e8_core::layout::WindowChrome {
+        e8_core::layout::WindowChrome { mode_line: 28.0, header_line: 28.0, text_top: 0.0, fringes: 0.0, divider: 0.0 }
+    }
+}
+
+#[test]
+fn a_frames_text_height_counts_its_bars_as_drawn_so_setting_it_keeps_the_frame() {
+    let (mut ed, s) = setup();
+    ed.set_text_metrics(std::sync::Arc::new(Padded));
+    ed.set_frame_pixel_size(800, 600);
+    // The windows' 600, and the echo area a bar tall.
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.frameTextWidth(), e8.frameTextHeight()])"), "[800,628]");
+    eval(&mut ed, &s, r#"(e8.setFrameParameter(undefined, "tab-bar-lines", 1), 1)"#);
+    assert_eq!(eval(&mut ed, &s, "e8.frameTextHeight()"), "656");
+    // Asking for the size it has asks the front end for the same text area.
+    ed.take_frame_requests();
+    eval(&mut ed, &s, "(e8.setFrameSize(undefined, e8.frameTextWidth(), e8.frameTextHeight(), true), 1)");
+    let frame = ed.selected_frame();
+    assert_eq!(ed.take_frame_requests(), vec![e8_core::FrameRequest::Size { frame, width: 800.0, height: 656.0 }]);
+}
