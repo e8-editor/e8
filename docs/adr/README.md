@@ -103,3 +103,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0099](0099-time-as-emacs-has-it.md) Time as Emacs has it: format-time-string, decode-time, encode-time and zones from the system's files
 - [0100](0100-json-as-emacs-has-it.md) JSON as Emacs has it: json-parse-string, json-serialize and json.c's errors
 - [0101](0101-variables-and-symbols-as-emacs-has-them.md) Variables and symbols as Emacs has them: aliases, watchers, being bound and local, and the symbol table
+- [0102](0102-the-printer-and-the-runtimes-odds.md) The printer and the runtime's odds: prin1 to buffers and markers, top-level values, value<

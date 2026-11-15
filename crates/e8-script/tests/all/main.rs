@@ -95,6 +95,7 @@ mod fns_strings;
 mod time_functions;
 mod json_functions;
 mod variables_and_symbols;
+mod printer;
 mod subr;
 mod symbols;
 mod syntax_tables;
