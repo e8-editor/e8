@@ -164,3 +164,14 @@ fn casing_keeps_text_properties() {
     let faces = s.eval_expression(&mut ed, r#"JSON.stringify([0, 1, 2, 3].map((p) => e8.getTextProperty(p, "face") ?? null))"#).unwrap();
     assert_eq!(faces, r#""[null,\"bold\",\"bold\",null]""#);
 }
+
+/// M-0 M-z searches nowhere, as search-forward with a count of 0 does, so
+/// it kills nothing, putting an empty kill on the ring, as Emacs 30 does.
+#[test]
+fn zap_with_a_count_of_zero_kills_nothing() {
+    let (mut ed, _s) = setup();
+    ed.type_text("abxcdx");
+    ed.press("M-< M-0 M-z x").unwrap();
+    let b = ed.window_buffer();
+    assert_eq!((b.slice(0..b.len()), b.point()), ("abxcdx".to_string(), 0));
+}

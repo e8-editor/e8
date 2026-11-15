@@ -496,3 +496,19 @@ fn expand_file_name_keeps_a_directory_name_s_slash() {
         .unwrap();
     assert_eq!(value, r#"["/tmp/foo/","/tmp/foo","/tmp/","/tmp/","/tmp"]"#);
 }
+
+/// write-file into a directory takes the visited file's name, as Emacs's
+/// does, not the buffer's, which differs for a second README.md.
+#[test]
+fn writing_into_a_directory_takes_the_file_s_name() {
+    let dir = tempfile::tempdir().unwrap();
+    let (a, b) = (dir.path().join("a"), dir.path().join("b"));
+    fs::create_dir_all(&a).unwrap();
+    fs::create_dir_all(&b).unwrap();
+    fs::write(a.join("README.md"), "one\n").unwrap();
+    let (mut ed, _s) = setup();
+    ed.call("find-file", vec![Arg::Str(a.join("README.md").display().to_string())]).unwrap();
+    ed.call("rename-buffer", vec![Arg::Str("README.md<2>".into())]).unwrap();
+    ed.call("write-file", vec![Arg::Str(format!("{}/", b.display()))]).unwrap();
+    assert_eq!(fs::read_to_string(b.join("README.md")).unwrap(), "one\n");
+}

@@ -1033,13 +1033,14 @@ e8.defineCommand({
   name: "write-file",
   doc:
     "Write the current buffer to a file and visit that file instead.\n\n" +
-    "A directory writes a file of the buffer's name in it. An existing file is overwritten only if you say so.",
+    "A directory writes a file of the visited file's name in it, or the buffer's. An existing file is overwritten only if you say so.",
   params: [{ name: "file", kind: "file", prompt: "Write file: " }],
   run: (input: string) => {
     let file = e8.expandFileName(input);
-    if (input.endsWith("/")) file = `${file.replace(/\/$/, "")}/${e8.bufferName()}`;
+    // A directory takes the name of the file visited, else the buffer's.
+    if (input.endsWith("/")) file = `${file.replace(/\/$/, "")}/${e8.fileNameNondirectory(e8.bufferFileName() ?? e8.bufferName())}`;
     if (e8.calledInteractively() && e8.fileExists(file) && file !== e8.bufferFileName()) {
-      if (!e8.yOrNP(`File ‘${file}’ exists; overwrite? `)) throw new Error("Canceled");
+      if (!e8.yOrNP(`File ‘${file}’ exists; overwrite? `)) e8.userError("Canceled");
     }
     e8.setVisitedFileName(file);
     e8.setBufferModified(true);

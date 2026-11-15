@@ -1102,6 +1102,11 @@ function zap(arg: number, char: string, upTo: boolean): void {
   // Read interactively, an upper-case letter searches exactly.
   const fold = char.toLowerCase() !== char ? false : undefined;
   const p = e8.point();
+  // A count of 0 searches nowhere, as search-forward's, and kills nothing.
+  if (arg === 0) {
+    e8.killRegion(p, p);
+    return;
+  }
   if (!upTo) {
     const m = e8.search(char, { backward: arg < 0, caseFold: fold });
     let found = m;
