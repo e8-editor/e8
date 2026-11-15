@@ -187,7 +187,11 @@ natives! {
 
     /// Compare parts of two strings, as compare-strings: true if they are equal, else the place of the first difference plus one, negative where the first string is less.
     #[ts = "(string1: string, start1: number | null, end1: number | null, string2: string, start2: number | null, end2: number | null, ignoreCase?: boolean | null): true | number"]
-    pub fn compareStrings(_ed, s1: EditorValue, start1: EditorValue, end1: EditorValue, s2: EditorValue, start2: EditorValue, end2: EditorValue, ignore_case: Opt<EditorValue>) -> EditorValue {
+    pub fn compareStrings(_ed, s1: EditorValue, start1: EditorValue, end1: EditorValue, s2: EditorValue, rest: crate::natives::Rest<EditorValue>) -> EditorValue {
+        // The rest as one, as QuickJS binds at most seven arguments.
+        let arg = |i: usize| rest.0.get(i).cloned().unwrap_or(EditorValue::Null);
+        let (start2, end2) = (arg(0), arg(1));
+        let ignore_case = Opt(rest.0.get(2).cloned());
         let (a, b): (Vec<char>, Vec<char>) = (text(&s1)?.chars().collect(), text(&s2)?.chars().collect());
         let bound = |v: &EditorValue, len: usize, default: usize| -> Result<usize> {
             match v.as_number() {
