@@ -93,6 +93,7 @@ pub mod sqlite;
 pub mod xwidget;
 mod kqueue;
 pub mod composite;
+pub mod timefns;
 mod window;
 mod window_tree;
 mod variables;

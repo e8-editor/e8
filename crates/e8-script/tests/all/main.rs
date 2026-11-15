@@ -92,6 +92,7 @@ mod charset_definitions;
 mod mark_marker;
 mod ns_functions;
 mod fns_strings;
+mod time_functions;
 mod subr;
 mod symbols;
 mod syntax_tables;

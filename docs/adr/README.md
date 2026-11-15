@@ -100,3 +100,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0096](0096-the-mark-as-a-marker.md) The mark as a marker: mark-marker
 - [0097](0097-the-macos-displays-functions.md) The macOS display's functions: hiding, panels, selections and defaults
 - [0098](0098-fns-strings-and-buffers.md) fns.c's strings and buffers: base64, comparing and searching strings, buffer hashes and line statistics
+- [0099](0099-time-as-emacs-has-it.md) Time as Emacs has it: format-time-string, decode-time, encode-time and zones from the system's files
