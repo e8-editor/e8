@@ -243,6 +243,14 @@ Measured again on the same corpus:
 - **Packages needing nothing missing**: all of each corpus — Emacs's 49, MELPA's 295 and the 77 daily ones.
 - **Still missing**: CCL's five primitives and `fontset-info`, which nothing in the corpus calls, and the Lisp language's rest, which TypeScript stands in for.
 
+After [ADRs 0102 to 0105](../adr/README.md), landed in pull requests 168 to 175, the counts by name are:
+
+- all 877 editor primitives;
+- 164 of the 169 platform ones, CCL's five left;
+- 154 of the 427 the Lisp language has (36%).
+
+The language's are those about the editor rather than the language: the printer, top-level values, Lisp's rounding and a float's parts, and `eval-buffer`.
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
