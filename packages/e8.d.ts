@@ -18204,6 +18204,34 @@ declare global {
     function stringToMultibyte(string: string): string;
     /** A string as the bytes Emacs keeps it in, UTF-8, each a character, as string-as-unibyte. */
     function stringAsUnibyte(string: string): string;
+    /** The time now, in seconds since the epoch, as current-time and float-time with no time give it. */
+    function currentTime(): number;
+    /** A time in seconds, now for none, as float-time. */
+    function floatTime(time?: Value): number;
+    /** The sum of two times, as time-add. */
+    function timeAdd(a: Value, b: Value): number;
+    /** One time less another, as time-subtract. */
+    function timeSubtract(a: Value, b: Value): number;
+    /** Whether a time is before another, as time-less-p; null is now. */
+    function timeLessP(a: Value, b: Value): boolean;
+    /** Whether two times are the same, as time-equal-p. */
+    function timeEqualP(a: Value, b: Value): boolean;
+    /** A time in another form, as time-convert: "list" for (HIGH LOW USEC PSEC), "integer" for whole seconds, true or a number of ticks a second for [ticks, hz], else seconds. */
+    function timeConvert(time: Value, form?: "list" | "integer" | true | number | null): Value;
+    /** A time formatted as format-time-string does: %Y, %m, %d, %H, %M, %S, %Z, %z and the rest, with Emacs's flags and widths, in a zone. */
+    function formatTimeString(format: string, time?: Value, zone?: Value): string;
+    /** A time's calendar fields in a zone, as decode-time: [sec, min, hour, day, month, year, weekday, dst, utcoff], the seconds as [ticks, hz] where they have a fraction and form is true. */
+    function decodeTime(time?: Value, zone?: Value, form?: Value): Value[];
+    /** The time calendar fields stand for, as encode-time: a list as decode-time gives, its zone last, or the old form of second, minute, hour, day, month, year and zone; fields past their range carry over. */
+    function encodeTime(time: Value[] | number, ...rest: Value[]): number;
+    /** A time as text, "Sat Nov 15 00:20:00 2025", as current-time-string. */
+    function currentTimeString(time?: Value, zone?: Value): string;
+    /** A zone's offset east of UTC in seconds and its abbreviation at a time, as current-time-zone. */
+    function currentTimeZone(time?: Value, zone?: Value): [offset: number, abbreviation: string];
+    /** Set the editor's own zone, or go back to the system's with null or "wall", as set-time-zone-rule. */
+    function setTimeZoneRule(zone: Value): undefined;
+    /** The processor time E8 has used, as current-cpu-time: [ticks, ticks a second]. */
+    function currentCpuTime(): [ticks: number, hz: number];
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */
