@@ -46,17 +46,10 @@ export const on = (name: string): boolean => {
 
 // The listing, as ls-lisp formats it.
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-/** A time as ls writes it: Oct 29 11:53 within the last six months, else Oct 29  2025. */
+/** A time as ls writes it, by ls-lisp-format-time-list: Oct 29 11:53 within the last six months, else Oct 29  2025. */
 function formatTime(ms: number): string {
-  const d = new Date(ms);
-  const day = String(d.getDate()).padStart(2, " ");
   const age = Date.now() - ms;
-  if (age >= 0 && age < 15778476000) {
-    return `${MONTHS[d.getMonth()]} ${day} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-  }
-  return `${MONTHS[d.getMonth()]} ${day}  ${d.getFullYear()}`;
+  return e8.formatTimeString(age >= 0 && age < 15778476000 ? "%b %e %H:%M" : "%b %e  %Y", ms / 1000);
 }
 
 /** A size as ls -h writes it, as Emacs's file-size-human-readable. */
