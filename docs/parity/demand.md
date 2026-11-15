@@ -224,6 +224,25 @@ The last odds ([ADR 0088](../adr/0088-the-last-odds-frames-file-notifications-an
 
 What is left is xwidgets alone (0.05): lsp-ui and evil-collection among MELPA's packages, eww and image among Emacs's, which [ADR 0087](../adr/0087-sqlite-as-emacs-has-it.md) leaves out as they need a web view in the GUI's window. The 32 editor primitives still missing are ones nothing in the corpus calls.
 
+## After the C core's last passes
+
+xwidgets ([ADR 0089](../adr/0089-xwidgets-as-emacs-has-them.md)) and the passes after them ([ADRs 0090 to 0101](../adr/README.md)) landed on 2026-11-15, in pull requests 153 to 166. They covered:
+
+- the C core's primitives under their own names;
+- POSIX searches and compositions;
+- the last odds;
+- coding systems and charsets as scripts define them;
+- `mark-marker`;
+- the macOS display's functions;
+- fns.c's strings and buffers;
+- time, JSON, and variables and symbols.
+
+Measured again on the same corpus:
+
+- **By name**, all 877 editor primitives (100%), 163 of the 169 platform ones (96%) and 106 of the 427 the Lisp language has (25%).
+- **Packages needing nothing missing**: all of each corpus — Emacs's 49, MELPA's 295 and the 77 daily ones.
+- **Still missing**: CCL's five primitives and `fontset-info`, which nothing in the corpus calls, and the Lisp language's rest, which TypeScript stands in for.
+
 ## Groups of work, in order (first measurement)
 
 Ordered by score, with a size: small is days, medium a week or two, large more. The table further down has the counts.
@@ -256,29 +275,21 @@ The 35 one-liners are a piece of their own, smaller than any: giving `eobp`, `bo
 
 ## Results
 
-As measured again after the last odds (ADR 0088), with what E8 has on main at that point.
+As measured again after the C core's last passes (ADRs 0089 to 0101), with what E8 has on main at that point.
 
 ### Missing primitives by demand
 
 Score: the share of each corpus's packages that need the primitive, directly or through a wrapper E8 also lacks, summed with weights emacs 1, melpa 1, daily 2. Each corpus's cell is packages / calls / uses through wrappers; the last column names the wrappers most of those come through.
 
-| # | primitive | C file | score | emacs | melpa | daily | through |
-|---|---|---|---|---|---|---|---|
-| 1 | `make-xwidget` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 2 | `xwidget-webkit-execute-script` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 | 1 / 1 / 0 |  |  |
-| 3 | `xwidget-info` | xwidget.c (platform) | 0.02 | 1 / 1 / 0 |  |  |  |
-| 4 | `set-xwidget-query-on-exit-flag` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 5 | `xwidget-resize` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 6 | `xwidget-webkit-goto-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
-| 7 | `xwidget-webkit-uri` | xwidget.c (platform) | 0.00 |  | 1 / 1 / 0 |  |  |
+No primitive E8 lacks is needed by any package of the corpus.
+
 
 ### By piece of work
 
 Packages needing at least one primitive of the group, per corpus, and those for which the group is all they lack (MELPA's by downloads, then Emacs's own).
 
-| group | needed | score | emacs | melpa | daily | all they lack |
-|---|---|---|---|---|---|---|
-| xwidgets | 7 | 0.05 | 2 | 2 | 0 | 4: lsp-ui, evil-collection, eww (Emacs), image (Emacs) |
+No group: nothing a package needs is missing.
+
 
 ### One-liners over what E8 has
 
@@ -331,6 +342,6 @@ Among MELPA's 150 most downloaded, those defining commands (three or more `inter
 | golden-ratio | 1,001,650 |  |  |  |
 | eval-sexp-fu | 990,156 |  |  |  |
 
-### Missing and needed by nothing in the corpus (32)
+### Missing and needed by nothing in the corpus (0)
 
-`cancel-kbd-macro-events`, `clear-composition-cache`, `compose-region-internal`, `compose-string-internal`, `composition-get-gstring`, `composition-sort-rules`, `declare-equiv-charset`, `define-charset-alias`, `define-charset-internal`, `define-coding-system-alias`, `define-coding-system-internal`, `find-coding-systems-region-internal`, `find-composition-internal`, `get-unused-iso-final-char`, `internal--labeled-narrow-to-region`, `internal--labeled-widen`, `internal--set-buffer-modified-tick`, `iso-charset`, `lookup-image-map`, `map-charset-chars`, `newline-cache-check`, `open-termscript`, `optimize-char-table`, `posix-looking-at`, `posix-search-backward`, `posix-search-forward`, `posix-string-match`, `re--describe-compiled`, `read-non-nil-coding-system`, `set-buffer-redisplay`, `set-minibuffer-window`, `set-safe-terminal-coding-system-internal`
+None of the editor's: every one is in E8. CCL's five platform primitives and `fontset-info` are missing and needed by nothing.
