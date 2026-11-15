@@ -417,6 +417,65 @@
       "kill_ring": [],
       "modified": true,
       "error": "Quit"
+    },
+    {
+      "name": "indent-rigidly-from-mid-line",
+      "input": {
+        "text": "aaa\nbbb\nccc\n",
+        "point": 1,
+        "keys": "C-SPC C-n C-n C-a C-u 2 C-x TAB",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n  bbb\nccc\n",
+      "visible": "aaa\n  bbb\nccc\n",
+      "point": 10,
+      "mark": 1,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indent-region-to-a-column-from-mid-line",
+      "input": {
+        "text": "aaa\nbbb\nccc\n",
+        "point": 1,
+        "keys": "C-SPC C-n C-n C-a C-u 4 C-M-\\",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n    bbb\nccc\n",
+      "visible": "aaa\n    bbb\nccc\n",
+      "point": 12,
+      "mark": 1,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indent-region-line-by-line-from-mid-line",
+      "input": {
+        "text": "(a\nb\nc)\n",
+        "point": 1,
+        "keys": "C-SPC C-n C-n C-e C-M-\\",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(a\n b\n c)\n",
+      "visible": "(a\n b\n c)\n",
+      "point": 9,
+      "mark": 1,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

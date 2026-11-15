@@ -127,5 +127,26 @@
     "modes": [
       "auto-fill-mode"
     ]
+  },
+  {
+    "name": "indent-rigidly-from-mid-line",
+    "text": "aaa\nbbb\nccc\n",
+    "point": 1,
+    "keys": "C-SPC C-n C-n C-a C-u 2 C-x TAB"
+  },
+  {
+    "name": "indent-region-to-a-column-from-mid-line",
+    "text": "aaa\nbbb\nccc\n",
+    "point": 1,
+    "keys": "C-SPC C-n C-n C-a C-u 4 C-M-\\"
+  },
+  {
+    "name": "indent-region-line-by-line-from-mid-line",
+    "text": "(a\nb\nc)\n",
+    "point": 1,
+    "keys": "C-SPC C-n C-n C-e C-M-\\",
+    "modes": [
+      "emacs-lisp-mode"
+    ]
   }
 ]
