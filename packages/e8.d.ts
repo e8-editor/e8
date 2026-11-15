@@ -18006,6 +18006,8 @@ declare global {
     function fontsetFont(name: string | boolean | null, ch: number, all?: boolean): Value;
     /** Make a fontset from an XLFD name and [target, font] pairs, as new-fontset; gives its name. */
     function newFontset(name: string, fontlist: Value[]): string;
+    /** The current buffer's mark as a marker, as mark-marker: where the mark is, nowhere while there is none, and the same marker each time. Moving it moves the mark, without activating it. */
+    function markMarker(): Marker;
     /** The name a buffer had before it was last renamed or killed, as buffer-last-name; undefined if it never was. */
     function bufferLastName(buffer?: Buffer | string | null): string | undefined;
     /** Swap the current buffer's text with another's, as buffer-swap-text: the text with its properties, overlays, markers, point, mark, narrowing, undo history and modified state. */

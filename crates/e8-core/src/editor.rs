@@ -2112,6 +2112,16 @@ impl Editor {
         {
             return Err(Error::new(format!("No such buffer {name}")));
         }
+        // A buffer's mark marker moves its mark, or with no buffer takes it
+        // away; it stays its own buffer's, as Emacs's mark marker does.
+        if let Some(b) = self.buffers.iter_mut().find(|b| b.mark_marker() == id) {
+            match buffer {
+                None => b.set_mark(None),
+                Some(name) if name == b.name => b.set_mark(Some(pos)),
+                Some(_) => return Err(Error::new("The mark marker cannot point into another buffer")),
+            }
+            return Ok(());
+        }
         let taken = self.buffers.iter_mut().find_map(|b| b.remove_marker(id)).or_else(|| {
             let i = self.detached_markers.iter().position(|m| m.id == id)?;
             Some(self.detached_markers.remove(i))
@@ -2135,6 +2145,10 @@ impl Editor {
 
     /// Forgets a marker altogether, once nothing can refer to it.
     pub fn delete_marker(&mut self, id: u64) {
+        // The mark's marker lives as long as its buffer.
+        if self.buffers.iter().any(|b| b.mark_marker() == id) {
+            return;
+        }
         let _ = self.set_marker(id, None, 0);
         self.detached_markers.retain(|m| m.id != id);
     }
