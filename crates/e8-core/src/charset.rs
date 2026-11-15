@@ -176,11 +176,14 @@ thread_local! {
     /// The charsets ISO 2022 names by dimension, 94 or 96 characters and
     /// final byte, as charset.c's iso_charset_table: E8's own, then those
     /// defined or declared, the last one winning.
-    static ISO: std::cell::RefCell<Vec<((u32, u32, u8), &'static str)>> = std::cell::RefCell::new(ISO_FINALS.to_vec());
+    static ISO: std::cell::RefCell<Vec<IsoName>> = std::cell::RefCell::new(ISO_FINALS.to_vec());
 }
 
+/// A charset as ISO 2022 names it: by dimension, 94 or 96 characters and final byte.
+type IsoName = ((u32, u32, u8), &'static str);
+
 /// The ISO 2022 finals of E8's own charsets, as Emacs registers them.
-const ISO_FINALS: [((u32, u32, u8), &str); 21] = [
+const ISO_FINALS: [IsoName; 21] = [
     ((1, 94, b'B'), "ascii"),
     ((1, 96, b'A'), "latin-iso8859-1"),
     ((1, 96, b'B'), "latin-iso8859-2"),
@@ -277,15 +280,15 @@ pub fn define_charset(def: &Definition) -> Result<(), String> {
     Ok(())
 }
 
-/// Gives a charset another name, as `define-charset-alias`. `Err` if it names none.
-pub fn define_alias(alias: &str, charset: &str) -> Result<(), ()> {
-    let target = canonical_name(charset).ok_or(())?;
+/// Gives a charset another name, as `define-charset-alias`; false if it names none.
+pub fn define_alias(alias: &str, charset: &str) -> bool {
+    let Some(target) = canonical_name(charset) else { return false };
     MORE_ALIASES.with(|a| {
         let mut a = a.borrow_mut();
         a.retain(|(n, _)| *n != alias);
         a.push((leak(alias), target));
     });
-    Ok(())
+    true
 }
 
 fn declare_iso(dimension: u32, chars: u32, final_byte: u8, charset: &'static str) {
@@ -297,11 +300,11 @@ fn declare_iso(dimension: u32, chars: u32, final_byte: u8, charset: &'static str
 }
 
 /// Makes ISO 2022's charset of a dimension, 94 or 96 characters and final
-/// byte this one, as `declare-equiv-charset`. `Err` if it names none.
-pub fn declare_equiv_charset(dimension: u32, chars: u32, final_byte: u8, charset: &str) -> Result<(), ()> {
-    let name = canonical_name(charset).ok_or(())?;
+/// byte this one, as `declare-equiv-charset`; false if it names none.
+pub fn declare_equiv_charset(dimension: u32, chars: u32, final_byte: u8, charset: &str) -> bool {
+    let Some(name) = canonical_name(charset) else { return false };
     declare_iso(dimension, chars, final_byte, name);
-    Ok(())
+    true
 }
 
 /// The charset ISO 2022 names by a dimension, 94 or 96 characters and a

@@ -92,7 +92,9 @@ natives! {
     pub fn defineCharsetAlias(_ed, alias: EditorValue, charset: EditorValue) -> Option<bool> {
         let alias = name_of(&alias, "symbolp")?;
         let target = name_of(&charset, "charsetp")?;
-        charset::define_alias(&alias, &target).map_err(|()| charset_error(&charset))?;
+        if !charset::define_alias(&alias, &target) {
+            return Err(charset_error(&charset));
+        }
         Ok(None)
     }
 
@@ -101,7 +103,9 @@ natives! {
     pub fn declareEquivCharset(_ed, dimension: f64, chars: f64, final_char: EditorValue, cs: EditorValue) -> Option<bool> {
         let final_byte = char_code(&final_char).ok_or_else(|| wrong("characterp", &final_char))? as u8;
         let name = name_of(&cs, "charsetp")?;
-        charset::declare_equiv_charset(dimension as u32, chars as u32, final_byte, &name).map_err(|()| charset_error(&cs))?;
+        if !charset::declare_equiv_charset(dimension as u32, chars as u32, final_byte, &name) {
+            return Err(charset_error(&cs));
+        }
         Ok(None)
     }
 
