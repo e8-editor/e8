@@ -4010,7 +4010,7 @@ declare global {
       /**
        * Start recording a keyboard macro: the keys typed until C-x ) or F4.
        *
-       * A prefix argument sets the macro counter's starting value, which is 0 otherwise.
+       * A numeric prefix argument sets the macro counter's starting value, which is 0 otherwise; C-u appends to the last macro, running it first, and C-u C-u appends without running it.
        *
        * Defined in packages/kmacro.ts.
        */
@@ -11027,6 +11027,12 @@ declare global {
        */
       "kill-read-only-ok": Value;
       /**
+       * Whether C-u C-x ( runs the last macro before appending to it, and C-u C-u C-x ( does not; nil turns these round.
+       *
+       * Defined in packages/kmacro.ts.
+       */
+      "kmacro-execute-before-append": Value;
+      /**
        * The coding system the last file read or written, or text decoded or encoded, used.
        */
       "last-coding-system-used": Value;
@@ -15774,8 +15780,12 @@ declare global {
     function activateMark(): void;
     /** Hide the region, leaving the mark where it is. */
     function deactivateMark(): void;
-    /** Start recording typed keys into a keyboard macro (Emacs's start-kbd-macro). */
-    function startKbdMacro(): void;
+    /**
+     * Start recording typed keys into a keyboard macro (Emacs's
+     * start-kbd-macro). With `append`, go on from the last macro, running
+     * it once more first unless `noExec`.
+     */
+    function startKbdMacro(append?: boolean, no_exec?: boolean): void;
     /** Finish the keyboard macro, leaving out the keys that ended it (Emacs's end-kbd-macro). */
     function endKbdMacro(): void;
     /**

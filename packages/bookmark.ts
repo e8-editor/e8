@@ -170,9 +170,15 @@ function find(name: string): Bookmark {
 async function readBookmark(prompt: string): Promise<string> {
   const names = bookmarks().map((b) => b.name);
   if (names.length === 0) e8.userError("No bookmarks exist");
-  const def = current.get(e8.bufferName()) ?? names[0];
-  const answer = await e8.completingRead(`${prompt} (default ${def}): `, names, { requireMatch: true, history: "bookmark-history", default: def });
-  return answer === "" ? def! : answer;
+  // The buffer's current bookmark is the default, or there is none, and
+  // empty input is the empty name, as bookmark-completing-read has it.
+  const def = current.get(e8.bufferName());
+  const answer = await e8.completingRead(def === undefined ? `${prompt}: ` : `${prompt} (default ${def}): `, names, {
+    requireMatch: true,
+    history: "bookmark-history",
+    ...(def === undefined ? {} : { default: def }),
+  });
+  return answer === "" ? (def ?? "") : answer;
 }
 
 e8.defineVariable({ name: "bookmark-history", doc: "Bookmark names answered at prompts, newest first.", value: [] });
@@ -247,7 +253,11 @@ e8.defineCommand({
   run: async () => {
     const name = await readBookmark("Delete bookmark");
     const list = bookmarks();
-    list.splice(list.findIndex((b) => b.name === name), 1);
+    // A name no bookmark has deletes nothing, as Emacs's delq of nil.
+    const i = list.findIndex((b) => b.name === name);
+    if (i >= 0) list.splice(i, 1);
+    // No buffer's current bookmark is the one gone, as bookmark-delete clears it.
+    current.replaceValue(name, undefined);
     changed();
   },
 });
@@ -259,6 +269,7 @@ e8.defineCommand({
     const old = await readBookmark("Old bookmark name");
     const name = await e8.readString(`Rename "${old}" to: `, { history: "bookmark-history" });
     find(old).name = name;
+    current.replaceValue(old, name);
     changed();
   },
 });

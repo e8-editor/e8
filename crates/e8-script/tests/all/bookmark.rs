@@ -42,3 +42,30 @@ fn a_bookmark_finds_its_place_after_edits_and_is_saved_as_emacs_saves_it() {
     let names = s2.eval_expression(&mut ed2, "JSON.stringify(e8.call('bookmark-bmenu-list') ?? e8.bufferText(0, e8.bufferSize()))").unwrap();
     assert!(names.contains("notes.txt"), "{names}");
 }
+
+/// Deleting a bookmark twice, the second time taking the buffer's former
+/// bookmark as the default, deletes no other: Emacs's delq of nil deletes
+/// nothing, and bookmark-delete forgets the buffer's current bookmark.
+#[test]
+fn deleting_a_bookmark_that_is_gone_deletes_no_other() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("notes.txt");
+    std::fs::write(&path, "some text\n").unwrap();
+    let file = dir.path().join("bookmarks");
+    let d = Driven::new(&format!("e8.setDefault('bookmark-default-file', {:?});", file.display().to_string()));
+    let visit = path.display().to_string();
+    d.with(move |ed| ed.call("find-file", vec![Arg::Str(visit)]).unwrap());
+    d.press("C-x r m");
+    d.type_text("old");
+    d.press("RET C-e C-x r m");
+    d.type_text("foo");
+    d.press("RET");
+    d.press("M-x");
+    d.type_text("bookmark-delete");
+    d.press("RET RET");
+    d.press("M-x");
+    d.type_text("bookmark-delete");
+    d.press("RET RET");
+    let saved = std::fs::read_to_string(&file).unwrap();
+    assert!(saved.contains("(\"old\"") && !saved.contains("(\"foo\""), "{saved}");
+}

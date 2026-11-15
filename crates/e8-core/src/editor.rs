@@ -1291,6 +1291,20 @@ impl Editor {
         Ok(())
     }
 
+    /// Starts recording a keyboard macro that goes on from the last one,
+    /// as Emacs's `start-kbd-macro` with APPEND: its keys first, run once
+    /// more unless `no_exec`, and then the keys typed after them.
+    pub fn start_kbd_macro_appending(&mut self, no_exec: bool) -> Result<()> {
+        let last = self.last_macro.clone().unwrap_or_default();
+        self.start_kbd_macro()?;
+        self.macro_sequence_start = last.len();
+        self.defining_macro = Some(last);
+        if !no_exec && self.last_macro.is_some() {
+            self.call_last_kbd_macro(1)?;
+        }
+        Ok(())
+    }
+
     /// Finishes the keyboard macro being defined. The keys that ended it
     /// are left out.
     pub fn end_kbd_macro(&mut self) -> Result<()> {

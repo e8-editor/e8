@@ -199,6 +199,63 @@
       "kill_ring": [],
       "modified": true,
       "error": "No further undo information for region"
+    },
+    {
+      "name": "kmacro-append-without-running",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "<f3> a <f4> C-u C-u <f3> b <f4> <f4>",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abab",
+      "visible": "abab",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "kmacro-append-keeps-the-counter",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "<f3> <f3> SPC <f4> C-u C-u <f3> <f3> SPC <f4> <f4>",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "0 1 2 3 ",
+      "visible": "0 1 2 3 ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "kmacro-c-u-counter-inserts-the-previous",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-u 5 <f3> <f3> C-u <f3> <f3> <f4>",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "556",
+      "visible": "556",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
