@@ -158,7 +158,7 @@ fn the_current_local_and_global_maps_are_keymaps() {
 fn local_set_key_as_lisp_writes_it_binds_in_the_mode_s_map() {
     let (mut ed, s) = setup();
     eval(&mut ed, &s, r#"(e8.call("emacs-lisp-mode"), e8.defineKey(e8.currentLocalMap(), "C-c z", "test-one"), true)"#);
-    ed.press("C-c z");
+    ed.press("C-c z").unwrap();
     assert_eq!(seen(&mut ed, &s), "one");
 }
 
@@ -170,7 +170,7 @@ fn a_global_map_can_be_put_in_place_of_another() {
         &s,
         r#"(globalThis.copy = e8.copyKeymap(e8.currentGlobalMap()), e8.defineKey(copy, "C-c y", "test-two"), e8.useGlobalMap(copy), true)"#,
     );
-    ed.press("C-c y");
+    ed.press("C-c y").unwrap();
     assert_eq!(seen(&mut ed, &s), "two");
     let got = eval(&mut ed, &s, r#"JSON.stringify([e8.lookupKey("global-map", "C-c y") ?? null, e8.lookupKey(copy, "C-x C-f")])"#);
     assert_eq!(got, r#"[null,"find-file"]"#);
@@ -225,7 +225,7 @@ fn minor_modes_keymaps_and_their_bindings() {
 fn keys_set_and_unset_globally_and_locally() {
     let (mut ed, s) = setup();
     eval(&mut ed, &s, r#"(e8.call("global-set-key", "C-c y", "test-one"), e8.call("local-set-key", "C-c u", "test-two"), true)"#);
-    ed.press("C-c y C-c u");
+    ed.press("C-c y C-c u").unwrap();
     assert_eq!(seen(&mut ed, &s), "one two");
     let got = eval(
         &mut ed,
@@ -269,7 +269,7 @@ fn the_first_minor_mode_binding_a_key_to_a_command_wins() {
 fn binding_keys_and_describing_them_follow_the_global_map_in_use() {
     let (mut ed, s) = setup();
     eval(&mut ed, &s, r#"(e8.useGlobalMap(e8.copyKeymap(e8.currentGlobalMap())), e8.bindKey("C-c x", "test-three"), true)"#);
-    ed.press("C-c x");
+    ed.press("C-c x").unwrap();
     assert_eq!(seen(&mut ed, &s), "three");
     let got = eval(&mut ed, &s, r#"JSON.stringify(e8.lookupKey("global-map", "C-c x") ?? null)"#);
     assert_eq!(got, "null");

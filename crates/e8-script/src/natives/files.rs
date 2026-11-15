@@ -185,9 +185,9 @@ natives! {
     /// it knows none, and -1 if the file did not exist when visited.
     pub fn visitedFileModtime(ed) -> f64 {
         Ok(match ed.buffer().visited_file_modtime() {
-            Ok(Some(t)) => milliseconds(t),
-            Ok(None) => -1.0,
-            Err(()) => 0.0,
+            Some(Some(t)) => milliseconds(t),
+            Some(None) => -1.0,
+            None => 0.0,
         })
     }
 
@@ -298,7 +298,7 @@ natives! {
     #[ts = "(prefix: string, dirFlag: boolean | 0 | null, suffix: string, text?: string | null): string"]
     pub fn makeTempFileInternal(ed, prefix: String, dir_flag: EditorValue, suffix: String, text: Option<String>) -> String {
         let kind = match dir_flag {
-            EditorValue::Number(n) if n == 0.0 => e8_core::TempKind::NameOnly,
+            EditorValue::Number(0.0) => e8_core::TempKind::NameOnly,
             v if v.is_true() => e8_core::TempKind::Directory,
             _ => e8_core::TempKind::File,
         };

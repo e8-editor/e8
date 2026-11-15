@@ -1787,6 +1787,14 @@ impl Buffer {
     }
 }
 
+/// The number of a new overlay: unique among every buffer's, so an
+/// overlay's number alone says which buffer it is in, as an Emacs overlay
+/// knows its buffer, and always larger than the last.
+fn next_overlay_id() -> u64 {
+    static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+    NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1907,12 +1915,4 @@ mod tests {
         assert!(b.insert("y").is_err());
         assert!(b.delete(0..1).is_err());
     }
-}
-
-/// The number of a new overlay: unique among every buffer's, so an
-/// overlay's number alone says which buffer it is in, as an Emacs overlay
-/// knows its buffer, and always larger than the last.
-fn next_overlay_id() -> u64 {
-    static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
-    NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
 }
