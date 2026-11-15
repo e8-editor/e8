@@ -20,9 +20,11 @@ import {
   acceptInBuffer,
   addPerFileWordList,
   changeDictionary,
+  checkWordLater,
   checkWords,
   insertPersonal,
   ispellWord,
+  knownAnswer,
   setSpellcheckerParams,
   wordAt as getWord,
 } from "ispell";
@@ -128,16 +130,23 @@ function searchForward(word: string, bound: number): number | undefined {
 /** The last word checked and what the checker said, as flyspell-word-cache-start, -end, -word and -result. */
 const cache = new PerBuffer<{ start: number; end: number; word: string; result: boolean }>();
 
+/** A word and where it is. */
+type Found = { word: string; start: number; end: number };
+
 /**
  * Checks the word before point, or the one after with `following`, marking
  * it if it is wrong or doubled, as flyspell-word: true if it is right. A
- * known answer from the checker, `given`, saves asking it again.
+ * known answer from the checker, `given`, saves asking it again. `later`
+ * asks the checker without waiting, marking the word when the answer comes
+ * if it is still there: true meanwhile. `expect` is the word an answer was
+ * for, which is marked only if it is still the word found.
  */
-export function flyspellWord(following = false, given?: Poss): boolean {
+export function flyspellWord(following = false, given?: Poss, later = false, expect?: Found): boolean {
   if (given === undefined) acceptLocalDefs();
   return e8.saveExcursion(() => {
     const found = getWord(following);
     if (found === undefined) return true;
+    if (expect !== undefined && (found.word !== expect.word || found.start !== expect.start || found.end !== expect.end)) return true;
     const predicate = e8.variable("flyspell-generic-check-word-predicate");
     if (truthy(predicate) && !e8.saveExcursion(() => {
       e8.gotoChar(found.end);
@@ -164,6 +173,10 @@ export function flyspellWord(following = false, given?: Poss): boolean {
     }
     const cached = cache.get(e8.currentBuffer());
     if (given === undefined && cached && cached.start === start && cached.end === end && cached.word === word) return cached.result;
+    if (given === undefined && later && knownAnswer(word) === undefined) {
+      askLater(found);
+      return true;
+    }
     const poss = given ?? checkWords([word])[0];
     const right = poss === true || typeof poss === "string" || poss === undefined;
     cache.set(e8.currentBuffer(), { start, end, word, result: right });
@@ -195,6 +208,30 @@ export function flyspellWord(following = false, given?: Poss): boolean {
     }
     highlight(hstart, hend, poss);
     return false;
+  });
+}
+
+/**
+ * Asks the checker about a word without waiting, and checks it again with
+ * the answer when it comes, if it is still there: Hunspell takes up to
+ * 50 ms to answer for a word it does not know, which typing would wait for.
+ */
+function askLater(found: Found): void {
+  const buffer = e8.currentBuffer();
+  const start = e8.makeMarker(found.start);
+  const end = e8.makeMarker(found.end);
+  checkWordLater(found.word, (poss) => {
+    const at = { word: found.word, start: e8.markerPosition(start), end: e8.markerPosition(end) };
+    e8.deleteMarker(start);
+    e8.deleteMarker(end);
+    if (poss === undefined || !e8.bufferLiveP(buffer) || at.start === undefined || at.end === undefined) return;
+    e8.withCurrentBuffer(buffer, () => {
+      if (!truthy(e8.variable("flyspell-mode"))) return;
+      e8.saveExcursion(() => {
+        e8.gotoChar(at.end!);
+        flyspellWord(false, poss, false, at as Found);
+      });
+    });
   });
 }
 
@@ -263,18 +300,18 @@ function postCommand(): void {
   if (command === "transpose-chars" && s.prePoint !== undefined) {
     e8.saveExcursion(() => {
       e8.gotoChar(s.prePoint! - 1);
-      flyspellWord();
+      flyspellWord(false, undefined, true);
     });
   }
   if (checkPreWordP(command)) {
     e8.saveExcursion(() => {
       e8.gotoChar(Math.min(s.prePoint!, e8.pointMax()));
-      flyspellWord();
+      flyspellWord(false, undefined, true);
     });
   }
   const now = checkWordP(command);
   if (now === true) {
-    flyspellWord();
+    flyspellWord(false, undefined, true);
     s.prePrePoint = e8.point();
   } else {
     s.prePrePoint = undefined;
@@ -286,7 +323,7 @@ function postCommand(): void {
         s.timer = undefined;
         if (!e8.bufferLiveP(buffer)) return;
         e8.withCurrentBuffer(buffer, () => {
-          if (e8.point() === at && truthy(e8.variable("flyspell-mode"))) flyspellWord();
+          if (e8.point() === at && truthy(e8.variable("flyspell-mode"))) flyspellWord(false, undefined, true);
         });
       });
       cache.delete(e8.currentBuffer());
@@ -300,7 +337,7 @@ function postCommand(): void {
     if (space || !near) {
       e8.saveExcursion(() => {
         e8.gotoChar(Math.min(start, e8.pointMax()));
-        flyspellWord();
+        flyspellWord(false, undefined, true);
       });
     }
   }

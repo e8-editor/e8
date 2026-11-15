@@ -234,3 +234,112 @@ fn a_checker_that_ends_is_started_again_by_the_next_check() {
     assert_eq!(t.ed.echo(), Some("HELLO is correct"));
     assert_eq!(t.args().lines().filter(|l| l.starts_with("-a ")).count(), 2, "{}", t.args());
 }
+
+impl Speller {
+    /// The lines the checker was asked to check, a line each.
+    fn checked(&self) -> String {
+        std::fs::read_to_string(self.dir.path().join("checked.log")).unwrap_or_default()
+    }
+
+    fn forget_checked(&self) {
+        let _ = std::fs::remove_file(self.dir.path().join("checked.log"));
+    }
+
+    /// Takes in the checker's answers until none comes for a while, as
+    /// the command loop does while it waits for keys.
+    fn settle(&mut self) {
+        while self.eval("e8.acceptProcessOutput(undefined, 0.3)") == "true" {}
+    }
+
+    /// The words flyspell marks, in order.
+    fn marked(&mut self) -> String {
+        self.eval(
+            r#"e8.overlaysIn(0, e8.bufferSize()).filter((o) => e8.overlayGet(o, "flyspell-overlay") === true)
+                .sort((a, b) => e8.overlayStart(a) - e8.overlayStart(b))
+                .map((o) => e8.bufferSubstringNoProperties(e8.overlayStart(o), e8.overlayEnd(o))).join(" ")"#,
+        )
+        .trim_matches('"')
+        .to_string()
+    }
+}
+
+#[test]
+fn what_the_checker_said_is_not_asked_again_until_what_it_accepts_changes() {
+    let Some(mut t) = speller("A speling and a wrod.\n") else { return };
+    t.ed.call("flyspell-buffer", vec![]).unwrap();
+    assert_eq!(t.marked(), "speling wrod");
+    assert!(t.checked().lines().any(|l| l == "speling"), "{}", t.checked());
+    t.forget_checked();
+    t.ed.call("flyspell-buffer", vec![]).unwrap();
+    assert_eq!(t.checked(), "", "every word's answer is remembered");
+    assert_eq!(t.marked(), "speling wrod");
+    t.eval("e8.funcall('ispell-send-string', '@and\\n')");
+    t.forget_checked();
+    t.ed.call("flyspell-buffer", vec![]).unwrap();
+    assert!(t.checked().lines().count() > 0, "a word accepted forgets the answers");
+    // Accepting it again, as flyspell tells the checker a buffer's words again, changes nothing.
+    t.eval("e8.funcall('ispell-send-string', '@and\\n')");
+    t.forget_checked();
+    t.ed.call("flyspell-buffer", vec![]).unwrap();
+    assert_eq!(t.checked(), "");
+    t.eval("e8.funcall('ispell-send-string', '@speling\\n')");
+    t.forget_checked();
+    t.ed.call("flyspell-buffer", vec![]).unwrap();
+    assert!(t.checked().lines().any(|l| l == "speling"), "{}", t.checked());
+    assert_eq!(t.marked(), "wrod", "and the word accepted is right now");
+}
+
+/// Words the stand-in does not know, `n` of them, each different: letters only, as it finds words.
+fn unknown_words(n: usize) -> Vec<String> {
+    (0..n)
+        .map(|i| {
+            let (mut i, mut w) = (i, String::from("q"));
+            for _ in 0..3 {
+                w.push((b'a' + (i % 26) as u8) as char);
+                i /= 26;
+            }
+            w
+        })
+        .collect()
+}
+
+#[test]
+fn a_large_region_is_checked_by_several_checkers_that_know_what_the_session_accepts() {
+    let words = unknown_words(300);
+    let text = format!("hello {}\n", words.join(" "));
+    let Some(mut t) = speller(&text) else { return };
+    // Accepted before the helpers start: the second batch of words goes to a helper, if there is one.
+    t.ed.press("M-$").unwrap();
+    let accepted = &words[40];
+    t.eval(&format!("e8.funcall('ispell-send-string', '@{accepted}\\n')"));
+    t.ed.call("flyspell-buffer", vec![]).unwrap();
+    let rest: Vec<&str> = words.iter().filter(|w| *w != accepted).map(String::as_str).collect();
+    assert_eq!(t.marked(), rest.join(" "), "every unknown word but the one accepted");
+    let processors: usize = t.eval("String(e8.numProcessors())").trim_matches('"').parse().unwrap();
+    let runs = t.args().lines().filter(|l| l.starts_with("-a ")).count();
+    assert_eq!(runs, 1 + 3.min(processors - 1), "the checker and its helpers: {}", t.args());
+    let checked: Vec<String> = t.checked().lines().map(str::to_string).collect();
+    for w in &words {
+        assert_eq!(checked.iter().filter(|c| *c == w).count(), 1, "{w} checked once, by one checker");
+    }
+    // Killing the session ends its helpers too.
+    t.ed.press("M-x").unwrap();
+    t.ed.type_text("ispell-kill-ispell");
+    t.ed.press("RET").unwrap();
+    assert_eq!(t.eval("String(e8.processList().length)"), "\"0\"");
+}
+
+#[test]
+fn a_word_typed_is_marked_when_the_answer_comes() {
+    let Some(mut t) = speller("") else { return };
+    t.ed.press(&mx("flyspell-mode")).unwrap();
+    t.ed.press(&typed("a helo ")).unwrap();
+    assert_eq!(t.marked(), "", "the command did not wait for the answer");
+    t.settle();
+    assert_eq!(t.marked(), "helo");
+    // A word changed before its answer comes is not marked by that answer.
+    t.ed.press(&format!("{} DEL DEL DEL DEL DEL {}", typed("wrod "), typed("word "))).unwrap();
+    t.settle();
+    assert_eq!(t.marked(), "helo", "{}", t.text());
+    assert_eq!(t.text(), "a helo word ");
+}
