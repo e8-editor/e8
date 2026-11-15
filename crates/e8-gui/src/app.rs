@@ -313,6 +313,35 @@ impl E8App {
         }
     }
 
+    /// Waits until the editor has taken everything sent to it and published
+    /// what its frames show, and says whether the last frame drawn showed
+    /// that: if not, the next one will. For tests that draw what keys made:
+    /// the editor's answer to a question says what it holds, which the
+    /// window draws only once the editor has described it, however long
+    /// that takes on a busy machine.
+    pub fn settle(&mut self) -> bool {
+        match &self.backend {
+            Backend::Inline { .. } => true,
+            Backend::Thread { driver, .. } => {
+                driver.settle();
+                driver.published().generation == self.generation
+            }
+        }
+    }
+
+    /// The panels of the open menu as the window last drew them, which with
+    /// the editor on a thread of its own may be behind what it holds, for
+    /// tests to say which frame they took a picture of.
+    pub fn drawn_menus(&mut self) -> Vec<e8_core::MenuPanel> {
+        match &mut self.backend {
+            Backend::Inline { editor, .. } => {
+                let frame = editor.selected_frame();
+                editor.describe_frame(frame, 1.0).menus
+            }
+            Backend::Thread { .. } => self.frames.iter().flat_map(|f| f.menus.iter().cloned()).collect(),
+        }
+    }
+
     /// Runs `f` with the editor without waiting for it.
     pub fn run(&mut self, f: impl FnOnce(&mut Editor) + Send + 'static) {
         self.backend.run(move |editor, _| f(editor));
