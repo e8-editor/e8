@@ -236,5 +236,35 @@
       "org-todo-list"
     ],
     "keys": "n n n t t n t RET"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-11-16",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "name": "deadline-warning-from-its-timestamp",
+    "text": "* TODO Soon\nDEADLINE: <2026-11-19 Thu -2d>\n* TODO Later\nDEADLINE: <2026-11-30 Mon -3d>\n* TODO Month\nDEADLINE: <2026-12-10 Thu -1m>\n"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-11-16",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "name": "scheduled-delay",
+    "text": "* TODO Waits\nSCHEDULED: <2026-11-15 Sun -2d>\n* TODO Shows\nSCHEDULED: <2026-11-13 Fri -2d>\n* TODO Today\nSCHEDULED: <2026-11-16 Mon -1d>\n"
   }
 ]

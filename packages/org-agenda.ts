@@ -23,8 +23,13 @@ e8.defineVariable({
 });
 e8.defineVariable({
   name: "org-deadline-warning-days",
-  doc: "How many days ahead today's agenda warns of a deadline.",
+  doc: "How many days ahead today's agenda warns of a deadline, unless its timestamp says, as -3d does; 0 or less applies whatever it says.",
   value: 14,
+});
+e8.defineVariable({
+  name: "org-scheduled-delay-days",
+  doc: "How many days after its date a scheduled entry waits to show, unless its timestamp says, as -2d does; less than 0 applies whatever it says.",
+  value: 0,
 });
 
 const AGENDA = "*Org Agenda*";
@@ -181,6 +186,21 @@ function agendaBuffers(): string[] {
   return (files as string[]).map((file) => e8.findFileNoselect(e8.expandFileName(String(file), typeof dir === "string" ? e8.expandFileName(dir) : undefined)));
 }
 
+/**
+ * How many days before a deadline it is warned of, or after a scheduled date
+ * the entry waits, as org-get-wdays: a negative or, for deadlines, zero
+ * variable applies whatever the timestamp says, else its own -Nd, -Nw, -Nm
+ * or -Ny, else the variable.
+ */
+function wdays(ts: string, delay: boolean): number {
+  const tv = Number(e8.variable(delay ? "org-scheduled-delay-days" : "org-deadline-warning-days") ?? (delay ? 0 : 14));
+  if ((delay && tv < 0) || (!delay && tv <= 0)) return -tv;
+  const m = /-([0-9]+)([hdwmy])(?=$|>| )/.exec(ts);
+  if (m === null) return tv;
+  const unit: Record<string, number> = { d: 1, w: 7, m: 30.4, y: 365.25, h: 0.041667 };
+  return Math.floor(Number(m[1]) * unit[m[2]]);
+}
+
 /** A heading's planning timestamps: when it is scheduled and due, and where those timestamps are. */
 function planningOf(h: Heading): {
   scheduled?: number;
@@ -188,6 +208,10 @@ function planningOf(h: Heading): {
   scheduledRepeat?: [number, string];
   scheduledAt?: number;
   deadlineAt?: number;
+  /** Days before a deadline its warning starts, as org-get-wdays gives them. */
+  warning?: number;
+  /** Days after its date a scheduled entry waits to show, as org-get-wdays gives them with DELAY. */
+  delay?: number;
 } {
   const line = h.line + 1;
   if (line >= e8.lineCount() || !PLANNING.test(e8.lineText(line))) return {};
@@ -198,11 +222,13 @@ function planningOf(h: Heading): {
   const st = s && activeTimestamp(s[1]);
   if (s && st) {
     [out.scheduled, out.scheduledRepeat] = [st.day, st.repeat];
+    out.delay = wdays(s[1], true);
     out.scheduledAt = at(line, text, (s.index ?? 0) + s[0].length - s[1].length);
   }
   const dt = d && activeTimestamp(d[1]);
   if (d && dt) {
     out.deadline = dt.day;
+    out.warning = wdays(d[1], false);
     out.deadlineAt = at(line, text, (d.index ?? 0) + d[0].length - d[1].length);
   }
   return out;
@@ -253,7 +279,6 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
 /** The items for a day from the current buffer, scanned once, as org-agenda-get-day-entries collects them. */
 function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today: number, buffer: string): AgendaItem[] {
   const cat = scan.cat;
-  const warning = Number(e8.variable("org-deadline-warning-days") ?? 14);
   const deadlines: AgendaItem[] = [];
   const scheduled: AgendaItem[] = [];
   const stamps: AgendaItem[] = [];
@@ -262,7 +287,7 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       const diff = plan.deadline - day;
       let leader: string | undefined;
       if (diff === 0) leader = "Deadline:  ";
-      else if (day === today && !done && diff > 0 && diff <= warning) leader = `In ${String(diff).padStart(3)} d.: `;
+      else if (day === today && !done && diff > 0 && diff <= (plan.warning ?? 14)) leader = `In ${String(diff).padStart(3)} d.: `;
       else if (day === today && !done && diff < 0) leader = `${String(-diff).padStart(2)} d. ago: `;
       if (leader !== undefined) {
         const item = { cat, leader, removeTimestamp: false, buffer, pos: plan.deadlineAt ?? h.start, heading: h.start };
@@ -275,11 +300,14 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       const ts = { day: plan.scheduled, repeat: plan.scheduledRepeat };
       const diff = day - plan.scheduled;
       const onDay = day === plan.scheduled || (day > today && occursOn(ts, day));
-      const past = day === today && plan.scheduled < today && !done;
+      // A delay keeps it out of the agenda until that many days after its date.
+      const delay = plan.delay ?? 0;
+      const past = day === today && plan.scheduled < today && !done && !(delay > 0 && today - plan.scheduled < delay);
       // A habit shows only today, as org-habit-show-habits-only-for-today says.
       const hidden = habit !== undefined && (done || e8.variable("org-habit-show-habits") !== true ||
         (e8.variable("org-habit-show-habits-only-for-today") === true && day !== today));
-      if (((onDay && !(done && plan.scheduled !== day)) || past) && !hidden) {
+      const delayed = delay > 0 && diff < delay;
+      if (((onDay && !(done && plan.scheduled !== day) && !delayed) || past) && !hidden) {
         // A habit has no leader, its graph saying when it is due, and is as urgent as org-habit-get-urgency says.
         const leader = habit !== undefined ? "" : past ? `Sched.${String(diff).padStart(2)}x: ` : "Scheduled: ";
         const item = { cat, leader, removeTimestamp: false, buffer, pos: plan.scheduledAt ?? h.start, heading: h.start };

@@ -11433,7 +11433,7 @@ declare global {
        */
       "org-cycle-subtree-status": Value;
       /**
-       * How many days ahead today's agenda warns of a deadline.
+       * How many days ahead today's agenda warns of a deadline, unless its timestamp says, as -3d does; 0 or less applies whatever it says.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -11710,6 +11710,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-return-follows-link": Value;
+      /**
+       * How many days after its date a scheduled entry waits to show, unless its timestamp says, as -2d does; less than 0 applies whatever it says.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-scheduled-delay-days": Value;
       /**
        * Whether C-o in a table inserts a row rather than opening a line.
        *
