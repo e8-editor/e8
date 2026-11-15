@@ -96,3 +96,75 @@ fn scrolling_with_the_wheel_checks_no_word_while_it_goes_on() {
     let after = marked(&mut ed, &s).split(' ').filter(|w| !w.is_empty()).count();
     assert_eq!(after, first, "words were checked during the scroll: {}", marked(&mut ed, &s));
 }
+
+#[test]
+fn looking_for_a_word_elsewhere_finds_what_the_regexp_alone_found() {
+    // flyspell looks for a misspelling elsewhere with a literal search
+    // first, then the regexp around each place: compared here with the
+    // regexp alone, as flyspell-word-search-backward and -forward search,
+    // over random text whose words overlap and touch the buffer's ends.
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "compare.ts",
+        r#"import("flyspell").then(({ wordSearches }) => import("subr").then(({ regexpQuote }) => import("ispell").then(({ wordAt }) => {
+          let seed = 7;
+          const random = (n: number) => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed % n; };
+          const pieces = ["ab", "ab", "aab", "ba", "Ab", "åb", "a-b", " ", " ", "\n", ".", "1"];
+          const words = ["ab", "a", "b", "Ab", "åb"];
+          const oldBackward = (word: string, bound: number, ignoreCase: boolean) => e8.saveExcursion(() => {
+            const re = `\\(?:[^[:alpha:]]\\|\\\`\\)${regexpQuote(word)}[^[:alpha:]]`;
+            const limit = bound > e8.pointMin() ? bound - 1 : undefined;
+            for (;;) {
+              if (e8.reSearchBackward(re, { bound: limit, noerror: true, caseFold: ignoreCase }) === undefined) return undefined;
+              if (e8.point() !== e8.pointMin()) e8.gotoChar(e8.point() + 1);
+              const p = e8.point();
+              const found = wordAt();
+              if (found && (ignoreCase ? found.word.toLowerCase() === word.toLowerCase() : found.word === word)) return p;
+              e8.gotoChar(p);
+            }
+          });
+          const oldForward = (word: string, bound: number) => e8.saveExcursion(() => {
+            const re = `[^[:alpha:]]${regexpQuote(word)}\\(?:[^[:alpha:]]\\|\\'\\)`;
+            const limit = bound < e8.pointMax() ? bound + 1 : undefined;
+            for (;;) {
+              if (e8.reSearchForward(re, { bound: limit, noerror: true }) === undefined) return undefined;
+              if (e8.point() !== e8.pointMax()) e8.gotoChar(e8.point() - 1);
+              const p = e8.point();
+              if (wordAt()?.word === word) return p;
+              e8.gotoChar(p + 1);
+            }
+          });
+          const bad: string[] = [];
+          let tried = 0;
+          for (let round = 0; round < 300; round++) {
+            e8.deleteRegion(e8.pointMin(), e8.pointMax());
+            let text = "";
+            for (let i = 0, n = 1 + random(14); i < n; i++) text += pieces[random(pieces.length)];
+            e8.insert(text);
+            const size = e8.pointMax();
+            for (let k = 0; k < 6; k++) {
+              const word = words[random(words.length)];
+              const point = 1 + random(size);
+              const bound = 1 + random(size);
+              const fold = random(2) === 0;
+              e8.gotoChar(point);
+              const a = oldBackward(word, Math.min(bound, point), fold);
+              const b = wordSearches.backward(word, Math.min(bound, point), fold);
+              e8.setVariable("case-fold-search", fold);
+              const c = oldForward(word, Math.max(bound, point));
+              const d = wordSearches.forward(word, Math.max(bound, point));
+              e8.setVariable("case-fold-search", true);
+              tried++;
+              if (a !== b || c !== d) bad.push(JSON.stringify({ text, word, point, bound, fold, backward: [a, b], forward: [c, d] }));
+            }
+          }
+          e8.setVariable("flyspell-test-result", `${tried} ${bad.slice(0, 3).join("\n")}`);
+        })));"#
+            .to_string(),
+    )
+    .unwrap();
+    let result = s.eval_expression(&mut ed, "e8.variable('flyspell-test-result')").unwrap();
+    assert_eq!(result, "\"1800 \"", "the searches differ:\n{result}");
+}

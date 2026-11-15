@@ -1172,13 +1172,55 @@ export function getWord(following = false, extraOtherchars?: string): { word: st
   e8.userError("No word found to check!");
 }
 
+/** The current dictionary's characters, as finding words uses them. */
+interface WordChars {
+  casechars: string;
+  notCasechars: string;
+  otherchars: string;
+  many: boolean;
+}
+
+/** The current dictionary's characters, looking its entry up once. */
+function wordChars(): WordChars {
+  setSpellcheckerParams();
+  const entry = currentEntry();
+  const at = (n: number): string | undefined => (typeof entry[n] === "string" ? entry[n] as string : undefined);
+  return { casechars: at(1) ?? "[[:alpha:]]", notCasechars: at(2) ?? "[^[:alpha:]]", otherchars: at(3) ?? "", many: truthy(entry[4]) };
+}
+
+/** Whether `withWordChars` is running, and the characters it keeps, for the buffer they were looked up in. */
+let keeping = false;
+let keptChars: { buffer: number; chars: WordChars } | undefined;
+
+/** The dictionary's characters, kept while `withWordChars` runs. */
+function charsNow(): WordChars {
+  if (!keeping) return wordChars();
+  const buffer = e8.currentBuffer().id;
+  if (keptChars === undefined || keptChars.buffer !== buffer) keptChars = { buffer, chars: wordChars() };
+  return keptChars.chars;
+}
+
+/**
+ * Runs `f` finding words with the dictionary's characters looked up once
+ * for each buffer, the first time a word is found, rather than for each
+ * word, as flyspell does over a region or after a command, where the
+ * dictionary does not change: looking its entry up reads the dictionary
+ * lists, which took a third of finding a word.
+ */
+export function withWordChars<T>(f: () => T): T {
+  if (keeping) return f();
+  keeping = true;
+  try {
+    return f();
+  } finally {
+    keeping = false;
+    keptChars = undefined;
+  }
+}
+
 /** The word at point, as getWord finds it, or undefined if there is none, as flyspell-get-word. */
 export function wordAt(following = false, extraOtherchars?: string): { word: string; start: number; end: number } | undefined {
-  setSpellcheckerParams();
-  const casechars = getCasechars();
-  const notCasechars = getNotCasechars();
-  const otherchars = getOtherchars();
-  const many = getManyOtherchars();
+  const { casechars, notCasechars, otherchars, many } = charsNow();
   const wordRegexp = `${casechars}+\\(${otherchars !== "" ? `${otherchars}?` : ""}${extraOtherchars ? `${extraOtherchars}?` : ""}${casechars}+\\)${many || extraOtherchars ? "*" : "?"}`;
   return e8.saveExcursion(() => {
     if (!e8.lookingAt(casechars)) {
