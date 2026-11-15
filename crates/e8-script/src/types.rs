@@ -525,6 +525,9 @@ const API: &str = r##"
   function readEvent(prompt?: string): string;
   function readEvent(prompt: string | undefined, options: { seconds: number }): string | undefined;
   /** Read a character, as Emacs's read-char: anything else, such as <f1>, is an error. With `seconds`, undefined if none comes in that long. */
+  /** Read a character, as read-char-exclusive: other events, such as <f1>, are read and passed over. With `seconds`, undefined if none comes in that long. */
+  function readCharExclusive(prompt?: string): string;
+  function readCharExclusive(prompt: string | undefined, options: { seconds: number }): string | undefined;
   function readChar(prompt?: string): string;
   function readChar(prompt: string | undefined, options: { seconds: number }): string | undefined;
   /**

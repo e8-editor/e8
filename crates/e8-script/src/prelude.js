@@ -937,6 +937,16 @@
     readKey: (prompt) => native.readKeyEvent("key", String(prompt ?? ""), null),
     readEvent: (prompt, options) => native.readKeyEvent("event", String(prompt ?? ""), options?.seconds ?? null) ?? undefined,
     readChar: (prompt, options) => native.readKeyEvent("char", String(prompt ?? ""), options?.seconds ?? null) ?? undefined,
+    // As read-char-exclusive: other events, such as <f1>, are read and passed over (ADR 0104).
+    readCharExclusive: (prompt, options) => {
+      for (;;) {
+        try {
+          return e8.readChar(prompt, options);
+        } catch (e) {
+          if (e?.symbol !== "error") throw e;
+        }
+      }
+    },
     readKeySequence: (prompt) => native.readKeyEvent("sequence", String(prompt ?? ""), null),
     readKeySequenceVector: (prompt) => e8.readKeySequence(prompt).split(" "),
     trackMouse: (fn) => e8.letBind({ "track-mouse": true }, fn),

@@ -418,8 +418,57 @@ impl Scripting {
             )
             .param("expression", ParamKind::String, "Eval: "),
         );
+        let scripting = self.clone();
+        ed.define_command(
+            Command::new(
+                "eval-region",
+                "Run the TypeScript in the region, as Emacs's eval-region runs Lisp.\n\nThe `e8` API is available, as in init.ts; text with `import` or `export` runs as a module.",
+                move |ed, args| {
+                    let (start, end) = (args[0].as_int()?.max(0) as usize, args[1].as_int()?.max(0) as usize);
+                    let text = ed.region_text(start.min(end), start.max(end))?;
+                    scripting.eval_text(ed, &format!("{}:region", ed.buffer().name), text)
+                },
+            )
+            .param("start", ParamKind::RegionBeginning, "")
+            .param("end", ParamKind::RegionEnd, ""),
+        );
+        let scripting = self.clone();
+        ed.define_command(
+            Command::new(
+                "eval-buffer",
+                "Run the TypeScript in the buffer, as Emacs's eval-buffer runs Lisp.\n\nThe `e8` API is available, as in init.ts; a buffer with `import` or `export` runs as a module.",
+                move |ed, _args| {
+                    let text = ed.buffer().slice(0..ed.buffer().len());
+                    let name = ed.buffer().path.as_ref().map_or_else(|| ed.buffer().name.clone(), |p| p.display().to_string());
+                    scripting.eval_text(ed, &name, text)?;
+                    ed.message(format!("Evaluated {}", ed.buffer().name));
+                    Ok(())
+                },
+            ),
+        );
         let map = ed.global_map();
         ed.keymaps_mut().bind_str(map, "M-:", "eval-expression");
+    }
+
+    /// Runs TypeScript text from a buffer, as eval-region and eval-buffer do:
+    /// after the agent's permission, as a script, or as a module from a file
+    /// of its own when it imports or exports, as only a module can.
+    fn eval_text(&self, ed: &mut Editor, name: &str, text: String) -> Result<()> {
+        ed.check_permission("run TypeScript")?;
+        let module = text.lines().any(|l| {
+            let l = l.trim_start();
+            l.starts_with("import ") || l.starts_with("import{") || l.starts_with("export ")
+        });
+        if !module {
+            return self.eval_typescript(ed, name, text);
+        }
+        static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+        let n = NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let path = e8_core::clock::temp_dir().join(format!("e8-eval-{}-{n}.ts", e8_core::clock::process_id()));
+        fs::write(&path, text).map_err(|e| Error::new(format!("Cannot write {}: {e}", path.display())))?;
+        let ran = self.load_module(ed, &path);
+        let _ = fs::remove_file(&path);
+        ran
     }
 }
 

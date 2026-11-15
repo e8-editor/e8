@@ -105,3 +105,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0101](0101-variables-and-symbols-as-emacs-has-them.md) Variables and symbols as Emacs has them: aliases, watchers, being bound and local, and the symbol table
 - [0102](0102-the-printer-and-the-runtimes-odds.md) The printer and the runtime's odds: prin1 to buffers and markers, top-level values, value<
 - [0103](0103-lisps-arithmetic-and-memory.md) Lisp's arithmetic and memory: rounding as Lisp rounds, a float's parts, memory-info
+- [0104](0104-running-a-buffers-typescript.md) Running a buffer's TypeScript: eval-buffer, eval-region and read-char-exclusive
