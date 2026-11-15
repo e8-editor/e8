@@ -1,4 +1,4 @@
-import { allMatches, defineGlobalizedMinorMode, forwardLine } from "subr";
+import { allMatches, defineGlobalizedMinorMode, eraseBuffer, forwardLine } from "subr";
 // Basic editing commands that Emacs writes in Lisp, after its simple.el.
 // E8 loads this file at startup, before init.ts.
 
@@ -680,7 +680,7 @@ function showOutput(output: string, exit: number): void {
   e8.getBufferCreate(name);
   e8.withCurrentBuffer(name, () => {
     e8.letBind({ "inhibit-read-only": true }, () => {
-      e8.deleteRegion(0, e8.bufferSize());
+      eraseBuffer();
       e8.insert(output);
     });
     e8.gotoChar(0);

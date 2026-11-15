@@ -301,3 +301,20 @@ fn wdired_lets_only_names_be_edited() {
     assert!(ed.window_buffer().read_only);
     assert!(text(&ed).contains(" b-a.txt\n"), "{}", text(&ed));
 }
+
+/// g in a narrowed Dired buffer lists the directory again, the narrowing
+/// gone, as Emacs's erase-buffer takes it off first.
+#[test]
+fn reverting_a_narrowed_listing_lists_it_all_again() {
+    let dir = sample();
+    let (mut ed, _s) = setup();
+    dired(&mut ed, dir.path());
+    // The names listed: the sizes and links of the directories around it,
+    // and the space free, change as other tests run.
+    let listing = |ed: &Editor| text(ed).lines().filter_map(|l| l.split_whitespace().last().map(str::to_string)).collect::<Vec<_>>();
+    let whole = listing(&ed);
+    ed.press("C-n C-n C-SPC C-n C-x n n g").unwrap();
+    assert_eq!(ed.echo().filter(|e| e.contains("out of range")), None);
+    assert!(!ed.window_buffer().is_narrowed());
+    assert_eq!(listing(&ed), whole);
+}

@@ -7,6 +7,7 @@
 // delete-by-moving-to-trash says.
 
 import { defineGuide } from "help-guide";
+import { eraseBuffer } from "subr";
 
 // Faces.
 
@@ -261,7 +262,7 @@ export function readin(keepState: boolean): void {
     pointFile = fileLine(pointLine)?.name;
   }
   writable(() => {
-    e8.deleteRegion(0, e8.bufferSize());
+    eraseBuffer();
     insertListing(dir);
   });
   e8.runHooks("dired-after-readin-hook");
@@ -821,7 +822,7 @@ export function removeEntry(file: string): void {
       if (e8.variable("major-mode") !== "dired-mode" || currentDirectory() !== dir) return;
       const line = findLine(name);
       if (line === undefined) return;
-      writable(() => e8.deleteRegion(e8.lineStart(line), Math.min(e8.lineStart(line + 1), e8.bufferSize())));
+      writable(() => e8.deleteRegion(e8.lineStart(line), Math.min(e8.lineStart(line + 1), e8.pointMax())));
     });
   }
 }
@@ -1151,7 +1152,7 @@ e8.defineCommand({
         while (n !== 0) {
           const line = currentLine();
           if (fileLine(line) === undefined) throw new Error("Can only kill file lines");
-          e8.deleteRegion(e8.lineStart(line), Math.min(e8.lineStart(line + 1), e8.bufferSize()));
+          e8.deleteRegion(e8.lineStart(line), Math.min(e8.lineStart(line + 1), e8.pointMax()));
           if (n > 0) n--;
           else {
             n++;

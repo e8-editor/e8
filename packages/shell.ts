@@ -3,7 +3,7 @@
 // the directory as cd, pushd and popd change it.
 
 import { makeComintInBuffer, outputFilter, readInputRing } from "comint";
-import { PerBuffer } from "subr";
+import { eraseBuffer, PerBuffer } from "subr";
 
 for (const [name, doc, value] of [
   ["explicit-shell-file-name", "The shell M-x shell runs, if not $ESHELL or shell-file-name.", null],
@@ -153,7 +153,7 @@ e8.defineCommand({
     const directory = e8.expandFileName(".");
     e8.getBufferCreate(buffer);
     e8.withCurrentBuffer(buffer, () => {
-      e8.letBind({ "inhibit-read-only": true }, () => e8.deleteRegion(0, e8.bufferSize()));
+      e8.letBind({ "inhibit-read-only": true }, () => eraseBuffer());
       e8.makeLocalVariable("default-directory");
       e8.setVariable("default-directory", directory.endsWith("/") ? directory : `${directory}/`);
     });

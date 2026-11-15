@@ -102,7 +102,7 @@ import { defineGuide } from "help-guide";
 import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
-import { allMatches, charCount, escapeRegExp, forwardLine, truthy } from "subr";
+import { allMatches, charCount, eraseBuffer, escapeRegExp, forwardLine, truthy } from "subr";
 export { PLANNING } from "org-element";
 
 // Variables
@@ -3438,7 +3438,7 @@ function fastTodoSelection(current: string | undefined): string | undefined {
     const perRow = Math.floor(((e8.windowSize()?.width ?? 80) - 4) / field);
     e8.withCurrentBuffer(name, () => {
       e8.letBind({ "inhibit-read-only": true }, () => {
-        e8.deleteRegion(0, e8.bufferSize());
+        eraseBuffer();
         let n = 0;
         for (const set of sets) {
           if (n !== 0) {
@@ -3803,7 +3803,7 @@ function fastTagSelection(current: string[], inherited: string[], table: e8.Valu
   const name = " *Org tags*";
   const draw = () => {
     e8.letBind({ "inhibit-read-only": true }, () => {
-      e8.deleteRegion(0, e8.bufferSize());
+      eraseBuffer();
       const put = (text: string, face?: string) => {
         const at = e8.point();
         e8.insert(text);

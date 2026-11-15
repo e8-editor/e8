@@ -24,7 +24,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { executableFind } from "subr";
+import { eraseBuffer, executableFind } from "subr";
 
 export const acpPackageVersion = "0.18.2";
 
@@ -815,7 +815,7 @@ export function trafficBuffer(options: { client: Client }): e8.Buffer {
 /** Empties the client's log and traffic buffers. */
 export function resetLogs(options: { client: Client }): void {
   for (const buffer of [logsBuffer(options), trafficBuffer(options)]) {
-    e8.withCurrentBuffer(buffer, () => e8.deleteRegion(0, e8.bufferSize()));
+    e8.withCurrentBuffer(buffer, () => eraseBuffer());
   }
 }
 

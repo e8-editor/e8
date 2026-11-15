@@ -59,7 +59,7 @@ function omitExpunge(): number {
     for (let l = e8.lineCount() - 1; l >= 0; l--) {
       const f = fileLine(l);
       if (!f || f.mark !== " " || e8.stringMatch(regexp, f.name, { caseFold }) === undefined) continue;
-      e8.deleteRegion(e8.lineStart(l), Math.min(e8.lineStart(l + 1), e8.bufferSize()));
+      e8.deleteRegion(e8.lineStart(l), Math.min(e8.lineStart(l + 1), e8.pointMax()));
       count++;
     }
   });

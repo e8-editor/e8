@@ -4,7 +4,7 @@
 
 import { type DateTime, type Heading, PLANNING, allKeywords, at, entryEnd, headings, isDone, keywordLines, today } from "org";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
-import { allMatches, charCount } from "subr";
+import { allMatches, charCount, eraseBuffer } from "subr";
 
 e8.defineVariable({
   name: "org-agenda-window-setup",
@@ -335,7 +335,7 @@ function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: num
   e8.getBufferCreate(AGENDA);
   e8.withCurrentBuffer(AGENDA, () => {
     e8.setReadOnly(false);
-    e8.deleteRegion(0, e8.bufferSize());
+    eraseBuffer();
     e8.insert(lines.map((l) => l.text).join("\n") + "\n");
     insertHabitGraphs(lines);
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.call("org-agenda-mode");
@@ -496,7 +496,7 @@ function agendaDispatch(): string {
     e8.call("switch-to-buffer-other-window", name);
     try {
       e8.letBind({ "inhibit-read-only": true }, () => {
-        e8.deleteRegion(0, e8.bufferSize());
+        eraseBuffer();
         e8.insert(DISPATCH_HEADER);
         // The keys in bold, as Org shows them.
         const text = DISPATCH_HEADER;

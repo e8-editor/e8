@@ -1,6 +1,8 @@
 // What Org's files share, after Org's org-macs.el: markers placed by
 // Org's own rules when it replaces text, and the edits that keep them.
 
+import { eraseBuffer } from "subr";
+
 /**
  * A marker of the core's, as Emacs's: it moves with every edit to its
  * buffer, however made. Setting `pos` moves it into the current buffer,
@@ -133,7 +135,7 @@ export function orgMks(table: e8.Value[][], title: string, prompt = "Select: ", 
           }
         }
         e8.letBind({ "inhibit-read-only": true }, () => {
-          e8.deleteRegion(0, e8.bufferSize());
+          eraseBuffer();
           e8.insert(text);
         });
         e8.gotoChar(0);

@@ -8,7 +8,7 @@
 // buffer selected, M-n and M-p move between messages, g runs the command
 // again, and C-c C-k kills it.
 
-import { truthy, numberValue as num } from "subr";
+import { eraseBuffer, numberValue as num, truthy } from "subr";
 
 // --- Faces and variables ----------------------------------------------------
 
@@ -240,7 +240,7 @@ async function compilationStart(command: string, mode: string, directory: string
     if (existing !== undefined && e8.processStatus(existing) === "run") e8.deleteProcess(existing);
     e8.getBufferCreate(bufferName);
     e8.withCurrentBuffer(bufferName, () => {
-      writable(() => e8.deleteRegion(0, e8.bufferSize()));
+      writable(() => eraseBuffer());
       e8.call(mode as e8.CommandName);
       e8.setVariable("default-directory", directory);
       e8.setVariable("compilation-directory", directory);

@@ -40,7 +40,7 @@ import { defineGuide, substituteCommandKeys } from "help-guide";
 import { completionInRegion } from "minibuffer";
 import { BLOCK_BEGIN, BLOCK_END, flag, folded, toggleDrawerOrBlock, withoutFoldChecks } from "org-fold";
 import { current as projectRoot } from "project";
-import { allMatches, charCount, executableFind, truthy } from "subr";
+import { allMatches, charCount, eraseBuffer, executableFind, truthy } from "subr";
 import { ispellWordCompletion } from "text-mode";
 
 e8.defineVariable({
@@ -1065,7 +1065,7 @@ function readText(path: string): string {
   const temp = e8.getBufferCreate(" *agent-shell-read*");
   try {
     return e8.withCurrentBuffer(temp, () => {
-      e8.deleteRegion(0, e8.bufferSize());
+      eraseBuffer();
       e8.insertFileContents(path);
       return e8.bufferText(0, e8.bufferSize());
     });
@@ -1089,7 +1089,7 @@ function writeText(path: string, content: string): void {
       const before = e8.bufferText(0, point);
       const line = before.split("\n").length - 1;
       const column = point - (before.lastIndexOf("\n") + 1);
-      e8.deleteRegion(0, e8.bufferSize());
+      eraseBuffer();
       e8.insert(content);
       const lines = content.split("\n");
       const row = Math.min(line, lines.length - 1);
@@ -1628,7 +1628,7 @@ function loadSession(
   done: (error?: acp.RpcError) => void,
 ): void {
   const typed = inBuffer(shell, () => e8.bufferText(requestStart(), e8.bufferSize())) ?? "";
-  writing(shell, () => e8.deleteRegion(0, e8.bufferSize()));
+  writing(shell, () => eraseBuffer());
   shell.loading = true;
   const ended = () => {
     shell.loading = false;

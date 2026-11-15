@@ -4,6 +4,8 @@
 // the buffer, and next-error steps through them. project-find-regexp (C-x
 // p g) fills it.
 
+import { eraseBuffer } from "subr";
+
 e8.defineFace({ name: "xref-file-header", doc: "The file names heading *xref*'s groups.", attributes: { inherit: "compilation-info" } });
 e8.defineFace({ name: "xref-line-number", doc: "Line numbers in *xref*.", attributes: { inherit: "compilation-line-number" } });
 e8.defineFace({ name: "xref-match", doc: "What matched, in *xref*.", attributes: { inherit: "match" } });
@@ -56,7 +58,7 @@ function showXrefs(xrefs: Xref[]): void {
   const byLine = new Map<number, Xref>();
   e8.withCurrentBuffer(name, () => {
     e8.setReadOnly(false);
-    e8.deleteRegion(0, e8.bufferSize());
+    eraseBuffer();
     e8.call("xref--xref-buffer-mode");
     const groups = new Map<string, Xref[]>();
     for (const x of xrefs) groups.set(x.group, [...(groups.get(x.group) ?? []), x]);
