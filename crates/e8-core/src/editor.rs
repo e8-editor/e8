@@ -191,6 +191,8 @@ pub struct Editor {
     ///
     /// [ADR 0078]: ../../../../docs/adr/0078-charsets-and-codings-as-emacs-has-them.md
     pub(crate) charsets: crate::charset::Charsets,
+    /// What `ns-set-resource` set, by owner and name, for `ns-get-resource` (ADR 0097).
+    pub(crate) ns_resources: Vec<((String, String), String)>,
     /// What `coding-system-put` put on a coding system, by its base name,
     /// which Emacs keeps on the coding system itself ([ADR 0078]).
     pub(crate) coding_plists: Vec<(String, Vec<(String, crate::variables::Value)>)>,
@@ -527,6 +529,7 @@ impl Editor {
             standard_category_table: None,
             unicode_property_tables: Default::default(),
             charsets: Default::default(),
+            ns_resources: Vec::new(),
             coding_plists: Vec::new(),
             coding_alist_depth: 0,
             display: Default::default(),
@@ -2151,6 +2154,21 @@ impl Editor {
         }
         let _ = self.set_marker(id, None, 0);
         self.detached_markers.retain(|m| m.id != id);
+    }
+
+    /// A value from macOS's defaults for an owner, the editor's by default,
+    /// as `ns-get-resource`: what `ns-set-resource` set this session. E8
+    /// does not read the system's defaults database.
+    pub fn ns_resource(&self, owner: &str, name: &str) -> Option<String> {
+        self.ns_resources.iter().find(|((o, n), _)| o == owner && n == name).map(|(_, v)| v.clone())
+    }
+
+    /// Sets a value for `ns-get-resource`, or with none takes it away, as `ns-set-resource`.
+    pub fn set_ns_resource(&mut self, owner: &str, name: &str, value: Option<&str>) {
+        self.ns_resources.retain(|((o, n), _)| !(o == owner && n == name));
+        if let Some(value) = value {
+            self.ns_resources.push(((owner.to_string(), name.to_string()), value.to_string()));
+        }
     }
 
     /// Sets the mark at `pos`, pushing the old one on the buffer's mark

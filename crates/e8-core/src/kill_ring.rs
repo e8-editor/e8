@@ -18,6 +18,9 @@ pub(crate) struct KillRing {
     /// Which kill yanking takes next, counting back from the newest (Emacs's
     /// `kill-ring-yank-pointer`).
     pub(crate) yank_pointer: usize,
+    /// The text the editor owns of selections other than the clipboard,
+    /// PRIMARY and SECONDARY, by name (ADR 0097).
+    pub(crate) selections: Vec<(String, String)>,
 }
 
 impl Editor {

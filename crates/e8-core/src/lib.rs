@@ -119,7 +119,7 @@ pub use properties::{Overlay, Props, Text};
 pub use process::{CallDestination, CallResult, CallSpec, CallStderr, Contact, Destination as CallOutput, RegionInput, StderrDestination, NetworkSpec, PipeSpec, ProcessInfo, ProcessSpec, Status as ProcessStatus};
 pub use font::{Font, FontKind, FontSize, font_spec};
 pub use quit::{QuitHandle, QuitState};
-pub use frame::{Display, Edges, FrameGeometry, FrameRequest, Monitor, parse_geometry};
+pub use frame::{AppRequest, Display, Edges, FrameGeometry, FrameRequest, Monitor, parse_geometry};
 pub use fringe::{FringeAlign, FringeBitmap, RowFringes, STANDARD_BITMAPS, WindowFringes};
 pub use rows::{FringeSpec, LineNumbers, Margin, Row, Segment};
 pub use symbols::{AdviceHow, Definition};
