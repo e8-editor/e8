@@ -19,6 +19,11 @@ org-structure/indent-region-with-adapted-indentation  # no org-adapt-indentation
 # the command loop, so there outline-up-heading does not push the mark.
 org-speed/speed-up  # this-command set for nested calls
 
+# Typing | in an item narrowed with C-x n e, Emacs's M-S-<down> takes the
+# accessible part of the line, "|plan", as a table and aligns it on a line of
+# its own; E8's does not.
+org-fuzz-11/seed303-1024-narrowed-item-table  # a table line starting at a narrowing
+
 # Intentional differences, not to be fixed.
 org-refile/refile-to-no-target  # the recorder answers completing-read directly, so Emacs reads a target its require-match refuses when typed; E8 refuses it with [No match], as Emacs does when it is typed.
 arguments/delete-more-than-there-is  # Emacs reports an internal "Args out of range" error naming the buffer; E8 says "End of buffer". The text is unchanged in both.

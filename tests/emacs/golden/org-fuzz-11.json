@@ -1,0 +1,111 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "seed303-0263-narrowed-checkbox-cookie",
+      "input": {
+        "text": "** beta\n  - gamma\n** [#B] fix [1/2]",
+        "point": 8,
+        "keys": "C-x n s M-S-<return>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "** beta\n  - [ ] \n  - gamma\n** [#B] fix [1/2]",
+      "visible": "** beta\n  - [ ] \n  - gamma\n** [#B] fix [1/2]",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed303-0546-narrowed-table-row",
+      "input": {
+        "text": "* fix plan\n|  | x |\n* DONE [#C] alpha beta",
+        "point": 12,
+        "keys": "C-x n s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* fix plan\n|   | x |\n|   |   |\n\n* DONE [#C] alpha beta",
+      "visible": "* fix plan\n|   | x |\n|   |   |\n\n* DONE [#C] alpha beta",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed303-0872-narrowed-toggle-heading",
+      "input": {
+        "text": "* TODO read fix\n4. plan",
+        "point": 16,
+        "keys": "C-x n e C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* TODO read fix\n** plan\n",
+      "visible": "* TODO read fix\n** plan\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed303-1024-narrowed-item-table",
+      "input": {
+        "text": "+ [X] plan",
+        "point": 6,
+        "keys": "C-x n e | M-S-<down> <backtab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "+ [X] \n| plan |\n",
+      "visible": "+ [X] \n| plan |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot move to previous table field"
+    },
+    {
+      "name": "seed303-0191-narrowed-insert-heading",
+      "input": {
+        "text": "3. [ ] fix\n\n** [#C] read [%] :work:",
+        "point": 1,
+        "keys": "C-c C-f C-x n s C-x n s M-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "3. [ ] fix\n\n** \n** [#C] read [%] :work:",
+      "visible": "3. [ ] fix\n\n** \n** [#C] read [%] :work:",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

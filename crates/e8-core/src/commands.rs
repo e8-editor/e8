@@ -1277,6 +1277,8 @@ fn killing(ed: &mut Editor) {
     def(ed, "kill-ring-save", "Copy the text between point and the mark to the kill ring.", |ed, _| {
         let region = region(ed.buffer())?;
         let backward = ed.buffer().mark().is_some_and(|m| ed.buffer().point() < m);
+        // A mark outside the narrowing copies nothing, as buffer-substring refuses.
+        ed.validate_region(region.start, region.end)?;
         let text = ed.buffer().substring(region);
         // As copy-region-as-kill does, a copy right after a kill joins it.
         ed.kill(text, backward);
@@ -1392,7 +1394,9 @@ fn kill_to(ed: &mut Editor, p: usize, to: usize) -> Result<()> {
 /// copied to the kill ring instead, and the error signalled, unless
 /// `kill-read-only-ok` says only to say so.
 fn kill_range(ed: &mut Editor, range: std::ops::Range<usize>, backward: bool) -> Result<()> {
-    // The text with its properties, as filter-buffer-substring gives it.
+    // The text with its properties, as filter-buffer-substring gives it,
+    // which refuses text outside the narrowing before anything is killed.
+    ed.validate_region(range.start, range.end)?;
     let killed = ed.buffer().substring(range.clone());
     match ed.delete_region(range.start, range.end) {
         Ok(_) => {}

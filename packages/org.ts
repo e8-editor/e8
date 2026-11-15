@@ -1192,8 +1192,10 @@ export function updateCheckboxCount(): void {
     const p = e8.point();
     // From the heading before point, as outline-previous-heading finds it:
     // searching back, so a heading's own stars must end before point.
-    const previousHeading = (pos: number) => all.filter((h) => h.start + h.level + 1 <= pos).at(-1)?.start ?? 0;
-    const nextHeading = (pos: number) => all.find((h) => h.start > pos)?.start ?? e8.bufferSize();
+    // Within the accessible text, as Emacs's searches are bounded by it.
+    const [min, max] = [e8.pointMin(), e8.pointMax()];
+    const previousHeading = (pos: number) => Math.max(min, all.filter((h) => h.start + h.level + 1 <= pos).at(-1)?.start ?? 0);
+    const nextHeading = (pos: number) => Math.min(max, all.find((h) => h.start > pos)?.start ?? max);
     const start = previousHeading(p);
     const end = nextHeading(p);
     const cookies: { start: number; end: number; percent: boolean; count: [number, number] }[] = [];
@@ -1221,7 +1223,7 @@ export function updateCheckboxCount(): void {
       const text = e8.lineText(l);
       for (const m of allMatches(COOKIE, text)) {
         const cs = e8.lineStart(l) + charCount(text.slice(0, m.index ?? 0));
-        if (cs < start || cs >= end) continue;
+        if (cs < start || cs >= end || cs + charCount(m[0]) > max) continue;
         const container = inItem(l);
         let count: [number, number];
         if (container !== undefined && !isHeadingLine(text)) {
@@ -2531,7 +2533,7 @@ function blankLineAt(line: number): boolean {
 
 /** Whether the line before point's is empty, as org-previous-line-empty-p says. */
 function previousLineEmpty(): boolean {
-  if (e8.point() === 0) return false;
+  if (e8.point() === e8.pointMin()) return false;
   return /^[ \t]*$/.test(e8.lineText(Math.max(0, lineAt() - 1)));
 }
 
@@ -2569,9 +2571,11 @@ export function blankBeforeHeading(parent: boolean): boolean {
 function emptyLinesBeforeCurrent(n: number): void {
   const column = e8.point() - e8.lineStart(lineAt());
   e8.gotoChar(e8.lineStart(lineAt()));
-  if (e8.point() > 0) {
+  // bobp and skip-chars-backward stop at the start of a narrowing.
+  const min = e8.pointMin();
+  if (e8.point() > min) {
     let q = e8.point();
-    while (q > 0 && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+    while (q > min && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
     const start = e8.lineEnd(lineAt(q));
     if (start < e8.point() - 1) e8.deleteRegion(start, e8.point() - 1);
   }
@@ -5739,8 +5743,13 @@ function listToSubtree(pos: number, limit: number): number {
   }
   edDelete(pos, bottom);
   const all = headings();
-  const above = headingIndex(all, lineAt(pos));
-  const level = above === undefined ? 1 : all[above].level + 1;
+  // As org-current-level, from the whole buffer, so a heading above a narrowing counts.
+  const level = e8.saveRestriction(() => {
+    e8.widen();
+    const wide = headings();
+    const above = headingIndex(wide, lineAt(pos));
+    return above === undefined ? 1 : wide[above].level + 1;
+  });
   // org-blank-before-new-entry's "auto": a blank line before the heading above means one between these.
   const previous = [...all].reverse().find((h) => h.start < pos);
   const blank = previous !== undefined && previous.start > 0 && /^[ \t]*$/.test(e8.lineText(previous.line - 1));

@@ -1,0 +1,37 @@
+[
+  {
+    "name": "seed303-0263-narrowed-checkbox-cookie",
+    "text": "** beta\n  - gamma\n** [#B] fix [1/2]",
+    "keys": "C-x n s M-S-<return>",
+    "point": 8,
+    "modes": ["org-mode"]
+  },
+  {
+    "name": "seed303-0546-narrowed-table-row",
+    "text": "* fix plan\n|  | x |\n* DONE [#C] alpha beta",
+    "keys": "C-x n s RET",
+    "point": 12,
+    "modes": ["org-mode"]
+  },
+  {
+    "name": "seed303-0872-narrowed-toggle-heading",
+    "text": "* TODO read fix\n4. plan",
+    "keys": "C-x n e C-c *",
+    "point": 16,
+    "modes": ["org-mode"]
+  },
+  {
+    "name": "seed303-1024-narrowed-item-table",
+    "text": "+ [X] plan",
+    "keys": "C-x n e | M-S-<down> <backtab>",
+    "point": 6,
+    "modes": ["org-mode"]
+  },
+  {
+    "name": "seed303-0191-narrowed-insert-heading",
+    "text": "3. [ ] fix\n\n** [#C] read [%] :work:",
+    "keys": "C-c C-f C-x n s C-x n s M-RET",
+    "point": 1,
+    "modes": ["org-mode"]
+  }
+]

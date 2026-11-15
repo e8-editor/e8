@@ -95,6 +95,7 @@ impl Editor {
     pub fn delete_region(&mut self, start: usize, end: usize) -> Result<String> {
         let len = self.buffer().len();
         let (start, end) = (start.min(end).min(len), start.max(end).min(len));
+        self.validate_region(start, end)?;
         if start == end {
             return Ok(String::new());
         }
@@ -125,6 +126,7 @@ impl Editor {
     pub fn replace_range(&mut self, start: usize, end: usize, text: &str) -> Result<()> {
         let len = self.buffer().len();
         let (start, end) = (start.min(len), end.clamp(start.min(len), len));
+        self.validate_region(start, end)?;
         if start == end && text.is_empty() {
             return Ok(());
         }
@@ -153,6 +155,21 @@ impl Editor {
             b.pending_changes.push((s, (e as isize + added) as usize, e - s));
             Ok(())
         })
+    }
+
+    /// Refuses a stretch reaching outside the accessible text of a
+    /// narrowed buffer, as Emacs's validate_region does. Past the end of the
+    /// buffer, positions are taken as its end.
+    pub(crate) fn validate_region(&self, start: usize, end: usize) -> Result<()> {
+        let b = self.buffer();
+        if start < b.point_min() || end > b.point_max() {
+            return Err(Error::signal(
+                "args-out-of-range",
+                format!("Args out of range: #<buffer {}>, {start}, {end}", b.name),
+                vec![Value::Str(b.name.clone()), Value::Number(start as f64), Value::Number(end as f64)],
+            ));
+        }
+        Ok(())
     }
 
     fn insert_with(&mut self, pos: usize, text: &str, edit: impl FnOnce(&mut Buffer, usize) -> Result<()>) -> Result<()> {

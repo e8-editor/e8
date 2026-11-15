@@ -282,3 +282,24 @@ fn edits_and_searches_among_many_overlays_are_quick() {
     assert_eq!(ed.buffer().previous_overlay_change(14), 10);
     assert_eq!(ed.buffer().next_overlay_change(14), 15);
 }
+
+/// Emacs's validate_region: text outside a narrowing can be neither deleted
+/// nor killed nor copied, and nothing reaches the kill ring.
+#[test]
+fn edits_outside_the_narrowing_are_refused() {
+    let mut ed = Editor::new();
+    ed.type_text("AAA\nBBB\n");
+    press(&mut ed, "M-< C-SPC C-n");
+    ed.window_buffer_mut().narrow(4, 7);
+    for keys in ["C-w", "M-w"] {
+        press(&mut ed, keys);
+        assert!(ed.echo().is_some_and(|e| e.starts_with("Args out of range")), "{keys}: {:?}", ed.echo());
+    }
+    assert!(ed.delete_region(0, 5).unwrap_err().is("args-out-of-range"));
+    assert!(ed.replace_range(6, 8, "x").unwrap_err().is("args-out-of-range"));
+    assert_eq!(text(&ed), "AAA\nBBB\n");
+    assert_eq!(ed.delete_region(4, 7).unwrap(), "BBB");
+    assert_eq!(text(&ed), "AAA\n\n");
+    press(&mut ed, "C-y");
+    assert_eq!(text(&ed), "AAA\n\n", "nothing was killed");
+}
