@@ -7,7 +7,7 @@
 // delete-by-moving-to-trash says.
 
 import { defineGuide } from "help-guide";
-import { eraseBuffer } from "subr";
+import { eraseBuffer, truthy } from "subr";
 
 // Faces.
 
@@ -196,6 +196,9 @@ function repeatOverLines(arg: number, fn: (line: number) => void): void {
   if (arg === 0 || e8.lineStart(line) < e8.bufferSize()) moveToFilename();
 }
 
+/** Whether regexps match ignoring case, as string-match does with case-fold-search. */
+export const caseFoldSearch = (): boolean => truthy(e8.variable("case-fold-search"));
+
 /** The lines with `marker`, from the top. */
 export function markedLines(marker = MARKER): number[] {
   const lines: number[] = [];
@@ -207,19 +210,25 @@ export function markedLines(marker = MARKER): number[] {
 }
 
 /**
- * The files a command acts on, as dired-get-marked-files: those marked,
- * else the next `arg` from point if it is a number, else the one at point.
+ * The files a command acts on, as dired-get-marked-files: the next `arg`
+ * from point if it is a number, else those marked, else the one at point.
  */
 export function markedFiles(
   arg: e8.PrefixArg | null,
   marker = MARKER,
   dotsError = false,
   noFiles = "No file on this line",
+  movePoint = false,
 ): { files: string[]; lines: number[]; marked: boolean } {
-  if (typeof arg === "number" || arg === "-") {
+  // Only a number means the next files; C-- and C-u mean the one at
+  // point, as in dired-get-marked-files, and point stays where it is,
+  // unless `movePoint`, as dired-map-over-marks alone moves it past them.
+  if (typeof arg === "number") {
     const lines: number[] = [];
-    repeatOverLines(arg === "-" ? -1 : arg, (l) => lines.push(l));
-    if (arg === "-" || (typeof arg === "number" && arg < 0)) lines.reverse();
+    const repeat = () => repeatOverLines(arg, (l) => lines.push(l));
+    if (movePoint) repeat();
+    else e8.saveExcursion(repeat);
+    if (arg < 0) lines.reverse();
     const kept = lines.filter((l) => fileLine(l) !== undefined);
     return { files: kept.map((l) => filenameAt(l)!), lines: kept, marked: false };
   }
@@ -748,7 +757,7 @@ e8.defineCommand({
   doc: "Mark the files whose names match a regular expression. With a prefix argument, unmark them.",
   params: [regexpParam("Mark files (regexp): ")],
   run: (regexp: string) => {
-    markIf((f) => !isDot(f.name) && e8.stringMatch(regexp, f.name) !== undefined, "matching file", e8.prefixArg() !== null ? " " : MARKER);
+    markIf((f) => !isDot(f.name) && e8.stringMatch(regexp, f.name, { caseFold: caseFoldSearch() }) !== undefined, "matching file", e8.prefixArg() !== null ? " " : MARKER);
   },
 });
 e8.defineCommand({
@@ -756,7 +765,7 @@ e8.defineCommand({
   doc: "Flag for deletion the files whose names match a regular expression.",
   params: [regexpParam("Flag for deletion (regexp): ")],
   run: (regexp: string) => {
-    markIf((f) => !isDot(f.name) && e8.stringMatch(regexp, f.name) !== undefined, "matching file", DEL_MARKER);
+    markIf((f) => !isDot(f.name) && e8.stringMatch(regexp, f.name, { caseFold: caseFoldSearch() }) !== undefined, "matching file", DEL_MARKER);
   },
 });
 e8.defineCommand({
@@ -911,7 +920,8 @@ e8.defineCommand({
   run: () => {
     requireDired();
     const arg = e8.prefixArg();
-    const { files, lines } = markedFiles(arg, MARKER, true);
+    // Past the files, as dired-do-delete's dired-map-over-marks leaves point.
+    const { files, lines } = markedFiles(arg, MARKER, true, undefined, true);
     if (files.some((f) => isDot(e8.fileNameNondirectory(f)))) throw new Error("Cannot operate on \u2018.\u2019 or \u2018..\u2019");
     doDeletions(files, arg, MARKER);
   },
