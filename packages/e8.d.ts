@@ -18232,6 +18232,50 @@ declare global {
     function setTimeZoneRule(zone: Value): undefined;
     /** The processor time E8 has used, as current-cpu-time: [ticks, ticks a second]. */
     function currentCpuTime(): [ticks: number, hz: number];
+    /** Make a name stand for another variable, as defvaralias; gives the variable. */
+    function defvaralias(newAlias: string, baseVariable: string, docstring?: string | null): string;
+    /** The variable a name stands for past any aliases, as indirect-variable. */
+    function indirectVariable(object: string): string;
+    /** Call a function before a variable changes, as add-variable-watcher: with the variable, its new value, the operation (set, makunbound or defvaralias) and the buffer whose own value changes, if one does. */
+    function addVariableWatcher(symbol: string, watchFunction: string | ((symbol: symbol, newval: Value, operation: symbol, where: Value) => void)): undefined;
+    /** Stop calling a function before a variable changes, as remove-variable-watcher. */
+    function removeVariableWatcher(symbol: string, watchFunction: Value): undefined;
+    /** The functions called before a variable changes, as get-variable-watchers. */
+    function getVariableWatchers(symbol: string): Value[];
+    /** Whether a variable has a value, as boundp. */
+    function boundp(symbol: string): boolean;
+    /** Whether a variable has a global value, as default-boundp. */
+    function defaultBoundp(symbol: string): boolean;
+    /** Make a variable unbound, the current buffer's own value if it has one, as makunbound; gives the variable. */
+    function makunbound(symbol: string): string;
+    /** Whether a buffer, the current one by default, has its own value of a variable, as local-variable-p. */
+    function localVariableP(variable: string, buffer?: BufferLike | null): boolean;
+    /** Whether setting a variable in a buffer would give it its own value, as local-variable-if-set-p. */
+    function localVariableIfSetP(variable: string, buffer?: BufferLike | null): boolean;
+    /** Make a variable buffer-local in every buffer that sets it, as make-variable-buffer-local; gives the variable. */
+    function makeVariableBufferLocal(variable: string): string;
+    /** Whether a variable was defined, as special-variable-p says of one defvar made. */
+    function specialVariableP(symbol: string): boolean;
+    /** A variable's value, or void-variable, as symbol-value. */
+    function symbolValue(symbol: string): Value;
+    /** The symbol by a name if one is interned, as intern-soft; undefined if not. */
+    function internSoft(name: string): string | undefined;
+    /** Call a function with every interned symbol's name, as mapatoms. */
+    function mapatoms(fn: string | ((symbol: string) => void)): undefined;
+    /** Take a symbol out of the table, as unintern; whether it was there. */
+    function unintern(name: string, obarray?: Value): boolean;
+    /** The number a string starts with, as string-to-number: an integer or float in base 10, an integer in another base, 0 for none. */
+    function stringToNumber(string: string, base?: number | null): number;
+    /** A number as text, as number-to-string: a whole number without a point. */
+    function numberToString(number: number): string;
+    /** Whether something can be called as a command, as commandp: a command's name, or a list of keys as a keyboard macro. A string is a name, as E8's names are strings, not a keyboard macro as in Emacs. */
+    function commandp(fn: Value, forCallInteractively?: boolean | null): boolean;
+    /** Call a wrapper with each of a hook's functions and the arguments until it gives something true, as run-hook-wrapped; gives that. */
+    function runHookWrapped(hook: string, wrapFunction: string | ((fn: Value, ...args: any[]) => any), ...args: Value[]): Value;
+    /** The first file along a path that is `filename` with one of `suffixes`, as locate-file-internal; undefined if none. */
+    function locateFileInternal(filename: string, path: (string | null)[], suffixes?: string[] | null, predicate?: Value): string | undefined;
+    /** The suffixes load tries, as get-load-suffixes: E8 loads TypeScript and JavaScript. */
+    function getLoadSuffixes(): string[];
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */
@@ -18916,6 +18960,8 @@ declare global {
       nullObject?: Value;
       falseObject?: Value;
     }
+    /** An error as text, as error-message-string: an error a script caught, or [symbol, ...data] written from the symbol's message and the data, as "Wrong type argument: stringp, 1". */
+    function errorMessageString(error: SignalledError | Value[]): string;
     /** Parse a string of JSON, as json-parse-string: objects keep their keys' order, and errors are json-end-of-file, json-trailing-content and json-parse-error with the line, column and position. */
     function jsonParseString(string: string, options?: JsonParseOptions): any;
     /** Parse the JSON after point and move point past it, as json-parse-buffer. */

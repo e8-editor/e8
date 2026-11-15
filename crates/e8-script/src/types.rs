@@ -635,6 +635,8 @@ const API: &str = r##"
     nullObject?: Value;
     falseObject?: Value;
   }
+  /** An error as text, as error-message-string: an error a script caught, or [symbol, ...data] written from the symbol's message and the data, as "Wrong type argument: stringp, 1". */
+  function errorMessageString(error: SignalledError | Value[]): string;
   /** Parse a string of JSON, as json-parse-string: objects keep their keys' order, and errors are json-end-of-file, json-trailing-content and json-parse-error with the line, column and position. */
   function jsonParseString(string: string, options?: JsonParseOptions): any;
   /** Parse the JSON after point and move point past it, as json-parse-buffer. */

@@ -742,6 +742,11 @@
     message: (text, { log = true } = {}) => native.message(String(text), Boolean(log)),
     insert: (text) => (text instanceof PropertizedString ? native.insertText(text) : native.insert(String(text))),
     PropertizedString,
+    // An error a script caught keeps its own message; [symbol, ...data] is written as Emacs writes it (ADR 0101).
+    errorMessageString: (error) =>
+      error !== null && typeof error === "object" && !Array.isArray(error) && typeof error.message === "string"
+        ? error.message
+        : native.errorMessageStringNative(error),
     jsonParseString: (string, options = {}) => jsonOut(native.jsonParse(String(string), ...jsonShape(options))),
     jsonParseBuffer: (options = {}) => jsonOut(native.jsonParseBufferNative(...jsonShape(options))),
     jsonSerialize: (value, options = {}) => native.jsonWrite(jsonIn(value), ...jsonShape(options).slice(2)),

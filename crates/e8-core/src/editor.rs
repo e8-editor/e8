@@ -251,6 +251,13 @@ pub struct Editor {
     pub(crate) minor_modes: Vec<MinorMode>,
     /// Every symbol's value, function, properties and advice.
     pub(crate) symbols: BTreeMap<String, crate::symbols::Symbol>,
+    /// Variables `defvaralias` made other names for others, each with the
+    /// one it names (ADR 0101).
+    pub(crate) variable_aliases: BTreeMap<String, String>,
+    /// The functions `add-variable-watcher` gave variables, by base variable.
+    pub(crate) variable_watchers: BTreeMap<String, Vec<Value>>,
+    /// Whether watchers are being called, so their own changes call none.
+    pub(crate) notifying_watchers: bool,
     pub(crate) faces: BTreeMap<String, Face>,
     /// The font selection order and alternatives xfaces.c's primitives set.
     pub(crate) face_settings: crate::xfaces::FaceSettings,
@@ -559,6 +566,9 @@ impl Editor {
             },
             minor_modes: Vec::new(),
             symbols: BTreeMap::new(),
+            variable_aliases: BTreeMap::new(),
+            variable_watchers: BTreeMap::new(),
+            notifying_watchers: false,
             faces: BTreeMap::new(),
             face_settings: Default::default(),
             fontsets: Default::default(),
