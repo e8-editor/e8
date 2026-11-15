@@ -160,6 +160,22 @@ In the bench's Org table, V8 against QuickJS: RET in a paragraph 4.97 against 11
 - **Headings are found in one pass over the text** instead of a native call per line, and each heading line is parsed from the text the scan already has.
 - **A search copies only the text it can match in**, from the start of the line it begins on to its bound, instead of the whole buffer. Incremental search runs up to 200 searches per key for lazy highlighting, each of which copied all 100 MB.
 
+### Variable aliases and watchers cost nothing measurable
+
+[ADR 0101](adr/0101-variables-and-symbols-as-emacs-has-them.md) made every variable read and set follow `defvaralias` aliases and call watchers. Both are skipped while no alias or watcher exists. On 2026-11-15 the bench's 50,000-line Org file was timed on V8 in release builds, at 833e41a, before the change, and at 8bd6231, after it, one after the other at a load of 11 to 12. The keys are within noise of each other:
+
+| key | before | after |
+|---|---|---|
+| typing | 1.15 ms | 1.19 ms |
+| DEL | 1.08 ms | 1.09 ms |
+| RET | 4.85 ms | 4.88 ms |
+| `C-c C-t` | 2.00 ms | 2.02 ms |
+| TAB on a heading | 4.98 ms | 5.08 ms |
+| `C-v` | 1.88 ms | 1.88 ms |
+| `S-TAB` | 14.13 ms | 14.36 ms |
+
+The bench's `memory` test panics on V8 at both commits, dropping isolates in an order V8 refuses; that is the test's own, not either change's.
+
 ## What is left
 
 [optimisation.md](optimisation.md) lists where E8 is still slower than it could be: Electric Pair mode's balance check in a large buffer, the objects Org's heading index makes after each edit, building the rope when a large file opens, and rows off the grid in the GUI.
