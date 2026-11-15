@@ -47,9 +47,9 @@ function now(): DateTime {
   return today(true);
 }
 
-/** An Org time as milliseconds, to count minutes between. */
+/** An Org time as milliseconds, to count minutes between, in E8's zone as Emacs's encode-time. */
 function millis(t: DateTime): number {
-  return new Date(t.year, t.month - 1, t.day, t.hour ?? 0, t.minute ?? 0).getTime();
+  return e8.encodeTime([0, t.minute ?? 0, t.hour ?? 0, t.day, t.month, t.year, null, -1, null]) * 1000;
 }
 
 /** Minutes as Org writes a duration: 0:05, or 1d 2:03 past a day, as org-duration-from-minutes. */
