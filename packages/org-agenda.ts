@@ -219,6 +219,13 @@ interface Scanned {
   habit?: Habit;
 }
 
+/** Runs `f` with the current buffer widened, as Org's agenda reads and edits files whole, however they are narrowed. */
+const widened = <T>(f: () => T): T =>
+  e8.saveRestriction(() => {
+    e8.widen();
+    return f();
+  });
+
 /** The current buffer's headings as the agenda reads them, and its category. */
 function scanBuffer(): { cat: string; entries: Scanned[] } {
   const all = headings();
@@ -395,7 +402,7 @@ function weekAgenda(start: number): void {
   const lines: { text: string; item?: AgendaItem }[] = [{ text: `Week-agenda (W${String(isoWeekOf(start)).padStart(2, "0")}):` }];
   let pointLine = 0;
   // Each file read once for the week, not once a day.
-  const scans = new Map(buffers.map((buffer) => [buffer, e8.withCurrentBuffer(buffer, scanBuffer)]));
+  const scans = new Map(buffers.map((buffer) => [buffer, e8.withCurrentBuffer(buffer, () => widened(scanBuffer))]));
   for (let day = start; day < start + 7; day++) {
     const d = dayFromNumber(day);
     const wd = new Date(day * 86400000).getUTCDay();
@@ -426,7 +433,7 @@ function todoList(): void {
   const items: AgendaItem[] = [];
   const keywords = new Set<string>();
   for (const buffer of buffers) {
-    e8.withCurrentBuffer(buffer, () => {
+    e8.withCurrentBuffer(buffer, () => widened(() => {
       const cat = category();
       for (const k of allKeywords()) keywords.add(k);
       for (const h of headings()) {
@@ -434,7 +441,7 @@ function todoList(): void {
         const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
         items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: 1 + priorityValue(h) });
       }
-    });
+    }));
   }
   const sorted = [...keywords].sort();
   const lines: { text: string; item?: AgendaItem }[] = [
@@ -523,10 +530,10 @@ function redrawEntry(item: AgendaItem): void {
     const point = e8.point();
     for (const [l, other] of agendaLines.entries()) {
       if (!other || other.buffer !== item.buffer || headingOf(other) !== heading) continue;
-      const text = e8.withCurrentBuffer(item.buffer, () => {
+      const text = e8.withCurrentBuffer(item.buffer, () => widened(() => {
         const h = headings().find((x) => x.start === heading);
         return h ? agendaLine(h, other.cat, other.leader, other.removeTimestamp) : other.text;
-      });
+      }));
       other.text = text;
       e8.deleteRegion(e8.lineStart(l), e8.lineEnd(l));
       e8.gotoChar(e8.lineStart(l));
@@ -544,11 +551,11 @@ function redrawEntry(item: AgendaItem): void {
 function atEntry(command: e8.CommandName, interactive = true): void {
   const item = agendaItemHere();
   e8.withCurrentBuffer(item.buffer, () => {
-    e8.saveExcursion(() => {
+    e8.saveExcursion(() => widened(() => {
       e8.gotoChar(headingOf(item));
       if (interactive) e8.callInteractively(command);
       else e8.call(command);
-    });
+    }));
   });
   redrawEntry(item);
 }
@@ -589,6 +596,8 @@ const agendaSwitchTo = e8.defineCommand({
   run: () => {
     const item = agendaItemHere();
     e8.call("switch-to-buffer", item.buffer);
+    // The whole file, as org-agenda-switch-to widens before going there.
+    e8.widen();
     e8.gotoChar(posOf(item));
   },
 });
@@ -599,6 +608,7 @@ const agendaGoto = e8.defineCommand({
   run: () => {
     const item = agendaItemHere();
     e8.call("pop-to-buffer", item.buffer);
+    e8.widen();
     e8.pushMark(e8.point());
     e8.gotoChar(posOf(item));
     // At the heading's title, as org-agenda-goto leaves it.
@@ -613,10 +623,10 @@ const agendaTodo = e8.defineCommand({
   doc: "Change the TODO state of the entry the agenda line at point shows, as C-c C-t does there.",
   run: () => {
     const item = agendaItemHere();
-    e8.withCurrentBuffer(item.buffer, () => {
+    e8.withCurrentBuffer(item.buffer, () => widened(() => {
       e8.gotoChar(headingOf(item));
       e8.callWithPrefix(e8.prefixArg(), "org-todo");
-    });
+    }));
     redrawEntry(item);
   },
 });

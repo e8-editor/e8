@@ -1157,3 +1157,29 @@ fn speed_command_help_is_in_help_mode_even_in_a_new_help_buffer() {
     assert_eq!(help_mode(&mut ed), "\"help-mode\"");
     assert!(s.eval_expression(&mut ed, r#"e8.withCurrentBuffer("*Help*", () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()))"#).unwrap().contains("Speed commands"));
 }
+
+/// The agenda reads a file whole however it is narrowed, as Org widens
+/// before collecting entries, and going to an entry outside the narrowing
+/// widens, as org-agenda-switch-to does.
+#[test]
+fn the_agenda_reads_narrowed_files_whole() {
+    let (mut ed, s) = org("");
+    ed.set_frame_size(80, 24);
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let path = dir.path().join("a.org");
+    std::fs::write(&path, "* TODO First\n* TODO Second\nbody\n").unwrap();
+    ed.call("find-file", vec![Arg::Str(path.display().to_string())]).unwrap();
+    ed.press("M-> C-p C-x n s").unwrap();
+    assert!(ed.window_buffer().is_narrowed());
+    s.eval_typescript(&mut ed, "files.ts", format!("e8.setVariable(\"org-agenda-files\", [{:?}]); e8.setVariable(\"org-agenda-window-setup\", \"current-window\");", path.to_str().unwrap())).unwrap();
+    s.eval_typescript(&mut ed, "todo.ts", "e8.call(\"org-todo-list\");".to_string()).unwrap();
+    let agenda = text(&ed);
+    assert!(agenda.contains("First") && agenda.contains("Second"), "{agenda}");
+    let line = agenda.lines().position(|l| l.contains("TODO First")).unwrap();
+    let start = ed.window_buffer().line_start(line);
+    ed.window_buffer_mut().set_point(start);
+    ed.press("RET").unwrap();
+    assert_eq!(ed.window_buffer().name, "a.org");
+    assert!(!ed.window_buffer().is_narrowed());
+    assert_eq!(ed.window_buffer().point(), 0);
+}
