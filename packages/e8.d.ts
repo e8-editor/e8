@@ -3609,6 +3609,13 @@ declare global {
        */
       "isearch-repeat-forward": [];
       /**
+       * Toggle case-fold searching on or off.
+       * Toggles the value of the variable isearch-case-fold-search.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-toggle-case-fold": [];
+      /**
        * Switch between searching for a string and for a regular expression; what is typed next searches the new way.
        *
        * Defined in packages/isearch.ts.

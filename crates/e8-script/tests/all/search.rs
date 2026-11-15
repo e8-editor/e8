@@ -179,6 +179,24 @@ fn query_replace_offers_the_last_pair_and_c_u_takes_words() {
     assert_eq!(text(&ed), "bar barbar bar");
 }
 
+/// M-c in isearch toggles case folding, as isearch-toggle-case-fold does,
+/// saying so after the prompt, rather than ending the search and
+/// capitalising a word.
+#[test]
+fn m_c_in_isearch_toggles_case_folding() {
+    let (mut ed, _scripting) = setup("Foo xFoo foo");
+    ed.press("C-s f o o").unwrap();
+    assert_eq!(point(&ed), 3);
+    ed.press("M-c").unwrap();
+    assert_eq!(ed.echo(), Some("I-search: foo [case sensitive]"));
+    ed.press("C-s").unwrap();
+    assert_eq!(point(&ed), 12, "Foo is passed over");
+    ed.press("RET").unwrap();
+    assert_eq!(text(&ed), "Foo xFoo foo");
+    ed.press("M-< C-s f o o M-c M-c").unwrap();
+    assert_eq!(ed.echo(), Some("I-search: foo [case insensitive]"));
+}
+
 #[test]
 fn query_replace_quits_with_c_g() {
     let (mut ed, _scripting) = setup("foo foo");

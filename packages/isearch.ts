@@ -738,6 +738,24 @@ const toggleRegexp = e8.defineCommand({
   },
 });
 
+const toggleCaseFold = e8.defineCommand({
+  name: "isearch-toggle-case-fold",
+  doc: "Toggle case-fold searching on or off.\nToggles the value of the variable isearch-case-fold-search.",
+  run: () => {
+    if (!searching()) isearchMode(true);
+    // yes rather than t, so a capital typed no longer makes it exact.
+    const fold = truthy(get("isearch-case-fold-search")) ? null : "yes";
+    set("isearch-case-fold-search", fold);
+    set("isearch-success", true);
+    set("isearch-adjusted", "toggle");
+    isearchUpdate();
+    // As isearch--momentary-message, after the prompt until the next key.
+    e8.letBind({ "message-log-max": null }, () =>
+      e8.message(`${isearchMessagePrefix(false)}${str("isearch-message")} [${fold === null ? "case sensitive" : "case insensitive"}]`),
+    );
+  },
+});
+
 e8.bindKey("C-s", isearchForward);
 e8.bindKey("C-r", isearchBackward);
 e8.bindKey("C-M-s", isearchForwardRegexp);
@@ -756,6 +774,8 @@ for (const [keys, command] of [
   ["C-y", yankKill],
   ["M-r", toggleRegexp],
   ["M-s r", toggleRegexp],
+  ["M-c", toggleCaseFold],
+  ["M-s c", toggleCaseFold],
 ] as const) {
   e8.bindKey(keys, command, "isearch-mode-map");
 }
