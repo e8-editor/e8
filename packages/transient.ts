@@ -27,6 +27,7 @@
 // off. C-x t shows the common commands. A menu taller than the frame is
 // cut to fit; with transient-show-popup nil it does not show until C-h.
 
+import { withHelpWindow } from "help";
 import { truthy } from "subr";
 
 e8.defineFace({ name: "transient-heading", doc: "Face used for headings.", attributes: { inherit: "font-lock-keyword-face" } });
@@ -1088,14 +1089,9 @@ const transientHelp = e8.defineCommand({
     }
     exit(true);
     if (doc !== undefined) {
-      e8.getBufferCreate("*Help*");
-      e8.withCurrentBuffer("*Help*", () =>
-        e8.letBind({ "inhibit-read-only": true }, () => {
-          e8.deleteRegion(e8.pointMin(), e8.pointMax());
-          e8.insert(`${target ?? ""}${target ? "\n\n" : ""}${doc}\n`);
-        }),
-      );
-      e8.call("display-buffer", "*Help*");
+      // In help-mode, as describe-variable shows an infix's, even in a *Help* made afresh.
+      const text = `${target ?? ""}${target ? "\n\n" : ""}${doc}\n`;
+      withHelpWindow(() => e8.insert(text));
     } else if (target) e8.call("describe-function" as e8.CommandName, target);
   },
 });

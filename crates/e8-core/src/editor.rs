@@ -733,12 +733,19 @@ impl Editor {
         // not, unless it sets this-command itself, as kill-region does.
         let this = self.this_command.clone();
         let set = std::mem::replace(&mut self.this_command_set, false);
+        let (waiting, answered) = (self.pending_call.is_some(), self.pending_calls_run);
         self.running += 1;
         let result = self.run_command_body(&command, &args);
         self.running -= 1;
         let result = result.and(self.run_after_change_functions());
         self.deactivate_changed_regions(result.is_ok());
-        if !self.this_command_set {
+        // A call that answered the command waiting for its arguments, as
+        // vertico's RET calls exit-minibuffer for M-x, ran that command to
+        // its end, and it stays the last command: in Emacs exit-minibuffer
+        // throws out of the command that called it, so a second M-x undo
+        // goes on undoing.
+        let answered_waiting = waiting && self.pending_calls_run != answered;
+        if !self.this_command_set && !answered_waiting {
             self.this_command = this;
         }
         self.this_command_set |= set;
@@ -909,7 +916,10 @@ impl Editor {
                 let (kind, mut text, args) = (param.kind, param.prompt.clone(), call.args.clone());
                 let (prompt_fn, initial_fn) = (param.prompt_fn.clone(), param.initial_fn.clone());
                 let (collection_fn, require_match) = (param.collection_fn.clone(), param.require_match);
-                for (f, out) in [(prompt_fn, &mut text), (initial_fn, &mut initial)] {
+                let default_fn = param.default_fn.clone();
+                let mut default = String::new();
+                let has_default = default_fn.is_some();
+                for (f, out) in [(prompt_fn, &mut text), (initial_fn, &mut initial), (default_fn, &mut default)] {
                     let Some(PromptFn(f)) = f else { continue };
                     match f(self, &args) {
                         Ok(t) => *out = t,
@@ -921,6 +931,10 @@ impl Editor {
                     }
                 }
                 let mut prompt = Prompt::new(&text, kind, &history);
+                // Empty, there is none, as when no other buffer is left to switch to.
+                if has_default && !default.is_empty() {
+                    prompt.default = Some(default);
+                }
                 if let Some(crate::command::CollectionFn(f)) = collection_fn {
                     match f(self, &args) {
                         Ok(names) => prompt.collection = Some(names),

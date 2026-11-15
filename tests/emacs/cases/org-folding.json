@@ -364,5 +364,53 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "startup-overview-visibility-children",
+    "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: children\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+    "keys": "C-a",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "startup-overview-visibility-content",
+    "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: content\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+    "keys": "C-a",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "startup-overview-visibility-all",
+    "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: all\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+    "keys": "C-a",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "startup-content-visibility-folded",
+    "text": "#+STARTUP: content\n* One\n:PROPERTIES:\n:VISIBILITY: folded\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+    "keys": "C-a",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "startup-overview-visibility-inside-a-shown-subtree-has-its-say",
+    "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n** Sub\n:PROPERTIES:\n:VISIBILITY: all\n:END:\ntext\n*** Deep\n* Two\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n** Shown\n",
+    "keys": "C-a",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "startup-overview-visibility-outside-a-drawer-counts-for-nothing",
+    "text": "#+STARTUP: overview\n* One\n:VISIBILITY: children\n** Sub\n",
+    "keys": "C-a",
+    "modes": [
+      "org-mode"
+    ]
   }
 ]

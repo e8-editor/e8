@@ -621,3 +621,43 @@ fn abort_minibuffers_from_m_x_quits_the_minibuffer_it_was_typed_in() {
     assert_eq!(d.with(|ed| ed.minibuffer_depth()), 0);
     assert_eq!(d.variable("answer").as_deref(), Some("null"));
 }
+
+#[test]
+fn a_command_waiting_on_the_minibuffer_stays_the_last_command_when_code_answers_it() {
+    // vertico's RET calls exit-minibuffer from a command of its own. The
+    // command M-x ran is the last command afterwards, as in Emacs, where
+    // exit-minibuffer throws out of the command that called it, so M-x
+    // undo again goes on undoing rather than redoing.
+    let (mut ed, s) = setup();
+    s.eval_expression(
+        &mut ed,
+        r#"(e8.defineCommand({ name: "my-exit", run: () => e8.call("exit-minibuffer") }),
+            e8.defineKeymap("my-map"), e8.defineKey("my-map", "RET", "my-exit"),
+            e8.addHook("minibuffer-setup-hook", () => e8.composeLocalMap("my-map")), 1)"#,
+    )
+    .unwrap();
+    ed.press("a C-a b C-a c C-a d C-a").unwrap();
+    let text = |ed: &Editor| ed.window_buffer().slice(0..ed.window_buffer().len());
+    for want in ["cba", "ba", "a"] {
+        ed.press("M-x u n d o RET").unwrap();
+        assert_eq!((text(&ed).as_str(), ed.echo(), ed.last_command()), (want, Some("Undo"), Some("undo")));
+    }
+}
+
+#[test]
+fn kill_buffer_and_switch_to_buffer_offer_their_defaults() {
+    // As read-buffer's DEF: C-x k the current buffer and C-x b the other
+    // one, which vertico lists first, so RET on the first candidate is
+    // what the prompt says empty input does.
+    let (mut ed, s) = setup();
+    ed.press("C-x b o n e RET C-x b t w o RET").unwrap();
+    let default = |ed: &mut Editor| s.eval_expression(ed, "String(e8.minibufferInfo()?.default)").unwrap();
+    ed.press("C-x k").unwrap();
+    assert_eq!(ed.prompt(), Some("Kill buffer (default two): "));
+    assert_eq!(default(&mut ed), "\"two\"");
+    ed.press("C-g C-x b").unwrap();
+    assert_eq!(ed.prompt(), Some("Switch to buffer (default one): "));
+    assert_eq!(default(&mut ed), "\"one\"");
+    ed.press("RET").unwrap();
+    assert_eq!(ed.window_buffer().name, "one");
+}

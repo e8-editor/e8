@@ -1127,3 +1127,18 @@ fn agenda_lines_show_inherited_and_file_tags_as_emacs_does() {
     let agenda = text(&ed);
     assert!(agenda.contains("  f:          Scheduled:  TODO Child                          :proj:work::home:\n  f:          Scheduled:  TODO Plain                                    :proj::\n"), "{agenda}");
 }
+
+#[test]
+fn speed_command_help_is_in_help_mode_even_in_a_new_help_buffer() {
+    // As with-output-to-temp-buffer shows it: killing *Help*, or changing
+    // its mode, does not leave the next one in Fundamental mode.
+    let (mut ed, s) = org("* Heading\n");
+    let help_mode = |ed: &mut Editor| s.eval_expression(ed, r#"String(e8.withCurrentBuffer("*Help*", () => e8.variable("major-mode")))"#).unwrap();
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-use-speed-commands", true), 1)"#).unwrap();
+    ed.press("M-< ?").unwrap();
+    assert_eq!(help_mode(&mut ed), "\"help-mode\"");
+    s.eval_expression(&mut ed, r#"(e8.withCurrentBuffer("*Help*", () => e8.call("fundamental-mode")), e8.call("kill-buffer", "*Help*"), 1)"#).unwrap();
+    ed.press("?").unwrap();
+    assert_eq!(help_mode(&mut ed), "\"help-mode\"");
+    assert!(s.eval_expression(&mut ed, r#"e8.withCurrentBuffer("*Help*", () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()))"#).unwrap().contains("Speed commands"));
+}

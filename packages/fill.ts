@@ -120,7 +120,7 @@ function commonPrefix(a: string, b: string): string | undefined {
 
 
 /** The fill prefix a paragraph's text suggests, as fill-context-prefix. */
-function fillContextPrefix(from: number, to: number): string | undefined {
+export function fillContextPrefix(from: number, to: number): string | undefined {
   return saveExcursion(() => {
     e8.gotoChar(from);
     if (eolp()) forwardLine(1);
