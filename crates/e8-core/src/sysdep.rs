@@ -6,6 +6,20 @@
 
 use crate::variables::Value;
 
+/// The system's load averages over 1, 5 and 15 minutes, as getloadavg
+/// gives them for `load-average`; none where it cannot say.
+pub fn load_average() -> Option<[f64; 3]> {
+    #[cfg(unix)]
+    {
+        let mut loads = [0.0f64; 3];
+        // SAFETY: getloadavg writes at most the 3 doubles it is told of.
+        let n = unsafe { libc::getloadavg(loads.as_mut_ptr(), 3) };
+        (n == 3).then_some(loads)
+    }
+    #[cfg(not(unix))]
+    None
+}
+
 /// The ids of the processes running on this machine, as
 /// list-system-processes, in increasing order.
 pub fn list_system_processes() -> Vec<u32> {

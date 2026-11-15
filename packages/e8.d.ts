@@ -18170,6 +18170,40 @@ declare global {
     function nsSelectionExistsP(selection?: string | null, terminal?: Value): boolean;
     /** Start dragging something from a frame to another program, as ns-begin-drag: E8 does not drag, so nothing is dropped and the answer is undefined. */
     function nsBeginDrag(frame: FrameLike | null, pboard: Value, action?: Value, pixelPosition?: Value, followMouse?: Value, allowSameFrame?: Value): undefined;
+    /** A string of bytes in base64, broken into lines of 76 unless `noLineBreak`, as base64-encode-string; a character that is no byte is an error. */
+    function base64EncodeString(string: string, noLineBreak?: boolean | null): string;
+    /** A string of bytes in URL-safe base64 on one line, unpadded with `noPad`, as base64url-encode-string. */
+    function base64urlEncodeString(string: string, noPad?: boolean | null): string;
+    /** The bytes base64 stands for, as base64-decode-string: URL-safe with `base64url`, and with `ignoreInvalid` skipping what is not base64. */
+    function base64DecodeString(string: string, base64url?: boolean | null, ignoreInvalid?: boolean | null): string;
+    /** Replace the region's bytes with their base64, as base64-encode-region; gives the length of the base64. */
+    function base64EncodeRegion(start: number, end: number, noLineBreak?: boolean | null): number;
+    /** Replace the region's bytes with their URL-safe base64, as base64url-encode-region; gives its length. */
+    function base64urlEncodeRegion(start: number, end: number, noPad?: boolean | null): number;
+    /** Replace the region's base64 with the bytes it stands for, as base64-decode-region; gives how many there are. */
+    function base64DecodeRegion(start: number, end: number, base64url?: boolean | null, ignoreInvalid?: boolean | null): number;
+    /** Compare parts of two strings, as compare-strings: true if they are equal, else the place of the first difference plus one, negative where the first string is less. */
+    function compareStrings(string1: string, start1: number | null, end1: number | null, string2: string, start2: number | null, end2: number | null, ignoreCase?: boolean | null): true | number;
+    /** The edit distance between two strings, as string-distance: in characters, or in their UTF-8 bytes with `bytecompare`. */
+    function stringDistance(string1: string, string2: string, bytecompare?: boolean | null): number;
+    /** Where a string is first found in another, from `start`, as string-search; undefined if it is not. */
+    function stringSearch(needle: string, haystack: string, start?: number | null): number | undefined;
+    /** Whether a string sorts before another, as string-collate-lessp: by code point, as in the C locale, ignoring case with `ignoreCase`. */
+    function stringCollateLessp(s1: string, s2: string, locale?: string | null, ignoreCase?: boolean | null): boolean;
+    /** Whether two strings sort the same, as string-collate-equalp: equal, ignoring case with `ignoreCase`. */
+    function stringCollateEqualp(s1: string, s2: string, locale?: string | null, ignoreCase?: boolean | null): boolean;
+    /** The SHA-1 of a buffer's text, the current one by default, as buffer-hash. */
+    function bufferHash(buffer?: BufferLike | null): string;
+    /** How many lines a buffer has, how long its longest is and how long they are on average, in bytes, as buffer-line-statistics. */
+    function bufferLineStatistics(buffer?: BufferLike | null): [lines: number, longest: number, mean: number];
+    /** The system's load averages over 1, 5 and 15 minutes, as load-average: times 100 and whole, or as they are with `useFloats`. */
+    function loadAverage(useFloats?: boolean | null): number[];
+    /** What the locale says, as locale-info: codeset gives its coding, days and months their names, paper undefined. */
+    function localeInfo(item: "codeset" | "days" | "months" | "paper"): Value;
+    /** A string's text as multibyte, as string-to-multibyte: E8's strings hold characters already. */
+    function stringToMultibyte(string: string): string;
+    /** A string as the bytes Emacs keeps it in, UTF-8, each a character, as string-as-unibyte. */
+    function stringAsUnibyte(string: string): string;
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */
