@@ -353,6 +353,70 @@
       "kill_ring": [],
       "modified": true,
       "error": "Beginning of buffer"
+    },
+    {
+      "name": "m-j-at-the-start-of-a-narrowing",
+      "input": {
+        "text": "one\ntwo three\nfour\n",
+        "point": 0,
+        "keys": "C-n C-SPC C-e C-x n n C-g M-< M-j",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "one\n\ntwo three\nfour\n",
+      "visible": "one\n\ntwo three\nfour\n",
+      "point": 5,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "m-j-in-a-comment-at-the-end-of-a-narrowing",
+      "input": {
+        "text": "(a)\n;; note\n(b)\n",
+        "point": 0,
+        "keys": "C-n C-SPC C-e C-x n n C-g M-> M-j",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(a)\n;; note\n;; \n(b)\n",
+      "visible": "(a)\n;; note\n;; \n(b)\n",
+      "point": 15,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "auto-fill-at-the-end-of-a-narrowing",
+      "input": {
+        "text": "x\naaa bbb ccc\nz\n",
+        "point": 0,
+        "keys": "C-n C-SPC C-e C-x n n C-g M-> SPC d d",
+        "modes": [
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "x\naaa bbb\nccc dd\nz\n",
+      "visible": "x\naaa bbb\nccc dd\nz\n",
+      "point": 16,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
     }
   ]
 }

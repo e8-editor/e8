@@ -153,10 +153,10 @@ export function commentRegion(begIn: number, endIn: number, arg: e8.PrefixArg): 
   if (n < 0) return uncommentRegion(begIn, endIn, -n);
   // The region without the blank lines around it, as comment-region-default-1 sanitizes it.
   let b = begIn;
-  while (b < e8.bufferSize() && " \t\n\r".includes(charAt(b))) b++;
+  while (b < e8.pointMax() && " \t\n\r".includes(charAt(b))) b++;
   const beg = Math.max(begIn, bol(b));
   let e = endIn;
-  while (e > 0 && " \t\n\r".includes(charAt(e - 1))) e--;
+  while (e > e8.pointMin() && " \t\n\r".includes(charAt(e - 1))) e--;
   const end = Math.min(endIn, eol(e));
   if (beg >= end) throw new Error("Nothing to comment");
   // Comments that end with the line end the region's last line there.
@@ -506,8 +506,8 @@ e8.defineCommand({
     // The whitespace either side goes.
     let a = e8.point();
     let b = a;
-    while (a > 0 && " \t".includes(charAt(a - 1))) a--;
-    while (b < e8.bufferSize() && " \t".includes(charAt(b))) b++;
+    while (a > e8.pointMin() && " \t".includes(charAt(a - 1))) a--;
+    while (b < e8.pointMax() && " \t".includes(charAt(b))) b++;
     e8.deleteRegion(a, b);
     e8.gotoChar(a);
     const ce = commentEnd();
@@ -534,7 +534,7 @@ e8.defineCommand({
     }
     e8.insertAndInherit("\n");
     let a = e8.point() - 1;
-    while (a > 0 && " \t".includes(charAt(a - 1))) a--;
+    while (a > e8.pointMin() && " \t".includes(charAt(a - 1))) a--;
     e8.deleteRegion(a, e8.point() - 1);
     e8.call("indent-according-to-mode");
   },

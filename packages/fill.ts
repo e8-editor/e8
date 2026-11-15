@@ -258,12 +258,12 @@ function fillNobreakP(): boolean {
   if (truthy(e8.variable("sentence-end-double-space"))) {
     let q = p;
     while (q > 0 && charBefore(q) === " ") q--;
-    if (charBefore(q) === "." && charAt(q) === " " && q + 1 < e8.bufferSize() && !" \n".includes(charAt(q + 1))) {
+    if (charBefore(q) === "." && charAt(q) === " " && q + 1 < e8.pointMax() && !" \n".includes(charAt(q + 1))) {
       return true;
     }
   }
   let q = p;
-  while (q < e8.bufferSize() && " \t".includes(charAt(q))) q++;
+  while (q < e8.pointMax() && " \t".includes(charAt(q))) q++;
   return q < e8.bufferSize() && charAt(q) !== "\n" && charAt(q) === "\f";
 }
 
@@ -290,7 +290,7 @@ function fillMoveToBreakPoint(linebeg: number): void {
     while (e8.point() < to && (first || fillNobreakP())) {
       skipForward(" \t");
       let q = e8.point();
-      while (q < e8.bufferSize() && !" \n\t".includes(charAt(q))) q++;
+      while (q < e8.pointMax() && !" \n\t".includes(charAt(q))) q++;
       e8.gotoChar(q);
       first = false;
     }
@@ -584,8 +584,8 @@ function defaultIndentNewLine(prefix: string | undefined): void {
 function deleteHorizontalSpace(): void {
   let a = e8.point();
   let b = a;
-  while (a > 0 && " \t".includes(charBefore(a))) a--;
-  while (b < e8.bufferSize() && " \t".includes(charAt(b))) b++;
+  while (a > e8.pointMin() && " \t".includes(charBefore(a))) a--;
+  while (b < e8.pointMax() && " \t".includes(charAt(b))) b++;
   if (b > a) e8.deleteRegion(a, b);
 }
 

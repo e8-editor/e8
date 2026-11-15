@@ -103,5 +103,29 @@
     "modes": [
       "electric-pair-mode"
     ]
+  },
+  {
+    "name": "m-j-at-the-start-of-a-narrowing",
+    "text": "one\ntwo three\nfour\n",
+    "keys": "C-n C-SPC C-e C-x n n C-g M-< M-j"
+  },
+  {
+    "name": "m-j-in-a-comment-at-the-end-of-a-narrowing",
+    "text": "(a)\n;; note\n(b)\n",
+    "keys": "C-n C-SPC C-e C-x n n C-g M-> M-j",
+    "modes": [
+      "emacs-lisp-mode"
+    ]
+  },
+  {
+    "name": "auto-fill-at-the-end-of-a-narrowing",
+    "text": "x\naaa bbb ccc\nz\n",
+    "keys": "C-n C-SPC C-e C-x n n C-g M-> SPC d d",
+    "vars": {
+      "fill-column": 8
+    },
+    "modes": [
+      "auto-fill-mode"
+    ]
   }
 ]
