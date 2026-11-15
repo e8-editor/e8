@@ -18904,6 +18904,26 @@ declare global {
     }
     /** Read a file name in the minibuffer, with completion, as Emacs's read-file-name; the answer is the name as typed. */
     function readFileName(prompt: string, options?: ReadFileNameOptions): string;
+    /** How JSON is read: objects as JavaScript objects ("hash-table", the default), [key, value] lists ("alist") or [":key", value, ...] ("plist"), and what stands for null and false, Symbol.for(":null") and Symbol.for(":false") by default. */
+    interface JsonParseOptions {
+      objectType?: "hash-table" | "alist" | "plist";
+      arrayType?: "array" | "list";
+      nullObject?: Value;
+      falseObject?: Value;
+    }
+    /** What stands for null and false when JSON is written, Symbol.for(":null") and Symbol.for(":false") by default. */
+    interface JsonSerializeOptions {
+      nullObject?: Value;
+      falseObject?: Value;
+    }
+    /** Parse a string of JSON, as json-parse-string: objects keep their keys' order, and errors are json-end-of-file, json-trailing-content and json-parse-error with the line, column and position. */
+    function jsonParseString(string: string, options?: JsonParseOptions): any;
+    /** Parse the JSON after point and move point past it, as json-parse-buffer. */
+    function jsonParseBuffer(options?: JsonParseOptions): any;
+    /** A value as JSON text, as json-serialize: objects and Maps as objects, arrays as arrays, true, numbers and strings as themselves, null (Lisp's nil) as {}. */
+    function jsonSerialize(value: unknown, options?: JsonSerializeOptions): string;
+    /** Insert a value as JSON at point, as json-insert. */
+    function jsonInsert(value: unknown, options?: JsonSerializeOptions): void;
     interface ReadStringOptions {
       initial?: string;
       default?: string;

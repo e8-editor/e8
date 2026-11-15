@@ -431,6 +431,32 @@
     }
   }
   globalThis.__e8Text = (string, runs) => new PropertizedString(string, runs);
+  // JSON objects cross to and from the natives as lists marked with this
+  // symbol, then their [key, value] pairs (ADR 0100).
+  const jsonObject = Symbol.for("__e8JsonObject");
+  const jsonIn = (v) => {
+    if (Array.isArray(v)) return v.map(jsonIn);
+    if (v instanceof Map) return [jsonObject, ...[...v].map(([k, x]) => [String(k), jsonIn(x)])];
+    if (v !== null && typeof v === "object" && [Object.prototype, null].includes(Object.getPrototypeOf(v))) {
+      return [jsonObject, ...Object.entries(v).map(([k, x]) => [k, jsonIn(x)])];
+    }
+    return v;
+  };
+  const jsonOut = (v) => {
+    if (!Array.isArray(v)) return v;
+    if (v[0] === jsonObject) {
+      const o = {};
+      for (const [k, x] of v.slice(1)) Object.defineProperty(o, k, { value: jsonOut(x), enumerable: true, writable: true, configurable: true });
+      return o;
+    }
+    return v.map(jsonOut);
+  };
+  const jsonShape = (o) => [
+    o.objectType ?? "hash-table",
+    o.arrayType ?? "array",
+    o.nullObject === undefined ? Symbol.for(":null") : o.nullObject,
+    o.falseObject === undefined ? Symbol.for(":false") : o.falseObject,
+  ];
 
   /**
    * A marker as an object, as Emacs's markers are: once nothing refers to
@@ -716,6 +742,10 @@
     message: (text, { log = true } = {}) => native.message(String(text), Boolean(log)),
     insert: (text) => (text instanceof PropertizedString ? native.insertText(text) : native.insert(String(text))),
     PropertizedString,
+    jsonParseString: (string, options = {}) => jsonOut(native.jsonParse(String(string), ...jsonShape(options))),
+    jsonParseBuffer: (options = {}) => jsonOut(native.jsonParseBufferNative(...jsonShape(options))),
+    jsonSerialize: (value, options = {}) => native.jsonWrite(jsonIn(value), ...jsonShape(options).slice(2)),
+    jsonInsert: (value, options = {}) => native.insert(native.jsonWrite(jsonIn(value), ...jsonShape(options).slice(2))),
     propertize(string, properties = {}) {
       const s = String(string);
       const n = [...s].length;
