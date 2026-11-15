@@ -4299,13 +4299,28 @@ function parseDate(input: string, withTime = false): DateTime {
   return d;
 }
 
+/**
+ * A timestamp's repeater and warning, such as "+1w -2d", as org-timestamp and
+ * org--deadline-or-schedule take them from the one they replace.
+ */
+function repeaterOf(ts: string | undefined): string | undefined {
+  return ts === undefined ? undefined : /([.+-]+[0-9]+[hdwmy](?:[/ ][-+]?[0-9]+[hdwmy])?)/.exec(ts.replace(/^[<[]\d{4}-\d{2}-\d{2}/, ""))?.[1];
+}
+
+/** A new timestamp with the repeater of the one it replaces put back before its end. */
+function withRepeater(text: string, old: string | undefined): string {
+  const repeater = repeaterOf(old);
+  return repeater === undefined || repeaterOf(text) !== undefined ? text : `${text.slice(0, -1)} ${repeater}${text.slice(-1)}`;
+}
+
 function insertTimestamp(input: string, active: boolean): void {
   const withTime = Array.isArray(e8.prefixArg());
   const date = parseDate(input, withTime);
-  const text = active ? `<${formatTimestamp(date)}>` : `[${formatTimestamp(date)}]`;
+  let text = active ? `<${formatTimestamp(date)}>` : `[${formatTimestamp(date)}]`;
   const p = e8.point();
   const ts = tsMatches(lineAt()).find((t) => t.start <= p && p <= t.end);
   if (ts) {
+    text = withRepeater(text, e8.bufferText(ts.start, ts.end));
     e8.deleteRegion(ts.start, ts.end);
     e8.gotoChar(ts.start);
   }
@@ -4361,7 +4376,10 @@ function plan(keyword: string, input: string): void {
     return;
   }
   const date = parseDate(input);
-  setPlanning(all[i].line, keyword, `<${formatTimestamp(date)}>`);
+  // The old date's repeater and warning stay, as org--deadline-or-schedule keeps them.
+  const next = all[i].line + 1;
+  const old = next < e8.lineCount() ? new RegExp(`${keyword}: *([<[][^>\\]\\n]*[>\\]])`).exec(e8.lineText(next))?.[1] : undefined;
+  setPlanning(all[i].line, keyword, withRepeater(`<${formatTimestamp(date)}>`, old));
 }
 
 const schedule = e8.defineCommand({

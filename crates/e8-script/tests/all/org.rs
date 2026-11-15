@@ -202,6 +202,21 @@ fn scheduling_and_deadlines_go_on_the_planning_line() {
     assert_eq!(text(&ed), "* Task\nDEADLINE: <2026-11-05 Thu 15:00>\nbody\n");
 }
 
+/// Rescheduling keeps the old date's repeater and warning, as Org's
+/// org--deadline-or-schedule and org-timestamp do, so a repeating task
+/// goes on repeating (what Org 9.7 gives for the same).
+#[test]
+fn rescheduling_keeps_the_repeater() {
+    let (mut ed, _s) = org("* TODO Water plants\nSCHEDULED: <2026-11-10 Tue +1w -2d>\n* TODO B\nDEADLINE: <2026-11-10 Tue .+1m>\n");
+    call(&mut ed, "org-schedule", &["2026-11-20"]);
+    ed.window_buffer_mut().set_point(60);
+    call(&mut ed, "org-deadline", &["2026-12-01"]);
+    assert_eq!(text(&ed), "* TODO Water plants\nSCHEDULED: <2026-11-20 Fri +1w -2d>\n* TODO B\nDEADLINE: <2026-12-01 Tue .+1m>\n");
+    ed.window_buffer_mut().set_point(35);
+    call(&mut ed, "org-timestamp", &["2026-11-27"]);
+    assert_eq!(text(&ed), "* TODO Water plants\nSCHEDULED: <2026-11-27 Fri +1w -2d>\n* TODO B\nDEADLINE: <2026-12-01 Tue .+1m>\n");
+}
+
 #[test]
 fn timestamps_are_inserted_from_a_date() {
     let (mut ed, _s) = org("Meet ");
