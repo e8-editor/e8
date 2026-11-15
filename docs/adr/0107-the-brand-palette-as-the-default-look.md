@@ -4,7 +4,7 @@ Status: accepted · 2026-11-15
 
 ## Context
 
-E8 took its colours from the ArtCraft Launcher's theme ([ADR 0004](0004-egui-front-end.md)): a warm off-white or near-black page and one blue accent. E8 now has a graphical profile of its own, built on six colours: Midnight `#260B40`, Lavender `#A477F5`, Ivory `#F8F4EB`, Jade `#71C7B1`, Amber `#E7B86B` and Rose `#D994A8`. Mark decided these become E8's default look, dark and light, rather than a theme to opt into.
+E8 took its colours from the ArtCraft Launcher's theme ([ADR 0004](0004-egui-front-end.md)): a warm off-white or near-black page and one blue accent. E8 now has a graphical profile of its own ([ADR 0106](0106-the-graphical-profile.md)), built on six colours: Midnight `#260B40`, Lavender `#A477F5`, Ivory `#F8F4EB`, Jade `#71C7B1`, Amber `#E7B86B` and Rose `#D994A8`. Mark decided these become E8's default look, dark and light, rather than a theme to opt into.
 
 Every colour E8 draws without a theme comes from one table, `PALETTE` in `crates/e8-core/src/faces.rs`: thirteen names, each with a dark and a light value. The default faces name them, the GUI's `Tokens` read them, and the terminal front end blends them over the page. Changing the look is changing that table.
 
