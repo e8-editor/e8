@@ -939,16 +939,39 @@ e8.defineCommand({
     "A fill prefix at the start of the joined line is deleted too.",
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => {
-    if (arg !== null) forwardLine(1);
-    // The line's own start, a prompt or not, as Emacs's forward-line 0.
-    e8.gotoChar(e8.posBol());
-    if (e8.point() <= e8.pointMin()) return;
-    const prefix = e8.variable("fill-prefix");
-    e8.deleteRegion(e8.point() - 1, e8.point());
-    if (typeof prefix === "string" && prefix !== "" && e8.bufferSubstringNoProperties(e8.point(), Math.min(e8.pointMax(), e8.point() + prefix.length)) === prefix) {
-      e8.deleteRegion(e8.point(), e8.point() + prefix.length);
+    // With the region active, as use-region-p says, and no argument, every
+    // line in the region joins the first.
+    const mark = e8.mark();
+    const region = arg === null && e8.regionActive() && mark !== undefined && mark !== e8.point();
+    // Deactivated even when no text changes, as Emacs sets deactivate-mark.
+    e8.deactivateMark();
+    let beg: number;
+    if (region) {
+      beg = Math.min(mark as number, e8.point());
+      const end = Math.max(mark as number, e8.point());
+      e8.gotoChar(beg);
+      if (end > e8.lineEndPosition()) e8.gotoChar(end);
+    } else {
+      // A sentinel below the line that joins last, so the loop stops at it:
+      // the next line's start with an argument, or the end of the buffer.
+      const start = arg === null
+        ? e8.posBol()
+        : e8.saveExcursion(() => {
+            forwardLine(1);
+            return e8.point() === e8.lineBeginningPosition(e8.point()) ? e8.point() : e8.pointMax();
+          });
+      beg = start - 1;
+      if (arg !== null) forwardLine(1);
     }
-    e8.call("fixup-whitespace");
+    const prefix = e8.variable("fill-prefix");
+    // The line's own start, a prompt or not, as Emacs's forward-line 0.
+    while (e8.posBol() > beg && (e8.gotoChar(e8.posBol()), e8.point() > e8.pointMin()) && e8.precedingChar() === 10) {
+      e8.deleteRegion(e8.point() - 1, e8.point());
+      if (typeof prefix === "string" && prefix !== "" && e8.bufferSubstringNoProperties(e8.point(), Math.min(e8.pointMax(), e8.point() + prefix.length)) === prefix) {
+        e8.deleteRegion(e8.point(), e8.point() + prefix.length);
+      }
+      e8.call("fixup-whitespace");
+    }
   },
 });
 e8.bindKey("M-^", "delete-indentation");

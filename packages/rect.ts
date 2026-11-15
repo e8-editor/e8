@@ -140,14 +140,14 @@ e8.defineCommand({
   params: [...region, { name: "fill", kind: "prefix" }],
   run: (start: number, end: number, fill: e8.PrefixArg) => {
     readOnly();
-    const p = applyOnRectangle((startcol, endcol) => {
+    // Point stays where it was, as apply-on-rectangle's save-excursion leaves it.
+    applyOnRectangle((startcol, endcol) => {
       if (moveToColumn(startcol, fill !== null ? true : "coerce") >= startcol) {
         const from = e8.point();
         moveToColumn(endcol, "coerce");
         e8.deleteRegion(from, e8.point());
       }
     }, start, end);
-    e8.gotoChar(p);
   },
 });
 
@@ -262,25 +262,31 @@ e8.defineCommand({
   params: [...region, { name: "arg", kind: "prefix" }],
   run: async (start: number, end: number, arg: e8.PrefixArg) => {
     readOnly();
-    const lines = e8.lineOf(Math.max(start, end)) - e8.lineOf(Math.min(start, end)) + 1;
+    const [beg, fin] = [Math.min(start, end), Math.max(start, end)];
+    // count-lines: the newlines between, and a line the region ends inside.
+    const lines = e8.lineOf(fin) - e8.lineOf(beg) + (fin > beg && fin !== e8.lineStart(e8.lineOf(fin)) ? 1 : 0);
+    // As rectangle--default-line-number-format: as wide as the count plus the start.
+    const defaultFormat = (at: number): string => `%${String(lines + at).length}d `;
     let first = 1;
-    let format: string | undefined;
+    let format = defaultFormat(first);
     if (arg !== null) {
-      first = Number(await e8.readString("Number to count from (default 1): ")) || 1;
+      // As read-number: empty for the default, and asked again until a number.
+      for (;;) {
+        const answer = (await e8.readString("Number to count from (default 1): ")).trim();
+        if (answer === "") break;
+        if (/^[-+]?\d+$/.test(answer)) {
+          first = Number(answer);
+          break;
+        }
+        e8.message("Please enter a number.");
+      }
+      format = await e8.readString("Format string: ", { initial: defaultFormat(first) });
     }
-    const width = String(first + lines - 1).length;
-    if (arg !== null) {
-      const def = `%${width}d `;
-      const answer = await e8.readString(`Format string (default ${def}): `);
-      format = answer === "" ? def : answer;
-    }
-    format ??= `%${width}d `;
     let n = first;
-    const pad = (s: string, w: number) => " ".repeat(Math.max(0, w - s.length)) + s;
     // Point stays where it was, as apply-on-rectangle leaves it.
     applyOnRectangle((startcol) => {
       moveToColumn(startcol, true);
-      e8.insert(format!.replace(/%(-?)(\d*)d/, (_, left: string, w: string) => (left ? String(n).padEnd(Number(w || 0)) : pad(String(n), Number(w || 0)))));
+      e8.insert(e8.format(format, n));
       n++;
     }, start, end);
   },
