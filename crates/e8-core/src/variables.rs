@@ -1092,6 +1092,16 @@ pub(crate) fn install(ed: &mut Editor) {
         ),
         Variable::new("ring-bell-function", "A function `ding` calls instead of ringing the bell, or nil to ring it.", Value::Null),
         Variable::new("visible-bell", "Whether the bell flashes the frame rather than sounding.", false),
+        Variable::new(
+            "e8-startup-lattice",
+            "Whether the graphical window draws E8's lattice faintly behind the text when it opens, fading it away after a few seconds or at the first key or click. Set it to nil in init.ts to turn it off; inhibit-startup-screen set to t turns it off too.",
+            true,
+        ),
+        Variable::new(
+            "inhibit-startup-screen",
+            "Whether to show nothing at startup, as Emacs's inhibit-startup-screen: E8 has no startup screen, so t only turns off the lattice the graphical window draws when it opens (e8-startup-lattice). inhibit-splash-screen and inhibit-startup-message, set to t, do the same.",
+            false,
+        ),
         Variable::new("overlay-arrow-position", "Marker for where to display an arrow on top of the buffer text. This must be the beginning of a line in order to work. See also `overlay-arrow-string'.", Value::Null),
         Variable::new("overlay-arrow-string", "String to display as an arrow in text-mode frames. See also `overlay-arrow-position'.", "=>"),
         Variable::new(

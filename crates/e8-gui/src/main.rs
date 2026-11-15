@@ -88,6 +88,9 @@ fn main() -> eframe::Result {
             if title_bar {
                 app = app.with_title_bar(&cc.egui_ctx);
             }
+            // E8's lattice behind the text as the window opens, unless the
+            // config turned it off (ADR 0108).
+            app = app.with_startup_lattice();
             Ok(Box::new(app.with_agent(requests, None)))
         }),
     )
