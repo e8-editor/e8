@@ -130,6 +130,15 @@ In the bench's Org table, V8 against QuickJS: RET in a paragraph 4.97 against 11
 
 ## What changed
 
+- **Literal searches keep their compiled patterns, 2026-11-15.** A literal search (`e8.search` without `regexp`, `search-forward`) compiled its pattern with the `regex` crate on every call, which was nearly all of a short search's time; patterns are now kept by pattern and folding, up to 512, as `Regexp::cached` keeps Emacs regexps. 5,000 searches in the 41 KB `docs/features.md`, release builds, V8, at a load of 34 to 51, per search:
+
+  | Literal search | Before | After |
+  | --- | ---: | ---: |
+  | within 10 characters | 107–124 µs | 0.7–1.2 µs |
+  | to the end | 116–140 µs | 4.7–7.7 µs |
+  | backward over 2,000 characters | 91–140 µs | 1.9–2.8 µs |
+  | within 10 characters, case folded | 118–160 µs | 0.5–1.1 µs |
+
 - **Only what a window shows is fontified, and properties are saved for undo by halving, 2026-11-04.** After an edit, redisplay fontified a window's rows from their first position to their last, which in a folded Org file runs through every hidden subtree to the end of the buffer; it now fontifies each row from its start to the last text it shows, as Emacs's display fontifies only what it shows. In the user's 7,900-line archive.org, folded, redisplay after typing a character went from 400 to 3 ms in the test build. And saving a range's text properties for undo looked at every run in the buffer, so changing properties a line at a time was quadratic: `org-indent-mode` over 35,000 lines went from 10 s to 1.7 s, and it now indents 50 ms at a time by a timer, as Org's agent does in idle time.
 
 - **The code review's large-buffer costs, 2026-11-03** ([review.md](review.md), group 3). Each has a test that times the case it names; on the same M1, in the test build, before and after:
