@@ -98,6 +98,7 @@ mod variables_and_symbols;
 mod printer;
 mod float_functions;
 mod eval_buffer;
+mod fontset_info;
 mod subr;
 mod symbols;
 mod syntax_tables;

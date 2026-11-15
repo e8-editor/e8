@@ -341,6 +341,12 @@ natives! {
         ed.fontset_font(&name, &c, all.0.is_some_and(|a| a.is_true()))
     }
 
+    /// What a fontset holds, as fontset-info: a char-table whose values are lists of [font] for each font a range is given, E8 opening none itself, its extra slot the default fontset's for another. Only on a window system.
+    #[ts = "(fontset: string | boolean | null, frame?: FrameLike | null): CharTable"]
+    pub fn fontsetInfo(ed, fontset: EditorValue, _frame: Opt<EditorValue>) -> EditorValue {
+        ed.fontset_info(&fontset)
+    }
+
     /// Make a fontset from an XLFD name and [target, font] pairs, as new-fontset; gives its name.
     #[ts = "(name: string, fontlist: Value[]): string"]
     pub fn newFontset(ed, name: String, fontlist: EditorValue) -> String {
