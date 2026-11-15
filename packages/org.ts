@@ -3504,6 +3504,11 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   setPlanning(line, "CLOSED", undefined);
   const log = e8.variable("org-log-repeat");
   if (log) entryPut(line, "LAST_REPEAT", `[${formatTimestamp(today(true), true)}]`);
+  // A SCHEDULED without a repeater is no longer relevant, and goes, as
+  // org-auto-repeat-maybe removes it.
+  const planning = line + 1 < e8.lineCount() ? e8.lineText(line + 1) : "";
+  const scheduled = /SCHEDULED: *(<[^>\n]*>)/.exec(planning)?.[1];
+  if (scheduled !== undefined && !repeating.test(scheduled)) setPlanning(line, "SCHEDULED", undefined);
   repeatEntry(parseHeading(line) as Heading);
   e8.gotoChar(p.pos);
   dropMarker(p);

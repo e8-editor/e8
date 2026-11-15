@@ -164,5 +164,27 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "done-repeating-drops-a-plain-scheduled",
+    "text": "* TODO Pay\nSCHEDULED: <2026-11-01 Sun> DEADLINE: <2026-11-05 Thu +1m>\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-log-repeat": false
+    }
+  },
+  {
+    "name": "done-repeating-keeps-a-repeating-scheduled",
+    "text": "* TODO Pay\nSCHEDULED: <2026-11-01 Sun +1w> DEADLINE: <2026-11-05 Thu +1m>\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-log-repeat": false
+    }
   }
 ]

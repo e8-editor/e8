@@ -421,6 +421,54 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "done-repeating-drops-a-plain-scheduled",
+      "input": {
+        "text": "* TODO Pay\nSCHEDULED: <2026-11-01 Sun> DEADLINE: <2026-11-05 Thu +1m>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Pay\nDEADLINE: <2026-12-05 Sat +1m>\n",
+      "visible": "* TODO Pay\nDEADLINE: <2026-12-05 Sat +1m>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "done-repeating-keeps-a-repeating-scheduled",
+      "input": {
+        "text": "* TODO Pay\nSCHEDULED: <2026-11-01 Sun +1w> DEADLINE: <2026-11-05 Thu +1m>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Pay\nSCHEDULED: <2026-11-08 Sun +1w> DEADLINE: <2026-12-05 Sat +1m>\n",
+      "visible": "* TODO Pay\nSCHEDULED: <2026-11-08 Sun +1w> DEADLINE: <2026-12-05 Sat +1m>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
