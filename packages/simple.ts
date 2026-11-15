@@ -441,11 +441,11 @@ function forwardChar(n: number): void {
   const to = e8.point() + n;
   if (to < e8.pointMin()) {
     e8.gotoChar(e8.pointMin());
-    throw new Error("Beginning of buffer");
+    e8.signal("beginning-of-buffer", "Beginning of buffer");
   }
   if (to > e8.pointMax()) {
     e8.gotoChar(e8.pointMax());
-    throw new Error("End of buffer");
+    e8.signal("end-of-buffer", "End of buffer");
   }
   e8.gotoChar(to);
 }
