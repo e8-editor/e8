@@ -18019,6 +18019,8 @@ declare global {
     function setFontsetFont(fontset: string | boolean | null, characters: Value, fontSpec: Value, frame?: Frame | null, add?: string | symbol | null): undefined;
     /** The font a fontset gives a character, as fontset-font, as [family, registry]; with `all`, every one. */
     function fontsetFont(name: string | boolean | null, ch: number, all?: boolean): Value;
+    /** What a fontset holds, as fontset-info: a char-table whose values are lists of [font] for each font a range is given, E8 opening none itself, its extra slot the default fontset's for another. Only on a window system. */
+    function fontsetInfo(fontset: string | boolean | null, frame?: FrameLike | null): CharTable;
     /** Make a fontset from an XLFD name and [target, font] pairs, as new-fontset; gives its name. */
     function newFontset(name: string, fontlist: Value[]): string;
     /** The current buffer's mark as a marker, as mark-marker: where the mark is, nowhere while there is none, and the same marker each time. Moving it moves the mark, without activating it. */

@@ -192,6 +192,60 @@ impl Editor {
 
     /// The fonts FONTSET gives a character, as `fontset-font`: the first,
     /// or with ALL every one, each `[family, registry]`; none if it gives none.
+    /// What a fontset holds, as `fontset-info`: a char-table of subtype
+    /// `fontset-info` whose values are `((FONT OPENED-FONT ...) ...)`, a
+    /// list for each font a range of characters is given. E8's front ends
+    /// do not draw with fontsets, so no font is opened and each list holds
+    /// the font alone. Its extra slot is the default fontset's table for a
+    /// fontset that is not the default, as Emacs's is. Only on a window system.
+    pub fn fontset_info(&mut self, fontset: &Value) -> Result<Value> {
+        if self.window_system().is_none() {
+            return Err(Error::signal("error", "Window system is not in use or not initialized", Vec::new()));
+        }
+        let index = self.fontset_index(fontset)?;
+        // The default fontset is the last; new ones go in front of it.
+        let default_index = self.fontsets.0.len() - 1;
+        let table = self.fontset_info_table(index)?;
+        if index != default_index {
+            let default = self.fontset_info_table(default_index)?;
+            self.set_char_table_extra_slot(table, 0, Value::CharTable(default))?;
+        }
+        Ok(Value::CharTable(table))
+    }
+
+    fn fontset_info_table(&mut self, index: usize) -> Result<crate::chartab::CharTableId> {
+        if self.get("fontset-info", "char-table-extra-slots").is_none() {
+            self.put("fontset-info", "char-table-extra-slots", Value::Number(1.0));
+        }
+        let table = self.make_char_table("fontset-info", Value::Null)?;
+        let entries = self.fontsets.0[index].entries.clone();
+        // Earlier entries win, as fonts_for looks them up, so the last are set first.
+        for (target, fonts) in entries.iter().rev() {
+            let value = Value::List(fonts.iter().filter(|f| !is_nil(f)).map(|f| Value::List(vec![f.clone()])).collect());
+            let ranges: Vec<(u32, u32)> = match target {
+                Target::Range(from, to) => vec![(*from, *to)],
+                Target::Script(name) => crate::chartab_data::SCRIPT
+                    .iter()
+                    .filter(|&&(_, _, s)| crate::chartab_data::SCRIPT_NAMES[s as usize] == name)
+                    .map(|&(first, last, _)| (first, last))
+                    .collect(),
+                Target::Charset(name) => crate::charset::charset_char_ranges(name, None, None)
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(|(a, b)| (a as u32, b as u32))
+                    .collect(),
+                Target::Default => {
+                    self.set_char_table_range(table, crate::chartab::CharRange::Default, value.clone())?;
+                    Vec::new()
+                }
+            };
+            for (from, to) in ranges {
+                self.set_char_table_range(table, crate::chartab::CharRange::Range(from, to), value.clone())?;
+            }
+        }
+        Ok(table)
+    }
+
     pub fn fontset_font(&self, fontset: &Value, c: &Value, all: bool) -> Result<Value> {
         let index = self.fontset_index(fontset)?;
         let fonts: Vec<Value> = self.fontsets.0[index].fonts_for(char_of(c)?).into_iter().filter(|f| !is_nil(f)).collect();
