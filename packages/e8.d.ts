@@ -18126,6 +18126,50 @@ declare global {
     function getUnusedIsoFinalChar(dimension: number, chars: number): number | undefined;
     /** The ranges of characters a charset's codes from `from` to `to` hold, each [first, last], for map-charset-chars. */
     function charsetCharRanges(charset: string, from?: number | null, to?: number | null): [number, number][];
+    /** Hide the whole application with on true, show it again with null, or show it and make it active with "activate" or "activate-front", as ns-hide-emacs. */
+    function nsHideEmacs(on: boolean | "activate" | "activate-front" | null): undefined;
+    /** Hide every application but this one, as ns-hide-others. */
+    function nsHideOthers(): undefined;
+    /** Show the application's About panel, as ns-emacs-info-panel. */
+    function nsEmacsInfoPanel(): undefined;
+    /** Show the colour panel, as ns-popup-color-panel. */
+    function nsPopupColorPanel(frame?: FrameLike | null): undefined;
+    /** Show the character palette, as ns-show-character-palette. */
+    function nsShowCharacterPalette(): undefined;
+    /** The services macOS offers, as ns-list-services: none, as on Cocoa, which cannot list them since 10.6. */
+    function nsListServices(): undefined;
+    /** Run a macOS service on some text, as ns-perform-service: E8 runs none, so there is no result. */
+    function nsPerformService(service: string, send: string | null): undefined;
+    /** The colours there are, as ns-list-colors: the names E8 knows, as defined-colors. */
+    function nsListColors(frame?: FrameLike | null): string[];
+    /** The family name of a font named by its XLFD name, or the name itself, as ns-font-name; a fontset's name is left alone. */
+    function nsFontName(name: string): string;
+    /** A value from macOS's defaults for an owner, this application's with null, as ns-get-resource: what ns-set-resource set this session. */
+    function nsGetResource(owner: string | null, name: string): string | undefined;
+    /** Set a value in macOS's defaults for an owner, or take it away with null, as ns-set-resource; kept for this session. */
+    function nsSetResource(owner: string | null, name: string, value: string | null): undefined;
+    /** Where the pointer is on the screen, as ns-mouse-absolute-pixel-position: [x, y], or undefined if not known. */
+    function nsMouseAbsolutePixelPosition(): [x: number, y: number] | undefined;
+    /** Move the pointer on the screen, as ns-set-mouse-absolute-pixel-position. */
+    function nsSetMouseAbsolutePixelPosition(x: number, y: number): undefined;
+    /** The largest request the display takes, as x-server-max-request-size: undefined, as macOS has none. */
+    function xServerMaxRequestSize(terminal?: Value): undefined;
+    /** Who made the display, as x-server-vendor: Apple on macOS. */
+    function xServerVendor(terminal?: Value): string;
+    /** Build the menu bar again, as ns-reset-menu: E8 lays it out at every redisplay. */
+    function nsResetMenu(): undefined;
+    /** A selection's text, as ns-get-selection: CLIPBOARD is the system clipboard, PRIMARY and SECONDARY the editor's own. */
+    function nsGetSelection(selection: string | null, target?: Value, time?: Value, terminal?: Value): string | undefined;
+    /** Own a selection with some text, as ns-own-selection-internal; gives the text. */
+    function nsOwnSelectionInternal(selection: string | null, value: string, frame?: FrameLike | null): string;
+    /** Give up a selection, as ns-disown-selection-internal. */
+    function nsDisownSelectionInternal(selection: string | null, time?: Value, terminal?: Value): undefined;
+    /** Whether the editor owns a selection, PRIMARY by default, as ns-selection-owner-p. */
+    function nsSelectionOwnerP(selection?: string | null, terminal?: Value): boolean;
+    /** Whether a selection, PRIMARY by default, holds anything, as ns-selection-exists-p. */
+    function nsSelectionExistsP(selection?: string | null, terminal?: Value): boolean;
+    /** Start dragging something from a frame to another program, as ns-begin-drag: E8 does not drag, so nothing is dropped and the answer is undefined. */
+    function nsBeginDrag(frame: FrameLike | null, pboard: Value, action?: Value, pixelPosition?: Value, followMouse?: Value, allowSameFrame?: Value): undefined;
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */

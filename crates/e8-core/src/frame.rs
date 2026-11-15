@@ -50,6 +50,28 @@ pub enum FrameRequest {
     Size { frame: FrameId, width: f64, height: f64 },
     /// Put the frame behind the others, as `lower-frame`.
     Lower { frame: FrameId },
+    /// Something for the application as a whole, as macOS does it (ADR 0097).
+    App(AppRequest),
+}
+
+/// What code asks of the application itself on macOS, as nsfns.m's
+/// functions ask AppKit, which the graphical front end carries out there.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AppRequest {
+    /// Hide the whole application, as `(ns-hide-emacs t)`.
+    Hide,
+    /// Show it again, as `(ns-hide-emacs nil)`.
+    Unhide,
+    /// Show it and make it the active application, as `(ns-hide-emacs 'activate)`.
+    Activate,
+    /// Hide the other applications, as `ns-hide-others`.
+    HideOthers,
+    /// Show the About panel, as `ns-emacs-info-panel`.
+    AboutPanel,
+    /// Show the colour panel, as `ns-popup-color-panel`.
+    ColorPanel,
+    /// Show the character palette, as `ns-show-character-palette`.
+    CharacterPalette,
 }
 
 impl Editor {
@@ -237,6 +259,12 @@ impl Editor {
     /// Keeps what a front end has been asked to do, dropping the oldest
     /// where no front end is taking them, as a headless editor's never
     /// does, so a script asking again and again cannot fill memory.
+    /// Asks the front end to do something to the application as a whole,
+    /// as macOS's functions do (ADR 0097).
+    pub fn ask_application(&mut self, request: AppRequest) {
+        self.ask_front_end(FrameRequest::App(request));
+    }
+
     fn ask_front_end(&mut self, request: FrameRequest) {
         const MOST: usize = 64;
         self.frame_requests.push(request);

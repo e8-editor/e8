@@ -655,6 +655,10 @@ impl E8App {
                 e8_core::FrameRequest::Position { frame, .. } => frame,
                 e8_core::FrameRequest::Size { frame, .. } => frame,
                 e8_core::FrameRequest::Lower { frame } => frame,
+                e8_core::FrameRequest::App(request) => {
+                    crate::application::carry_out(request);
+                    continue;
+                }
             };
             let viewport = if frame == self.main_frame { egui::ViewportId::ROOT } else { frame_viewport(frame) };
             let command = match request {
@@ -666,7 +670,7 @@ impl E8App {
                 }
                 // egui can raise a window but not put one behind another,
                 // so a lowered frame is left as it is (ADR 0077).
-                e8_core::FrameRequest::Lower { .. } => continue,
+                e8_core::FrameRequest::Lower { .. } | e8_core::FrameRequest::App(_) => continue,
             };
             ctx.send_viewport_cmd_to(viewport, command);
         }

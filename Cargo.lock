@@ -1615,6 +1615,7 @@ dependencies = [
  "egui_kittest",
  "fontique",
  "gtk",
+ "objc2 0.6.5",
  "objc2-app-kit 0.3.2",
  "serde_json",
  "skrifa",

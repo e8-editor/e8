@@ -42,7 +42,8 @@ wry = { version = "=0.57.1", optional = true }
 gtk = { version = "0.18", optional = true }
 
 [target.'cfg(target_os = "macos")'.dependencies]
-objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSGraphics"] }
+objc2-app-kit = { version = "0.3", default-features = false, features = ["std", "NSGraphics", "NSApplication", "NSResponder", "NSColorPanel", "NSPanel", "NSWindow"] }
+objc2 = "0.6"
 
 [dev-dependencies]
 egui_kittest = { version = "0.37", features = ["wgpu", "snapshot", "eframe"] }
