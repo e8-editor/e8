@@ -169,7 +169,7 @@ natives! {
     #[ts = "(symbol: string, watchFunction: Value): undefined"]
     pub fn removeVariableWatcher(ed, symbol: EditorValue, watch: EditorValue) -> Option<bool> {
         let name = ed.base_variable(&name_of(&symbol)?).into_owned();
-        ed.variable_watchers_mut(&name).retain(|w| *w != watch);
+        ed.remove_variable_watcher(&name, &watch);
         Ok(None)
     }
 
@@ -177,7 +177,7 @@ natives! {
     #[ts = "(symbol: string): Value[]"]
     pub fn getVariableWatchers(ed, symbol: EditorValue) -> Vec<EditorValue> {
         let name = ed.base_variable(&name_of(&symbol)?).into_owned();
-        Ok(ed.variable_watchers_mut(&name).clone())
+        Ok(ed.variable_watchers(&name))
     }
 
     /// Whether a variable has a value, as boundp.

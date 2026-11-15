@@ -415,9 +415,26 @@ impl Editor {
         self.notifying_watchers = false;
     }
 
-    /// The functions called before a variable changes, to add to or take from.
+    /// The functions called before a variable changes, to add to.
     pub fn variable_watchers_mut(&mut self, name: &str) -> &mut Vec<Value> {
         self.variable_watchers.entry(name.to_string()).or_default()
+    }
+
+    /// The functions called before a variable changes.
+    pub fn variable_watchers(&self, name: &str) -> Vec<Value> {
+        self.variable_watchers.get(name).cloned().unwrap_or_default()
+    }
+
+    /// Stops calling a function before a variable changes. A variable
+    /// left with none is forgotten, so variables with no watchers at all
+    /// cost nothing to set again.
+    pub fn remove_variable_watcher(&mut self, name: &str, watcher: &Value) {
+        if let Some(list) = self.variable_watchers.get_mut(name) {
+            list.retain(|w| w != watcher);
+            if list.is_empty() {
+                self.variable_watchers.remove(name);
+            }
+        }
     }
 
     /// Makes a variable buffer-local in every buffer that sets it, as
