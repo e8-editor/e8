@@ -146,6 +146,42 @@ The mechanisms most of Emacs's Lisp is written against are there: buffers with m
 
 The list comes from names, so it undercounts what exists under other names and does not weigh how much each primitive does; redisplay above all is far larger than its count suggests.
 
+## Where the C core work paused
+
+The work on Emacs's C primitives paused on 2026-11-15, with E8 0.5.11. It ran from 2026-11-11 to 15 as ADRs 0069 to 0105 (pull requests 98 to 177), and this section is what a session resuming it needs.
+
+**Where it stands.** All 877 editor primitives have Emacs's name in E8, 164 of the 169 platform ones (CCL's five are left) and 154 of the Lisp language's 427. Every package of the three corpora in [parity/demand.md](parity/demand.md), Emacs's own 49, MELPA's 295 most downloaded and the 77 of one daily configuration, needs no primitive E8 lacks. `main`'s CI, the ports' tests included, passed on the release.
+
+**How it was done**, a loop that can be run again:
+
+1. Measure: `python3 tests/emacs/demand.py report` joins the corpus counts (`counts.json`, made once by `count`) with what E8 has now, by `parity.py`'s matching of names, and ranks the missing primitives and their groups (`tests/emacs/demand-groups.json`) by how many packages need them. `tests/emacs/demand-other-names.json` holds what E8 has under another name.
+2. Take the group at the top, write an ADR for it that follows the Emacs C file it comes from, and carry it out in stages, each a pull request reviewed against that file, with tests and, where behaviour should match, oracle cases.
+3. Measure again in a pull request of its own that updates demand.md and the paragraph above, and take the next group.
+
+Matching by name has a few rules a new function must fit to be counted: camelCase is read as kebab-case and `P` as `-p`; a Lisp name with `--`, `<`, or a single capital letter in its camelCase (`ZOrder`) cannot be spelled that way, so it is defined under its Lisp name with `e8.defun`, as `subr.ts` does for `value<` and `log`.
+
+**What is left.**
+
+- **CCL**, the five platform primitives: they need a port of ccl.el's compiler as well as an interpreter, and nothing in the corpus calls them.
+- **The Lisp language's primitives**: TypeScript stands in for most, and demand.md leaves them out of its ranking, so which of the 273 missing ones matter has not been measured. A resumed effort would start by counting them as the editor's were.
+- **Two `undo-only` oracle gaps** in `tests/emacs/known-gaps.txt`, left deliberately: they depend on Emacs's `undo-equiv-table` losing track after a failed command, and on position entries in its undo list.
+- **What differs from Emacs**, the entries marked "not yet" in [differences.md](differences.md), about 120; ADRs 0069 to 0105 each name what they left out.
+- **What packages still need is Lisp, not C**: with every primitive there, the next step towards running what people use is porting packages (ADR 0059's repositories), led by the most used ones demand.md lists as needing nothing missing.
+
+**Never tried by hand**, only by tests:
+
+- smooth scrolling with a trackpad (ADR 0071);
+- `C-z` minimising the GUI window and the Dock bringing it back (ADR 0073);
+- pointer warps and `track-mouse` in the GUI (ADR 0074);
+- TLS against a real IMAP or IRC server (ADR 0075);
+- the macOS application calls (hiding the app, the colour and font panels, ADR 0097);
+- xwidgets on Linux, which CI only builds (ADR 0089);
+- `tty-no-underline` in a terminal (ADR 0093);
+- `eval-buffer` in the GUI (ADR 0104);
+- Org's today and clock times in the web build.
+
+**Noted along the way and not checked since**: `menu-bar-mode` is off by default, where Emacs shows a menu bar (ADR 0076), a choice to revisit once its effect on the oracle's recorded geometry is checked; E8's reader prints buffers as `#<Buffer(N)>` and dotted pairs as lists, so window states E8 prints do not read back in Emacs; from the Magit port, a file buffer's `default-directory` (e8-magit works around it), transient matching any `--x` value to the `--` infix, and `bookmark.ts` without record functions and handlers, which leaves `magit-bookmark.ts` inert.
+
 ## Tracking
 
 Each milestone gets a parity table in `docs/parity/`: the relevant manual sections, the commands and keys in each, and whether E8 has them. A gap report becomes a row, and an oracle case wherever it can be one.
