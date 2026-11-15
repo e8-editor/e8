@@ -756,17 +756,21 @@ impl Buffer {
     /// Whether a group's edits fit the buffer as it is, taken back in turn,
     /// as one set from code (`buffer-undo-list`) may no longer: undoing it
     /// would otherwise take out text that is not there.
+    ///
+    /// Each must also lie in the accessible text, as primitive-undo
+    /// refuses changes "outside visible portion of buffer": its end moves
+    /// with the edits taken back before, as a narrowing's does.
     pub(super) fn group_fits(&self, index: usize) -> bool {
-        let mut len = self.len();
+        let (min, mut max) = (self.point_min(), self.point_max());
         for edit in self.undo_groups[index].edits.iter().rev() {
             if !matches!(edit.extra, Extra::None) {
                 continue;
             }
             let inserted = edit.inserted.chars().count();
-            if edit.pos + inserted > len {
+            if edit.pos < min || edit.pos + inserted > max {
                 return false;
             }
-            len = len - inserted + edit.deleted.chars().count();
+            max = max - inserted + edit.deleted.chars().count();
         }
         true
     }

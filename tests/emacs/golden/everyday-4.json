@@ -256,6 +256,44 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "undo-outside-narrowing-refused",
+      "input": {
+        "text": "abc\ndef",
+        "point": 0,
+        "keys": "X C-n C-a C-SPC C-e C-x n n C-g C-/",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "Xabc\ndef",
+      "visible": "Xabc\ndef",
+      "point": 8,
+      "mark": 5,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "undo-inside-narrowing",
+      "input": {
+        "text": "abc\ndef",
+        "point": 0,
+        "keys": "C-n C-a Y C-a C-SPC C-e C-x n n C-g C-/",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abc\ndef",
+      "visible": "abc\ndef",
+      "point": 4,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit"
     }
   ]
 }

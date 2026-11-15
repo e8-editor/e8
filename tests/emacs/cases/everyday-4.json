@@ -74,5 +74,15 @@
     "name": "kmacro-c-u-counter-inserts-the-previous",
     "text": "",
     "keys": "C-u 5 <f3> <f3> C-u <f3> <f3> <f4>"
+  },
+  {
+    "name": "undo-outside-narrowing-refused",
+    "text": "abc\ndef",
+    "keys": "X C-n C-a C-SPC C-e C-x n n C-g C-/"
+  },
+  {
+    "name": "undo-inside-narrowing",
+    "text": "abc\ndef",
+    "keys": "C-n C-a Y C-a C-SPC C-e C-x n n C-g C-/"
   }
 ]
