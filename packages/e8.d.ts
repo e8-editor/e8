@@ -9442,6 +9442,10 @@ declare global {
        */
       "e8-mcp-socket": Value;
       /**
+       * Whether the graphical window draws E8's lattice faintly behind the text when it opens, fading it away after a few seconds or at the first key or click. Set it to nil in init.ts to turn it off; inhibit-startup-screen set to t turns it off too.
+       */
+      "e8-startup-lattice": Value;
+      /**
        * The version of E8 that is running, as Emacs's emacs-version: a package's manifest names the oldest it runs on.
        */
       "e8-version": Value;
@@ -10378,6 +10382,10 @@ declare global {
        * Whether to ignore read-only buffers and text: t ignores both, and a list lets through text whose read-only property is one of its values. Bind it with letBind around code that writes into a read-only buffer.
        */
       "inhibit-read-only": Value;
+      /**
+       * Whether to show nothing at startup, as Emacs's inhibit-startup-screen: E8 has no startup screen, so t only turns off the lattice the graphical window draws when it opens (e8-startup-lattice). inhibit-splash-screen and inhibit-startup-message, set to t, do the same.
+       */
+      "inhibit-startup-screen": Value;
       /**
        * Keymap input-decode-map.
        */

@@ -106,6 +106,9 @@ pub struct E8App {
     origins: std::collections::HashMap<FrameId, Pos2>,
     /// xwidgets' web views, put where the frames show them (ADR 0089).
     xwidgets: crate::xwidgets::XwidgetHost,
+    /// The lattice drawn behind the text when the window opens (ADR 0109),
+    /// in a window that asked for it.
+    lattice: Option<crate::lattice::Lattice>,
 }
 
 /// Where the editor runs.
@@ -301,6 +304,7 @@ impl E8App {
             minimised: std::collections::HashMap::new(),
             origins: std::collections::HashMap::new(),
             xwidgets: Default::default(),
+            lattice: None,
         }
     }
 
@@ -341,6 +345,23 @@ impl E8App {
     pub fn silent(mut self) -> E8App {
         self.audible_bell = false;
         self
+    }
+
+    /// The same window drawing E8's lattice faintly behind the text as it
+    /// opens, and fading it away, if the editor wants it once it is set up:
+    /// `e8-startup-lattice` on and `inhibit-startup-screen` off (ADR 0109).
+    /// The application asks for it; tests' windows do not, so it never
+    /// shows in their snapshots unless one asks.
+    pub fn with_startup_lattice(mut self) -> E8App {
+        let (lattice, wanted) = crate::lattice::Lattice::new();
+        self.backend.run(move |editor, _| *wanted.lock().unwrap_or_else(|e| e.into_inner()) = Some(crate::lattice::wanted(editor)));
+        self.lattice = Some(lattice);
+        self
+    }
+
+    /// Whether the lattice drawn at startup still shows, or is yet to.
+    pub fn startup_lattice_showing(&self) -> bool {
+        self.lattice.as_ref().is_some_and(|l| l.showing())
     }
 
     /// The same window drawing under a title bar made transparent, as
@@ -904,7 +925,20 @@ impl E8App {
         // Native web views go in the main window, and only where they sit in it.
         let native = self.xwidgets.embeds() && ctx.viewport_id() == egui::ViewportId::ROOT;
         let mut sink = crate::xwidgets::Sink::new(&description.xwidget_labels, native);
-        draw(ui, &description, &layout, t, focused, &mut sink);
+        // The lattice shows in the main window only, asking for frames while it does.
+        let lattice = match &mut self.lattice {
+            Some(lattice) if frame == self.main_frame => {
+                let look = lattice.frame(ctx.input(|i| i.time), input);
+                if lattice.showing() {
+                    ctx.request_repaint();
+                } else {
+                    self.lattice = None;
+                }
+                look
+            }
+            _ => None,
+        };
+        draw(ui, &description, &layout, t, focused, lattice, &mut sink);
         self.xwidgets.drawn(sink.placements);
         Some(t)
     }
@@ -1318,9 +1352,21 @@ impl Layout {
 }
 
 /// Draws a frame as the core described it, asking the editor nothing.
-fn draw(ui: &Ui, fd: &FrameDescription, layout: &Layout, t: Tokens, focused: bool, xwidgets: &mut crate::xwidgets::Sink) {
+fn draw(
+    ui: &Ui,
+    fd: &FrameDescription,
+    layout: &Layout,
+    t: Tokens,
+    focused: bool,
+    lattice: Option<crate::lattice::Look>,
+    xwidgets: &mut crate::xwidgets::Sink,
+) {
     let painter = ui.painter().clone();
     painter.rect_filled(layout.rect, 0.0, t.bg);
+    // Over the page and under everything else.
+    if let Some(look) = lattice {
+        crate::lattice::paint(&painter, layout.rect, look, t.ink, t.accent);
+    }
     let m = &layout.m;
     let in_minibuffer = fd.minibuffer_selected;
     if let (Some(rect), Some(menu_bar)) = (layout.menu_rect, &fd.menu_bar) {
