@@ -70,6 +70,29 @@ fn a_backward_literal_search_far_from_its_match_is_quick() {
 /// of 8,000 matches through 32 MB is quick, and a match across two windows
 /// is found whole, forward and backward.
 #[test]
+fn a_literal_pattern_kept_from_one_search_folds_case_as_the_next_asks() {
+    // Compiled literal patterns are kept, by pattern and by whether case
+    // folds: the same pattern folded and not, in either order, still differs.
+    let mut ed = Editor::new();
+    ed.buffer_mut().set_text("a Needle and a needle");
+    let exact = e8_core::SearchOptions { regexp: false, backward: false, case_fold: false, bound: None, posix: false };
+    let folded = e8_core::SearchOptions { case_fold: true, ..exact.clone() };
+    for _ in 0..2 {
+        assert_eq!(ed.search("needle", 0, &folded).unwrap().map(|m| m.start), Some(2));
+        assert_eq!(ed.search("needle", 0, &exact).unwrap().map(|m| m.start), Some(15));
+    }
+    for _ in 0..2 {
+        assert_eq!(ed.search("NEEDLE", 0, &exact).unwrap().map(|m| m.start), None);
+        assert_eq!(ed.search("NEEDLE", 0, &folded).unwrap().map(|m| m.start), Some(2));
+    }
+    // More patterns than are kept, and the first again afterwards.
+    for i in 0..600 {
+        assert!(ed.search(&format!("needle{i}"), 0, &exact).unwrap().is_none());
+    }
+    assert_eq!(ed.search("needle", 0, &exact).unwrap().map(|m| m.start), Some(15));
+}
+
+#[test]
 fn literal_searches_copy_only_windows_of_the_text() {
     let mut ed = Editor::new();
     let chunk = format!("{}needle", "x".repeat(4090));

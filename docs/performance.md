@@ -130,6 +130,15 @@ In the bench's Org table, V8 against QuickJS: RET in a paragraph 4.97 against 11
 
 ## What changed
 
+- **Literal searches keep their compiled patterns, 2026-11-15.** A literal search (`e8.search` without `regexp`, `search-forward`) compiled its pattern with the `regex` crate on every call, which was nearly all of a short search's time; patterns are now kept by pattern and folding, up to 512, as `Regexp::cached` keeps Emacs regexps. 5,000 searches in the 41 KB `docs/features.md`, release builds, V8, at a load of 34 to 51, per search:
+
+  | Literal search | Before | After |
+  | --- | ---: | ---: |
+  | within 10 characters | 107–124 µs | 0.7–1.2 µs |
+  | to the end | 116–140 µs | 4.7–7.7 µs |
+  | backward over 2,000 characters | 91–140 µs | 1.9–2.8 µs |
+  | within 10 characters, case folded | 118–160 µs | 0.5–1.1 µs |
+
 - **Flyspell's own work over a region, 2026-11-15.** With every answer from Hunspell already known ([ADR 0108](adr/0108-spell-checking-off-the-editor-thread.md)), `flyspell-buffer` over the 41 KB `docs/features.md` still took 12 s, all in flyspell's per-word work. Three costs, each fixed without changing what is marked (all 390 marks the same, 151 of them misspellings seen elsewhere, in position and face):
   - Every Emacs-regexp search read 8,192 characters into its haystack before trying a match, 35 µs for a `looking-at` that looks at one character. The haystack now reads 64 first and doubles each read up to 8,192: `looking-at` takes 3.5 µs, and a long search reads whole windows as before. Every regexp a script runs pays this, not only flyspell's.
   - Finding a word looked the dictionary's entry up four times, each reading the dictionary lists from the editor; it looks it up once, and flyspell keeps it over a region or a command (`withWordChars` in ispell.ts).
@@ -144,7 +153,7 @@ In the bench's Org table, V8 against QuickJS: RET in a paragraph 4.97 against 11
   | 41 KB, first | 13–18 s | 1.9–4.1 s |
   | 41 KB, answers known | 12.3–12.4 s | 0.7–1.8 s |
 
-  Literal searches (`e8.search` without `regexp`) still compile their pattern each call, about 18 µs, which flyspell now pays once for each place a misspelling is found elsewhere; keeping compiled patterns, as `Regexp::cached` keeps Emacs regexps, would take that away too.
+  Literal searches compiled their pattern on every call, which flyspell then paid once for each place a misspelling is found elsewhere; they keep their compiled patterns since (above).
 
 - **Only what a window shows is fontified, and properties are saved for undo by halving, 2026-11-04.** After an edit, redisplay fontified a window's rows from their first position to their last, which in a folded Org file runs through every hidden subtree to the end of the buffer; it now fontifies each row from its start to the last text it shows, as Emacs's display fontifies only what it shows. In the user's 7,900-line archive.org, folded, redisplay after typing a character went from 400 to 3 ms in the test build. And saving a range's text properties for undo looked at every run in the buffer, so changing properties a line at a time was quadratic: `org-indent-mode` over 35,000 lines went from 10 s to 1.7 s, and it now indents 50 ms at a time by a timer, as Org's agent does in idle time.
 
