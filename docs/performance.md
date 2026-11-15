@@ -174,7 +174,7 @@ In the bench's Org table, V8 against QuickJS: RET in a paragraph 4.97 against 11
 | `C-v` | 1.88 ms | 1.88 ms |
 | `S-TAB` | 14.13 ms | 14.36 ms |
 
-The bench's `memory` test panics on V8 at both commits, dropping isolates in an order V8 refuses; that is the test's own, not either change's.
+The bench's `memory` test panicked on V8 at both commits, dropping its editors' isolates oldest first, which V8 refuses; that was the test's own, and it drops them newest first since pull request 172.
 
 ## What is left
 
