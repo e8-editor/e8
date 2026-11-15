@@ -35,6 +35,26 @@ E8 was built in nine days, 27 October to 4 November 2026, in one long Claude Cod
 - **Fix the fuzzer's seeds before a change that could alter behaviour.** Note how many differences fixed seeds show before (Org: seeds 7 and 11 at 1,000 cases, 7 and 1 differences on 2026-11-03) and check they are the same after.
 - **Port Emacs's Lisp closely**, its names, messages and structure too ([ADR 0013](adr/0013-following-org-closely.md)). Following Org's code is faster than rediscovering its behaviour, and its cache, markers and change hooks turned out to be what E8 needed as well. Reading Emacs, Org and the GPL packages is fine while E8 is GPL; ask before reading the source of anything under another licence ([licensing.md](licensing.md)).
 
+## Porting Emacs's C
+
+What the run of ADRs 0069 to 0105 taught, porting a C file's primitives at a time ([plan.md](plan.md) says where it paused and how to resume):
+
+- **Let demand choose.** Ranking the missing primitives by how many real packages need them ([parity/demand.md](parity/demand.md)) put small accessors over things E8 already had first, and showed that matching every name was reachable: the last tenth was platform code nothing in daily use calls. Measure again after each group, in a pull request of its own.
+- **Follow the C file, stage by stage.** An ADR per group, named after the C file it follows, and a pull request per stage, each reviewed against that file. A stage small enough to review in one sitting is also small enough to fix in one when `main` goes red.
+- **Look for the name before adding a native.** A pub native whose name the prelude already defines (`e8.log` before `logarithm`) fails `public_natives_are_not_defined_again`, and one E8 already had under the same name (`displayLineIsContinuedP`) is a second copy. `grep` `e8.d.ts` and the prelude first.
+- **QuickJS binds at most seven parameters besides the editor.** A native with more compiles on V8 and fails to build on QuickJS; take the trailing optional ones as `Rest<EditorValue>`, as `compareStrings` does.
+- **Judge `make check` by its exit status, never by its last lines.** Echo it (`make check; echo "MAKE EXIT $?"`) and wait on that. The V8 half prints its summary first; a QuickJS build error after it ends the run with a few lines that are easy to misread, and pull request 162 was merged that way and broke `main` until 163.
+- **Tables Emacs keeps per session are per thread in E8**, as the coding priority list is: defined coding systems and charsets, ISO final characters, the local time zone, the random state. An editor belongs to the thread it runs on, and `cargo test` runs tests on parallel threads, which must not see each other's tables.
+- **A subagent can take a disjoint part** of a stage in the same worktree, as process.rs was in ADR 0086, when its brief names the files it may touch. Work on another branch needs a session of its own: a hook stops a session writing into another worktree.
+
+## The port repositories
+
+- **Their CI runs on released E8s, the oldest a package supports and the newest**, not on `main`. A change of behaviour on `main` that a port's tests notice must leave those tests passing on both, until the oldest catches up: accept either result, as the ports' tests did when `C-g` in a keyboard macro stopped ending it (vertico, marginalia, consult), and in e8-magit's parity test mark an exception that only older E8s need with a reason starting `Older E8:`, which is not counted as stale. Remove those once the oldest supported E8 no longer needs them.
+- **Run a port's `make types` too, not only `make test`**: the type check is a separate CI step and caught what the tests did not, e8-magit's pin of e8-with-editor v0.1.0 failing against E8 0.5.9's window and process objects.
+- **A pinned dependency changes by tag.** A fix on a dependency's `main` reaches its dependents only once it is tagged and their `DEPS` name the tag. Pushing tags, and merging, in the port repositories is Mark's; a session prepares the branch and the pull request and asks.
+- **Each push runs a port's CI twice**, for the push and for the pull request. After fixing what a run needed, as a tag that did not exist yet, rerun both, or the pull request still shows the old failure.
+- **E8's `Ports` job runs the ports' `main` against E8's `main`**, and a release waits for it, so a port broken by an E8 change blocks the next release until the port is fixed.
+
 ## Programs E8 talks to
 
 - **Record what the real program sends before designing for it.** For a protocol with someone else's program at the other end, an ACP adapter or a language server, a few lines of Python speaking the protocol over its standard input and output show what it actually does, which the specification does not say: Claude Code's adapter replays a loaded session as whole `user_message_chunk` messages, each followed by its tool calls, already complete, and the reply, all before `session/load` answers, and it lists 136 slash commands in one `available_commands_update`. Design from that, then play the same shapes from the fake (`crates/e8-script/tests/data/fake_acp_agent.py`, which can play a script of its own for each run, as for an agent started again), and keep one ignored live test against the real program.
