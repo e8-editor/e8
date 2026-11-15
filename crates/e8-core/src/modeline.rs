@@ -358,8 +358,9 @@ impl Editor {
             '&' => if b.is_modified() { "*" } else { "-" }.into(),
             // Lines count from the start of the accessible portion.
             'l' => (b.line_of(f.point.min(b.len())) - b.line_of(b.point_min()) + 1).to_string(),
-            'c' => b.column(f.point.min(b.len())).to_string(),
-            'C' => (b.column(f.point.min(b.len())) + 1).to_string(),
+            // The column on the screen, as current-column counts it.
+            'c' => crate::commands::current_column(self, b, f.point.min(b.len())).to_string(),
+            'C' => (crate::commands::current_column(self, b, f.point.min(b.len())) + 1).to_string(),
             'n' => if b.is_narrowed() { " Narrow" } else { "" }.into(),
             'm' => self.variable("mode-name").and_then(|v| v.as_str().map(str::to_string)).unwrap_or_default(),
             'Z' => b.coding_mnemonic(),

@@ -631,7 +631,9 @@ fn scroll_lines(ed: &mut Editor, lines: isize) -> bool {
     let b = ed.window_buffer();
     let goal = match ed.goal_column {
         Some(goal) if continuing => goal,
-        _ => b.column(b.point()) as f32,
+        // A column as next-line keeps it, on the screen, tabs and wide
+        // characters counted, so the two share it.
+        _ => current_column(ed, b, b.point()) as f32,
     };
     ed.goal_column = Some(goal);
     let goal = goal as usize;
@@ -643,11 +645,11 @@ fn scroll_lines(ed: &mut Editor, lines: isize) -> bool {
     let bottom = last_whole_line(ed, b, top);
     let point_row = ed.row_line_in(b, b.line_of(b.point()));
     let target = point_row.clamp(top, bottom);
+    let to = (target != point_row).then(|| move_to_column_on(ed, b, target, goal));
     let b = ed.window_buffer_mut();
     b.top_line = top;
-    if target != point_row {
-        let start = b.line_start(target);
-        b.set_point((start + goal).min(b.line_end(target)));
+    if let Some(to) = to {
+        b.set_point(to);
     }
     true
 }
