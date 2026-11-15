@@ -175,3 +175,26 @@ fn zap_with_a_count_of_zero_kills_nothing() {
     let b = ed.window_buffer();
     assert_eq!((b.slice(0..b.len()), b.point()), ("abxcdx".to_string(), 0));
 }
+
+/// comment-region's prefix argument as comment-region-default-1 reads it,
+/// what Emacs 30 gives in emacs-lisp-mode: none doubles a one-character
+/// starter as comment-add says, N puts N, C-u uncomments, and a negative
+/// number takes levels off; uncommenting what has no comment does nothing.
+#[test]
+fn comment_region_takes_its_prefix_argument_as_emacs_does() {
+    let (mut ed, s) = setup();
+    for (text, prefix, command, expected) in [
+        ("(foo)\n", "", "comment-region", ";; (foo)\n"),
+        ("(foo)\n", "M-1", "comment-region", "; (foo)\n"),
+        ("(foo)\n", "M-3", "comment-region", ";;; (foo)\n"),
+        (";; (foo)\n", "C-u", "comment-region", "(foo)\n"),
+        (";;; (foo)\n", "M-- M-1", "comment-region", ";; (foo)\n"),
+        ("(foo)\n", "", "uncomment-region", "(foo)\n"),
+    ] {
+        s.eval_expression(&mut ed, &format!("(e8.call('emacs-lisp-mode'), e8.deleteRegion(e8.pointMin(), e8.pointMax()), e8.insert({text:?}), 1)")).unwrap();
+        ed.press(&format!("C-x h {prefix} M-x").replace("  ", " ")).unwrap();
+        ed.type_text(&format!("{command}\n"));
+        let b = ed.window_buffer();
+        assert_eq!(b.slice(0..b.len()), expected, "{prefix} {command} on {text:?}: {:?}", ed.echo());
+    }
+}

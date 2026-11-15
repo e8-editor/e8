@@ -140,9 +140,17 @@ function regionLines(beg: number, end: number): [number, number] {
   return [first, last];
 }
 
-/** Comments each line of the region at its least indentation, as comment-region with the indent style. */
-export function commentRegion(begIn: number, endIn: number, arg: number): void {
-  if (arg < 0) return uncommentRegion(begIn, endIn, -arg);
+/**
+ * Comments each line of the region at its least indentation, as
+ * comment-region with the indent style. `arg` is the raw prefix argument:
+ * C-u uncomments, a negative number takes that many levels off, and N
+ * puts N comment starters, where none puts as many as comment-add says
+ * for a one-character starter, as comment-region-default-1 decides.
+ */
+export function commentRegion(begIn: number, endIn: number, arg: e8.PrefixArg): void {
+  if (Array.isArray(arg)) return uncommentRegion(begIn, endIn);
+  const n = arg === null ? 1 : e8.prefixNumericValue(arg);
+  if (n < 0) return uncommentRegion(begIn, endIn, -n);
   // The region without the blank lines around it, as comment-region-default-1 sanitizes it.
   let b = begIn;
   while (b < e8.bufferSize() && " \t\n\r".includes(charAt(b))) b++;
@@ -160,7 +168,8 @@ export function commentRegion(begIn: number, endIn: number, arg: number): void {
     e8.gotoChar(e8.markerPosition(p)!);
     e8.deleteMarker(p);
   }
-  const add = num("comment-add", 0) + arg - 1;
+  const multiChar = commentStart().replace(/[ \t]*$/, "").length !== 1;
+  const add = arg === null && !multiChar ? num("comment-add", 0) : n - 1;
   const cs = padRight(commentStart(), add);
   const ceRaw = commentEnd();
   const ce = ceRaw === "" ? "" : padLeft(ceRaw);
@@ -194,11 +203,9 @@ function uncommentRegion(beg: number, end: number, arg?: number): void {
   const [first, last] = regionLines(beg, end);
   const padding = str("comment-padding") ?? " ";
   const p = e8.makeMarker();
-  let found = false;
   for (let l = last; l >= first; l--) {
     const start = commentOnLine(l);
     if (start === undefined) continue;
-    found = true;
     // The starter, its last character repeated as it may be, as
     // (comment-padright comment-start 're) matches it; with `arg`, that
     // many levels only.
@@ -220,12 +227,12 @@ function uncommentRegion(beg: number, end: number, arg?: number): void {
   }
   e8.gotoChar(e8.markerPosition(p)!);
   e8.deleteMarker(p);
-  if (!found) throw new Error("Can't find any comment");
+  // No comment to take off is no error, as uncomment-region-default-1 searches with noerror.
 }
 
 function commentOrUncommentRegion(beg: number, end: number, arg: e8.PrefixArg): void {
   if (commentOnly(beg, end)) uncommentRegion(beg, end, arg === null ? undefined : e8.prefixNumericValue(arg));
-  else commentRegion(beg, end, arg === null ? 1 : e8.prefixNumericValue(arg));
+  else commentRegion(beg, end, arg);
 }
 
 /** The column for the comment at point, as comment-choose-indent: near comment-column, within the fill column, as the comments around align. */
@@ -375,7 +382,7 @@ e8.defineCommand({
   run: () => {
     barf();
     if (e8.mark() === undefined) e8.userError("The mark is not set now, so there is no region");
-    commentRegion(...region(), e8.prefixNumericValue(e8.prefixArg()));
+    commentRegion(...region(), e8.prefixArg());
   },
 });
 

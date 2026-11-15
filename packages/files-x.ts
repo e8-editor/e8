@@ -65,7 +65,7 @@ function changedMessage(): void {
 function commentLines(beg: number, end: number, fallback: string): void {
   const start = v("comment-start");
   e8.letBind({ "comment-start": typeof start === "string" && start !== "" ? start : fallback }, () => {
-    e8.saveExcursion(() => commentRegion(beg, end, 1));
+    e8.saveExcursion(() => commentRegion(beg, end, null));
   });
 }
 
