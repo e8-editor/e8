@@ -18276,6 +18276,42 @@ declare global {
     function locateFileInternal(filename: string, path: (string | null)[], suffixes?: string[] | null, predicate?: Value): string | undefined;
     /** The suffixes load tries, as get-load-suffixes: E8 loads TypeScript and JavaScript. */
     function getLoadSuffixes(): string[];
+    /** Write a value as Lisp writes it, strings quoted, where printcharfun says, as prin1: a buffer, a marker, a function of each character, or the echo area; gives the value. */
+    function prin1(object: Value, printcharfun?: Value, overrides?: Value): Value;
+    /** Write a value as prin1 does, after a newline and before another, as print; gives the value. */
+    function print(object: Value, printcharfun?: Value): Value;
+    /** Write a newline where printcharfun says, as terpri; with `ensure`, only if a buffer's point is not at a line's start, giving whether one was written. */
+    function terpri(printcharfun?: Value, ensure?: boolean | null): boolean;
+    /** Write one character where printcharfun says, as write-char; gives the character. */
+    function writeChar(char: number, printcharfun?: Value): number;
+    /** Write a character to standard error, as external-debugging-output; gives it. */
+    function externalDebuggingOutput(char: number): number;
+    /** Flush standard output, as flush-standard-output. */
+    function flushStandardOutput(): undefined;
+    /** The quoting style messages use, as text-quoting-style: the variable's, or curve. */
+    function textQuotingStyle(): string;
+    /** Whether something can be documentation, as documentation-stringp: a string or a number. */
+    function documentationStringp(object: Value): boolean;
+    /** A variable's default value outside every let that binds it, as default-toplevel-value. */
+    function defaultToplevelValue(symbol: string): Value;
+    /** Set a variable's default value outside every let that binds it, as set-default-toplevel-value. */
+    function setDefaultToplevelValue(symbol: string, value: Value): undefined;
+    /** Where a variable is bound, as variable-binding-locus: the current buffer if it has its own value, else undefined. */
+    function variableBindingLocus(variable: string): Buffer | undefined;
+    /** Whether a version string sorts before another, numbers in them compared as numbers, as string-version-lessp. */
+    function stringVersionLessp(string1: string, string2: string): boolean;
+    /** How many bytes Emacs keeps a string in, as string-bytes: UTF-8, a raw byte one. */
+    function stringBytes(string: string): number;
+    /** Whether a value is a string with characters past ASCII that are not raw bytes, as multibyte-string-p. */
+    function multibyteStringP(object: Value): boolean;
+    /** A string of characters below 256 as bytes, as string-to-unibyte; any other is an error. */
+    function stringToUnibyte(string: string): string;
+    /** A string as bytes, each character's low eight bits, as string-make-unibyte. */
+    function stringMakeUnibyte(string: string): string;
+    /** A random number, as random: below `limit` when it is a positive number, from a seed when it is a string, reseeded from the time when it is true. */
+    function random(limit?: number | string | true | null): number;
+    /** Whether a value sorts before another, as Emacs 30's value<: numbers, strings and symbols, lists element by element, buffers and markers. */
+    function valueLess(a: Value, b: Value): boolean;
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */

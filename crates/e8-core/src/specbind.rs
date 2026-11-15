@@ -44,6 +44,31 @@ impl Editor {
         id
     }
 
+    /// A variable's default value outside every `let` that binds it, as
+    /// `default-toplevel-value`: what the outermost binding saved, else its
+    /// default value now.
+    pub fn default_toplevel_value(&self, name: &str) -> Option<Value> {
+        let saved = self.specpdl.entries.iter().find_map(|(_, e)| match e {
+            Entry::Default { name: n, old } if n == name => Some(old.clone()),
+            _ => None,
+        });
+        saved.or_else(|| self.default_value(name))
+    }
+
+    /// Sets a variable's default value outside every `let` that binds it,
+    /// as `set-default-toplevel-value`: the value the outermost binding
+    /// restores, else its default value now.
+    pub fn set_default_toplevel_value(&mut self, name: &str, value: Value) {
+        let saved = self.specpdl.entries.iter_mut().find_map(|(_, e)| match e {
+            Entry::Default { name: n, old } if n == name => Some(old),
+            _ => None,
+        });
+        match saved {
+            Some(old) => *old = value,
+            None => self.set_default(name, value),
+        }
+    }
+
     /// Binds a variable for a dynamic extent, as `let` does: where it is
     /// local in the current buffer, there, and otherwise its default
     /// value. Returns the entry to [`unbind`](Editor::unbind) after.
