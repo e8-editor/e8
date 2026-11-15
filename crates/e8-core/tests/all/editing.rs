@@ -29,6 +29,20 @@ fn typing_and_undo_in_steps() {
 }
 
 #[test]
+fn undo_run_from_m_x_again_keeps_going_back() {
+    // As in Emacs, M-x undo after M-x undo continues the run: the
+    // commands typed in the minibuffer between them do not break it.
+    let mut ed = Editor::new();
+    press(&mut ed, "a C-a b C-a c C-a d C-a");
+    assert_eq!(text(&ed), "dcba");
+    for (i, want) in ["cba", "ba", "a"].into_iter().enumerate() {
+        press(&mut ed, "M-x u n d o RET");
+        assert_eq!(text(&ed), want, "after M-x undo {}", i + 1);
+        assert_eq!(ed.echo(), Some("Undo"));
+    }
+}
+
+#[test]
 fn undo_in_a_region_undoes_only_the_changes_inside_it() {
     let mut ed = Editor::new();
     ed.type_text("abc def ghi");

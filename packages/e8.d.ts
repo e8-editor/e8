@@ -4800,6 +4800,12 @@ declare global {
        */
       "org-align-tags": [];
       /**
+       * Break the line past fill-column as Auto Fill does, but only where Org fills: never in a heading, a table, a keyword or a block.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-auto-fill-function": [];
+      /**
        * Write the source blocks whose :tangle header argument names a file into their files. With C-u, only the block at point; with C-u C-u, the blocks that tangle to the same file as it.
        *
        * @param arg raw prefix argument

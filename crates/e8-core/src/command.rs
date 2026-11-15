@@ -166,6 +166,9 @@ pub struct Param {
     pub prompt_fn: Option<PromptFn>,
     /// Works out the input the minibuffer starts with, instead of the kind's.
     pub initial_fn: Option<PromptFn>,
+    /// Works out what empty input stands for, as `completing-read`'s DEF,
+    /// which completion frameworks such as vertico list first.
+    pub default_fn: Option<PromptFn>,
     /// Works out the names to complete against, as `completing-read`'s
     /// collection, instead of the kind's.
     pub collection_fn: Option<CollectionFn>,
@@ -354,6 +357,7 @@ impl Command {
             prompt: prompt.to_string(),
             prompt_fn: None,
             initial_fn: None,
+            default_fn: None,
             collection_fn: None,
             require_match: false,
             history: None,
@@ -375,6 +379,17 @@ impl Command {
     pub fn initial_with(mut self, initial: impl Fn(&mut Editor, &[Arg]) -> Result<String> + 'static) -> Command {
         if let Some(param) = self.params.last_mut() {
             param.initial_fn = Some(PromptFn(Rc::new(initial)));
+        }
+        self
+    }
+
+    /// Gives the last parameter added the default its prompt offers,
+    /// worked out from the arguments read before it, as the DEF argument
+    /// of Emacs's `read-buffer` and `completing-read`: what empty input
+    /// stands for. An empty string is no default.
+    pub fn default_with(mut self, default: impl Fn(&mut Editor, &[Arg]) -> Result<String> + 'static) -> Command {
+        if let Some(param) = self.params.last_mut() {
+            param.default_fn = Some(PromptFn(Rc::new(default)));
         }
         self
     }

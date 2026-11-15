@@ -1519,7 +1519,8 @@ fn files_and_buffers(ed: &mut Editor) {
                 Some(other) => format!("Switch to buffer (default {other}): "),
                 None => "Switch to buffer: ".to_string(),
             })
-        }),
+        })
+        .default_with(|ed, _| Ok(ed.other_buffer().map(str::to_string).unwrap_or_default())),
     );
     ed.define_command(
         Command::new(
@@ -1569,7 +1570,8 @@ fn files_and_buffers(ed: &mut Editor) {
             },
         )
         .param("buffer", ParamKind::Buffer, "Kill buffer: ")
-        .prompt_with(|ed, _| Ok(format!("Kill buffer (default {}): ", ed.window_buffer().name))),
+        .prompt_with(|ed, _| Ok(format!("Kill buffer (default {}): ", ed.window_buffer().name)))
+        .default_with(|ed, _| Ok(ed.window_buffer().name.clone())),
     );
     ed.define_command(
         Command::new(

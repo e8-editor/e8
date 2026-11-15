@@ -13,6 +13,7 @@ import {
   nextSameOrHigher,
   subtreeEnd,
 } from "org";
+import { elementAt } from "org-element";
 import { DRAWER_RE, ITEM_RE } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
 import { charCount, escapeRegExp } from "subr";
@@ -603,6 +604,47 @@ function hideAllDrawers(): void {
   }
 }
 
+/**
+ * Folds subtrees as their VISIBILITY properties say, after the startup
+ * folding, as org-cycle-set-visibility-according-to-property does:
+ * folded, children (the entry and its children's headings), content (every
+ * heading under it) or all, in order, so one inside a subtree another
+ * showed has its say after it. One outside a property drawer passes over
+ * the rest of its entry.
+ */
+function visibilityFromProperties(): void {
+  const lines = e8.matchingLines("^[ \t]*:VISIBILITY:[ \t]+[^ \t]", { caseFold: true });
+  if (lines.length === 0) return;
+  const all = headings();
+  let skipTo = -1;
+  for (const [line, , text] of lines) {
+    const pos = e8.lineStart(line);
+    if (pos < skipTo) continue;
+    const i = headingIndex(all, line);
+    if (i === undefined) continue;
+    if (elementAt(pos)?.type !== "node-property") {
+      skipTo = entryEnd(all, i);
+      continue;
+    }
+    const state = /:VISIBILITY:[ \t]+(.*?)[ \t]*$/i.exec(text)?.[1];
+    const end = subtreeEnd(all, i);
+    flag(all[i].end, end, true);
+    if (state === "children") {
+      showEntry(all, i);
+      showChildren(all, i);
+    } else if (state === "content") {
+      flag(Math.max(0, all[i].start - 1), end, false);
+      let last = end;
+      for (let k = (nextSameOrHigher(all, i) ? all.indexOf(nextSameOrHigher(all, i)!) : all.length) - 1; k >= i; k--) {
+        flag(all[k].end, last, true);
+        last = Math.max(0, all[k].start - 1);
+      }
+    } else if (state === "all" || state === "showall") {
+      flag(Math.max(0, all[i].start - 1), end, false);
+    }
+  }
+}
+
 /** Folds the buffer as org-startup-folded or a #+STARTUP: line says. */
 export function startupVisibility(): void {
   let how = String(e8.variable("org-startup-folded") ?? "showeverything");
@@ -616,6 +658,7 @@ export function startupVisibility(): void {
   if (how === "overview" || how === "fold") overview();
   else if (how === "content") contents();
   else if (/^show[2-5]levels$/.test(how)) showLevels(Number(how[4]));
+  visibilityFromProperties();
   hideAllDrawers();
   showEmptyLines("t");
 }

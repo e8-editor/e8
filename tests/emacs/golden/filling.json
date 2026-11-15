@@ -1068,6 +1068,156 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "auto-fill-org-leaves-a-heading-whole",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "* SPC t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "* the quick brown fox jumps over the lazy dog and keeps running ",
+      "visible": "* the quick brown fox jumps over the lazy dog and keeps running ",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-org-keeps-a-paragraphs-indentation",
+      "input": {
+        "text": "* Heading\n  ",
+        "point": 12,
+        "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "* Heading\n  the quick brown\n  fox jumps over the\n  lazy dog and keeps\n  running ",
+      "visible": "* Heading\n  the quick brown\n  fox jumps over the\n  lazy dog and keeps\n  running ",
+      "point": 80,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-org-lines-up-under-an-items-text",
+      "input": {
+        "text": "* Heading\n- ",
+        "point": 12,
+        "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "* Heading\n- the quick brown\n  fox jumps over the\n  lazy dog and keeps\n  running ",
+      "visible": "* Heading\n- the quick brown\n  fox jumps over the\n  lazy dog and keeps\n  running ",
+      "point": 80,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-org-leaves-a-table-row-whole",
+      "input": {
+        "text": "| ",
+        "point": 2,
+        "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "| the quick brown fox jumps over the lazy dog and keeps running ",
+      "visible": "| the quick brown fox jumps over the lazy dog and keeps running ",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-org-leaves-a-keyword-whole",
+      "input": {
+        "text": "#+title: ",
+        "point": 9,
+        "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "#+title: the quick brown fox jumps over the lazy dog and keeps running ",
+      "visible": "#+title: the quick brown fox jumps over the lazy dog and keeps running ",
+      "point": 71,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-org-goes-on-with-a-comment",
+      "input": {
+        "text": "# ",
+        "point": 2,
+        "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "# the quick brown\n# fox jumps over the\n# lazy dog and keeps\n# running ",
+      "visible": "# the quick brown\n# fox jumps over the\n# lazy dog and keeps\n# running ",
+      "point": 70,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

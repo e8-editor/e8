@@ -420,5 +420,82 @@
   "vars": {
    "fill-column": 27
   }
+ },
+ {
+  "name": "auto-fill-org-leaves-a-heading-whole",
+  "text": "",
+  "keys": "* SPC t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "auto-fill-org-keeps-a-paragraphs-indentation",
+  "text": "* Heading\n  ",
+  "point": 12,
+  "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "auto-fill-org-lines-up-under-an-items-text",
+  "text": "* Heading\n- ",
+  "point": 12,
+  "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "auto-fill-org-leaves-a-table-row-whole",
+  "text": "| ",
+  "point": 2,
+  "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "auto-fill-org-leaves-a-keyword-whole",
+  "text": "#+title: ",
+  "point": 9,
+  "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "auto-fill-org-goes-on-with-a-comment",
+  "text": "# ",
+  "point": 2,
+  "keys": "t h e SPC q u i c k SPC b r o w n SPC f o x SPC j u m p s SPC o v e r SPC t h e SPC l a z y SPC d o g SPC a n d SPC k e e p s SPC r u n n i n g SPC",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "vars": {
+   "fill-column": 20
+  }
  }
 ]

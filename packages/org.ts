@@ -97,7 +97,9 @@ import {
   orgRegionActive,
   placeMarkers,
 } from "org-macs";
+import { fillContextPrefix } from "fill";
 import { defineGuide } from "help-guide";
+import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
 import { allMatches, charCount, escapeRegExp, forwardLine, truthy } from "subr";
@@ -1687,6 +1689,59 @@ function listBodyColumn(pos: number): number {
   const m = /^[ \t]*(\S+)/.exec(text);
   return m ? e8.stringWidth(m[0].replace(/\t/g, "        ")) + 1 : 0;
 }
+
+// Filling
+
+/**
+ * The prefix the line at point takes when it is filled, or undefined
+ * where Org fills nothing, as org-adaptive-fill-function: headings,
+ * tables, keywords, drawers and blocks other than comment blocks are
+ * never filled; paragraphs keep their indentation, or line up under an
+ * item's text, comments go on as comments.
+ */
+function adaptiveFillPrefix(): string | undefined {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const line = lineAt();
+    if (parseHeading(line) !== undefined) return undefined;
+    const p = e8.lineStart(line);
+    const el = elementAt(p);
+    if (el === undefined) return undefined;
+    const indentation = (l: number) => /^[ \t]*/.exec(e8.lineText(l))![0];
+    switch (el.type) {
+      case "comment":
+        return indentation(line) + "# ";
+      case "item":
+      case "plain-list":
+        return " ".repeat(listBodyColumn(el.begin));
+      case "paragraph": {
+        if (el.parent?.type === "item") return " ".repeat(listBodyColumn(el.parent.begin));
+        const context = typeof e8.variable("adaptive-fill-regexp") === "string" ? fillContextPrefix(el.begin, el.end) : undefined;
+        return context ?? indentation(line);
+      }
+      case "comment-block": {
+        // Only its contents, between the #+BEGIN and #+END lines.
+        if (line <= lineAt(el.begin) || line >= lineAt(endBeforeBlank(el))) return undefined;
+        return indentation(line);
+      }
+      default:
+        return undefined;
+    }
+  });
+}
+
+e8.defineCommand({
+  name: "org-auto-fill-function",
+  doc: "Break the line past fill-column as Auto Fill does, but only where Org fills: never in a heading, a table, a keyword or a block.",
+  run: () => {
+    const fc = e8.variable("fill-column");
+    if (typeof fc !== "number" || e8.currentColumn() <= fc) return;
+    const prefix = adaptiveFillPrefix();
+    if (prefix === undefined) return;
+    // An empty prefix is kept as it is rather than worked out again.
+    e8.letBind({ "fill-prefix": prefix, "adaptive-fill-mode": prefix !== "" ? true : null }, () => e8.call("do-auto-fill"));
+  },
+});
 
 const GREATER_ELEMENTS = ["center-block", "drawer", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
 
@@ -4720,15 +4775,8 @@ e8.defineCommand({
       if (e.length === 1) text += `\n${String(e[0])}\n${"-".repeat(String(e[0]).length)}\n`;
       else text += `${String(e[0]).padEnd(4)}${Array.isArray(e[1]) ? `(${e[1].map(String).join(" ")})` : String(e[1])}\n`;
     }
-    e8.getBufferCreate("*Help*");
-    e8.withCurrentBuffer("*Help*", () => {
-      e8.letBind({ "inhibit-read-only": true }, () => {
-        e8.deleteRegion(0, e8.bufferSize());
-        e8.insert(text);
-      });
-      e8.gotoChar(0);
-    });
-    e8.call("display-buffer", "*Help*");
+    // In help-mode, as with-output-to-temp-buffer shows it, even in a *Help* made afresh.
+    withHelpWindow(() => e8.insert(text));
   },
 });
 
@@ -5973,6 +6021,9 @@ e8.defineMajorMode({
     // C-M-\ indents the region as Org does, as org-mode sets it.
     e8.makeLocalVariable("indent-region-function");
     e8.setVariable("indent-region-function", "org-indent-region");
+    // Auto Fill breaks lines only where Org fills them, as org-setup-filling sets it.
+    e8.makeLocalVariable("normal-auto-fill-function");
+    e8.setVariable("normal-auto-fill-function", "org-auto-fill-function");
     e8.addHook("jit-lock-functions", fontify, { local: true });
     e8.addHook("after-change-functions", foldsAfterChange, { local: true });
     e8.addHook("after-change-functions", headingsAfterChange, { local: true });

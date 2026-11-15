@@ -897,6 +897,132 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "startup-overview-visibility-children",
+      "input": {
+        "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: children\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: children\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+      "visible": "#+STARTUP: overview\n* One\n:PROPERTIES:\nbody\n** Sub\n** Sub two\n* Two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "startup-overview-visibility-content",
+      "input": {
+        "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: content\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: content\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+      "visible": "#+STARTUP: overview\n* One\n** Sub\n*** Deep\n** Sub two\n* Two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "startup-overview-visibility-all",
+      "input": {
+        "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: all\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: all\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+      "visible": "#+STARTUP: overview\n* One\n:PROPERTIES:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "startup-content-visibility-folded",
+      "input": {
+        "text": "#+STARTUP: content\n* One\n:PROPERTIES:\n:VISIBILITY: folded\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: content\n* One\n:PROPERTIES:\n:VISIBILITY: folded\n:END:\nbody\n** Sub\ntext\n*** Deep\ndeep\n** Sub two\n* Two\n** Hidden\n",
+      "visible": "#+STARTUP: content\n* One\n* Two\n** Hidden\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "startup-overview-visibility-inside-a-shown-subtree-has-its-say",
+      "input": {
+        "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n** Sub\n:PROPERTIES:\n:VISIBILITY: all\n:END:\ntext\n*** Deep\n* Two\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n** Shown\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: overview\n* One\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n** Sub\n:PROPERTIES:\n:VISIBILITY: all\n:END:\ntext\n*** Deep\n* Two\n:PROPERTIES:\n:VISIBILITY: children\n:END:\n** Shown\n",
+      "visible": "#+STARTUP: overview\n* One\n:PROPERTIES:\n** Sub\n:PROPERTIES:\ntext\n*** Deep\n* Two\n:PROPERTIES:\n** Shown\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "startup-overview-visibility-outside-a-drawer-counts-for-nothing",
+      "input": {
+        "text": "#+STARTUP: overview\n* One\n:VISIBILITY: children\n** Sub\n",
+        "point": 0,
+        "keys": "C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: overview\n* One\n:VISIBILITY: children\n** Sub\n",
+      "visible": "#+STARTUP: overview\n* One\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }
