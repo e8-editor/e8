@@ -51,6 +51,7 @@ mod charsetdefs;
 mod nsfns;
 mod cfns;
 mod ctime;
+mod cjson;
 mod text;
 mod treesit;
 pub(crate) mod variables;
@@ -433,6 +434,7 @@ const TABLES: &[&[Native]] = &[
     nsfns::TABLE,
     cfns::TABLE,
     ctime::TABLE,
+    cjson::TABLE,
     xwidget::TABLE,
 ];
 
@@ -466,6 +468,7 @@ pub(crate) fn install<'js>(ctx: &rquickjs::Ctx<'js>, native: &rquickjs::Object<'
     nsfns::install(ctx, native, api)?;
     cfns::install(ctx, native, api)?;
     ctime::install(ctx, native, api)?;
+    cjson::install(ctx, native, api)?;
     xwidget::install(ctx, native, api)?;
     Ok(())
 }
@@ -495,6 +498,7 @@ pub(crate) fn install<'s>(scope: &mut v8::PinScope<'s, '_>, native: v8::Local<'s
     nsfns::install(scope, native, api);
     cfns::install(scope, native, api);
     ctime::install(scope, native, api);
+    cjson::install(scope, native, api);
     xwidget::install(scope, native, api);
 }
 

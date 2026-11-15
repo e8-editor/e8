@@ -93,6 +93,7 @@ mod mark_marker;
 mod ns_functions;
 mod fns_strings;
 mod time_functions;
+mod json_functions;
 mod subr;
 mod symbols;
 mod syntax_tables;

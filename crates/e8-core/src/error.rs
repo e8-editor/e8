@@ -25,6 +25,15 @@ const ERRORS: &[(&str, &str)] = &[
     // treesit.c's, each a `treesit-error`; Emacs 30 leaves
     // `treesit-predicate-not-found` undefined, which E8 makes one too.
     // sqlite.c's, as Emacs defines them.
+    // json.c's, as Emacs defines them (ADR 0100).
+    ("json-error", "error"),
+    ("json-parse-error", "json-error"),
+    ("json-end-of-file", "json-parse-error"),
+    ("json-trailing-content", "json-parse-error"),
+    ("json-escape-sequence-error", "json-parse-error"),
+    ("json-object-too-deep", "json-error"),
+    ("json-utf8-decode-error", "json-error"),
+    ("json-invalid-surrogate-error", "json-error"),
     ("sqlite-error", "error"),
     ("sqlite-locked-error", "sqlite-error"),
     ("treesit-error", "error"),
