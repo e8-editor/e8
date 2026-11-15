@@ -38,11 +38,28 @@ pub struct Match {
     pub groups: Vec<Option<(usize, usize)>>,
 }
 
-/// Compiles a literal search pattern.
-fn compile_literal(pattern: &str, case_fold: bool) -> Result<Regex> {
+/// Compiles a literal search pattern, once for each pattern and folding,
+/// as [`Regexp::cached`] keeps Emacs regexps: compiling took nearly all of
+/// a short search's time, some 100 µs, as flyspell's searches for a word
+/// elsewhere and every package's `e8.search` paid on each call.
+fn compile_literal(pattern: &str, case_fold: bool) -> Result<std::rc::Rc<Regex>> {
+    thread_local! {
+        static CACHE: std::cell::RefCell<std::collections::HashMap<(String, bool), std::rc::Rc<Regex>>> = Default::default();
+    }
+    let key = (pattern.to_string(), case_fold);
+    if let Some(re) = CACHE.with_borrow(|c| c.get(&key).cloned()) {
+        return Ok(re);
+    }
     let source = regex::escape(pattern);
     let source = if case_fold { format!("(?i){source}") } else { source };
-    Regex::new(&source).map_err(|e| Error::signal("invalid-regexp", format!("Invalid regexp: {e}"), Vec::new()))
+    let re = std::rc::Rc::new(Regex::new(&source).map_err(|e| Error::signal("invalid-regexp", format!("Invalid regexp: {e}"), Vec::new()))?);
+    CACHE.with_borrow_mut(|c| {
+        if c.len() >= 512 {
+            c.clear();
+        }
+        c.insert(key, re.clone());
+    });
+    Ok(re)
 }
 
 /// A buffer as a regexp sees it: its accessible portion, its point, and

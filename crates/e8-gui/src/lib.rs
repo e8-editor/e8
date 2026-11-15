@@ -7,6 +7,7 @@ pub mod clipboard;
 mod fringe;
 mod image;
 pub mod keys;
+mod lattice;
 pub mod metrics;
 pub mod modeline;
 #[cfg(unix)]

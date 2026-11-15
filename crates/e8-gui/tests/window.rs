@@ -140,6 +140,107 @@ fn example_theme() {
     harness(ed, Theme::Dark).snapshot("example_theme");
 }
 
+/// A window that asked for the lattice at startup, as the application's
+/// does, with frames a quarter of a second apart, not yet stepped.
+fn harness_with_lattice(editor: Editor, theme: Theme) -> Harness<'static, E8App> {
+    Harness::builder().with_size(vec2(640.0, 360.0)).with_theme(theme).with_step_dt(0.25).build_eframe(move |cc| {
+        e8_gui::theme::install_fonts(&cc.egui_ctx, false);
+        E8App::new(editor).silent().with_startup_lattice()
+    })
+}
+
+/// A screenful of prose, to judge text over the lattice by.
+fn prose() -> Editor {
+    let mut ed = Editor::new();
+    ed.type_text(
+        "The lattice at startup\n\
+         \n\
+         When the window opens, the guided field is drawn faintly behind the\n\
+         text: its lines and dots in the page's ink, its path in the accent,\n\
+         drawing in from left to right. It holds for a moment and then fades\n\
+         away, lingering towards the end, and is gone within six seconds.\n\
+         \n\
+         The first key or click fades it at once, so it is never in the way\n\
+         of work. Set e8-startup-lattice to nil, or inhibit-startup-screen to\n\
+         t, in init.ts to turn it off.\n\
+         \n\
+         \tfn main() { println!(\"An editor that works the way Emacs works.\"); }\n",
+    );
+    ed.press("M-< C-n C-n").unwrap();
+    ed
+}
+
+/// Steps a window `seconds` on from its first frame, which starts the lattice.
+fn step_for(harness: &mut Harness<'static, E8App>, seconds: f32) {
+    harness.step();
+    for _ in 0..(seconds / 0.25).round() as usize {
+        harness.step();
+    }
+}
+
+/// The lattice at full strength, two seconds in: its path drawn in, nothing
+/// faded yet, under the text.
+#[test]
+fn startup_lattice_dark() {
+    let mut harness = harness_with_lattice(prose(), Theme::Dark);
+    step_for(&mut harness, 2.0);
+    assert!(harness.state().startup_lattice_showing());
+    harness.snapshot("startup_lattice_dark");
+}
+
+#[test]
+fn startup_lattice_light() {
+    let mut harness = harness_with_lattice(prose(), Theme::Light);
+    step_for(&mut harness, 2.0);
+    harness.snapshot("startup_lattice_light");
+}
+
+/// Once its time is up the lattice is gone, the window looks as one that
+/// never had it, and asks for no more frames than that one does.
+#[test]
+fn startup_lattice_goes_and_the_window_rests() {
+    let mut plain = harness(sample(), Theme::Dark);
+    plain.step();
+    let resting = plain.output().viewport_output[&egui::ViewportId::ROOT].repaint_delay;
+
+    let mut harness = harness_with_lattice(sample(), Theme::Dark);
+    harness.step();
+    assert!(harness.state().startup_lattice_showing());
+    assert_eq!(harness.output().viewport_output[&egui::ViewportId::ROOT].repaint_delay, std::time::Duration::ZERO);
+    step_for(&mut harness, 6.25);
+    assert!(!harness.state().startup_lattice_showing());
+    harness.step();
+    assert_eq!(harness.output().viewport_output[&egui::ViewportId::ROOT].repaint_delay, resting);
+    harness.snapshot("buffer_dark");
+}
+
+/// The first key fades the lattice within 400 ms.
+#[test]
+fn a_key_dismisses_the_startup_lattice() {
+    let mut harness = harness_with_lattice(sample(), Theme::Dark);
+    step_for(&mut harness, 1.0);
+    assert!(harness.state().startup_lattice_showing());
+    // The press and the release are a frame each, 0.25 s apart.
+    harness.key_press(Key::ArrowRight);
+    harness.step();
+    assert!(harness.state().startup_lattice_showing(), "it fades rather than vanishing");
+    harness.step();
+    assert!(!harness.state().startup_lattice_showing());
+}
+
+/// `inhibit-startup-screen`, as in Emacs, or `e8-startup-lattice` set to
+/// nil, keeps it from showing at all.
+#[test]
+fn the_startup_lattice_can_be_turned_off() {
+    for (name, value) in [("inhibit-startup-screen", true), ("e8-startup-lattice", false)] {
+        let mut ed = sample();
+        ed.set_variable(name, e8_core::Value::Bool(value));
+        let mut harness = harness_with_lattice(ed, Theme::Dark);
+        harness.step();
+        assert!(!harness.state().startup_lattice_showing(), "{name}");
+    }
+}
+
 /// A macOS window with its title bar made transparent: the frame drawn
 /// below it, and the bar in the theme's background, as Emacs's frames with
 /// `ns-transparent-titlebar` show it.
