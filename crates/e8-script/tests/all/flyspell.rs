@@ -16,8 +16,10 @@ fn setup(text: &str) -> Option<(Editor, Scripting)> {
     Some((ed, scripting))
 }
 
-/// The words flyspell underlines, and with which face.
+/// The words flyspell underlines, and with which face, once the checker's
+/// answers have come, as the command loop takes them in while it waits.
 fn marked(ed: &mut Editor, scripting: &Scripting) -> String {
+    while scripting.eval_expression(ed, "e8.acceptProcessOutput(undefined, 0.3)").unwrap() == "true" {}
     scripting
         .eval_expression(
             ed,

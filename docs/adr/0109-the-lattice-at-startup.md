@@ -1,4 +1,4 @@
-# 0108. The lattice at startup
+# 0109. The lattice at startup
 
 Status: accepted · 2026-11-15
 

@@ -28,6 +28,7 @@ This replaces ADR 0004's ArtCraft look for colour; egui stays, and so do the har
 ## Consequences
 
 - **One source per image.** A change to a banner's wording is an edit to its SVG and a render; nothing is drawn by hand twice.
+- **The ports' banner.** The repositories of package ports in `e8-editor` open their READMEs with `banner-ports-dark` and `banner-ports-light`, the compact banner with "Package ports" for its words, linked by their `raw.githubusercontent.com` URLs on `main`, so a change here reaches every one; `homebrew-tap` and `nix`, which are not ports, take `banner-compact`. Under it each port says whose package it ports, and that the design and the original code are theirs.
 - **Fonts in the renders.** The banners' text is Helvetica, so the PNGs are rendered on a Mac; elsewhere resvg falls back to Arial or another sans.
 - **Kept out of the repository:** the kit's `index.html` guide, `gallery.html`, `examples/`, `style.css`, `demo.js`, `04-backgrounds` and `05-elements`. They can be taken from the kit if something comes to need them.
 - **Steps outside the repository:** the organisation's avatar and each repository's social preview are set in GitHub's settings pages, by hand.

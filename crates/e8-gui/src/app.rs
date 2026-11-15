@@ -106,7 +106,7 @@ pub struct E8App {
     origins: std::collections::HashMap<FrameId, Pos2>,
     /// xwidgets' web views, put where the frames show them (ADR 0089).
     xwidgets: crate::xwidgets::XwidgetHost,
-    /// The lattice drawn behind the text when the window opens (ADR 0108),
+    /// The lattice drawn behind the text when the window opens (ADR 0109),
     /// in a window that asked for it.
     lattice: Option<crate::lattice::Lattice>,
 }
@@ -347,7 +347,7 @@ impl E8App {
 
     /// The same window drawing E8's lattice faintly behind the text as it
     /// opens, and fading it away, if the editor wants it once it is set up:
-    /// `e8-startup-lattice` on and `inhibit-startup-screen` off (ADR 0108).
+    /// `e8-startup-lattice` on and `inhibit-startup-screen` off (ADR 0109).
     /// The application asks for it; tests' windows do not, so it never
     /// shows in their snapshots unless one asks.
     pub fn with_startup_lattice(mut self) -> E8App {

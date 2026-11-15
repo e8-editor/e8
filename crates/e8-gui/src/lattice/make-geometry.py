@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Writes geometry.rs, the guided field's coordinates, from the drawing in
 docs/assets/lattices/guided-field.svg (ADR 0106), for the GUI to draw it
-at startup (ADR 0108).
+at startup (ADR 0109).
 
 The SVG is the drawing as the brand ships it, traced from
 docs/assets/lattices/source/guided-reference-trace.json: its lines, each a

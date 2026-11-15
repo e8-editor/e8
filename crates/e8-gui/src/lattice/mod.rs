@@ -1,4 +1,4 @@
-//! The lattice at startup (ADR 0108): when the window opens, E8's guided
+//! The lattice at startup (ADR 0109): when the window opens, E8's guided
 //! field is drawn faintly behind the text, its path drawing in from left to
 //! right, and then fades away, or at once at the first key or click.
 //!
