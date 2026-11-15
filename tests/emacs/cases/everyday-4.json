@@ -84,5 +84,24 @@
     "name": "undo-inside-narrowing",
     "text": "abc\ndef",
     "keys": "C-n C-a Y C-a C-SPC C-e C-x n n C-g C-/"
+  },
+  {
+    "name": "undo-after-region-delete-and-insert",
+    "text": "abc",
+    "keys": "C-x h DEL x C-/"
+  },
+  {
+    "name": "undo-after-failed-delete-and-insert",
+    "text": "abc",
+    "keys": "C-x h DEL DEL x C-/"
+  },
+  {
+    "name": "undo-after-failed-delete-and-pair",
+    "text": "a\"\"]{(\"\"",
+    "point": 6,
+    "keys": "C-x h DEL DEL ] C-/",
+    "modes": [
+      "electric-pair-mode"
+    ]
   }
 ]

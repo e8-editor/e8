@@ -294,6 +294,65 @@
       "kill_ring": [],
       "modified": false,
       "error": "Quit"
+    },
+    {
+      "name": "undo-after-region-delete-and-insert",
+      "input": {
+        "text": "abc",
+        "point": 0,
+        "keys": "C-x h DEL x C-/",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "undo-after-failed-delete-and-insert",
+      "input": {
+        "text": "abc",
+        "point": 0,
+        "keys": "C-x h DEL DEL x C-/",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Beginning of buffer"
+    },
+    {
+      "name": "undo-after-failed-delete-and-pair",
+      "input": {
+        "text": "a\"\"]{(\"\"",
+        "point": 6,
+        "keys": "C-x h DEL DEL ] C-/",
+        "modes": [
+          "electric-pair-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Beginning of buffer"
     }
   ]
 }

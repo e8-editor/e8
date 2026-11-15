@@ -1392,6 +1392,9 @@ fn delete_active_region(ed: &mut Editor, n: i64) -> Result<bool> {
     };
     let deleted = ed.buffer().substring(region.clone());
     ed.delete_region(region.start, region.end)?;
+    // Deleting the region is no run of deletions to join, as Emacs's
+    // delete-backward-char deletes it without undo-auto-amalgamate.
+    ed.undo_auto_stop_amalgamating();
     if setting.as_str() == Some("kill") {
         ed.kill(deleted, false);
         ed.set_this_command("kill-region");
