@@ -2630,6 +2630,12 @@ declare global {
        */
       "enlarge-window-horizontally": [delta?: number];
       /**
+       * Run the TypeScript in the buffer, as Emacs's eval-buffer runs Lisp.
+       *
+       * The `e8` API is available, as in init.ts; a buffer with `import` or `export` runs as a module.
+       */
+      "eval-buffer": [];
+      /**
        * Evaluate a TypeScript expression and show its value.
        *
        * The `e8` API is available, as in init.ts.
@@ -2637,6 +2643,15 @@ declare global {
        * @param expression text
        */
       "eval-expression": [expression: string];
+      /**
+       * Run the TypeScript in the region, as Emacs's eval-region runs Lisp.
+       *
+       * The `e8` API is available, as in init.ts; text with `import` or `export` runs as a module.
+       *
+       * @param start region start
+       * @param end region end
+       */
+      "eval-region": [start: number, end: number];
       /**
        * Put the mark where point is and point where the mark was.
        *
@@ -18942,6 +18957,9 @@ declare global {
     function readEvent(prompt?: string): string;
     function readEvent(prompt: string | undefined, options: { seconds: number }): string | undefined;
     /** Read a character, as Emacs's read-char: anything else, such as <f1>, is an error. With `seconds`, undefined if none comes in that long. */
+    /** Read a character, as read-char-exclusive: other events, such as <f1>, are read and passed over. With `seconds`, undefined if none comes in that long. */
+    function readCharExclusive(prompt?: string): string;
+    function readCharExclusive(prompt: string | undefined, options: { seconds: number }): string | undefined;
     function readChar(prompt?: string): string;
     function readChar(prompt: string | undefined, options: { seconds: number }): string | undefined;
     /**
