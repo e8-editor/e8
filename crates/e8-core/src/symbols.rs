@@ -279,6 +279,22 @@ impl Editor {
     }
 
     /// The names that run commands, aliases included, sorted, as M-x completes them.
+    /// Whether a symbol by this name is interned, as `intern-soft` asks.
+    pub fn symbol_interned(&self, name: &str) -> bool {
+        self.symbols.contains_key(name)
+    }
+
+    /// Every interned symbol's name, as `mapatoms` walks them.
+    pub fn symbol_names(&self) -> Vec<String> {
+        self.symbols.keys().cloned().collect()
+    }
+
+    /// Takes a symbol out of the table, as `unintern`; whether it was there.
+    pub fn unintern(&mut self, name: &str) -> bool {
+        self.variable_aliases.remove(name);
+        self.symbols.remove(name).is_some()
+    }
+
     pub fn command_names(&self) -> impl Iterator<Item = &str> {
         self.symbols.keys().map(String::as_str).filter(|name| self.command(name).is_some())
     }

@@ -361,8 +361,93 @@ impl Editor {
         self.variable_in(self.buffer(), name)
     }
 
+    /// The variable a name stands for, past any `defvaralias` aliases, as
+    /// `indirect-variable` follows them.
+    pub fn base_variable<'a>(&self, name: &'a str) -> std::borrow::Cow<'a, str> {
+        if self.variable_aliases.is_empty() {
+            return std::borrow::Cow::Borrowed(name);
+        }
+        let mut current = name.to_string();
+        for _ in 0..64 {
+            match self.variable_aliases.get(&current) {
+                Some(next) => current = next.clone(),
+                None => break,
+            }
+        }
+        std::borrow::Cow::Owned(current)
+    }
+
+    /// Makes a name stand for another variable, as `defvaralias`: if the
+    /// new name had a value and the variable has none, it takes it.
+    pub fn defvaralias(&mut self, new: &str, base: &str) -> Result<()> {
+        if self.base_variable(base) == new {
+            return Err(crate::error::Error::signal("cyclic-variable-indirection", format!("Symbol's chain of variable indirections contains a loop: {base}"), vec![Value::Symbol(base.to_string())]));
+        }
+        let had = self.var(new).map(|v| v.default.clone());
+        self.notify_watchers(new, &Value::Symbol(base.to_string()), "defvaralias", Value::Null);
+        if let Some(value) = had
+            && self.var(&self.base_variable(base)).is_none()
+        {
+            let base = self.base_variable(base).into_owned();
+            self.set_default(&base, value);
+        }
+        self.variable_aliases.insert(new.to_string(), base.to_string());
+        Ok(())
+    }
+
+    /// Calls a variable's watchers before it changes, as Emacs's
+    /// notify_variable_watchers: with its name, the new value, the
+    /// operation (`set`, `makunbound`, `defvaralias`) and the buffer whose
+    /// own value changes, if one does. Watchers' own changes call none.
+    pub(crate) fn notify_watchers(&mut self, name: &str, value: &Value, operation: &str, place: Value) {
+        if self.variable_watchers.is_empty() || self.notifying_watchers {
+            return;
+        }
+        let base = self.base_variable(name).into_owned();
+        let Some(watchers) = self.variable_watchers.get(&base).cloned() else { return };
+        self.notifying_watchers = true;
+        for watcher in watchers {
+            let args = [Value::Symbol(base.clone()), value.clone(), Value::Symbol(operation.to_string()), place.clone()];
+            if let Err(e) = self.funcall(&watcher, &args) {
+                self.log_message(&format!("Error in variable watcher for {base}: {}", e.message()), true);
+            }
+        }
+        self.notifying_watchers = false;
+    }
+
+    /// The functions called before a variable changes, to add to or take from.
+    pub fn variable_watchers_mut(&mut self, name: &str) -> &mut Vec<Value> {
+        self.variable_watchers.entry(name.to_string()).or_default()
+    }
+
+    /// Makes a variable buffer-local in every buffer that sets it, as
+    /// `make-variable-buffer-local`, defining it as nil if it has no value.
+    pub fn make_variable_buffer_local(&mut self, name: &str) {
+        let name = self.base_variable(name).into_owned();
+        if self.var(&name).is_none() {
+            self.symbol_mut(&name).variable = Some(Variable::new(&name, "", Value::Null));
+        }
+        if let Some(var) = self.symbol_mut(&name).variable.as_mut() {
+            var.local = true;
+        }
+    }
+
+    /// Makes a variable unbound, as `makunbound`: the current buffer's own
+    /// value if it has one, else its global value.
+    pub fn makunbound(&mut self, name: &str) {
+        let name = self.base_variable(name).into_owned();
+        self.notify_watchers(&name, &Value::Null, "makunbound", Value::Null);
+        if self.buffer_mut().locals.remove(&name).is_some() {
+            return;
+        }
+        if let Some(symbol) = self.symbols.get_mut(&name) {
+            symbol.variable = None;
+        }
+    }
+
     /// A variable's value as a given buffer sees it.
     pub fn variable_in(&self, b: &Buffer, name: &str) -> Option<Value> {
+        let name = &*self.base_variable(name);
         // The undo history, which the buffer keeps itself, as Emacs's BVAR.
         if name == "buffer-undo-list" {
             return Some(b.undo_list().unwrap_or(Value::Bool(true)));
@@ -386,6 +471,13 @@ impl Editor {
     /// if it has one or the variable is automatically buffer-local,
     /// otherwise the global value. Setting an unknown variable defines it.
     pub fn set_variable(&mut self, name: &str, value: Value) {
+        let resolved;
+        let name = if self.variable_aliases.is_empty() { name } else { resolved = self.base_variable(name).into_owned(); &resolved };
+        if !self.variable_watchers.is_empty() {
+            let local = self.var(name).is_some_and(|v| v.local) || self.buffer().locals.contains_key(name);
+            let place = if local { Value::Buffer(self.buffer().id()) } else { Value::Null };
+            self.notify_watchers(name, &value, "set", place);
+        }
         if name == "buffer-undo-list" {
             self.buffer_mut().set_undo_list(&value);
             return;
@@ -405,12 +497,20 @@ impl Editor {
         if local || b.locals.contains_key(name) {
             b.locals.insert(name.to_string(), value);
         } else {
-            self.set_default(name, value);
+            self.set_default_quietly(name, value);
         }
     }
 
     /// Sets the global value, which buffers without their own value see.
     pub fn set_default(&mut self, name: &str, value: Value) {
+        let resolved;
+        let name = if self.variable_aliases.is_empty() { name } else { resolved = self.base_variable(name).into_owned(); &resolved };
+        self.notify_watchers(name, &value, "set", Value::Null);
+        self.set_default_quietly(name, value);
+    }
+
+    /// Sets the global value without calling watchers, as set_variable does once it has.
+    fn set_default_quietly(&mut self, name: &str, value: Value) {
         if name == "inhibit-quit" {
             self.quitting.set_inhibit(value.is_true());
         }
@@ -427,6 +527,7 @@ impl Editor {
     }
 
     pub fn default_value(&self, name: &str) -> Option<Value> {
+        let name = &*self.base_variable(name);
         let var = self.var(name)?;
         if var.hook {
             // A hook's global functions.
@@ -439,16 +540,25 @@ impl Editor {
     /// Gives the current buffer its own value of a variable, starting from
     /// the value it sees now, as Emacs's `make-local-variable` does.
     pub fn make_local_variable(&mut self, name: &str) {
+        let resolved;
+        let name = if self.variable_aliases.is_empty() { name } else { resolved = self.base_variable(name).into_owned(); &resolved };
         let value = self.variable(name).unwrap_or(Value::Null);
         self.buffer_mut().locals.entry(name.to_string()).or_insert(value);
     }
 
     /// Removes the current buffer's own value, so it sees the global one again.
     pub fn kill_local_variable(&mut self, name: &str) {
+        let resolved;
+        let name = if self.variable_aliases.is_empty() { name } else { resolved = self.base_variable(name).into_owned(); &resolved };
+        if self.buffer().locals.contains_key(name) {
+            let place = Value::Buffer(self.buffer().id());
+            self.notify_watchers(name, &Value::Null, "makunbound", place);
+        }
         self.buffer_mut().locals.remove(name);
     }
 
     pub fn is_local_variable(&self, name: &str) -> bool {
+        let name = &*self.base_variable(name);
         // A hook is local when the buffer has its own functions for it;
         // each buffer has its own undo history.
         name == "buffer-undo-list"
@@ -640,6 +750,28 @@ impl Editor {
             }
         }
         Ok(true)
+    }
+
+    /// The functions a hook runs in the current buffer, in order: its own,
+    /// with the global ones where its local value has `t`, else the global
+    /// ones; a hook set as a plain variable gives its value's.
+    pub fn hook_functions(&self, hook: &str) -> Vec<Value> {
+        let global: Vec<Value> = self.global_hook(hook).iter().filter_map(|e| e.run.clone().map(Value::Function)).collect();
+        let entries = match self.buffer().local_hooks.get(hook) {
+            Some(local) => local.iter().flat_map(|e| match &e.run {
+                Some(f) => vec![Value::Function(f.clone())],
+                None => global.clone(),
+            }).collect(),
+            None => global,
+        };
+        if !entries.is_empty() || self.var(hook).is_some_and(|v| v.hook) {
+            return entries;
+        }
+        match self.variable(hook) {
+            Some(Value::List(items)) => items,
+            Some(v) if !v.is_nil() => vec![v],
+            _ => Vec::new(),
+        }
     }
 
     /// A hook's value for a buffer, as Emacs shows it: its local value's
