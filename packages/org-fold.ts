@@ -633,9 +633,12 @@ function visibilityFromProperties(): void {
       showEntry(all, i);
       showChildren(all, i);
     } else if (state === "content") {
+      // Every heading line in the subtree, as org-cycle-content narrowed to it.
       flag(Math.max(0, all[i].start - 1), end, false);
+      let k = i + 1;
+      while (k < all.length && all[k].level > all[i].level) k++;
       let last = end;
-      for (let k = (nextSameOrHigher(all, i) ? all.indexOf(nextSameOrHigher(all, i)!) : all.length) - 1; k >= i; k--) {
+      for (k--; k >= i; k--) {
         flag(all[k].end, last, true);
         last = Math.max(0, all[k].start - 1);
       }

@@ -733,18 +733,19 @@ impl Editor {
         // not, unless it sets this-command itself, as kill-region does.
         let this = self.this_command.clone();
         let set = std::mem::replace(&mut self.this_command_set, false);
-        let answered = self.pending_calls_run;
+        let (waiting, answered) = (self.pending_call.is_some(), self.pending_calls_run);
         self.running += 1;
         let result = self.run_command_body(&command, &args);
         self.running -= 1;
         let result = result.and(self.run_after_change_functions());
         self.deactivate_changed_regions(result.is_ok());
-        // A call that answered a command waiting for its arguments, as
+        // A call that answered the command waiting for its arguments, as
         // vertico's RET calls exit-minibuffer for M-x, ran that command to
         // its end, and it stays the last command: in Emacs exit-minibuffer
         // throws out of the command that called it, so a second M-x undo
         // goes on undoing.
-        if !self.this_command_set && self.pending_calls_run == answered {
+        let answered_waiting = waiting && self.pending_calls_run != answered;
+        if !self.this_command_set && !answered_waiting {
             self.this_command = this;
         }
         self.this_command_set |= set;

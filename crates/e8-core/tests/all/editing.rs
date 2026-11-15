@@ -32,6 +32,8 @@ fn typing_and_undo_in_steps() {
 fn undo_run_from_m_x_again_keeps_going_back() {
     // As in Emacs, M-x undo after M-x undo continues the run: the
     // commands typed in the minibuffer between them do not break it.
+    // With a RET that calls exit-minibuffer from code, as vertico's, see
+    // e8-script's minibuffer tests.
     let mut ed = Editor::new();
     press(&mut ed, "a C-a b C-a c C-a d C-a");
     assert_eq!(text(&ed), "dcba");
