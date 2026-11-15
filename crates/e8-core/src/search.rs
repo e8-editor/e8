@@ -56,22 +56,39 @@ pub struct BufferHaystack<'a> {
     chunk: std::cell::RefCell<(usize, Vec<char>)>,
     /// The flag to check while searching, if quitting can stop it.
     quit: Option<&'a crate::quit::QuitState>,
-    /// How many characters it reads at a time.
+    /// The most characters it reads at a time.
     window: usize,
+    /// How many it reads next: a few at first, doubling with each read up
+    /// to `window`, so a match tried at one place, as `looking-at` tries,
+    /// copies a few characters rather than a whole window, which cost
+    /// 35 µs a call, and a long search still reads whole windows.
+    next: std::cell::Cell<usize>,
 }
+
+/// How many characters a haystack reads first.
+const FIRST_CHUNK: usize = 64;
 
 /// How many characters a haystack reads at a time.
 const CHUNK: usize = 8192;
 
 impl<'a> BufferHaystack<'a> {
     pub fn new(buffer: &'a Buffer, class: &'a dyn Fn(usize, char) -> Class, fixed: bool) -> BufferHaystack<'a> {
-        BufferHaystack { buffer, class, fixed, chunk: std::cell::RefCell::new((0, Vec::new())), quit: None, window: CHUNK }
+        BufferHaystack {
+            buffer,
+            class,
+            fixed,
+            chunk: std::cell::RefCell::new((0, Vec::new())),
+            quit: None,
+            window: CHUNK,
+            next: std::cell::Cell::new(FIRST_CHUNK),
+        }
     }
 
     /// The same haystack reading `n` characters at a time: fewer suit
     /// matches tried at scattered places, as at each line's start.
     pub fn reading(mut self, n: usize) -> BufferHaystack<'a> {
         self.window = n.max(16);
+        self.next.set(self.next.get().min(self.window));
         self
     }
 
@@ -96,8 +113,10 @@ impl Haystack for BufferHaystack<'_> {
         let (start, chars) = &mut *chunk;
         if pos < *start || pos >= *start + chars.len() {
             // Around `pos`, so reading backward is as quick as forward.
-            *start = pos.saturating_sub(self.window / 4).max(min);
-            *chars = self.buffer.chars_between(*start, (*start + self.window).min(max));
+            let window = self.next.get();
+            self.next.set((window * 2).min(self.window));
+            *start = pos.saturating_sub(window / 4).max(min);
+            *chars = self.buffer.chars_between(*start, (*start + window).min(max));
         }
         chars.get(pos - *start).copied()
     }

@@ -27,6 +27,7 @@ import {
   ispellWord,
   knownAnswer,
   setSpellcheckerParams,
+  withWordChars,
   wordAt as getWord,
 } from "ispell";
 import { PerBuffer, regexpQuote } from "subr";
@@ -96,18 +97,47 @@ function highlight(start: number, end: number, poss: Poss | "doublon"): void {
   }, { frontAdvance: true });
 }
 
+// A misspelling is looked for elsewhere, up to flyspell-duplicate-distance
+// away, 400,000 characters by default: a regexp searched over all of that
+// for each misspelling made checking a long file take time that grew with
+// its length times its misspellings. The word itself is found first, by a
+// literal search, and the regexp tried only around each place it is, where
+// any match it could find has the word: what is found is the same.
+
+/** Whether the literal search finds every place the regexp could match, as it folds case the same way for such a word. */
+const literalFinds = (word: string, fold: boolean): boolean => !fold || /^[\x00-\x7f]*$/.test(word);
+
 /** Where `word` is, whole, in [bound, point), nearest first, as flyspell-word-search-backward. */
 function searchBackward(word: string, bound: number, ignoreCase = false): number | undefined {
   return e8.saveExcursion(() => {
     const re = `\\(?:[^[:alpha:]]\\|\\\`\\)${regexpQuote(word)}[^[:alpha:]]`;
     const limit = bound > e8.pointMin() ? bound - 1 : undefined;
+    const literal = literalFinds(word, ignoreCase);
+    // Matches end by `end`, where the search started, as point moves back.
+    let end = e8.point();
     for (;;) {
-      if (e8.reSearchBackward(re, { bound: limit, noerror: true, caseFold: ignoreCase }) === undefined) return undefined;
+      if (literal) {
+        // A match is the word with a character after it: the nearest such
+        // place, and any match there starts at most one character before it.
+        if (end - 1 < e8.pointMin()) return undefined;
+        const at = e8.search(word, { from: end - 1, backward: true, bound: limit, caseFold: ignoreCase });
+        if (at === undefined) return undefined;
+        e8.gotoChar(Math.min(end, at.end + 1));
+        const near = Math.max(at.start - 1, limit ?? e8.pointMin());
+        if (e8.reSearchBackward(re, { bound: near, noerror: true, caseFold: ignoreCase }) === undefined) {
+          // None there: the next place is before this one.
+          end = at.end;
+          continue;
+        }
+      } else {
+        e8.gotoChar(end);
+        if (e8.reSearchBackward(re, { bound: limit, noerror: true, caseFold: ignoreCase }) === undefined) return undefined;
+      }
       if (e8.point() !== e8.pointMin()) e8.gotoChar(e8.point() + 1);
       const p = e8.point();
       const found = getWord();
       if (found && (ignoreCase ? found.word.toLowerCase() === word.toLowerCase() : found.word === word)) return p;
-      e8.gotoChar(p);
+      end = p;
     }
   });
 }
@@ -117,16 +147,38 @@ function searchForward(word: string, bound: number): number | undefined {
   return e8.saveExcursion(() => {
     const re = `[^[:alpha:]]${regexpQuote(word)}\\(?:[^[:alpha:]]\\|\\'\\)`;
     const limit = bound < e8.pointMax() ? bound + 1 : undefined;
+    const fold = e8.foldCaseFor(re);
+    const literal = literalFinds(word, fold);
+    // Matches start at `start` or after, as point moves on.
+    let start = e8.point();
     for (;;) {
-      if (e8.reSearchForward(re, { bound: limit, noerror: true }) === undefined) return undefined;
+      if (literal) {
+        // A match is the word with a character before it: the first such
+        // place, and any match there ends at most one character after it.
+        const at = e8.search(word, { from: start + 1, bound: limit, caseFold: fold });
+        if (at === undefined) return undefined;
+        e8.gotoChar(Math.max(start, at.start - 1));
+        const near = Math.min(at.end + 1, limit ?? e8.pointMax());
+        if (e8.reSearchForward(re, { bound: near, noerror: true, caseFold: fold }) === undefined) {
+          // None there: the next place is after this one.
+          start = at.start;
+          continue;
+        }
+      } else {
+        e8.gotoChar(start);
+        if (e8.reSearchForward(re, { bound: limit, noerror: true, caseFold: fold }) === undefined) return undefined;
+      }
       if (e8.point() !== e8.pointMax()) e8.gotoChar(e8.point() - 1);
       const p = e8.point();
       const found = getWord();
       if (found?.word === word) return p;
-      e8.gotoChar(p + 1);
+      start = p + 1;
     }
   });
 }
+
+/** The searches for a word elsewhere, for tests that compare them with the regexp alone. */
+export const wordSearches = { backward: searchBackward, forward: searchForward };
 
 /** The last word checked and what the checker said, as flyspell-word-cache-start, -end, -word and -result. */
 const cache = new PerBuffer<{ start: number; end: number; word: string; result: boolean }>();
@@ -292,6 +344,11 @@ function checkWordP(command: string | undefined): boolean | "later" {
 
 function postCommand(): void {
   if (!truthy(e8.variable("flyspell-mode"))) return;
+  withWordChars(checkAfterCommand);
+}
+
+/** Checks the words the command left or changed, as flyspell-post-command-hook. */
+function checkAfterCommand(): void {
   const s = stateOf();
   const command = e8.thisCommand();
   if (s.timer !== undefined) {
@@ -440,7 +497,7 @@ function flyspellRegion(beg: number, end: number): void {
   acceptLocalDefs();
   const verbose = truthy(e8.variable("flyspell-issue-message-flag"));
   if (verbose) e8.message("Checking region...");
-  e8.saveExcursion(() => {
+  withWordChars(() => e8.saveExcursion(() => {
     const words: { word: string; end: number }[] = [];
     e8.gotoChar(beg);
     while (e8.point() < end) {
@@ -456,7 +513,7 @@ function flyspellRegion(beg: number, end: number): void {
       e8.gotoChar(w.end);
       flyspellWord(false, answers.get(w.word));
     }
-  });
+  }));
   if (verbose) e8.message("Spell Checking completed.");
 }
 
