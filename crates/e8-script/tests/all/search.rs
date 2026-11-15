@@ -114,6 +114,27 @@ fn scripts_search_and_replace() {
     assert_eq!(ed.echo(), Some("4 0 Bar bar false"));
 }
 
+/// As Emacs's adjust_markers_for_replace: markers at the end of the match
+/// end up after the new text, those inside at its start; what Emacs 30
+/// gives for the same, counting from 1.
+#[test]
+fn replacing_moves_markers_at_the_end_after_the_new_text() {
+    let (mut ed, scripting) = setup("a foo b");
+    let got = scripting
+        .eval_expression(
+            &mut ed,
+            r#"(() => {
+                const ms = [2, 5, 3, 6].map((p) => e8.makeMarker(p));
+                e8.search("foo", { from: 0 });
+                e8.gotoChar(3);
+                e8.replaceMatch("barbaz");
+                return `${e8.bufferText()} ${ms.map((m) => e8.markerPosition(m)).join(" ")}`;
+            })()"#,
+        )
+        .unwrap();
+    assert_eq!(got, r#""a barbaz b 2 8 2 9""#);
+}
+
 fn text(ed: &Editor) -> String {
     let b = ed.window_buffer();
     b.slice(0..b.len())

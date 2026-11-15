@@ -132,8 +132,17 @@ impl Editor {
         }
         self.modify(start, end, |b, start, end| {
             let pending = b.pending_changes.len();
+            // Markers, the mark and overlay edges at the old end go to the
+            // new end, and those inside to the start, as Emacs's
+            // adjust_markers_for_replace moves them: the new text goes in
+            // after the old before the markers there, and the old goes.
+            let point = b.point();
+            b.insert_before_markers_at(end, text)?;
             b.delete(start..end)?;
-            b.insert_at(start, text)?;
+            // Point as replace_range relocates it: after the new text if it
+            // was after the start, else where it was.
+            let n = text.chars().count();
+            b.set_point(if point > start { point.max(end) - (end - start) + n } else { point });
             b.pending_changes.truncate(pending);
             b.pending_changes.push((start, start + text.chars().count(), end - start));
             Ok(())
