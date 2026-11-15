@@ -158,6 +158,27 @@ fn query_replace_from_keys() {
     assert_eq!(text(&ed), "bar foo foo");
 }
 
+/// As query-replace-read-args: the second prompt names the string, empty
+/// input replaces the last pair again without asking for the replacement,
+/// and C-u replaces whole words only.
+#[test]
+fn query_replace_offers_the_last_pair_and_c_u_takes_words() {
+    let (mut ed, _scripting) = setup("foo foobar foo");
+    ed.press("C-u M-%").unwrap();
+    ed.type_text("foo\n");
+    assert_eq!(ed.prompt(), Some("Query replace foo with: "));
+    ed.type_text("bar\n");
+    assert_eq!(ed.echo(), Some("Query replacing word foo with bar: (? for help) "));
+    ed.press("!").unwrap();
+    assert_eq!(text(&ed), "bar foobar bar");
+    ed.press("M-< M-%").unwrap();
+    assert_eq!(ed.prompt(), Some("Query replace (default foo → bar): "));
+    ed.press("RET").unwrap();
+    assert_eq!((ed.prompt(), ed.echo()), (None, Some("Query replacing foo with bar: (? for help) ")));
+    ed.press("!").unwrap();
+    assert_eq!(text(&ed), "bar barbar bar");
+}
+
 #[test]
 fn query_replace_quits_with_c_g() {
     let (mut ed, _scripting) = setup("foo foo");

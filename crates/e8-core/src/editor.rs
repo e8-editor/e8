@@ -891,13 +891,25 @@ impl Editor {
 
     fn read_next_arg(&mut self) {
         // What the editor supplies, the prefix argument, point and the
-        // region, is taken without asking, as interactive "p", "d" and "r".
+        // region, is taken without asking, as interactive "p", "d" and "r",
+        // and so is a value the arguments before it decide.
         while let Some(call) = &self.pending_call
             && let Some(param) = call.command.params.get(call.args.len())
-            && param.kind.from_state()
         {
-            match self.state_arg(param.kind, call.prefix) {
-                Ok(arg) => self.pending_call.as_mut().expect("checked above").args.push(arg),
+            let arg = if param.kind.from_state() {
+                self.state_arg(param.kind, call.prefix).map(Some)
+            } else if let Some(crate::command::CollectionFn(f)) = param.value_fn.clone() {
+                let args = call.args.clone();
+                f(self, &args).map(|values| values.into_iter().next().map(Arg::Str))
+            } else {
+                Ok(None)
+            };
+            match arg {
+                Ok(Some(arg)) => match self.pending_call.as_mut() {
+                    Some(call) => call.args.push(arg),
+                    None => return,
+                },
+                Ok(None) => break,
                 Err(e) => {
                     self.pending_call = None;
                     self.fail(e);

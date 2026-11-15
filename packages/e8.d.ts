@@ -6210,10 +6210,11 @@ declare global {
        *
        * @param from text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/replace.ts.
        */
-      "query-replace": [from: string, to: string];
+      "query-replace": [from: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * Replace this match and go on to the next.
        *
@@ -6275,10 +6276,11 @@ declare global {
        *
        * @param regexp text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/replace.ts.
        */
-      "query-replace-regexp": [regexp: string, to: string];
+      "query-replace-regexp": [regexp: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * Leave this match and go on to the next.
        *
@@ -6494,19 +6496,21 @@ declare global {
        *
        * @param regexp text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/replace.ts.
        */
-      "replace-regexp": [regexp: string, to: string];
+      "replace-regexp": [regexp: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * Replace every match of a string from point to the end of the buffer, or in the active region.
        *
        * @param from text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/replace.ts.
        */
-      "replace-string": [from: string, to: string];
+      "replace-string": [from: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * Reverse the order of the whole lines in the region.
        *
@@ -7909,7 +7913,7 @@ declare global {
       /**
        * Write the current buffer to a file and visit that file instead.
        *
-       * A directory writes a file of the buffer's name in it. An existing file is overwritten only if you say so.
+       * A directory writes a file of the visited file's name in it, or the buffer's. An existing file is overwritten only if you say so.
        *
        * @param file file name
        *
@@ -18542,6 +18546,12 @@ declare global {
        * extended-command-history for commands, file-name-history and so on.
        */
       history?: string;
+      /**
+       * The argument worked out from those read before it, as code in an
+       * Emacs interactive spec can: when it gives one, nothing is asked, as
+       * query-replace asks for no replacement after its default.
+       */
+      value?: (...earlier: string[]) => string | undefined;
     }
 
     interface CommandDefinition {

@@ -83,6 +83,12 @@ const API: &str = r##"
      * extended-command-history for commands, file-name-history and so on.
      */
     history?: string;
+    /**
+     * The argument worked out from those read before it, as code in an
+     * Emacs interactive spec can: when it gives one, nothing is asked, as
+     * query-replace asks for no replacement after its default.
+     */
+    value?: (...earlier: string[]) => string | undefined;
   }
 
   interface CommandDefinition {

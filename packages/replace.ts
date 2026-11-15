@@ -58,7 +58,8 @@ let replacing: Replace | undefined;
 /** The range to work on: the active region from a key or M-x, else point to the end. */
 function scope(fromPoint = false): { start: number; endMarker: number } {
   let start = e8.point();
-  let end = e8.bufferSize();
+  // To the end of the accessible text, as Emacs's searches stop there.
+  let end = e8.pointMax();
   if (!fromPoint && e8.calledInteractively() && e8.regionActive()) {
     const mark = e8.mark() ?? start;
     end = Math.max(mark, start);
@@ -71,7 +72,7 @@ function scope(fromPoint = false): { start: number; endMarker: number } {
 }
 
 function endOf(marker: number): number {
-  return e8.overlayStart(marker) ?? e8.bufferSize();
+  return e8.overlayStart(marker) ?? e8.pointMax();
 }
 
 /** Finds the next match from a position, stepping past empty matches where the last one ended. */
@@ -167,9 +168,21 @@ function finish(r: Replace) {
 /** The query-replace that queryReplace waits for, in a recursive edit. */
 let waiting: Replace | undefined;
 
-function start(from: string, to: string, regexp: boolean, query: boolean, options: { literal?: boolean; shown?: string; fromPoint?: boolean } = {}) {
+function start(
+  from: string,
+  to: string,
+  regexp: boolean,
+  query: boolean,
+  options: { literal?: boolean; shown?: string; fromPoint?: boolean; delimited?: boolean } = {},
+) {
   if (from === "") throw new Error("Empty search string");
   const caseFold = e8.foldCaseFor(from, true);
+  // Whole words only, as perform-replace's delimited-flag puts \b round it.
+  if (options.delimited) {
+    options = { ...options, literal: options.literal ?? !regexp, shown: options.shown ?? `word ${from}` };
+    from = `\\b${regexp ? from : regexpQuote(from)}\\b`;
+    regexp = true;
+  }
   const { start, endMarker: marker } = scope(options.fromPoint);
   e8.pushMark(start);
   const r: Replace = {
@@ -310,6 +323,44 @@ const otherKey = e8.defineCommand({
 });
 e8.setKeymapDefault("query-replace-map", otherKey);
 
+/**
+ * The pairs replaced before, newest first, as Emacs's query-replace-defaults:
+ * empty input at the first prompt replaces the newest again.
+ */
+let defaults: [string, string][] = [];
+
+/**
+ * The parameters the replace commands read, as query-replace-read-args: the
+ * string, offering the last pair as the default, then its replacement,
+ * not asked for when the default is taken, and C-u for whole words only.
+ */
+function replaceParams(prompt: string, fromName: string): e8.Param[] {
+  return [
+    {
+      name: fromName,
+      prompt: () => (defaults.length > 0 ? `${prompt} (default ${defaults[0][0]} → ${defaults[0][1]}): ` : `${prompt}: `),
+      history: "query-replace-history",
+    },
+    {
+      name: "to",
+      prompt: (from: string) => `${prompt} ${from} with: `,
+      value: (from: string) => (from === "" && defaults.length > 0 ? defaults[0][1] : undefined),
+      history: "query-replace-history",
+    },
+    { name: "delimited", kind: "prefix" },
+  ];
+}
+
+/** Takes the default pair for empty input, or remembers a pair typed, as query-replace-read-args. */
+function readPair(from: string, to: string): [string, string] {
+  if (from === "" && defaults.length > 0) return defaults[0];
+  if (from !== "" && e8.calledInteractively()) defaults = [[from, to], ...defaults.filter(([f, t]) => f !== from || t !== to)];
+  return [from, to];
+}
+
+/** Whether a raw prefix argument asks for whole words, as anything but C-- does. */
+const delimitedBy = (arg: e8.PrefixArg | undefined): boolean => arg !== null && arg !== undefined && arg !== "-";
+
 const queryReplace = e8.defineCommand({
   name: "query-replace",
   doc:
@@ -317,11 +368,11 @@ const queryReplace = e8.defineCommand({
     "At each match: y or SPC replaces it, n or DEL skips it, ! replaces the rest, . replaces it and stops, " +
     "q or RET stops. Case is ignored unless the string has a capital letter, and then replacements follow " +
     "the case of what they replace. Works from point to the end of the buffer, or on the region if it is active.",
-  params: [
-    { name: "from", prompt: "Query replace: ", history: "query-replace-history" },
-    { name: "to", prompt: "Query replace with: ", history: "query-replace-history" },
-  ],
-  run: (from, to) => start(from, to, false, true),
+  params: replaceParams("Query replace", "from"),
+  run: (input: string, replacement: string, arg: e8.PrefixArg) => {
+    const [from, to] = readPair(input, replacement);
+    start(from, to, false, true, { delimited: delimitedBy(arg) });
+  },
 });
 
 const queryReplaceRegexp = e8.defineCommand({
@@ -329,21 +380,21 @@ const queryReplaceRegexp = e8.defineCommand({
   doc:
     "Replace matches of a regular expression, asking at each one.\n\n" +
     "In the replacement, \\& is the whole match and \\1 to \\9 its groups. See query-replace for the keys.",
-  params: [
-    { name: "regexp", prompt: "Query replace regexp: ", history: "query-replace-history" },
-    { name: "to", prompt: "Query replace regexp with: ", history: "query-replace-history" },
-  ],
-  run: (from, to) => start(from, to, true, true),
+  params: replaceParams("Query replace regexp", "regexp"),
+  run: (input: string, replacement: string, arg: e8.PrefixArg) => {
+    const [from, to] = readPair(input, replacement);
+    start(from, to, true, true, { delimited: delimitedBy(arg) });
+  },
 });
 
 e8.defineCommand({
   name: "replace-string",
   doc: "Replace every match of a string from point to the end of the buffer, or in the active region.",
-  params: [
-    { name: "from", prompt: "Replace string: ", history: "query-replace-history" },
-    { name: "to", prompt: "Replace string with: ", history: "query-replace-history" },
-  ],
-  run: (from, to) => start(from, to, false, false),
+  params: replaceParams("Replace string", "from"),
+  run: (input: string, replacement: string, arg: e8.PrefixArg) => {
+    const [from, to] = readPair(input, replacement);
+    start(from, to, false, false, { delimited: delimitedBy(arg) });
+  },
 });
 
 e8.defineCommand({
@@ -351,11 +402,11 @@ e8.defineCommand({
   doc:
     "Replace every match of a regular expression from point to the end of the buffer, or in the active region.\n\n" +
     "In the replacement, \\& is the whole match and \\1 to \\9 its groups.",
-  params: [
-    { name: "regexp", prompt: "Replace regexp: ", history: "query-replace-history" },
-    { name: "to", prompt: "Replace regexp with: ", history: "query-replace-history" },
-  ],
-  run: (from, to) => start(from, to, true, false),
+  params: replaceParams("Replace regexp", "regexp"),
+  run: (input: string, replacement: string, arg: e8.PrefixArg) => {
+    const [from, to] = readPair(input, replacement);
+    start(from, to, true, false, { delimited: delimitedBy(arg) });
+  },
 });
 
 e8.bindKey("M-%", queryReplace);

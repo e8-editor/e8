@@ -713,6 +713,8 @@
           prompt: typeof p.prompt === "function" ? p.prompt : p.prompt ?? `${p.name}: `,
           initial: p.initial ?? null,
           collection: typeof p.collection === "function" ? (...args) => [...p.collection(...args)].map(String) : null,
+          // None or one value, as a list, so that undefined can say "ask".
+          value: typeof p.value === "function" ? (...args) => { const v = p.value(...args); return v === undefined || v === null ? [] : [String(v)]; } : null,
           requireMatch: Boolean(p.requireMatch),
           history: p.history === undefined ? null : String(p.history),
         })),
