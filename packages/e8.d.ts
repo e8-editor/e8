@@ -9114,7 +9114,7 @@ declare global {
        */
       "desktop-path": Value;
       /**
-       * Whether the desktop saves and restores the selected frame's windows.
+       * Whether the desktop saves and restores the selected frame: where it is, how big, and its windows.
        *
        * Defined in packages/desktop.ts.
        */
