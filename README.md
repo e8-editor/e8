@@ -33,6 +33,10 @@ e8 some-file.txt
 
 An Emacs user's fingers already know the rest: `C-x C-f`, `C-x C-s`, `M-x`, `C-x C-c`. Your configuration goes in `~/.config/e8/init.ts`; [examples/init.ts](examples/init.ts) is a start.
 
+## Packages
+
+Besides the packages E8 ships, as Emacs ships its Lisp, the [`e8-editor`](https://github.com/e8-editor) organisation holds ports of Emacs packages from outside Emacs (Magit, Vertico, Consult, Orderless, Marginalia, Org-roam, a collection of themes and more), each in a repository of its own and maintained with E8. The design and the original code of each are its upstream authors'; a port keeps its upstream's licence and credits them in its README. A config installs one with `e8.usePackage("e8-editor/e8-NAME")`. [docs/features.md](docs/features.md#packages-in-their-own-repositories) lists them.
+
 ## Licence
 
 GPL-3.0-or-later.
