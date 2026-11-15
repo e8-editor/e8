@@ -853,7 +853,20 @@ impl Editor {
             }
             None => (total_units - units(total / 2), units(total / 2)),
             Some(size) => {
-                let (old, new) = if size >= 0 { (units(size), total_units - units(size)) } else { (total_units - units(-size), units(-size)) };
+                let (mut old, mut new) = if size >= 0 { (units(size), total_units - units(size)) } else { (total_units - units(-size), units(-size)) };
+                // A size Emacs takes, two lines (a line and a mode line one
+                // line tall) or two columns, is never refused because a
+                // front end's bars and padding are taller or wider than a
+                // line: that window grows to hold a line, or two columns,
+                // as Emacs's would, and the other gives the space.
+                let emacs_safe = units(2);
+                if new < safe && new >= emacs_safe {
+                    old -= safe - new;
+                    new = safe;
+                } else if old < safe && old >= emacs_safe {
+                    new -= safe - old;
+                    old = safe;
+                }
                 if new < safe {
                     return Err(Error::new("Size of new window too small"));
                 }
