@@ -18346,8 +18346,8 @@ declare global {
     function memoryUseCounts(): number[];
     /** Collect garbage soon if much was made since the last time, as garbage-collect-maybe: E8's engine collects when it judges, so undefined. */
     function garbageCollectMaybe(factor: number): undefined;
-    /** The natural logarithm of a number, or with `base` the logarithm in that base, as log. */
-    function log(arg: number, base?: number | null): number;
+    /** The natural logarithm of a number, or with `base` the logarithm in that base, as Lisp's log, whose name e8.log has for writing to the log. */
+    function logarithm(arg: number, base?: number | null): number;
     /** e to a power, as exp. */
     function exp(arg: number): number;
     /** A number's square root, as sqrt. */

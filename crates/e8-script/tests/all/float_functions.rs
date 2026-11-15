@@ -39,7 +39,7 @@ fn floats_come_apart_and_together() {
     assert_eq!(r("return [e8.frexp(8), e8.frexp(0), e8.frexp(-3)];"), "[[0.5,4],[0,0],[-0.75,2]]");
     assert_eq!(r("return [e8.ldexp(0.5, 4), e8.logb(8), e8.logb(10), e8.copysign(1, -2), e8.copysign(-3, 0), e8.isnan(NaN), e8.isnan(1)];"), "[8,3,3,-1,3,true,false]");
     assert_eq!(r("return [e8.expt(2, 10), e8.expt(2, 0.5), e8.expt(2, -1), e8.expt(0, 0)];"), "[1024,1.4142135623730951,0.5,1]");
-    assert_eq!(r("return [e8.log(8, 2), e8.log(100, 10), e8.log(1), e8.float(3), e8.abs(-5), e8.sqrt(16), e8.atan(1, 1), e8.atan(1)];"), "[3,2,0,3,5,4,0.7853981633974483,0.7853981633974483]");
+    assert_eq!(r("return [e8.logarithm(8, 2), e8.funcall(\"log\", 100, 10), e8.logarithm(1), e8.float(3), e8.abs(-5), e8.sqrt(16), e8.atan(1, 1), e8.atan(1)];"), "[3,2,0,3,5,4,0.7853981633974483,0.7853981633974483]");
     assert_eq!(r("return [e8.memoryUseCounts().length, e8.garbageCollectMaybe(1) ?? null];"), "[7,null]");
     // memory-info is nil on macOS, as Emacs's is, and four numbers on Linux.
     let info = r("return e8.memoryInfo() ?? null;");

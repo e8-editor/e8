@@ -766,6 +766,7 @@ e8.defun("re--describe-compiled", (_regexp: string, _raw?: boolean) => e8.signal
 e8.defun("interactive", () => undefined);
 e8.defun("match-data--translate", (n: number) => e8.matchDataTranslate(n));
 e8.defun("value<", (a: e8.Value, b: e8.Value) => e8.valueLess(a, b));
+e8.defun("log", (arg: number, base?: number | null) => e8.logarithm(arg, base));
 // macOS's file panel, which E8 reads in the minibuffer as read-file-name does (ADR 0097).
 e8.defun("ns-read-file-name", (prompt: string, dir?: string | null, mustmatch?: e8.Value, init?: string | null, _dirOnly?: e8.Value) =>
   e8.readFileName(prompt, { dir: dir ?? undefined, initial: init ?? undefined, mustMatch: mustmatch !== null && mustmatch !== undefined && mustmatch !== false }),

@@ -161,9 +161,9 @@ natives! {
         Ok(None)
     }
 
-    /// The natural logarithm of a number, or with `base` the logarithm in that base, as log.
+    /// The natural logarithm of a number, or with `base` the logarithm in that base, as Lisp's log, whose name e8.log has for writing to the log.
     #[ts = "(arg: number, base?: number | null): number"]
-    pub fn log(_ed, arg: f64, base: Opt<EditorValue>) -> f64 {
+    pub fn logarithm(_ed, arg: f64, base: Opt<EditorValue>) -> f64 {
         Ok(match base.0.as_ref().and_then(EditorValue::as_number) {
             Some(10.0) => arg.log10(),
             Some(2.0) => arg.log2(),

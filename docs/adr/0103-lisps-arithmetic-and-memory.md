@@ -25,7 +25,7 @@ Each is written as floatfns.c and alloc.c do it (`natives/cfloat.rs`).
 - **The rest:**
   - `copysign` and `isnan`;
   - `expt`;
-  - `log` with a base, exact for 2 and 10;
+  - `log` with a base, exact for 2 and 10, as `e8.logarithm`, as `e8.log` writes to the log, with a defun of `log`;
   - `exp`, `sqrt`, `abs` and `float`;
   - the trigonometric functions, `atan` with two arguments in the right quadrant.
 - **Memory.**
