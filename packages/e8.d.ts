@@ -18312,6 +18312,62 @@ declare global {
     function random(limit?: number | string | true | null): number;
     /** Whether a value sorts before another, as Emacs 30's value<: numbers, strings and symbols, lists element by element, buffers and markers. */
     function valueLess(a: Value, b: Value): boolean;
+    /** The nearest whole number to a number, or to its quotient by `divisor`, halves to the even one, as round. */
+    function round(number: number, divisor?: number | null): number;
+    /** The largest whole number not above a number or its quotient by `divisor`, as floor. */
+    function floor(number: number, divisor?: number | null): number;
+    /** The smallest whole number not below a number or its quotient by `divisor`, as ceiling. */
+    function ceiling(number: number, divisor?: number | null): number;
+    /** A number or its quotient by `divisor` towards zero, as truncate. */
+    function truncate(number: number, divisor?: number | null): number;
+    /** A float rounded to the nearest whole value, halves to the even one, as fround. */
+    function fround(number: number): number;
+    /** A float rounded down, as ffloor. */
+    function ffloor(number: number): number;
+    /** A float rounded up, as fceiling. */
+    function fceiling(number: number): number;
+    /** A float rounded towards zero, as ftruncate. */
+    function ftruncate(number: number): number;
+    /** A number's significand, from 0.5 to 1, and exponent, as frexp: [significand, exponent]. */
+    function frexp(x: number): [significand: number, exponent: number];
+    /** A significand times 2 to an exponent, as ldexp. */
+    function ldexp(significand: number, exponent: number): number;
+    /** A number's binary exponent, as logb. */
+    function logb(x: number): number;
+    /** A number with the sign of another, as copysign. */
+    function copysign(x1: number, x2: number): number;
+    /** Whether a number is not a number, as isnan. */
+    function isnan(x: number): boolean;
+    /** A number to a power, as expt: whole for a whole number to a power not below 0. */
+    function expt(base: number, power: number): number;
+    /** The machine's memory, as memory-info: [total, free, swap total, swap free] in KiB from /proc/meminfo on Linux; undefined elsewhere, as Emacs's is on macOS. */
+    function memoryInfo(): [total: number, free: number, swapTotal: number, swapFree: number] | undefined;
+    /** How many Lisp objects have been made, as memory-use-counts: E8's script engine keeps its own, so seven zeros. */
+    function memoryUseCounts(): number[];
+    /** Collect garbage soon if much was made since the last time, as garbage-collect-maybe: E8's engine collects when it judges, so undefined. */
+    function garbageCollectMaybe(factor: number): undefined;
+    /** The natural logarithm of a number, or with `base` the logarithm in that base, as log. */
+    function log(arg: number, base?: number | null): number;
+    /** e to a power, as exp. */
+    function exp(arg: number): number;
+    /** A number's square root, as sqrt. */
+    function sqrt(arg: number): number;
+    /** A number's absolute value, as abs. */
+    function abs(arg: number): number;
+    /** A number as a float, as float: the same number, as E8's numbers are floats already. */
+    function float(arg: number): number;
+    /** The sine of an angle in radians, as sin. */
+    function sin(arg: number): number;
+    /** The cosine of an angle in radians, as cos. */
+    function cos(arg: number): number;
+    /** The tangent of an angle in radians, as tan. */
+    function tan(arg: number): number;
+    /** The arcsine of a number, as asin. */
+    function asin(arg: number): number;
+    /** The arccosine of a number, as acos. */
+    function acos(arg: number): number;
+    /** The arctangent of `y`, or with `x` of y/x in the right quadrant, as atan. */
+    function atan(y: number, x?: number | null): number;
     /** Make an xwidget of a type, `webkit`, a web view, in a buffer (the current one by default, made if a name names none), as make-xwidget. An error where the display shows no web views. */
     function makeXwidget(type: string | symbol, title: string, width: number, height: number, arguments?: Value, buffer?: string | Buffer | null, related?: Xwidget | null): Xwidget;
     /** Whether an object is an xwidget, as xwidgetp. */
