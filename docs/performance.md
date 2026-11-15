@@ -139,6 +139,22 @@ In the bench's Org table, V8 against QuickJS: RET in a paragraph 4.97 against 11
   | backward over 2,000 characters | 91–140 µs | 1.9–2.8 µs |
   | within 10 characters, case folded | 118–160 µs | 0.5–1.1 µs |
 
+- **Flyspell's own work over a region, 2026-11-15.** With every answer from Hunspell already known ([ADR 0108](adr/0108-spell-checking-off-the-editor-thread.md)), `flyspell-buffer` over the 41 KB `docs/features.md` still took 12 s, all in flyspell's per-word work. Three costs, each fixed without changing what is marked (all 390 marks the same, 151 of them misspellings seen elsewhere, in position and face):
+  - Every Emacs-regexp search read 8,192 characters into its haystack before trying a match, 35 µs for a `looking-at` that looks at one character. The haystack now reads 64 first and doubles each read up to 8,192: `looking-at` takes 3.5 µs, and a long search reads whole windows as before. Every regexp a script runs pays this, not only flyspell's.
+  - Finding a word looked the dictionary's entry up four times, each reading the dictionary lists from the editor; it looks it up once, and flyspell keeps it over a region or a command (`withWordChars` in ispell.ts).
+  - A misspelling is looked for elsewhere up to `flyspell-duplicate-distance`, 400,000 characters by default, by a regexp searched backward over all of it, so the time grew as the file's length times its misspellings. The word is found first by a literal search and the regexp tried only around each place; a test compares the two on 1,800 random cases.
+
+  Release builds, V8, Hunspell with `en_US,sv_SE`, one after the other at a load of 64 to 70 from other sessions, so the times vary by about two between runs:
+
+  | `flyspell-buffer` | Before | After |
+  | --- | ---: | ---: |
+  | 12 KB, first | 3.5–3.6 s | 0.6–0.9 s |
+  | 12 KB, answers known | 3.0–3.7 s | 0.25–0.44 s |
+  | 41 KB, first | 13–18 s | 1.9–4.1 s |
+  | 41 KB, answers known | 12.3–12.4 s | 0.7–1.8 s |
+
+  Literal searches compiled their pattern on every call, which flyspell then paid once for each place a misspelling is found elsewhere; they keep their compiled patterns since (above).
+
 - **Only what a window shows is fontified, and properties are saved for undo by halving, 2026-11-04.** After an edit, redisplay fontified a window's rows from their first position to their last, which in a folded Org file runs through every hidden subtree to the end of the buffer; it now fontifies each row from its start to the last text it shows, as Emacs's display fontifies only what it shows. In the user's 7,900-line archive.org, folded, redisplay after typing a character went from 400 to 3 ms in the test build. And saving a range's text properties for undo looked at every run in the buffer, so changing properties a line at a time was quadratic: `org-indent-mode` over 35,000 lines went from 10 s to 1.7 s, and it now indents 50 ms at a time by a timer, as Org's agent does in idle time.
 
 - **The code review's large-buffer costs, 2026-11-03** ([review.md](review.md), group 3). Each has a test that times the case it names; on the same M1, in the test build, before and after:

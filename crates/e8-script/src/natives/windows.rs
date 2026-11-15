@@ -1684,9 +1684,10 @@ natives! {
     }
 
     /// Whether the display shows images and fonts of many sizes, as a graphical
-    /// one does, rather than a terminal's cells, as display-graphic-p.
+    /// one does, rather than a terminal's cells, as display-graphic-p: in
+    /// the GUI already while init.ts runs, as window-system is.
     pub fn displayGraphicP(ed) -> bool {
-        Ok(ed.text_metrics().images())
+        Ok(ed.window_system().is_some())
     }
 
     /// The width of a character of the frame's default font, in the front

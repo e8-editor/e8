@@ -1,11 +1,12 @@
 // Saving and restoring sessions, after Emacs's desktop.el: with
 // desktop-save-mode on, the buffers visiting files and Dired buffers, with
 // their modes, points and marks, some global variables such as
-// file-name-history, and the selected frame's windows are saved when E8
-// exits and every so often while idle, and read back when it starts. The
-// first save asks for a directory, as Emacs's does; M-x desktop-save saves
-// at once. The file is JSON, where Emacs writes Lisp, and a lock file next
-// to it keeps two E8s from using it at once.
+// file-name-history, and the selected frame's windows, and in a window its
+// place and size, are saved when E8 exits and every so often while idle,
+// and read back when it starts. The first save asks for a directory, as
+// Emacs's does; M-x desktop-save saves at once. The file is JSON, where
+// Emacs writes Lisp, and a lock file next to it keeps two E8s from using
+// it at once.
 
 import { truthy } from "subr";
 import { type WindowState, windowStateGet, windowStatePut } from "window";
@@ -34,7 +35,7 @@ for (const [name, value, doc] of [
   ["desktop-buffers-not-to-save", "\\` ", "A regexp for the names of buffers not visiting files that are not saved."],
   ["desktop-files-not-to-save", "\\`/[^/:]*:", "A regexp for the names of files whose buffers are not saved: remote ones."],
   ["desktop-modes-not-to-save", ["tags-table-mode"], "Major modes whose buffers are not saved."],
-  ["desktop-restore-frames", true, "Whether the desktop saves and restores the selected frame's windows."],
+  ["desktop-restore-frames", true, "Whether the desktop saves and restores the selected frame: where it is, how big, and its windows."],
   ["desktop-auto-save-timeout", 30, "Seconds idle after which the desktop is saved, if it has changed; nil or 0 for never."],
   ["desktop-missing-file-warning", null, "Whether a desktop buffer whose file is gone is made anyway, with a warning."],
   ["desktop-file-modes", 0o600, "The permissions the desktop file gets: only you can read it, as it lists your files."],
@@ -76,6 +77,46 @@ interface Desktop {
    * saved before held an object of its own, `OldWindows`, read still.
    */
   windows?: string | OldWindows;
+  /** Where the selected frame was and how big, as frameset keeps its parameters. */
+  frame?: SavedFrame;
+}
+
+/**
+ * The selected frame's place and size, as frameset-save keeps a frame's
+ * left, top, width and height: the size is its text area's, in the
+ * front end's units, as frame-text-width and set-frame-size with
+ * PIXELWISE have it, so it comes back the same whatever the font. Only
+ * a frame in a window is kept, and put back only in a window of the same
+ * kind, as a terminal's characters are not a window's pixels.
+ */
+interface SavedFrame {
+  windowSystem: string;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+/** The selected frame's place and size, if it is in a window. */
+function frameGeometry(): SavedFrame | undefined {
+  const windowSystem = e8.windowSystem();
+  if (!windowSystem) return undefined;
+  const [left, top] = e8.framePosition();
+  const [width, height] = [e8.frameTextWidth(), e8.frameTextHeight()];
+  return width > 0 && height > 0 ? { windowSystem, left, top, width, height } : undefined;
+}
+
+/**
+ * Puts the selected frame where the desktop had it, as frameset-restore
+ * puts back a frame it reuses with modify-frame-parameters: the front end
+ * moves and resizes the window as it next draws.
+ */
+function restoreFrame(saved: SavedFrame): void {
+  if (saved.windowSystem !== e8.windowSystem()) return;
+  const ok = (n: unknown) => typeof n === "number" && Number.isFinite(n);
+  if (!(ok(saved.width) && ok(saved.height) && ok(saved.left) && ok(saved.top)) || saved.width <= 0 || saved.height <= 0) return;
+  e8.setFrameSize(null, saved.width, saved.height, true);
+  e8.setFramePosition(null, saved.left, saved.top);
 }
 
 /** The windows as desktops before window-state-get kept them: a window, or two side by side or one above the other. */
@@ -195,7 +236,9 @@ function gather(): Desktop {
     });
     if (saved) buffers.push(saved);
   }
-  return { version: 1, globals, buffers, ...(truthy(e8.variable("desktop-restore-frames")) ? { windows: e8.prin1ToString(windowStateGet(null, true)) } : {}) };
+  if (!truthy(e8.variable("desktop-restore-frames"))) return { version: 1, globals, buffers };
+  const frame = frameGeometry();
+  return { version: 1, globals, buffers, windows: e8.prin1ToString(windowStateGet(null, true)), ...(frame ? { frame } : {}) };
 }
 
 /** The text last written, so auto-saving a desktop that did not change writes nothing, as desktop-file-checksum. */
@@ -300,7 +343,10 @@ function read(dirname?: string): boolean {
     else failed++;
   }
   if (locker !== e8.emacsPid()) claimLock(String(e8.variable("desktop-dirname")));
-  const windows = desktop.windows && truthy(e8.variable("desktop-restore-frames")) ? savedWindows(desktop.windows) : undefined;
+  const frames = truthy(e8.variable("desktop-restore-frames"));
+  // As frameset-restore reuses the selected frame: its place and size first, then its windows.
+  if (frames && desktop.frame) restoreFrame(desktop.frame);
+  const windows = desktop.windows && frames ? savedWindows(desktop.windows) : undefined;
   // As frameset.el puts a frame's windows: safely, and a state that no longer fits leaves them as they are.
   if (windows) e8.conditionCase(() => windowStatePut(windows, undefined, Symbol.for("safe")), { error: (e) => e8.message(`Desktop: windows not restored: ${e.message}`) });
   else if (desktop.buffers?.length) {

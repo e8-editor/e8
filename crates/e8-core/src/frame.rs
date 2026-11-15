@@ -96,10 +96,17 @@ impl Editor {
     }
 
     /// How much of a frame, in the front end's units, its text area holds
-    /// beside the windows: the echo area and the bars above them.
+    /// beside the windows: the echo area and the bars above them. The
+    /// menu bar, the tab bar and the echo area's first line are each a
+    /// bar as tall as a mode line, as a graphical front end draws them
+    /// with room above and below, and the echo area's other lines a line
+    /// each; on a terminal a bar is a line. So `set-frame-size` given
+    /// `frame-text-height` keeps the frame as big as it was.
     fn frame_outside_windows(&self, frame: FrameId) -> usize {
-        let lines = self.menu_bar_lines(frame) + self.tab_bar_lines(frame) + self.frame_echo_lines(frame);
-        (lines as f32 * self.cell().1) as usize
+        let bar = self.text_metrics().window_chrome().mode_line;
+        let bars = self.menu_bar_lines(frame) + self.tab_bar_lines(frame) + 1;
+        let more = self.frame_echo_lines(frame) - 1;
+        (bars as f32 * bar + more as f32 * self.cell().1) as usize
     }
 
     /// How many lines a frame's echo area takes.

@@ -155,3 +155,62 @@ fn the_windows_come_back_at_their_sizes_and_older_desktops_still_read() {
     assert_eq!(windows(&ed), [("a.txt".into(), 4), ("b.txt".into(), 0)]);
     assert_eq!(ed.window_buffer().name, "b.txt");
 }
+
+#[test]
+fn a_frame_in_a_window_comes_back_where_it_was_and_as_big() {
+    let config = dir();
+    {
+        let (mut ed, _s) = setup(config.path());
+        ed.set_in_a_window();
+        let frame = ed.selected_frame();
+        ed.set_frame_geometry(frame, e8_core::FrameGeometry { native: (90.0, 30.0), position: (120.0, 45.0), scale: 2.0, outer: (0.0, 0.0) });
+        ed.call("desktop-save", vec![Arg::Str(config.path().display().to_string()), Arg::Prefix(None)]).unwrap();
+    }
+    let saved = fs::read_to_string(config.path().join(".e8.desktop")).unwrap();
+    assert!(saved.contains("\"frame\""), "{saved}");
+    let (mut ed, _s) = setup(config.path());
+    ed.set_in_a_window();
+    // A frame a different size from the one saved, as a new window is.
+    ed.set_frame_size(60, 20);
+    ed.set_variable("desktop-save-mode", Value::Bool(true));
+    ed.run_hooks("after-init-hook").unwrap();
+    let frame = ed.selected_frame();
+    // Headless a cell is 1 by 1: the text area was 80 wide and its 23
+    // lines' windows and the echo area tall.
+    assert_eq!(
+        ed.take_frame_requests(),
+        vec![
+            e8_core::FrameRequest::Size { frame, width: 80.0, height: 24.0 },
+            e8_core::FrameRequest::Position { frame, x: 120.0, y: 45.0 },
+        ]
+    );
+}
+
+#[test]
+fn a_frame_is_not_put_back_on_a_terminal_or_without_desktop_restore_frames() {
+    let config = dir();
+    {
+        let (mut ed, _s) = setup(config.path());
+        ed.set_in_a_window();
+        let frame = ed.selected_frame();
+        ed.set_frame_geometry(frame, e8_core::FrameGeometry { native: (90.0, 30.0), position: (120.0, 45.0), scale: 2.0, outer: (0.0, 0.0) });
+        ed.call("desktop-save", vec![Arg::Str(config.path().display().to_string()), Arg::Prefix(None)]).unwrap();
+    }
+    {
+        let (mut ed, _s) = setup(config.path());
+        ed.set_in_a_window();
+        ed.set_variable("desktop-restore-frames", Value::Bool(false));
+        ed.set_variable("desktop-save-mode", Value::Bool(true));
+        ed.run_hooks("after-init-hook").unwrap();
+        assert!(ed.take_frame_requests().is_empty());
+    }
+    // A terminal's characters are not a window's pixels.
+    let (mut ed, _s) = setup(config.path());
+    ed.set_variable("desktop-save-mode", Value::Bool(true));
+    ed.run_hooks("after-init-hook").unwrap();
+    assert!(ed.take_frame_requests().is_empty());
+    // Nor does a terminal save a frame of its own.
+    ed.call("desktop-save", vec![Arg::Str(config.path().display().to_string()), Arg::Prefix(None)]).unwrap();
+    let saved = fs::read_to_string(config.path().join(".e8.desktop")).unwrap();
+    assert!(!saved.contains("\"frame\""), "{saved}");
+}
