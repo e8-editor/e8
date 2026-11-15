@@ -1,0 +1,204 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "replace-lone-capital-upcases",
+      "input": {
+        "text": "I a. i b.",
+        "point": 0,
+        "keys": "!",
+        "modes": [],
+        "call": [
+          "query-replace",
+          "i",
+          "we"
+        ],
+        "platform": null
+      },
+      "text": "WE a. we b.",
+      "visible": "WE a. we b.",
+      "point": 8,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "beginning-of-buffer-tenths-narrowed",
+      "input": {
+        "text": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n",
+        "point": 0,
+        "keys": "M-< C-n C-n C-SPC C-n C-n C-n C-n C-n C-n C-x n n M-3 M-<",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n",
+      "visible": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n",
+      "point": 15,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "end-of-buffer-tenths-narrowed",
+      "input": {
+        "text": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n",
+        "point": 0,
+        "keys": "M-< C-n C-n C-SPC C-n C-n C-n C-n C-n C-n C-x n n M-3 M->",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n",
+      "visible": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n",
+      "point": 21,
+      "mark": 6,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "delete-indentation-last-line-forward",
+      "input": {
+        "text": "a\nb",
+        "point": 2,
+        "keys": "C-u M-^",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\nb",
+      "visible": "a\nb",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "delete-indentation-region",
+      "input": {
+        "text": "a\n  b\n  c\nd",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-e M-^",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "a b c\nd",
+      "visible": "a b c\nd",
+      "point": 1,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "delete-rectangle-keeps-point",
+      "input": {
+        "text": "abcd\nefgh\nijkl\n",
+        "point": 1,
+        "keys": "C-SPC C-n C-n C-f C-f C-x C-x C-x r d",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ad\neh\nil\n",
+      "visible": "ad\neh\nil\n",
+      "point": 1,
+      "mark": 7,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "rectangle-number-lines-from-zero-padded",
+      "input": {
+        "text": "a\nb\nc\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-u C-x r N",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0",
+          "%03d "
+        ]
+      },
+      "text": "000 a\n001 b\n002 c\n",
+      "visible": "000 a\n001 b\n002 c\n",
+      "point": 12,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "overwrite-at-narrowing-end",
+      "input": {
+        "text": "abcdef",
+        "point": 0,
+        "keys": "C-SPC C-f C-f C-f C-x n n C-e <insert> x",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abcxdef",
+      "visible": "abcxdef",
+      "point": 4,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "overwrite-before-tab",
+      "input": {
+        "text": "\tab",
+        "point": 0,
+        "keys": "<insert> x",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "x\tab",
+      "visible": "x\tab",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "undo-outside-narrowing",
+      "input": {
+        "text": "abc\ndef",
+        "point": 0,
+        "keys": "X C-n C-a C-SPC C-e C-x n n C-/",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "Xabc\ndef",
+      "visible": "Xabc\ndef",
+      "point": 8,
+      "mark": 5,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No further undo information for region"
+    }
+  ]
+}

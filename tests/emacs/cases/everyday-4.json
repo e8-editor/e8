@@ -1,0 +1,12 @@
+[
+  {"name": "replace-lone-capital-upcases", "text": "I a. i b.", "call": ["query-replace", "i", "we"], "keys": "!"},
+  {"name": "beginning-of-buffer-tenths-narrowed", "text": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n", "keys": "M-< C-n C-n C-SPC C-n C-n C-n C-n C-n C-n C-x n n M-3 M-<"},
+  {"name": "end-of-buffer-tenths-narrowed", "text": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n", "keys": "M-< C-n C-n C-SPC C-n C-n C-n C-n C-n C-n C-x n n M-3 M->"},
+  {"name": "delete-indentation-last-line-forward", "text": "a\nb", "point": 2, "keys": "C-u M-^"},
+  {"name": "delete-indentation-region", "text": "a\n  b\n  c\nd", "keys": "C-SPC C-n C-n C-e M-^"},
+  {"name": "delete-rectangle-keeps-point", "text": "abcd\nefgh\nijkl\n", "point": 1, "keys": "C-SPC C-n C-n C-f C-f C-x C-x C-x r d"},
+  {"name": "rectangle-number-lines-from-zero-padded", "text": "a\nb\nc\n", "keys": "C-SPC C-n C-n C-u C-x r N", "answers": ["0", "%03d "]},
+  {"name": "overwrite-at-narrowing-end", "text": "abcdef", "keys": "C-SPC C-f C-f C-f C-x n n C-e <insert> x"},
+  {"name": "overwrite-before-tab", "text": "\tab", "keys": "<insert> x"},
+  {"name": "undo-outside-narrowing", "text": "abc\ndef", "keys": "X C-n C-a C-SPC C-e C-x n n C-/"}
+]

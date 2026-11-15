@@ -339,18 +339,36 @@ pub fn expand_replacement(text: &str, m: &Match, replacement: &str, literal: boo
     if fixed_case {
         return Ok(out);
     }
-    let letters: Vec<char> = text.chars().filter(|c| c.is_alphabetic()).collect();
-    if letters.is_empty() {
-        return Ok(out);
+    // As Freplace_match decides: all caps if the old text has no lower-case
+    // letter and a word of several letters, or if every word starts with
+    // a capital and none has more than one letter ("Should x -> yz,
+    // operating on X, give Yz or YZ? We'll assume the latter"); each word
+    // capitalised if every word starts with a capital.
+    let (mut some_lowercase, mut some_uppercase, mut some_multiletter_word, mut some_nonuppercase_initial) =
+        (false, false, false, false);
+    let mut prev_word = false;
+    for c in text.chars() {
+        if c.is_lowercase() {
+            some_lowercase = true;
+            if prev_word { some_multiletter_word = true } else { some_nonuppercase_initial = true }
+        } else if c.is_uppercase() {
+            some_uppercase = true;
+            if prev_word {
+                some_multiletter_word = true;
+            }
+        } else if !prev_word {
+            // Any caseless character after a non-word one, even a space,
+            // counts as a lower-case initial, as search.c's code has it.
+            some_nonuppercase_initial = true;
+        }
+        prev_word = c.is_alphanumeric();
     }
-    let all_upper = letters.iter().all(|c| c.is_uppercase());
-    let first_upper = text.split(|c: char| !c.is_alphanumeric()).filter(|w| !w.is_empty()).all(|w| {
-        w.chars().next().is_some_and(char::is_uppercase)
-    });
-    Ok(if all_upper && letters.len() > 1 {
+    Ok(if !some_lowercase && some_multiletter_word {
         out.to_uppercase()
-    } else if first_upper {
+    } else if !some_nonuppercase_initial && some_multiletter_word {
         capitalize(&out)
+    } else if !some_nonuppercase_initial && some_uppercase {
+        out.to_uppercase()
     } else {
         out
     })
@@ -652,6 +670,11 @@ mod tests {
         assert_eq!(expand_replacement("Foo", &m(0, 3), "bar", false, false).unwrap(), "Bar");
         assert_eq!(expand_replacement("FOO", &m(0, 3), "bar", false, false).unwrap(), "BAR");
         assert_eq!(expand_replacement("FOO", &m(0, 3), "bar", false, true).unwrap(), "bar");
+        // What Emacs 30's replace-match gives replacing each with "yz zz".
+        for (old, new) in [("X", "YZ ZZ"), ("1X", "YZ ZZ"), ("AB 9", "YZ ZZ"), ("Foo Bar", "Yz Zz"), ("Foo  Bar", "yz zz"), ("I a", "yz zz"), (" X", "yz zz"), ("X-1", "yz zz"), ("Ab 9", "yz zz")] {
+            let n = old.chars().count();
+            assert_eq!(expand_replacement(old, &m(0, n), "yz zz", false, false).unwrap(), new, "{old:?}");
+        }
         let groups = Match { start: 0, end: 7, groups: vec![Some((0, 7)), Some((0, 3)), Some((4, 7))] };
         assert_eq!(expand_replacement("abc def", &groups, r"\2 \1 [\&]", false, true).unwrap(), "def abc [abc def]");
     }

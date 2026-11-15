@@ -280,7 +280,9 @@ fn movement(ed: &mut Editor) {
             let b = ed.buffer_mut();
             match arg {
                 Some(arg @ (PrefixArg::Number(_) | PrefixArg::Minus)) => {
-                    let pos = (1 + tenths(b.len(), arg.numeric())).clamp(0, b.len() as i64) as usize;
+                    // Tenths of the accessible text, as Emacs counts from point-min.
+                    let (min, max) = (b.point_min() as i64, b.point_max() as i64);
+                    let pos = (min + 1 + tenths((max - min) as usize, arg.numeric())).clamp(min, max) as usize;
                     b.set_point(forward_line(b, pos, 1));
                 }
                 _ => b.set_point(b.point_min()),
@@ -306,7 +308,8 @@ fn movement(ed: &mut Editor) {
             let b = ed.buffer_mut();
             match arg {
                 Some(arg @ (PrefixArg::Number(_) | PrefixArg::Minus)) => {
-                    let pos = (b.len() as i64 - tenths(b.len(), arg.numeric())).clamp(0, b.len() as i64) as usize;
+                    let (min, max) = (b.point_min() as i64, b.point_max() as i64);
+                    let pos = (max - tenths((max - min) as usize, arg.numeric())).clamp(min, max) as usize;
                     b.set_point(forward_line(b, pos, 1));
                 }
                 _ => b.set_point(b.point_max()),
@@ -755,7 +758,6 @@ pub(crate) fn position_at_x_in(ed: &Editor, window: crate::window::WindowId, b: 
 /// hidden without an ellipsis, then to where the column is reached, past a
 /// character that spans it, or the line's end.
 pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usize) -> usize {
-    use unicode_width::UnicodeWidthChar;
     let tab = ed.tab_width_in(b).max(1);
     let end = b.line_end(line);
     let mut col = 0;
@@ -771,7 +773,7 @@ pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usiz
         }
         col = match b.char_at(p) {
             Some('\t') => (col / tab + 1) * tab,
-            Some(c) => col + c.width().unwrap_or(0),
+            Some(c) => col + column_width(c),
             None => col,
         };
         p += 1;
@@ -784,7 +786,6 @@ pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usiz
 /// if hidden text starts there, past a character that spans the column, or
 /// the line's end.
 fn position_at_goal_column(ed: &Editor, b: &Buffer, line: usize, goal: usize) -> usize {
-    use unicode_width::UnicodeWidthChar;
     let tab = ed.tab_width_in(b).max(1);
     let end = b.line_end(line);
     let mut col = 0;
@@ -796,7 +797,7 @@ fn position_at_goal_column(ed: &Editor, b: &Buffer, line: usize, goal: usize) ->
         }
         col = match b.char_at(p) {
             Some('\t') => (col / tab + 1) * tab,
-            Some(c) => col + c.width().unwrap_or(0),
+            Some(c) => col + column_width(c),
             None => col,
         };
         p += 1;
@@ -804,12 +805,24 @@ fn position_at_goal_column(ed: &Editor, b: &Buffer, line: usize, goal: usize) ->
     p
 }
 
+/// How many columns a character other than a tab takes, as Emacs shows it
+/// with `ctl-arrow` on: a control character as `^X`, two columns, one of
+/// U+0080 to U+009F as an octal escape, `\200`, four, and the rest as wide
+/// as they are drawn.
+pub(crate) fn column_width(c: char) -> usize {
+    use unicode_width::UnicodeWidthChar;
+    match c as u32 {
+        0..=0x1f | 0x7f => 2,
+        0x80..=0x9f => 4,
+        _ => c.width().unwrap_or(0),
+    }
+}
+
 /// The column of a position as Emacs's current-column counts it: from the
 /// start of its line, with tabs to tab stops, wide characters taking two
 /// columns, and hidden text taking none, unless it shows an ellipsis, as
 /// folds do: that counts as if shown.
 pub(crate) fn current_column(ed: &Editor, b: &Buffer, pos: usize) -> usize {
-    use unicode_width::UnicodeWidthChar;
     let tab = ed.tab_width_in(b).max(1);
     let mut col = 0;
     for p in b.line_start(b.line_of(pos))..pos {
@@ -818,7 +831,7 @@ pub(crate) fn current_column(ed: &Editor, b: &Buffer, pos: usize) -> usize {
         }
         col = match b.char_at(p) {
             Some('\t') => (col / tab + 1) * tab,
-            Some(c) => col + c.width().unwrap_or(0),
+            Some(c) => col + column_width(c),
             None => col,
         };
     }
@@ -980,16 +993,41 @@ fn editing(ed: &mut Editor) {
         if n < 0 {
             return Err(Error::new(format!("Negative repetition argument {n}")));
         }
-        // In overwrite mode each character replaces the one after point,
-        // except at the end of a line, as in Emacs.
-        if ed.variable("overwrite-mode").is_some_and(|v| v.is_true()) {
-            let b = ed.buffer();
-            let p = b.point();
-            let line_end = b.line_end(b.line_of(p));
-            ed.delete_region(p, (p + n as usize).min(line_end))?;
+        // In overwrite mode the characters replace as many columns after
+        // point as they take, as Emacs's internal_self_insert does: not at
+        // the end of the line or the accessible text, nor a tab they do not
+        // fill, and with spaces for the rest of a wide character they cut.
+        let mut overwrite = None;
+        if ed.variable("overwrite-mode").is_some_and(|v| v.is_true()) && ed.buffer().point() < ed.buffer().point_max() {
+            let pos = ed.buffer().point();
+            let width = column_width(c);
+            if c != '\n' && ed.buffer().char_at(pos) != Some('\n') && width != 0 {
+                let target = ed.current_column() + n as usize * width;
+                let actual = ed.move_to_column(target);
+                let mut delete = ed.buffer().point() - pos;
+                let mut spaces = 0;
+                if actual > target {
+                    let b = ed.buffer();
+                    if b.point() > pos && b.char_at(b.point() - 1) == Some('\t') {
+                        delete -= 1;
+                    } else {
+                        spaces = actual - target;
+                    }
+                }
+                ed.buffer_mut().set_point(pos);
+                if delete > 0 {
+                    overwrite = Some((pos, delete, spaces));
+                }
+            }
         }
-        // As Emacs's self-insert-command, the text takes on the properties around it.
-        ed.insert_and_inherit(&c.to_string().repeat(n as usize))?;
+        let text = c.to_string().repeat(n as usize);
+        if let Some((pos, delete, spaces)) = overwrite {
+            ed.replace_range(pos, pos + delete, &format!("{text}{}", " ".repeat(spaces)))?;
+            ed.buffer_mut().set_point(pos + n as usize);
+        } else {
+            // As Emacs's self-insert-command, the text takes on the properties around it.
+            ed.insert_and_inherit(&text)?;
+        }
         after_self_insert(ed, c, true)
     });
     ed.define_command(
