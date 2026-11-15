@@ -666,40 +666,118 @@ function formatWord(word: string): string {
 
 // The session: one checker kept running, as ispell.el keeps ispell-process,
 // told each line with ispell-send-string and read as its filter reads.
+//
+// Unlike ispell.el, the session also remembers what the checker said of
+// each word for as long as what it accepts stays the same, can be asked
+// about a word without waiting for the answer, and starts helpers, more
+// checkers with the same arguments, to check a large region on several
+// processors at once ([ADR 0108](../docs/adr/0108-spell-checking-off-the-editor-thread.md)).
+// Hunspell takes 5 to 50 ms to answer for a word it does not know, as it
+// looks for corrections, and a word it knows takes 0.02 ms.
 
-interface Session {
-  /** The checker's process. */
+/** A checker's process and the answers still to come from it. */
+interface Checker {
   process: e8.Process;
+  /** What to do with each answer to come, in the order the checks were sent. */
+  waiting: ((lines: string[]) => void)[];
+  /** The lines of the answer coming in. */
+  lines: string[];
+  /** Output after the last whole line, waiting for the rest of it. */
+  partial: string;
+  /** Whether its version line has come: a helper's is passed over. */
+  ready: boolean;
+}
+
+/** A helper, and how many of the session's state lines it has been told. */
+interface Helper extends Checker {
+  told: number;
+}
+
+interface Session extends Checker {
   directory: string;
+  /** How to start a checker as this one was, for its helpers. */
+  start: { command: string[]; directory: string; coding: string };
+  /** What the checker said of each word since what it accepts last changed. */
+  answers: Map<string, Poss>;
+  /** Counts the changes to what the checker accepts, to know an answer asked for before one. */
+  generation: number;
+  /** The lines that changed what the checker accepts or how it reads, in order, to tell helpers. */
+  state: string[];
+  /** The words it was told to accept, the last of + and -, and the last formatter (~). */
+  accepted: Set<string>;
+  mode?: string;
+  formatter?: string;
+  helpers: Helper[];
 }
 let session: Session | undefined;
 
 /** The checker's output, a line each, since the last check was sent. */
 let filter: string[] = [];
-/** Output after the last whole line, waiting for the rest of it. */
-let partial = "";
 /** How many empty lines, each ending an answer, `filter` holds. */
 let answered = 0;
 
-/** Takes in what the checker writes, a whole line at a time, as ispell-filter. */
-function takeOutput(output: string): void {
-  const lines = (partial + output).split("\n");
-  partial = lines.pop() ?? "";
+/**
+ * Takes in what a checker writes, a whole line at a time, as ispell-filter:
+ * each answer, ending with an empty line, goes to what waits for it, and
+ * lines nothing waits for, such as the version line, to `filter`.
+ */
+function takeOutput(checker: Checker, output: string): void {
+  const lines = (checker.partial + output).split("\n");
+  checker.partial = lines.pop() ?? "";
   for (const line of lines) {
-    filter.push(line);
-    if (line === "") answered++;
+    if (!checker.ready) {
+      checker.ready = /^@\(#\) /.test(line);
+      continue;
+    }
+    if (checker.waiting.length === 0) {
+      if (checker === session) {
+        filter.push(line);
+        if (line === "") answered++;
+      }
+    } else if (line !== "") checker.lines.push(line);
+    else {
+      const done = checker.waiting.shift()!;
+      const answer = checker.lines;
+      checker.lines = [];
+      done(answer);
+    }
   }
 }
 
 /** Starts collecting the checker's answers afresh. */
 function clearFilter(): void {
   filter = [];
-  partial = "";
   answered = 0;
 }
 
 /** Lines that only change the checker's state, which it answers with nothing. */
 const SILENT = "*@~+-!%#$";
+
+/**
+ * Notes a line that changes the checker's state: one that changes what it
+ * accepts or how it reads forgets the answers remembered, and is kept to
+ * tell helpers. Telling it again what it was told already changes nothing,
+ * as flyspell tells it a buffer's words each time it changes buffer.
+ */
+function noteState(s: Session, line: string): void {
+  const c = line[0];
+  if (c === "%" || c === "!" || c === "#") return;
+  if (c === "+" || c === "-") {
+    if (s.mode === c) return;
+    s.mode = c;
+  } else if (c === "~") {
+    if (s.formatter === line) return;
+    s.formatter = line;
+  } else if (c === "@" || c === "*") {
+    const word = line.slice(1);
+    if (s.accepted.has(word)) return;
+    s.accepted.add(word);
+  }
+  // A helper accepts a personal dictionary's word for its session only, as it never saves.
+  s.state.push(c === "*" ? `@${line.slice(1)}` : line);
+  s.answers.clear();
+  s.generation++;
+}
 
 /** Whether the session's checker is running. */
 const running = (): boolean => session !== undefined && e8.processLiveP(session.process);
@@ -708,19 +786,44 @@ const running = (): boolean => session !== undefined && e8.processLiveP(session.
  * Sends lines to the checker, as ispell-send-string, and for each line it
  * answers, one to check, waits for that answer, which ends with an empty
  * line, as ispell-accept-output does: the answers are then in `filter`.
+ * Answers to checks sent earlier without waiting come first.
  */
 export function sendString(text: string): void {
   if (session === undefined) return;
   if (!running()) e8.signal("error", "No Ispell process to read output from!");
-  const checks = text.split("\n").filter((line) => line !== "" && !SILENT.includes(line[0])).length;
+  const s = session;
+  const lines = text.split("\n").filter((line) => line !== "");
+  const checks = lines.filter((line) => !SILENT.includes(line[0])).length;
+  for (const line of lines) if (SILENT.includes(line[0])) noteState(s, line);
   if (checks > 0) clearFilter();
-  e8.processSendString(session.process, text);
+  for (let i = 0; i < checks; i++) {
+    s.waiting.push((answer) => {
+      filter.push(...answer, "");
+      answered++;
+    });
+  }
+  e8.processSendString(s.process, text);
   while (answered < checks) {
-    if (!e8.acceptProcessOutput(session.process, 1) && !running()) {
+    if (!e8.acceptProcessOutput(s.process, 1) && !running()) {
       e8.signal("error", `${String(v("ispell-program-name"))} ended: ${filter.join("\n")}`);
     }
   }
   if (checks > 0) set("ispell-filter", [...filter].reverse());
+}
+
+/** Starts a checker's process as `start` says, its output going to it. */
+function startChecker<C extends Checker>(name: string, start: Session["start"], fields: Omit<C, "process" | "waiting" | "lines" | "partial">): C {
+  const checker = { ...fields, waiting: [], lines: [], partial: "" } as unknown as C;
+  checker.process = e8.makeProcess({
+    name,
+    command: start.command,
+    directory: start.directory,
+    connectionType: "pipe",
+    coding: start.coding,
+    filter: (_process: e8.Process, output: string) => takeOutput(checker, output),
+  });
+  e8.setProcessQueryOnExitFlag(checker.process, false);
+  return checker;
 }
 
 /** Starts the checker, as ispell-start-process, and waits for its version line. */
@@ -746,20 +849,20 @@ function startProcess(): void {
   if (executableFind(program) === undefined) e8.signal("file-missing", `Searching for program: No such file or directory, ${program}`);
   clearFilter();
   const directory = String(v("ispell-process-directory"));
-  const process = e8.makeProcess({
-    name: "ispell",
+  const start = {
     // hunspell's -m means something else; ispell's makes root and affix combinations it does not know.
     command: [program, "-a", ...(hunspell ? [] : ["-m"]), ...args],
     directory: e8.fileAccessibleDirectoryP(directory) ? directory : e8.expandFileName("~/"),
-    connectionType: "pipe",
     coding: e8.codingSystemP(coding) ? coding : "utf-8",
-    filter: (_process: e8.Process, output: string) => takeOutput(output),
+  };
+  // Its version line goes to `filter`, as everything else nothing waits for.
+  const s = startChecker<Session>("ispell", start, {
+    ready: true, directory, start, answers: new Map(), generation: 0, state: [], accepted: new Set(), helpers: [],
   });
-  e8.setProcessQueryOnExitFlag(process, false);
-  session = { process, directory };
+  session = s;
   set("ispell-process", true);
   // Its version line, as ispell-init-process waits up to 3 seconds for it, twice.
-  for (let tries = 0; tries < 2 && filter.length === 0; tries++) e8.acceptProcessOutput(process, 3);
+  for (let tries = 0; tries < 2 && filter.length === 0; tries++) e8.acceptProcessOutput(s.process, 3);
 }
 
 /** Makes sure the session is going, starting it if need be, as ispell-init-process. */
@@ -810,6 +913,7 @@ export function initProcess(): void {
 
 /** Forgets the session, its checker ended. */
 function forgetProcess(): void {
+  for (const h of session?.helpers ?? []) e8.deleteProcess(h.process);
   session = undefined;
   set("ispell-process", null);
 }
@@ -878,25 +982,165 @@ export function runOnWord(word: string): Poss {
   return answers.length === 0 ? true : parseOutput(answers[0]);
 }
 
-/** Checks words, each on its own, in one run of the checker, as flyspell checks a large region. */
+/** The first line of an answer to a word, parsed: no line means it is right. */
+const parseAnswer = (lines: string[]): Poss => {
+  const first = lines.find((l) => l !== "");
+  return first === undefined ? true : parseOutput(first);
+};
+
+/** How many words a checker is given at a time when several check a region together. */
+const BATCH = 32;
+/** How many helpers a session starts at most, beside its own checker. */
+const MAX_HELPERS = 3;
+
+/**
+ * Checks words, each on its own, as flyspell checks a large region, and
+ * returns what the checker said of each. What it said before is not asked
+ * again, and many words are shared out between the checker and helpers,
+ * a batch at a time to whichever is free, so they are checked on several
+ * processors at once.
+ */
 export function checkWords(words: string[]): Poss[] {
   if (words.length === 0) return [];
   if (!running()) acceptBufferLocalDefs();
-  sendString("%\n");
-  sendString(words.map((w) => `^${w}\n`).join(""));
-  // Each ^ line's answers end with an empty line, which is all there is
-  // when the checker finds no word in it.
-  const answers: Poss[] = [];
-  let first: string | undefined;
-  for (const line of filter) {
-    if (line !== "") first ??= line;
-    else {
-      answers.push(first === undefined ? true : parseOutput(first));
-      first = undefined;
-    }
+  const s = session;
+  if (s === undefined) return words.map(() => true);
+  const fresh = new Map<string, Poss>();
+  const asked = [...new Set(words.filter((w) => !s.answers.has(w)))];
+  if (asked.length > 0) {
+    const generation = s.generation;
+    if (asked.length <= BATCH) {
+      sendString("%\n");
+      sendString(asked.map((w) => `^${w}\n`).join(""));
+      // Each ^ line's answers end with an empty line, which is all there is
+      // when the checker finds no word in it.
+      const answers: string[][] = [[]];
+      for (const line of filter) {
+        if (line !== "") answers[answers.length - 1].push(line);
+        else answers.push([]);
+      }
+      clearFilter();
+      asked.forEach((w, i) => fresh.set(w, parseAnswer(answers[i] ?? [])));
+    } else checkTogether(s, asked, fresh);
+    if (s.generation === generation) for (const [w, poss] of fresh) if (poss !== undefined) s.answers.set(w, poss);
   }
-  clearFilter();
-  return words.map((_, i) => answers[i] ?? true);
+  return words.map((w) => (fresh.has(w) ? fresh.get(w) : s.answers.get(w)) ?? true);
+}
+
+/** Starts helpers until the session has `count`, each told what the checker was. */
+function startHelpers(s: Session, count: number): void {
+  s.helpers = s.helpers.filter((h) => e8.processLiveP(h.process));
+  while (s.helpers.length < count) s.helpers.push(startChecker<Helper>("ispell-helper", s.start, { ready: false, told: 0 }));
+}
+
+/**
+ * Checks words with the session's checker and helpers together, giving
+ * each a batch at a time, and waits for every answer, putting them in
+ * `answers`. A helper that ends gives its words back to the others.
+ */
+function checkTogether(s: Session, words: string[], answers: Map<string, Poss>): void {
+  const wanted = Math.min(MAX_HELPERS, Math.max(0, e8.numProcessors() - 1), Math.ceil(words.length / BATCH) - 1);
+  startHelpers(s, wanted);
+  const queue = [...words];
+  const lines = new Map<string, string[]>();
+  const busy = new Map<Checker, string[]>();
+  let stopped = false;
+  const give = (c: Checker): void => {
+    const batch = queue.splice(0, BATCH);
+    if (stopped || batch.length === 0) return;
+    busy.set(c, batch);
+    let left = batch.length;
+    let told = "";
+    if ("told" in c) {
+      const h = c as Helper;
+      told = s.state.slice(h.told).map((line) => `${line}\n`).join("");
+      h.told = s.state.length;
+    }
+    for (const word of batch) {
+      c.waiting.push((answer) => {
+        lines.set(word, answer);
+        if (--left === 0) {
+          busy.delete(c);
+          give(c);
+        }
+      });
+    }
+    e8.processSendString(c.process, `${told}%\n${batch.map((w) => `^${w}\n`).join("")}`);
+  };
+  e8.unwindProtect(
+    () => {
+      for (const c of [s, ...s.helpers]) give(c);
+      // Seconds without output: a helper still not ready after a few is given up on.
+      let quiet = 0;
+      while (busy.size > 0) {
+        quiet = e8.acceptProcessOutput(undefined, 1) ? 0 : quiet + 1;
+        for (const [c, batch] of busy) {
+          if (c !== s && quiet >= 3 && !c.ready) e8.deleteProcess(c.process);
+          if (e8.processLiveP(c.process)) continue;
+          if (c === s) e8.signal("error", `${String(v("ispell-program-name"))} ended`);
+          // What a helper that ended had left goes to the others.
+          busy.delete(c);
+          c.waiting = [];
+          queue.unshift(...batch.filter((w) => !lines.has(w)));
+          s.helpers = s.helpers.filter((h) => h !== c);
+          for (const other of [s, ...s.helpers]) if (!busy.has(other)) give(other);
+        }
+      }
+    },
+    () => {
+      stopped = true;
+    },
+  );
+  for (const w of words) answers.set(w, parseAnswer(lines.get(w) ?? []));
+}
+
+/**
+ * Waits for the answers to every check sent without waiting, so that what
+ * they mark is there, as a command that reads flyspell's marks needs: in
+ * Emacs each word was marked before the next command ran.
+ */
+export function awaitAnswers(): void {
+  while (running() && session!.waiting.length > 0) e8.acceptProcessOutput(session!.process, 1);
+}
+
+/** What the checker said of a word since what it accepts last changed, if it was asked. */
+export function knownAnswer(word: string): Poss | undefined {
+  return running() ? session!.answers.get(word) : undefined;
+}
+
+/**
+ * Asks the checker about a word without waiting: `done` gets the answer
+ * when it comes, as the command loop takes in the checker's output, or at
+ * once if it is known. An answer asked for before what the checker accepts
+ * changed is asked for again; one from a session that has ended never comes.
+ */
+export function checkWordLater(word: string, done: (poss: Poss) => void): void {
+  if (!running()) acceptBufferLocalDefs();
+  const s = session;
+  if (s === undefined || !running()) return;
+  const known = s.answers.get(word);
+  if (known !== undefined) {
+    done(known);
+    return;
+  }
+  const generation = s.generation;
+  s.waiting.push((answer) => {
+    if (session !== s) return;
+    if (s.generation !== generation) {
+      checkWordLater(word, done);
+      return;
+    }
+    // An error is said, not waited on, as nothing waits for this answer.
+    const first = answer.find((l) => l !== "");
+    if (first !== undefined && /^[\ra-zA-Z]/.test(first)) {
+      e8.message(`Ispell error: ${first}`);
+      return;
+    }
+    const poss = parseAnswer(answer);
+    if (poss !== undefined) s.answers.set(word, poss);
+    done(poss);
+  });
+  e8.processSendString(s.process, `%\n^${word}\n`);
 }
 
 /** Whether the word at point is right, as ispell-correct-p. */

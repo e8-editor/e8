@@ -384,7 +384,7 @@ impl E8App {
         }
         match self.flash_until {
             Some(until) if now < until => {
-                let color = if ui.visuals().dark_mode { Color32::from_white_alpha(40) } else { Color32::from_black_alpha(40) };
+                let color = Tokens::get(ui.ctx()).flash;
                 let layer = egui::LayerId::new(egui::Order::Foreground, egui::Id::unique("visible-bell"));
                 ui.painter().clone().with_layer_id(layer).rect_filled(ui.max_rect(), 0.0, color);
                 ui.ctx().request_repaint_after(std::time::Duration::from_secs_f64(until - now));

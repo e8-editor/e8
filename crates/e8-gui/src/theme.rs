@@ -1,10 +1,9 @@
-//! Colours and type, after ArtCraft's design language: hard edges, hairline
-//! rules, a warm off-white or near-black page, one blue accent, Geist Mono
-//! for text and Inter for interface labels.
+//! Colours and type: hard edges, hairline rules, a violet-black or ivory
+//! page, one Lavender accent, Geist Mono for text and Inter for interface
+//! labels, as ADR 0004 began and ADR 0107 coloured.
 //!
-//! The colours come from the core's palette, which follows the ArtCraft
-//! Launcher's theme (github.com/storytold/craft-launcher, MIT OR Apache-2.0)
-//! and which faces use too. Drawing code reads [`Tokens`] or faces and never
+//! The colours come from the core's palette, made from E8's brand colours,
+//! which faces use too. Drawing code reads [`Tokens`] or faces and never
 //! hard-codes a colour.
 
 use std::collections::BTreeMap;
@@ -33,13 +32,16 @@ pub struct Tokens {
     pub faint: Color32,
     /// Hairline rules.
     pub line: Color32,
-    /// The brand blue, for surfaces.
+    /// Lavender, for surfaces; text on it is Midnight, never Ivory.
     pub accent: Color32,
-    /// The brand blue, for text.
+    /// Lavender, for text.
     pub accent_ink: Color32,
-    /// The active region: the brand blue, translucent so text stays readable.
+    /// The active region: Lavender, translucent so text stays readable.
     pub selection: Color32,
+    /// Errors.
     pub bad: Color32,
+    /// The visible bell's wash over the frame: ink, faintly.
+    pub flash: Color32,
     /// The cursor, ink unless a theme's `cursor` face says otherwise.
     pub cursor: Color32,
 }
@@ -67,6 +69,7 @@ impl Tokens {
             accent_ink: named("accent-ink"),
             selection: named("selection"),
             bad: named("bad"),
+            flash: { let ink = named("ink"); Color32::from_rgba_unmultiplied(ink.r(), ink.g(), ink.b(), 40) },
             cursor: named("ink"),
         }
     }

@@ -2,8 +2,8 @@
 """A stand-in for Hunspell, for ispell.ts's tests: it answers -vv, -D and
 ispell's pipe mode, -a, as Hunspell does, from the NAME.dic word lists
 beside it, one word a line, taking several dictionaries as -d en_US,sv_SE.
-Each run's arguments are appended to args.log beside it, and words saved
-with # to the -p file."""
+Each run's arguments are appended to args.log beside it, each line it is
+asked to check to checked.log, and words saved with # to the -p file."""
 
 import os
 import re
@@ -70,6 +70,8 @@ for raw in sys.stdin:
         pass
     else:
         text = line[1:] if c == "^" else line
+        with open(os.path.join(here, "checked.log"), "a", encoding="utf-8") as log:
+            log.write(text + "\n")
         for m in re.finditer(r"[^\W\d_]+(?:'[^\W\d_]+)?", text):
             word = m.group(0)
             offset = m.start() + (1 if c == "^" else 0)

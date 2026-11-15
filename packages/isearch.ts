@@ -21,7 +21,11 @@ import { truthy, regexpQuote } from "subr";
 e8.defineFace({
   name: "isearch",
   doc: "The match incremental search is at.",
-  attributes: { background: "accent", foreground: "bg" },
+  // Text on Lavender is dark in both appearances: the page's colour in the
+  // dark, the strongest ink in the light, never the light page's ivory.
+  attributes: { background: "accent" },
+  dark: { foreground: "bg" },
+  light: { foreground: "ink-strong" },
 });
 e8.defineFace({
   name: "lazy-highlight",
