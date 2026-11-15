@@ -7,51 +7,71 @@
 <meta name="description" content="E8 is an editor that works the way Emacs works, in Rust and TypeScript. Try it in your browser.">
 <meta property="og:title" content="E8">
 <meta property="og:description" content="An editor that works the way Emacs works, in Rust and TypeScript.">
-<meta property="og:image" content="assets/social-dark.png">
-<link rel="icon" href="assets/icon-512.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://e8-editor.github.io/e8/">
+<meta property="og:image" content="https://e8-editor.github.io/e8/assets/social-dark.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="E8: an editor that works the way Emacs works.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F8F4EB">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#17121F">
+<link rel="icon" href="assets/favicon.ico" sizes="32x32">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <style>
+  /* E8's brand colours (docs/adr/0106-the-graphical-profile.md): Ivory
+     and Midnight's ink by day, a greyed violet and Ivory's ink by night,
+     Lavender for links and focus. */
   :root {
-    --bg: #f7f3ee;
-    --raised: #fbf8f4;
-    --ink: #1a1a1a;
-    --muted: #6b655c;
-    --line: #e3ddd3;
-    --sun: #f2541b;
-    --code: #efe9e0;
+    --bg: #F8F4EB;
+    --raised: #FCFAF5;
+    --ink: #2B1A40;
+    --muted: #665A75;
+    --line: #E2DACB;
+    --accent: #6A3FD0;
+    --code: #EFE8DA;
+    --lattice: url(assets/lattices/guided-field.svg);
     --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
     --sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #141312;
-      --raised: #1b1a18;
-      --ink: #ece8e1;
-      --muted: #9b958b;
-      --line: #2e2c29;
-      --sun: #ff7a3d;
-      --code: #22201d;
+      --bg: #17121F;
+      --raised: #1D1727;
+      --ink: #EAE5DA;
+      --muted: #A89FB4;
+      --line: #30283F;
+      --accent: #B899F8;
+      --code: #221A2E;
+      --lattice: url(assets/lattices/guided-field-on-dark.svg);
       color-scheme: dark;
     }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); }
   body { font: 16px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
-  a { color: inherit; text-decoration-color: var(--sun); text-underline-offset: 3px; }
-  a:hover { color: var(--sun); }
+  a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
   .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
 
   header { border-bottom: 1px solid var(--line); }
   header .wrap { display: flex; align-items: center; gap: 24px; height: 64px; }
   .mark { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; letter-spacing: -0.01em; }
-  .mark img { width: 36px; height: 36px; }
+  .mark img { height: 36px; width: auto; }
   .mark .reverse { display: none; }
   @media (prefers-color-scheme: dark) { .mark .plain { display: none; } .mark .reverse { display: block; } }
   nav { margin-left: auto; display: flex; gap: 20px; font-size: 15px; }
   nav a { text-decoration: none; color: var(--muted); }
   nav a:hover { color: var(--ink); }
 
-  .hero { padding-top: 40px; }
+  /* The guided lattice, faint, behind the heading on screens wide enough
+     to leave it room. */
+  .hero { padding-top: 40px; position: relative; isolation: isolate; }
+  .hero::before { content: ""; position: absolute; z-index: -1; top: 8px; right: 16px; width: min(56%, 640px); height: 150px;
+    background: var(--lattice) right center / contain no-repeat; opacity: 0.22; pointer-events: none; }
+  @media (max-width: 900px) { .hero::before { display: none; } }
   h1 { font-size: clamp(28px, 4.2vw, 46px); line-height: 1.1; letter-spacing: -0.025em; margin: 0 0 12px; font-weight: 650; max-width: 18em; }
   .lede { color: var(--muted); font-size: clamp(16px, 1.6vw, 18px); margin: 0 0 24px; max-width: 42em; }
 
@@ -68,7 +88,7 @@
     border: 1px solid var(--line); border-radius: 10px; background: var(--raised); color: var(--ink); cursor: pointer; opacity: 0.8;
     box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 4px 12px rgb(0 0 0 / 0.08); transition: opacity 0.15s, color 0.15s, border-color 0.15s, transform 0.15s;
     -webkit-tap-highlight-color: transparent; }
-  .zoom:hover, .zoom:focus-visible { opacity: 1; color: var(--sun); border-color: var(--sun); transform: scale(1.06); }
+  .zoom:hover, .zoom:focus-visible { opacity: 1; color: var(--accent); border-color: var(--accent); transform: scale(1.06); }
   .zoom svg { width: 18px; height: 18px; }
   .zoom .out { display: none; }
   .zoom::after { content: attr(data-tip); position: absolute; top: calc(100% + 8px); right: 0; padding: 5px 10px; border-radius: 8px; white-space: nowrap;
@@ -112,9 +132,8 @@
 <header>
   <div class="wrap">
     <a class="mark" href="./">
-      <img class="plain" src="assets/logo.svg" alt="">
-      <img class="reverse" src="assets/logo-reverse.svg" alt="">
-      <span>E8</span>
+      <img class="plain" src="assets/logo.svg" alt="E8" width="80" height="36">
+      <img class="reverse" src="assets/logo-reverse.svg" alt="E8" width="80" height="36">
     </a>
     <nav>
       <a href="#install">Install</a>
@@ -129,7 +148,7 @@
     <h1>An editor that works the way Emacs works.</h1>
     <p class="lede">The same buffers, windows, keys and commands, with a Rust core and its commands in TypeScript. This is E8 itself, compiled to WebAssembly and running in your browser: click in it and type.</p>
     <div class="fullbar">
-      <img src="assets/logo.svg" alt="">
+      <img src="assets/symbol-lavender.svg" alt="">
       <span>E8, in your browser</span>
     </div>
     <div class="editor">
@@ -181,7 +200,7 @@
 <footer>
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.png">
-    <img src="assets/banner-light.png" alt="" width="1800" height="600" loading="lazy">
+    <img src="assets/banner-light.png" alt="" width="2880" height="840" loading="lazy">
   </picture>
   <div class="wrap">
     <span>E8 is GPL-3.0-or-later</span>
