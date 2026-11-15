@@ -91,6 +91,7 @@ mod coding_definitions;
 mod charset_definitions;
 mod mark_marker;
 mod ns_functions;
+mod fns_strings;
 mod subr;
 mod symbols;
 mod syntax_tables;

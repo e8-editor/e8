@@ -99,3 +99,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0095](0095-defining-charsets.md) Defining charsets: define-charset, aliases, ISO finals and map-charset-chars
 - [0096](0096-the-mark-as-a-marker.md) The mark as a marker: mark-marker
 - [0097](0097-the-macos-displays-functions.md) The macOS display's functions: hiding, panels, selections and defaults
+- [0098](0098-fns-strings-and-buffers.md) fns.c's strings and buffers: base64, comparing and searching strings, buffer hashes and line statistics
