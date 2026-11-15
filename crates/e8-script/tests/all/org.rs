@@ -887,6 +887,39 @@ fn capture_files_into_date_trees_and_outline_paths_as_emacs_does() {
 }
 
 #[test]
+fn today_is_the_day_in_the_editors_own_zone() {
+    // Fourteen hours east of UTC and twelve west are always a day or two apart.
+    let day = |zone: &str| {
+        let mut ed = Editor::new();
+        let s = Scripting::new(&mut ed).unwrap();
+        s.eval_expression(&mut ed, &format!(r#"(e8.setTimeZoneRule("{zone}"), 1)"#)).unwrap();
+        ed.window_buffer_mut().set_text("* Task\n");
+        ed.call("org-mode", vec![]).unwrap();
+        let expected = s.eval_expression(&mut ed, r#"e8.formatTimeString("%Y-%m-%d %a")"#).unwrap();
+        ed.press("C-c C-x C-i").unwrap();
+        let t = text(&ed);
+        let got = t.split("CLOCK: [").nth(1).unwrap_or_else(|| panic!("no clock in {t:?}"))[..14].to_string();
+        assert_eq!(format!("\"{got}\""), expected, "in {zone}");
+        got
+    };
+    assert_ne!(day("XXX-14"), day("YYY+12"));
+}
+
+#[test]
+fn a_clock_over_a_change_to_summer_time_counts_the_hours_there_were() {
+    // In Stockholm the night of 30 March 2025 lost an hour: noon to noon is 23 hours, as Emacs counts.
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    s.eval_expression(&mut ed, r#"(e8.setTimeZoneRule("Europe/Stockholm"), e8.setVariable("e8--today", "2025-03-29"), 1)"#).unwrap();
+    ed.window_buffer_mut().set_text("* Task\n");
+    ed.call("org-mode", vec![]).unwrap();
+    ed.press("C-c C-x C-i").unwrap();
+    s.eval_expression(&mut ed, r#"(e8.setVariable("e8--today", "2025-03-30"), 1)"#).unwrap();
+    ed.press("C-c C-x C-o").unwrap();
+    assert!(text(&ed).contains("CLOCK: [2025-03-29 Sat 12:00]--[2025-03-30 Sun 12:00] => 23:00\n"), "{}", text(&ed));
+}
+
+#[test]
 fn clocks_go_into_the_logbook_as_emacs_puts_them() {
     // What Emacs 30 did, its clock stopped at 12:00.
     let mut ed = Editor::new();

@@ -3898,13 +3898,9 @@ export function today(withTime = false): DateTime {
   // Tests fix the day with e8--today, as "YYYY-MM-DD".
   const fixed = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(e8.variable("e8--today") ?? ""));
   if (fixed) return { year: Number(fixed[1]), month: Number(fixed[2]), day: Number(fixed[3]), ...(withTime ? { hour: 12, minute: 0 } : {}) };
-  const now = new Date();
-  const d: DateTime = { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
-  if (withTime) {
-    d.hour = now.getHours();
-    d.minute = now.getMinutes();
-  }
-  return d;
+  // E8's clock in its own zone, as set-time-zone-rule sets it, as Emacs's decode-time.
+  const [, minute, hour, day, month, year] = e8.decodeTime() as number[];
+  return { year, month, day, ...(withTime ? { hour, minute } : {}) };
 }
 
 /** A date with its fields carried over, as Emacs's encode-time does: 31 February is 3 March. */
