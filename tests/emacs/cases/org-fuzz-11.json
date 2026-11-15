@@ -4,34 +4,89 @@
     "text": "** beta\n  - gamma\n** [#B] fix [1/2]",
     "keys": "C-x n s M-S-<return>",
     "point": 8,
-    "modes": ["org-mode"]
+    "modes": [
+      "org-mode"
+    ]
   },
   {
     "name": "seed303-0546-narrowed-table-row",
     "text": "* fix plan\n|  | x |\n* DONE [#C] alpha beta",
     "keys": "C-x n s RET",
     "point": 12,
-    "modes": ["org-mode"]
+    "modes": [
+      "org-mode"
+    ]
   },
   {
     "name": "seed303-0872-narrowed-toggle-heading",
     "text": "* TODO read fix\n4. plan",
     "keys": "C-x n e C-c *",
     "point": 16,
-    "modes": ["org-mode"]
+    "modes": [
+      "org-mode"
+    ]
   },
   {
     "name": "seed303-1024-narrowed-item-table",
     "text": "+ [X] plan",
     "keys": "C-x n e | M-S-<down> <backtab>",
     "point": 6,
-    "modes": ["org-mode"]
+    "modes": [
+      "org-mode"
+    ]
   },
   {
     "name": "seed303-0191-narrowed-insert-heading",
     "text": "3. [ ] fix\n\n** [#C] read [%] :work:",
     "keys": "C-c C-f C-x n s C-x n s M-RET",
     "point": 1,
-    "modes": ["org-mode"]
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "seed404-0280-narrowed-heading-to-item",
+    "text": "* DONE fix plan\n:PROPERTIES:\n:END:\n* plan plan :home:x:",
+    "point": 11,
+    "keys": "C-x n s C-c -",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "seed404-0370-narrowed-drag-drawer",
+    "text": "# a comment\n:PROPERTIES:\n:ID: 1\n:END:",
+    "point": 12,
+    "keys": "C-x n e M-<up>",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "seed404-1528-narrowed-item-return",
+    "text": "- notes",
+    "point": 6,
+    "keys": "C-x n e RET",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "seed404-2614-narrowed-copy-subtree",
+    "text": "* gamma\n#+TITLE: notes",
+    "point": 8,
+    "keys": "C-x n e C-c C-x M-w",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "seed404-0929-narrowed-drawer-tab",
+    "text": ":PROPERTIES:\n:ID: 1\n:END:",
+    "point": 13,
+    "keys": "C-x n e TAB S-<left>",
+    "modes": [
+      "org-mode"
+    ]
   }
 ]

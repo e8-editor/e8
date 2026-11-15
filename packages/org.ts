@@ -5463,6 +5463,14 @@ function replaceKeepingPoint(start: number, end: number, text: string): void {
 
 /** Removes a heading's tags, planning line and property drawer, as org-list--delete-metadata does. */
 function deleteMetadata(line: number): void {
+  // In the whole buffer, as org-list--delete-metadata's org-with-wide-buffer.
+  e8.saveRestriction(() => {
+    e8.widen();
+    deleteMetadataWide(line);
+  });
+}
+
+function deleteMetadataWide(line: number): void {
   const h = parseHeading(line);
   if (!h) return;
   const text = e8.lineText(line);

@@ -106,6 +106,113 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "seed404-0280-narrowed-heading-to-item",
+      "input": {
+        "text": "* DONE fix plan\n:PROPERTIES:\n:END:\n* plan plan :home:x:",
+        "point": 11,
+        "keys": "C-x n s C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [X] fix plan\n* plan plan :home:x:",
+      "visible": "- [X] fix plan\n* plan plan :home:x:",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed404-0370-narrowed-drag-drawer",
+      "input": {
+        "text": "# a comment\n:PROPERTIES:\n:ID: 1\n:END:",
+        "point": 12,
+        "keys": "C-x n e M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# a comment\n:PROPERTIES:\n:ID: 1\n:END:",
+      "visible": "# a comment\n:PROPERTIES:\n:ID: 1\n:END:",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward"
+    },
+    {
+      "name": "seed404-1528-narrowed-item-return",
+      "input": {
+        "text": "- notes",
+        "point": 6,
+        "keys": "C-x n e RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- note\n  s",
+      "visible": "- note\n  s",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed404-2614-narrowed-copy-subtree",
+      "input": {
+        "text": "* gamma\n#+TITLE: notes",
+        "point": 8,
+        "keys": "C-x n e C-c C-x M-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* gamma\n#+TITLE: notes",
+      "visible": "* gamma\n#+TITLE: notes",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "#+TITLE: notes"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "seed404-0929-narrowed-drawer-tab",
+      "input": {
+        "text": ":PROPERTIES:\n:ID: 1\n:END:",
+        "point": 13,
+        "keys": "C-x n e TAB S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ":PROPERTIES:\n:ID:       1\n:END:",
+      "visible": ":PROPERTIES:\n:ID:       1\n:END:",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Before first headline at position 14 in buffer *e8-oracle*"
     }
   ]
 }
