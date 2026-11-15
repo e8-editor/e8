@@ -415,6 +415,11 @@ fn memory() {
         one - before,
         (five - one) / 4.0
     );
+    // V8 enters each isolate as it is made and wants them left newest
+    // first, so the editors go in the reverse of the order they came.
+    while let Some(editor) = editors.pop() {
+        drop(editor);
+    }
 }
 
 /// How long a new editor takes to load its packages, as at startup.
