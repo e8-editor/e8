@@ -193,12 +193,9 @@ function parseNewLines(): void {
 
 // --- Running a compilation ---------------------------------------------------
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 /** The time as (substring (current-time-string) 0 19) writes it: "Wed Oct 29 21:05:00". */
-function timeString(d = new Date()): string {
-  const two = (n: number) => String(n).padStart(2, "0");
-  return `${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${String(d.getDate()).padStart(2, " ")} ${two(d.getHours())}:${two(d.getMinutes())}:${two(d.getSeconds())}`;
+function timeString(): string {
+  return e8.currentTimeString().slice(0, 19);
 }
 
 function duration(ms: number): string {

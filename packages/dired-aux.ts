@@ -394,9 +394,7 @@ e8.defineCommand({
 
 /** A time as touch -t takes it, as format-time-string's %Y%m%d%H%M.%S. */
 function touchTime(ms: number): string {
-  const d = new Date(ms);
-  const two = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}${two(d.getMonth() + 1)}${two(d.getDate())}${two(d.getHours())}${two(d.getMinutes())}.${two(d.getSeconds())}`;
+  return e8.formatTimeString("%Y%m%d%H%M.%S", ms / 1000);
 }
 
 /** Changes an attribute of the marked files by running a program on them, as dired-do-chxxx. */

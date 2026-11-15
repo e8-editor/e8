@@ -29,11 +29,7 @@ e8.defineFace({ name: "diff-indicator-added", doc: "The + starting a line a diff
 
 /** The current time as current-time-string writes it: "Sat Oct 31 03:30:00 2026". */
 function currentTimeString(): string {
-  const d = new Date();
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${days[d.getDay()]} ${months[d.getMonth()]} ${String(d.getDate()).padStart(2)} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${d.getFullYear()}`;
+  return e8.currentTimeString();
 }
 
 /** A shell word quoted as shell-quote-argument quotes it. */
