@@ -343,3 +343,13 @@ fn a_word_typed_is_marked_when_the_answer_comes() {
     assert_eq!(t.marked(), "helo", "{}", t.text());
     assert_eq!(t.text(), "a helo word ");
 }
+
+#[test]
+fn a_command_that_reads_the_marks_finds_those_still_to_come() {
+    let Some(mut t) = speller("A wrod.\n") else { return };
+    t.ed.press(&mx("flyspell-mode")).unwrap();
+    // C-e leaves wrod, and C-; looks for the mark before point straight
+    // after, before the command loop has taken in the answer.
+    t.ed.press("C-e C-;").unwrap();
+    assert_eq!(t.text(), "A word.\n");
+}

@@ -1094,6 +1094,15 @@ function checkTogether(s: Session, words: string[], answers: Map<string, Poss>):
   for (const w of words) answers.set(w, parseAnswer(lines.get(w) ?? []));
 }
 
+/**
+ * Waits for the answers to every check sent without waiting, so that what
+ * they mark is there, as a command that reads flyspell's marks needs: in
+ * Emacs each word was marked before the next command ran.
+ */
+export function awaitAnswers(): void {
+  while (running() && session!.waiting.length > 0) e8.acceptProcessOutput(session!.process, 1);
+}
+
 /** What the checker said of a word since what it accepts last changed, if it was asked. */
 export function knownAnswer(word: string): Poss | undefined {
   return running() ? session!.answers.get(word) : undefined;

@@ -19,6 +19,7 @@ import {
   acceptForSession,
   acceptInBuffer,
   addPerFileWordList,
+  awaitAnswers,
   changeDictionary,
   checkWordLater,
   checkWords,
@@ -480,6 +481,7 @@ e8.defineCommand({
   doc: "Go to the next word flyspell marked; with a prefix argument, the one before. After the last, start again from the top.",
   params: [{ name: "previous", kind: "prefix" }],
   run: (previous: e8.PrefixArg) => {
+    awaitAnswers();
     const back = previous !== null;
     let pos = e8.point();
     const max = back ? e8.pointMin() : e8.pointMax();
@@ -579,6 +581,7 @@ e8.defineCommand({
   doc: "Correct the nearest misspelling before point that the window shows, as C-. corrects the word at point; again, with the next correction.",
   params: [{ name: "position", kind: "point" }],
   run: (position: number) => {
+    awaitAnswers();
     const top = e8.windowStart();
     const misspelt = e8.overlaysIn(top, position)
       .filter((o) => isFlyspell(o) && e8.overlayGet(o, "face") === "flyspell-incorrect")
@@ -633,6 +636,7 @@ e8.defineCommand({
   name: "flyspell-check-previous-highlighted-word",
   doc: "Offer corrections for the nearest misspelling flyspell marked before point, as M-$ does for the word at point.",
   run: () => {
+    awaitAnswers();
     const marked = e8.overlaysIn(e8.pointMin(), e8.point()).filter(isFlyspell).sort((a, b) => e8.overlayStart(b)! - e8.overlayStart(a)!);
     if (marked.length === 0) e8.signal("error", "No word to correct before point");
     e8.saveExcursion(() => {
