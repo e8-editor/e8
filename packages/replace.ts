@@ -579,8 +579,24 @@ for (const [name, doc, value] of [
 }
 
 /** Where each line of an *Occur* buffer goes: the buffer, and markers at the start and end of each match on the line. */
-const occurTargets = new Map<number, { buffer: string; matches: [e8.Marker, e8.Marker][] }>();
+const occurTargets = new Map<number, { buffer: string; matches: [e8.Marker, e8.Marker][]; occur?: number }>();
 let nextOccurTarget = 0;
+
+/** Frees the markers of the lines an *Occur* buffer listed, as it is made again or killed. */
+function forgetOccurTargets(occur: number): void {
+  for (const [id, target] of occurTargets) {
+    if (target.occur !== occur) continue;
+    for (const [s, f] of target.matches) {
+      e8.deleteMarker(s);
+      e8.deleteMarker(f);
+    }
+    occurTargets.delete(id);
+  }
+}
+
+e8.addHook("kill-buffer-hook", () => {
+  if (e8.variable("major-mode") === "occur-mode") forgetOccurTargets(e8.currentBuffer().id);
+});
 
 /** What occur was last asked, to make *Occur* again with g. */
 let occurArgs: { regexp: string; buffer: string; region?: [number, number] } | undefined;
@@ -635,6 +651,10 @@ function occurIn(regexp: string, buffer: string, region?: [number, number]): num
   );
   e8.getBufferCreate("*Occur*");
   e8.withCurrentBuffer("*Occur*", () => {
+    // The lines it listed before go, and their markers with them.
+    const occur = e8.currentBuffer().id;
+    forgetOccurTargets(occur);
+    for (const { target } of lines) occurTargets.get(target)!.occur = occur;
     if (e8.variable("major-mode") !== "occur-mode") e8.call("occur-mode");
     e8.letBind({ "inhibit-read-only": true }, () => {
       e8.deleteRegion(e8.pointMin(), e8.pointMax());

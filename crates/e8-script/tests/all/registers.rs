@@ -48,3 +48,27 @@ fn a_rectangle_goes_in_a_register() {
     ed.press("C-f C-SPC C-n C-f C-f C-x r r r M-> C-x r i r").unwrap();
     assert_eq!(text(&ed), "abcdef\nghijkl\nbc\nhi");
 }
+
+/// Storing a position again in a register frees the marker the old one
+/// held, and so does making *Occur* again for its lines, so the markers
+/// every edit has to move do not pile up.
+#[test]
+fn registers_and_occur_free_the_markers_they_replace() {
+    let (mut ed, _s) = setup("foo bar\nfoo baz\nfoo\n");
+    let markers = |ed: &Editor| ed.window_buffer().marker_count();
+    ed.press("C-x r SPC a").unwrap();
+    let once = markers(&ed);
+    ed.press("C-n C-x r SPC a C-n C-x r w a C-n C-x r SPC a").unwrap();
+    assert_eq!(markers(&ed), once);
+    ed.press("M-< C-x r j a").unwrap();
+    assert_eq!(point(&ed), 20);
+    ed.press("M-s o f o o RET").unwrap();
+    let listed = markers(&ed);
+    assert!(listed > once, "occur keeps a marker for each match");
+    let mut counts = vec![];
+    for _ in 0..3 {
+        ed.press("M-s o f o o RET").unwrap();
+        counts.push(markers(&ed));
+    }
+    assert_eq!(counts, [listed; 3], "from {once} to {listed}");
+}

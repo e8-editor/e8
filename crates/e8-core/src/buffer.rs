@@ -653,6 +653,12 @@ impl Buffer {
         self.restriction.map_or(self.len(), |(_, end)| end.min(self.len()))
     }
 
+    /// How many markers the buffer keeps, which every edit moves: code that
+    /// makes them should delete them, and tests check that it does.
+    pub fn marker_count(&self) -> usize {
+        self.markers.len()
+    }
+
     pub fn is_narrowed(&self) -> bool {
         self.restriction.is_some()
     }

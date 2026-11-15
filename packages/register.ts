@@ -15,6 +15,15 @@ export type RegisterValue =
 /** The registers, by name, as register-alist. */
 const registers = new Map<string, RegisterValue>();
 
+/** Stores a value in a register, freeing the marker of what it held, as nothing else keeps it. */
+function setRegister(r: string, value: RegisterValue): void {
+  const old = registers.get(r);
+  if (old?.kind === "position" || old?.kind === "window") e8.deleteMarker(old.marker);
+  // A window configuration keeps markers of its own for each window.
+  if (old?.kind === "window") e8.freeWindowConfiguration(old.configuration);
+  registers.set(r, value);
+}
+
 /** The registers and what each holds, as register-alist, for packages such as consult to list. */
 export function registerAlist(): [string, RegisterValue][] {
   return [...registers].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
@@ -36,7 +45,7 @@ e8.defineCommand({
   doc: "Store point's position in a register, to go back to with C-x r j.",
   run: async () => {
     const r = await readRegister("Point to register: ");
-    registers.set(r, { kind: "position", marker: e8.makeMarker(e8.point()) });
+    setRegister(r, { kind: "position", marker: e8.makeMarker(e8.point()) });
   },
 });
 
@@ -45,7 +54,7 @@ e8.defineCommand({
   doc: "Store the frame's windows and what they show in a register, to restore with C-x r j.",
   run: async () => {
     const r = await readRegister("Window configuration to register: ");
-    registers.set(r, { kind: "window", configuration: e8.currentWindowConfiguration(), marker: e8.makeMarker(e8.point()) });
+    setRegister(r, { kind: "window", configuration: e8.currentWindowConfiguration(), marker: e8.makeMarker(e8.point()) });
   },
 });
 
@@ -77,10 +86,10 @@ function textToRegister(r: string, start: number, end: number, del: boolean, joi
   const text = e8.bufferSubstring(start, end);
   const old = registers.get(r);
   if (join === undefined || old === undefined) {
-    registers.set(r, { kind: "text", text });
+    setRegister(r, { kind: "text", text });
   } else if (old.kind === "text") {
     const [a, b] = join === "append" ? [String(old.text), String(text)] : [String(text), String(old.text)];
-    registers.set(r, { kind: "text", text: a + b });
+    setRegister(r, { kind: "text", text: a + b });
   } else {
     e8.userError("Register does not contain text");
   }
@@ -119,7 +128,7 @@ e8.defineCommand({
     e8.saveExcursion(() => {
       e8.call(del !== null ? "kill-rectangle" : "copy-rectangle-as-kill", start, end);
     });
-    registers.set(r, { kind: "rectangle", lines: lastKilledRectangle() ?? [] });
+    setRegister(r, { kind: "rectangle", lines: lastKilledRectangle() ?? [] });
     e8.deactivateMark();
   },
 });
@@ -137,7 +146,7 @@ e8.defineCommand({
       value = parseInt(e8.matchString(0)!.trim(), 10);
       e8.gotoChar(e8.matchEnd(0)!);
     }
-    registers.set(r, { kind: "number", value });
+    setRegister(r, { kind: "number", value });
   },
 });
 
@@ -149,7 +158,7 @@ e8.defineCommand({
     const r = await readRegister("Increment register: ");
     const val = registers.get(r);
     if (val?.kind === "number") {
-      registers.set(r, { kind: "number", value: val.value + e8.prefixNumericValue(prefix) });
+      setRegister(r, { kind: "number", value: val.value + e8.prefixNumericValue(prefix) });
     } else if (val === undefined || val.kind === "text") {
       // The region only now, as a number needs none.
       const mark = e8.mark();
