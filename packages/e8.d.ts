@@ -17496,7 +17496,8 @@ declare global {
     function frameSelectedWindow(frame?: FrameLike): Window | undefined;
     /**
      * Whether the display shows images and fonts of many sizes, as a graphical
-     * one does, rather than a terminal's cells, as display-graphic-p.
+     * one does, rather than a terminal's cells, as display-graphic-p: in
+     * the GUI already while init.ts runs, as window-system is.
      */
     function displayGraphicP(): boolean;
     /**

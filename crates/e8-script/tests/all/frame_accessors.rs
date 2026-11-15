@@ -731,3 +731,12 @@ fn a_frames_text_height_counts_its_bars_as_drawn_so_setting_it_keeps_the_frame()
     let frame = ed.selected_frame();
     assert_eq!(ed.take_frame_requests(), vec![e8_core::FrameRequest::Size { frame, width: 800.0, height: 656.0 }]);
 }
+
+#[test]
+fn a_front_end_in_a_window_is_graphic_before_it_has_measured_its_fonts() {
+    let (mut ed, s) = setup();
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.windowSystem() !== undefined, e8.displayGraphicP()])"), "[false,false]");
+    // As the GUI says before init.ts runs, its fonts measured only once it draws.
+    ed.set_in_a_window();
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify([e8.windowSystem() !== undefined, e8.displayGraphicP()])"), "[true,true]");
+}
