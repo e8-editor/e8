@@ -89,6 +89,7 @@ mod compositions;
 mod c_core_odds;
 mod coding_definitions;
 mod charset_definitions;
+mod mark_marker;
 mod subr;
 mod symbols;
 mod syntax_tables;

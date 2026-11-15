@@ -194,6 +194,9 @@ pub struct Buffer {
     pub(crate) has_rtl: bool,
     point: usize,
     mark: Option<usize>,
+    /// The id of the marker that stands for the mark, as `mark-marker`
+    /// gives it: where the mark is, nowhere while there is none.
+    mark_marker: u64,
     /// Earlier marks, most recent first, as Emacs's `mark-ring`.
     mark_ring: Vec<usize>,
     /// Whether the region between mark and point is active and shown, as in
@@ -392,6 +395,7 @@ impl Buffer {
             has_rtl: false,
             point: 0,
             mark: None,
+            mark_marker: NEXT_MARKER_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             mark_ring: Vec::new(),
             mark_active: false,
             shift_selected: false,
@@ -1458,9 +1462,17 @@ impl Buffer {
         id
     }
 
-    /// Where a marker of this buffer is.
+    /// Where a marker of this buffer is: the mark, for its mark's marker.
     pub fn marker(&self, id: u64) -> Option<usize> {
+        if id == self.mark_marker {
+            return self.mark;
+        }
         self.markers.iter().find(|m| m.id == id).map(|m| m.pos)
+    }
+
+    /// The id of the marker that stands for the buffer's mark, as `mark-marker`.
+    pub fn mark_marker(&self) -> u64 {
+        self.mark_marker
     }
 
     /// The buffer's own variables and their values, as Emacs's `buffer-local-variables`.
@@ -1471,6 +1483,9 @@ impl Buffer {
     /// Whether a marker of this buffer advances past text inserted where it
     /// is, as Emacs's `marker-insertion-type`.
     pub fn marker_advances(&self, id: u64) -> Option<bool> {
+        if id == self.mark_marker {
+            return Some(false);
+        }
         self.markers.iter().find(|m| m.id == id).map(|m| m.advances)
     }
 

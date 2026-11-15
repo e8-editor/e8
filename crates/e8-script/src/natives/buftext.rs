@@ -18,6 +18,12 @@ fn buffer_id(ed: &Editor, buffer: Option<EditorValue>) -> Result<u64> {
 }
 
 natives! {
+    /// The current buffer's mark as a marker, as mark-marker: where the mark is, nowhere while there is none, and the same marker each time. Moving it moves the mark, without activating it.
+    #[ts = "(): Marker"]
+    pub fn markMarker(ed) -> EditorValue {
+        Ok(EditorValue::Marker(ed.buffer().mark_marker()))
+    }
+
     /// The name a buffer had before it was last renamed or killed, as buffer-last-name; undefined if it never was.
     #[ts = "(buffer?: Buffer | string | null): string | undefined"]
     pub fn bufferLastName(ed, buffer: Opt<EditorValue>) -> Option<String> {
