@@ -104,3 +104,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0100](0100-json-as-emacs-has-it.md) JSON as Emacs has it: json-parse-string, json-serialize and json.c's errors
 - [0101](0101-variables-and-symbols-as-emacs-has-them.md) Variables and symbols as Emacs has them: aliases, watchers, being bound and local, and the symbol table
 - [0102](0102-the-printer-and-the-runtimes-odds.md) The printer and the runtime's odds: prin1 to buffers and markers, top-level values, value<
+- [0103](0103-lisps-arithmetic-and-memory.md) Lisp's arithmetic and memory: rounding as Lisp rounds, a float's parts, memory-info

@@ -54,6 +54,7 @@ mod ctime;
 mod cjson;
 mod cvars;
 mod cprint;
+mod cfloat;
 mod text;
 mod treesit;
 pub(crate) mod variables;
@@ -439,6 +440,7 @@ const TABLES: &[&[Native]] = &[
     cjson::TABLE,
     cvars::TABLE,
     cprint::TABLE,
+    cfloat::TABLE,
     xwidget::TABLE,
 ];
 
@@ -475,6 +477,7 @@ pub(crate) fn install<'js>(ctx: &rquickjs::Ctx<'js>, native: &rquickjs::Object<'
     cjson::install(ctx, native, api)?;
     cvars::install(ctx, native, api)?;
     cprint::install(ctx, native, api)?;
+    cfloat::install(ctx, native, api)?;
     xwidget::install(ctx, native, api)?;
     Ok(())
 }
@@ -507,6 +510,7 @@ pub(crate) fn install<'s>(scope: &mut v8::PinScope<'s, '_>, native: v8::Local<'s
     cjson::install(scope, native, api);
     cvars::install(scope, native, api);
     cprint::install(scope, native, api);
+    cfloat::install(scope, native, api);
     xwidget::install(scope, native, api);
 }
 

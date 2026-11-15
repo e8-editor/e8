@@ -96,6 +96,7 @@ mod time_functions;
 mod json_functions;
 mod variables_and_symbols;
 mod printer;
+mod float_functions;
 mod subr;
 mod symbols;
 mod syntax_tables;
