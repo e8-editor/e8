@@ -296,5 +296,20 @@
     "keys": "",
     "name": "repeating-deadline-on-its-later-dates",
     "text": "* TODO Weekly\nDEADLINE: <2026-11-10 Tue +1w>\n* TODO Daily\nDEADLINE: <2026-11-18 Wed +2d>\n* DONE Done\nDEADLINE: <2026-11-10 Tue +1w>\n"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-11-16",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "name": "times-show-and-sort-entries",
+    "text": "* Lunch <2026-11-17 Tue 12:00>\n* Standup <2026-11-17 Tue 09:30>\n* TODO Call\nSCHEDULED: <2026-11-17 Tue 14:15>\n* Review <2026-11-17 Tue 10:00-11:30>\n* TODO No time\nSCHEDULED: <2026-11-17 Tue>\n* TODO Due\nDEADLINE: <2026-11-17 Tue 08:05>\n* TODO Warned\nDEADLINE: <2026-11-19 Thu 16:00>\n"
   }
 ]

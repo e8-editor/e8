@@ -813,6 +813,49 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "times-show-and-sort-entries",
+      "input": {
+        "text": "* Lunch <2026-11-17 Tue 12:00>\n* Standup <2026-11-17 Tue 09:30>\n* TODO Call\nSCHEDULED: <2026-11-17 Tue 14:15>\n* Review <2026-11-17 Tue 10:00-11:30>\n* TODO No time\nSCHEDULED: <2026-11-17 Tue>\n* TODO Due\nDEADLINE: <2026-11-17 Tue 08:05>\n* TODO Warned\nDEADLINE: <2026-11-19 Thu 16:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  In   1 d.:  TODO Due\n  e8-agenda:  In   3 d.:  TODO Warned\nTuesday    17 November 2026\n  e8-agenda:   8:05...... Deadline:   TODO Due\n  e8-agenda:   9:30...... Standup \n  e8-agenda:  10:00-11:30 Review \n  e8-agenda:  12:00...... Lunch \n  e8-agenda:  14:15...... Scheduled:  TODO Call\n  e8-agenda:  Scheduled:  TODO No time\nWednesday  18 November 2026\nThursday   19 November 2026\n  e8-agenda:  16:00...... Deadline:   TODO Warned\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  In   1 d.:  TODO Due\n  e8-agenda:  In   3 d.:  TODO Warned\nTuesday    17 November 2026\n  e8-agenda:   8:05...... Deadline:   TODO Due\n  e8-agenda:   9:30...... Standup \n  e8-agenda:  10:00-11:30 Review \n  e8-agenda:  12:00...... Lunch \n  e8-agenda:  14:15...... Scheduled:  TODO Call\n  e8-agenda:  Scheduled:  TODO No time\nWednesday  18 November 2026\nThursday   19 November 2026\n  e8-agenda:  16:00...... Deadline:   TODO Warned\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ]
     }
   ]
 }

@@ -1183,3 +1183,40 @@ fn the_agenda_reads_narrowed_files_whole() {
     assert!(!ed.window_buffer().is_narrowed());
     assert_eq!(ed.window_buffer().point(), 0);
 }
+
+/// Today's agenda draws a time grid among entries with times, and a line
+/// for the time now, as org-agenda-add-time-grid-maybe does, in the form
+/// Emacs 30 draws them; a day with no times has none.
+#[test]
+fn today_s_agenda_has_a_time_grid() {
+    let (mut ed, s) = org("");
+    ed.set_frame_size(80, 30);
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let path = dir.path().join("a.org");
+    std::fs::write(&path, "* Standup <2026-11-16 Mon 09:30>\n* TODO Plain\nSCHEDULED: <2026-11-16 Mon>\n* Later <2026-11-17 Tue 10:00>\n").unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "setup.ts",
+        format!(
+            "e8.setVariable('e8--today', '2026-11-16'); e8.setVariable('org-agenda-files', [{:?}]); e8.setVariable('org-agenda-window-setup', 'current-window'); \
+             e8.setVariable('org-agenda-time-grid', [['daily', 'today', 'require-timed'], [800, 1300], '......', '----------------']);",
+            path.to_str().unwrap()
+        ),
+    )
+    .unwrap();
+    s.eval_typescript(&mut ed, "week.ts", "e8.call(\"org-agenda-list\");".to_string()).unwrap();
+    let agenda = text(&ed);
+    let monday: Vec<&str> = agenda.lines().skip(2).take_while(|l| !l.starts_with("Tuesday")).collect();
+    assert_eq!(
+        monday,
+        [
+            "               8:00...... ----------------",
+            "  a:           9:30...... Standup ",
+            "              12:00...... now - - - - - - - - - - - - - - - - - - - - - - - - -",
+            "              13:00...... ----------------",
+            "  a:          Scheduled:  TODO Plain",
+        ],
+        "{agenda}"
+    );
+    assert!(agenda.contains("Tuesday    17 November 2026\n  a:          10:00...... Later \n"), "no grid but today's: {agenda}");
+}

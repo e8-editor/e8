@@ -11341,6 +11341,12 @@ declare global {
        */
       "org-adapt-indentation": Value;
       /**
+       * What the time grid's line for the time now says.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-current-time-string": Value;
+      /**
        * The files the agenda collects entries from, as a list of file names.
        *
        * Defined in packages/org-agenda.ts.
@@ -11351,11 +11357,29 @@ declare global {
        */
       "org-agenda-mode-map": Value;
       /**
+       * Whether the time grid shows the time now, as org-agenda-current-time-string.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-show-current-time-in-grid": Value;
+      /**
        * Whether agenda lines show the tags their headings inherit, from the file and the headings above, before their own.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-show-inherited-tags": Value;
+      /**
+       * The time grid: when it is drawn, its times as HHMM, the string after a time, and the line drawn.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-time-grid": Value;
+      /**
+       * Whether today's agenda draws a time grid among the entries with times, as org-agenda-time-grid says.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-use-time-grid": Value;
       /**
        * Where the agenda shows: reorganize-frame, this window and the agenda's; current-window; only-window; or other-window.
        *
