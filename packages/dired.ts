@@ -430,7 +430,8 @@ function fontify(start: number, end: number): void {
       continue;
     }
     e8.putTextProperty(ls + 2, f.start, "invisible", "dired-hide-details-detail");
-    const nameEnd = f.start + f.name.length;
+    // In characters, as positions count them, not UTF-16 units.
+    const nameEnd = f.start + [...f.name].length;
     if (f.isLink && nameEnd < le) e8.putTextProperty(nameEnd, le, "invisible", "dired-hide-details-link");
     if (f.mark === DEL_MARKER) {
       e8.putTextProperty(ls, ls + 1, "face", "dired-flagged");

@@ -67,7 +67,7 @@ function showXrefs(xrefs: Xref[]): void {
     for (const [group, items] of groups) {
       const start = e8.point();
       e8.insert(`${group}\n`);
-      e8.putTextProperty(start, start + group.length, "face", "xref-file-header");
+      e8.putTextProperty(start, start + [...group].length, "face", "xref-file-header");
       const width = String(Math.max(...items.map((x) => x.line))).length;
       let previous: number | undefined;
       for (const x of items) {

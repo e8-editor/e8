@@ -466,7 +466,7 @@ function lock(start: number, end: number): void {
 function putPrompt(shell: Shell, before = ""): void {
   const text = `${before}* You\n`;
   const at = put(shell, text);
-  writing(shell, () => e8.putTextProperty(at + text.length - 1, at + text.length, "rear-nonsticky", ["read-only"]));
+  writing(shell, () => e8.putTextProperty(at + charCount(text) - 1, at + charCount(text), "rear-nonsticky", ["read-only"]));
 }
 
 /**
@@ -501,8 +501,8 @@ function replace(shell: Shell, start: number, end: number, text: string): void {
     e8.deleteRegion(start, end);
     e8.gotoChar(start);
     e8.insert(text);
-    lock(start, start + text.length);
-    const moved = point >= end ? point - (end - start) + text.length : Math.min(point, start + text.length);
+    lock(start, start + charCount(text));
+    const moved = point >= end ? point - (end - start) + charCount(text) : Math.min(point, start + charCount(text));
     e8.gotoChar(moved);
   });
 }
@@ -535,8 +535,8 @@ function replacePartial(shell: Shell, done: string, rest: string): void {
   // Shown as it came, but never as a heading or a block's line meanwhile.
   const shown = /^\s*(\*|#\+)/.test(rest) ? ` ${rest}` : rest;
   put(shell, done + shown);
-  if (shell.partialAt === undefined) shell.partialAt = e8.makeMarker(at + done.length, { buffer: shell.buffer });
-  else e8.setMarker(shell.partialAt, at + done.length, shell.buffer);
+  if (shell.partialAt === undefined) shell.partialAt = e8.makeMarker(at + charCount(done), { buffer: shell.buffer });
+  else e8.setMarker(shell.partialAt, at + charCount(done), shell.buffer);
   shell.partial = rest;
 }
 
@@ -836,7 +836,7 @@ function showToolCall(shell: Shell, update: acp.Json, first: boolean): void {
   const text = renderToolCall(shell, call);
   replace(shell, start, end, text);
   e8.setMarker(call.start, start, shell.buffer);
-  e8.setMarker(call.end, start + text.length, shell.buffer);
+  e8.setMarker(call.end, start + charCount(text), shell.buffer);
   // Its output folds into its line as it comes, unless TAB opened it.
   if (text !== "" && call.content !== "") inBuffer(shell, () => foldBlockBelow(start, call.folded));
   if (finished) revertTouched(call.paths);
@@ -869,13 +869,13 @@ function showPlan(shell: Shell, entries: unknown): void {
     closeOpen(shell);
     startLine(shell);
     const at = put(shell, text);
-    shell.plan = { start: e8.makeMarker(at, { buffer: shell.buffer, advances: true }), end: e8.makeMarker(at + text.length, { buffer: shell.buffer }) };
+    shell.plan = { start: e8.makeMarker(at, { buffer: shell.buffer, advances: true }), end: e8.makeMarker(at + charCount(text), { buffer: shell.buffer }) };
     return;
   }
   const start = e8.markerPosition(shell.plan.start) ?? 0;
   const end = e8.markerPosition(shell.plan.end) ?? start;
   replace(shell, start, end, text);
-  e8.setMarker(shell.plan.end, start + text.length, shell.buffer);
+  e8.setMarker(shell.plan.end, start + charCount(text), shell.buffer);
 }
 
 /** Takes in what the agent reports of its session. */
