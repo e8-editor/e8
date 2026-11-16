@@ -266,5 +266,20 @@
     "keys": "",
     "name": "scheduled-delay",
     "text": "* TODO Waits\nSCHEDULED: <2026-11-15 Sun -2d>\n* TODO Shows\nSCHEDULED: <2026-11-13 Fri -2d>\n* TODO Today\nSCHEDULED: <2026-11-16 Mon -1d>\n"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-11-16",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "name": "category-property-and-the-last-keyword",
+    "text": "#+CATEGORY: first\n* Work\n:PROPERTIES:\n:CATEGORY: job\n:END:\n** TODO Report\nSCHEDULED: <2026-11-16 Mon>\n* Home\n** TODO Dishes\nSCHEDULED: <2026-11-16 Mon>\n#+CATEGORY: last\n"
   }
 ]

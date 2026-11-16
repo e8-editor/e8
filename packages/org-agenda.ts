@@ -4,6 +4,7 @@
 
 import { type DateTime, type Heading, PLANNING, allKeywords, at, entryEnd, headings, isDone, keywordLines, today } from "org";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
+import { entryGet } from "org-list";
 import { allMatches, charCount, eraseBuffer } from "subr";
 
 e8.defineVariable({
@@ -115,14 +116,31 @@ function headingOf(item: AgendaItem): number {
   return (item.marks && e8.markerPosition(item.marks.heading)) ?? item.heading;
 }
 
-/** The buffer's category, as org-get-category gives it: #+CATEGORY, or the file's name. */
+/** The buffer's category, as org-refresh-category-properties sets it: the last #+CATEGORY, or the file's name. */
 function category(): string {
-  for (let l = 0; l < e8.lineCount(); l++) {
-    const m = /^#\+CATEGORY:[ \t]*(\S.*?)[ \t]*$/i.exec(e8.lineText(l));
+  for (let l = e8.lineCount() - 1; l >= 0; l--) {
+    const m = /^[ \t]*#\+CATEGORY:[ \t]*(\S.*?)[ \t]*$/i.exec(e8.lineText(l));
     if (m) return m[1];
   }
   const file = e8.bufferFileName();
   return file ? (file.split("/").pop() ?? file).replace(/\.[^.]*$/, "") : "???";
+}
+
+/**
+ * Each heading's category, as org-refresh-category-properties sets them: a
+ * CATEGORY property in its drawer, or its nearest ancestor's, or the
+ * buffer's.
+ */
+function categories(all: Heading[]): string[] {
+  const base = category();
+  const stack: { level: number; cat: string }[] = [];
+  return all.map((h) => {
+    while (stack.length > 0 && stack[stack.length - 1].level >= h.level) stack.pop();
+    const own = entryGet(h.line, "CATEGORY");
+    const cat = own !== undefined && own !== "" ? own : (stack[stack.length - 1]?.cat ?? base);
+    stack.push({ level: h.level, cat });
+    return cat;
+  });
 }
 
 /**
@@ -243,6 +261,8 @@ interface Scanned {
   /** The entry's active timestamps but its planning line's, in order: where each is, and whether it is in the heading. */
   stamps: { ts: { day: number; repeat?: [number, string] }; pos: number; inHeading: boolean }[];
   habit?: Habit;
+  /** Its category, as org-get-category gives it at the heading. */
+  cat: string;
 }
 
 /** Runs `f` with the current buffer widened, as Org's agenda reads and edits files whole, however they are narrowed. */
@@ -255,6 +275,7 @@ const widened = <T>(f: () => T): T =>
 /** The current buffer's headings as the agenda reads them, and its category. */
 function scanBuffer(): { cat: string; entries: Scanned[] } {
   const all = headings();
+  const cats = categories(all);
   const stamp = /<\d{4}-\d{2}-\d{2}[^>\n]*>/g;
   const entries = all.map((h, i): Scanned => {
     const stamps: Scanned["stamps"] = [];
@@ -271,18 +292,17 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
     const plan = planningOf(h);
     // Only a scheduled entry can be a habit, so only those have their properties read.
     const habit = plan.scheduled !== undefined ? parseHabit(h) : undefined;
-    return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ...(habit ? { habit } : {}) };
+    return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, cat: cats[i], ...(habit ? { habit } : {}) };
   });
   return { cat: category(), entries };
 }
 
 /** The items for a day from the current buffer, scanned once, as org-agenda-get-day-entries collects them. */
 function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today: number, buffer: string): AgendaItem[] {
-  const cat = scan.cat;
   const deadlines: AgendaItem[] = [];
   const scheduled: AgendaItem[] = [];
   const stamps: AgendaItem[] = [];
-  for (const { h, done, plan, priority, stamps: found, habit } of scan.entries) {
+  for (const { h, done, plan, priority, stamps: found, habit, cat } of scan.entries) {
     if (plan.deadline !== undefined) {
       const diff = plan.deadline - day;
       let leader: string | undefined;
@@ -462,10 +482,12 @@ function todoList(): void {
   const keywords = new Set<string>();
   for (const buffer of buffers) {
     e8.withCurrentBuffer(buffer, () => widened(() => {
-      const cat = category();
       for (const k of allKeywords()) keywords.add(k);
-      for (const h of headings()) {
+      const all = headings();
+      const cats = categories(all);
+      for (const [i, h] of all.entries()) {
         if (h.todo === undefined || isDone(h.todo)) continue;
+        const cat = cats[i];
         const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
         items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: 1 + priorityValue(h) });
       }

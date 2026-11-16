@@ -727,6 +727,49 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "category-property-and-the-last-keyword",
+      "input": {
+        "text": "#+CATEGORY: first\n* Work\n:PROPERTIES:\n:CATEGORY: job\n:END:\n** TODO Report\nSCHEDULED: <2026-11-16 Mon>\n* Home\n** TODO Dishes\nSCHEDULED: <2026-11-16 Mon>\n#+CATEGORY: last\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  job:        Scheduled:  TODO Report\n  last:       Scheduled:  TODO Dishes\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  job:        Scheduled:  TODO Report\n  last:       Scheduled:  TODO Dishes\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
     }
   ]
 }
