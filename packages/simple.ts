@@ -1177,11 +1177,13 @@ e8.defineCommand({
   name: "goto-line",
   doc:
     "Go to a line, counting from 1 at the start of the buffer: the prefix argument's, else one asked for, " +
-    "the number at point by default.\n\nThe mark is pushed first, unless the region is active. In a narrowed " +
+    "the number at point by default. With plain C-u, the line is in the buffer shown before, in another window.\n\nThe mark is pushed first, unless the region is active. In a narrowed " +
     "buffer, a line outside it widens the buffer, as widen-automatically says.",
   params: [{ name: "arg", kind: "prefix" }],
   run: async (arg: e8.PrefixArg) => {
     let line: number;
+    // Plain C-u goes to the line in the buffer shown before, as other-buffer gives it.
+    const buffer = Array.isArray(arg) ? e8.bufferList().find((n) => n !== e8.bufferName() && !n.startsWith(" ")) : undefined;
     if (arg !== null && !Array.isArray(arg)) {
       line = e8.prefixNumericValue(arg);
     } else {
@@ -1193,9 +1195,14 @@ e8.defineCommand({
         return lineNumberAtPos();
       });
       const shown = def ?? here;
-      const answer = await e8.readString(`Goto${narrowed ? " absolute" : ""} line (default ${shown}): `, { history: "goto-line-history" });
+      const answer = await e8.readString(`Goto${narrowed ? " absolute" : ""} line${buffer !== undefined ? ` in ${buffer}` : ""} (default ${shown}): `, { history: "goto-line-history" });
       line = answer.trim() === "" ? shown : Number(answer);
       if (!Number.isFinite(line)) e8.userError("Please enter a number.");
+    }
+    if (buffer !== undefined) {
+      const window = e8.windowList().find((w) => e8.windowBuffer(w) === buffer);
+      if (window !== undefined) e8.selectWindow(window);
+      else e8.call("switch-to-buffer-other-window", buffer);
     }
     if (!e8.regionActive()) e8.pushMark(e8.point());
     const pos = e8.saveRestriction(() => {

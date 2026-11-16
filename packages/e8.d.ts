@@ -3081,7 +3081,7 @@ declare global {
        */
       "goto-char": [arg?: PrefixArg | boolean];
       /**
-       * Go to a line, counting from 1 at the start of the buffer: the prefix argument's, else one asked for, the number at point by default.
+       * Go to a line, counting from 1 at the start of the buffer: the prefix argument's, else one asked for, the number at point by default. With plain C-u, the line is in the buffer shown before, in another window.
        *
        * The mark is pushed first, unless the region is active. In a narrowed buffer, a line outside it widens the buffer, as widen-automatically says.
        *

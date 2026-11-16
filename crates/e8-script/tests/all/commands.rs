@@ -198,3 +198,24 @@ fn comment_region_takes_its_prefix_argument_as_emacs_does() {
         assert_eq!(b.slice(0..b.len()), expected, "{prefix} {command} on {text:?}: {:?}", ed.echo());
     }
 }
+
+/// Plain C-u M-g g goes to the line in the buffer shown before, in another window, as Emacs's goto-line.
+#[test]
+fn goto_line_with_plain_c_u_goes_to_the_other_buffer() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("other\n");
+    d.type_text("one\ntwo\nthree\n");
+    d.press("C-x b");
+    d.type_text("here\n");
+    d.type_text("a\nb\n");
+    d.press("C-u M-g g");
+    assert!(d.prompt().unwrap_or_default().starts_with("Goto line in other (default "), "{:?}", d.prompt());
+    d.type_text("3\n");
+    assert_eq!(d.buffer_name(), "other");
+    assert_eq!(d.with(|ed| {
+        let b = ed.buffer();
+        b.slice(b.point()..b.len())
+    }), "three\n");
+    assert_eq!(d.with(|ed| ed.windows().len()), 2, "shown in another window");
+}
