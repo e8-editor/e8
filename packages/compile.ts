@@ -233,6 +233,9 @@ const modeStem = (mode: string): string => mode.replace(/-mode$/, "");
 /** Strips the colour codes programs write, which a dumb terminal would not show. */
 const stripAnsi = (text: string): string => text.replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
 
+/** The start of a colour code a chunk of output ended in, kept for the next, by process. */
+const pendingEscape = new Map<e8.Process, string>();
+
 /** What a compilation's end says, as compilation-exit-message-function or grep-exit-message. */
 function exitMessage(event: string, matches: number, grep: boolean): string {
   if (!grep) return event;
@@ -312,7 +315,16 @@ function compilationFilter(proc: e8.Process, output: string): void {
     const at = e8.markerPosition(mark) ?? e8.bufferSize();
     const moving = e8.point() === at;
     const point = e8.makeMarker();
-    const text = stripAnsi(output);
+    // A colour code split between chunks is taken out whole, its start
+    // held back until the rest comes.
+    let whole = (pendingEscape.get(proc) ?? "") + output;
+    pendingEscape.delete(proc);
+    const cut = /\x1b(?:\[[0-9;?]*)?$/.exec(whole);
+    if (cut !== null) {
+      pendingEscape.set(proc, cut[0]);
+      whole = whole.slice(0, cut.index);
+    }
+    const text = stripAnsi(whole);
     writable(() => {
       e8.gotoChar(at);
       e8.insert(text);
@@ -323,7 +335,9 @@ function compilationFilter(proc: e8.Process, output: string): void {
     parseNewLines();
     // grep separates the file name with a NUL, shown as a colon, as grep-mode's display property does.
     // Only in the lines read, so an unfinished one is still read with its NUL.
-    if (e8.derivedModeP("grep-mode")) writable(() => e8.substCharInRegion(at, Math.max(at, state().parsed), "\0", ":"));
+    // From the start of the line output was added to, as a line may come in two chunks.
+    const from = e8.lineStart(e8.lineOf(at));
+    if (e8.derivedModeP("grep-mode")) writable(() => e8.substCharInRegion(from, Math.max(from, state().parsed), "\0", ":"));
     e8.setBufferModified(false);
     e8.runHooks("compilation-filter-hook");
   });
@@ -331,6 +345,7 @@ function compilationFilter(proc: e8.Process, output: string): void {
 
 /** Notes how the compilation ended, as compilation-handle-exit. */
 function compilationSentinel(proc: e8.Process, event: string, modeName: string): void {
+  pendingEscape.delete(proc);
   const buffer = e8.processBuffer(proc);
   if (buffer === undefined || !e8.bufferList().includes(buffer)) return;
   let message = "";

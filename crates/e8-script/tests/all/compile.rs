@@ -280,3 +280,15 @@ fn messages_follow_the_directories_make_enters() {
     d.press("M-g n");
     assert_eq!(d.buffer_name(), "b.rs");
 }
+
+/// A colour code the program writes in two pieces is taken out whole, as
+/// a terminal reads it, not left in the buffer.
+#[test]
+fn colour_codes_split_between_writes_are_taken_out() {
+    let dir = project();
+    let d = setup(dir.path());
+    compile(&d, "printf 'a\\033[3'; sleep 0.3; printf '5mred\\033[0m b\\n'");
+    let text = buffer_text(&d, "*compilation*");
+    assert!(text.contains("\nared b\n"), "{text:?}");
+    assert!(!text.contains('\u{1b}'), "{text:?}");
+}
