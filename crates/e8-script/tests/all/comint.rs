@@ -414,3 +414,27 @@ fn interrupting_keeps_the_typed_command_in_the_history() {
     ed.press("M-> M-p").unwrap();
     assert!(text(&ed).ends_with("$ echo not sent"), "{:?}", text(&ed));
 }
+
+/// cd follows quoted and escaped names and variables, as
+/// shell-unquote-argument and comint-substitute-in-file-name take them, and
+/// cd - goes back to the directory before, as shell-last-dir.
+#[test]
+fn directory_tracking_reads_names_as_the_shell_does() {
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let real = std::fs::canonicalize(dir.path()).unwrap();
+    std::fs::create_dir(real.join("Application Support")).unwrap();
+    std::fs::create_dir(real.join("My Docs")).unwrap();
+    let start = format!("{}/", real.display());
+    let dir_now = |ed: &mut Editor| s.eval_expression(ed, "e8.variable('default-directory')").unwrap();
+    s.eval_expression(&mut ed, &format!("(e8.setVariable('default-directory', {start:?}), 1)")).unwrap();
+    s.eval_expression(&mut ed, r#"(e8.funcall("shell-directory-tracker", 'cd "Application Support"'), 1)"#).unwrap();
+    assert_eq!(dir_now(&mut ed), format!("{:?}", format!("{start}Application Support/")));
+    s.eval_expression(&mut ed, r#"(e8.funcall("shell-directory-tracker", "cd -"), 1)"#).unwrap();
+    assert_eq!(dir_now(&mut ed), format!("{start:?}"));
+    s.eval_expression(&mut ed, r#"(e8.funcall("shell-directory-tracker", "cd My\\ Docs"), 1)"#).unwrap();
+    assert_eq!(dir_now(&mut ed), format!("{:?}", format!("{start}My Docs/")));
+    s.eval_expression(&mut ed, "(e8.funcall('shell-directory-tracker', 'cd $HOME'), 1)").unwrap();
+    let home = s.eval_expression(&mut ed, "e8.expandFileName(e8.getenv('HOME')) + '/'").unwrap();
+    assert_eq!(dir_now(&mut ed), home);
+}
