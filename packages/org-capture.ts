@@ -95,8 +95,9 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
         text += `[${formatTimestamp(now, true)}]`;
         break;
       case "i":
-        // Each line after the first indented as the line %i is on.
-        text += context.initial.replace(/\n/g, `\n${/[^\n]*$/.exec(text)![0].replace(/\S/g, " ")}`);
+        // Each line after the first starts as the line %i is on does, as
+        // org-capture-fill-template repeats the characters before it.
+        text += context.initial.replace(/\n/g, `\n${/[^\n]*$/.exec(text)![0]}`);
         break;
       case "a":
         text += context.annotation;
@@ -125,7 +126,9 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
   const cut = lead.lastIndexOf("\n") + 1;
   if (cursor !== undefined) cursor = Math.max(0, cursor - charCount(text.slice(0, cut)));
   text = text.slice(cut);
-  const body = text.replace(/[ \t\n]*$/, "");
+  let body = text.replace(/[ \t\n]*$/, "");
+  // A %? after the text keeps the blank it is on, as Org trims with %? still in the text.
+  if (cursor !== undefined && cursor > charCount(body)) body = [...text].slice(0, cursor).join("");
   const lastLine = body.length === 0 ? "" : text.slice(body.length).split("\n")[0];
   text = body.length === 0 ? "" : `${body}${lastLine}\n`;
   if (cursor !== undefined) cursor = Math.min(cursor, charCount(text));
@@ -166,7 +169,7 @@ function captureWith(key: string): void {
   // A marker, as the buffer the capture came from stays editable below it.
   const point = e8.makeMarker(e8.point());
   const mark = e8.mark();
-  const initial = e8.variable("mark-active") === true && mark !== undefined
+  const initial = e8.regionActive() && mark !== undefined && mark !== e8.point()
     ? e8.bufferSubstringNoProperties(Math.min(mark, e8.point()), Math.max(mark, e8.point()))
     : "";
   const link = annotation();

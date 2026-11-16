@@ -1276,3 +1276,32 @@ fn insert_link_edits_the_link_at_point_and_takes_the_region() {
     ed.type_text("\n");
     assert_eq!(text(&ed), "see [[https://orgmode.org][Org manual]] here\n");
 }
+
+/// A %? on a line of its own at the end of a template leaves that line for
+/// the cursor, and %i repeats what comes before it on each of its lines,
+/// as org-capture-fill-template has them.
+#[test]
+fn capture_templates_keep_the_cursor_s_line_and_repeat_what_comes_before_initial_text() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("notes.org"), "* Inbox\n* Other\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    let d = dir.path().display().to_string();
+    s.eval_expression(
+        &mut ed,
+        &format!(
+            r#"(e8.setVariable("org-capture-templates", [
+              ["n", "Note", "entry", ["file+headline", "{d}/notes.org", "Inbox"], "* Note\n%?"],
+              ["i", "Initial", "entry", ["file+headline", "{d}/notes.org", "Inbox"], "* Lines\n- %i"]]), 1)"#
+        ),
+    )
+    .unwrap();
+    ed.set_frame_size(80, 24);
+    ed.press("M-x o r g - c a p t u r e RET n b o d y C-c C-c").unwrap();
+    let notes = std::fs::read_to_string(dir.path().join("notes.org")).unwrap();
+    assert_eq!(notes, "* Inbox\n** Note\nbody\n* Other\n");
+    ed.window_buffer_mut().set_text("l1\nl2");
+    ed.press("C-x h M-x o r g - c a p t u r e RET i C-c C-c").unwrap();
+    let notes = std::fs::read_to_string(dir.path().join("notes.org")).unwrap();
+    assert!(notes.contains("** Lines\n- l1\n- l2\n"), "{notes}");
+}
