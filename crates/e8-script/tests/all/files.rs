@@ -331,6 +331,25 @@ fn an_auto_save_file_can_be_recovered() {
     assert_eq!(failed.unwrap_err(), format!("Auto save file {} does not exist", e8_core::abbreviate_path(&auto)));
 }
 
+/// C-x C-v on a modified buffer asks as Emacs's find-alternate-file does,
+/// and no is a user error that leaves the buffer.
+#[test]
+fn find_alternate_file_asks_before_dropping_changes() {
+    let d = Driven::new("");
+    let dir = dir();
+    let (a, b) = (dir.path().join("a.txt"), dir.path().join("b.txt"));
+    fs::write(&b, "bee\n").unwrap();
+    visit_driven(&d, &a);
+    d.type_text("unsaved");
+    d.press("C-x C-v");
+    d.press("C-a C-k");
+    d.type_text(&format!("{}\n", b.display()));
+    assert_eq!(d.prompt().as_deref(), Some("Kill and replace buffer \u{2018}a.txt\u{2019} without saving it? (yes or no) "));
+    d.type_text("no\n");
+    assert_eq!(d.buffer_name(), "a.txt");
+    assert_eq!(d.message().as_deref(), Some("Aborted"));
+}
+
 #[test]
 fn killing_a_modified_buffer_asks() {
     let d = Driven::new("");

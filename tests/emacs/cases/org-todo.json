@@ -213,5 +213,27 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "done-repeats-by-hours",
+    "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 10:00 +2h>\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-log-repeat": false
+    }
+  },
+  {
+    "name": "done-repeats-by-hours-across-midnight",
+    "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 23:00 +3h>\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-log-repeat": false
+    }
   }
 ]

@@ -1458,11 +1458,14 @@ e8.defineCommand({
           if (oldFile !== undefined) e8.setVisitedFileName(oldFile, { alongWithFile: true });
         }
       }
-      if (e8.bufferName() !== lose) e8.call("kill-buffer", lose);
+      // Their questions were asked already, as find-alternate-file binds them away.
+      if (e8.bufferName() !== lose) e8.letBind({ "kill-buffer-query-functions": null }, () => e8.call("kill-buffer", lose));
     };
+    // As find-alternate-file asks, kill-buffer-query-functions first.
+    if (!e8.runHookWithArgsUntilFailure("kill-buffer-query-functions")) e8.userError("Aborted");
     if (e8.bufferModified() && e8.bufferFileName() !== undefined) {
       if (!e8.calledInteractively()) throw new Error(`Buffer ${old} modified`);
-      if (!e8.yesOrNoP(`Buffer \u2018${old}\u2019 modified; kill anyway? `)) throw new Error("Aborted");
+      if (!e8.yesOrNoP(`Kill and replace buffer \u2018${old}\u2019 without saving it? `)) e8.userError("Aborted");
     }
     replace();
   },

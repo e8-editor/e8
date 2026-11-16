@@ -532,6 +532,54 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "done-repeats-by-hours",
+      "input": {
+        "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 10:00 +2h>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 12:00 +2h>\n",
+      "visible": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 12:00 +2h>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "done-repeats-by-hours-across-midnight",
+      "input": {
+        "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 23:00 +3h>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Water\nSCHEDULED: <2026-11-17 Tue 02:00 +3h>\n",
+      "visible": "* TODO Water\nSCHEDULED: <2026-11-17 Tue 02:00 +3h>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
