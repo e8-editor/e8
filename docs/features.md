@@ -52,7 +52,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Characters typed with `C-x 8` through `key-translation-map`.
 - Keys bound to keys as keyboard macros.
 - `sit-for` and `read-event` with a timeout.
-- Repeat (`C-x z`), and edit and run again a command that read its arguments in the minibuffer (`C-x ESC ESC`, `C-x M-:`), from `command-history`. A goal column for `C-n` and `C-p` (`C-x C-n`, unset with `C-u C-x C-n`).
+- Repeat (`C-x z`), and edit and run again a command that read its arguments in the minibuffer (`C-x ESC ESC`, `C-x M-:`), from `command-history`, which also keeps every command run with `M-x`. A goal column for `C-n` and `C-p` (`C-x C-n`, unset with `C-u C-x C-n`).
 - Documented variables with buffer-local values (`C-h v`).
 - Hooks.
 - Major and minor modes with their own keymaps (`C-h m`), and `global-set-key`, `local-set-key`, `global-unset-key` and `local-unset-key`. Scripts reach the current keymaps as values (`currentLocalMap`, `currentGlobalMap`, `useGlobalMap`, `copyKeymap`, `accessibleKeymaps`, `currentMinorModeMaps`, `minorModeKeyBinding`).

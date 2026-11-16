@@ -1795,6 +1795,8 @@ fn minibuffer(ed: &mut Editor) {
             "Read a command name, with completion, and run it.\n\nA prefix argument given to M-x goes to the command it runs.",
             |ed, args| {
                 ed.set_prefix_arg(ed.current_prefix_arg());
+                // The command run goes on command-history, as command-execute records it for M-x.
+                ed.record_next_command = true;
                 ed.run_interactive(args[0].as_str()?);
                 Ok(())
             },

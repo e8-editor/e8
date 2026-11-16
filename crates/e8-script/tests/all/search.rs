@@ -165,8 +165,9 @@ fn query_replace_from_keys() {
 fn query_replace_offers_the_last_pair_and_c_u_takes_words() {
     let (mut ed, _scripting) = setup("foo foobar foo");
     ed.press("C-u M-%").unwrap();
+    assert_eq!(ed.prompt(), Some("Query replace word: "));
     ed.type_text("foo\n");
-    assert_eq!(ed.prompt(), Some("Query replace foo with: "));
+    assert_eq!(ed.prompt(), Some("Query replace word foo with: "));
     ed.type_text("bar\n");
     assert_eq!(ed.echo(), Some("Query replacing word foo with bar: (? for help) "));
     ed.press("!").unwrap();
@@ -266,4 +267,74 @@ fn replace_match_outside_the_narrowing_leaves_point() {
             JSON.stringify([e8.conditionCase(() => (e8.replaceMatch("x"), "replaced"), { "args-out-of-range": () => "refused" }), e8.point()]))"#,
     );
     assert_eq!(got, r#""[\"refused\",8]""#);
+}
+
+/// With C-- the replace commands work backward, from point, or the
+/// region's end, to the start, leaving point at the last match's start, as
+/// Emacs's perform-replace does with BACKWARD.
+#[test]
+fn replacing_backward_with_c_minus() {
+    let (mut ed, _s) = setup("one two one two one");
+    ed.window_buffer_mut().set_point(11);
+    ed.press("M-- M-x").unwrap();
+    ed.type_text("replace-string\n");
+    assert_eq!(ed.prompt(), Some("Replace string backward: "));
+    ed.type_text("one\n");
+    assert_eq!(ed.prompt(), Some("Replace string backward one with: "));
+    ed.type_text("1\n");
+    assert_eq!(text(&ed), "1 two 1 two one", "only the matches before point");
+    assert_eq!(point(&ed), 0);
+    assert_eq!(ed.echo(), Some("Replaced 2 occurrences"));
+
+    // query-replace asks at each match going back, point at its start.
+    let (mut ed, _s) = setup("foo x foo y foo");
+    ed.window_buffer_mut().set_point(9);
+    ed.press("M-- M-%").unwrap();
+    ed.type_text("foo\nbar\n");
+    assert_eq!(ed.echo(), Some("Query replacing backward foo with bar: (? for help) "));
+    assert_eq!(point(&ed), 6);
+    ed.press("y").unwrap();
+    assert_eq!(point(&ed), 0, "the match before");
+    ed.press("n").unwrap();
+    assert_eq!(text(&ed), "foo x bar y foo");
+    assert_eq!(ed.echo(), Some("Replaced 1 occurrence"));
+
+    // In the region, from its end back to its start.
+    let (mut ed, _s) = setup("ab ab ab ab");
+    ed.window_buffer_mut().set_point(3);
+    ed.press("C-SPC").unwrap();
+    ed.window_buffer_mut().set_point(8);
+    ed.press("M-- M-x").unwrap();
+    ed.type_text("replace-string\n");
+    assert_eq!(ed.prompt(), Some("Replace string backward in region: "));
+    ed.type_text("ab\nX\n");
+    assert_eq!(text(&ed), "ab X X ab");
+    assert_eq!(point(&ed), 3);
+    // ! after an empty match replaces it once, then goes on before it.
+    let (mut ed, _s) = setup("a\nb");
+    ed.window_buffer_mut().set_point(3);
+    ed.press("M-- C-M-%").unwrap();
+    ed.type_text("^\nX\n");
+    ed.press("!").unwrap();
+    assert_eq!(text(&ed), "Xa\nXb");
+
+    // An empty active region is none: from point back to the start.
+    let (mut ed, _s) = setup("ab ab ab");
+    ed.window_buffer_mut().set_point(5);
+    ed.press("C-SPC M-- M-x").unwrap();
+    ed.type_text("replace-string\n");
+    assert_eq!(ed.prompt(), Some("Replace string backward: "));
+    ed.type_text("ab\nX\n");
+    assert_eq!(text(&ed), "X X ab");
+}
+
+/// query-replace-regexp says it replaces a regexp, as perform-replace's message does.
+#[test]
+fn query_replace_regexp_says_regexp() {
+    let (mut ed, _s) = setup("aa b aa");
+    ed.press("C-M-%").unwrap();
+    ed.type_text("a+\nX\n");
+    assert_eq!(ed.echo(), Some("Query replacing regexp a+ with X: (? for help) "));
+    ed.press("!").unwrap();
+    assert_eq!(text(&ed), "X b X");
 }

@@ -235,11 +235,20 @@ fn repeat_complex_command_runs_a_command_again() {
     assert_eq!(d.text(), "three two three");
     let kept = d.with(|ed| format!("{:?}", ed.variable("command-history")));
     assert!(!kept.contains("execute-extended-command"), "{kept}");
+    // A command M-x runs is kept though it reads nothing, as command-execute records it.
+    d.mx("forward-char");
+    let newest = d.with(|ed| match ed.variable("command-history") {
+        Some(e8_core::Value::List(items)) => format!("{:?}", items[0]),
+        other => format!("{other:?}"),
+    });
+    assert_eq!(newest, r#"List([Symbol("forward-char"), Number(1.0)])"#);
+    d.press("C-b");
     d.press("C-f");
     d.press("M-<");
     d.type_text("one ");
     d.press("M-<");
-    d.press("C-x ESC ESC");
+    // The second newest, past the forward-char M-x ran.
+    d.press("M-2 C-x ESC ESC");
     assert_eq!(d.prompt().as_deref(), Some("Redo: "));
     assert_eq!(d.with(|ed| ed.minibuffer_input()), r#"(replace-string "one" "three" nil)"#);
     d.press("RET");

@@ -6263,7 +6263,7 @@ declare global {
       /**
        * Replace a string with another, asking at each match.
        *
-       * At each match: y or SPC replaces it, n or DEL skips it, ! replaces the rest, . replaces it and stops, q or RET stops. Case is ignored unless the string has a capital letter, and then replacements follow the case of what they replace. Works from point to the end of the buffer, or on the region if it is active.
+       * At each match: y or SPC replaces it, n or DEL skips it, ! replaces the rest, . replaces it and stops, q or RET stops. Case is ignored unless the string has a capital letter, and then replacements follow the case of what they replace. Works from point to the end of the buffer, or on the region if it is active. C-u replaces whole words only, and C-- works backward, from point to the start.
        *
        * @param from text
        * @param to text
@@ -6329,7 +6329,7 @@ declare global {
       /**
        * Replace matches of a regular expression, asking at each one.
        *
-       * In the replacement, \& is the whole match and \1 to \9 its groups. See query-replace for the keys.
+       * In the replacement, \& is the whole match and \1 to \9 its groups. See query-replace for the keys, and for C-u and C--.
        *
        * @param regexp text
        * @param to text
@@ -6563,7 +6563,7 @@ declare global {
       /**
        * Replace every match of a regular expression from point to the end of the buffer, or in the active region.
        *
-       * In the replacement, \& is the whole match and \1 to \9 its groups.
+       * In the replacement, \& is the whole match and \1 to \9 its groups. C-u replaces whole words only, and C-- works backward to the start.
        *
        * @param regexp text
        * @param to text
@@ -6573,7 +6573,7 @@ declare global {
        */
       "replace-regexp": [regexp: string, to: string, delimited?: PrefixArg | boolean];
       /**
-       * Replace every match of a string from point to the end of the buffer, or in the active region.
+       * Replace every match of a string from point to the end of the buffer, or in the active region; C-u for whole words only, C-- backward to the start.
        *
        * @param from text
        * @param to text
@@ -8799,7 +8799,7 @@ declare global {
        */
       "comint-terminfo-terminal": Value;
       /**
-       * Commands that read their arguments in the minibuffer, newest first, each a list of the command and its arguments, which C-x ESC ESC runs again.
+       * Commands that read their arguments in the minibuffer or ran from M-x, newest first, each a list of the command and its arguments, which C-x ESC ESC runs again.
        */
       "command-history": Value;
       /**
