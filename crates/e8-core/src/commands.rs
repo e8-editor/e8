@@ -441,8 +441,10 @@ fn movement(ed: &mut Editor) {
         |ed, _| {
             let height = ed.viewport_height() as i64;
             let arg = ed.current_prefix_arg();
+            // Any argument is a line, C-u as 4, as Fmove_to_window_line takes
+            // prefix-numeric-value of it.
             let row = match arg {
-                Some(arg @ (PrefixArg::Number(_) | PrefixArg::Minus)) => {
+                Some(arg) => {
                     let n = arg.numeric();
                     if n >= 0 { n.min(height - 1) } else { (height + n).max(0) }
                 }
