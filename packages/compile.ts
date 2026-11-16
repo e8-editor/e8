@@ -244,8 +244,9 @@ async function compilationStart(command: string, mode: string, directory: string
       e8.call(mode as e8.CommandName);
       e8.setVariable("default-directory", directory);
       e8.setVariable("compilation-directory", directory);
-      // And for recompile from anywhere, as compile sets its default.
-      e8.setDefault("compilation-directory", directory);
+      // And for recompile from anywhere, as compile sets its default; grep
+      // and the other modes do not, so recompile still runs where compile did.
+      if (mode === "compilation-mode") e8.setDefault("compilation-directory", directory);
       e8.setVariable("compilation-arguments", [command, mode]);
       const key = e8.currentBuffer();
       for (const m of buffers.get(key)?.messages ?? []) if (m.marker !== undefined) e8.deleteMarker(m.marker);
@@ -261,7 +262,9 @@ async function compilationStart(command: string, mode: string, directory: string
       e8.gotoChar(truthy(e8.variable("compilation-scroll-output")) ? e8.bufferSize() : 0);
     });
     e8.setVariable("next-error-last-buffer", e8.getBuffer(bufferName) ?? null);
-    const env: { [k: string]: string } = { INSIDE_EMACS: "e8,compile" };
+    // No pager, as compilation-start's PAGER= has it: git and the like start
+    // one on the terminal the command runs on, and would wait for it.
+    const env: { [k: string]: string } = { INSIDE_EMACS: "e8,compile", PAGER: "" };
     for (const e of (e8.variable("compilation-environment") as e8.Value[] | null) ?? []) {
       if (typeof e === "string" && e.includes("=")) env[e.slice(0, e.indexOf("="))] = e.slice(e.indexOf("=") + 1);
     }

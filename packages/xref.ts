@@ -26,8 +26,10 @@ export function matchesInFiles(regexp: string, files: string[], dir: string, fol
     ["xargs", "-0", "grep", ...(fold ? ["-i"] : []), "--null", "-snHE", "-e", toExtended(regexp)],
     { directory: dir, input: files.join("\0") },
   );
-  // grep says 1 for no matches; more is a failure, as of the regexp.
-  if (result.exit > 1 && !/\0\d+:/.test(result.output)) e8.userError(`Search failed with status ${result.exit}: ${result.output.trim()}`);
+  // A failure only when it says something other than matches, as
+  // xref-matches-in-files has it: GNU xargs says 123 for no matches.
+  const other = result.output.split("\n").filter((l) => l !== "" && !l.includes("\0"));
+  if (result.exit > 1 && other.length > 0) e8.userError(`Search failed with status ${result.exit}: ${other.join("\n").trim()}`);
   let js: RegExp | undefined;
   try {
     js = new RegExp(toExtended(regexp).replace(/\\</g, "\\b").replace(/\\>/g, "\\b"), fold ? "iu" : "u");

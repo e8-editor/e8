@@ -231,3 +231,22 @@ fn output_while_a_prompt_is_open_goes_to_its_buffer() {
     let text = buffer_text(&d, "*compilation*");
     assert!(text.contains("\nlate\n"), "{text}");
 }
+
+/// A command compile runs has no pager, as compilation-start sets PAGER=
+/// so git does not wait in one, and grep elsewhere leaves recompile running
+/// where compile last did, as only compile sets compilation-directory's default.
+#[test]
+fn commands_run_without_a_pager_and_grep_leaves_recompile_s_directory() {
+    let dir = project();
+    let d = setup(dir.path());
+    compile(&d, "echo \"pager=[$PAGER]\"");
+    assert!(buffer_text(&d, "*compilation*").contains("pager=[]\n"), "{}", buffer_text(&d, "*compilation*"));
+    let src = format!("{}/src/", dir.path().display());
+    d.with(move |ed| ed.set_variable("default-directory", Value::Str(src)));
+    d.mx("grep");
+    d.with(|ed| ed.set_minibuffer_input("grep -n x *.rs"));
+    d.press("RET");
+    wait_for_output(&d);
+    let default = d.with(|ed| ed.default_value("compilation-directory").and_then(|v| v.as_str().map(str::to_string)));
+    assert_eq!(default, Some(format!("{}/", dir.path().display())));
+}
