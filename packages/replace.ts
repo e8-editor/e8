@@ -65,8 +65,9 @@ function scope(fromPoint = false, backward = false): { start: number; endMarker:
   // To the end of the accessible text, as Emacs's searches stop there.
   let end = e8.pointMax();
   let limit = e8.pointMin();
-  if (!fromPoint && e8.calledInteractively() && e8.regionActive()) {
-    const mark = e8.mark() ?? start;
+  // An empty region counts as none, as use-region-p says.
+  const mark = e8.mark() ?? start;
+  if (!fromPoint && e8.calledInteractively() && e8.regionActive() && mark !== start) {
     end = Math.max(mark, start);
     // Backward, from the region's end to its start, as perform-replace does.
     if (backward) {
@@ -125,11 +126,11 @@ function occurrences(n: number): string {
 }
 
 /** Replaces every match from `start` up to the end marker, returning how many. */
-function replaceAll(r: Replace, start: number, endMarker: number): void {
+function replaceAll(r: Replace, start: number, endMarker: number, last?: number): void {
   let pos = start;
   if (r.backward) {
     // Each match's start, where the next search back begins, as perform-replace leaves point.
-    let lastStart: number | undefined;
+    let lastStart = last;
     for (;;) {
       const m = findBack(r, pos, lastStart);
       if (m === undefined) break;
@@ -140,7 +141,8 @@ function replaceAll(r: Replace, start: number, endMarker: number): void {
     e8.gotoChar(pos);
     return;
   }
-  let lastEnd: number | undefined;
+  // Where the last match replaced ended, past which an empty match is not taken again.
+  let lastEnd = last;
   for (;;) {
     const m = findFrom(r, pos, endOf(endMarker), lastEnd);
     if (m === undefined) break;
@@ -308,7 +310,8 @@ const actions: [string[], string, string, (r: Replace) => void][] = [
   }],
   [["!"], "query-replace-automatic", "Replace this match and all the rest without asking.", (r) => {
     replaceHere(r);
-    replaceAll(r, r.next, endMarker);
+    // An empty match just replaced, or replaced by ",", is not taken again.
+    replaceAll(r, r.next, endMarker, r.match === undefined ? undefined : r.next);
     finish(r);
   }],
   [["."], "query-replace-act-and-exit", "Replace this match and stop.", (r) => {

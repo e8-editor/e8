@@ -310,6 +310,22 @@ fn replacing_backward_with_c_minus() {
     ed.type_text("ab\nX\n");
     assert_eq!(text(&ed), "ab X X ab");
     assert_eq!(point(&ed), 3);
+    // ! after an empty match replaces it once, then goes on before it.
+    let (mut ed, _s) = setup("a\nb");
+    ed.window_buffer_mut().set_point(3);
+    ed.press("M-- C-M-%").unwrap();
+    ed.type_text("^\nX\n");
+    ed.press("!").unwrap();
+    assert_eq!(text(&ed), "Xa\nXb");
+
+    // An empty active region is none: from point back to the start.
+    let (mut ed, _s) = setup("ab ab ab");
+    ed.window_buffer_mut().set_point(5);
+    ed.press("C-SPC M-- M-x").unwrap();
+    ed.type_text("replace-string\n");
+    assert_eq!(ed.prompt(), Some("Replace string backward: "));
+    ed.type_text("ab\nX\n");
+    assert_eq!(text(&ed), "X X ab");
 }
 
 /// query-replace-regexp says it replaces a regexp, as perform-replace's message does.
