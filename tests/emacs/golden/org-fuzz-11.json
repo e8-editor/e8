@@ -213,6 +213,69 @@
       "kill_ring": [],
       "modified": true,
       "error": "Before first headline at position 14 in buffer *e8-oracle*"
+    },
+    {
+      "name": "seed505-2656-narrowed-insert-heading-after",
+      "input": {
+        "text": "   + gamma\n* DONE alpha [%]",
+        "point": 0,
+        "keys": "C-x n e C-<return>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "   + gamma\n* \n* DONE alpha [%]",
+      "visible": "   + gamma\n* \n* DONE alpha [%]",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed505-2324-narrowed-toggle-heading-twice",
+      "input": {
+        "text": "* plan alpha\n",
+        "point": 13,
+        "keys": "M-S-<return> C-x n e C-c * C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* plan alpha\n** TODO ",
+      "visible": "* plan alpha\n** TODO ",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed505-1872-narrowed-bullet-shift",
+      "input": {
+        "text": "  alpha\n  + plan\n+ alpha",
+        "point": 0,
+        "keys": "C-x n e - M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": " -   alpha\n  + plan\n+ alpha",
+      "visible": " -   alpha\n  + plan\n+ alpha",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

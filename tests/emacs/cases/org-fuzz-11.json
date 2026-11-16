@@ -88,5 +88,32 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "seed505-2656-narrowed-insert-heading-after",
+    "text": "   + gamma\n* DONE alpha [%]",
+    "point": 0,
+    "keys": "C-x n e C-<return>",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "seed505-2324-narrowed-toggle-heading-twice",
+    "text": "* plan alpha\n",
+    "point": 13,
+    "keys": "M-S-<return> C-x n e C-c * C-c *",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "seed505-1872-narrowed-bullet-shift",
+    "text": "  alpha\n  + plan\n+ alpha",
+    "point": 0,
+    "keys": "C-x n e - M-S-<right>",
+    "modes": [
+      "org-mode"
+    ]
   }
 ]

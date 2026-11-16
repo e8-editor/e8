@@ -32,6 +32,8 @@ org-fuzz-11/seed303-1024-narrowed-item-table  # a table line starting at a narro
 org-fuzz-11/seed404-1528-narrowed-item-return  # the element parser reads only the narrowing
 org-fuzz-11/seed404-0929-narrowed-drawer-tab  # the element parser reads only the narrowing
 org-fuzz-11/seed404-2614-narrowed-copy-subtree  # the element parser reads only the narrowing
+org-fuzz-11/seed505-2656-narrowed-insert-heading-after  # the element parser reads only the narrowing
+org-fuzz-11/seed505-1872-narrowed-bullet-shift  # the element parser reads only the narrowing
 
 # Intentional differences, not to be fixed.
 org-refile/refile-to-no-target  # the recorder answers completing-read directly, so Emacs reads a target its require-match refuses when typed; E8 refuses it with [No match], as Emacs does when it is typed.

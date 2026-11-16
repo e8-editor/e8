@@ -5710,9 +5710,15 @@ function orgToggleHeading(nstars: e8.PrefixArg): void {
         forwardLine();
       }
     } else {
-      const all = headings();
-      const i = headingIndex(all, lineAt(beg));
-      const count = typeof nstars === "number" ? nstars : i === undefined ? 0 : all[i].level;
+      // The level of the heading it is under, from the whole buffer, as
+      // org-current-level finds it above a narrowing too.
+      const level = e8.saveRestriction(() => {
+        e8.widen();
+        const all = headings();
+        const i = headingIndex(all, lineAt(beg));
+        return i === undefined ? 0 : all[i].level;
+      });
+      const count = typeof nstars === "number" ? nstars : level;
       const stars = "*".repeat(count);
       const add = nstars != null ? "" : stars === "" ? "*" : e8.variable("org-odd-levels-only") === true ? "**" : "*";
       const rpl = `${stars}${add} `;
