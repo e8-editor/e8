@@ -166,5 +166,8 @@
     "modes": [
       "emacs-lisp-mode"
     ]
-  }
+  },
+  {"name": "overwrite-count-before-a-wide-tab", "text": "abcdef\tx\n", "keys": "C-f C-f C-f C-f C-f C-f <insert> C-u 2 a"},
+  {"name": "overwrite-long-count-on-a-tab", "text": "\tx\n", "keys": "<insert> C-u 9 a"},
+  {"name": "overwrite-a-one-column-tab", "text": "abcdefg\tx\n", "keys": "C-f C-f C-f C-f C-f C-f C-f <insert> C-u 2 a"}
 ]

@@ -253,3 +253,17 @@ fn regexps_are_emacs_s_with_the_buffer_s_syntax() {
     // Errors are Emacs's.
     assert!(s.eval_expression(&mut ed, r#"e8.conditionCase(() => e8.stringMatch("\\(a\\)\\2", "aa"), { "invalid-regexp": (e) => { throw new Error("caught " + e.message); } })"#).unwrap_err().to_string().contains("caught Invalid regexp: \"Invalid back reference\""));
 }
+
+/// replace-match refuses a match outside the narrowing without moving point,
+/// as Freplace_match checks the match first.
+#[test]
+fn replace_match_outside_the_narrowing_leaves_point() {
+    let (mut ed, s) = setup("foo bar baz");
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.gotoChar(0), e8.reSearchForward("foo"), e8.narrowToRegion(4, 11), e8.gotoChar(8),
+            JSON.stringify([e8.conditionCase(() => (e8.replaceMatch("x"), "replaced"), { "args-out-of-range": () => "refused" }), e8.point()]))"#,
+    );
+    assert_eq!(got, r#""[\"refused\",8]""#);
+}

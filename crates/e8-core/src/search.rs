@@ -615,6 +615,8 @@ impl Editor {
         // As in Emacs, a mark at the end of the replaced text ends up at the
         // end of the new text, even where the match was empty.
         let mark_at_end = self.buffer().mark() == Some(m.end);
+        // A match outside the narrowing is refused before point moves, as Freplace_match checks it first.
+        self.validate_region(m.start, m.end)?;
         self.buffer_mut().set_point(m.start);
         self.replace_range(m.start, m.end, &new)?;
         let end = m.start + new.chars().count();

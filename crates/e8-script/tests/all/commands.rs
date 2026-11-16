@@ -300,7 +300,7 @@ fn binary_overwrite_and_quoted_digits_in_overwrite_mode() {
     d.type_text("xyz");
     assert_eq!(d.text(), "axyzd");
     d.mx("overwrite-mode");
-    assert_eq!(d.with(|ed| ed.variable("binary-overwrite-mode").is_some_and(|v| v.is_true())), false, "one overwrite mode at a time");
+    assert!(!d.with(|ed| ed.variable("binary-overwrite-mode").is_some_and(|v| v.is_true())), "one overwrite mode at a time");
     d.press("M-<");
     d.press("C-q 1");
     assert_eq!(d.text(), "1axyzd", "the digit itself, inserted as quoted-insert does");

@@ -523,6 +523,63 @@
       ],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "overwrite-count-before-a-wide-tab",
+      "input": {
+        "text": "abcdef\tx\n",
+        "point": 0,
+        "keys": "C-f C-f C-f C-f C-f C-f <insert> C-u 2 a",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abcdefaax\n",
+      "visible": "abcdefaax\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "overwrite-long-count-on-a-tab",
+      "input": {
+        "text": "\tx\n",
+        "point": 0,
+        "keys": "<insert> C-u 9 a",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaaaaaaaa\n",
+      "visible": "aaaaaaaaa\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "overwrite-a-one-column-tab",
+      "input": {
+        "text": "abcdefg\tx\n",
+        "point": 0,
+        "keys": "C-f C-f C-f C-f C-f C-f C-f <insert> C-u 2 a",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abcdefgaa\n",
+      "visible": "abcdefgaa\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
