@@ -467,6 +467,44 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "transpose-words-across-an-emoji",
+      "input": {
+        "text": "one 👍🏽 two three",
+        "point": 3,
+        "keys": "M-t",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "👍🏽 one two three",
+      "visible": "👍🏽 one two three",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "transpose-words-after-an-emoji",
+      "input": {
+        "text": "👍🏽 one two 😀 x",
+        "point": 6,
+        "keys": "M-t M-t",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "👍🏽 two 😀 one x",
+      "visible": "👍🏽 two 😀 one x",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

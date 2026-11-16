@@ -1,4 +1,4 @@
-import { allMatches, defineGlobalizedMinorMode, eraseBuffer, forwardLine } from "subr";
+import { allMatches, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine } from "subr";
 // Basic editing commands that Emacs writes in Lisp, after its simple.el.
 // E8 loads this file at startup, before init.ts.
 
@@ -347,7 +347,8 @@ function transposeRegions(pos1: [number, number], pos2: [number, number]): void 
     e8.gotoChar(at);
     if (beforeMarkers) e8.insertBeforeMarkers(text);
     else e8.insert(text);
-    for (const m of markers) if (m.pos > at || (beforeMarkers && m.pos === at)) m.pos += text.length;
+    // Positions count characters, not the UTF-16 units of length.
+    for (const m of markers) if (m.pos > at || (beforeMarkers && m.pos === at)) m.pos += charCount(text);
   };
   const remove = (from: number, to: number): string => {
     const text = e8.deleteRegion(from, to);
