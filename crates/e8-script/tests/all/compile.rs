@@ -265,3 +265,18 @@ fn make_and_clang_context_lines_are_info_that_next_error_passes() {
     d.press("M-g n");
     assert_eq!(d.with(|ed| ed.take_error().map(|e| e.to_string())).as_deref(), Some("Past last error"));
 }
+
+/// A message after make's "Entering directory" names its file relative to
+/// that directory, as compilation-directory-matcher has it, until make
+/// leaves it.
+#[test]
+fn messages_follow_the_directories_make_enters() {
+    let dir = project();
+    let d = setup(dir.path());
+    compile(&d, "printf \"make: Entering directory '%s/src'\\na.rs:2:5: error: x\\nmake: Leaving directory '%s/src'\\nsrc/b.rs:3: error: y\\n\" \"$PWD\" \"$PWD\"");
+    d.press("M-g n");
+    assert_eq!(d.buffer_name(), "a.rs");
+    assert_eq!(d.point(), 9 + 4, "line 2, column 5");
+    d.press("M-g n");
+    assert_eq!(d.buffer_name(), "b.rs");
+}

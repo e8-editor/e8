@@ -116,6 +116,8 @@ type Message = {
   line: number;
   col?: number;
   type: 0 | 1 | 2;
+  /** The directory make said it entered, which a relative file name is in, as compilation-directory-matcher finds it. */
+  dir?: string;
   /** Where it points, once its file has been visited, moving with edits there as compile.el's markers do. */
   marker?: e8.Marker;
 };
@@ -125,7 +127,7 @@ type Message = {
  * read, kept by buffer rather than name, as a buffer-local variable would
  * be, so renaming the buffer keeps them.
  */
-const buffers = new Map<e8.Buffer, { messages: Message[]; parsed: number; current?: number; started: number; matches: number }>();
+const buffers = new Map<e8.Buffer, { messages: Message[]; parsed: number; current?: number; started: number; matches: number; dirs?: string[] }>();
 
 // A killed buffer's messages go with it, as its buffer-local variables would.
 e8.addHook("kill-buffer-hook", () => {
@@ -158,6 +160,14 @@ function parseNewLines(): void {
   while (line < last) {
     const start = e8.lineStart(line);
     const text = e8.lineText(line);
+    // make's "Entering directory 'DIR'" and "Leaving directory", which the
+    // messages between are relative to, as compilation-directory-matcher.
+    const dirLine = /(?:Entering|Leavin(g)) directory [`'‘](.+)['’]$/.exec(text);
+    if (dirLine !== null) {
+      const dirs = (s.dirs ??= []);
+      if (dirLine[1] === undefined) dirs.push(e8.fileNameAsDirectory(e8.expandFileName(dirLine[2], messageBase())));
+      else dirs.pop();
+    }
     for (const f of formats) {
       const m = f.re.exec(text);
       if (m === null || m.groups === undefined) continue;
@@ -176,7 +186,8 @@ function parseNewLines(): void {
         }
       }
       const fileAt = start + chars(text, m.index + m[0].indexOf(file));
-      s.messages.push({ start, end: e8.lineEnd(line), file, line: lineNo, col: g.col === undefined ? undefined : Number(g.col), type });
+      const dir = s.dirs?.at(-1);
+      s.messages.push({ start, end: e8.lineEnd(line), file, line: lineNo, col: g.col === undefined ? undefined : Number(g.col), type, ...(dir ? { dir } : {}) });
       if (grep) s.matches++;
       // As compilation-mode's font-lock puts them: silently.
       e8.withSilentModifications(() => {
@@ -466,9 +477,14 @@ e8.defineCommand({
 
 /** The file a message names, relative to the directory its compilation ran in. */
 function messageFile(m: Message): string {
-  const dir = e8.variable("compilation-directory");
-  const base = typeof dir === "string" ? dir : currentDirectory();
+  const base = m.dir ?? messageBase();
   return e8.expandFileName(m.file.startsWith("/") || m.file.startsWith("~") ? m.file : base + m.file);
+}
+
+/** The directory the compilation ran in, which messages' file names are relative to. */
+function messageBase(): string {
+  const dir = e8.variable("compilation-directory");
+  return typeof dir === "string" ? dir : currentDirectory();
 }
 
 let highlight: number | undefined;
