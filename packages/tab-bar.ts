@@ -551,6 +551,12 @@ function closeTab(n?: number, to?: number): void {
   const current = currentIndex(list);
   const index = n === undefined ? current : n - 1;
   const last = list.length === 1;
+  // A number past the last tab closes nothing, as tab-bar-close-tab gives
+  // the hooks nil for it and finds no tab.
+  if (list[index] === undefined) {
+    e8.runHooks("tab-bar-tab-pre-close-functions", null, last);
+    return;
+  }
   e8.runHooks("tab-bar-tab-pre-close-functions", list[index].name, last);
   if (last) {
     const choice = e8.variable("tab-bar-close-last-tab-choice");
@@ -744,7 +750,8 @@ const findFileOtherTab = e8.defineCommand({
   name: "find-file-other-tab",
   doc: "Visit a file in a new tab.",
   params: [{ name: "file", kind: "file", prompt: "Find file in other tab: " }],
-  run: (file) => e8.call(switchToBufferOtherTab, e8.findFileNoselect(file)),
+  // A directory is listed, as find-file-noselect gives Dired for one.
+  run: (file) => (e8.fileDirectoryP(file) ? e8.call("dired-other-tab", file) : e8.call(switchToBufferOtherTab, e8.findFileNoselect(file))),
 });
 
 const findFileReadOnlyOtherTab = e8.defineCommand({

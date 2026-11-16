@@ -4152,7 +4152,9 @@ const findFileOtherFrame = e8.defineCommand({
   doc: "Visit a file in another frame and select it.",
   params: [{ name: "file", kind: "file", prompt: "Find file in other frame: " }],
   run: (file) => {
-    popToBuffer(e8.findFileNoselect(file), otherFrameAction);
+    // A directory is listed, as find-file-noselect gives Dired for one.
+    if (e8.fileDirectoryP(file)) e8.call("dired-other-frame", file);
+    else popToBuffer(e8.findFileNoselect(file), otherFrameAction);
   },
 });
 
