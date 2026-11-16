@@ -148,5 +148,23 @@
     "modes": [
       "emacs-lisp-mode"
     ]
+  },
+  {
+    "name": "comment-dwim-with-a-count-kills-and-moves-on",
+    "text": "(a) ; one\n(b) ; two\n(c) ; three\n(d)\n",
+    "point": 1,
+    "keys": "M-2 M-;",
+    "modes": [
+      "emacs-lisp-mode"
+    ]
+  },
+  {
+    "name": "comment-dwim-with-c-u-kills-one-and-stays",
+    "text": "(a) ; one\n(b) ; two\n(c) ; three\n(d)\n",
+    "point": 1,
+    "keys": "C-u M-;",
+    "modes": [
+      "emacs-lisp-mode"
+    ]
   }
 ]

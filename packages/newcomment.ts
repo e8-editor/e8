@@ -5,7 +5,7 @@
 // comments go to. Each major mode says what its comments look like with
 // comment-start and comment-end, and its syntax table finds them.
 
-import { escapeRegExp, numberValue as num, truthy } from "subr";
+import { escapeRegExp, forwardLine, numberValue as num, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string, local = false) => e8.defineVariable({ name, value, doc, local });
 defvar("comment-start", null, "What starts a comment in this mode, with the space after it: \"// \" or \"# \". nil if the mode has no comments.", true);
@@ -328,17 +328,23 @@ function reindent(column: number): void {
 }
 
 /** Kills the comment on the line, and the whitespace before it, as comment-kill. */
-function commentKill(count: number): void {
-  for (let i = 0; i < Math.max(count, 1); i++) {
-    const line = e8.lineOf(e8.point());
-    const start = commentOnLine(line);
-    if (start !== undefined) {
+/**
+ * Kills the comment on `count` lines from point's, as comment-kill does:
+ * point stays on each line while its comment goes, and with `moves`, as
+ * any prefix argument makes it, goes on to the next line after each.
+ */
+function commentKill(count: number, moves = false): void {
+  for (let i = 0; i < count; i++) {
+    e8.saveExcursion(() => {
+      const line = e8.lineOf(e8.point());
+      const start = commentOnLine(line);
+      if (start === undefined) return;
       let q = start;
       while (q > e8.lineStart(line) && " \t".includes(charAt(q - 1))) q--;
       e8.killRegion(q, e8.lineEnd(line));
       e8.call("indent-according-to-mode");
-    }
-    if (count > 1 && line + 1 < e8.lineCount()) e8.gotoChar(e8.lineStart(line + 1));
+    });
+    if (moves) forwardLine(1);
   }
 }
 
@@ -359,7 +365,8 @@ e8.defineCommand({
     const arg = e8.prefixArg();
     if (regionUsed()) return commentOrUncommentRegion(...region(), arg);
     if (!blank(e8.lineOf(e8.point()))) {
-      if (arg !== null) commentKill(typeof arg === "number" ? arg : 1);
+      // (comment-kill (and (integerp arg) arg)): a count moves on, C-u does not.
+      if (arg !== null) commentKill(typeof arg === "number" ? arg : 1, typeof arg === "number");
       else commentIndent();
       return;
     }
@@ -455,7 +462,8 @@ e8.defineCommand({
   doc: "Kill the comment on this line. With a prefix argument, on that many lines.",
   run: () => {
     barf();
-    commentKill(e8.prefixNumericValue(e8.prefixArg()));
+    const arg = e8.prefixArg();
+    commentKill(e8.prefixNumericValue(arg), arg !== null);
   },
 });
 

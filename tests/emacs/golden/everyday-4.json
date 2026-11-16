@@ -476,6 +476,53 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "comment-dwim-with-a-count-kills-and-moves-on",
+      "input": {
+        "text": "(a) ; one\n(b) ; two\n(c) ; three\n(d)\n",
+        "point": 1,
+        "keys": "M-2 M-;",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(a)\n(b)\n(c) ; three\n(d)\n",
+      "visible": "(a)\n(b)\n(c) ; three\n(d)\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        " ; two",
+        " ; one"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-dwim-with-c-u-kills-one-and-stays",
+      "input": {
+        "text": "(a) ; one\n(b) ; two\n(c) ; three\n(d)\n",
+        "point": 1,
+        "keys": "C-u M-;",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(a)\n(b) ; two\n(c) ; three\n(d)\n",
+      "visible": "(a)\n(b) ; two\n(c) ; three\n(d)\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        " ; one"
+      ],
+      "modified": true,
+      "error": null
     }
   ]
 }
