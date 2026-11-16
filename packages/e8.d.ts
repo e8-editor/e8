@@ -2787,6 +2787,22 @@ declare global {
        */
       "find-file-other-window": [file: string];
       /**
+       * Visit a file as find-file does, but read-only; read-only-mode makes it editable again.
+       *
+       * @param file file name
+       *
+       * Defined in packages/window.ts.
+       */
+      "find-file-read-only": [file: string];
+      /**
+       * Visit a file as find-file-other-frame does, but read-only; read-only-mode makes it editable again.
+       *
+       * @param file file name
+       *
+       * Defined in packages/window.ts.
+       */
+      "find-file-read-only-other-frame": [file: string];
+      /**
        * Visit a file in a new tab, read-only.
        *
        * @param file file name
@@ -2794,6 +2810,14 @@ declare global {
        * Defined in packages/tab-bar.ts.
        */
       "find-file-read-only-other-tab": [file: string];
+      /**
+       * Visit a file as find-file-other-window does, but read-only; read-only-mode makes it editable again.
+       *
+       * @param file file name
+       *
+       * Defined in packages/window.ts.
+       */
+      "find-file-read-only-other-window": [file: string];
       /**
        * Visit the place of the first error message.
        *

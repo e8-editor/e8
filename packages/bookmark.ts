@@ -393,7 +393,6 @@ for (const [keys, command] of [
   ["C-x r m", "bookmark-set"],
   ["C-x r b", "bookmark-jump"],
   ["C-x r l", "bookmark-bmenu-list"],
-  ["C-x 4 r", "bookmark-jump-other-window"],
 ] as const) {
   e8.bindKey(keys, command);
 }

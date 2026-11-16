@@ -4158,6 +4158,26 @@ const findFileOtherFrame = e8.defineCommand({
   },
 });
 
+// Visiting a file read-only, here or in another window or frame, as
+// find-file--read-only does it: a file that is not there is an error.
+for (const [name, visit, prompt, keys] of [
+  ["find-file-read-only", "find-file", "Find file read-only: ", "C-x C-r"],
+  ["find-file-read-only-other-window", "find-file-other-window", "Find file read-only other window: ", "C-x 4 r"],
+  ["find-file-read-only-other-frame", "find-file-other-frame", "Find file read-only other frame: ", "C-x 5 r"],
+] as const) {
+  const command = e8.defineCommand({
+    name,
+    doc: `Visit a file as ${visit} does, but read-only; read-only-mode makes it editable again.`,
+    params: [{ name: "file", kind: "file", prompt }],
+    run: (file: string) => {
+      if (!e8.fileExists(file)) e8.signal("error", `${file} does not exist`);
+      e8.call(visit, file);
+      e8.callWithPrefix(1, "read-only-mode");
+    },
+  });
+  e8.bindKey(keys, command);
+}
+
 const displayBufferOtherFrame = e8.defineCommand({
   name: "display-buffer-other-frame",
   doc: "Show a buffer in another frame, leaving the selected frame selected.",
