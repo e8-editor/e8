@@ -1726,3 +1726,49 @@ for (const [name, doc, run] of [
 ] as [string, string, (n: any) => void][]) {
   e8.defineCommand({ name, doc, params: [{ name: "n", kind: name.startsWith("scroll") ? "prefix" : "count" }], run });
 }
+
+// --- C-x ESC ESC, as simple.el's repeat-complex-command ----------------------
+
+/** An argument of a form on command-history, the forms for positions found again as call-interactively records them. */
+function commandHistoryArg(arg: e8.Value): e8.Value {
+  if (Array.isArray(arg) && arg.length === 1) {
+    const name = e8.prin1ToString(arg[0], true);
+    if (name === "point") return e8.point();
+    const mark = e8.mark();
+    if (mark === undefined && (name === "mark" || name.startsWith("region-"))) e8.signal("mark-inactive", "The mark is not set now");
+    if (name === "mark") return mark!;
+    if (name === "region-beginning") return Math.min(mark!, e8.point());
+    if (name === "region-end") return Math.max(mark!, e8.point());
+  }
+  return arg;
+}
+
+e8.defineCommand({
+  name: "repeat-complex-command",
+  doc:
+    "Edit and run again a command that read its arguments in the minibuffer, the latest by default, the Nth latest with a prefix argument, " +
+    "as command-history keeps them: the command and its arguments, written as Lisp.",
+  params: [{ name: "arg", kind: "count" }],
+  run: async (arg: number) => {
+    const history = ((e8.variable("command-history") ?? []) as e8.Value[]).filter(Array.isArray);
+    const elt = history[arg - 1];
+    if (elt === undefined) {
+      if (history.length > 0) e8.signal("error", `Argument ${arg} is beyond length of command history`);
+      e8.signal("error", "There are no previous complex commands");
+    }
+    const printed = history.map((form) => e8.prin1ToString(form));
+    e8.setVariable("repeat-complex-command-history", printed);
+    const answer = await e8.readString("Redo: ", { initial: printed[arg - 1], history: "repeat-complex-command-history" });
+    const [form] = e8.readFromString(answer);
+    if (!Array.isArray(form) || form.length === 0) e8.signal("error", `Not a command to run: ${answer}`);
+    const command = e8.prin1ToString(form[0], true);
+    const args = form.slice(1).map(commandHistoryArg);
+    // What was run goes first on the history, unless it is there already.
+    const now = (e8.variable("command-history") ?? []) as e8.Value[];
+    if (now.length === 0 || e8.prin1ToString(now[0]) !== e8.prin1ToString(form)) e8.setVariable("command-history", [form, ...now]);
+    (e8.call as (name: string, ...args: e8.Value[]) => void)(command, ...args);
+  },
+});
+e8.defineVariable({ name: "repeat-complex-command-history", doc: "The forms C-x ESC ESC offers with M-p and M-n, as printed.", value: [] });
+e8.bindKey("C-x M-ESC", "repeat-complex-command");
+e8.bindKey("C-x M-:", "repeat-complex-command");

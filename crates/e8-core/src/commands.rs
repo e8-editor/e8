@@ -578,7 +578,7 @@ fn scroll_lines_or_error(ed: &mut Editor, lines: i64) -> Result<()> {
         let (top, moved) = ed.move_rows_in(b, ed.row_line_in(b, b.top_line), lines);
         let last = b.line_of(b.point_max());
         let empty_last = b.line_start(last) == b.point_max() && top == ed.row_line_in(b, last);
-        if (moved as i64) < lines || empty_last {
+        if moved < lines || empty_last {
             return err("End of buffer");
         }
     }

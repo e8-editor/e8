@@ -966,7 +966,45 @@ impl Editor {
         let call = self.pending_call.take().expect("checked above");
         self.last_command = call.last_command;
         self.pending_calls_run += 1;
+        self.record_complex_command(&call.command, &call.args);
         self.execute(call.command, call.args, call.prefix);
+    }
+
+    /// Puts a command that read its arguments in the minibuffer on
+    /// `command-history`, as a form C-x ESC ESC can edit and run again, as
+    /// call-interactively does: positions the editor supplied as the forms
+    /// that find them again, (point), (mark) and the region's ends.
+    fn record_complex_command(&mut self, command: &Command, args: &[Arg]) {
+        // M-x is only a way to reach the command it runs, which is kept itself.
+        if command.name == "execute-extended-command" {
+            return;
+        }
+        let mut form = vec![Value::Symbol(command.name.clone())];
+        for (param, arg) in command.params.iter().zip(args) {
+            let supplied = match param.kind {
+                ParamKind::Point => Some("point"),
+                ParamKind::Mark => Some("mark"),
+                ParamKind::RegionBeginning => Some("region-beginning"),
+                ParamKind::RegionEnd => Some("region-end"),
+                _ => None,
+            };
+            form.push(match supplied {
+                Some(name) => Value::List(vec![Value::Symbol(name.into())]),
+                None => arg.to_value(),
+            });
+        }
+        let form = Value::List(form);
+        let mut items = match self.variable("command-history") {
+            Some(Value::List(items)) => items,
+            _ => Vec::new(),
+        };
+        if items.first() == Some(&form) {
+            return;
+        }
+        items.insert(0, form);
+        let max = self.number_in(self.window_buffer(), "history-length", 100.0).max(1.0) as usize;
+        items.truncate(max);
+        self.set_variable("command-history", Value::List(items));
     }
 
     /// Hands the next argument to the command waiting for it, or answers

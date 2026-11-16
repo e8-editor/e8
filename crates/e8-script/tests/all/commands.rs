@@ -219,3 +219,33 @@ fn goto_line_with_plain_c_u_goes_to_the_other_buffer() {
     }), "three\n");
     assert_eq!(d.with(|ed| ed.windows().len()), 2, "shown in another window");
 }
+
+/// C-x ESC ESC edits and runs again a command that read its arguments in
+/// the minibuffer, as Emacs's repeat-complex-command; commands that read
+/// nothing are not kept.
+#[test]
+fn repeat_complex_command_runs_a_command_again() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("t\n");
+    d.type_text("one two one");
+    d.press("M-<");
+    d.mx("replace-string");
+    d.type_text("one\nthree\n");
+    assert_eq!(d.text(), "three two three");
+    let kept = d.with(|ed| format!("{:?}", ed.variable("command-history")));
+    assert!(!kept.contains("execute-extended-command"), "{kept}");
+    d.press("C-f");
+    d.press("M-<");
+    d.type_text("one ");
+    d.press("M-<");
+    d.press("C-x ESC ESC");
+    assert_eq!(d.prompt().as_deref(), Some("Redo: "));
+    assert_eq!(d.with(|ed| ed.minibuffer_input()), r#"(replace-string "one" "three" nil)"#);
+    d.press("RET");
+    assert_eq!(d.text(), "three three two three");
+    // With nothing kept, it says so.
+    d.with(|ed| ed.set_variable("command-history", e8_core::Value::List(Vec::new())));
+    d.press("C-x M-:");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("There are no previous complex commands"));
+}

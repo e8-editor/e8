@@ -6523,6 +6523,14 @@ declare global {
        */
       "repeat": [];
       /**
+       * Edit and run again a command that read its arguments in the minibuffer, the latest by default, the Nth latest with a prefix argument, as command-history keeps them: the command and its arguments, written as Lisp.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/simple.ts.
+       */
+      "repeat-complex-command": [arg?: number];
+      /**
        * Replace every match of a regular expression from point to the end of the buffer, or in the active region.
        *
        * In the replacement, \& is the whole match and \1 to \9 its groups.
@@ -8742,6 +8750,10 @@ declare global {
        * Defined in packages/comint.ts.
        */
       "comint-terminfo-terminal": Value;
+      /**
+       * Commands that read their arguments in the minibuffer, newest first, each a list of the command and its arguments, which C-x ESC ESC runs again.
+       */
+      "command-history": Value;
       /**
        * How many more comment starts comment-region and M-; on a blank line add, as Lisp's ;; for comments of their own.
        *
@@ -12287,6 +12299,12 @@ declare global {
        * Defined in packages/isearch.ts.
        */
       "regexp-search-ring-max": Value;
+      /**
+       * The forms C-x ESC ESC offers with M-p and M-n, as printed.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "repeat-complex-command-history": Value;
       /**
        * Whether saving adds a newline to a file that does not end in one: true adds it, false leaves the file as it is, "ask" asks first. Text and programming modes set it from mode-require-final-newline.
        *

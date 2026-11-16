@@ -1163,6 +1163,11 @@ pub(crate) fn install(ed: &mut Editor) {
         ),
         Variable::new("minibuffer-history", "Earlier answers to minibuffer prompts for text, newest first.", Value::List(Vec::new())),
         Variable::new("extended-command-history", "Commands run with M-x, newest first.", Value::List(Vec::new())),
+        Variable::new(
+            "command-history",
+            "Commands that read their arguments in the minibuffer, newest first, each a list of the command and its arguments, which C-x ESC ESC runs again.",
+            Value::List(Vec::new()),
+        ),
         Variable::new("file-name-history", "File names answered in the minibuffer, newest first.", Value::List(Vec::new())),
         Variable::new("buffer-name-history", "Buffer names answered in the minibuffer, newest first.", Value::List(Vec::new())),
         Variable::new("variable-name-history", "Variable names answered in the minibuffer, newest first.", Value::List(Vec::new())),
