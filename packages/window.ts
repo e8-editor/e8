@@ -1636,6 +1636,32 @@ const scrollOtherWindowDown = e8.defineCommand({
   run: () => scrollOther("scroll-down-command"),
 });
 
+/** Goes to an end of the next window's buffer and centers it there, as beginning-of-buffer-other-window and its twin. */
+function otherWindowEnd(command: e8.CommandName, arg: e8.PrefixArg): void {
+  const selected = e8.selectedWindow();
+  e8.selectWindow(otherWindowForScrolling());
+  try {
+    e8.callWithPrefix(arg, command);
+    e8.callWithPrefix(null, "recenter");
+  } finally {
+    e8.selectWindow(selected);
+  }
+}
+
+const beginningOfBufferOtherWindow = e8.defineCommand({
+  name: "beginning-of-buffer-other-window",
+  doc: "Move point to the start of the next window's buffer, leaving the mark where it was; a prefix argument N, N tenths of the way in.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => otherWindowEnd("beginning-of-buffer", arg),
+});
+
+const endOfBufferOtherWindow = e8.defineCommand({
+  name: "end-of-buffer-other-window",
+  doc: "Move point to the end of the next window's buffer, leaving the mark where it was; a prefix argument N, N tenths of the way from the end.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => otherWindowEnd("end-of-buffer", arg),
+});
+
 // The buffers a window showed before, as window.el's previous-buffer and next-buffer.
 
 /** Why the selected window cannot switch buffers, if it cannot, as previous-buffer checks. */
@@ -4113,11 +4139,13 @@ const makeFrameCommand = e8.defineCommand({
 
 const otherFrame = e8.defineCommand({
   name: "other-frame",
-  doc: "Select another frame, the next in frame-list's order; a prefix argument says how many on to go.",
+  doc: "Select another frame, the next visible one in frame-list's order; a prefix argument says how many on to go, back if negative.",
   run: () => {
-    const frames = e8.frameList();
+    const selected = e8.selectedFrame();
+    // Only visible frames count, as other-frame skips invisible and iconified ones.
+    const frames = e8.frameList().filter((f) => f === selected || e8.frameVisibleP(f) === true);
     const count = e8.prefixNumericValue(e8.prefixArg());
-    const i = frames.indexOf(e8.selectedFrame());
+    const i = frames.indexOf(selected);
     const n = frames.length;
     e8.selectFrame(frames[(((i + count) % n) + n) % n]);
   },
@@ -4131,10 +4159,15 @@ const deleteFrameCommand = e8.defineCommand({
 
 const deleteOtherFrames = e8.defineCommand({
   name: "delete-other-frames",
-  doc: "Delete every frame but the selected one.",
-  run: () => {
+  doc: "Delete every frame but the selected one; with a prefix argument, iconify them instead.",
+  params: [{ name: "iconify", kind: "prefix" }],
+  run: (iconify: e8.PrefixArg) => {
     const selected = e8.selectedFrame();
-    for (const frame of e8.frameList()) if (frame !== selected) e8.deleteFrame(frame);
+    for (const frame of e8.frameList()) {
+      if (frame === selected) continue;
+      if (iconify !== null && iconify !== undefined) e8.iconifyFrame(frame);
+      else e8.deleteFrame(frame);
+    }
   },
 });
 
@@ -4152,9 +4185,31 @@ const findFileOtherFrame = e8.defineCommand({
   doc: "Visit a file in another frame and select it.",
   params: [{ name: "file", kind: "file", prompt: "Find file in other frame: " }],
   run: (file) => {
-    popToBuffer(e8.findFileNoselect(file), otherFrameAction);
+    // A directory is listed, as find-file-noselect gives Dired for one.
+    if (e8.fileDirectoryP(file)) e8.call("dired-other-frame", file);
+    else popToBuffer(e8.findFileNoselect(file), otherFrameAction);
   },
 });
+
+// Visiting a file read-only, here or in another window or frame, as
+// find-file--read-only does it: a file that is not there is an error.
+for (const [name, visit, prompt, keys] of [
+  ["find-file-read-only", "find-file", "Find file read-only: ", "C-x C-r"],
+  ["find-file-read-only-other-window", "find-file-other-window", "Find file read-only other window: ", "C-x 4 r"],
+  ["find-file-read-only-other-frame", "find-file-other-frame", "Find file read-only other frame: ", "C-x 5 r"],
+] as const) {
+  const command = e8.defineCommand({
+    name,
+    doc: `Visit a file as ${visit} does, but read-only; read-only-mode makes it editable again.`,
+    params: [{ name: "file", kind: "file", prompt }],
+    run: (file: string) => {
+      if (!e8.fileExists(file)) e8.signal("error", `${file} does not exist`);
+      e8.call(visit, file);
+      e8.callWithPrefix(1, "read-only-mode");
+    },
+  });
+  e8.bindKey(keys, command);
+}
 
 const displayBufferOtherFrame = e8.defineCommand({
   name: "display-buffer-other-frame",
@@ -4190,6 +4245,10 @@ e8.bindKey("C-x 4 C-o", displayBufferCommand);
 e8.bindKey("C-x 4 0", killBufferAndWindow);
 e8.bindKey("C-M-v", scrollOtherWindow);
 e8.bindKey("C-M-S-v", scrollOtherWindowDown);
+e8.bindKey("M-<next>", scrollOtherWindow);
+e8.bindKey("M-<prior>", scrollOtherWindowDown);
+e8.bindKey("M-<home>", beginningOfBufferOtherWindow);
+e8.bindKey("M-<end>", endOfBufferOtherWindow);
 e8.bindKey("C-x ^", enlargeWindowCommand);
 e8.bindKey("C-x }", enlargeWindowHorizontally);
 e8.bindKey("C-x {", shrinkWindowHorizontally);
@@ -4201,11 +4260,21 @@ e8.bindKey("C-x -", shrinkIfLarger);
 
 e8.defineVariable({
   name: "recenter-positions",
-  doc: "Where C-l puts the line with point each time in a row: middle, top, bottom, or a line of the window.",
+  doc: "Where C-l puts the line with point each time in a row: middle, top, bottom, a line of the window, or a fraction of the way down it.",
   value: ["middle", "top", "bottom"],
 });
 
 let recenterLastOp: e8.Value | undefined;
+
+/** The lines kept from the top or bottom, scroll-margin up to a quarter of the window, as recenter-top-bottom's. */
+const topBottomMargin = (): number =>
+  Math.min(Math.max(0, Number(e8.variable("scroll-margin") ?? 0)), Math.trunc(e8.windowBodyHeight() / 4));
+
+/** Rounds to the nearest whole number, halves to the even one, as Lisp's round. */
+function roundHalfEven(x: number): number {
+  const r = Math.round(x);
+  return Math.abs(x % 1) === 0.5 && r % 2 !== 0 ? r - 1 : r;
+}
 
 e8.defineCommand({
   name: "recenter-top-bottom",
@@ -4225,12 +4294,14 @@ e8.defineCommand({
     } else {
       recenterLastOp = positions[0];
     }
-    const margin = Math.max(0, Number(e8.variable("scroll-margin") ?? 0));
+    const margin = topBottomMargin();
     const op = recenterLastOp;
     if (op === "middle") e8.callWithPrefix(null, "recenter");
     else if (op === "top") e8.callWithPrefix(margin, "recenter");
     else if (op === "bottom") e8.callWithPrefix(-1 - margin, "recenter");
     else if (typeof op === "number" && Number.isInteger(op)) e8.callWithPrefix(op, "recenter");
+    // A fraction is that far down the window.
+    else if (typeof op === "number") e8.callWithPrefix(roundHalfEven(op * e8.windowTotalHeight()), "recenter");
   },
 });
 e8.bindKey("C-l", "recenter-top-bottom");
@@ -4254,12 +4325,14 @@ e8.defineCommand({
     } else {
       recenterLastOp = positions[0];
     }
-    const margin = Math.max(0, Number(e8.variable("scroll-margin") ?? 0));
+    const margin = topBottomMargin();
     const op = recenterLastOp;
     if (op === "middle") e8.callWithPrefix(null, "move-to-window-line");
     else if (op === "top") e8.callWithPrefix(margin, "move-to-window-line");
     else if (op === "bottom") e8.callWithPrefix(-1 - margin, "move-to-window-line");
     else if (typeof op === "number" && Number.isInteger(op)) e8.callWithPrefix(op, "move-to-window-line");
+    // A fraction is that far down the window.
+    else if (typeof op === "number") e8.callWithPrefix(roundHalfEven(op * e8.windowTotalHeight()), "move-to-window-line");
   },
 });
 e8.bindKey("M-r", "move-to-window-line-top-bottom");

@@ -280,7 +280,9 @@ fn movement(ed: &mut Editor) {
             let b = ed.buffer_mut();
             match arg {
                 Some(arg @ (PrefixArg::Number(_) | PrefixArg::Minus)) => {
-                    let pos = (1 + tenths(b.len(), arg.numeric())).clamp(0, b.len() as i64) as usize;
+                    // Tenths of the accessible text, as Emacs counts from point-min.
+                    let (min, max) = (b.point_min() as i64, b.point_max() as i64);
+                    let pos = (min + 1 + tenths((max - min) as usize, arg.numeric())).clamp(min, max) as usize;
                     b.set_point(forward_line(b, pos, 1));
                 }
                 _ => b.set_point(b.point_min()),
@@ -306,7 +308,8 @@ fn movement(ed: &mut Editor) {
             let b = ed.buffer_mut();
             match arg {
                 Some(arg @ (PrefixArg::Number(_) | PrefixArg::Minus)) => {
-                    let pos = (b.len() as i64 - tenths(b.len(), arg.numeric())).clamp(0, b.len() as i64) as usize;
+                    let (min, max) = (b.point_min() as i64, b.point_max() as i64);
+                    let pos = (max - tenths((max - min) as usize, arg.numeric())).clamp(min, max) as usize;
                     b.set_point(forward_line(b, pos, 1));
                 }
                 _ => b.set_point(b.point_max()),
@@ -438,8 +441,10 @@ fn movement(ed: &mut Editor) {
         |ed, _| {
             let height = ed.viewport_height() as i64;
             let arg = ed.current_prefix_arg();
+            // Any argument is a line, C-u as 4, as Fmove_to_window_line takes
+            // prefix-numeric-value of it.
             let row = match arg {
-                Some(arg @ (PrefixArg::Number(_) | PrefixArg::Minus)) => {
+                Some(arg) => {
                     let n = arg.numeric();
                     if n >= 0 { n.min(height - 1) } else { (height + n).max(0) }
                 }
@@ -514,8 +519,18 @@ pub(crate) fn move_words(ed: &mut Editor, mut pos: usize, n: i64) -> Result<usiz
             match function {
                 Some(f) if f.is_true() && pos < max => pos = boundary(ed, &f, pos, max)?,
                 _ => {
+                    // A word ends where its script changes too, as scan_words
+                    // stops where word_boundary_p says.
                     while pos < max && ed.buffer().char_at(pos).is_some_and(|c| word(ed, c)) {
                         pos += 1;
+                        let b = ed.buffer();
+                        if let (Some(c0), Some(c1)) = (b.char_at(pos - 1), b.char_at(pos))
+                            && pos < max
+                            && word(ed, c1)
+                            && crate::regexp::word_boundary(c0, c1)
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -529,6 +544,14 @@ pub(crate) fn move_words(ed: &mut Editor, mut pos: usize, n: i64) -> Result<usiz
                 _ => {
                     while pos > min && ed.buffer().char_at(pos - 1).is_some_and(|c| word(ed, c)) {
                         pos -= 1;
+                        let b = ed.buffer();
+                        if let (Some(c0), Some(c1)) = (pos.checked_sub(1).and_then(|p| b.char_at(p)), b.char_at(pos))
+                            && pos > min
+                            && word(ed, c0)
+                            && crate::regexp::word_boundary(c0, c1)
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -547,6 +570,18 @@ fn boundary(ed: &mut Editor, function: &Value, pos: usize, limit: usize) -> Resu
 
 /// Scrolls `lines` lines, signalling an error if the window cannot scroll at all.
 fn scroll_lines_or_error(ed: &mut Editor, lines: i64) -> Result<()> {
+    // Scrolling on past the last line fails without scrolling, as Emacs's
+    // window_scroll does when the new start would be the end of the text:
+    // too few lines left, or only the empty line after a final newline.
+    if lines > 0 {
+        let b = ed.window_buffer();
+        let (top, moved) = ed.move_rows_in(b, ed.row_line_in(b, b.top_line), lines);
+        let last = b.line_of(b.point_max());
+        let empty_last = b.line_start(last) == b.point_max() && top == ed.row_line_in(b, last);
+        if moved < lines || empty_last {
+            return err("End of buffer");
+        }
+    }
     if scroll_lines(ed, lines as isize) {
         Ok(())
     } else if lines < 0 {
@@ -572,9 +607,11 @@ fn scroll_screen_down(ed: &mut Editor) -> Result<()> {
         (top, if next > top { ed.move_rows_in(b, next, -1).0 } else { top })
     };
     let point_row = ed.row_line_in(b, b.line_of(b.point()));
+    let first = ed.row_line_in(b, b.line_of(b.point_min()));
     let b = ed.window_buffer_mut();
-    if old_top == 0 {
-        b.set_point(0);
+    // At the top already, point stays where it is, as scroll-down leaves it
+    // with scroll-error-top-bottom off.
+    if old_top <= first {
         return err("Beginning of buffer");
     }
     b.top_line = top;
@@ -628,7 +665,9 @@ fn scroll_lines(ed: &mut Editor, lines: isize) -> bool {
     let b = ed.window_buffer();
     let goal = match ed.goal_column {
         Some(goal) if continuing => goal,
-        _ => b.column(b.point()) as f32,
+        // A column as next-line keeps it, on the screen, tabs and wide
+        // characters counted, so the two share it.
+        _ => current_column(ed, b, b.point()) as f32,
     };
     ed.goal_column = Some(goal);
     let goal = goal as usize;
@@ -640,11 +679,11 @@ fn scroll_lines(ed: &mut Editor, lines: isize) -> bool {
     let bottom = last_whole_line(ed, b, top);
     let point_row = ed.row_line_in(b, b.line_of(b.point()));
     let target = point_row.clamp(top, bottom);
+    let to = (target != point_row).then(|| move_to_column_on(ed, b, target, goal));
     let b = ed.window_buffer_mut();
     b.top_line = top;
-    if target != point_row {
-        let start = b.line_start(target);
-        b.set_point((start + goal).min(b.line_end(target)));
+    if let Some(to) = to {
+        b.set_point(to);
     }
     true
 }
@@ -657,7 +696,14 @@ const SCROLL_KEEPS_COLUMN: &[&str] =
 /// long lines are continued, it moves by screen lines, as Emacs's
 /// `line-move-visual` does.
 fn line_move(ed: &mut Editor, n: i64) -> Result<()> {
-    if let Some(wrap) = ed.visual_wrap() {
+    // A goal column C-x C-n set is kept to, by logical lines, as Emacs's line-move.
+    let fixed = match ed.variable("goal-column") {
+        Some(Value::Number(column)) if column >= 0.0 => Some(column as f32),
+        _ => None,
+    };
+    if fixed.is_none()
+        && let Some(wrap) = ed.visual_wrap()
+    {
         return line_move_visual(ed, n, wrap);
     }
     let continuing = ed.last_command().is_some_and(|c| SCROLL_KEEPS_COLUMN.contains(&c));
@@ -668,6 +714,7 @@ fn line_move(ed: &mut Editor, n: i64) -> Result<()> {
     let b = ed.buffer();
     let line = b.line_of(b.point());
     let goal = match ed.goal_column {
+        _ if let Some(column) = fixed => column,
         Some(goal) if continuing => goal,
         _ => match off_grid_row(ed, b, b.point()) {
             Some(row) => row_column(ed, b, &row, b.point()),
@@ -755,7 +802,6 @@ pub(crate) fn position_at_x_in(ed: &Editor, window: crate::window::WindowId, b: 
 /// hidden without an ellipsis, then to where the column is reached, past a
 /// character that spans it, or the line's end.
 pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usize) -> usize {
-    use unicode_width::UnicodeWidthChar;
     let tab = ed.tab_width_in(b).max(1);
     let end = b.line_end(line);
     let mut col = 0;
@@ -771,7 +817,7 @@ pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usiz
         }
         col = match b.char_at(p) {
             Some('\t') => (col / tab + 1) * tab,
-            Some(c) => col + c.width().unwrap_or(0),
+            Some(c) => col + column_width(c),
             None => col,
         };
         p += 1;
@@ -784,7 +830,6 @@ pub(crate) fn move_to_column_on(ed: &Editor, b: &Buffer, line: usize, goal: usiz
 /// if hidden text starts there, past a character that spans the column, or
 /// the line's end.
 fn position_at_goal_column(ed: &Editor, b: &Buffer, line: usize, goal: usize) -> usize {
-    use unicode_width::UnicodeWidthChar;
     let tab = ed.tab_width_in(b).max(1);
     let end = b.line_end(line);
     let mut col = 0;
@@ -796,7 +841,7 @@ fn position_at_goal_column(ed: &Editor, b: &Buffer, line: usize, goal: usize) ->
         }
         col = match b.char_at(p) {
             Some('\t') => (col / tab + 1) * tab,
-            Some(c) => col + c.width().unwrap_or(0),
+            Some(c) => col + column_width(c),
             None => col,
         };
         p += 1;
@@ -804,12 +849,24 @@ fn position_at_goal_column(ed: &Editor, b: &Buffer, line: usize, goal: usize) ->
     p
 }
 
+/// How many columns a character other than a tab takes, as Emacs shows it
+/// with `ctl-arrow` on: a control character as `^X`, two columns, one of
+/// U+0080 to U+009F as an octal escape, `\200`, four, and the rest as wide
+/// as they are drawn.
+pub(crate) fn column_width(c: char) -> usize {
+    use unicode_width::UnicodeWidthChar;
+    match c as u32 {
+        0..=0x1f | 0x7f => 2,
+        0x80..=0x9f => 4,
+        _ => c.width().unwrap_or(0),
+    }
+}
+
 /// The column of a position as Emacs's current-column counts it: from the
 /// start of its line, with tabs to tab stops, wide characters taking two
 /// columns, and hidden text taking none, unless it shows an ellipsis, as
 /// folds do: that counts as if shown.
 pub(crate) fn current_column(ed: &Editor, b: &Buffer, pos: usize) -> usize {
-    use unicode_width::UnicodeWidthChar;
     let tab = ed.tab_width_in(b).max(1);
     let mut col = 0;
     for p in b.line_start(b.line_of(pos))..pos {
@@ -818,7 +875,7 @@ pub(crate) fn current_column(ed: &Editor, b: &Buffer, pos: usize) -> usize {
         }
         col = match b.char_at(p) {
             Some('\t') => (col / tab + 1) * tab,
-            Some(c) => col + c.width().unwrap_or(0),
+            Some(c) => col + column_width(c),
             None => col,
         };
     }
@@ -980,16 +1037,46 @@ fn editing(ed: &mut Editor) {
         if n < 0 {
             return Err(Error::new(format!("Negative repetition argument {n}")));
         }
-        // In overwrite mode each character replaces the one after point,
-        // except at the end of a line, as in Emacs.
-        if ed.variable("overwrite-mode").is_some_and(|v| v.is_true()) {
-            let b = ed.buffer();
-            let p = b.point();
-            let line_end = b.line_end(b.line_of(p));
-            ed.delete_region(p, (p + n as usize).min(line_end))?;
+        // In overwrite mode the characters replace as many columns after
+        // point as they take, as Emacs's internal_self_insert does: not at
+        // the end of the line or the accessible text, nor a tab they do not
+        // fill, and with spaces for the rest of a wide character they cut.
+        let mut overwrite = None;
+        let binary = ed.variable("binary-overwrite-mode").is_some_and(|v| v.is_true());
+        if binary && ed.buffer().point() < ed.buffer().point_max() {
+            // Binary overwriting replaces characters one for one, newlines and tabs too.
+            let pos = ed.buffer().point();
+            overwrite = Some((pos, (n as usize).min(ed.buffer().point_max() - pos), 0));
+        } else if ed.variable("overwrite-mode").is_some_and(|v| v.is_true()) && ed.buffer().point() < ed.buffer().point_max() {
+            let pos = ed.buffer().point();
+            let width = column_width(c);
+            if c != '\n' && ed.buffer().char_at(pos) != Some('\n') && width != 0 {
+                let target = ed.current_column() + n as usize * width;
+                let actual = ed.move_to_column(target);
+                let mut delete = ed.buffer().point() - pos;
+                let mut spaces = 0;
+                if actual > target {
+                    let b = ed.buffer();
+                    if b.point() > pos && b.char_at(b.point() - 1) == Some('\t') {
+                        delete -= 1;
+                    } else {
+                        spaces = actual - target;
+                    }
+                }
+                ed.buffer_mut().set_point(pos);
+                if delete > 0 {
+                    overwrite = Some((pos, delete, spaces));
+                }
+            }
         }
-        // As Emacs's self-insert-command, the text takes on the properties around it.
-        ed.insert_and_inherit(&c.to_string().repeat(n as usize))?;
+        let text = c.to_string().repeat(n as usize);
+        if let Some((pos, delete, spaces)) = overwrite {
+            ed.replace_range(pos, pos + delete, &format!("{text}{}", " ".repeat(spaces)))?;
+            ed.buffer_mut().set_point(pos + n as usize);
+        } else {
+            // As Emacs's self-insert-command, the text takes on the properties around it.
+            ed.insert_and_inherit(&text)?;
+        }
         after_self_insert(ed, c, true)
     });
     ed.define_command(
@@ -1163,6 +1250,11 @@ fn editing(ed: &mut Editor) {
             } else if repeated && b.is_mark_active() && b.mark() == Some(b.point()) {
                 b.deactivate_mark();
                 ed.message("Mark deactivated");
+            } else if repeated && !b.is_mark_active() && b.mark() == Some(b.point()) {
+                // A third C-SPC turns the region back on without pushing the
+                // mark again, as set-mark-command does after itself.
+                b.activate_region();
+                ed.message("Mark activated");
             } else {
                 let p = b.point();
                 ed.push_mark(p, true);
@@ -1277,6 +1369,8 @@ fn killing(ed: &mut Editor) {
     def(ed, "kill-ring-save", "Copy the text between point and the mark to the kill ring.", |ed, _| {
         let region = region(ed.buffer())?;
         let backward = ed.buffer().mark().is_some_and(|m| ed.buffer().point() < m);
+        // A mark outside the narrowing copies nothing, as buffer-substring refuses.
+        ed.validate_region(region.start, region.end)?;
         let text = ed.buffer().substring(region);
         // As copy-region-as-kill does, a copy right after a kill joins it.
         ed.kill(text, backward);
@@ -1350,6 +1444,9 @@ fn delete_active_region(ed: &mut Editor, n: i64) -> Result<bool> {
     };
     let deleted = ed.buffer().substring(region.clone());
     ed.delete_region(region.start, region.end)?;
+    // Deleting the region is no run of deletions to join, as Emacs's
+    // delete-backward-char deletes it without undo-auto-amalgamate.
+    ed.undo_auto_stop_amalgamating();
     if setting.as_str() == Some("kill") {
         ed.kill(deleted, false);
         ed.set_this_command("kill-region");
@@ -1392,7 +1489,9 @@ fn kill_to(ed: &mut Editor, p: usize, to: usize) -> Result<()> {
 /// copied to the kill ring instead, and the error signalled, unless
 /// `kill-read-only-ok` says only to say so.
 fn kill_range(ed: &mut Editor, range: std::ops::Range<usize>, backward: bool) -> Result<()> {
-    // The text with its properties, as filter-buffer-substring gives it.
+    // The text with its properties, as filter-buffer-substring gives it,
+    // which refuses text outside the narrowing before anything is killed.
+    ed.validate_region(range.start, range.end)?;
     let killed = ed.buffer().substring(range.clone());
     match ed.delete_region(range.start, range.end) {
         Ok(_) => {}
@@ -1618,11 +1717,13 @@ fn minibuffer(ed: &mut Editor) {
         "minibuffer-complete-and-exit",
         "Finish the minibuffer input if it is one of the completions, completing it first if only one matches.\n\nRET runs this in prompts that must be answered by one of their completions, such as M-x's.",
         |ed, _| {
-            let value = minibuffer_value(ed)?;
             // Empty input is an answer even where one must match, as Emacs's
-            // completing-read returns "" for it.
+            // completion--complete-and-exit exits at once for it: the
+            // default, whether or not it is one of the completions.
+            let typed_nothing = ed.minibuffer_input().is_empty();
+            let value = minibuffer_value(ed)?;
             let must_match = ed.prompt.as_ref().is_some_and(|p| p.require_match);
-            if !must_match || value.is_empty() || ed.is_completion_match(&value) {
+            if !must_match || typed_nothing || value.is_empty() || ed.is_completion_match(&value) {
                 return ed.finish_prompt(value);
             }
             match ed.prompt_completions(&value).as_slice() {

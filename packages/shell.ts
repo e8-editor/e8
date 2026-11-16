@@ -3,7 +3,7 @@
 // the directory as cd, pushd and popd change it.
 
 import { makeComintInBuffer, outputFilter, readInputRing } from "comint";
-import { PerBuffer } from "subr";
+import { eraseBuffer, PerBuffer } from "subr";
 
 for (const [name, doc, value] of [
   ["explicit-shell-file-name", "The shell M-x shell runs, if not $ESHELL or shell-file-name.", null],
@@ -16,6 +16,38 @@ for (const [name, doc, value] of [
 
 /** The directories pushd has pushed, newest first, as shell-dirstack. */
 const dirstacks = new PerBuffer<string[]>();
+/** The directory before the last change, where cd - goes, as shell-last-dir. */
+const lastDirs = new PerBuffer<string>();
+
+/**
+ * A command's words with their quoting taken off, as shell-unquote-argument
+ * does: '...' as it is, "..." and \x with the backslash gone.
+ */
+function shellWords(command: string): string[] {
+  const words: string[] = [];
+  let word: string | undefined;
+  let quote: string | undefined;
+  for (let i = 0; i < command.length; i++) {
+    const c = command[i];
+    if (quote === "'") {
+      if (c === "'") quote = undefined;
+      else word += c;
+    } else if (c === "\\" && i + 1 < command.length) {
+      word = (word ?? "") + command[++i];
+    } else if (quote === '"') {
+      if (c === '"') quote = undefined;
+      else word += c;
+    } else if (c === "'" || c === '"') {
+      quote = c;
+      word ??= "";
+    } else if (/\s/.test(c)) {
+      if (word !== undefined) words.push(word);
+      word = undefined;
+    } else word = (word ?? "") + c;
+  }
+  if (word !== undefined) words.push(word);
+  return words;
+}
 
 /** Follows a command that changes directory, as shell-directory-tracker: cd, pushd and popd. */
 function directoryTracker(input: string): void {
@@ -25,16 +57,27 @@ function directoryTracker(input: string): void {
   dirstacks.set(buffer, stack);
   // Each command of a line like "cd a; ls".
   for (const command of input.split(/[;&|]+/)) {
-    const [word, ...args] = command.trim().split(/\s+/);
-    const arg = args[0];
+    const [word, ...args] = shellWords(command.trim());
+    if (!["cd", "chdir", "pushd", "popd"].includes(word ?? "")) continue;
+    // $VAR and ${VAR} expanded, as comint-substitute-in-file-name does; a
+    // name it cannot expand is not followed.
+    let arg: string | undefined;
+    try {
+      arg = args[0] === undefined ? undefined : e8.substituteInFileName(args[0]);
+    } catch {
+      continue;
+    }
     const here = String(e8.variable("default-directory") ?? "~/");
     const go = (dir: string) => {
       const expanded = e8.expandFileName(dir, here);
-      if (e8.fileDirectoryP(expanded)) e8.setVariable("default-directory", expanded.endsWith("/") ? expanded : `${expanded}/`);
+      if (!e8.fileDirectoryP(expanded)) return;
+      lastDirs.set(buffer, here);
+      e8.setVariable("default-directory", expanded.endsWith("/") ? expanded : `${expanded}/`);
     };
     if (word === "cd" || word === "chdir") {
       if (arg === undefined) go(e8.getenv("HOME") ?? "~");
-      else if (arg === "-") go(stack[0] ?? here);
+      // The directory before the last change, as shell-last-dir.
+      else if (arg === "-") go(lastDirs.get(buffer) ?? here);
       else go(arg);
     } else if (word === "pushd") {
       if (arg !== undefined) {
@@ -153,7 +196,7 @@ e8.defineCommand({
     const directory = e8.expandFileName(".");
     e8.getBufferCreate(buffer);
     e8.withCurrentBuffer(buffer, () => {
-      e8.letBind({ "inhibit-read-only": true }, () => e8.deleteRegion(0, e8.bufferSize()));
+      e8.letBind({ "inhibit-read-only": true }, () => eraseBuffer());
       e8.makeLocalVariable("default-directory");
       e8.setVariable("default-directory", directory.endsWith("/") ? directory : `${directory}/`);
     });

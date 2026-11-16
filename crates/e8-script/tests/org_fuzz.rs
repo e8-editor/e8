@@ -847,3 +847,135 @@ fn org_mode_replays_differences() {
     eprintln!("\n{failing} of {} cases differ", cases.len());
     assert_eq!(failing, 0);
 }
+
+/// Texts for looking for panics: several scripts, wide and combining
+/// characters, right-to-left text, tabs, blank lines and brackets.
+const PANIC_PIECES: &[&str] = &[
+    "one", "two", "foo_bar", "x", "é", "日本語", "👍🏽", "e\u{301}", "שלום", "مرحبا", "\t", " ", "  ", "\n", "\n\n", "(a b)",
+    "\"q\"", "[x]", "{", "}", "'", ";; c", "* H", "- i", "| a | b |", "<2026-11-15 Sun>", "\u{a0}", "\r", "\u{200b}", "Ab.",
+];
+
+/// Keys from all over the global map, with prefix arguments of every
+/// kind, narrowing, rectangles, the kill ring, case, sexps and filling.
+const PANIC_KEYS: &[&str] = &[
+    "C-f", "C-b", "C-n", "C-p", "C-a", "C-e", "M-f", "M-b", "M-<", "M->", "C-v", "M-v", "C-l", "M-r", "M-m", "M-g g",
+    "C-d", "DEL", "M-d", "M-DEL", "C-k", "C-S-<backspace>", "M-z", "C-y", "M-y", "C-w", "M-w", "C-M-w", "C-SPC", "C-x C-x",
+    "C-x h", "C-/", "C-?", "C-_", "C-t", "M-t", "C-x C-t", "C-M-t", "C-o", "C-M-o", "C-j", "RET", "TAB", "M-\\", "M-SPC",
+    "M-^", "C-x C-o", "C-M-\\", "C-x TAB", "M-q", "M-u", "M-l", "M-c", "C-x C-u", "C-x C-l", "M-{", "M-}", "M-h", "M-a",
+    "M-e", "M-k", "C-x DEL", "C-M-f", "C-M-b", "C-M-k", "C-M-u", "C-M-d", "C-M-n", "C-M-p", "C-M-a", "C-M-e", "C-M-h",
+    "C-M-SPC", "C-x n n", "C-x n w", "C-x n p", "C-x r k", "C-x r y", "C-x r o", "C-x r c", "C-x r M-w", "C-x r N",
+    "C-x SPC", "M-;", "C-x C-;", "M-/", "C-x z", "C-x u", "C-q", "C-x 8 RET", "M-=", "C-x =", "C-x 2", "C-x 3", "C-x o",
+    "C-x 0", "C-x 1", "C-x ^", "C-x }", "C-x {", "C-x <", "C-x >", "C-s", "C-r", "M-%", "C-M-s", "C-x r SPC", "C-x r j",
+    "C-x r s", "C-x r i", "C-x C-n", "C-x f", "C-x s", "M-x", "C-u", "C-u C-u", "C--", "M--", "M-0", "M-1", "M-5", "M-9",
+    "C-u 0", "C-u -", "C-u 1 0 0", "C-g", "C-g", "x", "SPC", "1", "(", ")", "\"", "é", "S-<right>", "S-<left>", "S-<down>",
+    "C-S-<up>", "<end>", "<home>", "C-<right>", "C-<left>", "<prior>", "<next>", "<delete>", "C-<delete>", "M-<up>",
+    "C-x C-e", "C-M-x", "M-:", "C-x 4 b", "C-x b", "C-x k", "C-x C-b", "C-h k", "C-h c", "C-x r t", "C-x TAB", "M-s o",
+];
+
+const PANIC_MODES: &[&str] = &["", "", "text-mode", "org-mode", "emacs-lisp-mode", "outline-mode", "prog-mode"];
+
+/// Types random keys from all over the editor into random text, in a few
+/// modes, sometimes narrowed, and reports each case that panics. Panics
+/// are E8's own bugs whatever Emacs does, so no Emacs is needed.
+#[test]
+#[ignore = "a fuzzer; run with --ignored"]
+fn random_keys_never_panic() {
+    use e8_core::Editor;
+    use e8_script::Scripting;
+    let seed: u64 = std::env::var("E8_FUZZ_SEED").ok().and_then(|s| s.parse().ok()).unwrap_or(1);
+    let count: usize = std::env::var("E8_FUZZ_CASES").ok().and_then(|s| s.parse().ok()).unwrap_or(300);
+    let mut rng = Rng(seed.wrapping_mul(0x9e37_79b9_7f4a_7c15).wrapping_add(0x9e37_79b9_7f4a_7c15) | 1);
+    let panics = std::sync::Arc::new(std::sync::Mutex::new(Vec::<String>::new()));
+    let seen = panics.clone();
+    std::panic::set_hook(Box::new(move |info| {
+        let place = info.location().map(|l| format!("{}:{}", l.file(), l.line())).unwrap_or_default();
+        let what = info.payload().downcast_ref::<&str>().map(|s| s.to_string()).or_else(|| info.payload().downcast_ref::<String>().cloned()).unwrap_or_default();
+        seen.lock().unwrap().push(format!("{place}: {what}"));
+    }));
+    let sandbox = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let verbose = std::env::var("E8_FUZZ_VERBOSE").is_ok();
+    let narrow_percent: usize = std::env::var("E8_FUZZ_NARROW").ok().and_then(|s| s.parse().ok()).unwrap_or(20);
+    // Edits reaching past a narrowing are refused with Args out of range,
+    // which in practice means a command computed its range from the whole
+    // buffer: listed, though not failures, as Emacs signals it too at times.
+    let out_of_range = std::cell::RefCell::new(Vec::<String>::new());
+    let commands: Vec<String> = if std::env::var("E8_FUZZ_COMMANDS").is_ok() {
+        let mut ed = Editor::new();
+        let _scripting = Scripting::new(&mut ed).expect("scripting starts");
+        let skip = ["kill-emacs", "suspend", "save-buffers-kill", "sleep", "recursive-edit", "server", "profiler", "debug"];
+        let mut names: Vec<String> = ed.command_names().filter(|n| !skip.iter().any(|s| n.contains(s))).map(String::from).collect();
+        names.sort();
+        names
+    } else {
+        Vec::new()
+    };
+    let mut failing = Vec::new();
+    for i in 0..count {
+        let text: String = (0..rng.below(30)).map(|_| rng.pick(PANIC_PIECES)).collect();
+        let point = rng.below(text.chars().count() + 1);
+        let mode = rng.pick(PANIC_MODES);
+        // E8_FUZZ_NARROW sets how often, in percent, a case is narrowed.
+        let narrow = rng.chance(narrow_percent).then(|| {
+            let n = text.chars().count();
+            let a = rng.below(n + 1);
+            (a, a + rng.below(n - a + 1))
+        });
+        // With E8_FUZZ_COMMANDS, M-x runs a random command now and then.
+        let n = 1 + rng.below(12);
+        let mut keys: Vec<String> = Vec::new();
+        for _ in 0..n {
+            if !commands.is_empty() && rng.chance(30) {
+                keys.push(format!("M-x {}", commands[rng.below(commands.len())]));
+            } else {
+                keys.push(rng.pick(PANIC_KEYS).to_string());
+            }
+        }
+        keys.push("C-g".into());
+        keys.push("C-g".into());
+        panics.lock().unwrap().clear();
+        if verbose {
+            eprintln!("case {i}: {mode:?} {:?}", keys.join(" | "));
+        }
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let mut ed = Editor::new();
+            let _scripting = Scripting::new(&mut ed).expect("scripting starts");
+            ed.set_frame_size(80, 24);
+            // As while an agent acts: nothing written, deleted or run, and no quitting.
+            ed.set_agent_acting(true);
+            ed.set_variable("default-directory", e8_core::Value::Str(format!("{}/", sandbox.path().display())));
+            ed.window_buffer_mut().set_text(&text);
+            ed.window_buffer_mut().set_point(point);
+            if !mode.is_empty() {
+                let _ = ed.call(mode, vec![]);
+            }
+            if let Some((a, b)) = narrow {
+                ed.window_buffer_mut().narrow(a, b);
+            }
+            for k in &keys {
+                if let Some(name) = k.strip_prefix("M-x ") {
+                    let _ = ed.press("M-x");
+                    ed.type_text(name);
+                    let _ = ed.press("RET");
+                } else {
+                    let _ = ed.press(k);
+                }
+                if ed.echo().is_some_and(|e| e.contains("Args out of range")) {
+                    out_of_range.borrow_mut().push(format!("case {i}: mode {mode:?}, text {text:?}, point {point}, narrow {narrow:?}, at {k:?} of {:?}", keys.join(" | ")));
+                }
+                ed.redisplay();
+            }
+        }));
+        let caught: Vec<String> = panics.lock().unwrap().clone();
+        if result.is_err() || !caught.is_empty() {
+            let msg = format!("case {i}: mode {mode:?}, text {text:?}, point {point}, narrow {narrow:?}, keys {:?}\n    {}", keys.join(" "), caught.join("\n    "));
+            eprintln!("{msg}");
+            failing.push(msg);
+        }
+    }
+    let _ = std::panic::take_hook();
+    for line in out_of_range.borrow().iter() {
+        eprintln!("out of range: {line}");
+    }
+    eprintln!("seed {seed}: {count} cases, {} panicked", failing.len());
+    assert!(failing.is_empty(), "{} cases panicked; see above", failing.len());
+}

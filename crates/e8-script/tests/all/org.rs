@@ -202,6 +202,21 @@ fn scheduling_and_deadlines_go_on_the_planning_line() {
     assert_eq!(text(&ed), "* Task\nDEADLINE: <2026-11-05 Thu 15:00>\nbody\n");
 }
 
+/// Rescheduling keeps the old date's repeater and warning, as Org's
+/// org--deadline-or-schedule and org-timestamp do, so a repeating task
+/// goes on repeating (what Org 9.7 gives for the same).
+#[test]
+fn rescheduling_keeps_the_repeater() {
+    let (mut ed, _s) = org("* TODO Water plants\nSCHEDULED: <2026-11-10 Tue +1w -2d>\n* TODO B\nDEADLINE: <2026-11-10 Tue .+1m>\n");
+    call(&mut ed, "org-schedule", &["2026-11-20"]);
+    ed.window_buffer_mut().set_point(60);
+    call(&mut ed, "org-deadline", &["2026-12-01"]);
+    assert_eq!(text(&ed), "* TODO Water plants\nSCHEDULED: <2026-11-20 Fri +1w -2d>\n* TODO B\nDEADLINE: <2026-12-01 Tue .+1m>\n");
+    ed.window_buffer_mut().set_point(35);
+    call(&mut ed, "org-timestamp", &["2026-11-27"]);
+    assert_eq!(text(&ed), "* TODO Water plants\nSCHEDULED: <2026-11-27 Fri +1w -2d>\n* TODO B\nDEADLINE: <2026-12-01 Tue .+1m>\n");
+}
+
 #[test]
 fn timestamps_are_inserted_from_a_date() {
     let (mut ed, _s) = org("Meet ");
@@ -886,6 +901,38 @@ fn capture_files_into_date_trees_and_outline_paths_as_emacs_does() {
     assert_eq!(read("people.org"), "* Inbox\n** Title                                                             :person: \n:Created: <2026-11-04 Wed 12:00>\nRun (C-c n h)\n* Projects\n");
 }
 
+/// A relative target file is in org-directory, as org-capture-expand-file
+/// expands it, and a target heading is found with its statistics cookie,
+/// as org-complex-heading-regexp-format allows, rather than made again.
+#[test]
+fn capture_finds_relative_files_in_org_directory_and_headings_with_cookies() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("gtd.org"), "* Tasks [1/2]
+** DONE One
+** TODO Two
+* Other
+").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    let d = dir.path().display().to_string();
+    s.eval_expression(
+        &mut ed,
+        &format!(
+            r#"(e8.setVariable("org-directory", "{d}"), e8.setVariable("org-capture-templates", [
+              ["t", "Task", "entry", ["file+headline", "gtd.org", "Tasks"], "* TODO %?"],
+              ["o", "Olp", "entry", ["file+olp", "gtd.org", "Tasks"], "* TODO %?"]]), 1)"#
+        ),
+    )
+    .unwrap();
+    ed.set_frame_size(80, 24);
+    ed.press("M-x o r g - c a p t u r e RET t T h r e e C-c C-c").unwrap();
+    ed.press("M-x o r g - c a p t u r e RET o F o u r C-c C-c").unwrap();
+    let gtd = std::fs::read_to_string(dir.path().join("gtd.org")).unwrap();
+    assert!(gtd.starts_with("* Tasks [1/4]\n"), "the cookie counts them: {gtd}");
+    assert_eq!(gtd.matches("* Tasks").count(), 1, "{gtd}");
+    assert!(gtd.contains("** TODO Two\n** TODO Three\n** TODO Four\n* Other\n"), "{gtd}");
+}
+
 #[test]
 fn today_is_the_day_in_the_editors_own_zone() {
     // Fourteen hours east of UTC and twelve west are always a day or two apart.
@@ -1141,4 +1188,153 @@ fn speed_command_help_is_in_help_mode_even_in_a_new_help_buffer() {
     ed.press("?").unwrap();
     assert_eq!(help_mode(&mut ed), "\"help-mode\"");
     assert!(s.eval_expression(&mut ed, r#"e8.withCurrentBuffer("*Help*", () => e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()))"#).unwrap().contains("Speed commands"));
+}
+
+/// The agenda reads a file whole however it is narrowed, as Org widens
+/// before collecting entries, and going to an entry outside the narrowing
+/// widens, as org-agenda-switch-to does.
+#[test]
+fn the_agenda_reads_narrowed_files_whole() {
+    let (mut ed, s) = org("");
+    ed.set_frame_size(80, 24);
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let path = dir.path().join("a.org");
+    std::fs::write(&path, "* TODO First\n* TODO Second\nbody\n").unwrap();
+    ed.call("find-file", vec![Arg::Str(path.display().to_string())]).unwrap();
+    ed.press("M-> C-p C-x n s").unwrap();
+    assert!(ed.window_buffer().is_narrowed());
+    s.eval_typescript(&mut ed, "files.ts", format!("e8.setVariable(\"org-agenda-files\", [{:?}]); e8.setVariable(\"org-agenda-window-setup\", \"current-window\");", path.to_str().unwrap())).unwrap();
+    s.eval_typescript(&mut ed, "todo.ts", "e8.call(\"org-todo-list\");".to_string()).unwrap();
+    let agenda = text(&ed);
+    assert!(agenda.contains("First") && agenda.contains("Second"), "{agenda}");
+    let line = agenda.lines().position(|l| l.contains("TODO First")).unwrap();
+    let start = ed.window_buffer().line_start(line);
+    ed.window_buffer_mut().set_point(start);
+    ed.press("RET").unwrap();
+    assert_eq!(ed.window_buffer().name, "a.org");
+    assert!(!ed.window_buffer().is_narrowed());
+    assert_eq!(ed.window_buffer().point(), 0);
+}
+
+/// Today's agenda draws a time grid among entries with times, and a line
+/// for the time now, as org-agenda-add-time-grid-maybe does, in the form
+/// Emacs 30 draws them; a day with no times has none.
+#[test]
+fn today_s_agenda_has_a_time_grid() {
+    let (mut ed, s) = org("");
+    ed.set_frame_size(80, 30);
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let path = dir.path().join("a.org");
+    std::fs::write(&path, "* Standup <2026-11-16 Mon 09:30>\n* TODO Plain\nSCHEDULED: <2026-11-16 Mon>\n* Later <2026-11-17 Tue 10:00>\n").unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "setup.ts",
+        format!(
+            "e8.setVariable('e8--today', '2026-11-16'); e8.setVariable('org-agenda-files', [{:?}]); e8.setVariable('org-agenda-window-setup', 'current-window'); \
+             e8.setVariable('org-agenda-time-grid', [['daily', 'today', 'require-timed'], [800, 1300], '......', '----------------']);",
+            path.to_str().unwrap()
+        ),
+    )
+    .unwrap();
+    s.eval_typescript(&mut ed, "week.ts", "e8.call(\"org-agenda-list\");".to_string()).unwrap();
+    let agenda = text(&ed);
+    let monday: Vec<&str> = agenda.lines().skip(2).take_while(|l| !l.starts_with("Tuesday")).collect();
+    assert_eq!(
+        monday,
+        [
+            "               8:00...... ----------------",
+            "  a:           9:30...... Standup ",
+            "              12:00...... now - - - - - - - - - - - - - - - - - - - - - - - - -",
+            "              13:00...... ----------------",
+            "  a:          Scheduled:  TODO Plain",
+        ],
+        "{agenda}"
+    );
+    assert!(agenda.contains("Tuesday    17 November 2026\n  a:          10:00...... Later \n"), "no grid but today's: {agenda}");
+}
+
+/// C-c C-l on a link offers its target and description to edit, and with
+/// the region active takes its text as the description and replaces it,
+/// as org-insert-link does.
+#[test]
+fn insert_link_edits_the_link_at_point_and_takes_the_region() {
+    let (mut ed, _s) = org("see [[https://a.org][Alpha]] here\n");
+    ed.window_buffer_mut().set_point(8);
+    ed.press("C-c C-l").unwrap();
+    assert_eq!(ed.minibuffer_input(), "https://a.org");
+    ed.press("C-a C-k").unwrap();
+    ed.type_text("https://b.org\n");
+    assert_eq!(ed.minibuffer_input(), "Alpha");
+    ed.type_text("\n");
+    assert_eq!(text(&ed), "see [[https://b.org][Alpha]] here\n");
+
+    let (mut ed, _s) = org("see Org manual here\n");
+    ed.window_buffer_mut().set_point(4);
+    ed.press("C-SPC M-f M-f C-c C-l").unwrap();
+    ed.type_text("https://orgmode.org\n");
+    assert_eq!(ed.minibuffer_input(), "Org manual");
+    ed.type_text("\n");
+    assert_eq!(text(&ed), "see [[https://orgmode.org][Org manual]] here\n");
+}
+
+/// A %? on a line of its own at the end of a template leaves that line for
+/// the cursor, and %i repeats what comes before it on each of its lines,
+/// as org-capture-fill-template has them.
+#[test]
+fn capture_templates_keep_the_cursor_s_line_and_repeat_what_comes_before_initial_text() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("notes.org"), "* Inbox\n* Other\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    let d = dir.path().display().to_string();
+    s.eval_expression(
+        &mut ed,
+        &format!(
+            r#"(e8.setVariable("org-capture-templates", [
+              ["n", "Note", "entry", ["file+headline", "{d}/notes.org", "Inbox"], "* Note\n%?"],
+              ["i", "Initial", "entry", ["file+headline", "{d}/notes.org", "Inbox"], "* Lines\n- %i"]]), 1)"#
+        ),
+    )
+    .unwrap();
+    ed.set_frame_size(80, 24);
+    ed.press("M-x o r g - c a p t u r e RET n b o d y C-c C-c").unwrap();
+    let notes = std::fs::read_to_string(dir.path().join("notes.org")).unwrap();
+    assert_eq!(notes, "* Inbox\n** Note\nbody\n* Other\n");
+    ed.window_buffer_mut().set_text("l1\nl2");
+    ed.press("C-x h M-x o r g - c a p t u r e RET i C-c C-c").unwrap();
+    let notes = std::fs::read_to_string(dir.path().join("notes.org")).unwrap();
+    assert!(notes.contains("** Lines\n- l1\n- l2\n"), "{notes}");
+}
+
+/// Durations as org-duration-from-minutes writes them, what Org 9.7 gives:
+/// hours unpadded, after the days too.
+#[test]
+fn clock_durations_are_written_as_org_writes_them() {
+    let (mut ed, s) = org("");
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let file = dir.path().join("durations.ts");
+    std::fs::write(
+        &file,
+        r#"import { durationFromMinutes } from "org-clock";
+           e8.setVariable("e8--durations", [59, 61, 600, 1440, 1500, 3000, 90061].map(durationFromMinutes).join(" "));"#,
+    )
+    .unwrap();
+    s.load_module(&mut ed, &file).unwrap();
+    assert_eq!(ed.variable("e8--durations"), Some(e8_core::Value::Str("0:59 1:01 10:00 1d 0:00 1d 1:00 2d 2:00 62d 13:01".into())));
+}
+
+/// A heading link matches whatever the case, and a link's search text in a
+/// file that is not Org, as %a makes for a program, finds the words there,
+/// as org-link-search's free text search does.
+#[test]
+fn links_find_headings_in_any_case_and_text_in_other_files() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("main.rs"), "use std::io;\n\nfn main() {\n}\n").unwrap();
+    let (mut ed, _s) = org(&format!("[[*my heading]]\n[[file:{}/main.rs::fn main]]\n* My Heading\n", dir.path().display()));
+    ed.window_buffer_mut().set_point(3);
+    ed.press("C-c C-o").unwrap();
+    assert_eq!(ed.window_buffer().line_of(ed.window_buffer().point()), 2);
+    ed.press("M-< C-n C-f C-f C-f C-c C-o").unwrap();
+    assert_eq!(ed.window_buffer().name, "main.rs");
+    assert_eq!(ed.window_buffer().point(), 14);
 }

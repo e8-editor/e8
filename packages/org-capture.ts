@@ -3,10 +3,10 @@
 // files it or C-c C-k takes it away. Emacs captures in an indirect buffer;
 // E8 narrows the target buffer itself.
 
-import { alignTags, formatTimestamp, type Heading, headings, parseHeading, subtreeRegion, today } from "org";
+import { alignTags, formatTimestamp, type Heading, headings, parseHeading, subtreeRegion, today, updateParentTodoStatistics } from "org";
 import { clockIn, clockOut, runningEntry } from "org-clock";
 import { findDateCreate } from "org-datetree";
-import { lineAt, orgMks } from "org-macs";
+import { lineAt, orgMks, titleWithoutCookies } from "org-macs";
 import { charCount } from "subr";
 
 e8.defineVariable({
@@ -33,6 +33,12 @@ function captureTemplates(): CaptureTemplate[] {
 }
 
 /** A template's option, as its properties plist gives it. */
+/** How many blank lines go before or after a captured entry: the option, else :empty-lines, else none. */
+function emptyLines(t: CaptureTemplate, name: string): number {
+  const n = option(t, name) ?? option(t, ":empty-lines");
+  return typeof n === "number" && n > 0 ? n : 0;
+}
+
 function option(t: CaptureTemplate, name: string): e8.Value | undefined {
   const rest = t.slice(5);
   for (let i = 0; i + 1 < rest.length; i += 2) if (rest[i] === name) return rest[i + 1];
@@ -95,8 +101,9 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
         text += `[${formatTimestamp(now, true)}]`;
         break;
       case "i":
-        // Each line after the first indented as the line %i is on.
-        text += context.initial.replace(/\n/g, `\n${/[^\n]*$/.exec(text)![0].replace(/\S/g, " ")}`);
+        // Each line after the first starts as the line %i is on does, as
+        // org-capture-fill-template repeats the characters before it.
+        text += context.initial.replace(/\n/g, `\n${/[^\n]*$/.exec(text)![0]}`);
         break;
       case "a":
         text += context.annotation;
@@ -125,7 +132,9 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
   const cut = lead.lastIndexOf("\n") + 1;
   if (cursor !== undefined) cursor = Math.max(0, cursor - charCount(text.slice(0, cut)));
   text = text.slice(cut);
-  const body = text.replace(/[ \t\n]*$/, "");
+  let body = text.replace(/[ \t\n]*$/, "");
+  // A %? after the text keeps the blank it is on, as Org trims with %? still in the text.
+  if (cursor !== undefined && cursor > charCount(body)) body = [...text].slice(0, cursor).join("");
   const lastLine = body.length === 0 ? "" : text.slice(body.length).split("\n")[0];
   text = body.length === 0 ? "" : `${body}${lastLine}\n`;
   if (cursor !== undefined) cursor = Math.min(cursor, charCount(text));
@@ -157,12 +166,16 @@ function captureWith(key: string): void {
   const [, , type, target, template] = t;
   if (type !== "entry") throw new Error(`E8 captures only entries, not ${type}`);
   if (capturing) throw new Error("A capture is already under way: C-c C-c or C-c C-k finishes it");
-  const file = target[1] === "" || target[1] === undefined ? String(e8.variable("org-default-notes-file") ?? "~/.notes") : target[1];
+  // A relative name is in org-directory, as org-capture-expand-file expands it.
+  const dir = e8.variable("org-directory");
+  const file = target[1] === "" || target[1] === undefined
+    ? String(e8.variable("org-default-notes-file") ?? "~/.notes")
+    : e8.expandFileName(target[1], typeof dir === "string" ? e8.expandFileName(dir) : undefined);
   const from = e8.windowBuffer() ?? "";
   // A marker, as the buffer the capture came from stays editable below it.
   const point = e8.makeMarker(e8.point());
   const mark = e8.mark();
-  const initial = e8.variable("mark-active") === true && mark !== undefined
+  const initial = e8.regionActive() && mark !== undefined && mark !== e8.point()
     ? e8.bufferSubstringNoProperties(Math.min(mark, e8.point()), Math.max(mark, e8.point()))
     : "";
   const link = annotation();
@@ -178,7 +191,7 @@ function captureWith(key: string): void {
       const all = headings();
       const [start, end] = under === undefined ? [0, e8.bufferSize()] : subtreeRegion(all, all.findIndex((x) => x.start === under.start));
       const level = under === undefined ? Math.min(...all.map((h) => h.level)) : under.level + 1;
-      return all.find((h) => h.start >= start && h.start < end && h.title === title && (under === undefined ? true : h.level === level));
+      return all.find((h) => h.start >= start && h.start < end && titleWithoutCookies(h.title) === title && (under === undefined ? true : h.level === level));
     };
     /** The heading an outline path names, as org-find-olp, which signals when one is missing. */
     const olp = (path: string[]): Heading | undefined => {
@@ -198,7 +211,8 @@ function captureWith(key: string): void {
     };
     if (target[0] === "file+headline") {
       const name = target[2] ?? "";
-      let h = headings().find((x) => x.title === name);
+      // Its statistics cookies are no part of the name it is found by.
+      let h = headings().find((x) => titleWithoutCookies(x.title) === name);
       if (!h) {
         e8.gotoChar(e8.bufferSize());
         if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
@@ -224,6 +238,17 @@ function captureWith(key: string): void {
       throw new Error(`E8 does not capture to ${target[0]} targets`);
     }
     if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+    // The blank lines where it goes go, and as many as the template says
+    // come instead, as org-capture-empty-lines-before has it.
+    {
+      const here = e8.point();
+      let back = here;
+      while (back > e8.pointMin() && /[ \t\n\r]/.test(e8.bufferText(back - 1, back))) back--;
+      if (back < here) back = e8.lineEnd(lineAt(back)) < here ? e8.lineEnd(lineAt(back)) + 1 : here;
+      if (back < here) e8.deleteRegion(back, here);
+      e8.gotoChar(back);
+      e8.insert("\n".repeat(emptyLines(t, ":empty-lines-before")));
+    }
     // The template as a subtree at the target's level, as org-paste-subtree puts it.
     const first = /^(\*+) /m.exec(filled.text)?.[1].length ?? level;
     const shift = level - first;
@@ -250,6 +275,14 @@ function captureWith(key: string): void {
       if (h && h.tagsAt !== undefined) alignTags(l);
     }
     e8.message(`Clipboard pasted as level ${level} subtree`);
+    // Blank lines after it go too, and the template's come, as org-capture-empty-lines-after.
+    {
+      const after = e8.point();
+      let q = after;
+      while (q < e8.pointMax() && /^[ \t]*$/.test(e8.lineText(lineAt(q))) && e8.lineEnd(lineAt(q)) < e8.pointMax()) q = e8.lineEnd(lineAt(q)) + 1;
+      if (q > after) e8.deleteRegion(after, q);
+      e8.saveExcursion(() => e8.insert("\n".repeat(emptyLines(t, ":empty-lines-after"))));
+    }
     const endPos = e8.point();
     e8.narrowToRegion(beg, endPos === e8.bufferSize() ? endPos : endPos - 1);
     e8.gotoChar(cursor === undefined ? beg : beg + cursor);
@@ -341,6 +374,19 @@ const captureFinalize = e8.defineCommand({
         e8.message("Interrupted clock resumed");
       }
       if (interrupted) e8.deleteMarker(interrupted.marker);
+    }
+    // The parent's statistics cookie counts the new entry, as
+    // org-capture-finalize brings it up to date from the entry's heading.
+    if (buffer !== undefined) {
+      e8.withCurrentBuffer(buffer, () =>
+        e8.saveExcursion(() => {
+          const start = e8.pointMin();
+          e8.saveRestriction(() => {
+            e8.widen();
+            if (parseHeading(lineAt(start))) updateParentTodoStatistics(lineAt(start));
+          });
+        }),
+      );
     }
     endCapture();
     if (buffer !== undefined) {

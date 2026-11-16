@@ -4,6 +4,8 @@
 // the buffer, and next-error steps through them. project-find-regexp (C-x
 // p g) fills it.
 
+import { eraseBuffer } from "subr";
+
 e8.defineFace({ name: "xref-file-header", doc: "The file names heading *xref*'s groups.", attributes: { inherit: "compilation-info" } });
 e8.defineFace({ name: "xref-line-number", doc: "Line numbers in *xref*.", attributes: { inherit: "compilation-line-number" } });
 e8.defineFace({ name: "xref-match", doc: "What matched, in *xref*.", attributes: { inherit: "match" } });
@@ -24,8 +26,10 @@ export function matchesInFiles(regexp: string, files: string[], dir: string, fol
     ["xargs", "-0", "grep", ...(fold ? ["-i"] : []), "--null", "-snHE", "-e", toExtended(regexp)],
     { directory: dir, input: files.join("\0") },
   );
-  // grep says 1 for no matches; more is a failure, as of the regexp.
-  if (result.exit > 1 && !/\0\d+:/.test(result.output)) e8.userError(`Search failed with status ${result.exit}: ${result.output.trim()}`);
+  // A failure only when it says something other than matches, as
+  // xref-matches-in-files has it: GNU xargs says 123 for no matches.
+  const other = result.output.split("\n").filter((l) => l !== "" && !l.includes("\0"));
+  if (result.exit > 1 && other.length > 0) e8.userError(`Search failed with status ${result.exit}: ${other.join("\n").trim()}`);
   let js: RegExp | undefined;
   try {
     js = new RegExp(toExtended(regexp).replace(/\\</g, "\\b").replace(/\\>/g, "\\b"), fold ? "iu" : "u");
@@ -56,14 +60,14 @@ function showXrefs(xrefs: Xref[]): void {
   const byLine = new Map<number, Xref>();
   e8.withCurrentBuffer(name, () => {
     e8.setReadOnly(false);
-    e8.deleteRegion(0, e8.bufferSize());
+    eraseBuffer();
     e8.call("xref--xref-buffer-mode");
     const groups = new Map<string, Xref[]>();
     for (const x of xrefs) groups.set(x.group, [...(groups.get(x.group) ?? []), x]);
     for (const [group, items] of groups) {
       const start = e8.point();
       e8.insert(`${group}\n`);
-      e8.putTextProperty(start, start + group.length, "face", "xref-file-header");
+      e8.putTextProperty(start, start + [...group].length, "face", "xref-file-header");
       const width = String(Math.max(...items.map((x) => x.line))).length;
       let previous: number | undefined;
       for (const x of items) {

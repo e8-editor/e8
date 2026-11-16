@@ -2412,8 +2412,18 @@ impl Editor {
                     self.delete_region(start, end)?;
                 }
                 RegionInput::Whole => {
+                    // The whole buffer, narrowed or not, as Emacs's
+                    // del_range (BEG, Z); what is left is all accessible.
+                    let b = self.buffer_mut();
+                    let restriction = b.is_narrowed().then(|| (b.point_min(), b.point_max()));
+                    b.widen();
                     let len = self.buffer().len();
-                    self.delete_region(0, len)?;
+                    if let Err(e) = self.delete_region(0, len) {
+                        if let Some((start, end)) = restriction {
+                            self.buffer_mut().narrow(start, end);
+                        }
+                        return Err(e);
+                    }
                 }
                 RegionInput::Text(text) => {
                     return Err(Error::signal(

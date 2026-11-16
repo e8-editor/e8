@@ -164,5 +164,76 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "done-repeating-drops-a-plain-scheduled",
+    "text": "* TODO Pay\nSCHEDULED: <2026-11-01 Sun> DEADLINE: <2026-11-05 Thu +1m>\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-log-repeat": false
+    }
+  },
+  {
+    "name": "done-repeating-keeps-a-repeating-scheduled",
+    "text": "* TODO Pay\nSCHEDULED: <2026-11-01 Sun +1w> DEADLINE: <2026-11-05 Thu +1m>\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-log-repeat": false
+    }
+  },
+  {
+    "name": "shift-right-goes-on-to-the-next-sequence",
+    "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* Other\n",
+    "point": 52,
+    "keys": "S-<right>",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "shift-left-from-none-takes-the-last-keyword",
+    "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* Other\n",
+    "point": 63,
+    "keys": "S-<left>",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "shift-left-back-across-sequences",
+    "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* WAIT Task\n",
+    "point": 52,
+    "keys": "S-<left>",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "done-repeats-by-hours",
+    "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 10:00 +2h>\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-log-repeat": false
+    }
+  },
+  {
+    "name": "done-repeats-by-hours-across-midnight",
+    "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 23:00 +3h>\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-log-repeat": false
+    }
   }
 ]

@@ -1,0 +1,365 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "seed303-0263-narrowed-checkbox-cookie",
+      "input": {
+        "text": "** beta\n  - gamma\n** [#B] fix [1/2]",
+        "point": 8,
+        "keys": "C-x n s M-S-<return>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "** beta\n  - [ ] \n  - gamma\n** [#B] fix [1/2]",
+      "visible": "** beta\n  - [ ] \n  - gamma\n** [#B] fix [1/2]",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed303-0546-narrowed-table-row",
+      "input": {
+        "text": "* fix plan\n|  | x |\n* DONE [#C] alpha beta",
+        "point": 12,
+        "keys": "C-x n s RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* fix plan\n|   | x |\n|   |   |\n\n* DONE [#C] alpha beta",
+      "visible": "* fix plan\n|   | x |\n|   |   |\n\n* DONE [#C] alpha beta",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed303-0872-narrowed-toggle-heading",
+      "input": {
+        "text": "* TODO read fix\n4. plan",
+        "point": 16,
+        "keys": "C-x n e C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* TODO read fix\n** plan\n",
+      "visible": "* TODO read fix\n** plan\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed303-1024-narrowed-item-table",
+      "input": {
+        "text": "+ [X] plan",
+        "point": 6,
+        "keys": "C-x n e | M-S-<down> <backtab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "+ [X] \n| plan |\n",
+      "visible": "+ [X] \n| plan |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot move to previous table field"
+    },
+    {
+      "name": "seed303-0191-narrowed-insert-heading",
+      "input": {
+        "text": "3. [ ] fix\n\n** [#C] read [%] :work:",
+        "point": 1,
+        "keys": "C-c C-f C-x n s C-x n s M-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "3. [ ] fix\n\n** \n** [#C] read [%] :work:",
+      "visible": "3. [ ] fix\n\n** \n** [#C] read [%] :work:",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed404-0280-narrowed-heading-to-item",
+      "input": {
+        "text": "* DONE fix plan\n:PROPERTIES:\n:END:\n* plan plan :home:x:",
+        "point": 11,
+        "keys": "C-x n s C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [X] fix plan\n* plan plan :home:x:",
+      "visible": "- [X] fix plan\n* plan plan :home:x:",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed404-0370-narrowed-drag-drawer",
+      "input": {
+        "text": "# a comment\n:PROPERTIES:\n:ID: 1\n:END:",
+        "point": 12,
+        "keys": "C-x n e M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# a comment\n:PROPERTIES:\n:ID: 1\n:END:",
+      "visible": "# a comment\n:PROPERTIES:\n:ID: 1\n:END:",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot drag element backward"
+    },
+    {
+      "name": "seed404-1528-narrowed-item-return",
+      "input": {
+        "text": "- notes",
+        "point": 6,
+        "keys": "C-x n e RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- note\n  s",
+      "visible": "- note\n  s",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed404-2614-narrowed-copy-subtree",
+      "input": {
+        "text": "* gamma\n#+TITLE: notes",
+        "point": 8,
+        "keys": "C-x n e C-c C-x M-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* gamma\n#+TITLE: notes",
+      "visible": "* gamma\n#+TITLE: notes",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "#+TITLE: notes"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "seed404-0929-narrowed-drawer-tab",
+      "input": {
+        "text": ":PROPERTIES:\n:ID: 1\n:END:",
+        "point": 13,
+        "keys": "C-x n e TAB S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ":PROPERTIES:\n:ID:       1\n:END:",
+      "visible": ":PROPERTIES:\n:ID:       1\n:END:",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Before first headline at position 14 in buffer *e8-oracle*"
+    },
+    {
+      "name": "seed505-2656-narrowed-insert-heading-after",
+      "input": {
+        "text": "   + gamma\n* DONE alpha [%]",
+        "point": 0,
+        "keys": "C-x n e C-<return>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "   + gamma\n* \n* DONE alpha [%]",
+      "visible": "   + gamma\n* \n* DONE alpha [%]",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed505-2324-narrowed-toggle-heading-twice",
+      "input": {
+        "text": "* plan alpha\n",
+        "point": 13,
+        "keys": "M-S-<return> C-x n e C-c * C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* plan alpha\n** TODO ",
+      "visible": "* plan alpha\n** TODO ",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seed505-1872-narrowed-bullet-shift",
+      "input": {
+        "text": "  alpha\n  + plan\n+ alpha",
+        "point": 0,
+        "keys": "C-x n e - M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": " -   alpha\n  + plan\n+ alpha",
+      "visible": " -   alpha\n  + plan\n+ alpha",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "narrowed-list-renumbers-only-what-shows",
+      "input": {
+        "text": "1. a\n2. b\n3. c\n4. d\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-e C-x n n C-g M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "1. a\n2. b\n3. x\n3. c\n4. d\n",
+      "visible": "1. a\n2. b\n3. x\n3. c\n4. d\n",
+      "point": 14,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "narrowed-list-bullets-cycle-what-shows",
+      "input": {
+        "text": "1. a\n2. b\n3. c\n4. d\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-e C-x n n C-g C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "1) a\n2) b\n3. c\n4. d\n",
+      "visible": "1) a\n2) b\n3. c\n4. d\n",
+      "point": 9,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "narrowed-table-row-moves-up",
+      "input": {
+        "text": "* H\n| a |\n| b |\n* N\n",
+        "point": 12,
+        "keys": "C-x n s M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n| b |\n| a |\n\n* N\n",
+      "visible": "* H\n| b |\n| a |\n\n* N\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "narrowed-region-line-up-at-the-top",
+      "input": {
+        "text": "zero\none\ntwo\nthree\n",
+        "point": 5,
+        "keys": "C-SPC C-n C-n C-x n n C-g M-< C-SPC C-e M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "zero\none\ntwo\nthree\n",
+      "visible": "zero\none\ntwo\nthree\n",
+      "point": 8,
+      "mark": 5,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit"
+    }
+  ]
+}

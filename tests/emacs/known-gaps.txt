@@ -19,6 +19,21 @@ org-structure/indent-region-with-adapted-indentation  # no org-adapt-indentation
 # the command loop, so there outline-up-heading does not push the mark.
 org-speed/speed-up  # this-command set for nested calls
 
+# Typing | in an item narrowed with C-x n e, Emacs's M-S-<down> takes the
+# accessible part of the line, "|plan", as a table and aligns it on a line of
+# its own; E8's does not.
+org-fuzz-11/seed303-1024-narrowed-item-table  # a table line starting at a narrowing
+
+# In a buffer narrowed to one element with C-x n e, Org's element parser
+# reads the whole buffer, so it still sees the item, property drawer or
+# heading around the narrowing; E8's reads what is accessible. So RET in
+# the item's text does not indent the new line under the item, TAB does
+# not align the drawer's property, and org-copy-subtree finds no heading.
+org-fuzz-11/seed404-1528-narrowed-item-return  # the element parser reads only the narrowing
+org-fuzz-11/seed404-0929-narrowed-drawer-tab  # the element parser reads only the narrowing
+org-fuzz-11/seed404-2614-narrowed-copy-subtree  # the element parser reads only the narrowing
+org-fuzz-11/seed505-2656-narrowed-insert-heading-after  # the element parser reads only the narrowing
+
 # Intentional differences, not to be fixed.
 org-refile/refile-to-no-target  # the recorder answers completing-read directly, so Emacs reads a target its require-match refuses when typed; E8 refuses it with [No match], as Emacs does when it is typed.
 arguments/delete-more-than-there-is  # Emacs reports an internal "Args out of range" error naming the buffer; E8 says "End of buffer". The text is unchanged in both.

@@ -301,3 +301,48 @@ fn wdired_lets_only_names_be_edited() {
     assert!(ed.window_buffer().read_only);
     assert!(text(&ed).contains(" b-a.txt\n"), "{}", text(&ed));
 }
+
+/// g in a narrowed Dired buffer lists the directory again, the narrowing
+/// gone, as Emacs's erase-buffer takes it off first.
+#[test]
+fn reverting_a_narrowed_listing_lists_it_all_again() {
+    let dir = sample();
+    let (mut ed, _s) = setup();
+    dired(&mut ed, dir.path());
+    // The names listed: the sizes and links of the directories around it,
+    // and the space free, change as other tests run.
+    let listing = |ed: &Editor| text(ed).lines().filter_map(|l| l.split_whitespace().last().map(str::to_string)).collect::<Vec<_>>();
+    let whole = listing(&ed);
+    ed.press("C-n C-n C-SPC C-n C-x n n g").unwrap();
+    assert_eq!(ed.echo().filter(|e| e.contains("out of range")), None);
+    assert!(!ed.window_buffer().is_narrowed());
+    assert_eq!(listing(&ed), whole);
+}
+
+/// C-u 2 R moves the next two files from point, as dired-get-marked-files
+/// keeps point while it collects them, and M-- D deletes the file at point,
+/// as a prefix argument that is not a number means the current file.
+#[test]
+fn prefix_arguments_pick_the_files_at_point() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    for name in ["a", "b", "c", "d", "e"] {
+        fs::write(dir.path().join(name), "x\n").unwrap();
+    }
+    fs::create_dir(dir.path().join("sub")).unwrap();
+    let (mut ed, _s) = setup();
+    ed.set_variable("delete-by-moving-to-trash", Value::Bool(false));
+    dired(&mut ed, dir.path());
+    let at = |ed: &mut Editor, name: &str| {
+        let line = text(ed).lines().position(|l| l.ends_with(&format!(" {name}"))).unwrap();
+        let start = ed.window_buffer().line_start(line);
+        ed.window_buffer_mut().set_point(start);
+    };
+    at(&mut ed, "a");
+    ed.press("C-u 2 R s u b RET").unwrap();
+    assert!(dir.path().join("sub/a").exists() && dir.path().join("sub/b").exists());
+    assert!(dir.path().join("c").exists() && dir.path().join("d").exists());
+    at(&mut ed, "d");
+    ed.press("M-- D y e s RET").unwrap();
+    assert!(!dir.path().join("d").exists(), "the file at point");
+    assert!(dir.path().join("c").exists(), "not the one above");
+}

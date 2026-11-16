@@ -203,7 +203,7 @@ impl Named {
 /// `word-combining-categories` and `word-separating-categories`: of two
 /// scripts they are, unless one is a combining mark or Han next to kana,
 /// and of one script they are not, unless hiragana meets katakana.
-fn word_boundary(c1: char, c2: char) -> bool {
+pub(crate) fn word_boundary(c1: char, c2: char) -> bool {
     if c1.is_ascii() && c2.is_ascii() {
         return false;
     }

@@ -570,6 +570,48 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "align-measures-links-as-they-show",
+      "input": {
+        "text": "| [[https://gnu.org][GNU]] | x |\n| Emacs | y |\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| [[https://gnu.org][GNU]]   | x |\n| Emacs | y |\n",
+      "visible": "| GNU   | x |\n| Emacs | y |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "align-measures-plain-links-as-they-show",
+      "input": {
+        "text": "| [[https://gnu.org]] | x |\n| Emacs | y |\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| [[https://gnu.org]] | x |\n| Emacs           | y |\n",
+      "visible": "| https://gnu.org | x |\n| Emacs           | y |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

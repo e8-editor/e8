@@ -1,0 +1,173 @@
+[
+  {
+    "name": "replace-lone-capital-upcases",
+    "text": "I a. i b.",
+    "call": [
+      "query-replace",
+      "i",
+      "we"
+    ],
+    "keys": "!"
+  },
+  {
+    "name": "beginning-of-buffer-tenths-narrowed",
+    "text": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n",
+    "keys": "M-< C-n C-n C-SPC C-n C-n C-n C-n C-n C-n C-x n n M-3 M-<"
+  },
+  {
+    "name": "end-of-buffer-tenths-narrowed",
+    "text": "l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9\nla\nlb\n",
+    "keys": "M-< C-n C-n C-SPC C-n C-n C-n C-n C-n C-n C-x n n M-3 M->"
+  },
+  {
+    "name": "delete-indentation-last-line-forward",
+    "text": "a\nb",
+    "point": 2,
+    "keys": "C-u M-^"
+  },
+  {
+    "name": "delete-indentation-region",
+    "text": "a\n  b\n  c\nd",
+    "keys": "C-SPC C-n C-n C-e M-^"
+  },
+  {
+    "name": "delete-rectangle-keeps-point",
+    "text": "abcd\nefgh\nijkl\n",
+    "point": 1,
+    "keys": "C-SPC C-n C-n C-f C-f C-x C-x C-x r d"
+  },
+  {
+    "name": "rectangle-number-lines-from-zero-padded",
+    "text": "a\nb\nc\n",
+    "keys": "C-SPC C-n C-n C-u C-x r N",
+    "answers": [
+      "0",
+      "%03d "
+    ]
+  },
+  {
+    "name": "overwrite-at-narrowing-end",
+    "text": "abcdef",
+    "keys": "C-SPC C-f C-f C-f C-x n n C-e <insert> x"
+  },
+  {
+    "name": "overwrite-before-tab",
+    "text": "\tab",
+    "keys": "<insert> x"
+  },
+  {
+    "name": "undo-outside-narrowing",
+    "text": "abc\ndef",
+    "keys": "X C-n C-a C-SPC C-e C-x n n C-/"
+  },
+  {
+    "name": "kmacro-append-without-running",
+    "text": "",
+    "keys": "<f3> a <f4> C-u C-u <f3> b <f4> <f4>"
+  },
+  {
+    "name": "kmacro-append-keeps-the-counter",
+    "text": "",
+    "keys": "<f3> <f3> SPC <f4> C-u C-u <f3> <f3> SPC <f4> <f4>"
+  },
+  {
+    "name": "kmacro-c-u-counter-inserts-the-previous",
+    "text": "",
+    "keys": "C-u 5 <f3> <f3> C-u <f3> <f3> <f4>"
+  },
+  {
+    "name": "undo-outside-narrowing-refused",
+    "text": "abc\ndef",
+    "keys": "X C-n C-a C-SPC C-e C-x n n C-g C-/"
+  },
+  {
+    "name": "undo-inside-narrowing",
+    "text": "abc\ndef",
+    "keys": "C-n C-a Y C-a C-SPC C-e C-x n n C-g C-/"
+  },
+  {
+    "name": "undo-after-region-delete-and-insert",
+    "text": "abc",
+    "keys": "C-x h DEL x C-/"
+  },
+  {
+    "name": "undo-after-failed-delete-and-insert",
+    "text": "abc",
+    "keys": "C-x h DEL DEL x C-/"
+  },
+  {
+    "name": "undo-after-failed-delete-and-pair",
+    "text": "a\"\"]{(\"\"",
+    "point": 6,
+    "keys": "C-x h DEL DEL ] C-/",
+    "modes": [
+      "electric-pair-mode"
+    ]
+  },
+  {
+    "name": "m-j-at-the-start-of-a-narrowing",
+    "text": "one\ntwo three\nfour\n",
+    "keys": "C-n C-SPC C-e C-x n n C-g M-< M-j"
+  },
+  {
+    "name": "m-j-in-a-comment-at-the-end-of-a-narrowing",
+    "text": "(a)\n;; note\n(b)\n",
+    "keys": "C-n C-SPC C-e C-x n n C-g M-> M-j",
+    "modes": [
+      "emacs-lisp-mode"
+    ]
+  },
+  {
+    "name": "auto-fill-at-the-end-of-a-narrowing",
+    "text": "x\naaa bbb ccc\nz\n",
+    "keys": "C-n C-SPC C-e C-x n n C-g M-> SPC d d",
+    "vars": {
+      "fill-column": 8
+    },
+    "modes": [
+      "auto-fill-mode"
+    ]
+  },
+  {
+    "name": "indent-rigidly-from-mid-line",
+    "text": "aaa\nbbb\nccc\n",
+    "point": 1,
+    "keys": "C-SPC C-n C-n C-a C-u 2 C-x TAB"
+  },
+  {
+    "name": "indent-region-to-a-column-from-mid-line",
+    "text": "aaa\nbbb\nccc\n",
+    "point": 1,
+    "keys": "C-SPC C-n C-n C-a C-u 4 C-M-\\"
+  },
+  {
+    "name": "indent-region-line-by-line-from-mid-line",
+    "text": "(a\nb\nc)\n",
+    "point": 1,
+    "keys": "C-SPC C-n C-n C-e C-M-\\",
+    "modes": [
+      "emacs-lisp-mode"
+    ]
+  },
+  {
+    "name": "comment-dwim-with-a-count-kills-and-moves-on",
+    "text": "(a) ; one\n(b) ; two\n(c) ; three\n(d)\n",
+    "point": 1,
+    "keys": "M-2 M-;",
+    "modes": [
+      "emacs-lisp-mode"
+    ]
+  },
+  {
+    "name": "comment-dwim-with-c-u-kills-one-and-stays",
+    "text": "(a) ; one\n(b) ; two\n(c) ; three\n(d)\n",
+    "point": 1,
+    "keys": "C-u M-;",
+    "modes": [
+      "emacs-lisp-mode"
+    ]
+  },
+  {"name": "overwrite-count-before-a-wide-tab", "text": "abcdef\tx\n", "keys": "C-f C-f C-f C-f C-f C-f <insert> C-u 2 a"},
+  {"name": "overwrite-long-count-on-a-tab", "text": "\tx\n", "keys": "<insert> C-u 9 a"},
+  {"name": "overwrite-a-one-column-tab", "text": "abcdefg\tx\n", "keys": "C-f C-f C-f C-f C-f C-f C-f <insert> C-u 2 a"}
+]

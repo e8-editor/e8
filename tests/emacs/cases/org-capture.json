@@ -196,5 +196,62 @@
     "call": [
       "org-capture"
     ]
+  },
+  {
+    "name": "capture-under-a-heading-before-a-blank-line",
+    "text": "* Inbox\n** old\n\n* Other\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "Test",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-to-a-file-ending-in-blank-lines",
+    "text": "* one\n\n\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "Test",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* %?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
   }
 ]

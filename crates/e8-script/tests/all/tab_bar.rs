@@ -203,3 +203,17 @@ fn the_tab_bar_takes_a_line_from_the_windows() {
 }
 
 
+
+/// C-x t f on a directory lists it in the new tab, as find-file-noselect
+/// gives Dired for one, and C-x t 0 with a number past the last tab closes
+/// nothing, as tab-bar-close-tab finds no tab there.
+#[test]
+fn find_file_other_tab_lists_directories_and_closing_no_tab_is_quiet() {
+    let (mut ed, _s) = setup();
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("a.txt"), "a\n").unwrap();
+    ed.call("find-file-other-tab", vec![Arg::Str(dir.path().display().to_string())]).unwrap();
+    assert_eq!(ed.variable("major-mode"), Some(Value::Str("dired-mode".into())));
+    ed.press("C-u 5 C-x t 0").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+}

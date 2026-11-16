@@ -144,3 +144,16 @@ fn align_to_spaces_line_titles_up_at_columns() {
     let text: String = ed.format_mode_line(&format).unwrap().into_iter().map(|s| s.text).collect();
     assert_eq!(text, "Name    Size      Mode");
 }
+
+/// %c is the column on the screen, as current-column counts it: a tab to
+/// its stop and a wide character as two, as Emacs shows "C11" after "\tfoo".
+#[test]
+fn the_column_counts_tabs_and_wide_characters() {
+    let mut ed = Editor::new();
+    ed.set_frame_size(60, 10);
+    let format = |ed: &mut Editor| ed.format_mode_line(&s("%c")).unwrap().into_iter().map(|s| s.text).collect::<String>();
+    ed.type_text("\tfoo");
+    assert_eq!(format(&mut ed), "11");
+    ed.type_text("\n日本");
+    assert_eq!(format(&mut ed), "4");
+}

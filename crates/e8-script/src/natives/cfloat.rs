@@ -13,7 +13,7 @@ fn arith_error() -> Error {
 fn quotient(number: f64, divisor: &Opt<EditorValue>) -> Result<f64> {
     match divisor.0.as_ref().and_then(EditorValue::as_number) {
         None => Ok(number),
-        Some(d) if d == 0.0 => Err(arith_error()),
+        Some(0.0) => Err(arith_error()),
         Some(d) => Ok(number / d),
     }
 }
@@ -138,7 +138,7 @@ natives! {
     #[ts = "(): [total: number, free: number, swapTotal: number, swapFree: number] | undefined"]
     pub fn memoryInfo(_ed) -> Option<Vec<f64>> {
         let Ok(text) = e8_core::vfs::read_to_string("/proc/meminfo") else { return Ok(None) };
-        let field = |name: &str| text.lines().find_map(|l| l.strip_prefix(name)?.trim().split_whitespace().next()?.parse::<f64>().ok());
+        let field = |name: &str| text.lines().find_map(|l| l.strip_prefix(name)?.split_whitespace().next()?.parse::<f64>().ok());
         let free = field("MemAvailable:").or_else(|| field("MemFree:"));
         Ok(match (field("MemTotal:"), free, field("SwapTotal:"), field("SwapFree:")) {
             (Some(t), Some(f), Some(st), Some(sf)) => Some(vec![t, f, st, sf]),

@@ -641,6 +641,264 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "deadline-warning-from-its-timestamp",
+      "input": {
+        "text": "* TODO Soon\nDEADLINE: <2026-11-19 Thu -2d>\n* TODO Later\nDEADLINE: <2026-11-30 Mon -3d>\n* TODO Month\nDEADLINE: <2026-12-10 Thu -1m>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  In  24 d.:  TODO Month\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\n  e8-agenda:  Deadline:   TODO Soon\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  In  24 d.:  TODO Month\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\n  e8-agenda:  Deadline:   TODO Soon\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "scheduled-delay",
+      "input": {
+        "text": "* TODO Waits\nSCHEDULED: <2026-11-15 Sun -2d>\n* TODO Shows\nSCHEDULED: <2026-11-13 Fri -2d>\n* TODO Today\nSCHEDULED: <2026-11-16 Mon -1d>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  Sched. 3x:  TODO Shows\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  Sched. 3x:  TODO Shows\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "category-property-and-the-last-keyword",
+      "input": {
+        "text": "#+CATEGORY: first\n* Work\n:PROPERTIES:\n:CATEGORY: job\n:END:\n** TODO Report\nSCHEDULED: <2026-11-16 Mon>\n* Home\n** TODO Dishes\nSCHEDULED: <2026-11-16 Mon>\n#+CATEGORY: last\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  job:        Scheduled:  TODO Report\n  last:       Scheduled:  TODO Dishes\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  job:        Scheduled:  TODO Report\n  last:       Scheduled:  TODO Dishes\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "repeating-deadline-on-its-later-dates",
+      "input": {
+        "text": "* TODO Weekly\nDEADLINE: <2026-11-10 Tue +1w>\n* TODO Daily\nDEADLINE: <2026-11-18 Wed +2d>\n* DONE Done\nDEADLINE: <2026-11-10 Tue +1w>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:   6 d. ago:  TODO Weekly\n  e8-agenda:  In   2 d.:  TODO Daily\nTuesday    17 November 2026\n  e8-agenda:  Deadline:   TODO Weekly\nWednesday  18 November 2026\n  e8-agenda:  Deadline:   TODO Daily\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Deadline:   TODO Daily\nSaturday   21 November 2026\nSunday     22 November 2026\n  e8-agenda:  Deadline:   TODO Daily\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:   6 d. ago:  TODO Weekly\n  e8-agenda:  In   2 d.:  TODO Daily\nTuesday    17 November 2026\n  e8-agenda:  Deadline:   TODO Weekly\nWednesday  18 November 2026\n  e8-agenda:  Deadline:   TODO Daily\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Deadline:   TODO Daily\nSaturday   21 November 2026\nSunday     22 November 2026\n  e8-agenda:  Deadline:   TODO Daily\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "times-show-and-sort-entries",
+      "input": {
+        "text": "* Lunch <2026-11-17 Tue 12:00>\n* Standup <2026-11-17 Tue 09:30>\n* TODO Call\nSCHEDULED: <2026-11-17 Tue 14:15>\n* Review <2026-11-17 Tue 10:00-11:30>\n* TODO No time\nSCHEDULED: <2026-11-17 Tue>\n* TODO Due\nDEADLINE: <2026-11-17 Tue 08:05>\n* TODO Warned\nDEADLINE: <2026-11-19 Thu 16:00>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  In   1 d.:  TODO Due\n  e8-agenda:  In   3 d.:  TODO Warned\nTuesday    17 November 2026\n  e8-agenda:   8:05...... Deadline:   TODO Due\n  e8-agenda:   9:30...... Standup \n  e8-agenda:  10:00-11:30 Review \n  e8-agenda:  12:00...... Lunch \n  e8-agenda:  14:15...... Scheduled:  TODO Call\n  e8-agenda:  Scheduled:  TODO No time\nWednesday  18 November 2026\nThursday   19 November 2026\n  e8-agenda:  16:00...... Deadline:   TODO Warned\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  In   1 d.:  TODO Due\n  e8-agenda:  In   3 d.:  TODO Warned\nTuesday    17 November 2026\n  e8-agenda:   8:05...... Deadline:   TODO Due\n  e8-agenda:   9:30...... Standup \n  e8-agenda:  10:00-11:30 Review \n  e8-agenda:  12:00...... Lunch \n  e8-agenda:  14:15...... Scheduled:  TODO Call\n  e8-agenda:  Scheduled:  TODO No time\nWednesday  18 November 2026\nThursday   19 November 2026\n  e8-agenda:  16:00...... Deadline:   TODO Warned\nFriday     20 November 2026\nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "date-ranges-show-each-day",
+      "input": {
+        "text": "* Trip <2026-11-17 Tue>--<2026-11-19 Thu>\n* Conference\n<2026-11-20 Fri 09:00>--<2026-11-22 Sun 17:00>\n* TODO Long\n<2026-11-14 Sat>--<2026-11-18 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  (3/5):  TODO Long\nTuesday    17 November 2026\n  e8-agenda:  (1/3):  Trip <2026-11-17 Tue>--<2026-11-19 Thu>\n  e8-agenda:  (4/5):  TODO Long\nWednesday  18 November 2026\n  e8-agenda:  (2/3):  Trip <2026-11-17 Tue>--<2026-11-19 Thu>\n  e8-agenda:  (5/5):  TODO Long\nThursday   19 November 2026\n  e8-agenda:  (3/3):  Trip <2026-11-17 Tue>--<2026-11-19 Thu>\nFriday     20 November 2026\n  e8-agenda:   9:00...... (1/3):  Conference\nSaturday   21 November 2026\n  e8-agenda:  (2/3):  Conference\nSunday     22 November 2026\n  e8-agenda:  17:00...... (3/3):  Conference\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:  (3/5):  TODO Long\nTuesday    17 November 2026\n  e8-agenda:  (1/3):  Trip <2026-11-17 Tue>--<2026-11-19 Thu>\n  e8-agenda:  (4/5):  TODO Long\nWednesday  18 November 2026\n  e8-agenda:  (2/3):  Trip <2026-11-17 Tue>--<2026-11-19 Thu>\n  e8-agenda:  (5/5):  TODO Long\nThursday   19 November 2026\n  e8-agenda:  (3/3):  Trip <2026-11-17 Tue>--<2026-11-19 Thu>\nFriday     20 November 2026\n  e8-agenda:   9:00...... (1/3):  Conference\nSaturday   21 November 2026\n  e8-agenda:  (2/3):  Conference\nSunday     22 November 2026\n  e8-agenda:  17:00...... (3/3):  Conference\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ]
     }
   ]
 }

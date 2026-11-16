@@ -257,6 +257,11 @@ natives! {
     /// minibuffer-prompt-end: the prompt is read-only text at the start of
     /// the minibuffer, and point is kept after it.
     pub fn minibufferPromptEnd(ed) -> usize {
+        // In a buffer that is no minibuffer, its accessible start, as
+        // Emacs's minibuffer-prompt-end gives the entire contents there.
+        if !ed.buffer().name.starts_with(" *Minibuf-") {
+            return Ok(ed.buffer().point_min());
+        }
         Ok(ed.minibuffer_prompt_end())
     }
 

@@ -153,9 +153,11 @@ natives! {
         Ok(())
     }
 
-    /// Start recording typed keys into a keyboard macro (Emacs's start-kbd-macro).
-    pub fn startKbdMacro(ed) {
-        ed.start_kbd_macro()
+    /// Start recording typed keys into a keyboard macro (Emacs's
+    /// start-kbd-macro). With `append`, go on from the last macro, running
+    /// it once more first unless `noExec`.
+    pub fn startKbdMacro(ed, append: Opt<bool>, no_exec: Opt<bool>) {
+        if append.0 == Some(true) { ed.start_kbd_macro_appending(no_exec.0 == Some(true)) } else { ed.start_kbd_macro() }
     }
 
     /// Finish the keyboard macro, leaving out the keys that ended it (Emacs's end-kbd-macro).

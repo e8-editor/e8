@@ -5,6 +5,14 @@
 
 /** The counter F3 inserts while a macro is defined or run (Emacs's kmacro-counter). */
 let counter = 0;
+/** The counter before its last increment, which C-u F3 inserts (Emacs's kmacro-last-counter). */
+let lastCounter = 0;
+
+e8.defineVariable({
+  name: "kmacro-execute-before-append",
+  doc: "Whether C-u C-x ( runs the last macro before appending to it, and C-u C-u C-x ( does not; nil turns these round.",
+  value: true,
+});
 
 function startMacro(): void {
   if (e8.definingKbdMacro() || e8.executingKbdMacro()) {
@@ -12,9 +20,17 @@ function startMacro(): void {
     e8.message("Already defining keyboard macro.");
     return;
   }
-  e8.startKbdMacro();
   const arg = e8.prefixArg();
+  // C-u appends to the last macro, keeping the counter, as kmacro-start-macro does.
+  if (Array.isArray(arg)) {
+    const runFirst = e8.variable("kmacro-execute-before-append") !== false;
+    e8.startKbdMacro(true, runFirst ? arg[0] > 4 : arg[0] === 4);
+    e8.message("Appending to kbd macro...");
+    return;
+  }
+  e8.startKbdMacro();
   counter = arg === null ? 0 : e8.prefixNumericValue(arg);
+  lastCounter = counter;
   e8.message("Defining kbd macro...");
 }
 
@@ -24,7 +40,13 @@ function endMacro(): void {
 }
 
 function insertCounter(): void {
+  // C-u inserts the value before the last increment, and adds nothing.
+  if (Array.isArray(e8.prefixArg())) {
+    e8.insert(String(lastCounter));
+    return;
+  }
   e8.insert(String(counter));
+  lastCounter = counter;
   counter += e8.prefixNumericValue();
 }
 
@@ -32,7 +54,8 @@ e8.defineCommand({
   name: "kmacro-start-macro",
   doc:
     "Start recording a keyboard macro: the keys typed until C-x ) or F4.\n\n" +
-    "A prefix argument sets the macro counter's starting value, which is 0 otherwise.",
+    "A numeric prefix argument sets the macro counter's starting value, which is 0 otherwise; C-u appends to the last macro, " +
+    "running it first, and C-u C-u appends without running it.",
   run: startMacro,
 });
 

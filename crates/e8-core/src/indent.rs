@@ -171,7 +171,7 @@ impl Editor {
         match line {
             WindowLine::HeaderLine => (header > 0.0).then_some([header, 0.0, 0.0, 0.0]),
             // The header line counted twice, as window.c adds it to a bottom that has it.
-            WindowLine::ModeLine => self.window_shows_mode_line(window).then(|| [unit, 0.0, header + bottom, 0.0]),
+            WindowLine::ModeLine => self.window_shows_mode_line(window).then_some([unit, 0.0, header + bottom, 0.0]),
             WindowLine::Point => {
                 let text = self.rows_filling(window, true);
                 at(crate::display::row_showing(&text, view.point, self.tab_width_in(view.buffer))?)

@@ -8,7 +8,7 @@
 // buffer selected, M-n and M-p move between messages, g runs the command
 // again, and C-c C-k kills it.
 
-import { truthy, numberValue as num } from "subr";
+import { eraseBuffer, numberValue as num, truthy } from "subr";
 
 // --- Faces and variables ----------------------------------------------------
 
@@ -18,6 +18,7 @@ for (const [name, doc, attributes] of [
   ["compilation-info", "Notes' file names, and grep's hits, in compilation buffers.", { foreground: "good" }],
   ["compilation-line-number", "Line numbers in compilation messages.", { foreground: "accent-ink" }],
   ["compilation-column-number", "Column numbers in compilation messages.", { foreground: "muted" }],
+  ["compilation-mode-line-run", "The mode line's :run while a compilation runs.", { inherit: "compilation-warning" }],
   ["compilation-mode-line-exit", "How a compilation that succeeded ended.", { foreground: "good", bold: true }],
   ["compilation-mode-line-fail", "How a compilation that failed ended.", { foreground: "bad", bold: true }],
   ["next-error", "The line next-error goes to, for a moment.", { inherit: "region" }],
@@ -39,7 +40,7 @@ defvar(
 );
 defvar(
   "compilation-error-regexp-alist",
-  ["gnu", "python-tracebacks-and-caml", "typescript-tsc-pretty", "cargo"],
+  ["clang-include", "gmake", "gnu", "python-tracebacks-and-caml", "typescript-tsc-pretty", "cargo"],
   "The names of the message formats in compilation-error-regexp-alist-alist that compilation buffers look for.",
   true,
 );
@@ -78,6 +79,10 @@ type Format = { re: RegExp; type: 0 | 1 | 2 };
  * JavaScript regexps. cargo is rust-mode's, which Emacs leaves to it.
  */
 const FORMATS: { [name: string]: Format } = {
+  // clang's "In file included from FILE:LINE:", where an error comes from, as info.
+  "clang-include": { re: /^In file included from (?<file>[^\n:]+):(?<line>[0-9]+):$/, type: 0 },
+  // GNU make's "make: *** [FILE:LINE: target] Error 1", as info.
+  gmake: { re: /: \*\*\* \[(?<file>.+?):(?<line>[0-9]+): .+\]/, type: 0 },
   // [PROGRAM:]FILE:LINE[-ENDLINE][:COL[-ENDCOL]]: [warning|note|error] MESSAGE
   gnu: {
     re: new RegExp(
@@ -112,6 +117,8 @@ type Message = {
   line: number;
   col?: number;
   type: 0 | 1 | 2;
+  /** The directory make said it entered, which a relative file name is in, as compilation-directory-matcher finds it. */
+  dir?: string;
   /** Where it points, once its file has been visited, moving with edits there as compile.el's markers do. */
   marker?: e8.Marker;
 };
@@ -121,7 +128,7 @@ type Message = {
  * read, kept by buffer rather than name, as a buffer-local variable would
  * be, so renaming the buffer keeps them.
  */
-const buffers = new Map<e8.Buffer, { messages: Message[]; parsed: number; current?: number; started: number; matches: number }>();
+const buffers = new Map<e8.Buffer, { messages: Message[]; parsed: number; current?: number; started: number; matches: number; dirs?: string[] }>();
 
 // A killed buffer's messages go with it, as its buffer-local variables would.
 e8.addHook("kill-buffer-hook", () => {
@@ -154,6 +161,14 @@ function parseNewLines(): void {
   while (line < last) {
     const start = e8.lineStart(line);
     const text = e8.lineText(line);
+    // make's "Entering directory 'DIR'" and "Leaving directory", which the
+    // messages between are relative to, as compilation-directory-matcher.
+    const dirLine = /(?:Entering|Leavin(g)) directory [`'‘](.+)['’]$/.exec(text);
+    if (dirLine !== null) {
+      const dirs = (s.dirs ??= []);
+      if (dirLine[1] === undefined) dirs.push(e8.fileNameAsDirectory(e8.expandFileName(dirLine[2], messageBase())));
+      else dirs.pop();
+    }
     for (const f of formats) {
       const m = f.re.exec(text);
       if (m === null || m.groups === undefined) continue;
@@ -172,7 +187,8 @@ function parseNewLines(): void {
         }
       }
       const fileAt = start + chars(text, m.index + m[0].indexOf(file));
-      s.messages.push({ start, end: e8.lineEnd(line), file, line: lineNo, col: g.col === undefined ? undefined : Number(g.col), type });
+      const dir = s.dirs?.at(-1);
+      s.messages.push({ start, end: e8.lineEnd(line), file, line: lineNo, col: g.col === undefined ? undefined : Number(g.col), type, ...(dir ? { dir } : {}) });
       if (grep) s.matches++;
       // As compilation-mode's font-lock puts them: silently.
       e8.withSilentModifications(() => {
@@ -218,6 +234,9 @@ const modeStem = (mode: string): string => mode.replace(/-mode$/, "");
 /** Strips the colour codes programs write, which a dumb terminal would not show. */
 const stripAnsi = (text: string): string => text.replace(/\x1b\[[0-9;?]*[A-Za-z]/g, "");
 
+/** The start of a colour code a chunk of output ended in, kept for the next, by process. */
+const pendingEscape = new Map<e8.Process, string>();
+
 /** What a compilation's end says, as compilation-exit-message-function or grep-exit-message. */
 function exitMessage(event: string, matches: number, grep: boolean): string {
   if (!grep) return event;
@@ -240,12 +259,13 @@ async function compilationStart(command: string, mode: string, directory: string
     if (existing !== undefined && e8.processStatus(existing) === "run") e8.deleteProcess(existing);
     e8.getBufferCreate(bufferName);
     e8.withCurrentBuffer(bufferName, () => {
-      writable(() => e8.deleteRegion(0, e8.bufferSize()));
+      writable(() => eraseBuffer());
       e8.call(mode as e8.CommandName);
       e8.setVariable("default-directory", directory);
       e8.setVariable("compilation-directory", directory);
-      // And for recompile from anywhere, as compile sets its default.
-      e8.setDefault("compilation-directory", directory);
+      // And for recompile from anywhere, as compile sets its default; grep
+      // and the other modes do not, so recompile still runs where compile did.
+      if (mode === "compilation-mode") e8.setDefault("compilation-directory", directory);
       e8.setVariable("compilation-arguments", [command, mode]);
       const key = e8.currentBuffer();
       for (const m of buffers.get(key)?.messages ?? []) if (m.marker !== undefined) e8.deleteMarker(m.marker);
@@ -261,7 +281,9 @@ async function compilationStart(command: string, mode: string, directory: string
       e8.gotoChar(truthy(e8.variable("compilation-scroll-output")) ? e8.bufferSize() : 0);
     });
     e8.setVariable("next-error-last-buffer", e8.getBuffer(bufferName) ?? null);
-    const env: { [k: string]: string } = { INSIDE_EMACS: "e8,compile" };
+    // No pager, as compilation-start's PAGER= has it: git and the like start
+    // one on the terminal the command runs on, and would wait for it.
+    const env: { [k: string]: string } = { INSIDE_EMACS: "e8,compile", PAGER: "" };
     for (const e of (e8.variable("compilation-environment") as e8.Value[] | null) ?? []) {
       if (typeof e === "string" && e.includes("=")) env[e.slice(0, e.indexOf("="))] = e.slice(e.indexOf("=") + 1);
     }
@@ -274,7 +296,10 @@ async function compilationStart(command: string, mode: string, directory: string
       filter: (p, output) => compilationFilter(p, output),
       sentinel: (p, event) => compilationSentinel(p, event, modeName),
     });
-    e8.withCurrentBuffer(bufferName, () => e8.runHooks("compilation-start-hook", proc));
+    e8.withCurrentBuffer(bufferName, () => {
+      e8.setVariable("mode-line-process", e8.propertize(":run", { face: "compilation-mode-line-run" }));
+      e8.runHooks("compilation-start-hook", proc);
+    });
     e8.call("display-buffer", bufferName);
   };
   if (existing !== undefined && e8.processStatus(existing) === "run" && !truthy(e8.variable("compilation-always-kill"))) {
@@ -294,7 +319,16 @@ function compilationFilter(proc: e8.Process, output: string): void {
     const at = e8.markerPosition(mark) ?? e8.bufferSize();
     const moving = e8.point() === at;
     const point = e8.makeMarker();
-    const text = stripAnsi(output);
+    // A colour code split between chunks is taken out whole, its start
+    // held back until the rest comes.
+    let whole = (pendingEscape.get(proc) ?? "") + output;
+    pendingEscape.delete(proc);
+    const cut = /\x1b(?:\[[0-9;?]*)?$/.exec(whole);
+    if (cut !== null) {
+      pendingEscape.set(proc, cut[0]);
+      whole = whole.slice(0, cut.index);
+    }
+    const text = stripAnsi(whole);
     writable(() => {
       e8.gotoChar(at);
       e8.insert(text);
@@ -305,7 +339,9 @@ function compilationFilter(proc: e8.Process, output: string): void {
     parseNewLines();
     // grep separates the file name with a NUL, shown as a colon, as grep-mode's display property does.
     // Only in the lines read, so an unfinished one is still read with its NUL.
-    if (e8.derivedModeP("grep-mode")) writable(() => e8.substCharInRegion(at, Math.max(at, state().parsed), "\0", ":"));
+    // From the start of the line output was added to, as a line may come in two chunks.
+    const from = e8.lineStart(e8.lineOf(at));
+    if (e8.derivedModeP("grep-mode")) writable(() => e8.substCharInRegion(from, Math.max(from, state().parsed), "\0", ":"));
     e8.setBufferModified(false);
     e8.runHooks("compilation-filter-hook");
   });
@@ -313,6 +349,7 @@ function compilationFilter(proc: e8.Process, output: string): void {
 
 /** Notes how the compilation ended, as compilation-handle-exit. */
 function compilationSentinel(proc: e8.Process, event: string, modeName: string): void {
+  pendingEscape.delete(proc);
   const buffer = e8.processBuffer(proc);
   if (buffer === undefined || !e8.bufferList().includes(buffer)) return;
   let message = "";
@@ -344,6 +381,10 @@ function compilationSentinel(proc: e8.Process, event: string, modeName: string):
     e8.deleteMarker(point);
     e8.setBufferModified(false);
     message = `${modeName} ${status.replace(/\n$/, "")}`;
+    // How it ended, in the mode line, as compilation-handle-exit shows it.
+    const code = e8.processExitStatus(proc) ?? 0;
+    const face = code > 0 ? "compilation-mode-line-fail" : "compilation-mode-line-exit";
+    e8.setVariable("mode-line-process", e8.propertize(`:${e8.processStatus(proc) ?? "exit"} [${code}]`, { face }));
   });
   e8.message(message);
   e8.runHooks("compilation-finish-functions", buffer, event);
@@ -459,9 +500,14 @@ e8.defineCommand({
 
 /** The file a message names, relative to the directory its compilation ran in. */
 function messageFile(m: Message): string {
-  const dir = e8.variable("compilation-directory");
-  const base = typeof dir === "string" ? dir : currentDirectory();
+  const base = m.dir ?? messageBase();
   return e8.expandFileName(m.file.startsWith("/") || m.file.startsWith("~") ? m.file : base + m.file);
+}
+
+/** The directory the compilation ran in, which messages' file names are relative to. */
+function messageBase(): string {
+  const dir = e8.variable("compilation-directory");
+  return typeof dir === "string" ? dir : currentDirectory();
 }
 
 let highlight: number | undefined;

@@ -21,8 +21,9 @@ pub(crate) struct Prompt {
     pub(crate) kind: ParamKind,
     /// The variable with earlier answers.
     pub(crate) history: String,
-    /// How far back in the history M-p has gone: 0 for the input typed.
-    pub(crate) history_pos: usize,
+    /// How far back in the history M-p has gone: 0 for the input typed,
+    /// and -1 for the default M-n brings, Emacs's "future history".
+    pub(crate) history_pos: i64,
     /// The input typed, kept while M-p shows history.
     pub(crate) typed: String,
     /// The names a `completing-read` completes against, instead of the kind's.
@@ -891,13 +892,25 @@ impl Editor {
 
     fn read_next_arg(&mut self) {
         // What the editor supplies, the prefix argument, point and the
-        // region, is taken without asking, as interactive "p", "d" and "r".
+        // region, is taken without asking, as interactive "p", "d" and "r",
+        // and so is a value the arguments before it decide.
         while let Some(call) = &self.pending_call
             && let Some(param) = call.command.params.get(call.args.len())
-            && param.kind.from_state()
         {
-            match self.state_arg(param.kind, call.prefix) {
-                Ok(arg) => self.pending_call.as_mut().expect("checked above").args.push(arg),
+            let arg = if param.kind.from_state() {
+                self.state_arg(param.kind, call.prefix).map(Some)
+            } else if let Some(crate::command::CollectionFn(f)) = param.value_fn.clone() {
+                let args = call.args.clone();
+                f(self, &args).map(|values| values.into_iter().next().map(Arg::Str))
+            } else {
+                Ok(None)
+            };
+            match arg {
+                Ok(Some(arg)) => match self.pending_call.as_mut() {
+                    Some(call) => call.args.push(arg),
+                    None => return,
+                },
+                Ok(None) => break,
                 Err(e) => {
                     self.pending_call = None;
                     self.fail(e);
@@ -953,7 +966,46 @@ impl Editor {
         let call = self.pending_call.take().expect("checked above");
         self.last_command = call.last_command;
         self.pending_calls_run += 1;
+        self.record_complex_command(&call.command, &call.args);
         self.execute(call.command, call.args, call.prefix);
+    }
+
+    /// Puts a command that read its arguments in the minibuffer on
+    /// `command-history`, as a form C-x ESC ESC can edit and run again, as
+    /// call-interactively does: positions the editor supplied as the forms
+    /// that find them again, (point), (mark) and the region's ends.
+    fn record_complex_command(&mut self, command: &Command, args: &[Arg]) {
+        // M-x is only a way to reach the command it runs, which is kept itself.
+        if command.name == "execute-extended-command" {
+            return;
+        }
+        let mut form = vec![Value::Symbol(command.name.clone())];
+        for (param, arg) in command.params.iter().zip(args) {
+            let supplied = match param.kind {
+                ParamKind::Point => Some("point"),
+                ParamKind::Mark => Some("mark"),
+                ParamKind::RegionBeginning => Some("region-beginning"),
+                ParamKind::RegionEnd => Some("region-end"),
+                _ => None,
+            };
+            form.push(match supplied {
+                Some(name) => Value::List(vec![Value::Symbol(name.into())]),
+                None => arg.to_value(),
+            });
+        }
+        let form = Value::List(form);
+        let mut items = match self.variable("command-history") {
+            Some(Value::List(items)) => items,
+            _ => Vec::new(),
+        };
+        if items.first() == Some(&form) {
+            return;
+        }
+        items.insert(0, form);
+        // One more than history-length, as call-interactively cuts it with nthcdr.
+        let max = self.number_in(self.window_buffer(), "history-length", 100.0).max(0.0) as usize + 1;
+        items.truncate(max);
+        self.set_variable("command-history", Value::List(items));
     }
 
     /// Hands the next argument to the command waiting for it, or answers
@@ -1288,6 +1340,20 @@ impl Editor {
         self.defining_macro = Some(Vec::new());
         self.macro_sequence_start = 0;
         self.set_default("defining-kbd-macro", Value::Bool(true));
+        Ok(())
+    }
+
+    /// Starts recording a keyboard macro that goes on from the last one,
+    /// as Emacs's `start-kbd-macro` with APPEND: its keys first, run once
+    /// more unless `no_exec`, and then the keys typed after them.
+    pub fn start_kbd_macro_appending(&mut self, no_exec: bool) -> Result<()> {
+        let last = self.last_macro.clone().unwrap_or_default();
+        self.start_kbd_macro()?;
+        self.macro_sequence_start = last.len();
+        self.defining_macro = Some(last);
+        if !no_exec && self.last_macro.is_some() {
+            self.call_last_kbd_macro(1)?;
+        }
         Ok(())
     }
 
@@ -1866,8 +1932,10 @@ impl Editor {
                 } else {
                     self.message(format!("{} is undefined", format_keys(&keys)));
                     // Emacs runs the command `undefined` for the keys, so the
-                    // next command does not follow the one before them.
+                    // next command does not follow the one before them, and
+                    // takes no prefix argument typed before them.
                     self.last_command = Some("undefined".into());
+                    self.prefix_arg = None;
                     self.record_lossage_command("undefined");
                 }
             }
@@ -2832,20 +2900,29 @@ impl Editor {
             Some(Value::List(items)) => items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect(),
             _ => Vec::new(),
         };
-        let pos = prompt.history_pos as i64 + step;
+        let pos = prompt.history_pos + step;
         if pos > items.len() as i64 {
             return Err(Error::new("Beginning of history; no preceding item"));
         }
-        if pos < 0 {
+        // M-n past the input typed brings the default, as goto-history-element does.
+        let default = prompt.default.clone().filter(|d| !d.is_empty());
+        if pos < 0 && default.is_none() {
             return Err(Error::new("End of history; no default available"));
+        }
+        if pos < -1 {
+            return Err(Error::new("End of defaults; no next item"));
         }
         let input = self.minibuffer_input();
         let prompt = self.prompt.as_mut().expect("checked above");
         if prompt.history_pos == 0 {
             prompt.typed = input;
         }
-        prompt.history_pos = pos as usize;
-        let text = if pos == 0 { prompt.typed.clone() } else { items[pos as usize - 1].clone() };
+        prompt.history_pos = pos;
+        let text = match pos {
+            -1 => default.unwrap_or_default(),
+            0 => prompt.typed.clone(),
+            n => items[n as usize - 1].clone(),
+        };
         self.replace_minibuffer_input(&text, text.chars().count());
         Ok(())
     }

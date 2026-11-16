@@ -102,7 +102,7 @@ import { defineGuide } from "help-guide";
 import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
-import { allMatches, charCount, escapeRegExp, forwardLine, truthy } from "subr";
+import { allMatches, charCount, eraseBuffer, escapeRegExp, forwardLine, truthy } from "subr";
 export { PLANNING } from "org-element";
 
 // Variables
@@ -1192,8 +1192,10 @@ export function updateCheckboxCount(): void {
     const p = e8.point();
     // From the heading before point, as outline-previous-heading finds it:
     // searching back, so a heading's own stars must end before point.
-    const previousHeading = (pos: number) => all.filter((h) => h.start + h.level + 1 <= pos).at(-1)?.start ?? 0;
-    const nextHeading = (pos: number) => all.find((h) => h.start > pos)?.start ?? e8.bufferSize();
+    // Within the accessible text, as Emacs's searches are bounded by it.
+    const [min, max] = [e8.pointMin(), e8.pointMax()];
+    const previousHeading = (pos: number) => Math.max(min, all.filter((h) => h.start + h.level + 1 <= pos).at(-1)?.start ?? 0);
+    const nextHeading = (pos: number) => Math.min(max, all.find((h) => h.start > pos)?.start ?? max);
     const start = previousHeading(p);
     const end = nextHeading(p);
     const cookies: { start: number; end: number; percent: boolean; count: [number, number] }[] = [];
@@ -1221,7 +1223,7 @@ export function updateCheckboxCount(): void {
       const text = e8.lineText(l);
       for (const m of allMatches(COOKIE, text)) {
         const cs = e8.lineStart(l) + charCount(text.slice(0, m.index ?? 0));
-        if (cs < start || cs >= end) continue;
+        if (cs < start || cs >= end || cs + charCount(m[0]) > max) continue;
         const container = inItem(l);
         let count: [number, number];
         if (container !== undefined && !isHeadingLine(text)) {
@@ -2531,7 +2533,7 @@ function blankLineAt(line: number): boolean {
 
 /** Whether the line before point's is empty, as org-previous-line-empty-p says. */
 function previousLineEmpty(): boolean {
-  if (e8.point() === 0) return false;
+  if (e8.point() === e8.pointMin()) return false;
   return /^[ \t]*$/.test(e8.lineText(Math.max(0, lineAt() - 1)));
 }
 
@@ -2569,9 +2571,11 @@ export function blankBeforeHeading(parent: boolean): boolean {
 function emptyLinesBeforeCurrent(n: number): void {
   const column = e8.point() - e8.lineStart(lineAt());
   e8.gotoChar(e8.lineStart(lineAt()));
-  if (e8.point() > 0) {
+  // bobp and skip-chars-backward stop at the start of a narrowing.
+  const min = e8.pointMin();
+  if (e8.point() > min) {
     let q = e8.point();
-    while (q > 0 && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+    while (q > min && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
     const start = e8.lineEnd(lineAt(q));
     if (start < e8.point() - 1) e8.deleteRegion(start, e8.point() - 1);
   }
@@ -3140,7 +3144,7 @@ export function pasteSubtree(level: e8.PrefixArg): void {
   const next = shown.find((h) => h.line > line)?.level ?? 1;
   const fresh = force ?? Math.max(c16 ? prev + 1 : 0, prev, next);
   let shift = old === -1 || fresh === -1 || old === fresh ? 0 : fresh - old;
-  if (indicator !== undefined) e8.deleteRegion(e8.lineStart(line), lineStartOrEnd(line + 1));
+  if (indicator !== undefined) edDelete(e8.lineStart(line), lineStartOrEnd(line + 1));
   const here = lineAt();
   if (!(e8.point() === e8.lineStart(here) && parseHeading(here) && !c4 && !c16)) {
     if (c4) {
@@ -3372,9 +3376,17 @@ function fixPositionAfterTodo(line: number): void {
 }
 
 /** The state after one in a direction, wrapping round through no state. */
-function nextState(current: string | undefined, direction: number): string | undefined {
+function nextState(current: string | undefined, direction: number, across = false): string | undefined {
   const sets = todoSets();
   if (sets.length === 0) return undefined;
+  // S-<right> and S-<left> go through every sequence's keywords in turn, as
+  // org-todo's right and left walk org-todo-keywords-1.
+  if (across) {
+    const all = sets.flatMap((set) => [...set.todo, ...set.done]);
+    if (current === undefined) return direction > 0 ? all[0] : all.at(-1);
+    const k = all.indexOf(current) + direction;
+    return k >= 0 && k < all.length ? all[k] : undefined;
+  }
   if (current === undefined) {
     const set = sets[0];
     const states = [...set.todo, ...set.done];
@@ -3391,11 +3403,11 @@ function nextState(current: string | undefined, direction: number): string | und
  * the keyword, then the tags, CLOSED, the parent's statistics and a
  * repeat, then point just after the keyword if it was near it.
  */
-function todo(direction: number, state?: string): void {
+function todo(direction: number, state?: string, across = false): void {
   const [all, i] = backToHeading();
   const h = all[i];
   const before = h.todo;
-  const next = state === undefined ? nextState(before, direction) : state === "" ? undefined : state;
+  const next = state === undefined ? nextState(before, direction, across) : state === "" ? undefined : state;
   replaceTodoKeyword(h, next);
   if (parseHeading(h.line)?.tagsAt !== undefined) alignTagsAway(h.line);
   const logDone = e8.variable("org-log-done");
@@ -3434,7 +3446,7 @@ function fastTodoSelection(current: string | undefined): string | undefined {
     const perRow = Math.floor(((e8.windowSize()?.width ?? 80) - 4) / field);
     e8.withCurrentBuffer(name, () => {
       e8.letBind({ "inhibit-read-only": true }, () => {
-        e8.deleteRegion(0, e8.bufferSize());
+        eraseBuffer();
         let n = 0;
         for (const set of sets) {
           if (n !== 0) {
@@ -3500,6 +3512,11 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   setPlanning(line, "CLOSED", undefined);
   const log = e8.variable("org-log-repeat");
   if (log) entryPut(line, "LAST_REPEAT", `[${formatTimestamp(today(true), true)}]`);
+  // A SCHEDULED without a repeater is no longer relevant, and goes, as
+  // org-auto-repeat-maybe removes it.
+  const planning = line + 1 < e8.lineCount() ? e8.lineText(line + 1) : "";
+  const scheduled = /SCHEDULED: *(<[^>\n]*>)/.exec(planning)?.[1];
+  if (scheduled !== undefined && !repeating.test(scheduled)) setPlanning(line, "SCHEDULED", undefined);
   repeatEntry(parseHeading(line) as Heading);
   e8.gotoChar(p.pos);
   dropMarker(p);
@@ -3511,7 +3528,7 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
  * children's TODO states, as org-update-parent-todo-statistics does: the
  * children at the heading's level with a state, and those done.
  */
-function updateParentTodoStatistics(line: number): void {
+export function updateParentTodoStatistics(line: number): void {
   const all = headingsAsRead();
   const i = headingIndex(all, line);
   if (i === undefined) return;
@@ -3799,7 +3816,7 @@ function fastTagSelection(current: string[], inherited: string[], table: e8.Valu
   const name = " *Org tags*";
   const draw = () => {
     e8.letBind({ "inhibit-read-only": true }, () => {
-      e8.deleteRegion(0, e8.bufferSize());
+      eraseBuffer();
       const put = (text: string, face?: string) => {
         const at = e8.point();
         e8.insert(text);
@@ -4295,13 +4312,28 @@ function parseDate(input: string, withTime = false): DateTime {
   return d;
 }
 
+/**
+ * A timestamp's repeater and warning, such as "+1w -2d", as org-timestamp and
+ * org--deadline-or-schedule take them from the one they replace.
+ */
+function repeaterOf(ts: string | undefined): string | undefined {
+  return ts === undefined ? undefined : /([.+-]+[0-9]+[hdwmy](?:[/ ][-+]?[0-9]+[hdwmy])?)/.exec(ts.replace(/^[<[]\d{4}-\d{2}-\d{2}/, ""))?.[1];
+}
+
+/** A new timestamp with the repeater of the one it replaces put back before its end. */
+function withRepeater(text: string, old: string | undefined): string {
+  const repeater = repeaterOf(old);
+  return repeater === undefined || repeaterOf(text) !== undefined ? text : `${text.slice(0, -1)} ${repeater}${text.slice(-1)}`;
+}
+
 function insertTimestamp(input: string, active: boolean): void {
   const withTime = Array.isArray(e8.prefixArg());
   const date = parseDate(input, withTime);
-  const text = active ? `<${formatTimestamp(date)}>` : `[${formatTimestamp(date)}]`;
+  let text = active ? `<${formatTimestamp(date)}>` : `[${formatTimestamp(date)}]`;
   const p = e8.point();
   const ts = tsMatches(lineAt()).find((t) => t.start <= p && p <= t.end);
   if (ts) {
+    text = withRepeater(text, e8.bufferText(ts.start, ts.end));
     e8.deleteRegion(ts.start, ts.end);
     e8.gotoChar(ts.start);
   }
@@ -4357,7 +4389,10 @@ function plan(keyword: string, input: string): void {
     return;
   }
   const date = parseDate(input);
-  setPlanning(all[i].line, keyword, `<${formatTimestamp(date)}>`);
+  // The old date's repeater and warning stay, as org--deadline-or-schedule keeps them.
+  const next = all[i].line + 1;
+  const old = next < e8.lineCount() ? new RegExp(`${keyword}: *([<[][^>\\]\\n]*[>\\]])`).exec(e8.lineText(next))?.[1] : undefined;
+  setPlanning(all[i].line, keyword, withRepeater(`<${formatTimestamp(date)}>`, old));
 }
 
 const schedule = e8.defineCommand({
@@ -4574,21 +4609,36 @@ function linksIn(from: number, to: number): { links: string[]; last: number } {
   return { links: out, last };
 }
 
+/** The active region's text, if there is a region, as org-insert-link takes it for a description. */
+function regionText(): string | undefined {
+  const mark = e8.mark();
+  if (!e8.regionActive() || mark === undefined || mark === e8.point()) return undefined;
+  return e8.bufferSubstringNoProperties(Math.min(mark, e8.point()), Math.max(mark, e8.point()));
+}
+
 const insertLink = e8.defineCommand({
   name: "org-insert-link",
   doc: "Insert a link as [[link][description]], or [[link]] without a description; on a link, replace it.",
+  // As org-insert-link: on a link, its target and description to edit; with
+  // the region active, its text as the description, which the link replaces.
   params: [
-    { name: "link", prompt: "Link: ", history: "org-link-history" },
-    { name: "description", prompt: "Description: " },
+    { name: "link", prompt: "Link: ", history: "org-link-history", initial: () => linkHere()?.path ?? "" },
+    { name: "description", prompt: "Description: ", initial: () => regionText() ?? linkHere()?.description ?? "" },
   ],
   run: (target, description) => {
     if (target.trim() === "") throw new Error("No link given");
     const escaped = target.trim().replace(/([[\]])/g, "\\$1");
     const text = description.trim() === "" ? `[[${escaped}]]` : `[[${escaped}][${description.trim()}]]`;
     const link = linkHere();
+    const mark = e8.mark();
     if (link) {
       e8.deleteRegion(link.start, link.end);
       e8.gotoChar(link.start);
+    } else if (regionText() !== undefined && mark !== undefined) {
+      const start = Math.min(mark, e8.point());
+      e8.deleteRegion(start, Math.max(mark, e8.point()));
+      e8.gotoChar(start);
+      e8.deactivateMark();
     }
     e8.insert(text);
   },
@@ -4985,14 +5035,16 @@ function transposeRegionLines(up: boolean, a: number, b: number): void {
   const atBol = (x: number): boolean => x === e8.lineStart(lineAt(x));
   if (up) {
     const prev = Math.max(0, lineAt(a) - 1);
-    // On the first line, move-beginning-of-line and move-end-of-line with 0 both stay at its start.
-    const [c, d] = lineAt(a) === 0 ? [0, 0] : [e8.lineStart(prev), e8.lineEnd(prev)];
+    // On the first line, of the buffer or of a narrowing, move-beginning-of-line
+    // and move-end-of-line with 0 both stay at its start.
+    const first = e8.lineStart(lineAt(a)) <= e8.pointMin();
+    const [c, d] = first ? [e8.pointMin(), e8.pointMin()] : [e8.lineStart(prev), e8.lineEnd(prev)];
     transposeRegions(a, b, c, d);
     e8.setMark(c);
     e8.gotoChar(c + (b - a));
   } else {
     const next = atBol(b) ? lineAt(b) : lineAt(b) + 1;
-    const [c, d] = next < e8.lineCount() ? [e8.lineStart(next), e8.lineEnd(next)] : [e8.bufferSize(), e8.bufferSize()];
+    const [c, d] = next < e8.lineCount() && e8.lineStart(next) < e8.pointMax() ? [e8.lineStart(next), Math.min(e8.lineEnd(next), e8.pointMax())] : [e8.pointMax(), e8.pointMax()];
     transposeRegions(a, b, c, d);
     e8.setMark(1 + a + (d - c));
     e8.gotoChar(1 + a + (d - c) + (b - a));
@@ -5260,7 +5312,7 @@ const shiftRight = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-up-day");
     // org-todo, which loops over the headings in an active region.
     else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(1), true)) todo(1);
+      if (!forEachHeadingInRegion(() => todo(1, undefined, true), true)) todo(1, undefined, true);
     }
     else if (itemLine(lineAt())) cycleListBullet();
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
@@ -5276,7 +5328,7 @@ const shiftLeft = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-down-day");
     // org-todo, which loops over the headings in an active region.
     else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(-1), true)) todo(-1);
+      if (!forEachHeadingInRegion(() => todo(-1, undefined, true), true)) todo(-1, undefined, true);
     }
     else if (itemLine(lineAt())) cycleListBullet("previous");
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
@@ -5436,6 +5488,14 @@ function replaceKeepingPoint(start: number, end: number, text: string): void {
 
 /** Removes a heading's tags, planning line and property drawer, as org-list--delete-metadata does. */
 function deleteMetadata(line: number): void {
+  // In the whole buffer, as org-list--delete-metadata's org-with-wide-buffer.
+  e8.saveRestriction(() => {
+    e8.widen();
+    deleteMetadataWide(line);
+  });
+}
+
+function deleteMetadataWide(line: number): void {
   const h = parseHeading(line);
   if (!h) return;
   const text = e8.lineText(line);
@@ -5652,9 +5712,15 @@ function orgToggleHeading(nstars: e8.PrefixArg): void {
         forwardLine();
       }
     } else {
-      const all = headings();
-      const i = headingIndex(all, lineAt(beg));
-      const count = typeof nstars === "number" ? nstars : i === undefined ? 0 : all[i].level;
+      // The level of the heading it is under, from the whole buffer, as
+      // org-current-level finds it above a narrowing too.
+      const level = e8.saveRestriction(() => {
+        e8.widen();
+        const all = headings();
+        const i = headingIndex(all, lineAt(beg));
+        return i === undefined ? 0 : all[i].level;
+      });
+      const count = typeof nstars === "number" ? nstars : level;
       const stars = "*".repeat(count);
       const add = nstars != null ? "" : stars === "" ? "*" : e8.variable("org-odd-levels-only") === true ? "**" : "*";
       const rpl = `${stars}${add} `;
@@ -5739,8 +5805,13 @@ function listToSubtree(pos: number, limit: number): number {
   }
   edDelete(pos, bottom);
   const all = headings();
-  const above = headingIndex(all, lineAt(pos));
-  const level = above === undefined ? 1 : all[above].level + 1;
+  // As org-current-level, from the whole buffer, so a heading above a narrowing counts.
+  const level = e8.saveRestriction(() => {
+    e8.widen();
+    const wide = headings();
+    const above = headingIndex(wide, lineAt(pos));
+    return above === undefined ? 1 : wide[above].level + 1;
+  });
   // org-blank-before-new-entry's "auto": a blank line before the heading above means one between these.
   const previous = [...all].reverse().find((h) => h.start < pos);
   const blank = previous !== undefined && previous.start > 0 && /^[ \t]*$/.test(e8.lineText(previous.line - 1));

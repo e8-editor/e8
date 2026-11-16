@@ -4,7 +4,8 @@
 
 import { type DateTime, type Heading, PLANNING, allKeywords, at, entryEnd, headings, isDone, keywordLines, today } from "org";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
-import { allMatches, charCount } from "subr";
+import { entryGet } from "org-list";
+import { allMatches, charCount, eraseBuffer } from "subr";
 
 e8.defineVariable({
   name: "org-agenda-window-setup",
@@ -23,8 +24,33 @@ e8.defineVariable({
 });
 e8.defineVariable({
   name: "org-deadline-warning-days",
-  doc: "How many days ahead today's agenda warns of a deadline.",
+  doc: "How many days ahead today's agenda warns of a deadline, unless its timestamp says, as -3d does; 0 or less applies whatever it says.",
   value: 14,
+});
+e8.defineVariable({
+  name: "org-agenda-use-time-grid",
+  doc: "Whether today's agenda draws a time grid among the entries with times, as org-agenda-time-grid says.",
+  value: true,
+});
+e8.defineVariable({
+  name: "org-agenda-time-grid",
+  doc: "The time grid: when it is drawn, its times as HHMM, the string after a time, and the line drawn.",
+  value: [["daily", "today", "require-timed"], [800, 1000, 1200, 1400, 1600, 1800, 2000], "......", "----------------"],
+});
+e8.defineVariable({
+  name: "org-agenda-show-current-time-in-grid",
+  doc: "Whether the time grid shows the time now, as org-agenda-current-time-string.",
+  value: true,
+});
+e8.defineVariable({
+  name: "org-agenda-current-time-string",
+  doc: "What the time grid's line for the time now says.",
+  value: "now - - - - - - - - - - - - - - - - - - - - - - - - -",
+});
+e8.defineVariable({
+  name: "org-scheduled-delay-days",
+  doc: "How many days after its date a scheduled entry waits to show, unless its timestamp says, as -2d does; less than 0 applies whatever it says.",
+  value: 0,
 });
 
 const AGENDA = "*Org Agenda*";
@@ -94,6 +120,8 @@ interface AgendaItem {
   cat: string;
   leader: string;
   removeTimestamp: boolean;
+  /** Its time of day as the line shows it, " 9:30......" or "10:00-11:30", and in minutes, for sorting. */
+  time?: { field: string; minutes: number };
   /** The habit a scheduled line is, whose graph the line shows. */
   habit?: Habit;
   /** Markers at `pos` and `heading`, once the agenda shows the line, so they follow edits there. */
@@ -110,14 +138,52 @@ function headingOf(item: AgendaItem): number {
   return (item.marks && e8.markerPosition(item.marks.heading)) ?? item.heading;
 }
 
-/** The buffer's category, as org-get-category gives it: #+CATEGORY, or the file's name. */
+/** The buffer's category, as org-refresh-category-properties sets it: the last #+CATEGORY, or the file's name. */
 function category(): string {
-  for (let l = 0; l < e8.lineCount(); l++) {
-    const m = /^#\+CATEGORY:[ \t]*(\S.*?)[ \t]*$/i.exec(e8.lineText(l));
+  for (let l = e8.lineCount() - 1; l >= 0; l--) {
+    const m = /^[ \t]*#\+CATEGORY:[ \t]*(\S.*?)[ \t]*$/i.exec(e8.lineText(l));
     if (m) return m[1];
   }
   const file = e8.bufferFileName();
   return file ? (file.split("/").pop() ?? file).replace(/\.[^.]*$/, "") : "???";
+}
+
+/** The string after a time on the grid and on entries, as org-agenda-time-grid's third element. */
+function gridDots(): string {
+  const grid = e8.variable("org-agenda-time-grid");
+  return Array.isArray(grid) && typeof grid[2] === "string" ? grid[2] : "......";
+}
+
+/** A time of day as the agenda writes it: hours padded to two, as " 9:30". */
+const clockTime = (h: number, m: number): string => `${String(h).padStart(2)}:${String(m).padStart(2, "0")}`;
+
+/**
+ * A timestamp's time of day as an agenda line shows it, as
+ * org-agenda-format-item does: " 9:30......", or a range "10:00-11:30".
+ */
+function timeOf(ts: string): AgendaItem["time"] {
+  const m = /^[<[]\d{4}-\d{2}-\d{2}[^>\]\n]*? (\d{1,2}):(\d{2})(?:-(\d{1,2}):(\d{2}))?/.exec(ts);
+  if (m === null) return undefined;
+  const [h, min] = [Number(m[1]), Number(m[2])];
+  const field = m[3] === undefined ? clockTime(h, min) + gridDots() : `${clockTime(h, min)}-${Number(m[3])}:${m[4]}`;
+  return { field, minutes: h * 60 + min };
+}
+
+/**
+ * Each heading's category, as org-refresh-category-properties sets them: a
+ * CATEGORY property in its drawer, or its nearest ancestor's, or the
+ * buffer's.
+ */
+function categories(all: Heading[]): string[] {
+  const base = category();
+  const stack: { level: number; cat: string }[] = [];
+  return all.map((h) => {
+    while (stack.length > 0 && stack[stack.length - 1].level >= h.level) stack.pop();
+    const own = entryGet(h.line, "CATEGORY");
+    const cat = own !== undefined && own !== "" ? own : (stack[stack.length - 1]?.cat ?? base);
+    stack.push({ level: h.level, cat });
+    return cat;
+  });
 }
 
 /**
@@ -161,11 +227,11 @@ function displayedTags(h: Heading): string {
   return `:${inherited.join(":")}:${h.tags.length === 0 ? ":" : `:${h.tags.join(":")}:`}`;
 }
 
-function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: boolean): string {
+function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: boolean, time?: AgendaItem["time"]): string {
   let text = e8.lineText(h.line).replace(/^\*+[ \t]+/, "");
   if (h.tagsAt !== undefined) text = text.slice(0, text.length - (e8.lineEnd(h.line) - h.tagsAt) - 0).replace(/[ \t]+$/, "");
   if (removeTimestamp) text = text.replace(/<\d{4}-\d{2}-\d{2}[^>\n]*>/, "");
-  const line = `  ${`${cat}:`.padEnd(12)}${leader === "" ? "" : `${leader} `}${text}`;
+  const line = `  ${`${cat}:`.padEnd(12)}${time === undefined ? "" : `${time.field.padEnd(11)} `}${leader === "" ? "" : `${leader} `}${text}`;
   const tags = displayedTags(h);
   if (tags === "") return line;
   const width = (e8.windowSize()?.width ?? 80) - 1;
@@ -181,13 +247,35 @@ function agendaBuffers(): string[] {
   return (files as string[]).map((file) => e8.findFileNoselect(e8.expandFileName(String(file), typeof dir === "string" ? e8.expandFileName(dir) : undefined)));
 }
 
+/**
+ * How many days before a deadline it is warned of, or after a scheduled date
+ * the entry waits, as org-get-wdays: a negative or, for deadlines, zero
+ * variable applies whatever the timestamp says, else its own -Nd, -Nw, -Nm
+ * or -Ny, else the variable.
+ */
+function wdays(ts: string, delay: boolean): number {
+  const tv = Number(e8.variable(delay ? "org-scheduled-delay-days" : "org-deadline-warning-days") ?? (delay ? 0 : 14));
+  if ((delay && tv < 0) || (!delay && tv <= 0)) return -tv;
+  const m = /-([0-9]+)([hdwmy])(?=$|>| )/.exec(ts);
+  if (m === null) return tv;
+  const unit: Record<string, number> = { d: 1, w: 7, m: 30.4, y: 365.25, h: 0.041667 };
+  return Math.floor(Number(m[1]) * unit[m[2]]);
+}
+
 /** A heading's planning timestamps: when it is scheduled and due, and where those timestamps are. */
 function planningOf(h: Heading): {
   scheduled?: number;
   deadline?: number;
   scheduledRepeat?: [number, string];
+  deadlineRepeat?: [number, string];
   scheduledAt?: number;
   deadlineAt?: number;
+  scheduledText?: string;
+  deadlineText?: string;
+  /** Days before a deadline its warning starts, as org-get-wdays gives them. */
+  warning?: number;
+  /** Days after its date a scheduled entry waits to show, as org-get-wdays gives them with DELAY. */
+  delay?: number;
 } {
   const line = h.line + 1;
   if (line >= e8.lineCount() || !PLANNING.test(e8.lineText(line))) return {};
@@ -198,11 +286,16 @@ function planningOf(h: Heading): {
   const st = s && activeTimestamp(s[1]);
   if (s && st) {
     [out.scheduled, out.scheduledRepeat] = [st.day, st.repeat];
+    out.delay = wdays(s[1], true);
+    out.scheduledText = s[1];
     out.scheduledAt = at(line, text, (s.index ?? 0) + s[0].length - s[1].length);
   }
   const dt = d && activeTimestamp(d[1]);
   if (d && dt) {
     out.deadline = dt.day;
+    out.deadlineRepeat = dt.repeat;
+    out.warning = wdays(d[1], false);
+    out.deadlineText = d[1];
     out.deadlineAt = at(line, text, (d.index ?? 0) + d[0].length - d[1].length);
   }
   return out;
@@ -215,51 +308,91 @@ interface Scanned {
   plan: ReturnType<typeof planningOf>;
   priority: number;
   /** The entry's active timestamps but its planning line's, in order: where each is, and whether it is in the heading. */
-  stamps: { ts: { day: number; repeat?: [number, string] }; pos: number; inHeading: boolean }[];
+  stamps: { ts: { day: number; repeat?: [number, string] }; pos: number; inHeading: boolean; text: string }[];
+  /** The entry's date ranges, <a>--<b>: their first and last days, the timestamps at either end, and where they are. */
+  ranges: { first: number; last: number; from: string; to: string; pos: number }[];
   habit?: Habit;
+  /** Its category, as org-get-category gives it at the heading. */
+  cat: string;
 }
+
+/** Runs `f` with the current buffer widened, as Org's agenda reads and edits files whole, however they are narrowed. */
+const widened = <T>(f: () => T): T =>
+  e8.saveRestriction(() => {
+    e8.widen();
+    return f();
+  });
+
+/** A date range, <a>--<b>, as org-tr-regexp matches one. */
+const RANGE = /(<\d{4}-\d{2}-\d{2}[^>\n]*>)--(<\d{4}-\d{2}-\d{2}[^>\n]*>)/g;
 
 /** The current buffer's headings as the agenda reads them, and its category. */
 function scanBuffer(): { cat: string; entries: Scanned[] } {
   const all = headings();
+  const cats = categories(all);
   const stamp = /<\d{4}-\d{2}-\d{2}[^>\n]*>/g;
   const entries = all.map((h, i): Scanned => {
     const stamps: Scanned["stamps"] = [];
+    const ranges: Scanned["ranges"] = [];
     const end = entryEnd(all, i);
     for (let l = h.line; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
       if (l === h.line + 1 && PLANNING.test(e8.lineText(l))) continue;
       const text = e8.lineText(l);
       if (!text.includes("<")) continue;
+      // A range's ends belong to the range, which shows on every day of it, as org-agenda-get-blocks has it.
+      const inRange: [number, number][] = [];
+      for (const m of allMatches(RANGE, text)) {
+        const [a, b] = [activeTimestamp(m[1]), activeTimestamp(m[2])];
+        if (a === undefined || b === undefined) continue;
+        inRange.push([m.index, m.index + m[0].length]);
+        ranges.push({ first: a.day, last: b.day, from: m[1], to: m[2], pos: at(l, text, m.index) });
+      }
       for (const m of allMatches(stamp, text)) {
+        if (inRange.some(([a, b]) => m.index >= a && m.index < b)) continue;
         const ts = activeTimestamp(m[0]);
-        if (ts) stamps.push({ ts, pos: at(l, text, m.index), inHeading: l === h.line });
+        if (ts) stamps.push({ ts, pos: at(l, text, m.index), inHeading: l === h.line, text: m[0] });
       }
     }
     const plan = planningOf(h);
     // Only a scheduled entry can be a habit, so only those have their properties read.
     const habit = plan.scheduled !== undefined ? parseHabit(h) : undefined;
-    return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ...(habit ? { habit } : {}) };
+    return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ranges, cat: cats[i], ...(habit ? { habit } : {}) };
   });
   return { cat: category(), entries };
 }
 
 /** The items for a day from the current buffer, scanned once, as org-agenda-get-day-entries collects them. */
 function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today: number, buffer: string): AgendaItem[] {
-  const cat = scan.cat;
-  const warning = Number(e8.variable("org-deadline-warning-days") ?? 14);
   const deadlines: AgendaItem[] = [];
   const scheduled: AgendaItem[] = [];
   const stamps: AgendaItem[] = [];
-  for (const { h, done, plan, priority, stamps: found, habit } of scan.entries) {
+  const blocks: AgendaItem[] = [];
+  for (const { h, done, plan, priority, stamps: found, ranges, habit, cat } of scan.entries) {
+    // Each day of a range, numbered, with the time it starts on its first
+    // day and ends on its last, as org-agenda-get-blocks has them.
+    for (const r of ranges) {
+      if (day < r.first || day > r.last) continue;
+      const leader = r.first === r.last ? "" : `(${day - r.first + 1}/${r.last - r.first + 1}): `;
+      const [from, to] = [timeOf(r.from), timeOf(r.to)];
+      const time = r.first === day && r.last === day && from && to
+        ? { field: `${from.field.replace(gridDots(), "")}-${to.field.replace(gridDots(), "").trim()}`, minutes: from.minutes }
+        : r.first === day ? from : r.last === day ? to : undefined;
+      const item = { cat, leader, removeTimestamp: false, buffer, pos: r.pos, heading: h.start, ...(time ? { time } : {}) };
+      blocks.push({ ...item, text: agendaLine(h, cat, leader, false, time), urgency: priority });
+    }
     if (plan.deadline !== undefined) {
       const diff = plan.deadline - day;
       let leader: string | undefined;
-      if (diff === 0) leader = "Deadline:  ";
-      else if (day === today && !done && diff > 0 && diff <= warning) leader = `In ${String(diff).padStart(3)} d.: `;
+      // Its date, and after today each of its repeats, as org-agenda-show-future-repeats has it.
+      const repeatDay = day > today && !done && plan.deadlineRepeat !== undefined && occursOn({ day: plan.deadline, repeat: plan.deadlineRepeat }, day);
+      if (diff === 0 || repeatDay) leader = "Deadline:  ";
+      else if (day === today && !done && diff > 0 && diff <= (plan.warning ?? 14)) leader = `In ${String(diff).padStart(3)} d.: `;
       else if (day === today && !done && diff < 0) leader = `${String(-diff).padStart(2)} d. ago: `;
       if (leader !== undefined) {
-        const item = { cat, leader, removeTimestamp: false, buffer, pos: plan.deadlineAt ?? h.start, heading: h.start };
-        deadlines.push({ ...item, text: agendaLine(h, cat, leader, false), urgency: priority - (day === today ? diff : 0) });
+        // Its time shows on its date and its repeats, not in a warning.
+        const time = (diff === 0 || repeatDay) && plan.deadlineText !== undefined ? timeOf(plan.deadlineText) : undefined;
+        const item = { cat, leader, removeTimestamp: false, buffer, pos: plan.deadlineAt ?? h.start, heading: h.start, ...(time ? { time } : {}) };
+        deadlines.push({ ...item, text: agendaLine(h, cat, leader, false, time), urgency: priority - (day === today ? diff : 0) });
       }
     }
     if (plan.scheduled !== undefined) {
@@ -268,34 +401,46 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       const ts = { day: plan.scheduled, repeat: plan.scheduledRepeat };
       const diff = day - plan.scheduled;
       const onDay = day === plan.scheduled || (day > today && occursOn(ts, day));
-      const past = day === today && plan.scheduled < today && !done;
+      // A delay keeps it out of the agenda until that many days after its date.
+      const delay = plan.delay ?? 0;
+      const past = day === today && plan.scheduled < today && !done && !(delay > 0 && today - plan.scheduled < delay);
       // A habit shows only today, as org-habit-show-habits-only-for-today says.
       const hidden = habit !== undefined && (done || e8.variable("org-habit-show-habits") !== true ||
         (e8.variable("org-habit-show-habits-only-for-today") === true && day !== today));
-      if (((onDay && !(done && plan.scheduled !== day)) || past) && !hidden) {
+      const delayed = delay > 0 && diff < delay;
+      if (((onDay && !(done && plan.scheduled !== day) && !delayed) || past) && !hidden) {
         // A habit has no leader, its graph saying when it is due, and is as urgent as org-habit-get-urgency says.
         const leader = habit !== undefined ? "" : past ? `Sched.${String(diff).padStart(2)}x: ` : "Scheduled: ";
-        const item = { cat, leader, removeTimestamp: false, buffer, pos: plan.scheduledAt ?? h.start, heading: h.start };
+        const time = !past && plan.scheduledText !== undefined ? timeOf(plan.scheduledText) : undefined;
+        const item = { cat, leader, removeTimestamp: false, buffer, pos: plan.scheduledAt ?? h.start, heading: h.start, ...(time ? { time } : {}) };
         const urgency = habit !== undefined ? habitUrgency(habit, today) : 99 + (past ? diff : 0) + priority;
-        scheduled.push({ ...item, text: agendaLine(h, cat, leader, false), urgency, ...(habit ? { habit } : {}) });
+        scheduled.push({ ...item, text: agendaLine(h, cat, leader, false, time), urgency, ...(habit ? { habit } : {}) });
       }
     }
     // The first active timestamp in the heading and its entry on the day.
     const stamp = found.find((s) => occursOn(s.ts, day));
     if (stamp) {
-      const item = { cat, leader: "", removeTimestamp: stamp.inHeading, buffer, pos: stamp.pos, heading: h.start };
-      stamps.push({ ...item, text: agendaLine(h, cat, "", stamp.inHeading), urgency: priority });
+      const time = timeOf(stamp.text);
+      const item = { cat, leader: "", removeTimestamp: stamp.inHeading, buffer, pos: stamp.pos, heading: h.start, ...(time ? { time } : {}) };
+      stamps.push({ ...item, text: agendaLine(h, cat, "", stamp.inHeading, time), urgency: priority });
     }
   }
-  return [...deadlines, ...scheduled, ...stamps];
+  return [...deadlines, ...scheduled, ...blocks, ...stamps];
 }
 
-/** Sorts a day's items with habits last, as org-agenda-sorting-strategy's habit-down, then by urgency, most urgent first, keeping their order otherwise. */
+/**
+ * Sorts a day's items as org-agenda-sorting-strategy's habit-down time-up
+ * urgency-down: habits last, then those with a time, earliest first, before
+ * those without, then by urgency, most urgent first, keeping their order
+ * otherwise.
+ */
 function byUrgency(items: AgendaItem[]): AgendaItem[] {
   const habit = (i: AgendaItem) => (i.habit !== undefined ? 1 : 0);
+  // Without a time is late, as org-agenda-sort-notime-is-late has it.
+  const time = (i: AgendaItem) => i.time?.minutes ?? 24 * 60;
   return items
     .map((item, k) => ({ item, k }))
-    .sort((a, b) => habit(a.item) - habit(b.item) || b.item.urgency - a.item.urgency || a.k - b.k)
+    .sort((a, b) => habit(a.item) - habit(b.item) || time(a.item) - time(b.item) || b.item.urgency - a.item.urgency || a.k - b.k)
     .map((x) => x.item);
 }
 
@@ -335,7 +480,7 @@ function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: num
   e8.getBufferCreate(AGENDA);
   e8.withCurrentBuffer(AGENDA, () => {
     e8.setReadOnly(false);
-    e8.deleteRegion(0, e8.bufferSize());
+    eraseBuffer();
     e8.insert(lines.map((l) => l.text).join("\n") + "\n");
     insertHabitGraphs(lines);
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.call("org-agenda-mode");
@@ -395,7 +540,7 @@ function weekAgenda(start: number): void {
   const lines: { text: string; item?: AgendaItem }[] = [{ text: `Week-agenda (W${String(isoWeekOf(start)).padStart(2, "0")}):` }];
   let pointLine = 0;
   // Each file read once for the week, not once a day.
-  const scans = new Map(buffers.map((buffer) => [buffer, e8.withCurrentBuffer(buffer, scanBuffer)]));
+  const scans = new Map(buffers.map((buffer) => [buffer, e8.withCurrentBuffer(buffer, () => widened(scanBuffer))]));
   for (let day = start; day < start + 7; day++) {
     const d = dayFromNumber(day);
     const wd = new Date(day * 86400000).getUTCDay();
@@ -404,10 +549,45 @@ function weekAgenda(start: number): void {
     lines.push({ text: `${AGENDA_DAYS[wd].padEnd(10)} ${String(d.day).padStart(2)} ${AGENDA_MONTHS[d.month - 1]} ${d.year}${week}` });
     const items: AgendaItem[] = [];
     for (const buffer of buffers) items.push(...e8.withCurrentBuffer(buffer, () => dayItems(scans.get(buffer)!, day, today, buffer)));
-    for (const item of byUrgency(items)) lines.push({ text: item.text, item });
+    const sorted = byUrgency(items);
+    const grid = day === today ? timeGrid(sorted) : [];
+    // Each grid line after the entries at its time or earlier, as a stable sort puts it.
+    for (const item of sorted) {
+      while (grid.length > 0 && item.time !== undefined && grid[0].minutes < item.time.minutes) lines.push({ text: grid.shift()!.text });
+      if (item.time === undefined) while (grid.length > 0) lines.push({ text: grid.shift()!.text });
+      lines.push({ text: item.text, item });
+    }
+    for (const g of grid) lines.push({ text: g.text });
   }
   agendaView = { kind: "week", start };
   showAgenda(lines, pointLine);
+}
+
+/**
+ * Today's time grid, as org-agenda-add-time-grid-maybe draws it with the
+ * default org-agenda-time-grid: a line at each of its times, and one for
+ * the time now, when the day has entries with times.
+ */
+function timeGrid(items: AgendaItem[]): { text: string; minutes: number }[] {
+  if (e8.variable("org-agenda-use-time-grid") === null || e8.variable("org-agenda-use-time-grid") === false) return [];
+  const spec = e8.variable("org-agenda-time-grid");
+  const [when, times, , rule] = Array.isArray(spec) ? spec : [];
+  const conditions = Array.isArray(when) ? when.map(String) : [];
+  if (conditions.includes("require-timed") && !items.some((i) => i.time !== undefined)) return [];
+  const blank = " ".repeat(14);
+  const out: { text: string; minutes: number }[] = (Array.isArray(times) ? times : []).map((t) => {
+    const [h, m] = [Math.floor(Number(t) / 100), Number(t) % 100];
+    return { text: `${blank}${clockTime(h, m)}${gridDots()} ${typeof rule === "string" ? rule : "----------------"}`, minutes: h * 60 + m };
+  });
+  const showNow = e8.variable("org-agenda-show-current-time-in-grid");
+  if (showNow !== null && showNow !== false) {
+    const now = today(true);
+    const minutes = (now.hour ?? 0) * 60 + (now.minute ?? 0);
+    const text = `${blank}${clockTime(now.hour ?? 0, now.minute ?? 0)}${gridDots()} ${String(e8.variable("org-agenda-current-time-string") ?? "")}`;
+    const at = out.findIndex((g) => g.minutes > minutes);
+    out.splice(at === -1 ? out.length : at, 0, { text, minutes });
+  }
+  return out;
 }
 
 /** Today, as the agenda counts it. */
@@ -426,15 +606,17 @@ function todoList(): void {
   const items: AgendaItem[] = [];
   const keywords = new Set<string>();
   for (const buffer of buffers) {
-    e8.withCurrentBuffer(buffer, () => {
-      const cat = category();
+    e8.withCurrentBuffer(buffer, () => widened(() => {
       for (const k of allKeywords()) keywords.add(k);
-      for (const h of headings()) {
+      const all = headings();
+      const cats = categories(all);
+      for (const [i, h] of all.entries()) {
         if (h.todo === undefined || isDone(h.todo)) continue;
+        const cat = cats[i];
         const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
         items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: 1 + priorityValue(h) });
       }
-    });
+    }));
   }
   const sorted = [...keywords].sort();
   const lines: { text: string; item?: AgendaItem }[] = [
@@ -496,7 +678,7 @@ function agendaDispatch(): string {
     e8.call("switch-to-buffer-other-window", name);
     try {
       e8.letBind({ "inhibit-read-only": true }, () => {
-        e8.deleteRegion(0, e8.bufferSize());
+        eraseBuffer();
         e8.insert(DISPATCH_HEADER);
         // The keys in bold, as Org shows them.
         const text = DISPATCH_HEADER;
@@ -523,10 +705,10 @@ function redrawEntry(item: AgendaItem): void {
     const point = e8.point();
     for (const [l, other] of agendaLines.entries()) {
       if (!other || other.buffer !== item.buffer || headingOf(other) !== heading) continue;
-      const text = e8.withCurrentBuffer(item.buffer, () => {
+      const text = e8.withCurrentBuffer(item.buffer, () => widened(() => {
         const h = headings().find((x) => x.start === heading);
-        return h ? agendaLine(h, other.cat, other.leader, other.removeTimestamp) : other.text;
-      });
+        return h ? agendaLine(h, other.cat, other.leader, other.removeTimestamp, other.time) : other.text;
+      }));
       other.text = text;
       e8.deleteRegion(e8.lineStart(l), e8.lineEnd(l));
       e8.gotoChar(e8.lineStart(l));
@@ -544,11 +726,11 @@ function redrawEntry(item: AgendaItem): void {
 function atEntry(command: e8.CommandName, interactive = true): void {
   const item = agendaItemHere();
   e8.withCurrentBuffer(item.buffer, () => {
-    e8.saveExcursion(() => {
+    e8.saveExcursion(() => widened(() => {
       e8.gotoChar(headingOf(item));
       if (interactive) e8.callInteractively(command);
       else e8.call(command);
-    });
+    }));
   });
   redrawEntry(item);
 }
@@ -589,6 +771,8 @@ const agendaSwitchTo = e8.defineCommand({
   run: () => {
     const item = agendaItemHere();
     e8.call("switch-to-buffer", item.buffer);
+    // The whole file, as org-agenda-switch-to widens before going there.
+    e8.widen();
     e8.gotoChar(posOf(item));
   },
 });
@@ -599,6 +783,7 @@ const agendaGoto = e8.defineCommand({
   run: () => {
     const item = agendaItemHere();
     e8.call("pop-to-buffer", item.buffer);
+    e8.widen();
     e8.pushMark(e8.point());
     e8.gotoChar(posOf(item));
     // At the heading's title, as org-agenda-goto leaves it.
@@ -613,10 +798,10 @@ const agendaTodo = e8.defineCommand({
   doc: "Change the TODO state of the entry the agenda line at point shows, as C-c C-t does there.",
   run: () => {
     const item = agendaItemHere();
-    e8.withCurrentBuffer(item.buffer, () => {
+    e8.withCurrentBuffer(item.buffer, () => widened(() => {
       e8.gotoChar(headingOf(item));
       e8.callWithPrefix(e8.prefixArg(), "org-todo");
-    });
+    }));
     redrawEntry(item);
   },
 });

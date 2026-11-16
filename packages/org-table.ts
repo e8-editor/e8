@@ -193,8 +193,21 @@ export function markAligned(line = lineAt()): void {
 }
 
 /** Pads a field to a width, as org-table--align-field does. */
+/**
+ * How wide a field shows, as org-string-width measures it: a bracket link
+ * as its description, or its link without one, while org-link-descriptive
+ * hides the rest.
+ */
+function shownWidth(field: string): number {
+  const descriptive = e8.variable("org-link-descriptive");
+  const shown = descriptive === false || descriptive === null
+    ? field
+    : field.replace(/\[\[((?:[^\]\\]|\\.)+)\](?:\[([^\]]+)\])?\]/g, (_m, link: string, desc?: string) => desc ?? link);
+  return e8.stringWidth(shown);
+}
+
 function alignField(field: string, width: number, align: string): string {
-  const spaces = width - e8.stringWidth(field);
+  const spaces = width - shownWidth(field);
   const prefix = align === "r" ? " ".repeat(spaces) : align === "c" ? " ".repeat(Math.floor(spaces / 2)) : "";
   return ` ${prefix}${field}${" ".repeat(spaces - prefix.length)} `;
 }
@@ -230,7 +243,7 @@ function align(): void {
         let nonEmpty = 0;
         for (const row of rows) {
           const cell = row[i] ?? "";
-          width = Math.max(width, e8.stringWidth(cell));
+          width = Math.max(width, shownWidth(cell));
           if (fixed !== undefined || cell === "") continue;
           const cookie = /^<([lrc])[0-9]*>$/.exec(cell);
           if (cookie) fixed = cookie[1];
@@ -254,7 +267,8 @@ function align(): void {
       if (updated !== previous) {
         const bol = e8.lineStart(line);
         edInsert(bol, `${updated}\n`);
-        edDelete(bol + charCount(updated) + 1, lineStartOrEnd(line + 2));
+        // The next line's start, or the narrowing's end, as line-beginning-position stops there.
+        edDelete(bol + charCount(updated) + 1, Math.min(lineStartOrEnd(line + 2), e8.pointMax()));
       }
       line++;
     }
@@ -323,7 +337,7 @@ function findDataline(): void {
 
 function insertRow(below: boolean): void {
   tableHere();
-  if (e8.point() === e8.bufferSize()) saveExcursion(() => edInsert(e8.point(), "\n"));
+  if (e8.point() === e8.pointMax()) saveExcursion(() => edInsert(e8.point(), "\n"));
   if (!/\|[ \t]*$/.test(e8.lineText(lineAt()))) align();
   const line = e8.lineText(lineAt());
   let fresh = cleanLine(line);
@@ -653,7 +667,7 @@ function moveRow(up: boolean): void {
   const pos = e8.point();
   if (up && e8.lineStart(lineAt()) === 0) e8.userError("Cannot move row further");
   forwardLine(up ? -1 : 1);
-  if ((!up && e8.point() === e8.bufferSize()) || !atTable()) {
+  if ((!up && e8.point() === e8.pointMax()) || !atTable()) {
     e8.gotoChar(pos);
     e8.userError("Cannot move row further");
   }
@@ -712,7 +726,7 @@ e8.defineCommand({
   doc: "Insert an empty column to the left of the one at point.",
   run: () => {
     tableHere();
-    if (e8.point() === e8.bufferSize()) saveExcursion(() => edInsert(e8.point(), "\n"));
+    if (e8.point() === e8.pointMax()) saveExcursion(() => edInsert(e8.point(), "\n"));
     if (!/\|[ \t]*$/.test(e8.lineText(lineAt()))) align();
     findDataline();
     const col = Math.max(1, currentColumn());
@@ -764,7 +778,7 @@ e8.defineCommand({
   run: () => {
     tableHere();
     const above = e8.prefixArg() !== null;
-    if (e8.point() === e8.bufferSize()) saveExcursion(() => edInsert(e8.point(), "\n"));
+    if (e8.point() === e8.pointMax()) saveExcursion(() => edInsert(e8.point(), "\n"));
     if (!/\|[ \t]*$/.test(e8.lineText(lineAt()))) align();
     let rule = cleanLine(e8.lineText(lineAt()));
     const col = currentColumnOfPoint();

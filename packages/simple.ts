@@ -1,4 +1,4 @@
-import { allMatches, defineGlobalizedMinorMode, forwardLine } from "subr";
+import { allMatches, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine } from "subr";
 // Basic editing commands that Emacs writes in Lisp, after its simple.el.
 // E8 loads this file at startup, before init.ts.
 
@@ -216,8 +216,22 @@ const overwriteMode = e8.defineMinorMode({
   doc:
     "Replace text rather than insert it: each typed character replaces the one after point.\n\n" +
     "At the end of a line, characters are inserted as usual.",
+  onChange: (on) => {
+    if (on && e8.variable("binary-overwrite-mode") === true) e8.callWithPrefix(-1, "binary-overwrite-mode");
+  },
 });
 e8.bindKey("<insert>", overwriteMode);
+
+e8.defineMinorMode({
+  name: "binary-overwrite-mode",
+  lighter: " Bin Ovwrt",
+  doc:
+    "Replace text rather than insert it, character for character: each typed character replaces the one after point, " +
+    "even a newline or a tab, and C-q reads a character's octal code, as binary-overwrite-mode does.",
+  onChange: (on) => {
+    if (on && e8.variable("overwrite-mode") === true) e8.callWithPrefix(-1, "overwrite-mode");
+  },
+});
 
 // Long lines, after simple.el: toggle-truncate-lines, and visual-line-mode
 // with commands that move by screen lines.
@@ -347,7 +361,8 @@ function transposeRegions(pos1: [number, number], pos2: [number, number]): void 
     e8.gotoChar(at);
     if (beforeMarkers) e8.insertBeforeMarkers(text);
     else e8.insert(text);
-    for (const m of markers) if (m.pos > at || (beforeMarkers && m.pos === at)) m.pos += text.length;
+    // Positions count characters, not the UTF-16 units of length.
+    for (const m of markers) if (m.pos > at || (beforeMarkers && m.pos === at)) m.pos += charCount(text);
   };
   const remove = (from: number, to: number): string => {
     const text = e8.deleteRegion(from, to);
@@ -441,11 +456,11 @@ function forwardChar(n: number): void {
   const to = e8.point() + n;
   if (to < e8.pointMin()) {
     e8.gotoChar(e8.pointMin());
-    throw new Error("Beginning of buffer");
+    e8.signal("beginning-of-buffer", "Beginning of buffer");
   }
   if (to > e8.pointMax()) {
     e8.gotoChar(e8.pointMax());
-    throw new Error("End of buffer");
+    e8.signal("end-of-buffer", "End of buffer");
   }
   e8.gotoChar(to);
 }
@@ -680,7 +695,7 @@ function showOutput(output: string, exit: number): void {
   e8.getBufferCreate(name);
   e8.withCurrentBuffer(name, () => {
     e8.letBind({ "inhibit-read-only": true }, () => {
-      e8.deleteRegion(0, e8.bufferSize());
+      eraseBuffer();
       e8.insert(output);
     });
     e8.gotoChar(0);
@@ -939,16 +954,39 @@ e8.defineCommand({
     "A fill prefix at the start of the joined line is deleted too.",
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => {
-    if (arg !== null) forwardLine(1);
-    // The line's own start, a prompt or not, as Emacs's forward-line 0.
-    e8.gotoChar(e8.posBol());
-    if (e8.point() <= e8.pointMin()) return;
-    const prefix = e8.variable("fill-prefix");
-    e8.deleteRegion(e8.point() - 1, e8.point());
-    if (typeof prefix === "string" && prefix !== "" && e8.bufferSubstringNoProperties(e8.point(), Math.min(e8.pointMax(), e8.point() + prefix.length)) === prefix) {
-      e8.deleteRegion(e8.point(), e8.point() + prefix.length);
+    // With the region active, as use-region-p says, and no argument, every
+    // line in the region joins the first.
+    const mark = e8.mark();
+    const region = arg === null && e8.regionActive() && mark !== undefined && mark !== e8.point();
+    // Deactivated even when no text changes, as Emacs sets deactivate-mark.
+    e8.deactivateMark();
+    let beg: number;
+    if (region) {
+      beg = Math.min(mark as number, e8.point());
+      const end = Math.max(mark as number, e8.point());
+      e8.gotoChar(beg);
+      if (end > e8.lineEndPosition()) e8.gotoChar(end);
+    } else {
+      // A sentinel below the line that joins last, so the loop stops at it:
+      // the next line's start with an argument, or the end of the buffer.
+      const start = arg === null
+        ? e8.posBol()
+        : e8.saveExcursion(() => {
+            forwardLine(1);
+            return e8.point() === e8.lineBeginningPosition(e8.point()) ? e8.point() : e8.pointMax();
+          });
+      beg = start - 1;
+      if (arg !== null) forwardLine(1);
     }
-    e8.call("fixup-whitespace");
+    const prefix = e8.variable("fill-prefix");
+    // The line's own start, a prompt or not, as Emacs's forward-line 0.
+    while (e8.posBol() > beg && (e8.gotoChar(e8.posBol()), e8.point() > e8.pointMin()) && e8.precedingChar() === 10) {
+      e8.deleteRegion(e8.point() - 1, e8.point());
+      if (typeof prefix === "string" && prefix !== "" && e8.bufferSubstringNoProperties(e8.point(), Math.min(e8.pointMax(), e8.point() + prefix.length)) === prefix) {
+        e8.deleteRegion(e8.point(), e8.point() + prefix.length);
+      }
+      e8.call("fixup-whitespace");
+    }
   },
 });
 e8.bindKey("M-^", "delete-indentation");
@@ -998,7 +1036,8 @@ e8.defineCommand({
     "where empty lines at the end go too, as delete-trailing-lines says. Form feeds stay.",
   run: () => {
     const mark = e8.mark();
-    const [start, end] = e8.regionActive() && mark !== undefined ? [Math.min(mark, e8.point()), Math.max(mark, e8.point())] : [undefined, undefined];
+    // An empty region is none, as use-region-p says.
+    const [start, end] = e8.regionActive() && mark !== undefined && mark !== e8.point() ? [Math.min(mark, e8.point()), Math.max(mark, e8.point())] : [undefined, undefined];
     e8.saveExcursion(() => {
       const endMarker = end === undefined ? undefined : e8.makeMarker(end);
       e8.gotoChar(start ?? e8.pointMin());
@@ -1079,6 +1118,11 @@ function zap(arg: number, char: string, upTo: boolean): void {
   // Read interactively, an upper-case letter searches exactly.
   const fold = char.toLowerCase() !== char ? false : undefined;
   const p = e8.point();
+  // A count of 0 searches nowhere, as search-forward's, and kills nothing.
+  if (arg === 0) {
+    e8.killRegion(p, p);
+    return;
+  }
   if (!upTo) {
     const m = e8.search(char, { backward: arg < 0, caseFold: fold });
     let found = m;
@@ -1147,11 +1191,13 @@ e8.defineCommand({
   name: "goto-line",
   doc:
     "Go to a line, counting from 1 at the start of the buffer: the prefix argument's, else one asked for, " +
-    "the number at point by default.\n\nThe mark is pushed first, unless the region is active. In a narrowed " +
+    "the number at point by default. With plain C-u, the line is in the buffer shown before, in another window.\n\nThe mark is pushed first, unless the region is active. In a narrowed " +
     "buffer, a line outside it widens the buffer, as widen-automatically says.",
   params: [{ name: "arg", kind: "prefix" }],
   run: async (arg: e8.PrefixArg) => {
     let line: number;
+    // Plain C-u goes to the line in the buffer shown before, as other-buffer gives it.
+    const buffer = Array.isArray(arg) ? e8.bufferList().find((n) => n !== e8.bufferName() && !n.startsWith(" ")) : undefined;
     if (arg !== null && !Array.isArray(arg)) {
       line = e8.prefixNumericValue(arg);
     } else {
@@ -1163,9 +1209,14 @@ e8.defineCommand({
         return lineNumberAtPos();
       });
       const shown = def ?? here;
-      const answer = await e8.readString(`Goto${narrowed ? " absolute" : ""} line (default ${shown}): `, { history: "goto-line-history" });
+      const answer = await e8.readString(`Goto${narrowed ? " absolute" : ""} line${buffer !== undefined ? ` in ${buffer}` : ""} (default ${shown}): `, { history: "goto-line-history" });
       line = answer.trim() === "" ? shown : Number(answer);
       if (!Number.isFinite(line)) e8.userError("Please enter a number.");
+    }
+    if (buffer !== undefined) {
+      const window = e8.windowList().find((w) => e8.windowBuffer(w) === buffer);
+      if (window !== undefined) e8.selectWindow(window);
+      else e8.call("switch-to-buffer-other-window", buffer);
     }
     if (!e8.regionActive()) e8.pushMark(e8.point());
     const pos = e8.saveRestriction(() => {
@@ -1186,7 +1237,8 @@ e8.defineCommand({
   doc: "Go to a position in the buffer, counting characters from 1: the prefix argument's, else one asked for.",
   params: [{ name: "arg", kind: "prefix" }],
   run: async (arg: e8.PrefixArg) => {
-    const pos = arg !== null ? e8.prefixNumericValue(arg) : Number(await e8.readString(`Go to char (default ${e8.point() + 1}): `));
+    // A number, or C--, goes there; plain C-u asks, as goto-char--read-natnum-interactive.
+    const pos = arg !== null && !Array.isArray(arg) ? e8.prefixNumericValue(arg) : Number(await e8.readString(`Go to char (default ${e8.point() + 1}): `));
     e8.gotoChar(Math.max(e8.pointMin(), Math.min(e8.pointMax(), (Number.isFinite(pos) && pos > 0 ? pos : e8.point() + 1) - 1)));
   },
 });
@@ -1283,8 +1335,9 @@ export function countWords(start: number, end: number): number {
           const p = e8.point();
           e8.call("forward-word", 1);
           if (e8.point() === p) break;
-          // forward-word-strictly fails at the end with no word left.
-          if (!/\w/u.test(e8.bufferSubstringNoProperties(p, e8.point()))) break;
+          // forward-word-strictly fails at the end with no word left: a
+          // letter or digit of any script, as \w in JavaScript is ASCII only.
+          if (!/[\p{L}\p{N}]/u.test(e8.bufferSubstringNoProperties(p, e8.point()))) break;
           words++;
         }
         return words;
@@ -1320,7 +1373,8 @@ e8.defineCommand({
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => {
     const mark = e8.mark();
-    const region = e8.regionActive() && mark !== undefined;
+    // An empty region is none, as use-region-p says.
+    const region = e8.regionActive() && mark !== undefined && mark !== e8.point();
     const totals =
       arg !== null && (region || e8.bufferNarrowedP())
         ? e8.saveRestriction(() => {
@@ -1413,7 +1467,7 @@ e8.defineCommand({
     let key = await e8.readEvent();
     let code: number | undefined;
     let char: string | undefined;
-    if (digit(key) !== undefined && e8.variable("overwrite-mode") !== "overwrite-mode-textual") {
+    if (digit(key) !== undefined && e8.variable("overwrite-mode") !== true) {
       code = 0;
       while (digit(key) !== undefined) {
         code = code * radix + digit(key)!;
@@ -1425,6 +1479,8 @@ e8.defineCommand({
       char = keyChar(key);
     }
     if (char === undefined) e8.userError(`${key} is not a valid character`);
+    // Binary overwriting replaces as many characters; textual overwriting inserts, as quoted-insert does.
+    if (arg > 0 && e8.variable("binary-overwrite-mode") === true) e8.call("delete-char", arg);
     for (let i = 0; i < arg; i++) e8.insertAndInherit(char!);
   },
 });
@@ -1641,7 +1697,7 @@ for (const [name, doc, region, word] of [
     params: [{ name: "arg", kind: "prefix" }],
     run: (arg: e8.PrefixArg) => {
       const mark = e8.mark();
-      if (e8.regionActive() && mark !== undefined) e8.call(region, Math.min(mark, e8.point()), Math.max(mark, e8.point()));
+      if (e8.regionActive() && mark !== undefined && mark !== e8.point()) e8.call(region, Math.min(mark, e8.point()), Math.max(mark, e8.point()));
       else e8.callWithPrefix(arg ?? 1, word);
     },
   });
@@ -1686,3 +1742,66 @@ for (const [name, doc, run] of [
 ] as [string, string, (n: any) => void][]) {
   e8.defineCommand({ name, doc, params: [{ name: "n", kind: name.startsWith("scroll") ? "prefix" : "count" }], run });
 }
+
+// --- C-x ESC ESC, as simple.el's repeat-complex-command ----------------------
+
+/** An argument of a form on command-history, the forms for positions found again as call-interactively records them. */
+function commandHistoryArg(arg: e8.Value): e8.Value {
+  if (Array.isArray(arg) && arg.length === 1) {
+    const name = e8.prin1ToString(arg[0], true);
+    if (name === "point") return e8.point();
+    const mark = e8.mark();
+    if (mark === undefined && (name === "mark" || name.startsWith("region-"))) e8.signal("mark-inactive", "The mark is not set now");
+    if (name === "mark") return mark!;
+    if (name === "region-beginning") return Math.min(mark!, e8.point());
+    if (name === "region-end") return Math.max(mark!, e8.point());
+  }
+  return arg;
+}
+
+e8.defineCommand({
+  name: "repeat-complex-command",
+  doc:
+    "Edit and run again a command that read its arguments in the minibuffer, the latest by default, the Nth latest with a prefix argument, " +
+    "as command-history keeps them: the command and its arguments, written as Lisp.",
+  params: [{ name: "arg", kind: "count" }],
+  run: async (arg: number) => {
+    const history = ((e8.variable("command-history") ?? []) as e8.Value[]).filter(Array.isArray);
+    const elt = history[arg - 1];
+    if (elt === undefined) {
+      if (history.length > 0) e8.signal("error", `Argument ${arg} is beyond length of command history`);
+      e8.signal("error", "There are no previous complex commands");
+    }
+    const printed = history.map((form) => e8.prin1ToString(form));
+    e8.setVariable("repeat-complex-command-history", printed);
+    const answer = await e8.readString("Redo: ", { initial: printed[arg - 1], history: "repeat-complex-command-history" });
+    const [form] = e8.readFromString(answer);
+    if (!Array.isArray(form) || form.length === 0) e8.signal("error", `Not a command to run: ${answer}`);
+    const command = e8.prin1ToString(form[0], true);
+    const args = form.slice(1).map(commandHistoryArg);
+    // What was run goes first on the history, unless it is there already.
+    const now = (e8.variable("command-history") ?? []) as e8.Value[];
+    if (now.length === 0 || e8.prin1ToString(now[0]) !== e8.prin1ToString(form)) e8.setVariable("command-history", [form, ...now]);
+    (e8.call as (name: string, ...args: e8.Value[]) => void)(command, ...args);
+  },
+});
+e8.defineVariable({ name: "repeat-complex-command-history", doc: "The forms C-x ESC ESC offers with M-p and M-n, as printed.", value: [] });
+e8.bindKey("C-x M-ESC", "repeat-complex-command");
+e8.bindKey("C-x M-:", "repeat-complex-command");
+
+e8.defineCommand({
+  name: "set-goal-column",
+  doc: "Make the current column the one C-n and C-p keep to in this buffer; with a prefix argument, keep to the column they start from again.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    if (arg !== null && arg !== undefined) {
+      e8.setVariable("goal-column", null);
+      e8.message("No goal column");
+      return;
+    }
+    const column = e8.currentColumn();
+    e8.setVariable("goal-column", column);
+    e8.message(`Goal column ${column} (use ${e8.whereIs("set-goal-column") ?? "M-x set-goal-column"} with an arg to unset it)`);
+  },
+});
+e8.bindKey("C-x C-n", "set-goal-column");

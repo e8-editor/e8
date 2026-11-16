@@ -38,9 +38,19 @@ impl Editor {
             }
             _ => self.kill_ring.kills.push(text),
         }
+        self.trim_kill_ring();
         // The whole kill goes to the clipboard, as kill-append gives it there.
         let newest = self.kill_ring.kills.last().map(|t| t.string.clone()).unwrap_or_default();
         self.interprogram_cut(&newest);
+    }
+
+    /// Lets the oldest kills go past `kill-ring-max`, as kill-new does.
+    fn trim_kill_ring(&mut self) {
+        let max = self.variable("kill-ring-max").and_then(|v| v.as_number()).map_or(120, |n| n.max(1.0) as usize);
+        let kills = &mut self.kill_ring.kills;
+        if kills.len() > max {
+            kills.drain(..kills.len() - max);
+        }
     }
 
     /// Puts text in the kill ring as a kill of its own, as Emacs's
@@ -48,6 +58,7 @@ impl Editor {
     pub fn kill_new(&mut self, text: &str) {
         self.kill_ring.yank_pointer = 0;
         self.kill_ring.kills.push(crate::properties::Text { string: text.to_string(), props: Vec::new() });
+        self.trim_kill_ring();
         self.interprogram_cut(text);
     }
 
@@ -73,6 +84,7 @@ impl Editor {
         {
             self.kill_ring.yank_pointer = 0;
             self.kill_ring.kills.push(crate::properties::Text { string: text, props: Vec::new() });
+            self.trim_kill_ring();
         }
         if self.kill_ring.kills.is_empty() {
             return Err(Error::new("Kill ring is empty"));

@@ -172,6 +172,10 @@ pub struct Param {
     /// Works out the names to complete against, as `completing-read`'s
     /// collection, instead of the kind's.
     pub collection_fn: Option<CollectionFn>,
+    /// Works out the argument from those read before it without asking,
+    /// when it gives one, as an interactive spec's code can: none or one
+    /// value.
+    pub value_fn: Option<CollectionFn>,
     /// Whether the answer must be one of the completions.
     pub require_match: bool,
     /// The variable holding earlier answers, which M-p and M-n go through.
@@ -359,9 +363,20 @@ impl Command {
             initial_fn: None,
             default_fn: None,
             collection_fn: None,
+            value_fn: None,
             require_match: false,
             history: None,
         });
+        self
+    }
+
+    /// Gives the last parameter added a value worked out from the arguments
+    /// read before it, the first of those `value` gives, in place of asking
+    /// for it; when it gives none, the parameter is asked for as usual.
+    pub fn value_with(mut self, value: impl Fn(&mut Editor, &[Arg]) -> Result<Vec<String>> + 'static) -> Command {
+        if let Some(param) = self.params.last_mut() {
+            param.value_fn = Some(CollectionFn(Rc::new(value)));
+        }
         self
     }
 

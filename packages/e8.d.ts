@@ -687,6 +687,14 @@ declare global {
        */
       "beginning-of-buffer": [];
       /**
+       * Move point to the start of the next window's buffer, leaving the mark where it was; a prefix argument N, N tenths of the way in.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/window.ts.
+       */
+      "beginning-of-buffer-other-window": [arg?: PrefixArg | boolean];
+      /**
        * Move back to the beginning of a defun, or as many as the prefix argument says; forward if negative.
        *
        * A defun starts at an open paren in column 0, unless the major mode says otherwise.
@@ -710,6 +718,14 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "beginning-of-visual-line": [];
+      /**
+       * Replace text rather than insert it, character for character: each typed character replaces the one after point, even a newline or a tab, and C-q reads a character's octal code, as binary-overwrite-mode does.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "binary-overwrite-mode": [];
       /**
        * Mark this line's bookmark to be deleted by x, and move down.
        *
@@ -1514,11 +1530,13 @@ declare global {
        */
       "delete-minibuffer-contents": [];
       /**
-       * Delete every frame but the selected one.
+       * Delete every frame but the selected one; with a prefix argument, iconify them instead.
+       *
+       * @param iconify raw prefix argument
        *
        * Defined in packages/window.ts.
        */
-      "delete-other-frames": [];
+      "delete-other-frames": [iconify?: PrefixArg | boolean];
       /**
        * Make the selected window fill its frame, deleting the others.
        *
@@ -2590,6 +2608,14 @@ declare global {
        */
       "end-of-buffer": [];
       /**
+       * Move point to the end of the next window's buffer, leaving the mark where it was; a prefix argument N, N tenths of the way from the end.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/window.ts.
+       */
+      "end-of-buffer-other-window": [arg?: PrefixArg | boolean];
+      /**
        * Move forward to the end of a defun, or as many as the prefix argument says; back if negative.
        *
        * @param arg prefix count
@@ -2787,6 +2813,22 @@ declare global {
        */
       "find-file-other-window": [file: string];
       /**
+       * Visit a file as find-file does, but read-only; read-only-mode makes it editable again.
+       *
+       * @param file file name
+       *
+       * Defined in packages/window.ts.
+       */
+      "find-file-read-only": [file: string];
+      /**
+       * Visit a file as find-file-other-frame does, but read-only; read-only-mode makes it editable again.
+       *
+       * @param file file name
+       *
+       * Defined in packages/window.ts.
+       */
+      "find-file-read-only-other-frame": [file: string];
+      /**
        * Visit a file in a new tab, read-only.
        *
        * @param file file name
@@ -2794,6 +2836,14 @@ declare global {
        * Defined in packages/tab-bar.ts.
        */
       "find-file-read-only-other-tab": [file: string];
+      /**
+       * Visit a file as find-file-other-window does, but read-only; read-only-mode makes it editable again.
+       *
+       * @param file file name
+       *
+       * Defined in packages/window.ts.
+       */
+      "find-file-read-only-other-window": [file: string];
       /**
        * Visit the place of the first error message.
        *
@@ -3057,7 +3107,7 @@ declare global {
        */
       "goto-char": [arg?: PrefixArg | boolean];
       /**
-       * Go to a line, counting from 1 at the start of the buffer: the prefix argument's, else one asked for, the number at point by default.
+       * Go to a line, counting from 1 at the start of the buffer: the prefix argument's, else one asked for, the number at point by default. With plain C-u, the line is in the buffer shown before, in another window.
        *
        * The mark is pushed first, unless the region is active. In a narrowed buffer, a line outside it widens the buffer, as widen-automatically says.
        *
@@ -3609,6 +3659,13 @@ declare global {
        */
       "isearch-repeat-forward": [];
       /**
+       * Toggle case-fold searching on or off.
+       * Toggles the value of the variable isearch-case-fold-search.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-toggle-case-fold": [];
+      /**
        * Switch between searching for a string and for a regular expression; what is typed next searches the new way.
        *
        * Defined in packages/isearch.ts.
@@ -4010,7 +4067,7 @@ declare global {
       /**
        * Start recording a keyboard macro: the keys typed until C-x ) or F4.
        *
-       * A prefix argument sets the macro counter's starting value, which is 0 otherwise.
+       * A numeric prefix argument sets the macro counter's starting value, which is 0 otherwise; C-u appends to the last macro, running it first, and C-u C-u appends without running it.
        *
        * Defined in packages/kmacro.ts.
        */
@@ -5852,7 +5909,7 @@ declare global {
        */
       "org-yank": [];
       /**
-       * Select another frame, the next in frame-list's order; a prefix argument says how many on to go.
+       * Select another frame, the next visible one in frame-list's order; a prefix argument says how many on to go, back if negative.
        *
        * Defined in packages/window.ts.
        */
@@ -6210,10 +6267,11 @@ declare global {
        *
        * @param from text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/replace.ts.
        */
-      "query-replace": [from: string, to: string];
+      "query-replace": [from: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * Replace this match and go on to the next.
        *
@@ -6275,10 +6333,11 @@ declare global {
        *
        * @param regexp text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/replace.ts.
        */
-      "query-replace-regexp": [regexp: string, to: string];
+      "query-replace-regexp": [regexp: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * Leave this match and go on to the next.
        *
@@ -6470,6 +6529,12 @@ declare global {
        */
       "rename-file": [file: string, newname: string];
       /**
+       * Rename the current buffer to a name no other buffer has, its name with <N> after it, so another buffer can take its name, as a second *shell* or *compilation* can once the first is renamed.
+       *
+       * Defined in packages/files.ts.
+       */
+      "rename-uniquely": [];
+      /**
        * Rename the file the buffer visits, and visit it under its new name.
        *
        * In a buffer visiting no file, set the file it visits instead, as set-visited-file-name does.
@@ -6488,25 +6553,35 @@ declare global {
        */
       "repeat": [];
       /**
+       * Edit and run again a command that read its arguments in the minibuffer, the latest by default, the Nth latest with a prefix argument, as command-history keeps them: the command and its arguments, written as Lisp.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/simple.ts.
+       */
+      "repeat-complex-command": [arg?: number];
+      /**
        * Replace every match of a regular expression from point to the end of the buffer, or in the active region.
        *
        * In the replacement, \& is the whole match and \1 to \9 its groups.
        *
        * @param regexp text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/replace.ts.
        */
-      "replace-regexp": [regexp: string, to: string];
+      "replace-regexp": [regexp: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * Replace every match of a string from point to the end of the buffer, or in the active region.
        *
        * @param from text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/replace.ts.
        */
-      "replace-string": [from: string, to: string];
+      "replace-string": [from: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * Reverse the order of the whole lines in the region.
        *
@@ -6769,6 +6844,14 @@ declare global {
        * Defined in packages/fill.ts.
        */
       "set-fill-prefix": [];
+      /**
+       * Make the current column the one C-n and C-p keep to in this buffer; with a prefix argument, keep to the column they start from again.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/simple.ts.
+       */
+      "set-goal-column": [arg?: PrefixArg | boolean];
       /**
        * Set the mark at point and activate the region, saving the old mark on the mark ring.
        *
@@ -7909,7 +7992,7 @@ declare global {
       /**
        * Write the current buffer to a file and visit that file instead.
        *
-       * A directory writes a file of the buffer's name in it. An existing file is overwritten only if you say so.
+       * A directory writes a file of the visited file's name in it, or the buffer's. An existing file is overwritten only if you say so.
        *
        * @param file file name
        *
@@ -8486,6 +8569,16 @@ declare global {
        */
       "bidi-paragraph-start-re": Value;
       /**
+       * Whether Binary-Overwrite mode is on in this buffer. Use the command binary-overwrite-mode to change it.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "binary-overwrite-mode": Value;
+      /**
+       * Keymap binary-overwrite-mode-map.
+       */
+      "binary-overwrite-mode-map": Value;
+      /**
        * How far to look for a matching paren, in characters, or nil to look through the whole buffer.
        *
        * Defined in packages/paren.ts.
@@ -8705,6 +8798,10 @@ declare global {
        * Defined in packages/comint.ts.
        */
       "comint-terminfo-terminal": Value;
+      /**
+       * Commands that read their arguments in the minibuffer, newest first, each a list of the command and its arguments, which C-x ESC ESC runs again.
+       */
+      "command-history": Value;
       /**
        * How many more comment starts comment-region and M-; on a blank line add, as Lisp's ;; for comments of their own.
        *
@@ -9996,6 +10093,10 @@ declare global {
        */
       "go-ts-mode-map": Value;
       /**
+       * The column C-n and C-p keep to, set with C-x C-n; nil to keep to the column they start from.
+       */
+      "goal-column": Value;
+      /**
        * Line numbers answered to goto-line, newest first.
        *
        * Defined in packages/simple.ts.
@@ -11027,6 +11128,16 @@ declare global {
        */
       "kill-read-only-ok": Value;
       /**
+       * How many kills the kill ring keeps: past that, the oldest goes.
+       */
+      "kill-ring-max": Value;
+      /**
+       * Whether C-u C-x ( runs the last macro before appending to it, and C-u C-u C-x ( does not; nil turns these round.
+       *
+       * Defined in packages/kmacro.ts.
+       */
+      "kmacro-execute-before-append": Value;
+      /**
        * The coding system the last file read or written, or text decoded or encoded, used.
        */
       "last-coding-system-used": Value;
@@ -11164,7 +11275,7 @@ declare global {
        */
       "mode-line-buffer-identification": Value;
       /**
-       * What each window's mode line shows, as a mode line construct: a string, whose %-specs show the buffer's state (%b its name, %* and %+ whether it is read-only or modified, %l and %c point's line and column, %n Narrow when narrowed, %Z the coding, %p how far through the buffer the window is, %- dashes to the end); a symbol, whose value is shown, a string as it is; a list of constructs; [":eval", function], whose result is shown; [":propertize", construct, "face", face]; [symbol, then, else], which shows then when the symbol's value is true; or [width, ...constructs], padded to at least width columns, or cut to -width.
+       * What each window's mode line shows, as a mode line construct: a string, whose %-specs show the buffer's state (%b its name, %* and %+ whether it is read-only or modified, %l and %c point's line and column, %n Narrow when narrowed, %s the status of its process, %Z the coding, %p how far through the buffer the window is, %- dashes to the end); a symbol, whose value is shown, a string as it is; a list of constructs; [":eval", function], whose result is shown; [":propertize", construct, "face", face]; [symbol, then, else], which shows then when the symbol's value is true; or [width, ...constructs], padded to at least width columns, or cut to -width.
        */
       "mode-line-format": Value;
       /**
@@ -11324,6 +11435,12 @@ declare global {
        */
       "org-adapt-indentation": Value;
       /**
+       * What the time grid's line for the time now says.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-current-time-string": Value;
+      /**
        * The files the agenda collects entries from, as a list of file names.
        *
        * Defined in packages/org-agenda.ts.
@@ -11334,11 +11451,29 @@ declare global {
        */
       "org-agenda-mode-map": Value;
       /**
+       * Whether the time grid shows the time now, as org-agenda-current-time-string.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-show-current-time-in-grid": Value;
+      /**
        * Whether agenda lines show the tags their headings inherit, from the file and the headings above, before their own.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-show-inherited-tags": Value;
+      /**
+       * The time grid: when it is drawn, its times as HHMM, the string after a time, and the line drawn.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-time-grid": Value;
+      /**
+       * Whether today's agenda draws a time grid among the entries with times, as org-agenda-time-grid says.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-use-time-grid": Value;
       /**
        * Where the agenda shows: reorganize-frame, this window and the agenda's; current-window; only-window; or other-window.
        *
@@ -11416,7 +11551,7 @@ declare global {
        */
       "org-cycle-subtree-status": Value;
       /**
-       * How many days ahead today's agenda warns of a deadline.
+       * How many days ahead today's agenda warns of a deadline, unless its timestamp says, as -3d does; 0 or less applies whatever it says.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -11693,6 +11828,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-return-follows-link": Value;
+      /**
+       * How many days after its date a scheduled entry waits to show, unless its timestamp says, as -2d does; less than 0 applies whatever it says.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-scheduled-delay-days": Value;
       /**
        * Whether C-o in a table inserts a row rather than opening a line.
        *
@@ -12141,7 +12282,7 @@ declare global {
        */
       "read-quoted-char-radix": Value;
       /**
-       * Where C-l puts the line with point each time in a row: middle, top, bottom, or a line of the window.
+       * Where C-l puts the line with point each time in a row: middle, top, bottom, a line of the window, or a fraction of the way down it.
        *
        * Defined in packages/window.ts.
        */
@@ -12210,6 +12351,12 @@ declare global {
        * Defined in packages/isearch.ts.
        */
       "regexp-search-ring-max": Value;
+      /**
+       * The forms C-x ESC ESC offers with M-p and M-n, as printed.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "repeat-complex-command-history": Value;
       /**
        * Whether saving adds a newline to a file that does not end in one: true adds it, false leaves the file as it is, "ask" asks first. Text and programming modes set it from mode-require-final-newline.
        *
@@ -13765,6 +13912,12 @@ declare global {
        */
       "compilation-mode-line-fail": FaceAttributes;
       /**
+       * The mode line's :run while a compilation runs.
+       *
+       * Defined in packages/compile.ts.
+       */
+      "compilation-mode-line-run": FaceAttributes;
+      /**
        * Warnings' file names in compilation buffers.
        *
        * Defined in packages/compile.ts.
@@ -14768,6 +14921,18 @@ declare global {
        * Run before saving a buffer to its file.
        */
       "before-save-hook": Value;
+      /**
+       * Run after Binary-Overwrite mode is turned on or off.
+       */
+      "binary-overwrite-mode-hook": Value;
+      /**
+       * Run after Binary-Overwrite mode is turned off.
+       */
+      "binary-overwrite-mode-off-hook": Value;
+      /**
+       * Run after Binary-Overwrite mode is turned on.
+       */
+      "binary-overwrite-mode-on-hook": Value;
       /**
        * Run after entering Bookmark Menu mode, after the hooks of the modes it is built on.
        */
@@ -15774,8 +15939,12 @@ declare global {
     function activateMark(): void;
     /** Hide the region, leaving the mark where it is. */
     function deactivateMark(): void;
-    /** Start recording typed keys into a keyboard macro (Emacs's start-kbd-macro). */
-    function startKbdMacro(): void;
+    /**
+     * Start recording typed keys into a keyboard macro (Emacs's
+     * start-kbd-macro). With `append`, go on from the last macro, running
+     * it once more first unless `noExec`.
+     */
+    function startKbdMacro(append?: boolean, no_exec?: boolean): void;
     /** Finish the keyboard macro, leaving out the keys that ended it (Emacs's end-kbd-macro). */
     function endKbdMacro(): void;
     /**
@@ -18532,6 +18701,12 @@ declare global {
        * extended-command-history for commands, file-name-history and so on.
        */
       history?: string;
+      /**
+       * The argument worked out from those read before it, as code in an
+       * Emacs interactive spec can: when it gives one, nothing is asked, as
+       * query-replace asks for no replacement after its default.
+       */
+      value?: (...earlier: string[]) => string | undefined;
     }
 
     interface CommandDefinition {

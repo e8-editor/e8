@@ -421,6 +421,165 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "done-repeating-drops-a-plain-scheduled",
+      "input": {
+        "text": "* TODO Pay\nSCHEDULED: <2026-11-01 Sun> DEADLINE: <2026-11-05 Thu +1m>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Pay\nDEADLINE: <2026-12-05 Sat +1m>\n",
+      "visible": "* TODO Pay\nDEADLINE: <2026-12-05 Sat +1m>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "done-repeating-keeps-a-repeating-scheduled",
+      "input": {
+        "text": "* TODO Pay\nSCHEDULED: <2026-11-01 Sun +1w> DEADLINE: <2026-11-05 Thu +1m>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Pay\nSCHEDULED: <2026-11-08 Sun +1w> DEADLINE: <2026-12-05 Sat +1m>\n",
+      "visible": "* TODO Pay\nSCHEDULED: <2026-11-08 Sun +1w> DEADLINE: <2026-12-05 Sat +1m>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-right-goes-on-to-the-next-sequence",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* Other\n",
+        "point": 52,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* WAIT Task\n* Other\n",
+      "visible": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* WAIT Task\n* Other\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-left-from-none-takes-the-last-keyword",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* Other\n",
+        "point": 63,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* CANCELLED Other\n",
+      "visible": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* CANCELLED Other\n",
+      "point": 73,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-left-back-across-sequences",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* WAIT Task\n",
+        "point": 52,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n",
+      "visible": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "done-repeats-by-hours",
+      "input": {
+        "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 10:00 +2h>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 12:00 +2h>\n",
+      "visible": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 12:00 +2h>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "done-repeats-by-hours-across-midnight",
+      "input": {
+        "text": "* TODO Water\nSCHEDULED: <2026-11-16 Mon 23:00 +3h>\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-log-repeat": false
+        }
+      },
+      "text": "* TODO Water\nSCHEDULED: <2026-11-17 Tue 02:00 +3h>\n",
+      "visible": "* TODO Water\nSCHEDULED: <2026-11-17 Tue 02:00 +3h>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

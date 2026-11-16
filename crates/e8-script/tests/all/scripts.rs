@@ -275,6 +275,19 @@ fn packages_type_definitions_are_current() {
     );
 }
 
+/// C-u F3 appends to the last macro after running it once more, as
+/// kmacro-execute-before-append has it by default; batch Emacs runs the
+/// macro at another time, so the oracle cannot record this one.
+#[test]
+fn c_u_f3_runs_the_last_macro_and_appends_to_it() {
+    let (mut ed, _scripting) = setup();
+    ed.press("<f3> a <f4> C-u <f3>").unwrap();
+    assert_eq!(text(&ed), "aa");
+    assert_eq!(ed.echo(), Some("Appending to kbd macro..."));
+    ed.press("b <f4> <f4>").unwrap();
+    assert_eq!(text(&ed), "aabab");
+}
+
 #[test]
 fn macros_repeat_and_yank_pop_from_packages() {
     // C-x e e runs the macro again; batch Emacs cannot record this, so the

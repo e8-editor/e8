@@ -1,0 +1,157 @@
+[
+  {
+    "name": "saving-a-narrowed-buffer-adds-the-newline-at-the-end",
+    "text": "",
+    "keys": "C-n C-SPC C-n C-x n n x C-x C-s",
+    "files": {
+      "a.txt": "one\ntwo\nthree\nfour"
+    },
+    "find": "a.txt"
+  },
+  {
+    "name": "count-words-counts-swedish-words",
+    "text": "Jag bor på en ö i en å.",
+    "keys": "C-x h M-=",
+    "message": true
+  },
+  {
+    "name": "count-words-counts-cyrillic-words",
+    "text": "привет мир",
+    "keys": "C-x h M-=",
+    "message": true
+  },
+  {
+    "name": "a-third-c-spc-activates-the-mark",
+    "text": "abc def",
+    "point": 2,
+    "keys": "C-SPC C-SPC C-SPC",
+    "message": true
+  },
+  {
+    "name": "a-third-c-spc-does-not-push-the-mark",
+    "text": "abc def",
+    "keys": "C-f C-SPC C-f C-SPC C-SPC C-SPC C-f C-u C-SPC C-u C-SPC"
+  },
+  {
+    "name": "c-u-goto-char-asks",
+    "text": "abcdefgh",
+    "keys": "C-u M-g c",
+    "answers": [
+      "3"
+    ]
+  },
+  {
+    "name": "m-v-at-the-top-leaves-point",
+    "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\n",
+    "keys": "C-n C-n C-n M-v"
+  },
+  {
+    "name": "m-f-stops-where-the-script-changes",
+    "text": "Emacs日本語 x",
+    "keys": "M-f"
+  },
+  {
+    "name": "m-b-stops-where-the-script-changes",
+    "text": "Emacs日本語 x",
+    "point": 8,
+    "keys": "M-b"
+  },
+  {
+    "name": "m-u-upcases-one-script-s-run",
+    "text": "abcабв def",
+    "keys": "M-u"
+  },
+  {
+    "name": "m-f-over-swedish-words",
+    "text": "blåbär och smörgås",
+    "keys": "M-f M-f"
+  },
+  {
+    "name": "scrolling-past-the-end-by-a-count-fails",
+    "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+    "keys": "C-u 5 0 C-v",
+    "windows": true
+  },
+  {
+    "name": "scrolling-to-the-empty-last-line-fails",
+    "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+    "keys": "C-u 3 0 C-v",
+    "windows": true
+  },
+  {
+    "name": "scrolling-by-a-count-within-the-text",
+    "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+    "keys": "C-u 2 9 C-v",
+    "windows": true
+  },
+  {
+    "name": "fill-paragraph-after-the-last-paragraph",
+    "text": "aaa bbb ccc ddd\n",
+    "keys": "M-> M-q",
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "fill-paragraph-after-the-last-paragraph-with-a-blank-line",
+    "text": "aaa bbb ccc ddd\n\n",
+    "keys": "M-> M-q",
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "fill-paragraph-on-a-blank-line-between",
+    "text": "aaa bbb ccc ddd\n\neee fff ggg hhh\n",
+    "keys": "C-n M-q",
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "fill-paragraph-after-a-tabbed-line",
+    "text": "why?\tsuper\twhy?  super\tfixes a\ta the\n",
+    "keys": "M-> M-q",
+    "vars": {
+      "fill-column": 28
+    }
+  },
+  {
+    "name": "fill-paragraph-after-the-last-paragraph-in-auto-fill",
+    "text": "aaa bbb ccc ddd\n",
+    "keys": "M-> M-q",
+    "modes": [
+      "auto-fill-mode"
+    ],
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "fill-paragraph-below-a-line-typed",
+    "text": "aaa bbb ccc ddd\n",
+    "keys": "z C-n M-q",
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "c-u-move-to-window-line-goes-to-line-4",
+    "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\n",
+    "keys": "C-u M-r"
+  },
+  {
+    "name": "transpose-words-across-an-emoji",
+    "text": "one 👍🏽 two three",
+    "point": 3,
+    "keys": "M-t"
+  },
+  {
+    "name": "transpose-words-after-an-emoji",
+    "text": "👍🏽 one two 😀 x",
+    "point": 6,
+    "keys": "M-t M-t"
+  },
+  {"name": "replace-case-word-syntax-text-mode", "text": "Don't stop. don't stop.", "modes": ["text-mode"], "call": ["replace-string", "don't", "won't"], "keys": "C-f"},
+  {"name": "replace-case-word-syntax-fundamental", "text": "Don't stop. don't stop.", "call": ["replace-string", "don't", "won't"], "keys": "C-f"}
+]

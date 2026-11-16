@@ -905,7 +905,7 @@ impl E8App {
         }
         let selected = frame == self.frame_list().1;
         // Window sizes first, for the commands this frame's keys run.
-        let Some(before) = self.layout(ui, frame) else { return None };
+        let before = self.layout(ui, frame)?;
         self.note_pointer(&ctx, &events, &before);
         if selected {
             let time = ctx.input(|i| i.time);
@@ -924,7 +924,7 @@ impl E8App {
         }
         let frame_selected = frame == self.frame_list().1;
         // Input may have split or deleted windows.
-        let Some(layout) = self.layout(ui, frame) else { return None };
+        let layout = self.layout(ui, frame)?;
         if frame_selected {
             self.scroll(&ctx, &layout);
         }
@@ -935,10 +935,7 @@ impl E8App {
                 self.exit = editor.should_quit();
                 editor.describe_frame(frame, ctx.pixels_per_point())
             }
-            Backend::Thread { .. } => match self.frames.iter().find(|f| f.frame == frame) {
-                Some(fd) => fd.clone(),
-                None => return None,
-            },
+            Backend::Thread { .. } => self.frames.iter().find(|f| f.frame == frame)?.clone(),
         };
         // The palette for the background the editor judges the frame has,
         // a theme's rather than the system's, and the theme's colours over

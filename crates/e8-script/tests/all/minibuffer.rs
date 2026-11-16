@@ -52,6 +52,25 @@ fn m_x_remembers_commands() {
     ed.press("C-g").unwrap();
 }
 
+/// M-n past the input typed brings the prompt's default, as Emacs's
+/// goto-history-element takes it as the "future history": C-x b's default is
+/// the other buffer.
+#[test]
+fn m_n_brings_the_default() {
+    let (mut ed, _scripting) = setup();
+    ed.press("C-x b").unwrap();
+    ed.type_text("other\n");
+    ed.press("C-x b").unwrap();
+    ed.type_text("sc");
+    ed.press("M-n").unwrap();
+    assert_eq!(input(&ed), "*scratch*");
+    ed.press("M-n").unwrap();
+    assert_eq!(ed.echo(), Some("End of defaults; no next item"));
+    ed.press("M-p").unwrap();
+    assert_eq!(input(&ed), "sc", "back to what was typed");
+    ed.press("C-g").unwrap();
+}
+
 #[test]
 fn prompts_keep_separate_histories() {
     let (mut ed, _scripting) = setup();
@@ -660,4 +679,33 @@ fn kill_buffer_and_switch_to_buffer_offer_their_defaults() {
     assert_eq!(default(&mut ed), "\"one\"");
     ed.press("RET").unwrap();
     assert_eq!(ed.window_buffer().name, "one");
+}
+
+/// RET on empty input answers with the default even where the answer must
+/// match and the default is no completion, as Emacs's
+/// completion--complete-and-exit exits at once on empty input.
+#[test]
+fn empty_input_takes_a_default_that_is_no_completion() {
+    let (mut ed, s) = setup();
+    let got = s
+        .eval_expression(&mut ed, r#"(e8.unreadKeys(["RET"]), e8.completingRead("x: ", ["a", "b"], { requireMatch: true, default: "zzz" }))"#)
+        .unwrap();
+    assert_eq!(got, r#""zzz""#);
+}
+
+/// read-buffer puts its default in the prompt, as Emacs's does with
+/// format-prompt, and offers no internal buffer, whose name starts with a
+/// space, as internal-complete-buffer leaves those out.
+#[test]
+fn read_buffer_shows_its_default_and_hides_internal_buffers() {
+    let d = Driven::new("");
+    d.with(|ed| {
+        ed.call("get-buffer-create", vec![e8_core::Arg::Str(" scratch-hidden".into())]).ok();
+    });
+    d.start_eval(r#"e8.setVariable("got", e8.funcall("read-buffer", "Buffer: ", "*scratch*"));"#);
+    assert_eq!(d.prompt().as_deref(), Some("Buffer (default *scratch*): "));
+    let names = d.with(|ed| ed.minibuffer_completions());
+    assert!(names.iter().all(|n| !n.starts_with(' ')), "{names:?}");
+    d.press("RET");
+    assert_eq!(d.variable("got").as_deref(), Some("\"*scratch*\""));
 }

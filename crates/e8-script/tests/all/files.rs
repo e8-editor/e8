@@ -331,6 +331,25 @@ fn an_auto_save_file_can_be_recovered() {
     assert_eq!(failed.unwrap_err(), format!("Auto save file {} does not exist", e8_core::abbreviate_path(&auto)));
 }
 
+/// C-x C-v on a modified buffer asks as Emacs's find-alternate-file does,
+/// and no is a user error that leaves the buffer.
+#[test]
+fn find_alternate_file_asks_before_dropping_changes() {
+    let d = Driven::new("");
+    let dir = dir();
+    let (a, b) = (dir.path().join("a.txt"), dir.path().join("b.txt"));
+    fs::write(&b, "bee\n").unwrap();
+    visit_driven(&d, &a);
+    d.type_text("unsaved");
+    d.press("C-x C-v");
+    d.press("C-a C-k");
+    d.type_text(&format!("{}\n", b.display()));
+    assert_eq!(d.prompt().as_deref(), Some("Kill and replace buffer \u{2018}a.txt\u{2019} without saving it? (yes or no) "));
+    d.type_text("no\n");
+    assert_eq!(d.buffer_name(), "a.txt");
+    assert_eq!(d.message().as_deref(), Some("Aborted"));
+}
+
 #[test]
 fn killing_a_modified_buffer_asks() {
     let d = Driven::new("");
@@ -495,4 +514,41 @@ fn expand_file_name_keeps_a_directory_name_s_slash() {
         )
         .unwrap();
     assert_eq!(value, r#"["/tmp/foo/","/tmp/foo","/tmp/","/tmp/","/tmp"]"#);
+}
+
+/// write-file into a directory takes the visited file's name, as Emacs's
+/// does, not the buffer's, which differs for a second README.md.
+#[test]
+fn writing_into_a_directory_takes_the_file_s_name() {
+    let dir = tempfile::tempdir().unwrap();
+    let (a, b) = (dir.path().join("a"), dir.path().join("b"));
+    fs::create_dir_all(&a).unwrap();
+    fs::create_dir_all(&b).unwrap();
+    fs::write(a.join("README.md"), "one\n").unwrap();
+    let (mut ed, _s) = setup();
+    ed.call("find-file", vec![Arg::Str(a.join("README.md").display().to_string())]).unwrap();
+    ed.call("rename-buffer", vec![Arg::Str("README.md<2>".into())]).unwrap();
+    ed.call("write-file", vec![Arg::Str(format!("{}/", b.display()))]).unwrap();
+    assert_eq!(fs::read_to_string(b.join("README.md")).unwrap(), "one\n");
+}
+
+/// C-x C-r and C-x 4 r visit a file read-only, as find-file-read-only and
+/// its other-window form do, and refuse a file that is not there.
+#[test]
+fn find_file_read_only_visits_read_only() {
+    let dir = dir();
+    let path = dir.path().join("a.txt");
+    fs::write(&path, "one\n").unwrap();
+    let (mut ed, s) = setup();
+    ed.call("find-file-read-only", vec![Arg::Str(path.display().to_string())]).unwrap();
+    assert_eq!(ed.window_buffer().name, "a.txt");
+    assert!(ed.window_buffer().read_only);
+    ed.call("kill-buffer", vec![Arg::Str("a.txt".into())]).unwrap();
+    ed.call("find-file-read-only-other-window", vec![Arg::Str(path.display().to_string())]).unwrap();
+    assert_eq!(ed.window_list().len(), 2);
+    assert!(ed.window_buffer().read_only);
+    let missing = ed.call("find-file-read-only", vec![Arg::Str(dir.path().join("nope.txt").display().to_string())]);
+    assert!(missing.unwrap_err().to_string().ends_with("nope.txt does not exist"));
+    let bound = s.eval_expression(&mut ed, r#"JSON.stringify(["C-x C-r", "C-x 4 r", "C-x 5 r"].map((k) => e8.lookupKey("global-map", k)))"#).unwrap();
+    assert_eq!(bound, r#""[\"find-file-read-only\",\"find-file-read-only-other-window\",\"find-file-read-only-other-frame\"]""#);
 }

@@ -577,7 +577,7 @@ e8.defineCommand({
     if (e.type === "headline") {
       // Point stays where it was in the subtree, even on blank lines below its heading.
       let q = e8.point();
-      while (q > 0 && /[ \t\n]/.test(e8.bufferText(q - 1, q))) q--;
+      while (q > e8.pointMin() && /[ \t\n]/.test(e8.bufferText(q - 1, q))) q--;
       const offset = e8.point() - q;
       e8.gotoChar(q);
       try {
@@ -588,9 +588,10 @@ e8.defineCommand({
       return;
     }
     let prev: Elem | undefined;
+    // Back to the element before, within the narrowing, as bobp says.
     let q = e.begin;
-    while (q > 0 && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
-    if (q > 0) {
+    while (q > e8.pointMin() && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+    if (q > e8.pointMin()) {
       prev = elementAt(q);
       for (let up = prev?.parent; prev && up && up.end <= e.begin; up = up.parent) prev = up;
     }
@@ -608,7 +609,7 @@ e8.defineCommand({
     const pos = e8.point();
     const e = elementAt(pos);
     if (!e) e8.userError("No element at point");
-    if (e.end === e8.bufferSize()) e8.userError("Cannot drag element forward");
+    if (e.end >= e8.pointMax()) e8.userError("Cannot drag element forward");
     const next = elementAt(e.end);
     if (!next || nested(e, next) || (next.type === "headline" && e.type !== "headline")) {
       e8.gotoChar(pos);

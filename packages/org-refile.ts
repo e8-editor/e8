@@ -95,7 +95,8 @@ export function refileTargets(): Target[] {
           const path: string[] = [];
           for (const h of all) {
             path.length = h.level - 1;
-            path[h.level - 1] = linkDisplay(h.title).replace(/\//g, "\\/");
+            // Without statistics cookies, as org--get-outline-path-1 takes them out.
+            path[h.level - 1] = linkDisplay(h.title).replace(/\[[0-9]*(?:%|\/[0-9]*)\]/g, "").trim().replace(/\//g, "\\/");
             const text = e8.lineText(h.line);
             if (h.title === "" || !matches(h, text)) continue;
             if (verify !== null && verify !== undefined && !e8.saveExcursion(() => {

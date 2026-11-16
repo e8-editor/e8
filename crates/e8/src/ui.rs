@@ -28,7 +28,7 @@ struct WindowArea {
 /// says they divide it.
 fn window_areas(ed: &Editor, width: u16, height: u16) -> Vec<WindowArea> {
     let tab_lines = (ed.menu_bar_lines(ed.selected_frame()) + ed.tab_bar_lines(ed.selected_frame())) as u16;
-    areas_of(ed.window_tree(), tab_lines, ed.mini_window_lines(), &|id, h| ed.window_wants_header_line(id, h), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id), width, height)
+    areas_of(ed.window_tree(), tab_lines, ed.mini_window_lines(), &|id, h| ed.window_wants_header_line(id, h), &|id| ed.window_margins(id), &|id| ed.window_shows_mode_line(id), (width, height))
 }
 
 /// As [`window_areas`], as a frame description says.
@@ -38,7 +38,7 @@ fn described_areas(fd: &FrameDescription, width: u16, height: u16) -> Vec<Window
     let margins = |id| window(id).map_or((0, 0), |w| w.margins);
     let mode_line = |id| window(id).is_none_or(|w| w.shows_mode_line);
     let bars = u16::from(fd.menu_bar.is_some()) + u16::from(fd.tab_bar.is_some());
-    areas_of(&fd.tree, bars, fd.echo_lines, &header, &margins, &mode_line, width, height)
+    areas_of(&fd.tree, bars, fd.echo_lines, &header, &margins, &mode_line, (width, height))
 }
 
 fn areas_of(
@@ -48,8 +48,7 @@ fn areas_of(
     wants_header: &dyn Fn(WindowId, usize) -> bool,
     margins_of: &dyn Fn(WindowId) -> (usize, usize),
     shows_mode_line: &dyn Fn(WindowId) -> bool,
-    width: u16,
-    height: u16,
+    (width, height): (u16, u16),
 ) -> Vec<WindowArea> {
     // The menu bar and the tab bar take the top lines, the echo area the bottom ones.
     let height = height.saturating_sub(echo_lines as u16 + tab_lines).max(2);

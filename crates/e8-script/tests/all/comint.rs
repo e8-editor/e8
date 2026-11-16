@@ -133,9 +133,18 @@ fn interrupting_the_job_and_end_of_file() {
     ed.press("C-c C-c").unwrap();
     until(&mut ed, |t| t.ends_with("$ "));
     assert!(!text(&ed).contains("\nslept\n"), "{:?}", text(&ed));
+    assert!(mode_line(&mut ed).contains("(Shell:run)"), "{}", mode_line(&mut ed));
     // C-c C-d ends the shell's input, so it exits.
     ed.press("C-c C-d").unwrap();
     until(&mut ed, |t| t.contains("\nProcess shell exited abnormally with code 130\n"));
+    assert!(mode_line(&mut ed).contains("(Shell:no process)"), "{}", mode_line(&mut ed));
+}
+
+/// The selected window's mode line, as it is drawn.
+fn mode_line(ed: &mut Editor) -> String {
+    ed.redisplay();
+    let id = ed.selected_window();
+    ed.mode_line(id).iter().map(|s| s.text.as_str()).collect()
 }
 
 #[test]
@@ -399,4 +408,42 @@ fn m_r_searches_the_history_with_isearch() {
     assert_eq!(input(&ed).0, "true");
     ed.press("C-g").unwrap();
     assert_eq!(input(&ed).0, "mine");
+}
+
+/// C-c C-c with a command typed but not sent keeps it in the history, as
+/// comint-skip-input does, and shows the keys after it; M-p brings it back.
+#[test]
+fn interrupting_keeps_the_typed_command_in_the_history() {
+    let (mut ed, _s) = setup();
+    start_shell(&mut ed);
+    ed.type_text("echo not sent");
+    ed.press("C-c C-c").unwrap();
+    assert!(text(&ed).contains("echo not sent  C-c C-c"), "{:?}", text(&ed));
+    until(&mut ed, |t| t.matches("$ ").count() >= 2);
+    ed.press("M-> M-p").unwrap();
+    assert!(text(&ed).ends_with("$ echo not sent"), "{:?}", text(&ed));
+}
+
+/// cd follows quoted and escaped names and variables, as
+/// shell-unquote-argument and comint-substitute-in-file-name take them, and
+/// cd - goes back to the directory before, as shell-last-dir.
+#[test]
+fn directory_tracking_reads_names_as_the_shell_does() {
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let real = std::fs::canonicalize(dir.path()).unwrap();
+    std::fs::create_dir(real.join("Application Support")).unwrap();
+    std::fs::create_dir(real.join("My Docs")).unwrap();
+    let start = format!("{}/", real.display());
+    let dir_now = |ed: &mut Editor| s.eval_expression(ed, "e8.variable('default-directory')").unwrap();
+    s.eval_expression(&mut ed, &format!("(e8.setVariable('default-directory', {start:?}), 1)")).unwrap();
+    s.eval_expression(&mut ed, r#"(e8.funcall("shell-directory-tracker", 'cd "Application Support"'), 1)"#).unwrap();
+    assert_eq!(dir_now(&mut ed), format!("{:?}", format!("{start}Application Support/")));
+    s.eval_expression(&mut ed, r#"(e8.funcall("shell-directory-tracker", "cd -"), 1)"#).unwrap();
+    assert_eq!(dir_now(&mut ed), format!("{start:?}"));
+    s.eval_expression(&mut ed, r#"(e8.funcall("shell-directory-tracker", "cd My\\ Docs"), 1)"#).unwrap();
+    assert_eq!(dir_now(&mut ed), format!("{:?}", format!("{start}My Docs/")));
+    s.eval_expression(&mut ed, "(e8.funcall('shell-directory-tracker', 'cd $HOME'), 1)").unwrap();
+    let home = s.eval_expression(&mut ed, "e8.expandFileName(e8.getenv('HOME')) + '/'").unwrap();
+    assert_eq!(dir_now(&mut ed), home);
 }

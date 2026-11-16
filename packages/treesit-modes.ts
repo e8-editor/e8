@@ -355,7 +355,7 @@ function bracedIndentation(line: number): number | undefined {
   if (q >= lineEnd || rest.startsWith("//") || rest.startsWith("/*")) {
     // The line the list starts on, from a condition's open paren if it closes just before.
     let p = open;
-    while (p > 0 && " \t".includes(charAt(p - 1))) p--;
+    while (p > e8.pointMin() && " \t".includes(charAt(p - 1))) p--;
     if (charAt(p - 1) === ")") {
       const back = e8.scanLists(p, -1, 0);
       if (back !== null) p = back;

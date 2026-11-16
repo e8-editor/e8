@@ -76,6 +76,46 @@ fn compile_shows_output_and_how_it_ended() {
     assert!(lines[6].contains(", duration "), "{text}");
     assert_eq!(last_message(&d).as_deref(), Some("Compilation exited abnormally with code 2"));
     assert!(d.with(|ed| ed.windows().iter().any(|w| w.buffer.name == "*compilation*")), "the buffer is shown");
+    assert_eq!(compilation_mode_line_process(&d), vec![(":exit [2]".to_string(), true)]);
+    let shown = d.with(|ed| {
+        ed.redisplay();
+        let id = ed.windows().iter().find(|w| w.buffer.name == "*compilation*").unwrap().id;
+        ed.mode_line(id).iter().map(|s| s.text.as_str()).collect::<String>()
+    });
+    assert!(shown.contains("(Compilation:exit [2])"), "{shown}");
+}
+
+/// What the mode line of *compilation* shows of its process, with whether it is in the fail face.
+fn compilation_mode_line_process(d: &Driven) -> Vec<(String, bool)> {
+    d.with(|ed| {
+        let was = ed.buffer().name.clone();
+        ed.set_current_buffer("*compilation*").unwrap();
+        let value = ed.variable("mode-line-process");
+        ed.set_current_buffer(&was).unwrap();
+        match value {
+            Some(Value::Text(t)) => {
+                let fail = t.properties_at(0).and_then(|p| p.get("face")).is_some_and(|f| f.as_str() == Some("compilation-mode-line-fail"));
+                vec![(t.string.clone(), fail)]
+            }
+            Some(Value::Str(s)) => vec![(s, false)],
+            other => panic!("{other:?}"),
+        }
+    })
+}
+
+#[test]
+fn the_mode_line_shows_a_compilation_running_and_how_it_ended() {
+    let dir = project();
+    let d = setup(dir.path());
+    start(&d, "sleep 30");
+    assert_eq!(compilation_mode_line_process(&d), vec![(":run".to_string(), false)]);
+    d.press("M-x");
+    d.type_text("switch-to-buffer\n*compilation*\n");
+    d.press("C-c C-k");
+    wait_for_output(&d);
+    assert!(compilation_mode_line_process(&d)[0].0.starts_with(":signal ["), "{:?}", compilation_mode_line_process(&d));
+    compile(&d, "true");
+    assert_eq!(compilation_mode_line_process(&d), vec![(":exit [0]".to_string(), false)]);
 }
 
 #[test]
@@ -230,4 +270,65 @@ fn output_while_a_prompt_is_open_goes_to_its_buffer() {
     assert_eq!(d.minibuffer_input(), "fo");
     let text = buffer_text(&d, "*compilation*");
     assert!(text.contains("\nlate\n"), "{text}");
+}
+
+/// A command compile runs has no pager, as compilation-start sets PAGER=
+/// so git does not wait in one, and grep elsewhere leaves recompile running
+/// where compile last did, as only compile sets compilation-directory's default.
+#[test]
+fn commands_run_without_a_pager_and_grep_leaves_recompile_s_directory() {
+    let dir = project();
+    let d = setup(dir.path());
+    compile(&d, "echo \"pager=[$PAGER]\"");
+    assert!(buffer_text(&d, "*compilation*").contains("pager=[]\n"), "{}", buffer_text(&d, "*compilation*"));
+    let src = format!("{}/src/", dir.path().display());
+    d.with(move |ed| ed.set_variable("default-directory", Value::Str(src)));
+    d.mx("grep");
+    d.with(|ed| ed.set_minibuffer_input("grep -n x *.rs"));
+    d.press("RET");
+    wait_for_output(&d);
+    let default = d.with(|ed| ed.default_value("compilation-directory").and_then(|v| v.as_str().map(str::to_string)));
+    assert_eq!(default, Some(format!("{}/", dir.path().display())));
+}
+
+/// GNU make's "*** [FILE:LINE: target] Error 1" and clang's "In file
+/// included from FILE:LINE:" are info, as Emacs's gmake and clang-include
+/// rules take them before gnu, so next-error passes over them to the error.
+#[test]
+fn make_and_clang_context_lines_are_info_that_next_error_passes() {
+    let dir = project();
+    let d = setup(dir.path());
+    compile(&d, "printf 'In file included from src/b.rs:1:\\nsrc/a.rs:2:9: error: bad\\nmake: *** [src/b.rs:3: all] Error 1\\n'");
+    d.press("M-g n");
+    assert_eq!(d.buffer_name(), "a.rs");
+    assert_eq!(d.point(), 9 + 8);
+    d.press("M-g n");
+    assert_eq!(d.with(|ed| ed.take_error().map(|e| e.to_string())).as_deref(), Some("Past last error"));
+}
+
+/// A message after make's "Entering directory" names its file relative to
+/// that directory, as compilation-directory-matcher has it, until make
+/// leaves it.
+#[test]
+fn messages_follow_the_directories_make_enters() {
+    let dir = project();
+    let d = setup(dir.path());
+    compile(&d, "printf \"make: Entering directory '%s/src'\\na.rs:2:5: error: x\\nmake: Leaving directory '%s/src'\\nsrc/b.rs:3: error: y\\n\" \"$PWD\" \"$PWD\"");
+    d.press("M-g n");
+    assert_eq!(d.buffer_name(), "a.rs");
+    assert_eq!(d.point(), 9 + 4, "line 2, column 5");
+    d.press("M-g n");
+    assert_eq!(d.buffer_name(), "b.rs");
+}
+
+/// A colour code the program writes in two pieces is taken out whole, as
+/// a terminal reads it, not left in the buffer.
+#[test]
+fn colour_codes_split_between_writes_are_taken_out() {
+    let dir = project();
+    let d = setup(dir.path());
+    compile(&d, "printf 'a\\033[3'; sleep 0.3; printf '5mred\\033[0m b\\n'");
+    let text = buffer_text(&d, "*compilation*");
+    assert!(text.contains("\nared b\n"), "{text:?}");
+    assert!(!text.contains('\u{1b}'), "{text:?}");
 }

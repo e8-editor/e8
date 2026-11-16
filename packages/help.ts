@@ -4,6 +4,8 @@
 // apropos.el (ADR 0064). Everything shown is made from E8's own
 // definitions and keymaps, never from Emacs's text.
 
+import { eraseBuffer } from "subr";
+
 // --- The *Help* buffer, with its history, after help-mode.el ---------------
 
 e8.defineFace({ name: "button", doc: "A button, such as a name in *Help* that RET follows.", attributes: { inherit: "link" } });
@@ -984,7 +986,7 @@ e8.defineCommand({
     e8.getBufferCreate("*Messages*");
     e8.withCurrentBuffer("*Messages*", () => {
       e8.setReadOnly(false);
-      e8.deleteRegion(0, e8.bufferSize());
+      eraseBuffer();
       const lines = e8.messages();
       e8.insert(lines.length === 0 ? "" : lines.join("\n") + "\n");
       e8.setReadOnly(true);

@@ -209,11 +209,11 @@ impl Buffer {
     }
 
     /// The visited file's modification time, as Emacs's
-    /// `visited-file-modtime`: `Ok(Some(time))`, `Ok(None)` if the file did
-    /// not exist when visited, and `Err(())` if none is recorded, which
+    /// `visited-file-modtime`: `Some(Some(time))`, `Some(None)` if the file
+    /// did not exist when visited, and `None` if none is recorded, which
     /// Emacs gives as 0.
-    pub fn visited_file_modtime(&self) -> std::result::Result<Option<SystemTime>, ()> {
-        if self.file.modtime_known { Ok(self.file.modtime) } else { Err(()) }
+    pub fn visited_file_modtime(&self) -> Option<Option<SystemTime>> {
+        self.file.modtime_known.then_some(self.file.modtime)
     }
 
     /// Whether the visited file is as it was when visited or last saved,

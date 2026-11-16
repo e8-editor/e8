@@ -630,11 +630,16 @@ function applyTextEdits(edits: { range: Range; newText: string }[]): void {
   const resolved = edits.map((e) => ({ start: bufferPosition(e.range.start), end: bufferPosition(e.range.end), text: e.newText }));
   resolved.sort((a, b) => b.start - a.start || b.end - a.end);
   const point = e8.makeMarker(e8.point());
-  for (const e of resolved) {
-    e8.deleteRegion(e.start, e.end);
-    e8.gotoChar(e.start);
-    e8.insert(e.text);
-  }
+  // In the whole buffer, as eglot--apply-text-edits widens: a rename changes
+  // uses outside a narrowing too.
+  e8.saveRestriction(() => {
+    e8.widen();
+    for (const e of resolved) {
+      e8.deleteRegion(e.start, e.end);
+      e8.gotoChar(e.start);
+      e8.insert(e.text);
+    }
+  });
   e8.gotoChar(e8.markerPosition(point)!);
   e8.deleteMarker(point);
 }

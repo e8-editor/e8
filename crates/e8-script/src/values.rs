@@ -571,6 +571,9 @@ pub(crate) fn command_from_js<S: Scope>(s: &mut S, [name, doc, params, run, shif
         if let Some(history) = field(s, "history")?.and_then(|v| s.as_string(&v)) {
             command = command.history(&history);
         }
+        if let Some(f) = field(s, "value")?.and_then(|v| s.hold(&v)) {
+            command = command.value_with(move |ed, args| f.call_for_names(ed, args));
+        }
     }
     Ok(command)
 }

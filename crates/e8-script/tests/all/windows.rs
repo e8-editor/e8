@@ -216,6 +216,25 @@ fn frames_each_have_their_own_windows() {
     assert_eq!(ed.echo(), Some("Attempt to delete the sole visible or iconified frame"));
 }
 
+/// C-x 5 o passes over frames that are invisible or iconified, as other-frame does.
+#[test]
+fn other_frame_passes_over_hidden_frames() {
+    let (mut ed, s) = setup("hello");
+    ed.press("C-x 5 2 C-x 5 2").unwrap();
+    assert_eq!(ed.frame_list().len(), 3);
+    eval(&mut ed, &s, "(e8.iconifyFrame(e8.frameList()[1]), 0)");
+    let selected = |ed: &mut Editor, s: &Scripting| eval(ed, s, "e8.frameList().indexOf(e8.selectedFrame())");
+    assert_eq!(selected(&mut ed, &s), "0");
+    ed.press("C-x 5 o").unwrap();
+    assert_eq!(selected(&mut ed, &s), "2", "the iconified frame is passed over");
+    ed.press("C-x 5 o").unwrap();
+    assert_eq!(selected(&mut ed, &s), "0");
+    // C-u C-x 5 1 iconifies the others rather than deleting them.
+    ed.press("C-u C-x 5 1").unwrap();
+    assert_eq!(ed.frame_list().len(), 3);
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.frameList().map((f) => e8.frameVisibleP(f)))"), r#""[true,\"icon\",\"icon\"]""#);
+}
+
 #[test]
 fn deleting_the_selected_frame_selects_the_next() {
     let (mut ed, _scripting) = setup("abc");
@@ -431,6 +450,29 @@ fn c_l_puts_the_line_in_the_middle_then_at_the_top_then_the_bottom() {
     assert_eq!(top(&ed), 45, "middle again");
 }
 
+/// C-l keeps scroll-margin from the top and bottom, but at most a quarter
+/// of the window, and a fraction in recenter-positions is that far down it,
+/// as recenter-top-bottom does.
+#[test]
+fn c_l_caps_the_margin_and_takes_fractions() {
+    let text: String = (0..100).map(|i| format!("line {i}\n")).collect();
+    let (mut ed, s) = setup(&text);
+    ed.set_viewport_height(10);
+    for _ in 0..50 {
+        ed.press("C-n").unwrap();
+    }
+    let top = |ed: &Editor| ed.window_buffer().top_line;
+    let quarter: usize = eval(&mut ed, &s, "Math.trunc(e8.windowBodyHeight() / 4)").parse().unwrap();
+    eval(&mut ed, &s, "(e8.setVariable('scroll-margin', 5), 0)");
+    ed.press("C-l C-l").unwrap();
+    assert_eq!(top(&ed), 50 - quarter, "top, the margin a quarter of the window");
+    let height: f64 = eval(&mut ed, &s, "e8.windowTotalHeight()").parse().unwrap();
+    eval(&mut ed, &s, "(e8.setVariable('recenter-positions', [0.3]), 0)");
+    ed.press("C-f").unwrap();
+    ed.press("C-l").unwrap();
+    assert_eq!(top(&ed), 50 - (0.3 * height).round() as usize, "three tenths of the way down");
+}
+
 #[test]
 fn m_r_moves_to_the_middle_then_the_top_then_the_bottom_line() {
     let text: String = (0..100).map(|i| format!("line {i}\n")).collect();
@@ -464,4 +506,16 @@ fn split_height_threshold_nil_splits_side_by_side() {
     ed.call("display-buffer", vec![e8_core::Arg::Str("*other*".into())]).unwrap();
     let beside = s.eval_expression(&mut ed, r#"String(e8.windowSize(e8.windowList()[1]).fullWidth)"#).unwrap();
     assert_eq!(beside.trim_matches('"'), "false", "split beside when nil");
+}
+
+/// M-<end> and M-<home> move to the ends of the next window's buffer, staying in the selected one.
+#[test]
+fn m_end_and_m_home_move_in_the_other_window() {
+    let (mut ed, s) = setup("one\ntwo\nthree\n");
+    ed.press("C-x 2").unwrap();
+    ed.press("M-<end>").unwrap();
+    let points = |ed: &mut Editor, s: &Scripting| eval(ed, s, "JSON.stringify([e8.windowList().indexOf(e8.selectedWindow()), ...e8.windowList().map((w) => e8.windowPoint(w))])");
+    assert_eq!(points(&mut ed, &s), r#""[0,0,14]""#);
+    ed.press("M-<home>").unwrap();
+    assert_eq!(points(&mut ed, &s), r#""[0,0,0]""#);
 }

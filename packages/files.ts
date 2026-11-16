@@ -979,18 +979,21 @@ function nondirectory(file: string): string {
 function addFinalNewline(): void {
   const size = e8.bufferSize();
   const require = e8.variable("require-final-newline");
-  if (size === 0 || require === false || require === null || e8.bufferText(size - 1, size) === "\n") return;
+  if (size === 0 || require === false || require === null || e8.bufferReadOnly() || e8.bufferText(size - 1, size) === "\n") return;
   if (require === true || require === "visit-save" || e8.yOrNP(`Buffer ${e8.bufferName()} does not end in newline.  Add one? `)) {
-    const point = e8.point();
-    e8.gotoChar(e8.pointMax());
-    e8.insert("\n");
-    e8.gotoChar(point);
+    // At the end of the whole buffer: basicSaveBuffer has widened it.
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.pointMax());
+      e8.insert("\n");
+    });
   }
 }
 
 /** Writes the buffer, says so and runs the save hooks, as basic-save-buffer does once it may. */
 function writeBuffer(file: string): void {
-  e8.runHooks("before-save-hook");
+  // An error in a hook is only reported, so it cannot stop the saving, as
+  // basic-save-buffer's with-demoted-errors has it.
+  e8.conditionCase(() => e8.runHooks("before-save-hook"), { error: (e) => e8.message(`Before-save hook error: ${e.message}`) });
   e8.writeVisitedFile();
   e8.message(`Wrote ${e8.bufferFileName() ?? file}`);
   e8.runHooks("after-save-hook");
@@ -1015,9 +1018,20 @@ function basicSaveBuffer(): void {
   if (e8.visitedFileChanged() && !e8.yesOrNoP(`${nondirectory(file)} has changed since visited or saved.  Save anyway? `)) {
     e8.userError("Save not confirmed");
   }
-  addFinalNewline();
-  selectSafeCodingSystem();
-  writeBuffer(file);
+  // The whole buffer, however it is narrowed, for the final newline, the
+  // hooks and the writing, as basic-save-buffer widens around them.
+  e8.saveRestriction(() => {
+    e8.widen();
+    addFinalNewline();
+    selectSafeCodingSystem();
+    // A directory that is not there yet is made if you say so.
+    const dir = e8.fileNameDirectory(e8.expandFileName(file));
+    if (dir !== undefined && !e8.fileExists(file) && !e8.fileExists(dir)) {
+      if (!e8.yOrNP(`Directory \u2018${dir}\u2019 does not exist; create? `)) e8.signal("error", "Canceled");
+      e8.makeDirectory(dir, { parents: true });
+    }
+    writeBuffer(file);
+  });
 }
 
 e8.defineCommand({
@@ -1033,13 +1047,14 @@ e8.defineCommand({
   name: "write-file",
   doc:
     "Write the current buffer to a file and visit that file instead.\n\n" +
-    "A directory writes a file of the buffer's name in it. An existing file is overwritten only if you say so.",
+    "A directory writes a file of the visited file's name in it, or the buffer's. An existing file is overwritten only if you say so.",
   params: [{ name: "file", kind: "file", prompt: "Write file: " }],
   run: (input: string) => {
     let file = e8.expandFileName(input);
-    if (input.endsWith("/")) file = `${file.replace(/\/$/, "")}/${e8.bufferName()}`;
+    // A directory takes the name of the file visited, else the buffer's.
+    if (input.endsWith("/")) file = `${file.replace(/\/$/, "")}/${e8.fileNameNondirectory(e8.bufferFileName() ?? e8.bufferName())}`;
     if (e8.calledInteractively() && e8.fileExists(file) && file !== e8.bufferFileName()) {
-      if (!e8.yOrNP(`File ‘${file}’ exists; overwrite? `)) throw new Error("Canceled");
+      if (!e8.yOrNP(`File ‘${file}’ exists; overwrite? `)) e8.userError("Canceled");
     }
     e8.setVisitedFileName(file);
     e8.setBufferModified(true);
@@ -1443,11 +1458,14 @@ e8.defineCommand({
           if (oldFile !== undefined) e8.setVisitedFileName(oldFile, { alongWithFile: true });
         }
       }
-      if (e8.bufferName() !== lose) e8.call("kill-buffer", lose);
+      // Their questions were asked already, as find-alternate-file binds them away.
+      if (e8.bufferName() !== lose) e8.letBind({ "kill-buffer-query-functions": null }, () => e8.call("kill-buffer", lose));
     };
+    // As find-alternate-file asks, kill-buffer-query-functions first.
+    if (!e8.runHookWithArgsUntilFailure("kill-buffer-query-functions")) e8.userError("Aborted");
     if (e8.bufferModified() && e8.bufferFileName() !== undefined) {
       if (!e8.calledInteractively()) throw new Error(`Buffer ${old} modified`);
-      if (!e8.yesOrNoP(`Buffer \u2018${old}\u2019 modified; kill anyway? `)) throw new Error("Aborted");
+      if (!e8.yesOrNoP(`Kill and replace buffer \u2018${old}\u2019 without saving it? `)) e8.userError("Aborted");
     }
     replace();
   },
@@ -1605,3 +1623,18 @@ export function findBufferVisiting(file: string): string | undefined {
     return f !== undefined && e8.fileTruename(f) === truename;
   });
 }
+
+e8.defineCommand({
+  name: "rename-uniquely",
+  doc:
+    "Rename the current buffer to a name no other buffer has, its name with <N> after it, so another buffer can take its name, " +
+    "as a second *shell* or *compilation* can once the first is renamed.",
+  run: () => {
+    let base = e8.bufferName()!;
+    const file = e8.bufferFileName();
+    const m = /<[0-9]+>$/.exec(base);
+    // A <N> its file's name has is kept, as files.el does.
+    if (m !== null && !(file !== undefined && base === e8.fileNameNondirectory(file))) base = base.slice(0, m.index);
+    e8.call("rename-buffer", e8.generateNewBufferName(base));
+  },
+});

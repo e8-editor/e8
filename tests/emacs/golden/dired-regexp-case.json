@@ -1,0 +1,72 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "marking-by-regexp-folds-case",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x C-j % m",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "readme"
+        ],
+        "files": {
+          "README.md": "r\n",
+          "a.txt": "one\n",
+          "notes.org": "n\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "  DIR:\n  .\n  ..\n* README.md\n  a.txt\n  notes.org\n",
+      "visible": "  DIR:\n  .\n  ..\n* README.md\n  a.txt\n  notes.org\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "README.md": "r\n",
+        "a.txt": "one\n",
+        "notes.org": "n\n"
+      }
+    },
+    {
+      "name": "flagging-by-regexp-folds-case",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x C-j % d",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "NOTES"
+        ],
+        "files": {
+          "README.md": "r\n",
+          "a.txt": "one\n",
+          "notes.org": "n\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "  DIR:\n  .\n  ..\n  README.md\n  a.txt\nD notes.org\n",
+      "visible": "  DIR:\n  .\n  ..\n  README.md\n  a.txt\nD notes.org\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "README.md": "r\n",
+        "a.txt": "one\n",
+        "notes.org": "n\n"
+      }
+    }
+  ]
+}

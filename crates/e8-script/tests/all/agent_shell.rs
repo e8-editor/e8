@@ -1388,3 +1388,31 @@ fn the_transcript_is_read_only_and_undo_reaches_only_the_request() {
     assert_eq!(s.d.text(), text);
     assert!(s.d.message().is_some_and(|m| m.contains("No further undo")), "{:?}", s.d.message());
 }
+
+/// A reply and a tool call with emoji, which JavaScript counts as two units
+/// each, come out whole and in order, the tool call's line and the plan
+/// where they belong.
+#[test]
+fn replies_with_emoji_stay_in_order() {
+    let mut steps = opening("go");
+    steps.extend([
+        chunk("Start 🚀 here.\n"),
+        update(json!({"sessionUpdate": "tool_call", "toolCallId": "t1", "title": "Read 📄 notes", "kind": "read", "status": "pending"})),
+        update(json!({"sessionUpdate": "tool_call_update", "toolCallId": "t1", "status": "completed", "title": "Read 📄 notes.md"})),
+        update(json!({"sessionUpdate": "plan", "entries": [{"content": "Ship 🎉", "priority": "high", "status": "completed"}]})),
+        chunk("All done 👍🏽."),
+        end_turn("end_turn"),
+    ]);
+    let Some(s) = setup(steps, "go") else { return };
+    s.d.press("C-c RET");
+    let text = s.finished();
+    let reply = text.find("* Agent\n").map(|i| &text[i..]).unwrap_or(&text);
+    let order = ["Start 🚀 here.", "Read 📄 notes", "Ship 🎉", "All done 👍🏽."].map(|t| reply.find(t));
+    assert!(order.iter().all(Option::is_some), "{text}");
+    assert!(order.windows(2).all(|w| w[0] < w[1]), "{text}");
+    // The next request can be typed at the end: no lock reaches past the
+    // agent's text by the emoji's extra units.
+    s.d.eval("e8.gotoChar(e8.bufferSize())");
+    s.d.type_text("next");
+    assert!(s.d.text().ends_with("* You\nnext"), "{:?} {:?}", s.d.text(), s.d.message());
+}

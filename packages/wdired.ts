@@ -13,7 +13,7 @@
 
 import { DEL_MARKER, currentDirectory, fileLine, findLine, isDot, readin, requireDired, setMark } from "dired";
 import { diredRenameFile } from "dired-aux";
-import { PerBuffer } from "subr";
+import { eraseBuffer, PerBuffer } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("wdired-allow-to-redirect-links", true, "Whether the targets of symbolic links can be edited too, to point them elsewhere.");
@@ -114,7 +114,7 @@ e8.defineCommand({
     const before = saved.get(e8.currentBuffer());
     if (before === undefined) throw new Error("Not a Wdired buffer");
     e8.letBind({ "inhibit-read-only": true }, () => {
-      e8.deleteRegion(0, e8.bufferSize());
+      eraseBuffer();
       e8.insert(before.content);
     });
     e8.gotoChar(before.point);

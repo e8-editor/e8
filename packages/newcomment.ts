@@ -5,7 +5,7 @@
 // comments go to. Each major mode says what its comments look like with
 // comment-start and comment-end, and its syntax table finds them.
 
-import { escapeRegExp, numberValue as num, truthy } from "subr";
+import { escapeRegExp, forwardLine, numberValue as num, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string, local = false) => e8.defineVariable({ name, value, doc, local });
 defvar("comment-start", null, "What starts a comment in this mode, with the space after it: \"// \" or \"# \". nil if the mode has no comments.", true);
@@ -140,15 +140,23 @@ function regionLines(beg: number, end: number): [number, number] {
   return [first, last];
 }
 
-/** Comments each line of the region at its least indentation, as comment-region with the indent style. */
-export function commentRegion(begIn: number, endIn: number, arg: number): void {
-  if (arg < 0) return uncommentRegion(begIn, endIn, -arg);
+/**
+ * Comments each line of the region at its least indentation, as
+ * comment-region with the indent style. `arg` is the raw prefix argument:
+ * C-u uncomments, a negative number takes that many levels off, and N
+ * puts N comment starters, where none puts as many as comment-add says
+ * for a one-character starter, as comment-region-default-1 decides.
+ */
+export function commentRegion(begIn: number, endIn: number, arg: e8.PrefixArg): void {
+  if (Array.isArray(arg)) return uncommentRegion(begIn, endIn);
+  const n = arg === null ? 1 : e8.prefixNumericValue(arg);
+  if (n < 0) return uncommentRegion(begIn, endIn, -n);
   // The region without the blank lines around it, as comment-region-default-1 sanitizes it.
   let b = begIn;
-  while (b < e8.bufferSize() && " \t\n\r".includes(charAt(b))) b++;
+  while (b < e8.pointMax() && " \t\n\r".includes(charAt(b))) b++;
   const beg = Math.max(begIn, bol(b));
   let e = endIn;
-  while (e > 0 && " \t\n\r".includes(charAt(e - 1))) e--;
+  while (e > e8.pointMin() && " \t\n\r".includes(charAt(e - 1))) e--;
   const end = Math.min(endIn, eol(e));
   if (beg >= end) throw new Error("Nothing to comment");
   // Comments that end with the line end the region's last line there.
@@ -160,7 +168,8 @@ export function commentRegion(begIn: number, endIn: number, arg: number): void {
     e8.gotoChar(e8.markerPosition(p)!);
     e8.deleteMarker(p);
   }
-  const add = num("comment-add", 0) + arg - 1;
+  const multiChar = commentStart().replace(/[ \t]*$/, "").length !== 1;
+  const add = arg === null && !multiChar ? num("comment-add", 0) : n - 1;
   const cs = padRight(commentStart(), add);
   const ceRaw = commentEnd();
   const ce = ceRaw === "" ? "" : padLeft(ceRaw);
@@ -194,11 +203,9 @@ function uncommentRegion(beg: number, end: number, arg?: number): void {
   const [first, last] = regionLines(beg, end);
   const padding = str("comment-padding") ?? " ";
   const p = e8.makeMarker();
-  let found = false;
   for (let l = last; l >= first; l--) {
     const start = commentOnLine(l);
     if (start === undefined) continue;
-    found = true;
     // The starter, its last character repeated as it may be, as
     // (comment-padright comment-start 're) matches it; with `arg`, that
     // many levels only.
@@ -220,12 +227,12 @@ function uncommentRegion(beg: number, end: number, arg?: number): void {
   }
   e8.gotoChar(e8.markerPosition(p)!);
   e8.deleteMarker(p);
-  if (!found) throw new Error("Can't find any comment");
+  // No comment to take off is no error, as uncomment-region-default-1 searches with noerror.
 }
 
 function commentOrUncommentRegion(beg: number, end: number, arg: e8.PrefixArg): void {
   if (commentOnly(beg, end)) uncommentRegion(beg, end, arg === null ? undefined : e8.prefixNumericValue(arg));
-  else commentRegion(beg, end, arg === null ? 1 : e8.prefixNumericValue(arg));
+  else commentRegion(beg, end, arg);
 }
 
 /** The column for the comment at point, as comment-choose-indent: near comment-column, within the fill column, as the comments around align. */
@@ -321,17 +328,23 @@ function reindent(column: number): void {
 }
 
 /** Kills the comment on the line, and the whitespace before it, as comment-kill. */
-function commentKill(count: number): void {
-  for (let i = 0; i < Math.max(count, 1); i++) {
-    const line = e8.lineOf(e8.point());
-    const start = commentOnLine(line);
-    if (start !== undefined) {
+/**
+ * Kills the comment on `count` lines from point's, as comment-kill does:
+ * point stays on each line while its comment goes, and with `moves`, as
+ * any prefix argument makes it, goes on to the next line after each.
+ */
+function commentKill(count: number, moves = false): void {
+  for (let i = 0; i < count; i++) {
+    e8.saveExcursion(() => {
+      const line = e8.lineOf(e8.point());
+      const start = commentOnLine(line);
+      if (start === undefined) return;
       let q = start;
       while (q > e8.lineStart(line) && " \t".includes(charAt(q - 1))) q--;
       e8.killRegion(q, e8.lineEnd(line));
       e8.call("indent-according-to-mode");
-    }
-    if (count > 1 && line + 1 < e8.lineCount()) e8.gotoChar(e8.lineStart(line + 1));
+    });
+    if (moves) forwardLine(1);
   }
 }
 
@@ -352,7 +365,8 @@ e8.defineCommand({
     const arg = e8.prefixArg();
     if (regionUsed()) return commentOrUncommentRegion(...region(), arg);
     if (!blank(e8.lineOf(e8.point()))) {
-      if (arg !== null) commentKill(typeof arg === "number" ? arg : 1);
+      // (comment-kill (and (integerp arg) arg)): a count moves on, C-u does not.
+      if (arg !== null) commentKill(typeof arg === "number" ? arg : 1, typeof arg === "number");
       else commentIndent();
       return;
     }
@@ -375,7 +389,7 @@ e8.defineCommand({
   run: () => {
     barf();
     if (e8.mark() === undefined) e8.userError("The mark is not set now, so there is no region");
-    commentRegion(...region(), e8.prefixNumericValue(e8.prefixArg()));
+    commentRegion(...region(), e8.prefixArg());
   },
 });
 
@@ -448,7 +462,8 @@ e8.defineCommand({
   doc: "Kill the comment on this line. With a prefix argument, on that many lines.",
   run: () => {
     barf();
-    commentKill(e8.prefixNumericValue(e8.prefixArg()));
+    const arg = e8.prefixArg();
+    commentKill(e8.prefixNumericValue(arg), arg !== null);
   },
 });
 
@@ -499,8 +514,8 @@ e8.defineCommand({
     // The whitespace either side goes.
     let a = e8.point();
     let b = a;
-    while (a > 0 && " \t".includes(charAt(a - 1))) a--;
-    while (b < e8.bufferSize() && " \t".includes(charAt(b))) b++;
+    while (a > e8.pointMin() && " \t".includes(charAt(a - 1))) a--;
+    while (b < e8.pointMax() && " \t".includes(charAt(b))) b++;
     e8.deleteRegion(a, b);
     e8.gotoChar(a);
     const ce = commentEnd();
@@ -527,7 +542,7 @@ e8.defineCommand({
     }
     e8.insertAndInherit("\n");
     let a = e8.point() - 1;
-    while (a > 0 && " \t".includes(charAt(a - 1))) a--;
+    while (a > e8.pointMin() && " \t".includes(charAt(a - 1))) a--;
     e8.deleteRegion(a, e8.point() - 1);
     e8.call("indent-according-to-mode");
   },

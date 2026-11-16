@@ -1,6 +1,8 @@
 // What Org's files share, after Org's org-macs.el: markers placed by
 // Org's own rules when it replaces text, and the edits that keep them.
 
+import { eraseBuffer } from "subr";
+
 /**
  * A marker of the core's, as Emacs's: it moves with every edit to its
  * buffer, however made. Setting `pos` moves it into the current buffer,
@@ -81,6 +83,15 @@ export function placeMarkers(saved: [Marker, number][]): void {
   for (const [m, p] of saved) if (e8.markerBuffer(m.id) === here) m.pos = p;
 }
 
+/**
+ * A heading's title without the statistics cookies before and after it, as
+ * org-complex-heading-regexp-format lets a title be matched with them:
+ * "Tasks [1/3]" is the heading "Tasks".
+ */
+export function titleWithoutCookies(title: string): string {
+  return title.replace(/^(?:\[[0-9%/]+\] *)*/, "").replace(/(?: *\[[0-9%/]+\])*$/, "");
+}
+
 export function edInsert(pos: number, text: string, beforeMarkers = false): void {
   if (text === "") return;
   e8.gotoChar(pos);
@@ -88,7 +99,13 @@ export function edInsert(pos: number, text: string, beforeMarkers = false): void
   else e8.insert(text);
 }
 
+/**
+ * Deletes from `from` to `to`, kept to the accessible text, as Org's
+ * deletions to (line-beginning-position 2) and the like stop at a
+ * narrowing's edges; code that means the whole buffer widens first.
+ */
 export function edDelete(from: number, to: number): string {
+  [from, to] = [Math.max(from, e8.pointMin()), Math.min(to, e8.pointMax())];
   if (to <= from) return "";
   return e8.deleteRegion(from, to);
 }
@@ -133,7 +150,7 @@ export function orgMks(table: e8.Value[][], title: string, prompt = "Select: ", 
           }
         }
         e8.letBind({ "inhibit-read-only": true }, () => {
-          e8.deleteRegion(0, e8.bufferSize());
+          eraseBuffer();
           e8.insert(text);
         });
         e8.gotoChar(0);

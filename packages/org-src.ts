@@ -11,7 +11,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { PerBuffer } from "subr";
+import { eraseBuffer, PerBuffer } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("org-src-lang-modes", [
@@ -132,7 +132,7 @@ function openEdit(block: Block): { name: string; edit: Edit } {
   const name = `*Org Src ${source}[ ${lang} ]*`;
   e8.getBufferCreate(name);
   e8.withCurrentBuffer(name, () => {
-    e8.deleteRegion(0, e8.bufferSize());
+    eraseBuffer();
     e8.insert(text);
     if (mode !== undefined) e8.call(mode as e8.CommandName);
     edits.set(e8.currentBuffer(), edit);
@@ -182,11 +182,16 @@ function writeBack(edit: Edit, text: string): void {
     const beg = e8.markerPosition(edit.beg) ?? 0;
     const end = e8.markerPosition(edit.end) ?? beg;
     if (e8.bufferSubstringNoProperties(beg, end) === text) return;
-    e8.saveExcursion(() => {
-      e8.gotoChar(beg);
-      e8.deleteRegion(beg, end);
-      e8.insert(text);
-    });
+    // Wherever the Org buffer is narrowed to now, as org-edit-src-exit
+    // narrows to the block itself to put the text back.
+    e8.saveExcursion(() =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        e8.gotoChar(beg);
+        e8.deleteRegion(beg, end);
+        e8.insert(text);
+      }),
+    );
   });
 }
 
@@ -340,7 +345,7 @@ e8.defun("org-src-font-lock-fontify-block", (lang: e8.Value, start: e8.Value, en
   const runs: [number, number, e8.Value][] = [];
   e8.withCurrentBuffer(name, () => {
     if (fresh) e8.bufferDisableUndo();
-    e8.deleteRegion(0, e8.bufferSize());
+    eraseBuffer();
     e8.insert(`${text} `);
     if (e8.variable("org-src--fontification-mode") !== mode) {
       e8.call(mode as e8.CommandName);

@@ -114,6 +114,27 @@ fn scripts_search_and_replace() {
     assert_eq!(ed.echo(), Some("4 0 Bar bar false"));
 }
 
+/// As Emacs's adjust_markers_for_replace: markers at the end of the match
+/// end up after the new text, those inside at its start; what Emacs 30
+/// gives for the same, counting from 1.
+#[test]
+fn replacing_moves_markers_at_the_end_after_the_new_text() {
+    let (mut ed, scripting) = setup("a foo b");
+    let got = scripting
+        .eval_expression(
+            &mut ed,
+            r#"(() => {
+                const ms = [2, 5, 3, 6].map((p) => e8.makeMarker(p));
+                e8.search("foo", { from: 0 });
+                e8.gotoChar(3);
+                e8.replaceMatch("barbaz");
+                return `${e8.bufferText()} ${ms.map((m) => e8.markerPosition(m)).join(" ")}`;
+            })()"#,
+        )
+        .unwrap();
+    assert_eq!(got, r#""a barbaz b 2 8 2 9""#);
+}
+
 fn text(ed: &Editor) -> String {
     let b = ed.window_buffer();
     b.slice(0..b.len())
@@ -135,6 +156,45 @@ fn query_replace_from_keys() {
     // Each replacement can be undone.
     ed.press("C-/").unwrap();
     assert_eq!(text(&ed), "bar foo foo");
+}
+
+/// As query-replace-read-args: the second prompt names the string, empty
+/// input replaces the last pair again without asking for the replacement,
+/// and C-u replaces whole words only.
+#[test]
+fn query_replace_offers_the_last_pair_and_c_u_takes_words() {
+    let (mut ed, _scripting) = setup("foo foobar foo");
+    ed.press("C-u M-%").unwrap();
+    ed.type_text("foo\n");
+    assert_eq!(ed.prompt(), Some("Query replace foo with: "));
+    ed.type_text("bar\n");
+    assert_eq!(ed.echo(), Some("Query replacing word foo with bar: (? for help) "));
+    ed.press("!").unwrap();
+    assert_eq!(text(&ed), "bar foobar bar");
+    ed.press("M-< M-%").unwrap();
+    assert_eq!(ed.prompt(), Some("Query replace (default foo → bar): "));
+    ed.press("RET").unwrap();
+    assert_eq!((ed.prompt(), ed.echo()), (None, Some("Query replacing foo with bar: (? for help) ")));
+    ed.press("!").unwrap();
+    assert_eq!(text(&ed), "bar barbar bar");
+}
+
+/// M-c in isearch toggles case folding, as isearch-toggle-case-fold does,
+/// saying so after the prompt, rather than ending the search and
+/// capitalising a word.
+#[test]
+fn m_c_in_isearch_toggles_case_folding() {
+    let (mut ed, _scripting) = setup("Foo xFoo foo");
+    ed.press("C-s f o o").unwrap();
+    assert_eq!(point(&ed), 3);
+    ed.press("M-c").unwrap();
+    assert_eq!(ed.echo(), Some("I-search: foo [case sensitive]"));
+    ed.press("C-s").unwrap();
+    assert_eq!(point(&ed), 12, "Foo is passed over");
+    ed.press("RET").unwrap();
+    assert_eq!(text(&ed), "Foo xFoo foo");
+    ed.press("M-< C-s f o o M-c M-c").unwrap();
+    assert_eq!(ed.echo(), Some("I-search: foo [case insensitive]"));
 }
 
 #[test]
@@ -192,4 +252,18 @@ fn regexps_are_emacs_s_with_the_buffer_s_syntax() {
     assert_eq!(eval(&mut ed, &s, r#"(e8.gotoChar(0), e8.reSearchForward("\\w+"), e8.point())"#), "7");
     // Errors are Emacs's.
     assert!(s.eval_expression(&mut ed, r#"e8.conditionCase(() => e8.stringMatch("\\(a\\)\\2", "aa"), { "invalid-regexp": (e) => { throw new Error("caught " + e.message); } })"#).unwrap_err().to_string().contains("caught Invalid regexp: \"Invalid back reference\""));
+}
+
+/// replace-match refuses a match outside the narrowing without moving point,
+/// as Freplace_match checks the match first.
+#[test]
+fn replace_match_outside_the_narrowing_leaves_point() {
+    let (mut ed, s) = setup("foo bar baz");
+    let got = eval(
+        &mut ed,
+        &s,
+        r#"(e8.gotoChar(0), e8.reSearchForward("foo"), e8.narrowToRegion(4, 11), e8.gotoChar(8),
+            JSON.stringify([e8.conditionCase(() => (e8.replaceMatch("x"), "replaced"), { "args-out-of-range": () => "refused" }), e8.point()]))"#,
+    );
+    assert_eq!(got, r#""[\"refused\",8]""#);
 }

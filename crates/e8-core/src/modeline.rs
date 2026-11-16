@@ -358,8 +358,9 @@ impl Editor {
             '&' => if b.is_modified() { "*" } else { "-" }.into(),
             // Lines count from the start of the accessible portion.
             'l' => (b.line_of(f.point.min(b.len())) - b.line_of(b.point_min()) + 1).to_string(),
-            'c' => b.column(f.point.min(b.len())).to_string(),
-            'C' => (b.column(f.point.min(b.len())) + 1).to_string(),
+            // The column on the screen, as current-column counts it.
+            'c' => crate::commands::current_column(self, b, f.point.min(b.len())).to_string(),
+            'C' => (crate::commands::current_column(self, b, f.point.min(b.len())) + 1).to_string(),
             'n' => if b.is_narrowed() { " Narrow" } else { "" }.into(),
             'm' => self.variable("mode-name").and_then(|v| v.as_str().map(str::to_string)).unwrap_or_default(),
             'Z' => b.coding_mnemonic(),
@@ -368,6 +369,8 @@ impl Editor {
                 m.pop();
                 m
             }
+            // The status of the buffer's process, as process-status names it.
+            's' => self.buffer_process(&b.name).and_then(|p| self.process_status_name(&p)).unwrap_or("no process").into(),
             'i' => b.len().to_string(),
             'I' => human_size(b.len()),
             'p' => self.window_position(f, b),
@@ -517,7 +520,7 @@ pub(crate) fn install(ed: &mut Editor) {
     ed.define_variable(
         Variable::new(
             "mode-line-format",
-            "What each window's mode line shows, as a mode line construct: a string, whose %-specs show the buffer's state (%b its name, %* and %+ whether it is read-only or modified, %l and %c point's line and column, %n Narrow when narrowed, %Z the coding, %p how far through the buffer the window is, %- dashes to the end); a symbol, whose value is shown, a string as it is; a list of constructs; [\":eval\", function], whose result is shown; [\":propertize\", construct, \"face\", face]; [symbol, then, else], which shows then when the symbol's value is true; or [width, ...constructs], padded to at least width columns, or cut to -width.",
+            "What each window's mode line shows, as a mode line construct: a string, whose %-specs show the buffer's state (%b its name, %* and %+ whether it is read-only or modified, %l and %c point's line and column, %n Narrow when narrowed, %s the status of its process, %Z the coding, %p how far through the buffer the window is, %- dashes to the end); a symbol, whose value is shown, a string as it is; a list of constructs; [\":eval\", function], whose result is shown; [\":propertize\", construct, \"face\", face]; [symbol, then, else], which shows then when the symbol's value is true; or [width, ...constructs], padded to at least width columns, or cut to -width.",
             // It starts with a string, as Emacs's does with "%e", since a
             // list that starts with a symbol is a conditional.
             Value::List(vec![s("%e"), sym("mode-line-mule-info"), sym("mode-line-modified"), s("-  "), sym("mode-line-buffer-identification"), s(" "), sym("mode-line-position"), s(" "), sym("mode-line-modes"), sym("mode-line-misc-info"), s("%-")]),

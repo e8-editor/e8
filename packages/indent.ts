@@ -112,14 +112,20 @@ e8.defineCommand({
   },
 });
 
-/** The lines from the region's start to its end, the end's own line left out if the end is at its start. */
-function regionLines(): [number, number] {
+/**
+ * The lines from the region's start to its end, the end's own line left out
+ * if the end is at its start. With `whole`, the start's line too is left
+ * out unless the region starts at its beginning, as indent-rigidly's
+ * (or (bolp) (forward-line 1)) does.
+ */
+function regionLines(whole = false): [number, number] {
   const mark = e8.mark();
   if (mark === undefined) e8.userError("The mark is not set now, so there is no region");
   const [a, b] = [Math.min(e8.point(), mark), Math.max(e8.point(), mark)];
   let last = e8.lineOf(b);
   if (b === e8.lineStart(last) && last > e8.lineOf(a)) last--;
-  return [e8.lineOf(a), last];
+  const first = e8.lineOf(a) + (whole && a !== e8.lineStart(e8.lineOf(a)) ? 1 : 0);
+  return [first, last];
 }
 
 /** Indents each line of the region that is not empty, as indent-region does line by line. */
@@ -158,8 +164,8 @@ e8.defineCommand({
     "Indent each non-empty line of the region as the major mode says. " +
     "With a prefix argument, indent each to that column instead.",
   run: () => {
-    const [first, last] = regionLines();
     const arg = e8.prefixArg();
+    const [first, last] = regionLines(arg !== null);
     if (arg !== null) {
       const column = e8.prefixNumericValue(arg);
       for (let line = first; line <= last; line++) indentRigidly(line, line, column - currentIndentation(line));
@@ -179,7 +185,7 @@ e8.defineCommand({
 
 /** One step of indent-rigidly's keys: a column, or to the tab stop before or after the least indentation. */
 function rigidStep(n: number | "left-tab" | "right-tab"): void {
-  const [first, last] = regionLines();
+  const [first, last] = regionLines(true);
   const tab = num("tab-width", 8);
   const lines = [...Array(last - first + 1).keys()].map((i) => first + i).filter((l) => e8.lineText(l).trim() !== "");
   const least = lines.length === 0 ? 0 : Math.min(...lines.map(currentIndentation));
@@ -213,7 +219,7 @@ e8.defineCommand({
   run: () => {
     const arg = e8.prefixArg();
     if (arg !== null) {
-      const [first, last] = regionLines();
+      const [first, last] = regionLines(true);
       indentRigidly(first, last, e8.prefixNumericValue(arg));
       return;
     }
@@ -230,8 +236,8 @@ e8.defineCommand({
     "With tab-always-indent nil, insert a tab instead when point is past the indentation.",
   run: () => {
     if (e8.regionActive() && e8.mark() !== undefined && e8.mark() !== e8.point()) {
-      const [first, last] = regionLines();
-      indentRegion(first, last);
+      // indent-region, so a mode's indent-region-function, as Org's, does it.
+      e8.call("indent-region");
       e8.deactivateMark();
       return;
     }

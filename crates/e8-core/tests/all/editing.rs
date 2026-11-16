@@ -282,3 +282,50 @@ fn edits_and_searches_among_many_overlays_are_quick() {
     assert_eq!(ed.buffer().previous_overlay_change(14), 10);
     assert_eq!(ed.buffer().next_overlay_change(14), 15);
 }
+
+/// Emacs's validate_region: text outside a narrowing can be neither deleted
+/// nor killed nor copied, and nothing reaches the kill ring.
+#[test]
+fn edits_outside_the_narrowing_are_refused() {
+    let mut ed = Editor::new();
+    ed.type_text("AAA\nBBB\n");
+    press(&mut ed, "M-< C-SPC C-n");
+    ed.window_buffer_mut().narrow(4, 7);
+    for keys in ["C-w", "M-w"] {
+        press(&mut ed, keys);
+        assert!(ed.echo().is_some_and(|e| e.starts_with("Args out of range")), "{keys}: {:?}", ed.echo());
+    }
+    assert!(ed.delete_region(0, 5).unwrap_err().is("args-out-of-range"));
+    assert!(ed.replace_range(6, 8, "x").unwrap_err().is("args-out-of-range"));
+    assert_eq!(text(&ed), "AAA\nBBB\n");
+    assert_eq!(ed.delete_region(4, 7).unwrap(), "BBB");
+    assert_eq!(text(&ed), "AAA\n\n");
+    press(&mut ed, "C-y");
+    assert_eq!(text(&ed), "AAA\n\n", "nothing was killed");
+}
+
+/// The kill ring keeps kill-ring-max kills, the oldest going first, as
+/// kill-new lets them go.
+#[test]
+fn the_kill_ring_keeps_kill_ring_max_kills() {
+    let mut ed = Editor::new();
+    ed.set_variable("kill-ring-max", e8_core::Value::Number(3.0));
+    for word in ["a", "b", "c", "d", "e"] {
+        ed.kill_new(word);
+    }
+    let kills: Vec<String> = (0..4).map(|n| ed.current_kill(if n == 0 { 0 } else { 1 }).unwrap()).collect();
+    assert_eq!(kills, ["e", "d", "c", "e"], "three kept, cycling back to the newest");
+}
+
+/// An undefined key uses up the prefix argument typed before it, as
+/// Emacs's `undefined` command clears prefix-arg: C-u <f12> C-k kills one
+/// line, not four.
+#[test]
+fn an_undefined_key_takes_the_prefix_argument_with_it() {
+    let mut ed = Editor::new();
+    ed.type_text("one\ntwo\nthree\nfour\nfive\n");
+    press(&mut ed, "M-< C-u <f12>");
+    assert_eq!(ed.echo(), Some("<f12> is undefined"));
+    press(&mut ed, "C-k");
+    assert_eq!(text(&ed), "\ntwo\nthree\nfour\nfive\n");
+}

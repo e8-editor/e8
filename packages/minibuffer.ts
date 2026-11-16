@@ -330,8 +330,12 @@ e8.defineVariable({ name: "custom-variable-history", doc: "Variable names read-v
 /** Reads a buffer's name with completion, as read-buffer: DEF the default, REQUIRE-MATCH as completing-read's. */
 export function readBuffer(prompt: string, def?: string | e8.Buffer | null, requireMatch?: e8.Value, predicate?: (name: string) => boolean): string {
   const fallback = def === null || def === undefined ? undefined : typeof def === "string" ? def : (def.name ?? undefined);
-  const names = e8.bufferList().filter((n) => predicate === undefined || predicate(n));
-  return e8.completingRead(prompt, names, { requireMatch: requireMatch !== null && requireMatch !== undefined && requireMatch !== false, default: fallback });
+  // Not the internal buffers, whose names start with a space, as
+  // internal-complete-buffer leaves them out.
+  const names = e8.bufferList().filter((n) => !n.startsWith(" ") && (predicate === undefined || predicate(n)));
+  // The default in the prompt, before its colon, as read-buffer puts it with format-prompt.
+  const shown = fallback === undefined ? prompt : `${prompt.replace(/: $|[: ]$/, "")} (default ${fallback}): `;
+  return e8.completingRead(shown, names, { requireMatch: requireMatch !== null && requireMatch !== undefined && requireMatch !== false, default: fallback });
 }
 e8.defun("read-buffer", readBuffer);
 

@@ -679,6 +679,15 @@ export class PerBuffer<T> {
     if (id !== undefined) this.values.delete(id);
   }
 
+  /** Gives every buffer whose value is `from` the value `to` instead, or none if `to` is undefined. */
+  replaceValue(from: T, to: T | undefined): void {
+    for (const [id, v] of this.values) {
+      if (v !== from) continue;
+      if (to === undefined) this.values.delete(id);
+      else this.values.set(id, to);
+    }
+  }
+
   /** Forgets every buffer's value. */
   clear(): void {
     this.values.clear();

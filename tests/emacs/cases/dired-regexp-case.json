@@ -1,0 +1,4 @@
+[
+  {"name": "marking-by-regexp-folds-case", "text": "", "keys": "C-x C-j % m", "answers": ["readme"], "files": {"README.md": "r\n", "a.txt": "one\n", "notes.org": "n\n"}, "find": "a.txt"},
+  {"name": "flagging-by-regexp-folds-case", "text": "", "keys": "C-x C-j % d", "answers": ["NOTES"], "files": {"README.md": "r\n", "a.txt": "one\n", "notes.org": "n\n"}, "find": "a.txt"}
+]

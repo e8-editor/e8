@@ -12,7 +12,7 @@
 // option) any later version.
 
 import {
-  MARKER, type Creator, createFiles, currentDirectory, doCreateFiles, filenameAt, isDot, makeQuery, markIf, markOf,
+  MARKER, type Creator, caseFoldSearch, createFiles, currentDirectory, doCreateFiles, filenameAt, isDot, makeQuery, markIf, markOf,
   markedFiles, markPrompt, on, readin, removeEntry, requireDired,
 } from "dired";
 import { matchesInFiles } from "xref";
@@ -128,7 +128,7 @@ function createFilesRegexp(creator: Creator, operation: string, arg: e8.PrefixAr
  * undefined if it does not match.
  */
 export function stringReplaceMatch(regexp: string, string: string, newtext: string): string | undefined {
-  if (e8.stringMatch(regexp, string) === undefined) return undefined;
+  if (e8.stringMatch(regexp, string, { caseFold: caseFoldSearch() }) === undefined) return undefined;
   const chars = [...string];
   const group = (n: number): string => {
     const start = e8.matchBeginning(n);
@@ -216,7 +216,7 @@ e8.defineCommand({
       const text = buffer !== undefined
         ? e8.withCurrentBuffer(buffer, () => e8.bufferSubstringNoProperties(0, e8.bufferSize()))
         : e8.readTextFile(file);
-      return e8.stringMatch(regexp, text) !== undefined;
+      return e8.stringMatch(regexp, text, { caseFold: caseFoldSearch() }) !== undefined;
     }, "matching file", e8.prefixArg() !== null ? " " : MARKER);
   },
 });

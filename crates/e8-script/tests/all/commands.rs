@@ -164,3 +164,147 @@ fn casing_keeps_text_properties() {
     let faces = s.eval_expression(&mut ed, r#"JSON.stringify([0, 1, 2, 3].map((p) => e8.getTextProperty(p, "face") ?? null))"#).unwrap();
     assert_eq!(faces, r#""[null,\"bold\",\"bold\",null]""#);
 }
+
+/// M-0 M-z searches nowhere, as search-forward with a count of 0 does, so
+/// it kills nothing, putting an empty kill on the ring, as Emacs 30 does.
+#[test]
+fn zap_with_a_count_of_zero_kills_nothing() {
+    let (mut ed, _s) = setup();
+    ed.type_text("abxcdx");
+    ed.press("M-< M-0 M-z x").unwrap();
+    let b = ed.window_buffer();
+    assert_eq!((b.slice(0..b.len()), b.point()), ("abxcdx".to_string(), 0));
+}
+
+/// comment-region's prefix argument as comment-region-default-1 reads it,
+/// what Emacs 30 gives in emacs-lisp-mode: none doubles a one-character
+/// starter as comment-add says, N puts N, C-u uncomments, and a negative
+/// number takes levels off; uncommenting what has no comment does nothing.
+#[test]
+fn comment_region_takes_its_prefix_argument_as_emacs_does() {
+    let (mut ed, s) = setup();
+    for (text, prefix, command, expected) in [
+        ("(foo)\n", "", "comment-region", ";; (foo)\n"),
+        ("(foo)\n", "M-1", "comment-region", "; (foo)\n"),
+        ("(foo)\n", "M-3", "comment-region", ";;; (foo)\n"),
+        (";; (foo)\n", "C-u", "comment-region", "(foo)\n"),
+        (";;; (foo)\n", "M-- M-1", "comment-region", ";; (foo)\n"),
+        ("(foo)\n", "", "uncomment-region", "(foo)\n"),
+    ] {
+        s.eval_expression(&mut ed, &format!("(e8.call('emacs-lisp-mode'), e8.deleteRegion(e8.pointMin(), e8.pointMax()), e8.insert({text:?}), 1)")).unwrap();
+        ed.press(&format!("C-x h {prefix} M-x").replace("  ", " ")).unwrap();
+        ed.type_text(&format!("{command}\n"));
+        let b = ed.window_buffer();
+        assert_eq!(b.slice(0..b.len()), expected, "{prefix} {command} on {text:?}: {:?}", ed.echo());
+    }
+}
+
+/// Plain C-u M-g g goes to the line in the buffer shown before, in another window, as Emacs's goto-line.
+#[test]
+fn goto_line_with_plain_c_u_goes_to_the_other_buffer() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("other\n");
+    d.type_text("one\ntwo\nthree\n");
+    d.press("C-x b");
+    d.type_text("here\n");
+    d.type_text("a\nb\n");
+    d.press("C-u M-g g");
+    assert!(d.prompt().unwrap_or_default().starts_with("Goto line in other (default "), "{:?}", d.prompt());
+    d.type_text("3\n");
+    assert_eq!(d.buffer_name(), "other");
+    assert_eq!(d.with(|ed| {
+        let b = ed.buffer();
+        b.slice(b.point()..b.len())
+    }), "three\n");
+    assert_eq!(d.with(|ed| ed.windows().len()), 2, "shown in another window");
+}
+
+/// C-x ESC ESC edits and runs again a command that read its arguments in
+/// the minibuffer, as Emacs's repeat-complex-command; commands that read
+/// nothing are not kept.
+#[test]
+fn repeat_complex_command_runs_a_command_again() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("t\n");
+    d.type_text("one two one");
+    d.press("M-<");
+    d.mx("replace-string");
+    d.type_text("one\nthree\n");
+    assert_eq!(d.text(), "three two three");
+    let kept = d.with(|ed| format!("{:?}", ed.variable("command-history")));
+    assert!(!kept.contains("execute-extended-command"), "{kept}");
+    d.press("C-f");
+    d.press("M-<");
+    d.type_text("one ");
+    d.press("M-<");
+    d.press("C-x ESC ESC");
+    assert_eq!(d.prompt().as_deref(), Some("Redo: "));
+    assert_eq!(d.with(|ed| ed.minibuffer_input()), r#"(replace-string "one" "three" nil)"#);
+    d.press("RET");
+    assert_eq!(d.text(), "three three two three");
+    // With nothing kept, it says so.
+    d.with(|ed| ed.set_variable("command-history", e8_core::Value::List(Vec::new())));
+    d.press("C-x M-:");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("There are no previous complex commands"));
+}
+
+/// C-x C-n sets a goal column C-n and C-p keep to, and C-u C-x C-n unsets
+/// it, as Emacs's set-goal-column.
+#[test]
+fn set_goal_column_keeps_line_moves_to_a_column() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("g\n");
+    d.type_text("abcdef\nab\nabcdef\n");
+    d.press("M-<");
+    d.press("C-f C-f C-f C-f");
+    d.press("C-x C-n");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("Goal column 4 (use C-x C-n with an arg to unset it)"));
+    d.press("C-a C-n");
+    assert_eq!(d.point(), 9, "the end of the short line");
+    d.press("C-a C-n");
+    assert_eq!(d.point(), 14, "column 4 again, though it started at 0");
+    d.press("C-u C-x C-n");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("No goal column"));
+    d.press("C-a C-p");
+    assert_eq!(d.point(), 7, "the column it starts from");
+}
+
+/// rename-uniquely gives the buffer a name with <N>, as Emacs's.
+#[test]
+fn rename_uniquely_adds_a_number() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("*shell*\n");
+    d.mx("rename-uniquely");
+    assert_eq!(d.buffer_name(), "*shell*<2>");
+    d.press("C-x b");
+    d.type_text("*shell*\n");
+    d.mx("rename-uniquely");
+    assert_eq!(d.buffer_name(), "*shell*<3>", "its own <N> is taken off first");
+}
+
+/// Binary overwrite mode replaces characters one for one, newlines too,
+/// and C-q in textual overwrite mode takes a digit as itself, as Emacs's.
+#[test]
+fn binary_overwrite_and_quoted_digits_in_overwrite_mode() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("o\n");
+    d.type_text("ab\ncd");
+    d.press("M-<");
+    d.press("C-f");
+    d.mx("binary-overwrite-mode");
+    d.type_text("xyz");
+    assert_eq!(d.text(), "axyzd");
+    d.mx("overwrite-mode");
+    assert!(!d.with(|ed| ed.variable("binary-overwrite-mode").is_some_and(|v| v.is_true())), "one overwrite mode at a time");
+    d.press("M-<");
+    d.press("C-q 1");
+    assert_eq!(d.text(), "1axyzd", "the digit itself, inserted as quoted-insert does");
+    d.mx("binary-overwrite-mode");
+    d.press("C-q 1 6 2 RET");
+    assert_eq!(d.text(), "1rxyzd", "an octal code, replacing the a");
+}

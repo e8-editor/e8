@@ -1,0 +1,558 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "saving-a-narrowed-buffer-adds-the-newline-at-the-end",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-SPC C-n C-x n n x C-x C-s",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\nfour"
+        },
+        "find": "a.txt"
+      },
+      "text": "one\ntwo\nxthree\nfour\n",
+      "visible": "one\ntwo\nxthree\nfour\n",
+      "point": 9,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nxthree\nfour\n",
+        "a.txt~": "one\ntwo\nthree\nfour"
+      }
+    },
+    {
+      "name": "count-words-counts-swedish-words",
+      "input": {
+        "text": "Jag bor på en ö i en å.",
+        "point": 0,
+        "keys": "C-x h M-=",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Jag bor på en ö i en å.",
+      "visible": "Jag bor på en ö i en å.",
+      "point": 0,
+      "mark": 23,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Region has 1 line, 1 sentence, 8 words, and 23 characters"
+    },
+    {
+      "name": "count-words-counts-cyrillic-words",
+      "input": {
+        "text": "привет мир",
+        "point": 0,
+        "keys": "C-x h M-=",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "привет мир",
+      "visible": "привет мир",
+      "point": 0,
+      "mark": 10,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Region has 1 line, 1 sentence, 2 words, and 10 characters"
+    },
+    {
+      "name": "a-third-c-spc-activates-the-mark",
+      "input": {
+        "text": "abc def",
+        "point": 2,
+        "keys": "C-SPC C-SPC C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc def",
+      "visible": "abc def",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "a-third-c-spc-does-not-push-the-mark",
+      "input": {
+        "text": "abc def",
+        "point": 0,
+        "keys": "C-f C-SPC C-f C-SPC C-SPC C-SPC C-f C-u C-SPC C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abc def",
+      "visible": "abc def",
+      "point": 1,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "c-u-goto-char-asks",
+      "input": {
+        "text": "abcdefgh",
+        "point": 0,
+        "keys": "C-u M-g c",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3"
+        ]
+      },
+      "text": "abcdefgh",
+      "visible": "abcdefgh",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "m-v-at-the-top-leaves-point",
+      "input": {
+        "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\n",
+        "point": 0,
+        "keys": "C-n C-n C-n M-v",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\n",
+      "visible": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Beginning of buffer"
+    },
+    {
+      "name": "m-f-stops-where-the-script-changes",
+      "input": {
+        "text": "Emacs日本語 x",
+        "point": 0,
+        "keys": "M-f",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "Emacs日本語 x",
+      "visible": "Emacs日本語 x",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "m-b-stops-where-the-script-changes",
+      "input": {
+        "text": "Emacs日本語 x",
+        "point": 8,
+        "keys": "M-b",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "Emacs日本語 x",
+      "visible": "Emacs日本語 x",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "m-u-upcases-one-script-s-run",
+      "input": {
+        "text": "abcабв def",
+        "point": 0,
+        "keys": "M-u",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ABCабв def",
+      "visible": "ABCабв def",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "m-f-over-swedish-words",
+      "input": {
+        "text": "blåbär och smörgås",
+        "point": 0,
+        "keys": "M-f M-f",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "blåbär och smörgås",
+      "visible": "blåbär och smörgås",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "scrolling-past-the-end-by-a-count-fails",
+      "input": {
+        "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+        "point": 0,
+        "keys": "C-u 5 0 C-v",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true
+      },
+      "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+      "visible": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "scrolling-to-the-empty-last-line-fails",
+      "input": {
+        "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+        "point": 0,
+        "keys": "C-u 3 0 C-v",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true
+      },
+      "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+      "visible": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "End of buffer",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "scrolling-by-a-count-within-the-text",
+      "input": {
+        "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+        "point": 0,
+        "keys": "C-u 2 9 C-v",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true
+      },
+      "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+      "visible": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
+      "point": 222,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 222,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "fill-paragraph-after-the-last-paragraph",
+      "input": {
+        "text": "aaa bbb ccc ddd\n",
+        "point": 0,
+        "keys": "M-> M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc ddd\n",
+      "visible": "aaa bbb ccc ddd\n",
+      "point": 16,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-after-the-last-paragraph-with-a-blank-line",
+      "input": {
+        "text": "aaa bbb ccc ddd\n\n",
+        "point": 0,
+        "keys": "M-> M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc ddd\n\n",
+      "visible": "aaa bbb ccc ddd\n\n",
+      "point": 17,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-on-a-blank-line-between",
+      "input": {
+        "text": "aaa bbb ccc ddd\n\neee fff ggg hhh\n",
+        "point": 0,
+        "keys": "C-n M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc ddd\n\neee fff\nggg hhh\n",
+      "visible": "aaa bbb ccc ddd\n\neee fff\nggg hhh\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-after-a-tabbed-line",
+      "input": {
+        "text": "why?\tsuper\twhy?  super\tfixes a\ta the\n",
+        "point": 0,
+        "keys": "M-> M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 28
+        }
+      },
+      "text": "why?\tsuper\twhy?  super\tfixes a\ta the\n",
+      "visible": "why?\tsuper\twhy?  super\tfixes a\ta the\n",
+      "point": 37,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-after-the-last-paragraph-in-auto-fill",
+      "input": {
+        "text": "aaa bbb ccc ddd\n",
+        "point": 0,
+        "keys": "M-> M-q",
+        "modes": [
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc ddd\n",
+      "visible": "aaa bbb ccc ddd\n",
+      "point": 16,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-below-a-line-typed",
+      "input": {
+        "text": "aaa bbb ccc ddd\n",
+        "point": 0,
+        "keys": "z C-n M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "zaaa bbb ccc ddd\n",
+      "visible": "zaaa bbb ccc ddd\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-u-move-to-window-line-goes-to-line-4",
+      "input": {
+        "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\n",
+        "point": 0,
+        "keys": "C-u M-r",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\n",
+      "visible": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "transpose-words-across-an-emoji",
+      "input": {
+        "text": "one 👍🏽 two three",
+        "point": 3,
+        "keys": "M-t",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "👍🏽 one two three",
+      "visible": "👍🏽 one two three",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "transpose-words-after-an-emoji",
+      "input": {
+        "text": "👍🏽 one two 😀 x",
+        "point": 6,
+        "keys": "M-t M-t",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "👍🏽 two 😀 one x",
+      "visible": "👍🏽 two 😀 one x",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "replace-case-word-syntax-text-mode",
+      "input": {
+        "text": "Don't stop. don't stop.",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [
+          "replace-string",
+          "don't",
+          "won't"
+        ],
+        "platform": null
+      },
+      "text": "Won't stop. won't stop.",
+      "visible": "Won't stop. won't stop.",
+      "point": 18,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "replace-case-word-syntax-fundamental",
+      "input": {
+        "text": "Don't stop. don't stop.",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [],
+        "call": [
+          "replace-string",
+          "don't",
+          "won't"
+        ],
+        "platform": null
+      },
+      "text": "won't stop. won't stop.",
+      "visible": "won't stop. won't stop.",
+      "point": 18,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

@@ -74,7 +74,7 @@ fn buffers_windows_and_the_minibuffer_by_their_names() {
     assert_eq!(r("return [e8.windowBodyHeight() > 0, e8.windowBodyWidth() > 0, e8.windowTextHeight() === e8.windowBodyHeight()];"), "[true,true,true]");
     assert_eq!(r("return e8.setFrameSelectedWindow(null, e8.selectedWindow()) === e8.selectedWindow();"), "true");
     assert_eq!(r("e8.setBuffer('other'); return [e8.funcall('save-current-buffer', () => { e8.setBuffer('*scratch*'); return e8.bufferName(); }), e8.bufferName()];"), r#"["*scratch*","other"]"#);
-    assert_eq!(r("return e8.funcallInteractively(() => e8.calledInteractivelyP?.() ?? 'ran');").is_empty(), false);
+    assert!(!r("return e8.funcallInteractively(() => e8.calledInteractivelyP?.() ?? 'ran');").is_empty());
     assert_eq!(r("let n = 0; e8.funcall('map-keymap', () => { n++; }, e8.makeSparseKeymap('help-mode-map')); return n > 0;"), "true");
 }
 
