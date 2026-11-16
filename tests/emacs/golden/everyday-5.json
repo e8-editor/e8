@@ -314,6 +314,140 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "fill-paragraph-after-the-last-paragraph",
+      "input": {
+        "text": "aaa bbb ccc ddd\n",
+        "point": 0,
+        "keys": "M-> M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc ddd\n",
+      "visible": "aaa bbb ccc ddd\n",
+      "point": 16,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-after-the-last-paragraph-with-a-blank-line",
+      "input": {
+        "text": "aaa bbb ccc ddd\n\n",
+        "point": 0,
+        "keys": "M-> M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc ddd\n\n",
+      "visible": "aaa bbb ccc ddd\n\n",
+      "point": 17,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-on-a-blank-line-between",
+      "input": {
+        "text": "aaa bbb ccc ddd\n\neee fff ggg hhh\n",
+        "point": 0,
+        "keys": "C-n M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc ddd\n\neee fff\nggg hhh\n",
+      "visible": "aaa bbb ccc ddd\n\neee fff\nggg hhh\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-after-a-tabbed-line",
+      "input": {
+        "text": "why?\tsuper\twhy?  super\tfixes a\ta the\n",
+        "point": 0,
+        "keys": "M-> M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 28
+        }
+      },
+      "text": "why?\tsuper\twhy?  super\tfixes a\ta the\n",
+      "visible": "why?\tsuper\twhy?  super\tfixes a\ta the\n",
+      "point": 37,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-after-the-last-paragraph-in-auto-fill",
+      "input": {
+        "text": "aaa bbb ccc ddd\n",
+        "point": 0,
+        "keys": "M-> M-q",
+        "modes": [
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "aaa bbb ccc ddd\n",
+      "visible": "aaa bbb ccc ddd\n",
+      "point": 16,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-below-a-line-typed",
+      "input": {
+        "text": "aaa bbb ccc ddd\n",
+        "point": 0,
+        "keys": "z C-n M-q",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 8
+        }
+      },
+      "text": "zaaa bbb ccc ddd\n",
+      "visible": "zaaa bbb ccc ddd\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

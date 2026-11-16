@@ -83,5 +83,56 @@
     "text": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\n",
     "keys": "C-u 2 9 C-v",
     "windows": true
+  },
+  {
+    "name": "fill-paragraph-after-the-last-paragraph",
+    "text": "aaa bbb ccc ddd\n",
+    "keys": "M-> M-q",
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "fill-paragraph-after-the-last-paragraph-with-a-blank-line",
+    "text": "aaa bbb ccc ddd\n\n",
+    "keys": "M-> M-q",
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "fill-paragraph-on-a-blank-line-between",
+    "text": "aaa bbb ccc ddd\n\neee fff ggg hhh\n",
+    "keys": "C-n M-q",
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "fill-paragraph-after-a-tabbed-line",
+    "text": "why?\tsuper\twhy?  super\tfixes a\ta the\n",
+    "keys": "M-> M-q",
+    "vars": {
+      "fill-column": 28
+    }
+  },
+  {
+    "name": "fill-paragraph-after-the-last-paragraph-in-auto-fill",
+    "text": "aaa bbb ccc ddd\n",
+    "keys": "M-> M-q",
+    "modes": [
+      "auto-fill-mode"
+    ],
+    "vars": {
+      "fill-column": 8
+    }
+  },
+  {
+    "name": "fill-paragraph-below-a-line-typed",
+    "text": "aaa bbb ccc ddd\n",
+    "keys": "z C-n M-q",
+    "vars": {
+      "fill-column": 8
+    }
   }
 ]
