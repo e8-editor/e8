@@ -1252,3 +1252,27 @@ fn today_s_agenda_has_a_time_grid() {
     );
     assert!(agenda.contains("Tuesday    17 November 2026\n  a:          10:00...... Later \n"), "no grid but today's: {agenda}");
 }
+
+/// C-c C-l on a link offers its target and description to edit, and with
+/// the region active takes its text as the description and replaces it,
+/// as org-insert-link does.
+#[test]
+fn insert_link_edits_the_link_at_point_and_takes_the_region() {
+    let (mut ed, _s) = org("see [[https://a.org][Alpha]] here\n");
+    ed.window_buffer_mut().set_point(8);
+    ed.press("C-c C-l").unwrap();
+    assert_eq!(ed.minibuffer_input(), "https://a.org");
+    ed.press("C-a C-k").unwrap();
+    ed.type_text("https://b.org\n");
+    assert_eq!(ed.minibuffer_input(), "Alpha");
+    ed.type_text("\n");
+    assert_eq!(text(&ed), "see [[https://b.org][Alpha]] here\n");
+
+    let (mut ed, _s) = org("see Org manual here\n");
+    ed.window_buffer_mut().set_point(4);
+    ed.press("C-SPC M-f M-f C-c C-l").unwrap();
+    ed.type_text("https://orgmode.org\n");
+    assert_eq!(ed.minibuffer_input(), "Org manual");
+    ed.type_text("\n");
+    assert_eq!(text(&ed), "see [[https://orgmode.org][Org manual]] here\n");
+}

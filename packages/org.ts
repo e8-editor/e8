@@ -4609,21 +4609,36 @@ function linksIn(from: number, to: number): { links: string[]; last: number } {
   return { links: out, last };
 }
 
+/** The active region's text, if there is a region, as org-insert-link takes it for a description. */
+function regionText(): string | undefined {
+  const mark = e8.mark();
+  if (!e8.regionActive() || mark === undefined || mark === e8.point()) return undefined;
+  return e8.bufferSubstringNoProperties(Math.min(mark, e8.point()), Math.max(mark, e8.point()));
+}
+
 const insertLink = e8.defineCommand({
   name: "org-insert-link",
   doc: "Insert a link as [[link][description]], or [[link]] without a description; on a link, replace it.",
+  // As org-insert-link: on a link, its target and description to edit; with
+  // the region active, its text as the description, which the link replaces.
   params: [
-    { name: "link", prompt: "Link: ", history: "org-link-history" },
-    { name: "description", prompt: "Description: " },
+    { name: "link", prompt: "Link: ", history: "org-link-history", initial: () => linkHere()?.path ?? "" },
+    { name: "description", prompt: "Description: ", initial: () => regionText() ?? linkHere()?.description ?? "" },
   ],
   run: (target, description) => {
     if (target.trim() === "") throw new Error("No link given");
     const escaped = target.trim().replace(/([[\]])/g, "\\$1");
     const text = description.trim() === "" ? `[[${escaped}]]` : `[[${escaped}][${description.trim()}]]`;
     const link = linkHere();
+    const mark = e8.mark();
     if (link) {
       e8.deleteRegion(link.start, link.end);
       e8.gotoChar(link.start);
+    } else if (regionText() !== undefined && mark !== undefined) {
+      const start = Math.min(mark, e8.point());
+      e8.deleteRegion(start, Math.max(mark, e8.point()));
+      e8.gotoChar(start);
+      e8.deactivateMark();
     }
     e8.insert(text);
   },
