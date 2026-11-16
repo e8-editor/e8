@@ -52,6 +52,25 @@ fn m_x_remembers_commands() {
     ed.press("C-g").unwrap();
 }
 
+/// M-n past the input typed brings the prompt's default, as Emacs's
+/// goto-history-element takes it as the "future history": C-x b's default is
+/// the other buffer.
+#[test]
+fn m_n_brings_the_default() {
+    let (mut ed, _scripting) = setup();
+    ed.press("C-x b").unwrap();
+    ed.type_text("other\n");
+    ed.press("C-x b").unwrap();
+    ed.type_text("sc");
+    ed.press("M-n").unwrap();
+    assert_eq!(input(&ed), "*scratch*");
+    ed.press("M-n").unwrap();
+    assert_eq!(ed.echo(), Some("End of defaults; no next item"));
+    ed.press("M-p").unwrap();
+    assert_eq!(input(&ed), "sc", "back to what was typed");
+    ed.press("C-g").unwrap();
+}
+
 #[test]
 fn prompts_keep_separate_histories() {
     let (mut ed, _scripting) = setup();

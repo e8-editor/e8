@@ -21,8 +21,9 @@ pub(crate) struct Prompt {
     pub(crate) kind: ParamKind,
     /// The variable with earlier answers.
     pub(crate) history: String,
-    /// How far back in the history M-p has gone: 0 for the input typed.
-    pub(crate) history_pos: usize,
+    /// How far back in the history M-p has gone: 0 for the input typed,
+    /// and -1 for the default M-n brings, Emacs's "future history".
+    pub(crate) history_pos: i64,
     /// The input typed, kept while M-p shows history.
     pub(crate) typed: String,
     /// The names a `completing-read` completes against, instead of the kind's.
@@ -1892,8 +1893,10 @@ impl Editor {
                 } else {
                     self.message(format!("{} is undefined", format_keys(&keys)));
                     // Emacs runs the command `undefined` for the keys, so the
-                    // next command does not follow the one before them.
+                    // next command does not follow the one before them, and
+                    // takes no prefix argument typed before them.
                     self.last_command = Some("undefined".into());
+                    self.prefix_arg = None;
                     self.record_lossage_command("undefined");
                 }
             }
@@ -2858,20 +2861,29 @@ impl Editor {
             Some(Value::List(items)) => items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect(),
             _ => Vec::new(),
         };
-        let pos = prompt.history_pos as i64 + step;
+        let pos = prompt.history_pos + step;
         if pos > items.len() as i64 {
             return Err(Error::new("Beginning of history; no preceding item"));
         }
-        if pos < 0 {
+        // M-n past the input typed brings the default, as goto-history-element does.
+        let default = prompt.default.clone().filter(|d| !d.is_empty());
+        if pos < 0 && default.is_none() {
             return Err(Error::new("End of history; no default available"));
+        }
+        if pos < -1 {
+            return Err(Error::new("End of defaults; no next item"));
         }
         let input = self.minibuffer_input();
         let prompt = self.prompt.as_mut().expect("checked above");
         if prompt.history_pos == 0 {
             prompt.typed = input;
         }
-        prompt.history_pos = pos as usize;
-        let text = if pos == 0 { prompt.typed.clone() } else { items[pos as usize - 1].clone() };
+        prompt.history_pos = pos;
+        let text = match pos {
+            -1 => default.unwrap_or_default(),
+            0 => prompt.typed.clone(),
+            n => items[n as usize - 1].clone(),
+        };
         self.replace_minibuffer_input(&text, text.chars().count());
         Ok(())
     }

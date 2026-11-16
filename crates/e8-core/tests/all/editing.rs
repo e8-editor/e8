@@ -316,3 +316,16 @@ fn the_kill_ring_keeps_kill_ring_max_kills() {
     let kills: Vec<String> = (0..4).map(|n| ed.current_kill(if n == 0 { 0 } else { 1 }).unwrap()).collect();
     assert_eq!(kills, ["e", "d", "c", "e"], "three kept, cycling back to the newest");
 }
+
+/// An undefined key uses up the prefix argument typed before it, as
+/// Emacs's `undefined` command clears prefix-arg: C-u <f12> C-k kills one
+/// line, not four.
+#[test]
+fn an_undefined_key_takes_the_prefix_argument_with_it() {
+    let mut ed = Editor::new();
+    ed.type_text("one\ntwo\nthree\nfour\nfive\n");
+    press(&mut ed, "M-< C-u <f12>");
+    assert_eq!(ed.echo(), Some("<f12> is undefined"));
+    press(&mut ed, "C-k");
+    assert_eq!(text(&ed), "\ntwo\nthree\nfour\nfive\n");
+}
