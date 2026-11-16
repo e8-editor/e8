@@ -133,9 +133,18 @@ fn interrupting_the_job_and_end_of_file() {
     ed.press("C-c C-c").unwrap();
     until(&mut ed, |t| t.ends_with("$ "));
     assert!(!text(&ed).contains("\nslept\n"), "{:?}", text(&ed));
+    assert!(mode_line(&mut ed).contains("(Shell:run)"), "{}", mode_line(&mut ed));
     // C-c C-d ends the shell's input, so it exits.
     ed.press("C-c C-d").unwrap();
     until(&mut ed, |t| t.contains("\nProcess shell exited abnormally with code 130\n"));
+    assert!(mode_line(&mut ed).contains("(Shell:no process)"), "{}", mode_line(&mut ed));
+}
+
+/// The selected window's mode line, as it is drawn.
+fn mode_line(ed: &mut Editor) -> String {
+    ed.redisplay();
+    let id = ed.selected_window();
+    ed.mode_line(id).iter().map(|s| s.text.as_str()).collect()
 }
 
 #[test]

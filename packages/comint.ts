@@ -350,6 +350,8 @@ e8.defineMajorMode({
     e8.addHook("isearch-mode-hook", historyIsearchSetup, { local: true });
     e8.setVariable("comint-preoutput-filter-functions", [dropEcho]);
     e8.setVariable("scroll-conservatively", 101);
+    // The process's status after the mode's name, as comint-mode's (":%s").
+    e8.setVariable("mode-line-process", [":%s"]);
   },
 });
 

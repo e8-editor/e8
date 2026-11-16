@@ -11209,7 +11209,7 @@ declare global {
        */
       "mode-line-buffer-identification": Value;
       /**
-       * What each window's mode line shows, as a mode line construct: a string, whose %-specs show the buffer's state (%b its name, %* and %+ whether it is read-only or modified, %l and %c point's line and column, %n Narrow when narrowed, %Z the coding, %p how far through the buffer the window is, %- dashes to the end); a symbol, whose value is shown, a string as it is; a list of constructs; [":eval", function], whose result is shown; [":propertize", construct, "face", face]; [symbol, then, else], which shows then when the symbol's value is true; or [width, ...constructs], padded to at least width columns, or cut to -width.
+       * What each window's mode line shows, as a mode line construct: a string, whose %-specs show the buffer's state (%b its name, %* and %+ whether it is read-only or modified, %l and %c point's line and column, %n Narrow when narrowed, %s the status of its process, %Z the coding, %p how far through the buffer the window is, %- dashes to the end); a symbol, whose value is shown, a string as it is; a list of constructs; [":eval", function], whose result is shown; [":propertize", construct, "face", face]; [symbol, then, else], which shows then when the symbol's value is true; or [width, ...constructs], padded to at least width columns, or cut to -width.
        */
       "mode-line-format": Value;
       /**
@@ -13839,6 +13839,12 @@ declare global {
        * Defined in packages/compile.ts.
        */
       "compilation-mode-line-fail": FaceAttributes;
+      /**
+       * The mode line's :run while a compilation runs.
+       *
+       * Defined in packages/compile.ts.
+       */
+      "compilation-mode-line-run": FaceAttributes;
       /**
        * Warnings' file names in compilation buffers.
        *
