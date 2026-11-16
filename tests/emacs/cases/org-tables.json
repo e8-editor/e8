@@ -241,5 +241,23 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "align-measures-links-as-they-show",
+    "text": "| [[https://gnu.org][GNU]] | x |\n| Emacs | y |\n",
+    "point": 2,
+    "keys": "C-c C-c",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "align-measures-plain-links-as-they-show",
+    "text": "| [[https://gnu.org]] | x |\n| Emacs | y |\n",
+    "point": 2,
+    "keys": "C-c C-c",
+    "modes": [
+      "org-mode"
+    ]
   }
 ]

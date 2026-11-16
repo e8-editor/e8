@@ -193,8 +193,21 @@ export function markAligned(line = lineAt()): void {
 }
 
 /** Pads a field to a width, as org-table--align-field does. */
+/**
+ * How wide a field shows, as org-string-width measures it: a bracket link
+ * as its description, or its link without one, while org-link-descriptive
+ * hides the rest.
+ */
+function shownWidth(field: string): number {
+  const descriptive = e8.variable("org-link-descriptive");
+  const shown = descriptive === false || descriptive === null
+    ? field
+    : field.replace(/\[\[((?:[^\]\\]|\\.)+)\](?:\[([^\]]+)\])?\]/g, (_m, link: string, desc?: string) => desc ?? link);
+  return e8.stringWidth(shown);
+}
+
 function alignField(field: string, width: number, align: string): string {
-  const spaces = width - e8.stringWidth(field);
+  const spaces = width - shownWidth(field);
   const prefix = align === "r" ? " ".repeat(spaces) : align === "c" ? " ".repeat(Math.floor(spaces / 2)) : "";
   return ` ${prefix}${field}${" ".repeat(spaces - prefix.length)} `;
 }
@@ -230,7 +243,7 @@ function align(): void {
         let nonEmpty = 0;
         for (const row of rows) {
           const cell = row[i] ?? "";
-          width = Math.max(width, e8.stringWidth(cell));
+          width = Math.max(width, shownWidth(cell));
           if (fixed !== undefined || cell === "") continue;
           const cookie = /^<([lrc])[0-9]*>$/.exec(cell);
           if (cookie) fixed = cookie[1];
