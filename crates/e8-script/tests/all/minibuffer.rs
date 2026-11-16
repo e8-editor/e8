@@ -680,3 +680,15 @@ fn kill_buffer_and_switch_to_buffer_offer_their_defaults() {
     ed.press("RET").unwrap();
     assert_eq!(ed.window_buffer().name, "one");
 }
+
+/// RET on empty input answers with the default even where the answer must
+/// match and the default is no completion, as Emacs's
+/// completion--complete-and-exit exits at once on empty input.
+#[test]
+fn empty_input_takes_a_default_that_is_no_completion() {
+    let (mut ed, s) = setup();
+    let got = s
+        .eval_expression(&mut ed, r#"(e8.unreadKeys(["RET"]), e8.completingRead("x: ", ["a", "b"], { requireMatch: true, default: "zzz" }))"#)
+        .unwrap();
+    assert_eq!(got, r#""zzz""#);
+}

@@ -1672,11 +1672,13 @@ fn minibuffer(ed: &mut Editor) {
         "minibuffer-complete-and-exit",
         "Finish the minibuffer input if it is one of the completions, completing it first if only one matches.\n\nRET runs this in prompts that must be answered by one of their completions, such as M-x's.",
         |ed, _| {
-            let value = minibuffer_value(ed)?;
             // Empty input is an answer even where one must match, as Emacs's
-            // completing-read returns "" for it.
+            // completion--complete-and-exit exits at once for it: the
+            // default, whether or not it is one of the completions.
+            let typed_nothing = ed.minibuffer_input().is_empty();
+            let value = minibuffer_value(ed)?;
             let must_match = ed.prompt.as_ref().is_some_and(|p| p.require_match);
-            if !must_match || value.is_empty() || ed.is_completion_match(&value) {
+            if !must_match || typed_nothing || value.is_empty() || ed.is_completion_match(&value) {
                 return ed.finish_prompt(value);
             }
             match ed.prompt_completions(&value).as_slice() {
