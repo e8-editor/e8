@@ -281,5 +281,20 @@
     "keys": "",
     "name": "category-property-and-the-last-keyword",
     "text": "#+CATEGORY: first\n* Work\n:PROPERTIES:\n:CATEGORY: job\n:END:\n** TODO Report\nSCHEDULED: <2026-11-16 Mon>\n* Home\n** TODO Dishes\nSCHEDULED: <2026-11-16 Mon>\n#+CATEGORY: last\n"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-11-16",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "name": "repeating-deadline-on-its-later-dates",
+    "text": "* TODO Weekly\nDEADLINE: <2026-11-10 Tue +1w>\n* TODO Daily\nDEADLINE: <2026-11-18 Wed +2d>\n* DONE Done\nDEADLINE: <2026-11-10 Tue +1w>\n"
   }
 ]

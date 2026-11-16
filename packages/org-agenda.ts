@@ -224,6 +224,7 @@ function planningOf(h: Heading): {
   scheduled?: number;
   deadline?: number;
   scheduledRepeat?: [number, string];
+  deadlineRepeat?: [number, string];
   scheduledAt?: number;
   deadlineAt?: number;
   /** Days before a deadline its warning starts, as org-get-wdays gives them. */
@@ -246,6 +247,7 @@ function planningOf(h: Heading): {
   const dt = d && activeTimestamp(d[1]);
   if (d && dt) {
     out.deadline = dt.day;
+    out.deadlineRepeat = dt.repeat;
     out.warning = wdays(d[1], false);
     out.deadlineAt = at(line, text, (d.index ?? 0) + d[0].length - d[1].length);
   }
@@ -306,7 +308,9 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
     if (plan.deadline !== undefined) {
       const diff = plan.deadline - day;
       let leader: string | undefined;
-      if (diff === 0) leader = "Deadline:  ";
+      // Its date, and after today each of its repeats, as org-agenda-show-future-repeats has it.
+      const repeatDay = day > today && !done && plan.deadlineRepeat !== undefined && occursOn({ day: plan.deadline, repeat: plan.deadlineRepeat }, day);
+      if (diff === 0 || repeatDay) leader = "Deadline:  ";
       else if (day === today && !done && diff > 0 && diff <= (plan.warning ?? 14)) leader = `In ${String(diff).padStart(3)} d.: `;
       else if (day === today && !done && diff < 0) leader = `${String(-diff).padStart(2)} d. ago: `;
       if (leader !== undefined) {

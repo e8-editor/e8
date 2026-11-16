@@ -770,6 +770,49 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "repeating-deadline-on-its-later-dates",
+      "input": {
+        "text": "* TODO Weekly\nDEADLINE: <2026-11-10 Tue +1w>\n* TODO Daily\nDEADLINE: <2026-11-18 Wed +2d>\n* DONE Done\nDEADLINE: <2026-11-10 Tue +1w>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-11-16",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:   6 d. ago:  TODO Weekly\n  e8-agenda:  In   2 d.:  TODO Daily\nTuesday    17 November 2026\n  e8-agenda:  Deadline:   TODO Weekly\nWednesday  18 November 2026\n  e8-agenda:  Deadline:   TODO Daily\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Deadline:   TODO Daily\nSaturday   21 November 2026\nSunday     22 November 2026\n  e8-agenda:  Deadline:   TODO Daily\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\n  e8-agenda:   6 d. ago:  TODO Weekly\n  e8-agenda:  In   2 d.:  TODO Daily\nTuesday    17 November 2026\n  e8-agenda:  Deadline:   TODO Weekly\nWednesday  18 November 2026\n  e8-agenda:  Deadline:   TODO Daily\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Deadline:   TODO Daily\nSaturday   21 November 2026\nSunday     22 November 2026\n  e8-agenda:  Deadline:   TODO Daily\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 19,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ]
     }
   ]
 }
