@@ -3528,7 +3528,7 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
  * children's TODO states, as org-update-parent-todo-statistics does: the
  * children at the heading's level with a state, and those done.
  */
-function updateParentTodoStatistics(line: number): void {
+export function updateParentTodoStatistics(line: number): void {
   const all = headingsAsRead();
   const i = headingIndex(all, line);
   if (i === undefined) return;

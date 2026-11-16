@@ -3,10 +3,10 @@
 // files it or C-c C-k takes it away. Emacs captures in an indirect buffer;
 // E8 narrows the target buffer itself.
 
-import { alignTags, formatTimestamp, type Heading, headings, parseHeading, subtreeRegion, today } from "org";
+import { alignTags, formatTimestamp, type Heading, headings, parseHeading, subtreeRegion, today, updateParentTodoStatistics } from "org";
 import { clockIn, clockOut, runningEntry } from "org-clock";
 import { findDateCreate } from "org-datetree";
-import { lineAt, orgMks } from "org-macs";
+import { lineAt, orgMks, titleWithoutCookies } from "org-macs";
 import { charCount } from "subr";
 
 e8.defineVariable({
@@ -157,7 +157,11 @@ function captureWith(key: string): void {
   const [, , type, target, template] = t;
   if (type !== "entry") throw new Error(`E8 captures only entries, not ${type}`);
   if (capturing) throw new Error("A capture is already under way: C-c C-c or C-c C-k finishes it");
-  const file = target[1] === "" || target[1] === undefined ? String(e8.variable("org-default-notes-file") ?? "~/.notes") : target[1];
+  // A relative name is in org-directory, as org-capture-expand-file expands it.
+  const dir = e8.variable("org-directory");
+  const file = target[1] === "" || target[1] === undefined
+    ? String(e8.variable("org-default-notes-file") ?? "~/.notes")
+    : e8.expandFileName(target[1], typeof dir === "string" ? e8.expandFileName(dir) : undefined);
   const from = e8.windowBuffer() ?? "";
   // A marker, as the buffer the capture came from stays editable below it.
   const point = e8.makeMarker(e8.point());
@@ -178,7 +182,7 @@ function captureWith(key: string): void {
       const all = headings();
       const [start, end] = under === undefined ? [0, e8.bufferSize()] : subtreeRegion(all, all.findIndex((x) => x.start === under.start));
       const level = under === undefined ? Math.min(...all.map((h) => h.level)) : under.level + 1;
-      return all.find((h) => h.start >= start && h.start < end && h.title === title && (under === undefined ? true : h.level === level));
+      return all.find((h) => h.start >= start && h.start < end && titleWithoutCookies(h.title) === title && (under === undefined ? true : h.level === level));
     };
     /** The heading an outline path names, as org-find-olp, which signals when one is missing. */
     const olp = (path: string[]): Heading | undefined => {
@@ -198,7 +202,8 @@ function captureWith(key: string): void {
     };
     if (target[0] === "file+headline") {
       const name = target[2] ?? "";
-      let h = headings().find((x) => x.title === name);
+      // Its statistics cookies are no part of the name it is found by.
+      let h = headings().find((x) => titleWithoutCookies(x.title) === name);
       if (!h) {
         e8.gotoChar(e8.bufferSize());
         if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
@@ -341,6 +346,19 @@ const captureFinalize = e8.defineCommand({
         e8.message("Interrupted clock resumed");
       }
       if (interrupted) e8.deleteMarker(interrupted.marker);
+    }
+    // The parent's statistics cookie counts the new entry, as
+    // org-capture-finalize brings it up to date from the entry's heading.
+    if (buffer !== undefined) {
+      e8.withCurrentBuffer(buffer, () =>
+        e8.saveExcursion(() => {
+          const start = e8.pointMin();
+          e8.saveRestriction(() => {
+            e8.widen();
+            if (parseHeading(lineAt(start))) updateParentTodoStatistics(lineAt(start));
+          });
+        }),
+      );
     }
     endCapture();
     if (buffer !== undefined) {

@@ -901,6 +901,38 @@ fn capture_files_into_date_trees_and_outline_paths_as_emacs_does() {
     assert_eq!(read("people.org"), "* Inbox\n** Title                                                             :person: \n:Created: <2026-11-04 Wed 12:00>\nRun (C-c n h)\n* Projects\n");
 }
 
+/// A relative target file is in org-directory, as org-capture-expand-file
+/// expands it, and a target heading is found with its statistics cookie,
+/// as org-complex-heading-regexp-format allows, rather than made again.
+#[test]
+fn capture_finds_relative_files_in_org_directory_and_headings_with_cookies() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("gtd.org"), "* Tasks [1/2]
+** DONE One
+** TODO Two
+* Other
+").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    let d = dir.path().display().to_string();
+    s.eval_expression(
+        &mut ed,
+        &format!(
+            r#"(e8.setVariable("org-directory", "{d}"), e8.setVariable("org-capture-templates", [
+              ["t", "Task", "entry", ["file+headline", "gtd.org", "Tasks"], "* TODO %?"],
+              ["o", "Olp", "entry", ["file+olp", "gtd.org", "Tasks"], "* TODO %?"]]), 1)"#
+        ),
+    )
+    .unwrap();
+    ed.set_frame_size(80, 24);
+    ed.press("M-x o r g - c a p t u r e RET t T h r e e C-c C-c").unwrap();
+    ed.press("M-x o r g - c a p t u r e RET o F o u r C-c C-c").unwrap();
+    let gtd = std::fs::read_to_string(dir.path().join("gtd.org")).unwrap();
+    assert!(gtd.starts_with("* Tasks [1/4]\n"), "the cookie counts them: {gtd}");
+    assert_eq!(gtd.matches("* Tasks").count(), 1, "{gtd}");
+    assert!(gtd.contains("** TODO Two\n** TODO Three\n** TODO Four\n* Other\n"), "{gtd}");
+}
+
 #[test]
 fn today_is_the_day_in_the_editors_own_zone() {
     // Fourteen hours east of UTC and twelve west are always a day or two apart.

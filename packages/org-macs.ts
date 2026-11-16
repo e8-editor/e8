@@ -83,6 +83,15 @@ export function placeMarkers(saved: [Marker, number][]): void {
   for (const [m, p] of saved) if (e8.markerBuffer(m.id) === here) m.pos = p;
 }
 
+/**
+ * A heading's title without the statistics cookies before and after it, as
+ * org-complex-heading-regexp-format lets a title be matched with them:
+ * "Tasks [1/3]" is the heading "Tasks".
+ */
+export function titleWithoutCookies(title: string): string {
+  return title.replace(/^(?:\[[0-9%/]+\] *)*/, "").replace(/(?: *\[[0-9%/]+\])*$/, "");
+}
+
 export function edInsert(pos: number, text: string, beforeMarkers = false): void {
   if (text === "") return;
   e8.gotoChar(pos);
