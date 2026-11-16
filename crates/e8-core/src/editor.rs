@@ -1002,7 +1002,8 @@ impl Editor {
             return;
         }
         items.insert(0, form);
-        let max = self.number_in(self.window_buffer(), "history-length", 100.0).max(1.0) as usize;
+        // One more than history-length, as call-interactively cuts it with nthcdr.
+        let max = self.number_in(self.window_buffer(), "history-length", 100.0).max(0.0) as usize + 1;
         items.truncate(max);
         self.set_variable("command-history", Value::List(items));
     }
