@@ -575,9 +575,11 @@ fn scroll_screen_down(ed: &mut Editor) -> Result<()> {
         (top, if next > top { ed.move_rows_in(b, next, -1).0 } else { top })
     };
     let point_row = ed.row_line_in(b, b.line_of(b.point()));
+    let first = ed.row_line_in(b, b.line_of(b.point_min()));
     let b = ed.window_buffer_mut();
-    if old_top == 0 {
-        b.set_point(0);
+    // At the top already, point stays where it is, as scroll-down leaves it
+    // with scroll-error-top-bottom off.
+    if old_top <= first {
         return err("Beginning of buffer");
     }
     b.top_line = top;
