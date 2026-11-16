@@ -811,15 +811,19 @@ e8.defineCommand({
   },
 });
 
-/** Throws away what is typed but not sent, as comint-skip-input before a signal. */
+/**
+ * Leaves what is typed but not sent, as comint-skip-input before a signal:
+ * it goes into the history, as comint-send-input with nothing sent puts
+ * it, and the keys that skipped it follow it, "  C-c C-c", with the
+ * process mark after them.
+ */
 function skipInput(): void {
   const proc = bufferProcess();
   const pmark = processMark(proc);
+  if (e8.pointMax() > pmark) addToHistory(e8.bufferSubstringNoProperties(pmark, e8.pointMax()));
   e8.gotoChar(e8.pointMax());
-  if (e8.point() > pmark) {
-    e8.insert("  ");
-    e8.setMarker(e8.processMark(proc)!, e8.point());
-  }
+  e8.letBind({ "inhibit-read-only": true }, () => e8.insert(`  ${e8.thisCommandKeys()}`));
+  e8.setMarker(e8.processMark(proc)!, e8.point());
 }
 
 for (const [name, doc, signal] of [
@@ -831,7 +835,7 @@ for (const [name, doc, signal] of [
     name,
     doc,
     run: () => {
-      if (signal === "INT") skipInput();
+      skipInput();
       const proc = bufferProcess();
       const fn = { INT: e8.interruptProcess, TSTP: e8.stopProcess, QUIT: e8.quitProcess }[signal];
       fn(proc, e8.processTtyName(proc) !== undefined);

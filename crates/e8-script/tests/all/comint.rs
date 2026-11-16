@@ -400,3 +400,17 @@ fn m_r_searches_the_history_with_isearch() {
     ed.press("C-g").unwrap();
     assert_eq!(input(&ed).0, "mine");
 }
+
+/// C-c C-c with a command typed but not sent keeps it in the history, as
+/// comint-skip-input does, and shows the keys after it; M-p brings it back.
+#[test]
+fn interrupting_keeps_the_typed_command_in_the_history() {
+    let (mut ed, _s) = setup();
+    start_shell(&mut ed);
+    ed.type_text("echo not sent");
+    ed.press("C-c C-c").unwrap();
+    assert!(text(&ed).contains("echo not sent  C-c C-c"), "{:?}", text(&ed));
+    until(&mut ed, |t| t.matches("$ ").count() >= 2);
+    ed.press("M-> M-p").unwrap();
+    assert!(text(&ed).ends_with("$ echo not sent"), "{:?}", text(&ed));
+}
