@@ -1514,11 +1514,13 @@ declare global {
        */
       "delete-minibuffer-contents": [];
       /**
-       * Delete every frame but the selected one.
+       * Delete every frame but the selected one; with a prefix argument, iconify them instead.
+       *
+       * @param iconify raw prefix argument
        *
        * Defined in packages/window.ts.
        */
-      "delete-other-frames": [];
+      "delete-other-frames": [iconify?: PrefixArg | boolean];
       /**
        * Make the selected window fill its frame, deleting the others.
        *
@@ -5883,7 +5885,7 @@ declare global {
        */
       "org-yank": [];
       /**
-       * Select another frame, the next in frame-list's order; a prefix argument says how many on to go.
+       * Select another frame, the next visible one in frame-list's order; a prefix argument says how many on to go, back if negative.
        *
        * Defined in packages/window.ts.
        */

@@ -216,6 +216,25 @@ fn frames_each_have_their_own_windows() {
     assert_eq!(ed.echo(), Some("Attempt to delete the sole visible or iconified frame"));
 }
 
+/// C-x 5 o passes over frames that are invisible or iconified, as other-frame does.
+#[test]
+fn other_frame_passes_over_hidden_frames() {
+    let (mut ed, s) = setup("hello");
+    ed.press("C-x 5 2 C-x 5 2").unwrap();
+    assert_eq!(ed.frame_list().len(), 3);
+    eval(&mut ed, &s, "(e8.iconifyFrame(e8.frameList()[1]), 0)");
+    let selected = |ed: &mut Editor, s: &Scripting| eval(ed, s, "e8.frameList().indexOf(e8.selectedFrame())");
+    assert_eq!(selected(&mut ed, &s), "0");
+    ed.press("C-x 5 o").unwrap();
+    assert_eq!(selected(&mut ed, &s), "2", "the iconified frame is passed over");
+    ed.press("C-x 5 o").unwrap();
+    assert_eq!(selected(&mut ed, &s), "0");
+    // C-u C-x 5 1 iconifies the others rather than deleting them.
+    ed.press("C-u C-x 5 1").unwrap();
+    assert_eq!(ed.frame_list().len(), 3);
+    assert_eq!(eval(&mut ed, &s, "JSON.stringify(e8.frameList().map((f) => e8.frameVisibleP(f)))"), r#""[true,\"icon\",\"icon\"]""#);
+}
+
 #[test]
 fn deleting_the_selected_frame_selects_the_next() {
     let (mut ed, _scripting) = setup("abc");

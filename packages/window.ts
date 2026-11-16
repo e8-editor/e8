@@ -4113,11 +4113,13 @@ const makeFrameCommand = e8.defineCommand({
 
 const otherFrame = e8.defineCommand({
   name: "other-frame",
-  doc: "Select another frame, the next in frame-list's order; a prefix argument says how many on to go.",
+  doc: "Select another frame, the next visible one in frame-list's order; a prefix argument says how many on to go, back if negative.",
   run: () => {
-    const frames = e8.frameList();
+    const selected = e8.selectedFrame();
+    // Only visible frames count, as other-frame skips invisible and iconified ones.
+    const frames = e8.frameList().filter((f) => f === selected || e8.frameVisibleP(f) === true);
     const count = e8.prefixNumericValue(e8.prefixArg());
-    const i = frames.indexOf(e8.selectedFrame());
+    const i = frames.indexOf(selected);
     const n = frames.length;
     e8.selectFrame(frames[(((i + count) % n) + n) % n]);
   },
@@ -4131,10 +4133,15 @@ const deleteFrameCommand = e8.defineCommand({
 
 const deleteOtherFrames = e8.defineCommand({
   name: "delete-other-frames",
-  doc: "Delete every frame but the selected one.",
-  run: () => {
+  doc: "Delete every frame but the selected one; with a prefix argument, iconify them instead.",
+  params: [{ name: "iconify", kind: "prefix" }],
+  run: (iconify: e8.PrefixArg) => {
     const selected = e8.selectedFrame();
-    for (const frame of e8.frameList()) if (frame !== selected) e8.deleteFrame(frame);
+    for (const frame of e8.frameList()) {
+      if (frame === selected) continue;
+      if (iconify !== null && iconify !== undefined) e8.iconifyFrame(frame);
+      else e8.deleteFrame(frame);
+    }
   },
 });
 
