@@ -3376,9 +3376,17 @@ function fixPositionAfterTodo(line: number): void {
 }
 
 /** The state after one in a direction, wrapping round through no state. */
-function nextState(current: string | undefined, direction: number): string | undefined {
+function nextState(current: string | undefined, direction: number, across = false): string | undefined {
   const sets = todoSets();
   if (sets.length === 0) return undefined;
+  // S-<right> and S-<left> go through every sequence's keywords in turn, as
+  // org-todo's right and left walk org-todo-keywords-1.
+  if (across) {
+    const all = sets.flatMap((set) => [...set.todo, ...set.done]);
+    if (current === undefined) return direction > 0 ? all[0] : all.at(-1);
+    const k = all.indexOf(current) + direction;
+    return k >= 0 && k < all.length ? all[k] : undefined;
+  }
   if (current === undefined) {
     const set = sets[0];
     const states = [...set.todo, ...set.done];
@@ -3395,11 +3403,11 @@ function nextState(current: string | undefined, direction: number): string | und
  * the keyword, then the tags, CLOSED, the parent's statistics and a
  * repeat, then point just after the keyword if it was near it.
  */
-function todo(direction: number, state?: string): void {
+function todo(direction: number, state?: string, across = false): void {
   const [all, i] = backToHeading();
   const h = all[i];
   const before = h.todo;
-  const next = state === undefined ? nextState(before, direction) : state === "" ? undefined : state;
+  const next = state === undefined ? nextState(before, direction, across) : state === "" ? undefined : state;
   replaceTodoKeyword(h, next);
   if (parseHeading(h.line)?.tagsAt !== undefined) alignTagsAway(h.line);
   const logDone = e8.variable("org-log-done");
@@ -5287,7 +5295,7 @@ const shiftRight = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-up-day");
     // org-todo, which loops over the headings in an active region.
     else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(1), true)) todo(1);
+      if (!forEachHeadingInRegion(() => todo(1, undefined, true), true)) todo(1, undefined, true);
     }
     else if (itemLine(lineAt())) cycleListBullet();
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
@@ -5303,7 +5311,7 @@ const shiftLeft = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-down-day");
     // org-todo, which loops over the headings in an active region.
     else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(-1), true)) todo(-1);
+      if (!forEachHeadingInRegion(() => todo(-1, undefined, true), true)) todo(-1, undefined, true);
     }
     else if (itemLine(lineAt())) cycleListBullet("previous");
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();

@@ -469,6 +469,69 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "shift-right-goes-on-to-the-next-sequence",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* Other\n",
+        "point": 52,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* WAIT Task\n* Other\n",
+      "visible": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* WAIT Task\n* Other\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-left-from-none-takes-the-last-keyword",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* Other\n",
+        "point": 63,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* CANCELLED Other\n",
+      "visible": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n* CANCELLED Other\n",
+      "point": 73,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-left-back-across-sequences",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* WAIT Task\n",
+        "point": 52,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n",
+      "visible": "#+TODO: TODO | DONE\n#+TODO: WAIT | CANCELLED\n* DONE Task\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
