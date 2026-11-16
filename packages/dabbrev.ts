@@ -277,6 +277,9 @@ e8.defineCommand({
     } else {
       const [a, end] = abbrevAtPoint();
       abbrev = a;
+      // A new expansion: the last one's marker is no longer needed.
+      if (last !== undefined) e8.deleteMarker(last.abbrevLocation);
+      last = undefined;
       s = {
         abbrev,
         table: [],
@@ -294,6 +297,7 @@ e8.defineCommand({
     }
     expansion ??= e8.saveExcursion(() => findExpansion(s, abbrev, s.direction, ignoreCaseP(abbrev)));
     if (expansion === undefined) {
+      e8.deleteMarker(s.abbrevLocation);
       last = undefined;
       if (old !== undefined) {
         // Put back the abbreviation as it was typed.

@@ -21,3 +21,22 @@ fn m_slash_finds_words_in_other_buffers() {
     let b = ed.window_buffer();
     assert_eq!(b.slice(0..b.len()), "zeb");
 }
+
+/// Each M-/ that starts an expansion frees the marker the last one kept,
+/// so expanding many times leaves no markers piling up in the buffer.
+#[test]
+fn expanding_again_and_again_leaves_no_markers_behind() {
+    let mut ed = Editor::new();
+    let _s = Scripting::new(&mut ed).unwrap();
+    ed.type_text("alpha beta ");
+    ed.type_text("al");
+    ed.press("M-/").unwrap();
+    let after_one = ed.window_buffer().marker_count();
+    for _ in 0..5 {
+        ed.type_text(" be");
+        ed.press("M-/").unwrap();
+        ed.type_text(" al");
+        ed.press("M-/").unwrap();
+    }
+    assert_eq!(ed.window_buffer().marker_count(), after_one);
+}
