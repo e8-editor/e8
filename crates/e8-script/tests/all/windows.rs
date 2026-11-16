@@ -507,3 +507,15 @@ fn split_height_threshold_nil_splits_side_by_side() {
     let beside = s.eval_expression(&mut ed, r#"String(e8.windowSize(e8.windowList()[1]).fullWidth)"#).unwrap();
     assert_eq!(beside.trim_matches('"'), "false", "split beside when nil");
 }
+
+/// M-<end> and M-<home> move to the ends of the next window's buffer, staying in the selected one.
+#[test]
+fn m_end_and_m_home_move_in_the_other_window() {
+    let (mut ed, s) = setup("one\ntwo\nthree\n");
+    ed.press("C-x 2").unwrap();
+    ed.press("M-<end>").unwrap();
+    let points = |ed: &mut Editor, s: &Scripting| eval(ed, s, "JSON.stringify([e8.windowList().indexOf(e8.selectedWindow()), ...e8.windowList().map((w) => e8.windowPoint(w))])");
+    assert_eq!(points(&mut ed, &s), r#""[0,0,14]""#);
+    ed.press("M-<home>").unwrap();
+    assert_eq!(points(&mut ed, &s), r#""[0,0,0]""#);
+}

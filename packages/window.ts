@@ -1636,6 +1636,32 @@ const scrollOtherWindowDown = e8.defineCommand({
   run: () => scrollOther("scroll-down-command"),
 });
 
+/** Goes to an end of the next window's buffer and centers it there, as beginning-of-buffer-other-window and its twin. */
+function otherWindowEnd(command: e8.CommandName, arg: e8.PrefixArg): void {
+  const selected = e8.selectedWindow();
+  e8.selectWindow(otherWindowForScrolling());
+  try {
+    e8.callWithPrefix(arg, command);
+    e8.callWithPrefix(null, "recenter");
+  } finally {
+    e8.selectWindow(selected);
+  }
+}
+
+const beginningOfBufferOtherWindow = e8.defineCommand({
+  name: "beginning-of-buffer-other-window",
+  doc: "Move point to the start of the next window's buffer, leaving the mark where it was; a prefix argument N, N tenths of the way in.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => otherWindowEnd("beginning-of-buffer", arg),
+});
+
+const endOfBufferOtherWindow = e8.defineCommand({
+  name: "end-of-buffer-other-window",
+  doc: "Move point to the end of the next window's buffer, leaving the mark where it was; a prefix argument N, N tenths of the way from the end.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => otherWindowEnd("end-of-buffer", arg),
+});
+
 // The buffers a window showed before, as window.el's previous-buffer and next-buffer.
 
 /** Why the selected window cannot switch buffers, if it cannot, as previous-buffer checks. */
@@ -4219,6 +4245,10 @@ e8.bindKey("C-x 4 C-o", displayBufferCommand);
 e8.bindKey("C-x 4 0", killBufferAndWindow);
 e8.bindKey("C-M-v", scrollOtherWindow);
 e8.bindKey("C-M-S-v", scrollOtherWindowDown);
+e8.bindKey("M-<next>", scrollOtherWindow);
+e8.bindKey("M-<prior>", scrollOtherWindowDown);
+e8.bindKey("M-<home>", beginningOfBufferOtherWindow);
+e8.bindKey("M-<end>", endOfBufferOtherWindow);
 e8.bindKey("C-x ^", enlargeWindowCommand);
 e8.bindKey("C-x }", enlargeWindowHorizontally);
 e8.bindKey("C-x {", shrinkWindowHorizontally);

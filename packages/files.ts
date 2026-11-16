@@ -1623,3 +1623,18 @@ export function findBufferVisiting(file: string): string | undefined {
     return f !== undefined && e8.fileTruename(f) === truename;
   });
 }
+
+e8.defineCommand({
+  name: "rename-uniquely",
+  doc:
+    "Rename the current buffer to a name no other buffer has, its name with <N> after it, so another buffer can take its name, " +
+    "as a second *shell* or *compilation* can once the first is renamed.",
+  run: () => {
+    let base = e8.bufferName()!;
+    const file = e8.bufferFileName();
+    const m = /<[0-9]+>$/.exec(base);
+    // A <N> its file's name has is kept, as files.el does.
+    if (m !== null && !(file !== undefined && base === e8.fileNameNondirectory(file))) base = base.slice(0, m.index);
+    e8.call("rename-buffer", e8.generateNewBufferName(base));
+  },
+});

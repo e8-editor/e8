@@ -249,3 +249,39 @@ fn repeat_complex_command_runs_a_command_again() {
     d.press("C-x M-:");
     assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("There are no previous complex commands"));
 }
+
+/// C-x C-n sets a goal column C-n and C-p keep to, and C-u C-x C-n unsets
+/// it, as Emacs's set-goal-column.
+#[test]
+fn set_goal_column_keeps_line_moves_to_a_column() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("g\n");
+    d.type_text("abcdef\nab\nabcdef\n");
+    d.press("M-<");
+    d.press("C-f C-f C-f C-f");
+    d.press("C-x C-n");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("Goal column 4 (use C-x C-n with an arg to unset it)"));
+    d.press("C-a C-n");
+    assert_eq!(d.point(), 9, "the end of the short line");
+    d.press("C-a C-n");
+    assert_eq!(d.point(), 14, "column 4 again, though it started at 0");
+    d.press("C-u C-x C-n");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("No goal column"));
+    d.press("C-a C-p");
+    assert_eq!(d.point(), 7, "the column it starts from");
+}
+
+/// rename-uniquely gives the buffer a name with <N>, as Emacs's.
+#[test]
+fn rename_uniquely_adds_a_number() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("*shell*\n");
+    d.mx("rename-uniquely");
+    assert_eq!(d.buffer_name(), "*shell*<2>");
+    d.press("C-x b");
+    d.type_text("*shell*\n");
+    d.mx("rename-uniquely");
+    assert_eq!(d.buffer_name(), "*shell*<3>", "its own <N> is taken off first");
+}

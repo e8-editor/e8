@@ -696,7 +696,14 @@ const SCROLL_KEEPS_COLUMN: &[&str] =
 /// long lines are continued, it moves by screen lines, as Emacs's
 /// `line-move-visual` does.
 fn line_move(ed: &mut Editor, n: i64) -> Result<()> {
-    if let Some(wrap) = ed.visual_wrap() {
+    // A goal column C-x C-n set is kept to, by logical lines, as Emacs's line-move.
+    let fixed = match ed.variable("goal-column") {
+        Some(Value::Number(column)) if column >= 0.0 => Some(column as f32),
+        _ => None,
+    };
+    if fixed.is_none()
+        && let Some(wrap) = ed.visual_wrap()
+    {
         return line_move_visual(ed, n, wrap);
     }
     let continuing = ed.last_command().is_some_and(|c| SCROLL_KEEPS_COLUMN.contains(&c));
@@ -707,6 +714,7 @@ fn line_move(ed: &mut Editor, n: i64) -> Result<()> {
     let b = ed.buffer();
     let line = b.line_of(b.point());
     let goal = match ed.goal_column {
+        _ if let Some(column) = fixed => column,
         Some(goal) if continuing => goal,
         _ => match off_grid_row(ed, b, b.point()) {
             Some(row) => row_column(ed, b, &row, b.point()),

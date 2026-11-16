@@ -687,6 +687,14 @@ declare global {
        */
       "beginning-of-buffer": [];
       /**
+       * Move point to the start of the next window's buffer, leaving the mark where it was; a prefix argument N, N tenths of the way in.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/window.ts.
+       */
+      "beginning-of-buffer-other-window": [arg?: PrefixArg | boolean];
+      /**
        * Move back to the beginning of a defun, or as many as the prefix argument says; forward if negative.
        *
        * A defun starts at an open paren in column 0, unless the major mode says otherwise.
@@ -2591,6 +2599,14 @@ declare global {
        * Unless the region is active, leaves the mark where point was. With a numeric prefix argument N, move to N tenths of the way from the end instead, at the start of the next line. Plain C-u does not leave the mark.
        */
       "end-of-buffer": [];
+      /**
+       * Move point to the end of the next window's buffer, leaving the mark where it was; a prefix argument N, N tenths of the way from the end.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/window.ts.
+       */
+      "end-of-buffer-other-window": [arg?: PrefixArg | boolean];
       /**
        * Move forward to the end of a defun, or as many as the prefix argument says; back if negative.
        *
@@ -6505,6 +6521,12 @@ declare global {
        */
       "rename-file": [file: string, newname: string];
       /**
+       * Rename the current buffer to a name no other buffer has, its name with <N> after it, so another buffer can take its name, as a second *shell* or *compilation* can once the first is renamed.
+       *
+       * Defined in packages/files.ts.
+       */
+      "rename-uniquely": [];
+      /**
        * Rename the file the buffer visits, and visit it under its new name.
        *
        * In a buffer visiting no file, set the file it visits instead, as set-visited-file-name does.
@@ -6814,6 +6836,14 @@ declare global {
        * Defined in packages/fill.ts.
        */
       "set-fill-prefix": [];
+      /**
+       * Make the current column the one C-n and C-p keep to in this buffer; with a prefix argument, keep to the column they start from again.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/simple.ts.
+       */
+      "set-goal-column": [arg?: PrefixArg | boolean];
       /**
        * Set the mark at point and activate the region, saving the old mark on the mark ring.
        *
@@ -10044,6 +10074,10 @@ declare global {
        * Keymap go-ts-mode-map.
        */
       "go-ts-mode-map": Value;
+      /**
+       * The column C-n and C-p keep to, set with C-x C-n; nil to keep to the column they start from.
+       */
+      "goal-column": Value;
       /**
        * Line numbers answered to goto-line, newest first.
        *

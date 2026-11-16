@@ -1772,3 +1772,20 @@ e8.defineCommand({
 e8.defineVariable({ name: "repeat-complex-command-history", doc: "The forms C-x ESC ESC offers with M-p and M-n, as printed.", value: [] });
 e8.bindKey("C-x M-ESC", "repeat-complex-command");
 e8.bindKey("C-x M-:", "repeat-complex-command");
+
+e8.defineCommand({
+  name: "set-goal-column",
+  doc: "Make the current column the one C-n and C-p keep to in this buffer; with a prefix argument, keep to the column they start from again.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    if (arg !== null && arg !== undefined) {
+      e8.setVariable("goal-column", null);
+      e8.message("No goal column");
+      return;
+    }
+    const column = e8.currentColumn();
+    e8.setVariable("goal-column", column);
+    e8.message(`Goal column ${column} (use ${e8.whereIs("set-goal-column") ?? "M-x set-goal-column"} with an arg to unset it)`);
+  },
+});
+e8.bindKey("C-x C-n", "set-goal-column");
