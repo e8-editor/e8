@@ -151,5 +151,7 @@
     "text": "👍🏽 one two 😀 x",
     "point": 6,
     "keys": "M-t M-t"
-  }
+  },
+  {"name": "replace-case-word-syntax-text-mode", "text": "Don't stop. don't stop.", "modes": ["text-mode"], "call": ["replace-string", "don't", "won't"], "keys": "C-f"},
+  {"name": "replace-case-word-syntax-fundamental", "text": "Don't stop. don't stop.", "call": ["replace-string", "don't", "won't"], "keys": "C-f"}
 ]

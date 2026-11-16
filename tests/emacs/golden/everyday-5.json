@@ -505,6 +505,54 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "replace-case-word-syntax-text-mode",
+      "input": {
+        "text": "Don't stop. don't stop.",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [
+          "replace-string",
+          "don't",
+          "won't"
+        ],
+        "platform": null
+      },
+      "text": "Won't stop. won't stop.",
+      "visible": "Won't stop. won't stop.",
+      "point": 18,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "replace-case-word-syntax-fundamental",
+      "input": {
+        "text": "Don't stop. don't stop.",
+        "point": 0,
+        "keys": "C-f",
+        "modes": [],
+        "call": [
+          "replace-string",
+          "don't",
+          "won't"
+        ],
+        "platform": null
+      },
+      "text": "won't stop. won't stop.",
+      "visible": "won't stop. won't stop.",
+      "point": 18,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

@@ -311,6 +311,12 @@ fn has_upper_case(pattern: &str) -> bool {
 /// off. Unless `fixed_case`, the replacement follows the match's case: all
 /// capitals if the match is, capitalised if its first letter is.
 pub fn expand_replacement(text: &str, m: &Match, replacement: &str, literal: bool, fixed_case: bool) -> Result<String> {
+    expand_replacement_with(text, m, replacement, literal, fixed_case, &|c: char| c.is_alphanumeric())
+}
+
+/// As `expand_replacement`, with what a word character is, as the buffer's
+/// syntax table says for Freplace_match's case rules.
+pub fn expand_replacement_with(text: &str, m: &Match, replacement: &str, literal: bool, fixed_case: bool, is_word: &dyn Fn(char) -> bool) -> Result<String> {
     let mut out = String::new();
     if literal {
         out.push_str(replacement);
@@ -361,12 +367,12 @@ pub fn expand_replacement(text: &str, m: &Match, replacement: &str, literal: boo
             // counts as a lower-case initial, as search.c's code has it.
             some_nonuppercase_initial = true;
         }
-        prev_word = c.is_alphanumeric();
+        prev_word = is_word(c);
     }
     Ok(if !some_lowercase && some_multiletter_word {
         out.to_uppercase()
     } else if !some_nonuppercase_initial && some_multiletter_word {
-        capitalize(&out)
+        capitalize(&out, is_word)
     } else if !some_nonuppercase_initial && some_uppercase {
         out.to_uppercase()
     } else {
@@ -375,7 +381,7 @@ pub fn expand_replacement(text: &str, m: &Match, replacement: &str, literal: boo
 }
 
 /// Capitalises each word, as Emacs's `upcase-initials`.
-fn capitalize(text: &str) -> String {
+fn capitalize(text: &str, is_word: &dyn Fn(char) -> bool) -> String {
     let mut out = String::new();
     let mut start = true;
     for c in text.chars() {
@@ -384,7 +390,7 @@ fn capitalize(text: &str) -> String {
         } else {
             out.push(c);
         }
-        start = !c.is_alphanumeric();
+        start = !is_word(c);
     }
     out
 }
@@ -611,7 +617,8 @@ impl Editor {
             return Err(Error::new("The match is out of date"));
         }
         let text = b.slice(m.start..m.end);
-        let new = expand_replacement(&text, &m, replacement, literal, fixed_case)?;
+        let is_word = |c: char| self.char_syntax(c).class == crate::syntax_table::Class::Word;
+        let new = expand_replacement_with(&text, &m, replacement, literal, fixed_case, &is_word)?;
         // As in Emacs, a mark at the end of the replaced text ends up at the
         // end of the new text, even where the match was empty.
         let mark_at_end = self.buffer().mark() == Some(m.end);
