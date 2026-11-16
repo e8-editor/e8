@@ -1021,7 +1021,8 @@ e8.defineCommand({
     "where empty lines at the end go too, as delete-trailing-lines says. Form feeds stay.",
   run: () => {
     const mark = e8.mark();
-    const [start, end] = e8.regionActive() && mark !== undefined ? [Math.min(mark, e8.point()), Math.max(mark, e8.point())] : [undefined, undefined];
+    // An empty region is none, as use-region-p says.
+    const [start, end] = e8.regionActive() && mark !== undefined && mark !== e8.point() ? [Math.min(mark, e8.point()), Math.max(mark, e8.point())] : [undefined, undefined];
     e8.saveExcursion(() => {
       const endMarker = end === undefined ? undefined : e8.makeMarker(end);
       e8.gotoChar(start ?? e8.pointMin());
@@ -1214,7 +1215,8 @@ e8.defineCommand({
   doc: "Go to a position in the buffer, counting characters from 1: the prefix argument's, else one asked for.",
   params: [{ name: "arg", kind: "prefix" }],
   run: async (arg: e8.PrefixArg) => {
-    const pos = arg !== null ? e8.prefixNumericValue(arg) : Number(await e8.readString(`Go to char (default ${e8.point() + 1}): `));
+    // A number, or C--, goes there; plain C-u asks, as goto-char--read-natnum-interactive.
+    const pos = arg !== null && !Array.isArray(arg) ? e8.prefixNumericValue(arg) : Number(await e8.readString(`Go to char (default ${e8.point() + 1}): `));
     e8.gotoChar(Math.max(e8.pointMin(), Math.min(e8.pointMax(), (Number.isFinite(pos) && pos > 0 ? pos : e8.point() + 1) - 1)));
   },
 });
@@ -1311,8 +1313,9 @@ export function countWords(start: number, end: number): number {
           const p = e8.point();
           e8.call("forward-word", 1);
           if (e8.point() === p) break;
-          // forward-word-strictly fails at the end with no word left.
-          if (!/\w/u.test(e8.bufferSubstringNoProperties(p, e8.point()))) break;
+          // forward-word-strictly fails at the end with no word left: a
+          // letter or digit of any script, as \w in JavaScript is ASCII only.
+          if (!/[\p{L}\p{N}]/u.test(e8.bufferSubstringNoProperties(p, e8.point()))) break;
           words++;
         }
         return words;
@@ -1348,7 +1351,8 @@ e8.defineCommand({
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => {
     const mark = e8.mark();
-    const region = e8.regionActive() && mark !== undefined;
+    // An empty region is none, as use-region-p says.
+    const region = e8.regionActive() && mark !== undefined && mark !== e8.point();
     const totals =
       arg !== null && (region || e8.bufferNarrowedP())
         ? e8.saveRestriction(() => {
@@ -1669,7 +1673,7 @@ for (const [name, doc, region, word] of [
     params: [{ name: "arg", kind: "prefix" }],
     run: (arg: e8.PrefixArg) => {
       const mark = e8.mark();
-      if (e8.regionActive() && mark !== undefined) e8.call(region, Math.min(mark, e8.point()), Math.max(mark, e8.point()));
+      if (e8.regionActive() && mark !== undefined && mark !== e8.point()) e8.call(region, Math.min(mark, e8.point()), Math.max(mark, e8.point()));
       else e8.callWithPrefix(arg ?? 1, word);
     },
   });
