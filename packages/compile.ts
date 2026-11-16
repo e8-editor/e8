@@ -18,6 +18,7 @@ for (const [name, doc, attributes] of [
   ["compilation-info", "Notes' file names, and grep's hits, in compilation buffers.", { foreground: "good" }],
   ["compilation-line-number", "Line numbers in compilation messages.", { foreground: "accent-ink" }],
   ["compilation-column-number", "Column numbers in compilation messages.", { foreground: "muted" }],
+  ["compilation-mode-line-run", "The mode line's :run while a compilation runs.", { inherit: "compilation-warning" }],
   ["compilation-mode-line-exit", "How a compilation that succeeded ended.", { foreground: "good", bold: true }],
   ["compilation-mode-line-fail", "How a compilation that failed ended.", { foreground: "bad", bold: true }],
   ["next-error", "The line next-error goes to, for a moment.", { inherit: "region" }],
@@ -295,7 +296,10 @@ async function compilationStart(command: string, mode: string, directory: string
       filter: (p, output) => compilationFilter(p, output),
       sentinel: (p, event) => compilationSentinel(p, event, modeName),
     });
-    e8.withCurrentBuffer(bufferName, () => e8.runHooks("compilation-start-hook", proc));
+    e8.withCurrentBuffer(bufferName, () => {
+      e8.setVariable("mode-line-process", e8.propertize(":run", { face: "compilation-mode-line-run" }));
+      e8.runHooks("compilation-start-hook", proc);
+    });
     e8.call("display-buffer", bufferName);
   };
   if (existing !== undefined && e8.processStatus(existing) === "run" && !truthy(e8.variable("compilation-always-kill"))) {
@@ -377,6 +381,10 @@ function compilationSentinel(proc: e8.Process, event: string, modeName: string):
     e8.deleteMarker(point);
     e8.setBufferModified(false);
     message = `${modeName} ${status.replace(/\n$/, "")}`;
+    // How it ended, in the mode line, as compilation-handle-exit shows it.
+    const code = e8.processExitStatus(proc) ?? 0;
+    const face = code > 0 ? "compilation-mode-line-fail" : "compilation-mode-line-exit";
+    e8.setVariable("mode-line-process", e8.propertize(`:${e8.processStatus(proc) ?? "exit"} [${code}]`, { face }));
   });
   e8.message(message);
   e8.runHooks("compilation-finish-functions", buffer, event);

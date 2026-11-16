@@ -76,6 +76,46 @@ fn compile_shows_output_and_how_it_ended() {
     assert!(lines[6].contains(", duration "), "{text}");
     assert_eq!(last_message(&d).as_deref(), Some("Compilation exited abnormally with code 2"));
     assert!(d.with(|ed| ed.windows().iter().any(|w| w.buffer.name == "*compilation*")), "the buffer is shown");
+    assert_eq!(compilation_mode_line_process(&d), vec![(":exit [2]".to_string(), true)]);
+    let shown = d.with(|ed| {
+        ed.redisplay();
+        let id = ed.windows().iter().find(|w| w.buffer.name == "*compilation*").unwrap().id;
+        ed.mode_line(id).iter().map(|s| s.text.as_str()).collect::<String>()
+    });
+    assert!(shown.contains("(Compilation:exit [2])"), "{shown}");
+}
+
+/// What the mode line of *compilation* shows of its process, with whether it is in the fail face.
+fn compilation_mode_line_process(d: &Driven) -> Vec<(String, bool)> {
+    d.with(|ed| {
+        let was = ed.buffer().name.clone();
+        ed.set_current_buffer("*compilation*").unwrap();
+        let value = ed.variable("mode-line-process");
+        ed.set_current_buffer(&was).unwrap();
+        match value {
+            Some(Value::Text(t)) => {
+                let fail = t.properties_at(0).and_then(|p| p.get("face")).is_some_and(|f| f.as_str() == Some("compilation-mode-line-fail"));
+                vec![(t.string.clone(), fail)]
+            }
+            Some(Value::Str(s)) => vec![(s, false)],
+            other => panic!("{other:?}"),
+        }
+    })
+}
+
+#[test]
+fn the_mode_line_shows_a_compilation_running_and_how_it_ended() {
+    let dir = project();
+    let d = setup(dir.path());
+    start(&d, "sleep 30");
+    assert_eq!(compilation_mode_line_process(&d), vec![(":run".to_string(), false)]);
+    d.press("M-x");
+    d.type_text("switch-to-buffer\n*compilation*\n");
+    d.press("C-c C-k");
+    wait_for_output(&d);
+    assert!(compilation_mode_line_process(&d)[0].0.starts_with(":signal ["), "{:?}", compilation_mode_line_process(&d));
+    compile(&d, "true");
+    assert_eq!(compilation_mode_line_process(&d), vec![(":exit [0]".to_string(), false)]);
 }
 
 #[test]
