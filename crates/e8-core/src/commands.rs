@@ -568,6 +568,18 @@ fn boundary(ed: &mut Editor, function: &Value, pos: usize, limit: usize) -> Resu
 
 /// Scrolls `lines` lines, signalling an error if the window cannot scroll at all.
 fn scroll_lines_or_error(ed: &mut Editor, lines: i64) -> Result<()> {
+    // Scrolling on past the last line fails without scrolling, as Emacs's
+    // window_scroll does when the new start would be the end of the text:
+    // too few lines left, or only the empty line after a final newline.
+    if lines > 0 {
+        let b = ed.window_buffer();
+        let (top, moved) = ed.move_rows_in(b, ed.row_line_in(b, b.top_line), lines);
+        let last = b.line_of(b.point_max());
+        let empty_last = b.line_start(last) == b.point_max() && top == ed.row_line_in(b, last);
+        if (moved as i64) < lines || empty_last {
+            return err("End of buffer");
+        }
+    }
     if scroll_lines(ed, lines as isize) {
         Ok(())
     } else if lines < 0 {
