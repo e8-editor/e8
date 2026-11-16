@@ -308,6 +308,9 @@ pub struct Editor {
     /// The prefix argument of the command that is running (Emacs's
     /// `current-prefix-arg`).
     current_prefix_arg: Option<PrefixArg>,
+    /// Whether the next interactive call goes on `command-history` even if it
+    /// reads nothing, as M-x asks with command-execute's RECORD-FLAG.
+    pub(crate) record_next_command: bool,
     pub(crate) message: Option<String>,
     /// The error from the last interactive command that failed, until taken.
     last_error: Option<Error>,
@@ -594,6 +597,7 @@ impl Editor {
             interactive: false,
             prefix_arg: None,
             current_prefix_arg: None,
+            record_next_command: false,
             message: None,
             last_error: None,
             command_failed: false,
@@ -824,6 +828,7 @@ impl Editor {
     pub fn run_interactive(&mut self, name: &str) {
         let shifted = std::mem::take(&mut self.keyboard.shift_translated);
         let prefix = self.prefix_arg.take();
+        let record = std::mem::take(&mut self.record_next_command);
         let Some(command) = self.command(name) else {
             self.message(format!("No such command: {name}"));
             return;
@@ -867,7 +872,12 @@ impl Editor {
             // a prompt open meanwhile keeps the command waiting for it.
             let args = command.params.iter().map(|p| self.state_arg(p.kind, prefix)).collect::<Result<Vec<_>>>();
             match args {
-                Ok(args) => self.execute(command, args, prefix),
+                Ok(args) => {
+                    if record {
+                        self.record_complex_command(&command, &args);
+                    }
+                    self.execute(command, args, prefix)
+                }
                 Err(e) => self.fail(e),
             }
         } else {
@@ -891,6 +901,16 @@ impl Editor {
     }
 
     fn read_next_arg(&mut self) {
+        // The functions that work out a prompt, a default or a value see the
+        // command's prefix argument, as an interactive spec sees
+        // current-prefix-arg.
+        let prefix = self.pending_call.as_ref().and_then(|c| c.prefix);
+        let saved = std::mem::replace(&mut self.current_prefix_arg, prefix);
+        self.read_next_arg_with_prefix();
+        self.current_prefix_arg = saved;
+    }
+
+    fn read_next_arg_with_prefix(&mut self) {
         // What the editor supplies, the prefix argument, point and the
         // region, is taken without asking, as interactive "p", "d" and "r",
         // and so is a value the arguments before it decide.
@@ -970,8 +990,8 @@ impl Editor {
         self.execute(call.command, call.args, call.prefix);
     }
 
-    /// Puts a command that read its arguments in the minibuffer on
-    /// `command-history`, as a form C-x ESC ESC can edit and run again, as
+    /// Puts a command that read its arguments in the minibuffer, or that M-x
+    /// ran, on `command-history`, as a form C-x ESC ESC can edit and run again, as
     /// call-interactively does: positions the editor supplied as the forms
     /// that find them again, (point), (mark) and the region's ends.
     fn record_complex_command(&mut self, command: &Command, args: &[Arg]) {

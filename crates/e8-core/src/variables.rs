@@ -1166,7 +1166,7 @@ pub(crate) fn install(ed: &mut Editor) {
         Variable::new("goal-column", "The column C-n and C-p keep to, set with C-x C-n; nil to keep to the column they start from.", Value::Null).local(),
         Variable::new(
             "command-history",
-            "Commands that read their arguments in the minibuffer, newest first, each a list of the command and its arguments, which C-x ESC ESC runs again.",
+            "Commands that read their arguments in the minibuffer or ran from M-x, newest first, each a list of the command and its arguments, which C-x ESC ESC runs again.",
             Value::List(Vec::new()),
         ),
         Variable::new("file-name-history", "File names answered in the minibuffer, newest first.", Value::List(Vec::new())),

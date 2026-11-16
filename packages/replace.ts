@@ -2,7 +2,7 @@
 // query-replace-regexp (C-M-%) ask at each match, and replace-string and
 // replace-regexp replace every match. All of them work from point to the
 // end of the buffer, or on the region when it is active and they run from
-// a key or M-x.
+// a key or M-x; with C-- they work backward, from point to the start.
 //
 // While query-replace asks, query-replace-map overrides other keymaps:
 // y or SPC replaces and moves on, n or DEL skips, ! replaces the rest, . replaces
@@ -44,6 +44,10 @@ interface Replace {
   replaced: boolean;
   /** Where the search goes on from. */
   next: number;
+  /** Whether it goes from point toward the start, as C-- asks. */
+  backward: boolean;
+  /** Where a backward replacement stops, the start of the region or the accessible text. */
+  limit: number;
   count: number;
   /** The match being asked about. */
   match?: { start: number; end: number };
@@ -56,19 +60,24 @@ interface Replace {
 let replacing: Replace | undefined;
 
 /** The range to work on: the active region from a key or M-x, else point to the end. */
-function scope(fromPoint = false): { start: number; endMarker: number } {
+function scope(fromPoint = false, backward = false): { start: number; endMarker: number; limit: number } {
   let start = e8.point();
   // To the end of the accessible text, as Emacs's searches stop there.
   let end = e8.pointMax();
+  let limit = e8.pointMin();
   if (!fromPoint && e8.calledInteractively() && e8.regionActive()) {
     const mark = e8.mark() ?? start;
     end = Math.max(mark, start);
-    start = Math.min(mark, start);
+    // Backward, from the region's end to its start, as perform-replace does.
+    if (backward) {
+      limit = Math.min(mark, start);
+      start = end;
+    } else start = Math.min(mark, start);
     e8.deactivateMark();
   }
   // An overlay keeps the end in place as replacements change the text before it.
   const endMarker = e8.makeOverlay(end, end);
-  return { start, endMarker };
+  return { start, endMarker, limit };
 }
 
 function endOf(marker: number): number {
@@ -87,6 +96,23 @@ function findFrom(r: Replace, from: number, end: number, lastEnd: number | undef
   return m;
 }
 
+/** Finds the match before a position, back to the limit, stepping past an empty match where the last one started. */
+function findBack(r: Replace, from: number, lastStart: number | undefined) {
+  // As perform-replace stops at the limit or the start of the buffer.
+  if (from <= r.limit) return undefined;
+  let m = e8.search(r.from, { from, regexp: r.regexp, backward: true, bound: r.limit, caseFold: r.caseFold });
+  if (m && m.start === m.end && m.start === lastStart) {
+    if (from - 1 <= r.limit) return undefined;
+    m = e8.search(r.from, { from: from - 1, regexp: r.regexp, backward: true, bound: r.limit, caseFold: r.caseFold });
+  }
+  return m;
+}
+
+/** The next match in the direction replacing goes. */
+function findNext(r: Replace, from: number, last: number | undefined) {
+  return r.backward ? findBack(r, from, last) : findFrom(r, from, endOf(endMarker), last);
+}
+
 function replaceCurrent(r: Replace): number {
   const fixedCase = !(r.caseFold && e8.variable("case-replace") === true);
   const replaced = e8.replaceMatch(r.to, { literal: r.literal, fixedCase });
@@ -101,6 +127,19 @@ function occurrences(n: number): string {
 /** Replaces every match from `start` up to the end marker, returning how many. */
 function replaceAll(r: Replace, start: number, endMarker: number): void {
   let pos = start;
+  if (r.backward) {
+    // Each match's start, where the next search back begins, as perform-replace leaves point.
+    let lastStart: number | undefined;
+    for (;;) {
+      const m = findBack(r, pos, lastStart);
+      if (m === undefined) break;
+      replaceCurrent(r);
+      pos = m.start;
+      lastStart = pos;
+    }
+    e8.gotoChar(pos);
+    return;
+  }
   let lastEnd: number | undefined;
   for (;;) {
     const m = findFrom(r, pos, endOf(endMarker), lastEnd);
@@ -126,13 +165,14 @@ function highlight(r: Replace, endMarker: number) {
   clearHighlights(r);
   if (r.match === undefined) return;
   r.current = e8.makeOverlay(r.match.start, r.match.end, { face: "query-replace", priority: 1001 });
-  let pos = r.match.end;
-  const end = endOf(endMarker);
+  // The matches still to come, after it, or before it going backward.
+  let pos = r.backward ? r.match.start : r.match.end;
+  const bound = r.backward ? r.limit : endOf(endMarker);
   while (r.others.length < 200) {
-    const m = e8.search(r.from, { from: pos, regexp: r.regexp, bound: end, caseFold: r.caseFold });
+    const m = e8.search(r.from, { from: pos, regexp: r.regexp, backward: r.backward, bound, caseFold: r.caseFold });
     if (m === undefined || m.end === m.start) break;
     r.others.push(e8.makeOverlay(m.start, m.end, { face: "lazy-highlight", priority: 1000 }));
-    pos = m.end;
+    pos = r.backward ? m.start : m.end;
   }
 }
 
@@ -140,15 +180,15 @@ let endMarker = -1;
 
 /** Moves to the next match and asks about it, or finishes if there is none. */
 function askNext(r: Replace) {
-  const lastEnd = r.match === undefined ? undefined : r.next;
-  const m = findFrom(r, r.next, endOf(endMarker), lastEnd);
+  const last = r.match === undefined ? undefined : r.next;
+  const m = findNext(r, r.next, last);
   if (m === undefined) {
     finish(r);
     return;
   }
   r.match = { start: m.start, end: m.end };
   r.replaced = false;
-  e8.gotoChar(m.end);
+  e8.gotoChar(r.backward ? m.start : m.end);
   highlight(r, endMarker);
   e8.message(`Query replacing ${r.shown} with ${r.to}: (? for help) `);
 }
@@ -173,17 +213,21 @@ function start(
   to: string,
   regexp: boolean,
   query: boolean,
-  options: { literal?: boolean; shown?: string; fromPoint?: boolean; delimited?: boolean } = {},
+  options: { literal?: boolean; shown?: string; fromPoint?: boolean; delimited?: boolean; backward?: boolean } = {},
 ) {
   if (from === "") throw new Error("Empty search string");
   const caseFold = e8.foldCaseFor(from, true);
+  // The messages say how it replaces, as perform-replace's: backward, word, regexp.
+  const how = `${options.backward ? "backward " : ""}${options.delimited ? "word " : ""}${regexp ? "regexp " : ""}`;
+  options = { ...options, shown: how + (options.shown ?? from) };
   // Whole words only, as perform-replace's delimited-flag puts \b round it.
   if (options.delimited) {
-    options = { ...options, literal: options.literal ?? !regexp, shown: options.shown ?? `word ${from}` };
+    options = { ...options, literal: options.literal ?? !regexp };
     from = `\\b${regexp ? from : regexpQuote(from)}\\b`;
     regexp = true;
   }
-  const { start, endMarker: marker } = scope(options.fromPoint);
+  const backward = options.backward === true;
+  const { start, endMarker: marker, limit } = scope(options.fromPoint, backward);
   e8.pushMark(start);
   const r: Replace = {
     from,
@@ -194,6 +238,8 @@ function start(
     caseFold,
     replaced: false,
     next: start,
+    backward,
+    limit,
     count: 0,
     history: [],
     others: [],
@@ -216,11 +262,7 @@ function start(
  * whole words. ispell's R uses it.
  */
 export function queryReplaceUntilDone(from: string, to: string, delimited = false): void {
-  start(delimited ? `\\b${regexpQuote(from)}\\b` : from, to, delimited, true, {
-    literal: true,
-    shown: delimited ? `word ${from}` : from,
-    fromPoint: true,
-  });
+  start(from, to, false, true, { literal: true, fromPoint: true, delimited });
   if (replacing === undefined) return;
   waiting = replacing;
   try {
@@ -243,9 +285,11 @@ function replaceHere(r: Replace) {
   if (r.match === undefined || r.replaced) return;
   // The match data may have moved on while highlighting; find this match again.
   e8.search(r.from, { from: r.match.start, regexp: r.regexp, bound: r.match.end, caseFold: r.caseFold });
-  r.history.push(r.match.start);
-  r.next = replaceCurrent(r);
-  r.match = { start: r.match.start, end: r.next };
+  r.history.push(r.backward ? r.match.end : r.match.start);
+  const end = replaceCurrent(r);
+  // Backward, the search goes on from the match's start, as perform-replace moves there.
+  r.next = r.backward ? r.match.start : end;
+  r.match = { start: r.match.start, end };
 }
 
 e8.defineKeymap("query-replace-map");
@@ -257,8 +301,8 @@ const actions: [string[], string, string, (r: Replace) => void][] = [
   }],
   [["n", "DEL", "<delete>"], "query-replace-skip", "Leave this match and go on to the next.", (r) => {
     if (r.match && !r.replaced) {
-      r.history.push(r.match.start);
-      r.next = r.match.end;
+      r.history.push(r.backward ? r.match.end : r.match.start);
+      r.next = r.backward ? r.match.start : r.match.end;
     }
     askNext(r);
   }],
@@ -334,16 +378,22 @@ let defaults: [string, string][] = [];
  * string, offering the last pair as the default, then its replacement,
  * not asked for when the default is taken, and C-u for whole words only.
  */
-function replaceParams(prompt: string, fromName: string): e8.Param[] {
+function replaceParams(base: string, fromName: string): e8.Param[] {
+  // "backward" for C--, "word" for another prefix argument, and "in region", as the commands' interactive specs add.
+  const named = (): string => {
+    const arg = e8.prefixArg();
+    const how = arg === null || arg === undefined ? "" : arg === "-" ? " backward" : " word";
+    return `${base}${how}${e8.regionActive() && e8.mark() !== e8.point() ? " in region" : ""}`;
+  };
   return [
     {
       name: fromName,
-      prompt: () => (defaults.length > 0 ? `${prompt} (default ${defaults[0][0]} → ${defaults[0][1]}): ` : `${prompt}: `),
+      prompt: () => (defaults.length > 0 ? `${named()} (default ${defaults[0][0]} → ${defaults[0][1]}): ` : `${named()}: `),
       history: "query-replace-history",
     },
     {
       name: "to",
-      prompt: (from: string) => `${prompt} ${from} with: `,
+      prompt: (from: string) => `${named()} ${from} with: `,
       value: (from: string) => (from === "" && defaults.length > 0 ? defaults[0][1] : undefined),
       history: "query-replace-history",
     },
@@ -367,11 +417,12 @@ const queryReplace = e8.defineCommand({
     "Replace a string with another, asking at each match.\n\n" +
     "At each match: y or SPC replaces it, n or DEL skips it, ! replaces the rest, . replaces it and stops, " +
     "q or RET stops. Case is ignored unless the string has a capital letter, and then replacements follow " +
-    "the case of what they replace. Works from point to the end of the buffer, or on the region if it is active.",
+    "the case of what they replace. Works from point to the end of the buffer, or on the region if it is active. " +
+    "C-u replaces whole words only, and C-- works backward, from point to the start.",
   params: replaceParams("Query replace", "from"),
   run: (input: string, replacement: string, arg: e8.PrefixArg) => {
     const [from, to] = readPair(input, replacement);
-    start(from, to, false, true, { delimited: delimitedBy(arg) });
+    start(from, to, false, true, { delimited: delimitedBy(arg), backward: arg === "-" });
   },
 });
 
@@ -379,21 +430,21 @@ const queryReplaceRegexp = e8.defineCommand({
   name: "query-replace-regexp",
   doc:
     "Replace matches of a regular expression, asking at each one.\n\n" +
-    "In the replacement, \\& is the whole match and \\1 to \\9 its groups. See query-replace for the keys.",
+    "In the replacement, \\& is the whole match and \\1 to \\9 its groups. See query-replace for the keys, and for C-u and C--.",
   params: replaceParams("Query replace regexp", "regexp"),
   run: (input: string, replacement: string, arg: e8.PrefixArg) => {
     const [from, to] = readPair(input, replacement);
-    start(from, to, true, true, { delimited: delimitedBy(arg) });
+    start(from, to, true, true, { delimited: delimitedBy(arg), backward: arg === "-" });
   },
 });
 
 e8.defineCommand({
   name: "replace-string",
-  doc: "Replace every match of a string from point to the end of the buffer, or in the active region.",
+  doc: "Replace every match of a string from point to the end of the buffer, or in the active region; C-u for whole words only, C-- backward to the start.",
   params: replaceParams("Replace string", "from"),
   run: (input: string, replacement: string, arg: e8.PrefixArg) => {
     const [from, to] = readPair(input, replacement);
-    start(from, to, false, false, { delimited: delimitedBy(arg) });
+    start(from, to, false, false, { delimited: delimitedBy(arg), backward: arg === "-" });
   },
 });
 
@@ -401,11 +452,11 @@ e8.defineCommand({
   name: "replace-regexp",
   doc:
     "Replace every match of a regular expression from point to the end of the buffer, or in the active region.\n\n" +
-    "In the replacement, \\& is the whole match and \\1 to \\9 its groups.",
+    "In the replacement, \\& is the whole match and \\1 to \\9 its groups. C-u replaces whole words only, and C-- works backward to the start.",
   params: replaceParams("Replace regexp", "regexp"),
   run: (input: string, replacement: string, arg: e8.PrefixArg) => {
     const [from, to] = readPair(input, replacement);
-    start(from, to, true, false, { delimited: delimitedBy(arg) });
+    start(from, to, true, false, { delimited: delimitedBy(arg), backward: arg === "-" });
   },
 });
 
