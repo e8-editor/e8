@@ -339,6 +339,27 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "narrowed-region-line-up-at-the-top",
+      "input": {
+        "text": "zero\none\ntwo\nthree\n",
+        "point": 5,
+        "keys": "C-SPC C-n C-n C-x n n C-g M-< C-SPC C-e M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "zero\none\ntwo\nthree\n",
+      "visible": "zero\none\ntwo\nthree\n",
+      "point": 8,
+      "mark": 5,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit"
     }
   ]
 }

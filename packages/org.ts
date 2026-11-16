@@ -5035,14 +5035,16 @@ function transposeRegionLines(up: boolean, a: number, b: number): void {
   const atBol = (x: number): boolean => x === e8.lineStart(lineAt(x));
   if (up) {
     const prev = Math.max(0, lineAt(a) - 1);
-    // On the first line, move-beginning-of-line and move-end-of-line with 0 both stay at its start.
-    const [c, d] = lineAt(a) === 0 ? [0, 0] : [e8.lineStart(prev), e8.lineEnd(prev)];
+    // On the first line, of the buffer or of a narrowing, move-beginning-of-line
+    // and move-end-of-line with 0 both stay at its start.
+    const first = e8.lineStart(lineAt(a)) <= e8.pointMin();
+    const [c, d] = first ? [e8.pointMin(), e8.pointMin()] : [e8.lineStart(prev), e8.lineEnd(prev)];
     transposeRegions(a, b, c, d);
     e8.setMark(c);
     e8.gotoChar(c + (b - a));
   } else {
     const next = atBol(b) ? lineAt(b) : lineAt(b) + 1;
-    const [c, d] = next < e8.lineCount() ? [e8.lineStart(next), e8.lineEnd(next)] : [e8.bufferSize(), e8.bufferSize()];
+    const [c, d] = next < e8.lineCount() && e8.lineStart(next) < e8.pointMax() ? [e8.lineStart(next), Math.min(e8.lineEnd(next), e8.pointMax())] : [e8.pointMax(), e8.pointMax()];
     transposeRegions(a, b, c, d);
     e8.setMark(1 + a + (d - c));
     e8.gotoChar(1 + a + (d - c) + (b - a));

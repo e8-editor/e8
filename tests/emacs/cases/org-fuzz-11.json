@@ -142,5 +142,14 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "narrowed-region-line-up-at-the-top",
+    "text": "zero\none\ntwo\nthree\n",
+    "point": 5,
+    "keys": "C-SPC C-n C-n C-x n n C-g M-< C-SPC C-e M-<up>",
+    "modes": [
+      "org-mode"
+    ]
   }
 ]
