@@ -33,6 +33,12 @@ function captureTemplates(): CaptureTemplate[] {
 }
 
 /** A template's option, as its properties plist gives it. */
+/** How many blank lines go before or after a captured entry: the option, else :empty-lines, else none. */
+function emptyLines(t: CaptureTemplate, name: string): number {
+  const n = option(t, name) ?? option(t, ":empty-lines");
+  return typeof n === "number" && n > 0 ? n : 0;
+}
+
 function option(t: CaptureTemplate, name: string): e8.Value | undefined {
   const rest = t.slice(5);
   for (let i = 0; i + 1 < rest.length; i += 2) if (rest[i] === name) return rest[i + 1];
@@ -232,6 +238,17 @@ function captureWith(key: string): void {
       throw new Error(`E8 does not capture to ${target[0]} targets`);
     }
     if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+    // The blank lines where it goes go, and as many as the template says
+    // come instead, as org-capture-empty-lines-before has it.
+    {
+      const here = e8.point();
+      let back = here;
+      while (back > e8.pointMin() && /[ \t\n\r]/.test(e8.bufferText(back - 1, back))) back--;
+      if (back < here) back = e8.lineEnd(lineAt(back)) < here ? e8.lineEnd(lineAt(back)) + 1 : here;
+      if (back < here) e8.deleteRegion(back, here);
+      e8.gotoChar(back);
+      e8.insert("\n".repeat(emptyLines(t, ":empty-lines-before")));
+    }
     // The template as a subtree at the target's level, as org-paste-subtree puts it.
     const first = /^(\*+) /m.exec(filled.text)?.[1].length ?? level;
     const shift = level - first;
@@ -258,6 +275,14 @@ function captureWith(key: string): void {
       if (h && h.tagsAt !== undefined) alignTags(l);
     }
     e8.message(`Clipboard pasted as level ${level} subtree`);
+    // Blank lines after it go too, and the template's come, as org-capture-empty-lines-after.
+    {
+      const after = e8.point();
+      let q = after;
+      while (q < e8.pointMax() && /^[ \t]*$/.test(e8.lineText(lineAt(q))) && e8.lineEnd(lineAt(q)) < e8.pointMax()) q = e8.lineEnd(lineAt(q)) + 1;
+      if (q > after) e8.deleteRegion(after, q);
+      e8.saveExcursion(() => e8.insert("\n".repeat(emptyLines(t, ":empty-lines-after"))));
+    }
     const endPos = e8.point();
     e8.narrowToRegion(beg, endPos === e8.bufferSize() ? endPos : endPos - 1);
     e8.gotoChar(cursor === undefined ? beg : beg + cursor);

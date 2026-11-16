@@ -278,6 +278,85 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "capture-under-a-heading-before-a-blank-line",
+      "input": {
+        "text": "* Inbox\n** old\n\n* Other\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "Test",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** old\n** new\n* Other\n",
+      "visible": "* Inbox\n** old\n** new\n* Other\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-to-a-file-ending-in-blank-lines",
+      "input": {
+        "text": "* one\n\n\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "Test",
+            "entry",
+            [
+              "file",
+              "FILE"
+            ],
+            "* %?"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\n* new\n",
+      "visible": "* one\n* new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }
