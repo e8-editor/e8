@@ -979,18 +979,21 @@ function nondirectory(file: string): string {
 function addFinalNewline(): void {
   const size = e8.bufferSize();
   const require = e8.variable("require-final-newline");
-  if (size === 0 || require === false || require === null || e8.bufferText(size - 1, size) === "\n") return;
+  if (size === 0 || require === false || require === null || e8.bufferReadOnly() || e8.bufferText(size - 1, size) === "\n") return;
   if (require === true || require === "visit-save" || e8.yOrNP(`Buffer ${e8.bufferName()} does not end in newline.  Add one? `)) {
-    const point = e8.point();
-    e8.gotoChar(e8.pointMax());
-    e8.insert("\n");
-    e8.gotoChar(point);
+    // At the end of the whole buffer: basicSaveBuffer has widened it.
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.pointMax());
+      e8.insert("\n");
+    });
   }
 }
 
 /** Writes the buffer, says so and runs the save hooks, as basic-save-buffer does once it may. */
 function writeBuffer(file: string): void {
-  e8.runHooks("before-save-hook");
+  // An error in a hook is only reported, so it cannot stop the saving, as
+  // basic-save-buffer's with-demoted-errors has it.
+  e8.conditionCase(() => e8.runHooks("before-save-hook"), { error: (e) => e8.message(`Before-save hook error: ${e.message}`) });
   e8.writeVisitedFile();
   e8.message(`Wrote ${e8.bufferFileName() ?? file}`);
   e8.runHooks("after-save-hook");
@@ -1015,9 +1018,20 @@ function basicSaveBuffer(): void {
   if (e8.visitedFileChanged() && !e8.yesOrNoP(`${nondirectory(file)} has changed since visited or saved.  Save anyway? `)) {
     e8.userError("Save not confirmed");
   }
-  addFinalNewline();
-  selectSafeCodingSystem();
-  writeBuffer(file);
+  // The whole buffer, however it is narrowed, for the final newline, the
+  // hooks and the writing, as basic-save-buffer widens around them.
+  e8.saveRestriction(() => {
+    e8.widen();
+    addFinalNewline();
+    selectSafeCodingSystem();
+    // A directory that is not there yet is made if you say so.
+    const dir = e8.fileNameDirectory(e8.expandFileName(file));
+    if (dir !== undefined && !e8.fileExists(file) && !e8.fileExists(dir)) {
+      if (!e8.yOrNP(`Directory \u2018${dir}\u2019 does not exist; create? `)) e8.signal("error", "Canceled");
+      e8.makeDirectory(dir, { parents: true });
+    }
+    writeBuffer(file);
+  });
 }
 
 e8.defineCommand({
