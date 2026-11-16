@@ -1305,3 +1305,20 @@ fn capture_templates_keep_the_cursor_s_line_and_repeat_what_comes_before_initial
     let notes = std::fs::read_to_string(dir.path().join("notes.org")).unwrap();
     assert!(notes.contains("** Lines\n- l1\n- l2\n"), "{notes}");
 }
+
+/// Durations as org-duration-from-minutes writes them, what Org 9.7 gives:
+/// hours unpadded, after the days too.
+#[test]
+fn clock_durations_are_written_as_org_writes_them() {
+    let (mut ed, s) = org("");
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let file = dir.path().join("durations.ts");
+    std::fs::write(
+        &file,
+        r#"import { durationFromMinutes } from "org-clock";
+           e8.setVariable("e8--durations", [59, 61, 600, 1440, 1500, 3000, 90061].map(durationFromMinutes).join(" "));"#,
+    )
+    .unwrap();
+    s.load_module(&mut ed, &file).unwrap();
+    assert_eq!(ed.variable("e8--durations"), Some(e8_core::Value::Str("0:59 1:01 10:00 1d 0:00 1d 1:00 2d 2:00 62d 13:01".into())));
+}

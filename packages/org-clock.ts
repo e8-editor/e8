@@ -57,7 +57,7 @@ export function durationFromMinutes(minutes: number): string {
   const days = Math.floor(minutes / 1440);
   const rest = minutes - days * 1440;
   const hm = `${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}`;
-  return days > 0 ? `${days}d ${hm.padStart(5, "0")}` : hm;
+  return days > 0 ? `${days}d ${hm}` : hm;
 }
 
 /** The drawer CLOCK: lines go in, as org-clock-drawer-name: nil for none. */
