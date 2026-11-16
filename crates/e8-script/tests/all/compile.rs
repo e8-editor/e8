@@ -250,3 +250,18 @@ fn commands_run_without_a_pager_and_grep_leaves_recompile_s_directory() {
     let default = d.with(|ed| ed.default_value("compilation-directory").and_then(|v| v.as_str().map(str::to_string)));
     assert_eq!(default, Some(format!("{}/", dir.path().display())));
 }
+
+/// GNU make's "*** [FILE:LINE: target] Error 1" and clang's "In file
+/// included from FILE:LINE:" are info, as Emacs's gmake and clang-include
+/// rules take them before gnu, so next-error passes over them to the error.
+#[test]
+fn make_and_clang_context_lines_are_info_that_next_error_passes() {
+    let dir = project();
+    let d = setup(dir.path());
+    compile(&d, "printf 'In file included from src/b.rs:1:\\nsrc/a.rs:2:9: error: bad\\nmake: *** [src/b.rs:3: all] Error 1\\n'");
+    d.press("M-g n");
+    assert_eq!(d.buffer_name(), "a.rs");
+    assert_eq!(d.point(), 9 + 8);
+    d.press("M-g n");
+    assert_eq!(d.with(|ed| ed.take_error().map(|e| e.to_string())).as_deref(), Some("Past last error"));
+}

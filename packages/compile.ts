@@ -39,7 +39,7 @@ defvar(
 );
 defvar(
   "compilation-error-regexp-alist",
-  ["gnu", "python-tracebacks-and-caml", "typescript-tsc-pretty", "cargo"],
+  ["clang-include", "gmake", "gnu", "python-tracebacks-and-caml", "typescript-tsc-pretty", "cargo"],
   "The names of the message formats in compilation-error-regexp-alist-alist that compilation buffers look for.",
   true,
 );
@@ -78,6 +78,10 @@ type Format = { re: RegExp; type: 0 | 1 | 2 };
  * JavaScript regexps. cargo is rust-mode's, which Emacs leaves to it.
  */
 const FORMATS: { [name: string]: Format } = {
+  // clang's "In file included from FILE:LINE:", where an error comes from, as info.
+  "clang-include": { re: /^In file included from (?<file>[^\n:]+):(?<line>[0-9]+):$/, type: 0 },
+  // GNU make's "make: *** [FILE:LINE: target] Error 1", as info.
+  gmake: { re: /: \*\*\* \[(?<file>.+?):(?<line>[0-9]+): .+\]/, type: 0 },
   // [PROGRAM:]FILE:LINE[-ENDLINE][:COL[-ENDCOL]]: [warning|note|error] MESSAGE
   gnu: {
     re: new RegExp(
