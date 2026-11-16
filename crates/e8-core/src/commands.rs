@@ -517,8 +517,18 @@ pub(crate) fn move_words(ed: &mut Editor, mut pos: usize, n: i64) -> Result<usiz
             match function {
                 Some(f) if f.is_true() && pos < max => pos = boundary(ed, &f, pos, max)?,
                 _ => {
+                    // A word ends where its script changes too, as scan_words
+                    // stops where word_boundary_p says.
                     while pos < max && ed.buffer().char_at(pos).is_some_and(|c| word(ed, c)) {
                         pos += 1;
+                        let b = ed.buffer();
+                        if let (Some(c0), Some(c1)) = (b.char_at(pos - 1), b.char_at(pos))
+                            && pos < max
+                            && word(ed, c1)
+                            && crate::regexp::word_boundary(c0, c1)
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -532,6 +542,14 @@ pub(crate) fn move_words(ed: &mut Editor, mut pos: usize, n: i64) -> Result<usiz
                 _ => {
                     while pos > min && ed.buffer().char_at(pos - 1).is_some_and(|c| word(ed, c)) {
                         pos -= 1;
+                        let b = ed.buffer();
+                        if let (Some(c0), Some(c1)) = (pos.checked_sub(1).and_then(|p| b.char_at(p)), b.char_at(pos))
+                            && pos > min
+                            && word(ed, c0)
+                            && crate::regexp::word_boundary(c0, c1)
+                        {
+                            break;
+                        }
                     }
                 }
             }

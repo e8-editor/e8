@@ -151,6 +151,82 @@
       "kill_ring": [],
       "modified": false,
       "error": "Beginning of buffer"
+    },
+    {
+      "name": "m-f-stops-where-the-script-changes",
+      "input": {
+        "text": "Emacs日本語 x",
+        "point": 0,
+        "keys": "M-f",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "Emacs日本語 x",
+      "visible": "Emacs日本語 x",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "m-b-stops-where-the-script-changes",
+      "input": {
+        "text": "Emacs日本語 x",
+        "point": 8,
+        "keys": "M-b",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "Emacs日本語 x",
+      "visible": "Emacs日本語 x",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "m-u-upcases-one-script-s-run",
+      "input": {
+        "text": "abcабв def",
+        "point": 0,
+        "keys": "M-u",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ABCабв def",
+      "visible": "ABCабв def",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "m-f-over-swedish-words",
+      "input": {
+        "text": "blåbär och smörgås",
+        "point": 0,
+        "keys": "M-f M-f",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "blåbär och smörgås",
+      "visible": "blåbär och smörgås",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }
