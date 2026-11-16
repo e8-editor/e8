@@ -11038,6 +11038,10 @@ declare global {
        */
       "kill-read-only-ok": Value;
       /**
+       * How many kills the kill ring keeps: past that, the oldest goes.
+       */
+      "kill-ring-max": Value;
+      /**
        * Whether C-u C-x ( runs the last macro before appending to it, and C-u C-u C-x ( does not; nil turns these round.
        *
        * Defined in packages/kmacro.ts.

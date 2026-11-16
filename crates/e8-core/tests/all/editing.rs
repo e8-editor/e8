@@ -303,3 +303,16 @@ fn edits_outside_the_narrowing_are_refused() {
     press(&mut ed, "C-y");
     assert_eq!(text(&ed), "AAA\n\n", "nothing was killed");
 }
+
+/// The kill ring keeps kill-ring-max kills, the oldest going first, as
+/// kill-new lets them go.
+#[test]
+fn the_kill_ring_keeps_kill_ring_max_kills() {
+    let mut ed = Editor::new();
+    ed.set_variable("kill-ring-max", e8_core::Value::Number(3.0));
+    for word in ["a", "b", "c", "d", "e"] {
+        ed.kill_new(word);
+    }
+    let kills: Vec<String> = (0..4).map(|n| ed.current_kill(if n == 0 { 0 } else { 1 }).unwrap()).collect();
+    assert_eq!(kills, ["e", "d", "c", "e"], "three kept, cycling back to the newest");
+}

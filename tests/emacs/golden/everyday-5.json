@@ -1,0 +1,137 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "saving-a-narrowed-buffer-adds-the-newline-at-the-end",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-SPC C-n C-x n n x C-x C-s",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.txt": "one\ntwo\nthree\nfour"
+        },
+        "find": "a.txt"
+      },
+      "text": "one\ntwo\nxthree\nfour\n",
+      "visible": "one\ntwo\nxthree\nfour\n",
+      "point": 9,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.txt": "one\ntwo\nxthree\nfour\n",
+        "a.txt~": "one\ntwo\nthree\nfour"
+      }
+    },
+    {
+      "name": "count-words-counts-swedish-words",
+      "input": {
+        "text": "Jag bor på en ö i en å.",
+        "point": 0,
+        "keys": "C-x h M-=",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Jag bor på en ö i en å.",
+      "visible": "Jag bor på en ö i en å.",
+      "point": 0,
+      "mark": 23,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Region has 1 line, 1 sentence, 8 words, and 23 characters"
+    },
+    {
+      "name": "count-words-counts-cyrillic-words",
+      "input": {
+        "text": "привет мир",
+        "point": 0,
+        "keys": "C-x h M-=",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "привет мир",
+      "visible": "привет мир",
+      "point": 0,
+      "mark": 10,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Region has 1 line, 1 sentence, 2 words, and 10 characters"
+    },
+    {
+      "name": "a-third-c-spc-activates-the-mark",
+      "input": {
+        "text": "abc def",
+        "point": 2,
+        "keys": "C-SPC C-SPC C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "abc def",
+      "visible": "abc def",
+      "point": 2,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark activated"
+    },
+    {
+      "name": "a-third-c-spc-does-not-push-the-mark",
+      "input": {
+        "text": "abc def",
+        "point": 0,
+        "keys": "C-f C-SPC C-f C-SPC C-SPC C-SPC C-f C-u C-SPC C-u C-SPC",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abc def",
+      "visible": "abc def",
+      "point": 1,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "c-u-goto-char-asks",
+      "input": {
+        "text": "abcdefgh",
+        "point": 0,
+        "keys": "C-u M-g c",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3"
+        ]
+      },
+      "text": "abcdefgh",
+      "visible": "abcdefgh",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

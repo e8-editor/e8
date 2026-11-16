@@ -1203,6 +1203,11 @@ fn editing(ed: &mut Editor) {
             } else if repeated && b.is_mark_active() && b.mark() == Some(b.point()) {
                 b.deactivate_mark();
                 ed.message("Mark deactivated");
+            } else if repeated && !b.is_mark_active() && b.mark() == Some(b.point()) {
+                // A third C-SPC turns the region back on without pushing the
+                // mark again, as set-mark-command does after itself.
+                b.activate_region();
+                ed.message("Mark activated");
             } else {
                 let p = b.point();
                 ed.push_mark(p, true);

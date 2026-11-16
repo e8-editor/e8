@@ -1,0 +1,43 @@
+[
+  {
+    "name": "saving-a-narrowed-buffer-adds-the-newline-at-the-end",
+    "text": "",
+    "keys": "C-n C-SPC C-n C-x n n x C-x C-s",
+    "files": {
+      "a.txt": "one\ntwo\nthree\nfour"
+    },
+    "find": "a.txt"
+  },
+  {
+    "name": "count-words-counts-swedish-words",
+    "text": "Jag bor på en ö i en å.",
+    "keys": "C-x h M-=",
+    "message": true
+  },
+  {
+    "name": "count-words-counts-cyrillic-words",
+    "text": "привет мир",
+    "keys": "C-x h M-=",
+    "message": true
+  },
+  {
+    "name": "a-third-c-spc-activates-the-mark",
+    "text": "abc def",
+    "point": 2,
+    "keys": "C-SPC C-SPC C-SPC",
+    "message": true
+  },
+  {
+    "name": "a-third-c-spc-does-not-push-the-mark",
+    "text": "abc def",
+    "keys": "C-f C-SPC C-f C-SPC C-SPC C-SPC C-f C-u C-SPC C-u C-SPC"
+  },
+  {
+    "name": "c-u-goto-char-asks",
+    "text": "abcdefgh",
+    "keys": "C-u M-g c",
+    "answers": [
+      "3"
+    ]
+  }
+]

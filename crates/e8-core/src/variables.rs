@@ -840,6 +840,11 @@ pub(crate) fn install(ed: &mut Editor) {
         )
         .local(),
         Variable::new(
+            "kill-ring-max",
+            "How many kills the kill ring keeps: past that, the oldest goes.",
+            120.0,
+        ),
+        Variable::new(
             "delete-active-region",
             "Whether DEL and <delete> delete the active region rather than one character.\n\nIf the value is \"kill\", they kill the region instead, so it can be yanked back.",
             true,
