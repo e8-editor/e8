@@ -309,6 +309,8 @@ interface Scanned {
   priority: number;
   /** The entry's active timestamps but its planning line's, in order: where each is, and whether it is in the heading. */
   stamps: { ts: { day: number; repeat?: [number, string] }; pos: number; inHeading: boolean; text: string }[];
+  /** The entry's date ranges, <a>--<b>: their first and last days, the timestamps at either end, and where they are. */
+  ranges: { first: number; last: number; from: string; to: string; pos: number }[];
   habit?: Habit;
   /** Its category, as org-get-category gives it at the heading. */
   cat: string;
@@ -321,6 +323,9 @@ const widened = <T>(f: () => T): T =>
     return f();
   });
 
+/** A date range, <a>--<b>, as org-tr-regexp matches one. */
+const RANGE = /(<\d{4}-\d{2}-\d{2}[^>\n]*>)--(<\d{4}-\d{2}-\d{2}[^>\n]*>)/g;
+
 /** The current buffer's headings as the agenda reads them, and its category. */
 function scanBuffer(): { cat: string; entries: Scanned[] } {
   const all = headings();
@@ -328,12 +333,22 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
   const stamp = /<\d{4}-\d{2}-\d{2}[^>\n]*>/g;
   const entries = all.map((h, i): Scanned => {
     const stamps: Scanned["stamps"] = [];
+    const ranges: Scanned["ranges"] = [];
     const end = entryEnd(all, i);
     for (let l = h.line; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
       if (l === h.line + 1 && PLANNING.test(e8.lineText(l))) continue;
       const text = e8.lineText(l);
       if (!text.includes("<")) continue;
+      // A range's ends belong to the range, which shows on every day of it, as org-agenda-get-blocks has it.
+      const inRange: [number, number][] = [];
+      for (const m of allMatches(RANGE, text)) {
+        const [a, b] = [activeTimestamp(m[1]), activeTimestamp(m[2])];
+        if (a === undefined || b === undefined) continue;
+        inRange.push([m.index, m.index + m[0].length]);
+        ranges.push({ first: a.day, last: b.day, from: m[1], to: m[2], pos: at(l, text, m.index) });
+      }
       for (const m of allMatches(stamp, text)) {
+        if (inRange.some(([a, b]) => m.index >= a && m.index < b)) continue;
         const ts = activeTimestamp(m[0]);
         if (ts) stamps.push({ ts, pos: at(l, text, m.index), inHeading: l === h.line, text: m[0] });
       }
@@ -341,7 +356,7 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
     const plan = planningOf(h);
     // Only a scheduled entry can be a habit, so only those have their properties read.
     const habit = plan.scheduled !== undefined ? parseHabit(h) : undefined;
-    return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, cat: cats[i], ...(habit ? { habit } : {}) };
+    return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ranges, cat: cats[i], ...(habit ? { habit } : {}) };
   });
   return { cat: category(), entries };
 }
@@ -351,7 +366,20 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
   const deadlines: AgendaItem[] = [];
   const scheduled: AgendaItem[] = [];
   const stamps: AgendaItem[] = [];
-  for (const { h, done, plan, priority, stamps: found, habit, cat } of scan.entries) {
+  const blocks: AgendaItem[] = [];
+  for (const { h, done, plan, priority, stamps: found, ranges, habit, cat } of scan.entries) {
+    // Each day of a range, numbered, with the time it starts on its first
+    // day and ends on its last, as org-agenda-get-blocks has them.
+    for (const r of ranges) {
+      if (day < r.first || day > r.last) continue;
+      const leader = r.first === r.last ? "" : `(${day - r.first + 1}/${r.last - r.first + 1}): `;
+      const [from, to] = [timeOf(r.from), timeOf(r.to)];
+      const time = r.first === day && r.last === day && from && to
+        ? { field: `${from.field.replace(gridDots(), "")}-${to.field.replace(gridDots(), "").trim()}`, minutes: from.minutes }
+        : r.first === day ? from : r.last === day ? to : undefined;
+      const item = { cat, leader, removeTimestamp: false, buffer, pos: r.pos, heading: h.start, ...(time ? { time } : {}) };
+      blocks.push({ ...item, text: agendaLine(h, cat, leader, false, time), urgency: priority });
+    }
     if (plan.deadline !== undefined) {
       const diff = plan.deadline - day;
       let leader: string | undefined;
@@ -397,7 +425,7 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       stamps.push({ ...item, text: agendaLine(h, cat, "", stamp.inHeading, time), urgency: priority });
     }
   }
-  return [...deadlines, ...scheduled, ...stamps];
+  return [...deadlines, ...scheduled, ...blocks, ...stamps];
 }
 
 /**

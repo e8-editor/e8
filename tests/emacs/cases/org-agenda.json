@@ -311,5 +311,20 @@
     "keys": "",
     "name": "times-show-and-sort-entries",
     "text": "* Lunch <2026-11-17 Tue 12:00>\n* Standup <2026-11-17 Tue 09:30>\n* TODO Call\nSCHEDULED: <2026-11-17 Tue 14:15>\n* Review <2026-11-17 Tue 10:00-11:30>\n* TODO No time\nSCHEDULED: <2026-11-17 Tue>\n* TODO Due\nDEADLINE: <2026-11-17 Tue 08:05>\n* TODO Warned\nDEADLINE: <2026-11-19 Thu 16:00>\n"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-11-16",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "name": "date-ranges-show-each-day",
+    "text": "* Trip <2026-11-17 Tue>--<2026-11-19 Thu>\n* Conference\n<2026-11-20 Fri 09:00>--<2026-11-22 Sun 17:00>\n* TODO Long\n<2026-11-14 Sat>--<2026-11-18 Wed>\n"
   }
 ]
