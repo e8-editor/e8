@@ -12216,7 +12216,7 @@ declare global {
        */
       "read-quoted-char-radix": Value;
       /**
-       * Where C-l puts the line with point each time in a row: middle, top, bottom, or a line of the window.
+       * Where C-l puts the line with point each time in a row: middle, top, bottom, a line of the window, or a fraction of the way down it.
        *
        * Defined in packages/window.ts.
        */

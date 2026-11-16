@@ -4223,11 +4223,21 @@ e8.bindKey("C-x -", shrinkIfLarger);
 
 e8.defineVariable({
   name: "recenter-positions",
-  doc: "Where C-l puts the line with point each time in a row: middle, top, bottom, or a line of the window.",
+  doc: "Where C-l puts the line with point each time in a row: middle, top, bottom, a line of the window, or a fraction of the way down it.",
   value: ["middle", "top", "bottom"],
 });
 
 let recenterLastOp: e8.Value | undefined;
+
+/** The lines kept from the top or bottom, scroll-margin up to a quarter of the window, as recenter-top-bottom's. */
+const topBottomMargin = (): number =>
+  Math.min(Math.max(0, Number(e8.variable("scroll-margin") ?? 0)), Math.trunc(e8.windowBodyHeight() / 4));
+
+/** Rounds to the nearest whole number, halves to the even one, as Lisp's round. */
+function roundHalfEven(x: number): number {
+  const r = Math.round(x);
+  return Math.abs(x % 1) === 0.5 && r % 2 !== 0 ? r - 1 : r;
+}
 
 e8.defineCommand({
   name: "recenter-top-bottom",
@@ -4247,12 +4257,14 @@ e8.defineCommand({
     } else {
       recenterLastOp = positions[0];
     }
-    const margin = Math.max(0, Number(e8.variable("scroll-margin") ?? 0));
+    const margin = topBottomMargin();
     const op = recenterLastOp;
     if (op === "middle") e8.callWithPrefix(null, "recenter");
     else if (op === "top") e8.callWithPrefix(margin, "recenter");
     else if (op === "bottom") e8.callWithPrefix(-1 - margin, "recenter");
     else if (typeof op === "number" && Number.isInteger(op)) e8.callWithPrefix(op, "recenter");
+    // A fraction is that far down the window.
+    else if (typeof op === "number") e8.callWithPrefix(roundHalfEven(op * e8.windowTotalHeight()), "recenter");
   },
 });
 e8.bindKey("C-l", "recenter-top-bottom");
@@ -4276,12 +4288,14 @@ e8.defineCommand({
     } else {
       recenterLastOp = positions[0];
     }
-    const margin = Math.max(0, Number(e8.variable("scroll-margin") ?? 0));
+    const margin = topBottomMargin();
     const op = recenterLastOp;
     if (op === "middle") e8.callWithPrefix(null, "move-to-window-line");
     else if (op === "top") e8.callWithPrefix(margin, "move-to-window-line");
     else if (op === "bottom") e8.callWithPrefix(-1 - margin, "move-to-window-line");
     else if (typeof op === "number" && Number.isInteger(op)) e8.callWithPrefix(op, "move-to-window-line");
+    // A fraction is that far down the window.
+    else if (typeof op === "number") e8.callWithPrefix(roundHalfEven(op * e8.windowTotalHeight()), "move-to-window-line");
   },
 });
 e8.bindKey("M-r", "move-to-window-line-top-bottom");

@@ -431,6 +431,29 @@ fn c_l_puts_the_line_in_the_middle_then_at_the_top_then_the_bottom() {
     assert_eq!(top(&ed), 45, "middle again");
 }
 
+/// C-l keeps scroll-margin from the top and bottom, but at most a quarter
+/// of the window, and a fraction in recenter-positions is that far down it,
+/// as recenter-top-bottom does.
+#[test]
+fn c_l_caps_the_margin_and_takes_fractions() {
+    let text: String = (0..100).map(|i| format!("line {i}\n")).collect();
+    let (mut ed, s) = setup(&text);
+    ed.set_viewport_height(10);
+    for _ in 0..50 {
+        ed.press("C-n").unwrap();
+    }
+    let top = |ed: &Editor| ed.window_buffer().top_line;
+    let quarter: usize = eval(&mut ed, &s, "Math.trunc(e8.windowBodyHeight() / 4)").parse().unwrap();
+    eval(&mut ed, &s, "(e8.setVariable('scroll-margin', 5), 0)");
+    ed.press("C-l C-l").unwrap();
+    assert_eq!(top(&ed), 50 - quarter, "top, the margin a quarter of the window");
+    let height: f64 = eval(&mut ed, &s, "e8.windowTotalHeight()").parse().unwrap();
+    eval(&mut ed, &s, "(e8.setVariable('recenter-positions', [0.3]), 0)");
+    ed.press("C-f").unwrap();
+    ed.press("C-l").unwrap();
+    assert_eq!(top(&ed), 50 - (0.3 * height).round() as usize, "three tenths of the way down");
+}
+
 #[test]
 fn m_r_moves_to_the_middle_then_the_top_then_the_bottom_line() {
     let text: String = (0..100).map(|i| format!("line {i}\n")).collect();
