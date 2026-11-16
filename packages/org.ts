@@ -3144,7 +3144,7 @@ export function pasteSubtree(level: e8.PrefixArg): void {
   const next = shown.find((h) => h.line > line)?.level ?? 1;
   const fresh = force ?? Math.max(c16 ? prev + 1 : 0, prev, next);
   let shift = old === -1 || fresh === -1 || old === fresh ? 0 : fresh - old;
-  if (indicator !== undefined) e8.deleteRegion(e8.lineStart(line), lineStartOrEnd(line + 1));
+  if (indicator !== undefined) edDelete(e8.lineStart(line), lineStartOrEnd(line + 1));
   const here = lineAt();
   if (!(e8.point() === e8.lineStart(here) && parseHeading(here) && !c4 && !c16)) {
     if (c4) {

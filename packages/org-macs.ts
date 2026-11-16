@@ -99,7 +99,13 @@ export function edInsert(pos: number, text: string, beforeMarkers = false): void
   else e8.insert(text);
 }
 
+/**
+ * Deletes from `from` to `to`, kept to the accessible text, as Org's
+ * deletions to (line-beginning-position 2) and the like stop at a
+ * narrowing's edges; code that means the whole buffer widens first.
+ */
 export function edDelete(from: number, to: number): string {
+  [from, to] = [Math.max(from, e8.pointMin()), Math.min(to, e8.pointMax())];
   if (to <= from) return "";
   return e8.deleteRegion(from, to);
 }

@@ -154,8 +154,9 @@ function listContext(line: number): { up: number; down: number; type?: string } 
   const pos = e8.lineStart(line);
   const all = headings();
   const h = headingIndex(all, line);
-  let up = h === undefined ? 0 : all[h].start;
-  let down = all.find((x) => x.start > pos)?.start ?? e8.bufferSize();
+  // Within the narrowing, as org-list-context bounds the list by point-min and point-max.
+  let up = h === undefined ? e8.pointMin() : all[h].start;
+  let down = all.find((x) => x.start > pos)?.start ?? e8.pointMax();
   let type: string | undefined;
   const text = e8.lineText(line);
   const upLine = lineAt(up);

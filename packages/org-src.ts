@@ -182,11 +182,16 @@ function writeBack(edit: Edit, text: string): void {
     const beg = e8.markerPosition(edit.beg) ?? 0;
     const end = e8.markerPosition(edit.end) ?? beg;
     if (e8.bufferSubstringNoProperties(beg, end) === text) return;
-    e8.saveExcursion(() => {
-      e8.gotoChar(beg);
-      e8.deleteRegion(beg, end);
-      e8.insert(text);
-    });
+    // Wherever the Org buffer is narrowed to now, as org-edit-src-exit
+    // narrows to the block itself to put the text back.
+    e8.saveExcursion(() =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        e8.gotoChar(beg);
+        e8.deleteRegion(beg, end);
+        e8.insert(text);
+      }),
+    );
   });
 }
 

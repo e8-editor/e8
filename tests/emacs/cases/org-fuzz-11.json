@@ -115,5 +115,32 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "narrowed-list-renumbers-only-what-shows",
+    "text": "1. a\n2. b\n3. c\n4. d\n",
+    "point": 0,
+    "keys": "C-SPC C-n C-e C-x n n C-g M-RET x",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "narrowed-list-bullets-cycle-what-shows",
+    "text": "1. a\n2. b\n3. c\n4. d\n",
+    "point": 0,
+    "keys": "C-SPC C-n C-e C-x n n C-g C-c -",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "narrowed-table-row-moves-up",
+    "text": "* H\n| a |\n| b |\n* N\n",
+    "point": 12,
+    "keys": "C-x n s M-<up>",
+    "modes": [
+      "org-mode"
+    ]
   }
 ]

@@ -235,9 +235,13 @@ export function clockOut(failQuietly = false): void {
 function removeEmptyDrawer(line: number): void {
   const drawer = drawerName();
   if (drawer === undefined || line < 1) return;
-  if (new RegExp(`^[ \\t]*:${drawer}:[ \\t]*$`, "i").test(e8.lineText(line - 1)) && /^[ \t]*:END:[ \t]*$/i.test(e8.lineText(line))) {
-    e8.deleteRegion(e8.lineStart(line - 1), lineStartOrEnd(line + 1));
-  }
+  // In the whole buffer, as org-remove-empty-drawer-at's org-with-wide-buffer.
+  e8.saveRestriction(() => {
+    e8.widen();
+    if (new RegExp(`^[ \\t]*:${drawer}:[ \\t]*$`, "i").test(e8.lineText(line - 1)) && /^[ \t]*:END:[ \t]*$/i.test(e8.lineText(line))) {
+      e8.deleteRegion(e8.lineStart(line - 1), lineStartOrEnd(line + 1));
+    }
+  });
 }
 
 e8.defineCommand({
@@ -265,11 +269,16 @@ e8.defineCommand({
     if (buffer !== undefined) {
       e8.withCurrentBuffer(buffer, () => {
         e8.saveExcursion(() => {
-          const line = lineAt(e8.markerPosition(running.line) ?? 0);
-          if (/^[ \t]*CLOCK: \[[^\]]*\][ \t]*$/.test(e8.lineText(line))) {
-            e8.deleteRegion(e8.lineStart(line), lineStartOrEnd(line + 1));
+          const pos = e8.markerPosition(running.line) ?? 0;
+          const line = lineAt(pos);
+          // A clock line outside the narrowing stays, as goto-char cannot
+          // reach it in org-clock-cancel, which says so and stops anyway.
+          // It goes with the newline before it, as org-clock-cancel deletes it.
+          const inside = e8.lineStart(line) - 1 >= e8.pointMin() && e8.lineEnd(line) <= e8.pointMax() && pos <= e8.pointMax();
+          if (inside && /^[ \t]*CLOCK: \[[^\]]*\][ \t]*$/.test(e8.lineText(line))) {
+            e8.deleteRegion(e8.lineStart(line) - 1, e8.lineEnd(line));
             removeEmptyDrawer(line);
-          }
+          } else e8.message("Clock gone, cancel the timer anyway");
         });
       });
     }

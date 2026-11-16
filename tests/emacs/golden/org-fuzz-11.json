@@ -276,6 +276,69 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "narrowed-list-renumbers-only-what-shows",
+      "input": {
+        "text": "1. a\n2. b\n3. c\n4. d\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-e C-x n n C-g M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "1. a\n2. b\n3. x\n3. c\n4. d\n",
+      "visible": "1. a\n2. b\n3. x\n3. c\n4. d\n",
+      "point": 14,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "narrowed-list-bullets-cycle-what-shows",
+      "input": {
+        "text": "1. a\n2. b\n3. c\n4. d\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-e C-x n n C-g C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "1) a\n2) b\n3. c\n4. d\n",
+      "visible": "1) a\n2) b\n3. c\n4. d\n",
+      "point": 9,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "narrowed-table-row-moves-up",
+      "input": {
+        "text": "* H\n| a |\n| b |\n* N\n",
+        "point": 12,
+        "keys": "C-x n s M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n| b |\n| a |\n\n* N\n",
+      "visible": "* H\n| b |\n| a |\n\n* N\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

@@ -894,6 +894,11 @@ fn random_keys_never_panic() {
     }));
     let sandbox = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
     let verbose = std::env::var("E8_FUZZ_VERBOSE").is_ok();
+    let narrow_percent: usize = std::env::var("E8_FUZZ_NARROW").ok().and_then(|s| s.parse().ok()).unwrap_or(20);
+    // Edits reaching past a narrowing are refused with Args out of range,
+    // which in practice means a command computed its range from the whole
+    // buffer: listed, though not failures, as Emacs signals it too at times.
+    let out_of_range = std::cell::RefCell::new(Vec::<String>::new());
     let commands: Vec<String> = if std::env::var("E8_FUZZ_COMMANDS").is_ok() {
         let mut ed = Editor::new();
         let _scripting = Scripting::new(&mut ed).expect("scripting starts");
@@ -909,7 +914,8 @@ fn random_keys_never_panic() {
         let text: String = (0..rng.below(30)).map(|_| rng.pick(PANIC_PIECES)).collect();
         let point = rng.below(text.chars().count() + 1);
         let mode = rng.pick(PANIC_MODES);
-        let narrow = rng.chance(20).then(|| {
+        // E8_FUZZ_NARROW sets how often, in percent, a case is narrowed.
+        let narrow = rng.chance(narrow_percent).then(|| {
             let n = text.chars().count();
             let a = rng.below(n + 1);
             (a, a + rng.below(n - a + 1))
@@ -953,6 +959,9 @@ fn random_keys_never_panic() {
                 } else {
                     let _ = ed.press(k);
                 }
+                if ed.echo().is_some_and(|e| e.contains("Args out of range")) {
+                    out_of_range.borrow_mut().push(format!("case {i}: mode {mode:?}, text {text:?}, point {point}, narrow {narrow:?}, at {k:?} of {:?}", keys.join(" | ")));
+                }
                 ed.redisplay();
             }
         }));
@@ -964,6 +973,9 @@ fn random_keys_never_panic() {
         }
     }
     let _ = std::panic::take_hook();
+    for line in out_of_range.borrow().iter() {
+        eprintln!("out of range: {line}");
+    }
     eprintln!("seed {seed}: {count} cases, {} panicked", failing.len());
     assert!(failing.is_empty(), "{} cases panicked; see above", failing.len());
 }
