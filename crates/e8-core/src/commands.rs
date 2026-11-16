@@ -1042,7 +1042,12 @@ fn editing(ed: &mut Editor) {
         // the end of the line or the accessible text, nor a tab they do not
         // fill, and with spaces for the rest of a wide character they cut.
         let mut overwrite = None;
-        if ed.variable("overwrite-mode").is_some_and(|v| v.is_true()) && ed.buffer().point() < ed.buffer().point_max() {
+        let binary = ed.variable("binary-overwrite-mode").is_some_and(|v| v.is_true());
+        if binary && ed.buffer().point() < ed.buffer().point_max() {
+            // Binary overwriting replaces characters one for one, newlines and tabs too.
+            let pos = ed.buffer().point();
+            overwrite = Some((pos, (n as usize).min(ed.buffer().point_max() - pos), 0));
+        } else if ed.variable("overwrite-mode").is_some_and(|v| v.is_true()) && ed.buffer().point() < ed.buffer().point_max() {
             let pos = ed.buffer().point();
             let width = column_width(c);
             if c != '\n' && ed.buffer().char_at(pos) != Some('\n') && width != 0 {

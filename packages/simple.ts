@@ -216,8 +216,22 @@ const overwriteMode = e8.defineMinorMode({
   doc:
     "Replace text rather than insert it: each typed character replaces the one after point.\n\n" +
     "At the end of a line, characters are inserted as usual.",
+  onChange: (on) => {
+    if (on && e8.variable("binary-overwrite-mode") === true) e8.callWithPrefix(-1, "binary-overwrite-mode");
+  },
 });
 e8.bindKey("<insert>", overwriteMode);
+
+e8.defineMinorMode({
+  name: "binary-overwrite-mode",
+  lighter: " Bin Ovwrt",
+  doc:
+    "Replace text rather than insert it, character for character: each typed character replaces the one after point, " +
+    "even a newline or a tab, and C-q reads a character's octal code, as binary-overwrite-mode does.",
+  onChange: (on) => {
+    if (on && e8.variable("overwrite-mode") === true) e8.callWithPrefix(-1, "overwrite-mode");
+  },
+});
 
 // Long lines, after simple.el: toggle-truncate-lines, and visual-line-mode
 // with commands that move by screen lines.
@@ -1453,7 +1467,7 @@ e8.defineCommand({
     let key = await e8.readEvent();
     let code: number | undefined;
     let char: string | undefined;
-    if (digit(key) !== undefined && e8.variable("overwrite-mode") !== "overwrite-mode-textual") {
+    if (digit(key) !== undefined && e8.variable("overwrite-mode") !== true) {
       code = 0;
       while (digit(key) !== undefined) {
         code = code * radix + digit(key)!;
@@ -1465,6 +1479,8 @@ e8.defineCommand({
       char = keyChar(key);
     }
     if (char === undefined) e8.userError(`${key} is not a valid character`);
+    // Binary overwriting replaces as many characters; textual overwriting inserts, as quoted-insert does.
+    if (arg > 0 && e8.variable("binary-overwrite-mode") === true) e8.call("delete-char", arg);
     for (let i = 0; i < arg; i++) e8.insertAndInherit(char!);
   },
 });

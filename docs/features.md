@@ -58,7 +58,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Major and minor modes with their own keymaps (`C-h m`), and `global-set-key`, `local-set-key`, `global-unset-key` and `local-unset-key`. Scripts reach the current keymaps as values (`currentLocalMap`, `currentGlobalMap`, `useGlobalMap`, `copyKeymap`, `accessibleKeymaps`, `currentMinorModeMaps`, `minorModeKeyBinding`).
 - Choosing the major mode from the file name.
 - `text-mode`.
-- `overwrite-mode` and `delete-selection-mode`.
+- `overwrite-mode` (`<insert>`), `binary-overwrite-mode` and `delete-selection-mode`.
 - Header lines (`header-line-format`).
 - Margins (`left-margin-width`, `(margin left-margin)` display specs) and fringes in the GUI (continuation arrows, `(left-fringe BITMAP)` specs, `define-fringe-bitmap`, `indicate-empty-lines`, `indicate-buffer-boundaries`, `fringe-indicator-alist`).
 - The overlay arrow (`overlay-arrow-position`, a triangle in the fringe or `=>` on a terminal, marking `next-error`'s message).

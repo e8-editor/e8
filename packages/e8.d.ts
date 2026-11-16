@@ -719,6 +719,14 @@ declare global {
        */
       "beginning-of-visual-line": [];
       /**
+       * Replace text rather than insert it, character for character: each typed character replaces the one after point, even a newline or a tab, and C-q reads a character's octal code, as binary-overwrite-mode does.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "binary-overwrite-mode": [];
+      /**
        * Mark this line's bookmark to be deleted by x, and move down.
        *
        * Defined in packages/bookmark.ts.
@@ -8561,6 +8569,16 @@ declare global {
        */
       "bidi-paragraph-start-re": Value;
       /**
+       * Whether Binary-Overwrite mode is on in this buffer. Use the command binary-overwrite-mode to change it.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "binary-overwrite-mode": Value;
+      /**
+       * Keymap binary-overwrite-mode-map.
+       */
+      "binary-overwrite-mode-map": Value;
+      /**
        * How far to look for a matching paren, in characters, or nil to look through the whole buffer.
        *
        * Defined in packages/paren.ts.
@@ -14903,6 +14921,18 @@ declare global {
        * Run before saving a buffer to its file.
        */
       "before-save-hook": Value;
+      /**
+       * Run after Binary-Overwrite mode is turned on or off.
+       */
+      "binary-overwrite-mode-hook": Value;
+      /**
+       * Run after Binary-Overwrite mode is turned off.
+       */
+      "binary-overwrite-mode-off-hook": Value;
+      /**
+       * Run after Binary-Overwrite mode is turned on.
+       */
+      "binary-overwrite-mode-on-hook": Value;
       /**
        * Run after entering Bookmark Menu mode, after the hooks of the modes it is built on.
        */

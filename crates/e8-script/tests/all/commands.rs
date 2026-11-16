@@ -285,3 +285,26 @@ fn rename_uniquely_adds_a_number() {
     d.mx("rename-uniquely");
     assert_eq!(d.buffer_name(), "*shell*<3>", "its own <N> is taken off first");
 }
+
+/// Binary overwrite mode replaces characters one for one, newlines too,
+/// and C-q in textual overwrite mode takes a digit as itself, as Emacs's.
+#[test]
+fn binary_overwrite_and_quoted_digits_in_overwrite_mode() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("o\n");
+    d.type_text("ab\ncd");
+    d.press("M-<");
+    d.press("C-f");
+    d.mx("binary-overwrite-mode");
+    d.type_text("xyz");
+    assert_eq!(d.text(), "axyzd");
+    d.mx("overwrite-mode");
+    assert_eq!(d.with(|ed| ed.variable("binary-overwrite-mode").is_some_and(|v| v.is_true())), false, "one overwrite mode at a time");
+    d.press("M-<");
+    d.press("C-q 1");
+    assert_eq!(d.text(), "1axyzd", "the digit itself, inserted as quoted-insert does");
+    d.mx("binary-overwrite-mode");
+    d.press("C-q 1 6 2 RET");
+    assert_eq!(d.text(), "1rxyzd", "an octal code, replacing the a");
+}
