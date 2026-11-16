@@ -1322,3 +1322,19 @@ fn clock_durations_are_written_as_org_writes_them() {
     s.load_module(&mut ed, &file).unwrap();
     assert_eq!(ed.variable("e8--durations"), Some(e8_core::Value::Str("0:59 1:01 10:00 1d 0:00 1d 1:00 2d 2:00 62d 13:01".into())));
 }
+
+/// A heading link matches whatever the case, and a link's search text in a
+/// file that is not Org, as %a makes for a program, finds the words there,
+/// as org-link-search's free text search does.
+#[test]
+fn links_find_headings_in_any_case_and_text_in_other_files() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("main.rs"), "use std::io;\n\nfn main() {\n}\n").unwrap();
+    let (mut ed, _s) = org(&format!("[[*my heading]]\n[[file:{}/main.rs::fn main]]\n* My Heading\n", dir.path().display()));
+    ed.window_buffer_mut().set_point(3);
+    ed.press("C-c C-o").unwrap();
+    assert_eq!(ed.window_buffer().line_of(ed.window_buffer().point()), 2);
+    ed.press("M-< C-n C-f C-f C-f C-c C-o").unwrap();
+    assert_eq!(ed.window_buffer().name, "main.rs");
+    assert_eq!(ed.window_buffer().point(), 14);
+}

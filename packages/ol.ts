@@ -39,8 +39,9 @@ function bareTitle(h: Heading): string {
 }
 
 function searchHeading(title: string): Heading | undefined {
-  const want = title.replace(/\s+/g, " ").trim();
-  return headings().find((h) => bareTitle(h) === want);
+  // Case does not matter, as org-link-search compares the words upcased.
+  const want = title.replace(/\s+/g, " ").trim().toUpperCase();
+  return headings().find((h) => bareTitle(h).toUpperCase() === want);
 }
 
 /** Follows a link within the buffer: *Heading, #custom-id, a <<target>> or a heading's title. */
@@ -61,8 +62,13 @@ export function searchInBuffer(path: string): number {
   if (/^\d+$/.test(path)) return e8.lineStart(Math.min(Number(path) - 1, e8.lineCount() - 1));
   const target = e8.search(`<<${path}>>`, { from: 0 });
   if (target) return target.start;
-  const h = searchHeading(path);
+  // Headings only in Org buffers; elsewhere, as in a program a link of
+  // %a's names, the words anywhere, as org-link-search's free text search.
+  const h = e8.derivedModeP("org-mode") ? searchHeading(path) : undefined;
   if (h) return h.start;
+  const words = path.trim().split(/\s+/).map(regexpQuote).join("[ \t\r\n]+");
+  const text = !e8.derivedModeP("org-mode") && words !== "" ? e8.search(words, { from: 0, regexp: true, caseFold: true }) : undefined;
+  if (text) return text.start;
   throw new Error(`No match for fuzzy expression: ${path}`);
 }
 
