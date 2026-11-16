@@ -140,6 +140,33 @@ fn yank_pop_follows_a_yank_from_the_clipboard() {
     assert_eq!(b.slice(0..b.len()), "older");
 }
 
+/// yank-from-kill-ring offers what another program copied, with the kills,
+/// as read-from-kill-ring's (current-kill 0) takes it in first; with
+/// neither, it says the kill ring is empty.
+#[test]
+fn choosing_a_kill_offers_the_clipboard() {
+    struct Outside(Option<String>);
+    impl e8_core::select::Clipboard for Outside {
+        fn get_text(&mut self) -> Option<String> {
+            self.0.clone()
+        }
+        fn set_text(&mut self, _: &str) {}
+    }
+    let d = crate::driven::Driven::new("");
+    d.with(|ed| ed.set_clipboard(Box::new(Outside(Some("pasted".into())))));
+    d.mx("yank-from-kill-ring");
+    assert_eq!(d.prompt().as_deref(), Some("Yank from kill-ring: "));
+    assert_eq!(d.with(|ed| ed.kill_ring()), vec!["pasted".to_string()], "the clipboard's text is the newest kill to choose");
+    d.type_text("pasted\n");
+    assert_eq!(d.text(), "pasted");
+
+    let d = crate::driven::Driven::new("");
+    d.with(|ed| ed.set_clipboard(Box::new(Outside(None))));
+    d.mx("yank-from-kill-ring");
+    assert_eq!(d.prompt(), None);
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("Kill ring is empty"));
+}
+
 #[test]
 fn case_functions_give_emacs_results() {
     // What Emacs 30.2 gives for the same strings.

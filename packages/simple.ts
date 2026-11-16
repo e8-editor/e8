@@ -109,6 +109,9 @@ e8.defineVariable({ name: "read-from-kill-ring-history", doc: "Kills chosen from
 
 /** Reads one of the kills with completion, newest first, as read-from-kill-ring. */
 async function readFromKillRing(prompt: string): Promise<string> {
+  // Text another program put on the clipboard joins the kills first, as
+  // read-from-kill-ring's (current-kill 0) takes it in.
+  e8.currentKill(0);
   return e8.completingRead(prompt, e8.killRing(), { history: "read-from-kill-ring-history" });
 }
 
