@@ -10,7 +10,10 @@ e8.defineVariable({
   doc:
     "What starts a heading line: an Emacs regular expression matched at the start of a line. " +
     "The length of the match is the heading's level.",
-  value: "[*\\f]+",
+  // A star or a form feed, as Emacs's "[*\^L]+": in an Emacs regexp a
+  // backslash in brackets is itself, so "\\f" there would make every line
+  // starting with f a heading.
+  value: "[*\f]+",
   local: true,
 });
 
@@ -54,9 +57,11 @@ function headings(): Heading[] {
   });
   for (const [line] of lines) {
     const match = headingMatch(line);
-    if (match.trimEnd().length > 0) {
+    // Only spaces and tabs are trimmed: a form feed is a heading of its own.
+    const level = match.replace(/[ \t]+$/, "").length;
+    if (level > 0) {
       // The match's length is the level, not counting a space after the stars, as in org-mode's "\\*+ ".
-      found.push({ line, start: e8.lineStart(line), end: e8.lineEnd(line), level: match.trimEnd().length });
+      found.push({ line, start: e8.lineStart(line), end: e8.lineEnd(line), level });
     }
   }
   return found;

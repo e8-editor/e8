@@ -1,0 +1,750 @@
+E8 NEWS -- history of user-visible changes.
+
+This file is about the changes in each release of E8, newest first.
+'C-h n' shows it; with a prefix argument, 'C-u C-h n' asks for a
+release and shows only that one's changes.  TAB on a heading folds it.
+
+A package that is a repository of its own keeps its news in a NEWS file
+of the same form, which 'C-h P' shows under its description.
+
+
+* Changes in E8 0.5.16
+
+** 'C-h n' ('view-e8-news') shows this file, the news of each release.
+'view-emacs-news' is another name for it, as configurations written for
+Emacs call it.
+
+** 'C-h P' ('describe-package') describes a package.
+For a package installed from a repository: its version and commit, what
+it requires and what requires it, its README, and its news, from the
+NEWS file in its repository.  For a package that ships with E8: what its
+file says it is.
+
+** Outlines no longer take a line starting with "f" for a heading.
+'outline-regexp' matches a star or a form feed, as Emacs's does, so
+folding in 'outline-mode' and 'outline-minor-mode' hides such lines.
+
+
+* Changes in E8 0.5.15
+
+** 'yank-from-kill-ring' offers what another program copied.
+Text on the clipboard joins the kill ring before the choices are shown,
+as Emacs's 'read-from-kill-ring' takes it in.
+
+
+* Changes in E8 0.5.14
+
+** 'C-x ESC ESC' and 'C-x M-:' edit and run an earlier command again.
+'repeat-complex-command' takes it from 'command-history', which now
+keeps every command run with 'M-x'.
+
+** 'C-x C-n' sets a goal column for 'C-n' and 'C-p'.
+'C-u C-x C-n' unsets it.
+
+** More of Emacs's commands and keys.
+'C-x C-r', 'C-x 4 r' and 'C-x 5 r' visit a file read-only.  'M-<next>',
+'M-<prior>', 'M-<home>' and 'M-<end>' act in the next window.  New
+commands 'rename-uniquely' and 'binary-overwrite-mode'.  'M-c' in
+isearch toggles case folding, and 'C-u M-g g' goes to a line in the
+other buffer.
+
+** A negative argument makes the replace commands replace backward.
+'C--' before 'M-%', 'C-M-%', 'replace-string' or 'replace-regexp'
+replaces from point back to the start, and the 'y', 'n', '!', '.', ','
+and '^' answers work backward too.  Prompts and messages name the
+replacement as Emacs's do, such as "Query replace backward: ", and
+'C-M-%' now says "regexp".
+
+** Editing keeps within the narrowing, as in Emacs.
+'delete-region', replacing and undo refuse positions outside it with
+'args-out-of-range', and 'erase-buffer' widens.  'M-j', filling, 'C-c -',
+dragging Org elements and 'M-<up>' keep to it, and Org, the agenda,
+capture, refile and the clock widen where Emacs widens.  Saving a
+narrowed buffer adds the final newline at the end of the file.
+
+** Columns count control characters as Emacs does.
+They take two columns, or four for C1 characters, and the mode line's
+'%c' and scrolling's goal column count screen columns.
+
+** Fixes in editing and movement.
+'replace-match' converts case as Emacs's does, finding words by the
+syntax table.  Overwrite mode follows Emacs, and 'C-q' reads digits
+there.  Word motion stops where the script changes, 'count-words'
+counts words in every script, and transposing next to emoji no longer
+garbles text.  'M-<' and 'M->' with a count use tenths of the
+narrowing; 'delete-indentation' works on the region; 'M-0 M-z' kills
+nothing; DEL on the region is an undo step of its own; a third
+'C-SPC' activates the mark; 'kill-ring-max' is obeyed.  'M-v' at the
+top keeps point, scrolling by a count past the end fails without
+scrolling, and 'C-l' and 'M-r' cap 'scroll-margin' and take fractions.
+
+** Fixes in the minibuffer and keys.
+An undefined key uses up the prefix argument.  'M-n' past the input
+brings the default, and RET on empty input takes a default that is not
+one of the completions.  'read-buffer' shows its default and hides
+internal buffers.  'query-replace' offers the last pair and takes 'C-u'
+for whole words.
+
+** Fixes in Org.
+Rescheduling a repeating task keeps its repeater, and marking a task
+done drops a plain SCHEDULED.  'S-<right>' and 'S-<left>' go through
+every TODO sequence, 'C-c C-l' edits the link at point, links find
+headings in any case, tables measure links as they are shown, and
+clock durations of a day or more are written correctly.
+
+** Fixes in Org's agenda and capture.
+The agenda reads whole files when they are narrowed, and takes a
+timestamp's own warning and delay, CATEGORY properties, repeating
+deadlines on later dates and date ranges on every day; times sort with
+the time grid and the now line.  Capture uses 'org-directory', finds
+headings with cookies, updates the parent's cookies, fills '%i' from
+the region, keeps '%?' on its line and leaves blank lines as Org does.
+
+** Fixes in files, Dired, compilation, the shell and frames.
+'write-file' writes into a directory, and 'find-alternate-file' asks as
+Emacs does.  Dired picks the files a prefix argument names and folds
+case in its regexps.  Bookmarks delete only what is asked, and
+'C-u <f3>' appends to the keyboard macro.  Compilation uses no pager,
+follows make's directory changes, shows ':run' and ':exit [N]' in the
+mode line, and handles colour codes split between writes.  The shell
+shows '(Shell:run)', tracks directories as the shell reads their names,
+and 'C-c C-c' keeps the typed command in the history.  'C-x 5 o' passes
+over hidden frames, 'C-u C-x 5 1' iconifies the others, and 'C-x 5 f'
+and 'C-x t f' take directories.
+
+
+* Changes in E8 0.5.13
+
+E8 0.5.13 is a bug-fix release with no new features.
+
+** 'C-x k' and 'C-x b' offer their defaults first.
+RET takes the default the prompt names, the current buffer for 'C-x k'
+and the other buffer for 'C-x b', and vertico lists it first.
+
+** Org's Auto Fill leaves headings, tables, keywords and blocks whole.
+'org-mode' sets 'normal-auto-fill-function' to 'org-auto-fill-function'.
+Paragraphs keep their indentation, items line up under their text and
+comments go on with "# ".
+
+** Org applies ':VISIBILITY:' properties when a file is opened.
+They are applied after the '#+STARTUP' folding, as Emacs's Org does.
+
+** Repeated 'M-x undo' goes on undoing when vertico reads the command.
+
+** Org's '?' speed-command help and transient's help are in 'help-mode'.
+
+** 'M-x vundo' opens its window in the GUI.
+Splitting a window two or more lines tall no longer fails with "Size of
+new window too small" because of the GUI's taller mode line.
+
+
+* Changes in E8 0.5.12
+
+** The default look uses E8's brand colours, in dark and light.
+Midnight, Lavender and Ivory replace the blue palette in both front
+ends.  'font-lock-constant-face' and 'font-lock-number-face' use a new
+rose colour rather than the colour of errors, and the GUI's visible bell
+follows the theme.
+
+** The GUI draws E8's lattice behind the text when its window opens.
+It fades within six seconds, or at once at the first key, click or
+scroll.  Set 'e8-startup-lattice' to nil, or 'inhibit-startup-screen' to
+t, to turn it off.
+
+** The app icon is E8's new rosette.
+
+** The desktop puts the GUI window back where it was, and as big.
+With 'desktop-save-mode' on and 'desktop-restore-frames' t, the window's
+place and size are saved and restored.  'window-system' is now set while
+'init.ts' and the desktop are read in the GUI.
+
+** Flyspell no longer makes typing wait for the spelling checker.
+Answers are remembered, and checks after a command do not wait: the
+underline appears a few milliseconds later.  'flyspell-buffer' shares
+large regions among up to three more Hunspell processes and does less
+work per word.
+
+** Short regexp searches and literal searches are faster.
+This helps every package that searches, not only flyspell.
+
+** 'set-frame-size' given 'frame-text-height' no longer shrinks the frame.
+
+
+* Changes in E8 0.5.11
+
+** New minor mode 'prettify-symbols-mode'.
+It shows symbols such as 'lambda' as λ, outside strings and comments;
+'global-prettify-symbols-mode' turns it on everywhere.  Compositions
+work as Emacs's do, with 'compose-region' and 'decompose-region'.
+
+** 'eval-buffer' and 'eval-region' run the TypeScript being edited.
+Text that imports runs as a module.  Both ask the agent's permission
+while it acts.
+
+** The GUI shows web pages in buffers on macOS and Linux.
+'xwidget-webkit-browse-url' and 'xwidget-webkit-mode' work as Emacs's
+xwidgets do.  On Linux the GUI needs WebKitGTK.
+
+** 'C-g' in the minibuffer runs 'abort-minibuffers', as in Emacs 28.
+From an outer minibuffer it asks "Abort N minibuffer levels?".  A quit
+minibuffer signals 'minibuffer-quit', so a keyboard macro goes on past
+one, as in Emacs.
+
+** 'C-h b' and 'C-x C-h' list bindings as Emacs's do.
+They have page breaks, tab-padded key columns, runs of characters on one
+line, a section for meta keys and one for remaps, and leave out keys
+that are shadowed.
+
+** Dates follow the editor's clock and time zone.
+Dired, diff and compile write times with 'format-time-string' and
+'current-time-string', and Org reads today's date and clock times the
+same way, so they follow 'set-time-zone-rule'.
+
+** 'top-level' leaves every nested minibuffer.
+
+** Scripts can use the rest of Emacs's C primitives under their names.
+Every editor primitive Emacs writes in C is now in the 'e8' API under
+its Emacs name, among them 'format', 'format-message', 'read-variable',
+'mark-marker', 'buffer-swap-text', labeled restrictions, POSIX
+searches ('posixSearchForward', 'posixStringMatch'), base64,
+'compareStrings', 'stringDistance', 'bufferHash', 'prin1' and Lisp's
+arithmetic ('expt', 'frexp', 'e8.logarithm').
+
+** Scripts can use SQLite and JSON as Emacs does.
+'e8.sqliteOpen', 'sqliteSelect', 'sqliteExecute' and the rest follow
+sqlite.c; SQLite is not in the web build.  'e8.jsonParseString',
+'jsonParseBuffer', 'jsonSerialize' and 'jsonInsert' follow json.c, with
+its options and errors.
+
+** Scripts have Emacs's time functions.
+'e8.formatTimeString', 'decodeTime', 'encodeTime', 'set-time-zone-rule'
+and the rest read time zones from the system's zone files, as the C
+library does.
+
+** Scripts can alias and watch variables.
+'e8.defvaralias' and 'addVariableWatcher', with 'boundp', 'internSoft',
+'mapatoms' and the rest of Emacs's functions on variables and symbols.
+
+** Scripts can define coding systems and charsets.
+'define-coding-system', 'define-coding-system-alias' and 'define-charset'
+work as in mule.el.  'coding-system-get' now gives what
+'coding-system-put' put.
+
+** Scripts have the rest of Emacs's tree-sitter, face and font functions.
+Tree-sitter gains 'e8.treesitSearchSubtree', 'treesitSearchForward',
+compiled queries, included ranges ('treesitParserSetIncludedRanges') and
+parser notifiers ('treesitParserAddNotifier').  Faces and fonts gain
+Lisp faces ('internalMakeLispFace', 'internalSetLispFaceAttribute'),
+'internalCharFont', 'setFontsetFont' and 'fontsetInfo'.
+
+** Scripts can watch files, open serial ports and use macOS's functions.
+'file-notify-add-watch' and its kin, on kqueue; 'makeSerialProcess' and
+'set-network-process-option'; and the NS port's functions, such as
+'nsGetSelection'.
+
+
+* Changes in E8 0.5.10
+
+E8 0.5.10 is a bug-fix release with no new features.
+
+** Scrolling up with the wheel or trackpad is no longer pulled back.
+Over lines continued on several rows, 'mwheel-scroll' left point below
+the window, and redisplay recentred on it, undoing the scroll.
+
+** Scrolling with flyspell on no longer checks a word at each step.
+'mwheel-scroll', 'scroll-up-line' and 'scroll-down-line' are now in
+'flyspell-deplacement-commands', so scrolling keeps up.
+
+
+* Changes in E8 0.5.9
+
+** 'menu-bar-mode' shows a menu bar, which '<f10>' opens.
+File, Edit, Options, Buffers, Tools and Help as menu-bar.el has them,
+with a mode's own menus, in a terminal as in the window. The arrows and
+'RET' walk it, and a click opens the menu under the pointer.
+
+** Pop-up menus, dialogs and tooltips work in a terminal as in a window.
+'x-popup-menu', 'x-popup-dialog' and 'message-box' are drawn by E8
+itself, and 'tooltip-mode' shows tooltips. 'y-or-n-p' asks in a dialog
+when a menu or the mouse asked, unless 'use-dialog-box' is nil.
+
+** windmove and winner are ported from Emacs.
+'windmove-default-keybindings' puts 'windmove-left' and its kin on
+'S-<left>' and the other arrows; 'windmove-display-*',
+'windmove-delete-*' and 'windmove-swap-states-*' show, delete and swap
+by direction.
+'winner-mode' undoes and redoes window changes with 'C-c <left>' and
+'C-c <right>'.
+
+** New commands 'maximize-window' and 'minimize-window'.
+
+** 'C-x <' and 'C-x >' scroll the window sideways.
+They run 'scroll-left' and 'scroll-right'. Truncated lines scroll to
+keep point in sight as Emacs's do, following 'auto-hscroll-mode',
+'hscroll-margin' and 'hscroll-step'.
+
+** 'C-z' and 'C-x C-z' run 'suspend-frame'.
+In the GUI it minimizes the window; in a terminal it stops E8 for the
+shell, as 'suspend-emacs' does, and 'fg' brings it back.
+
+** Network connections can use TLS, with the Network Security Manager.
+'open-network-stream' takes ':type tls', or starts TLS after plain text.
+E8 asks about a certificate that does not verify or a key that changed,
+and remembers the answer for the session or for good.
+
+** Files can choose their coding system by name.
+'file-coding-system-alist' is honoured, as are
+'process-coding-system-alist' and 'network-coding-system-alist'; a
+file's own coding cookie wins over its name.
+
+** Windows split, resize and delete as Emacs's window.el has them.
+'C-x 2' twice gives three windows of 6, 6 and 12 lines on 24, as in
+Emacs, and windows keep their shares when the frame is resized.
+'balance-windows' and 'fit-window-to-buffer' respect fixed and preserved
+sizes, and atomic and side windows behave as in Emacs.
+
+** 'display-buffer' follows 'display-buffer-alist' and its actions.
+Emacs's action functions, such as 'display-buffer-in-side-window' and
+'display-buffer-reuse-window', and entries such as 'window-height' and
+'dedicated' work as in Emacs.
+
+** 'quit-window' restores a window's previous buffer, place and size.
+'window-state-get' and 'window-state-put' save and restore a frame's
+windows, and the desktop now saves them as Emacs does.
+
+** Windows, frames, processes and terminals are objects in scripts.
+'windowp' and 'framep' answer as Emacs's do, and a window prints as
+'#<window 1 on *scratch*>'. Functions still take numbers for now.
+
+** Scripts have many more of Emacs's primitives, under Emacs's names.
+Among them 'window-frame', 'set-frame-size', 'set-process-sentinel',
+'call-process-region', 'vertical-motion', 'user-full-name',
+'mouse-position', 'track-mouse' and 'libxml-parse-html-region'.
+
+** Scripts can ask about and change frames, windows and the display.
+'set-frame-position', 'frame-parameters', 'set-window-fringes',
+'window-configuration-equal-p', 'terminal-parameter',
+'x-display-pixel-width' and 'display-monitor-attributes-list' answer
+as Emacs's do, and charsets ('split-char', 'find-charset-region') and
+'current-idle-time' are there too.
+
+** A terminal shows '$' at the right of a line cut off there.
+
+** A command waiting for an event after a mouse click no longer hangs.
+
+** Fixes to windows and scrolling in the GUI.
+The GUI's smooth scrolling stays with the text when it is edited, and
+'C-l' resets it. Dragging a divider follows the pointer. A window with
+no mode line uses that line for text, so a transient menu's last row
+shows again.
+
+
+* Changes in E8 0.5.8
+
+** 'global-set-key' and 'local-set-key' are commands.
+So are 'global-unset-key' and 'local-unset-key'; 'local-set-key' gives
+a buffer with no local map one.
+
+** Scripts have more of Emacs's primitives, under Emacs's names.
+Keymaps ('current-local-map', 'use-global-map', 'copy-keymap'), syntax
+tables ('standard-syntax-table'), overlays from any buffer
+('overlay-buffer', 'remove-overlays'), markers' insertion types, and
+one-liners such as 'eobp' and 'erase-buffer'.
+
+** Spell checking keeps one checker running, as ispell.el does.
+Moving about with Flyspell and Hunspell no longer pauses at each word,
+since the checker is no longer started afresh for every check.
+
+** 'accept-process-output', 'sit-for' and 'sleep-for' wake at once.
+They return as soon as a process's output comes, which speeds up
+talking to programs a line at a time, such as language servers.
+
+
+* Changes in E8 0.5.7
+
+** Spell checking follows ispell.el, with several languages at once.
+With Hunspell, setting 'ispell-dictionary' to "en_US,sv_SE" checks both.
+'ispell-change-dictionary', 'ispell-region', 'ispell-buffer',
+'ispell-complete-word' and 'ispell-minor-mode' are new, and '*Choices*'
+takes all of Emacs's answers.
+
+** File-local variables are set from a file's '-*-' line and its list.
+As Emacs's 'hack-local-variables' sets them, asking about unsafe values.
+'add-file-local-variable' and its kin write them.
+
+** Directory-local variables are read from '.dir-locals.el'.
+And '.dir-locals-2.el', for a mode or a subdirectory, Dired buffers
+included. 'add-dir-local-variable' and its kin write them.
+
+** 'C-h h' names a key that a configuration gave to another command.
+For example "C-x b  Go to another buffer (now consult-buffer)". The
+cards' titles, headings and keys also keep their faces.
+
+** 'before-init-hook' runs after E8's packages load and before init.ts.
+
+** 'expand-file-name' keeps a directory name's trailing slash.
+
+** A directory trusted for its local variables is trusted through links.
+'safe-local-variable-directories' is compared after following symbolic
+links, as Emacs compares it.
+
+
+* Changes in E8 0.5.6
+
+** 'C-h h' shows a short guide to the current mode, 'C-h 8' one to E8.
+Org, Dired, Prog mode and agent-shell have cards of their own; other
+modes get one from their documentation and keymap. 'help-guide-mode'
+turns the guides and the startup hint off.
+
+** agent-shell's header line shows only the session's settings.
+Its model, mode and thought level. 'agent-shell-header-style' chooses
+"text", "graphical" or no header line, and 'agent-shell-current-model'
+and its kin hold the settings for a mode line of one's own.
+
+
+* Changes in E8 0.5.5
+
+E8 0.5.5 is a bug-fix release with no new features.
+
+** A long word is no longer broken right after a line prefix.
+With 'org-indent-mode' and 'visual-line-mode', a long URL started with
+an empty row, and 'C-n' stuck on it.
+
+
+* Changes in E8 0.5.4
+
+E8 0.5.4 is a bug-fix release with no new features.
+
+** Underlines are drawn where the font puts them, under their own line.
+In the GUI, as Emacs draws them, rather than at the bottom of the row,
+close to the next line's text.
+
+
+* Changes in E8 0.5.3
+
+** The website's E8 can be used on a phone or tablet.
+A row of keys (Esc, Ctrl, Alt, Tab and the arrows) and a button that
+brings up the keyboard; a swipe scrolls, a tap moves point, and holding
+then dragging selects. Org's speed commands are on in its configuration.
+
+** The 'e8-themes' package has 168 themes.
+
+** Themes are drawn as Emacs draws them.
+':distant-foreground' is used when a face's foreground is too close to
+its background, strike-through crosses the middle of the text, and
+'diff-mode' has dark faces. 'load-theme' reads the theme's file again,
+so options set before it take effect.
+
+** 'visual-line-mode' shows no continuation arrows in the fringes.
+
+** Transient menus leave 'window-min-height' lines for the window above.
+
+
+* Changes in E8 0.5.2
+
+** E8 has a website, with E8 running in the page.
+At https://e8-editor.github.io/e8/, set up with ports such as Vertico,
+Orderless and Consult, and with 'C-c t' to choose a theme. '?plain'
+starts it without them, and a button fills the browser's window.
+
+** Themes come as one package, 'e8-themes', with a chooser.
+Twenty themes, among them Modus, Leuven, Nord, Gruvbox, Solarized and
+Dracula. 'e8-themes-select' shows each as the selection moves.
+
+** 'load-theme' completes over every available theme.
+'custom-available-themes' finds the themes along 'load-path', not only
+those already loaded.
+
+** 'visual-line-mode' wraps lines in narrow side-by-side windows.
+It makes 'truncate-partial-width-windows' nil in the buffer, as Emacs's
+does.
+
+
+* Changes in E8 0.5.1
+
+** agent-shell resumes earlier sessions.
+'M-x agent-shell' offers the project's earlier sessions, Claude Code's
+own included, and replays the chosen one with earlier replies folded.
+'agent-shell-session-strategy' says whether to ask. An agent that stops
+is started again in the same session.
+
+** agent-shell recalls earlier requests with 'M-p', 'M-n' and 'M-r'.
+'agent-shell-history' is shared by every agent-shell buffer, and kept
+between starts by 'savehist-mode'.
+
+** agent-shell completes slash commands at the prompt.
+TAB or 'C-M-i' after '/' completes the agent's commands, and the echo
+area says what the command does.
+
+** Org's speed commands move about agent-shell's transcript.
+'org-use-speed-commands' may now be a function, as in Emacs.
+
+** Package upgrades fetch in the background.
+'package-vc-upgrade' and 'package-vc-upgrade-all' fetch every package
+at once without freezing E8, upgrade what a package requires first, and
+upgrade a requirement installed at too old a version.
+
+** E8 can run in a web browser, as a build of its own.
+It runs scripts on QuickJS and keeps files in the browser's storage.
+
+** Each buffer has its own 'default-directory'.
+A buffer visiting a file takes the file's directory, and a new buffer
+the current buffer's, as in Emacs, so programs such as git run from a
+file's buffer start in its directory.
+
+** Dired shows a new listing's details until '(' hides them.
+
+
+* Changes in E8 0.5.0
+
+** Ediff compares and merges two or three files or buffers.
+'ediff-files', 'ediff-buffers', 'ediff-files3', 'ediff-buffers3',
+'ediff-merge-files' and 'ediff-merge-buffers', with and without an
+ancestor, and Ediff's keys and faces.
+
+** Transient menus have levels, saved values and argument history.
+'C-x l' sets a suffix's level and 'C-x a' shows every level; 'C-x s'
+and 'C-x C-s' set and save a menu's values; 'C-M-p' and 'C-M-n' go
+through earlier arguments. 'C-h' on a suffix shows its help.
+
+** The agent-shell buffer is a read-only transcript.
+Only the request being typed can be edited or undone, so the buffer
+always matches what the agent holds.
+
+** agent-shell shows tool output and thinking in named blocks.
+Tool output is a source block in its language, such as 'diff' or
+'json', and thinking a folded '#+begin_thinking' block that TAB opens.
+
+
+* Changes in E8 0.4.1
+
+** Org has 'org-hide-emphasis-markers', off by default.
+When it is on, emphasized text such as ~code~ and *bold* is shown
+without its markers. The 'agent-shell' buffer turns it on locally.
+
+** New variable 'agent-shell-hidden-tools'.
+It names tool calls the 'agent-shell' buffer leaves out. By default
+these are Claude Code's bookkeeping calls, 'ToolSearch' and 'TodoWrite'.
+
+** Startup shows what it is doing.
+The window is drawn before 'init.ts' runs, and a message from code that
+has run for a while, such as installing packages, is shown at once.
+
+** Packages named in 'e8-lock.json' are cloned all at once.
+On a machine that has the lock file but not the packages, the first
+'e8.usePackage' clones them together and shows its progress.
+
+** 'agent-shell' folds tool output and thinking while the agent streams.
+TAB on a line opens its block, which then stays open. A call that asks
+permission shows its diff while it asks, and folds once answered.
+
+** 'agent-shell' tool lines are shorter.
+A command is followed by Claude Code's description of it, an MCP tool
+reads as 'e8: screen', and paths leave out the project's directory.
+
+** 'C-M-\' calls 'indent-region-function' when a mode sets it.
+In 'org-mode' it runs 'org-indent-region', so list bodies, property
+drawers and source block code are indented as Org indents them.
+
+** Faces are drawn for the theme's background, not the system's.
+A dark theme on a Mac in light mode no longer gets light-background
+colours. 'frame-background-mode' is now unset by default.
+
+** Indenting a long Org section takes time in proportion to its length.
+
+** Org's region indenting no longer moves a section to the margin.
+A blank line after a heading was taken for the heading itself.
+
+
+* Changes in E8 0.4.0
+
+** E8 has Emacs's help system.
+'C-h k', 'C-h c', 'C-h f', 'C-h x', 'C-h v', 'C-h o', 'C-h m', 'C-h w',
+'C-h b', 'C-h a' and 'C-h ?' work, '<f1>' is 'C-h', and 'C-h' after a
+prefix key lists the keys under it.
+
+** '*Help*' is in 'help-mode', with links and history.
+RET follows a name, TAB and S-TAB move between names, and 'l' and 'r'
+go back and forward through what was shown.
+
+** New commands 'apropos', 'apropos-command' and 'apropos-variable'.
+
+** 'agent-shell' can set the session's model, mode and thought level.
+Use 'agent-shell-set-session-model' ('C-c C-v'),
+'agent-shell-set-session-thought-level' ('C-c C-t'),
+'agent-shell-cycle-session-mode' ('C-c TAB') and
+'agent-shell-set-session-config-option' ('C-c C-s'). The header line
+shows the current settings and the keys.
+
+** 'agent-shell' shows the agent's Markdown as Org.
+Code becomes source blocks, and bold, italic, code and links become
+Org's markup. Tool calls show their command as Org code.
+
+** New variable 'mode-line-process'.
+'agent-shell' uses it to show whether the agent is working and how
+much of its context is used.
+
+** 'agent-shell' folds tool output into the tool call's line.
+TAB on the line opens or folds it, and a failed call says so on its
+line. The agent's thinking folds into its 'Thinking:' line.
+
+** 'agent-shell' starts the session when its buffer opens.
+Settings can be picked before the first request.
+
+** Vertico, Consult, Magit and other ports are packages of their own.
+Orderless, Marginalia, Magit-section, with-editor, Org-roam,
+consult-org-roam, Casual, Popper and persistent-scratch too: each is
+installed with 'e8.usePackage("e8-editor/e8-NAME")'.
+
+** 'sleep-for' and 'sit-for' wait without reading input in batch mode.
+
+
+* Changes in E8 0.3.1
+
+** E8 can be installed with Nix, from the 'e8-editor/nix' flake.
+
+** E8.app shows its own icon in the Dock and the app switcher.
+
+
+* Changes in E8 0.3.0
+
+** The editor is named E8.
+The program is 'e8', the window is 'E8.app', the configuration lives in
+'~/.config/e8', and the script API's global is 'e8'.
+
+** E8 installs with Homebrew.
+'brew install e8-editor/tap/e8' gives 'e8' and 'e8-mcp', and 'E8.app'
+on a Mac.
+
+** E8.app has E8's icon.
+
+** New command 'agent-shell' talks to coding agents.
+It uses the Agent Client Protocol, as Emacs's agent-shell does.
+Claude Code, Gemini CLI, Codex or Goose work in an Org buffer:
+'C-c RET' sends a request and 'C-c C-k' stops the agent.
+
+** 'agent-shell' gives its agents E8's own commands through 'e8-mcp'.
+Turning 'agent-shell-e8-tools' off stops this.
+
+** Agents using the open editor through 'e8-mcp' ask before acting.
+E8 asks before such an agent saves, discards unsaved work, quits or
+runs code: 'y' allows once, '!' for as long as E8 runs.
+
+** 'e8-mcp --socket FILE' connects to the editor listening on FILE.
+
+** New variables 'invocation-directory' and 'invocation-name'.
+
+** 'make-process' can send standard error to a buffer of its own.
+
+** E8.app carries 'e8-mcp'.
+
+
+* Changes in E8 0.2.2
+
+** Nord is a package of its own.
+It is installed with 'e8.usePackage("e8-editor/e8-nord-theme")'.
+
+** A process's last output is no longer lost on a busy machine.
+Shell, compile and process buffers could miss a program's last output
+when the process ended.
+
+
+* Changes in E8 0.2.1
+
+** Releases include E8.app for Apple silicon Macs.
+
+
+* Changes in E8 0.2.0
+
+** vundo is a package of its own.
+It is installed with 'e8.usePackage("e8-editor/e8-vundo")'.
+
+** New function 'e8.executeKbdMacro', as Emacs's 'execute-kbd-macro'.
+
+** 'e8 --batch -L DIR' puts DIR at the front of 'load-path'.
+
+** Batch mode lays windows out at 80 by 24, as Emacs's does.
+
+
+* Changes in E8 0.1.0
+
+E8 0.1.0 is the first release.
+
+** E8 runs in a terminal ('e8') and in a window ('e8-gui').
+Releases carry 'e8' and 'e8-mcp' for Apple silicon Macs and Linux.
+
+** Buffers, windows, frames and tabs work as in Emacs.
+'C-x 2', 'C-x 3', 'C-x o', 'C-x 4' and 'C-x 5', 'display-buffer',
+window configurations, and 'tab-bar-mode' with 'C-x t'.
+
+** Files are visited, saved and backed up as Emacs does it.
+Auto-saving and 'recover-this-file', 'auto-revert-mode', lock files,
+other codings and line ends, 'recentf-mode' and 'find-file-at-point'.
+
+** Dired, with dired-aux, dired-x and wdired.
+
+** Projects: 'C-x p f', 'C-x p p', 'C-x p b', 'C-x p g' and 'C-x p c'.
+
+** Emacs's editing commands and keys.
+The kill ring and 'M-y', the mark ring, registers, rectangles, undo
+with 'undo-redo', keyboard macros, abbrevs, 'M-/', filling and
+'auto-fill-mode', sexp and paragraph motion, and 'C-x z'.
+
+** Search and replace with Emacs's regexps.
+'C-s', 'C-r', 'C-M-s', 'M-%', 'C-M-%', 'replace-regexp', 'occur' and
+'M-s h r'.
+
+** The minibuffer completes with Emacs's completion styles.
+'icomplete-mode' is on by default, with 'fido-mode' and the vertical
+modes, and 'M-p' and 'M-n' go through the history.
+
+** Org mode, with its agenda and capture.
+Folding, structure editing, TODO states, tags, tables, links,
+refiling, clocking, editing source blocks in their language's mode,
+tangling, habits and 'org-indent-mode'.
+
+** A shell in a buffer with 'M-x shell', and shell commands on 'M-!'.
+
+** 'M-x compile' and 'M-x grep' run in the background.
+'next-error' on 'M-g n' visits each message's place.
+
+** Tree-sitter modes and Emacs Lisp mode.
+'rust-ts-mode', 'js-ts-mode', 'json-ts-mode', 'python-ts-mode',
+'go-ts-mode' and 'bash-ts-mode' highlight and indent by Emacs's rules,
+and 'emacs-lisp-mode' indents as Emacs does.
+
+** Language servers through 'M-x eglot'.
+
+** Spell checking with 'M-$' and 'flyspell-mode'.
+It runs ispell, aspell or hunspell.
+
+** Faces, themes, images and bidirectional text.
+'load-theme' colours both front ends; images show in the window, and
+Hebrew and Arabic are reordered as Emacs reorders them.
+
+** The mouse clicks, drags, selects and scrolls the window under it.
+
+** Sessions are kept with 'desktop-save-mode'.
+'savehist-mode' keeps the history and 'save-place-mode' each file's
+place between sessions.
+
+** 'M-x agent' talks to Claude in an Org buffer.
+Claude calls E8's commands as tools, and asks before it writes files
+or quits. Each turn is one undo step.
+
+** 'e8-mcp' lets Claude Code and other MCP clients use E8.
+
+** E8 is configured and extended in TypeScript.
+'init.ts' defines commands and keys, 'M-x load-file' reloads it, and
+'M-:' evaluates an expression.
+
+** Packages install from git repositories, as with package-vc.
+'e8.usePackage' in 'init.ts', 'package-vc-install',
+'package-vc-upgrade' and 'package-delete'; 'e8-lock.json' pins each
+package's commit.
+
+** Batch mode and ERT, as 'emacs --batch' and Emacs's ERT.
+'e8 --batch -l FILE -f FUNCTION' runs a package's tests, and 'M-x ert'
+runs them in the editor.
+
+** Help on 'C-h f', 'C-h k', 'C-h v', 'C-h m', 'C-h b' and 'C-h l'.

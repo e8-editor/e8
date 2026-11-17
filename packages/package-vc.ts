@@ -16,6 +16,8 @@
 // Preloaded, for its commands, which Emacs autoloads; it runs nothing until
 // one is used.
 
+import { button, fontifyNews, withHelpWindow } from "help";
+
 e8.defineVariable({
   name: "package-user-dir",
   doc: "The directory packages are installed in, each in a directory named after it; nil for repos/ in user-emacs-directory, where Emacs's is elpa/.",
@@ -626,6 +628,138 @@ export function deletePackage(name: string): void {
   const path = e8.variable("load-path");
   if (Array.isArray(path)) e8.setVariable("load-path", path.filter((d) => typeof d !== "string" || e8.expandFileName(d) !== dir));
 }
+
+// Describing a package, after package.el's describe-package
+
+e8.defineFace({
+  name: "package-help-section-name",
+  doc: "The names of the sections, such as Status:, in a package's description.",
+  attributes: { inherit: "font-lock-function-name-face", weight: "bold" },
+});
+
+/** The files a package's long description is read from, the first found, as package--get-description: never README.md, often a web page. */
+const README_FILES = ["README-elpa", "README-elpa.md", "README", "README.rst", "README.org"];
+
+/** The file of a package's news in its checkout: NEWS, or news as an ELPA package has it. */
+function newsFile(dir: string): string | undefined {
+  return ["NEWS", "news"].map((name) => e8.fileNameAsDirectory(dir) + name).find((file) => e8.fileRegularP(file) && e8.fileReadableP(file));
+}
+
+/** A section's name, right-aligned to the 13th column, as package--print-help-section. */
+function helpSection(name: string, ...text: (string | e8.PropertizedString)[]): void {
+  e8.insert(" ".repeat(Math.max(0, 11 - name.length)));
+  e8.insert(e8.propertize(`${name}: `, { face: "package-help-section-name" }));
+  if (text.length === 0) return;
+  for (const t of text) e8.insert(t);
+  e8.insert("\n");
+}
+
+/** A package's name as a button to its description. */
+const packageButton = (name: string) => button(name, ["call", "describe-package", name]);
+
+/** Inserts names as buttons, separated by commas, ending the line. */
+function insertPackageList(names: string[]): void {
+  names.forEach((name, i) => {
+    if (i > 0) e8.insert(", ");
+    e8.insert(packageButton(name));
+  });
+  e8.insert("\n");
+}
+
+/** The comment a shipped package starts with, its description, as lm-commentary reads a Lisp file's. */
+function builtinCommentary(source: string): string {
+  const lines: string[] = [];
+  for (const line of source.split("\n")) {
+    const m = /^\/\/ ?(.*)$/.exec(line);
+    if (m === null) {
+      // The imports and blank lines before the comment are passed over.
+      if (lines.length === 0 && (line.trim() === "" || line.startsWith("import "))) continue;
+      break;
+    }
+    // As is a licence line, and the empty comment lines after it.
+    if (m[1].startsWith("SPDX-License-Identifier:") || (lines.length === 0 && m[1].trim() === "")) continue;
+    lines.push(m[1]);
+  }
+  return lines.join("\n").trim();
+}
+
+/** A description's first sentence: up to a full stop after a word, not one in "..." or a key such as "M-s h .". */
+function firstSentence(text: string): string {
+  const m = /^([\s\S]*?[^.\s]\.)(\s|$)/.exec(text);
+  return (m === null ? text : m[1]).replace(/\s+/g, " ");
+}
+
+/** Inserts the description of a package that ships with E8. */
+function insertBuiltinPackage(name: string, source: string): void {
+  const commentary = builtinCommentary(source);
+  e8.insert(`Package ${name} is built-in.\n\n`);
+  helpSection("Status", "Built-in.");
+  const summary = firstSentence(commentary);
+  if (summary !== "") helpSection("Summary", summary);
+  e8.insert("\n");
+  if (commentary !== "") e8.insert(`${commentary}\n`);
+}
+
+/** Inserts the description of a package installed from its repository, its news last. */
+function insertInstalledPackage(name: string): void {
+  const entry = readLock().packages[name];
+  const dir = packageDir(name);
+  const manifest = readManifest(dir, entry.url);
+  e8.insert(`Package ${name} is installed.\n\n`);
+  helpSection("Status");
+  e8.insert("Installed in ");
+  e8.insert(button(`${name}/`, ["call", "dired", dir]));
+  e8.insert(".\n");
+  if (entry.tag !== undefined) helpSection("Version", entry.tag.replace(/^v/, ""));
+  if (entry.branch !== undefined) helpSection("Branch", entry.branch);
+  helpSection("Commit", entry.commit);
+  if (manifest.description !== undefined) helpSection("Summary", manifest.description);
+  const requires = Object.keys(manifest.requires ?? {});
+  if (manifest.e8 !== undefined || requires.length > 0) {
+    helpSection("Requires");
+    if (manifest.e8 !== undefined) e8.insert(`E8 ${manifest.e8}${requires.length > 0 ? ", " : ""}`);
+    insertPackageList(requires);
+  }
+  const requiredBy = dependents(name);
+  if (requiredBy.length > 0) {
+    helpSection("Required by");
+    insertPackageList(requiredBy);
+  }
+  helpSection("Website", entry.url.replace(/\.git$/, ""));
+  e8.insert("\n");
+  const readme = README_FILES.map((file) => e8.fileNameAsDirectory(dir) + file).find((file) => e8.fileReadableP(file) && e8.fileRegularP(file));
+  if (readme !== undefined) e8.insert(`${e8.readTextFile(readme).trimEnd()}\n`);
+  const news = newsFile(dir);
+  if (news !== undefined) {
+    e8.insert(`\n${"─".repeat(70)}\n`);
+    e8.insert(e8.propertize("* News", { face: "package-help-section-name" }));
+    e8.insert("\n\n");
+    const start = e8.point();
+    e8.insert(e8.readTextFile(news));
+    fontifyNews(start, e8.point());
+  }
+}
+
+/** Every package describe-package knows: those installed, then those that ship with E8. */
+function knownPackages(): string[] {
+  return [...new Set([...packageInstalledList(), ...e8.builtinPackages()])].sort();
+}
+
+const describePackage = e8.defineCommand({
+  name: "describe-package",
+  doc:
+    "Describe a package. For one installed from its repository: its version and commit, what it requires and what requires it, its README, and then its news, from the NEWS file in its repository. " +
+    "For one that ships with E8: what its file says it is.",
+  params: [{ name: "package", prompt: "Describe package: ", collection: () => knownPackages(), requireMatch: true }],
+  run: (name: string) => {
+    if (name === "") return void e8.message("No package specified");
+    const installed = readLock().packages[name] !== undefined && e8.fileDirectoryP(packageDir(name));
+    const source = installed ? undefined : e8.builtinPackageSource(name);
+    if (!installed && source === undefined) e8.signal("error", `No package named ${name}`);
+    withHelpWindow(() => (source === undefined ? insertInstalledPackage(name) : insertBuiltinPackage(name, source)));
+  },
+});
+e8.bindKey("C-h P", describePackage);
 
 // Commands
 

@@ -238,3 +238,104 @@ fn describe_key_follows_shift_translation_and_names_the_wheel() {
     ed.press("C-h k <wheel-down>").unwrap();
     assert!(help(&ed).starts_with("<wheel-down> runs the command mwheel-scroll."), "{}", help(&ed));
 }
+
+#[test]
+fn c_h_n_shows_the_news_of_each_release() {
+    let (mut ed, s) = setup();
+    ed.press("C-h n").unwrap();
+    assert_eq!(ed.buffer().name, "NEWS");
+    assert_eq!(ed.variable("major-mode"), Some(e8_core::Value::Str("e8-news-view-mode".into())));
+    let news = buffer_text(&ed, "NEWS");
+    assert!(news.starts_with("E8 NEWS -- history of user-visible changes."), "{news}");
+    assert!(news.contains("\n* Changes in E8 0.5.15\n"), "{news}");
+    assert_eq!(ed.buffer().point(), 0);
+    // It is read-only, and quoted names of commands are buttons to their help.
+    ed.type_text("x");
+    assert_eq!(ed.echo(), Some("Buffer is read-only: #<buffer NEWS>"));
+    let at = news.find("'yank-from-kill-ring'").unwrap() + 1;
+    s.eval_expression(&mut ed, &format!("e8.gotoChar({})", news[..at].chars().count())).unwrap();
+    ed.press("RET").unwrap();
+    assert!(help(&ed).starts_with("yank-from-kill-ring is a command"), "{}", help(&ed));
+    // A name in parentheses after a key in quotes is a button too.
+    let at = news.find("'view-e8-news'").unwrap() + 1;
+    s.eval_expression(&mut ed, &format!("e8.gotoChar({})", news[..at].chars().count())).unwrap();
+    let button = s.eval_expression(&mut ed, &format!("e8.withCurrentBuffer(\"NEWS\", () => e8.getTextProperty({}, \"help-xref\"))", news[..at].chars().count())).unwrap();
+    assert_eq!(button, r#"["symbol","view-e8-news"]"#);
+
+    // view-emacs-news, as an Emacs configuration calls it, is the same command.
+    ed.call("switch-to-buffer", vec![e8_core::Arg::Str("*scratch*".into())]).unwrap();
+    ed.call("view-emacs-news", vec![]).unwrap();
+    assert_eq!(ed.buffer().name, "NEWS");
+}
+
+#[test]
+fn c_u_c_h_n_shows_only_one_release() {
+    let (mut ed, _s) = setup();
+    // The prompt opens inside the command, so the same keys answer it.
+    ed.press("C-u C-h n 0 . 5 . 1 5 RET").unwrap();
+    assert_eq!(ed.buffer().name, "NEWS");
+    let b = ed.buffer();
+    let shown = b.slice(b.point_min()..b.point_max());
+    assert!(shown.starts_with("* Changes in E8 0.5.15\n"), "{shown}");
+    assert!(!shown.contains("\n* Changes in E8"), "only 0.5.15: {shown}");
+    // C-h n again shows all of it.
+    ed.press("C-h n").unwrap();
+    assert_eq!(ed.buffer().point_min(), 0);
+    assert_eq!(ed.buffer().point_max(), ed.buffer().len());
+
+    ed.press("C-u C-h n 9 . 9 . 9 RET").unwrap();
+    assert_eq!(ed.echo(), Some("No news about version 9.9.9"));
+    // An empty answer is the newest release.
+    ed.press("C-u C-h n RET").unwrap();
+    let b = ed.buffer();
+    assert!(b.slice(b.point_min()..b.point_max()).starts_with("* Changes in E8 0.5.16\n"));
+}
+
+#[test]
+fn tab_folds_a_release_in_the_news() {
+    let (mut ed, s) = setup();
+    ed.press("C-h n").unwrap();
+    ed.press("C-c C-n").unwrap();
+    let line = s.eval_expression(&mut ed, "e8.bufferText(e8.lineBeginningPosition(), e8.lineEndPosition())").unwrap();
+    assert!(line.starts_with("\"* Changes in E8 "), "{line}");
+    ed.press("TAB").unwrap();
+    assert_eq!(ed.echo(), Some("FOLDED"));
+    ed.press("TAB").unwrap();
+    assert_eq!(ed.echo(), Some("CHILDREN"));
+}
+
+#[test]
+fn only_stars_and_form_feeds_start_outline_headings() {
+    // outline-regexp's default is "[*^L]+": a line starting with f, or F
+    // when case folds, is text, not a heading, and a form feed is one.
+    let (mut ed, s) = setup();
+    let fold = r#"
+      e8.call("switch-to-buffer", "o");
+      e8.insert("* One\nfirst line\nFor a second\n** Two\nfile\n\f\nbody\n");
+      e8.call("outline-mode");
+      e8.gotoChar(0);
+      e8.call("outline-cycle-buffer");
+    "#;
+    s.eval_typescript(&mut ed, "test.ts", fold.to_string()).unwrap();
+    let folded = r#"[0, 1, 2, 3, 4, 5, 6].filter((l) => !e8.invisibleAt(e8.lineStart(l))).join(" ")"#;
+    assert_eq!(s.eval_expression(&mut ed, folded).unwrap(), "\"0 5\"");
+}
+
+#[test]
+fn c_h_n_leaves_a_file_called_news_alone() {
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("NEWS");
+    std::fs::write(&file, "My own news\n").unwrap();
+    s.eval_typescript(&mut ed, "test.ts", format!("e8.call(\"find-file\", {:?}); e8.insert(\"unsaved \");", file.display().to_string())).unwrap();
+    ed.press("C-h n").unwrap();
+    assert_eq!(ed.buffer().name, "NEWS<2>");
+    assert!(buffer_text(&ed, "NEWS<2>").starts_with("E8 NEWS"));
+    assert_eq!(buffer_text(&ed, "NEWS"), "unsaved My own news\n");
+    let modified = s.eval_expression(&mut ed, "e8.withCurrentBuffer(\"NEWS\", () => e8.bufferModifiedP())").unwrap();
+    assert_eq!(modified, "true");
+    // C-h n again reuses the news buffer.
+    ed.press("C-h n").unwrap();
+    assert_eq!(ed.buffer().name, "NEWS<2>");
+    assert!(ed.find_buffer("NEWS<3>").is_none());
+}

@@ -53,6 +53,7 @@ What the run of ADRs 0069 to 0105 taught, porting a C file's primitives at a tim
 - **Run a port's `make types` too, not only `make test`**: the type check is a separate CI step and caught what the tests did not, e8-magit's pin of e8-with-editor v0.1.0 failing against E8 0.5.9's window and process objects.
 - **A pinned dependency changes by tag.** A fix on a dependency's `main` reaches its dependents only once it is tagged and their `DEPS` name the tag. Pushing tags, and merging, in the port repositories is Mark's; a session prepares the branch and the pull request and asks.
 - **Each push runs a port's CI twice**, for the push and for the pull request. After fixing what a run needed, as a tag that did not exist yet, rerun both, or the pull request still shows the old failure.
+- **A port keeps a `NEWS` in E8's NEWS format** ([ADR 0110](adr/0110-news-in-help.md)), at the top of its repository: a `* Changes in NAME X.Y.Z` heading for each tag, newest first, and a `** ` heading under it for each change a user would notice. The pull request that a tag follows adds the section, and `C-h P` shows it under the package's description.
 - **E8's `Ports` job runs the ports' `main` against E8's `main`**, and a release waits for it, so a port broken by an E8 change blocks the next release until the port is fixed.
 
 ## Programs E8 talks to

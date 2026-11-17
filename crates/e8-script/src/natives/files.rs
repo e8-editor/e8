@@ -507,7 +507,27 @@ natives! {
     pub fn kqueueValidP(ed, descriptor: EditorValue) -> Option<bool> {
         Ok(ed.kqueue_valid_p(&descriptor).then_some(true))
     }
+
+    /// The text of a file E8 carries in itself, as Emacs keeps files in
+    /// data-directory: "NEWS", the history of its user-visible changes, a
+    /// heading for each release. Undefined for a name it does not carry.
+    pub fn dataFile(_ed, name: String) -> Option<String> {
+        Ok(DATA_FILES.iter().find(|(n, _)| *n == name).map(|(_, text)| text.to_string()))
+    }
+
+    /// The packages that ship with E8, preloaded or not, by name, as Emacs's package--builtins lists its own.
+    pub fn builtinPackages(_ed) -> Vec<String> {
+        Ok(shipped_packages().map(|(file, _)| file.trim_end_matches(".ts").to_string()).collect::<Vec<_>>())
+    }
+
+    /// The TypeScript of a package that ships with E8, by name; undefined for another.
+    pub fn builtinPackageSource(_ed, name: String) -> Option<String> {
+        Ok(shipped_packages().find(|(file, _)| file.trim_end_matches(".ts") == name).map(|(_, source)| source.to_string()))
+    }
 }
+
+/// The files E8 carries in itself, as Emacs's in data-directory, by name.
+const DATA_FILES: &[(&str, &str)] = &[("NEWS", include_str!("../../../../etc/NEWS"))];
 
 /// A time as milliseconds since 1970, to the nanosecond as far as a number holds it.
 fn milliseconds(t: std::time::SystemTime) -> f64 {
