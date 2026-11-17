@@ -10,7 +10,7 @@ of the same form, which 'C-h P' shows under its description.
 
 * Changes in E8 0.5.16
 
-** 'C-h n' ('view-e8-news') shows this file, the news of each release.
+** 'C-h n' ('view-e8-news') shows E8's news, what changed in each release.
 'view-emacs-news' is another name for it, as configurations written for
 Emacs call it.
 
