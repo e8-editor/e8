@@ -287,8 +287,9 @@ fn c_u_c_h_n_shows_only_one_release() {
     assert_eq!(ed.echo(), Some("No news about version 9.9.9"));
     // An empty answer is the newest release.
     ed.press("C-u C-h n RET").unwrap();
+    let newest = buffer_text(&ed, "NEWS").lines().find(|l| l.starts_with("* Changes in E8 ")).unwrap().to_string();
     let b = ed.buffer();
-    assert!(b.slice(b.point_min()..b.point_max()).starts_with("* Changes in E8 0.5.16\n"));
+    assert!(b.slice(b.point_min()..b.point_max()).starts_with(&format!("{newest}\n")), "{newest}");
 }
 
 #[test]
