@@ -25,7 +25,7 @@ To match Emacs's highlighting where two patterns capture one node, the core now 
 ## Consequences
 
 - `init.ts` and packages are edited with highlighting and indentation as in Emacs; `tsc` still checks them.
-- The binaries grow by the two parsers. The web build compiles them with the other grammars.
+- The binaries grow by the two parsers. The web build compiles them with the other grammars: their C needs only the headers JavaScript's grammar already needs there.
 - Fonts in go-ts-mode and bash-ts-mode are applied in the new order too; their tests, recorded from Emacs, still pass.
 - `load-file`, and so init.ts and a tangled config, runs a file that imports or exports as a module, a fresh one each time, as `eval-region` already ran such text; a block that imports runs the same way and gives no value.
 - `org-babel-tangle-file` as a command takes the file only, as commands take no optional arguments but prefix and count; code that wants Emacs's TARGET-FILE and LANG-RE imports `tangleFile` from `ob-tangle`.
