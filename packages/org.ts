@@ -303,6 +303,7 @@ function shiftSelectError(): never {
 // TODO states
 
 e8.defineHook("org-after-todo-state-change-hook", "Functions called after a heading's TODO state changes, at the heading.");
+e8.defineHook("org-ctrl-c-ctrl-c-hook", "Functions C-c C-c tries first, until one returns true, which ends it, as running a source block does.");
 
 interface TodoSet {
   todo: string[];
@@ -5396,6 +5397,8 @@ const ctrlCCtrlC = e8.defineCommand({
     "C-c C-c in Org: tick or untick a checkbox, align a table, update a statistics cookie, set a heading's tags, " +
     "fix a timestamp, or re-read the buffer's #+ settings on a #+ line.",
   run: () => {
+    // As Org, the hook first: ob-core's function on it runs a source block point is in.
+    if (truthy(e8.runHookWithArgsUntilSuccess("org-ctrl-c-ctrl-c-hook"))) return;
     const line = lineAt();
     const text = e8.lineText(line);
     if (/^[ \t]*$/.test(text)) nothingUseful();

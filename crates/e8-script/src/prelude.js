@@ -1749,6 +1749,10 @@
     // As with-silent-modifications: changes to text properties are not
     // recorded for undo and leave the buffer as modified as it was, with
     // read-only text and the change hooks out of the way.
+    // Indirect eval, so the text runs in the global scope, as a script, not in this one.
+    evalTypescript(source) {
+      return (0, eval)(native.typescriptToScript(String(source)));
+    },
     withSilentModifications(fn) {
       const buffer = native.bufferIdOf();
       const state = native.beginSilentModifications();

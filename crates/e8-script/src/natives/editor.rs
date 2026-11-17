@@ -27,6 +27,14 @@ natives! {
         ed.insert(&text)
     }
 
+    /// TypeScript as the script evalTypescript runs, once the agent allows
+    /// running code: its types erased, a quit check in each loop, and in a
+    /// block of its own, so its const and let clash with nothing else's.
+    fn typescriptToScript(ed, source: String) -> String {
+        ed.check_permission("run TypeScript")?;
+        Ok(format!("\"use strict\";void 0;{{{}\n}}", strip_types("evalTypescript", source)?))
+    }
+
     /// Join the running command's undo step to the one before, as Emacs's
     /// undo-auto-amalgamate does when self-insert-command runs, if the command
     /// before was this one and did the same. For commands that insert newlines

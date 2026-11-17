@@ -112,3 +112,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0108](0108-spell-checking-off-the-editor-thread.md) Spell checking off the editor thread: answers remembered, checks after commands that do not wait, helpers for large regions
 - [0109](0109-the-lattice-at-startup.md) The lattice at startup: the guided field drawn behind the text as the GUI opens, then faded
 - [0110](0110-news-in-help.md) News in help: etc/NEWS on C-h n, a package's NEWS in describe-package, and E8's own name for what is E8's
+- [0111](0111-typescript-mode-and-literate-configuration.md) TypeScript mode and a literate configuration: typescript-ts-mode shipped, C-c C-c on TypeScript blocks, org-babel-load-file

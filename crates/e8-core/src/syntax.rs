@@ -122,6 +122,10 @@ pub(crate) fn builtin_grammars() -> Vec<(&'static str, Grammar)> {
         ("json", Grammar::new(tree_sitter_json::LANGUAGE.into(), tree_sitter_json::HIGHLIGHTS_QUERY)),
         ("python", Grammar::new(tree_sitter_python::LANGUAGE.into(), tree_sitter_python::HIGHLIGHTS_QUERY)),
         ("rust", Grammar::new(tree_sitter_rust::LANGUAGE.into(), tree_sitter_rust::HIGHLIGHTS_QUERY)),
+        // Highlighted by typescript-ts-mode's font-lock rules, as Emacs's are,
+        // so with no query of their own, as a grammar from a library.
+        ("typescript", Grammar::new(tree_sitter_typescript::LANGUAGE_TYPESCRIPT.into(), "")),
+        ("tsx", Grammar::new(tree_sitter_typescript::LANGUAGE_TSX.into(), "")),
     ]
 }
 
@@ -281,8 +285,12 @@ impl SyntaxTree {
 
     /// The faces the mode's font-lock rules give, as Emacs's
     /// treesit-font-lock-fontify-region does: each rule in turn, its
-    /// captures in the order of the text, each face over the capture's
-    /// node as the rule's override says.
+    /// captures match by match, in the order tree-sitter finishes the
+    /// matches, as Emacs's treesit-query-capture gathers them with
+    /// ts_query_cursor_next_match, each face over the capture's node as the
+    /// rule's override says. So where two patterns capture one node, as
+    /// typescript-ts-mode's name of a variable holding an arrow function,
+    /// the match that finishes later paints last.
     fn faces_by_rules(&self, rules: &Rules, tree: &Tree, text: &Rope, start: usize, end: usize) -> Vec<Option<&'static str>> {
         let mut faces: Vec<Option<&'static str>> = vec![None; end.saturating_sub(start)];
         let (start_byte, end_byte) = (text.char_to_byte(start), text.char_to_byte(end));
@@ -291,24 +299,25 @@ impl SyntaxTree {
             let mut cursor = QueryCursor::new();
             cursor.set_byte_range(start_byte..end_byte);
             let names = query.capture_names();
-            let mut captures = cursor.captures(query, tree.root_node(), source);
-            while let Some((m, i)) = captures.next() {
-                let capture = m.captures()[*i];
-                let name = names[capture.index as usize];
-                // Captures a rule uses for its predicates, as @_name, give no face.
-                if name.starts_with('_') {
-                    continue;
-                }
-                let face = interned(name);
-                let range = capture.node.byte_range();
-                let from = text.byte_to_char(range.start.max(start_byte)).max(start) - start;
-                let to = text.byte_to_char(range.end.min(end_byte)).min(end) - start;
-                let Some(slots) = faces.get_mut(from..to) else { continue };
-                match over {
-                    Override::Nil if slots.iter().all(Option::is_none) => slots.fill(Some(face)),
-                    Override::Nil => {}
-                    Override::T | Override::Prepend => slots.fill(Some(face)),
-                    Override::Append | Override::Keep => slots.iter_mut().filter(|s| s.is_none()).for_each(|s| *s = Some(face)),
+            let mut matches = cursor.matches(query, tree.root_node(), source);
+            while let Some(m) = matches.next() {
+                for capture in m.captures() {
+                    let name = names[capture.index as usize];
+                    // Captures a rule uses for its predicates, as @_name, give no face.
+                    if name.starts_with('_') {
+                        continue;
+                    }
+                    let face = interned(name);
+                    let range = capture.node.byte_range();
+                    let from = text.byte_to_char(range.start.max(start_byte)).max(start) - start;
+                    let to = text.byte_to_char(range.end.min(end_byte)).min(end) - start;
+                    let Some(slots) = faces.get_mut(from..to) else { continue };
+                    match over {
+                        Override::Nil if slots.iter().all(Option::is_none) => slots.fill(Some(face)),
+                        Override::Nil => {}
+                        Override::T | Override::Prepend => slots.fill(Some(face)),
+                        Override::Append | Override::Keep => slots.iter_mut().filter(|s| s.is_none()).for_each(|s| *s = Some(face)),
+                    }
                 }
             }
         }

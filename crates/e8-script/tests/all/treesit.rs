@@ -484,3 +484,76 @@ fn bash_ts_mode_highlights_and_indents_as_emacs_does() {
     let b = ed.window_buffer();
     assert_eq!(b.slice(0..b.len()), "f() {\n    local x=1\n    if [ 1 ]; then\n\techo a\n    fi\n    for i in 1 2; do\n\techo $i\n    done\n}\n");
 }
+
+#[test]
+fn typescript_ts_mode_highlights_and_indents_as_emacs_does() {
+    // TypeScript's grammar ships with E8, as the language of its configuration.
+    let (mut ed, _s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("sample.ts");
+    let sample = include_str!("../data/typescript-sample.ts");
+    std::fs::write(&file, sample).unwrap();
+    ed.visit_file(&file).unwrap();
+    assert_eq!(ed.mode_name(), "TypeScript");
+    assert_eq!(ed.buffer_language(), Some("typescript"));
+    let runs = face_runs(&mut ed);
+    let style_of = |text: &str| runs.iter().find(|(t, _)| t == text).map(|(_, f)| f.clone()).unwrap_or_else(|| panic!("no {text:?} in {runs:?}"));
+    // As Emacs 30's typescript-ts-mode fontifies the sample at the default level.
+    for (text, face) in [
+        ("// A config", "font-lock-comment-face"),
+        ("import", "font-lock-keyword-face"),
+        ("truthy", "font-lock-variable-name-face"),
+        ("\"subr\"", "font-lock-string-face"),
+        ("MAX_SIZE", "font-lock-variable-name-face"),
+        ("10", "font-lock-number-face"),
+        ("interface", "font-lock-keyword-face"),
+        ("Opts", "font-lock-type-face"),
+        ("name", "font-lock-property-name-face"),
+        ("string", "font-lock-type-face"),
+        ("greet", "font-lock-function-name-face"),
+        ("who", "font-lock-variable-name-face"),
+        ("/a\"b/g", "font-lock-regexp-face"),
+        ("`hi ", "font-lock-string-face"),
+        ("${", "font-lock-misc-punctuation-face"),
+        ("\\n", "font-lock-escape-face"),
+        ("f", "font-lock-function-name-face"),
+        ("Thing", "font-lock-type-face"),
+        ("Base", "font-lock-type-face"),
+        ("count", "font-lock-property-name-face"),
+        ("run", "font-lock-function-name-face"),
+        ("this", "font-lock-keyword-face"),
+        ("Red", "font-lock-type-face"),
+        ("Map", "font-lock-type-face"),
+        ("'no'", "font-lock-string-face"),
+    ] {
+        assert_eq!(style_of(text), style(&ed, face), "{text}");
+    }
+    // Calls are level 4, which the default level 3 leaves plain.
+    assert!(runs.iter().any(|(t, s)| t.contains("bindKey") && s.foreground.is_none()), "{runs:?}");
+    // The regexp's quote opens no string for the sexp commands.
+    ed.press("M-< C-s / a C-b C-M-f").unwrap();
+    assert_eq!(ed.window_buffer().line_text(ed.window_buffer().line_of(ed.window_buffer().point())), "  const re = /a\"b/g;");
+    // Emacs's indentation, two columns a level, from flush-left lines.
+    let flush: String = sample.lines().map(|l| format!("{}\n", l.trim_start())).collect();
+    ed.window_buffer_mut().set_text(&flush);
+    ed.press("C-x h C-M-\\").unwrap();
+    let b = ed.window_buffer();
+    assert_eq!(b.slice(0..b.len()), sample);
+    // C-M-a goes to the start of the function point is in.
+    ed.press("M-< C-s r e t u r n C-M-a").unwrap();
+    assert_eq!(ed.window_buffer().line_text(ed.window_buffer().line_of(ed.window_buffer().point())), "function greet(who: string, n = 2): string {");
+}
+
+#[test]
+fn tsx_ts_mode_highlights_jsx() {
+    let (mut ed, _s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("view.tsx");
+    std::fs::write(&file, "const v = <div id=\"a\">hi</div>;\n").unwrap();
+    ed.visit_file(&file).unwrap();
+    assert_eq!(ed.mode_name(), "TypeScript[TSX]");
+    let runs = face_runs(&mut ed);
+    let style_of = |text: &str| runs.iter().find(|(t, _)| t == text).map(|(_, f)| f.clone()).unwrap_or_else(|| panic!("no {text:?} in {runs:?}"));
+    assert_eq!(style_of("div"), style(&ed, "typescript-ts-jsx-tag-face"));
+    assert_eq!(style_of("id"), style(&ed, "typescript-ts-jsx-attribute-face"));
+}

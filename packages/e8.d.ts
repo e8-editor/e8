@@ -4889,6 +4889,26 @@ declare global {
        */
       "org-auto-fill-function": [];
       /**
+       * Run the source block point is in, if it is in one.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-execute-maybe": [];
+      /**
+       * Run the source block point is in and put its value under it, after #+RESULTS:.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-execute-src-block": [];
+      /**
+       * Load the TypeScript source blocks of an Org file: tangle them into FILE.ts, if the Org file is newer than it, and load that, as a literate configuration is loaded.
+       *
+       * @param file file name
+       *
+       * Defined in packages/ob-tangle.ts.
+       */
+      "org-babel-load-file": [file: string];
+      /**
        * Write the source blocks whose :tangle header argument names a file into their files. With C-u, only the block at point; with C-u C-u, the blocks that tangle to the same file as it.
        *
        * @param arg raw prefix argument
@@ -4897,7 +4917,7 @@ declare global {
        */
       "org-babel-tangle": [arg?: PrefixArg | boolean];
       /**
-       * Tangle an Org file's source blocks into their files.
+       * Tangle an Org file's source blocks into their files. Code that wants a target file or a language regexp, as Emacs's optional arguments, uses tangleFile from ob-tangle.
        *
        * @param file file name
        *
@@ -7544,6 +7564,40 @@ declare global {
        * Defined in packages/treesit.ts.
        */
       "treesit-end-of-defun": [arg?: number];
+      /**
+       * Edit TSX and JSX, in tsx-ts-mode: E8's mode for it, as major-mode-remap-alist would have Emacs use.
+       *
+       * Defined in packages/treesit-modes.ts.
+       */
+      "tsx-mode": [];
+      /**
+       * The major mode for editing TSX and JSX, highlighted from a tree-sitter syntax tree.
+       *
+       * Files matching \.tsx\' use it; see auto-mode-alist.
+       *
+       * Defined in packages/treesit-modes.ts.
+       */
+      "tsx-ts-mode": [];
+      /**
+       * Edit TypeScript, in typescript-ts-mode: E8's mode for it, as major-mode-remap-alist would have Emacs use.
+       *
+       * Defined in packages/treesit-modes.ts.
+       */
+      "typescript-mode": [];
+      /**
+       * The mode typescript-ts-mode and tsx-ts-mode are built on, for editing TypeScript.
+       *
+       * Defined in packages/treesit-modes.ts.
+       */
+      "typescript-ts-base-mode": [];
+      /**
+       * The major mode for editing TypeScript, highlighted from a tree-sitter syntax tree.
+       *
+       * Files matching \.ts\' use it; see auto-mode-alist.
+       *
+       * Defined in packages/treesit-modes.ts.
+       */
+      "typescript-ts-mode": [];
       /**
        * Take the comment starts and ends out of the region's lines. With a prefix argument, take out that many levels.
        *
@@ -11523,9 +11577,21 @@ declare global {
       /**
        * The header arguments every source block has unless it says otherwise: pairs of an argument and its value.
        *
-       * Defined in packages/ob-tangle.ts.
+       * Defined in packages/ob-core.ts.
        */
       "org-babel-default-header-args": Value;
+      /**
+       * Results of this many lines or more go in an example block, fewer each after a colon.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-min-lines-for-block-output": Value;
+      /**
+       * Whether C-c C-c leaves source blocks alone; C-c C-v e still runs one.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-no-eval-on-ctrl-c-ctrl-c": Value;
       /**
        * The extension a language's code is tangled to with :tangle yes: pairs of a language and an extension, else the language's name.
        *
@@ -11572,6 +11638,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-out-when-done": Value;
+      /**
+       * Whether C-c C-c asks before running a source block: true asks, false runs it, and a function of the block's language and code decides.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-confirm-babel-evaluate": Value;
       /**
        * What S-TAB last did: "overview", "contents" or "all".
        *
@@ -11911,7 +11983,7 @@ declare global {
       /**
        * Whether a source block's code keeps its indentation when tangled, rather than losing what all its lines share.
        *
-       * Defined in packages/ob-tangle.ts.
+       * Defined in packages/ob-core.ts.
        */
       "org-src-preserve-indentation": Value;
       /**
@@ -13207,6 +13279,24 @@ declare global {
        * nil leaves it to truncate-lines, as visual-line-mode makes it in its buffer, and any other non-nil value truncates lines in every window that shares the frame's width.
        */
       "truncate-partial-width-windows": Value;
+      /**
+       * Keymap tsx-ts-mode-map.
+       */
+      "tsx-ts-mode-map": Value;
+      /**
+       * Keymap typescript-ts-base-mode-map.
+       */
+      "typescript-ts-base-mode-map": Value;
+      /**
+       * How far TypeScript indents each level.
+       *
+       * Defined in packages/treesit-modes.ts.
+       */
+      "typescript-ts-mode-indent-offset": Value;
+      /**
+       * Keymap typescript-ts-mode-map.
+       */
+      "typescript-ts-mode-map": Value;
       /**
        * Whether a question a command asks with the mouse, or from a menu, is asked in a dialog box rather than the echo area.
        */
@@ -14842,6 +14932,18 @@ declare global {
        */
       "tty-menu-selected-face": FaceAttributes;
       /**
+       * HTML attributes such as name and id in JSX.
+       *
+       * Defined in packages/treesit-modes.ts.
+       */
+      "typescript-ts-jsx-attribute-face": FaceAttributes;
+      /**
+       * HTML tags such as <div> and <p> in JSX.
+       *
+       * Defined in packages/treesit-modes.ts.
+       */
+      "typescript-ts-jsx-tag-face": FaceAttributes;
+      /**
        * Underlined text.
        */
       "underline": FaceAttributes;
@@ -15558,6 +15660,10 @@ declare global {
        */
       "org-agenda-mode-hook": Value;
       /**
+       * Run after a source block has run and its results are in the buffer.
+       */
+      "org-babel-after-execute-hook": Value;
+      /**
        * Run in each file tangled, visited, after tangling.
        */
       "org-babel-post-tangle-hook": Value;
@@ -15593,6 +15699,10 @@ declare global {
        * Functions called when a clock stops.
        */
       "org-clock-out-hook": Value;
+      /**
+       * Functions C-c C-c tries first, until one returns true, which ends it, as running a source block does.
+       */
+      "org-ctrl-c-ctrl-c-hook": Value;
       /**
        * Functions TAB in Org tries first, each until one gives true, which then is all TAB does. Emacs also calls it org-tab-first-hook.
        */
@@ -15889,6 +15999,18 @@ declare global {
        * Run after Tooltip mode is turned on.
        */
       "tooltip-mode-on-hook": Value;
+      /**
+       * Run after entering TypeScript[TSX] mode, after the hooks of the modes it is built on.
+       */
+      "tsx-ts-mode-hook": Value;
+      /**
+       * Run after entering TypeScript mode, after the hooks of the modes it is built on.
+       */
+      "typescript-ts-base-mode-hook": Value;
+      /**
+       * Run after entering TypeScript mode, after the hooks of the modes it is built on.
+       */
+      "typescript-ts-mode-hook": Value;
       /**
        * Run after View mode is turned on or off.
        */
@@ -20065,6 +20187,15 @@ declare global {
      * that style text rather than change it.
      */
     function withSilentModifications<T>(fn: () => T): T;
+    /**
+     * Run TypeScript text and return the value of the last statement it ran,
+     * as Lisp's eval of what read gives returns its form's value: 42 for
+     * `e8.message("x"); 42`, undefined for a declaration. The `e8` API is
+     * there, as in init.ts; its top-level const and let are its own. Asks the
+     * agent's permission while it acts, as eval-region does. Org's C-c C-c
+     * runs TypeScript blocks with it.
+     */
+    function evalTypescript(source: string): unknown;
     /** Run `fn`, taking back its changes if it throws, as Emacs's atomic-change-group. */
     function atomicChangeGroup<T>(fn: () => T): T;
     /** What starts a process: its name, program and arguments, and where its output goes. */

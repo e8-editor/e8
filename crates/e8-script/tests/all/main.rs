@@ -11,6 +11,7 @@ mod abbrev;
 mod acp;
 mod agent_shell;
 mod awaiting;
+mod babel;
 mod batch;
 mod blocking;
 mod bookmark;

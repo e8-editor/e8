@@ -1357,6 +1357,15 @@ const API: &str = r##"
    * that style text rather than change it.
    */
   function withSilentModifications<T>(fn: () => T): T;
+  /**
+   * Run TypeScript text and return the value of the last statement it ran,
+   * as Lisp's eval of what read gives returns its form's value: 42 for
+   * `e8.message("x"); 42`, undefined for a declaration. The `e8` API is
+   * there, as in init.ts; its top-level const and let are its own. Asks the
+   * agent's permission while it acts, as eval-region does. Org's C-c C-c
+   * runs TypeScript blocks with it.
+   */
+  function evalTypescript(source: string): unknown;
   /** Run `fn`, taking back its changes if it throws, as Emacs's atomic-change-group. */
   function atomicChangeGroup<T>(fn: () => T): T;
   /** What starts a process: its name, program and arguments, and where its output goes. */

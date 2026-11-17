@@ -20,6 +20,8 @@ tree-sitter-javascript = "0.25"
 tree-sitter-json = "0.24"
 tree-sitter-python = "0.25"
 tree-sitter-rust = "0.24"
+# TypeScript and TSX, the language of E8's own configuration (ADR 0111).
+tree-sitter-typescript = "0.23"
 tree-sitter-language = "0.1"
 unicode-width = "0.2"
 encoding_rs = "0.8"

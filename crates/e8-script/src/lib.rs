@@ -211,6 +211,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/org-clock.ts", include_str!("../../../packages/org-clock.ts")),
     ("packages/org-capture.ts", include_str!("../../../packages/org-capture.ts")),
     ("packages/org-src.ts", include_str!("../../../packages/org-src.ts")),
+    ("packages/ob-core.ts", include_str!("../../../packages/ob-core.ts")),
     ("packages/ob-tangle.ts", include_str!("../../../packages/ob-tangle.ts")),
     // Preloaded for its commands, which Emacs autoloads.
     ("packages/package-vc.ts", include_str!("../../../packages/package-vc.ts")),

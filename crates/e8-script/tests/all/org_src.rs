@@ -148,3 +148,23 @@ fn tab_natively_uses_the_org_buffer_s_content_indentation() {
     assert_eq!(text(&ed), "* H\n#+begin_src emacs-lisp\n(let ((a 1))\n  (foo a))\n#+end_src\n");
     assert_eq!(ed.window_buffer().point(), 42);
 }
+
+#[test]
+fn a_typescript_block_gets_typescript_s_faces_and_mode() {
+    // As in Emacs with typescript-ts-mode, which typescript-mode runs here,
+    // as org-src-get-lang-mode looks for LANGUAGE-mode.
+    let (mut ed, _s) = org("* H\n#+begin_src typescript\nconst x: number = 1;\n#+end_src\n", "x:");
+    ed.set_frame_size(100, 20);
+    ed.redisplay();
+    let faces = |ed: &Editor, at: usize| match ed.window_buffer().text_property(at, "face") {
+        Some(e8_core::Value::List(items)) => items.iter().filter_map(|v| v.as_str().map(String::from)).collect::<Vec<_>>(),
+        Some(e8_core::Value::Str(s)) => vec![s.clone()],
+        _ => Vec::new(),
+    };
+    let at = |needle: &str| text(&ed)[..text(&ed).find(needle).unwrap()].chars().count();
+    assert_eq!(faces(&ed, at("const")), ["font-lock-keyword-face", "org-block"]);
+    assert_eq!(faces(&ed, at("number")), ["font-lock-type-face", "org-block"]);
+    ed.press("C-c '").unwrap();
+    assert_eq!(ed.variable("major-mode").and_then(|v| v.as_str().map(String::from)).as_deref(), Some("typescript-ts-mode"));
+    assert_eq!(name(&ed), "*Org Src t.org[ typescript ]*");
+}
