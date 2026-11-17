@@ -20,13 +20,14 @@ Option 3: `tree-sitter-typescript` ships, and `typescript-ts-mode` and `tsx-ts-m
 
 To match Emacs's highlighting where two patterns capture one node, the core now applies a mode's font-lock rules match by match, in the order tree-sitter finishes them, as Emacs's `treesit-query-capture` gathers them with `ts_query_cursor_next_match`, rather than capture by capture.
 
-`ob-core.ts` takes the source-block code that was in `ob-tangle.ts` (header arguments, finding blocks) and adds `org-babel-execute-src-block` on `C-c C-c` (through `org-ctrl-c-ctrl-c-hook`, as Emacs does it) and `C-c C-v e`, with `org-confirm-babel-evaluate`, `:eval`, and results as Emacs writes them: `: value` lines, a table for a list, an example block from `org-babel-min-lines-for-block-output` lines, nothing for nil; `:results silent` and `none`. `org-babel-execute:typescript` (and `:ts`) runs a block with `e8.evalTypescript`, which asks the agent's permission while it acts, as `eval-region` does. `org-babel-load-file` tangles an Org file's TypeScript into FILE.ts when the Org file is newer, and loads it, so an `init.ts` of one line loads a literate `config.org`.
+`ob-core.ts` takes the source-block code that was in `ob-tangle.ts` (header arguments, finding blocks) and adds `org-babel-execute-src-block` on `C-c C-c` (through `org-ctrl-c-ctrl-c-hook`, as Emacs does it) and `C-c C-v e`, with `org-confirm-babel-evaluate`, `:eval`, and results as Emacs writes them: `: value` lines, a table for a list, an example block from `org-babel-min-lines-for-block-output` lines, nothing for nil, indented as the block is; `:results silent`, `none`, `append` and `prepend`. `org-babel-execute:typescript` (and `:ts`) runs a block with `e8.evalTypescript`, which asks the agent's permission while it acts, as `eval-region` does. `org-babel-load-file` tangles an Org file's TypeScript into FILE.ts when the Org file is newer, and loads it, so an `init.ts` of one line loads a literate `config.org`.
 
 ## Consequences
 
 - `init.ts` and packages are edited with highlighting and indentation as in Emacs; `tsc` still checks them.
 - The binaries grow by the two parsers. The web build compiles them with the other grammars.
 - Fonts in go-ts-mode and bash-ts-mode are applied in the new order too; their tests, recorded from Emacs, still pass.
+- `load-file`, and so init.ts and a tangled config, runs a file that imports or exports as a module, a fresh one each time, as `eval-region` already ran such text; a block that imports runs the same way and gives no value.
 - `org-babel-tangle-file` as a command takes the file only, as commands take no optional arguments but prefix and count; code that wants Emacs's TARGET-FILE and LANG-RE imports `tangleFile` from `ob-tangle`.
 - Not done: `:results output`, `:var`, sessions, noweb references, and languages other than TypeScript, for which C-c C-c says there is no org-babel-execute function, as Emacs does.
 

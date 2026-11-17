@@ -241,7 +241,12 @@ function cell(v: unknown): string {
   if (typeof v === "string") return v;
   if (typeof v === "number" || typeof v === "bigint") return String(v);
   if (typeof v === "function") return String(v);
-  return JSON.stringify(v) ?? String(v);
+  try {
+    return JSON.stringify(v) ?? String(v);
+  } catch {
+    // A value that refers to itself.
+    return String(v);
+  }
 }
 
 /** Escapes lines Org would read as headings or keywords, as org-escape-code-in-region. */
@@ -251,8 +256,8 @@ const escapeCode = (line: string): string => line.replace(/^([ \t]*)(,*(?:\*|#\+
  * The text of a result, as org-babel-insert-result writes it: a list as a
  * table, a row for each element that is itself a list; a scalar's lines
  * each after a colon, or in an example block from
- * org-babel-min-lines-for-block-output lines on; nothing for nil. Each
- * line ends in a newline.
+ * org-babel-min-lines-for-block-output lines on; nothing for nil or an
+ * empty string. Each line ends in a newline.
  */
 function resultText(result: unknown, rp: string[]): { text: string; table: boolean } {
   if (nil(result) || (Array.isArray(result) && result.length === 0)) return { text: "", table: false };
@@ -262,6 +267,8 @@ function resultText(result: unknown, rp: string[]): { text: string; table: boole
     return { text: rows.map((r) => `| ${r.map(cell).join(" | ")} |\n`).join(""), table: true };
   }
   const text = scalar && typeof result !== "string" ? e8.prin1ToString(result as e8.Value) : cell(result);
+  // As org-babel-examplify-region, which does nothing for an empty result.
+  if (text === "") return { text: "", table: false };
   const lines = text.replace(/\n$/, "").split("\n");
   if (rp.includes("raw")) return { text: `${lines.join("\n")}\n`, table: false };
   const min = Number(e8.variable("org-babel-min-lines-for-block-output") ?? 10);
@@ -271,35 +278,45 @@ function resultText(result: unknown, rp: string[]): { text: string; table: boole
 
 const RESULTS = /^[ \t]*#\+results(?:\[[^\]\n]*\])?:[ \t]*(.*?)[ \t]*$/i;
 
-/** The line of the block's #+RESULTS:, as org-babel-where-is-src-block-result finds it, or undefined. */
+/**
+ * The line of the block's #+RESULTS:, as org-babel-where-is-src-block-result
+ * finds it, or undefined: a named block's anywhere by its name, else the
+ * unnamed one just after the block.
+ */
 function resultsLine(block: Block): number | undefined {
   if (block.name !== undefined) {
     for (let k = 0; k < e8.lineCount(); k++) {
       const m = RESULTS.exec(e8.lineText(k));
       if (m && m[1] === block.name) return k;
     }
+    return undefined;
   }
   let k = block.end + 1;
   while (k < e8.lineCount() && /^[ \t]*$/.test(e8.lineText(k))) k++;
   const m = k < e8.lineCount() ? RESULTS.exec(e8.lineText(k)) : null;
-  return m && (m[1] === "" || m[1] === block.name) ? k : undefined;
+  return m && m[1] === "" ? k : undefined;
 }
 
-/** The line after the result under a #+RESULTS: line: its fixed-width lines, table, block or drawer. */
+const HEADING = /^\*+[ \t]/;
+
+/**
+ * The line after the result under a #+RESULTS: line, as org-babel-result-end
+ * finds it: its fixed-width lines, table, block or drawer. A block or drawer
+ * that does not close before the next heading is no result, so nothing is
+ * taken.
+ */
 function resultEnd(line: number): number {
   let k = line + 1;
   const text = (n: number) => (n < e8.lineCount() ? e8.lineText(n) : "");
   const begin = /^[ \t]*#\+begin_(\S+)/i.exec(text(k));
   const drawer = /^[ \t]*:([\w-]+):[ \t]*$/.exec(text(k));
-  if (begin) {
-    const close = new RegExp(`^[ \\t]*#\\+end_${begin[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[ \\t]*$`, "i");
-    while (k < e8.lineCount() && !close.test(text(k))) k++;
-    return Math.min(k + 1, e8.lineCount());
-  }
-  if (drawer && drawer[1].toUpperCase() !== "END") {
-    while (k < e8.lineCount() && !/^[ \t]*:END:[ \t]*$/i.test(text(k))) k++;
-    return Math.min(k + 1, e8.lineCount());
-  }
+  /** The line after the first from `k` that `close` matches, before a heading, or nothing. */
+  const closing = (close: RegExp): number => {
+    for (let n = k + 1; n < e8.lineCount() && !HEADING.test(text(n)); n++) if (close.test(text(n))) return n + 1;
+    return line + 1;
+  };
+  if (begin) return closing(new RegExp(`^[ \\t]*#\\+end_${begin[1].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[ \\t]*$`, "i"));
+  if (drawer && drawer[1].toUpperCase() !== "END") return closing(/^[ \t]*:END:[ \t]*$/i);
   if (/^[ \t]*\|/.test(text(k))) {
     while (k < e8.lineCount() && /^[ \t]*(?:\||#\+TBLFM:)/i.test(text(k))) k++;
     return k;
@@ -312,33 +329,51 @@ function resultEnd(line: number): number {
 function lineStartOrEnd(line: number): number {
   if (line < e8.lineCount()) return e8.lineStart(line);
   const end = e8.pointMax();
-  if (e8.charBefore(end) !== "\n") {
+  if (end > e8.pointMin() && e8.charBefore(end) !== "\n") {
     e8.gotoChar(end);
     e8.insert("\n");
   }
   return e8.pointMax();
 }
 
-/** Puts a result in the buffer under the block, replacing the one there, as org-babel-insert-result. */
+const indentationOf = (line: number): string => /^[ \t]*/.exec(e8.lineText(line))![0];
+
+/**
+ * Puts a result in the buffer under the block, as org-babel-insert-result:
+ * in place of the one there, or after it with :results append, before it
+ * with prepend; else under a new #+RESULTS: line after the block, followed
+ * by a blank line unless one or the buffer's end follows already. The
+ * keyword and result are indented as the block is, as in a list item.
+ */
 function insertResult(block: Block, result: unknown, rp: string[]): void {
   const { text, table } = resultText(result, rp);
   const back = marker(e8.point());
   try {
     let at: number;
+    let indent: string;
     const existing = resultsLine(block);
     if (existing !== undefined) {
+      indent = indentationOf(existing);
       const start = lineStartOrEnd(existing + 1);
-      e8.deleteRegion(start, lineStartOrEnd(resultEnd(existing)));
-      at = start;
+      const end = lineStartOrEnd(resultEnd(existing));
+      if (rp.includes("append")) at = end;
+      else if (rp.includes("prepend")) at = start;
+      else {
+        e8.deleteRegion(start, end);
+        at = start;
+      }
     } else {
+      indent = indentationOf(block.line);
       const after = lineStartOrEnd(block.end + 1);
       e8.gotoChar(after);
-      e8.insert(`\n#+RESULTS:${block.name !== undefined ? ` ${block.name}` : ""}\n`);
+      e8.insert(`\n${indent}#+RESULTS:${block.name !== undefined ? ` ${block.name}` : ""}\n`);
       at = e8.point();
-      e8.insert("\n");
+      if (at < e8.pointMax() && !/^[ \t]*$/.test(e8.lineText(e8.lineOf(at)))) {
+        e8.insert("\n");
+      }
     }
     e8.gotoChar(at);
-    e8.insert(text);
+    e8.insert(text.replace(/^(?=.)/gm, indent));
     if (table) {
       e8.gotoChar(at);
       e8.call("org-table-align");
@@ -429,11 +464,24 @@ e8.defineKey("org-mode-map", "C-c C-v C-e", executeMaybe);
 
 // --- TypeScript, E8's own language, as ob-emacs-lisp.el runs Emacs Lisp -------
 
+/** Whether TypeScript text imports or exports, which only a module can. */
+const isModule = (text: string): boolean => /^[ \t]*(?:import[ \t{]|export[ \t])/m.test(text);
+
 /**
  * Runs a TypeScript block in the editor and gives its value: the last
- * statement's, as evalTypescript returns it, or a string of it with
- * :results scalar or verbatim.
+ * statement's, as evalTypescript returns it. A block that imports or
+ * exports runs as a module, from a file of its own, as eval-region runs
+ * one, and gives no value.
  */
-const executeTypescript = (body: string): unknown => e8.evalTypescript(body);
+const executeTypescript = (body: string): unknown => {
+  if (!isModule(body)) return e8.evalTypescript(body);
+  const file = e8.makeTempFile("e8-babel-", { suffix: ".ts", text: body });
+  try {
+    e8.call("load-file", file);
+  } finally {
+    e8.deleteFile(file);
+  }
+  return undefined;
+};
 e8.defun("org-babel-execute:typescript", executeTypescript);
 e8.defun("org-babel-execute:ts", executeTypescript);

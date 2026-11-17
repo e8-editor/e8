@@ -79,7 +79,7 @@ fn a_block_runs_only_once_allowed() {
     assert_eq!(ed.echo(), Some("Evaluation of this typescript code block is aborted."));
     assert_eq!(text(&ed), "#+begin_src typescript\n42\n#+end_src\n");
     ed.press("C-c C-c y e s RET").unwrap();
-    assert_eq!(text(&ed), "#+begin_src typescript\n42\n#+end_src\n\n#+RESULTS:\n: 42\n\n");
+    assert_eq!(text(&ed), "#+begin_src typescript\n42\n#+end_src\n\n#+RESULTS:\n: 42\n");
     // :eval no keeps it from running at all.
     let (mut ed, _s) = org("#+begin_src typescript :eval no\n42\n#+end_src\n");
     ed.press("C-c C-c").unwrap();
@@ -152,4 +152,69 @@ fn tangle_file_takes_a_target_and_a_language_regexp() {
     // With the file alone, as before, blocks with no :tangle stay where they are.
     ed.call("org-babel-tangle-file", vec![Arg::Str(org_file.display().to_string())]).unwrap();
     assert_eq!(ed.echo(), Some("Tangled 0 code blocks from notes.org"));
+}
+
+/// The buffer after C-c C-c in its first block.
+fn run_first(text: &str) -> String {
+    let (mut ed, _s) = org(text);
+    ed.window_buffer_mut().set_point(0);
+    ed.press("C-s # + b e g i n _ s r c RET C-c C-c").unwrap();
+    self::text(&ed)
+}
+
+#[test]
+fn results_go_where_emacs_puts_them() {
+    // Each as Emacs 30 leaves it after C-c C-c in an emacs-lisp block of the same value.
+    // A block that never closes after #+RESULTS: is no result: nothing is taken.
+    assert_eq!(
+        run_first("#+begin_src typescript\n42\n#+end_src\n\n#+RESULTS:\n#+begin_quote\nfoo\n\n* H\nbody\n"),
+        "#+begin_src typescript\n42\n#+end_src\n\n#+RESULTS:\n: 42\n#+begin_quote\nfoo\n\n* H\nbody\n",
+    );
+    // A named block's results are found by name, not in an unnamed #+RESULTS: below it.
+    assert_eq!(
+        run_first("#+name: foo\n#+begin_src typescript\n42\n#+end_src\n\n#+RESULTS:\n: 1\n\nafter\n"),
+        "#+name: foo\n#+begin_src typescript\n42\n#+end_src\n\n#+RESULTS: foo\n: 42\n\n#+RESULTS:\n: 1\n\nafter\n",
+    );
+    // No second blank line before one that is there, or at the end.
+    assert_eq!(
+        run_first("#+begin_src typescript\n42\n#+end_src\n\n* Next\n"),
+        "#+begin_src typescript\n42\n#+end_src\n\n#+RESULTS:\n: 42\n\n* Next\n",
+    );
+    assert_eq!(run_first("#+begin_src typescript\n42\n#+end_src\n"), "#+begin_src typescript\n42\n#+end_src\n\n#+RESULTS:\n: 42\n");
+    // Indented as the block is, so they stay in the item.
+    assert_eq!(
+        run_first("- item\n  #+begin_src typescript\n  42\n  #+end_src\n"),
+        "- item\n  #+begin_src typescript\n  42\n  #+end_src\n\n  #+RESULTS:\n  : 42\n",
+    );
+    // An empty string is no lines.
+    assert_eq!(run_first("#+begin_src typescript\n\"\"\n#+end_src\nafter\n"), "#+begin_src typescript\n\"\"\n#+end_src\n\n#+RESULTS:\n\nafter\n");
+    // :results append and prepend keep what is there.
+    assert_eq!(
+        run_first("#+begin_src typescript :results append\n42\n#+end_src\n\n#+RESULTS:\n: 1\n\nafter\n"),
+        "#+begin_src typescript :results append\n42\n#+end_src\n\n#+RESULTS:\n: 1\n: 42\n\nafter\n",
+    );
+    assert_eq!(
+        run_first("#+begin_src typescript :results prepend\n42\n#+end_src\n\n#+RESULTS:\n: 1\n\nafter\n"),
+        "#+begin_src typescript :results prepend\n42\n#+end_src\n\n#+RESULTS:\n: 42\n: 1\n\nafter\n",
+    );
+}
+
+#[test]
+fn blocks_and_loaded_files_can_import_packages() {
+    // A block that imports runs as a module, as eval-region runs one, and gives no value.
+    let (mut ed, _s) = org("#+begin_src typescript\nimport { truthy } from \"subr\";\ne8.setVariable(\"fill-column\", truthy(1) ? 33 : 0);\n#+end_src\n");
+    ed.press("C-c C-c").unwrap();
+    assert_eq!(ed.variable("fill-column"), Some(e8_core::Value::Number(33.0)));
+    assert_eq!(ed.echo(), Some("Code block produced no output."));
+    // And a literate config's file, loaded again each time.
+    let dir = tempfile::tempdir().unwrap();
+    let org_file = dir.path().join("config.org");
+    std::fs::write(&org_file, "#+begin_src typescript\nimport { truthy } from \"subr\";\ne8.setVariable(\"tab-width\", (e8.variable(\"tab-width\") as number) + (truthy(1) ? 1 : 0));\n#+end_src\n").unwrap();
+    let mut ed = Editor::new();
+    let _s = Scripting::new(&mut ed).unwrap();
+    let width = |ed: &Editor| ed.variable("tab-width");
+    let before = width(&ed).and_then(|v| if let e8_core::Value::Number(n) = v { Some(n) } else { None }).unwrap();
+    ed.call("org-babel-load-file", vec![Arg::Str(org_file.display().to_string())]).unwrap();
+    ed.call("org-babel-load-file", vec![Arg::Str(org_file.display().to_string())]).unwrap();
+    assert_eq!(width(&ed), Some(e8_core::Value::Number(before + 2.0)));
 }
