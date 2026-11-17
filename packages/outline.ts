@@ -57,9 +57,11 @@ function headings(): Heading[] {
   });
   for (const [line] of lines) {
     const match = headingMatch(line);
-    if (match.trimEnd().length > 0) {
+    // Only spaces and tabs are trimmed: a form feed is a heading of its own.
+    const level = match.replace(/[ \t]+$/, "").length;
+    if (level > 0) {
       // The match's length is the level, not counting a space after the stars, as in org-mode's "\\*+ ".
-      found.push({ line, start: e8.lineStart(line), end: e8.lineEnd(line), level: match.trimEnd().length });
+      found.push({ line, start: e8.lineStart(line), end: e8.lineEnd(line), level });
     }
   }
   return found;

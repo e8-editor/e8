@@ -256,6 +256,11 @@ fn c_h_n_shows_the_news_of_each_release() {
     s.eval_expression(&mut ed, &format!("e8.gotoChar({})", news[..at].chars().count())).unwrap();
     ed.press("RET").unwrap();
     assert!(help(&ed).starts_with("yank-from-kill-ring is a command"), "{}", help(&ed));
+    // A name in parentheses after a key in quotes is a button too.
+    let at = news.find("'view-e8-news'").unwrap() + 1;
+    s.eval_expression(&mut ed, &format!("e8.gotoChar({})", news[..at].chars().count())).unwrap();
+    let button = s.eval_expression(&mut ed, &format!("e8.withCurrentBuffer(\"NEWS\", () => e8.getTextProperty({}, \"help-xref\"))", news[..at].chars().count())).unwrap();
+    assert_eq!(button, r#"["symbol","view-e8-news"]"#);
 
     // view-emacs-news, as an Emacs configuration calls it, is the same command.
     ed.call("switch-to-buffer", vec![e8_core::Arg::Str("*scratch*".into())]).unwrap();
@@ -302,11 +307,11 @@ fn tab_folds_a_release_in_the_news() {
 #[test]
 fn only_stars_and_form_feeds_start_outline_headings() {
     // outline-regexp's default is "[*^L]+": a line starting with f, or F
-    // when case folds, is text, not a heading.
+    // when case folds, is text, not a heading, and a form feed is one.
     let (mut ed, s) = setup();
     let fold = r#"
       e8.call("switch-to-buffer", "o");
-      e8.insert("* One\nfirst line\nFor a second\n** Two\nfile\n* Three\nbody\n");
+      e8.insert("* One\nfirst line\nFor a second\n** Two\nfile\n\f\nbody\n");
       e8.call("outline-mode");
       e8.gotoChar(0);
       e8.call("outline-cycle-buffer");
@@ -314,4 +319,23 @@ fn only_stars_and_form_feeds_start_outline_headings() {
     s.eval_typescript(&mut ed, "test.ts", fold.to_string()).unwrap();
     let folded = r#"[0, 1, 2, 3, 4, 5, 6].filter((l) => !e8.invisibleAt(e8.lineStart(l))).join(" ")"#;
     assert_eq!(s.eval_expression(&mut ed, folded).unwrap(), "\"0 5\"");
+}
+
+#[test]
+fn c_h_n_leaves_a_file_called_news_alone() {
+    let (mut ed, s) = setup();
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("NEWS");
+    std::fs::write(&file, "My own news\n").unwrap();
+    s.eval_typescript(&mut ed, "test.ts", format!("e8.call(\"find-file\", {:?}); e8.insert(\"unsaved \");", file.display().to_string())).unwrap();
+    ed.press("C-h n").unwrap();
+    assert_eq!(ed.buffer().name, "NEWS<2>");
+    assert!(buffer_text(&ed, "NEWS<2>").starts_with("E8 NEWS"));
+    assert_eq!(buffer_text(&ed, "NEWS"), "unsaved My own news\n");
+    let modified = s.eval_expression(&mut ed, "e8.withCurrentBuffer(\"NEWS\", () => e8.bufferModifiedP())").unwrap();
+    assert_eq!(modified, "true");
+    // C-h n again reuses the news buffer.
+    ed.press("C-h n").unwrap();
+    assert_eq!(ed.buffer().name, "NEWS<2>");
+    assert!(ed.find_buffer("NEWS<3>").is_none());
 }

@@ -1075,7 +1075,7 @@ export function fontifyNews(start: number, end: number): void {
           e8.putTextProperty(e8.matchBeginning(0)!, e8.matchEnd(0)!, "face", `outline-${((level - 1) % 8) + 1}`);
         }
         e8.gotoChar(start);
-        while (e8.reSearchForward("'\\([^-'][^ \t\n']+\\)'", { bound: end, noerror: true }) !== undefined) {
+        while (e8.reSearchForward("'\\([^- \t\n'][^ \t\n']*\\)'", { bound: end, noerror: true }) !== undefined) {
           const name = e8.matchString(1)!;
           if (!isSymbol(name)) continue;
           const [from, to] = [e8.matchBeginning(1)!, e8.matchEnd(1)!];
@@ -1140,7 +1140,7 @@ const viewE8News = e8.defineCommand({
       version = e8.completingRead(`Read NEWS for the version (default ${current}): `, versions, { default: current }) || current;
       if (!versions.includes(version)) e8.signal("error", `No news about version ${version}`);
     }
-    const buffer = e8.getBufferCreate("NEWS");
+    const buffer = newsBuffer();
     e8.withCurrentBuffer(buffer, () => {
       e8.widen();
       e8.letBind({ "inhibit-read-only": true }, () => {
@@ -1153,10 +1153,28 @@ const viewE8News = e8.defineCommand({
       e8.gotoChar(e8.pointMin());
       if (version !== undefined) narrowToRelease(version);
     });
-    e8.call("switch-to-buffer", "NEWS");
+    e8.call("switch-to-buffer", e8.bufferName(buffer)!);
   },
 });
 e8.defalias("view-emacs-news", "view-e8-news");
+
+/**
+ * The buffer to show the news in: the one an earlier C-h n made, else a
+ * new one, "NEWS" unless a buffer has that name, as find-file names the
+ * buffer of a second file called NEWS "NEWS<2>". Never a buffer visiting a
+ * file of its own, whose text and unsaved edits are the user's.
+ */
+function newsBuffer(): e8.Buffer {
+  for (const name of e8.bufferList()) {
+    if (name !== "NEWS" && !name.startsWith("NEWS<")) continue;
+    const ours = e8.withCurrentBuffer(name, () => e8.variable("major-mode") === "e8-news-view-mode" && e8.bufferFileName() === undefined);
+    if (ours) return e8.getBuffer(name)!;
+  }
+  const buffer = e8.getBufferCreate(e8.generateNewBufferName("NEWS"));
+  // Its text is made again each time, never edited: nothing to undo.
+  e8.bufferDisableUndo(buffer);
+  return buffer;
+}
 
 /**
  * Narrows a NEWS buffer to what it says of one release: from its first

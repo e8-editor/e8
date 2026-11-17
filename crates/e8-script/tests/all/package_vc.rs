@@ -398,3 +398,25 @@ fn describe_package_shows_a_built_in_package() {
     assert!(shown.starts_with("Package outline is built-in.\n\n     Status: Built-in.\n    Summary: Outlines: headings that fold, after Emacs's outline.el.\n\n"), "{shown}");
     assert!(shown.contains("A heading is a line that starts with a match of outline-regexp"), "{shown}");
 }
+
+#[test]
+fn a_built_in_package_is_described_past_its_imports_and_licence_line() {
+    let root = tempfile::tempdir().unwrap();
+    let (mut ed, _s) = editor(&root.path().join("config"));
+    ed.press("C-h P").unwrap();
+    ed.type_text("misc");
+    ed.press("RET").unwrap();
+    let shown = help(&ed);
+    assert!(shown.contains("    Summary: Small editing commands, after Emacs's misc.el: duplicating lines and the region, and copying the line above.\n"), "{shown}");
+    ed.press("C-h P").unwrap();
+    ed.type_text("acp");
+    ed.press("RET").unwrap();
+    let shown = help(&ed);
+    assert!(shown.contains("    Summary: The Agent Client Protocol, after acp.el 0.18.2"), "{shown}");
+    assert!(!shown.contains("SPDX"), "{shown}");
+    ed.press("C-h P").unwrap();
+    ed.type_text("hi-lock");
+    ed.press("RET").unwrap();
+    let shown = help(&ed);
+    assert!(shown.contains("M-s h . the symbol at point"), "a key with a full stop does not end the summary: {shown}");
+}

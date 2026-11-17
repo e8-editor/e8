@@ -671,10 +671,22 @@ function builtinCommentary(source: string): string {
   const lines: string[] = [];
   for (const line of source.split("\n")) {
     const m = /^\/\/ ?(.*)$/.exec(line);
-    if (m === null) break;
+    if (m === null) {
+      // The imports and blank lines before the comment are passed over.
+      if (lines.length === 0 && (line.trim() === "" || line.startsWith("import "))) continue;
+      break;
+    }
+    // As is a licence line, and the empty comment lines after it.
+    if (m[1].startsWith("SPDX-License-Identifier:") || (lines.length === 0 && m[1].trim() === "")) continue;
     lines.push(m[1]);
   }
   return lines.join("\n").trim();
+}
+
+/** A description's first sentence: up to a full stop after a word, not one in "..." or a key such as "M-s h .". */
+function firstSentence(text: string): string {
+  const m = /^([\s\S]*?[^.\s]\.)(\s|$)/.exec(text);
+  return (m === null ? text : m[1]).replace(/\s+/g, " ");
 }
 
 /** Inserts the description of a package that ships with E8. */
@@ -682,8 +694,8 @@ function insertBuiltinPackage(name: string, source: string): void {
   const commentary = builtinCommentary(source);
   e8.insert(`Package ${name} is built-in.\n\n`);
   helpSection("Status", "Built-in.");
-  const summary = commentary.split(/\.(\s|$)/)[0].replace(/\s+/g, " ");
-  if (summary !== "") helpSection("Summary", `${summary}.`);
+  const summary = firstSentence(commentary);
+  if (summary !== "") helpSection("Summary", summary);
   e8.insert("\n");
   if (commentary !== "") e8.insert(`${commentary}\n`);
 }
