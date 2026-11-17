@@ -211,6 +211,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/org-clock.ts", include_str!("../../../packages/org-clock.ts")),
     ("packages/org-capture.ts", include_str!("../../../packages/org-capture.ts")),
     ("packages/org-src.ts", include_str!("../../../packages/org-src.ts")),
+    ("packages/ob-core.ts", include_str!("../../../packages/ob-core.ts")),
     ("packages/ob-tangle.ts", include_str!("../../../packages/ob-tangle.ts")),
     // Preloaded for its commands, which Emacs autoloads.
     ("packages/package-vc.ts", include_str!("../../../packages/package-vc.ts")),
@@ -346,11 +347,20 @@ impl Scripting {
         TIME_LIMIT.set(limit);
     }
 
-    /// Runs a TypeScript file as a script.
+    /// Runs a TypeScript file: as a script, or, when it imports or exports,
+    /// as a module of its own each time, as `e8.load` runs a package anew,
+    /// so init.ts and a tangled config can import packages by name.
     pub fn load_file(&self, ed: &mut Editor, path: &Path) -> Result<()> {
         let name = abbreviate_path(path);
         let source = fs::read_to_string(path).map_err(|e| Error::new(format!("{name}: {e}")))?;
-        loading(name.clone(), || self.eval_typescript(ed, &name, source))
+        if !is_module(&source) {
+            return loading(name.clone(), || self.eval_typescript(ed, &name, source));
+        }
+        let path = if fs::is_absolute(path) { path.to_path_buf() } else { fs::current_dir().unwrap_or_default().join(path) };
+        static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+        let n = NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        prepare_require(ed, "");
+        loading(name, || self.engine.import(ed, &format!("{}#{n}", path.display())))
     }
 
     /// Imports a TypeScript file as an ES module, as `e8 --batch -l`
@@ -455,11 +465,7 @@ impl Scripting {
     /// of its own when it imports or exports, as only a module can.
     fn eval_text(&self, ed: &mut Editor, name: &str, text: String) -> Result<()> {
         ed.check_permission("run TypeScript")?;
-        let module = text.lines().any(|l| {
-            let l = l.trim_start();
-            l.starts_with("import ") || l.starts_with("import{") || l.starts_with("export ")
-        });
-        if !module {
+        if !is_module(&text) {
             return self.eval_typescript(ed, name, text);
         }
         static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
@@ -470,6 +476,14 @@ impl Scripting {
         let _ = fs::remove_file(&path);
         ran
     }
+}
+
+/// Whether TypeScript text imports or exports, which only a module can.
+fn is_module(text: &str) -> bool {
+    text.lines().any(|l| {
+        let l = l.trim_start();
+        l.starts_with("import ") || l.starts_with("import{") || l.starts_with("export ")
+    })
 }
 
 /// Sets a thread-local cell and puts the old value back when dropped, even on panic.

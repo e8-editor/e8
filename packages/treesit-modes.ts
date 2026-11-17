@@ -1,6 +1,6 @@
 // Major modes that highlight with tree-sitter grammars, after Emacs's
-// rust-ts-mode.el, js.el, json-ts-mode.el, python.el, go-ts-mode.el and
-// sh-script.el's bash-ts-mode.
+// rust-ts-mode.el, js.el, typescript-ts-mode.el, json-ts-mode.el, python.el,
+// go-ts-mode.el and sh-script.el's bash-ts-mode.
 // Each is built on prog-mode and asks for its grammar with
 // treesit-parser-create. Go's grammar does not ship with E8: it is
 // loaded from libtree-sitter-go.dylib, as Emacs loads its grammars, and
@@ -49,9 +49,23 @@ const BASH_SYNTAX: { [chars: string]: string } = {
   "=/;|&<>": ".",
 };
 
+/** TypeScript's, as typescript-ts-mode--syntax-table: C's comments, three kinds of quotes, $ and _ in symbols. */
+const TS_SYNTAX: { [chars: string]: string } = {
+  _: "_",
+  "\\": "\\",
+  "+-=%<>&| ": ".",
+  "'`": '"',
+  "/": ". 124b",
+  "*": ". 23",
+  "\n\r": "> b",
+  $: "_",
+};
+
 type ModeSpec = {
   name: string;
   modeName: string;
+  /** The mode it is built on, prog-mode if not given. */
+  parent?: string;
   language: string;
   pattern: string;
   what: string;
@@ -83,6 +97,28 @@ const modes: ModeSpec[] = [
     syntax: { ...C_SYNTAX, "'`": '"', $: "_" },
     comment: { start: "// ", skip: "\\(?://+\\|/\\*+\\)\\s *" },
     alias: "js-mode",
+  },
+  {
+    name: "typescript-ts-mode",
+    modeName: "TypeScript",
+    parent: "typescript-ts-base-mode",
+    language: "typescript",
+    pattern: "\\.ts\\'",
+    what: "TypeScript",
+    syntax: TS_SYNTAX,
+    comment: { start: "// ", skip: "\\(?://+\\|/\\*+\\)\\s *" },
+    alias: "typescript-mode",
+  },
+  {
+    name: "tsx-ts-mode",
+    modeName: "TypeScript[TSX]",
+    parent: "typescript-ts-base-mode",
+    language: "tsx",
+    pattern: "\\.tsx\\'",
+    what: "TSX and JSX",
+    syntax: TS_SYNTAX,
+    comment: { start: "// ", skip: "\\(?://+\\|/\\*+\\)\\s *" },
+    alias: "tsx-mode",
   },
   { name: "json-ts-mode", modeName: "JSON", language: "json", pattern: "\\.json\\'", what: "JSON" },
   {
@@ -300,6 +336,7 @@ e8.defun("python-hideshow-find-next-block", (regexp: string, maxp: number, comme
 for (const [name, value, doc] of [
   ["go-ts-mode-indent-offset", 8, "How far Go indents each level."],
   ["js-indent-level", 4, "How far JavaScript indents each level."],
+  ["typescript-ts-mode-indent-offset", 2, "How far TypeScript indents each level."],
   ["rust-ts-mode-indent-offset", 4, "How far Rust indents each level."],
   ["json-ts-mode-indent-offset", 2, "How far JSON indents each level."],
   ["python-indent-offset", 4, "How far Python indents each block."],
@@ -740,20 +777,278 @@ const BASH_FEATURES = [
   ["bracket", "delimiter", "misc-punctuation", "operator"],
 ];
 
+// --- TypeScript and TSX, as typescript-ts-mode.el -------------------------------
+
+e8.defineFace({ name: "typescript-ts-jsx-tag-face", doc: "HTML tags such as <div> and <p> in JSX.", attributes: { inherit: "font-lock-function-call-face" } });
+e8.defineFace({ name: "typescript-ts-jsx-attribute-face", doc: "HTML attributes such as name and id in JSX.", attributes: { inherit: "font-lock-constant-face" } });
+
+/** Any of these names in a node's type, as regexp-opt makes a regexp of them. */
+const anyIn = (names: string[]): string => `\\(?:${names.map(regexpQuote).join("\\|")}\\)`;
+
+/** A typescript-ts-mode rule: a line in a node of this type goes a level deeper than the line its parent starts on. */
+const tsIndentRule = (type: string) => ruleFor(type, "typescript-ts-mode-indent-offset");
+
+/** JSX's rules for older or newer grammars, as tsx-ts-mode--indent-compatibility-b893426 chooses them. */
+function tsxCompatibility(): unknown[] {
+  const fragment = e8.conditionCase(
+    () => (e8.treesitQueryCompile("tsx", "(jsx_fragment) @capture", true), true),
+    { error: () => false },
+  );
+  const type = fragment ? "jsx_fragment" : "jsx_text";
+  return [[["match", "<", type], "parent", 0], [["parent-is", type], "parent", "typescript-ts-mode-indent-offset"]];
+}
+
+/** typescript-ts-mode--indent-rules, for typescript or tsx. */
+const tsRules = (language: string) => (): unknown[] => {
+  const offset = "typescript-ts-mode-indent-offset";
+  return [
+    [["parent-is", "program"], "column-0", 0],
+    [["node-is", "}"], "standalone-parent", 0],
+    [["node-is", ")"], "parent-bol", 0],
+    [["node-is", "]"], "parent-bol", 0],
+    [["node-is", ">"], "parent-bol", 0],
+    [["and", ["parent-is", "comment"], lookingAtStar], commentStartAfterFirstStar, -1],
+    [["parent-is", "comment"], "prev-adaptive-prefix", 0],
+    [["parent-is", "ternary_expression"], "standalone-parent", offset],
+    tsIndentRule("member_expression"),
+    tsIndentRule("named_imports"),
+    [["parent-is", "statement_block"], "standalone-parent", offset],
+    [["or", ["node-is", "case"], ["node-is", "default"]], "parent-bol", offset],
+    tsIndentRule("switch_case"),
+    tsIndentRule("switch_default"),
+    tsIndentRule("type_arguments"),
+    tsIndentRule("type_parameters"),
+    tsIndentRule("\\(?:lexical\\|variable\\)_\\(?:declarat\\(?:ion\\|or\\)\\)"),
+    tsIndentRule("arguments"),
+    tsIndentRule("array"),
+    tsIndentRule("formal_parameters"),
+    [["parent-is", "template_string"], "no-indent"],
+    ...[
+      "template_substitution", "object_pattern", "object", "object_type", "enum_body", "class_body", "interface_body", "arrow_function",
+      "parenthesized_expression", "binary_expression",
+    ].map(tsIndentRule),
+    [["match", "while", "do_statement"], "parent-bol", 0],
+    [["match", "else", "if_statement"], "parent-bol", 0],
+    tsIndentRule("\\(?:\\(?:do\\|for\\(?:_in\\)?\\|if\\|while\\)_statement\\|else_clause\\)"),
+    ...(language === "tsx"
+      ? [
+          ...tsxCompatibility(),
+          [["node-is", "jsx_closing_element"], "parent", 0],
+          [["match", "jsx_element", "statement"], "parent", offset],
+          [["parent-is", "jsx_element"], "parent", offset],
+          tsIndentRule("jsx_text"),
+          [["parent-is", "jsx_opening_element"], "parent", offset],
+          tsIndentRule("jsx_expression"),
+          [["match", "/", "jsx_self_closing_element"], "parent", 0],
+          [["parent-is", "jsx_self_closing_element"], "parent", offset],
+        ]
+      : []),
+    ["no-node", "parent-bol", 0],
+  ];
+};
+
+const TS_KEYWORDS = [
+  "!", "abstract", "as", "async", "await", "break", "case", "catch", "class", "const", "continue", "debugger", "declare", "default",
+  "delete", "do", "else", "enum", "export", "extends", "finally", "for", "from", "function", "get", "if", "implements", "import", "in",
+  "instanceof", "interface", "is", "infer", "keyof", "let", "namespace", "new", "of", "private", "protected", "public", "readonly",
+  "return", "satisfies", "set", "static", "switch", "target", "throw", "try", "type", "typeof", "var", "void", "while", "with", "yield",
+];
+
+const TS_OPERATORS = [
+  "=", "+=", "-=", "*=", "/=", "%=", "**=", "<<=", ">>=", ">>>=", "&=", "^=", "|=", "&&=", "||=", "??=", "==", "!=", "===", "!==", ">",
+  ">=", "<", "<=", "+", "-", "*", "/", "%", "++", "--", "**", "&", "|", "^", "~", "<<", ">>", ">>>", "&&", "||", "!", "?.",
+];
+
+/**
+ * typescript-ts-mode--font-lock-settings, its queries in tree-sitter's
+ * syntax, for typescript or tsx. A template string's text outside its
+ * substitutions is a string, as js--fontify-template-string paints it.
+ */
+function tsFontLockSettings(language: string) {
+  const has = (query: string): boolean =>
+    e8.conditionCase(() => (e8.treesitQueryCompile(language, query, true), true), { error: () => false });
+  const funcExp = has("(function_expression) @cap") ? "function_expression" : "function";
+  const tag = has("(jsx_opening_element (member_expression) @capture)") ? "member_expression" : "nested_identifier";
+  const L = [":language", language];
+  return fontLockRules(
+    ...L, ":feature", "comment", "[(comment) (hash_bang_line)] @font-lock-comment-face",
+    ...L, ":feature", "constant",
+    `((identifier) @font-lock-constant-face (#match? @font-lock-constant-face "^[A-Z_][0-9A-Z_]*$"))
+     [(true) (false) (null)] @font-lock-constant-face`,
+    ...L, ":feature", "keyword", `[${quoted(TS_KEYWORDS)}] @font-lock-keyword-face [(this) (super)] @font-lock-keyword-face`,
+    ...L, ":feature", "string",
+    `(regex pattern: (regex_pattern)) @font-lock-regexp-face
+     (string) @font-lock-string-face
+     (template_string ["\`" (string_fragment) (escape_sequence)] @font-lock-string-face)
+     (template_substitution ["\${" "}"] @font-lock-misc-punctuation-face)`,
+    ...L, ":override", "t", ":feature", "declaration",
+    `(${funcExp} name: (identifier) @font-lock-function-name-face)
+     (function_declaration name: (identifier) @font-lock-function-name-face)
+     (function_signature name: (identifier) @font-lock-function-name-face)
+     (method_definition name: (property_identifier) @font-lock-function-name-face)
+     (method_signature name: (property_identifier) @font-lock-function-name-face)
+     (required_parameter (identifier) @font-lock-variable-name-face)
+     (optional_parameter (identifier) @font-lock-variable-name-face)
+     (variable_declarator name: (identifier) @font-lock-function-name-face value: [(${funcExp}) (arrow_function)])
+     (variable_declarator name: (identifier) @font-lock-variable-name-face)
+     (enum_declaration (identifier) @font-lock-type-face)
+     (extends_clause value: (identifier) @font-lock-type-face)
+     (extends_clause value: (member_expression object: (identifier) @font-lock-type-face property: (property_identifier) @font-lock-type-face))
+     (arrow_function parameter: (identifier) @font-lock-variable-name-face)
+     (variable_declarator name: (array_pattern (identifier) (identifier) @font-lock-function-name-face) value: (array (number) (${funcExp})))
+     (catch_clause parameter: (identifier) @font-lock-variable-name-face)
+     (import_clause (identifier) @font-lock-variable-name-face)
+     (import_clause (named_imports (import_specifier alias: (identifier) @font-lock-variable-name-face)))
+     (import_clause (named_imports (import_specifier !alias name: (identifier) @font-lock-variable-name-face)))
+     (import_clause (namespace_import (identifier) @font-lock-variable-name-face))`,
+    ...L, ":feature", "identifier",
+    `(nested_type_identifier module: (identifier) @font-lock-type-face)
+     (type_identifier) @font-lock-type-face
+     (predefined_type) @font-lock-type-face
+     (new_expression constructor: (identifier) @font-lock-type-face)
+     (enum_body (property_identifier) @font-lock-type-face)
+     (enum_assignment name: (property_identifier) @font-lock-type-face)
+     (variable_declarator name: (identifier) @font-lock-variable-name-face)
+     (for_in_statement left: (identifier) @font-lock-variable-name-face)
+     (arrow_function parameters: [(_ (identifier) @font-lock-variable-name-face)
+                                  (_ (_ (identifier) @font-lock-variable-name-face))
+                                  (_ (_ (_ (identifier) @font-lock-variable-name-face)))])`,
+    ...L, ":feature", "property",
+    `(property_signature name: (property_identifier) @font-lock-property-name-face)
+     (public_field_definition name: (property_identifier) @font-lock-property-name-face)
+     (pair key: (property_identifier) @font-lock-property-use-face)
+     ((shorthand_property_identifier) @font-lock-property-use-face)`,
+    ...L, ":feature", "expression",
+    `(assignment_expression
+       left: [(identifier) @font-lock-function-name-face (member_expression property: (property_identifier) @font-lock-function-name-face)]
+       right: [(${funcExp}) (arrow_function)])`,
+    ...L, ":feature", "function",
+    `(call_expression function: [(identifier) @font-lock-function-call-face
+                                 (member_expression property: (property_identifier) @font-lock-function-call-face)])`,
+    ...L, ":feature", "pattern",
+    `(pair_pattern key: (property_identifier) @font-lock-property-use-face
+                   value: [(identifier) @font-lock-variable-name-face (assignment_pattern left: (identifier) @font-lock-variable-name-face)])
+     (array_pattern (identifier) @font-lock-variable-name-face)
+     ((shorthand_property_identifier_pattern) @font-lock-variable-name-face)`,
+    ...(language === "tsx"
+      ? [
+          ...L, ":feature", "jsx",
+          `(jsx_opening_element [(${tag} (identifier)) (identifier)] @typescript-ts-jsx-tag-face)
+           (jsx_closing_element [(${tag} (identifier)) (identifier)] @typescript-ts-jsx-tag-face)
+           (jsx_self_closing_element [(${tag} (identifier)) (identifier)] @typescript-ts-jsx-tag-face)
+           (jsx_attribute (property_identifier) @typescript-ts-jsx-attribute-face)`,
+        ]
+      : []),
+    ...L, ":feature", "number",
+    `(number) @font-lock-number-face ((identifier) @font-lock-number-face (#match? @font-lock-number-face "^(NaN|Infinity)$"))`,
+    ...L, ":feature", "operator", `[${quoted(TS_OPERATORS)}] @font-lock-operator-face (ternary_expression ["?" ":"] @font-lock-operator-face)`,
+    ...L, ":feature", "bracket", `["(" ")" "[" "]" "{" "}"] @font-lock-bracket-face`,
+    ...L, ":feature", "delimiter", `["," "." ";" ":"] @font-lock-delimiter-face`,
+    ...L, ":feature", "escape-sequence", ":override", "t", "(escape_sequence) @font-lock-escape-face",
+  );
+}
+
+/** typescript-ts-mode's and tsx-ts-mode's treesit-font-lock-feature-list. */
+const tsFeatures = (language: string): string[][] => [
+  ["comment", "declaration"],
+  ["keyword", "string", "escape-sequence"],
+  ["constant", "expression", "identifier", ...(language === "tsx" ? ["jsx"] : []), "number", "pattern", "property"],
+  [...(language === "tsx" ? [] : ["operator"]), "function", "bracket", "delimiter"],
+];
+
+const TS_SENTENCES = [
+  "import_statement", "debugger_statement", "expression_statement", "if_statement", "switch_statement", "for_statement", "for_in_statement",
+  "while_statement", "do_statement", "try_statement", "with_statement", "break_statement", "continue_statement", "return_statement",
+  "throw_statement", "empty_statement", "labeled_statement", "variable_declaration", "lexical_declaration", "property_signature",
+];
+
+const TS_SEXPS = [
+  "expression", "pattern", "array", "function", "string", "escape", "template", "regex", "number", "identifier", "this", "super", "true",
+  "false", "null", "undefined", "arguments", "pair",
+];
+
+/** typescript-ts-mode's treesit-thing-settings, with JSX's elements for tsx. */
+const tsThings = (language: string): unknown[] => [
+  ["sexp", anyIn(language === "tsx" ? [...TS_SEXPS, "jsx"] : TS_SEXPS)],
+  ["sentence", anyIn(language === "tsx" ? [...TS_SENTENCES, "jsx_element", "jsx_self_closing_element"] : TS_SENTENCES)],
+  ["text", anyIn(["comment", "template_string"])],
+];
+
+/** typescript-ts-mode--defun-predicate: a const or let is a defun only when it holds an arrow function. */
+const tsDefunPredicate = (node: e8.TreesitNode): boolean =>
+  e8.treesitNodeType(node) !== "lexical_declaration" ||
+  e8.treesitNodeMatchP(e8.treesitNodeChildByFieldName(e8.treesitNodeChild(node, 0, true), "value"), "arrow_function");
+
+/** typescript-ts-mode--defun-type-regexp with its predicate. */
+const TS_DEFUN = [
+  "\\`\\(?:class_declaration\\|function_declaration\\|interface_declaration\\|internal_module\\|lexical_declaration\\|method_definition\\)\\'",
+  tsDefunPredicate,
+];
+
+/**
+ * Makes a regexp literal's slashes, and for tsx a JSX element's ends,
+ * delimit it, so a quote inside opens nothing, as
+ * typescript-ts--syntax-propertize and tsx-ts--syntax-propertize do.
+ */
+const tsSyntaxPropertize = (language: string) => (start: number, end: number): void => {
+  const query =
+    language === "tsx"
+      ? `(regex pattern: (regex_pattern) @regexp)
+         (variable_declarator value: (jsx_element) @jsx)
+         (assignment_expression right: (jsx_element) @jsx)
+         (arguments (jsx_element) @jsx)
+         (parenthesized_expression (jsx_element) @jsx)
+         (return_statement (jsx_element) @jsx)`
+      : "(regex pattern: (regex_pattern) @regexp)";
+  e8.withSilentModifications(() => {
+    for (const [name, node] of e8.treesitQueryCapture(language, query, start, end)) {
+      let ns = e8.treesitNodeStart(node)!;
+      let ne = e8.treesitNodeEnd(node)!;
+      if (name === "regexp") {
+        ns--;
+        ne++;
+      }
+      const syntax = name === "regexp" ? '"/' : "|";
+      e8.putTextProperty(ns, ns + 1, "syntax-table", syntax);
+      e8.putTextProperty(ne - 1, ne, "syntax-table", syntax);
+    }
+  });
+};
+
+const tsSettings = (language: string) => ({
+  rules: tsRules(language),
+  defun: TS_DEFUN,
+  name: jsDefunName,
+  electric: "{}():;,<>/",
+  imenu: [
+    ["Function", "\\`function_declaration\\'", null, null],
+    ["Variable", "\\`lexical_declaration\\'", jsValidImenuEntry, null],
+    ["Class", "\\`\\(?:class_declaration\\|method_definition\\)\\'", null, null],
+  ],
+  things: tsThings(language),
+  fontLock: () => ({ settings: tsFontLockSettings(language), features: tsFeatures(language) }),
+  propertize: tsSyntaxPropertize(language),
+});
+
 /** What each language's mode sets for treesit.el, as its mode's body does. */
 const TREESIT_SETTINGS: Record<
   string,
   {
     rules: () => unknown[];
-    defun: string;
+    /** treesit-defun-type-regexp: a regexp, or [regexp, predicate]. */
+    defun: string | unknown[];
     name: (node: e8.TreesitNode) => string | null;
     electric: string;
     imenu: unknown[];
     things?: unknown[];
     /** The mode's font-lock rules and their features by level, for a grammar with no highlighting query of its own. */
     fontLock?: () => { settings: unknown[]; features: string[][] };
+    /** The mode's syntax-propertize-function. */
+    propertize?: (start: number, end: number) => void;
   }
 > = {
+  typescript: tsSettings("typescript"),
+  tsx: tsSettings("tsx"),
   go: {
     rules: () => GO_RULES,
     defun: "\\(?:function_declaration\\|method_declaration\\|type_declaration\\)",
@@ -844,11 +1139,20 @@ function rustSyntaxPropertize(start: number, end: number): void {
   }
 }
 
+// As typescript-ts-base-mode, which typescript-ts-mode and tsx-ts-mode are built on.
+e8.defineMajorMode({
+  name: "typescript-ts-base-mode",
+  modeName: "TypeScript",
+  parent: "prog-mode",
+  doc: "The mode typescript-ts-mode and tsx-ts-mode are built on, for editing TypeScript.",
+  syntax: TS_SYNTAX,
+});
+
 for (const mode of modes) {
   e8.defineMajorMode({
     name: mode.name,
     modeName: mode.modeName,
-    parent: "prog-mode",
+    parent: (mode.parent ?? "prog-mode") as e8.CommandName,
     doc:
       `The major mode for editing ${mode.what}, highlighted from a tree-sitter syntax tree.\n\n` +
       `Files matching ${mode.pattern} use it; see auto-mode-alist.`,
@@ -882,7 +1186,7 @@ for (const mode of modes) {
         // Typing these reindents the line, as the mode's electric-indent-chars has them.
         e8.setVariable("electric-indent-chars", ["\n", ...settings.electric]);
         e8.setVariable("treesit-simple-indent-rules", [[mode.language, settings.rules()]] as unknown as e8.Value);
-        e8.setVariable("treesit-defun-type-regexp", settings.defun);
+        e8.setVariable("treesit-defun-type-regexp", settings.defun as e8.Value);
         e8.setVariable("treesit-defun-name-function", e8.defun(`${mode.name}--defun-name`, settings.name));
         e8.setVariable("treesit-simple-imenu-settings", settings.imenu as unknown as e8.Value);
         if (settings.things) e8.setVariable("treesit-thing-settings", [[mode.language, settings.things]] as unknown as e8.Value);
@@ -890,6 +1194,10 @@ for (const mode of modes) {
           const { settings: rules, features } = settings.fontLock();
           e8.setVariable("treesit-font-lock-settings", rules as unknown as e8.Value);
           e8.setVariable("treesit-font-lock-feature-list", features);
+        }
+        if (settings.propertize) {
+          e8.setVariable("syntax-propertize-function", settings.propertize);
+          e8.setVariable("parse-sexp-lookup-properties", true);
         }
         majorModeSetup(`${mode.name}-map`);
       }

@@ -6,22 +6,9 @@
 // lines, the header-args properties of the headings above a block, and the
 // block's own #+begin_src line and #+header: lines, the nearest winning.
 
-import { headings, keywordLines } from "org";
+import { type Block, blockAtPoint, collectBlocks, pairs } from "ob-core";
 import { truthy } from "subr";
 
-e8.defineVariable({
-  name: "org-babel-default-header-args",
-  doc: "The header arguments every source block has unless it says otherwise: pairs of an argument and its value.",
-  value: [
-    [":session", "none"],
-    [":results", "replace"],
-    [":exports", "code"],
-    [":cache", "no"],
-    [":noweb", "no"],
-    [":hlines", "no"],
-    [":tangle", "no"],
-  ],
-});
 e8.defineVariable({
   name: "org-babel-tangle-lang-exts",
   doc: "The extension a language's code is tangled to with :tangle yes: pairs of a language and an extension, else the language's name.",
@@ -44,11 +31,6 @@ e8.defineVariable({
     ["C++", "cpp"],
   ],
 });
-e8.defineVariable({
-  name: "org-src-preserve-indentation",
-  doc: "Whether a source block's code keeps its indentation when tangled, rather than losing what all its lines share.",
-  value: false,
-});
 for (const [name, doc] of [
   ["org-babel-pre-tangle-hook", "Run before tangling."],
   ["org-babel-post-tangle-hook", "Run in each file tangled, visited, after tangling."],
@@ -57,131 +39,6 @@ for (const [name, doc] of [
   e8.defineHook(name, doc);
 }
 
-type Params = Map<string, string>;
-
-const pairs = (v: e8.Value | undefined): [string, string][] =>
-  Array.isArray(v) ? (v.filter((p) => Array.isArray(p) && p.length >= 2) as [string, string][]).map(([k, x]) => [String(k), String(x)]) : [];
-
-/** Header arguments as a line writes them, ":tangle ~/x.el :mkdirp yes", as org-babel-parse-header-arguments reads them. */
-export function parseHeaderArguments(text: string): Params {
-  const out: Params = new Map();
-  for (const part of ` ${text}`.split(/[ \t]+(?=:\S)/)) {
-    const m = /^:(\S+)(?:[ \t]+([\s\S]*))?$/.exec(part.trim());
-    if (!m) continue;
-    let value = (m[2] ?? "").trim();
-    // As org-babel-read reads a quoted string: without its quotes.
-    if (/^"(?:[^"\\]|\\.)*"$/.test(value)) value = JSON.parse(value) as string;
-    out.set(`:${m[1]}`, value);
-  }
-  return out;
-}
-
-/** Merges header arguments, later ones winning, as org-babel-merge-params. */
-const merge = (...all: Params[]): Params => new Map(all.flatMap((p) => [...p]));
-
-/** The header arguments #+PROPERTY: lines give the buffer: for all languages, or with `language` for that one. */
-function bufferHeaderArgs(language?: string): Params {
-  let out: Params = new Map();
-  for (const [, , text] of keywordLines()) {
-    const m = /^#\+PROPERTY:[ \t]+header-args(?::(\S+?))?(\+)?[ \t]+(.*)$/i.exec(text);
-    if (m && m[1] === language) out = merge(out, parseHeaderArguments(m[3]));
-  }
-  return out;
-}
-
-/** A heading's header-args property: for all languages, or with `language` for that one. */
-function headingHeaderArgs(line: number, language?: string): Params {
-  let out: Params = new Map();
-  let k = line + 1;
-  // Past the planning line, if any, to the drawer.
-  if (/^[ \t]*(?:SCHEDULED|DEADLINE|CLOSED):/.test(e8.lineText(k))) k++;
-  if (!/^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(k))) return out;
-  for (k++; k < e8.lineCount() && !/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(k)); k++) {
-    const m = /^[ \t]*:header-args(?::(\S+?))?(\+)?:[ \t]*(.*)$/i.exec(e8.lineText(k));
-    if (m && m[1] === language) out = merge(out, parseHeaderArguments(m[3]));
-  }
-  return out;
-}
-
-/** A source block: where it is, its language, its header arguments and its code. */
-interface Block {
-  line: number;
-  language: string;
-  params: Params;
-  body: string;
-}
-
-const BEGIN = /^[ \t]*#\+begin_src(?:[ \t]+(\S+)(.*))?$/i;
-const END = /^[ \t]*#\+end_src[ \t]*$/i;
-
-/** A block's code as tangled: without the indentation its lines share, and Org's escaping commas, as org-babel-get-src-block-info has it. */
-function blockBody(lines: string[]): string {
-  let out = lines;
-  if (!truthy(e8.variable("org-src-preserve-indentation"))) {
-    const indents = out.filter((l) => l.trim() !== "").map((l) => /^[ \t]*/.exec(l)![0].length);
-    const common = indents.length ? Math.min(...indents) : 0;
-    out = out.map((l) => l.slice(Math.min(common, /^[ \t]*/.exec(l)![0].length)));
-  }
-  // As org-unescape-code-in-string: one comma less before * and #+ at a line's start.
-  return out.map((l) => l.replace(/^([ \t]*,*),(?=\*|#\+)/, "$1")).join("\n");
-}
-
-/** Whether a heading, or one above it, is commented or archived, as org-in-commented-heading-p and org-in-archived-heading-p ask. */
-function skipped(ancestors: { line: number }[]): boolean {
-  return ancestors.some(({ line }) => {
-    const text = e8.lineText(line);
-    return /^\*+[ \t]+(?:\S+[ \t]+)?COMMENT\b/.test(text) || /:ARCHIVE:(?:\S*:)?[ \t]*$/.test(text);
-  });
-}
-
-/** The buffer's source blocks with their header arguments, in order, as org-babel-map-src-blocks finds them. */
-function collectBlocks(): Block[] {
-  const all = headings();
-  const blocks: Block[] = [];
-  const defaults = new Map(pairs(e8.variable("org-babel-default-header-args")));
-  for (let line = 0; line < e8.lineCount(); line++) {
-    const m = BEGIN.exec(e8.lineText(line));
-    if (!m) continue;
-    let end = line + 1;
-    while (end < e8.lineCount() && !END.test(e8.lineText(end))) end++;
-    if (end >= e8.lineCount()) break;
-    // The headings this block is under, outermost first.
-    const ancestors: { line: number; level: number }[] = [];
-    for (const h of all) {
-      if (h.line > line) break;
-      while (ancestors.length && ancestors[ancestors.length - 1].level >= h.level) ancestors.pop();
-      ancestors.push({ line: h.line, level: h.level });
-    }
-    const language = m[1] ?? "";
-    if (!skipped(ancestors) && language !== "") {
-      // #+header: lines just before the block add to its own arguments.
-      const headers: Params[] = [];
-      for (let k = line - 1; k >= 0; k--) {
-        const h = /^[ \t]*#\+headers?:[ \t]*(.*)$/i.exec(e8.lineText(k));
-        if (!h) break;
-        headers.unshift(parseHeaderArguments(h[1]));
-      }
-      const langDefaults = new Map(pairs(e8.variable(`org-babel-default-header-args:${language}`)));
-      // As org-babel-params-from-properties: the header-args properties,
-      // inherited, then the language's, each the buffer's then the headings'.
-      const params = merge(
-        defaults,
-        langDefaults,
-        bufferHeaderArgs(),
-        ...ancestors.map((a) => headingHeaderArgs(a.line)),
-        bufferHeaderArgs(language),
-        ...ancestors.map((a) => headingHeaderArgs(a.line, language)),
-        ...headers,
-        parseHeaderArguments(m[2] ?? ""),
-      );
-      const lines: string[] = [];
-      for (let k = line + 1; k < end; k++) lines.push(e8.lineText(k));
-      blocks.push({ line, language, params, body: blockBody(lines) });
-    }
-    line = end;
-  }
-  return blocks;
-}
 
 /** The file a block tangles to, or undefined for :tangle no, as org-babel-effective-tangled-filename. */
 function tangledFile(block: Block, orgFile: string): string | undefined {
@@ -206,15 +63,16 @@ function fileMode(value: string): number | undefined {
  * Tangles the buffer's blocks, or with `only` some of them, as
  * org-babel-tangle: each file gets its blocks' code in order, a blank line
  * between blocks unless :padline no, a :shebang first, and is written only
- * if it changed. The files written.
+ * if it changed. With `targetFile`, blocks that name no file go there, as
+ * org-babel-tangle's TARGET-FILE. The files written.
  */
-export function tangle(only?: (block: Block, file: string) => boolean): string[] {
+export function tangle(only?: (block: Block, file: string) => boolean, targetFile?: string): string[] {
   e8.runHooks("org-babel-pre-tangle-hook");
   const orgFile = e8.bufferFileName();
   if (!orgFile) e8.userError("Buffer is not visiting a file");
   const blocks = e8.saveRestriction(() => {
     e8.widen();
-    return collectBlocks();
+    return collectBlocks(targetFile);
   });
   const byFile = new Map<string, Block[]>();
   for (const block of blocks) {
@@ -267,17 +125,6 @@ export function tangle(only?: (block: Block, file: string) => boolean): string[]
   return written;
 }
 
-/** The source block point is in, by the line its #+begin_src is on, as org-babel-where-is-src-block-head finds it. */
-function blockAtPoint(): number | undefined {
-  const here = e8.lineOf(e8.point());
-  for (let line = here; line >= 0; line--) {
-    const text = e8.lineText(line);
-    if (BEGIN.test(text)) return line;
-    if (END.test(text) && line !== here) return undefined;
-  }
-  return undefined;
-}
-
 const tangleCommand = e8.defineCommand({
   name: "org-babel-tangle",
   doc:
@@ -287,7 +134,7 @@ const tangleCommand = e8.defineCommand({
   run: (arg) => {
     const prefix = Array.isArray(arg) ? arg[0] : undefined;
     if (prefix === 4 || prefix === 16) {
-      const head = blockAtPoint();
+      const head = blockAtPoint()?.line;
       if (head === undefined) e8.userError("Point is not in a source code block");
       const orgFile = e8.bufferFileName() ?? "";
       const target = e8.saveRestriction(() => {
@@ -301,13 +148,48 @@ const tangleCommand = e8.defineCommand({
   },
 });
 
+/**
+ * Tangles an Org file, as org-babel-tangle-file: with `targetFile`, the
+ * blocks that name no file of their own go there; with `langRe`, an Emacs
+ * regexp, only the blocks whose language it matches. The files written.
+ */
+export function tangleFile(file: string, targetFile?: string, langRe?: string): string[] {
+  const buffer = e8.findFileNoselect(file);
+  return e8.withCurrentBuffer(buffer, () =>
+    tangle(langRe ? (block) => e8.stringMatch(langRe, block.language) !== undefined : undefined, targetFile),
+  );
+}
+
 e8.defineCommand({
   name: "org-babel-tangle-file",
-  doc: "Tangle an Org file's source blocks into their files.",
+  doc: "Tangle an Org file's source blocks into their files. Code that wants a target file or a language regexp, as Emacs's optional arguments, uses tangleFile from ob-tangle.",
   params: [{ name: "file", kind: "file", prompt: "File to tangle: " }],
   run: (file) => {
-    const buffer = e8.findFileNoselect(file);
-    e8.withCurrentBuffer(buffer, () => tangle());
+    tangleFile(file);
+  },
+});
+
+/**
+ * Tangles an Org file's TypeScript into a .ts file of the same name, if the
+ * Org file is newer, and loads that, as org-babel-load-file does with Emacs
+ * Lisp: a literate init file, as `config.org` that init.ts loads.
+ */
+e8.defineCommand({
+  name: "org-babel-load-file",
+  doc:
+    "Load the TypeScript source blocks of an Org file: tangle them into FILE.ts, if the Org file is newer than it, " +
+    "and load that, as a literate configuration is loaded.",
+  params: [{ name: "file", kind: "file", prompt: "File to load: " }],
+  run: (file) => {
+    const org = e8.expandFileName(file);
+    const tangled = `${org.replace(/\.[^./]*$/, "")}.ts`;
+    if (!e8.fileExists(org)) e8.signal("error", `File to tangle does not exist: ${org}`);
+    if (!e8.fileExists(tangled) || e8.fileNewerThanFileP(org, tangled)) {
+      tangleFile(org, tangled, "\\`\\(?:typescript\\|ts\\)\\'");
+      // So a change to the Org file that left the code alone is not tangled again each time.
+      if (e8.fileExists(tangled)) e8.setFileTimes(tangled);
+    }
+    e8.call("load-file", tangled);
   },
 });
 
