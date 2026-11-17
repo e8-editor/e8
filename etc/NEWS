@@ -8,6 +8,40 @@ A package that is a repository of its own keeps its news in a NEWS file
 of the same form, which 'C-h P' shows under its description.
 
 
+* Changes in E8 0.5.17
+
+** TypeScript files have a mode: 'typescript-ts-mode', and 'tsx-ts-mode'.
+'.ts' and '.tsx' files, init.ts among them, are highlighted and
+indented as Emacs's typescript-ts-mode does it, and the sexp and defun
+commands follow their syntax tree.  TypeScript's grammar ships with E8.
+Org's 'typescript' blocks get its faces, and 'C-c '' edits them in it.
+
+** 'C-c C-c' in an Org source block runs it.
+A TypeScript block runs in the editor, as an Emacs Lisp block runs in
+Emacs, and its value goes under it after '#+RESULTS:', as Org writes
+it.  'org-confirm-babel-evaluate' says whether to ask first, and
+':results silent', 'none', 'append' and 'prepend' work as in Org.
+'C-c C-v e' runs a block too.
+
+** A configuration can be a literate Org file.
+'org-babel-load-file' tangles the TypeScript blocks of an Org file into
+a .ts file of the same name, when the Org file is newer, and loads it.
+An init.ts of one line loads a 'config.org':
+
+    e8.call("org-babel-load-file", e8.expandFileName("config.org", e8.variable("user-emacs-directory") as string));
+
+** init.ts and 'load-file' can import packages.
+A file that imports or exports runs as a module, a new one each time it
+is loaded, so 'import { truthy } from "subr"' works in a configuration.
+
+** The agent's conversation in 'agent-shell' looks like a chat.
+Who speaks shows as a coloured name, each tool call as a mark for its
+status and what it does, the agent's thinking and tool calls between
+replies as one folded line ("Thought, ran 2 commands, edited a file")
+that TAB opens, code as a captioned panel, and a spinner turns while
+the agent works.  The buffer's text is still Org.
+
+
 * Changes in E8 0.5.16
 
 ** 'C-h n' ('view-e8-news') shows E8's news, what changed in each release.
