@@ -171,10 +171,19 @@ jobs:
           ls -l dist
           version="${{ steps.decide.outputs.version }}"
           tag="${{ steps.decide.outputs.tag }}"
-          # How to install it, before the notes GitHub generates from the
-          # pull requests. The binaries are not signed, so macOS quarantines
-          # them when a browser downloads them, and refuses to open them.
+          # What is new, from this version's section of etc/NEWS, what C-h n
+          # shows: its "** " entries as headings of their own.
+          news=$(awk -v v="$version" '
+            /^\* / { on = substr($0, length($0) - length(v)) == " " v; next }
+            on { sub(/^\*\* /, "### "); print }' etc/NEWS)
+          if [ -n "$news" ]; then news=$(printf "## What's new\n%s\n\n" "$news"); fi
+          # Then how to install it, before the notes GitHub generates from
+          # the pull requests. The binaries are not signed, so macOS
+          # quarantines them when a browser downloads them, and refuses to
+          # open them.
           notes=$(cat <<NOTES
+          $news
+
           ## Installing
 
           Download with \`curl\`, not a browser: macOS quarantines unsigned programs a browser downloads, and will not open them.

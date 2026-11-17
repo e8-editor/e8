@@ -4,7 +4,7 @@
 // apropos.el (ADR 0064). Everything shown is made from E8's own
 // definitions and keymaps, never from Emacs's text.
 
-import { eraseBuffer } from "subr";
+import { allMatches, eraseBuffer } from "subr";
 
 // --- The *Help* buffer, with its history, after help-mode.el ---------------
 
@@ -1043,6 +1043,140 @@ const helpForHelp = e8.defineCommand({
   },
 });
 
+// --- News, after help.el's view-emacs-news and emacs-news-mode.el ------------
+
+/**
+ * A release's heading in a NEWS file, "* Changes in E8 0.5.15", its version
+ * the first group. View-emacs-news takes the first number on the line, which
+ * E8's name would be, so here it is the number that ends the line.
+ */
+const NEWS_HEADING = /^\* .* ([0-9]+\.[0-9]+(?:\.[0-9]+)?)$/gm;
+
+/** The releases a NEWS file tells of, newest first, as view-emacs-news offers them. */
+export function newsVersions(text: string): string[] {
+  const versions = new Set<string>();
+  for (const m of allMatches(NEWS_HEADING, text)) versions.add(m[1]);
+  return [...versions].sort((a, b) => versionLess(b, a));
+}
+
+/**
+ * Makes the names quoted 'like-this' that are commands, variables or faces
+ * into buttons to their help, and gives headings their level's face, as
+ * emacs-news--buttonize and outline-minor-mode-highlight do. Only styles
+ * the text, so it is not a change to the buffer.
+ */
+export function fontifyNews(start: number, end: number): void {
+  e8.withSilentModifications(() =>
+    e8.letBind({ "inhibit-read-only": true }, () =>
+      e8.saveExcursion(() => {
+        e8.gotoChar(start);
+        while (e8.reSearchForward("^\\(\\*+\\) .*$", { bound: end, noerror: true }) !== undefined) {
+          const level = e8.matchEnd(1)! - e8.matchBeginning(1)!;
+          e8.putTextProperty(e8.matchBeginning(0)!, e8.matchEnd(0)!, "face", `outline-${((level - 1) % 8) + 1}`);
+        }
+        e8.gotoChar(start);
+        while (e8.reSearchForward("'\\([^-'][^ \t\n']+\\)'", { bound: end, noerror: true }) !== undefined) {
+          const name = e8.matchString(1)!;
+          if (!isSymbol(name)) continue;
+          const [from, to] = [e8.matchBeginning(1)!, e8.matchEnd(1)!];
+          e8.putTextProperty(from, to, "face", "button");
+          e8.putTextProperty(from, to, "button", true);
+          e8.putTextProperty(from, to, "help-xref", ["symbol", name]);
+        }
+      }),
+    ),
+  );
+}
+
+/** Whether point is on a heading line of a NEWS buffer. */
+const onNewsHeading = () => e8.lookingAt("\\*+ ", e8.lineBeginningPosition());
+
+const newsCycle = e8.defineCommand({
+  name: "e8-news-cycle",
+  doc: "On a heading, fold or unfold it as outline-cycle does; anywhere else, move to the next button.",
+  run: () => e8.call(onNewsHeading() ? "outline-cycle" : "forward-button"),
+});
+
+const newsCycleBuffer = e8.defineCommand({
+  name: "e8-news-cycle-buffer",
+  doc: "On a heading, cycle the whole buffer between its top headings, all headings and everything, as outline-cycle-buffer does; anywhere else, move to the previous button.",
+  run: () => e8.call(onNewsHeading() ? "outline-cycle-buffer" : "backward-button"),
+});
+
+e8.defineMajorMode({
+  name: "e8-news-view-mode",
+  modeName: "NEWS",
+  parent: "special-mode",
+  doc:
+    "The major mode for reading a NEWS file, as Emacs's emacs-news-view-mode: a heading for each release, and under it one for each change. " +
+    "TAB on a heading folds it, S-TAB folds them all, RET on a name describes it, C-c C-n and C-c C-p move between headings, and q quits.",
+  bindings: {
+    RET: helpFollow,
+    TAB: newsCycle,
+    "<backtab>": newsCycleBuffer,
+    "C-c C-n": "outline-next-visible-heading",
+    "C-c C-p": "outline-previous-visible-heading",
+    "C-c C-u": "outline-up-heading",
+  },
+  setup: () => {
+    e8.callWithPrefix(1, "outline-minor-mode");
+    e8.setVariable("imenu-generic-expression", [[null, "^\\*+ .*$", 0]]);
+  },
+});
+
+const viewE8News = e8.defineCommand({
+  name: "view-e8-news",
+  doc:
+    "Show E8's news: the changes in each release, newest first, in a buffer of its own.\n\n" +
+    "With a prefix argument, ask for a release and show only its changes, narrowed to them; C-x n w shows the rest again.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    const text = e8.dataFile("NEWS");
+    if (text === undefined) e8.signal("error", "E8 carries no NEWS file");
+    let version: string | undefined;
+    if (arg !== null && arg !== undefined) {
+      const versions = newsVersions(text);
+      const current = versions[0];
+      version = e8.completingRead(`Read NEWS for the version (default ${current}): `, versions, { default: current }) || current;
+      if (!versions.includes(version)) e8.signal("error", `No news about version ${version}`);
+    }
+    const buffer = e8.getBufferCreate("NEWS");
+    e8.withCurrentBuffer(buffer, () => {
+      e8.widen();
+      e8.letBind({ "inhibit-read-only": true }, () => {
+        e8.deleteRegion(e8.pointMin(), e8.pointMax());
+        e8.insert(text);
+      });
+      if (e8.variable("major-mode") !== "e8-news-view-mode") e8.call("e8-news-view-mode");
+      fontifyNews(e8.pointMin(), e8.pointMax());
+      e8.setBufferModified(false);
+      e8.gotoChar(e8.pointMin());
+      if (version !== undefined) narrowToRelease(version);
+    });
+    e8.call("switch-to-buffer", "NEWS");
+  },
+});
+e8.defalias("view-emacs-news", "view-e8-news");
+
+/**
+ * Narrows a NEWS buffer to what it says of one release: from its first
+ * heading to the next heading of another release, as view-emacs-news does.
+ */
+function narrowToRelease(version: string): void {
+  const quoted = version.replace(/\./g, "\\.");
+  if (e8.reSearchForward(`^\\* .* ${quoted}$`, { noerror: true }) === undefined) return;
+  const start = e8.lineBeginningPosition();
+  let end = e8.pointMax();
+  while (e8.reSearchForward("^\\* .* \\([0-9]+\\.[0-9]+\\(?:\\.[0-9]+\\)?\\)$", { noerror: true }) !== undefined) {
+    if (e8.matchString(1) !== version) {
+      end = e8.lineBeginningPosition();
+      break;
+    }
+  }
+  e8.narrowToRegion(start, end);
+  e8.gotoChar(start);
+}
+
 // --- The keys, as help.el's help-map ----------------------------------------
 
 e8.bindKey("C-h a", aproposCommand);
@@ -1053,6 +1187,8 @@ e8.bindKey("C-h f", describeFunction);
 e8.bindKey("C-h k", describeKey);
 e8.bindKey("C-h l", viewLossage);
 e8.bindKey("C-h m", describeMode);
+e8.bindKey("C-h n", viewE8News);
+e8.bindKey("C-h C-n", viewE8News);
 e8.bindKey("C-h o", describeSymbol);
 e8.bindKey("C-h v", describeVariable);
 e8.bindKey("C-h w", whereIs);

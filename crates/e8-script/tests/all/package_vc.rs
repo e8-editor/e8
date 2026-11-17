@@ -354,3 +354,47 @@ fn upgrading_upgrades_a_requirement_that_is_too_old() {
     let echo = upgraded(&mut ed);
     assert!(echo.contains("alpha: v0.2.0 -> v0.3.0") && echo.contains("beta: v2.0.0 -> v3.0.0"), "{echo}");
 }
+
+fn help(ed: &Editor) -> String {
+    let i = ed.find_buffer("*Help*").expect("no *Help*");
+    let b = &ed.buffers()[i];
+    b.slice(0..b.len())
+}
+
+#[test]
+fn describe_package_shows_an_installed_package_and_its_news() {
+    let root = tempfile::tempdir().unwrap();
+    let config = root.path().join("config");
+    let alpha = repository(root.path(), "e8-alpha", "alpha", &["0.1.0"], |_| {
+        "{ \"name\": \"alpha\", \"description\": \"Letters, first of all\", \"e8\": \"0.3.0\" }".to_string()
+    });
+    fs::write(alpha.join("NEWS"), "Alpha NEWS -- history of user-visible changes.\n\n* Changes in alpha 0.2.0\n\n** 'alpha-mode' is new.\n").unwrap();
+    fs::write(alpha.join("README"), "Alpha does letters.\n").unwrap();
+    tag(&alpha, "alpha", "0.2.0", "{ \"name\": \"alpha\", \"description\": \"Letters, first of all\", \"e8\": \"0.3.0\" }");
+    let (mut ed, s) = editor(&config);
+    eval(&mut ed, &s, &use_package("alpha", &alpha, None)).unwrap();
+    ed.press("C-h P").unwrap();
+    assert_eq!(ed.prompt(), Some("Describe package: "));
+    ed.type_text("alpha");
+    ed.press("RET").unwrap();
+    let shown = help(&ed);
+    assert!(shown.starts_with("Package alpha is installed.\n\n     Status: Installed in alpha/.\n    Version: 0.2.0\n"), "{shown}");
+    assert!(shown.contains(&format!("     Commit: {}\n", git(&alpha, &["rev-parse", "v0.2.0"]))), "{shown}");
+    assert!(shown.contains("    Summary: Letters, first of all\n   Requires: E8 0.3.0\n"), "{shown}");
+    assert!(shown.contains("\nAlpha does letters.\n"), "{shown}");
+    let news = shown.find("* News\n\nAlpha NEWS").unwrap_or_else(|| panic!("{shown}"));
+    assert!(news > shown.find("Alpha does letters.").unwrap(), "news after the README: {shown}");
+    assert!(shown.ends_with("* Changes in alpha 0.2.0\n\n** 'alpha-mode' is new.\n"), "{shown}");
+}
+
+#[test]
+fn describe_package_shows_a_built_in_package() {
+    let root = tempfile::tempdir().unwrap();
+    let (mut ed, _s) = editor(&root.path().join("config"));
+    ed.press("C-h P").unwrap();
+    ed.type_text("outline");
+    ed.press("RET").unwrap();
+    let shown = help(&ed);
+    assert!(shown.starts_with("Package outline is built-in.\n\n     Status: Built-in.\n    Summary: Outlines: headings that fold, after Emacs's outline.el.\n\n"), "{shown}");
+    assert!(shown.contains("A heading is a line that starts with a match of outline-regexp"), "{shown}");
+}

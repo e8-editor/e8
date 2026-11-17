@@ -1671,6 +1671,14 @@ declare global {
        */
       "describe-mode": [];
       /**
+       * Describe a package. For one installed from its repository: its version and commit, what it requires and what requires it, its README, and then its news, from the NEWS file in its repository. For one that ships with E8: what its file says it is.
+       *
+       * @param package text
+       *
+       * Defined in packages/package-vc.ts.
+       */
+      "describe-package": [package: string];
+      /**
        * List the keys that start with the prefix typed before C-h, and the commands they run.
        *
        * The command loop runs this when C-h or <f1> follows a prefix key that does not bind it, as Emacs's prefix-help-command.
@@ -2405,6 +2413,24 @@ declare global {
        * Defined in packages/misc.ts.
        */
       "duplicate-line": [n?: number];
+      /**
+       * On a heading, fold or unfold it as outline-cycle does; anywhere else, move to the next button.
+       *
+       * Defined in packages/help.ts.
+       */
+      "e8-news-cycle": [];
+      /**
+       * On a heading, cycle the whole buffer between its top headings, all headings and everything, as outline-cycle-buffer does; anywhere else, move to the previous button.
+       *
+       * Defined in packages/help.ts.
+       */
+      "e8-news-cycle-buffer": [];
+      /**
+       * The major mode for reading a NEWS file, as Emacs's emacs-news-view-mode: a heading for each release, and under it one for each change. TAB on a heading folds it, S-TAB folds them all, RET on a name describes it, C-c C-n and C-c C-p move between headings, and q quits.
+       *
+       * Defined in packages/help.ts.
+       */
+      "e8-news-view-mode": [];
       /**
        * Compare two buffers in Ediff, as they are, saved or not.
        *
@@ -7641,6 +7667,16 @@ declare global {
        */
       "view-buffer": [buffer: string];
       /**
+       * Show E8's news: the changes in each release, newest first, in a buffer of its own.
+       *
+       * With a prefix argument, ask for a release and show only its changes, narrowed to them; C-x n w shows the rest again.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/help.ts.
+       */
+      "view-e8-news": [arg?: PrefixArg | boolean];
+      /**
        * Show the *Messages* buffer: the messages shown in the echo area, newest last.
        *
        * Defined in packages/help.ts.
@@ -9544,6 +9580,10 @@ declare global {
        * The socket this E8 answers e8-mcp on, so an agent can use it (`e8-mcp --socket FILE`), or nil when it answers none, as in batch mode or when another E8 already listens.
        */
       "e8-mcp-socket": Value;
+      /**
+       * Keymap e8-news-view-mode-map.
+       */
+      "e8-news-view-mode-map": Value;
       /**
        * Whether the graphical window draws E8's lattice faintly behind the text when it opens, fading it away after a few seconds or at the first key or click. Set it to nil in init.ts to turn it off; inhibit-startup-screen set to t turns it off too.
        */
@@ -14678,6 +14718,12 @@ declare global {
        */
       "outline-8": FaceAttributes;
       /**
+       * The names of the sections, such as Status:, in a package's description.
+       *
+       * Defined in packages/package-vc.ts.
+       */
+      "package-help-section-name": FaceAttributes;
+      /**
        * The match query-replace is asking about.
        *
        * Defined in packages/replace.ts.
@@ -15069,6 +15115,10 @@ declare global {
        * Run after Display-Line-Numbers mode is turned on.
        */
       "display-line-numbers-mode-on-hook": Value;
+      /**
+       * Run after entering NEWS mode, after the hooks of the modes it is built on.
+       */
+      "e8-news-view-mode-hook": Value;
       /**
        * Run after entering Edit-Abbrevs mode, after the hooks of the modes it is built on.
        */
@@ -18021,6 +18071,16 @@ declare global {
     function kqueueRmWatch(descriptor: number): true;
     /** Whether a watch is in place, as kqueue-valid-p: not once removed, or once what it watched was deleted or renamed. */
     function kqueueValidP(descriptor: number): true | undefined;
+    /**
+     * The text of a file E8 carries in itself, as Emacs keeps files in
+     * data-directory: "NEWS", the history of its user-visible changes, a
+     * heading for each release. Undefined for a name it does not carry.
+     */
+    function dataFile(name: string): string | undefined;
+    /** The packages that ship with E8, preloaded or not, by name, as Emacs's package--builtins lists its own. */
+    function builtinPackages(): string[];
+    /** The TypeScript of a package that ships with E8, by name; undefined for another. */
+    function builtinPackageSource(name: string): string | undefined;
     /** A category table with no categories, as make-category-table. */
     function makeCategoryTable(): CharTable;
     /** What a char-table is for, as char-table-subtype: "case-table", "category-table" or what make-char-table was given. */
