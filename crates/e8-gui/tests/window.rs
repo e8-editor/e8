@@ -16,8 +16,13 @@ fn harness(editor: Editor, theme: Theme) -> Harness<'static, E8App> {
 
 /// A harness whose frames are `step_dt` seconds apart.
 fn harness_stepping(editor: Editor, theme: Theme, step_dt: f32) -> Harness<'static, E8App> {
+    harness_sized(editor, theme, step_dt, vec2(640.0, 360.0))
+}
+
+/// A harness with a window of `size` points.
+fn harness_sized(editor: Editor, theme: Theme, step_dt: f32, size: egui::Vec2) -> Harness<'static, E8App> {
     let mut harness = Harness::builder()
-        .with_size(vec2(640.0, 360.0))
+        .with_size(size)
         .with_theme(theme)
         .with_step_dt(step_dt)
         // Through eframe, as the real window runs, rather than inside a test panel.
@@ -739,6 +744,76 @@ fn org_notes_dark() {
 fn org_notes_light() {
     let (ed, _scripting) = org_notes();
     harness(ed, Theme::Light).snapshot("org_light");
+}
+
+/// A conversation with a coding agent, as agent-shell shows its Org text:
+/// labels for the turns, the agent's activity folded into a line, an open
+/// group of tool calls with their marks, and code on a panel.
+fn agent_conversation() -> (Editor, e8_script::Scripting) {
+    let mut ed = Editor::new();
+    let scripting = e8_script::Scripting::new(&mut ed).unwrap();
+    ed.window_buffer_mut().set_text(
+        "* You\n\
+         Why does the build fail on Linux?\n\
+         \n\
+         * Agent\n\
+         :ACTIVITY:\n\
+         → ~cargo build~ — Build the workspace\n\
+         #+begin_src console\n\
+         error: linking with `cc` failed\n\
+         #+end_src\n\
+         → ~Read .cargo/config.toml~\n\
+         :END:\n\
+         The linker is set for *every* platform, not only macOS:\n\
+         #+begin_src toml\n\
+         [target.aarch64-apple-darwin]\n\
+         linker = \"/usr/bin/cc\"\n\
+         #+end_src\n\
+         :ACTIVITY:\n\
+         #+begin_thinking\n\
+         Only the Mac needs it.\n\
+         #+end_thinking\n\
+         → ~Edit .cargo/config.toml~ +2 -1\n\
+         → ~cargo test~ (failed) — Run the tests\n\
+         → ~cargo build~ … — Build again\n\
+         :END:\n\
+         \n\
+         * You\n",
+    );
+    ed.call("agent-shell-mode", vec![]).unwrap();
+    scripting
+        .eval_typescript(
+            &mut ed,
+            "test.ts",
+            r#"
+            const kinds = ["execute", "read", "edit", "execute", "execute"];
+            let n = 0;
+            for (let l = 0; l < e8.lineCount(); l++) {
+              if (e8.lineText(l).startsWith("→ ")) e8.putTextProperty(e8.lineStart(l), e8.lineStart(l) + 1, "agent-shell-kind", kinds[n++]);
+            }
+            // The first group folded, as the agent's text went on after it; its thinking folded too.
+            for (const l of [4, 17]) {
+              e8.gotoChar(e8.lineStart(l));
+              e8.call("org-cycle");
+            }
+            e8.gotoChar(0);
+            "#
+            .into(),
+        )
+        .unwrap();
+    (ed, scripting)
+}
+
+#[test]
+fn agent_conversation_dark() {
+    let (ed, _scripting) = agent_conversation();
+    harness_sized(ed, Theme::Dark, 0.25, vec2(640.0, 480.0)).snapshot("agent_shell_dark");
+}
+
+#[test]
+fn agent_conversation_light() {
+    let (ed, _scripting) = agent_conversation();
+    harness_sized(ed, Theme::Light, 0.25, vec2(640.0, 480.0)).snapshot("agent_shell_light");
 }
 
 #[test]

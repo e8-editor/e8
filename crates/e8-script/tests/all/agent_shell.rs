@@ -164,34 +164,54 @@ fn a_reply_streams_in_with_its_thinking_tool_calls_and_plan() {
     let text = s.finished();
     assert_eq!(
         text,
-        "* You\nfix it\n\n* Agent\n#+begin_thinking\nLooking at\nthe file\n#+end_thinking\n\
+        "* You\nfix it\n\n* Agent\n:ACTIVITY:\n#+begin_thinking\nLooking at\nthe file\n#+end_thinking\n:END:\n\
          I'll fix it.\n- not a heading\n\
-         → ~Edit a.txt~\n#+begin_src diff\n--- /x/a.txt\n+++ /x/a.txt\n@@ line 2 @@\n-two\n+2\n#+end_src\n\
+         :ACTIVITY:\n→ ~Edit a.txt~ +1 -1\n#+begin_src diff\n--- /x/a.txt\n+++ /x/a.txt\n@@ line 2 @@\n-two\n+2\n#+end_src\n:END:\n\
          Plan:\n- [X] Read a.txt\n- [X] Change two\n\
          Done.\n\n* You\n"
     );
-    // The diff folds into its tool call's line, from the line's end; the
-    // thinking folds as any Org block, after its #+begin_thinking line; the reply does not.
+    // What the agent did between what it said folds into a line each time, once it says more.
+    let thoughts = text.find(":ACTIVITY:").unwrap();
+    let edits = text.rfind(":ACTIVITY:").unwrap();
     let tool = text.find("→ ~Edit a.txt~").unwrap();
     let tool_end = text[tool..].find('\n').unwrap() + tool;
-    assert!(!hidden_in(&s.d, &text, tool), "the tool call's line shows");
-    assert!(hidden_in(&s.d, &text, tool_end), "its diff folds into it, #+begin_src and all");
-    assert!(hidden_in(&s.d, &text, text.find("--- /x/a.txt").unwrap()));
     let thinking = text.find("#+begin_thinking").unwrap();
-    assert!(!hidden_in(&s.d, &text, thinking), "the block's first line shows");
-    assert!(hidden_in(&s.d, &text, text.find("Looking at").unwrap()), "its text folds");
+    assert!(!hidden_in(&s.d, &text, edits), "the group's line shows");
+    assert!(hidden_in(&s.d, &text, tool), "what it holds folds into it");
+    assert!(hidden_in(&s.d, &text, thinking));
     assert!(!hidden_in(&s.d, &text, text.find("Done.").unwrap()), "the reply shows");
+    // Each line shows what it stands for, over its Org text.
+    assert_eq!(shown_at(&s.d, &text, text.find("* You").unwrap()), "You");
+    assert_eq!(shown_at(&s.d, &text, text.find("* Agent").unwrap()), "Fake");
+    assert_eq!(shown_at(&s.d, &text, thoughts), "◇ Thought");
+    assert_eq!(shown_at(&s.d, &text, edits), "● Edited a file");
+    assert_eq!(shown_at(&s.d, &text, tool), "● ", "an edit's title says it is one");
+    assert_eq!(shown_at(&s.d, &text, thinking), "◇ Thinking");
+    assert_eq!(shown_at(&s.d, &text, text.find("#+begin_src diff").unwrap()), " diff");
+    assert_eq!(shown_at(&s.d, &text, text.find("#+end_src").unwrap()), "");
+    // TAB on a group's line opens it: its call's line shows, the diff still folded into it.
+    s.d.eval(&format!("e8.gotoChar({})", text[..edits].chars().count()));
+    s.d.press("TAB");
+    assert!(!hidden_in(&s.d, &text, tool), "TAB opens the group");
+    assert!(hidden_in(&s.d, &text, tool_end), "its diff folds into its line, #+begin_src and all");
+    assert!(hidden_in(&s.d, &text, text.find("--- /x/a.txt").unwrap()));
+    assert!(hidden_in(&s.d, &text, text.rfind(":END:").unwrap()), "the drawer's end never shows");
     // TAB on the tool call's line shows its diff, and folds it again; on the block's first line it is Org's own.
-    s.d.eval(&format!("e8.gotoChar({})", tool + 2));
+    s.d.eval(&format!("e8.gotoChar({})", text[..tool].chars().count() + 2));
     s.d.press("TAB");
     assert!(!hidden_in(&s.d, &text, tool_end), "TAB shows the diff");
     s.d.press("TAB");
     assert!(hidden_in(&s.d, &text, tool_end), "TAB folds it again");
-    s.d.eval(&format!("e8.gotoChar({thinking})"));
+    s.d.eval(&format!("e8.gotoChar({})", text[..thoughts].chars().count()));
+    s.d.press("TAB");
+    assert!(!hidden_in(&s.d, &text, thinking), "the block's first line shows");
+    assert!(hidden_in(&s.d, &text, text.find("Looking at").unwrap()), "its text folds");
+    s.d.eval(&format!("e8.gotoChar({})", text[..thinking].chars().count()));
     s.d.press("TAB");
     assert!(!hidden_in(&s.d, &text, text.find("Looking at").unwrap()), "TAB opens the thinking");
+    assert!(hidden_in(&s.d, &text, text.find("#+end_thinking").unwrap()), "its last line never shows");
     // How much of its context the conversation fills shows on the mode line, not in the conversation.
-    assert_eq!(js_string(&s.d, "e8.variable(\"mode-line-process\")"), " 1k/200k");
+    assert_eq!(js_string(&s.d, "String(e8.variable(\"mode-line-process\"))"), " 1k/200k");
     // The header line is the session's state; the keys are C-h m's.
     assert!(!js_string(&s.d, "e8.variable(\"header-line-format\")").contains("C-c RET"));
 }
@@ -444,7 +464,8 @@ fn c_c_c_k_stops_the_turn() {
     s.d.until(|t| t.contains("[Cancelled: Run `make`]"));
     s.d.press("C-c C-k");
     let text = s.finished();
-    assert!(text.ends_with("[Cancelled: Run `make`]\n[Stopped.]\n\n* You\n"), "{text}");
+    // The answer is among the agent's activity, and the note that the turn stopped after it.
+    assert!(text.ends_with("[Cancelled: Run `make`]\n:END:\n[Stopped.]\n\n* You\n"), "{text}");
 }
 
 #[test]
@@ -458,7 +479,8 @@ fn c_c_c_k_tells_the_agent_to_cancel() {
     let Some(s) = setup(steps, "go") else { return };
     s.d.press("C-c RET");
     s.d.until(|t| t.contains("Working"));
-    assert_eq!(js_string(&s.d, "e8.variable(\"mode-line-process\")"), ":working", "the mode line says the agent is working");
+    let working = js_string(&s.d, "String(e8.variable(\"mode-line-process\"))");
+    assert!(working.starts_with(":working "), "the mode line says the agent is working, a spinner turning: {working}");
     s.d.press("C-c C-k");
     let text = s.finished();
     assert!(text.ends_with("Working\n[Stopped.]\n\n* You\n"), "{text}");
@@ -1090,7 +1112,7 @@ fn an_earlier_session_is_resumed_its_conversation_replayed_and_the_agent_carries
     s.d.until(|t| t.contains("You're welcome.") && t.ends_with("* You\nAnd now?"));
     let text = s.d.text();
     assert!(
-        text.starts_with("* You\nRun the tests\n\n* Agent\n→ ~cargo test~\n#+begin_src console\nok\n#+end_src\nThey *pass*.\n\n* You\nThanks\n\n* Agent\nYou're welcome.\n\n* You\nAnd now?"),
+        text.starts_with("* You\nRun the tests\n\n* Agent\n:ACTIVITY:\n→ ~cargo test~\n#+begin_src console\nok\n#+end_src\n:END:\nThey *pass*.\n\n* You\nThanks\n\n* Agent\nYou're welcome.\n\n* You\nAnd now?"),
         "{text}"
     );
     assert_eq!(s.d.message().as_deref(), Some("Resumed Fix the tests"));
@@ -1231,6 +1253,19 @@ fn hidden_in(d: &Driven, text: &str, at: usize) -> bool {
     hidden_at(d, text[..at].chars().count())
 }
 
+/// What the shell's buffer shows for the text at `at`, a byte index into
+/// `text`: its display string once fontified, or "-" for none.
+fn shown_at(d: &Driven, text: &str, at: usize) -> String {
+    let pos = text[..at].chars().count();
+    js_string(
+        d,
+        &format!(
+            "e8.withCurrentBuffer(e8.bufferList().find((b) => b.startsWith(\"*agent-shell\")), () => {{ \
+               e8.call(\"font-lock-ensure\"); const v = e8.getTextProperty({pos}, \"display\"); return v === undefined ? \"-\" : String(v); }})"
+        ),
+    )
+}
+
 fn hidden_at(d: &Driven, at: usize) -> bool {
     d.with(move |ed| {
         let shell = ed.find_buffer("*agent-shell: fake*").or_else(|| ed.find_buffer("*agent-shell: claude*")).unwrap();
@@ -1279,6 +1314,11 @@ fn tool_output_and_thinking_fold_as_they_stream_and_tab_keeps_one_open() {
     let t = s.d.text();
     assert!(!hidden_in(&s.d, &t, t.find("line two").unwrap()), "still open after the update");
     let t = s.finished();
+    // Once the turn ends its activity folds into a line, and opened again the output is still open.
+    assert!(hidden_in(&s.d, &t, t.find("line two").unwrap()), "the turn's activity folds as it ends");
+    assert_eq!(shown_at(&s.d, &t, t.find(":ACTIVITY:").unwrap()), "● Thought, ran a command");
+    s.d.eval(&format!("e8.gotoChar({})", t[..t.find(":ACTIVITY:").unwrap()].chars().count()));
+    s.d.press("TAB");
     assert!(!hidden_in(&s.d, &t, t.find("line two").unwrap()), "and once the turn ends");
 }
 
@@ -1326,7 +1366,13 @@ fn tool_lines_are_short_and_claude_s_bookkeeping_is_left_out() {
     assert!(!t.contains("ToolSearch") && !t.contains("tools"), "{t}");
     assert!(t.contains("→ ~e8: screen window=1~\n"), "{t}");
     assert!(t.contains("→ =ls ~/notes= — List the sources\n"), "{t}");
-    // ~code~ shows without its tildes here.
+    // Each shows its status and what it does, as its title does not say.
+    assert_eq!(shown_at(&s.d, &t, t.find("→ =ls").unwrap()), "● Command ");
+    assert_eq!(shown_at(&s.d, &t, t.find("→ ~e8").unwrap()), "● Tool ");
+    assert_eq!(shown_at(&s.d, &t, t.find(":ACTIVITY:").unwrap()), "● Used a tool, ran a command");
+    // ~code~ shows without its tildes here, once its group is open.
+    s.d.eval(&format!("e8.gotoChar({})", t[..t.find(":ACTIVITY:").unwrap()].chars().count()));
+    s.d.press("TAB");
     s.d.with(|ed| ed.redisplay());
     // In characters, as buffer positions are: the arrow is three bytes.
     let at = t[..t.find("~e8: screen").unwrap()].chars().count();

@@ -10,7 +10,13 @@
 //               tool call a line, its output or diff in a src block named
 //               by what it holds, folded into the line as it comes (TAB
 //               shows it), and its plan as a checklist; Claude Code's own
-//               bookkeeping calls left out (agent-shell-hidden-tools)
+//               bookkeeping calls left out (agent-shell-hidden-tools). Its
+//               thinking and tool calls between what it says go in an
+//               :ACTIVITY: drawer, folded once its text goes on
+//
+// The text is Org, and it is drawn as a chat over that text: the headings
+// as labels, each tool call with its status's mark, blocks as panels, and a
+// drawer as what was done in it, "Thought, ran 2 commands" (decorate).
 //
 // The conversation above the request being typed is a transcript, as a
 // shell's is: the agent's turns and the requests sent are read-only, and
@@ -35,6 +41,7 @@
 // Org agent buffer, not shell-maker's.
 
 import * as acp from "acp";
+import { faceRemapAddRelative } from "face-remap";
 import { findBufferVisiting } from "files";
 import { defineGuide, substituteCommandKeys } from "help-guide";
 import { completionInRegion } from "minibuffer";
@@ -194,6 +201,10 @@ interface Shell {
   plan?: { start: e8.Marker; end: e8.Marker };
   /** Where the thinking being written starts, its #+begin_thinking line. */
   thought?: e8.Marker;
+  /** Where the :ACTIVITY: drawer open at the end starts, while the agent thinks and calls its tools. */
+  activity?: e8.Marker;
+  /** While the agent works: the timer that turns the spinner, its frame, and the overlay showing it at the buffer's end. */
+  spinner?: { timer: number; frame: number; overlay: number };
   permissions: Permission[];
   asking: boolean;
   askTimer?: number;
@@ -270,7 +281,7 @@ defineGuide("agent-shell-mode", {
         ["agent-shell-set-session-thought-level", "Choose how hard it thinks"],
       ],
     ],
-    ["Reading the reply", [["org-cycle", "On a tool call or thinking: show or fold what it holds"]]],
+    ["Reading the reply", [["org-cycle", "On what the agent did, a tool call or its thinking: show or fold what it holds"]]],
   ],
   tryNow: [
     "Ask about the project you are in, such as \"What does this project do?\", and press \\[agent-shell-send].",
@@ -292,6 +303,8 @@ e8.defineMajorMode({
     "Type a request under the last * You heading and send it with C-c RET. The agent's reply streams in under " +
     "* Agent, its Markdown made Org; each tool call is a line, with its output or diff folded into it as it comes " +
     "(TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. " +
+    "Its thinking and tool calls between what it says show as one line saying what was done, \"Thought, ran 2 commands\", " +
+    "which folds once its text goes on; TAB on the line opens it. " +
     "The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is " +
     "read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. M-p and M-n bring " +
     "the requests sent before back to the prompt, as in a shell, and M-r picks one of them. A request starting " +
@@ -336,6 +349,10 @@ e8.defineMajorMode({
     e8.setVariable("org-use-speed-commands", inTranscript);
     e8.makeLocalVariable("org-speed-commands");
     e8.setVariable("org-speed-commands", SPEED_COMMANDS);
+    // How it looks, over Org's text and after Org's faces: labels, marks, captions and panels.
+    e8.addHook("jit-lock-functions", decorate, { local: true, append: true });
+    e8.addToInvisibilitySpec("agent-shell");
+    for (const face of ["org-block", "org-block-begin-line", "org-block-end-line"]) faceRemapAddRelative(face, "agent-shell-block");
   },
 });
 
@@ -653,8 +670,11 @@ function srcBlock(lang: string, text: string, label = ""): string {
   return `#+begin_src ${lang}\n${label}${lines.join("\n")}\n#+end_src\n`;
 }
 
-/** Closes what is open at the end: the agent's paragraph, or its thinking's block. */
-function closeOpen(shell: Shell): void {
+/**
+ * Closes what is open at the end: the agent's paragraph, or its thinking's
+ * block; and the drawer of its activity, unless what comes next is more of it.
+ */
+function closeOpen(shell: Shell, keepActivity = false): void {
   if (shell.open === "thought") {
     flushReply(shell);
     startLine(shell);
@@ -673,11 +693,38 @@ function closeOpen(shell: Shell): void {
     put(shell, "\n* Agent\n");
   }
   shell.open = undefined;
+  if (!keepActivity) closeActivity(shell);
 }
 
-/** A note in brackets on a line of its own. */
+/**
+ * Opens a drawer for what the agent does between the things it says, its
+ * thinking and tool calls, unless one is open: an :ACTIVITY: drawer, which
+ * shows as what was done in it, "Thought, ran 2 commands", and folds into
+ * that line once the agent's text goes on, as Claude Code's own groups do.
+ */
+function openActivity(shell: Shell): void {
+  if (shell.activity !== undefined) return;
+  startLine(shell);
+  const at = put(shell, ":ACTIVITY:\n");
+  shell.activity = e8.makeMarker(at, { buffer: shell.buffer });
+}
+
+/** Closes the drawer of the agent's activity, if one is open, and folds it into its line. */
+function closeActivity(shell: Shell): void {
+  if (shell.activity === undefined) return;
+  const start = e8.markerPosition(shell.activity);
+  e8.deleteMarker(shell.activity);
+  shell.activity = undefined;
+  startLine(shell);
+  put(shell, ":END:\n");
+  if (start === undefined) return;
+  inBuffer(shell, () => toggleDrawerOrBlock(e8.lineOf(start), true));
+  refreshActivity(shell, start);
+}
+
+/** A note in brackets on a line of its own: among the agent's activity, while it is open, as an answer to its question is. */
 function note(shell: Shell, text: string): void {
-  closeOpen(shell);
+  closeOpen(shell, true);
   startLine(shell);
   put(shell, `[${text}]\n`);
 }
@@ -775,11 +822,29 @@ function toolTitle(shell: Shell, call: ToolCall): string {
   return title;
 }
 
+/** How many lines a diff puts in and takes out, " +2 -1", or "" for text that is not a diff. */
+function diffStat(call: ToolCall): string {
+  if (call.lang !== "diff") return "";
+  let added = 0;
+  let removed = 0;
+  const lines = call.content.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    // A file's --- and +++ lines, before its @@ line, are not lines of the file.
+    if (lines[i].startsWith("--- ") && lines[i + 1]?.startsWith("+++ ") && lines[i + 2]?.startsWith("@@")) {
+      i += 2;
+      continue;
+    }
+    if (lines[i].startsWith("+")) added++;
+    else if (lines[i].startsWith("-")) removed++;
+  }
+  return added + removed === 0 ? "" : ` +${added} -${removed}`;
+}
+
 function renderToolCall(shell: Shell, call: ToolCall): string {
   if (call.hidden) return "";
   // A command's description, as Claude Code's Bash tool gives one, after it.
   const description = typeof call.input?.description === "string" ? ` — ${call.input.description.replace(/\n/g, " ")}` : "";
-  const line = `→ ${quoteTitle(toolTitle(shell, call))}${STATUS[call.status] ?? ""}${description}\n`;
+  const line = `→ ${quoteTitle(toolTitle(shell, call))}${STATUS[call.status] ?? ""}${diffStat(call)}${description}\n`;
   // Named by what it holds: a diff, a command's output, JSON, or text.
   const lang = call.lang ?? (call.kind === "execute" ? "console" : "text");
   return call.content === "" ? line : line + srcBlock(lang, call.content, call.status === "failed" ? "Failed:\n" : "");
@@ -790,18 +855,21 @@ function showToolCall(shell: Shell, update: acp.Json, first: boolean): void {
   const id = String(update.toolCallId ?? "");
   let call = shell.toolCalls.get(id);
   if (call === undefined) {
-    closeOpen(shell);
-    startLine(shell);
-    const at = inBuffer(shell, () => e8.bufferSize()) ?? 0;
     const toolName = update._meta?.claudeCode?.toolName ? String(update._meta.claudeCode.toolName) : undefined;
     const hiddenTools = e8.variable("agent-shell-hidden-tools");
+    const hidden = toolName !== undefined && Array.isArray(hiddenTools) && hiddenTools.includes(toolName);
+    // Among the agent's activity, which folds into one line once its text goes on.
+    closeOpen(shell, true);
+    startLine(shell);
+    if (!hidden) openActivity(shell);
+    const at = inBuffer(shell, () => e8.bufferSize()) ?? 0;
     call = {
       title: String(update.title ?? update.kind ?? "tool"),
       status: String(update.status ?? "pending"),
       toolName,
       kind: update.kind ? String(update.kind) : undefined,
       folded: true,
-      hidden: toolName !== undefined && Array.isArray(hiddenTools) && hiddenTools.includes(toolName),
+      hidden,
       content: "",
       paths: new Set(),
       start: e8.makeMarker(at, { buffer: shell.buffer, advances: true }),
@@ -837,8 +905,11 @@ function showToolCall(shell: Shell, update: acp.Json, first: boolean): void {
   replace(shell, start, end, text);
   e8.setMarker(call.start, start, shell.buffer);
   e8.setMarker(call.end, start + charCount(text), shell.buffer);
+  // What it does, for its line to show beside its status: the text has only its title.
+  if (text !== "" && call.kind !== undefined) writing(shell, () => e8.putTextProperty(start, start + 1, "agent-shell-kind", call.kind!));
   // Its output folds into its line as it comes, unless TAB opened it.
   if (text !== "" && call.content !== "") inBuffer(shell, () => foldBlockBelow(start, call.folded));
+  refreshActivity(shell, start);
   if (finished) revertTouched(call.paths);
 }
 
@@ -901,7 +972,8 @@ function onUpdate(shell: Shell, notification: acp.Json): void {
       break;
     case "agent_message_chunk":
       if (update.content?.type === "text") {
-        if (shell.open === "thought") closeOpen(shell);
+        // Its text closes its thinking and the drawer of its activity.
+        if (shell.open !== "text") closeOpen(shell);
         if (shell.open === undefined) startLine(shell);
         shell.open = "text";
         putReply(shell, String(update.content.text ?? ""));
@@ -911,12 +983,14 @@ function onUpdate(shell: Shell, notification: acp.Json): void {
       if (update.content?.type === "text") {
         let first = false;
         if (shell.open !== "thought") {
-          closeOpen(shell);
+          closeOpen(shell, true);
           startLine(shell);
+          openActivity(shell);
           const at = put(shell, "#+begin_thinking\n");
           shell.thought = e8.makeMarker(at, { buffer: shell.buffer, advances: true });
           shell.open = "thought";
           first = true;
+          refreshActivity(shell, at);
         }
         // Its Markdown made Org as the reply's is: the block is Org, not verbatim.
         putReply(shell, String(update.content.text ?? ""));
@@ -1185,22 +1259,311 @@ function describe(shell: Shell, error: acp.RpcError | undefined): string {
 }
 
 /** A count of tokens, short: 950, 46k, 1M or 1.5M. */
+// --- How the buffer looks ------------------------------------------------------------
+//
+// The buffer's text is Org, which is what copying, saving or exporting the
+// conversation gives. How it looks is put over that text as it is shown, by
+// decorate on jit-lock-functions after Org's own fontifying: display strings,
+// prefixes and faces, which change what is drawn and never the text, as
+// agent-shell's chat labels are put over comint's text. A * You or * Agent
+// heading shows as a label, a tool call's → as its status and what it does,
+// a block's #+begin and #+end lines as a panel's caption and margin, and an
+// :ACTIVITY: drawer as what the agent did in it, its lines indented under it.
+
+for (const [name, doc, attributes] of [
+  ["agent-shell-user-label", "The label a * You heading shows as in an agent's buffer.", { foreground: "accent-ink", bold: true }],
+  ["agent-shell-agent-label", "The label a * Agent heading shows as, the agent's name.", { foreground: "good", bold: true }],
+  ["agent-shell-tool-kind", "What a tool call does, Command, Edit or Read, beside its status.", { bold: true }],
+  ["agent-shell-caption", "A block's caption, the language of its code or what it holds, and the thinking's.", { inherit: "shadow", italic: true }],
+  ["agent-shell-block", "Blocks in an agent's buffer, code and tool output, drawn as panels.", { background: "sunken", foreground: "ink", extend: true }],
+] as [string, string, e8.FaceAttributes][]) {
+  e8.defineFace({ name, doc, attributes });
+}
+
+/** What a tool call does, by ACP's kinds, as its line names it. */
+const KIND_NAMES: { [kind: string]: string } = {
+  read: "Read",
+  edit: "Edit",
+  delete: "Delete",
+  move: "Move",
+  search: "Search",
+  execute: "Command",
+  think: "Think",
+  fetch: "Fetch",
+  switch_mode: "Mode",
+  other: "Tool",
+};
+
+/** What a group's line says each kind of call did, once and more than once. */
+const KIND_DONE: { [kind: string]: [string, string] } = {
+  read: ["read a file", "read %d files"],
+  edit: ["edited a file", "edited %d files"],
+  delete: ["deleted a file", "deleted %d files"],
+  move: ["moved a file", "moved %d files"],
+  search: ["searched", "searched %d times"],
+  execute: ["ran a command", "ran %d commands"],
+  fetch: ["fetched a page", "fetched %d pages"],
+  think: ["thought", "thought"],
+  other: ["used a tool", "used %d tools"],
+};
+
+/**
+ * A status's mark and face: waiting or running, done, or failed. Marks
+ * egui's own monospace font has, as ✓ and ✗ are not, so they are drawn
+ * at the text's height without the system's fonts, as on the website.
+ */
+const STATUS_MARKS: { [status: string]: [string, string] } = {
+  pending: ["◔", "warning"],
+  completed: ["●", "success"],
+  failed: ["×", "error"],
+};
+
+/** The mark of the agent's thinking. */
+const THINKING_MARK = "◇";
+
+/** A tool call's line, → ~title~ and what follows it, in parts. */
+const TOOL_LINE = /^→ (~[^~]*~|=[^=]*=)( …| \(failed\))?( \+\d+ -\d+)?( — .*)?$/;
+
+/** A tool call's status, from what its line says after its title. */
+function lineStatus(suffix: string | undefined): string {
+  return suffix === " …" ? "pending" : suffix === " (failed)" ? "failed" : "completed";
+}
+
+/** The agent's name, as the * Agent heading shows it: Claude for claude. */
+function agentName(): string {
+  const agent = shells.get(e8.bufferName() ?? "")?.agent ?? "agent";
+  return agent.charAt(0).toUpperCase() + agent.slice(1);
+}
+
+/** The line the :ACTIVITY: drawer that holds line `line` starts on, if it is in one. */
+function activityAround(line: number): number | undefined {
+  for (let l = line; l >= 0; l--) {
+    const text = e8.lineText(l);
+    if (text === ":ACTIVITY:") return l;
+    if (text === ":END:" || text.startsWith("* ")) return undefined;
+  }
+  return undefined;
+}
+
+/**
+ * What an :ACTIVITY: drawer's line shows: the worst status of its calls and
+ * what was done in it, "● Thought, ran 2 commands, edited a file".
+ */
+function activityLabel(line: number): e8.Value {
+  const counts = new Map<string, number>();
+  let status: string | undefined;
+  for (let l = line + 1; l < e8.lineCount(); l++) {
+    const text = e8.lineText(l);
+    if (text === ":END:" || text.startsWith("* ")) break;
+    if (text === "#+begin_thinking") counts.set("think", 1);
+    const m = TOOL_LINE.exec(text);
+    if (!text.startsWith("→ ")) continue;
+    const kind = String(e8.getTextProperty(e8.lineStart(l), "agent-shell-kind") ?? "other");
+    const key = kind in KIND_DONE ? kind : "other";
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+    const s = lineStatus(m?.[2]);
+    if (s === "failed" || (s === "pending" && status !== "failed")) status = s;
+    else status ??= s;
+  }
+  const done = [...counts].map(([kind, n]) => KIND_DONE[kind][n === 1 ? 0 : 1].replace("%d", String(n)));
+  const said = done.join(", ");
+  const summary = said === "" ? "Working" : said.charAt(0).toUpperCase() + said.slice(1);
+  const [mark, face] = status === undefined ? [THINKING_MARK, "agent-shell-caption"] : STATUS_MARKS[status];
+  return e8.concat(e8.propertize(`${mark} `, { face }), e8.propertize(summary, { face: "agent-shell-caption" }));
+}
+
+/** What a tool call's line shows in place of its →: its status's mark, and what it does unless its title says. */
+function toolLabel(pos: number, text: string, status: string): e8.Value {
+  const [mark, face] = STATUS_MARKS[status];
+  const kind = e8.getTextProperty(pos, "agent-shell-kind");
+  const name = typeof kind === "string" ? KIND_NAMES[kind] : undefined;
+  const title = text.slice(2).replace(/^[~=]/, "").toLowerCase();
+  const shown = name !== undefined && !title.startsWith(name.toLowerCase()) ? e8.propertize(`${name} `, { face: "agent-shell-tool-kind" }) : "";
+  return e8.concat(e8.propertize(`${mark} `, { face }), shown);
+}
+
+/** The lines that start and end the blocks the buffer draws as panels: code, tool output and thinking. */
+const BLOCK_OPEN = /^[ \t]*#\+begin_(src|example|thinking)\b/i;
+const BLOCK_CLOSE = /^[ \t]*#\+end_(src|example|thinking)[ \t]*$/i;
+
+/** Whether a block is open after line `line`: it is a block's first line or inside one. */
+function blockOpenAt(line: number): boolean {
+  for (let l = line; l >= 0; l--) {
+    const text = e8.lineText(l);
+    if (BLOCK_CLOSE.test(text) || text.startsWith("* ")) return false;
+    if (BLOCK_OPEN.test(text)) return true;
+  }
+  return false;
+}
+
+/** Hides a block's or drawer's last line, with the newline before it, so the line before ends where it did. */
+function hideClosingLine(ls: number, le: number): void {
+  if (ls > 0) e8.putTextProperty(ls - 1, le, "invisible", "agent-shell");
+}
+
+/** Decorates whole lines from start to end, for jit-lock-functions, after Org's fontifying. */
+function decorate(start: number, end: number): void {
+  if (!e8.derivedModeP("agent-shell-mode")) return;
+  const first = e8.lineOf(start);
+  const from = e8.lineStart(first);
+  // org-indent-mode's prefixes are its own.
+  const indent = !truthy(e8.variable("org-indent-mode"));
+  e8.removeTextProperty(from, end, "display");
+  if (indent) {
+    e8.removeTextProperty(from, end, "line-prefix");
+    e8.removeTextProperty(from, end, "wrap-prefix");
+  }
+  let inActivity = first > 0 && activityAround(first - 1) !== undefined;
+  let inBlock = first > 0 && blockOpenAt(first - 1);
+  for (let line = first; line < e8.lineCount() && e8.lineStart(line) < Math.max(end, from + 1); line++) {
+    const text = e8.lineText(line);
+    const ls = e8.lineStart(line);
+    const le = e8.lineEnd(line);
+    // A block's text is a column in from the panel's edge, on the panel; what
+    // the agent did is two in, under its group's line.
+    const closing = inBlock && BLOCK_CLOSE.test(text);
+    if (indent) {
+      const pad = inBlock && !closing ? e8.propertize(" ", { face: "agent-shell-block" }) : "";
+      const prefix = inActivity && text !== ":END:" ? e8.concat("  ", pad) : pad;
+      if (prefix !== "") {
+        const lineEnd = Math.min(le + 1, e8.pointMax());
+        e8.putTextProperty(ls, lineEnd, "line-prefix", prefix);
+        e8.putTextProperty(ls, lineEnd, "wrap-prefix", e8.concat(prefix, "  "));
+      }
+    }
+    if (closing) inBlock = false;
+    else if (!inBlock && BLOCK_OPEN.test(text)) inBlock = true;
+    if (text === "* You") {
+      e8.putTextProperty(ls, le, "display", e8.propertize("You", { face: "agent-shell-user-label" }));
+      continue;
+    }
+    if (text === "* Agent") {
+      e8.putTextProperty(ls, le, "display", e8.propertize(agentName(), { face: "agent-shell-agent-label" }));
+      continue;
+    }
+    if (text === ":ACTIVITY:") {
+      e8.putTextProperty(ls, le, "display", activityLabel(line));
+      inActivity = true;
+      continue;
+    }
+    if (inActivity && text === ":END:") {
+      hideClosingLine(ls, le);
+      inActivity = false;
+      continue;
+    }
+    const tool = TOOL_LINE.exec(text);
+    if (tool) {
+      const status = lineStatus(tool[2]);
+      e8.putTextProperty(ls, ls + 2, "display", toolLabel(ls, text, status));
+      let at = ls + 2 + charCount(tool[1]);
+      if (tool[2] !== undefined) {
+        // Its mark says it is running or failed.
+        e8.putTextProperty(at, at + charCount(tool[2]), "display", "");
+        at += charCount(tool[2]);
+      }
+      if (tool[3] !== undefined) {
+        const [added, removed] = tool[3].trim().split(" ");
+        e8.addFaceTextProperty(at + 1, at + 1 + added.length, "success");
+        e8.addFaceTextProperty(at + 2 + added.length, at + 1 + added.length + 1 + removed.length, "error");
+        at += charCount(tool[3]);
+      }
+      if (tool[4] !== undefined) e8.addFaceTextProperty(at, at + charCount(tool[4]), "shadow");
+      continue;
+    }
+    if (text === "#+begin_thinking") {
+      e8.putTextProperty(ls, le, "display", e8.propertize(`${THINKING_MARK} Thinking`, { face: "agent-shell-caption" }));
+      // A line like the group's, not a panel's caption: the panel is for code.
+      e8.addFaceTextProperty(ls, Math.min(le + 1, e8.pointMax()), [":background", "bg", ":extend", false]);
+      continue;
+    }
+    if (text === "#+end_thinking") {
+      hideClosingLine(ls, le);
+      continue;
+    }
+    // A block's first line is its caption, the language it is in, and its
+    // last an empty line, both on the panel's background.
+    const begin = /^[ \t]*#\+begin_(src|example)(?:[ \t]+(\S+))?/i.exec(text);
+    if (begin) {
+      const caption = begin[1].toLowerCase() === "src" && begin[2] !== undefined ? ` ${begin[2]}` : "";
+      e8.putTextProperty(ls, le, "display", e8.propertize(caption, { face: "agent-shell-caption" }));
+      continue;
+    }
+    if (/^[ \t]*#\+end_(src|example)[ \t]*$/i.test(text)) e8.putTextProperty(ls, le, "display", "");
+  }
+}
+
+/** Shows the line of the :ACTIVITY: drawer that holds `pos` again, after what is in it changed. */
+function refreshActivity(shell: Shell, pos: number): void {
+  writing(shell, () =>
+    e8.withSilentModifications(() => {
+      const line = activityAround(e8.lineOf(Math.min(pos, e8.bufferSize())));
+      if (line !== undefined) e8.putTextProperty(e8.lineStart(line), e8.lineEnd(line), "display", activityLabel(line));
+    }),
+  );
+}
+
+// --- The spinner ------------------------------------------------------------------
+
+/** The frames of the spinner: ASCII, as a fallback font's glyph could make its line taller. */
+const SPINNER = ["|", "/", "-", "\\"];
+
+/** Turns the spinner while the agent works: on the mode line, and at the buffer's end, where its reply comes. */
+function startSpinner(shell: Shell): void {
+  if (shell.spinner !== undefined) return;
+  const end = inBuffer(shell, () => e8.bufferSize()) ?? 0;
+  const overlay = inBuffer(shell, () => e8.makeOverlay(end, end)) ?? 0;
+  const timer = e8.runWithTimer(0.15, 0.15, () => {
+    if (shell.spinner === undefined) return;
+    shell.spinner.frame = (shell.spinner.frame + 1) % SPINNER.length;
+    showState(shell);
+  });
+  shell.spinner = { timer, frame: 0, overlay };
+  showState(shell);
+}
+
+function stopSpinner(shell: Shell): void {
+  if (shell.spinner === undefined) return;
+  e8.cancelTimer(shell.spinner.timer);
+  inBuffer(shell, () => e8.deleteOverlay(shell.spinner!.overlay));
+  shell.spinner = undefined;
+}
+
 function tokens(n: number): string {
   if (n < 1000) return String(n);
   if (n < 1_000_000) return `${Math.round(n / 1000)}k`;
   return `${Number((n / 1_000_000).toFixed(1))}M`;
 }
 
-/** Shows on the mode line whether the agent is working and how much of its context the conversation fills. */
+/**
+ * Shows whether the agent is working, with a spinner on the mode line and at
+ * the buffer's end, and on the mode line how much of its context the
+ * conversation fills, green, then amber past half and red past four fifths.
+ */
 function showState(shell: Shell): void {
-  const usage = shell.usage && shell.usage.size > 0 ? ` ${tokens(shell.usage.used)}/${tokens(shell.usage.size)}` : "";
-  inBuffer(shell, () => e8.setVariable("mode-line-process", `${shell.busy ? ":working" : ""}${usage}`));
+  const parts: (string | e8.PropertizedString)[] = [];
+  const frame = shell.spinner === undefined ? undefined : SPINNER[shell.spinner.frame];
+  if (shell.busy) parts.push(`:working${frame === undefined ? "" : ` ${frame}`}`);
+  if (shell.usage && shell.usage.size > 0) {
+    const share = shell.usage.used / shell.usage.size;
+    const face = share > 0.8 ? "error" : share > 0.5 ? "warning" : "success";
+    parts.push(" ", e8.propertize(`${tokens(shell.usage.used)}/${tokens(shell.usage.size)}`, { face }));
+  }
+  inBuffer(shell, () => {
+    e8.setVariable("mode-line-process", e8.concat(...parts));
+    const spinner = shell.spinner;
+    if (spinner === undefined) return;
+    const end = e8.bufferSize();
+    e8.moveOverlay(spinner.overlay, end, end);
+    const lineStart = end === 0 || e8.bufferText(end - 1, end) === "\n";
+    e8.overlayPut(spinner.overlay, "after-string", e8.propertize(`${lineStart ? "" : " "}${frame}`, { face: "shadow" }));
+  });
 }
 
 /** Ends the turn: a note if it did not end as asked, its blocks folded, and a heading for the next request. */
 function finish(shell: Shell, text?: string): void {
   shell.busy = false;
   shell.cancelled = false;
+  stopSpinner(shell);
   showState(shell);
   cancelPermissions(shell);
   closeOpen(shell);
@@ -1961,7 +2324,7 @@ e8.defineCommand({
     e8.setVariable("buffer-undo-list", null);
     shell.busy = true;
     shell.cancelled = false;
-    showState(shell);
+    startSpinner(shell);
     startLine(shell);
     put(shell, "\n* Agent\n");
     e8.gotoChar(e8.bufferSize());
@@ -1991,5 +2354,6 @@ e8.addHook("kill-buffer-hook", () => {
   if (shell === undefined) return;
   shells.delete(name);
   cancelPermissions(shell);
+  stopSpinner(shell);
   acp.shutdown({ client: shell.client });
 });

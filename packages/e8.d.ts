@@ -378,7 +378,7 @@ declare global {
       /**
        * The mode of a conversation with a coding agent, started with M-x agent-shell.
        *
-       * Type a request under the last * You heading and send it with C-c RET. The agent's reply streams in under * Agent, its Markdown made Org; each tool call is a line, with its output or diff folded into it as it comes (TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. M-p and M-n bring the requests sent before back to the prompt, as in a shell, and M-r picks one of them. A request starting with / is one of the agent's slash commands, which TAB or C-M-i completes, its description shown once it is whole. In the transcript, where nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode line shows whether the agent is working and how much of its context the conversation fills.
+       * Type a request under the last * You heading and send it with C-c RET. The agent's reply streams in under * Agent, its Markdown made Org; each tool call is a line, with its output or diff folded into it as it comes (TAB on the line shows it, and a call the agent asks about shows its diff while it asks); its thinking is a #+begin_thinking block, folded as it comes, which TAB on its first line opens as any Org block. Its thinking and tool calls between what it says show as one line saying what was done, "Thought, ran 2 commands", which folds once its text goes on; TAB on the line opens it. The tools agent-shell-hidden-tools names are left out. The conversation above the request you are typing is read-only, as a shell's: the agent's turns and the requests sent, which undo never reaches. M-p and M-n bring the requests sent before back to the prompt, as in a shell, and M-r picks one of them. A request starting with / is one of the agent's slash commands, which TAB or C-M-i completes, its description shown once it is whole. In the transcript, where nothing can be typed, Org's speed commands run anywhere: n and p move to the next and previous heading, f and b to the next and previous at the same level, u up, c and C fold and unfold, o opens a link and ? lists them. The agent asks before its tools act. C-c C-k stops the turn. The mode line shows whether the agent is working and how much of its context the conversation fills.
        *
        * The header line shows the session's model, mode and thought level, and nothing else: the keys are listed below. agent-shell-header-style null leaves the header line to you. C-c TAB, or C-<tab> as in Emacs's agent-shell where tab-bar-mode does not take it, moves to the next mode, C-c C-v picks the model, C-c C-t the thought level, and C-c C-s any setting the agent offers. Picking a mode is M-x agent-shell-set-session-mode, as C-c C-m is C-c RET.
        *
@@ -13673,6 +13673,36 @@ declare global {
 
     /** Every face, with its documentation. */
     interface Faces {
+      /**
+       * The label a * Agent heading shows as, the agent's name.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-agent-label": FaceAttributes;
+      /**
+       * Blocks in an agent's buffer, code and tool output, drawn as panels.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-block": FaceAttributes;
+      /**
+       * A block's caption, the language of its code or what it holds, and the thinking's.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-caption": FaceAttributes;
+      /**
+       * What a tool call does, Command, Edit or Read, beside its status.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-tool-kind": FaceAttributes;
+      /**
+       * The label a * You heading shows as in an agent's buffer.
+       *
+       * Defined in packages/agent-shell.ts.
+       */
+      "agent-shell-user-label": FaceAttributes;
       /**
        * ANSI black as a background.
        *
