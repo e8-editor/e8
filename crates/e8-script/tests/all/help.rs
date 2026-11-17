@@ -298,3 +298,20 @@ fn tab_folds_a_release_in_the_news() {
     ed.press("TAB").unwrap();
     assert_eq!(ed.echo(), Some("CHILDREN"));
 }
+
+#[test]
+fn only_stars_and_form_feeds_start_outline_headings() {
+    // outline-regexp's default is "[*^L]+": a line starting with f, or F
+    // when case folds, is text, not a heading.
+    let (mut ed, s) = setup();
+    let fold = r#"
+      e8.call("switch-to-buffer", "o");
+      e8.insert("* One\nfirst line\nFor a second\n** Two\nfile\n* Three\nbody\n");
+      e8.call("outline-mode");
+      e8.gotoChar(0);
+      e8.call("outline-cycle-buffer");
+    "#;
+    s.eval_typescript(&mut ed, "test.ts", fold.to_string()).unwrap();
+    let folded = r#"[0, 1, 2, 3, 4, 5, 6].filter((l) => !e8.invisibleAt(e8.lineStart(l))).join(" ")"#;
+    assert_eq!(s.eval_expression(&mut ed, folded).unwrap(), "\"0 5\"");
+}

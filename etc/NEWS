@@ -20,6 +20,10 @@ it requires and what requires it, its README, and its news, from the
 NEWS file in its repository.  For a package that ships with E8: what its
 file says it is.
 
+** Outlines no longer take a line starting with "f" for a heading.
+'outline-regexp' matches a star or a form feed, as Emacs's does, so
+folding in 'outline-mode' and 'outline-minor-mode' hides such lines.
+
 
 * Changes in E8 0.5.15
 

@@ -10,7 +10,10 @@ e8.defineVariable({
   doc:
     "What starts a heading line: an Emacs regular expression matched at the start of a line. " +
     "The length of the match is the heading's level.",
-  value: "[*\\f]+",
+  // A star or a form feed, as Emacs's "[*\^L]+": in an Emacs regexp a
+  // backslash in brackets is itself, so "\\f" there would make every line
+  // starting with f a heading.
+  value: "[*\f]+",
   local: true,
 });
 
