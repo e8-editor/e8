@@ -9189,6 +9189,24 @@ declare global {
        */
       "completions-format": Value;
       /**
+       * Whether cycling keeps the order a table's groups give its completions, rather than sorting them by length. *Completions* groups them whenever the table has a group function.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-group": Value;
+      /**
+       * The line above each group in *Completions*, %s its title.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-group-format": Value;
+      /**
+       * How *Completions* orders its groups: nil as the table gives them, alphabetical by title, or a function of the [title, ...completions] lists.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-group-sort": Value;
+      /**
        * The line at the top of *Completions*, %s the number of completions; nil for none.
        *
        * Defined in packages/minibuffer.ts.
@@ -14245,6 +14263,18 @@ declare global {
        * Defined in packages/icomplete.ts.
        */
       "completions-common-part": FaceAttributes;
+      /**
+       * The lines either side of a group's title in *Completions*.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-group-separator": FaceAttributes;
+      /**
+       * The title of a group in *Completions*.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-group-title": FaceAttributes;
       /**
        * The completion chosen in *Completions*.
        *
