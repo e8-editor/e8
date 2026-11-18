@@ -47,6 +47,22 @@ e8.defineVariable({
 });
 e8.defineVariable({ name: "completion-auto-wrap", doc: "Whether moving past the last completion in *Completions* goes to the first, and back.", value: true });
 
+e8.defineVariable({
+  name: "completions-group",
+  doc: "Whether cycling keeps the order a table's groups give its completions, rather than sorting them by length. *Completions* groups them whenever the table has a group function.",
+  value: null,
+});
+e8.defineVariable({
+  name: "completions-group-sort",
+  doc: "How *Completions* orders its groups: nil as the table gives them, alphabetical by title, or a function of the [title, ...completions] lists.",
+  value: null,
+});
+/** completions-group-format's text as Emacs has it; its faces are put when it is used. */
+const GROUP_FORMAT = "     %s  ";
+e8.defineVariable({ name: "completions-group-format", doc: "The line above each group in *Completions*, %s its title.", value: GROUP_FORMAT });
+e8.defineFace({ name: "completions-group-title", doc: "The title of a group in *Completions*.", attributes: { inherit: "shadow", slant: "italic" } });
+e8.defineFace({ name: "completions-group-separator", doc: "The lines either side of a group's title in *Completions*.", attributes: { inherit: "shadow", strikeThrough: true } });
+
 e8.defineFace({ name: "completions-highlight", doc: "The completion chosen in *Completions*.", attributes: { inherit: "highlight" } });
 
 /** The text in the buffer being completed, and how to tell it is still there, as completion-in-region--data. */
@@ -72,6 +88,8 @@ export type ExitFunction = (text: string, status: "finished" | "exact" | "sole")
  */
 export interface CompletionProps {
   exitFunction?: ExitFunction;
+  /** A completion's group's title, or with `transform` the completion as its group shows it, as group-function. */
+  groupFunction?: (candidate: string, transform: boolean) => string | undefined | null;
   annotationFunction?: (candidate: string) => string | e8.PropertizedString | undefined | null;
   displaySortFunction?: (candidates: string[]) => string[];
   cycleSortFunction?: (candidates: string[]) => string[];
@@ -242,6 +260,9 @@ function completionHelp(start: number, end: number, names: () => string[], props
   // field-end has it with no boundaries, and what is typed at its end
   // after the list shows, as the insert-choice function takes it in.
   listData = { reference, start: e8.makeMarker(start), end: e8.makeMarker(end, { advances: true }), names, props };
+  // In their groups, as minibuffer--group-by, the groups in the order completions-group-sort says.
+  const group = props.groupFunction;
+  if (group) completions = groupBy(completions, group);
   // Annotated in the buffer being completed, as Emacs calls the annotation
   // function with-current-buffer the main buffer.
   const annotate = props.annotationFunction;
@@ -268,7 +289,7 @@ function completionHelp(start: number, end: number, names: () => string[], props
       e8.deleteRegion(e8.pointMin(), e8.pointMax());
       const header = e8.variable("completions-header-format");
       if (typeof header === "string") e8.insert(e8.propertize(header.replace("%s", String(completions.length)), { face: "shadow" }));
-      insertStrings(entries, width);
+      insertStrings(entries, width, group);
       if (help !== undefined) {
         e8.gotoChar(e8.pointMin());
         e8.insert(help);
@@ -291,6 +312,35 @@ function completionHelp(start: number, end: number, names: () => string[], props
  * as completions-format says, each with mouse-face, so a click or RET on
  * it chooses it, and completion--string, which names it.
  */
+/** COMPLETIONS in the groups GROUP puts them in, each group's in their order, as minibuffer--group-by. */
+function groupBy(completions: string[], group: NonNullable<CompletionProps["groupFunction"]>): string[] {
+  const groups: [string | null | undefined, string[]][] = [];
+  for (const c of completions) {
+    const key = group(c, false);
+    const found = groups.find((g) => g[0] === key);
+    if (found) found[1].push(c);
+    else groups.push([key, [c]]);
+  }
+  const order = e8.variable("completions-group-sort");
+  let sorted = groups;
+  if (order === "alphabetical") sorted = [...groups].sort((a, b) => (String(a[0] ?? "") < String(b[0] ?? "") ? -1 : String(a[0] ?? "") > String(b[0] ?? "") ? 1 : 0));
+  else if (typeof order === "function" || (typeof order === "string" && order !== ""))
+    sorted = e8.funcall(order as string, groups.map(([title, cs]) => [title ?? null, ...cs])).map((g: e8.Value[]) => [g[0] as string, g.slice(1) as string[]]);
+  return sorted.flatMap((g) => g[1]);
+}
+
+/** The line above a group in *Completions*, as completions-group-format formats it, with Emacs's faces on its own format. */
+function groupLine(title: string): string | e8.PropertizedString {
+  const format = e8.variable("completions-group-format");
+  if (typeof format !== "string") return title;
+  if (format !== GROUP_FORMAT) return format.replace("%s", title);
+  return e8.concat(
+    e8.propertize("    ", { face: "completions-group-separator" }),
+    e8.propertize(` ${title} `, { face: "completions-group-title" }),
+    e8.propertize(" ", { face: "completions-group-separator", display: ["space", ":align-to", "right"] }),
+  );
+}
+
 /** A completion as *Completions* lists it: alone, or with its annotation. */
 type Entry = string | [string, string | e8.PropertizedString];
 
@@ -298,7 +348,7 @@ const entryText = (e: Entry): string => (typeof e === "string" ? e : e[0]);
 const plain = (s: string | e8.PropertizedString): string => (typeof s === "string" ? s : s.string);
 const entryWidth = (e: Entry): number => (typeof e === "string" ? e8.stringWidth(e) : e8.stringWidth(e[0]) + e8.stringWidth(plain(e[1])));
 
-function insertStrings(strings: Entry[], wwidth: number): void {
+function insertStrings(strings: Entry[], wwidth: number, group?: CompletionProps["groupFunction"]): void {
   if (strings.length === 0) return;
   const length = Math.max(...strings.map(entryWidth));
   const columns = Math.min(Math.max(1, Math.floor(wwidth / (2 + length))), Math.max(1, Math.floor(strings.length / 2)));
@@ -308,7 +358,9 @@ function insertStrings(strings: Entry[], wwidth: number): void {
   // it has a face of its own.
   const one = (e: Entry) => {
     const s = entryText(e);
-    e8.insert(e8.propertize(s, { "mouse-face": "highlight", "completion--string": s }));
+    // As its group shows it, as the group function transforms it, still naming the completion.
+    const shown = group ? (group(s, true) ?? s) : s;
+    e8.insert(e8.propertize(shown, { "mouse-face": "highlight", "completion--string": s }));
     if (typeof e === "string") return;
     const from = e8.point();
     e8.insert(e[1]);
@@ -319,51 +371,90 @@ function insertStrings(strings: Entry[], wwidth: number): void {
   const format = e8.variable("completions-format");
   const same = (a: Entry, b: Entry) => entryText(a) === entryText(b) && (typeof a === "string" ? a : plain(a[1])) === (typeof b === "string" ? b : plain(b[1]));
   const unique = strings.filter((s, i) => i === 0 || !same(s, strings[i - 1]));
+  const titleOf = (e: Entry) => (group ? group(entryText(e), false) : undefined);
   if (format === "one-column") {
+    let lastTitle: string | null | undefined;
     unique.forEach((s, i) => {
       if (i > 0) e8.insert("\n");
+      const title = titleOf(s);
+      if (group && title !== lastTitle) {
+        lastTitle = title;
+        if (title) {
+          e8.insert(groupLine(title));
+          e8.insert("\n");
+        }
+      }
       one(s);
     });
     return;
   }
   if (format === "vertical") {
-    // As completion--insert-vertical: down the columns, a line more than
-    // the completions divide into, each column padded out to its place.
-    const rows = Math.floor(strings.length / columns);
-    let column = 0;
-    let row = 0;
-    let last: Entry | undefined;
-    for (const s of strings) {
-      if (last !== undefined && same(s, last)) continue;
-      last = s;
-      if (row > rows) {
-        forwardLine(-1 - rows);
-        row = 0;
-        column += colwidth;
-      }
-      if (column > 0) {
-        e8.gotoChar(e8.lineEnd(e8.lineOf(e8.point())));
-        while (e8.currentColumn() > column) {
-          if (e8.point() === e8.pointMax()) e8.insert("\n");
-          else {
-            forwardLine(1);
-            e8.gotoChar(e8.lineEnd(e8.lineOf(e8.point())));
-          }
+    // As completion--insert-vertical: each group down the columns, a line
+    // more than its completions divide into, each column padded out to its place.
+    let rest = strings;
+    while (rest.length > 0) {
+      let chunk = rest;
+      if (group) {
+        const title = titleOf(rest[0]);
+        const n = rest.findIndex((e) => titleOf(e) !== title);
+        chunk = n < 0 ? rest : rest.slice(0, n);
+        if (title) {
+          e8.gotoChar(e8.pointMax());
+          e8.insert(groupLine(title));
+          e8.insert("\n");
         }
-        e8.insert(" ");
-        e8.insert(e8.propertize("\t", { display: ["space", ":align-to", column] }));
       }
-      one(s);
-      if (column > 0) forwardLine(1);
-      else e8.insert("\n");
-      row++;
+      rest = rest.slice(chunk.length);
+      const rows = Math.floor(chunk.length / columns);
+      let column = 0;
+      let row = 0;
+      let last: Entry | undefined;
+      for (const s of chunk) {
+        if (last !== undefined && same(s, last)) continue;
+        last = s;
+        if (row > rows) {
+          forwardLine(-1 - rows);
+          row = 0;
+          column += colwidth;
+        }
+        if (column > 0) {
+          e8.gotoChar(e8.lineEnd(e8.lineOf(e8.point())));
+          while (e8.currentColumn() > column) {
+            if (e8.point() === e8.pointMax()) e8.insert("\n");
+            else {
+              forwardLine(1);
+              e8.gotoChar(e8.lineEnd(e8.lineOf(e8.point())));
+            }
+          }
+          e8.insert(" ");
+          e8.insert(e8.propertize("\t", { display: ["space", ":align-to", column] }));
+        }
+        one(s);
+        if (column > 0) forwardLine(1);
+        else e8.insert("\n");
+        row++;
+      }
     }
     return;
   }
   // Horizontal, as completion--insert-horizontal: across, then down.
   let column = 0;
   let first = true;
+  let lastTitle: string | null | undefined;
   for (const s of unique) {
+    if (group) {
+      const title = titleOf(s);
+      if (title !== lastTitle) {
+        lastTitle = title;
+        if (title) {
+          e8.insert(first ? "" : "\n");
+          e8.insert(groupLine(title));
+          e8.insert("\n");
+          column = 0;
+          first = true;
+        }
+      }
+    }
     if (!first) {
       if (wwidth < column + Math.max(colwidth, entryWidth(s))) {
         e8.insert("\n");
@@ -568,9 +659,11 @@ function allSortedCompletions(start: number, end: number, names: string[], props
   const at = Math.min(Math.max(e8.point() - start, 0), text.length);
   let all = [...new Set(allCompletions(text.slice(0, at), text.slice(at), names))];
   if (all.length === 0) return all;
-  all = props.cycleSortFunction
-    ? props.cycleSortFunction(all)
-    : all.sort((a, b) => [...a].length - [...b].length || (a < b ? -1 : a > b ? 1 : 0));
+  // A table's cycle sort; else with completions-group and groups, the table's
+  // order; else by length and then alphabetically.
+  if (props.cycleSortFunction) all = props.cycleSortFunction(all);
+  else if (!(truthyValue(e8.variable("completions-group")) && props.groupFunction))
+    all = all.sort((a, b) => [...a].length - [...b].length || (a < b ? -1 : a > b ? 1 : 0));
   cacheSortedCompletions(start, end, all);
   return all;
 }
@@ -707,7 +800,7 @@ interface CapfData {
 /**
  * The first function of completion-at-point-functions to say what completes
  * at point, and what it says: [start, end, completions], and after them,
- * as Emacs's plist, ":exit-function", ":annotation-function", and, where
+ * as Emacs's plist, ":exit-function", ":annotation-function", ":group-function", and, where
  * Emacs's table gives them as its metadata, ":display-sort-function" and
  * ":cycle-sort-function", each with its function.
  */
@@ -725,6 +818,7 @@ function completionAtPointData(): CapfData | undefined {
     annotationFunction: get(":annotation-function"),
     displaySortFunction: get(":display-sort-function"),
     cycleSortFunction: get(":cycle-sort-function"),
+    groupFunction: get(":group-function"),
   };
   return { start, end, names, props };
 }

@@ -315,3 +315,65 @@ fn cycling_goes_on_with_the_last_key_of_a_prefix_binding() {
     ed.press("c").unwrap();
     assert_eq!(text(&ed), "foobarc");
 }
+
+/// Fruits in groups by their first letter, shown upper case, as a group function transforms them.
+fn grouped() -> (Editor, Scripting) {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.set_frame_size(80, 24);
+    s.eval_typescript(
+        &mut ed,
+        "capf.ts",
+        r#"e8.addHook("completion-at-point-functions", () => [e8.point(), e8.point(), ["apple", "banana", "avocado", "blueberry", "cherry"],
+          ":group-function", (c: string, transform: boolean) => transform ? c.toUpperCase() : c.startsWith("a") ? "A fruits" : c.startsWith("b") ? "B fruits" : "Other"],
+          { local: true });"#
+            .to_string(),
+    )
+    .unwrap();
+    (ed, s)
+}
+
+fn completions_text(ed: &mut Editor, s: &Scripting) -> String {
+    ed.call("completion-help-at-point", vec![]).unwrap();
+    eval(ed, s, r#"e8.withCurrentBuffer("*Completions*", () => e8.bufferText(e8.pointMin(), e8.pointMax()))"#)
+}
+
+#[test]
+fn groups_are_listed_under_their_titles_as_emacs_lists_them() {
+    let (mut ed, s) = grouped();
+    // Each as Emacs 30.2 lists them, without completions-group, which only cycling reads.
+    let head = r#"5 possible completions:\n     A fruits  \n"#;
+    let horizontal = completions_text(&mut ed, &s);
+    assert!(horizontal.ends_with(&format!(r#"{head}APPLE \tAVOCADO\n     B fruits  \nBANANA \tBLUEBERRY\n     Other  \nCHERRY""#)), "{horizontal}");
+    ed.set_variable("completions-format", e8_core::Value::Str("vertical".into()));
+    let vertical = completions_text(&mut ed, &s);
+    assert!(vertical.ends_with(&format!(r#"{head}APPLE\nAVOCADO\n     B fruits  \nBANANA\nBLUEBERRY\n     Other  \nCHERRY\n""#)), "{vertical}");
+    ed.set_variable("completions-format", e8_core::Value::Str("one-column".into()));
+    ed.set_variable("completions-group-sort", e8_core::Value::Str("alphabetical".into()));
+    let one = completions_text(&mut ed, &s);
+    assert!(one.ends_with(&format!(r#"{head}APPLE\nAVOCADO\n     B fruits  \nBANANA\nBLUEBERRY\n     Other  \nCHERRY""#)), "{one}");
+    // The title is in its face, and choosing what the group shows chooses the completion itself.
+    let face = eval(&mut ed, &s, r#"e8.withCurrentBuffer("*Completions*", () => e8.getTextProperty(e8.bufferText(e8.pointMin(), e8.pointMax()).indexOf("A fruits"), "face"))"#);
+    assert_eq!(face, r#""completions-group-title""#);
+    ed.press("M-<down>").unwrap();
+    ed.press("M-RET").unwrap();
+    assert_eq!(text(&ed), "apple");
+}
+
+#[test]
+fn groups_sort_alphabetically_when_asked() {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.set_frame_size(80, 24);
+    s.eval_typescript(
+        &mut ed,
+        "capf.ts",
+        r#"e8.addHook("completion-at-point-functions", () => [e8.point(), e8.point(), ["zed", "alpha"],
+          ":group-function", (c: string, transform: boolean) => transform ? c : c === "zed" ? "First" : "Second"], { local: true });"#
+            .to_string(),
+    )
+    .unwrap();
+    ed.set_variable("completions-group-sort", e8_core::Value::Str("alphabetical".into()));
+    let list = completions_text(&mut ed, &s);
+    assert!(list.ends_with(r#"2 possible completions:\n     First  \nzed\n     Second  \nalpha""#), "{list}");
+}
