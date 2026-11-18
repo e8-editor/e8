@@ -2202,7 +2202,9 @@ function slashAtPoint(): { shell: Shell; start: number; end: number } | undefine
 function slashCompletions(): e8.Value {
   const at = slashAtPoint();
   if (at === undefined || at.shell.commands.length === 0) return null;
-  return [at.start, at.end, at.shell.commands.map((c) => `/${c.name}`)];
+  // Once one is whole, say what it does, as completeSlashCommand does.
+  const describe = () => describeSlashCommand(at.shell, at.start);
+  return [at.start, at.end, at.shell.commands.map((c) => `/${c.name}`), ":exit-function", describe as unknown as e8.Value];
 }
 
 /** Says what the slash command typed does, once it is whole: its description, and what it takes. */
@@ -2222,8 +2224,15 @@ function completeSlashCommand(): boolean {
     e8.message(`${at.shell.agent} has given no slash commands${at.shell.sessionId === undefined ? " yet" : ""}`);
     return true;
   }
-  completionInRegion(at.start, at.end, at.shell.commands.map((c) => `/${c.name}`));
-  describeSlashCommand(at.shell, at.start);
+  // Still the same command while the / it starts with stays where it was;
+  // once one is done, typed out or chosen from *Completions*, say what it does.
+  completionInRegion(
+    at.start,
+    at.end,
+    at.shell.commands.map((c) => `/${c.name}`),
+    (start) => slashAtPoint()?.start === start,
+    () => describeSlashCommand(at.shell, at.start),
+  );
   return true;
 }
 

@@ -346,7 +346,7 @@ fn filename_try_filter(all: Vec<String>, ignored: &[String]) -> Vec<String> {
 }
 
 /// What completing in one style gives, or `None` for a style E8 does not know.
-fn try_in_style(style: &str, before: &str, after: &str, suffix: &str, names: &[String], fold: bool, ignored: Option<&[String]>) -> Option<Try> {
+pub fn try_in_style(style: &str, before: &str, after: &str, suffix: &str, names: &[String], fold: bool, ignored: Option<&[String]>) -> Option<Try> {
     let point = before.chars().count();
     let plain = |completion: Option<Result<String, ()>>, after: &str| match completion {
         None => Try::None,

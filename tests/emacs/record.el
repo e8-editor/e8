@@ -21,8 +21,11 @@
 ;; of those files, or a new one holding `text', to visit for real instead
 ;; of the case's buffer), `disk' (text to give the visited file, changed
 ;; on disk as if by another program, when the keys reach <f33>),
-;; `message' (true to record the last message), and `platform' (an Emacs
-;; `system-type' such as "darwin", for cases that only hold on one platform).
+;; `message' (true to record the last message), `capf' (a list of strings
+;; that a function on completion-at-point-functions offers for the word at
+;; point), `completions' (true to record the text of *Completions* if a
+;; window shows it), and `platform' (an Emacs `system-type' such as
+;; "darwin", for cases that only hold on one platform).
 ;; Cases with files record what the directory holds afterwards.
 ;;
 ;; Each case runs in a fresh Fundamental mode buffer, in a single window,
@@ -233,6 +236,14 @@ answers come, and then from its answers, as save-some-buffers' do."
     (e8-oracle--read-char)))
 (advice-add 'read-event :around #'e8-oracle--read-event)
 
+;; The case's keys wait in unread-command-events, where a person types
+;; them one at a time; completion-in-region--postch does nothing while keys
+;; wait, so it would never hide *Completions* when point leaves the field.
+(defun e8-oracle--postch-as-typed (postch)
+  "Run POSTCH as after a key typed on its own."
+  (let ((unread-command-events nil)) (funcall postch)))
+(advice-add 'completion-in-region--postch :around #'e8-oracle--postch-as-typed)
+
 ;; Batch Emacs gives up on a file changed on disk; ask as interactive Emacs
 ;; does, taking the answer from the case.
 (defun e8-oracle--supersession (filename)
@@ -341,6 +352,14 @@ answers come, and then from its answers, as save-some-buffers' do."
       (dolist (var (alist-get 'vars case))
         (set (make-local-variable (car var))
              (pcase (cdr var) (:json-false nil) ('t t) (v v))))
+      ;; A completion function offering the case's strings for the word at point.
+      (when-let* ((strings (alist-get 'capf case)))
+        (add-hook 'completion-at-point-functions
+                  (lambda ()
+                    (let ((start (save-excursion (skip-chars-backward "-_[:alnum:]") (point)))
+                          (end (save-excursion (skip-chars-forward "-_[:alnum:]") (point))))
+                      (list start end strings)))
+                  nil t))
       (e8-oracle--fontify)
       (setq mark-active nil
             mark-ring nil
@@ -482,6 +501,8 @@ The whole buffer, even if the case left it narrowed."
                   ,@(and (alist-get 'find case) `((find . ,(alist-get 'find case))))
                   ,@(and (alist-get 'disk case) `((disk . ,(alist-get 'disk case))))
                   ,@(and (alist-get 'message case) '((message . t)))
+                  ,@(and (alist-get 'capf case) `((capf . ,(vconcat (alist-get 'capf case)))))
+                  ,@(and (alist-get 'completions case) '((completions . t)))
                   ,@(and (alist-get 'vars case) `((vars . ,(alist-get 'vars case))))
                   ,@(and (alist-get 'lockfiles case) '((lockfiles . t)))))
         ,@(if (derived-mode-p 'dired-mode)
@@ -504,7 +525,13 @@ The whole buffer, even if the case left it narrowed."
         ,@(and (or (alist-get 'files case) (alist-get 'find case))
                `((files . ,(e8-oracle--listing))))
         ,@(and (alist-get 'message case)
-               `((message . ,(e8-oracle--last-message))))))
+               `((message . ,(e8-oracle--last-message))))
+        ,@(and (alist-get 'completions case)
+               `((completions . ,(let ((b (get-buffer "*Completions*")))
+                                   (if (and b (get-buffer-window b 0))
+                                       (with-current-buffer b
+                                         (buffer-substring-no-properties (point-min) (point-max)))
+                                     nil)))))))
 
 (defun e8-oracle--windows ()
   "The frame's windows in cyclic order: buffer, point and total size."

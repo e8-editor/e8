@@ -917,6 +917,12 @@ declare global {
        */
       "check-parens": [];
       /**
+       * Put the completion at point, or where the mouse was clicked, in place of the text it completes, and take the list away.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "choose-completion": [];
+      /**
        * Replace the text in the rectangle between point and the mark with spaces; with a prefix argument, short lines are padded too.
        *
        * @param start region start
@@ -1215,11 +1221,31 @@ declare global {
        */
       "compile-goto-error": [];
       /**
-       * Complete the text at point, from what completion-at-point-functions give: one completion goes in, or the part they share; with several, the minibuffer asks which.
+       * Complete the text at point, from what completion-at-point-functions give, as far as the completion styles go; when they go no further, list the completions in *Completions*, for M-<down>, M-<up> and M-RET to choose from.
        *
        * Defined in packages/minibuffer.ts.
        */
       "completion-at-point": [];
+      /**
+       * List the completions of the text at point in *Completions*, as completion-at-point would when it can complete no further.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-help-at-point": [];
+      /**
+       * On while the completions of the text at point are listed in *Completions*: M-<down> and M-<up> move among them, M-RET puts the one moved to in place of the text, TAB completes again and M-? lists them again. It goes off when point leaves the text.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-in-region-mode": [];
+      /**
+       * The list of completions *Completions* shows: RET or a click on one puts it in place of the text it completes; TAB and S-TAB move among them.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-list-mode": [];
       /**
        * Show the text in the region as its characters drawn together, or as other characters when code gives them.
        *
@@ -1433,6 +1459,12 @@ declare global {
        * @param n prefix count
        */
       "delete-char": [n?: number];
+      /**
+       * Take *Completions* away.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "delete-completion-window": [];
       /**
        * Delete every setting of a directory-local variable for a mode or subdirectory from the .dir-locals.el. With a prefix argument, ask which file.
        *
@@ -2871,6 +2903,12 @@ declare global {
        */
       "find-file-read-only-other-window": [file: string];
       /**
+       * Move to the first completion in *Completions*.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "first-completion": [];
+      /**
        * Visit the place of the first error message.
        *
        * Defined in packages/compile.ts.
@@ -4107,6 +4145,12 @@ declare global {
        */
       "kmacro-start-macro-or-insert-counter": [];
       /**
+       * Move to the last completion in *Completions*.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "last-completion": [];
+      /**
        * Move point a character to the left, or as many as the prefix argument says: back in left-to-right text and forward in right-to-left, or to the left on display with visual-order-cursor-movement.
        *
        * @param n prefix count
@@ -4443,6 +4487,12 @@ declare global {
        */
       "menu-bar-select-buffer-9": [];
       /**
+       * Put the completion moved to in *Completions* in place of the text being completed, and take the list away.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "minibuffer-choose-completion": [];
+      /**
        * Complete the minibuffer input as far as it is unambiguous.
        *
        * Which names match the input is up to completion-styles.
@@ -4464,6 +4514,22 @@ declare global {
        * With no completions, the input is finished as it is, unless the prompt must be answered by a completion.
        */
       "minibuffer-force-complete-and-exit": [];
+      /**
+       * Move to the next completion in *Completions*, from the text being completed.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "minibuffer-next-completion": [n?: number];
+      /**
+       * Move to the previous completion in *Completions*, from the text being completed.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "minibuffer-previous-completion": [n?: number];
       /**
        * Make the selected window as small as it can be without deleting any windows.
        *
@@ -4592,6 +4658,14 @@ declare global {
        * Defined in packages/window.ts.
        */
       "next-buffer": [count?: number];
+      /**
+       * Move to the next completion in *Completions*, or the Nth with a prefix argument.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "next-completion": [n?: number];
       /**
        * Visit the place of the next error message, or grep hit, in the compilation or grep buffer used last: its file, at its line. With a prefix argument, that many on; plain C-u starts again from the first.
        *
@@ -6174,6 +6248,14 @@ declare global {
        * Defined in packages/window.ts.
        */
       "previous-buffer": [count?: number];
+      /**
+       * Move to the previous completion in *Completions*, or the Nth back with a prefix argument.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "previous-completion": [n?: number];
       /**
        * Visit the place of the error message before, or as many back as the prefix argument says.
        *
@@ -9023,6 +9105,18 @@ declare global {
        */
       "compile-command": Value;
       /**
+       * Whether completing lists the completions when it cannot complete further: true; lazy, only when asked twice; always, after each completion too; visible, after each completion while the list shows; nil, never.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-auto-help": Value;
+      /**
+       * Whether moving past the last completion in *Completions* goes to the first, and back.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-auto-wrap": Value;
+      /**
        * The completion styles kinds of completion try before completion-styles, as [category, styles] pairs: buffer names match by substring too, and a project's files only by substring.
        */
       "completion-category-defaults": Value;
@@ -9031,6 +9125,12 @@ declare global {
        */
       "completion-category-overrides": Value;
       /**
+       * Whether completing that finds no match says nothing and does not ding.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-fail-discreetly": Value;
+      /**
        * Whether minibuffer completion ignores the case of letters.
        */
       "completion-ignore-case": Value;
@@ -9038,6 +9138,26 @@ declare global {
        * Endings of file names that completion lists leave out, such as icomplete's: compiled files, backups, and version control directories.
        */
       "completion-ignored-extensions": Value;
+      /**
+       * Whether Completion-In-Region mode is on. Use the command completion-in-region-mode to change it.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-in-region-mode": Value;
+      /**
+       * Keymap completion-in-region-mode-map.
+       */
+      "completion-in-region-mode-map": Value;
+      /**
+       * Keymap completion-list-mode-map.
+       */
+      "completion-list-mode-map": Value;
+      /**
+       * Whether *Completions* starts with lines saying how to choose a completion.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-show-help": Value;
       /**
        * How minibuffer input matches what it completes to, as a list of styles tried in order until one matches.
        *
@@ -9050,6 +9170,24 @@ declare global {
        * Defined in packages/minibuffer.ts.
        */
       "completion-styles-alist": Value;
+      /**
+       * How *Completions* lays the completions out: horizontal, across the lines in columns; vertical, down the columns; or one-column.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-format": Value;
+      /**
+       * The line at the top of *Completions*, %s the number of completions; nil for none.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-header-format": Value;
+      /**
+       * How *Completions* orders the completions: alphabetical, nil to leave them in the order given, or a function of the list.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-sort": Value;
       /**
        * Whether editing a file makes a lock file beside it, .#name, so another Emacs or E8 editing it is warned.
        */
@@ -14096,6 +14234,12 @@ declare global {
        */
       "completions-common-part": FaceAttributes;
       /**
+       * The completion chosen in *Completions*.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completions-highlight": FaceAttributes;
+      /**
        * The text of buffers.
        */
       "default": FaceAttributes;
@@ -15152,9 +15296,25 @@ declare global {
        */
       "compilation-start-hook": Value;
       /**
-       * Functions that say what completes the text at point: each gives [start, end, completions] or nil, the first that gives one winning.
+       * Functions that say what completes the text at point: each gives [start, end, completions] or nil, the first that gives one winning. The completions are a list of strings, or a function giving one when called.
        */
       "completion-at-point-functions": Value;
+      /**
+       * Run after Completion-In-Region mode is turned on or off.
+       */
+      "completion-in-region-mode-hook": Value;
+      /**
+       * Run after Completion-In-Region mode is turned off.
+       */
+      "completion-in-region-mode-off-hook": Value;
+      /**
+       * Run after Completion-In-Region mode is turned on.
+       */
+      "completion-in-region-mode-on-hook": Value;
+      /**
+       * Run after entering Completion List mode, after the hooks of the modes it is built on.
+       */
+      "completion-list-mode-hook": Value;
       /**
        * Run after Delete-Selection mode is turned on or off.
        */
@@ -16472,6 +16632,14 @@ declare global {
      * completion-styles-alist.
      */
     function completionAllInStyle(style: string, before: string, after: string, names: string[], ignore_case: boolean | undefined): string[] | undefined;
+    /**
+     * What completing BEFORE and AFTER, the text either side of point, in
+     * one of the completion styles E8 has built in gives, as that style's
+     * try-completion function: null for no match, true when the text is
+     * the only match, and otherwise the new text and where point goes in
+     * it. Undefined for a style it does not have, as one a package adds.
+     */
+    function completionTryInStyle(style: string, before: string, after: string, names: string[], ignoreCase?: boolean): null | true | { text: string; point: number } | undefined;
     /**
      * Asks the open prompt's completion function, a completingRead table
      * that is a function, for its names again, as when output a process

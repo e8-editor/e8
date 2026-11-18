@@ -25,6 +25,7 @@ mod codings;
 mod comint;
 mod commands;
 mod compile;
+mod completion_in_region;
 mod compression;
 mod dabbrev;
 mod describe_odds;

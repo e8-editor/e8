@@ -201,6 +201,17 @@ In the bench's Org table, V8 against QuickJS: RET in a paragraph 4.97 against 11
 
 The bench's `memory` test panicked on V8 at both commits, dropping its editors' isolates oldest first, which V8 refuses; that was the test's own, and it drops them newest first since pull request 172.
 
+### eglot sending whole texts costs little
+
+E8's eglot tells the server of edits with the buffer's whole text, where Emacs's sends what changed. Both send them once E8 has been idle half a second, or just before a request. On 2026-11-18 a test against gopls timed, on V8 in a debug build with dependencies optimised, serialising the text for a didChange and a completion request after `fmt.` with and without an edit just before it, the median of ten:
+
+| Go file | serialising the text | completion | completion after an edit |
+|---|---:|---:|---:|
+| 1,003 lines, 15 KB | 0.05 ms | 3.1 ms | 8.9 ms |
+| 30,007 lines, 467 KB | 0.7 ms | 264 ms | 417 ms |
+
+The time an edit adds is gopls checking the file again, which it does for an incremental change too; sending the text is under a millisecond. Incremental changes would save a few milliseconds on a file of 30,000 lines and nothing noticeable on the files of a thousand lines or fewer that most Go code is in, so they are left undone.
+
 ## What is left
 
 [optimisation.md](optimisation.md) lists where E8 is still slower than it could be: Electric Pair mode's balance check in a large buffer, the objects Org's heading index makes after each edit, building the rope when a large file opens, and rows off the grid in the GUI.

@@ -1,0 +1,940 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "sole-completion-goes-in",
+      "input": {
+        "text": "fo",
+        "point": 2,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "capf": [
+          "foobar",
+          "quux"
+        ],
+        "completions": true
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "the-common-part-goes-in",
+      "input": {
+        "text": "fo",
+        "point": 2,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "fooba",
+      "visible": "fooba",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "no-progress-lists-the-completions",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "fooba",
+      "visible": "fooba",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 5,
+          "width": 80,
+          "height": 17,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 7,
+          "selected": false
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n2 possible completions:\nfoobar\nfoobaz"
+    },
+    {
+      "name": "a-second-press-keeps-the-list",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "fooba",
+      "visible": "fooba",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Making completion list...",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n2 possible completions:\nfoobar\nfoobaz"
+    },
+    {
+      "name": "no-match-changes-nothing",
+      "input": {
+        "text": "zz",
+        "point": 2,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "capf": [
+          "foo"
+        ],
+        "completions": true
+      },
+      "text": "zz",
+      "visible": "zz",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No match",
+      "completions": null
+    },
+    {
+      "name": "exact-but-not-unique",
+      "input": {
+        "text": "foo",
+        "point": 3,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "capf": [
+          "foo",
+          "foobar"
+        ],
+        "completions": true
+      },
+      "text": "foo",
+      "visible": "foo",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Complete, but not unique",
+      "completions": null
+    },
+    {
+      "name": "exact-but-not-unique-twice-lists",
+      "input": {
+        "text": "foo",
+        "point": 3,
+        "keys": "C-M-i C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foo",
+          "foobar"
+        ],
+        "completions": true
+      },
+      "text": "foo",
+      "visible": "foo",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 3,
+          "width": 80,
+          "height": 17,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 7,
+          "selected": false
+        }
+      ],
+      "message": "Complete, but not unique",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n2 possible completions:\nfoo\nfoobar"
+    },
+    {
+      "name": "already-sole-and-exact",
+      "input": {
+        "text": "foobar",
+        "point": 6,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "capf": [
+          "foobar"
+        ],
+        "completions": true
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Sole completion",
+      "completions": null
+    },
+    {
+      "name": "m-down-and-m-ret-choose",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i M-<down> M-RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": null
+    },
+    {
+      "name": "m-down-twice-and-m-ret-choose-the-second",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i M-<down> M-<down> M-RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "foobaz",
+      "visible": "foobaz",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": null
+    },
+    {
+      "name": "m-up-from-the-list-chooses-the-last",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i M-<up> M-RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "foobaz",
+      "visible": "foobaz",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": null
+    },
+    {
+      "name": "typing-keeps-the-list-and-completes-again",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i r C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Sole completion",
+      "completions": null
+    },
+    {
+      "name": "leaving-the-word-hides-the-list",
+      "input": {
+        "text": "x fooba",
+        "point": 7,
+        "keys": "C-M-i C-a",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "x fooba",
+      "visible": "x fooba",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": null
+    },
+    {
+      "name": "tab-completes-while-the-list-shows",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i z TAB",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "foobaz",
+      "visible": "foobaz",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Sole completion",
+      "completions": null
+    },
+    {
+      "name": "m-question-in-the-mode-lists-again",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i M-?",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "fooba",
+      "visible": "fooba",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 5,
+          "width": 80,
+          "height": 17,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 7,
+          "selected": false
+        }
+      ],
+      "message": "Making completion list... [2 times]",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n2 possible completions:\nfoobar\nfoobaz"
+    },
+    {
+      "name": "many-completions-in-columns",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "apple",
+          "apricot",
+          "avocado",
+          "banana",
+          "blueberry",
+          "cherry",
+          "coconut",
+          "date",
+          "elderberry",
+          "fig",
+          "grape",
+          "guava"
+        ],
+        "completions": true
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 17,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 7,
+          "selected": false
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n12 possible completions:\napple \tapricot \tavocado \tbanana \tblueberry \tcherry\ncoconut \tdate \telderberry \tfig \tgrape \tguava"
+    },
+    {
+      "name": "many-completions-for-a-letter",
+      "input": {
+        "text": "a",
+        "point": 1,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "apple",
+          "apricot",
+          "avocado",
+          "banana",
+          "blueberry",
+          "cherry",
+          "coconut",
+          "date",
+          "elderberry",
+          "fig",
+          "grape",
+          "guava"
+        ],
+        "completions": true
+      },
+      "text": "a",
+      "visible": "a",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 1,
+          "width": 80,
+          "height": 16,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 8,
+          "selected": false
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n3 possible completions:\napple\napricot\navocado"
+    },
+    {
+      "name": "completing-in-the-middle-of-a-word",
+      "input": {
+        "text": "foo bar",
+        "point": 2,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "capf": [
+          "foobar-x",
+          "foobar-y"
+        ],
+        "completions": true
+      },
+      "text": "foobar- bar",
+      "visible": "foobar- bar",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "completing-the-word-before-point-mid-line",
+      "input": {
+        "text": "x fo y",
+        "point": 4,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "capf": [
+          "foobar"
+        ],
+        "completions": true
+      },
+      "text": "x foobar y",
+      "visible": "x foobar y",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "nothing-to-complete-at-point",
+      "input": {
+        "text": "  ",
+        "point": 1,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "completions": true
+      },
+      "text": "  ",
+      "visible": "  ",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "choosing-replaces-the-whole-word",
+      "input": {
+        "text": "fooba tail",
+        "point": 5,
+        "keys": "C-M-i M-<down> M-<down> M-RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "foobaz tail",
+      "visible": "foobaz tail",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": null
+    },
+    {
+      "name": "c-g-after-the-list",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i C-g",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "fooba",
+      "visible": "fooba",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 5,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": null
+    },
+    {
+      "name": "moving-within-the-word-keeps-the-list",
+      "input": {
+        "text": "x fooba",
+        "point": 7,
+        "keys": "C-M-i C-b C-b",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "x fooba",
+      "visible": "x fooba",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 5,
+          "width": 80,
+          "height": 17,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 7,
+          "selected": false
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n2 possible completions:\nfoobar\nfoobaz"
+    },
+    {
+      "name": "typing-after-the-list-then-choosing-replaces-it-all",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i r M-<down> M-RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": null
+    },
+    {
+      "name": "choosing-with-point-inside-the-word",
+      "input": {
+        "text": "fobar",
+        "point": 2,
+        "keys": "C-M-i C-M-i M-<down> M-RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foo1bar",
+          "foo2bar"
+        ],
+        "completions": true
+      },
+      "text": "foo1bar",
+      "visible": "foo1bar",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 7,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": null
+    },
+    {
+      "name": "listing-with-point-inside-the-word",
+      "input": {
+        "text": "fobar",
+        "point": 2,
+        "keys": "C-M-i C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foo1bar",
+          "foo2bar"
+        ],
+        "completions": true
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 3,
+          "width": 80,
+          "height": 17,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 7,
+          "selected": false
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n2 possible completions:\nfoo1bar\nfoo2bar"
+    }
+  ]
+}
