@@ -40,6 +40,11 @@ e8.defineVariable({
   doc: "How *Completions* orders the completions: alphabetical, nil to leave them in the order given, or a function of the list.",
   value: "alphabetical",
 });
+e8.defineVariable({
+  name: "completion-cycle-threshold",
+  doc: "When completing cycles through the completions, each try putting in the next: true, always; a number, when there are no more than that; nil, never.",
+  value: null,
+});
 e8.defineVariable({ name: "completion-auto-wrap", doc: "Whether moving past the last completion in *Completions* goes to the first, and back.", value: true });
 
 e8.defineFace({ name: "completions-highlight", doc: "The completion chosen in *Completions*.", attributes: { inherit: "highlight" } });
@@ -52,12 +57,25 @@ interface RegionData {
   names: () => string[];
   /** Whether the text is still the one being completed, given where its start's marker now is. */
   predicate: (start: number) => boolean;
-  exit?: ExitFunction;
+  props: CompletionProps;
 }
 let regionData: RegionData | undefined;
 
 /** What runs once a completion is done, as :exit-function: given the text and finished, exact or sole. */
 export type ExitFunction = (text: string, status: "finished" | "exact" | "sole") => void;
+
+/**
+ * What a completion function says besides its completions, as Emacs's
+ * completion-extra-properties and a table's metadata: what to run once a
+ * completion is done, what to show after each in *Completions*, and how to
+ * order them there and for cycling.
+ */
+export interface CompletionProps {
+  exitFunction?: ExitFunction;
+  annotationFunction?: (candidate: string) => string | e8.PropertizedString | undefined | null;
+  displaySortFunction?: (candidates: string[]) => string[];
+  cycleSortFunction?: (candidates: string[]) => string[];
+}
 
 /** What *Completions* lists the completions of: the buffer, the text they replace, and the names. */
 interface ListData {
@@ -65,7 +83,7 @@ interface ListData {
   start: e8.Marker;
   end: e8.Marker;
   names: () => string[];
-  exit?: ExitFunction;
+  props: CompletionProps;
 }
 let listData: ListData | undefined;
 
@@ -157,7 +175,7 @@ function plainTryCompletion(text: string, names: string[]): boolean {
  * and MESSAGE shown unless it said something itself. "unknown" is exact
  * if the text completes further, else finished.
  */
-function completionDone(text: string, status: "finished" | "exact" | "unknown", names: string[], exit: ExitFunction | undefined, message?: string): void {
+function completionDone(text: string, status: "finished" | "exact" | "sole" | "unknown", names: string[], exit: ExitFunction | undefined, message?: string): void {
   const before = exit ? e8.currentMessage() : undefined;
   if (exit) {
     const finished = status !== "unknown" ? status : plainTryCompletion(text, names) ? "finished" : "exact";
@@ -187,7 +205,7 @@ function clearMessage(): void {
  * minibuffer-completion-help: below the window, fitted to them, for
  * M-<down>, M-<up> and M-RET, or RET and a click there, to choose from.
  */
-function completionHelp(start: number, end: number, names: () => string[], exit?: ExitFunction): void {
+function completionHelp(start: number, end: number, names: () => string[], props: CompletionProps = {}): void {
   e8.message("Making completion list...");
   const text = e8.bufferText(start, end);
   const at = Math.min(Math.max(e8.point() - start, 0), text.length);
@@ -204,8 +222,10 @@ function completionHelp(start: number, end: number, names: () => string[], exit?
     return;
   }
   const sort = e8.variable("completions-sort");
-  // By history only where it is specific to the completions, which in a buffer it never is.
-  if (sort === "alphabetical" || sort === "historical") completions = [...completions].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  // The table's own order first, as eglot's by the server's sortText;
+  // by history only where it is specific to the completions, which in a buffer it never is.
+  if (props.displaySortFunction) completions = props.displaySortFunction([...completions]);
+  else if (sort === "alphabetical" || sort === "historical") completions = [...completions].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   else if (typeof sort === "function" || (typeof sort === "string" && sort !== "")) completions = e8.funcall(sort as string, completions) as string[];
   const reference = e8.bufferName()!;
   // Its keys as completion-in-region-mode binds them, and a click too where there is a mouse.
@@ -221,7 +241,16 @@ function completionHelp(start: number, end: number, names: () => string[], exit?
   // The completion replaces the text from its start to its end, as
   // field-end has it with no boundaries, and what is typed at its end
   // after the list shows, as the insert-choice function takes it in.
-  listData = { reference, start: e8.makeMarker(start), end: e8.makeMarker(end, { advances: true }), names, exit };
+  listData = { reference, start: e8.makeMarker(start), end: e8.makeMarker(end, { advances: true }), names, props };
+  // Annotated in the buffer being completed, as Emacs calls the annotation
+  // function with-current-buffer the main buffer.
+  const annotate = props.annotationFunction;
+  const entries: Entry[] = annotate
+    ? completions.map((c): Entry => {
+        const ann = annotate(c);
+        return ann === undefined || ann === null || ann === "" ? c : [c, ann];
+      })
+    : completions;
   const buffer = e8.getBufferCreate(COMPLETIONS);
   // As with-current-buffer-window: shown first, so the list is laid out
   // for its window's width, then filled, then fitted to what it holds.
@@ -239,7 +268,7 @@ function completionHelp(start: number, end: number, names: () => string[], exit?
       e8.deleteRegion(e8.pointMin(), e8.pointMax());
       const header = e8.variable("completions-header-format");
       if (typeof header === "string") e8.insert(e8.propertize(header.replace("%s", String(completions.length)), { face: "shadow" }));
-      insertStrings(completions, width);
+      insertStrings(entries, width);
       if (help !== undefined) {
         e8.gotoChar(e8.pointMin());
         e8.insert(help);
@@ -262,14 +291,34 @@ function completionHelp(start: number, end: number, names: () => string[], exit?
  * as completions-format says, each with mouse-face, so a click or RET on
  * it chooses it, and completion--string, which names it.
  */
-function insertStrings(strings: string[], wwidth: number): void {
+/** A completion as *Completions* lists it: alone, or with its annotation. */
+type Entry = string | [string, string | e8.PropertizedString];
+
+const entryText = (e: Entry): string => (typeof e === "string" ? e : e[0]);
+const plain = (s: string | e8.PropertizedString): string => (typeof s === "string" ? s : s.string);
+const entryWidth = (e: Entry): number => (typeof e === "string" ? e8.stringWidth(e) : e8.stringWidth(e[0]) + e8.stringWidth(plain(e[1])));
+
+function insertStrings(strings: Entry[], wwidth: number): void {
   if (strings.length === 0) return;
-  const length = Math.max(...strings.map((s) => e8.stringWidth(s)));
+  const length = Math.max(...strings.map(entryWidth));
   const columns = Math.min(Math.max(1, Math.floor(wwidth / (2 + length))), Math.max(1, Math.floor(strings.length / 2)));
   const colwidth = Math.floor(wwidth / columns);
-  const one = (s: string) => e8.insert(e8.propertize(s, { "mouse-face": "highlight", "completion--string": s }));
+  // As completion--insert: the completion with mouse-face, so a click or
+  // RET chooses it, then its annotation, in completions-annotations unless
+  // it has a face of its own.
+  const one = (e: Entry) => {
+    const s = entryText(e);
+    e8.insert(e8.propertize(s, { "mouse-face": "highlight", "completion--string": s }));
+    if (typeof e === "string") return;
+    const from = e8.point();
+    e8.insert(e[1]);
+    e8.putTextProperty(from, e8.point(), "completion--string", s);
+    const faced = typeof e[1] !== "string" && e[1].properties.some(([, , props]) => props.face !== undefined);
+    if (!faced) e8.putTextProperty(from, e8.point(), "face", "completions-annotations");
+  };
   const format = e8.variable("completions-format");
-  const unique = strings.filter((s, i) => i === 0 || s !== strings[i - 1]);
+  const same = (a: Entry, b: Entry) => entryText(a) === entryText(b) && (typeof a === "string" ? a : plain(a[1])) === (typeof b === "string" ? b : plain(b[1]));
+  const unique = strings.filter((s, i) => i === 0 || !same(s, strings[i - 1]));
   if (format === "one-column") {
     unique.forEach((s, i) => {
       if (i > 0) e8.insert("\n");
@@ -283,9 +332,9 @@ function insertStrings(strings: string[], wwidth: number): void {
     const rows = Math.floor(strings.length / columns);
     let column = 0;
     let row = 0;
-    let last: string | undefined;
+    let last: Entry | undefined;
     for (const s of strings) {
-      if (s === last) continue;
+      if (last !== undefined && same(s, last)) continue;
       last = s;
       if (row > rows) {
         forwardLine(-1 - rows);
@@ -316,7 +365,7 @@ function insertStrings(strings: string[], wwidth: number): void {
   let first = true;
   for (const s of unique) {
     if (!first) {
-      if (wwidth < column + Math.max(colwidth, e8.stringWidth(s))) {
+      if (wwidth < column + Math.max(colwidth, entryWidth(s))) {
         e8.insert("\n");
         column = 0;
       } else {
@@ -339,13 +388,14 @@ function highlightChosen(): void {
   const window = getBufferWindow(COMPLETIONS);
   e8.withCurrentBuffer(buffer, () => {
     const p = window ? e8.windowPoint(window) : e8.point();
-    const on = e8.getTextProperty(p, "completion--string") !== undefined;
-    if (!on) {
+    // The completion itself, which has mouse-face, not its annotation, as cursor-face is put.
+    const on = (q: number) => e8.getTextProperty(q, "mouse-face") !== undefined;
+    if (!on(p)) {
       if (chosenOverlay !== undefined) e8.moveOverlay(chosenOverlay, 0, 0);
       return;
     }
-    const start = p > e8.pointMin() && e8.getTextProperty(p - 1, "completion--string") !== undefined ? (e8.previousSinglePropertyChange(p, "completion--string") ?? e8.pointMin()) : p;
-    const end = e8.nextSinglePropertyChange(p, "completion--string") ?? e8.pointMax();
+    const start = p > e8.pointMin() && on(p - 1) ? (e8.previousSinglePropertyChange(p, "mouse-face") ?? e8.pointMin()) : p;
+    const end = e8.nextSinglePropertyChange(p, "mouse-face") ?? e8.pointMax();
     if (chosenOverlay === undefined || e8.overlayBuffer(chosenOverlay) !== e8.bufferName()) {
       chosenOverlay = e8.makeOverlay(start, end);
       e8.overlayPut(chosenOverlay, "face", "completions-highlight");
@@ -359,7 +409,8 @@ function highlightChosen(): void {
  * completions when completion-auto-help asks. Gives Emacs's bits: 4 if the
  * text changed, 2 if there were completions, 1 if it is now an exact match.
  */
-function doCompletion(beg: number, end: number, names: string[], listNames: () => string[], exit?: ExitFunction): number {
+function doCompletion(beg: number, end: number, names: string[], listNames: () => string[], props: CompletionProps = {}): number {
+  const exit = props.exitFunction;
   const string = e8.bufferText(beg, end);
   const at = Math.min(Math.max(e8.point() - beg, 0), string.length);
   const comp = tryCompletion(string.slice(0, at), string.slice(at), names);
@@ -378,7 +429,7 @@ function doCompletion(beg: number, end: number, names: string[], listNames: () =
     return 1;
   }
   const completion = comp.text;
-  const completed = completion.toLowerCase() !== string.toLowerCase();
+  let completed = completion.toLowerCase() !== string.toLowerCase();
   const unchanged = completion === string;
   if (unchanged) e8.gotoChar(end);
   else {
@@ -386,23 +437,33 @@ function doCompletion(beg: number, end: number, names: string[], listNames: () =
     end = beg + [...completion].length;
   }
   e8.gotoChar(beg + comp.point);
-  if (!unchanged && !completed) return doCompletion(beg, end, names, listNames, exit);
-  const exact = isCompletion(completion, names);
+  if (!unchanged && !completed) return doCompletion(beg, end, names, listNames, props);
+  let exact = isCompletion(completion, names);
   const autoHelp = e8.variable("completion-auto-help");
   const again = e8.thisCommand() === e8.lastCommand();
-  if (completed) {
+  // Cycling, as completion-cycle-threshold allows: the sorted completions,
+  // if there are no more than it says, put in one at a time.
+  const threshold = e8.variable("completion-cycle-threshold");
+  const comps = !isNil(threshold) && (!completed || comp.point > 0) ? allSortedCompletions(beg, end, names, props) : undefined;
+  flushSortedCompletions();
+  if (comps && comps.length > 1 && (threshold === true || (typeof threshold === "number" && comps.length <= threshold))) {
+    completed = true;
+    exact = true;
+    cacheSortedCompletions(beg, end, comps);
+    forceComplete(beg, end, names, props);
+  } else if (completed) {
     const listing = autoHelp === "always" || (autoHelp === "visible" && getBufferWindow(COMPLETIONS) !== undefined);
-    if (listing) completionHelp(beg, end, listNames, exit);
+    if (listing) completionHelp(beg, end, listNames, props);
     else {
       minibufferHideCompletions();
       // Point short of the text's end is a sign completing is not done.
       if (exact) completionDone(completion, comp.point < [...completion].length ? "exact" : "unknown", names, exit);
     }
   } else if (!exact) {
-    if (autoHelp === "lazy" ? again : truthyValue(autoHelp)) completionHelp(beg, end, listNames, exit);
+    if (autoHelp === "lazy" ? again : truthyValue(autoHelp)) completionHelp(beg, end, listNames, props);
     else e8.message("Next char not unique");
   } else {
-    if (again && truthyValue(autoHelp)) completionHelp(beg, end, listNames, exit);
+    if (again && truthyValue(autoHelp)) completionHelp(beg, end, listNames, props);
     completionDone(completion, "exact", names, exit, "Complete, but not unique");
   }
   return (completed ? 4 : 0) | 2 | (exact ? 1 : 0);
@@ -421,17 +482,21 @@ export function completionInRegion(
   end: number,
   collection: string[] | (() => string[]),
   predicate?: (start: number) => boolean,
-  exit?: ExitFunction,
+  properties?: CompletionProps | ExitFunction,
 ): boolean {
+  const props: CompletionProps = typeof properties === "function" ? { exitFunction: properties } : (properties ?? {});
   let cached: string[] | undefined;
   const names = () => (cached ??= typeof collection === "function" ? collection().map(String) : collection);
   if (predicate) {
     clearRegionData();
-    regionData = { buffer: e8.bufferName()!, start: e8.makeMarker(start), end: e8.makeMarker(end, { advances: true }), names, predicate, exit };
+    regionData = { buffer: e8.bufferName()!, start: e8.makeMarker(start), end: e8.makeMarker(end, { advances: true }), names, predicate, props };
     if (!truthyValue(e8.variable("completion-in-region-mode"))) e8.callWithPrefix(1, "completion-in-region-mode");
   }
   e8.setThisCommand("completion-at-point");
-  if (e8.lastCommand() !== "completion-at-point") scrollWindow = undefined;
+  if (e8.lastCommand() !== "completion-at-point") {
+    flushSortedCompletions();
+    scrollWindow = undefined;
+  }
   if (scrollWindow !== undefined && e8.windowLiveP(scrollWindow) && e8.windowBuffer(scrollWindow) === COMPLETIONS) {
     // Asked again with the list showing: scroll it, back to its top once its end shows.
     const window = scrollWindow;
@@ -439,10 +504,137 @@ export function completionInRegion(
     else withSelectedWindow(window, () => e8.call("scroll-up"));
     return false;
   }
-  const found = doCompletion(start, end, names(), names, exit);
+  // Cycling on: the next completion.
+  if (cycling && sortedCompletions) {
+    forceComplete(start, end, names(), props);
+    return true;
+  }
+  const found = doCompletion(start, end, names(), names, props);
   if (!(scrollWindow !== undefined && e8.windowLiveP(scrollWindow) && e8.windowBuffer(scrollWindow) === COMPLETIONS)) turnOffRegionMode();
   return found !== 0;
 }
+
+// Cycling, as minibuffer.el's completion-all-sorted-completions and
+// minibuffer-force-complete.
+
+/** The completions cycled through, in the order they come, and the text they complete. */
+let sortedCompletions: { list: string[]; buffer: string; start: e8.Marker; end: e8.Marker } | undefined;
+/** Whether completing cycles, as completion-cycling: the next try puts in the next completion. */
+let cycling = false;
+
+const isNil = (v: e8.Value | undefined) => v === undefined || v === null || v === false;
+
+/** Forgets the completions cycled through, as completion--flush-all-sorted-completions. */
+function flushSortedCompletions(): void {
+  cycling = false;
+  if (cycleNext) {
+    e8.deleteMarker(cycleNext.start);
+    cycleNext = undefined;
+  }
+  const sorted = sortedCompletions;
+  if (!sorted) return;
+  sortedCompletions = undefined;
+  if (e8.getBuffer(sorted.buffer)) e8.withCurrentBuffer(sorted.buffer, () => e8.removeHook("after-change-functions", flushOnChange, { local: true }));
+  e8.deleteMarker(sorted.start);
+  e8.deleteMarker(sorted.end);
+}
+
+/** A change to the text being completed, not one before or after it, forgets them. */
+function flushOnChange(start: number, end: number): void {
+  const sorted = sortedCompletions;
+  if (sorted && (start > e8.markerPosition(sorted.end)! || end < e8.markerPosition(sorted.start)!)) return;
+  flushSortedCompletions();
+}
+
+function cacheSortedCompletions(start: number, end: number, list: string[]): void {
+  const keep = cycling;
+  const next = cycleNext;
+  cycleNext = undefined;
+  flushSortedCompletions();
+  cycling = keep;
+  cycleNext = next;
+  e8.addHook("after-change-functions", flushOnChange, { local: true });
+  sortedCompletions = { list, buffer: e8.bufferName()!, start: e8.makeMarker(start), end: e8.makeMarker(end) };
+}
+
+/**
+ * The completions of the text from START to END, sorted for cycling, as
+ * completion-all-sorted-completions: by the table's cycle sort function,
+ * else by length and then alphabetically.
+ */
+function allSortedCompletions(start: number, end: number, names: string[], props: CompletionProps): string[] {
+  if (sortedCompletions) return sortedCompletions.list;
+  const text = e8.bufferText(start, end);
+  const at = Math.min(Math.max(e8.point() - start, 0), text.length);
+  let all = [...new Set(allCompletions(text.slice(0, at), text.slice(at), names))];
+  if (all.length === 0) return all;
+  all = props.cycleSortFunction
+    ? props.cycleSortFunction(all)
+    : all.sort((a, b) => [...a].length - [...b].length || (a < b ? -1 : a > b ? 1 : 0));
+  cacheSortedCompletions(start, end, all);
+  return all;
+}
+
+/** The arguments the next cycling step completes with, its start a marker, as Emacs's closure keeps one. */
+let cycleNext: { start: e8.Marker; names: string[]; props: CompletionProps } | undefined;
+
+/**
+ * Puts in the first of the sorted completions, as minibuffer-force-complete,
+ * and unless DONT-CYCLE, sets the rest up for the next try to put in.
+ */
+function forceComplete(start: number, end: number, names: string[], props: CompletionProps, dontCycle = false): void {
+  scrollWindow = undefined;
+  const startMarker = e8.makeMarker(start);
+  const all = allSortedCompletions(start, end, names, props);
+  const exit = props.exitFunction;
+  try {
+    if (all.length === 0) {
+      e8.message(sortedCompletions ? "No more completions" : "No completions");
+    } else if (all.length === 1) {
+      const done = all[0] === e8.bufferText(start, end);
+      if (!done) completionReplace(start, end, all[0]);
+      completionDone(e8.bufferText(e8.markerPosition(startMarker)!, e8.point()), "finished", names, exit, done ? "Sole completion" : undefined);
+    } else {
+      completionReplace(start, end, all[0]);
+      const newEnd = start + [...all[0]].length;
+      completionDone(e8.bufferText(e8.markerPosition(startMarker)!, e8.point()), "sole", names, exit);
+      e8.setThisCommand("completion-at-point");
+      if (!dontCycle) {
+        const from = e8.markerPosition(startMarker)!;
+        cacheSortedCompletions(from, from + (newEnd - start), [...all.slice(1), all[0]]);
+        cycling = true;
+        if (cycleNext) e8.deleteMarker(cycleNext.start);
+        cycleNext = { start: e8.makeMarker(from), names, props };
+        // The last key of those that started it goes on cycling, whatever
+        // it is bound to, as (vector last-command-event); completion-at-point
+        // itself cycles too, as the map's remap of it does.
+        const keys = e8.thisCommandKeys().trim().split(/\s+/);
+        const last = keys[keys.length - 1];
+        if (last) e8.setTransientMap({ [last]: cycleCommand });
+      }
+    }
+  } finally {
+    e8.deleteMarker(startMarker);
+  }
+}
+
+const cycleCommand = e8.defineCommand({
+  name: "completion--cycle",
+  doc: "Put in the next of the completions being cycled through.",
+  run: () => {
+    const next = cycleNext;
+    // Cycling stopped, by a change to the text, since the key was armed:
+    // the key does what completion-at-point does, as its own binding would.
+    if (!next || !cycling) {
+      e8.call("completion-at-point");
+      return;
+    }
+    completionInRegion(e8.markerPosition(next.start)!, e8.point(), next.names, undefined, next.props);
+  },
+});
+
+/** Whether completion-at-point should take the next completion being cycled through, as the cycling map's remap of it does. */
+const cyclingOn = () => cycling && sortedCompletions !== undefined && cycleNext !== undefined && e8.lastCommand() === "completion-at-point";
 
 function clearRegionData(): void {
   if (!regionData) return;
@@ -509,22 +701,32 @@ interface CapfData {
   start: number;
   end: number;
   names: string[] | (() => string[]);
-  exit?: ExitFunction;
+  props: CompletionProps;
 }
 
 /**
  * The first function of completion-at-point-functions to say what completes
  * at point, and what it says: [start, end, completions], and after them,
- * as Emacs's plist, ":exit-function" and a function of the text and status.
+ * as Emacs's plist, ":exit-function", ":annotation-function", and, where
+ * Emacs's table gives them as its metadata, ":display-sort-function" and
+ * ":cycle-sort-function", each with its function.
  */
 function completionAtPointData(): CapfData | undefined {
   const found = e8.runHookWithArgsUntilSuccess("completion-at-point-functions");
   if (!Array.isArray(found) || found.length < 3) return undefined;
   const [start, end, collection, ...plist] = found as [number, number, e8.Value, ...e8.Value[]];
   const names = typeof collection === "function" ? (collection as unknown as () => string[]) : Array.isArray(collection) ? collection.map(String) : [];
-  const at = plist.indexOf(":exit-function");
-  const exit = at >= 0 && typeof plist[at + 1] === "function" ? (plist[at + 1] as unknown as ExitFunction) : undefined;
-  return { start, end, names, exit };
+  const get = <T>(key: string): T | undefined => {
+    const at = plist.indexOf(key);
+    return at >= 0 && typeof plist[at + 1] === "function" ? (plist[at + 1] as unknown as T) : undefined;
+  };
+  const props: CompletionProps = {
+    exitFunction: get(":exit-function"),
+    annotationFunction: get(":annotation-function"),
+    displaySortFunction: get(":display-sort-function"),
+    cycleSortFunction: get(":cycle-sort-function"),
+  };
+  return { start, end, names, props };
 }
 
 /** Whether the functions still say the text being completed starts at START, as completion-at-point's predicate. */
@@ -536,9 +738,13 @@ e8.defineCommand({
     "Complete the text at point, from what completion-at-point-functions give, as far as the completion styles go; " +
     "when they go no further, list the completions in *Completions*, for M-<down>, M-<up> and M-RET to choose from.",
   run: () => {
+    if (cyclingOn()) {
+      e8.call("completion--cycle");
+      return;
+    }
     const data = completionAtPointData();
     if (!data) return;
-    completionInRegion(data.start, data.end, data.names, sameStart, data.exit);
+    completionInRegion(data.start, data.end, data.names, sameStart, data.props);
   },
 });
 
@@ -551,13 +757,13 @@ e8.defineCommand({
       e8.message("Nothing to complete at point");
       return;
     }
-    const { start, end, names: collection, exit } = data;
+    const { start, end, names: collection, props } = data;
     let cached: string[] | undefined;
     const names = () => (cached ??= typeof collection === "function" ? collection().map(String) : collection);
     clearRegionData();
-    regionData = { buffer: e8.bufferName()!, start: e8.makeMarker(start), end: e8.makeMarker(end, { advances: true }), names, predicate: sameStart, exit };
+    regionData = { buffer: e8.bufferName()!, start: e8.makeMarker(start), end: e8.makeMarker(end, { advances: true }), names, predicate: sameStart, props };
     if (!truthyValue(e8.variable("completion-in-region-mode"))) e8.callWithPrefix(1, "completion-in-region-mode");
-    completionHelp(start, end, names, exit);
+    completionHelp(start, end, names, props);
   },
 });
 
@@ -570,7 +776,7 @@ e8.bindKey("C-M-i", "completion-at-point");
 function inCompletionsWindow(body: () => void): void {
   let window = getBufferWindow(COMPLETIONS);
   if (!window && regionData) {
-    completionHelp(e8.markerPosition(regionData.start)!, e8.markerPosition(regionData.end)!, regionData.names, regionData.exit);
+    completionHelp(e8.markerPosition(regionData.start)!, e8.markerPosition(regionData.end)!, regionData.names, regionData.props);
     window = getBufferWindow(COMPLETIONS);
   }
   if (window) withSelectedWindow(window, body);
@@ -648,7 +854,7 @@ function chooseCompletion(noQuit = false, at?: number): void {
     if (shown) e8.setWindowPoint(shown, e8.point());
     const names = data.names();
     // As the insert-choice function: finished, there being no boundaries.
-    completionDone(choice, "finished", names, data.exit);
+    completionDone(choice, "finished", names, data.props.exitFunction);
   });
 }
 
@@ -682,7 +888,8 @@ e8.defineCommand({
 // <mouse-1> runs wherever the click lands, has gone to it.
 e8.adviceAdd("mouse-set-point", "after", () => {
   if (e8.windowBuffer(e8.selectedWindow()) !== COMPLETIONS || !/mouse-1/.test(e8.thisCommandKeys())) return;
-  if (e8.getTextProperty(e8.point(), "completion--string") !== undefined) chooseCompletion();
+  // On the completion, which has mouse-face; a click on its annotation only moves there.
+  if (e8.getTextProperty(e8.point(), "mouse-face") !== undefined) chooseCompletion();
 });
 e8.defineCommand({
   name: "delete-completion-window",

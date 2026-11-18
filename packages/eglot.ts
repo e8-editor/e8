@@ -526,28 +526,100 @@ defineXrefBackend("eglot", {
 
 // --- Completion, as eglot-completion-at-point --------------------------------
 
+/** The names of completion items' kinds, as eglot--kind-names. */
+const KIND_NAMES: Record<number, string> = {
+  1: "Text", 2: "Method", 3: "Function", 4: "Constructor", 5: "Field", 6: "Variable", 7: "Class", 8: "Interface", 9: "Module",
+  10: "Property", 11: "Unit", 12: "Value", 13: "Enum", 14: "Keyword", 15: "Snippet", 16: "Color", 17: "File", 18: "Reference",
+  19: "Folder", 20: "EnumMember", 21: "Constant", 22: "Struct", 23: "Event", 24: "Operator", 25: "TypeParameter",
+};
+
+/**
+ * What completes the symbol at point, as eglot-completion-at-point: the
+ * server's items, asked for only when the completions are needed, each
+ * shown with its detail or kind, in the server's order, and once one is
+ * chosen, its edits made: its own textEdit, and additionalTextEdits, such
+ * as the import a Go package needs.
+ */
 function completionAtPoint(): e8.Value {
   const server = currentServer();
   if (!server || !hasCapability(server, "completionProvider")) return null;
-  const end = e8.point();
-  const start = e8.saveExcursion(() => {
+  // The symbol around point, as bounds-of-thing-at-point.
+  const [start, end] = e8.saveExcursion(() => {
     e8.skipSyntaxBackward("w_");
-    return e8.point();
+    const from = e8.point();
+    e8.skipSyntaxForward("w_");
+    return [from, e8.point()];
   });
-  // The server is asked only when the completions are needed, as eglot's
-  // table is a function: completion-in-region-mode calls this after each
-  // command to see the text is still the one being completed.
+  const boundsString = e8.bufferText(start, end);
+  const origPos = e8.point();
   const position = lspPosition();
   const document = textDocument();
   const buffer = e8.bufferName()!;
-  let words: string[] | undefined;
-  const completions = (): string[] =>
-    (words ??= e8.withCurrentBuffer(buffer, () => {
+  let items: Map<string, any> | undefined;
+  const fetch = (): Map<string, any> =>
+    (items ??= e8.withCurrentBuffer(buffer, () => {
       const answer = request(server, "textDocument/completion", { textDocument: document, position, context: { triggerKind: 1 } }) as any;
-      const items: any[] = Array.isArray(answer) ? answer : (answer?.items ?? []);
-      return [...new Set(items.map((item) => String(item.textEdit?.newText ?? item.insertText ?? item.label)))];
+      const found = new Map<string, any>();
+      for (const item of (Array.isArray(answer) ? answer : (answer?.items ?? [])) as any[]) {
+        // A snippet's or a textEdit's label, which the edit adjusts; else the text to insert.
+        const proxy = item.insertTextFormat === 2 || item.textEdit || !item.insertText ? String(item.label).trimStart() : String(item.insertText);
+        if (proxy !== "" && !found.has(proxy)) found.set(proxy, item);
+      }
+      return found;
     }));
-  return [start, end, completions as unknown as e8.Value];
+  const resolved = new Map<any, any>();
+  const resolve = (item: any): any => {
+    if (!resolved.has(item))
+      resolved.set(item, hasCapability(server, "completionProvider") && (server.capabilities.completionProvider as any)?.resolveProvider === true && item.data !== undefined ? request(server, "completionItem/resolve", item) : item);
+    return resolved.get(item);
+  };
+  const annotation = (proxy: string): e8.Value => {
+    const item = fetch().get(proxy);
+    const detail = typeof item?.detail === "string" && item.detail !== "" ? item.detail : undefined;
+    const text = detail ?? KIND_NAMES[item?.kind];
+    return text === undefined ? null : e8.concat(" ", e8.propertize(text, { face: "font-lock-function-name-face" }));
+  };
+  // In the server's order, by sortText, as eglot's display-sort-function.
+  const sort = (proxies: string[]): string[] => {
+    // No sortText sorts as nil's name does in string-lessp.
+    const key = (p: string) => String(fetch().get(p)?.sortText ?? "nil");
+    return proxies.map((p, i) => [p, i] as const).sort((a, b) => (key(a[0]) < key(b[0]) ? -1 : key(a[0]) > key(b[0]) ? 1 : a[1] - b[1])).map((x) => x[0]);
+  };
+  const exit = (proxy: string, status: string): void => {
+    if (status !== "finished" && status !== "exact") return;
+    e8.withCurrentBuffer(buffer, () => {
+      const item = fetch().get(proxy);
+      if (!item) return;
+      const { textEdit, additionalTextEdits } = resolve(item);
+      if (textEdit) {
+        // Back to the text the edit was worked out for: "foo.b" when
+        // "bar" was asked for there, not the "foo.bar" now.
+        const at = Math.min(origPos, e8.point());
+        e8.deleteRegion(origPos, e8.point());
+        e8.gotoChar(at);
+        e8.insert(boundsString.slice(origPos - start));
+        const range = textEdit.range ?? textEdit.replace ?? textEdit.insert;
+        const from = bufferPosition(range.start);
+        e8.deleteRegion(from, bufferPosition(range.end));
+        e8.gotoChar(from);
+        e8.insert(String(textEdit.newText));
+      }
+      if (Array.isArray(additionalTextEdits) && additionalTextEdits.length > 0) applyTextEdits(additionalTextEdits);
+      flushChanges(server);
+    });
+  };
+  const completions = () => [...fetch().keys()];
+  return [
+    start,
+    end,
+    completions as unknown as e8.Value,
+    ":annotation-function",
+    annotation as unknown as e8.Value,
+    ":display-sort-function",
+    sort as unknown as e8.Value,
+    ":exit-function",
+    exit as unknown as e8.Value,
+  ];
 }
 
 e8.defineKey("eglot--managed-mode-map", "C-M-i", "completion-at-point");

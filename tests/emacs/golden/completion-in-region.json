@@ -935,6 +935,342 @@
       ],
       "message": "Making completion list...",
       "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n2 possible completions:\nfoo1bar\nfoo2bar"
+    },
+    {
+      "name": "cycling-puts-in-the-first",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true,
+        "vars": {
+          "completion-cycle-threshold": 3
+        }
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "cycling-puts-in-the-next",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true,
+        "vars": {
+          "completion-cycle-threshold": 3
+        }
+      },
+      "text": "foobaz",
+      "visible": "foobaz",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "cycling-comes-round-again",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i C-M-i C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true,
+        "vars": {
+          "completion-cycle-threshold": 3
+        }
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "cycling-shortest-first",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i C-M-i C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz",
+          "foobarx"
+        ],
+        "completions": true,
+        "vars": {
+          "completion-cycle-threshold": true
+        }
+      },
+      "text": "foobarx",
+      "visible": "foobarx",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 7,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "too-many-to-cycle-lists-them",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz",
+          "foobarx"
+        ],
+        "completions": true,
+        "vars": {
+          "completion-cycle-threshold": 2
+        }
+      },
+      "text": "fooba",
+      "visible": "fooba",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 5,
+          "width": 80,
+          "height": 16,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 8,
+          "selected": false
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n3 possible completions:\nfoobar\nfoobarx\nfoobaz"
+    },
+    {
+      "name": "typing-ends-the-cycle",
+      "input": {
+        "text": "fooba",
+        "point": 5,
+        "keys": "C-M-i C-f x C-b C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true,
+        "vars": {
+          "completion-cycle-threshold": 3
+        }
+      },
+      "text": "foobarx",
+      "visible": "foobarx",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "End of buffer",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        },
+        {
+          "buffer": "*Completions*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        }
+      ],
+      "message": "Making completion list...",
+      "completions": "Type M-RET on a completion to select it.\nType M-<down> or M-<up> to move point between completions.\n\n1 possible completions:\nfoobar"
+    },
+    {
+      "name": "cycling-after-completing-part",
+      "input": {
+        "text": "fo",
+        "point": 2,
+        "keys": "C-M-i C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foobar",
+          "foobaz"
+        ],
+        "completions": true,
+        "vars": {
+          "completion-cycle-threshold": 3
+        }
+      },
+      "text": "foobaz",
+      "visible": "foobaz",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null,
+      "completions": null
+    },
+    {
+      "name": "cycling-from-an-exact-match",
+      "input": {
+        "text": "foo",
+        "point": 3,
+        "keys": "C-M-i C-M-i",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "message": true,
+        "capf": [
+          "foo",
+          "foobar"
+        ],
+        "completions": true,
+        "vars": {
+          "completion-cycle-threshold": 3
+        }
+      },
+      "text": "foobar",
+      "visible": "foobar",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null,
+      "completions": null
     }
   ]
 }
