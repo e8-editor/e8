@@ -612,6 +612,69 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "m-down-on-a-bar-line-in-a-source-block",
+      "input": {
+        "text": "#+begin_src text\n| a |\nb\n#+end_src\n\nafter\n",
+        "point": 17,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src text\n| a |\nb\n#+end_src\n\nafter\n",
+      "visible": "#+begin_src text\n| a |\nb\n#+end_src\n\nafter\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "This block is not using a session!"
+    },
+    {
+      "name": "c-c-minus-on-a-bar-line-in-an-example-block",
+      "input": {
+        "text": "#+begin_example\n| a |\n#+end_example\n",
+        "point": 16,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_example\n- | a |\n#+end_example\n",
+      "visible": "#+begin_example\n- | a |\n#+end_example\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "s-tab-on-a-bar-line-in-a-source-block",
+      "input": {
+        "text": "* h\n#+begin_src text\n| a |\n#+end_src\n* i\n",
+        "point": 21,
+        "keys": "S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* h\n#+begin_src text\n| a |\n#+end_src\n* i\n",
+      "visible": "* h\n* i\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

@@ -899,6 +899,42 @@ function backToHeading(move = false): [Heading[], number] {
 }
 
 /**
+ * Whether point is under a heading above the narrowing, with none between:
+ * org-back-to-heading finds it, through the element parser, and goes to
+ * it, which goto-char stops at the narrowing's start.
+ */
+function underHeadingAboveNarrowing(): boolean {
+  if (e8.pointMin() === 0 || headingIndex(headings(), lineAt()) !== undefined) return false;
+  return e8.saveRestriction(() => {
+    e8.widen();
+    return headingIndex(headings(), lineAt()) !== undefined;
+  });
+}
+
+/**
+ * The region org-copy-subtree takes when point is under a heading above
+ * the narrowing: from the narrowing's start, past blank lines, where
+ * org-forward-heading-same-level goes, the next heading if none is there,
+ * else n - 1 headings on, to the end of that one's subtree, or of the
+ * narrowing if there is no heading. And whether the line it starts from
+ * ends folded.
+ */
+function subtreeFromNarrowingStart(n: number): [number, number, boolean] {
+  const [min, max] = [e8.pointMin(), e8.pointMax()];
+  let q = min;
+  while (q < max && /[ \t\r\n]/.test(e8.bufferText(q, q + 1))) q++;
+  const folded = e8.invisibleAt(e8.lineEnd(lineAt(q)));
+  const all = headings();
+  let i = headingIndex(all, lineAt(q));
+  if (i === undefined) {
+    // As outline-next-heading from before the first heading.
+    const k = all.findIndex((h) => h.start > q);
+    i = k < 0 ? undefined : k;
+  } else for (let k = 1; k < n; k++) i = sibling(all, i, 1) ?? i;
+  return [min, i === undefined ? max : Math.min(subtreeRegion(all, i)[1], max), folded];
+}
+
+/**
  * The heading org-back-to-heading finds without invisible-ok: the one on
  * point's line or above it, or the nearest heading above that which shows.
  */
@@ -1748,38 +1784,49 @@ e8.defineCommand({
 
 const GREATER_ELEMENTS = ["center-block", "drawer", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
 
-/** The column Org expects a line to start at, given the element it is in, as org--get-expected-indentation works it out. */
+/**
+ * The column Org expects a line to start at, given the element it is in, as
+ * org--get-expected-indentation works it out: with the buffer widened, so
+ * a narrowing that starts inside an item still lines up with its text.
+ */
 function expectedIndent(el: Elem | undefined, contentsp: boolean, line: number): number {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    return expectedIndentWide(el, contentsp, line);
+  });
+}
+
+function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: number): number {
   const type = el?.type;
   const indentOf = (pos: number): number => textIndentation(e8.lineText(lineAt(pos)));
   if (contentsp) {
-    if (type === "section") return expectedIndent(el?.parent, true, line);
+    if (type === "section") return expectedIndentWide(el?.parent, true, line);
     if (type === undefined || type === "headline") return 0;
     if (type === "item" || type === "plain-list") return listBodyColumn((el as Elem).begin);
     return indentOf((el as Elem).begin);
   }
-  if (!el || type === "headline" || type === "org-data") return isBlank(e8.lineText(line)) ? expectedIndent(el, true, line) : 0;
+  if (!el || type === "headline" || type === "org-data") return isBlank(e8.lineText(line)) ? expectedIndentWide(el, true, line) : 0;
   const bol = e8.lineStart(line);
   const start = el.begin;
-  if (bol < start) return expectedIndent(el.parent, true, line);
+  if (bol < start) return expectedIndentWide(el.parent, true, line);
   if (bol === start) {
     if (start === 0) return 0;
     let previous = elementAt(start - 1);
     for (let parent = previous; parent && parent.end <= start; parent = parent.parent) previous = parent;
     if (!previous || previous.type === "org-data") return 0;
-    if (previous.end > start) return expectedIndent(previous, true, line);
+    if (previous.end > start) return expectedIndentWide(previous, true, line);
     if (previous.begin === e8.lineStart(lineAt(previous.begin))) return indentOf(previous.begin);
-    return expectedIndent(previous.parent, true, line);
+    return expectedIndentWide(previous.parent, true, line);
   }
   let q = bol;
   while (q > 0 && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
   if (type === "plain-list" && lineAt(bol) - lineAt(q) > 2) return indentOf(start);
-  if (e8.lineStart(lineAt(q)) < start) return expectedIndent(el.parent, true, line);
-  if (e8.lineStart(lineAt(q)) === start) return expectedIndent(el, true, line);
+  if (e8.lineStart(lineAt(q)) < start) return expectedIndentWide(el.parent, true, line);
+  if (e8.lineStart(lineAt(q)) === start) return expectedIndentWide(el, true, line);
   if (GREATER_ELEMENTS.includes(type ?? "") && el.contentsEnd !== undefined && el.contentsEnd <= bol) {
     if (type === "item" || type === "plain-list") {
       const last = elementAt(q);
-      return expectedIndent(last, last?.type === "item", line);
+      return expectedIndentWide(last, last?.type === "item", line);
     }
     return indentOf(start);
   }
@@ -2012,7 +2059,11 @@ e8.defineCommand({
     const el = elementAt(e8.point());
     if (!el || !BLOCK_TYPES.includes(el.type)) e8.userError("Not at a block");
     const pt = marker(e8.point());
-    orgIndentRegion(el.begin, el.end);
+    // With the buffer widened, as Org's org-with-wide-buffer.
+    e8.saveRestriction(() => {
+      e8.widen();
+      orgIndentRegion(el.begin, el.end);
+    });
     e8.gotoChar(pt.pos);
     dropMarker(pt);
     e8.message("Block at point indented");
@@ -2026,7 +2077,11 @@ e8.defineCommand({
     const el = elementAt(e8.point());
     if (el?.type !== "drawer" && el?.type !== "property-drawer") e8.userError("Not at a drawer");
     const pt = marker(e8.point());
-    orgIndentRegion(el.begin, el.end);
+    // With the buffer widened, as Org's org-with-wide-buffer.
+    e8.saveRestriction(() => {
+      e8.widen();
+      orgIndentRegion(el.begin, el.end);
+    });
     e8.gotoChar(pt.pos);
     dropMarker(pt);
     e8.message("Drawer at point indented");
@@ -2202,7 +2257,7 @@ const shiftTab = e8.defineCommand({
     "S-TAB in Org: cycle the whole buffer between its top headings, all its headings and everything.\n\n" +
     "In a table, move to the previous field. With a number as prefix argument, show that many levels of headings.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) {
+    if (atTableP()) {
       e8.call("org-table-previous-field");
       return;
     }
@@ -2278,7 +2333,7 @@ e8.defineCommand({
   doc: "C-o in Org: in a table, insert a row above; elsewhere, or at the very start of the buffer, open-line.",
   run: () => {
     const p = e8.point();
-    if (e8.variable("org-special-ctrl-o") === true && p !== 0 && /^[ \t]*\|/.test(e8.lineText(lineAt())))
+    if (e8.variable("org-special-ctrl-o") === true && p !== 0 && atTableP())
       e8.call("org-table-insert-row");
     else e8.callWithPrefix(e8.prefixArg(), "open-line");
   },
@@ -2301,7 +2356,7 @@ function orgReturnWith(electric: boolean): void {
   const p = e8.point();
   const [ls, le] = [e8.lineStart(line), e8.lineEnd(line)];
   const n = Math.max(1, e8.prefixNumericValue());
-  if (/^[ \t]*\|/.test(e8.lineText(line))) {
+  if (atTableP()) {
     // Before the first column or after the last, a table is split.
     if (/^[ \t]*$/.test(e8.bufferText(p, le)) || /^[ \t]*$/.test(e8.bufferText(ls, p))) e8.insert("\n");
     else {
@@ -2504,7 +2559,7 @@ function markElement(): void {
   const e = elementAt(e8.point());
   if (!e) return;
   e8.gotoChar(e8.lineEnd(lineAt()));
-  e8.pushMark(Math.min(e8.bufferSize(), e.end), { activate: true });
+  e8.pushMark(Math.min(e8.pointMax(), e.end), { activate: true });
   e8.gotoChar(e.begin);
 }
 
@@ -2627,12 +2682,25 @@ function insertHeading(arg: e8.PrefixArg, invisibleOk = false): void {
   const respect =
     e8.variable("org-insert-heading-respect-content") === true ||
     (Array.isArray(arg) && (arg[0] === 4 || arg[0] === 16)) ||
-    (!invisibleOk && e8.invisibleAt(Math.max(0, p - 1)));
+    (!invisibleOk && e8.invisibleAt(Math.max(e8.pointMin(), p - 1)));
   const atBol = (): boolean => e8.point() === e8.lineStart(lineAt());
   if (respect) {
-    if (current === undefined) {
-      const from = atBol() && p < e8.bufferSize() ? p + 1 : p;
-      e8.gotoChar(all.find((h) => h.start >= from)?.start ?? e8.bufferSize());
+    if (level === undefined) {
+      // As outline-next-heading, within the narrowing.
+      const from = atBol() && p < e8.pointMax() ? p + 1 : p;
+      e8.gotoChar(all.find((h) => h.start >= from)?.start ?? e8.pointMax());
+    } else if (current === undefined) {
+      // Under a heading above the narrowing: org-back-to-heading stops at
+      // the narrowing's start, and org-end-of-subtree goes to that
+      // heading's end, or the narrowing's.
+      const end = e8.saveRestriction(() => {
+        e8.widen();
+        const wide = headings();
+        let i = headingIndex(wide, lineAt()) as number;
+        if (parentEnd) i = ancestors(wide, i)[0] ?? i;
+        return subtreeRegion(wide, i)[1];
+      });
+      e8.gotoChar(Math.min(end, e8.pointMax()));
     } else {
       let i = current;
       if (!invisibleOk) {
@@ -2656,7 +2724,8 @@ function insertHeading(arg: e8.PrefixArg, invisibleOk = false): void {
       e8.insert("\n");
       e8.gotoChar(e8.point() - 1);
     }
-    if (level === undefined && e8.point() < e8.bufferSize() && e8.point() > 0) {
+    // Neither eobp nor bobp, which are the narrowing's ends.
+    if (level === undefined && e8.point() < e8.pointMax() && e8.point() > e8.pointMin()) {
       if (isHeadingLine(e8.lineText(lineAt()))) e8.insert("\n");
       e8.gotoChar(e8.point() - 1);
     }
@@ -2752,7 +2821,7 @@ const metaReturn = e8.defineCommand({
       insertHeading(prefix);
       return;
     }
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) {
+    if (atTableP()) {
       e8.call("org-table-wrap-region");
       return;
     }
@@ -3057,14 +3126,12 @@ function cleanVisibilityAfterMove(all: Heading[], k: number): void {
 // Subtrees and the kill ring
 
 /**
- * Kills or copies the subtree point is in, and the n - 1 after it, as
- * org-copy-subtree does; point and the mark stay where they were, moving
- * as markers do when the text goes. Called
- * interactively it takes what looks like the subtree, the nearest heading
- * that shows; otherwise, as org-cut-subtree calls it, what is really there.
+ * The subtree org-copy-subtree takes, and the n - 1 after it, and whether
+ * it shows folded, so pasting it back can fold it again. Called
+ * interactively (visible), what looks like the subtree: the nearest
+ * heading that shows.
  */
-export function copySubtree(cut: boolean, n: number, visible: boolean): void {
-  const p = e8.point();
+function subtreeToCopy(n: number, visible: boolean): [number, number, boolean] {
   const [all, found] = backToHeading(true);
   let i = found;
   for (const a of [found, ...ancestors(all, found)]) {
@@ -3073,11 +3140,21 @@ export function copySubtree(cut: boolean, n: number, visible: boolean): void {
   }
   let j = i;
   for (let k = 1; k < n; k++) j = sibling(all, j, 1) ?? j;
-  const [beg, end] = [all[i].start, subtreeRegion(all, j)[1]];
+  return [all[i].start, subtreeRegion(all, j)[1], e8.invisibleAt(all[i].end)];
+}
+
+/**
+ * Kills or copies the subtree point is in, and the n - 1 after it, as
+ * org-copy-subtree does; point and the mark stay where they were, moving
+ * as markers do when the text goes. Called
+ * interactively it takes what looks like the subtree, the nearest heading
+ * that shows; otherwise, as org-cut-subtree calls it, what is really there.
+ */
+export function copySubtree(cut: boolean, n: number, visible: boolean): void {
+  const p = e8.point();
+  const [beg, end, folded] = underHeadingAboveNarrowing() ? subtreeFromNarrowingStart(n) : subtreeToCopy(n, visible);
   if (end <= beg) return;
   const mark = e8.mark();
-  // Whether the tree shows folded, so pasting it back can fold it again.
-  const folded = e8.invisibleAt(all[i].end);
   // Point after the mark, as Org passes them in order, so a kill joining
   // an earlier one goes after it.
   e8.setMark(beg);
@@ -3311,7 +3388,7 @@ e8.defineCommand({
   name: "org-paste-special",
   doc: "Paste a subtree at the right level, or in a table, the fields last cut or copied from one.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-paste-rectangle");
+    if (atTableP()) e8.call("org-table-paste-rectangle");
     else e8.callWithPrefix(e8.prefixArg(), "org-paste-subtree");
   },
 });
@@ -3319,13 +3396,13 @@ e8.defineCommand({
 e8.defineCommand({
   name: "org-cut-special",
   doc: "Cut the subtree point is in, or in a table, blank the field at point or the fields in the region.",
-  run: () => e8.callInteractively(/^[ \t]*\|/.test(e8.lineText(lineAt())) ? "org-table-cut-region" : "org-cut-subtree"),
+  run: () => e8.callInteractively(atTableP() ? "org-table-cut-region" : "org-cut-subtree"),
 });
 
 e8.defineCommand({
   name: "org-copy-special",
   doc: "Copy the subtree point is in, or in a table, the field at point or the fields in the region.",
-  run: () => e8.callInteractively(/^[ \t]*\|/.test(e8.lineText(lineAt())) ? "org-table-copy-region" : "org-copy-subtree"),
+  run: () => e8.callInteractively(atTableP() ? "org-table-copy-region" : "org-copy-subtree"),
 });
 
 // Commands: TODO states, priorities and tags
@@ -4932,7 +5009,7 @@ const metaLeft = e8.defineCommand({
   name: "org-metaleft",
   doc: "M-<left> in Org: promote a heading, outdent an item, move a table column left, or move back a word.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-move-column-left");
+    if (atTableP()) e8.call("org-table-move-column-left");
     else if (regionStartsAtHeading() || headingHere()) {
       if (hiddenBelow("headlines")) hiddenTreeError();
       e8.call("org-do-promote");
@@ -4948,7 +5025,7 @@ const metaRight = e8.defineCommand({
   name: "org-metaright",
   doc: "M-<right> in Org: demote a heading, indent an item, move a table column right, or move forward a word.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-move-column-right");
+    if (atTableP()) e8.call("org-table-move-column-right");
     else if (DRAWER_RE.test(e8.lineText(lineAt()))) e8.call("org-indent-drawer");
     else if (atBlock()) e8.call("org-indent-block");
     else if (regionStartsAtHeading() || headingHere()) {
@@ -5074,7 +5151,7 @@ const metaUp = e8.defineCommand({
   run: () => {
     babelSessionHook("load");
     if (metaRegion(true)) return;
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-move-row-up");
+    if (atTableP()) e8.call("org-table-move-row-up");
     else if (headingHere()) e8.call("org-move-subtree-up");
     else if (itemHere()) e8.call("org-move-item-up");
     else e8.call("org-drag-element-backward");
@@ -5087,7 +5164,7 @@ const metaDown = e8.defineCommand({
   run: () => {
     babelSessionHook("pop");
     if (metaRegion(false)) return;
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-move-row-down");
+    if (atTableP()) e8.call("org-table-move-row-down");
     else if (headingHere()) e8.call("org-move-subtree-down");
     else if (itemHere()) e8.call("org-move-item-down");
     else e8.call("org-drag-element-forward");
@@ -5098,7 +5175,7 @@ const shiftMetaLeft = e8.defineCommand({
   name: "org-shiftmetaleft",
   doc: "M-S-<left> in Org: promote a subtree, outdent an item with its children, or delete a table column.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-delete-column");
+    if (atTableP()) e8.call("org-table-delete-column");
     else if (headingHere()) e8.call("org-promote-subtree");
     else if (itemHere()) e8.call("org-outdent-item-tree");
     else e8.userError("This command is active in special context like tables, headlines or items");
@@ -5109,7 +5186,7 @@ const shiftMetaRight = e8.defineCommand({
   name: "org-shiftmetaright",
   doc: "M-S-<right> in Org: demote a subtree, indent an item with its children, or insert a table column.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-insert-column");
+    if (atTableP()) e8.call("org-table-insert-column");
     else if (headingHere()) e8.call("org-demote-subtree");
     else if (itemHere()) e8.call("org-indent-item-tree");
     else e8.userError("This command is active in special context like tables, headlines or items");
@@ -5120,7 +5197,7 @@ const shiftMetaUp = e8.defineCommand({
   name: "org-shiftmetaup",
   doc: "M-S-<up> in Org: delete the table row point is on, or drag the line up.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-kill-row");
+    if (atTableP()) e8.call("org-table-kill-row");
     else e8.callWithPrefix(e8.prefixArg(), "org-drag-line-backward");
   },
 });
@@ -5129,7 +5206,7 @@ const shiftMetaDown = e8.defineCommand({
   name: "org-shiftmetadown",
   doc: "M-S-<down> in Org: insert a table row above the one point is on, or drag the line down.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-insert-row");
+    if (atTableP()) e8.call("org-table-insert-row");
     else e8.callWithPrefix(e8.prefixArg(), "org-drag-line-forward");
   },
 });
@@ -5474,7 +5551,7 @@ const ctrlCMinus = e8.defineCommand({
   doc: "C-c - in Org: insert a table rule, change a list's bullets, or turn the line into an item.",
   run: () => {
     const line = lineAt();
-    if (/^[ \t]*\|/.test(e8.lineText(line))) e8.callWithPrefix(e8.prefixArg(), "org-table-insert-hline");
+    if (atTableP()) e8.callWithPrefix(e8.prefixArg(), "org-table-insert-hline");
     else if (orgRegionActive()) e8.call("org-toggle-item");
     else if (inItem(line) !== undefined) cycleListBullet();
     else e8.call("org-toggle-item");
@@ -5638,7 +5715,7 @@ const ctrlCStar = e8.defineCommand({
   name: "org-ctrl-c-star",
   doc: "C-c * in Org: recalculate a table, or turn the line into a heading as org-toggle-heading does.",
   run: () => {
-    if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-recalculate");
+    if (atTableP()) e8.call("org-table-recalculate");
     else e8.callWithPrefix(e8.prefixArg(), "org-toggle-heading");
   },
 });
@@ -5992,6 +6069,7 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c *": ctrlCStar,
   "C-c -": ctrlCMinus,
   "C-c @": markSubtree,
+  "M-h": "org-mark-element",
   "C-c |": "org-table-create-or-convert-from-region",
   "C-c C-x C-w": "org-cut-special",
   "C-c C-x M-w": "org-copy-special",

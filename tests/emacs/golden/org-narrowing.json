@@ -508,6 +508,264 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "ret-in-an-item-narrowed-to-a-region-indents",
+      "input": {
+        "text": "- one two\n- three\n",
+        "point": 6,
+        "keys": "C-SPC C-e C-x n n C-g RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- one two\n  x\n- three\n",
+      "visible": "- one two\n  x\n- three\n",
+      "point": 13,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "copy-subtree-narrowed-inside-an-entry",
+      "input": {
+        "text": "* a\nbody one\nbody two\n* b\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-x n n C-g C-c C-x M-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* a\nbody one\nbody two\n* b\n",
+      "visible": "* a\nbody one\nbody two\n* b\n",
+      "point": 13,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "body one\n"
+      ],
+      "modified": false,
+      "error": "Quit"
+    },
+    {
+      "name": "insert-heading-respecting-content-at-a-narrowing-end",
+      "input": {
+        "text": "text\nmore\n* b\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-x n n C-g C-<return> x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "text\n* x\nmore\n* b\n",
+      "visible": "text\n* x\nmore\n* b\n",
+      "point": 8,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "drag-element-down-whose-start-is-before-the-narrowing",
+      "input": {
+        "text": "aaa\nbbb\n\nccc\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-g M-< M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\nbbb\n\nccc\n",
+      "visible": "aaa\nbbb\n\nccc\n",
+      "point": 4,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit"
+    },
+    {
+      "name": "drag-element-up-past-the-narrowing-start",
+      "input": {
+        "text": "aaa\nbbb\n\nccc\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-g M-< C-n C-n M-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\nbbb\n\nccc\n",
+      "visible": "aaa\nbbb\n\nccc\n",
+      "point": 4,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit"
+    },
+    {
+      "name": "indent-block-whose-start-is-before-the-narrowing",
+      "input": {
+        "text": "  #+begin_quote\n  x\n  #+end_quote\n",
+        "point": 20,
+        "keys": "C-SPC M-> C-x n n C-g M-< M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "  #+begin_quote\n  x\n  #+end_quote\n",
+      "visible": "  #+begin_quote\n  x\n  #+end_quote\n",
+      "point": 27,
+      "mark": 34,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit"
+    },
+    {
+      "name": "indent-region-in-a-block-narrowed-inside",
+      "input": {
+        "text": "- i\n  #+begin_example\nx\n  #+end_example\n",
+        "point": 22,
+        "keys": "C-SPC M-> C-x n n C-g M-< C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- i\n    #+begin_example\n  x\n    #+end_example\n",
+      "visible": "- i\n    #+begin_example\n  x\n    #+end_example\n",
+      "point": 24,
+      "mark": 46,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "mark-element-at-the-end-of-a-narrowed-list",
+      "input": {
+        "text": "- a\n- b\n\ntext\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-x n n C-g M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n- b\n\ntext\n",
+      "visible": "- a\n- b\n\ntext\n",
+      "point": 0,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit"
+    },
+    {
+      "name": "copy-subtree-from-blank-lines-at-the-narrowing-start",
+      "input": {
+        "text": "* a\ntext\n\n** b\nb\n** c\nc\n",
+        "point": 9,
+        "keys": "C-SPC M-> C-x n n C-g M-< C-c C-x M-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* a\ntext\n\n** b\nb\n** c\nc\n",
+      "visible": "* a\ntext\n\n** b\nb\n** c\nc\n",
+      "point": 9,
+      "mark": 24,
+      "mark_active": false,
+      "kill_ring": [
+        "\n** b\nb\n"
+      ],
+      "modified": false,
+      "error": "Quit"
+    },
+    {
+      "name": "copy-two-subtrees-narrowed-inside-an-entry",
+      "input": {
+        "text": "* a\ntext\n** b\nb\n** c\nc\n* d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-n C-n C-n C-x n n C-g M-< C-u 2 C-c C-x M-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* a\ntext\n** b\nb\n** c\nc\n* d\n",
+      "visible": "* a\ntext\n** b\nb\n** c\nc\n* d\n",
+      "point": 4,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [
+        "text\n** b\nb\n"
+      ],
+      "modified": false,
+      "error": "Quit"
+    },
+    {
+      "name": "insert-heading-respecting-content-narrowed-inside-an-entry",
+      "input": {
+        "text": "* A\ntext\n** B\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-x n n C-g M-< C-<return> x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\ntext\n** B\n* x\n",
+      "visible": "* A\ntext\n** B\n* x\n",
+      "point": 17,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Quit"
+    },
+    {
+      "name": "mark-element-on-the-blank-line-after-a-list",
+      "input": {
+        "text": "- a\n- b\n\ntext\n",
+        "point": 0,
+        "keys": "C-n C-n M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n- b\n\ntext\n",
+      "visible": "- a\n- b\n\ntext\n",
+      "point": 0,
+      "mark": 9,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

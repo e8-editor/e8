@@ -170,14 +170,23 @@ e8.defineCommand({
       const column = e8.prefixNumericValue(arg);
       for (let line = first; line <= last; line++) indentRigidly(line, line, column - currentIndentation(line));
     } else if (typeof regionFunction() === "string" || typeof regionFunction() === "function") {
-      // The mode's own, given the region as Emacs gives it.
+      // The mode's own, given the region as Emacs gives it, with the
+      // buffer widened, as Emacs's indent-region calls it.
       const mark = e8.mark() as number;
       const pt = e8.makeMarker();
-      e8.funcall(regionFunction() as string, Math.min(mark, e8.point()), Math.max(mark, e8.point()));
+      const [start, end] = [Math.min(mark, e8.point()), Math.max(mark, e8.point())];
+      e8.saveRestriction(() => {
+        e8.widen();
+        e8.funcall(regionFunction() as string, start, end);
+      });
       e8.gotoChar(e8.markerPosition(pt)!);
       e8.deleteMarker(pt);
     } else {
-      indentRegion(first, last);
+      // Line by line, also widened.
+      e8.saveRestriction(() => {
+        e8.widen();
+        indentRegion(first, last);
+      });
     }
     e8.deactivateMark();
   },

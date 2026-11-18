@@ -259,5 +259,32 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "m-down-on-a-bar-line-in-a-source-block",
+    "text": "#+begin_src text\n| a |\nb\n#+end_src\n\nafter\n",
+    "keys": "M-<down>",
+    "point": 17,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "c-c-minus-on-a-bar-line-in-an-example-block",
+    "text": "#+begin_example\n| a |\n#+end_example\n",
+    "keys": "C-c -",
+    "point": 16,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "s-tab-on-a-bar-line-in-a-source-block",
+    "text": "* h\n#+begin_src text\n| a |\n#+end_src\n* i\n",
+    "keys": "S-<tab>",
+    "point": 21,
+    "modes": [
+      "org-mode"
+    ]
   }
 ]

@@ -410,6 +410,17 @@ function shiftParse(root: Elem, change: [number, number, number]): void {
  * TODO keywords or that heading change.
  */
 function parseFor(pos: number): Elem {
+  // As org-element-at-point, the parse is of the whole buffer, however it
+  // is narrowed: an item's paragraph narrowed to is still in the item.
+  if (e8.pointMin() !== 0 || e8.pointMax() !== e8.bufferSize())
+    return e8.saveRestriction(() => {
+      e8.widen();
+      return parseWide(pos);
+    });
+  return parseWide(pos);
+}
+
+function parseWide(pos: number): Elem {
   const all = headingsAsRead();
   const branch = headingIndex(all, lineAt(pos));
   const key = `${e8.bufferName()}\n${allKeywords().join(" ")}\n${branch ?? -1}`;
@@ -488,15 +499,16 @@ export function elementAt(pos: number): Elem | undefined {
 
 function elementAt_(pos: number): Elem | undefined {
   let node = parseFor(pos);
-  // At the end of the accessible portion, the element that ends there.
-  const size = e8.pointMax();
+  // At the end of the buffer, the element that ends there: the whole
+  // buffer's end, as org-element--parse-to works widened.
+  const size = e8.bufferSize();
   for (;;) {
     // Children do not overlap and come in order: the one that holds pos is
     // the first that ends after it, if it starts at or before it.
     const i = firstEndingAfter(node, pos);
     let found = i < node.children.length ? child(node, i) : undefined;
     if (found && found.begin > pos) found = undefined;
-    // At the end of the accessible portion, the one that ends there.
+    // At the end of the buffer, the one that ends there.
     for (let j = node.children.length - 1; !found && pos === size && j >= 0; j--) {
       const c = child(node, j);
       if (c.end !== size) break;
@@ -532,6 +544,12 @@ function swapElementsUnchecked(a: Elem, b: Elem): void {
   }
   const indB = special ? indentation(e8.lineText(lineAt(b.begin))) : 0;
   const [begA, endA, begB, endB] = [a.begin, endBeforeBlank(a), b.begin, endBeforeBlank(b)];
+  // As buffer-substring, before anything is changed: an element reaching
+  // past the narrowing is not there to swap. Org has gone to its start
+  // first, which goto-char stops at the narrowing's.
+  if (begA < e8.pointMin() || endB > e8.pointMax()) e8.gotoChar(Math.max(begA, e8.pointMin()));
+  if (begA < e8.pointMin()) e8.signal("args-out-of-range", `Args out of range: ${begA + 1}, ${endA + 1}`, [begA + 1, endA + 1]);
+  if (endB > e8.pointMax()) e8.signal("args-out-of-range", `Args out of range: ${begB + 1}, ${endB + 1}`, [begB + 1, endB + 1]);
   const bodyA = e8.bufferText(begA, endA);
   let bodyB = e8.bufferText(begB, endB);
   // As in Org, the folds each element is in, whole, go with it, placed
