@@ -8,6 +8,43 @@ A package that is a repository of its own keeps its news in a NEWS file
 of the same form, which 'C-h P' shows under its description.
 
 
+* Changes in E8 0.5.18
+
+** 'C-M-i' ('completion-at-point') completes in the buffer, as Emacs does.
+As far as the completion styles go, orderless's too; when they go no
+further, the completions are listed in *Completions* below the window.
+'M-<down>' and 'M-<up>' move among them, 'M-RET' puts one in, and 'TAB'
+completes again; RET or a click in the list chooses too.  Leaving the
+text, or 'C-g', takes the list away.  It used to ask in the minibuffer.
+
+** *Completions* shows what a completion function says about each.
+Its annotation goes after each completion, the function's order and
+groups are kept, and with 'completion-cycle-threshold' set each try
+puts in the next completion, as Emacs's 'minibuffer-force-complete'.
+
+** eglot's completion shows the server's detail for each completion.
+They come in the server's order, and once one is chosen, the edits it
+brings are made: completing a Go package not yet imported adds its
+import.
+
+** Org reads the whole buffer under a narrowing, as Org does.
+Narrowed to part of an entry with 'C-x n e' or 'C-x n n', RET and TAB
+in a list item or a property drawer indent as in Org, and 'C-RET',
+'C-c C-x M-w' and dragging an element with 'M-<up>' and 'M-<down>' act
+as Org's do.
+
+** Commands that act on tables leave a bar line in a block alone.
+'M-<up>', 'C-c -', 'S-TAB' and the other commands that treat a line
+starting with '|' as a table row ask the parser, as Org does, so such a
+line in a source or example block is no table.
+
+** 'M-h' in Org marks the element at point ('org-mark-element').
+
+** 'C-M-\' ('indent-region') indents a narrowed buffer as Emacs does.
+It widens around the mode's indenting, so a block whose first line is
+outside the narrowing is indented whole.
+
+
 * Changes in E8 0.5.17
 
 ** TypeScript files have a mode: 'typescript-ts-mode', and 'tsx-ts-mode'.
