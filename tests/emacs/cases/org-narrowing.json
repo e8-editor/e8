@@ -185,5 +185,113 @@
       "org-mode"
     ],
     "windows": true
+  },
+  {
+    "name": "ret-in-an-item-narrowed-to-a-region-indents",
+    "text": "- one two\n- three\n",
+    "keys": "C-SPC C-e C-x n n C-g RET x",
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "copy-subtree-narrowed-inside-an-entry",
+    "text": "* a\nbody one\nbody two\n* b\n",
+    "keys": "C-SPC C-n C-x n n C-g C-c C-x M-w",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "insert-heading-respecting-content-at-a-narrowing-end",
+    "text": "text\nmore\n* b\n",
+    "keys": "C-SPC C-n C-x n n C-g C-<return> x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "drag-element-down-whose-start-is-before-the-narrowing",
+    "text": "aaa\nbbb\n\nccc\n",
+    "keys": "C-SPC M-> C-x n n C-g M-< M-<down>",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "drag-element-up-past-the-narrowing-start",
+    "text": "aaa\nbbb\n\nccc\n",
+    "keys": "C-SPC M-> C-x n n C-g M-< C-n C-n M-<up>",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "indent-block-whose-start-is-before-the-narrowing",
+    "text": "  #+begin_quote\n  x\n  #+end_quote\n",
+    "keys": "C-SPC M-> C-x n n C-g M-< M-<right>",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "indent-region-in-a-block-narrowed-inside",
+    "text": "- i\n  #+begin_example\nx\n  #+end_example\n",
+    "keys": "C-SPC M-> C-x n n C-g M-< C-x h C-M-\\",
+    "point": 22,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "mark-element-at-the-end-of-a-narrowed-list",
+    "text": "- a\n- b\n\ntext\n",
+    "keys": "C-SPC C-n C-n C-x n n C-g M-h",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "copy-subtree-from-blank-lines-at-the-narrowing-start",
+    "text": "* a\ntext\n\n** b\nb\n** c\nc\n",
+    "keys": "C-SPC M-> C-x n n C-g M-< C-c C-x M-w",
+    "point": 9,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "copy-two-subtrees-narrowed-inside-an-entry",
+    "text": "* a\ntext\n** b\nb\n** c\nc\n* d\n",
+    "keys": "C-SPC C-n C-n C-n C-n C-n C-x n n C-g M-< C-u 2 C-c C-x M-w",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "insert-heading-respecting-content-narrowed-inside-an-entry",
+    "text": "* A\ntext\n** B\n",
+    "keys": "C-SPC M-> C-x n n C-g M-< C-<return> x",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "mark-element-on-the-blank-line-after-a-list",
+    "text": "- a\n- b\n\ntext\n",
+    "keys": "C-n C-n M-h",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
   }
 ]
