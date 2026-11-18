@@ -1221,6 +1221,12 @@ declare global {
        */
       "compile-goto-error": [];
       /**
+       * Put in the next of the completions being cycled through.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion--cycle": [];
+      /**
        * Complete the text at point, from what completion-at-point-functions give, as far as the completion styles go; when they go no further, list the completions in *Completions*, for M-<down>, M-<up> and M-RET to choose from.
        *
        * Defined in packages/minibuffer.ts.
@@ -9124,6 +9130,12 @@ declare global {
        * Completion styles for kinds of completion, as completion-category-defaults has them, that win over those.
        */
       "completion-category-overrides": Value;
+      /**
+       * When completing cycles through the completions, each try putting in the next: true, always; a number, when there are no more than that; nil, never.
+       *
+       * Defined in packages/minibuffer.ts.
+       */
+      "completion-cycle-threshold": Value;
       /**
        * Whether completing that finds no match says nothing and does not ding.
        *

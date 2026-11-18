@@ -340,5 +340,135 @@
     "message": true,
     "completions": true,
     "windows": true
+  },
+  {
+    "name": "cycling-puts-in-the-first",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true,
+    "vars": {
+      "completion-cycle-threshold": 3
+    }
+  },
+  {
+    "name": "cycling-puts-in-the-next",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true,
+    "vars": {
+      "completion-cycle-threshold": 3
+    }
+  },
+  {
+    "name": "cycling-comes-round-again",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i C-M-i C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true,
+    "vars": {
+      "completion-cycle-threshold": 3
+    }
+  },
+  {
+    "name": "cycling-shortest-first",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i C-M-i C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz",
+      "foobarx"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true,
+    "vars": {
+      "completion-cycle-threshold": true
+    }
+  },
+  {
+    "name": "too-many-to-cycle-lists-them",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz",
+      "foobarx"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true,
+    "vars": {
+      "completion-cycle-threshold": 2
+    }
+  },
+  {
+    "name": "typing-ends-the-cycle",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i C-f x C-b C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true,
+    "vars": {
+      "completion-cycle-threshold": 3
+    }
+  },
+  {
+    "name": "cycling-after-completing-part",
+    "text": "fo",
+    "point": 2,
+    "keys": "C-M-i C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true,
+    "vars": {
+      "completion-cycle-threshold": 3
+    }
+  },
+  {
+    "name": "cycling-from-an-exact-match",
+    "text": "foo",
+    "point": 3,
+    "keys": "C-M-i C-M-i",
+    "capf": [
+      "foo",
+      "foobar"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true,
+    "vars": {
+      "completion-cycle-threshold": 3
+    }
   }
 ]

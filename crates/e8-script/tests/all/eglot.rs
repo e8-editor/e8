@@ -96,3 +96,45 @@ fn rename_and_format_edit_the_buffer() {
 }
 
 
+
+/// Against gopls, where it is installed: completing a package not yet
+/// imported puts in the name and, as gopls's additionalTextEdits say, the
+/// import, as Emacs's eglot does.
+#[test]
+fn gopls_completion_adds_the_import_a_package_needs() {
+    if std::process::Command::new("gopls").arg("version").output().is_err() {
+        return;
+    }
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    fs::write(dir.path().join("go.mod"), "module m\n\ngo 1.21\n").unwrap();
+    let file = dir.path().join("main.go");
+    fs::write(&file, "package main\n\nfunc main() {\n\t_ = strings.ToUpp\n}\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.set_frame_size(80, 24);
+    ed.call("find-file", vec![Arg::Str(file.display().to_string())]).unwrap();
+    ed.call("eglot", vec![]).unwrap();
+    for _ in 0..20 {
+        settle(&mut ed);
+    }
+    // After "strings.ToUpp", where only ToUpper is left.
+    let at = text(&ed).find("ToUpp").unwrap() + "ToUpp".len();
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-M-i").unwrap();
+    let mut done = false;
+    for _ in 0..20 {
+        if text(&ed).contains("strings.ToUpper") {
+            done = true;
+            break;
+        }
+        settle(&mut ed);
+    }
+    assert!(done, "{}", text(&ed));
+    assert!(text(&ed).contains("import \"strings\""), "{}", text(&ed));
+    // The list shows each with its detail, as gopls gives it.
+    ed.press("C-a C-k").unwrap();
+    ed.type_text("\t_ = strings.Split");
+    ed.call("completion-help-at-point", vec![]).unwrap();
+    let list = s.eval_expression(&mut ed, r#"e8.getBuffer("*Completions*") ? e8.withCurrentBuffer("*Completions*", () => e8.bufferText(e8.pointMin(), e8.pointMax())) : """#).unwrap();
+    assert!(list.contains("Split func(s string, sep string) []string"), "{list}");
+}

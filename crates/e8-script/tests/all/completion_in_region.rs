@@ -199,3 +199,119 @@ fn text_put_in_before_the_word_keeps_the_list() {
     ed.press("C-f M-<down> M-RET").unwrap();
     assert_eq!(text(&ed), "more\nx foobar");
 }
+
+#[test]
+fn annotations_follow_their_completions_as_emacs_shows_them() {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.set_frame_size(80, 24);
+    ed.window_buffer_mut().set_text("Print");
+    ed.window_buffer_mut().set_point(5);
+    s.eval_typescript(
+        &mut ed,
+        "capf.ts",
+        r#"e8.addHook("completion-at-point-functions", () => [0, e8.point(), ["Printf", "Println", "Print", "Sprintf"],
+          ":annotation-function", (c: string) => e8.concat(" ", e8.propertize(c === "Print" ? "func(a ...any)" : "func", { face: "font-lock-function-name-face" }))],
+          { local: true });"#
+            .to_string(),
+    )
+    .unwrap();
+    ed.call("completion-help-at-point", vec![]).unwrap();
+    // As Emacs 30.2 lists them: one to a line, as the widest with its annotation leaves room for one column.
+    let list = eval(&mut ed, &s, r#"e8.withCurrentBuffer("*Completions*", () => e8.bufferText(e8.pointMin(), e8.pointMax()))"#);
+    assert!(list.ends_with(r#"3 possible completions:\nPrint func(a ...any)\nPrintf func\nPrintln func""#), "{list}");
+    // The annotation keeps its own face, and choosing on it chooses its completion.
+    let props = eval(
+        &mut ed,
+        &s,
+        r#"e8.withCurrentBuffer("*Completions*", () => { const p = e8.bufferText(e8.pointMin(), e8.pointMax()).indexOf("func(a"); return JSON.stringify([e8.getTextProperty(p, "face"), e8.getTextProperty(p, "completion--string"), e8.getTextProperty(p, "mouse-face") ?? null]); })"#,
+    );
+    assert_eq!(props, r#""[\"font-lock-function-name-face\",\"Print\",null]""#);
+}
+
+#[test]
+fn a_display_sort_function_orders_the_list() {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.set_frame_size(80, 24);
+    ed.window_buffer_mut().set_text("a");
+    ed.window_buffer_mut().set_point(1);
+    s.eval_typescript(
+        &mut ed,
+        "capf.ts",
+        r#"e8.addHook("completion-at-point-functions", () => [0, e8.point(), ["ab", "ac", "aa"],
+          ":display-sort-function", (cs: string[]) => [...cs].sort().reverse()], { local: true });"#
+            .to_string(),
+    )
+    .unwrap();
+    ed.press("C-M-i").unwrap();
+    let list = eval(&mut ed, &s, r#"e8.withCurrentBuffer("*Completions*", () => e8.bufferText(e8.pointMin(), e8.pointMax()))"#);
+    assert!(list.ends_with(r#"3 possible completions:\nac\nab\naa""#), "{list}");
+}
+
+/// A completion function with annotations naming the buffer they are asked in.
+fn annotated(text: &str) -> (Editor, Scripting) {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.set_frame_size(80, 24);
+    ed.window_buffer_mut().set_text(text);
+    let end = ed.window_buffer().len();
+    ed.window_buffer_mut().set_point(end);
+    s.eval_typescript(
+        &mut ed,
+        "capf.ts",
+        r#"e8.addHook("completion-at-point-functions", () => [0, e8.point(), ["foobar", "foobaz"],
+          ":annotation-function", (c: string) => ` in ${e8.bufferName()}`], { local: true });"#
+            .to_string(),
+    )
+    .unwrap();
+    (ed, s)
+}
+
+#[test]
+fn annotations_are_asked_for_in_the_buffer_being_completed_and_only_the_completion_is_marked() {
+    let (mut ed, s) = annotated("fooba");
+    ed.press("C-M-i").unwrap();
+    let list = eval(&mut ed, &s, r#"e8.withCurrentBuffer("*Completions*", () => e8.bufferText(e8.pointMin(), e8.pointMax()))"#);
+    assert!(list.ends_with(r#"foobar in *scratch*\nfoobaz in *scratch*""#), "{list}");
+    ed.press("M-<down>").unwrap();
+    let marked = eval(
+        &mut ed,
+        &s,
+        r#"e8.withCurrentBuffer("*Completions*", () => {
+          const o = e8.overlaysIn(e8.pointMin(), e8.pointMax()).find((o) => e8.overlayGet(o, "face") === "completions-highlight");
+          return o === undefined ? "" : e8.bufferText(e8.overlayStart(o), e8.overlayEnd(o));
+        })"#,
+    );
+    assert_eq!(marked, r#""foobar""#);
+}
+
+#[test]
+fn a_click_on_an_annotation_only_moves_there() {
+    let (mut ed, s) = annotated("fooba");
+    ed.press("C-M-i").unwrap();
+    let window = ed.windows().iter().find(|w| w.buffer.name == "*Completions*").map(|w| w.id).unwrap();
+    let at: usize = eval(&mut ed, &s, r#"e8.withCurrentBuffer("*Completions*", () => e8.bufferText(e8.pointMin(), e8.pointMax()).indexOf(" in *scratch*") + 3)"#)
+        .parse()
+        .unwrap();
+    ed.mouse(e8_core::Key::parse("<mouse-1>").unwrap(), e8_core::MouseEvent { window, position: Some(at), start: None });
+    assert_eq!(ed.window_buffer().name, "*Completions*");
+    assert_eq!(eval(&mut ed, &s, r#"e8.withCurrentBuffer("*scratch*", () => e8.bufferText(e8.pointMin(), e8.pointMax()))"#), r#""fooba""#);
+}
+
+#[test]
+fn cycling_goes_on_with_the_last_key_of_a_prefix_binding() {
+    let (mut ed, _s) = completing("fooba", r#"["foobar", "foobaz"]"#);
+    ed.set_variable("completion-cycle-threshold", e8_core::Value::Number(3.0));
+    ed.call("global-set-key", vec![e8_core::Arg::Str("C-c c".into()), e8_core::Arg::Str("completion-at-point".into())]).unwrap();
+    ed.press("C-c c").unwrap();
+    assert_eq!(text(&ed), "foobar");
+    ed.press("c").unwrap();
+    assert_eq!(text(&ed), "foobaz");
+    ed.press("c").unwrap();
+    assert_eq!(text(&ed), "foobar");
+    // Another key, and the cycle is over: c is typed.
+    ed.press("C-e").unwrap();
+    ed.press("c").unwrap();
+    assert_eq!(text(&ed), "foobarc");
+}
