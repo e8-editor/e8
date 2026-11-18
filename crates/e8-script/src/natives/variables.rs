@@ -1067,6 +1067,21 @@ natives! {
         Ok(e8_core::completion::all_in_style(&style, &before, &after, &names, ignore_case.unwrap_or(false)))
     }
 
+    /// What completing BEFORE and AFTER, the text either side of point, in
+    /// one of the completion styles E8 has built in gives, as that style's
+    /// try-completion function: null for no match, true when the text is
+    /// the only match, and otherwise the new text and where point goes in
+    /// it. Undefined for a style it does not have, as one a package adds.
+    #[ts = "(style: string, before: string, after: string, names: string[], ignoreCase?: boolean): null | true | { text: string; point: number } | undefined"]
+    pub fn completionTryInStyle(ed, style: String, before: String, after: String, names: Vec<String>, ignore_case: Option<bool>) -> Option<Field> {
+        let _ = ed;
+        Ok(e8_core::completion::try_in_style(&style, &before, &after, "", &names, ignore_case.unwrap_or(false), None).map(|t| match t {
+            e8_core::completion::Try::None => Field::Value(EditorValue::Null),
+            e8_core::completion::Try::Exact => Field::from(true),
+            e8_core::completion::Try::Completed { text, point } => Record::new().with("text", text).with("point", point).into(),
+        }))
+    }
+
     /// Asks the open prompt's completion function, a completingRead table
     /// that is a function, for its names again, as when output a process
     /// gave changes them between commands, as consult's async tables do.

@@ -1,0 +1,344 @@
+[
+  {
+    "name": "sole-completion-goes-in",
+    "text": "fo",
+    "point": 2,
+    "keys": "C-M-i",
+    "capf": [
+      "foobar",
+      "quux"
+    ],
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "the-common-part-goes-in",
+    "text": "fo",
+    "point": 2,
+    "keys": "C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "no-progress-lists-the-completions",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "a-second-press-keeps-the-list",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "no-match-changes-nothing",
+    "text": "zz",
+    "point": 2,
+    "keys": "C-M-i",
+    "capf": [
+      "foo"
+    ],
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "exact-but-not-unique",
+    "text": "foo",
+    "point": 3,
+    "keys": "C-M-i",
+    "capf": [
+      "foo",
+      "foobar"
+    ],
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "exact-but-not-unique-twice-lists",
+    "text": "foo",
+    "point": 3,
+    "keys": "C-M-i C-M-i",
+    "capf": [
+      "foo",
+      "foobar"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "already-sole-and-exact",
+    "text": "foobar",
+    "point": 6,
+    "keys": "C-M-i",
+    "capf": [
+      "foobar"
+    ],
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "m-down-and-m-ret-choose",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i M-<down> M-RET",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "m-down-twice-and-m-ret-choose-the-second",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i M-<down> M-<down> M-RET",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "m-up-from-the-list-chooses-the-last",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i M-<up> M-RET",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "typing-keeps-the-list-and-completes-again",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i r C-M-i",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "leaving-the-word-hides-the-list",
+    "text": "x fooba",
+    "point": 7,
+    "keys": "C-M-i C-a",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "tab-completes-while-the-list-shows",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i z TAB",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "m-question-in-the-mode-lists-again",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i M-?",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "many-completions-in-columns",
+    "text": "",
+    "point": 0,
+    "keys": "C-M-i",
+    "capf": [
+      "apple",
+      "apricot",
+      "avocado",
+      "banana",
+      "blueberry",
+      "cherry",
+      "coconut",
+      "date",
+      "elderberry",
+      "fig",
+      "grape",
+      "guava"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "many-completions-for-a-letter",
+    "text": "a",
+    "point": 1,
+    "keys": "C-M-i",
+    "capf": [
+      "apple",
+      "apricot",
+      "avocado",
+      "banana",
+      "blueberry",
+      "cherry",
+      "coconut",
+      "date",
+      "elderberry",
+      "fig",
+      "grape",
+      "guava"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "completing-in-the-middle-of-a-word",
+    "text": "foo bar",
+    "point": 2,
+    "keys": "C-M-i",
+    "capf": [
+      "foobar-x",
+      "foobar-y"
+    ],
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "completing-the-word-before-point-mid-line",
+    "text": "x fo y",
+    "point": 4,
+    "keys": "C-M-i",
+    "capf": [
+      "foobar"
+    ],
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "nothing-to-complete-at-point",
+    "text": "  ",
+    "point": 1,
+    "keys": "C-M-i",
+    "message": true,
+    "completions": true
+  },
+  {
+    "name": "choosing-replaces-the-whole-word",
+    "text": "fooba tail",
+    "point": 5,
+    "keys": "C-M-i M-<down> M-<down> M-RET",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "c-g-after-the-list",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i C-g",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "moving-within-the-word-keeps-the-list",
+    "text": "x fooba",
+    "point": 7,
+    "keys": "C-M-i C-b C-b",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "typing-after-the-list-then-choosing-replaces-it-all",
+    "text": "fooba",
+    "point": 5,
+    "keys": "C-M-i r M-<down> M-RET",
+    "capf": [
+      "foobar",
+      "foobaz"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "choosing-with-point-inside-the-word",
+    "text": "fobar",
+    "point": 2,
+    "keys": "C-M-i C-M-i M-<down> M-RET",
+    "capf": [
+      "foo1bar",
+      "foo2bar"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  },
+  {
+    "name": "listing-with-point-inside-the-word",
+    "text": "fobar",
+    "point": 2,
+    "keys": "C-M-i C-M-i",
+    "capf": [
+      "foo1bar",
+      "foo2bar"
+    ],
+    "message": true,
+    "completions": true,
+    "windows": true
+  }
+]

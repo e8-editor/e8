@@ -1223,21 +1223,23 @@ fn slash_commands_complete_at_the_start_of_a_request_and_say_what_they_do() {
     wait_for("the commands", || s.d.eval_expression(capf) != r#""null""#);
     assert_eq!(
         js_string(&s.d, capf),
-        json!([6, 9, ["/compact", "/context", "/code-review:code-review"]]).to_string()
+        json!([6, 9, ["/compact", "/context", "/code-review:code-review"], ":exit-function", null]).to_string()
     );
     // TAB completes one, and says what it does.
     s.d.type_text("nt");
     s.d.press("TAB");
     assert_eq!(s.d.text(), "* You\n/context");
     assert_eq!(s.d.message().as_deref(), Some("/context: Show what fills the context"));
-    // With several, the minibuffer asks which, and what one takes is said too.
+    // With several, *Completions* lists them, M-<down> and M-RET choose one,
+    // and what it takes is said too.
     s.d.press("C-a");
     s.d.press("C-k");
     s.d.type_text("/co");
     s.d.press("TAB");
-    assert!(s.d.prompt().is_some_and(|p| p.starts_with("Complete")), "{:?}", s.d.prompt());
-    s.d.type_text("de-review:code-review");
-    s.d.press("RET");
+    assert!(s.d.prompt().is_none(), "{:?}", s.d.prompt());
+    assert!(s.d.eval_expression(r#"e8.windowList().map((w) => e8.windowBuffer(w)).join(",")"#).contains("*Completions*"));
+    s.d.press("M-<down>");
+    s.d.press("M-RET");
     assert_eq!(s.d.text(), "* You\n/code-review:code-review");
     assert_eq!(s.d.message().as_deref(), Some("/code-review:code-review: (code-review) Code review a pull request (takes PR number)"));
     // Only at the start of the request: a / later in it is text, and TAB is Org's.

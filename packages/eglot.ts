@@ -534,10 +534,20 @@ function completionAtPoint(): e8.Value {
     e8.skipSyntaxBackward("w_");
     return e8.point();
   });
-  const answer = request(server, "textDocument/completion", { textDocument: textDocument(), position: lspPosition(), context: { triggerKind: 1 } }) as any;
-  const items: any[] = Array.isArray(answer) ? answer : (answer?.items ?? []);
-  const words = items.map((item) => String(item.textEdit?.newText ?? item.insertText ?? item.label));
-  return [start, end, [...new Set(words)]];
+  // The server is asked only when the completions are needed, as eglot's
+  // table is a function: completion-in-region-mode calls this after each
+  // command to see the text is still the one being completed.
+  const position = lspPosition();
+  const document = textDocument();
+  const buffer = e8.bufferName()!;
+  let words: string[] | undefined;
+  const completions = (): string[] =>
+    (words ??= e8.withCurrentBuffer(buffer, () => {
+      const answer = request(server, "textDocument/completion", { textDocument: document, position, context: { triggerKind: 1 } }) as any;
+      const items: any[] = Array.isArray(answer) ? answer : (answer?.items ?? []);
+      return [...new Set(items.map((item) => String(item.textEdit?.newText ?? item.insertText ?? item.label)))];
+    }));
+  return [start, end, completions as unknown as e8.Value];
 }
 
 e8.defineKey("eglot--managed-mode-map", "C-M-i", "completion-at-point");

@@ -67,6 +67,13 @@ pub struct Case {
     /// Whether editing makes lock files, `create-lockfiles`, off otherwise.
     #[serde(default, skip_serializing_if = "is_false")]
     pub lockfiles: bool,
+    /// Strings a function on completion-at-point-functions offers for the
+    /// word at point.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub capf: Vec<String>,
+    /// Whether to compare the text of *Completions*, if a window shows it.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub completions: bool,
 }
 
 #[derive(Deserialize)]
@@ -119,6 +126,10 @@ pub struct Input {
     pub vars: BTreeMap<String, serde_json::Value>,
     #[serde(default)]
     pub lockfiles: bool,
+    #[serde(default)]
+    pub capf: Vec<String>,
+    #[serde(default)]
+    pub completions: bool,
 }
 
 impl Input {
@@ -143,6 +154,8 @@ impl Input {
             message: case.message,
             vars: case.vars.clone(),
             lockfiles: case.lockfiles,
+            capf: case.capf.clone(),
+            completions: case.completions,
         }
     }
 }
@@ -181,6 +194,9 @@ pub struct State {
     /// The last message, with the case's directory as DIR, for cases that ask.
     #[serde(default)]
     pub message: Option<String>,
+    /// The text of *Completions*, if a window shows it, for cases that ask.
+    #[serde(default)]
+    pub completions: Option<String>,
 }
 
 /// Writes a case's file: UTF-8, or Latin-1 for text marked `latin-1:`.
@@ -377,7 +393,7 @@ pub fn oracle_dir() -> PathBuf {
 /// Runs a case through E8 the way record.el runs it through Emacs.
 pub fn run(case: &Case) -> State {
     let mut ed = Editor::new();
-    let _scripting = Scripting::new(&mut ed).expect("scripting starts");
+    let scripting = Scripting::new(&mut ed).expect("scripting starts");
     // As in Emacs, deleting deletes, which also keeps cases out of the trash.
     ed.set_variable("delete-by-moving-to-trash", e8_core::Value::Bool(false));
     // Lock files only where a case asks for them, as record.el has it.
@@ -487,6 +503,20 @@ pub fn run(case: &Case) -> State {
         ed.make_local_variable(name);
         ed.set_variable(name, value);
     }
+    // A completion function offering the case's strings for the word at point.
+    if !case.capf.is_empty() {
+        let strings = serde_json::to_string(&case.capf).expect("strings");
+        let source = format!(
+            "e8.addHook(\"completion-at-point-functions\", () => {{\n\
+             const word = /[-_\\p{{L}}\\p{{N}}]/u;\n\
+             let start = e8.point(), end = e8.point();\n\
+             while (start > e8.pointMin() && word.test(e8.bufferText(start - 1, start))) start--;\n\
+             while (end < e8.pointMax() && word.test(e8.bufferText(end, end + 1))) end++;\n\
+             return [start, end, {strings}];\n\
+             }}, {{ local: true }})"
+        );
+        scripting.eval_expression(&mut ed, &source).unwrap_or_else(|e| panic!("{}: adding the completion function: {e}", case.name));
+    }
     // Fontified as redisplay would before the keys; record.el does the same.
     ed.font_lock_ensure().unwrap_or_else(|e| panic!("{}: fontifying: {e}", case.name));
     // A case may be only a call, with no keys after it.
@@ -587,6 +617,10 @@ pub fn run(case: &Case) -> State {
         windows,
         files: dir.as_ref().map(|d| listing(d.path())),
         message: message.filter(|_| case.message).map(|m| without_dir(&m, dir.as_ref())),
+        completions: case
+            .completions
+            .then(|| ed.windows().iter().find(|w| w.buffer.name == "*Completions*").map(|w| w.buffer.slice(0..w.buffer.len())))
+            .flatten(),
         error: answering.borrow().error.clone().map(|e| without_dir(&e, dir.as_ref())),
     }
 }
@@ -623,6 +657,9 @@ pub fn differences(emacs: &State, e8: &State) -> String {
     }
     if emacs.message != e8.message {
         out.push(format!("    message: Emacs {:?}, E8 {:?}", emacs.message, e8.message));
+    }
+    if emacs.completions != e8.completions {
+        out.push(format!("    completions: Emacs {:?}, E8 {:?}", emacs.completions, e8.completions));
     }
     out.join("\n")
 }
