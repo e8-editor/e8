@@ -19,7 +19,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - A shell in a buffer (`M-x shell`, on comint: `M-p`, `M-n`, `M-r` searching the history with isearch, `C-c M-r`, the shell's history file, `C-c C-c`, `C-c C-o`, the directory followed, passwords read hidden with `read-passwd`).
 - Shell commands (`M-!`, `M-|`, `M-&`).
 - The environment programs run in, as Emacs keeps it ([ADR 0112](adr/0112-the-environment-programs-run-in.md)): `process-environment` and `initial-environment`, `M-x setenv` and `M-x getenv`, `substitute-env-vars`, `with-environment-variables`, programs found along `exec-path`, and `call-process` as Emacs takes it, with an input file and DISPLAY. Network connections made without waiting (`:nowait`), datagrams (UDP, `:type datagram`, `process-datagram-address`), and connections and pipe processes stopped and continued (`:stop`, `stop-process`).
-- Going to a definition by name (`M-x imenu`, from the syntax tree in tree-sitter modes, Python's included, and the headings in Org).
+- Going to a definition by name (`M-x imenu`, from the syntax tree in tree-sitter modes, Python's included, and the headings in Org; the index kept until `*Rescan*` or made afresh with `imenu-auto-rescan`, flattened with `imenu-flatten`, and put on the menu bar with `imenu-add-menubar-index`).
 - Compiling and grepping in the background (`M-x compile`, `M-x grep`, `recompile`, `C-x p c`) and visiting each message's place (`next-error` on `M-g n`, `M-g p`).
 - Finding a regexp in a project (`C-x p g`, into `*xref*`).
 - Comments (`M-;`, `C-x C-;`, `C-x ;`, `M-j`).
