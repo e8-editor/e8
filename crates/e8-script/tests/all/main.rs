@@ -23,6 +23,7 @@ mod c_core_names;
 mod changes;
 mod chartab;
 mod codings;
+mod codings_rest;
 mod comint;
 mod commands;
 mod compile;

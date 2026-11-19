@@ -182,13 +182,17 @@ fn a_charset_is_named_described_and_ordered_as_emacs_names_it() {
           e8.sortCharsets(["unicode", "ascii", "big5"]),
           e8.charsetIdInternal("ascii"), e8.charsetIdInternal("unicode"), e8.charsetIdInternal("nope") ?? null,
           e8.charsetPlist("ascii"), e8.charsetPlist("japanese-jisx0208")[":dimension"],
+          ["japanese-jisx0208", "iso-8859-1"].map((c) => [":iso-final-char", ":emacs-mule-id", ":unify-map", ":short-name"].map((k) => e8.charsetPlist(c)[k] ?? null)),
         ])"#,
     );
-    // Emacs: nil (ascii unicode) (ascii unicode big5) 0 2 nil; its ascii plist says :dimension 1,
-    // :ascii-compatible-p t, :code-space [0 127 0 0 0 0 0 0], and holds more E8 does not.
+    // Emacs: nil (ascii unicode) (ascii unicode big5) 0 2 nil; its ascii plist says
+    // :docstring "ASCII (ISO646 IRV)" :short-name "ASCII" :long-name "ASCII (ISO646 IRV)"
+    // :iso-final-char 66 :emacs-mule-id 0 :dimension 1, :ascii-compatible-p t,
+    // :code-space [0 127 0 0 0 0 0 0]; japanese-jisx0208's :iso-final-char 66,
+    // :emacs-mule-id 146 and :unify-map "JISX0208", iso-8859-1 none of them.
     assert_eq!(
         got,
-        r#"[[],["ascii","unicode"],["ascii","unicode","big5"],0,2,null,{":name":"ascii",":dimension":1,":ascii-compatible-p":true,":code-space":[0,127]},2]"#
+        r#"[[],["ascii","unicode"],["ascii","unicode","big5"],0,2,null,{":name":"ascii",":docstring":"ASCII (ISO646 IRV)",":short-name":"ASCII",":long-name":"ASCII (ISO646 IRV)",":iso-final-char":66,":emacs-mule-id":0,":code-space":[0,127],":dimension":1,":ascii-compatible-p":true},2,[[66,146,"JISX0208","JISX0208"],[null,null,null,"Latin-1"]]]"#
     );
 }
 
@@ -445,12 +449,13 @@ fn a_coding_system_has_the_plist_emacs_gives_it() {
                            e8.codingSystemPlist("prefer-utf-8")[":ascii-compatible-p"],
                            (e8.codingSystemPut("utf-8", ":mime-charset", "zz"), e8.codingSystemPlist("utf-8")[":mime-charset"])]))"#,
     );
-    // Emacs's iso-latin-1 plist says :ascii-compatible-p t, :name iso-latin-1,
-    // :coding-type charset, :mnemonic 49 and :mime-charset iso-8859-1, with a
-    // :category, :docstring and :charset-list E8 does not hold.
+    // Emacs: (:ascii-compatible-p t :category coding-category-charset
+    // :name iso-latin-1 :docstring "ISO 2022 based 8-bit encoding for
+    // Latin-1 (MIME:ISO-8859-1)." :coding-type charset :mnemonic 49
+    // :charset-list (iso-8859-1) :mime-charset iso-8859-1).
     assert_eq!(
         got,
-        r#"[{":name":"iso-latin-1",":coding-type":"charset",":mnemonic":49,":ascii-compatible-p":true,":mime-charset":"iso-8859-1"},42,false,false,false,"zz"]"#
+        r#"[{":ascii-compatible-p":true,":category":"coding-category-charset",":name":"iso-latin-1",":docstring":"ISO 2022 based 8-bit encoding for Latin-1 (MIME:ISO-8859-1).",":coding-type":"charset",":mnemonic":49,":charset-list":["iso-8859-1"],":mime-charset":"iso-8859-1"},42,false,false,false,"zz"]"#
     );
 }
 

@@ -277,11 +277,84 @@ impl Editor {
     pub(crate) fn file_coding_for_read(&mut self, args: &[Value]) -> Result<crate::coding::FileCoding> {
         let forced = self.coding_for_read();
         if forced.is_some() {
-            return Ok(crate::coding::FileCoding { forced, by_name: None });
+            return Ok(crate::coding::FileCoding { forced, by_name: None, by_function: None });
+        }
+        // auto-coding-alist, by the name, wins over what the file says, as
+        // set-auto-coding asks it first.
+        let name = args.first().and_then(|a| match a {
+            Value::List(pair) => pair.first().and_then(Value::as_str).map(str::to_string),
+            v => v.as_str().map(str::to_string),
+        });
+        if let Some(name) = &name
+            && let Some(c) = self.auto_coding_alist_lookup(name)?
+        {
+            return Ok(crate::coding::FileCoding { forced: Some(c), by_name: None, by_function: None });
         }
         let found = self.find_operation_coding_system("insert-file-contents", args)?;
         let by_name = found.and_then(|(decode, _)| decode.as_str().and_then(Coding::parse)).filter(|c| !c.is_undecided());
-        Ok(crate::coding::FileCoding { forced, by_name })
+        let by_function = match &name {
+            Some(name) => self.auto_coding_from_functions(name)?,
+            None => None,
+        };
+        Ok(crate::coding::FileCoding { forced, by_name, by_function })
+    }
+
+    /// The first coding a function in `auto-coding-functions` gives for
+    /// a file, as set-auto-coding asks them after the file's cookie: each
+    /// is called with the file's size, `auto-coding-file-name` bound to
+    /// its name. E8 asks them before the file's text is read, so they
+    /// have its name to go by, not its text; the XML and HTML
+    /// declarations Emacs's own functions look for, E8 finds itself. A
+    /// function that fails is passed over, as find-auto-coding ignores
+    /// its errors.
+    pub(crate) fn auto_coding_from_functions(&mut self, name: &str) -> Result<Option<Coding>> {
+        let functions = match self.variable("auto-coding-functions") {
+            Some(Value::List(items)) => items,
+            Some(f @ (Value::Str(_) | Value::Function(_))) => vec![f],
+            _ => return Ok(None),
+        };
+        if functions.is_empty() {
+            return Ok(None);
+        }
+        let size = fs::metadata(Path::new(name)).map_or(0, |m| m.len());
+        let binding = self.specbind("auto-coding-file-name", Value::Str(name.to_string()));
+        let mut found = None;
+        for f in functions {
+            // Errors are passed over, as ignore-errors does; a quit still stops it.
+            match self.funcall(&f, &[Value::Number(size as f64)]) {
+                Ok(v) => {
+                    if let Some(c) = v.as_str().and_then(Coding::parse) {
+                        found = Some(c);
+                        break;
+                    }
+                }
+                Err(e) if !e.is("error") => {
+                    self.unbind(binding);
+                    return Err(e);
+                }
+                Err(_) => {}
+            }
+        }
+        self.unbind(binding);
+        Ok(found)
+    }
+
+    /// The coding `auto-coding-alist` gives a file by this name, as
+    /// `auto-coding-alist-lookup`.
+    pub(crate) fn auto_coding_alist_lookup(&mut self, name: &str) -> Result<Option<Coding>> {
+        let Some(Value::List(entries)) = self.variable("auto-coding-alist") else { return Ok(None) };
+        // Case folded where file names are, as on macOS.
+        let fold = self.file_name_case_insensitive_p(name);
+        for entry in entries {
+            let Value::List(pair) = &entry else { continue };
+            let (Some(re), Some(coding)) = (pair.first().and_then(Value::as_str), pair.get(1).and_then(Value::as_str)) else { continue };
+            if self.string_match(re, name, 0, fold)?.is_some()
+                && let Some(c) = Coding::parse(coding)
+            {
+                return Ok(Some(c));
+            }
+        }
+        Ok(None)
     }
 
     /// The coding to write a file by this name with: `coding-system-for-write`
@@ -300,10 +373,51 @@ impl Editor {
             let found = self.find_operation_coding_system("write-region", args)?;
             if let Some(coding) = found.and_then(|(_, encode)| encode.as_str().and_then(Coding::parse)).filter(|c| !c.is_undecided()) {
                 let own = self.coding_for_write();
-                return Ok(coding.with_eol(Some(coding.eol.or(own.eol).unwrap_or(Eol::Unix))));
+                let coding = coding.with_eol(Some(coding.eol.or(own.eol).unwrap_or(Eol::Unix)));
+                return self.select_safe_coding(coding, false, args);
             }
         }
-        Ok(self.coding_for_write())
+        let coding = self.coding_for_write();
+        self.select_safe_coding(coding, forced.is_some(), args)
+    }
+
+    /// Asks `select-safe-coding-system-function` whether `coding` can
+    /// write the text, as Emacs's choose_write_coding_system does: always
+    /// for the buffer's own coding, which it gives back if it can, else
+    /// asks which to use, showing what it cannot write; for one
+    /// `coding-system-for-write` forced, only when C-x RET c asked for a
+    /// warning, as `coding-system-require-warning` says.
+    fn select_safe_coding(&mut self, coding: Coding, forced: bool, args: &[Value]) -> Result<Coding> {
+        if forced && !self.variable("coding-system-require-warning").is_some_and(|v| v.is_true()) {
+            return Ok(coding);
+        }
+        // Raw text writes what it holds, as choose_write_coding_system forces it.
+        if !forced && coding.system().coding_type == "raw-text" {
+            return Ok(coding);
+        }
+        let Some(function) = self.variable("select-safe-coding-system-function").filter(|v| v.is_true()) else {
+            return Ok(coding);
+        };
+        let default = if forced { Value::List(vec![Value::Bool(true), Value::Str(coding.name())]) } else { Value::Str(coding.name()) };
+        let file = args.get(2).cloned().unwrap_or(Value::Null);
+        let chosen = match (args.first(), args.get(1)) {
+            // The whole buffer, widened, as write-region writes it.
+            (None | Some(Value::Null), _) => {
+                let (min, max) = (self.buffer().point_min(), self.buffer().point_max());
+                self.buffer_mut().widen();
+                let len = self.buffer().len();
+                let chosen = self.funcall(&function, &[Value::Number(0.0), Value::Number(len as f64), default, Value::Null, file]);
+                if (min, max) != (0, len) {
+                    self.buffer_mut().narrow(min, max);
+                }
+                chosen?
+            }
+            (Some(start), end) => self.funcall(&function, &[start.clone(), end.cloned().unwrap_or(Value::Null), default, Value::Null, file])?,
+        };
+        Ok(match chosen.as_str().and_then(Coding::parse) {
+            Some(c) => c.with_eol(Some(c.eol.or(coding.eol).unwrap_or(Eol::Unix))),
+            None => coding,
+        })
     }
 
     /// The coding `coding-system-for-read` says to read files with, if any.

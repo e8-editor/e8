@@ -16,7 +16,8 @@
     iso-latin-8 iso-latin-9 iso-latin-10 windows-1250 windows-1251 windows-1252 windows-1253 windows-1254
     windows-1255 windows-1256 windows-1257 windows-1258 cp874 cp866 cyrillic-koi8 koi8-u mac-roman
     japanese-shift-jis japanese-cp932 japanese-iso-8bit iso-2022-jp iso-2022-7bit chinese-iso-8bit chinese-gbk
-    chinese-gb18030 chinese-big5 chinese-big5-hkscs korean-iso-8bit korean-cp949 raw-text no-conversion)
+    chinese-gb18030 chinese-big5 chinese-big5-hkscs korean-iso-8bit korean-cp949 raw-text no-conversion
+    no-conversion-multibyte)
   "The coding systems in crates/e8-core/src/coding.rs.")
 
 (defun e8--description (coding)

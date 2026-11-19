@@ -360,7 +360,7 @@ function justifyCurrentLine(how: string | undefined, eop: boolean, prefix: strin
  * fill-region-as-paragraph, leaving point at the start of the line after
  * it. Returns the fill prefix it used.
  */
-function fillRegionAsParagraph(fromIn: number, toIn: number, justifyIn?: string): string | undefined {
+export function fillRegionAsParagraph(fromIn: number, toIn: number, justifyIn?: string): string | undefined {
   let justify = justifyIn;
   e8.gotoChar(Math.min(fromIn, toIn));
   const toPos = Math.max(fromIn, toIn);

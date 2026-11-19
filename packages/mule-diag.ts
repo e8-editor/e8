@@ -82,6 +82,66 @@ function describeCurrentText(): string {
   const defaults = e8.variable("default-process-coding-system");
   const [decoding, encoding] = Array.isArray(defaults) ? defaults.map(value) : [undefined, undefined];
   text += "Defaults for subprocess I/O:\n  decoding: " + codingSystemBriefly(decoding) + "  encoding: " + codingSystemBriefly(encoding);
+  text += "\nPriority order for recognizing coding systems when reading files:\n";
+  e8.codingSystemPriorityList().forEach((coding, i) => {
+    text += `  ${i + 1}. ${coding} `;
+    const aliases = aliasesOf(coding);
+    if (aliases[0] === coding) {
+      if (aliases.length > 1) text += `(alias: ${aliases.slice(1).join(" ")})`;
+    } else text += `(alias of ${aliases[0]})`;
+    text += "\n";
+  });
+  text +=
+    "\n  Other coding systems cannot be distinguished automatically\n  from these, and therefore cannot be recognized automatically\n  with the present coding system priorities.\n\n";
+  text += "Particular coding systems specified for certain file names:\n\n";
+  text += "  OPERATION\tTARGET PATTERN\t\tCODING SYSTEM(s)\n";
+  text += "  ---------\t--------------\t\t----------------\n";
+  const list = (name: string) => {
+    const v = e8.variable(name);
+    return Array.isArray(v) ? (v as e8.Value[][]) : [];
+  };
+  text += alistLines("File I/O", [...list("auto-coding-alist"), ...list("file-coding-system-alist")]);
+  text += alistLines("Process I/O", list("process-coding-system-alist"));
+  text += alistLines("Network I/O", list("network-coding-system-alist"));
+  return text;
+}
+
+/** A string as prin1 writes it: in double quotes, backslashes and quotes escaped. */
+const prin1String = (s: string): string => `"${s.replace(/[\\"]/g, (c) => `\\${c}`)}"`;
+
+/** A line grown to `column` with tabs and then spaces, as indent-to does with indent-tabs-mode. */
+function indentTo(line: string, column: number): string {
+  let col = [...line.split("\n").pop()!].reduce((c, ch) => (ch === "\t" ? Math.floor(c / 8) * 8 + 8 : c + 1), 0);
+  if (col >= column) return line;
+  let out = line;
+  while (Math.floor(col / 8) * 8 + 8 <= column) {
+    out += "\t";
+    col = Math.floor(col / 8) * 8 + 8;
+  }
+  return out + " ".repeat(column - col);
+}
+
+/** What an alist entry's codings print as: a coding, (DECODING . ENCODING), or (DECODING) when encoding is nil. */
+function codingsOf(entry: e8.Value[]): string {
+  const [, decode, ...rest] = entry;
+  const name = (v: e8.Value | undefined) => (typeof v === "symbol" ? ((v as symbol).description ?? "") : String(v));
+  if (rest.length === 0) return name(decode);
+  const encode = rest[0];
+  return encode === null || encode === undefined || encode === false ? `(${name(decode)})` : `(${name(decode)} . ${name(encode)})`;
+}
+
+/** One operation's lines of the table, as describe-current-coding-system writes them. */
+function alistLines(operation: string, alist: e8.Value[][]): string {
+  let text = `  ${operation}`;
+  if (alist.length === 0) return `${text}\tnothing specified\n`;
+  for (const entry of alist) {
+    text = indentTo(text, 16);
+    text += typeof entry[0] === "string" ? prin1String(entry[0]) : String(entry[0]);
+    const current = text.split("\n").pop()!;
+    if ([...current].reduce((c, ch) => (ch === "\t" ? Math.floor(c / 8) * 8 + 8 : c + 1), 0) >= 40) text += "\n";
+    text = indentTo(text, 40);
+    text += `${codingsOf(entry)}\n`;
+  }
   return text;
 }
 
@@ -161,4 +221,5 @@ const DESCRIPTIONS: Record<string, [string, string[], string, string]> = {
   "korean-cp949": ["K", ["korean-cp949", "cp949"], "\nCP949 (Microsoft Unified Hangul Code)\nType: charset (charset)\n", "This coding system encodes the following charsets:\n  ascii cp949\n"],
   "raw-text": ["t", ["raw-text"], "\nRaw text, which means text contains random 8-bit codes.\nEncoding text with this coding system produces the actual byte\nsequence of the text in buffers and strings.  An exception is made for\ncharacters from the ‘eight-bit’ character set.  Each of them is encoded\ninto a single byte.\n\nWhen you visit a file with this coding, the file is read into a\nunibyte buffer as is (except for EOL format), thus each byte of a file\nis treated as a character.\nType: raw-text (text with random binary characters)\n", ""],
   "no-conversion": ["=", ["no-conversion", "binary"], "\nDo no conversion.\n\nWhen you visit a file with this coding, the file is read into a\nunibyte buffer as is, thus each byte of a file is treated as a\ncharacter.\nType: raw-text (text with random binary characters)\n", ""],
+  "no-conversion-multibyte": ["=", ["no-conversion-multibyte"], "\nLike ‘no-conversion’ but don’t read a file into a unibyte buffer.\nType: raw-text (text with random binary characters)\n", ""],
 };

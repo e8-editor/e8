@@ -33,10 +33,10 @@ org-speed/speed-up  # this-command set for nested calls
 org-refile/refile-to-no-target  # the recorder answers completing-read directly, so Emacs reads a target its require-match refuses when typed; E8 refuses it with [No match], as Emacs does when it is typed.
 arguments/delete-more-than-there-is  # Emacs reports an internal "Args out of range" error naming the buffer; E8 says "End of buffer". The text is unchanged in both.
 
-# describe-current-coding-system shows what E8 has: the coding systems in
-# use, but not the detection priority list or the coding systems for
-# particular file names that follow them in Emacs.
-mule-diag/describe-current-coding-system  # no coding priority list yet
+# describe-current-coding-system's priority list is E8's detection order,
+# which leaves out the coding systems E8 does not have: emacs-mule, the
+# ISO 2022 variants and those written in CCL.
+mule-diag/describe-current-coding-system  # E8's coding priority list
 
 # After a command that failed (C-f at the end of the buffer), Emacs's
 # undo-equiv-table no longer finds the undo on top, as the failure left an

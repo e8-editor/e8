@@ -1193,11 +1193,32 @@ pub(crate) fn install(ed: &mut Editor) {
             "The coding system to write files and encode text with, if any, rather than the buffer's own; code binds it around a call, as C-x RET c does.",
             Value::Null,
         ),
+        Variable::new(
+            "auto-coding-functions",
+            "Functions that say which coding system a file is in, asked after its coding: cookie: each is called with the file's size, auto-coding-file-name naming it, and gives a coding system or nil. E8 finds XML and HTML declarations itself, before them.",
+            Value::List(Vec::new()),
+        ),
+        Variable::new("auto-coding-file-name", "The file auto-coding-functions are asked about, bound while they are.", Value::Null),
+        Variable::new(
+            "select-safe-coding-system-function",
+            "The function writing a file asks whether its coding can write the text, with the region, the coding, nil and the file's name; it gives back the coding to use. mule.ts sets it to select-safe-coding-system.",
+            Value::Null,
+        ),
+        Variable::new(
+            "coding-system-require-warning",
+            "Whether a coding coding-system-for-write forces is checked by select-safe-coding-system-function too, as C-x RET c binds it.",
+            Value::Null,
+        ),
         Variable::new("last-coding-system-used", "The coding system the last file read or written, or text decoded or encoded, used.", Value::Null),
         Variable::new(
             "file-coding-system-alist",
             "Which coding system to read and write a file in, by its name: an alist of an Emacs regexp and a coding system, a pair of them for reading and writing, or a function to call.",
-            Value::List(Vec::new()),
+            Value::List(default_file_coding_alist()),
+        ),
+        Variable::new(
+            "auto-coding-alist",
+            "Which coding system to read a file in by its name, before anything else, the file's own coding: cookie included: an alist of an Emacs regexp and a coding system.",
+            Value::List(default_auto_coding_alist()),
         ),
         Variable::new(
             "system-type",
@@ -1402,4 +1423,50 @@ fn invocation() -> (Value, Value) {
         }
         Err(_) => (Value::Bool(false), Value::Bool(false)),
     }
+}
+
+/// Emacs's default file-coding-system-alist: compressed files read as
+/// bytes, Lisp in UTF-8, and XML, PO and LaTeX files by functions that read
+/// what the file says.
+fn default_file_coding_alist() -> Vec<Value> {
+    let both = |re: &str, c: &str| Value::List(vec![Value::Str(re.into()), Value::Str(c.into()), Value::Str(c.into())]);
+    let one = |re: &str, c: &str| Value::List(vec![Value::Str(re.into()), Value::Str(c.into())]);
+    vec![
+        both("\\.tzst\\'", "no-conversion"),
+        both("\\.zst\\'", "no-conversion"),
+        both("\\.dz\\'", "no-conversion"),
+        both("\\.txz\\'", "no-conversion"),
+        both("\\.xz\\'", "no-conversion"),
+        both("\\.lzma\\'", "no-conversion"),
+        both("\\.lz\\'", "no-conversion"),
+        both("\\.g?z\\'", "no-conversion"),
+        both("\\.\\(?:tgz\\|svgz\\|sifz\\)\\'", "no-conversion"),
+        both("\\.tbz2?\\'", "no-conversion"),
+        both("\\.bz2\\'", "no-conversion"),
+        both("\\.Z\\'", "no-conversion"),
+        one("\\.elc\\'", "utf-8-emacs"),
+        one("\\.el\\'", "prefer-utf-8"),
+        one("\\.utf\\(-8\\)?\\'", "utf-8"),
+        one("\\.xml\\'", "xml-find-file-coding-system"),
+        Value::List(vec![Value::Str("\\(\\`\\|/\\)loaddefs.el\\'".into()), Value::Str("raw-text".into()), Value::Str("raw-text-unix".into())]),
+        both("\\.tar\\'", "no-conversion"),
+        one("\\.po[tx]?\\'\\|\\.po\\.", "po-find-file-coding-system"),
+        one("\\.\\(tex\\|ltx\\|dtx\\|drv\\)\\'", "latexenc-find-file-coding-system"),
+        Value::List(vec![Value::Str(String::new()), Value::Str("undecided".into()), Value::Null]),
+    ]
+}
+
+/// Emacs's default auto-coding-alist: archives, programs, compressed files,
+/// images and PDFs read as bytes, and auto-save files in Emacs's own UTF-8.
+fn default_auto_coding_alist() -> Vec<Value> {
+    let one = |re: &str, c: &str| Value::List(vec![Value::Str(re.into()), Value::Str(c.into())]);
+    vec![
+        one("\\.\\(arc\\|zip\\|lzh\\|lha\\|zoo\\|[jew]ar\\|xpi\\|rar\\|7z\\|squashfs\\|ARC\\|ZIP\\|LZH\\|LHA\\|ZOO\\|[JEW]AR\\|XPI\\|RAR\\|7Z\\|SQUASHFS\\)\\'", "no-conversion-multibyte"),
+        one("\\.\\(exe\\|EXE\\)\\'", "no-conversion"),
+        one("\\.\\(sx[dmicw]\\|odt\\|tar\\|t[bg]z\\)\\'", "no-conversion"),
+        one("\\.\\(gz\\|Z\\|bz\\|bz2\\|xz\\|gpg\\)\\'", "no-conversion"),
+        one("\\.\\(jpe?g\\|png\\|gif\\|tiff?\\|p[bpgn]m\\)\\'", "no-conversion"),
+        one("\\.pdf\\'", "no-conversion"),
+        one("/#[^/]+#\\'", "utf-8-emacs-unix"),
+    ]
 }

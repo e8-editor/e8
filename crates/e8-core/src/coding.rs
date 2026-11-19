@@ -223,6 +223,9 @@ static SYSTEMS: &[System] = &[
     system!("korean-cp949", ["cp949"], 'K', "charset", None, Kind::Multi(e::EUC_KR, Variant::Plain)),
     system!("raw-text", [], 't', "raw-text", None, Kind::RawText),
     System { name: "no-conversion", aliases: &["binary"], mnemonic: '=', coding_type: "raw-text", mime_charset: None, kind: Kind::RawText, fixed_eol: true, own_eol: Eol::Unix },
+    // Emacs's for archives, read into a multibyte buffer; E8's buffers are
+    // all multibyte, so it is no-conversion.
+    System { name: "no-conversion-multibyte", aliases: &[], mnemonic: '=', coding_type: "raw-text", mime_charset: None, kind: Kind::RawText, fixed_eol: true, own_eol: Eol::Unix },
 ];
 
 /// A coding system with its line ends, as Emacs names them: `utf-8-unix`,
@@ -323,7 +326,52 @@ impl Coding {
             Some(Eol::Mac) => '/',
             Some(Eol::Unix) | None => ':',
         };
-        format!("{}{eol}", self.system().mnemonic)
+        format!("{}{eol}", self.mnemonic_char())
+    }
+
+    /// The letter for its charset: the system's own, or what
+    /// `coding-system-put` gave its `:mnemonic`.
+    pub fn mnemonic_char(&self) -> char {
+        MNEMONICS.with(|m| m.borrow().iter().find(|(i, _)| *i == self.system).map(|(_, c)| *c)).unwrap_or(self.system().mnemonic)
+    }
+
+    /// Gives the base coding system another mnemonic, as `coding-system-put`
+    /// of `:mnemonic` changes the letter the mode line shows.
+    pub fn set_mnemonic(&self, c: char) {
+        MNEMONICS.with(|m| {
+            let mut m = m.borrow_mut();
+            m.retain(|(i, _)| *i != self.system);
+            m.push((self.system, c));
+        });
+    }
+
+    /// What Emacs's plist says of a coding system E8 has too: its
+    /// docstring, its detection category and the charsets it writes, the
+    /// last a symbol, `iso-2022`, for `iso-2022-7bit`. A coding a script
+    /// defined has its category from its type and its own charsets.
+    pub fn emacs_properties(&self) -> (Option<&'static str>, String, Vec<&'static str>) {
+        let system = self.system();
+        if let Some((_, doc, category, charsets)) = EMACS_SYSTEMS.iter().find(|(n, ..)| *n == system.name) {
+            return (Some(doc), category.to_string(), charsets.to_vec());
+        }
+        let category = match system.coding_type {
+            "utf-8" => "utf-8",
+            "utf-16" => "utf-16-auto",
+            "raw-text" => "raw-text",
+            "undecided" => "undecided",
+            "shift-jis" => "sjis",
+            "big5" => "big5",
+            "iso-2022" => "iso-8-1",
+            "emacs-mule" => "emacs-mule",
+            "ccl" => "ccl",
+            _ => "charset",
+        };
+        let charsets = match system.kind {
+            Kind::Charsets(c) => c.to_vec(),
+            Kind::Utf8(_) | Kind::Utf16 { .. } => vec!["unicode"],
+            _ => Vec::new(),
+        };
+        (None, format!("coding-category-{category}"), charsets)
     }
 
     /// Whether this coding can write `c`, as `find-coding-systems-region` decides.
@@ -499,7 +547,72 @@ thread_local! {
     /// Other names `define-coding-system-alias` gave coding systems, each
     /// with the coding it names.
     static MORE_ALIASES: std::cell::RefCell<Vec<(&'static str, usize)>> = const { std::cell::RefCell::new(Vec::new()) };
+    /// The mnemonics `coding-system-put` gave base coding systems.
+    static MNEMONICS: std::cell::RefCell<Vec<(usize, char)>> = const { std::cell::RefCell::new(Vec::new()) };
 }
+
+// What Emacs 30's coding systems say of themselves that E8's table does
+// not hold, written from Emacs by tests/emacs/coding-plists.el: each one's
+// docstring, its category for detection and its `:charset-list`, which
+// names charsets of Emacs's that E8 has no table for, as `tis620-2533`.
+static EMACS_SYSTEMS: &[(&str, &str, &str, &[&str])] = &[
+    ("undecided", "No conversion on encoding, automatic conversion on decoding.", "coding-category-undecided", &["ascii"]),
+    ("prefer-utf-8", "Like `undecided' but prefer UTF-8 when appropriate.\nOn decoding, if the source contains 8-bit codes and they all\nare valid UTF-8 sequences, detect the source as UTF-8 encoding\nregardless of the coding priority.\nOn encoding, if the source contains non-ASCII characters, encode them\nby UTF-8.", "coding-category-undecided", &["emacs"]),
+    ("utf-8", "UTF-8 (no signature (BOM))", "coding-category-utf-8", &["unicode"]),
+    ("utf-8-with-signature", "UTF-8 (with signature (BOM))", "coding-category-utf-8-sig", &["unicode"]),
+    ("utf-8-auto", "UTF-8 (auto-detect signature (BOM))", "coding-category-utf-8-auto", &["unicode"]),
+    ("utf-8-emacs", "Support for all Emacs characters (including non-Unicode characters).", "coding-category-utf-8", &["emacs"]),
+    ("utf-16", "UTF-16 (detect endian on decoding, use big endian on encoding with BOM).", "coding-category-utf-16-auto", &["unicode"]),
+    ("utf-16le", "UTF-16LE (little endian, no signature (BOM)).", "coding-category-utf-16-le-nosig", &["unicode"]),
+    ("utf-16be", "UTF-16BE (big endian, no signature (BOM)).", "coding-category-utf-16-be-nosig", &["unicode"]),
+    ("utf-16le-with-signature", "UTF-16 (little endian, with signature (BOM)).", "coding-category-utf-16-le", &["unicode"]),
+    ("utf-16be-with-signature", "UTF-16 (big endian, with signature (BOM)).", "coding-category-utf-16-be", &["unicode"]),
+    ("us-ascii", "Encode ASCII as-is and encode non-ASCII characters to `?'.", "coding-category-charset", &["ascii"]),
+    ("iso-latin-1", "ISO 2022 based 8-bit encoding for Latin-1 (MIME:ISO-8859-1).", "coding-category-charset", &["iso-8859-1"]),
+    ("iso-latin-2", "ISO 2022 based 8-bit encoding for Latin-2 (MIME:ISO-8859-2).", "coding-category-charset", &["iso-8859-2"]),
+    ("iso-latin-3", "ISO 2022 based 8-bit encoding for Latin-3 (MIME:ISO-8859-3).", "coding-category-charset", &["iso-8859-3"]),
+    ("iso-latin-4", "ISO 2022 based 8-bit encoding for Latin-4 (MIME:ISO-8859-4).", "coding-category-charset", &["iso-8859-4"]),
+    ("cyrillic-iso-8bit", "ISO 2022 based 8-bit encoding for Cyrillic script (MIME:ISO-8859-5).", "coding-category-charset", &["iso-8859-5"]),
+    ("greek-iso-8bit", "ISO 2022 based 8-bit encoding for Greek (MIME:ISO-8859-7).", "coding-category-charset", &["iso-8859-7"]),
+    ("hebrew-iso-8bit", "ISO 2022 based 8-bit encoding for Hebrew (MIME:ISO-8859-8).", "coding-category-charset", &["iso-8859-8"]),
+    ("iso-latin-5", "ISO 2022 based 8-bit encoding for Latin-5 (MIME:ISO-8859-9).", "coding-category-charset", &["iso-8859-9"]),
+    ("iso-latin-6", "ISO 2022 based 8-bit encoding for Latin-6 (MIME:ISO-8859-10).", "coding-category-charset", &["iso-8859-10"]),
+    ("thai-tis620", "8-bit encoding for ASCII (MSB=0) and Thai TIS620 (MSB=1).", "coding-category-charset", &["tis620-2533"]),
+    ("iso-8859-11", "ISO/IEC 8859/11 (Latin/Thai)\nThis is the same as `thai-tis620' with the addition of no-break-space.", "coding-category-charset", &["iso-8859-11"]),
+    ("iso-latin-7", "ISO 2022 based 8-bit encoding for Latin-7 (MIME:ISO-8859-13).", "coding-category-charset", &["iso-8859-13"]),
+    ("iso-latin-8", "ISO 2022 based 8-bit encoding for Latin-8 (MIME:ISO-8859-14).", "coding-category-charset", &["iso-8859-14"]),
+    ("iso-latin-9", "ISO 2022 based 8-bit encoding for Latin-9 (MIME:ISO-8859-15).", "coding-category-charset", &["iso-8859-15"]),
+    ("iso-latin-10", "ISO 2022 based 8-bit encoding for Latin-10.", "coding-category-charset", &["iso-8859-16"]),
+    ("windows-1250", "windows-1250 (Central European) encoding (MIME: WINDOWS-1250)", "coding-category-charset", &["windows-1250"]),
+    ("windows-1251", "windows-1251 8-bit encoding for Cyrillic (MIME: WINDOWS-1251)", "coding-category-charset", &["windows-1251"]),
+    ("windows-1252", "windows-1252 (Western European) encoding (MIME: WINDOWS-1252)", "coding-category-charset", &["windows-1252"]),
+    ("windows-1253", "windows-1253 encoding for Greek", "coding-category-charset", &["windows-1253"]),
+    ("windows-1254", "windows-1254 (Turkish) encoding (MIME: WINDOWS-1254)", "coding-category-charset", &["windows-1254"]),
+    ("windows-1255", "windows-1255 (Hebrew) encoding (MIME: WINDOWS-1255)", "coding-category-charset", &["windows-1255"]),
+    ("windows-1256", "windows-1256 (Arabic) encoding (MIME: WINDOWS-1256)", "coding-category-charset", &["windows-1256"]),
+    ("windows-1257", "windows-1257 (Baltic) encoding (MIME: WINDOWS-1257)", "coding-category-charset", &["windows-1257"]),
+    ("windows-1258", "windows-1258 encoding for Vietnamese (MIME: WINDOWS-1258)", "coding-category-charset", &["windows-1258"]),
+    ("cp874", "DOS codepage 874 (Thai)", "coding-category-charset", &["cp874"]),
+    ("cp866", "CP866 encoding for Cyrillic.", "coding-category-charset", &["ibm866"]),
+    ("cyrillic-koi8", "KOI8 8-bit encoding for Cyrillic (MIME: KOI8-R).", "coding-category-charset", &["koi8"]),
+    ("koi8-u", "KOI8-U 8-bit encoding for Cyrillic (MIME: KOI8-U)", "coding-category-charset", &["koi8-u"]),
+    ("mac-roman", "Mac Roman Encoding (MIME:MACINTOSH).", "coding-category-charset", &["mac-roman"]),
+    ("japanese-shift-jis", "Shift-JIS 8-bit encoding for Japanese (MIME:SHIFT_JIS)", "coding-category-sjis", &["ascii", "katakana-jisx0201", "japanese-jisx0208"]),
+    ("japanese-cp932", "CP932 (Microsoft shift-jis)", "coding-category-charset", &["ascii", "katakana-sjis", "cp932-2-byte"]),
+    ("japanese-iso-8bit", "ISO 2022 based EUC encoding for Japanese (MIME:EUC-JP).", "coding-category-iso-8-2", &["ascii", "latin-jisx0201", "japanese-jisx0208", "katakana-jisx0201", "japanese-jisx0212", "japanese-jisx0208-1978"]),
+    ("iso-2022-jp", "ISO 2022 based 7bit encoding for Japanese (MIME:ISO-2022-JP).", "coding-category-iso-7-tight", &["ascii", "japanese-jisx0208", "japanese-jisx0208-1978", "latin-jisx0201"]),
+    ("iso-2022-7bit", "ISO 2022 based 7-bit encoding using only G0.", "coding-category-iso-7", &["iso-2022"]),
+    ("chinese-iso-8bit", "ISO 2022 based EUC encoding for Chinese GB2312 (MIME:GB2312).", "coding-category-iso-8-2", &["ascii", "chinese-gb2312"]),
+    ("chinese-gbk", "GBK encoding for Chinese (MIME:GBK).", "coding-category-charset", &["ascii", "chinese-gbk"]),
+    ("chinese-gb18030", "GB18030 encoding for Chinese (MIME:GB18030).", "coding-category-charset", &["ascii", "gb18030-2-byte", "gb18030-4-byte-bmp", "gb18030-4-byte-smp", "gb18030-4-byte-ext-1", "gb18030-4-byte-ext-2"]),
+    ("chinese-big5", "BIG5 8-bit encoding for Chinese (MIME:Big5)", "coding-category-big5", &["ascii", "big5"]),
+    ("chinese-big5-hkscs", "BIG5-HKSCS 8-bit encoding for Chinese, Hong Kong supplement (MIME:Big5-HKSCS)", "coding-category-charset", &["ascii", "big5-hkscs"]),
+    ("korean-iso-8bit", "ISO 2022 based EUC encoding for Korean KSC5601 (MIME:EUC-KR).", "coding-category-iso-8-2", &["ascii", "korean-ksc5601"]),
+    ("korean-cp949", "CP949 (Microsoft Unified Hangul Code)", "coding-category-charset", &["ascii", "cp949"]),
+    ("raw-text", "Raw text, which means text contains random 8-bit codes.\nEncoding text with this coding system produces the actual byte\nsequence of the text in buffers and strings.  An exception is made for\ncharacters from the `eight-bit' character set.  Each of them is encoded\ninto a single byte.\n\nWhen you visit a file with this coding, the file is read into a\nunibyte buffer as is (except for EOL format), thus each byte of a file\nis treated as a character.", "coding-category-raw-text", &[]),
+    ("no-conversion", "Do no conversion.\n\nWhen you visit a file with this coding, the file is read into a\nunibyte buffer as is, thus each byte of a file is treated as a\ncharacter.", "coding-category-raw-text", &[]),
+    ("no-conversion-multibyte", "Like `no-conversion' but don't read a file into a unibyte buffer.", "coding-category-raw-text", &[]),
+];
 
 /// How many base coding systems there are, E8's own and those defined.
 fn system_count() -> usize {
@@ -778,20 +891,80 @@ fn decode_cleanly(encoding: &'static Encoding, bytes: &[u8]) -> bool {
 /// then a `coding:` in the `-*-` line, which may be the second after `#!`,
 /// or in a `Local Variables:` list at the end.
 pub fn auto_coding(bytes: &[u8]) -> Option<Coding> {
+    auto_coding_and_source(bytes).map(|(c, ..)| c)
+}
+
+/// A coding with the name it was given by, as a file names it.
+type Named = (Coding, String);
+
+/// The coding a name names, with the name.
+fn named(name: &str) -> Option<Named> {
+    Coding::parse(name).map(|c| (c, name.to_string()))
+}
+
+/// The coding a file's bytes say they are in, with the name they give
+/// it by and where they say so, as `find-auto-coding` gives them:
+/// `auto-coding-regexp-alist` for a byte order mark, `:coding` for a
+/// cookie, `auto-coding-functions` for an XML or HTML declaration.
+pub fn auto_coding_and_source(bytes: &[u8]) -> Option<(Coding, String, &'static str)> {
+    let signature = |name: &str| Some((Coding::named(name).with_eol(None), name.to_string(), "auto-coding-regexp-alist"));
     if bytes.starts_with(UTF8_SIGNATURE) {
-        return Some(Coding::named("utf-8-with-signature").with_eol(None));
+        return signature("utf-8-with-signature");
     }
     if bytes.starts_with(b"\xFF\xFE") {
-        return Some(Coding::named("utf-16le-with-signature").with_eol(None));
+        return signature("utf-16le-with-signature");
     }
     if bytes.starts_with(b"\xFE\xFF") {
-        return Some(Coding::named("utf-16be-with-signature").with_eol(None));
+        return signature("utf-16be-with-signature");
     }
-    coding_cookie(bytes).or_else(|| local_variables_coding(bytes))
+    if let Some((c, name)) = coding_cookie(bytes).or_else(|| local_variables_coding(bytes)) {
+        return Some((c, name, ":coding"));
+    }
+    xml_declared(bytes).or_else(|| html_meta_charset(bytes)).map(|(c, name)| (c, name, "auto-coding-functions"))
+}
+
+/// The coding an XML declaration at the start names, as
+/// sgml-xml-auto-coding-function finds it: `<?xml ... encoding="NAME"?>`.
+fn xml_declared(bytes: &[u8]) -> Option<Named> {
+    let head = String::from_utf8_lossy(&bytes[..bytes.len().min(1024)]);
+    let rest = head.trim_start().strip_prefix("<?xml")?;
+    let decl = &rest[..rest.find("?>")?];
+    let at = decl.find("encoding")? + "encoding".len();
+    let value = decl[at..].trim_start().strip_prefix('=')?.trim_start();
+    let quote = value.chars().next().filter(|c| *c == '"' || *c == '\'')?;
+    let name = &value[1..1 + value[1..].find(quote)?];
+    named(&name.to_ascii_lowercase())
+}
+
+/// The coding an HTML file's `<meta>` names in its head, as
+/// sgml-html-meta-auto-coding-function finds it: `<meta charset="NAME">`,
+/// or the charset of an http-equiv Content-Type's content.
+fn html_meta_charset(bytes: &[u8]) -> Option<Named> {
+    let head = String::from_utf8_lossy(&bytes[..bytes.len().min(4096)]).to_ascii_lowercase();
+    let trimmed = head.trim_start();
+    if !(trimmed.starts_with("<!doctype html") || trimmed.starts_with("<html") || trimmed.starts_with("<head") || trimmed.starts_with("<meta")) {
+        return None;
+    }
+    let end = head.find("</head").unwrap_or(head.len());
+    let mut from = 0;
+    while let Some(at) = head[from..end].find("<meta") {
+        let tag_start = from + at;
+        let tag_end = tag_start + head[tag_start..end].find('>')?;
+        let tag = &head[tag_start..tag_end];
+        if let Some(i) = tag.find("charset=") {
+            let value = tag[i + "charset=".len()..].trim_start_matches(['"', '\'']);
+            let name: String = value.chars().take_while(|c| c.is_ascii_alphanumeric() || *c == '-' || *c == '_').collect();
+            if let Some(c) = named(&name) {
+                return Some(c);
+            }
+        }
+        from = tag_end;
+    }
+    None
 }
 
 /// The coding a file's `-*-` line names, as `coding: latin-2`.
-fn coding_cookie(bytes: &[u8]) -> Option<Coding> {
+fn coding_cookie(bytes: &[u8]) -> Option<Named> {
     let mut lines = bytes.split(|&b| b == b'\n');
     let first = lines.next()?;
     let line = if first.starts_with(b"#!") { lines.next()? } else { first };
@@ -802,11 +975,11 @@ fn coding_cookie(bytes: &[u8]) -> Option<Coding> {
         let (key, value) = part.split_once(':')?;
         (key.trim().eq_ignore_ascii_case("coding")).then(|| value.trim().to_string())
     })?;
-    Coding::parse(&value)
+    named(&value)
 }
 
 /// The coding a `Local Variables:` list in a file's last 3000 bytes names.
-fn local_variables_coding(bytes: &[u8]) -> Option<Coding> {
+fn local_variables_coding(bytes: &[u8]) -> Option<Named> {
     let tail = &bytes[bytes.len().saturating_sub(3000)..];
     let text = String::from_utf8_lossy(tail);
     let start = text.rfind("Local Variables:")?;
@@ -820,7 +993,7 @@ fn local_variables_coding(bytes: &[u8]) -> Option<Coding> {
             break;
         }
         if let Some(value) = line.strip_prefix("coding:") {
-            return Coding::parse(value.split_whitespace().next()?);
+            return named(value.split_whitespace().next()?);
         }
     }
     None
@@ -842,11 +1015,14 @@ pub fn visiting(bytes: &[u8]) -> Coding {
 pub struct FileCoding {
     pub forced: Option<Coding>,
     pub by_name: Option<Coding>,
+    /// What a function in `auto-coding-functions` gave, which a cookie in
+    /// the file wins over and which wins over `by_name`.
+    pub by_function: Option<Coding>,
 }
 
 impl From<Option<Coding>> for FileCoding {
     fn from(forced: Option<Coding>) -> FileCoding {
-        FileCoding { forced, by_name: None }
+        FileCoding { forced, by_name: None, by_function: None }
     }
 }
 
@@ -855,7 +1031,7 @@ impl From<Option<Coding>> for FileCoding {
 /// else in what its bytes look like, looking at them once.
 pub fn decode_file(bytes: &[u8], coding: impl Into<FileCoding>) -> (String, Coding) {
     let coding = coding.into();
-    let found = match coding.forced.or_else(|| auto_coding(bytes)).or(coding.by_name) {
+    let found = match coding.forced.or_else(|| auto_coding(bytes)).or(coding.by_function).or(coding.by_name) {
         Some(coding) => coding,
         None => detect(bytes)[0],
     };

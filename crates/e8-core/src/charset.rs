@@ -179,6 +179,75 @@ thread_local! {
     static ISO: std::cell::RefCell<Vec<IsoName>> = std::cell::RefCell::new(ISO_FINALS.to_vec());
 }
 
+/// The final byte ISO 2022 names a charset by, as its `:iso-final-char`:
+/// the one it was registered or declared with last.
+fn iso_final(charset: &str) -> Option<u8> {
+    ISO.with(|t| t.borrow().iter().rev().find(|(_, n)| *n == charset).map(|((.., f), _)| *f))
+}
+
+// What Emacs 30 says of the charsets E8 has too, written from Emacs's
+// `charset-plist` by tests/emacs/coding-plists.el: each one's docstring, short and long names,
+// `emacs-mule` id and the map its characters unify through. E8 builds its
+// charsets rather than loading maps, so the map is only named.
+type EmacsCharset = (&'static str, &'static str, &'static str, &'static str, Option<u32>, Option<&'static str>);
+static EMACS_CHARSETS: &[EmacsCharset] = &[
+    ("ascii", "ASCII (ISO646 IRV)", "ASCII", "ASCII (ISO646 IRV)", Some(0), None),
+    ("iso-8859-1", "Latin-1 (ISO/IEC 8859-1)", "Latin-1", "Latin-1", None, None),
+    ("unicode", "Unicode (ISO10646)", "Unicode", "Unicode (ISO10646)", None, None),
+    ("latin-iso8859-1", "Right-Hand Part of ISO/IEC 8859/1 (Latin-1): ISO-IR-100", "RHP of Latin-1", "RHP of ISO/IEC 8859/1 (Latin-1): ISO-IR-100", Some(129), None),
+    ("iso-8859-2", "ISO/IEC 8859/2", "Latin-2", "ISO/IEC 8859/2", None, None),
+    ("latin-iso8859-2", "Right-Hand Part of ISO/IEC 8859/2 (Latin-2): ISO-IR-101", "RHP of ISO/IEC 8859/2", "RHP of ISO/IEC 8859/2 (Latin-2)", Some(130), None),
+    ("iso-8859-3", "ISO/IEC 8859/3", "Latin-3", "ISO/IEC 8859/3", None, None),
+    ("latin-iso8859-3", "Right-Hand Part of ISO/IEC 8859/3 (Latin-3): ISO-IR-109", "RHP of ISO/IEC 8859/3", "RHP of ISO/IEC 8859/3 (Latin-3)", Some(131), None),
+    ("iso-8859-4", "ISO/IEC 8859/4", "Latin-4", "ISO/IEC 8859/4", None, None),
+    ("latin-iso8859-4", "Right-Hand Part of ISO/IEC 8859/4 (Latin-4): ISO-IR-110", "RHP of ISO/IEC 8859/4", "RHP of ISO/IEC 8859/4 (Latin-4)", Some(132), None),
+    ("iso-8859-5", "ISO/IEC 8859/5", "Latin/Cyrillic", "ISO/IEC 8859/5", None, None),
+    ("cyrillic-iso8859-5", "Right-Hand Part of ISO/IEC 8859/5 (Latin/Cyrillic): ISO-IR-144", "RHP of ISO/IEC 8859/5", "RHP of ISO/IEC 8859/5 (Latin/Cyrillic)", Some(140), None),
+    ("iso-8859-7", "ISO/IEC 8859/7", "Latin/Greek", "ISO/IEC 8859/7", None, None),
+    ("greek-iso8859-7", "Right-Hand Part of ISO/IEC 8859/7 (Latin/Greek): ISO-IR-126", "RHP of ISO/IEC 8859/7", "RHP of ISO/IEC 8859/7 (Latin/Greek)", Some(134), None),
+    ("iso-8859-8", "ISO/IEC 8859/8", "Latin/Hebrew", "ISO/IEC 8859/8", None, None),
+    ("hebrew-iso8859-8", "Right-Hand Part of ISO/IEC 8859/8 (Latin/Hebrew): ISO-IR-138", "RHP of ISO/IEC 8859/8", "RHP of ISO/IEC 8859/8 (Latin/Hebrew)", Some(136), None),
+    ("iso-8859-9", "ISO/IEC 8859/9", "Latin-5", "ISO/IEC 8859/9", None, None),
+    ("latin-iso8859-9", "Right-Hand Part of ISO/IEC 8859/9 (Latin-5): ISO-IR-148", "RHP of ISO/IEC 8859/9", "RHP of ISO/IEC 8859/9 (Latin-5)", Some(141), None),
+    ("iso-8859-10", "ISO/IEC 8859/10", "Latin-6", "ISO/IEC 8859/10", None, None),
+    ("latin-iso8859-10", "Right-Hand Part of ISO/IEC 8859/10 (Latin-6): ISO-IR-157", "RHP of ISO/IEC 8859/10", "RHP of ISO/IEC 8859/10 (Latin-6)", None, None),
+    ("iso-8859-11", "ISO/IEC 8859/11", "Latin/Thai", "ISO/IEC 8859/11", None, None),
+    ("thai-iso8859-11", "Right-Hand Part of ISO/IEC 8859/11 (Latin/Thai): ISO-IR-166", "RHP of ISO/IEC 8859/11", "RHP of ISO/IEC 8859/11 (Latin/Thai)", None, None),
+    ("iso-8859-13", "ISO/IEC 8859/13", "Latin-7", "ISO/IEC 8859/13", None, None),
+    ("latin-iso8859-13", "Right-Hand Part of ISO/IEC 8859/13 (Latin-7): ISO-IR-179", "RHP of ISO/IEC 8859/13", "RHP of ISO/IEC 8859/13 (Latin-7)", None, None),
+    ("iso-8859-14", "ISO/IEC 8859/14", "Latin-8", "ISO/IEC 8859/14", None, None),
+    ("latin-iso8859-14", "Right-Hand Part of ISO/IEC 8859/14 (Latin-8): ISO-IR-199", "RHP of ISO/IEC 8859/14", "RHP of ISO/IEC 8859/14 (Latin-8)", Some(143), None),
+    ("iso-8859-15", "ISO/IEC 8859/15", "Latin-9", "ISO/IEC 8859/15", None, None),
+    ("latin-iso8859-15", "Right-Hand Part of ISO/IEC 8859/15 (Latin-9): ISO-IR-203", "RHP of ISO/IEC 8859/15", "RHP of ISO/IEC 8859/15 (Latin-9)", Some(142), None),
+    ("iso-8859-16", "ISO/IEC 8859/16", "Latin-10", "ISO/IEC 8859/16", None, None),
+    ("latin-iso8859-16", "Right-Hand Part of ISO/IEC 8859/16 (Latin-10): ISO-IR-226", "RHP of ISO/IEC 8859/16", "RHP of ISO/IEC 8859/16 (Latin-10)", None, None),
+    ("thai-tis620", "MULE charset for TIS620.2533", "TIS620.2533", "TIS620.2533", Some(133), None),
+    ("chinese-gb2312", "GB2312 Chinese simplified: ISO-IR-58", "GB2312", "GB2312: ISO-IR-58", Some(145), Some("GB2312")),
+    ("chinese-gbk", "GBK Chinese simplified.", "GBK", "GBK", None, Some("GBK")),
+    ("big5", "Big5 (Chinese traditional)", "Big5", "Big5", None, Some("BIG5")),
+    ("japanese-jisx0208", "JISX0208.1983/1990 Japanese Kanji: ISO-IR-87", "JISX0208", "JISX0208.1983/1990 (Japanese): ISO-IR-87", Some(146), Some("JISX0208")),
+    ("japanese-jisx0212", "JISX0212 Japanese supplement: ISO-IR-159", "JISX0212", "JISX0212 (Japanese): ISO-IR-159", Some(148), Some("JISX0212")),
+    ("korean-ksc5601", "KSC5601 Korean Hangul and Hanja: ISO-IR-149", "KSC5601", "KSC5601 (Korean): ISO-IR-149", Some(147), Some("KSC5601")),
+    ("koi8-r", "KOI8-R", "KOI8-R", "KOI8-R", None, None),
+    ("cp866", "CP866", "cp866", "cp866", None, None),
+    ("koi8-u", "KOI8-U", "KOI8-U", "KOI8-U", None, None),
+    ("windows-1250", "WINDOWS-1250 (Central Europe)", "WINDOWS-1250", "WINDOWS-1250", None, None),
+    ("windows-1251", "WINDOWS-1251 (Cyrillic)", "WINDOWS-1251", "WINDOWS-1251", None, None),
+    ("windows-1252", "WINDOWS-1252 (Latin I)", "WINDOWS-1252", "WINDOWS-1252", None, None),
+    ("windows-1253", "WINDOWS-1253 (Greek)", "WINDOWS-1253", "WINDOWS-1253", None, None),
+    ("windows-1254", "WINDOWS-1254 (Turkish)", "WINDOWS-1254", "WINDOWS-1254", None, None),
+    ("windows-1255", "WINDOWS-1255 (Hebrew)", "WINDOWS-1255", "WINDOWS-1255", None, None),
+    ("windows-1256", "WINDOWS-1256 (Arabic)", "WINDOWS-1256", "WINDOWS-1256", None, None),
+    ("windows-1257", "WINDOWS-1257 (Baltic)", "WINDOWS-1257", "WINDOWS-1257", None, None),
+    ("windows-1258", "WINDOWS-1258 (Viet Nam)", "WINDOWS-1258", "WINDOWS-1258", None, None),
+    ("cp874", "CP874 (IBM Thai)", "CP874", "CP874", None, None),
+    ("unicode-bmp", "Unicode Basic Multilingual Plane (U+0000..U+FFFF)", "Unicode BMP", "Unicode BMP", None, None),
+    ("mac-roman", "Mac Roman charset", "Mac Roman", "Mac Roman", None, None),
+    ("emacs", "Full Emacs charset (excluding eight bit chars)", "Emacs", "Emacs", None, None),
+    ("eight-bit", "Raw bytes 128-255", "Raw bytes", "", None, None),
+    ("katakana-jisx0201", "Katakana Part of JISX0201.1976", "JISX0201 Katakana", "Japanese Katakana (JISX0201.1976)", Some(137), None),
+];
+
 /// A charset as ISO 2022 names it: by dimension, 94 or 96 characters and final byte.
 type IsoName = ((u32, u32, u8), &'static str);
 
@@ -394,23 +463,43 @@ impl Charsets {
         names
     }
 
-    /// What E8 knows of a charset as a property list, as `charset-plist`:
-    /// its name, dimension, whether it holds ASCII, and its code space,
-    /// with what `set-charset-plist` put kept after them.
+    /// A charset's properties, as `charset-plist`: what E8 works out — its
+    /// name, dimension, code space, ISO 2022 final byte and whether it
+    /// holds ASCII — and what Emacs says of its own charsets, its
+    /// docstring, names, `emacs-mule` id and unification map, in Emacs's
+    /// order, with what `set-charset-plist` put replacing or following them.
     pub fn charset_plist(&self, name: &str) -> Option<Plist> {
         use crate::variables::Value;
         let set = find(name)?;
         let num = |n: u32| Value::Number(n as f64);
+        let str = |s: &str| Value::Str(s.to_string());
         let space: Vec<Value> = set.map.code_space().into_iter().flat_map(|(lo, hi)| [num(lo), num(hi)]).collect();
         let ascii = encode_char('a', set.name) == Some(0x61);
-        let mut plist = vec![
-            (":name".to_string(), Value::Str(set.name.to_string())),
-            (":dimension".to_string(), num(set.map.dimension())),
-            (":ascii-compatible-p".to_string(), Value::Bool(ascii)),
-            (":code-space".to_string(), Value::List(space)),
-        ];
-        let put = self.plists.iter().find(|(n, _)| *n == set.name).map(|(_, v)| v.clone());
-        plist.extend(put.unwrap_or_default());
+        let emacs = EMACS_CHARSETS.iter().find(|(n, ..)| *n == set.name);
+        let mut plist = vec![(":name".to_string(), str(set.name))];
+        if let Some((_, doc, short, long, ..)) = emacs {
+            plist.push((":docstring".to_string(), str(doc)));
+            plist.push((":short-name".to_string(), str(short)));
+            plist.push((":long-name".to_string(), str(long)));
+        }
+        if let Some(final_byte) = iso_final(set.name) {
+            plist.push((":iso-final-char".to_string(), num(final_byte as u32)));
+        }
+        if let Some((.., Some(id), _)) = emacs {
+            plist.push((":emacs-mule-id".to_string(), num(*id)));
+        }
+        plist.push((":code-space".to_string(), Value::List(space)));
+        if let Some((.., Some(map))) = emacs {
+            plist.push((":unify-map".to_string(), str(map)));
+        }
+        plist.push((":dimension".to_string(), num(set.map.dimension())));
+        plist.push((":ascii-compatible-p".to_string(), Value::Bool(ascii)));
+        for (key, value) in self.plists.iter().find(|(n, _)| *n == set.name).map(|(_, v)| v.clone()).unwrap_or_default() {
+            match plist.iter_mut().find(|(k, _)| *k == key) {
+                Some((_, v)) => *v = value,
+                None => plist.push((key, value)),
+            }
+        }
         Some(plist)
     }
 
