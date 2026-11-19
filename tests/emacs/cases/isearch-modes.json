@@ -1,0 +1,20 @@
+[
+  {"name": "isearch-lax-whitespace", "text": "ab a\tb a   b", "keys": "C-s a SPC b C-s C-s RET"},
+  {"name": "isearch-lax-whitespace-toggled-off", "text": "a  b a b", "keys": "C-s M-s SPC a SPC b RET"},
+  {"name": "isearch-regexp-spaces-literal", "text": "a  b a b", "keys": "C-M-s a SPC b RET"},
+  {"name": "isearch-lax-space-before-star", "text": "ab a b", "keys": "C-M-s a SPC * b C-s RET"},
+  {"name": "isearch-word-search", "text": "foobar foo-bar foo bar", "keys": "M-s w f o o SPC b a r RET"},
+  {"name": "isearch-word-search-repeat", "text": "foobar foo-bar foo bar", "keys": "M-s w f o o SPC b a r C-s RET"},
+  {"name": "isearch-toggle-word", "text": "foobar foo-bar", "keys": "C-s M-s w f o o SPC b a r RET"},
+  {"name": "isearch-word-lax-while-typing", "text": "foo barbaz", "keys": "M-s w f o o SPC b a r RET"},
+  {"name": "isearch-symbol-search", "text": "foox foo_x foo", "keys": "M-s _ f o o RET"},
+  {"name": "isearch-toggle-symbol", "text": "foox foo_x foo", "keys": "C-s M-s _ f o o RET"},
+  {"name": "isearch-symbol-at-point", "text": "foo bar foo foox", "keys": "M-s . RET"},
+  {"name": "isearch-symbol-at-point-repeat", "text": "foo bar foo foox foo", "keys": "M-s . C-s RET"},
+  {"name": "isearch-toggle-regexp-ends-word", "text": "a.c abc", "keys": "C-s M-s w M-r a . c RET"},
+  {"name": "isearch-symbol-at-point-count", "text": "foo bar foo foox foo", "keys": "C-u 2 M-s . RET"},
+  {"name": "isearch-symbol-at-point-folds-case", "text": "Foo bar foo Foo", "keys": "M-s . C-s RET"},
+  {"name": "isearch-again-then-ring", "text": "xa xb xc xa", "keys": "C-s x a RET C-s x b RET M-< C-s C-s C-s RET"},
+  {"name": "isearch-lax-whitespace-backward", "text": "a b a\tb a   b c", "keys": "M-> C-r a SPC b C-r RET"},
+  {"name": "isearch-lax-whitespace-folds-case", "text": "A  B a b", "keys": "C-s a SPC b RET"}
+]

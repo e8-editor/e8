@@ -26,6 +26,8 @@ Like Emacs's, the matcher takes exponential time on some expressions: `\(x+x+\)+
 
 Everything else stays with the engine. The regexp fuzzer compares the two on every case, and the speed test above gains E8-only rows for the automaton.
 
+**A literal prefix.** Before that, a smaller step: a regexp that starts with literal text, as isearch's lax whitespace makes of any string with a space (`lazy\(?:[ \t]+\)cat`), could find that text with the literal search, which reads the buffer far faster than the fastmap's character at a time, and run the machine only there. A failing `lazy cat` over 21 MB took 200 ms as a regexp in a release build, 22 ms as literal text, and 85 ms in Emacs with `search-spaces-regexp`. isearch.ts does this itself for now (`laxLiteral`), handing over to the engine after 2,000 places that fail, where the text is everywhere.
+
 ## Electric Pair mode in a large buffer
 
 Typing `(` then `)` with Electric Pair and Show Paren mode on took about 1.9 s a key in a 100 MB text file, as elec-pair.el scans the buffer to its end to check the balance; since 2026-11-01 the scan passes plain text a run at a time and it takes 270 ms ([performance.md](performance.md)). Being faster still means not scanning: keeping the balance from `syntax-ppss`'s cached states, or summarising each chunk of the text's parens as the rope keeps its line counts.

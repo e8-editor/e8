@@ -105,7 +105,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Scripts reach all of treesit.c: searching and sparse trees by predicate, compiled and Lisp-form queries, included ranges for embedded languages, and parser notifiers.
 - Emacs Lisp mode (`emacs-lisp-mode` for `.el` files and Org's `emacs-lisp` and `elisp` blocks, `lisp-data-mode` for `.eld` and `.dir-locals.el`): indenting as Emacs does, by `lisp-indent-line`, `indent-region` and `C-M-q`, with Emacs's indent specs for its macros, and Emacs Lisp's faces, for doc strings, definitions, keywords, `:keywords` and `&optional`.
 - The tree for scripts (parsers, nodes, queries).
-- Incremental search (`C-s`, `C-r`, `C-M-s`).
+- Incremental search (`C-s`, `C-r`, `C-M-s`; `M-s w` word, `M-s _` symbol and `M-s .` symbol-at-point searches, toggled with `M-s w`, `M-s _` and `M-s SPC` while searching; spaces matching any run of whitespace, as `isearch-lax-whitespace`; `M-e` to edit the string, `M-p` and `M-n` through earlier searches; `isearch-lazy-count` to count the matches).
 - `query-replace` (`M-%`, `C-M-%`).
 - `replace-string`.
 - `replace-regexp` and the search commands.

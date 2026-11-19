@@ -398,6 +398,11 @@ answers come, and then from its answers, as save-some-buffers' do."
   "Make the buffer CASE runs in current and shown, and return it.
 That is a file visited for real if CASE has `find', in a fresh directory
 holding its `files', and otherwise a fresh *e8-oracle* buffer holding TEXT."
+  ;; Toggles that set global variables, as isearch's M-s SPC sets
+  ;; isearch-lax-whitespace, start each case as Emacs starts, as E8's
+  ;; fresh editor for each case does.
+  (setq isearch-lax-whitespace t
+        isearch-regexp-lax-whitespace nil)
   (let ((files (alist-get 'files case))
         (find (alist-get 'find case)))
     (when (or files find)

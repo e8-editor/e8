@@ -1279,8 +1279,8 @@ pub(crate) fn install(ed: &mut Editor) {
         .local(),
         Variable::new(
             "search-upper-case",
-            "Whether an upper case letter in a search string typed interactively makes that search match case exactly.",
-            true,
+            "Whether an upper case letter in a search string typed interactively makes that search match case exactly: not-yanks, the default, as t except that isearch lowercases text yanked into its string first.",
+            Value::Str("not-yanks".into()),
         ),
         Variable::new(
             "line-move-visual",

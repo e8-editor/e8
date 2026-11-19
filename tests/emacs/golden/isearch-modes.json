@@ -1,0 +1,348 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "isearch-lax-whitespace",
+      "input": {
+        "text": "ab a\tb a   b",
+        "point": 0,
+        "keys": "C-s a SPC b C-s C-s RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ab a\tb a   b",
+      "visible": "ab a\tb a   b",
+      "point": 12,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-lax-whitespace-toggled-off",
+      "input": {
+        "text": "a  b a b",
+        "point": 0,
+        "keys": "C-s M-s SPC a SPC b RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "a  b a b",
+      "visible": "a  b a b",
+      "point": 8,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-regexp-spaces-literal",
+      "input": {
+        "text": "a  b a b",
+        "point": 0,
+        "keys": "C-M-s a SPC b RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "a  b a b",
+      "visible": "a  b a b",
+      "point": 8,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-lax-space-before-star",
+      "input": {
+        "text": "ab a b",
+        "point": 0,
+        "keys": "C-M-s a SPC * b C-s RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "ab a b",
+      "visible": "ab a b",
+      "point": 6,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-word-search",
+      "input": {
+        "text": "foobar foo-bar foo bar",
+        "point": 0,
+        "keys": "M-s w f o o SPC b a r RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foobar foo-bar foo bar",
+      "visible": "foobar foo-bar foo bar",
+      "point": 14,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-word-search-repeat",
+      "input": {
+        "text": "foobar foo-bar foo bar",
+        "point": 0,
+        "keys": "M-s w f o o SPC b a r C-s RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foobar foo-bar foo bar",
+      "visible": "foobar foo-bar foo bar",
+      "point": 22,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-toggle-word",
+      "input": {
+        "text": "foobar foo-bar",
+        "point": 0,
+        "keys": "C-s M-s w f o o SPC b a r RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foobar foo-bar",
+      "visible": "foobar foo-bar",
+      "point": 14,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-word-lax-while-typing",
+      "input": {
+        "text": "foo barbaz",
+        "point": 0,
+        "keys": "M-s w f o o SPC b a r RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foo barbaz",
+      "visible": "foo barbaz",
+      "point": 7,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-symbol-search",
+      "input": {
+        "text": "foox foo_x foo",
+        "point": 0,
+        "keys": "M-s _ f o o RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foox foo_x foo",
+      "visible": "foox foo_x foo",
+      "point": 3,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-toggle-symbol",
+      "input": {
+        "text": "foox foo_x foo",
+        "point": 0,
+        "keys": "C-s M-s _ f o o RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foox foo_x foo",
+      "visible": "foox foo_x foo",
+      "point": 3,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-symbol-at-point",
+      "input": {
+        "text": "foo bar foo foox",
+        "point": 0,
+        "keys": "M-s . RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foo bar foo foox",
+      "visible": "foo bar foo foox",
+      "point": 3,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-symbol-at-point-repeat",
+      "input": {
+        "text": "foo bar foo foox foo",
+        "point": 0,
+        "keys": "M-s . C-s RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foo bar foo foox foo",
+      "visible": "foo bar foo foox foo",
+      "point": 11,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-toggle-regexp-ends-word",
+      "input": {
+        "text": "a.c abc",
+        "point": 0,
+        "keys": "C-s M-s w M-r a . c RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "a.c abc",
+      "visible": "a.c abc",
+      "point": 3,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-symbol-at-point-count",
+      "input": {
+        "text": "foo bar foo foox foo",
+        "point": 0,
+        "keys": "C-u 2 M-s . RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "foo bar foo foox foo",
+      "visible": "foo bar foo foox foo",
+      "point": 20,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-symbol-at-point-folds-case",
+      "input": {
+        "text": "Foo bar foo Foo",
+        "point": 0,
+        "keys": "M-s . C-s RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "Foo bar foo Foo",
+      "visible": "Foo bar foo Foo",
+      "point": 11,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-again-then-ring",
+      "input": {
+        "text": "xa xb xc xa",
+        "point": 0,
+        "keys": "C-s x a RET C-s x b RET M-< C-s C-s C-s RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "xa xb xc xa",
+      "visible": "xa xb xc xa",
+      "point": 5,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-lax-whitespace-backward",
+      "input": {
+        "text": "a b a\tb a   b c",
+        "point": 0,
+        "keys": "M-> C-r a SPC b C-r RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "a b a\tb a   b c",
+      "visible": "a b a\tb a   b c",
+      "point": 0,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-lax-whitespace-folds-case",
+      "input": {
+        "text": "A  B a b",
+        "point": 0,
+        "keys": "C-s a SPC b RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "A  B a b",
+      "visible": "A  B a b",
+      "point": 4,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}
