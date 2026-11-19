@@ -1,156 +1,472 @@
-// ANSI colours in program output, after Emacs's ansi-color.el: the escape
-// sequences a program writes to colour its output, ESC [ ... m, become the
-// ansi-color faces on the text, and other control sequences are removed,
-// as ansi-color-apply-on-region does for comint's output.
+// ANSI colours in program output, after Emacs's ansi-color.el: the SGR
+// sequences a program writes to colour its output, ESC [ ... m, become
+// faces on the text, and other control sequences are removed, in strings
+// (ansi-color-apply) and in a buffer's text (ansi-color-apply-on-region),
+// as comint, shell and compilation buffers use them.
 
-import { PerBuffer } from "subr";
+const truthy = (v: e8.Value | undefined) => v !== null && v !== undefined && v !== false;
 
-/** Emacs's colours for the eight ANSI colours and their bright forms, as its X colour names give them. */
-const COLOURS: [string, string, string][] = [
-  ["black", "#000000", "#4d4d4d"],
-  ["red", "#cd0000", "#ee0000"],
-  ["green", "#00cd00", "#00ee00"],
-  ["yellow", "#cdcd00", "#eeee00"],
-  ["blue", "#0000ee", "#0000ff"],
-  ["magenta", "#cd00cd", "#ee00ee"],
-  ["cyan", "#00cdcd", "#00eeee"],
-  ["white", "#e5e5e5", "#ffffff"],
+/** Emacs's ansi-color faces: the attributes, then the doc. */
+const FACES: [string, e8.FaceAttributes, string][] = [
+  ["ansi-color-bold", { inherit: "bold" }, "Face used to render bold text."],
+  ["ansi-color-faint", { weight: "light" }, "Face used to render faint text."],
+  ["ansi-color-italic", { inherit: "italic" }, "Face used to render italic text."],
+  ["ansi-color-underline", { inherit: "underline" }, "Face used to render underlined text."],
+  ["ansi-color-slow-blink", { box: { lineWidth: -1 } }, "Face used to render slowly blinking text."],
+  ["ansi-color-fast-blink", { box: { lineWidth: -1 } }, "Face used to render rapidly blinking text."],
+  ["ansi-color-inverse", { inverseVideo: true }, "Face used to render inverted video text."],
 ];
 
+/** The eight colours and their bright forms, as Emacs's faces name them. */
+const COLOURS: [string, string, string][] = [
+  ["black", "black", "gray30"],
+  ["red", "red3", "red2"],
+  ["green", "green3", "green2"],
+  ["yellow", "yellow3", "yellow2"],
+  ["blue", "blue2", "blue1"],
+  ["magenta", "magenta3", "magenta2"],
+  ["cyan", "cyan3", "cyan2"],
+  ["white", "grey90", "white"],
+];
+
+for (const [name, attributes, doc] of FACES) e8.defineFace({ name, doc, attributes });
 for (const [name, normal, bright] of COLOURS) {
-  e8.defineFace({ name: `ansi-color-${name}`, doc: `ANSI ${name}.`, attributes: { foreground: normal } });
-  e8.defineFace({ name: `ansi-color-bright-${name}`, doc: `ANSI bright ${name}.`, attributes: { foreground: bright } });
-  e8.defineFace({ name: `ansi-color-bg-${name}`, doc: `ANSI ${name} as a background.`, attributes: { background: normal } });
-  e8.defineFace({ name: `ansi-color-bg-bright-${name}`, doc: `ANSI bright ${name} as a background.`, attributes: { background: bright } });
-}
-e8.defineFace({ name: "ansi-color-bold", doc: "ANSI bold.", attributes: { bold: true } });
-e8.defineFace({ name: "ansi-color-italic", doc: "ANSI italic.", attributes: { italic: true } });
-e8.defineFace({ name: "ansi-color-underline", doc: "ANSI underline.", attributes: { underline: true } });
-
-e8.defineVariable({
-  name: "ansi-color-for-comint-mode",
-  doc: "What comint does with ANSI escape sequences in output: t colours the text, filter removes them, nil leaves them.",
-  value: true,
-});
-
-/** The graphic rendition in force: what the escape sequences so far have set. */
-interface Rendition {
-  bold: boolean;
-  italic: boolean;
-  underline: boolean;
-  fg?: string;
-  bg?: string;
+  e8.defineFace({ name: `ansi-color-${name}`, doc: `Face used to render ${name} color code.`, attributes: { foreground: normal, background: normal } });
+  e8.defineFace({ name: `ansi-color-bright-${name}`, doc: `Face used to render bright ${name} color code.`, attributes: { foreground: bright, background: bright } });
 }
 
-/** A colour from the 256-colour palette or as red, green and blue, as a face made for it. */
-function colourFace(rgb: string, background: boolean): string {
-  const name = `ansi-color-${background ? "bg-" : ""}rgb-${rgb.slice(1)}`;
-  if (e8.faceInfo(name) === undefined) {
-    e8.defineFace({ name, doc: `The colour ${rgb}${background ? " as a background" : ""}.`, attributes: background ? { background: rgb } : { foreground: rgb } });
-  }
-  return name;
+for (const [name, doc, value, local] of [
+  ["ansi-color-for-comint-mode", "What comint does with SGR control sequences in output: t translates them into faces, filter removes them, nil leaves them.", true, false],
+  ["ansi-color-for-compilation-mode", "What ansi-color-compilation-filter does with compilation output: t translates SGR control sequences into faces, filter removes them, nil leaves them.", true, false],
+  ["ansi-color-bold-is-bright", "Whether bold with a colour gives the colour's bright form.", false, false],
+  ["ansi-color-apply-face-function", "The function ansi-color-apply-on-region puts a face on text with: given the start, the end and the face, or nil for none.", "ansi-color-apply-overlay-face", false],
+  [
+    "ansi-color-basic-faces-vector",
+    "The faces for SGR parameters 0 to 7: default, bold, faint, italic, underlined, slowly blinking, rapidly blinking and negative image.",
+    [null, ...FACES.map(([n]) => n)],
+    false,
+  ],
+  ["ansi-color-normal-colors-vector", "The faces whose colours SGR parameters 30 to 37 and 40 to 47 set.", COLOURS.map(([n]) => `ansi-color-${n}`), false],
+  ["ansi-color-bright-colors-vector", "The faces whose colours SGR parameters 90 to 97 and 100 to 107 set.", COLOURS.map(([n]) => `ansi-color-bright-${n}`), false],
+  [
+    "ansi-color-context",
+    "What the last ansi-color-apply ended with: (FACE-VEC FRAGMENT), FACE-VEC the bold, faint and other basic faces in force and the foreground and background colour codes, FRAGMENT the start of an escape sequence not yet ended. Set it to nil to start afresh.",
+    null,
+    true,
+  ],
+  [
+    "ansi-color-context-region",
+    "What the last ansi-color-apply-on-region ended with: (FACE-VEC MARKER), FACE-VEC as in ansi-color-context, MARKER where to start next time, as within an escape sequence not yet ended. Set it to nil to start afresh.",
+    null,
+    true,
+  ],
+] as const) {
+  e8.defineVariable({ name, doc, value: value as e8.Value, local });
 }
 
-const hex = (n: number) => n.toString(16).padStart(2, "0");
+/** The basic faces in force and the foreground and background colour codes, as Emacs's FACE-VEC. */
+type FaceVec = [boolean[], number | null, number | null];
 
-/** The colour of entry n of the xterm 256-colour palette. */
-function xterm256(n: number): string {
-  if (n < 16) return COLOURS[n % 8]![n < 8 ? 1 : 2];
-  if (n < 232) {
-    const steps = [0, 95, 135, 175, 215, 255];
-    const i = n - 16;
-    return `#${hex(steps[Math.floor(i / 36)]!)}${hex(steps[Math.floor(i / 6) % 6]!)}${hex(steps[i % 6]!)}`;
-  }
-  const grey = 8 + (n - 232) * 10;
-  return `#${hex(grey)}${hex(grey)}${hex(grey)}`;
+/** ECMA-48's control sequences, and the start of one cut off at the end. */
+const CONTROL_SEQ = /\x1b\[[\x30-\x3f]*[\x20-\x2f]*[\x40-\x7e]/g;
+const FRAGMENT_AT_END = /(?:\x1b\[[\x30-\x3f]*[\x20-\x2f]*|\x1b)$/;
+const PARAMETER = /([0-9]*)[m;]/g;
+
+const newFaceVec = (): FaceVec => [Array<boolean>(8).fill(false), null, null];
+
+/** A context's FACE-VEC, from a variable's value, sound or not. */
+function faceVecOf(v: e8.Value | undefined): FaceVec {
+  if (!Array.isArray(v) || !Array.isArray(v[0])) return newFaceVec();
+  const basic = Array.from({ length: 8 }, (_, i) => truthy((v[0] as e8.Value[])[i]));
+  const code = (x: e8.Value | undefined) => (typeof x === "number" ? x : null);
+  return [basic, code(v[1]), code(v[2])];
 }
-
-/** Applies an SGR sequence's parameters to the rendition, as ansi-color--update-face-vec. */
-function update(r: Rendition, params: number[]): void {
-  if (params.length === 0) params = [0];
-  for (let i = 0; i < params.length; i++) {
-    const p = params[i]!;
-    if (p === 0) Object.assign(r, { bold: false, italic: false, underline: false, fg: undefined, bg: undefined });
-    else if (p === 1) r.bold = true;
-    else if (p === 3) r.italic = true;
-    else if (p === 4) r.underline = true;
-    else if (p === 22) r.bold = false;
-    else if (p === 23) r.italic = false;
-    else if (p === 24) r.underline = false;
-    else if (p >= 30 && p <= 37) r.fg = `ansi-color-${COLOURS[p - 30]![0]}`;
-    else if (p === 39) r.fg = undefined;
-    else if (p >= 40 && p <= 47) r.bg = `ansi-color-bg-${COLOURS[p - 40]![0]}`;
-    else if (p === 49) r.bg = undefined;
-    else if (p >= 90 && p <= 97) r.fg = `ansi-color-bright-${COLOURS[p - 90]![0]}`;
-    else if (p >= 100 && p <= 107) r.bg = `ansi-color-bg-bright-${COLOURS[p - 100]![0]}`;
-    else if ((p === 38 || p === 48) && params[i + 1] === 5 && params[i + 2] !== undefined) {
-      const face = colourFace(xterm256(params[i + 2]!), p === 48);
-      if (p === 38) r.fg = face;
-      else r.bg = face;
-      i += 2;
-    } else if ((p === 38 || p === 48) && params[i + 1] === 2 && params[i + 4] !== undefined) {
-      const face = colourFace(`#${hex(params[i + 2]!)}${hex(params[i + 3]!)}${hex(params[i + 4]!)}`, p === 48);
-      if (p === 38) r.fg = face;
-      else r.bg = face;
-      i += 4;
-    }
-  }
-}
-
-const faces = (r: Rendition): string[] =>
-  [r.bold && "ansi-color-bold", r.italic && "ansi-color-italic", r.underline && "ansi-color-underline", r.fg, r.bg].filter((f): f is string => Boolean(f));
-
-/** Each buffer's rendition, and where an escape sequence not yet ended starts, as ansi-color-context-region. */
-const contexts = new PerBuffer<{ rendition: Rendition; pending?: e8.Marker }>();
 
 /**
- * Colours the text from start to end by the escape sequences in it, and
- * removes them and other control sequences, as ansi-color-apply-on-region;
- * with `filter`, only removes them. The rendition carries on to the next
- * region, and an escape sequence cut off at the end is finished next time.
+ * Applies the codes the iterator gives to a FACE-VEC, as
+ * ansi-color--update-face-vec: 1 to 7 set a basic face, 21 to 27 unset
+ * them, 30 to 37 and 90 to 97 set the foreground, 40 to 47 and 100 to 107
+ * the background, 39 and 49 unset them, 38 and 48 take a 256-colour or RGB
+ * colour from the codes after them, and anything else clears it all.
  */
-export function applyOnRegion(startIn: number, end: number, filter = false): void {
-  const buffer = e8.bufferName();
-  const context = contexts.get(buffer) ?? { rendition: { bold: false, italic: false, underline: false } };
-  contexts.set(buffer, context);
-  let start = startIn;
-  if (context.pending !== undefined) {
-    start = Math.min(start, e8.markerPosition(context.pending) ?? start);
-    e8.deleteMarker(context.pending);
-    context.pending = undefined;
-  }
-  const endMarker = e8.makeMarker(end);
-  let runStart = start;
-  let p = start;
-  const paint = (from: number, to: number) => {
-    const list = faces(context.rendition);
-    if (!filter && to > from && list.length > 0) e8.putTextProperty(from, to, "face", list.length === 1 ? list[0]! : list);
-  };
-  e8.letBind({ "inhibit-read-only": true }, () => {
-    for (;;) {
-      const limit = e8.markerPosition(endMarker)!;
-      const text = e8.bufferText(p, limit);
-      const esc = text.indexOf("\x1b");
-      if (esc < 0) break;
-      const at = p + [...text.slice(0, esc)].length;
-      const m = /^\x1b\[([\x30-\x3f]*)([\x20-\x2f]*)([\x40-\x7e])/.exec(text.slice(esc));
-      if (m === null) {
-        // Cut off at the end: finish it with the next output.
-        if (/^\x1b(\[[\x30-\x3f]*[\x20-\x2f]*)?$/.test(text.slice(esc))) {
-          paint(runStart, at);
-          context.pending = e8.makeMarker(at);
-          e8.deleteMarker(endMarker);
-          return;
-        }
-        p = at + 1;
-        continue;
+function updateFaceVec(faceVec: FaceVec, next: () => number | undefined): void {
+  const basic = faceVec[0];
+  let code: number | undefined;
+  while ((code = next()) !== undefined) {
+    const q = Math.floor(code / 10);
+    let clear = false;
+    if (q === 0) {
+      if (code === 0 || code === 8 || code === 9) clear = true;
+      else basic[code] = true;
+    } else if (q === 2) {
+      if ([20, 26, 28, 29].includes(code)) clear = true;
+      else {
+        basic[code - 20] = false;
+        basic[code === 22 ? 1 : code === 25 ? 6 : 0] = false;
       }
-      paint(runStart, at);
-      e8.deleteRegion(at, at + m[0].length);
-      if (m[3] === "m") update(context.rendition, m[1] === "" ? [] : m[1]!.split(";").map((x) => Number(x) || 0));
-      runStart = p = at;
+    } else if (q === 3 || q === 4 || q === 9 || q === 10) {
+      const r = code % 10;
+      const cell = q === 3 || q === 9 ? 1 : 2;
+      if (r === 8) {
+        const mode = next();
+        if (mode === 5) {
+          const c = next();
+          faceVec[cell] = c ?? null;
+          clear = c === undefined || c >= 256;
+        } else if (mode === 2) {
+          const red = next();
+          const green = next();
+          const blue = next();
+          const rgb = red !== undefined && green !== undefined && blue !== undefined ? red * 0x10000 + green * 0x100 + blue : undefined;
+          if (rgb !== undefined && rgb <= 0xffffff) faceVec[cell] = 256 + rgb;
+          else clear = true;
+        } else clear = true;
+      } else if (r === 9) faceVec[cell] = null;
+      else faceVec[cell] = (q === 3 || q === 4 ? 0 : 8) + r;
+    } else clear = true;
+    if (clear) {
+      basic.fill(false);
+      faceVec[1] = null;
+      faceVec[2] = null;
     }
-    paint(runStart, e8.markerPosition(endMarker)!);
+  }
+}
+
+const hex6 = (n: number) => `#${n.toString(16).toUpperCase().padStart(6, "0")}`;
+
+/**
+ * A colour code as #RRGGBB, as ansi-color--code-as-hex: 16 to 255 from the
+ * xterm palette's cube and greys, 256 and over a 24-bit colour; undefined
+ * for the sixteen named colours.
+ */
+function codeAsHex(color: number): string | undefined {
+  if (color < 16) return undefined;
+  if (color >= 256) return hex6(color - 256);
+  if (color >= 232) return hex6(0x010101 * (8 + 10 * (color - 232)));
+  const c = color - 16;
+  let res = 0;
+  for (let frac = 36; frac >= 1; frac = Math.floor(frac / 6)) {
+    res *= 0x100;
+    const n = Math.floor(c / frac) % 6;
+    if (n !== 0) res += 0x37 + 0x28 * n;
+  }
+  return hex6(res);
+}
+
+/** A face's colour, or the default face's where it sets none, as face-foreground with INHERIT 'default. */
+function faceColour(face: string, attribute: ":foreground" | ":background"): e8.Value {
+  const own = e8.faceAttribute(face, attribute, true);
+  return typeof own === "string" && own !== "unspecified" ? own : e8.faceAttribute("default", attribute);
+}
+
+/** A vector of faces from a variable, nil as undefined. */
+const listVar = (name: string): (string | undefined)[] => ((e8.variable(name) ?? []) as e8.Value[]).map((f) => (typeof f === "string" ? f : undefined));
+
+/**
+ * The face for a FACE-VEC, as ansi-color--face-vec-face: the basic faces in
+ * order, then the background and the foreground as attribute lists, one
+ * face alone, or undefined for none.
+ */
+function faceVecFace(faceVec: FaceVec): e8.Value | undefined {
+  const [basic, fg, bg] = faceVec;
+  const bright = truthy(e8.variable("ansi-color-bold-is-bright")) && basic[1];
+  const faces: e8.Value[] = [];
+  const colour = (code: number, attribute: ":foreground" | ":background") => {
+    const vectorName = bright || code >= 8 ? "ansi-color-bright-colors-vector" : "ansi-color-normal-colors-vector";
+    return codeAsHex(code) ?? faceColour(listVar(vectorName)[code % 8]!, attribute);
+  };
+  const basicFaces = listVar("ansi-color-basic-faces-vector");
+  for (let i = 0; i < 8; i++) if (basic[i] && basicFaces[i]) faces.push(basicFaces[i]!);
+  if (bg !== null) faces.push([":background", colour(bg, ":background")]);
+  if (fg !== null) faces.push([":foreground", colour(fg, ":foreground")]);
+  return faces.length === 0 ? undefined : faces.length === 1 ? faces[0] : faces;
+}
+
+/** The parameters of an SGR sequence, from its start, as ansi-color-parameter-regexp finds them. */
+function parameters(text: string, from: number, to: number): () => number | undefined {
+  PARAMETER.lastIndex = from;
+  return () => {
+    const m = PARAMETER.exec(text);
+    if (m === null || PARAMETER.lastIndex > to) {
+      PARAMETER.lastIndex = text.length + 1;
+      return undefined;
+    }
+    return Number(m[1]) || 0;
+  };
+}
+
+/** The current buffer's string context, made if it has none, as ansi-color--ensure-context. */
+function stringContext(): [FaceVec, string] {
+  const v = e8.variable("ansi-color-context");
+  return Array.isArray(v) ? [faceVecOf(v[0]), typeof v[1] === "string" ? v[1] : ""] : [newFaceVec(), ""];
+}
+
+/** Code points to UTF-16 offsets in a string and back, as strings' properties count characters. */
+const chars = (s: string, offset: number) => [...s.slice(0, offset)].length;
+
+/**
+ * Removes the control sequences from a string, keeping the start of one
+ * cut off at its end in ansi-color-context for the next string, as
+ * ansi-color-filter-apply.
+ */
+export function filterApply(stringIn: string): string {
+  const [faceVec, fragment] = stringContext();
+  const string = fragment + stringIn;
+  const pieces: string[] = [];
+  let start = 0;
+  CONTROL_SEQ.lastIndex = 0;
+  for (let m = CONTROL_SEQ.exec(string); m !== null; m = CONTROL_SEQ.exec(string)) {
+    pieces.push(string.slice(start, m.index));
+    start = m.index + m[0].length;
+  }
+  // Only what is after the last whole sequence can be the start of one.
+  let rest = string.slice(start);
+  const cut = FRAGMENT_AT_END.exec(rest);
+  let next = "";
+  if (cut !== null) {
+    next = cut[0];
+    rest = rest.slice(0, cut.index);
+  }
+  pieces.push(rest);
+  e8.setVariable("ansi-color-context", [faceVec, next] as e8.Value);
+  return pieces.join("");
+}
+
+/**
+ * A string with its SGR sequences made into `font-lock-face' properties and
+ * other control sequences removed, as ansi-color-apply. The faces in force
+ * and the start of a sequence cut off at the end carry on, in
+ * ansi-color-context, to the next string.
+ */
+export function apply(stringIn: string): string | e8.PropertizedString {
+  const [faceVec, fragment] = stringContext();
+  const string = fragment + stringIn;
+  const pieces: string[] = [];
+  const runs: [number, number, { [name: string]: e8.Value }][] = [];
+  let length = 0;
+  const add = (text: string) => {
+    const face = faceVecFace(faceVec);
+    const n = [...text].length;
+    if (face !== undefined && n > 0) runs.push([length, length + n, { "font-lock-face": face }]);
+    pieces.push(text);
+    length += n;
+  };
+  let start = 0;
+  CONTROL_SEQ.lastIndex = 0;
+  for (let m = CONTROL_SEQ.exec(string); m !== null; m = CONTROL_SEQ.exec(string)) {
+    const escEnd = m.index + m[0].length;
+    add(string.slice(start, m.index));
+    start = escEnd;
+    if (m[0].endsWith("m")) {
+      const saved = CONTROL_SEQ.lastIndex;
+      updateFaceVec(faceVec, parameters(string, m.index, escEnd));
+      CONTROL_SEQ.lastIndex = saved;
+    }
+  }
+  let rest = string.slice(start);
+  const cut = FRAGMENT_AT_END.exec(rest);
+  let next = "";
+  if (cut !== null) {
+    next = cut[0];
+    rest = rest.slice(0, cut.index);
+  }
+  add(rest);
+  e8.setVariable("ansi-color-context", [faceVec, next] as e8.Value);
+  const text = pieces.join("");
+  return runs.length === 0 ? text : new e8.PropertizedString(text, runs);
+}
+
+/**
+ * The current buffer's region context, made if it has none, its marker
+ * put at `position` if it points nowhere, as ansi-color--ensure-context.
+ */
+function regionContext(position: number): [FaceVec, e8.Marker] {
+  const v = e8.variable("ansi-color-context-region");
+  let marker = Array.isArray(v) && v[1] instanceof e8.Marker ? v[1] : undefined;
+  // One that points nowhere is put back, as ansi-color--ensure-context does; one in another buffer is not this buffer's.
+  if (marker === undefined || (e8.markerBuffer(marker) !== undefined && e8.markerBuffer(marker) !== e8.bufferName())) marker = e8.makeMarker(position);
+  else if (e8.markerPosition(marker) === undefined) e8.setMarker(marker, position);
+  return [Array.isArray(v) ? faceVecOf(v[0]) : newFaceVec(), marker];
+}
+
+const applyFace = (beg: number, end: number, face: e8.Value | undefined) => {
+  const f = e8.variable("ansi-color-apply-face-function");
+  e8.funcall((truthy(f) ? f : "ansi-color-apply-overlay-face") as string, beg, end, face ?? null);
+};
+
+/** How many characters, code points, a string has from one UTF-16 index to another. */
+function codePoints(text: string, from: number, to: number): number {
+  let n = 0;
+  for (let i = from; i < to; i++) {
+    const c = text.charCodeAt(i);
+    if (c < 0xd800 || c > 0xdbff) n++;
+  }
+  return n;
+}
+
+/**
+ * The control sequences from `from` to `to`, read once, each with where it
+ * starts and how many characters it has, counted in the text as it was.
+ */
+function* sequences(from: number, to: number): Generator<{ at: number; length: number; text: string }> {
+  const text = e8.bufferText(from, to);
+  let index = 0;
+  let at = from;
+  const re = new RegExp(CONTROL_SEQ.source, "g");
+  for (let m = re.exec(text); m !== null; m = re.exec(text)) {
+    at += codePoints(text, index, m.index);
+    index = m.index + m[0].length;
+    const length = codePoints(m[0], 0, m[0].length);
+    yield { at, length, text: m[0] };
+    at += length;
+  }
+}
+
+/** Where the start of a control sequence cut off at `end` begins, searching from `from`, as the fragment regexp's last match. */
+function fragmentBefore(from: number, end: number): { start: number; end: number } | undefined {
+  const text = e8.bufferText(from, end);
+  const m = FRAGMENT_AT_END.exec(text);
+  if (m === null) return undefined;
+  return { start: from + chars(text, m.index), end };
+}
+
+/**
+ * Makes the SGR sequences from begin to end into faces, through
+ * ansi-color-apply-face-function, and deletes them and the other control
+ * sequences, or with preserveSequences hides them, as
+ * ansi-color-apply-on-region. The faces in force carry on, in
+ * ansi-color-context-region, to the next region, which starts where this
+ * one stopped, as within a sequence cut off at its end.
+ */
+export function applyOnRegion(begin: number, end: number, preserveSequences = false): void {
+  const [faceVec, startMarker] = regionContext(begin);
+  const endMarker = e8.makeMarker(end);
+  e8.saveExcursion(() => {
+    const first = e8.markerPosition(startMarker)!;
+    let point = first;
+    // Positions after a deletion move back by what went.
+    let deleted = 0;
+    for (const seq of sequences(first, e8.markerPosition(endMarker)!)) {
+      const escBeg = seq.at - deleted;
+      const escEnd = escBeg + seq.length;
+      const from = e8.markerPosition(startMarker)!;
+      e8.setMarker(startMarker, escEnd);
+      applyFace(from, escBeg, faceVecFace(faceVec));
+      if (seq.text.endsWith("m")) updateFaceVec(faceVec, parameters(seq.text, 0, seq.text.length));
+      if (preserveSequences) {
+        e8.overlayPut(e8.makeOverlay(escBeg, escEnd), "invisible", true);
+        point = escEnd;
+      } else {
+        e8.deleteRegion(escBeg, escEnd);
+        deleted += seq.length;
+        point = escBeg;
+      }
+    }
+    const endPos = e8.markerPosition(endMarker)!;
+    const fragment = fragmentBefore(point, endPos);
+    // Emacs's last search leaves point after the last fragment; only one at the end counts.
+    const after = fragment?.end ?? point;
+    if (fragment !== undefined && after !== e8.markerPosition(startMarker) && after === endPos) {
+      applyFace(e8.markerPosition(startMarker)!, fragment.start, faceVecFace(faceVec));
+      e8.setMarker(startMarker, fragment.start);
+    } else {
+      const face = faceVecFace(faceVec);
+      applyFace(e8.markerPosition(startMarker)!, endPos, face);
+      // Kept only while codes are in force, so text before it later is not coloured.
+      e8.setMarker(startMarker, face === undefined ? null : endPos);
+    }
   });
   e8.deleteMarker(endMarker);
+  e8.setVariable("ansi-color-context-region", [faceVec, startMarker] as e8.Value);
+}
+
+/**
+ * Deletes the control sequences from begin to end, stopping before the
+ * start of one cut off at the end, which the next call starts from, as
+ * ansi-color-filter-region.
+ */
+export function filterRegion(begin: number, end: number): void {
+  const [faceVec, start] = regionContext(begin);
+  const endMarker = e8.makeMarker(end);
+  e8.saveExcursion(() => {
+    const first = e8.markerPosition(start)!;
+    let point = first;
+    let deleted = 0;
+    for (const seq of sequences(first, e8.markerPosition(endMarker)!)) {
+      point = seq.at - deleted;
+      e8.deleteRegion(point, point + seq.length);
+      deleted += seq.length;
+    }
+    e8.setMarker(start, point);
+    const endPos = e8.markerPosition(endMarker)!;
+    const fragment = fragmentBefore(point, endPos);
+    if (fragment !== undefined && fragment.end !== point && fragment.end === endPos) e8.setMarker(start, fragment.start);
+    else e8.setMarker(start, null);
+  });
+  e8.deleteMarker(endMarker);
+  e8.setVariable("ansi-color-context-region", [faceVec, start] as e8.Value);
+}
+
+/** Keeps an overlay from growing over text inserted at its end, as ansi-color-freeze-overlay. */
+const freezeOverlay = e8.defun("ansi-color-freeze-overlay", (overlay: number, isAfter: e8.Value, begin: number, end: number, len?: number) => {
+  if (truthy(isAfter) && len === 0 && end === e8.overlayEnd(overlay)) e8.moveOverlay(overlay, e8.overlayStart(overlay)!, begin);
+});
+
+/** An overlay from `from` to `to` that goes with its text and does not grow, as ansi-color-make-extent. */
+export function makeExtent(from: number, to: number): number {
+  return e8.makeOverlay(from, to, { evaporate: true, "modification-hooks": [freezeOverlay], "insert-behind-hooks": [freezeOverlay] });
+}
+
+e8.defun("ansi-color-make-extent", (from: number, to: number) => makeExtent(from, to));
+e8.defun("ansi-color-apply-overlay-face", (beg: number, end: number, face: e8.Value) => {
+  // An empty overlay that evaporates goes at once, as in Emacs.
+  if (truthy(face) && beg < end) e8.overlayPut(makeExtent(beg, end), "face", face);
+});
+e8.defun("ansi-color-apply-text-property-face", (beg: number, end: number, face: e8.Value) => {
+  if (truthy(face)) e8.putTextProperty(beg, end, "font-lock-face", face);
+});
+e8.defun("ansi-color-apply", (string: string) => apply(string));
+e8.defun("ansi-color-filter-apply", (string: string) => filterApply(string));
+e8.defun("ansi-color-apply-on-region", (begin: number, end: number, preserve?: e8.Value) => applyOnRegion(begin, end, truthy(preserve)));
+e8.defun("ansi-color-filter-region", (begin: number, end: number) => filterRegion(begin, end));
+
+/**
+ * Colours comint's last output, from comint-last-output-start to the
+ * process mark, or only removes its sequences, as ansi-color-for-comint-mode
+ * says, as ansi-color-process-output does on comint-output-filter-functions.
+ */
+export const processOutput = (_ignored?: e8.Value): void => {
+  const process = e8.getBufferProcess(e8.bufferName());
+  if (process === undefined) return;
+  const mode = e8.variable("ansi-color-for-comint-mode");
+  if (!truthy(mode)) return;
+  const startVar = e8.variable("comint-last-output-start");
+  const start = startVar instanceof e8.Marker && e8.markerBuffer(startVar) === e8.bufferName() ? e8.markerPosition(startVar) : undefined;
+  const end = e8.markerPosition(e8.processMark(process)!)!;
+  if (mode === "filter") filterRegion(start ?? e8.pointMin(), end);
+  else applyOnRegion(start ?? e8.pointMin(), end);
+};
+e8.defun("ansi-color-process-output", processOutput);
+
+/**
+ * Colours what compilation output was just inserted, from
+ * compilation-filter-start to point, or only removes its sequences, as
+ * ansi-color-for-compilation-mode says; for compilation-filter-hook.
+ */
+e8.defun("ansi-color-compilation-filter", () => {
+  const mode = e8.variable("ansi-color-for-compilation-mode");
+  if (!truthy(mode)) return;
+  const start = Number(e8.variable("compilation-filter-start") ?? e8.point());
+  e8.letBind({ "inhibit-read-only": true }, () => {
+    if (mode === "filter") filterRegion(start, e8.point());
+    else applyOnRegion(start, e8.point());
+  });
+});
+
+for (const [name, value, doc] of [
+  ["ansi-color-for-comint-mode-on", true, "Set `ansi-color-for-comint-mode' to t."],
+  ["ansi-color-for-comint-mode-off", null, "Set `ansi-color-for-comint-mode' to nil."],
+  ["ansi-color-for-comint-mode-filter", "filter", "Set `ansi-color-for-comint-mode' to symbol `filter'."],
+] as const) {
+  e8.defineCommand({ name, doc, run: () => e8.setDefault("ansi-color-for-comint-mode", value) });
 }

@@ -447,6 +447,24 @@ declare global {
        */
       "agent-shell-set-session-thought-level": [thoughtLevel: string];
       /**
+       * Set `ansi-color-for-comint-mode' to symbol `filter'.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-for-comint-mode-filter": [];
+      /**
+       * Set `ansi-color-for-comint-mode' to nil.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-for-comint-mode-off": [];
+      /**
+       * Set `ansi-color-for-comint-mode' to t.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-for-comint-mode-on": [];
+      /**
        * Make the next kill join onto the last one on the kill ring, as consecutive kills do.
        *
        * Defined in packages/simple.ts.
@@ -971,11 +989,24 @@ declare global {
        */
       "clone-indirect-buffer-other-window": [arg?: PrefixArg | boolean];
       /**
-       * Go to the start of the line, after the prompt if there is one.
+       * Search back through the buffer for an input matching a regexp, the nth with a prefix argument, or forward if it is negative.
+       *
+       * @param regexp text
+       * @param n prefix count
        *
        * Defined in packages/comint.ts.
        */
-      "comint-bol": [];
+      "comint-backward-matching-input": [regexp: string, n?: number];
+      /**
+       * Go to the start of the line, after the prompt if there is one; with a prefix argument, to the very start.
+       *
+       * With comint-use-prompt-regexp, the prompt is what comint-prompt-regexp matches.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-bol": [arg?: PrefixArg | boolean];
       /**
        * Go to the start of the input on this line; again, to the process mark.
        *
@@ -1010,6 +1041,27 @@ declare global {
        * Defined in packages/comint.ts.
        */
       "comint-delete-output": [kill?: PrefixArg | boolean];
+      /**
+       * Complete the file name before point, adding comint-completion-addsuffix once it is complete.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-dynamic-complete-filename": [];
+      /**
+       * List the completions of the file name before point in *Completions*.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-dynamic-list-filename-completions": [];
+      /**
+       * Search forward through the buffer for an input matching a regexp, the nth with a prefix argument, or back if it is negative.
+       *
+       * @param regexp text
+       * @param n prefix count
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-forward-matching-input": [regexp: string, n?: number];
       /**
        * Search back through the input history for a string, incrementally: each match is put after the prompt.
        *
@@ -7171,6 +7223,14 @@ declare global {
        */
       "shell": [arg?: PrefixArg | boolean];
       /**
+       * Move back over a command of the line, or as many as the prefix argument says. See shell-command-regexp.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-backward-command": [n?: number];
+      /**
        * Run a shell command and show its output: in the echo area if it is one line, else in *Shell Command Output*.
        *
        * A command ending in & runs in the background, as M-& does. With a prefix argument, the output goes into the buffer at point, with the mark after it.
@@ -7194,6 +7254,14 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "shell-command-on-region": [start: number, end: number, command: string, replace?: PrefixArg | boolean];
+      /**
+       * Move forward over a command of the line, or as many as the prefix argument says. See shell-command-regexp.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-forward-command": [n?: number];
       /**
        * The major mode for a shell in a buffer: type commands after its prompt and send them with RET.
        *
@@ -8821,11 +8889,59 @@ declare global {
        */
       "agent-shell-session-strategy": Value;
       /**
-       * What comint does with ANSI escape sequences in output: t colours the text, filter removes them, nil leaves them.
+       * The function ansi-color-apply-on-region puts a face on text with: given the start, the end and the face, or nil for none.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-apply-face-function": Value;
+      /**
+       * The faces for SGR parameters 0 to 7: default, bold, faint, italic, underlined, slowly blinking, rapidly blinking and negative image.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-basic-faces-vector": Value;
+      /**
+       * Whether bold with a colour gives the colour's bright form.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-bold-is-bright": Value;
+      /**
+       * The faces whose colours SGR parameters 90 to 97 and 100 to 107 set.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-bright-colors-vector": Value;
+      /**
+       * What the last ansi-color-apply ended with: (FACE-VEC FRAGMENT), FACE-VEC the bold, faint and other basic faces in force and the foreground and background colour codes, FRAGMENT the start of an escape sequence not yet ended. Set it to nil to start afresh.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-context": Value;
+      /**
+       * What the last ansi-color-apply-on-region ended with: (FACE-VEC MARKER), FACE-VEC as in ansi-color-context, MARKER where to start next time, as within an escape sequence not yet ended. Set it to nil to start afresh.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-context-region": Value;
+      /**
+       * What comint does with SGR control sequences in output: t translates them into faces, filter removes them, nil leaves them.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-for-comint-mode": Value;
+      /**
+       * What ansi-color-compilation-filter does with compilation output: t translates SGR control sequences into faces, filter removes them, nil leaves them.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-for-compilation-mode": Value;
+      /**
+       * The faces whose colours SGR parameters 30 to 37 and 40 to 47 set.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-normal-colors-vector": Value;
       /**
        * Keymap apropos-mode-map.
        */
@@ -9205,11 +9321,47 @@ declare global {
        */
       "comint--echo-pending": Value;
       /**
+       * What completing a file name adds after it: t a space, a string that string, nil nothing; a cons (DIRSUFFIX . FILESUFFIX) adds FILESUFFIX.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-completion-addsuffix": Value;
+      /**
+       * Suffixes of file names that completion leaves out.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-completion-fignore": Value;
+      /**
+       * The functions comint-completion-at-point asks in turn what to complete at point, as completion-at-point-functions.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-dynamic-complete-functions": Value;
+      /**
        * Whether RET moves to the end of the input before sending it.
        *
        * Defined in packages/comint.ts.
        */
       "comint-eol-on-send": Value;
+      /**
+       * The characters a file name at point is made of, as inside skip-chars-forward's [...], besides all non-ASCII ones.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-file-name-chars": Value;
+      /**
+       * What goes before an absolute file name from the program's input, as for a remote shell.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-file-name-prefix": Value;
+      /**
+       * The characters quoted with a backslash in a file name.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-file-name-quote-list": Value;
       /**
        * Whether C-r and C-M-r search the input history rather than the buffer: t always, dwim when the search starts at the command line, nil never. M-r searches the history whatever it says.
        *
@@ -9253,6 +9405,12 @@ declare global {
        */
       "comint-input-ring-size": Value;
       /**
+       * Where the program's last output starts, a marker.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-last-output-start": Value;
+      /**
        * Keymap comint-mode-map.
        */
       "comint-mode-map": Value;
@@ -9287,11 +9445,23 @@ declare global {
        */
       "comint-prompt-read-only": Value;
       /**
+       * An Emacs regexp matching the prompt, used when comint-use-prompt-regexp is true; it should start with ^.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-prompt-regexp": Value;
+      /**
        * The terminal comint programs are told they run on, as TERM.
        *
        * Defined in packages/comint.ts.
        */
       "comint-terminfo-terminal": Value;
+      /**
+       * Whether comint finds prompts and inputs by comint-prompt-regexp rather than by the fields it puts on output, for C-a, C-c C-p, C-c C-n, RET on old input and the like.
+       *
+       * Defined in packages/comint.ts.
+       */
+      "comint-use-prompt-regexp": Value;
       /**
        * Commands that read their arguments in the minibuffer or ran from M-x, newest first, each a list of the command and its arguments, which C-x ESC ESC runs again.
        */
@@ -13546,11 +13716,35 @@ declare global {
        */
       "shell-command-guess-open": Value;
       /**
+       * An Emacs regexp matching one command of a pipeline.
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-command-regexp": Value;
+      /**
        * What tells the shell that the next argument is a command to run.
        *
        * Defined in packages/simple.ts.
        */
       "shell-command-switch": Value;
+      /**
+       * Whether completing a command offers only files that can be run.
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-completion-execonly": Value;
+      /**
+       * Suffixes of file names that completion in shell-mode leaves out, as comint-completion-fignore there.
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-completion-fignore": Value;
+      /**
+       * The characters that are arguments of their own in a shell command.
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-delimiter-argument-list": Value;
       /**
        * Whether shell-mode follows cd, pushd and popd to keep default-directory where the shell is.
        *
@@ -13558,11 +13752,29 @@ declare global {
        */
       "shell-dirtrack-mode": Value;
       /**
+       * The functions that say what completes at point in shell-mode, as comint-dynamic-complete-functions there.
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-dynamic-complete-functions": Value;
+      /**
        * The shell programs and shell commands are run with, from $SHELL.
        *
        * Defined in packages/simple.ts.
        */
       "shell-file-name": Value;
+      /**
+       * The characters of a file name in shell-mode, as comint-file-name-chars there.
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-file-name-chars": Value;
+      /**
+       * The characters quoted with a backslash in a file name in shell-mode, as comint-file-name-quote-list there.
+       *
+       * Defined in packages/shell.ts.
+       */
+      "shell-file-name-quote-list": Value;
       /**
        * The file shell-mode reads the history from: nil for $HISTFILE or the shell's own default, t for none.
        *
@@ -14652,211 +14864,139 @@ declare global {
        */
       "agent-shell-user-label": FaceAttributes;
       /**
-       * ANSI black as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-black": FaceAttributes;
-      /**
-       * ANSI blue as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-blue": FaceAttributes;
-      /**
-       * ANSI bright black as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-bright-black": FaceAttributes;
-      /**
-       * ANSI bright blue as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-bright-blue": FaceAttributes;
-      /**
-       * ANSI bright cyan as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-bright-cyan": FaceAttributes;
-      /**
-       * ANSI bright green as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-bright-green": FaceAttributes;
-      /**
-       * ANSI bright magenta as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-bright-magenta": FaceAttributes;
-      /**
-       * ANSI bright red as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-bright-red": FaceAttributes;
-      /**
-       * ANSI bright white as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-bright-white": FaceAttributes;
-      /**
-       * ANSI bright yellow as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-bright-yellow": FaceAttributes;
-      /**
-       * ANSI cyan as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-cyan": FaceAttributes;
-      /**
-       * ANSI green as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-green": FaceAttributes;
-      /**
-       * ANSI magenta as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-magenta": FaceAttributes;
-      /**
-       * ANSI red as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-red": FaceAttributes;
-      /**
-       * ANSI white as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-white": FaceAttributes;
-      /**
-       * ANSI yellow as a background.
-       *
-       * Defined in packages/ansi-color.ts.
-       */
-      "ansi-color-bg-yellow": FaceAttributes;
-      /**
-       * ANSI black.
+       * Face used to render black color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-black": FaceAttributes;
       /**
-       * ANSI blue.
+       * Face used to render blue color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-blue": FaceAttributes;
       /**
-       * ANSI bold.
+       * Face used to render bold text.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bold": FaceAttributes;
       /**
-       * ANSI bright black.
+       * Face used to render bright black color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bright-black": FaceAttributes;
       /**
-       * ANSI bright blue.
+       * Face used to render bright blue color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bright-blue": FaceAttributes;
       /**
-       * ANSI bright cyan.
+       * Face used to render bright cyan color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bright-cyan": FaceAttributes;
       /**
-       * ANSI bright green.
+       * Face used to render bright green color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bright-green": FaceAttributes;
       /**
-       * ANSI bright magenta.
+       * Face used to render bright magenta color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bright-magenta": FaceAttributes;
       /**
-       * ANSI bright red.
+       * Face used to render bright red color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bright-red": FaceAttributes;
       /**
-       * ANSI bright white.
+       * Face used to render bright white color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bright-white": FaceAttributes;
       /**
-       * ANSI bright yellow.
+       * Face used to render bright yellow color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-bright-yellow": FaceAttributes;
       /**
-       * ANSI cyan.
+       * Face used to render cyan color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-cyan": FaceAttributes;
       /**
-       * ANSI green.
+       * Face used to render faint text.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-faint": FaceAttributes;
+      /**
+       * Face used to render rapidly blinking text.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-fast-blink": FaceAttributes;
+      /**
+       * Face used to render green color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-green": FaceAttributes;
       /**
-       * ANSI italic.
+       * Face used to render inverted video text.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-inverse": FaceAttributes;
+      /**
+       * Face used to render italic text.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-italic": FaceAttributes;
       /**
-       * ANSI magenta.
+       * Face used to render magenta color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-magenta": FaceAttributes;
       /**
-       * ANSI red.
+       * Face used to render red color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-red": FaceAttributes;
       /**
-       * ANSI underline.
+       * Face used to render slowly blinking text.
+       *
+       * Defined in packages/ansi-color.ts.
+       */
+      "ansi-color-slow-blink": FaceAttributes;
+      /**
+       * Face used to render underlined text.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-underline": FaceAttributes;
       /**
-       * ANSI white.
+       * Face used to render white color code.
        *
        * Defined in packages/ansi-color.ts.
        */
       "ansi-color-white": FaceAttributes;
       /**
-       * ANSI yellow.
+       * Face used to render yellow color code.
        *
        * Defined in packages/ansi-color.ts.
        */

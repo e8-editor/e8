@@ -33,6 +33,17 @@ With programs on a pseudo-terminal ([ADR 0037](0037-terminals-sockets-and-proces
 - **Faces.** The faces are Emacs's `ansi-color-*`, with its X colours in hex. Backgrounds and other colours are faces made for them, as E8 has no face attribute lists.
 - **Turning it off.** `ansi-color-for-comint-mode` set to `filter` only removes the sequences.
 
+**ANSI colours as Emacs's** (added after the rest, replacing the faces above): `ansi-color.ts` is now ansi-color.el of Emacs 30.2 ported function by function.
+- **Faces.** The SGR codes go into Emacs's FACE-VEC, and the face is Emacs's: the basic faces in order (`ansi-color-bold` to `ansi-color-inverse`, faint and blinking included), then the background and foreground as attribute lists, `(:foreground "red3")` for the eight colours from the colours of Emacs's `ansi-color-*` faces, `#RRGGBB` for the rest; `ansi-color-bold-is-bright` as in Emacs. E8's faces read attribute lists in text, which they could not when the first version was written.
+- **Strings and regions.** `ansi-color-apply` and `ansi-color-filter-apply` work on strings, keeping their state in `ansi-color-context`; `ansi-color-apply-on-region` and `ansi-color-filter-region` on the buffer, keeping it in `ansi-color-context-region`, a sequence cut off at the end left in the buffer for the next call, as Emacs leaves it.
+- **Where faces go.** Through `ansi-color-apply-face-function`: overlays that do not grow by default, as Emacs's comint buffers have, and `font-lock-face` and `ansi-color-face` text properties in `shell-mode` and `*Async Shell Command*`, as shell.el's `shell-apply-ansi-color` puts them. `ansi-color-process-output` is first on `comint-output-filter-functions`, as in Emacs, rather than called by comint's filter, and `ansi-color-compilation-filter` is there for `compilation-filter-hook`.
+- **The prompt.** `comint-highlight-prompt` is appended to the prompt's `font-lock-face`, so a coloured prompt keeps its colours, and taken off a line that output goes on after, as `comint-last-prompt` does.
+- **Checking.** `tests/emacs/ansi-color.el` runs 23 cases of chunked output through the four functions in Emacs 30.2 and writes what each gives, text and faces, to `tests/emacs/ansi-color.txt`; `tests/all/ansi_color.rs` gives E8 the same chunks and compares.
+
+**Prompt regexps** (added after the rest): with `comint-use-prompt-regexp`, output is not made the `output` field, and `comint-bol` (`C-c C-a`, and `comint-line-beginning-position` beneath the history commands), the old input RET sends, `C-c C-n` and `C-c C-p`, `comint-show-output` and the new `comint-backward-matching-input` and `comint-forward-matching-input` find prompts by `comint-prompt-regexp`, as comint.el's branches do.
+
+**Completion at the prompt** (added after the rest): `comint-completion-at-point` is on `completion-at-point-functions` in comint buffers and asks `comint-dynamic-complete-functions`. `comint-filename-completion` completes the file name before point, of `comint-file-name-chars`, quoted with `comint-file-name-quote-list`, adding `comint-completion-addsuffix` after a file; `comint-dynamic-complete-filename` and `comint-dynamic-list-filename-completions` (`M-?` in shell-mode) are there. `shell-mode` binds TAB to `completion-at-point` and sets up `shell-completion-vars`, with shell.el's functions: `shell-environment-variable-completion`, `shell-command-completion` (the programs on `exec-path`, only the command of its part of the line, found with `shell-backward-command`), `shell-c-a-p-replace-by-expanded-directory` (`=N` and `=-` from the directory stack, a capf returning a function to call, which `completion-at-point` now does as Emacs's does) and `shell-filename-completion`. pcomplete and history expansion are not there.
+
 **Passwords** (added after the rest):
 - **Reading them.** `read-passwd`, from auth-source.el, is `readPasswd` in `subr.ts`. It reads with `read-string` and no history, shows the input as `read-hide-char` (`*`) through a `display` property after each command, and keeps its keys out of `recent-keys`, as `inhibit--record-char` does. In `read-passwd-mode`, `C-u` clears the input and `TAB` shows or hides it. With CONFIRM it reads twice and starts over until both agree.
 - **Spotting prompts.** `comint-watch-for-password-prompt` is on `comint-output-filter-functions`, as in Emacs. Output matching `comint-password-prompt-regexp`, Emacs 30's own, reads a password with `comint-send-invisible` and sends it.
@@ -56,10 +67,9 @@ A real terminal was checked for what the shell does on C-c. The interactive Emac
 `M-x shell` works, and REPL modes can be written on comint as Emacs's are.
 
 Not done yet:
-- `comint-use-prompt-regexp`;
 - `M-r`, searching the history incrementally, which needed isearch's `isearch-search-fun-function` and the hooks around it ([ADR 0042](0042-isearch-state-and-comint-history-search.md) added them and it);
-- completing file names and commands at the prompt;
-- ANSI colours in compilation buffers, and inverse video and faint text, which E8's faces lack;
+- pcomplete, and history expansion (`comint-input-autoexpand`), which shell-mode's completion also uses;
+- ANSI colours in compilation buffers, whose escape sequences compile.ts takes out;
 - `comint-accumulate`;
 - an error buffer for shell commands' standard error (`shell-command-default-error-buffer`).
 
