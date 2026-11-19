@@ -7,7 +7,8 @@
 //! Each case's keys are typed into a fresh editor, as record.el types them
 //! into Emacs: an error shows its message and the next key still runs. The
 //! result, including the first error, is compared with what Emacs did. Cases listed in `known-gaps.txt` are expected to differ; the
-//! test fails if one of them starts matching, so the list stays accurate.
+//! tests fail if one of them starts matching, so the list stays accurate.
+//! The cases are shared among four tests, each run alone on every core.
 //!
 //! To add cases, edit `tests/emacs/cases/*.json`, then record what Emacs
 //! does with `emacs -Q --batch -l tests/emacs/record.el`.
@@ -33,12 +34,22 @@ fn known_gaps() -> BTreeMap<String, String> {
         .collect()
 }
 
-#[test]
-fn e8_behaves_like_emacs() {
+/// How many tests the cases are shared among: each a process of its own,
+/// so each has nextest's three minutes, which all the cases in one ran past
+/// on CI's runners with QuickJS.
+const SHARDS: usize = 4;
+
+/// What gathering the cases finds: every case's id, the cases to run with
+/// what Emacs did, the problems found, and how many cases there are to run.
+type Gathered = (Vec<String>, Vec<(String, Case, Recorded)>, Vec<String>, usize);
+
+/// The cases of every case file, as `file/case` ids, and the problems
+/// found gathering them; with `shard`, only every SHARDS-th case is kept to
+/// run, starting from it.
+fn gather(shard: Option<usize>) -> Gathered {
     let dir = oracle_dir();
-    let gaps = known_gaps();
     let mut problems = Vec::new();
-    let (mut total, mut matching) = (0, 0);
+    let mut total = 0;
     let mut seen = Vec::new();
 
     let mut files: Vec<PathBuf> = fs::read_dir(dir.join("cases"))
@@ -52,9 +63,8 @@ fn e8_behaves_like_emacs() {
         files.retain(|f| f.file_stem().is_some_and(|s| s.to_string_lossy().contains(&only)));
     }
 
-    // The cases to run, gathered first and then run in parallel, each with
-    // an editor of its own.
     let mut jobs: Vec<(String, Case, Recorded)> = Vec::new();
+    let mut index = 0;
     for file in files {
         let stem = file.file_stem().unwrap().to_string_lossy().into_owned();
         let cases: Vec<Case> = serde_json::from_str(&fs::read_to_string(&file).unwrap())
@@ -72,6 +82,11 @@ fn e8_behaves_like_emacs() {
         for case in cases {
             let id = format!("{stem}/{}", case.name);
             seen.push(id.clone());
+            let mine = shard.is_none_or(|s| index % SHARDS == s);
+            index += 1;
+            if !mine {
+                continue;
+            }
             if let Some(platform) = &case.platform {
                 if platform != system_type() {
                     continue;
@@ -94,6 +109,15 @@ fn e8_behaves_like_emacs() {
             jobs.push((id, case, emacs));
         }
     }
+    (seen, jobs, problems, total)
+}
+
+/// Runs one shard's cases, in parallel, each with an editor of its own,
+/// and compares each with what Emacs did.
+fn compare(shard: usize) {
+    let gaps = known_gaps();
+    let (_, jobs, mut problems, total) = gather(Some(shard));
+    let mut matching = 0;
     let next = std::sync::atomic::AtomicUsize::new(0);
     let threads = std::thread::available_parallelism().map_or(4, |n| n.get());
     let results: Vec<(usize, String)> = std::thread::scope(|scope| {
@@ -123,12 +147,41 @@ fn e8_behaves_like_emacs() {
             (false, false) => problems.push(format!("{id}: keys {:?}\n{diff}", case.keys)),
         }
     }
-    for id in gaps.keys() {
-        if !seen.contains(id) {
-            problems.push(format!("{id}: listed in known-gaps.txt but there is no such case"));
-        }
-    }
-
-    eprintln!("Emacs oracle: {total} cases, {matching} match, {} known gaps", gaps.len());
+    eprintln!("Emacs oracle, shard {} of {SHARDS}: {total} cases, {matching} match", shard + 1);
     assert!(problems.is_empty(), "\n{}\n", problems.join("\n"));
+}
+
+#[test]
+fn e8_behaves_like_emacs_1() {
+    compare(0);
+}
+
+#[test]
+fn e8_behaves_like_emacs_2() {
+    compare(1);
+}
+
+#[test]
+fn e8_behaves_like_emacs_3() {
+    compare(2);
+}
+
+#[test]
+fn e8_behaves_like_emacs_4() {
+    compare(3);
+}
+
+/// Every known gap names a case there is, so the list stays accurate.
+#[test]
+fn known_gaps_name_cases_there_are() {
+    // Only meaningful over every case file.
+    if std::env::var("E8_ORACLE_ONLY").is_ok() {
+        return;
+    }
+    let gaps = known_gaps();
+    // Every case's id, and no case to run: no shard is numbered usize::MAX.
+    let (seen, _, _, _) = gather(Some(usize::MAX));
+    let missing: Vec<String> = gaps.keys().filter(|id| !seen.contains(id)).map(|id| format!("{id}: listed in known-gaps.txt but there is no such case")).collect();
+    eprintln!("Emacs oracle: {} cases, {} known gaps", seen.len(), gaps.len());
+    assert!(missing.is_empty(), "\n{}\n", missing.join("\n"));
 }

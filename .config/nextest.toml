@@ -12,3 +12,10 @@ fail-fast = false
 # adapters from Metal before its first render, which their tests share in
 # one process under cargo test, about a minute for them all.
 default-filter = "!(package(e8-gui) & (binary(window) | binary(images)))"
+
+# The Emacs oracle's shards each run its cases on every core, so each runs
+# alone: shared with other tests, a shard took as long as all the cases had,
+# past the three minutes on CI's runners with QuickJS.
+[[profile.default.overrides]]
+filter = "binary(emacs) & test(/^e8_behaves_like_emacs_/)"
+threads-required = "num-cpus"
