@@ -328,8 +328,10 @@ export function laxSpaces(regexp: string, spaces: string): string {
   while (i < regexp.length) {
     const c = regexp[i]!;
     if (c === "\\") {
-      out += regexp.slice(i, i + 2);
-      i += 2;
+      // \\s, \\S, \\c and \\C take the character after them, a space as any other.
+      const n = "sScC".includes(regexp[i + 1] ?? "") ? 3 : 2;
+      out += regexp.slice(i, i + n);
+      i += n;
     } else if (c === "[") {
       // A bracket expression, ] first and [:class:] inside it.
       let j = i + 1;
@@ -644,7 +646,9 @@ function searchAndUpdate(): void {
       const string = str("isearch-string");
       let fold = truthy(get("isearch-case-fold-search"));
       if (get("isearch-case-fold-search") === true && truthy(get("search-upper-case"))) fold = isearchNoUpperCaseP(string, flag("isearch-regexp"));
-      const here = e8.ignoreErrors(() => e8.lookingAt(flag("isearch-regexp") ? string : regexpQuote(string), undefined, { caseFold: fold }));
+      const fn = get("isearch-regexp-function");
+      const re = truthy(fn) ? String(e8.funcall((fn === true ? "word-search-regexp" : fn) as string, string, true)) : flag("isearch-regexp") ? string : regexpQuote(string);
+      const here = e8.ignoreErrors(() => e8.lookingAt(re, undefined, { caseFold: fold }));
       matchedHere = here === true && (flag("isearch-yank-flag") || e8.matchEnd(0)! <= Math.min(opoint, barrier));
     }
     if (matchedHere) {
@@ -694,6 +698,8 @@ function isearchRepeat(direction: "forward" | "backward", count = 1): void {
         set("isearch-string", previous);
         set("isearch-message", charDescription(previous));
         set("isearch-case-fold-search", lastCaseFold);
+        // After taking the last search, the ring's pointer is at it, as M-p goes on from there.
+        ringAdjust1(false);
       }
     } else if (!flag("isearch-success")) {
       set("isearch-wrapped", true);
@@ -784,8 +790,12 @@ function repeatWithCount(direction: "forward" | "backward", count: number): void
   const other = direction === "forward" ? "backward" : "forward";
   if (count < 0) {
     repeatWithCount(other, -count);
-    isearchRepeat(direction);
-  } else isearchRepeat(direction, flag("isearch-forward") === (direction === "forward") ? count : count + 1);
+    // Turning back, as isearch-repeat-on-direction-change nil turns.
+    e8.letBind({ "isearch-repeat-on-direction-change": false }, () => isearchRepeat(direction));
+  } else {
+    const turning = flag("isearch-forward") !== (direction === "forward");
+    isearchRepeat(direction, turning && !flag("isearch-repeat-on-direction-change") ? count + 1 : count);
+  }
 }
 
 const repeatForward = e8.defineCommand({
@@ -1096,6 +1106,7 @@ for (const [key, name, forward, doc] of [
 export function editString(): void {
   const saved = {
     string: str("isearch-string"),
+    message: str("isearch-message"),
     forward: flag("isearch-forward"),
     regexp: flag("isearch-regexp"),
     regexpFunction: get("isearch-regexp-function") ?? null,
@@ -1104,41 +1115,61 @@ export function editString(): void {
     cmds,
     otherEnd: get("isearch-other-end"),
   };
-  const prompt = isearchMessagePrefix(false);
   const cursor = failPos() ?? [...saved.string].length;
   set("isearch-suspended", true);
+  // Made while suspended, so it has no count, as Emacs makes it.
+  const prompt = isearchMessagePrefix(false);
   isearchDone(true, true);
   const oldPoint = e8.point();
   editForward = undefined;
-  let edited: string;
+  let edited: string | undefined;
   const setup = () => {
     e8.removeHook("minibuffer-setup-hook", setup);
     e8.useLocalMap("minibuffer-local-isearch-map");
     e8.gotoChar(e8.minibufferPromptEnd() + cursor);
   };
   e8.addHook("minibuffer-setup-hook", setup);
+  let quit: unknown;
   try {
     edited = e8.letBind({ "message-log-max": null, "history-add-new-input": false }, () =>
       e8.readString(prompt, { initial: saved.string, history: saved.regexp ? "regexp-search-ring" : "search-ring" }),
     );
   } catch (e) {
-    // C-g: the search is cancelled from where it began, as isearch-abort after it.
+    quit = e;
+  } finally {
     e8.removeHook("minibuffer-setup-hook", setup);
-    set("isearch-suspended", false);
-    e8.gotoChar(saved.opoint);
-    throw e;
   }
+  // The search starts again, as with-isearch-suspended restarts it whatever happened.
   set("isearch-suspended", false);
   const forward = editForward ?? saved.forward;
-  isearchMode(forward, saved.regexp, saved.regexpFunction);
+  isearchMode(quit === undefined ? forward : saved.forward, saved.regexp, saved.regexpFunction);
+  // Its kind as it was, whatever search-default-mode says.
+  set("isearch-regexp", saved.regexp);
+  set("isearch-regexp-function", saved.regexpFunction);
   set("isearch-opoint", saved.opoint);
+  if (quit !== undefined) {
+    // C-g: the search as it was, then cancelled or rubbed out, as isearch-abort.
+    cmds = saved.cmds;
+    setState(cmds[0]!);
+    if (flag("isearch-success") && !truthy(get("isearch-error"))) {
+      set("isearch-success", false);
+      if (truthy(get("isearch-push-state-function")) && cmds.length > 0) setState(cmds[cmds.length - 1]!);
+      else e8.gotoChar(saved.opoint);
+      isearchDone(true);
+      throw quit;
+    }
+    while ((!flag("isearch-success") || truthy(get("isearch-error"))) && cmds.length > 1) popState();
+    isearchUpdate();
+    return;
+  }
   cmds = saved.cmds;
-  set("isearch-string", edited);
-  set("isearch-message", charDescription(edited));
+  set("isearch-string", edited!);
+  set("isearch-message", charDescription(edited!));
+  set("isearch-forward", forward);
   set("isearch-case-fold-search", saved.caseFold);
   callMessage(false, true);
   // Back to the start (end) of the old match, so the search can find it again.
-  if (typeof saved.otherEnd === "number" && oldPoint === e8.point() && forward === saved.forward) e8.gotoChar(saved.otherEnd);
+  if (typeof saved.otherEnd === "number" && oldPoint === e8.point()) e8.gotoChar(saved.otherEnd);
   if (edited === "") {
     const previous = ring(saved.regexp)[0] ?? "";
     set("isearch-string", previous);
@@ -1146,8 +1177,28 @@ export function editString(): void {
     ringAdjust1(false);
   }
   isearchSearch();
-  pushState();
+  // A state of its own only if the edit changed something.
+  if (cmds.length === 0 || !sameState(cmds[0]!, getState())) pushState();
   isearchUpdate();
+}
+
+/** Whether two states are the same search at the same place, as Emacs compares them with equal. */
+function sameState(a: State, b: State): boolean {
+  return (
+    a.string === b.string &&
+    a.message === b.message &&
+    a.point === b.point &&
+    a.success === b.success &&
+    a.forward === b.forward &&
+    a.otherEnd === b.otherEnd &&
+    a.error === b.error &&
+    a.wrapped === b.wrapped &&
+    a.barrier === b.barrier &&
+    a.caseFold === b.caseFold &&
+    a.regexpFunction === b.regexpFunction &&
+    a.match?.start === b.match?.start &&
+    a.match?.end === b.match?.end
+  );
 }
 
 const editStringCommand = e8.defineCommand({
@@ -1200,8 +1251,7 @@ const forwardSymbolAtPoint = e8.defineCommand({
     }
     const [start, end] = bounds;
     if (start < e8.point()) e8.gotoChar(start);
-    set("isearch-yank-flag", true);
-    processSearchString(e8.bufferSubstringNoProperties(start, end), charDescription(e8.bufferSubstringNoProperties(start, end)));
+    yankString(e8.bufferSubstringNoProperties(start, end));
     // With a count, on to the COUNTth, as isearch-repeat-forward with it.
     if (count !== undefined) repeatWithCount("forward", count);
   },

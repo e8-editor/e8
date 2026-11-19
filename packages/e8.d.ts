@@ -3950,16 +3950,22 @@ declare global {
       "isearch-printing-char": [];
       /**
        * Find the next match backward of the string being searched for.
+       * With a prefix argument, the COUNTth, or forward for a negative one.
+       *
+       * @param arg raw prefix argument
        *
        * Defined in packages/isearch.ts.
        */
-      "isearch-repeat-backward": [];
+      "isearch-repeat-backward": [arg?: PrefixArg | boolean];
       /**
        * Find the next match forward of the string being searched for.
+       * With a prefix argument, the COUNTth, or back for a negative one.
+       *
+       * @param arg raw prefix argument
        *
        * Defined in packages/isearch.ts.
        */
-      "isearch-repeat-forward": [];
+      "isearch-repeat-forward": [arg?: PrefixArg | boolean];
       /**
        * Resume isearching backward from the minibuffer that edits the search string.
        *

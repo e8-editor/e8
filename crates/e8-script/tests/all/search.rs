@@ -425,3 +425,46 @@ fn prompts_name_the_kind_of_search_and_count_matches() {
     assert_eq!(ed.echo(), Some("2/3 I-search backward: foo"));
     ed.press("RET").unwrap();
 }
+
+/// What with-isearch-suspended does around M-e: C-g while the search
+/// fails takes off what fails and searches on; RET with the string
+/// unchanged pushes no state, so DEL takes off a character; the prompt has
+/// no count; and C-r there goes back to the old match's end first.
+#[test]
+fn m_e_resumes_as_emacs_does() {
+    let d = crate::driven::Driven::new("e8.setDefault('isearch-lazy-count', true);");
+    d.press("C-x b");
+    d.type_text("s\n");
+    d.type_text("abc abd abx");
+    d.press("M-< C-s a b q M-e C-g");
+    assert_eq!(d.prompt(), None);
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("1/3 I-search: ab"));
+    d.press("RET M-< C-s a b d M-e");
+    assert_eq!(d.prompt().as_deref(), Some("I-search: "));
+    // Restarting moves the barrier, so the state is new, as in Emacs, and DEL takes it off first.
+    d.press("RET DEL");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("1/1 I-search: abd"));
+    d.press("DEL");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("1/3 I-search: ab"));
+    d.press("RET M-< C-s a b d M-e C-r");
+    // No match current, out of the one there is.
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("0/1 Failing I-search backward: abd"));
+    d.press("C-g C-g");
+}
+
+/// Lax spaces leave \s's syntax class alone; a count with
+/// isearch-repeat-on-direction-change goes as many matches as it says.
+#[test]
+fn lax_spaces_and_counts_as_emacs_has_them() {
+    let (mut ed, s) = setup("a b axb");
+    s.eval_expression(&mut ed, "e8.setDefault('isearch-regexp-lax-whitespace', true)").unwrap();
+    ed.press("C-M-s a \\ s SPC b RET").unwrap();
+    assert_eq!(point(&ed), 3);
+    let (mut ed, s) = setup("foo foo foo foo");
+    s.eval_expression(&mut ed, "e8.setDefault('isearch-repeat-on-direction-change', true)").unwrap();
+    ed.press("C-s f o o C-s C-s C-s").unwrap();
+    assert_eq!(point(&ed), 15);
+    // One back, turning round at the match's other end first: the third foo.
+    s.eval_expression(&mut ed, "(e8.callWithPrefix(1, 'isearch-repeat-backward'), 0)").unwrap();
+    assert_eq!(point(&ed), 8);
+}

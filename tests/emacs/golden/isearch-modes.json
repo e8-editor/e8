@@ -267,6 +267,44 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "isearch-symbol-at-point-folds-case",
+      "input": {
+        "text": "Foo bar foo Foo",
+        "point": 0,
+        "keys": "M-s . C-s RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "Foo bar foo Foo",
+      "visible": "Foo bar foo Foo",
+      "point": 11,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-again-then-ring",
+      "input": {
+        "text": "xa xb xc xa",
+        "point": 0,
+        "keys": "C-s x a RET C-s x b RET M-< C-s C-s C-s RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "xa xb xc xa",
+      "visible": "xa xb xc xa",
+      "point": 5,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }
