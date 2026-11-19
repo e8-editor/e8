@@ -5538,6 +5538,16 @@ declare global {
        */
       "org-end-of-line": [];
       /**
+       * Fill element at point, when applicable.
+       *
+       * This function only applies to comment blocks, comments, example blocks and paragraphs. Also, as a special case, re-align table when point is at one. With a prefix argument, justify as well. With the region active, fill each of the elements in it.
+       *
+       * @param justify raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-fill-paragraph": [justify?: PrefixArg | boolean];
+      /**
        * Align the tags of the heading point is on, if point is before them, as typing on a heading does.
        *
        * Defined in packages/org.ts.

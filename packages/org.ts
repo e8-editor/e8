@@ -97,7 +97,7 @@ import {
   orgRegionActive,
   placeMarkers,
 } from "org-macs";
-import { fillContextPrefix } from "fill";
+import { fillContextPrefix, fillRegionAsParagraph } from "fill";
 import { defineGuide } from "help-guide";
 import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand } from "org-refile";
@@ -1782,6 +1782,172 @@ e8.defineCommand({
   },
 });
 
+/**
+ * Fills from `beg` to `end` as one paragraph, its lines taking the prefix
+ * org-adaptive-fill-function gives at its second line (or its first), as
+ * fill-region-as-paragraph does with adaptive-fill-function set to it.
+ */
+function fillAsParagraph(beg: number, end: number, justify: string | undefined): void {
+  const prefix = e8.saveExcursion(() => {
+    e8.gotoChar(beg);
+    if (e8.lineEnd(lineAt()) < end) e8.gotoChar(e8.lineStart(lineAt() + 1));
+    return adaptiveFillPrefix();
+  });
+  // An empty prefix is kept as it is rather than worked out again, as for Auto Fill.
+  e8.letBind({ "fill-prefix": prefix ?? null, "adaptive-fill-mode": prefix === undefined || prefix !== "" ? true : null }, () => fillRegionAsParagraph(beg, end, justify));
+}
+
+/**
+ * Fills the element at point where Org fills, as org-fill-element: a
+ * paragraph, cut at its line breaks (\\\\ at a line's end); a comment's
+ * lines between blank comment lines; a comment block's paragraph; and a
+ * table, which is aligned instead. A plain list, an item or a footnote
+ * definition fill their first paragraph. Anything else is left alone.
+ */
+function orgFillElement(justify: string | undefined): void {
+  const element = e8.saveExcursion(() => {
+    e8.gotoChar(e8.lineEnd(lineAt()));
+    return elementAt(e8.point());
+  });
+  if (element === undefined) return;
+  const lineEndHere = e8.lineEnd(lineAt());
+  switch (element.type) {
+    // In the block's own mode, as org-babel-do-in-edit-buffer fills it.
+    case "src-block":
+      if (e8.fboundp("org-src--fill-paragraph")) e8.funcall("org-src--fill-paragraph", justify ?? null);
+      return;
+    case "table":
+    case "table-row":
+      e8.saveExcursion(() => {
+        e8.gotoChar(element.begin);
+        e8.call("org-table-align");
+      });
+      return;
+    case "paragraph": {
+      const beg = Math.max(e8.pointMin(), element.contentsBegin ?? element.begin);
+      let end = Math.min(e8.pointMax(), element.contentsEnd ?? endBeforeBlank(element));
+      // At an affiliated keyword, nothing.
+      if (lineEndHere < beg) return;
+      e8.saveExcursion(() => {
+        const cuts = [beg];
+        const text = e8.bufferText(beg, end);
+        for (const m of allMatches(/\\\\[ \t]*\n/g, text)) cuts.push(beg + [...text.slice(0, m.index + m[0].length)].length);
+        for (const c of cuts.filter((c) => c !== end).reverse()) {
+          fillAsParagraph(c, end, justify);
+          end = c;
+        }
+      });
+      return;
+    }
+    case "comment-block": {
+      const beg = e8.saveExcursion(() => {
+        e8.gotoChar(element.begin);
+        e8.reSearchForward("^[ \t]*#\\+begin_comment", { noerror: true, caseFold: true });
+        return e8.lineStart(lineAt() + 1);
+      });
+      const end = e8.saveExcursion(() => {
+        e8.gotoChar(element.end);
+        e8.reSearchBackward("^[ \t]*#\\+end_comment", { noerror: true, caseFold: true });
+        return e8.lineStart(lineAt());
+      });
+      if (e8.point() < beg || e8.point() > end) return;
+      const from = e8.saveExcursion(() => {
+        e8.gotoChar(e8.lineEnd(lineAt()));
+        if (e8.reSearchBackward("^[ \t]*$", { bound: beg, noerror: true }) === undefined) e8.gotoChar(beg);
+        return e8.lineStart(lineAt());
+      });
+      const to = e8.saveExcursion(() => {
+        e8.gotoChar(e8.lineStart(lineAt()));
+        if (e8.reSearchForward("^[ \t]*$", { bound: end, noerror: true }) === undefined) e8.gotoChar(end);
+        return e8.lineStart(lineAt());
+      });
+      e8.saveExcursion(() => fillAsParagraph(from, to, justify));
+      return;
+    }
+    case "comment": {
+      const begin = element.begin;
+      const elementEnd = element.end;
+      if (e8.point() < begin || e8.point() > elementEnd) return;
+      const from = e8.saveExcursion(() => {
+        e8.gotoChar(e8.lineEnd(lineAt()));
+        return e8.reSearchBackward("^[ \t]*#[ \t]*$", { bound: begin, noerror: true }) !== undefined ? e8.lineStart(lineAt() + 1) : begin;
+      });
+      const to = e8.saveExcursion(() => {
+        e8.gotoChar(e8.lineEnd(lineAt()));
+        if (e8.reSearchForward("^[ \t]*#[ \t]*$", { bound: elementEnd, noerror: true }) !== undefined) return e8.lineStart(lineAt()) - 1;
+        e8.gotoChar(elementEnd);
+        e8.skipCharsBackward(" \r\t\n");
+        return e8.lineEnd(lineAt());
+      });
+      // Not at a blank comment line.
+      if (to <= from) return;
+      const prefix = e8.saveExcursion(() => {
+        e8.gotoChar(e8.lineStart(lineAt()));
+        e8.lookingAt("[ \t]*#");
+        const comment = e8.bufferSubstringNoProperties(e8.matchBeginning(0)!, e8.matchEnd(0)!);
+        e8.gotoChar(e8.matchEnd(0)!);
+        const re = e8.variable("adaptive-fill-regexp");
+        return typeof re === "string" && e8.lookingAt(re) ? comment + e8.bufferSubstringNoProperties(e8.matchBeginning(0)!, e8.matchEnd(0)!) : `${comment} `;
+      });
+      e8.saveExcursion(() => e8.letBind({ "fill-prefix": prefix }, () => fillRegionAsParagraph(from, to, justify)));
+      return;
+    }
+    default:
+      return;
+  }
+}
+
+/**
+ * Fills the element at point, or each element in the active region, as
+ * org-fill-paragraph: paragraphs, comments and comment blocks are filled,
+ * a table is aligned, and headings, keywords, drawers and blocks are left
+ * alone. With a prefix argument, justifies too. A buffer unmodified
+ * before stays so if nothing changed.
+ */
+function orgFillParagraph(justify: string | undefined, region: boolean): void {
+  const before = e8.bufferModifiedP() ? undefined : e8.bufferText(e8.pointMin(), e8.pointMax());
+  const mark = e8.mark();
+  // Transient Mark mode is always on in E8, so an active region is enough.
+  if (region && e8.regionActive() && mark !== undefined && mark !== e8.point()) {
+    const start = Math.min(mark, e8.point());
+    const origin = e8.makeMarker(e8.point());
+    try {
+      e8.gotoChar(Math.max(mark, e8.point()));
+      e8.skipCharsBackward(" \t\n");
+      while (e8.point() > start) {
+        orgFillElement(justify);
+        // Back to the element before, as org-backward-paragraph goes.
+        const el = elementAt(e8.lineStart(lineAt()));
+        e8.gotoChar(Math.max(start, el?.type === "paragraph" ? (el.contentsBegin ?? el.begin) : e8.lineStart(lineAt())));
+        e8.gotoChar(e8.lineStart(lineAt()));
+        e8.skipCharsBackward(" \t\n");
+      }
+    } finally {
+      e8.gotoChar(e8.markerPosition(origin)!);
+      e8.deleteMarker(origin);
+    }
+  } else {
+    e8.saveExcursion(() => {
+      if (e8.lookingAt("[ \t]*$")) e8.skipCharsForward(" \t\n");
+      orgFillElement(justify);
+    });
+  }
+  if (before !== undefined && before === e8.bufferText(e8.pointMin(), e8.pointMax())) e8.setBufferModified(false);
+}
+
+e8.defineCommand({
+  name: "org-fill-paragraph",
+  doc:
+    "Fill element at point, when applicable.\n\nThis function only applies to comment blocks, comments, example blocks and paragraphs. " +
+    "Also, as a special case, re-align table when point is at one. With a prefix argument, justify as well. " +
+    "With the region active, fill each of the elements in it.",
+  params: [{ name: "justify", kind: "prefix" }],
+  run: (justify: e8.PrefixArg) => {
+    if (truthy(e8.variable("buffer-read-only"))) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    // As a command it fills the region, as Emacs's interactive spec passes REGION t.
+    orgFillParagraph(justify === null ? undefined : "full", true);
+  },
+});
 const GREATER_ELEMENTS = ["center-block", "drawer", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
 
 /**
@@ -6193,4 +6359,5 @@ e8.bindKey("|", "org-force-self-insert", "org-mode-map");
 e8.remapCommand("org-mode-map", "self-insert-command", "org-self-insert-command");
 e8.remapCommand("org-mode-map", "delete-backward-char", "org-delete-backward-char");
 e8.remapCommand("org-mode-map", "delete-char", "org-delete-char");
+e8.remapCommand("org-mode-map", "fill-paragraph", "org-fill-paragraph" as e8.CommandName);
 e8.remapCommand("org-mode-map", "move-end-of-line", "org-end-of-line");

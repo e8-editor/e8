@@ -367,3 +367,13 @@ e8.defun("org-src-font-lock-fontify-block", (lang: e8.Value, start: e8.Value, en
   for (const [a, b, face] of runs) e8.putTextProperty(from + a, from + b, "face", face);
   return true;
 });
+
+/**
+ * Fills the source block at point in its language's mode, in its edit
+ * buffer, as org-fill-element does for a src-block: the paragraph there,
+ * or the region if it is active there.
+ */
+e8.defun("org-src--fill-paragraph", (justify?: e8.Value) => {
+  doInEditBuffer(() => e8.callWithPrefix(justify === null || justify === undefined || justify === false ? null : 4, "fill-paragraph"));
+  return true;
+});

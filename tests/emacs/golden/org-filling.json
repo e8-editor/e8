@@ -1,0 +1,342 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "org-fill-paragraph",
+      "input": {
+        "text": "* Heading\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "* Heading\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-on-heading-does-nothing",
+      "input": {
+        "text": "* Heading Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nbody\n",
+        "point": 2,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nbody\n",
+      "visible": "* Heading Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nbody\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "org-fill-item",
+      "input": {
+        "text": "- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- second\n",
+        "point": 5,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n  eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- second\n",
+      "visible": "- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n  eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- second\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-nested-item",
+      "input": {
+        "text": "- top\n  1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- top\n  1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n     eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "- top\n  1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n     eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-description-item",
+      "input": {
+        "text": "- term :: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 4,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- term :: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed\n  do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "- term :: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed\n  do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-indented-paragraph",
+      "input": {
+        "text": "   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 5,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n   eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n   eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-comment",
+      "input": {
+        "text": "# Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n# more words here\n#\n# after the blank comment line\n",
+        "point": 5,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n# eiusmod tempor incididunt ut labore et dolore magna aliqua.  more\n# words here\n#\n# after the blank comment line\n",
+      "visible": "# Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n# eiusmod tempor incididunt ut labore et dolore magna aliqua.  more\n# words here\n#\n# after the blank comment line\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-comment-block",
+      "input": {
+        "text": "#+begin_comment\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nsecond paragraph stays\n#+end_comment\n",
+        "point": 20,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_comment\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nsecond paragraph stays\n#+end_comment\n",
+      "visible": "#+begin_comment\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nsecond paragraph stays\n#+end_comment\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-keeps-line-breaks",
+      "input": {
+        "text": "first part of the line that goes on \\\\\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 2,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "first part of the line that goes on \\\\\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "first part of the line that goes on \\\\\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-table-aligns",
+      "input": {
+        "text": "| a | bb |\n|ccc|d|\n",
+        "point": 2,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a   | bb |\n| ccc | d  |\n",
+      "visible": "| a   | bb |\n| ccc | d  |\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-src-block-left-alone",
+      "input": {
+        "text": "#+begin_src text\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n#+end_src\n",
+        "point": 2,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src text\n  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n  eiusmod tempor incididunt ut labore et dolore magna aliqua.\n#+end_src\n",
+      "visible": "#+begin_src text\n  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\n  eiusmod tempor incididunt ut labore et dolore magna aliqua.\n#+end_src\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-keyword-left-alone",
+      "input": {
+        "text": "#+TITLE: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 2,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TITLE: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "#+TITLE: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "org-fill-at-blank-line-fills-next",
+      "input": {
+        "text": "\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 0,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-justify",
+      "input": {
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 2,
+        "keys": "C-u M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Lorem  ipsum  dolor sit  amet,  consectetur  adipiscing elit,  sed  do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "Lorem  ipsum  dolor sit  amet,  consectetur  adipiscing elit,  sed  do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-region-of-two-paragraphs",
+      "input": {
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+        "point": 0,
+        "keys": "C-SPC M-> M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "visible": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do\neiusmod tempor incididunt ut labore et dolore magna aliqua.\n",
+      "point": 249,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-fill-drawer-left-alone",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\n",
+        "point": 6,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n:A: 1\n:END:\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}
