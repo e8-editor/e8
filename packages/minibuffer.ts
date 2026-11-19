@@ -804,8 +804,7 @@ interface CapfData {
  * Emacs's table gives them as its metadata, ":display-sort-function" and
  * ":cycle-sort-function", each with its function.
  */
-function completionAtPointData(): CapfData | undefined {
-  const found = e8.runHookWithArgsUntilSuccess("completion-at-point-functions");
+function completionAtPointData(found = e8.runHookWithArgsUntilSuccess("completion-at-point-functions")): CapfData | undefined {
   if (!Array.isArray(found) || found.length < 3) return undefined;
   const [start, end, collection, ...plist] = found as [number, number, e8.Value, ...e8.Value[]];
   const names = typeof collection === "function" ? (collection as unknown as () => string[]) : Array.isArray(collection) ? collection.map(String) : [];
@@ -836,7 +835,13 @@ e8.defineCommand({
       e8.call("completion--cycle");
       return;
     }
-    const data = completionAtPointData();
+    const found = e8.runHookWithArgsUntilSuccess("completion-at-point-functions");
+    // A function that completes itself, as Emacs's capfs may give.
+    if (typeof found === "function") {
+      e8.funcall(found);
+      return;
+    }
+    const data = completionAtPointData(found);
     if (!data) return;
     completionInRegion(data.start, data.end, data.names, sameStart, data.props);
   },

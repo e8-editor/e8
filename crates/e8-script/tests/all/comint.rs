@@ -168,6 +168,9 @@ fn carriage_returns_and_backspaces_as_a_terminal_shows_them() {
     assert!(text(&ed).contains("\nX\naZ\n$ "), "{:?}", text(&ed));
 }
 
+/// Colours as Emacs's shell-mode puts them: font-lock-face text
+/// properties, the eight colours as attribute lists of the colours of
+/// Emacs's faces, and the rest as #RRGGBB.
 #[test]
 fn ansi_colours_become_faces() {
     let (mut ed, s) = setup();
@@ -178,15 +181,130 @@ fn ansi_colours_become_faces() {
     let red = t.rfind("red plain").unwrap();
     let x = t.rfind("x\n$ ").unwrap();
     let got = s
-        .eval_expression(&mut ed, &format!("JSON.stringify([e8.getTextProperty({red}, 'face'), e8.getTextProperty({}, 'face') ?? null, e8.getTextProperty({x}, 'face')])", red + 4))
+        .eval_expression(
+            &mut ed,
+            &format!("JSON.stringify([e8.getTextProperty({red}, 'font-lock-face'), e8.getTextProperty({}, 'font-lock-face') ?? null, e8.getTextProperty({x}, 'font-lock-face'), e8.getTextProperty({x}, 'ansi-color-face')])", red + 4),
+        )
         .unwrap();
-    assert_eq!(got, r#""[[\"ansi-color-bold\",\"ansi-color-red\"],null,\"ansi-color-rgb-00ff00\"]""#);
+    assert_eq!(got, r##""[[\"ansi-color-bold\",[\":foreground\",\"red3\"]],null,[\":foreground\",\"#00FF00\"],[\":foreground\",\"#00FF00\"]]""##);
     // A sequence cut between two pieces of output is finished with the second.
     type_line(&mut ed, r"printf '\033[3'; sleep 0.3; printf '2mgreen\033[0m\n'");
     until(&mut ed, |t| t.ends_with("green\n$ "));
     let t = text(&ed);
     let g = t.rfind("green\n").unwrap();
-    assert_eq!(s.eval_expression(&mut ed, &format!("e8.getTextProperty({g}, 'face')")).unwrap(), r#""ansi-color-green""#);
+    assert_eq!(s.eval_expression(&mut ed, &format!("JSON.stringify(e8.getTextProperty({g}, 'font-lock-face'))")).unwrap(), r#""[\":foreground\",\"green3\"]""#);
+    // A coloured prompt keeps its colours, with comint-highlight-prompt after them.
+    type_line(&mut ed, r"PS1=$(printf '\033[32m$\033[0m ')");
+    until(&mut ed, |t| t.ends_with("')\n$ "));
+    let p = text(&ed).len() - 2;
+    assert_eq!(
+        s.eval_expression(&mut ed, &format!("JSON.stringify([e8.getTextProperty({p}, 'font-lock-face'), e8.getTextProperty({}, 'font-lock-face')])", p + 1)).unwrap(),
+        r#""[[[\":foreground\",\"green3\"],\"comint-highlight-prompt\"],[\"comint-highlight-prompt\"]]""#
+    );
+}
+
+/// Output that goes on after a line that seemed a prompt takes
+/// comint-highlight-prompt off it, as comint-last-prompt does; a prompt
+/// answered keeps it.
+#[test]
+fn only_the_last_line_of_output_is_highlighted_as_the_prompt() {
+    let (mut ed, s) = setup();
+    start_shell(&mut ed);
+    type_line(&mut ed, "printf 'part'; sleep 0.3; printf 'ial\\n'");
+    until(&mut ed, |t| t.ends_with("partial\n$ "));
+    let t = text(&ed);
+    let partial = t.rfind("partial").unwrap();
+    let face = |ed: &mut Editor, pos: usize| s.eval_expression(ed, &format!("JSON.stringify(e8.getTextProperty({pos}, 'font-lock-face') ?? null)")).unwrap();
+    assert_eq!(face(&mut ed, partial), "\"null\"");
+    // The first prompt, answered, keeps its highlight.
+    assert_eq!(face(&mut ed, 0), r#""[\"comint-highlight-prompt\"]""#);
+}
+
+/// With comint-use-prompt-regexp, prompts are found by comint-prompt-regexp
+/// rather than by fields: output is not made the output field, C-a skips
+/// what the regexp matches, C-c C-p goes back over prompts, and RET on an
+/// old line sends what follows its prompt.
+#[test]
+fn prompts_found_by_comint_prompt_regexp() {
+    let (mut ed, s) = setup();
+    s.eval_expression(&mut ed, "e8.setDefault('comint-use-prompt-regexp', true)").unwrap();
+    start_shell(&mut ed);
+    type_line(&mut ed, "echo one");
+    until(&mut ed, |t| t.ends_with("one\n$ "));
+    type_line(&mut ed, "echo two");
+    until(&mut ed, |t| t.ends_with("two\n$ "));
+    let t = text(&ed);
+    let one = t.rfind("one\n").unwrap();
+    assert_eq!(s.eval_expression(&mut ed, &format!("String(e8.charProperty({one}, 'field') ?? null)")).unwrap(), r#""null""#);
+    // C-c C-a after the prompt, as the regexp matches it; C-a, with no field to stop at, to the line's start.
+    ed.type_text("echo three");
+    ed.press("C-a").unwrap();
+    let b = ed.window_buffer();
+    assert_eq!(b.slice(b.point()..b.len()), "$ echo three");
+    ed.press("C-c C-a").unwrap();
+    let b = ed.window_buffer();
+    assert_eq!(b.slice(b.point()..b.len()), "echo three");
+    ed.press("C-e").unwrap();
+    // C-c C-p twice: after the prompt of "echo two", then of "echo one".
+    ed.press("C-c C-p C-c C-p").unwrap();
+    let b = ed.window_buffer();
+    assert!(b.slice(b.point()..b.len()).starts_with("echo one\n"), "{:?}", b.slice(b.point()..b.len()));
+    ed.press("C-c C-n").unwrap();
+    let b = ed.window_buffer();
+    assert!(b.slice(b.point()..b.len()).starts_with("echo two\n"), "{:?}", b.slice(b.point()..b.len()));
+    // RET on "echo one" sends the line after its prompt, what was typed staying after it, as in Emacs.
+    ed.press("C-c C-p").unwrap();
+    ed.press("RET").unwrap();
+    until(&mut ed, |t| t.ends_with("two\n$ echo one\none\n$ echo three"));
+}
+
+/// TAB in a shell completes file names after the command, the command from
+/// exec-path, and environment variables, as shell-dynamic-complete-functions
+/// do, adding a space after a file completed in full.
+#[test]
+fn tab_completes_files_commands_and_variables_at_the_prompt() {
+    let dir = std::env::temp_dir().join(format!("e8-comint-complete-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(dir.join("subdir")).unwrap();
+    std::fs::write(dir.join("unique-file.txt"), "").unwrap();
+    std::fs::write(dir.join("with space"), "").unwrap();
+    let (mut ed, s) = setup();
+    start_shell(&mut ed);
+    type_line(&mut ed, &format!("cd {}", dir.display()));
+    until(&mut ed, |t| t.ends_with("$ ") && t.matches("$ ").count() >= 2);
+    ed.type_text("cat uni");
+    ed.press("TAB").unwrap();
+    let b = ed.window_buffer();
+    assert!(b.slice(0..b.len()).ends_with("$ cat unique-file.txt "), "{:?}", b.slice(0..b.len()));
+    ed.press("C-c C-u").unwrap();
+    // A directory gets its slash and no space; a name with a space is quoted.
+    ed.type_text("ls sub");
+    ed.press("TAB").unwrap();
+    ed.type_text(" wit");
+    ed.press("TAB").unwrap();
+    let b = ed.window_buffer();
+    assert!(b.slice(0..b.len()).ends_with("$ ls subdir/ with\\ space "), "{:?}", b.slice(0..b.len()));
+    ed.press("C-c C-u").unwrap();
+    // The command, from exec-path.
+    s.eval_expression(&mut ed, &format!("e8.setVariable('exec-path', ['{}'])", dir.join("subdir").display())).unwrap();
+    std::fs::write(dir.join("subdir/e8-test-command"), "#!/bin/sh\n").unwrap();
+    std::fs::write(dir.join("subdir/e8-test-not-run"), "").unwrap();
+    {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(dir.join("subdir/e8-test-command"), std::fs::Permissions::from_mode(0o755)).unwrap();
+    }
+    ed.type_text("e8-test-");
+    ed.press("TAB").unwrap();
+    let b = ed.window_buffer();
+    assert!(b.slice(0..b.len()).ends_with("$ e8-test-command "), "{:?}", b.slice(0..b.len()));
+    ed.press("C-c C-u").unwrap();
+    // An environment variable, with its closing brace.
+    s.eval_expression(&mut ed, "e8.setVariable('process-environment', ['E8_COMPLETION_TEST_VAR=x', ...(e8.variable('process-environment') as string[])])").unwrap();
+    ed.type_text("echo ${E8_COMPLETION_TE");
+    ed.press("TAB").unwrap();
+    let b = ed.window_buffer();
+    assert!(b.slice(0..b.len()).ends_with("$ echo ${E8_COMPLETION_TEST_VAR}"), "{:?}", b.slice(0..b.len()));
+    let _ = std::fs::remove_dir_all(&dir);
 }
 
 /// What the echo area shows, as its rows' text.

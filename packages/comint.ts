@@ -1,6 +1,7 @@
-import { applyOnRegion } from "ansi-color";
+import { processOutput } from "ansi-color";
 import { PerBuffer, readPasswd, regexpQuote } from "subr";
 import { isearchSearchFunDefault, isearchMessage, isearchMessagePrefix } from "isearch";
+import { completionInRegion } from "minibuffer";
 
 // Command interpreters in a buffer, after Emacs's comint.el: a program on
 // a pseudo-terminal, its output marked as the `output` field and its prompt
@@ -26,6 +27,25 @@ for (const [name, doc, value, local] of [
   ["comint-input-ring-file-prefix", "A regexp for what to skip at the start of each entry of the history file, such as zsh's time stamps.", null, true],
   ["comint-move-point-for-matching-input", "Where C-c M-r and C-c M-s leave point: after-input where it was, end-of-line at the end.", "after-input", false],
   ["comint-terminfo-terminal", "The terminal comint programs are told they run on, as TERM.", "dumb", false],
+  [
+    "comint-use-prompt-regexp",
+    "Whether comint finds prompts and inputs by comint-prompt-regexp rather than by the fields it puts on output, for C-a, C-c C-p, C-c C-n, RET on old input and the like.",
+    false,
+    false,
+  ],
+  ["comint-prompt-regexp", "An Emacs regexp matching the prompt, used when comint-use-prompt-regexp is true; it should start with ^.", "^", true],
+  ["comint-last-output-start", "Where the program's last output starts, a marker.", null, true],
+  [
+    "comint-dynamic-complete-functions",
+    "The functions comint-completion-at-point asks in turn what to complete at point, as completion-at-point-functions.",
+    ["comint-filename-completion"],
+    true,
+  ],
+  ["comint-completion-addsuffix", "What completing a file name adds after it: t a space, a string that string, nil nothing; a cons (DIRSUFFIX . FILESUFFIX) adds FILESUFFIX.", true, false],
+  ["comint-completion-fignore", "Suffixes of file names that completion leaves out.", [], false],
+  ["comint-file-name-prefix", "What goes before an absolute file name from the program's input, as for a remote shell.", "", false],
+  ["comint-file-name-chars", "The characters a file name at point is made of, as inside skip-chars-forward's [...], besides all non-ASCII ones.", "[]~/A-Za-z0-9+@:_.$#%,={}-", false],
+  ["comint-file-name-quote-list", "The characters quoted with a backslash in a file name.", [], false],
 ] as const) {
   e8.defineVariable({ name, doc, value: value as e8.Value, local });
 }
@@ -42,6 +62,8 @@ interface State {
   lastInputStart: e8.Marker;
   lastInputEnd: e8.Marker;
   lastOutputStart: e8.Marker;
+  /** The last prompt's start and end, its comint-highlight-prompt taken off if output goes on after it, as comint-last-prompt. */
+  lastPrompt: [e8.Marker, e8.Marker] | undefined;
 }
 
 const states = new PerBuffer<State>();
@@ -57,8 +79,10 @@ function state(buffer = e8.bufferName()): State {
       lastInputStart: e8.makeMarker(e8.pointMax()),
       lastInputEnd: e8.makeMarker(e8.pointMax()),
       lastOutputStart: e8.makeMarker(e8.pointMax()),
+      lastPrompt: undefined,
     };
     states.set(buffer, s);
+    if (buffer === e8.bufferName()) e8.setVariable("comint-last-output-start", s.lastOutputStart);
   }
   return s;
 }
@@ -89,6 +113,44 @@ function markAsOutput(beg: number, end: number): void {
       e8.putTextProperty(beg, end, name, value as e8.Value);
     }
   });
+}
+
+/** Whether comint finds prompts by comint-prompt-regexp, as comint-use-prompt-regexp. */
+const usePromptRegexp = () => !nil(e8.variable("comint-use-prompt-regexp"));
+
+/**
+ * Adds a face after those of a property from start to end, as
+ * font-lock-append-text-property: the values become lists, an attribute
+ * list counting as one face.
+ */
+export function fontLockAppendTextProperty(start: number, end: number, prop: string, value: e8.Value): void {
+  const isPlist = (v: e8.Value | undefined) => Array.isArray(v) && typeof v[0] === "string" && v[0].startsWith(":");
+  const add = Array.isArray(value) && !isPlist(value) ? value : [value];
+  let p = start;
+  while (p < end) {
+    const next = Math.min(e8.nextSinglePropertyChange(p, prop, end) ?? end, end);
+    const prev = e8.getTextProperty(p, prop);
+    const list = nil(prev) ? [] : Array.isArray(prev) && !isPlist(prev) ? prev : [prev!];
+    e8.putTextProperty(p, next, prop, [...list, ...add]);
+    p = next;
+  }
+}
+
+/** Takes a face out of a property from start to end, as font-lock--remove-face-from-text-property. */
+export function removeFaceFromTextProperty(start: number, end: number, prop: string, value: string): void {
+  let p = start;
+  while (p < end) {
+    const next = Math.min(e8.nextSinglePropertyChange(p, prop, end) ?? end, end);
+    const prev = e8.getTextProperty(p, prop);
+    if (Array.isArray(prev) && !(typeof prev[0] === "string" && prev[0].startsWith(":"))) {
+      if (prev.includes(value)) {
+        const rest = prev.filter((f) => f !== value);
+        if (rest.length === 0) e8.removeTextProperty(p, next, prop);
+        else e8.putTextProperty(p, next, prop, rest.length === 1 ? rest[0]! : rest);
+      }
+    } else if (prev === value) e8.removeTextProperty(p, next, prop);
+    p = next;
+  }
 }
 
 /**
@@ -166,26 +228,35 @@ export function outputFilter(process: e8.ProcessLike, text: string): void {
         e8.setMarker(e8.processMark(process)!, e8.point());
         carriageMotion(e8.markerPosition(s.lastOutputStart)!, e8.point());
         e8.setMarker(e8.processMark(process)!, e8.point());
-        // ANSI colours, as ansi-color-process-output does first among comint-output-filter-functions.
-        const ansi = e8.variable("ansi-color-for-comint-mode");
-        if (ansi === true || ansi === "filter") {
-          applyOnRegion(e8.markerPosition(s.lastOutputStart)!, processMark(process), ansi === "filter");
-          e8.gotoChar(processMark(process));
-        }
-        const end = e8.point();
-        e8.gotoChar(pointAtMark ? end : e8.markerPosition(saved)!);
+        // The hooks, ansi-color-process-output first, run with point where the user had it.
+        e8.gotoChar(pointAtMark ? processMark(process) : e8.markerPosition(saved)!);
         e8.runHooks("comint-output-filter-functions", string!);
-        markAsOutput(e8.markerPosition(s.lastOutputStart)!, processMark(process));
+        e8.setMarker(saved, e8.point());
+        e8.gotoChar(processMark(process));
+        if (!usePromptRegexp()) markAsOutput(e8.markerPosition(s.lastOutputStart)!, processMark(process));
         // The prompt: the output on the last line, with no newline after it.
         const promptStart = e8.lineBeginningPosition(processMark(process));
+        const promptEnd = processMark(process);
         e8.withSilentModifications(() => {
-          if (!nil(e8.variable("comint-prompt-read-only")) && promptStart < processMark(process)) {
-            e8.putTextProperty(promptStart, processMark(process), "read-only", true);
-            e8.putTextProperty(promptStart, processMark(process), "front-sticky", ["read-only"]);
+          if (!nil(e8.variable("comint-prompt-read-only"))) {
+            if (promptStart > e8.pointMin() && nil(e8.getTextProperty(promptStart - 1, "read-only"))) {
+              e8.putTextProperty(promptStart - 1, promptStart, "read-only", Symbol.for("fence"));
+            }
+            if (promptStart < promptEnd) {
+              e8.putTextProperty(promptStart, promptEnd, "read-only", true);
+              e8.putTextProperty(promptStart, promptEnd, "front-sticky", ["read-only"]);
+            }
           }
-          if (promptStart < processMark(process)) e8.addFaceTextProperty(promptStart, processMark(process), "comint-highlight-prompt");
+          // Output that went on after the last prompt makes it no prompt.
+          if (s.lastPrompt !== undefined) {
+            removeFaceFromTextProperty(e8.markerPosition(s.lastPrompt[0])!, e8.markerPosition(s.lastPrompt[1])!, "font-lock-face", "comint-highlight-prompt");
+          }
+          s.lastPrompt = [e8.makeMarker(promptStart), e8.makeMarker(promptEnd)];
+          fontLockAppendTextProperty(promptStart, promptEnd, "font-lock-face", "comint-highlight-prompt");
+          if (promptStart < promptEnd) e8.putTextProperty(promptStart, promptEnd, "rear-nonsticky", PROMPT_REAR_NONSTICKY);
         });
         advanceWindowPoints(buffer, mark, processMark(process));
+        e8.gotoChar(e8.markerPosition(saved)!);
         e8.deleteMarker(saved);
       }),
     );
@@ -202,13 +273,50 @@ function addToHistory(input: string): void {
   if (s.ring.length > size) s.ring.length = size;
 }
 
-/** The input at point when it is before the process mark, as comint-get-old-input-default. */
+/**
+ * The input at point when it is before the process mark, as
+ * comint-get-old-input-default: the input field point is on, or the line
+ * after its prompt on output; with comint-use-prompt-regexp, the line
+ * after what comint-prompt-regexp matches.
+ */
 function oldInput(): string {
-  const bof = e8.fieldBeginning();
-  if (nil(e8.charProperty(bof, "field"))) return e8.fieldStringNoProperties(bof);
-  const field = e8.charProperty(bof, "field");
-  e8.call("comint-bol");
-  return e8.bufferSubstringNoProperties(e8.point(), field === Symbol.for("output") ? e8.lineEndPosition() : e8.fieldEnd());
+  let field: e8.Value | undefined;
+  if (!usePromptRegexp()) {
+    const bof = e8.fieldBeginning();
+    field = e8.charProperty(bof, "field");
+    if (nil(field)) return e8.fieldStringNoProperties(bof);
+  }
+  e8.gotoChar(lineBeginningPosition());
+  return e8.bufferSubstringNoProperties(e8.point(), usePromptRegexp() || field === Symbol.for("output") ? e8.lineEndPosition() : e8.fieldEnd());
+}
+
+/** The field at a position, the one after a boundary, as field-at-pos. */
+function fieldAtPos(pos: number): e8.Value | undefined {
+  const raw = e8.charProperty(e8.fieldBeginning(pos), "field");
+  return raw === Symbol.for("boundary") ? e8.charProperty(e8.fieldEnd(pos) - 1, "field") : raw;
+}
+
+/** Goes past what comint-prompt-regexp matches at point, unless that goes past the line's end, as comint-skip-prompt. */
+function skipPrompt(): void {
+  const regexp = String(e8.variable("comint-prompt-regexp") ?? "^");
+  if (e8.lookingAt(regexp) && e8.matchEnd(0)! <= e8.lineEndPosition()) e8.gotoChar(e8.matchEnd(0)!);
+}
+
+/**
+ * Where the line starts after its prompt, as comint-line-beginning-position:
+ * after what comint-prompt-regexp matches with comint-use-prompt-regexp,
+ * else after the output field before the input.
+ */
+export function lineBeginningPosition(): number {
+  if (usePromptRegexp()) {
+    return e8.saveExcursion(() => {
+      e8.gotoChar(e8.lineBeginningPosition());
+      skipPrompt();
+      return e8.point();
+    });
+  }
+  const from = fieldAtPos(e8.point()) === Symbol.for("output") ? e8.lineBeginningPosition() : e8.fieldBeginning();
+  return e8.constrainToField(from, e8.lineEndPosition());
 }
 
 /** Sends the input after the process mark, or the old input at point, to the process, as comint-send-input. */
@@ -218,7 +326,7 @@ export function sendInput(noNewline = false, artificial = false): void {
   const pmark = processMark(proc);
   let input: string;
   if (e8.point() >= pmark) {
-    if (!nil(e8.variable("comint-eol-on-send"))) e8.gotoChar(e8.fieldEnd());
+    if (!nil(e8.variable("comint-eol-on-send"))) e8.gotoChar(usePromptRegexp() ? e8.lineEndPosition() : e8.fieldEnd());
     input = e8.bufferSubstringNoProperties(pmark, e8.point());
   } else {
     input = oldInput();
@@ -239,12 +347,14 @@ export function sendInput(noNewline = false, artificial = false): void {
   const end = noNewline ? e8.point() : e8.point() - 1;
   e8.withSilentModifications(() => {
     if (end > pmark) e8.addFaceTextProperty(pmark, end, "comint-highlight-input");
-    if (!noNewline) {
+    if (!noNewline && !usePromptRegexp()) {
       // The newline separates the input from the output after it.
       e8.putTextProperty(end, end + 1, "rear-nonsticky", PROMPT_REAR_NONSTICKY);
       e8.putTextProperty(end, end + 1, "field", Symbol.for("boundary"));
     }
   });
+  // The prompt the input followed stays highlighted, as comint-snapshot-last-prompt.
+  s.lastPrompt = undefined;
   e8.setMarker(s.lastInputStart, pmark);
   e8.setMarker(s.lastInputEnd, e8.point());
   e8.setMarker(e8.processMark(proc)!, e8.point());
@@ -348,6 +458,7 @@ e8.defineMajorMode({
   setup: () => {
     state();
     e8.addHook("isearch-mode-hook", historyIsearchSetup, { local: true });
+    e8.addHook("completion-at-point-functions", completionAtPoint, { local: true });
     e8.setVariable("comint-preoutput-filter-functions", [dropEcho]);
     e8.setVariable("scroll-conservatively", 101);
     // The process's status after the mode's name, as comint-mode's (":%s").
@@ -606,9 +717,6 @@ e8.defineVariable({
   value: false,
 });
 
-/** Where the input on point's line starts, after the prompt, as comint-line-beginning-position. */
-const lineBeginningPosition = (): number => e8.constrainToField(e8.lineBeginningPosition(), e8.lineEndPosition());
-
 /** The start of the line the prompt is on. */
 const promptLineStart = (): number => e8.lineBeginningPosition(lineBeginningPosition());
 
@@ -778,10 +886,14 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "comint-bol",
-  doc: "Go to the start of the line, after the prompt if there is one.",
-  run: () => {
-    e8.gotoChar(e8.lineBeginningPosition());
-    e8.gotoChar(e8.constrainToField(e8.point(), e8.lineEndPosition()));
+  doc:
+    "Go to the start of the line, after the prompt if there is one; with a prefix argument, to the very start.\n\n" +
+    "With comint-use-prompt-regexp, the prompt is what comint-prompt-regexp matches.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    // Unlike beginning-of-line, past the prompt's field, as forward-line goes.
+    if (arg !== null && arg !== undefined) e8.gotoChar(e8.lineBeginningPosition());
+    else e8.gotoChar(lineBeginningPosition());
   },
 });
 
@@ -884,9 +996,17 @@ e8.defineCommand({
   doc: "Put the start of the last output at the top of the window, with point at the input before it.",
   run: () => {
     const s = state();
-    e8.gotoChar(e8.markerPosition(s.lastInputStart)!);
-    e8.callWithPrefix(0, "recenter");
-    e8.gotoChar(e8.lineBeginningPosition(e8.markerPosition(s.lastInputStart)!));
+    e8.pushMark(e8.point());
+    const pos = e8.markerPosition(s.lastInputEnd) ?? e8.pointMax();
+    if (usePromptRegexp()) {
+      e8.gotoChar(pos);
+      e8.call("beginning-of-line", 0);
+      e8.setWindowStart(e8.selectedWindow(), e8.point());
+      skipPrompt();
+    } else {
+      e8.gotoChar(e8.fieldBeginning(pos));
+      e8.setWindowStart(e8.selectedWindow(), e8.point());
+    }
   },
 });
 
@@ -899,8 +1019,29 @@ e8.defineCommand({
   },
 });
 
-/** Goes to the start of the nth next input field, back if negative, as comint-next-prompt. */
+/**
+ * Goes to the start of the nth next input field, back if negative, as
+ * comint-next-prompt; with comint-use-prompt-regexp, after the nth next
+ * text comint-prompt-regexp matches.
+ */
 function nextPrompt(nIn: number): void {
+  if (usePromptRegexp()) {
+    // Emacs moves by paragraphs that comint-prompt-regexp starts; E8's
+    // paragraphs keep to their defaults, so the lines it matches are found.
+    const regexp = String(e8.variable("comint-prompt-regexp") ?? "^");
+    e8.gotoChar(nIn > 0 ? e8.lineEndPosition() : e8.lineBeginningPosition() - (e8.lineBeginningPosition() > e8.pointMin() ? 1 : 0));
+    for (let i = 0; i < Math.abs(nIn); i++) {
+      const found = nIn > 0 ? e8.reSearchForward(regexp, { noerror: true }) : e8.reSearchBackward(regexp, { noerror: true });
+      if (found === undefined) {
+        e8.gotoChar(nIn > 0 ? e8.pointMax() : e8.pointMin());
+        break;
+      }
+      e8.gotoChar(e8.lineBeginningPosition(e8.matchBeginning(0)!));
+      if (nIn > 0 && i + 1 < nIn) e8.gotoChar(e8.lineEndPosition());
+    }
+    skipPrompt();
+    return;
+  }
   let n = nIn;
   let pos = e8.point();
   let inputPos: number | undefined;
@@ -978,3 +1119,236 @@ export const watchForPasswordPrompt = (string: string): void => {
   sendInvisible(prompt).finally(() => promptDepth--);
 };
 e8.addHook("comint-output-filter-functions", watchForPasswordPrompt);
+// First among them, as in Emacs.
+e8.addHook("comint-output-filter-functions", processOutput);
+
+/**
+ * Goes back to the nth earlier input matching a regexp, forward if n is
+ * negative, as comint-backward-matching-input: inputs are the text outside
+ * output fields, or with comint-use-prompt-regexp the lines after a prompt.
+ */
+function backwardMatchingInput(regexp: string, n: number): void {
+  if (usePromptRegexp()) {
+    const re = `${String(e8.variable("comint-prompt-regexp") ?? "^")}.*${regexp}`;
+    const pos = e8.saveExcursion(() => {
+      e8.call("end-of-line", n > 0 ? 0 : 1);
+      for (let i = 0; i < Math.abs(n); i++) {
+        const found = n > 0 ? e8.reSearchBackward(re, { noerror: true }) : e8.reSearchForward(re, { noerror: true });
+        if (found === undefined) return undefined;
+      }
+      return e8.point();
+    });
+    if (pos === undefined) {
+      e8.message("Not found");
+      e8.ding();
+    } else {
+      e8.gotoChar(pos);
+      e8.gotoChar(lineBeginningPosition());
+    }
+    return;
+  }
+  const dir = n < 0 ? -1 : 1;
+  let left = n;
+  const pos = e8.saveExcursion(() => {
+    while (left !== 0) {
+      const found = dir > 0 ? e8.reSearchBackward(regexp, { noerror: true }) : e8.reSearchForward(regexp, { noerror: true });
+      if (found === undefined) e8.userError("Not found");
+      if (nil(e8.charProperty(e8.point(), "field"))) left -= dir;
+    }
+    return e8.fieldBeginning();
+  });
+  e8.gotoChar(pos);
+}
+
+e8.defineCommand({
+  name: "comint-backward-matching-input",
+  doc: "Search back through the buffer for an input matching a regexp, the nth with a prefix argument, or forward if it is negative.",
+  params: [
+    { name: "regexp", kind: "string", prompt: "Backward input matching (regexp): " },
+    { name: "n", kind: "count" },
+  ],
+  run: (regexp: string, n: number) => backwardMatchingInput(regexp, n),
+});
+
+e8.defineCommand({
+  name: "comint-forward-matching-input",
+  doc: "Search forward through the buffer for an input matching a regexp, the nth with a prefix argument, or back if it is negative.",
+  params: [
+    { name: "regexp", kind: "string", prompt: "Forward input matching (regexp): " },
+    { name: "n", kind: "count" },
+  ],
+  run: (regexp: string, n: number) => backwardMatchingInput(regexp, -n),
+});
+
+// Completing file names at the prompt, as comint.el's completion functions.
+
+/** A variable's list of characters, given as characters or one-character strings. */
+function charList(name: string): string[] {
+  const v = e8.variable(name);
+  return Array.isArray(v) ? v.map((c) => (typeof c === "number" ? String.fromCodePoint(c) : String(c))) : [];
+}
+
+/**
+ * The text of `chars` before point, as comint-word: characters of the set,
+ * as inside skip-chars-forward's [...], non-ASCII ones, and those of
+ * comint-file-name-quote-list after a backslash.
+ */
+export function comintWord(chars: string): { start: number; end: number; text: string } | undefined {
+  const here = e8.point();
+  const quoted = charList("comint-file-name-quote-list");
+  const min = e8.pointMin();
+  let p = here;
+  for (;;) {
+    const from = p;
+    p = e8.saveExcursion(() => {
+      e8.gotoChar(p);
+      e8.skipCharsBackward(`\\\\${chars}`);
+      return e8.point();
+    });
+    if (p - 2 >= min && e8.charAfter(p - 2) === "\\" && quoted.includes(e8.charAfter(p - 1)!)) p -= 2;
+    if (p > min && e8.charAfter(p - 1)!.codePointAt(0)! >= 128) p -= 1;
+    if (p === from) break;
+  }
+  return p < here ? { start: p, end: here, text: e8.bufferSubstringNoProperties(p, here) } : undefined;
+}
+
+/** The file name before point as it is typed, as comint--match-partial-filename. */
+export function matchPartialFilenameRaw(): { start: number; end: number; text: string } | undefined {
+  return comintWord(String(e8.variable("comint-file-name-chars") ?? ""));
+}
+
+/** A file name with $VAR and ${VAR} put in and, with comint-file-name-quote-list, backslashes taken off, as comint--unquote-argument. */
+export function unquoteArgument(text: string): string {
+  const backslashes = charList("comint-file-name-quote-list").length > 0;
+  const re = backslashes ? /\$(?:([A-Za-z][A-Za-z0-9]*)|\{([^{}]+)\})|\\(.)/g : /\$(?:([A-Za-z][A-Za-z0-9]*)|\{([^{}]+)\})/g;
+  return text.replace(re, (_m, name?: string, braced?: string, escaped?: string) => (escaped !== undefined ? escaped : (e8.getenv((name ?? braced)!) ?? "")));
+}
+
+/** The file name before point, unquoted and with variables put in, as comint-match-partial-filename. */
+export function matchPartialFilename(): string | undefined {
+  const word = matchPartialFilenameRaw();
+  return word === undefined ? undefined : unquoteArgument(word.text);
+}
+
+/** A file name with the characters of comint-file-name-quote-list quoted with a backslash, as comint-quote-filename. */
+export function quoteFilename(filename: string): string {
+  const quoted = charList("comint-file-name-quote-list");
+  if (quoted.length === 0) return filename;
+  return [...filename].map((c) => (quoted.includes(c) ? `\\${c}` : c)).join("");
+}
+
+/** A directory expanded, with comint-file-name-prefix before it if absolute, as comint-directory. */
+export function comintDirectory(directory: string): string {
+  return e8.expandFileName(e8.fileNameAbsoluteP(directory) ? `${String(e8.variable("comint-file-name-prefix") ?? "")}${directory}` : directory);
+}
+
+/** What completing a file name adds after it, from comint-completion-addsuffix. */
+export function fileSuffix(): string {
+  const v = e8.variable("comint-completion-addsuffix");
+  if (nil(v)) return "";
+  if (typeof v === "string") return v;
+  if (Array.isArray(v)) return String(v[v.length - 1] ?? "");
+  return " ";
+}
+
+/** Goes past `suffix` after point, or inserts it, as an :exit-function adding a suffix does. */
+export function insertSuffix(suffix: string): void {
+  if (e8.bufferSubstringNoProperties(e8.point(), Math.min(e8.pointMax(), e8.point() + [...suffix].length)) === suffix) e8.gotoChar(e8.point() + [...suffix].length);
+  else e8.insert(suffix);
+}
+
+/**
+ * Leaves out the names ending in one of comint-completion-fignore's
+ * suffixes, unless that leaves none, as completion-ignored-extensions does.
+ */
+function withoutIgnored(names: string[]): string[] {
+  const ignored = ((e8.variable("comint-completion-fignore") ?? []) as e8.Value[]).map(String).filter((x) => x !== "");
+  if (ignored.length === 0) return names;
+  const kept = names.filter((n) => n.endsWith("/") || !ignored.some((x) => n.endsWith(x)));
+  return kept.length > 0 ? kept : names;
+}
+
+/**
+ * What completes the file name before point, as comint--complete-file-name-data:
+ * its start and end, the names in its directory as typed there, quoted, and
+ * an :exit-function adding comint-completion-addsuffix after a file name
+ * completed in full.
+ */
+export function completeFileNameData(): e8.Value[] {
+  const suffix = fileSuffix();
+  const word = matchPartialFilenameRaw();
+  const start = word?.start ?? e8.point();
+  const end = word?.end ?? e8.point();
+  const typed = word?.text ?? "";
+  const slash = typed.lastIndexOf("/");
+  const typedDir = slash < 0 ? "" : typed.slice(0, slash + 1);
+  const names = () => {
+    const dir = comintDirectory(unquoteArgument(typedDir) || ".");
+    if (!e8.fileAccessibleDirectoryP(dir)) return [];
+    let found: string[];
+    try {
+      found = e8.fileNameAllCompletions("", dir);
+    } catch {
+      return [];
+    }
+    return withoutIgnored(found).map((n) => typedDir + quoteFilename(n));
+  };
+  const data: e8.Value[] = [start, end, names as unknown as e8.Value];
+  if (suffix !== "") {
+    data.push(":exit-function", ((text: string, status: string) => {
+      // A directory goes on to its files, as Emacs's file name table never finishes on one.
+      if (status === "finished" && !text.endsWith("/")) insertSuffix(suffix);
+    }) as unknown as e8.Value);
+  }
+  return data;
+}
+
+/** What completes the file name before point, if there is one, as comint-filename-completion. */
+export const filenameCompletion = e8.defun("comint-filename-completion", () =>
+  matchPartialFilenameRaw() === undefined ? null : (completeFileNameData() as e8.Value),
+);
+
+/**
+ * What comint-dynamic-complete-functions say completes at point, the first
+ * to say anything, t in a local value standing for the global ones, as
+ * comint-completion-at-point.
+ */
+export const completionAtPoint = (): e8.Value => {
+  const value = e8.variable("comint-dynamic-complete-functions");
+  const functions = Array.isArray(value) ? value : nil(value) ? [] : [value!];
+  for (const f of functions) {
+    const result = f === true ? untilSuccess(e8.defaultValue("comint-dynamic-complete-functions")) : e8.funcall(f as string);
+    if (!nil(result)) return result;
+  }
+  return null;
+};
+
+/** The first non-nil result of the functions of a list, as run-hook-with-args-until-success over a global value. */
+function untilSuccess(value: e8.Value | undefined): e8.Value {
+  for (const f of Array.isArray(value) ? value : []) {
+    const result = e8.funcall(f as string);
+    if (!nil(result)) return result;
+  }
+  return null;
+}
+e8.defun("comint-completion-at-point", completionAtPoint);
+
+e8.defineCommand({
+  name: "comint-dynamic-complete-filename",
+  doc: "Complete the file name before point, adding comint-completion-addsuffix once it is complete.",
+  run: () => {
+    if (matchPartialFilenameRaw() === undefined) return;
+    if (!e8.minibufferp()) e8.message("Completing file name...");
+    const [start, end, names, ...plist] = completeFileNameData();
+    const exit = plist[1] as unknown as ((text: string, status: "finished" | "exact" | "sole") => void) | undefined;
+    completionInRegion(start as number, end as number, names as unknown as () => string[], undefined, { exitFunction: exit });
+  },
+});
+
+e8.defineCommand({
+  name: "comint-dynamic-list-filename-completions",
+  doc: "List the completions of the file name before point in *Completions*.",
+  run: () => {
+    e8.letBind({ "completion-at-point-functions": [completeFileNameData as unknown as e8.Value] }, () => e8.call("completion-help-at-point"));
+  },
+});

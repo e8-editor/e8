@@ -10,6 +10,7 @@ mod driven;
 mod abbrev;
 mod acp;
 mod agent_shell;
+mod ansi_color;
 mod autorevert;
 mod awaiting;
 mod babel;

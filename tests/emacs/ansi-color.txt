@@ -1,0 +1,115 @@
+case plain	nil	["no colours here"]
+ansi-color-apply	"no colours here" nil
+ansi-color-filter-apply	"no colours here" nil
+ansi-color-apply-on-region	"no colours here" nil
+ansi-color-filter-region	"no colours here" nil
+case red	nil	["\u001b[31mred\u001b[0m plain"]
+ansi-color-apply	"red" (:foreground "red3") | " plain" nil
+ansi-color-filter-apply	"red plain" nil
+ansi-color-apply-on-region	"red" (:foreground "red3") | " plain" nil
+ansi-color-filter-region	"red plain" nil
+case bold-red-on-blue	nil	["\u001b[1;31;44mx\u001b[mn"]
+ansi-color-apply	"x" (ansi-color-bold (:background "blue2") (:foreground "red3")) | "n" nil
+ansi-color-filter-apply	"xn" nil
+ansi-color-apply-on-region	"x" (ansi-color-bold (:background "blue2") (:foreground "red3")) | "n" nil
+ansi-color-filter-region	"xn" nil
+case bright	nil	["\u001b[91mbr\u001b[101mbg\u001b[39mfg\u001b[49m."]
+ansi-color-apply	"br" (:foreground "red2") | "bg" ((:background "red2") (:foreground "red2")) | "fg" (:background "red2") | "." nil
+ansi-color-filter-apply	"brbgfg." nil
+ansi-color-apply-on-region	"br" (:foreground "red2") | "bg" ((:background "red2") (:foreground "red2")) | "fg" (:background "red2") | "." nil
+ansi-color-filter-region	"brbgfg." nil
+case basic	nil	["\u001b[1mb\u001b[2mf\u001b[3mi\u001b[4mu\u001b[5ms\u001b[6mq\u001b[7mr\u001b[0m."]
+ansi-color-apply	"b" ansi-color-bold | "f" (ansi-color-bold ansi-color-faint) | "i" (ansi-color-bold ansi-color-faint ansi-color-italic) | "u" (ansi-color-bold ansi-color-faint ansi-color-italic ansi-color-underline) | "s" (ansi-color-bold ansi-color-faint ansi-color-italic ansi-color-underline ansi-color-slow-blink) | "q" (ansi-color-bold ansi-color-faint ansi-color-italic ansi-color-underline ansi-color-slow-blink ansi-color-fast-blink) | "r" (ansi-color-bold ansi-color-faint ansi-color-italic ansi-color-underline ansi-color-slow-blink ansi-color-fast-blink ansi-color-inverse) | "." nil
+ansi-color-filter-apply	"bfiusqr." nil
+ansi-color-apply-on-region	"b" ansi-color-bold | "f" (ansi-color-bold ansi-color-faint) | "i" (ansi-color-bold ansi-color-faint ansi-color-italic) | "u" (ansi-color-bold ansi-color-faint ansi-color-italic ansi-color-underline) | "s" (ansi-color-bold ansi-color-faint ansi-color-italic ansi-color-underline ansi-color-slow-blink) | "q" (ansi-color-bold ansi-color-faint ansi-color-italic ansi-color-underline ansi-color-slow-blink ansi-color-fast-blink) | "r" (ansi-color-bold ansi-color-faint ansi-color-italic ansi-color-underline ansi-color-slow-blink ansi-color-fast-blink ansi-color-inverse) | "." nil
+ansi-color-filter-region	"bfiusqr." nil
+case unset	nil	["\u001b[1;3;4;7mall\u001b[22mnb\u001b[23mni\u001b[24mnu\u001b[27mnr\u001b[25m."]
+ansi-color-apply	"all" (ansi-color-bold ansi-color-italic ansi-color-underline ansi-color-inverse) | "nb" (ansi-color-italic ansi-color-underline ansi-color-inverse) | "ni" (ansi-color-underline ansi-color-inverse) | "nu" ansi-color-inverse | "nr." nil
+ansi-color-filter-apply	"allnbninunr." nil
+ansi-color-apply-on-region	"all" (ansi-color-bold ansi-color-italic ansi-color-underline ansi-color-inverse) | "nb" (ansi-color-italic ansi-color-underline ansi-color-inverse) | "ni" (ansi-color-underline ansi-color-inverse) | "nu" ansi-color-inverse | "nr." nil
+ansi-color-filter-region	"allnbninunr." nil
+case bold-off-21	nil	["\u001b[1;4mx\u001b[21my\u001b[0m"]
+ansi-color-apply	"x" (ansi-color-bold ansi-color-underline) | "y" ansi-color-underline
+ansi-color-filter-apply	"xy" nil
+ansi-color-apply-on-region	"x" (ansi-color-bold ansi-color-underline) | "y" ansi-color-underline
+ansi-color-filter-region	"xy" nil
+case clear-codes	nil	["\u001b[31mx\u001b[8my\u001b[31mz\u001b[20mw\u001b[31mv\u001b[50mu"]
+ansi-color-apply	"x" (:foreground "red3") | "y" nil | "z" (:foreground "red3") | "w" nil | "v" (:foreground "red3") | "u" nil
+ansi-color-filter-apply	"xyzwvu" nil
+ansi-color-apply-on-region	"x" (:foreground "red3") | "y" nil | "z" (:foreground "red3") | "w" nil | "v" (:foreground "red3") | "u" nil
+ansi-color-filter-region	"xyzwvu" nil
+case 256	nil	["\u001b[38;5;196ma\u001b[48;5;21mb\u001b[38;5;244mc\u001b[38;5;3md\u001b[38;5;11me\u001b[0m"]
+ansi-color-apply	"a" (:foreground "#FF0000") | "b" ((:background "#0000FF") (:foreground "#FF0000")) | "c" ((:background "#0000FF") (:foreground "#808080")) | "d" ((:background "#0000FF") (:foreground "yellow3")) | "e" ((:background "#0000FF") (:foreground "yellow2"))
+ansi-color-filter-apply	"abcde" nil
+ansi-color-apply-on-region	"a" (:foreground "#FF0000") | "b" ((:background "#0000FF") (:foreground "#FF0000")) | "c" ((:background "#0000FF") (:foreground "#808080")) | "d" ((:background "#0000FF") (:foreground "yellow3")) | "e" ((:background "#0000FF") (:foreground "yellow2"))
+ansi-color-filter-region	"abcde" nil
+case cube	nil	["\u001b[38;5;16ma\u001b[38;5;67mb\u001b[38;5;231mc\u001b[38;5;232md\u001b[38;5;255me"]
+ansi-color-apply	"a" (:foreground "#000000") | "b" (:foreground "#5F87AF") | "c" (:foreground "#FFFFFF") | "d" (:foreground "#080808") | "e" (:foreground "#EEEEEE")
+ansi-color-filter-apply	"abcde" nil
+ansi-color-apply-on-region	"a" (:foreground "#000000") | "b" (:foreground "#5F87AF") | "c" (:foreground "#FFFFFF") | "d" (:foreground "#080808") | "e" (:foreground "#EEEEEE")
+ansi-color-filter-region	"abcde" nil
+case rgb	nil	["\u001b[38;2;255;128;0mo\u001b[48;2;0;0;0mk\u001b[0m"]
+ansi-color-apply	"o" (:foreground "#FF8000") | "k" ((:background "#000000") (:foreground "#FF8000"))
+ansi-color-filter-apply	"ok" nil
+ansi-color-apply-on-region	"o" (:foreground "#FF8000") | "k" ((:background "#000000") (:foreground "#FF8000"))
+ansi-color-filter-region	"ok" nil
+case bad-256	nil	["\u001b[31mx\u001b[38;5;300my\u001b[0m"]
+ansi-color-apply	"x" (:foreground "red3") | "y" nil
+ansi-color-filter-apply	"xy" nil
+ansi-color-apply-on-region	"x" (:foreground "red3") | "y" nil
+ansi-color-filter-region	"xy" nil
+case bad-rgb	nil	["\u001b[31mx\u001b[38;2;1;2mz"]
+ansi-color-apply	"x" (:foreground "red3") | "z" nil
+ansi-color-filter-apply	"xz" nil
+ansi-color-apply-on-region	"x" (:foreground "red3") | "z" nil
+ansi-color-filter-region	"xz" nil
+case bad-38	nil	["\u001b[31mx\u001b[38;7my"]
+ansi-color-apply	"x" (:foreground "red3") | "y" nil
+ansi-color-filter-apply	"xy" nil
+ansi-color-apply-on-region	"x" (:foreground "red3") | "y" nil
+ansi-color-filter-region	"xy" nil
+case empty-params	nil	["\u001b[;31mx\u001b[31;mY\u001b[m."]
+ansi-color-apply	"x" (:foreground "red3") | "Y." nil
+ansi-color-filter-apply	"xY." nil
+ansi-color-apply-on-region	"x" (:foreground "red3") | "Y." nil
+ansi-color-filter-region	"xY." nil
+case other-sequences	nil	["a\u001b[Kb\u001b[2Jc\u001b[?25hd\u001b[1;1He"]
+ansi-color-apply	"abcde" nil
+ansi-color-filter-apply	"abcde" nil
+ansi-color-apply-on-region	"abcde" nil
+ansi-color-filter-region	"abcde" nil
+case split-sequence	nil	["\u001b[3","1mred","\u001b[","0m","plain"]
+ansi-color-apply	"red" (:foreground "red3") | "plain" nil
+ansi-color-filter-apply	"redplain" nil
+ansi-color-apply-on-region	"red" (:foreground "red3") | "plain" nil
+ansi-color-filter-region	"redplain" nil
+case split-escape	nil	["a\u001b","[32mgreen","\u001b[1",";4mbold"]
+ansi-color-apply	"a" nil | "green" (:foreground "green3") | "bold" (ansi-color-bold ansi-color-underline (:foreground "green3"))
+ansi-color-filter-apply	"agreenbold" nil
+ansi-color-apply-on-region	"a" nil | "green" (:foreground "green3") | "bold" (ansi-color-bold ansi-color-underline (:foreground "green3"))
+ansi-color-filter-region	"agreenbold" nil
+case carry-on	nil	["\u001b[33myellow"," still","\u001b[0m done"]
+ansi-color-apply	"yellow still" (:foreground "yellow3") | " done" nil
+ansi-color-filter-apply	"yellow still done" nil
+ansi-color-apply-on-region	"yellow still" (:foreground "yellow3") | " done" nil
+ansi-color-filter-region	"yellow still done" nil
+case trailing-escape	nil	["x\u001b"]
+ansi-color-apply	"x" nil
+ansi-color-filter-apply	"x" nil
+ansi-color-apply-on-region	"x" nil
+ansi-color-filter-region	"x" nil
+case lone-escape	nil	["a\u001bb\u001b(Bc"]
+ansi-color-apply	"ab(Bc" nil
+ansi-color-filter-apply	"ab(Bc" nil
+ansi-color-apply-on-region	"ab(Bc" nil
+ansi-color-filter-region	"ab(Bc" nil
+case bold-is-bright	t	["\u001b[1;31mx\u001b[22my\u001b[1;41mz"]
+ansi-color-apply	"x" (ansi-color-bold (:foreground "red2")) | "y" (:foreground "red3") | "z" (ansi-color-bold (:background "red2") (:foreground "red2"))
+ansi-color-filter-apply	"xyz" nil
+ansi-color-apply-on-region	"x" (ansi-color-bold (:foreground "red2")) | "y" (:foreground "red3") | "z" (ansi-color-bold (:background "red2") (:foreground "red2"))
+ansi-color-filter-region	"xyz" nil
+case bright-with-bold	t	["\u001b[1;91mx\u001b[0;1;38;5;1my"]
+ansi-color-apply	"xy" (ansi-color-bold (:foreground "red2"))
+ansi-color-filter-apply	"xy" nil
+ansi-color-apply-on-region	"xy" (ansi-color-bold (:foreground "red2"))
+ansi-color-filter-region	"xy" nil
