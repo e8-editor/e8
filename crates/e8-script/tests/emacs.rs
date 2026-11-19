@@ -7,7 +7,8 @@
 //! Each case's keys are typed into a fresh editor, as record.el types them
 //! into Emacs: an error shows its message and the next key still runs. The
 //! result, including the first error, is compared with what Emacs did. Cases listed in `known-gaps.txt` are expected to differ; the
-//! test fails if one of them starts matching, so the list stays accurate.
+//! tests fail if one of them starts matching, so the list stays accurate.
+//! The cases are shared among four tests, each run alone on every core.
 //!
 //! To add cases, edit `tests/emacs/cases/*.json`, then record what Emacs
 //! does with `emacs -Q --batch -l tests/emacs/record.el`.
@@ -178,6 +179,7 @@ fn known_gaps_name_cases_there_are() {
         return;
     }
     let gaps = known_gaps();
+    // Every case's id, and no case to run: no shard is numbered usize::MAX.
     let (seen, _, _, _) = gather(Some(usize::MAX));
     let missing: Vec<String> = gaps.keys().filter(|id| !seen.contains(id)).map(|id| format!("{id}: listed in known-gaps.txt but there is no such case")).collect();
     eprintln!("Emacs oracle: {} cases, {} known gaps", seen.len(), gaps.len());
