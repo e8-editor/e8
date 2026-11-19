@@ -104,6 +104,7 @@ mod float_functions;
 mod eval_buffer;
 mod file_primitives_rest;
 mod fontset_info;
+mod imenu;
 mod subr;
 mod symbols;
 mod syntax_tables;
