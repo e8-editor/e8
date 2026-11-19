@@ -159,7 +159,7 @@ impl Editor {
         if b.is_modified() || b.file.locked || b.file.lock_ignored || !self.lockfiles() {
             return Ok(());
         }
-        let lock = lock_file_name(&path);
+        let lock = lock_file_name(&truename(&path));
         // A stale lock is deleted and the lock made again; one that can be
         // neither read nor deleted, such as a directory of the name, would
         // come back each time, so after a few tries editing goes on without one.
@@ -239,15 +239,32 @@ impl Editor {
         if let Some(r) = self.handled("lock-file", &name, vec![Value::Str(name.clone())]) {
             return r.map(drop);
         }
+        let lock = lock_file_name(&path);
+        // A buffer visiting it whose file changed on disk asks first, as
+        // lock_file calls userlock--ask-user-about-supersession-threat,
+        // whether lock files are made or not.
+        let visiting = self.buffers.iter().position(|b| b.path.as_deref().is_some_and(|p| truename(p) == truename(&path)));
+        if let Some(i) = visiting
+            && self.buffers[i].visited_file_changed()
+            && fs::path_exists(&path)
+            && !(self.lockfiles() && current_lock_owner(&lock) == LockOwner::Me)
+        {
+            self.ask_user_about_supersession_threat(&name, i)?;
+        }
         if !self.lockfiles() {
             return Ok(());
         }
-        let lock = lock_file_name(&path);
         let held = match create_lock(&lock, false) {
             Ok(()) => true,
             Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => match current_lock_owner(&lock) {
                 LockOwner::Other(owner) => {
-                    return Err(Error::signal("file-locked", format!("File is locked: {name}, {owner}"), vec![Value::Str(name.clone()), Value::Str(owner)]));
+                    // Asked, as lock_file calls ask-user-about-lock; in batch
+                    // mode, or answered q, it is an error.
+                    if self.ask_user_about_lock(&name, &owner)? {
+                        create_lock(&lock, true).is_ok()
+                    } else {
+                        false
+                    }
                 }
                 LockOwner::None => {
                     let _ = fs::remove_file(&lock);
@@ -261,11 +278,52 @@ impl Editor {
         // Modified buffers hold it, to give it up when saved; an unmodified
         // one would give it up after the command, where Emacs keeps it.
         for b in &mut self.buffers {
-            if held && b.is_modified() && b.path.as_deref() == Some(path.as_path()) {
+            if held && b.is_modified() && b.path.as_deref().is_some_and(|p| p == path || truename(p) == path) {
                 b.file.locked = true;
             }
         }
         Ok(())
+    }
+
+    /// Asks what to do about a file another process has locked, as Emacs's
+    /// `ask-user-about-lock`: true for s, to take the lock, false for p, to
+    /// go ahead without it, and `file-locked` for q, or in batch mode, where
+    /// nobody can answer.
+    pub fn ask_user_about_lock(&mut self, file: &str, owner: &str) -> Result<bool> {
+        let locked = || Error::signal("file-locked", format!("File is locked: {file}, {owner}"), vec![Value::Str(file.to_string()), Value::Str(owner.to_string())]);
+        if self.noninteractive() {
+            return Err(locked());
+        }
+        let short = |s: &str, max: usize| if s.chars().count() > max { format!("...{}", s.chars().skip(s.chars().count() - max).collect::<String>()) } else { s.to_string() };
+        let prompt = format!("{} locked by {}: (s, q, p, ?)? ", short(file, 22), short(owner, 25));
+        match self.read_char_choice(&prompt, &['s', 'q', 'p'])?.as_str() {
+            "s" => Ok(true),
+            "p" => Ok(false),
+            _ => Err(locked()),
+        }
+    }
+
+    /// Asks whether to edit a buffer whose file changed on disk, as Emacs's
+    /// `userlock--ask-user-about-supersession-threat`: y goes ahead, r
+    /// reverts the buffer and signals `file-supersession` ("File
+    /// reverted"), n signals it ("File changed on disk"). In batch mode it
+    /// is an error, "Cannot resolve conflict in batch mode".
+    fn ask_user_about_supersession_threat(&mut self, file: &str, buffer: usize) -> Result<()> {
+        let name = std::path::Path::new(file).file_name().map_or_else(|| file.to_string(), |n| n.to_string_lossy().into_owned());
+        let prompt = format!("{name} changed on disk; really edit the buffer? (y, n, r or C-h) ");
+        if self.noninteractive() {
+            self.message(prompt);
+            return Err(Error::new("Cannot resolve conflict in batch mode"));
+        }
+        let superseded = |why: &str| Error::signal("file-supersession", format!("{why}: {file}"), vec![Value::Str(why.to_string()), Value::Str(file.to_string())]);
+        match self.read_char_choice(&prompt, &['y', 'n', 'r'])?.as_str() {
+            "y" => Ok(()),
+            "r" => {
+                self.with_current_buffer(buffer, |ed| ed.revert_to_visited_file())?;
+                Err(superseded("File reverted"))
+            }
+            _ => Err(superseded("File changed on disk")),
+        }
     }
 
     /// Takes a file's lock away if this process holds it, as Emacs's
@@ -277,7 +335,7 @@ impl Editor {
         if self.handled("unlock-file", &name, vec![Value::Str(name.clone())]).is_some() {
             return;
         }
-        unlock(&path);
+        unlock_named(&path);
         for b in &mut self.buffers {
             if b.path.as_deref() == Some(path.as_path()) {
                 b.file.locked = false;
@@ -289,7 +347,9 @@ impl Editor {
     /// Emacs's `lock-buffer`.
     pub fn lock_buffer(&mut self, file: Option<&str>) -> Result<()> {
         let b = self.buffer();
-        let Some(file) = file.map(str::to_string).or_else(|| b.path.as_ref().map(|p| p.display().to_string())) else { return Ok(()) };
+        // The buffer's own file by its true name, as lock-buffer locks
+        // buffer-file-truename.
+        let Some(file) = file.map(str::to_string).or_else(|| b.path.as_ref().map(|p| truename(p).display().to_string())) else { return Ok(()) };
         if b.is_modified() { self.lock_file(&file) } else { Ok(()) }
     }
 
@@ -326,15 +386,35 @@ impl Editor {
     pub(crate) fn steal_lock(&mut self, buffer: u64) {
         let Some(b) = self.buffers.iter_mut().find(|b| b.id == buffer) else { return };
         if let Some(path) = &b.path
-            && create_lock(&lock_file_name(path), true).is_ok()
+            && create_lock(&lock_file_name(&truename(path)), true).is_ok()
         {
             b.file.locked = true;
         }
     }
 }
 
-/// Takes a file's lock away if this process holds it.
+/// The name a buffer's file is locked by: its true name, through symbolic
+/// links, as Emacs locks buffer-file-truename; for a file not made yet,
+/// its directory's true name and its own.
+pub(crate) fn truename(path: &Path) -> PathBuf {
+    if let Ok(real) = fs::canonicalize(path) {
+        return real;
+    }
+    match (path.parent().and_then(|d| fs::canonicalize(d).ok()), path.file_name()) {
+        (Some(dir), Some(name)) => dir.join(name),
+        _ => path.to_path_buf(),
+    }
+}
+
+/// Takes a buffer's file's lock away, by the file's true name, if this
+/// process holds it.
 pub(crate) fn unlock(path: &Path) {
+    unlock_named(&truename(path));
+}
+
+/// Takes the lock of a file by the name given away if this process holds
+/// it, as unlock-file does with the expanded name.
+fn unlock_named(path: &Path) {
     let lock = lock_file_name(path);
     if current_lock_owner(&lock) == LockOwner::Me {
         let _ = fs::remove_file(lock);

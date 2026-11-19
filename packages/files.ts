@@ -1072,58 +1072,164 @@ e8.defineCommand({
   },
 });
 
-/** Rereads the file into the buffer and chooses its mode again, as revert-buffer--default does once it may. */
-function revertNow(): void {
-  e8.runHooks("before-revert-hook");
-  e8.revertToVisitedFile();
-  e8.callWithPrefix(1, "normal-mode");
-  e8.runHooks("after-revert-hook");
-}
-
+// Reverting, after files.el: revert-buffer calls revert-buffer-function,
+// by default revert-buffer--default, which rereads the visited file.
 
 e8.defineVariable({
   name: "revert-buffer-function",
-  doc: "The command revert-buffer runs instead of rereading the file, in buffers that set it, such as Dired's. Nil for the usual.",
-  value: null,
+  doc:
+    "The function revert-buffer calls to revert the buffer, with its IGNORE-AUTO and NOCONFIRM; " +
+    "revert-buffer--default rereads the visited file, and buffers such as Dired's set their own. Nil for the default.",
+  value: "revert-buffer--default",
+});
+e8.defineVariable({
+  name: "buffer-stale-function",
+  doc:
+    "A function of one optional argument, NOCONFIRM, saying whether the buffer needs reverting, as Auto-Revert asks it: " +
+    "true to revert, \"fast\" to revert without saying so. The default asks whether the visited file changed.",
+  value: "buffer-stale--default-function",
+});
+e8.defineVariable({
+  name: "buffer-auto-revert-by-notification",
+  doc: "Whether, in a buffer visiting no file, Auto-Revert may rely on notifications about its directory, as Dired's does.",
+  value: false,
+  local: true,
+});
+e8.defineVariable({ name: "read-only-mode--state", doc: "The read-only state read-only-mode last chose in this buffer, which reverting keeps.", value: false });
+e8.defineVariable({ name: "revert-buffer-in-progress-p", doc: "Whether revert-buffer is running.", value: false });
+e8.defineVariable({ name: "revert-buffer-preserve-modes", doc: "Whether the revert-buffer running keeps the buffer's modes, as its PRESERVE-MODES.", value: false });
+e8.defineVariable({
+  name: "revert-buffer-restore-functions",
+  doc: "Functions called before reverting, each giving a function, or nil, that puts back what it kept once the buffer is reverted.",
+  value: ["revert-buffer-restore-read-only"],
+});
+
+// A file name handler calls the primitive again with itself inhibited, as
+// TRAMP's do, so the primitives it answers for are functions by name too.
+e8.defun("expand-file-name", (name: string, dir?: string | null) => e8.expandFileName(name, dir ?? undefined));
+e8.defun("file-attributes", (file: string) => (e8.fileAttributes(file) ?? null) as e8.Value);
+e8.defun("make-symbolic-link", (target: string, link: string, ok?: e8.Value) => e8.makeSymbolicLink(target, link, truthy(ok)));
+e8.defun("add-name-to-file", (file: string, newname: string, ok?: e8.Value) => e8.addNameToFile(file, newname, truthy(ok)));
+e8.defun("file-name-all-completions", (file: string, dir: string) => e8.fileNameAllCompletions(file, dir));
+e8.defun("file-name-completion", (file: string, dir: string, predicate?: e8.Value) =>
+  e8.fileNameCompletion(file, dir, (predicate ?? null) as string | null) ?? null);
+
+/** Whether the buffer's file changed on disk and the buffer did not, as buffer-stale--default-function. */
+export function bufferStaleDefault(): boolean {
+  const file = e8.bufferFileName();
+  return file !== undefined && e8.fileReadableP(file) && !e8.bufferModified() && e8.visitedFileChanged();
+}
+e8.defun("buffer-stale--default-function", () => bufferStaleDefault());
+
+/** Keeps a read-only state read-only-mode set, to put back after reverting, as revert-buffer-restore-read-only. */
+e8.defun("revert-buffer-restore-read-only", () => {
+  if (!e8.localVariableP("read-only-mode--state")) return null;
+  const state = e8.variable("read-only-mode--state");
+  return () => {
+    e8.setReadOnly(truthy(state));
+    e8.makeLocalVariable("read-only-mode--state");
+    e8.setVariable("read-only-mode--state", state ?? false);
+  };
 });
 
 /**
- * Reverts the buffer, asking first unless `noconfirm`, or the buffer is
- * unmodified and its file matches revert-without-query.
+ * Reverts the buffer, as Emacs's revert-buffer: calls
+ * revert-buffer-function with `ignoreAuto` and `noconfirm`,
+ * revert-buffer-in-progress-p and revert-buffer-preserve-modes bound
+ * meanwhile, and puts back what revert-buffer-restore-functions keep.
+ * Returns what the function returns.
  */
-function revertBuffer(noconfirm: boolean): void {
-  // A buffer such as Dired's reverts itself, as its revert-buffer-function says.
-  const own = e8.variable("revert-buffer-function");
-  if (typeof own === "string" && e8.commandExists(own)) {
-    e8.call(own as e8.CommandName);
-    return;
-  }
-  const file = visitedFile();
-  if (!e8.fileExists(file)) throw new Error(`File ${file} no longer exists!`);
+export function revertBuffer(ignoreAuto = false, noconfirm = false, preserveModes = false): e8.Value {
+  return e8.letBind({ "revert-buffer-in-progress-p": true, "revert-buffer-preserve-modes": preserveModes }, () => {
+    // Each one's restoring function first in, last run, as Emacs pushes them.
+    const restores: e8.Value[] = [];
+    e8.runHookWrapped("revert-buffer-restore-functions", (f: e8.Value) => {
+      restores.unshift(e8.funcall(f as string));
+      return null;
+    });
+    const fn = e8.variable("revert-buffer-function");
+    // A command, as Dired's is here, is called with its own parameters,
+    // the two arguments being passed over.
+    const result: e8.Value = fn === null || fn === false || fn === undefined ? revertBufferDefault(ignoreAuto, noconfirm) : e8.funcall(fn as string, ignoreAuto, noconfirm);
+    for (const restore of restores) if (truthy(restore)) e8.funcall(restore as string);
+    return result;
+  });
+}
+
+/**
+ * What revert-buffer does by default, as revert-buffer--default: offers the
+ * auto-save file if it is newer and `ignoreAuto` is false, asks unless
+ * `noconfirm` or the buffer is unmodified and its file matches
+ * revert-without-query, then rereads the file, choosing the modes again
+ * unless revert-buffer-preserve-modes, between before-revert-hook and
+ * after-revert-hook. True if it reverted.
+ */
+function revertBufferDefault(ignoreAuto: boolean, noconfirm: boolean): boolean {
+  const autoSave = e8.variable("buffer-auto-save-file-name");
+  const fromAutoSave =
+    !ignoreAuto &&
+    e8.recentAutoSaveP() &&
+    typeof autoSave === "string" &&
+    e8.fileReadableP(autoSave) &&
+    e8.yOrNP("Buffer has been auto-saved recently.  Revert from auto-save file? ");
+  const file = fromAutoSave ? (autoSave as string) : e8.bufferFileName();
+  if (file === undefined) throw new Error("Buffer does not seem to be associated with any file");
   const modified = e8.bufferModified();
   const patterns = e8.variable("revert-without-query");
   const unasked = !modified && Array.isArray(patterns) && patterns.some((p) => typeof p === "string" && e8.stringMatch(p, file) !== undefined);
-  const question = modified ? `Discard edits and reread from ${file}? ` : `Revert buffer from file ${file}? `;
-  if (noconfirm || unasked || e8.yesOrNoP(question)) revertNow();
+  if (!(noconfirm || unasked || e8.yesOrNoP(modified ? `Discard edits and reread from ${file}? ` : `Revert buffer from file ${file}? `))) return false;
+  e8.runHooks("before-revert-hook");
+  if (fromAutoSave) {
+    e8.recoverFromAutoSave();
+  } else {
+    if (!e8.fileExists(file)) throw new Error(`File ${file} no longer exists!`);
+    if (!e8.fileReadableP(file)) throw new Error(`File ${file} no longer readable!`);
+    e8.revertToVisitedFile();
+  }
+  // The modes chosen again and find-file-hook run, as after-find-file does
+  // unless the modes are kept.
+  if (!truthy(e8.variable("revert-buffer-preserve-modes"))) {
+    e8.callWithPrefix(1, "normal-mode");
+    e8.runHooks("find-file-hook");
+  }
+  e8.runHooks("after-revert-hook");
+  return true;
 }
+e8.defun("revert-buffer--default", (ignoreAuto: e8.Value, noconfirm: e8.Value) => revertBufferDefault(truthy(ignoreAuto), truthy(noconfirm)));
 
 e8.defineCommand({
   name: "revert-buffer",
   doc:
     "Replace the buffer's text with its file's, after asking.\n\n" +
-    "Point stays where the text is unchanged. The major mode is chosen again, as when visiting the file. The revert can be undone.",
-  run: () => revertBuffer(false),
+    "With a prefix argument, offer to revert from the auto-save file if it is newer. Point stays where the text " +
+    "is unchanged. The major mode is chosen again, as when visiting the file. The revert can be undone. Buffers " +
+    "that show something other than a file, such as Dired's, revert by their revert-buffer-function.",
+  params: [{ name: "auto-save", kind: "prefix" }],
+  run: (autoSave: e8.PrefixArg) => {
+    revertBuffer(autoSave === null);
+  },
+});
+
+e8.defineVariable({
+  name: "revert-buffer-quick-short-answers",
+  doc: "Whether revert-buffer-quick asks with y-or-n-p rather than yes-or-no-p.",
+  value: false,
 });
 
 e8.defineCommand({
   name: "revert-buffer-quick",
-  doc: "Revert the buffer from its file, asking only if it has unsaved changes.",
-  run: () => {
+  doc:
+    "Revert the buffer from its file, asking only if it has unsaved changes.\n\n" +
+    "With a prefix argument, offer to revert from the auto-save file if it is newer.",
+  params: [{ name: "auto-save", kind: "prefix" }],
+  run: (autoSave: e8.PrefixArg) => {
     if (e8.bufferFileName() !== undefined && !e8.bufferModified()) {
-      revertBuffer(true);
+      revertBuffer(autoSave === null, true);
       e8.message("Reverted buffer");
+    } else if (truthy(e8.variable("revert-buffer-quick-short-answers"))) {
+      e8.letBind({ "use-short-answers": true }, () => revertBuffer(autoSave === null));
     } else {
-      revertBuffer(false);
+      revertBuffer(autoSave === null);
     }
   },
 });
@@ -1246,65 +1352,6 @@ e8.defineCommand({
 
 e8.defineHook("kill-emacs-query-functions", "Functions called before E8 exits from save-buffers-kill-terminal; if one returns false, it does not exit.");
 
-// Reverting buffers when their files change, after autorevert.el, by
-// looking every auto-revert-interval seconds.
-
-e8.defineVariable({
-  name: "auto-revert-interval",
-  doc: "How many seconds between checks for files that changed, in buffers where auto-revert-mode or global-auto-revert-mode is on.",
-  value: 5,
-});
-
-e8.defineVariable({
-  name: "auto-revert-verbose",
-  doc: "Whether reverting a buffer because its file changed says so.",
-  value: true,
-});
-
-let autoRevertTimer: number | undefined;
-
-/** Reverts each buffer that auto-reverts, is unmodified, and whose file changed. */
-function autoRevertBuffers(): void {
-  const global = e8.variable("global-auto-revert-mode") === true;
-  for (const buffer of e8.bufferList()) {
-    e8.withCurrentBuffer(buffer, () => {
-      const file = e8.bufferFileName();
-      if (file === undefined || (!global && e8.variable("auto-revert-mode") !== true)) return;
-      if (e8.bufferModified() || !e8.visitedFileChanged() || !e8.fileExists(file)) return;
-      revertNow();
-      if (e8.variable("auto-revert-verbose") === true) e8.message(`Reverting buffer ‘${buffer}’`);
-    });
-  }
-}
-
-/** Starts checking files if any buffer auto-reverts, and stops when none does. */
-function updateAutoRevertTimer(): void {
-  const wanted =
-    e8.variable("global-auto-revert-mode") === true ||
-    e8.bufferList().some((b) => e8.withCurrentBuffer(b, () => e8.variable("auto-revert-mode") === true));
-  if (wanted && autoRevertTimer === undefined) {
-    const interval = Number(e8.variable("auto-revert-interval")) || 5;
-    autoRevertTimer = e8.runWithTimer(interval, interval, autoRevertBuffers);
-  } else if (!wanted && autoRevertTimer !== undefined) {
-    e8.cancelTimer(autoRevertTimer);
-    autoRevertTimer = undefined;
-  }
-}
-
-e8.defineMinorMode({
-  name: "auto-revert-mode",
-  lighter: " ARev",
-  doc: "Revert the buffer when its file changes on disk, if the buffer has no unsaved changes.",
-  onChange: updateAutoRevertTimer,
-});
-
-e8.defineMinorMode({
-  name: "global-auto-revert-mode",
-  global: true,
-  doc: "Revert every file buffer when its file changes on disk, if the buffer has no unsaved changes.",
-  onChange: updateAutoRevertTimer,
-});
-
 // Managing files, after the commands of files.el and fileio.c.
 
 /** Whether to go ahead where `file` exists: asked when typed, refused from code, as `ok-if-already-exists` 0 does. */
@@ -1420,6 +1467,9 @@ e8.defineCommand({
     const arg = e8.prefixArg();
     const on = arg === null ? !e8.bufferReadOnly() : e8.prefixNumericValue(arg) > 0;
     e8.setReadOnly(on);
+    // Kept, so reverting keeps what was chosen here, as Emacs's does.
+    e8.makeLocalVariable("read-only-mode--state");
+    e8.setVariable("read-only-mode--state", on);
     if (e8.calledInteractively()) e8.message(`Read-Only mode ${on ? "enabled" : "disabled"} in current buffer`);
   },
 });

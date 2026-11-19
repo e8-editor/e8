@@ -258,6 +258,12 @@ function insertListing(dir: string): void {
 }
 
 /** Lists the directory in the current buffer again, as dired-revert: marks and point stay with their files. */
+/** Keeps the directory's time as the buffer's, as dired-readin does, for dired-buffer-stale-p. */
+function keepDirectoryTime(dir: string): void {
+  const attrs = e8.fileAttributes(dir);
+  if (attrs?.type === "directory") e8.setVisitedFileModtime(attrs.modified);
+}
+
 export function readin(keepState: boolean): void {
   const dir = currentDirectory();
   const marks = new Map<string, string>();
@@ -274,6 +280,7 @@ export function readin(keepState: boolean): void {
     eraseBuffer();
     insertListing(dir);
   });
+  keepDirectoryTime(dir);
   e8.runHooks("dired-after-readin-hook");
   // As dired-revert does once the listing is back.
   e8.funcall("hack-dir-local-variables-non-file-buffer");
@@ -348,6 +355,7 @@ function diredNoselect(input: string): string {
     // As dired-mode does before listing: the directory's .dir-locals.el applies.
     e8.funcall("hack-dir-local-variables-non-file-buffer");
     writable(() => insertListing(dir));
+    keepDirectoryTime(dir);
     e8.runHooks("dired-after-readin-hook");
     e8.setBufferModified(false);
     initialPosition();
@@ -1226,6 +1234,20 @@ e8.defineCommand({
   },
 });
 
+/**
+ * Whether the Dired buffer's directory changed since it was listed, as
+ * dired-buffer-stale-p: not while it is being edited, as wdired-mode does.
+ */
+e8.defun("dired-buffer-stale-p", () => {
+  const dir = currentDirectory();
+  if (!e8.fileReadableP(dir) || !e8.bufferReadOnly()) return false;
+  const attrs = e8.fileAttributes(dir);
+  const modtime = e8.visitedFileModtime();
+  // As dired-directory-changed-p, which compares with eq, so a time of
+  // none known (0) never matches and the listing is stale.
+  return !(attrs?.type !== "directory" || attrs.modified === modtime);
+});
+
 e8.defineCommand({
   name: "dired-do-redisplay",
   doc: "List the directory again, as g does.",
@@ -1348,6 +1370,12 @@ e8.defineMajorMode({
     e8.setReadOnly(true);
     e8.makeLocalVariable("revert-buffer-function");
     e8.setVariable("revert-buffer-function", "dired-revert");
+    // As dired-mode sets them for Auto-Revert: its directory's time says
+    // when it is stale, and notifications about the directory are enough.
+    e8.makeLocalVariable("buffer-stale-function");
+    e8.setVariable("buffer-stale-function", "dired-buffer-stale-p");
+    e8.makeLocalVariable("buffer-auto-revert-by-notification");
+    e8.setVariable("buffer-auto-revert-by-notification", true);
     e8.addHook("jit-lock-functions", fontify, { local: true });
     // As dired-mode does: the spec becomes a list, so the details, whose
     // invisible property names dired-hide-details-detail, show until

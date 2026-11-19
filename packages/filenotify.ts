@@ -1,8 +1,12 @@
 // Watching files for changes on disk, after Emacs's filenotify.el: one
 // way to watch a file or directory, file-notify-add-watch, over the
-// back end the system has. E8 has Emacs's kqueue back end (kqueue.c), on
-// macOS and the BSDs; elsewhere there is none, and adding a watch signals
-// file-notify-error. There are no file name handlers, so no remote watches.
+// back end the system has: Emacs's kqueue back end (kqueue.c) on macOS and
+// the BSDs, and inotify (inotify.c) on Linux; elsewhere there is none, and
+// adding a watch signals file-notify-error. There are no file name
+// handlers, so no remote watches.
+
+/** The back end, as file-notify--library: inotify on Linux, kqueue elsewhere. */
+const library: "inotify" | "kqueue" = e8.variable("system-type") === "gnu/linux" ? "inotify" : "kqueue";
 
 /** A watch: the directory, the file in it, or undefined for the directory itself, and the callback, undefined once the watch is being removed. */
 interface Watch {
@@ -114,6 +118,25 @@ const KQUEUE_ACTIONS: Record<string, string> = {
   revoke: "stopped",
 };
 
+/** The inotify back end's actions as file-notify's, as file-notify--callback-inotify. */
+const INOTIFY_ACTIONS: Record<string, string> = {
+  create: "created",
+  modify: "changed",
+  attrib: "attribute-changed",
+  delete: "deleted",
+  "delete-self": "deleted",
+  "move-self": "deleted",
+  "moved-from": "renamed-from",
+  "moved-to": "renamed-to",
+  ignored: "stopped",
+  unmount: "stopped",
+};
+
+e8.defun("file-notify--callback-inotify", (event: [number, string[], string, number?]) => {
+  const [desc, actions, file, cookie] = event;
+  handleEvent(desc, actions.map((a) => INOTIFY_ACTIONS[a]).filter((a): a is string => a !== undefined), file, cookie);
+});
+
 e8.defun("file-notify--callback-kqueue", (event: [number, string[], string, string?]) => {
   const [desc, actions, file, file1] = event;
   handleEvent(desc, actions.map((a) => KQUEUE_ACTIONS[a]).filter((a): a is string => a !== undefined), file, file1);
@@ -138,6 +161,23 @@ export function fileNotifyAddWatch(file: string, flags: string[], callback: ((ev
   }
   const dir = e8.directoryFileName(e8.fileDirectoryP(file) ? file : (e8.fileNameDirectory(file) ?? file));
   if (!e8.fileDirectoryP(dir)) e8.signal("file-notify-error", `Directory does not exist, ${dir}`, ["Directory does not exist", dir]);
+  if (library === "inotify") {
+    // inotify watches the directory, as file-notify--add-watch-inotify
+    // does, and events for other files in it are passed over.
+    const desc = e8.inotifyAddWatch(
+      dir,
+      [
+        "dont-follow",
+        "ignored",
+        "unmount",
+        ...(flags.includes("change") ? ["create", "delete", "delete-self", "modify", "move-self", "move"] : []),
+        ...(flags.includes("attribute-change") ? ["attrib"] : []),
+      ],
+      "file-notify--callback-inotify",
+    );
+    descriptors.set(desc, { directory: dir, filename: e8.fileDirectoryP(file) ? undefined : e8.fileNameNondirectory(file), callback });
+    return desc;
+  }
   // kqueue does not report changes to the files in a watched directory,
   // so each file is watched itself.
   const desc = e8.kqueueAddWatch(
@@ -158,7 +198,7 @@ export function fileNotifyRmWatch(descriptor: number): void {
   const watch = descriptors.get(descriptor);
   // Called from a stopped event, it does nothing.
   if (!watch?.callback) return;
-  e8.conditionCase(() => e8.kqueueRmWatch(descriptor), { "file-notify-error": () => true });
+  e8.conditionCase(() => (library === "inotify" ? e8.inotifyRmWatch(descriptor) : e8.kqueueRmWatch(descriptor)), { "file-notify-error": () => true });
   rmDescriptor(descriptor);
 }
 
@@ -169,7 +209,7 @@ export function fileNotifyRmAllWatches(): void {
 
 /** Whether a watch file-notify-add-watch made is in place, as file-notify-valid-p. */
 export function fileNotifyValidP(descriptor: number): boolean | undefined {
-  return descriptors.has(descriptor) && e8.kqueueValidP(descriptor) ? true : undefined;
+  return descriptors.has(descriptor) && (library === "inotify" ? e8.inotifyValidP(descriptor) : e8.kqueueValidP(descriptor)) ? true : undefined;
 }
 
 e8.defun("file-notify-add-watch", fileNotifyAddWatch);

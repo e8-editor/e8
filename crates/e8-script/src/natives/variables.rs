@@ -343,6 +343,24 @@ natives! {
     }
 
     fn expandFileName(ed, file: String, dir: Opt<String>) -> String {
+        // A handler for the name, or else for the directory, expands it, as
+        // Emacs's expand-file-name asks one.
+        let given = dir.0.clone();
+        let default = given.clone().unwrap_or_else(|| ed.default_directory().display().to_string());
+        // The name's handler gets the arguments as given; the directory's
+        // gets the directory worked out, as fileio.c passes it.
+        let asked = [
+            (file.as_str(), given.clone().map_or(EditorValue::Null, EditorValue::Str)),
+            (default.as_str(), EditorValue::Str(default.clone())),
+        ];
+        for (name, dir_arg) in asked {
+            if let Some(r) = ed.handled("expand-file-name", name, vec![EditorValue::Str(file.clone()), dir_arg]) {
+                return match r? {
+                    v if v.as_str().is_some() => Ok(v.as_str().unwrap_or_default().to_string()),
+                    _ => Err(e8_core::Error::new("Invalid handler in `file-name-handler-alist'")),
+                };
+            }
+        }
         let dir = match dir.0 {
             Some(dir) => ed.expand_file_name(&dir),
             None => ed.default_directory(),
@@ -355,28 +373,64 @@ natives! {
     }
 
     fn copyFile(ed, from: String, to: String, ok: bool, keep_time: bool) -> String {
+        // A handler for either name copies it, as Emacs's copy-file asks one.
+        let (abs_from, abs_to) = (ed.expand_file_name(&from).display().to_string(), ed.expand_file_name(&to).display().to_string());
+        let args = vec![EditorValue::Str(abs_from.clone()), EditorValue::Str(abs_to.clone()), EditorValue::Bool(ok), EditorValue::Bool(keep_time), EditorValue::Null, EditorValue::Null];
+        for name in [abs_from.clone(), abs_to.clone()] {
+            if let Some(r) = ed.handled("copy-file", &name, args.clone()) {
+                r?;
+                return Ok(abs_to);
+            }
+        }
         let to_dir = to.ends_with('/');
         ed.copy_file(&ed.expand_file_name(&from), &ed.expand_file_name(&to), to_dir, ok, keep_time).map(|p| p.display().to_string())
     }
 
     fn copyDirectory(ed, from: String, to: String, keep_time: bool) -> String {
+        let (a, b) = (ed.expand_file_name(&from).display().to_string(), ed.expand_file_name(&to).display().to_string());
+        let args = vec![EditorValue::Str(a.clone()), EditorValue::Str(b.clone()), EditorValue::Bool(keep_time), EditorValue::Null, EditorValue::Null];
+        if let Some(r) = handled_by(ed, "copy-directory", &[&a, &b], args) {
+            r?;
+            return Ok(b);
+        }
         ed.copy_directory(&ed.expand_file_name(&from), &ed.expand_file_name(&to), keep_time).map(|p| p.display().to_string())
     }
 
     fn renameFile(ed, from: String, to: String, ok: bool) -> String {
+        // A handler for either name renames it, as Emacs's rename-file asks one.
+        let (abs_from, abs_to) = (ed.expand_file_name(&from).display().to_string(), ed.expand_file_name(&to).display().to_string());
+        let args = vec![EditorValue::Str(abs_from.clone()), EditorValue::Str(abs_to.clone()), EditorValue::Bool(ok)];
+        for name in [abs_from.clone(), abs_to.clone()] {
+            if let Some(r) = ed.handled("rename-file", &name, args.clone()) {
+                r?;
+                return Ok(abs_to);
+            }
+        }
         let to_dir = to.ends_with('/');
         ed.rename_file(&ed.expand_file_name(&from), &ed.expand_file_name(&to), to_dir, ok).map(|p| p.display().to_string())
     }
 
     fn deleteFile(ed, file: String, trash: bool) {
+        let name = ed.expand_file_name(&file).display().to_string();
+        if let Some(r) = handled_by(ed, "delete-file", &[&name], vec![EditorValue::Str(name.clone()), EditorValue::Bool(trash)]) {
+            return r.map(drop);
+        }
         ed.delete_file(&ed.expand_file_name(&file), trash)
     }
 
     fn makeDirectory(ed, dir: String, parents: bool) {
+        let name = ed.expand_file_name(&dir).display().to_string();
+        if let Some(r) = handled_by(ed, "make-directory", &[&name], vec![EditorValue::Str(name.clone()), EditorValue::Bool(parents)]) {
+            return r.map(drop);
+        }
         ed.make_directory(&ed.expand_file_name(&dir), parents)
     }
 
     fn deleteDirectory(ed, dir: String, recursive: bool, trash: bool) {
+        let name = ed.expand_file_name(&dir).display().to_string();
+        if let Some(r) = handled_by(ed, "delete-directory", &[&name], vec![EditorValue::Str(name.clone()), EditorValue::Bool(recursive), EditorValue::Bool(trash)]) {
+            return r.map(drop);
+        }
         ed.delete_directory(&ed.expand_file_name(&dir), recursive, trash)
     }
 
@@ -1141,10 +1195,16 @@ natives! {
 
     /// A file's attributes, or undefined if there is no such file.
     #[ts = "(file: string): FileAttributes | undefined"]
-    pub fn fileAttributes(ed, file: String) -> Option<Record> {
+    pub fn fileAttributes(ed, file: String) -> Option<Field> {
         let path = ed.expand_file_name(&file);
+        // A handler for the name gives them, as Emacs's file-attributes asks one.
+        let name = path.display().to_string();
+        if let Some(r) = ed.handled("file-attributes", &name, vec![EditorValue::Str(name.clone()), EditorValue::Null]) {
+            let v = r?;
+            return Ok((!v.is_nil()).then(|| Field::from(v)));
+        }
         let Some(a) = e8_core::fileops::file_attributes(&path) else { return Ok(None) };
-        Ok(Some(attributes_record(&a)))
+        Ok(Some(attributes_record(&a).into()))
     }
 
     /// Where a file is auto-saved: #name# beside it.
@@ -1216,4 +1276,10 @@ fn binding_value(binding: e8_core::Binding) -> Option<EditorValue> {
         e8_core::Binding::Keys(k) => Some(EditorValue::List(k.iter().map(|k| EditorValue::Str(k.to_string())).collect())),
         e8_core::Binding::Menu(_) | e8_core::Binding::Nil => None,
     }
+}
+
+/// What a file name handler makes of an operation, asked for each of
+/// `names` in turn, as the primitives that take two names ask for either.
+pub(crate) fn handled_by(ed: &mut Editor, operation: &str, names: &[&str], args: Vec<EditorValue>) -> Option<e8_core::Result<EditorValue>> {
+    names.iter().find_map(|name| ed.handled(operation, name, args.clone()))
 }

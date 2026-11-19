@@ -93,6 +93,7 @@ pub mod xfaces;
 pub mod sqlite;
 pub mod xwidget;
 mod kqueue;
+mod inotify;
 pub mod composite;
 pub mod timefns;
 mod window;

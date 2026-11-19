@@ -531,13 +531,31 @@ declare global {
        */
       "auto-fill-mode": [];
       /**
-       * Revert the buffer when its file changes on disk, if the buffer has no unsaved changes.
+       * Revert the buffer when its file changes on disk (Auto-Revert Mode).
+       *
+       * A message says so each time, unless auto-revert-verbose is nil. Use global-auto-revert-mode for every buffer, and auto-revert-tail-mode for a file that only grows.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
        *
-       * Defined in packages/files.ts.
+       * Defined in packages/autorevert.ts.
        */
       "auto-revert-mode": [];
+      /**
+       * Restart the timer Auto-Revert Mode looks at files with, so a new auto-revert-interval takes effect, or stop it if nothing needs it.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-set-timer": [];
+      /**
+       * Follow the end of the visited file as it grows, as tail -f does (Auto-Revert Tail Mode).
+       *
+       * What is added to the file is added to the buffer; the buffer can be edited meanwhile. Make sure the file stops growing before saving it. Use auto-revert-mode for changes other than appends.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-tail-mode": [];
       /**
        * Toggle auto-saving of the current buffer to #name# beside its file.
        *
@@ -3098,11 +3116,13 @@ declare global {
        */
       "getenv": [variable: string];
       /**
-       * Revert every file buffer when its file changes on disk, if the buffer has no unsaved changes.
+       * Revert any buffer visiting a file when the file changes on disk (Global Auto-Revert Mode).
+       *
+       * With global-auto-revert-non-file-buffers, buffers such as Dired's are reverted too. Buffers in global-auto-revert-ignore-modes, or with global-auto-revert-ignore-buffer, are left alone.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
        *
-       * Defined in packages/files.ts.
+       * Defined in packages/autorevert.ts.
        */
       "global-auto-revert-mode": [];
       /**
@@ -6736,17 +6756,23 @@ declare global {
       /**
        * Replace the buffer's text with its file's, after asking.
        *
-       * Point stays where the text is unchanged. The major mode is chosen again, as when visiting the file. The revert can be undone.
+       * With a prefix argument, offer to revert from the auto-save file if it is newer. Point stays where the text is unchanged. The major mode is chosen again, as when visiting the file. The revert can be undone. Buffers that show something other than a file, such as Dired's, revert by their revert-buffer-function.
+       *
+       * @param auto-save raw prefix argument
        *
        * Defined in packages/files.ts.
        */
-      "revert-buffer": [];
+      "revert-buffer": [autoSave?: PrefixArg | boolean];
       /**
        * Revert the buffer from its file, asking only if it has unsaved changes.
        *
+       * With a prefix argument, offer to revert from the auto-save file if it is newer.
+       *
+       * @param auto-save raw prefix argument
+       *
        * Defined in packages/files.ts.
        */
-      "revert-buffer-quick": [];
+      "revert-buffer-quick": [autoSave?: PrefixArg | boolean];
       /**
        * Visit the buffer's file again, reading it in another coding system: for a file that was read wrongly.
        *
@@ -7686,6 +7712,18 @@ declare global {
        * Defined in packages/treesit-modes.ts.
        */
       "tsx-ts-mode": [];
+      /**
+       * Turn on Auto-Revert Mode, as a function for hooks.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "turn-on-auto-revert-mode": [];
+      /**
+       * Turn on Auto-Revert Tail Mode, as a function for hooks.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "turn-on-auto-revert-tail-mode": [];
       /**
        * Edit TypeScript, in typescript-ts-mode: E8's mode for it, as major-mode-remap-alist would have Emacs use.
        *
@@ -8691,15 +8729,45 @@ declare global {
        */
       "auto-mode-alist": Value;
       /**
-       * How many seconds between checks for files that changed, in buffers where auto-revert-mode or global-auto-revert-mode is on.
+       * Whether Global Auto-Revert Mode looks after this buffer.
        *
-       * Defined in packages/files.ts.
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert--global-mode": Value;
+      /**
+       * Whether to stop looking at files every auto-revert-interval seconds where the system tells about changes, to save power. Files on a file system that does not tell must then match auto-revert-notify-exclude-dir-regexp.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-avoid-polling": Value;
+      /**
+       * The buffers in Auto-Revert Mode.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-buffer-list": Value;
+      /**
+       * Whether to update version control information every auto-revert-interval seconds as well as when a buffer reverts.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-check-vc-info": Value;
+      /**
+       * Whether to say what notifications come.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-debug": Value;
+      /**
+       * Time, in seconds, between Auto-Revert Mode file checks. Setting it with setopt, or calling auto-revert-set-timer after, makes it take effect at once.
+       *
+       * Defined in packages/autorevert.ts.
        */
       "auto-revert-interval": Value;
       /**
        * Whether Auto-Revert mode is on in this buffer. Use the command auto-revert-mode to change it.
        *
-       * Defined in packages/files.ts.
+       * Defined in packages/autorevert.ts.
        */
       "auto-revert-mode": Value;
       /**
@@ -8707,9 +8775,73 @@ declare global {
        */
       "auto-revert-mode-map": Value;
       /**
-       * Whether reverting a buffer because its file changed says so.
+       * What the mode line shows while Auto-Revert Mode is on.
        *
-       * Defined in packages/files.ts.
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-mode-text": Value;
+      /**
+       * A regexp matching directories whose files are not watched for changes, only looked at.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-notify-exclude-dir-regexp": Value;
+      /**
+       * Whether a notification said this buffer's file changed.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-notify-modified-p": Value;
+      /**
+       * The file watch for this buffer's file.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-notify-watch-descriptor": Value;
+      /**
+       * Whether remote files are reverted; E8 has none.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-remote-files": Value;
+      /**
+       * Whether typing interrupts checking buffers, the rest being checked first next time.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-stop-on-user-input": Value;
+      /**
+       * Whether Auto-Revert-Tail mode is on in this buffer. Use the command auto-revert-tail-mode to change it.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-tail-mode": Value;
+      /**
+       * Keymap auto-revert-tail-mode-map.
+       */
+      "auto-revert-tail-mode-map": Value;
+      /**
+       * What the mode line shows while Auto-Revert Tail Mode is on.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-tail-mode-text": Value;
+      /**
+       * How long the file was when this buffer last read it, for Auto-Revert Tail Mode.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-tail-pos": Value;
+      /**
+       * Whether Auto-Revert Mode is told by the system when a file changes, as well as looking.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "auto-revert-use-notify": Value;
+      /**
+       * Whether reverting a buffer says so.
+       *
+       * Defined in packages/autorevert.ts.
        */
       "auto-revert-verbose": Value;
       /**
@@ -8811,6 +8943,12 @@ declare global {
        */
       "bookmark-search-size": Value;
       /**
+       * Whether, in a buffer visiting no file, Auto-Revert may rely on notifications about its directory, as Dired's does.
+       *
+       * Defined in packages/files.ts.
+       */
+      "buffer-auto-revert-by-notification": Value;
+      /**
        * This buffer's display table, a char-table of subtype display-table, or nil. Its extra slot 4, selective-display, holds the string hidden text with an ellipsis shows as in place of ..., as Org's org-ellipsis sets.
        */
       "buffer-display-table": Value;
@@ -8858,6 +8996,12 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "buffer-quit-function": Value;
+      /**
+       * A function of one optional argument, NOCONFIRM, saying whether the buffer needs reverting, as Auto-Revert asks it: true to revert, "fast" to revert without saying so. The default asks whether the visited file changed.
+       *
+       * Defined in packages/files.ts.
+       */
+      "buffer-stale-function": Value;
       /**
        * The current buffer's undo history, newest first: nil between commands, a number for where point was before one, [beg, end] for text inserted there, [text, pos] for text deleted at pos (negative if point was after it), [nil, prop, value, beg, end] for a text property's old value, [apply, fn, ...args] for a function undo calls, and [t] where the buffer was unmodified. t while changes are not recorded. Setting it sets the history, t to stop recording.
        */
@@ -10265,15 +10409,39 @@ declare global {
        */
       "fundamental-mode-map": Value;
       /**
+       * When true, Global Auto-Revert Mode leaves this buffer alone; a function is called with the buffer to say.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "global-auto-revert-ignore-buffer": Value;
+      /**
+       * Major modes Global Auto-Revert Mode leaves alone.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "global-auto-revert-ignore-modes": Value;
+      /**
        * Whether Global-Auto-Revert mode is on. Use the command global-auto-revert-mode to change it.
        *
-       * Defined in packages/files.ts.
+       * Defined in packages/autorevert.ts.
        */
       "global-auto-revert-mode": Value;
       /**
        * Keymap global-auto-revert-mode-map.
        */
       "global-auto-revert-mode-map": Value;
+      /**
+       * What the mode line shows while Global Auto-Revert Mode is on.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "global-auto-revert-mode-text": Value;
+      /**
+       * Whether Global Auto-Revert Mode reverts buffers visiting no file that say when they are stale, as Dired's and the buffer list do, as well as file buffers.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "global-auto-revert-non-file-buffers": Value;
       /**
        * Whether Global-Display-Line-Numbers mode is on. Use the command global-display-line-numbers-mode to change it.
        *
@@ -11607,6 +11775,12 @@ declare global {
        */
       "mode-require-final-newline": Value;
       /**
+       * A regexp matching the directories where mounted file systems are, which may not tell about changes.
+       *
+       * Defined in packages/autorevert.ts.
+       */
+      "mounted-file-systems": Value;
+      /**
        * If non-nil, a function mouse-position and mouse-pixel-position call with what they would return, returning what it returns.
        */
       "mouse-position-function": Value;
@@ -12582,6 +12756,12 @@ declare global {
        */
       "read-hide-char": Value;
       /**
+       * The read-only state read-only-mode last chose in this buffer, which reverting keeps.
+       *
+       * Defined in packages/files.ts.
+       */
+      "read-only-mode--state": Value;
+      /**
        * Whether the password being read is shown as read-hide-char rather than as typed.
        *
        * Defined in packages/subr.ts.
@@ -12690,11 +12870,35 @@ declare global {
        */
       "resize-mini-windows": Value;
       /**
-       * The command revert-buffer runs instead of rereading the file, in buffers that set it, such as Dired's. Nil for the usual.
+       * The function revert-buffer calls to revert the buffer, with its IGNORE-AUTO and NOCONFIRM; revert-buffer--default rereads the visited file, and buffers such as Dired's set their own. Nil for the default.
        *
        * Defined in packages/files.ts.
        */
       "revert-buffer-function": Value;
+      /**
+       * Whether revert-buffer is running.
+       *
+       * Defined in packages/files.ts.
+       */
+      "revert-buffer-in-progress-p": Value;
+      /**
+       * Whether the revert-buffer running keeps the buffer's modes, as its PRESERVE-MODES.
+       *
+       * Defined in packages/files.ts.
+       */
+      "revert-buffer-preserve-modes": Value;
+      /**
+       * Whether revert-buffer-quick asks with y-or-n-p rather than yes-or-no-p.
+       *
+       * Defined in packages/files.ts.
+       */
+      "revert-buffer-quick-short-answers": Value;
+      /**
+       * Functions called before reverting, each giving a function, or nil, that puts back what it kept once the buffer is reverted.
+       *
+       * Defined in packages/files.ts.
+       */
+      "revert-buffer-restore-functions": Value;
       /**
        * Files revert-buffer reverts without asking, if unmodified: a list of Emacs regular expressions matched against the file name.
        *
@@ -13083,6 +13287,10 @@ declare global {
        * A function the mode gives, called with a start and an end to put syntax-table properties on the text there, before it is scanned, as Emacs's syntax-propertize calls it.
        */
       "syntax-propertize-function": Value;
+      /**
+       * The kind of system E8 runs on, as Emacs names it: "darwin" for macOS, "gnu/linux", "berkeley-unix" for the BSDs, "windows-nt", or "gnu" elsewhere.
+       */
+      "system-type": Value;
       /**
        * Whether TAB always indents the line, as t; nil indents only in the indentation and inserts a tab elsewhere.
        *
@@ -15278,6 +15486,10 @@ declare global {
        */
       "after-save-hook": Value;
       /**
+       * Run after set-visited-file-name changes the file a buffer visits.
+       */
+      "after-set-visited-file-name-hook": Value;
+      /**
        * Run after entering Agent Shell mode, after the hooks of the modes it is built on.
        */
       "agent-shell-mode-hook": Value;
@@ -15309,6 +15521,18 @@ declare global {
        * Run after Auto-Revert mode is turned on.
        */
       "auto-revert-mode-on-hook": Value;
+      /**
+       * Run after Auto-Revert-Tail mode is turned on or off.
+       */
+      "auto-revert-tail-mode-hook": Value;
+      /**
+       * Run after Auto-Revert-Tail mode is turned off.
+       */
+      "auto-revert-tail-mode-off-hook": Value;
+      /**
+       * Run after Auto-Revert-Tail mode is turned on.
+       */
+      "auto-revert-tail-mode-on-hook": Value;
       /**
        * Run after entering Bash mode, after the hooks of the modes it is built on.
        */
@@ -18341,8 +18565,8 @@ declare global {
     function setBufferAutoSaved(): void;
     /**
      * Forgets that auto-saving the current buffer failed, as
-     * clear-buffer-auto-save-failure. E8 does not stop auto-saving a
-     * buffer after failures, so there is nothing to forget.
+     * clear-buffer-auto-save-failure: an auto-save that took more than a
+     * minute keeps the buffer from being auto-saved for 20 minutes.
      */
     function clearBufferAutoSaveFailure(): void;
     /**
@@ -18488,6 +18712,21 @@ declare global {
      * on Linux and the web.
      */
     function kqueueAddWatch(file: string, flags: ("create" | "delete" | "write" | "extend" | "attrib" | "link" | "rename" | "revoke" | (string & {}))[] | null, callback: ((event: [number, string[], string, string?]) => void) | string): number;
+    /**
+     * Watch a file or directory with Linux's inotify, as inotify-add-watch:
+     * `aspect` one name or a list of them (access, attrib, close-write,
+     * close-nowrite, create, delete, delete-self, modify, move-self,
+     * moved-from, moved-to, open, move, close, all-events, and dont-follow,
+     * onlydir, ignored and unmount); `callback` is called with
+     * `[descriptor, aspects, name, cookie]`. Returns the watch's descriptor,
+     * one number where Emacs gives (DESCRIPTOR . ID). A file-notify-error
+     * elsewhere than Linux.
+     */
+    function inotifyAddWatch(file: string, aspect: string | string[], callback: ((event: [number, string[], string, number]) => void) | string): number;
+    /** Stop a watch inotifyAddWatch made, as inotify-rm-watch. */
+    function inotifyRmWatch(descriptor: number): true;
+    /** Whether a watch inotifyAddWatch made is in place, as inotify-valid-p. */
+    function inotifyValidP(descriptor: Value): boolean;
     /** Stop a watch kqueueAddWatch made, as kqueue-rm-watch: true, or a file-notify-error if it is not one. */
     function kqueueRmWatch(descriptor: number): true;
     /** Whether a watch is in place, as kqueue-valid-p: not once removed, or once what it watched was deleted or renamed. */
