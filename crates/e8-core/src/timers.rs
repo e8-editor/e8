@@ -190,7 +190,9 @@ impl Editor {
             self.timers.running.push(id);
             let result = f(self, &[]);
             self.timers.running.retain(|&r| r != id);
-            if let Err(e) = result {
+            if let Err(e) = result
+                && e.symbol() != "kill-emacs"
+            {
                 self.message(format!("Error running timer: {e}"));
             }
         }

@@ -74,6 +74,7 @@ mod overlays;
 mod package_vc;
 mod parens;
 mod process_objects;
+mod process_environment;
 mod process_odds;
 mod posix_search;
 mod process_primitives;

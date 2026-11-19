@@ -118,9 +118,9 @@ natives! {
         Ok(handler.unwrap_or(EditorValue::Null))
     }
 
-    /// A file name with $VAR and ${VAR} from the environment, and starting again after // or /~, as substitute-in-file-name.
+    /// A file name with $VAR and ${VAR} from process-environment, and starting again after // or /~, as substitute-in-file-name.
     pub fn substituteInFileName(ed, file: String) -> String {
-        e8_core::substitute_in_file_name(&file)
+        e8_core::substitute_in_file_name(&file, |var| ed.getenv(var))
     }
 
     fn fileNameConcat(ed, parts: Vec<String>) -> String {

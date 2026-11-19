@@ -83,6 +83,10 @@ const SIGNALS: &[(&str, i32)] = &[
     ("CHLD", libc::SIGCHLD),
     ("TTIN", libc::SIGTTIN),
     ("TTOU", libc::SIGTTOU),
+    // Linux's SIGPOLL is its SIGIO, which gnulib's table, and so Emacs's
+    // signal-names, calls POLL, that name coming first there.
+    #[cfg(any(target_os = "linux", target_os = "android"))]
+    ("POLL", libc::SIGPOLL),
     ("IO", libc::SIGIO),
     ("XCPU", libc::SIGXCPU),
     ("XFSZ", libc::SIGXFSZ),
@@ -119,7 +123,10 @@ pub fn signal_names() -> Vec<String> {
     #[cfg(unix)]
     {
         let mut signals: Vec<(&str, i32)> = SIGNALS.to_vec();
+        // Highest first; of two names for one number, the one the table
+        // has first, as gnulib's sig2str gives it.
         signals.sort_by_key(|(_, sig)| std::cmp::Reverse(*sig));
+        signals.dedup_by_key(|(_, sig)| *sig);
         let mut names: Vec<String> = signals.into_iter().map(|(n, _)| n.to_string()).collect();
         // The real-time signals, highest first, named as gnulib's sig2str
         // names them: RTMIN+n for the lower half, RTMAX-n for the upper.
@@ -229,6 +236,19 @@ pub(crate) struct Process {
     /// Output that came while its filter was `t`, to give the next filter
     /// set, in order.
     held_output: String,
+    /// Whether a connection or pipe process is kept from being read, as
+    /// stop-process or `:stop` keeps it; its output waits, as held_output.
+    stopped: bool,
+    /// Ends of its output that came while it was stopped, counted when it
+    /// is continued, so it ends only once what came meanwhile is given.
+    deferred_closes: usize,
+    /// Whether a connection made with `:nowait` is still being made.
+    connecting: bool,
+    /// A datagram process's socket and the address it sends to.
+    datagram: Option<Datagram>,
+    /// Whether such a connection failed: its status is "failed", its
+    /// exit code the system's error number.
+    failed: bool,
     query_on_exit: bool,
     /// Its process-inherit-coding-system-flag.
     inherit_coding: bool,
@@ -311,6 +331,34 @@ enum Event {
     Closed(u64),
     /// A server took a connection, from this peer.
     Accepted(u64, Conn, String),
+    /// A connection made with `:nowait` was made, or failed.
+    Connected(u64, std::io::Result<Conn>),
+}
+
+/// A datagram (UDP) process's socket, with the address what is sent goes
+/// to: the one connected to for a client, the last one heard from for a
+/// server, as Emacs keeps a datagram process's address.
+#[derive(Clone)]
+struct Datagram {
+    socket: Arc<std::net::UdpSocket>,
+    peer: Arc<Mutex<Option<std::net::SocketAddr>>>,
+    /// Set when the process is deleted, which its reader looks at.
+    stop: Arc<AtomicBool>,
+}
+
+impl Write for Datagram {
+    /// Sends one datagram to the process's address.
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        let peer = *self.peer.lock().unwrap_or_else(|e| e.into_inner());
+        match peer {
+            Some(addr) => self.socket.send_to(buf, addr),
+            None => Err(std::io::Error::other("no datagram address")),
+        }
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
 }
 
 /// A network connection's socket.
@@ -632,7 +680,7 @@ pub struct ProcessSpec {
     /// Whether what it writes to standard error comes in as output too.
     pub merge_stderr: bool,
     /// A buffer, by name, for what it writes to standard error, made if
-    /// there is none, as make-process's :stderr; on pipes only, and
+    /// there is none, as make-process's :stderr, on pipes or a terminal;
     /// `merge_stderr` then does not apply.
     pub stderr_buffer: Option<String>,
     /// A pipe process, by id, to write its standard error to, as
@@ -661,6 +709,8 @@ pub struct PipeSpec {
     pub coding: Option<(Coding, Coding)>,
     /// Whether exiting E8 goes ahead without asking while it is open, as :noquery.
     pub noquery: bool,
+    /// Whether it starts kept from being read, as :stop.
+    pub stop: bool,
 }
 
 /// What opens a network connection or server, as make-network-process takes it.
@@ -677,6 +727,16 @@ pub struct NetworkSpec {
     pub coding: Option<(Coding, Coding)>,
     /// TLS to start once connected, as `:tls-parameters` asks.
     pub tls: Option<crate::tls::TlsParams>,
+    /// Whether it starts kept from being read, as :stop.
+    pub stop: bool,
+    /// Whether to return at once and connect meanwhile, as :nowait: the
+    /// status is "connect" until it is made, when the sentinel is told
+    /// "open\n", or "failed with code N\n" if it cannot be.
+    pub nowait: bool,
+    /// Whether it sends and takes datagrams (UDP), as `:type datagram`:
+    /// each string sent is one datagram, each one that comes is one piece
+    /// of output.
+    pub datagram: bool,
 }
 
 /// Reads a stream in chunks, sending the bytes on to be decoded. With a
@@ -806,13 +866,27 @@ impl Editor {
             }
         }
         self.check_permission(&format!("run {}", spec.command.join(" ")))?;
+        // The codings first, as Emacs chooses them before it starts the
+        // program, so a function in the alist that fails starts nothing.
+        let coding = match spec.coding {
+            Some(coding) => coding,
+            None => {
+                // As make-process asks find-operation-coding-system:
+                // start-process, the name, the buffer, the program and its arguments.
+                let mut args = vec![Value::Str(spec.name.clone()), spec.buffer.clone().map_or(Value::Null, Value::Str)];
+                args.extend(spec.command.iter().cloned().map(Value::Str));
+                self.chosen_process_coding("start-process", &args)?
+            }
+        };
         let buffer = spec.buffer.as_ref().map(|name| self.get_buffer_create(name));
         let dir = match &spec.directory {
             Some(d) => self.expand_file_name(d),
             None => self.expand_file_name("."),
         };
-        let mut command = Command::new(&program);
-        command.args(&spec.command[1..]).current_dir(&dir).env("TERM", "dumb").env("INSIDE_EMACS", "e8");
+        let found = self.find_program(&program)?;
+        let mut command = Command::new(&found);
+        command.args(&spec.command[1..]).current_dir(&dir);
+        self.set_command_environment(&mut command, &dir, true);
         for (k, v) in &spec.env {
             command.env(k, v);
         }
@@ -827,8 +901,17 @@ impl Editor {
             #[cfg(unix)]
             Some((master, slave, _)) => {
                 // The terminal is the program's input, output and error, and
-                // its controlling terminal, in a session of its own.
-                command.stdin(Stdio::from(slave.try_clone()?)).stdout(Stdio::from(slave.try_clone()?)).stderr(Stdio::from(slave.try_clone()?));
+                // its controlling terminal, in a session of its own; its
+                // standard error goes to a pipe instead when it has a
+                // buffer of its own, as Emacs's :stderr does on a terminal.
+                let stderr = if spec.stderr_buffer.is_some() {
+                    let (reader, writer) = std::io::pipe().map_err(|e| Error::new(format!("Making a pipe: {e}")))?;
+                    errors = Some(reader);
+                    Stdio::from(writer)
+                } else {
+                    Stdio::from(slave.try_clone()?)
+                };
+                command.stdin(Stdio::from(slave.try_clone()?)).stdout(Stdio::from(slave.try_clone()?)).stderr(stderr);
                 use std::os::unix::process::CommandExt;
                 // SAFETY: setsid and the ioctl are async-signal-safe, as pre_exec needs.
                 unsafe {
@@ -935,7 +1018,6 @@ impl Editor {
             }
             _ => None,
         };
-        let coding = spec.coding.unwrap_or_else(|| self.default_process_coding());
         let (buffer_id, mark) = match buffer {
             Some(index) => {
                 let b = &mut self.buffers[index];
@@ -960,6 +1042,11 @@ impl Editor {
             sentinel: spec.sentinel,
             plist: Value::Null,
             held_output: String::new(),
+            stopped: false,
+            deferred_closes: 0,
+            connecting: false,
+            datagram: None,
+            failed: false,
             query_on_exit: true,
             inherit_coding,
             exited: None,
@@ -987,6 +1074,176 @@ impl Editor {
         encode = named(self.variable("coding-system-for-write")).or(encode);
         let utf8 = Coding::named("utf-8-unix");
         (decode.unwrap_or(utf8), encode.unwrap_or(utf8))
+    }
+
+    /// Opens a datagram (UDP) socket for a process: a server bound to its
+    /// host and port, any free one for "t", hearing from anyone and sending
+    /// to whoever was heard from last; a client sending to its host and
+    /// port. Each datagram that comes is output, read on a thread of its
+    /// own that stops when the process is deleted.
+    fn open_datagram(&mut self, id: u64, spec: &NetworkSpec, contact: &mut Contact) -> std::io::Result<(Sender<Option<ToProcess>>, Datagram)> {
+        use std::net::ToSocketAddrs;
+        let host = match spec.host.as_deref() {
+            Some("local") | None => "127.0.0.1",
+            Some(host) => host,
+        };
+        let (socket, peer) = if spec.server {
+            let port = if spec.service == "t" { "0" } else { spec.service.as_str() };
+            let socket = std::net::UdpSocket::bind(format!("{host}:{port}"))?;
+            contact.service = socket.local_addr().map(|a| a.port().to_string()).unwrap_or_else(|_| contact.service.clone());
+            (socket, None)
+        } else {
+            let addr = format!("{host}:{}", spec.service).to_socket_addrs()?.next().ok_or_else(|| std::io::Error::other("no address"))?;
+            let any = if addr.is_ipv6() { "[::]:0" } else { "0.0.0.0:0" };
+            (std::net::UdpSocket::bind(any)?, Some(addr))
+        };
+        socket.set_read_timeout(Some(Duration::from_millis(100)))?;
+        let dgram = Datagram { socket: Arc::new(socket), peer: Arc::new(Mutex::new(peer)), stop: Arc::new(AtomicBool::new(false)) };
+        let (reader, tx, server) = (dgram.clone(), self.processes.tx.clone(), spec.server);
+        std::thread::spawn(move || {
+            let mut buf = vec![0u8; 65536];
+            while !reader.stop.load(Ordering::Relaxed) {
+                match reader.socket.recv_from(&mut buf) {
+                    Ok((n, from)) => {
+                        if server {
+                            *reader.peer.lock().unwrap_or_else(|e| e.into_inner()) = Some(from);
+                        }
+                        if tx.send(Event::Output(id, buf[..n].to_vec())).is_err() {
+                            return;
+                        }
+                    }
+                    Err(e) if matches!(e.kind(), std::io::ErrorKind::WouldBlock | std::io::ErrorKind::TimedOut | std::io::ErrorKind::Interrupted) => {}
+                    // A client told the other side is not there, as an
+                    // ICMP refusal reports, keeps listening, as Emacs's does.
+                    Err(e) if e.kind() == std::io::ErrorKind::ConnectionRefused => {}
+                    Err(_) => break,
+                }
+            }
+            let _ = tx.send(Event::Closed(id));
+        });
+        let stop = dgram.stop.clone();
+        let sender = writer(self.processes.write_delay.clone(), dgram.clone(), move || stop.store(true, Ordering::Relaxed));
+        Ok((sender, dgram))
+    }
+
+    /// A datagram process's address, as process-datagram-address: where
+    /// what it sends goes; None for a server not yet heard from, or a
+    /// process that is not a datagram one.
+    pub fn process_datagram_address(&self, id: u64) -> Option<Option<std::net::SocketAddr>> {
+        let p = self.processes.list.iter().find(|p| p.id == id)?;
+        let d = p.datagram.as_ref()?;
+        Some(*d.peer.lock().unwrap_or_else(|e| e.into_inner()))
+    }
+
+    /// Sets where a datagram process sends to, as
+    /// set-process-datagram-address; false if it is not a datagram process.
+    pub fn set_process_datagram_address(&mut self, id: u64, addr: std::net::SocketAddr) -> bool {
+        let Some(d) = self.processes.list.iter().find(|p| p.id == id).and_then(|p| p.datagram.as_ref()) else { return false };
+        *d.peer.lock().unwrap_or_else(|e| e.into_inner()) = Some(addr);
+        true
+    }
+
+    /// Finishes a connection made with `:nowait`: once made, it is read and
+    /// written as any other and its sentinel told "open\n"; if it could not
+    /// be, its status is "failed", its sentinel told "failed with code N\n"
+    /// with the system's error number, and it is done with, as one that
+    /// has ended is. One deleted meanwhile is closed.
+    fn finish_connecting(&mut self, id: u64, result: std::io::Result<Conn>) {
+        if !self.processes.list.iter().any(|p| p.id == id && p.connecting) {
+            return;
+        }
+        let made = match result {
+            Ok(conn) => {
+                #[cfg(unix)]
+                let socket = conn.own_socket();
+                self.connect(id, conn).map(|(stdin, link)| {
+                    let p = self.processes.list.iter_mut().find(|p| p.id == id).expect("looked for above");
+                    p.stdin = Some(stdin);
+                    p.tls = Some(link);
+                    #[cfg(unix)]
+                    {
+                        p.socket = socket;
+                    }
+                })
+            }
+            Err(e) => Err(Error::new(e.raw_os_error().unwrap_or(0).to_string())),
+        };
+        let Some(i) = self.processes.list.iter().position(|p| p.id == id) else { return };
+        let p = &mut self.processes.list[i];
+        p.connecting = false;
+        let sentinel = p.sentinel.clone();
+        match made {
+            Ok(()) => self.run_sentinel(id, sentinel, "open\n".into()),
+            Err(e) => {
+                p.failed = true;
+                p.status = Status::Exit(e.to_string().parse().unwrap_or(0));
+                p.open_streams = 0;
+                let event = p.event();
+                self.run_sentinel(id, sentinel, event);
+                if let Some(i) = self.processes.list.iter().position(|p| p.id == id) {
+                    let p = self.processes.list.remove(i);
+                    self.keep_gone(&p);
+                    self.forget_marks(p);
+                }
+            }
+        }
+    }
+
+    /// Waits while a connection made with `:nowait` is being made, as
+    /// Emacs's wait_for_socket_fds before sending to one; `C-g` quits.
+    fn wait_for_connection(&mut self, name: &str) -> Result<()> {
+        while self.processes.list.iter().any(|p| p.name == name && p.connecting) {
+            self.maybe_quit()?;
+            self.poll_processes();
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        Ok(())
+    }
+
+    /// Keeps a connection, server or pipe process from being read, or lets
+    /// it be read again, as stop-process and continue-process do for one;
+    /// what came meanwhile is given its filter then, in order. False for
+    /// any other kind of process, which is signalled instead.
+    pub fn set_process_stopped(&mut self, id: u64, stop: bool) -> bool {
+        let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) else { return false };
+        if !matches!(p.kind, Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_)) {
+            return false;
+        }
+        p.stopped = stop;
+        if !stop {
+            p.open_streams = p.open_streams.saturating_sub(std::mem::take(&mut p.deferred_closes));
+        }
+        true
+    }
+
+    /// The codings a process gets when it is given none, as make-process
+    /// and make-network-process choose them: coding-system-for-read and
+    /// -write where bound, else what find-operation-coding-system says of
+    /// `operation` on `args`, from process-coding-system-alist or
+    /// network-coding-system-alist, else default-process-coding-system's,
+    /// else UTF-8. An `operation` of "" asks no alist.
+    pub fn chosen_process_coding(&mut self, operation: &str, args: &[Value]) -> Result<(Coding, Coding)> {
+        let named = |v: Option<Value>| v.and_then(|v| v.as_str().and_then(Coding::parse));
+        let (default_decode, default_encode) = match self.variable("default-process-coding-system") {
+            Some(Value::List(pair)) if pair.len() == 2 => (named(pair.first().cloned()), named(pair.get(1).cloned())),
+            _ => (None, None),
+        };
+        let for_read = named(self.variable("coding-system-for-read"));
+        let for_write = named(self.variable("coding-system-for-write"));
+        let found = if (for_read.is_none() || for_write.is_none()) && !operation.is_empty() {
+            self.find_operation_coding_system(operation, args)?
+        } else {
+            None
+        };
+        let (found_decode, found_encode) = match found {
+            Some((decode, encode)) => (named(Some(decode)), named(Some(encode))),
+            None => (None, None),
+        };
+        let utf8 = Coding::named("utf-8-unix");
+        Ok((
+            for_read.or(found_decode).or(default_decode).unwrap_or(utf8),
+            for_write.or(found_encode).or(default_encode).unwrap_or(utf8),
+        ))
     }
 
     /// A new process's process-inherit-coding-system-flag: set when it has
@@ -1127,6 +1384,11 @@ impl Editor {
             sentinel: spec.sentinel,
             plist: Value::Null,
             held_output: String::new(),
+            stopped: spec.stop,
+            deferred_closes: 0,
+            connecting: false,
+            datagram: None,
+            failed: false,
             query_on_exit: !spec.noquery,
             inherit_coding,
             exited: None,
@@ -1157,13 +1419,36 @@ impl Editor {
         let failed = |e: std::io::Error| {
             Error::signal("file-error", format!("make client process failed: {e}, :name, {}, :service, {}", spec.name, spec.service), vec![])
         };
+        let coding = match spec.coding {
+            Some(coding) => coding,
+            // A local socket, with no host, asks no alist, as Emacs's
+            // make-network-process asks only with a host and a service.
+            None if spec.host.is_none() => self.chosen_process_coding("", &[])?,
+            None => {
+                let service = match spec.service.parse::<u16>() {
+                    Ok(port) => Value::Number(port as f64),
+                    Err(_) => Value::Str(spec.service.clone()),
+                };
+                let args = [Value::Str(spec.name.clone()), spec.buffer.clone().map_or(Value::Null, Value::Str), spec.host.clone().map_or(Value::Null, Value::Str), service];
+                self.chosen_process_coding("open-network-stream", &args)?
+            }
+        };
         let id = self.processes.next_id;
         self.processes.next_id += 1;
         let mut contact = Contact { host: spec.host.clone(), service: spec.service.clone(), remote: None, options: Vec::new() };
         let mut tls = None;
         #[cfg(unix)]
         let socket;
-        let (kind, stdin, open_streams) = if spec.server {
+        let mut datagram = None;
+        let (kind, stdin, open_streams) = if spec.datagram {
+            let (sender, dgram) = self.open_datagram(id, &spec, &mut contact).map_err(failed)?;
+            #[cfg(unix)]
+            {
+                socket = own_socket(&*dgram.socket);
+            }
+            datagram = Some(dgram);
+            (Kind::Network(contact), Some(sender), 1)
+        } else if spec.server {
             let stop = Arc::new(AtomicBool::new(false));
             let tx = self.processes.tx.clone();
             let flag = stop.clone();
@@ -1199,6 +1484,34 @@ impl Editor {
                 None => return Err(Error::new("Local sockets are not supported here")),
             }
             (Kind::Server(contact, stop), None, 0)
+        } else if spec.nowait {
+            let (tx, host, service) = (self.processes.tx.clone(), spec.host.clone(), spec.service.clone());
+            // The name is looked up first, as Emacs does before it connects
+            // without waiting, so one that does not resolve is an error here.
+            let addr = match &host {
+                Some(host) => {
+                    use std::net::ToSocketAddrs;
+                    let host = if host == "local" { "127.0.0.1" } else { host.as_str() };
+                    Some(format!("{host}:{service}").to_socket_addrs().map_err(failed)?.next().ok_or_else(|| failed(std::io::Error::other("no address")))?)
+                }
+                None => None,
+            };
+            std::thread::spawn(move || {
+                let _ = &host;
+                let result = match addr {
+                    Some(addr) => std::net::TcpStream::connect(addr).map(Conn::Tcp),
+                    #[cfg(unix)]
+                    None => std::os::unix::net::UnixStream::connect(&service).map(Conn::Local),
+                    #[cfg(not(unix))]
+                    None => Err(std::io::Error::other("Local sockets are not supported here")),
+                };
+                let _ = tx.send(Event::Connected(id, result));
+            });
+            #[cfg(unix)]
+            {
+                socket = None;
+            }
+            (Kind::Network(contact), None, 1)
         } else {
             let conn = match &spec.host {
                 Some(host) => {
@@ -1227,7 +1540,6 @@ impl Editor {
             }
             None => (None, None),
         };
-        let coding = spec.coding.unwrap_or_else(|| self.default_process_coding());
         let inherit_coding = self.inherits_coding(buffer_id);
         self.processes.list.push(Process {
             id,
@@ -1244,6 +1556,11 @@ impl Editor {
             sentinel: spec.sentinel,
             plist: Value::Null,
             held_output: String::new(),
+            stopped: spec.stop,
+            deferred_closes: 0,
+            connecting: spec.nowait && !spec.server && !spec.datagram,
+            datagram,
+            failed: false,
             query_on_exit: true,
             inherit_coding,
             exited: None,
@@ -1407,6 +1724,11 @@ impl Editor {
             // A copy of the server's, as server_accept_connection gives it.
             plist,
             held_output: String::new(),
+            stopped: false,
+            deferred_closes: 0,
+            connecting: false,
+            datagram: None,
+            failed: false,
             query_on_exit: true,
             inherit_coding,
             exited: None,
@@ -1421,6 +1743,7 @@ impl Editor {
         });
         if let Some(f) = sentinel
             && let Err(e) = self.funcall(&f, &[Value::Process(id), Value::Str(format!("open from {host}\n"))])
+            && e.symbol() != "kill-emacs"
         {
             self.message(format!("error in process sentinel: {e}"));
         }
@@ -1619,6 +1942,7 @@ impl Editor {
 
     /// Sends text to a process's input, encoded in its coding, as process-send-string.
     pub fn process_send_string(&mut self, name: &str, text: &str) -> Result<()> {
+        self.wait_for_connection(name)?;
         let p = self.process_mut(name)?;
         let bytes = p.coding.1.encode_lossy(text).0;
         let stdin = p.stdin.as_ref().ok_or_else(|| Error::new(format!("Process {name} not running")))?;
@@ -1629,7 +1953,12 @@ impl Editor {
     /// end-of-file character on a terminal, which can go on reading after
     /// it; a pipe or connection is closed for writing.
     pub fn process_send_eof(&mut self, name: &str) -> Result<()> {
+        self.wait_for_connection(name)?;
         let p = self.process_mut(name)?;
+        // A datagram has no end to send, as Emacs's returns for one.
+        if p.datagram.is_some() {
+            return Ok(());
+        }
         if p.status != Status::Run {
             return Err(Error::new(format!("Process {name} not running: {}", p.status.event().trim_end())));
         }
@@ -1872,9 +2201,14 @@ impl Editor {
                 }
                 Event::Stderr(id, bytes) => self.process_stderr(id, &bytes),
                 Event::Accepted(server, conn, peer) => self.accept_connection(server, conn, peer),
+                Event::Connected(id, result) => self.finish_connecting(id, result),
                 Event::Closed(id) => {
                     if let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) {
-                        p.open_streams = p.open_streams.saturating_sub(1);
+                        if p.stopped {
+                            p.deferred_closes += 1;
+                        } else {
+                            p.open_streams = p.open_streams.saturating_sub(1);
+                        }
                     }
                 }
             }
@@ -1962,7 +2296,7 @@ impl Editor {
                     }
                     Event::Stderr(_, bytes) => self.process_stderr(id, &bytes),
                     Event::Closed(_) => {}
-                    Event::Accepted(..) => unreachable!("only this process's output is taken"),
+                    Event::Accepted(..) | Event::Connected(..) => unreachable!("only this process's output is taken"),
                 }
             }
             // The output may have run a filter that deleted it.
@@ -1996,7 +2330,7 @@ impl Editor {
             .processes
             .list
             .iter_mut()
-            .filter(|p| !p.held_output.is_empty() && p.filter != Some(Value::Bool(true)))
+            .filter(|p| !p.held_output.is_empty() && p.filter != Some(Value::Bool(true)) && !p.stopped)
             .map(|p| (p.id, std::mem::take(&mut p.held_output)))
             .collect();
         for (id, text) in waiting {
@@ -2017,7 +2351,9 @@ impl Editor {
                 Ok(())
             }
         };
-        if let Err(e) = result {
+        if let Err(e) = result
+            && e.symbol() != "kill-emacs"
+        {
             self.message(format!("error in process sentinel: {e}"));
         }
     }
@@ -2131,8 +2467,9 @@ impl Editor {
 
     fn process_output(&mut self, id: u64, text: &str) {
         let Some(p) = self.processes.list.iter_mut().find(|p| p.id == id) else { return };
-        // A filter of t holds the output back, as Emacs stops reading it.
-        if p.filter == Some(Value::Bool(true)) {
+        // A filter of t holds the output back, as Emacs stops reading it,
+        // and so does a connection or pipe process stop-process stopped.
+        if p.filter == Some(Value::Bool(true)) || p.stopped {
             p.held_output.push_str(text);
             return;
         }
@@ -2152,7 +2489,9 @@ impl Editor {
         }
         match filter {
             Some(f) if !f.is_nil() => {
-                if let Err(e) = self.funcall(&f, &[Value::Process(id), Value::Str(text.to_string())]) {
+                if let Err(e) = self.funcall(&f, &[Value::Process(id), Value::Str(text.to_string())])
+                    && e.symbol() != "kill-emacs"
+                {
                     self.message(format!("error in process filter: {e}"));
                 }
             }
@@ -2164,14 +2503,38 @@ impl Editor {
     /// filter: point moves along if it was at the mark.
     fn insert_process_text(&mut self, buffer: Option<u64>, mark: Option<u64>, text: &str, advance: bool) {
         let (Some(id), Some(mark)) = (buffer, mark) else { return };
-        let Some(b) = self.buffers.iter_mut().find(|b| b.id == id) else { return };
-        // At the mark even outside a narrowing, before markers, as Emacs
-        // inserts output: point, the mark and other windows' points there
-        // move along with it.
-        let at = b.marker(mark).unwrap_or(b.len());
-        if b.insert_before_markers_at(at, text).is_ok() && !advance {
-            // A note of the end goes after the output without moving the mark.
-            b.set_marker(mark, at);
+        let Some(index) = self.buffer_with_id(id) else { return };
+        // As Emacs's read_process_output_before_insert and _after_insert:
+        // in the process's buffer, read-only or not, widened if the mark is
+        // outside its narrowing, which is put back after; inserted at the
+        // mark before markers, so point, the mark and other windows' points
+        // there move along, with the change hooks run as for any insertion.
+        let result = self.with_current_buffer(index, |ed| {
+            let b = ed.buffer_mut();
+            let at = b.marker(mark).unwrap_or(b.len());
+            let restriction = (b.is_narrowed() && !(b.point_min() <= at && at <= b.point_max())).then(|| (b.point_min(), b.point_max()));
+            if restriction.is_some() {
+                b.widen();
+            }
+            let read_only = std::mem::replace(&mut b.read_only, false);
+            let inserted = ed.insert_before_markers_at(at, text);
+            let len = text.chars().count();
+            let b = ed.buffer_mut();
+            b.read_only = read_only;
+            if let Some((begv, zv)) = restriction {
+                let shift = |pos: usize, moves: bool| if moves && inserted.is_ok() { pos + len } else { pos };
+                b.narrow(shift(begv, begv > at), shift(zv, zv >= at));
+            }
+            if inserted.is_ok() && !advance {
+                // A note of the end goes after the output without moving the mark.
+                b.set_marker(mark, at);
+            }
+            inserted
+        });
+        if let Err(e) = result
+            && e.symbol() != "kill-emacs"
+        {
+            self.message(format!("error in process filter: {e}"));
         }
     }
 
@@ -2198,6 +2561,7 @@ impl Editor {
             input: input.map(|t| t.as_bytes().to_vec()),
             stderr: CallStderr::Merge,
             wait: true,
+            progress: None,
         })?;
         let code = match result.status {
             Status::Exit(c) => c,
@@ -2213,14 +2577,15 @@ impl Editor {
     /// for, as a destination of 0 asks, when both are thrown away and its
     /// status is `Run`. `C-g` kills it. Asks the agent's permission first.
     pub fn call_process_with(&mut self, spec: CallSpec) -> Result<CallResult> {
+        let mut progress = spec.progress;
         let program = spec.command.first().ok_or_else(|| Error::new("No program to run"))?;
         self.check_permission(&format!("run {}", spec.command.join(" ")))?;
         let dir = self.expand_file_name(spec.directory.unwrap_or("."));
-        let mut process = Command::new(program);
+        let mut process = Command::new(self.find_program(program)?);
+        self.set_command_environment(&mut process, &dir, false);
         process
             .args(&spec.command[1..])
             .current_dir(&dir)
-            .env("TERM", "dumb")
             .stdin(if spec.input.is_some() { Stdio::piped() } else { Stdio::null() });
         let spawn_failed = |e: std::io::Error| crate::fileops::file_error("Searching for program", &e, &[std::path::Path::new(program)]);
         if !spec.wait {
@@ -2283,7 +2648,12 @@ impl Editor {
         let mut bytes = Vec::new();
         loop {
             match read.recv_timeout(Duration::from_millis(20)) {
-                Ok(Ok(chunk)) => bytes.extend(chunk),
+                Ok(Ok(chunk)) => {
+                    if let Some(progress) = progress.as_mut() {
+                        progress(self, &chunk);
+                    }
+                    bytes.extend(chunk);
+                }
                 Ok(Err(e)) => return Err(Error::new(format!("Running {program}: {e}"))),
                 Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => break,
                 Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {}
@@ -2386,7 +2756,26 @@ impl Editor {
     /// decoded as a process's output is. Returns its exit code, or how
     /// strsignal describes the signal that ended it, or nil if not waited
     /// for. Asks the agent's permission first.
-    pub fn call_process_region(&mut self, input: RegionInput, delete: bool, command: &[String], destination: &CallDestination) -> Result<Value> {
+    pub fn call_process_region(&mut self, input: RegionInput, delete: bool, command: &[String], destination: &CallDestination, display: bool) -> Result<Value> {
+        // The codings, chosen before the region goes: encoding as
+        // call-process-region asks find-operation-coding-system, by the
+        // program, decoding as call-process does.
+        let start_arg = match &input {
+            RegionInput::Region(start, _) => Value::Number(*start as f64),
+            RegionInput::Whole => Value::Null,
+            RegionInput::Text(text) => Value::Str(text.clone()),
+        };
+        let end_arg = match &input {
+            RegionInput::Region(_, end) => Value::Number(*end as f64),
+            _ => Value::Null,
+        };
+        let program_args = command.iter().skip(1).cloned().map(Value::Str);
+        let mut region_args = vec![start_arg, end_arg, Value::Str(command.first().cloned().unwrap_or_default()), Value::Bool(delete), Value::Null, Value::Bool(display)];
+        region_args.extend(program_args.clone());
+        let encode = self.chosen_process_coding("call-process-region", &region_args)?.1;
+        let mut call_args = vec![Value::Str(command.first().cloned().unwrap_or_default()), Value::Null, Value::Null, Value::Bool(display)];
+        call_args.extend(program_args);
+        let decode = self.chosen_process_coding("call-process", &call_args)?.0;
         let text = match &input {
             RegionInput::Region(start, end) => {
                 let b = self.buffer();
@@ -2434,8 +2823,34 @@ impl Editor {
                 }
             }
         }
-        let coding = self.default_process_coding();
-        let input = coding.1.encode_lossy(&text).0;
+        let input = encode.encode_lossy(&text).0;
+        self.call_into(command, Some(input), destination, display, decode)
+    }
+
+    /// Runs a program and waits for it, as Emacs's call-process: its input
+    /// the file `infile`, or none; its output where `destination` says,
+    /// decoded as coding-system-for-read, else process-coding-system-alist
+    /// says for the program, else default-process-coding-system; with
+    /// `display`, shown line by line as it comes. Returns as
+    /// [`call_process_region`](Self::call_process_region) does.
+    pub fn call_process_file(&mut self, command: &[String], infile: Option<&str>, destination: &CallDestination, display: bool) -> Result<Value> {
+        let program = command.first().cloned().unwrap_or_default();
+        let mut args = vec![Value::Str(program), infile.map_or(Value::Null, |f| Value::Str(f.to_string())), Value::Null, Value::Bool(display)];
+        args.extend(command.iter().skip(1).cloned().map(Value::Str));
+        let decode = self.chosen_process_coding("call-process", &args)?.0;
+        let input = match infile {
+            Some(file) => {
+                let path = self.expand_file_name(file);
+                Some(crate::vfs::read(&path).map_err(|e| crate::fileops::file_error("Opening process input file", &e, &[&path]))?)
+            }
+            None => None,
+        };
+        self.call_into(command, input, destination, display, decode)
+    }
+
+    /// What call-process and call-process-region share once the input is
+    /// ready: running the program and putting its output where it goes.
+    fn call_into(&mut self, command: &[String], input: Option<Vec<u8>>, destination: &CallDestination, display: bool, decode: Coding) -> Result<Value> {
         let directory = self.expand_file_name(".").to_string_lossy().into_owned();
         let stderr = match &destination.stderr {
             StderrDestination::Merge => CallStderr::Merge,
@@ -2443,14 +2858,35 @@ impl Editor {
             StderrDestination::File(file) => CallStderr::File(file.clone().into()),
         };
         let wait = destination.output != Destination::NoWait;
-        let result = self.call_process_with(CallSpec { command, directory: Some(&directory), input: Some(input), stderr, wait })?;
+        // With DISPLAY, whole lines go into the buffer as they come, each
+        // time shown, as Emacs redisplays as it inserts; a coding whose
+        // lines are not bytes up to "\n", as UTF-16's, waits for the end.
+        let shown = std::rc::Rc::new(std::cell::Cell::new(0usize));
+        let progress: Option<Progress> = match &destination.output {
+            Destination::Buffer(index) if display && !decode.name().starts_with("utf-16") => {
+                let (index, shown) = (*index, shown.clone());
+                let mut pending = Vec::new();
+                Some(Box::new(move |ed: &mut Editor, chunk: &[u8]| {
+                    pending.extend_from_slice(chunk);
+                    let Some(end) = pending.iter().rposition(|&b| b == b'\n') else { return };
+                    let lines: Vec<u8> = pending.drain(..=end).collect();
+                    shown.set(shown.get() + lines.len());
+                    let text = decode.decode(&lines).0;
+                    if ed.with_current_buffer(index, |ed| ed.insert(&text)).is_ok() {
+                        ed.redisplay_now();
+                    }
+                }))
+            }
+            _ => None,
+        };
+        let result = self.call_process_with(CallSpec { command, directory: Some(&directory), input, stderr, wait, progress })?;
         match &destination.output {
             Destination::Discard | Destination::NoWait => {}
             Destination::File(file) => {
                 crate::vfs::write(file, &result.output).map_err(|e| crate::fileops::file_error("Writing", &e, &[std::path::Path::new(file)]))?;
             }
             Destination::Buffer(index) => {
-                let text = coding.0.decode(&result.output).0;
+                let text = decode.decode(&result.output[shown.get()..]).0;
                 if !text.is_empty() {
                     self.with_current_buffer(*index, |ed| ed.insert(&text))?;
                 }
@@ -2476,6 +2912,9 @@ pub enum CallStderr {
     File(std::path::PathBuf),
 }
 
+/// What is called with each piece of a program's output as it comes.
+pub type Progress<'a> = Box<dyn FnMut(&mut Editor, &[u8]) + 'a>;
+
 /// What [`Editor::call_process_with`] runs.
 pub struct CallSpec<'a> {
     /// The program and its arguments.
@@ -2487,6 +2926,9 @@ pub struct CallSpec<'a> {
     pub stderr: CallStderr,
     /// Whether to wait for it; if not, its output is thrown away.
     pub wait: bool,
+    /// Called with each piece of output as it comes, as call-process's
+    /// DISPLAY has it shown; all of it is in the result too.
+    pub progress: Option<Progress<'a>>,
 }
 
 /// How a program [`Editor::call_process_with`] ran ended, and what it wrote.
@@ -2531,6 +2973,7 @@ impl Process {
     /// connection is "deleted" or "connection broken by remote peer".
     fn event(&self) -> String {
         match (&self.kind, self.status) {
+            (Kind::Network(_), Status::Exit(code)) if self.failed => format!("failed with code {code}\n"),
             (Kind::Network(_) | Kind::Server(..), Status::Exit(0)) => "deleted\n".into(),
             (Kind::Network(_) | Kind::Server(..), Status::Exit(_)) => "connection broken by remote peer\n".into(),
             (_, status) => status.event(),
@@ -2565,6 +3008,9 @@ impl Process {
             }
             #[cfg(unix)]
             (Kind::Serial(_), _) => "closed",
+            (Kind::Network(_), Status::Run) if self.connecting => "connect",
+            (Kind::Network(_), _) if self.failed => "failed",
+            (Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_), Status::Run) if self.stopped => "stop",
             (Kind::Server(..), Status::Run) => "listen",
             (Kind::Network(_) | Kind::PipeProcess(_), Status::Run) => "open",
             (Kind::Network(_) | Kind::Server(..) | Kind::PipeProcess(_), _) => "closed",

@@ -69,7 +69,7 @@ fn s(text: &str) -> Value {
 
 /// Whether the system lets this process at a file in a way, as access(2) says.
 #[cfg(all(unix, not(feature = "memory-fs")))]
-fn access(path: &Path, mode: libc::c_int) -> bool {
+pub(crate) fn access(path: &Path, mode: libc::c_int) -> bool {
     use std::os::unix::ffi::OsStrExt;
     let Ok(c) = std::ffi::CString::new(path.as_os_str().as_bytes()) else { return false };
     unsafe { libc::access(c.as_ptr(), mode) == 0 }
@@ -78,7 +78,7 @@ fn access(path: &Path, mode: libc::c_int) -> bool {
 /// As access(2) would say of a file in memory: anything there can be read,
 /// what is not read-only written, and only directories gone into.
 #[cfg(all(unix, feature = "memory-fs"))]
-fn access(path: &Path, mode: libc::c_int) -> bool {
+pub(crate) fn access(path: &Path, mode: libc::c_int) -> bool {
     fs::metadata(path).is_ok_and(|m| (mode & libc::W_OK == 0 || !m.permissions().readonly()) && (mode & libc::X_OK == 0 || m.is_dir()))
 }
 
@@ -813,8 +813,8 @@ pub fn file_name_concat(parts: &[&str]) -> String {
 
 /// A file name with `$VAR` and `${VAR}` replaced by the environment's, `$$`
 /// by `$`, and starting again after `//` or `/~`, as Emacs's
-/// `substitute-in-file-name`.
-pub fn substitute_in_file_name(name: &str) -> Result<String> {
+/// `substitute-in-file-name`, with `getenv` giving each variable's value.
+pub fn substitute_in_file_name(name: &str, getenv: impl Fn(&str) -> Option<String>) -> Result<String> {
     let chars: Vec<char> = name.chars().collect();
     let mut start = 0;
     for i in 1..chars.len() {
@@ -838,7 +838,7 @@ pub fn substitute_in_file_name(name: &str) -> Result<String> {
             Some('{') => {
                 it.next();
                 let var: String = it.by_ref().take_while(|&c| c != '}').collect();
-                out.push_str(&env_value(&var)?);
+                out.push_str(&env_value(&var, &getenv)?);
             }
             Some(c) if c.is_alphanumeric() || *c == '_' => {
                 let mut var = String::new();
@@ -846,7 +846,7 @@ pub fn substitute_in_file_name(name: &str) -> Result<String> {
                     var.push(c);
                     it.next();
                 }
-                out.push_str(&env_value(&var)?);
+                out.push_str(&env_value(&var, &getenv)?);
             }
             _ => out.push('$'),
         }
@@ -854,6 +854,6 @@ pub fn substitute_in_file_name(name: &str) -> Result<String> {
     Ok(out)
 }
 
-fn env_value(var: &str) -> Result<String> {
-    std::env::var(var).map_err(|_| Error::new(format!("Substituting nonexistent environment variable \"{var}\"")))
+fn env_value(var: &str, getenv: &impl Fn(&str) -> Option<String>) -> Result<String> {
+    getenv(var).ok_or_else(|| Error::new(format!("Substituting nonexistent environment variable \"{var}\"")))
 }

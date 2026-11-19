@@ -20,6 +20,8 @@ export interface NetworkStreamParameters {
   returnList?: boolean;
   capabilityCommand?: string;
   success?: string;
+  /** With "plain", return at once and connect meanwhile, as :nowait. */
+  nowait?: boolean;
 }
 
 /**
@@ -33,7 +35,7 @@ export function openNetworkStream(name: string, buffer: e8.BufferLike | null, ho
   let process: e8.Process | undefined;
   if (type === "plain" || type === "network") {
     if (type === "network" && parameters.success && parameters.capabilityCommand) throw new Error("STARTTLS connections are not supported in E8 yet");
-    process = e8.makeNetworkProcess({ name, buffer: buffer ?? undefined, host, service, coding: parameters.coding });
+    process = e8.makeNetworkProcess({ name, buffer: buffer ?? undefined, host, service, coding: parameters.coding, nowait: parameters.nowait });
     if (parameters.warnUnlessEncrypted) process = nsmVerifyConnection(process, host, service, false, true);
   } else if (type === "tls" || type === "ssl") {
     process = nsmVerifyConnection(openGnutlsStream(name, buffer, host, service, parameters), host, service);
@@ -75,6 +77,9 @@ e8.defun("open-network-stream", (name: string, buffer: e8.BufferLike | null, hos
         break;
       case "success":
         params.success = String(value);
+        break;
+      case "nowait":
+        params.nowait = true;
         break;
       case "noquery":
       case "end-of-command":

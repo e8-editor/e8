@@ -160,6 +160,8 @@ fn compile_in_the_project_runs_at_its_root() {
         let b = &ed.buffers()[ed.find_buffer("*compilation*").unwrap()];
         b.slice(0..b.len())
     });
+    // The shell's pwd is the directory as E8 names it, PWD being set to
+    // it as Emacs sets it, which may reach it through a symbolic link.
     let root = fs::canonicalize(repo.path()).unwrap();
-    assert!(text.contains(&format!("\n{}\n", root.display())), "{text}");
+    assert!(text.contains(&format!("\n{}\n", root.display())) || text.contains(&format!("\n{}\n", repo.path().display())), "{text}");
 }

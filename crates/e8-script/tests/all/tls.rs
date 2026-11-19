@@ -519,7 +519,7 @@ fn open_network_stream_refuses_what_e8_does_not_do() {
     for call in [
         r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":type", "starttls")"#,
         r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":capability-command", "CAPABILITY", ":success", "^OK")"#,
-        r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":nowait", true)"#,
+        r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":nogreeting", true)"#,
         r#"e8.funcall("open-network-stream", "s", null, "127.0.0.1", 1, ":type", "shell")"#,
     ] {
         let got = eval(&mut ed, &s, &format!("e8.conditionCase(() => {call}, {{ error: (e) => e.message }})"));

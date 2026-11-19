@@ -3090,6 +3090,14 @@ declare global {
        */
       "fundamental-mode": [];
       /**
+       * Show an environment variable's value as programs E8 starts are given it, or "Not set".
+       *
+       * @param variable text
+       *
+       * Defined in packages/env.ts.
+       */
+      "getenv": [variable: string];
+      /**
        * Revert every file buffer when its file changes on disk, if the buffer has no unsaved changes.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
@@ -6993,6 +7001,18 @@ declare global {
        */
       "set-mark-command": [];
       /**
+       * Set an environment variable for the programs E8 starts from now on.
+       *
+       * Environment variables named in the value, as $HOME, are replaced by theirs. With a prefix argument, unset the variable instead. This changes process-environment.
+       *
+       * @param variable text
+       * @param value text
+       * @param clear raw prefix argument
+       *
+       * Defined in packages/env.ts.
+       */
+      "setenv": [variable: string, value: string, clear?: PrefixArg | boolean];
+      /**
        * Edit shell scripts, in bash-ts-mode: E8's mode for it, as major-mode-remap-alist would have Emacs use.
        *
        * Defined in packages/treesit-modes.ts.
@@ -9999,6 +10019,14 @@ declare global {
        */
       "even-window-sizes": Value;
       /**
+       * The directories a program named without one is looked for in, in order; nil for default-directory. It starts as PATH's directories.
+       */
+      "exec-path": Value;
+      /**
+       * Suffixes to try after a program's name when looking for it along exec-path; none on these systems.
+       */
+      "exec-suffixes": Value;
+      /**
        * What M-x shell gives bash: no line editing, and interactive.
        *
        * Defined in packages/shell.ts.
@@ -10755,6 +10783,10 @@ declare global {
        * Whether to show nothing at startup, as Emacs's inhibit-startup-screen: E8 has no startup screen, so t only turns off the lattice the graphical window draws when it opens (e8-startup-lattice). inhibit-splash-screen and inhibit-startup-message, set to t, do the same.
        */
       "inhibit-startup-screen": Value;
+      /**
+       * The environment variables E8 was started with, each a string "NAME=VALUE".
+       */
+      "initial-environment": Value;
       /**
        * Keymap input-decode-map.
        */
@@ -12462,6 +12494,10 @@ declare global {
        */
       "process-connection-type": Value;
       /**
+       * The environment variables programs E8 starts are given, each a string "NAME=VALUE": an entry earlier in the list wins over a later one for the same name, and a name alone, without "=VALUE", leaves that variable out. Binding it around a call is how code changes one program's environment; setenv changes it for every program after.
+       */
+      "process-environment": Value;
+      /**
        * Keymap prog-mode-map.
        */
       "prog-mode-map": Value;
@@ -12523,6 +12559,12 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "read-char-history": Value;
+      /**
+       * Environment variable names read so far, for M-p and M-n.
+       *
+       * Defined in packages/env.ts.
+       */
+      "read-envvar-name-history": Value;
       /**
        * Whether completing file names ignores the case of letters: on where the file system does, as on macOS and Windows.
        */
@@ -12851,6 +12893,12 @@ declare global {
        * Defined in packages/paragraphs.ts.
        */
       "sentence-end-without-space": Value;
+      /**
+       * Values given to setenv so far, for M-p and M-n.
+       *
+       * Defined in packages/env.ts.
+       */
+      "setenv-history": Value;
       /**
        * How far shell scripts indent each level.
        *
@@ -16485,7 +16533,8 @@ declare global {
     function autoSaving(): boolean;
     /**
      * Ask the front end to exit, as Emacs's kill-emacs, the program
-     * exiting with `status`, 0 if it is left out.
+     * exiting with `status`, 0 if it is left out. In batch mode it exits
+     * there and then, unwinding what is running.
      */
     function killEmacs(status?: number): void;
     function commandExists(name: string): boolean;
@@ -16699,7 +16748,11 @@ declare global {
     function markRing(): number[];
     /** Whether `input` is an answer the open prompt takes, as test-completion. */
     function testCompletion(input: string): boolean;
-    /** An environment variable's value, as Emacs's getenv. */
+    /**
+     * An environment variable's value as programs E8 starts are given
+     * it, from process-environment, as Emacs's getenv; undefined if it is
+     * not set, or is listed as its name alone, which unsets it.
+     */
     function getenv(name: string): string | undefined;
     /** A file's attributes, or undefined if there is no such file. */
     function fileAttributes(file: string): FileAttributes | undefined;
@@ -16899,7 +16952,10 @@ declare global {
      * its name for point in that buffer, `[":file", FILE]` for a file, or
      * `[DESTINATION, STDERR]` to send standard error elsewhere, STDERR
      * null to throw it away, true to keep it with the output, or a file
-     * name. `display` is accepted and ignored. Returns the exit code, a
+     * name. With `display`, output going into a buffer is shown there
+     * line by line as it comes. Codings are coding-system-for-read and
+     * -write if bound, else process-coding-system-alist's for the
+     * program, else default-process-coding-system's. Returns the exit code, a
      * description of the signal that ended the program, as "Killed: 9",
      * or undefined if not waited for. Asks the agent's permission first.
      */
@@ -16954,11 +17010,12 @@ declare global {
     function processAttributes(pid: number): [string, number | string][] | undefined;
     /**
      * An environment variable's value, as getenv-internal: from `env`, a
-     * list of "NAME=VALUE" strings, if given, true for one listed as
-     * "NAME" alone, which unsets it; else from process-environment if it
-     * is set, else E8's own environment. Undefined if it is not set.
+     * list of "NAME=VALUE" strings, if it is one, true for a name listed
+     * alone; else, `env` being a frame or left out, from
+     * process-environment, where a name alone unsets it. Undefined if it
+     * is not set.
      */
-    function getenvInternal(variable: string, env?: string[]): string | true | undefined;
+    function getenvInternal(variable: string, env?: string[] | Frame | null): string | true | undefined;
     /**
      * An address as Emacs writes one, as format-network-address: from
      * `[a, b, c, d, port]` "a.b.c.d:port", from eight 16-bit words and a
@@ -17010,17 +17067,19 @@ declare global {
      */
     function setProcessThread(process: ProcessLike, thread: null | undefined): undefined;
     /**
-     * A datagram process's address, as process-datagram-address:
-     * undefined, as E8 has no datagram (UDP) processes, which is what
-     * Emacs gives for any other process.
+     * A datagram process's address, as process-datagram-address: where
+     * what it sends goes, as `[a, b, c, d, port]` or eight 16-bit words and
+     * a port for IPv6; undefined for a server not yet heard from, or a
+     * process that sends no datagrams.
      */
-    function processDatagramAddress(process: ProcessLike): undefined;
+    function processDatagramAddress(process: ProcessLike): number[] | undefined;
     /**
-     * Set a datagram process's address, as set-process-datagram-address:
-     * undefined, "error setting address", as E8 has no datagram (UDP)
-     * processes and Emacs gives that for any other process.
+     * Set where a datagram process sends to, as
+     * set-process-datagram-address: `address` as processDatagramAddress
+     * gives one, or "host:port". Returns it, or undefined if it is no
+     * address or the process sends no datagrams.
      */
-    function setProcessDatagramAddress(process: ProcessLike, address: unknown): undefined;
+    function setProcessDatagramAddress(process: ProcessLike, address: number[] | string): number[] | string | undefined;
     /**
      * Interrupt a process, as internal-default-interrupt-process, what
      * interrupt-process does by default: SIGINT to its process group, or
@@ -18236,7 +18295,7 @@ declare global {
     function addNameToFile(file: string, newname: string, ok_if_exists?: boolean): void;
     /** A file's name with the symbolic links in it followed, as file-truename. */
     function fileTruename(file: string): string;
-    /** A file name with $VAR and ${VAR} from the environment, and starting again after // or /~, as substitute-in-file-name. */
+    /** A file name with $VAR and ${VAR} from process-environment, and starting again after // or /~, as substitute-in-file-name. */
     function substituteInFileName(file: string): string;
     /** Whose lock a file has, as file-locked-p: true for E8's own, the other process's user@host (pid N), or undefined. */
     function fileLockedP(file: string): true | string | undefined;
@@ -18895,7 +18954,15 @@ declare global {
     function commandp(fn: Value, forCallInteractively?: boolean | null): boolean;
     /** Call a wrapper with each of a hook's functions and the arguments until it gives something true, as run-hook-wrapped; gives that. */
     function runHookWrapped(hook: string, wrapFunction: string | ((fn: Value, ...args: any[]) => any), ...args: Value[]): Value;
-    /** The first file along a path that is `filename` with one of `suffixes`, as locate-file-internal; undefined if none. */
+    /**
+     * The first file along a path that is `filename` with one of
+     * `suffixes`, as locate-file-internal; undefined if none. A null in
+     * the path is default-directory. `predicate` is what the file must
+     * pass: none, a file that is not a directory; a number, an access(2)
+     * mode, 1 to run, 2 to write and 4 to read, as Emacs's 1 for
+     * file-executable-p; a function, called with the file's name, true
+     * for it, a directory only if it answers "dir-ok".
+     */
     function locateFileInternal(filename: string, path: (string | null)[], suffixes?: string[] | null, predicate?: Value): string | undefined;
     /** The suffixes load tries, as get-load-suffixes: E8 loads TypeScript and JavaScript. */
     function getLoadSuffixes(): string[];
@@ -20455,6 +20522,8 @@ declare global {
       coding?: string | [string, string];
       /** Whether exiting E8 goes ahead without asking while it is open. */
       noquery?: boolean;
+      /** Start it kept from being read, its status "stop", until continue-process, as :stop. */
+      stop?: boolean;
     }
     /**
      * Where callProcessRegion puts what a program writes, as call-process's
@@ -20506,8 +20575,22 @@ declare global {
       service: number | string | true;
       /** "local" for a Unix socket; TCP otherwise. */
       family?: "local";
-      /** Listen for connections, each of which becomes a process of its own. */
+      /** Listen for connections, each of which becomes a process of its own; with type "datagram", take datagrams from anyone. */
       server?: boolean;
+      /**
+       * "datagram" for UDP, as `:type datagram`: each string sent is one
+       * datagram, to the host and port, or for a server to whoever sent the
+       * last one; each that comes is one piece of output.
+       */
+      type?: "stream" | "datagram";
+      /**
+       * Return at once, connecting meanwhile, as :nowait: the status is
+       * "connect" until the sentinel is told "open\n", or "failed with code
+       * N\n" with the system's error number. Sending waits for the connection.
+       */
+      nowait?: boolean;
+      /** Start it kept from being read, its status "stop", until continue-process, as :stop. */
+      stop?: boolean;
       filter?: ((process: Process, output: string) => void) | string | symbol | true | null;
       /** Told "deleted\n", "connection broken by remote peer\n", or for a server's new connection "open from HOST\n". */
       sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
@@ -20625,7 +20708,7 @@ declare global {
      * server "listen", or undefined for a name no listed process has. A
      * process that has gone answers still, as these all do.
      */
-    function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | "stop" | undefined;
+    function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | "stop" | "connect" | "failed" | undefined;
     /** Whether a process is running, or a connection or server open, as process-live-p. */
     function processLiveP(process: ProcessLike): boolean;
     /** How a process's output is decoded and its input encoded, as process-coding-system. */
@@ -20684,6 +20767,18 @@ declare global {
      * and what it wrote. Asks the agent's permission first.
      */
     function callProcess(command: string[], options?: { directory?: string; input?: string }): { exit: number; output: string };
+    /**
+     * Run a program and wait for it, as Emacs's call-process takes it: its
+     * input the file `infile`, or none; what it writes going where
+     * `destination` says, as callProcessRegion's does; with `display`, shown
+     * line by line as it comes. The program is looked for along exec-path,
+     * runs in default-directory with process-environment, and its output is
+     * decoded as coding-system-for-read, else process-coding-system-alist
+     * says, else default-process-coding-system. Returns the exit code, a
+     * description of the signal that ended it, as "Killed: 9", or undefined
+     * if not waited for. Asks the agent's permission first.
+     */
+    function callProcess(program: string, infile?: string | null, destination?: CallProcessDestination, display?: boolean | null, ...args: string[]): number | string | undefined;
     /**
      * Where a window's text starts, the selected window's by default, at the
      * start of its top line, as window-start. Another window's start moves

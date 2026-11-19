@@ -8,8 +8,11 @@ use crate::driven::Driven;
 use e8_core::{Arg, Editor};
 use e8_script::Scripting;
 
+// PS1 in the shell's environment, so the prompt is the same everywhere,
+// and no ENV file, whatever the user's own are.
 const SETUP: &str = r#"e8.setDefault("explicit-shell-file-name", "/bin/sh"); e8.setDefault("explicit-sh-args", ["-i"]);
-               e8.setDefault("shell-history-file-name", true);"#;
+               e8.setDefault("shell-history-file-name", true);
+               e8.setVariable("process-environment", ["PS1=$ ", "ENV=/dev/null", ...(e8.variable("process-environment") as string[])]);"#;
 
 /// As `setup`, on the editor's own thread, for prompts that wait partway
 /// through (ADR 0053), as a password prompt a process's output opens.
@@ -18,8 +21,6 @@ fn driven() -> Driven {
 }
 
 fn driven_shell(d: &Driven) {
-    unsafe { std::env::set_var("PS1", "$ ") };
-    unsafe { std::env::set_var("ENV", "/dev/null") };
     d.start(|ed| ed.call("shell", vec![Arg::Prefix(None)]).unwrap());
     assert_eq!(d.buffer_name(), "*shell*");
     d.until(|t| t.ends_with("$ "));
@@ -68,9 +69,6 @@ fn type_line(ed: &mut Editor, line: &str) {
 }
 
 fn start_shell(ed: &mut Editor) {
-    // PS1 from the environment, so the prompt is the same everywhere.
-    unsafe { std::env::set_var("PS1", "$ ") };
-    unsafe { std::env::set_var("ENV", "/dev/null") };
     ed.call("shell", vec![Arg::Prefix(None)]).unwrap();
     assert_eq!(ed.window_buffer().name, "*shell*");
     until(ed, |t| t.ends_with("$ "));

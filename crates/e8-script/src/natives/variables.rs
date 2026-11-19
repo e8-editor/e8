@@ -438,9 +438,10 @@ natives! {
     }
 
     /// Ask the front end to exit, as Emacs's kill-emacs, the program
-    /// exiting with `status`, 0 if it is left out.
+    /// exiting with `status`, 0 if it is left out. In batch mode it exits
+    /// there and then, unwinding what is running.
     pub fn killEmacs(ed, status: Opt<f64>) {
-        ed.kill_emacs_with_status(status.0.unwrap_or(0.0) as i32)
+        ed.kill_emacs_now(status.0.unwrap_or(0.0) as i32)
     }
 
     pub fn commandExists(ed, name: String) -> bool {
@@ -1131,9 +1132,11 @@ natives! {
         Ok(if idle { ed.run_with_idle_timer(secs, repeat.is_some(), f) } else { ed.run_with_timer(secs, repeat, f) } as f64)
     }
 
-    /// An environment variable's value, as Emacs's getenv.
+    /// An environment variable's value as programs E8 starts are given
+    /// it, from process-environment, as Emacs's getenv; undefined if it is
+    /// not set, or is listed as its name alone, which unsets it.
     pub fn getenv(ed, name: String) -> Option<String> {
-        Ok(std::env::var(name).ok())
+        Ok(ed.getenv(&name))
     }
 
     /// A file's attributes, or undefined if there is no such file.

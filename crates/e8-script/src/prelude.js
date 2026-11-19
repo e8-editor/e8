@@ -1516,12 +1516,12 @@
         sentinel ?? undefined,
       );
     },
-    makeNetworkProcess({ name, buffer, host, service, family, server = false, filter, sentinel, coding, tls }) {
+    makeNetworkProcess({ name, buffer, host, service, family, server = false, filter, sentinel, coding, tls, type, nowait = false, stop = false }) {
       const local = family === "local";
       // TLS from the start, as :tls-parameters asks: a connection whose
       // handshake fails is deleted, as Emacs's is.
       if (tls) {
-        const process = e8.makeNetworkProcess({ name, buffer, host, service, family, server, filter, sentinel, coding });
+        const process = e8.makeNetworkProcess({ name, buffer, host, service, family, server, filter, sentinel, coding, type, stop });
         try {
           e8.gnutlsBoot(process, tls.type ?? "gnutls-x509pki", tls);
         } catch (e) {
@@ -1538,18 +1538,22 @@
           service: String(service === true ? "t" : service),
           server: Boolean(server),
           coding: coding ?? undefined,
+          type: type === "datagram" ? "datagram" : undefined,
+          nowait: Boolean(nowait),
+          stop: Boolean(stop),
         },
         filter ?? undefined,
         sentinel ?? undefined,
       );
     },
-    makePipeProcess({ name, buffer, filter, sentinel, coding, noquery = false }) {
+    makePipeProcess({ name, buffer, filter, sentinel, coding, noquery = false, stop = false }) {
       return native.makePipeProcess(
         {
           name: String(name),
           buffer: buffer === undefined || buffer === null ? undefined : nameOf(buffer),
           coding: coding ?? undefined,
           noquery: Boolean(noquery),
+          stop: Boolean(stop),
         },
         filter ?? undefined,
         sentinel ?? undefined,
@@ -1598,8 +1602,14 @@
       const f = native.processSentinelSet(process);
       return f === null || f === undefined ? api.internalDefaultProcessSentinel : f;
     },
-    callProcess: (command, { directory, input } = {}) =>
-      native.callProcess(command.map(String), directory ?? undefined, input === undefined ? undefined : String(input)),
+    callProcess: (command, ...rest) => {
+      if (typeof command === "string") {
+        const [infile, destination, ...displayAndArgs] = rest;
+        return native.callProcessFile(command, infile ?? undefined, destination ?? null, ...displayAndArgs) ?? undefined;
+      }
+      const { directory, input } = rest[0] ?? {};
+      return native.callProcess(command.map(String), directory ?? undefined, input === undefined ? undefined : String(input));
+    },
     windowStart: (window) => native.windowStart(window ?? native.selectedWindow()),
     setWindowStart: (window, pos) => native.setWindowStart(window ?? native.selectedWindow(), pos),
     windowEnd: (window) => native.windowEnd(window ?? native.selectedWindow()),

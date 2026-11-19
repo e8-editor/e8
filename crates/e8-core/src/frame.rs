@@ -684,6 +684,7 @@ impl Editor {
             input: None,
             wait: true,
             stderr: crate::process::CallStderr::Discard,
+            progress: None,
         };
         let result = self.call_process_with(spec)?;
         let output = String::from_utf8_lossy(&result.output).into_owned();

@@ -187,3 +187,40 @@ fn sleep_for_and_sit_for_wait_without_reading_input() {
     assert!(log.contains("slept true timer true sat true"), "{log}");
     assert!(log.contains("output \"hello\""), "{log}");
 }
+
+/// Batch Emacs exits there and then on kill-emacs, with its status, and
+/// on an error command-error-default-function reports, with 255: nothing
+/// after either runs, and a handler for `error` does not stop it.
+#[test]
+fn kill_emacs_and_unhandled_errors_exit_at_once() {
+    let killing = r#"
+e8.conditionCase(() => e8.killEmacs(3), { error: () => e8.message("caught") });
+e8.message("after");
+"#;
+    let (status, ed, _dir) = run(&[("kill.ts", killing)], &["-l", "kill.ts", "--eval", "e8.message('next')"]);
+    let log = logged(&ed);
+    assert_eq!(status, 3, "{log}");
+    assert!(!log.contains("after") && !log.contains("caught") && !log.contains("next"), "{log}");
+    let erring = r#"
+e8.commandErrorDefaultFunction("Something broke", "context: ");
+e8.message("after");
+"#;
+    let (status, ed, _dir) = run(&[("err.ts", erring)], &["-l", "err.ts"]);
+    let log = logged(&ed);
+    assert_eq!(status, 255, "{log}");
+    assert!(!log.contains("after"), "{log}");
+}
+
+/// kill-emacs from a sentinel while a batch script waits for output exits
+/// with its status, as batch Emacs would have exited in the sentinel.
+#[test]
+fn kill_emacs_in_a_sentinel_exits_a_waiting_script() {
+    let waiting = r#"
+const p = e8.makeProcess({ name: "t", command: ["true"], sentinel: () => e8.killEmacs(4) });
+for (;;) e8.acceptProcessOutput(p, 0.05);
+"#;
+    let (status, ed, _dir) = run(&[("wait.ts", waiting)], &["-l", "wait.ts"]);
+    let log = logged(&ed);
+    assert_eq!(status, 4, "{log}");
+    assert!(!log.contains("error in process sentinel"), "{log}");
+}

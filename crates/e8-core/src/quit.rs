@@ -127,8 +127,13 @@ impl Editor {
     }
 
     /// Signals `quit` if quitting was asked for and `inhibit-quit` is not
-    /// set, as Emacs's `maybe_quit`.
+    /// set, as Emacs's `maybe_quit`. In batch mode, once kill-emacs has
+    /// run, as from a sentinel or timer while code waits, it unwinds what
+    /// is running instead, as Emacs would have exited there.
     pub fn maybe_quit(&self) -> Result<()> {
+        if self.quit && self.noninteractive() {
+            return Err(crate::fileio::exiting());
+        }
         self.quitting.check()
     }
 }
