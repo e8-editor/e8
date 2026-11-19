@@ -66,6 +66,7 @@ mod keymaps;
 mod kqueue;
 mod layout;
 mod line_numbers;
+mod novice;
 mod memory_fs;
 mod minibuffer;
 mod modes;

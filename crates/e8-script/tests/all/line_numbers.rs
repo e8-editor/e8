@@ -56,6 +56,8 @@ fn numbers_widen_for_longer_files_and_count_from_the_narrowing() {
     let text: String = (1..=120).map(|i| format!("line {i}\n")).collect();
     let (mut ed, _s) = setup(&text);
     ed.call("display-line-numbers-mode", vec![]).unwrap();
+    // Enabled, as novice.el disables it for new users.
+    ed.put("narrow-to-region", "disabled", e8_core::Value::Null);
     ed.press("M-<").unwrap();
     assert_eq!(labels(&mut ed)[0], " 1 ");
     ed.press("M->").unwrap();

@@ -648,6 +648,8 @@ e8.defineCommand({
     if (e8.bufferName() !== from) e8.call("kill-buffer", from);
   },
 });
+// As dired.el disables it, for new users.
+e8.put("dired-find-alternate-file", "disabled", true);
 
 // Marking.
 

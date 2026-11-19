@@ -71,6 +71,8 @@ fn wrapped_lines_are_never_scrolled() {
 #[test]
 fn scroll_left_sets_the_least_scroll_when_run_by_keys() {
     let (mut ed, _s) = editor();
+    // Enabled, as novice.el disables it for new users.
+    ed.put("scroll-left", "disabled", e8_core::Value::Null);
     // By the window's width less two without a number.
     assert_eq!(press(&mut ed, "C-x <"), 18);
     // The scroll stays until point moves, though point is out of sight.

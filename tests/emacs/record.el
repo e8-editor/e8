@@ -42,7 +42,7 @@
 ;; Batch mode starts with these off; interactive Emacs has them on.
 (transient-mark-mode 1)
 (setq shift-select-mode t)
-;; Emacs asks before narrowing to a region the first time; E8 does not.
+;; Emacs asks before narrowing to a region the first time, as E8 does; the oracle enables it on both.
 (put 'narrow-to-region 'disabled nil)
 ;; A case's buffer may visit a file it never writes; leave no lock files.
 (setq create-lockfiles nil)
@@ -264,7 +264,7 @@ answers come, and then from its answers, as save-some-buffers' do."
               browse-url-xdg-open org-open-file org-link-open-as-file))
   (advice-add fn :override #'e8-oracle--no-external))
 
-;; E8 does not disable commands yet, as novice.el does for new users,
+;; The oracle enables these on both sides, as Emacs and E8 disable them,
 ;; so cases compare what the commands do rather than the question first.
 (dolist (command '(upcase-region downcase-region))
   (put command 'disabled nil))

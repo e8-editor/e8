@@ -184,6 +184,8 @@ fn casing_keeps_text_properties() {
     let mut ed = e8_core::Editor::new();
     let s = e8_script::Scripting::new(&mut ed).unwrap();
     ed.window_buffer_mut().set_text("aßb");
+    // Enabled, as novice.el disables it for new users.
+    ed.put("upcase-region", "disabled", e8_core::Value::Null);
     s.eval_expression(&mut ed, r#"(e8.putTextProperty(1, 2, "face", "bold"), 0)"#).unwrap();
     ed.press("C-x h C-x C-u").unwrap();
     let b = ed.window_buffer();
@@ -290,7 +292,8 @@ fn repeat_complex_command_runs_a_command_again() {
 /// it, as Emacs's set-goal-column.
 #[test]
 fn set_goal_column_keeps_line_moves_to_a_column() {
-    let d = crate::driven::Driven::new("");
+    // Enabled, as novice.el disables it for new users.
+    let d = crate::driven::Driven::new(r#"e8.put("set-goal-column", "disabled", null);"#);
     d.press("C-x b");
     d.type_text("g\n");
     d.type_text("abcdef\nab\nabcdef\n");

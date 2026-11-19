@@ -2470,6 +2470,17 @@ declare global {
        */
       "dired-why": [];
       /**
+       * Require special confirmation to execute COMMAND from now on.
+       * COMMAND must be a symbol.
+       * This command alters your init file so that this choice applies to
+       * future sessions.
+       *
+       * @param command command name
+       *
+       * Defined in packages/novice.ts.
+       */
+      "disable-command": [command: string];
+      /**
        * Disable a theme, its faces going back to what they were.
        *
        * @param theme text
@@ -2768,6 +2779,17 @@ declare global {
        */
       "emacs-lisp-mode": [];
       /**
+       * Allow COMMAND to be executed without special confirmation from now on.
+       * COMMAND must be a symbol.
+       * This command alters the user's init file so that this will apply
+       * to future sessions.
+       *
+       * @param command command name
+       *
+       * Defined in packages/novice.ts.
+       */
+      "enable-command": [command: string];
+      /**
        * Enable a theme that is loaded, its faces winning over the other themes'.
        *
        * @param theme text
@@ -2829,6 +2851,14 @@ declare global {
        * Defined in packages/window.ts.
        */
       "enlarge-window-horizontally": [delta?: number];
+      /**
+       * Delete the entire contents of the current buffer.
+       * Any narrowing restriction in effect (see `narrow-to-region') is removed,
+       * so the buffer is truly empty after this.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "erase-buffer": [];
       /**
        * Run the TypeScript in the buffer, as Emacs's eval-buffer runs Lisp.
        *
@@ -10269,6 +10299,13 @@ declare global {
        */
       "dired-trivial-filenames": Value;
       /**
+       * Function to call to handle disabled commands.
+       * If nil, the feature is disabled, i.e., all commands work normally.
+       *
+       * Defined in packages/novice.ts.
+       */
+      "disabled-command-function": Value;
+      /**
        * How display-buffer shows buffers: a list of entries [CONDITION, FUNCTIONS, ...ALIST], as Emacs's (CONDITION . ACTION). CONDITION is matched by buffer-match-p: a regexp the buffer's name matches, a function, or ["major-mode", MODE], ["derived-mode", MODE], ["category", NAME], ["not", ...], ["or", ...] or ["and", ...]. FUNCTIONS is an action function or a list of them, tried in turn; each ALIST entry is [KEY, VALUE], such as ["side", "right"].
        *
        * Defined in packages/window.ts.
@@ -14372,6 +14409,12 @@ declare global {
        */
       "user-full-name": Value;
       /**
+       * The init file loaded at startup, init.ts in the configuration directory, or nil if none was, as with -q.
+       *
+       * Defined in packages/novice.ts.
+       */
+      "user-init-file": Value;
+      /**
        * The login name E8 goes by: $LOGNAME, else $USER, else the account E8 runs as.
        */
       "user-login-name": Value;
@@ -15865,6 +15908,12 @@ declare global {
        * Defined in packages/replace.ts.
        */
       "query-replace": FaceAttributes;
+      /**
+       * Face for the symbol name in `read-multiple-choice' output.
+       *
+       * Defined in packages/rmc.ts.
+       */
+      "read-multiple-choice-face": FaceAttributes;
       /**
        * The active region.
        */

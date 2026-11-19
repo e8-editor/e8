@@ -187,7 +187,8 @@ function keyText(command: string, find: KeyFinder): string {
  */
 export function substituteCommandKeys(text: string, mode?: string): string {
   const find = mode === undefined ? keysHere() : keysInMode(mode);
-  return text.replace(/\\\[([^\]]+)\]/g, (_, command: string) => keyText(command, find));
+  // \\`KEYS' is the keys themselves, as Emacs 29 and later write them.
+  return text.replace(/\\\[([^\]]+)\]/g, (_, command: string) => keyText(command, find)).replace(/\\`([^']*)'/g, (_, keys: string) => keys);
 }
 
 // --- Laying a card out -------------------------------------------------------

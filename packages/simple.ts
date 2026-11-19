@@ -1815,3 +1815,10 @@ e8.defineCommand({
   },
 });
 e8.bindKey("C-x C-n", "set-goal-column");
+
+// As buffer.c's erase-buffer, which Emacs disables for new users (novice.ts).
+e8.defineCommand({
+  name: "erase-buffer",
+  doc: "Delete the entire contents of the current buffer.\nAny narrowing restriction in effect (see `narrow-to-region') is removed,\nso the buffer is truly empty after this.",
+  run: () => eraseBuffer(),
+});
