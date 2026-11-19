@@ -364,6 +364,42 @@ export function laxSpaces(regexp: string, spaces: string): string {
   return out;
 }
 
+/**
+ * Searches for `re`, whose matches all start with `first`, as
+ * re-search-forward or -backward would: the literal search finds each
+ * place `first` is, and the regexp is tried only there.
+ */
+function laxLiteral(first: string, re: string, forward: boolean, options: { bound?: number; noerror: boolean }): number | undefined {
+  const origin = e8.point();
+  const limit = options.bound ?? (forward ? e8.pointMax() : e8.pointMin());
+  let from = origin;
+  for (let tries = 0; ; tries++) {
+    // Where the first word is everywhere, trying the regexp at each costs
+    // more than the regexp engine's own scan, which takes over: forward
+    // from here, backward from the start again, as a match may span here.
+    if (tries === 2000) {
+      e8.gotoChar(forward ? from : origin);
+      return forward ? e8.reSearchForward(re, options) : e8.reSearchBackward(re, options);
+    }
+    e8.gotoChar(from);
+    const m = e8.search(first, { backward: !forward, bound: forward ? undefined : limit });
+    if (m === undefined || (forward && m.start >= limit)) break;
+    if (e8.lookingAt(re, m.start)) {
+      const end = e8.matchEnd(0)!;
+      // Forward, within the bound; backward, ending before where the search began.
+      if (forward ? end <= limit : end <= origin) {
+        e8.gotoChar(forward ? end : m.start);
+        return e8.point();
+      }
+    }
+    from = forward ? m.start + 1 : m.end - 1;
+    if (forward ? from > limit : from < limit) break;
+  }
+  e8.gotoChar(origin);
+  if (options.noerror) return undefined;
+  e8.signal("search-failed", `Search failed: "${re}"`, [re]);
+}
+
 /** Whether the regexp function should be lax as the string is still being typed, as isearch--lax-regexp-function-p. */
 const laxRegexpFunction = () => ["isearch-printing-char", "isearch-del-char"].includes(String(e8.thisCommand() ?? "")) || flag("isearch-yank-flag");
 
@@ -385,6 +421,10 @@ export function isearchSearchFunDefault(): (string: string, bound?: e8.Value, no
         re = String(e8.funcall((fn === true ? "word-search-regexp" : fn) as string, string, laxWords));
       } else re = regexp ? string : regexpQuote(string);
       if (lax) re = laxSpaces(re, spaces as string);
+      // A literal string with spaces: each match starts with its first word, which the
+      // literal search finds far faster than the regexp engine, which is then tried there.
+      const first = string.split(" ")[0]!;
+      if (!truthy(fn) && !regexp && first !== "") return laxLiteral(first, re, forward, options);
       return forward ? e8.reSearchForward(re, options) : e8.reSearchBackward(re, options);
     }
     // A string is searched for literally, as search-forward does, which is
