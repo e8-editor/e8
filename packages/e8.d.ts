@@ -6818,6 +6818,13 @@ declare global {
        */
       "re-search-forward": [string: string, count?: number];
       /**
+       * Insert the character you type into the minibuffer and exit minibuffer.
+       * Discard all previous input before inserting and exiting the minibuffer.
+       *
+       * Defined in packages/subr.ts.
+       */
+      "read-char-from-minibuffer-insert-char": [];
+      /**
        * Reject a disallowed character typed into the minibuffer.
        * This command is intended to be bound to keys that users are not
        * allowed to type into the minibuffer.  When the user types any

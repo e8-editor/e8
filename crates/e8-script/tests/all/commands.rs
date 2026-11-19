@@ -367,3 +367,20 @@ fn zap_to_char_reads_from_the_minibuffer_with_a_history() {
     d.press("M-p");
     assert_eq!(d.text(), " two");
 }
+
+/// read-char-from-minibuffer with CHARS takes only those, as Emacs's does,
+/// and keeps no history unless given one.
+#[test]
+fn read_char_from_minibuffer_takes_only_its_chars() {
+    let d = crate::driven::Driven::new(
+        r#"e8.defineCommand({ name: "ask-a-or-b", run: () => { e8.insert(String(e8.funcall("read-char-from-minibuffer", "a or b? ", [97, 98]))); } });"#,
+    );
+    d.press("C-x b");
+    d.type_text("r\n");
+    d.mx("ask-a-or-b");
+    d.type_text("x");
+    assert_eq!(d.prompt().as_deref(), Some("a or b? "), "x is a wrong answer");
+    d.type_text("b");
+    assert_eq!(d.text(), "b");
+    assert_eq!(d.variable("read-char-history").as_deref(), Some("[]"));
+}
