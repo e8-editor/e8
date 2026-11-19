@@ -347,3 +347,23 @@ fn binary_overwrite_and_quoted_digits_in_overwrite_mode() {
     d.press("C-q 1 6 2 RET");
     assert_eq!(d.text(), "1rxyzd", "an octal code, replacing the a");
 }
+
+/// M-z reads its character in the minibuffer, as Emacs 30's
+/// read-char-from-minibuffer: the first character ends it, M-p brings the
+/// last one back, and RET with nothing typed is a wrong answer.
+#[test]
+fn zap_to_char_reads_from_the_minibuffer_with_a_history() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("z\n");
+    d.type_text("one two one two");
+    d.press("M-< M-z");
+    assert_eq!(d.prompt().as_deref(), Some("Zap to char: "));
+    d.type_text("e");
+    assert_eq!(d.text(), " two one two");
+    assert_eq!(d.message().as_deref(), Some("Zap to char: e"));
+    d.press("M-z RET");
+    assert_eq!(d.prompt().as_deref(), Some("Zap to char: "), "RET alone is a wrong answer");
+    d.press("M-p");
+    assert_eq!(d.text(), " two");
+}
