@@ -244,6 +244,10 @@ fn prompts_found_by_comint_prompt_regexp() {
     ed.press("C-c C-a").unwrap();
     let b = ed.window_buffer();
     assert_eq!(b.slice(b.point()..b.len()), "echo three");
+    // With a prefix argument, to the line's very start.
+    s.eval_expression(&mut ed, "e8.callWithPrefix(4, 'comint-bol')").unwrap();
+    let b = ed.window_buffer();
+    assert_eq!(b.slice(b.point()..b.len()), "$ echo three");
     ed.press("C-e").unwrap();
     // C-c C-p twice: after the prompt of "echo two", then of "echo one".
     ed.press("C-c C-p C-c C-p").unwrap();

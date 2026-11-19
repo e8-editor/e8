@@ -212,16 +212,24 @@ const chars = (s: string, offset: number) => [...s.slice(0, offset)].length;
 export function filterApply(stringIn: string): string {
   const [faceVec, fragment] = stringContext();
   const string = fragment + stringIn;
+  const pieces: string[] = [];
+  let start = 0;
   CONTROL_SEQ.lastIndex = 0;
-  let result = string.replace(CONTROL_SEQ, "");
-  const cut = FRAGMENT_AT_END.exec(result);
-  let rest = "";
-  if (cut !== null) {
-    rest = cut[0];
-    result = result.slice(0, cut.index);
+  for (let m = CONTROL_SEQ.exec(string); m !== null; m = CONTROL_SEQ.exec(string)) {
+    pieces.push(string.slice(start, m.index));
+    start = m.index + m[0].length;
   }
-  e8.setVariable("ansi-color-context", [faceVec, rest] as e8.Value);
-  return result;
+  // Only what is after the last whole sequence can be the start of one.
+  let rest = string.slice(start);
+  const cut = FRAGMENT_AT_END.exec(rest);
+  let next = "";
+  if (cut !== null) {
+    next = cut[0];
+    rest = rest.slice(0, cut.index);
+  }
+  pieces.push(rest);
+  e8.setVariable("ansi-color-context", [faceVec, next] as e8.Value);
+  return pieces.join("");
 }
 
 /**
@@ -275,14 +283,44 @@ export function apply(stringIn: string): string | e8.PropertizedString {
 function regionContext(position: number): [FaceVec, e8.Marker] {
   const v = e8.variable("ansi-color-context-region");
   let marker = Array.isArray(v) && v[1] instanceof e8.Marker ? v[1] : undefined;
-  if (marker === undefined || e8.markerBuffer(marker) !== e8.bufferName()) marker = e8.makeMarker(position);
+  // One that points nowhere is put back, as ansi-color--ensure-context does; one in another buffer is not this buffer's.
+  if (marker === undefined || (e8.markerBuffer(marker) !== undefined && e8.markerBuffer(marker) !== e8.bufferName())) marker = e8.makeMarker(position);
   else if (e8.markerPosition(marker) === undefined) e8.setMarker(marker, position);
   return [Array.isArray(v) ? faceVecOf(v[0]) : newFaceVec(), marker];
 }
 
 const applyFace = (beg: number, end: number, face: e8.Value | undefined) => {
-  e8.funcall(String(e8.variable("ansi-color-apply-face-function") ?? "ansi-color-apply-overlay-face"), beg, end, face ?? null);
+  const f = e8.variable("ansi-color-apply-face-function");
+  e8.funcall((truthy(f) ? f : "ansi-color-apply-overlay-face") as string, beg, end, face ?? null);
 };
+
+/** How many characters, code points, a string has from one UTF-16 index to another. */
+function codePoints(text: string, from: number, to: number): number {
+  let n = 0;
+  for (let i = from; i < to; i++) {
+    const c = text.charCodeAt(i);
+    if (c < 0xd800 || c > 0xdbff) n++;
+  }
+  return n;
+}
+
+/**
+ * The control sequences from `from` to `to`, read once, each with where it
+ * starts and how many characters it has, counted in the text as it was.
+ */
+function* sequences(from: number, to: number): Generator<{ at: number; length: number; text: string }> {
+  const text = e8.bufferText(from, to);
+  let index = 0;
+  let at = from;
+  const re = new RegExp(CONTROL_SEQ.source, "g");
+  for (let m = re.exec(text); m !== null; m = re.exec(text)) {
+    at += codePoints(text, index, m.index);
+    index = m.index + m[0].length;
+    const length = codePoints(m[0], 0, m[0].length);
+    yield { at, length, text: m[0] };
+    at += length;
+  }
+}
 
 /** Where the start of a control sequence cut off at `end` begins, searching from `from`, as the fragment regexp's last match. */
 function fragmentBefore(from: number, end: number): { start: number; end: number } | undefined {
@@ -304,24 +342,23 @@ export function applyOnRegion(begin: number, end: number, preserveSequences = fa
   const [faceVec, startMarker] = regionContext(begin);
   const endMarker = e8.makeMarker(end);
   e8.saveExcursion(() => {
-    let point = e8.markerPosition(startMarker)!;
-    for (;;) {
-      const limit = e8.markerPosition(endMarker)!;
-      const text = e8.bufferText(point, limit);
-      CONTROL_SEQ.lastIndex = 0;
-      const m = CONTROL_SEQ.exec(text);
-      if (m === null) break;
-      const escBeg = point + chars(text, m.index);
-      const escEnd = escBeg + [...m[0]].length;
+    const first = e8.markerPosition(startMarker)!;
+    let point = first;
+    // Positions after a deletion move back by what went.
+    let deleted = 0;
+    for (const seq of sequences(first, e8.markerPosition(endMarker)!)) {
+      const escBeg = seq.at - deleted;
+      const escEnd = escBeg + seq.length;
       const from = e8.markerPosition(startMarker)!;
       e8.setMarker(startMarker, escEnd);
       applyFace(from, escBeg, faceVecFace(faceVec));
-      if (m[0].endsWith("m")) updateFaceVec(faceVec, parameters(m[0], 0, m[0].length));
+      if (seq.text.endsWith("m")) updateFaceVec(faceVec, parameters(seq.text, 0, seq.text.length));
       if (preserveSequences) {
         e8.overlayPut(e8.makeOverlay(escBeg, escEnd), "invisible", true);
         point = escEnd;
       } else {
         e8.deleteRegion(escBeg, escEnd);
+        deleted += seq.length;
         point = escBeg;
       }
     }
@@ -352,15 +389,13 @@ export function filterRegion(begin: number, end: number): void {
   const [faceVec, start] = regionContext(begin);
   const endMarker = e8.makeMarker(end);
   e8.saveExcursion(() => {
-    let point = e8.markerPosition(start)!;
-    for (;;) {
-      const text = e8.bufferText(point, e8.markerPosition(endMarker)!);
-      CONTROL_SEQ.lastIndex = 0;
-      const m = CONTROL_SEQ.exec(text);
-      if (m === null) break;
-      const at = point + chars(text, m.index);
-      e8.deleteRegion(at, at + [...m[0]].length);
-      point = at;
+    const first = e8.markerPosition(start)!;
+    let point = first;
+    let deleted = 0;
+    for (const seq of sequences(first, e8.markerPosition(endMarker)!)) {
+      point = seq.at - deleted;
+      e8.deleteRegion(point, point + seq.length);
+      deleted += seq.length;
     }
     e8.setMarker(start, point);
     const endPos = e8.markerPosition(endMarker)!;

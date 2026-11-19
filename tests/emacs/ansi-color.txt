@@ -103,6 +103,16 @@ ansi-color-apply	"ab(Bc" nil
 ansi-color-filter-apply	"ab(Bc" nil
 ansi-color-apply-on-region	"ab(Bc" nil
 ansi-color-filter-region	"ab(Bc" nil
+case fragment-then-sequence	nil	["\u001b[\u001b[0m","x"]
+ansi-color-apply	"[x" nil
+ansi-color-filter-apply	"[x" nil
+ansi-color-apply-on-region	"[x" nil
+ansi-color-filter-region	"[x" nil
+case wide-characters	nil	["é\u001b[31mλ😀","ü\u001b[0mx","\u001b[44m🙂"]
+ansi-color-apply	"é" nil | "λ😀ü" (:foreground "red3") | "x" nil | "🙂" (:background "blue2")
+ansi-color-filter-apply	"éλ😀üx🙂" nil
+ansi-color-apply-on-region	"é" nil | "λ😀ü" (:foreground "red3") | "x" nil | "🙂" (:background "blue2")
+ansi-color-filter-region	"éλ😀üx🙂" nil
 case bold-is-bright	t	["\u001b[1;31mx\u001b[22my\u001b[1;41mz"]
 ansi-color-apply	"x" (ansi-color-bold (:foreground "red2")) | "y" (:foreground "red3") | "z" (ansi-color-bold (:background "red2") (:foreground "red2"))
 ansi-color-filter-apply	"xyz" nil

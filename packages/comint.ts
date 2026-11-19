@@ -456,7 +456,8 @@ e8.defineMajorMode({
     "C-c C-d": "comint-send-eof",
   } as Record<string, e8.CommandName>,
   setup: () => {
-    state();
+    // Entering the mode again clears the buffer's variables; the marker is kept.
+    e8.setVariable("comint-last-output-start", state().lastOutputStart);
     e8.addHook("isearch-mode-hook", historyIsearchSetup, { local: true });
     e8.addHook("completion-at-point-functions", completionAtPoint, { local: true });
     e8.setVariable("comint-preoutput-filter-functions", [dropEcho]);
@@ -892,7 +893,7 @@ e8.defineCommand({
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => {
     // Unlike beginning-of-line, past the prompt's field, as forward-line goes.
-    if (arg !== null && arg !== undefined) e8.gotoChar(e8.lineBeginningPosition());
+    if (arg !== null && arg !== undefined) e8.gotoChar(e8.posBol());
     else e8.gotoChar(lineBeginningPosition());
   },
 });
@@ -1090,6 +1091,8 @@ export async function sendInvisible(prompt = "Non-echoed text: "): Promise<void>
   if (proc === undefined) throw new Error(`Buffer ${buffer} has no process`);
   const prefix = e8.windowBuffer() === buffer ? "" : `(In buffer ${buffer}) `;
   const str = await readPasswd(prefix + prompt);
+  // The prompt answered stays highlighted, as comint-snapshot-last-prompt.
+  if (e8.bufferLiveP(buffer)) e8.withCurrentBuffer(buffer, () => (state().lastPrompt = undefined));
   if (e8.processLiveP(proc)) e8.processSendString(proc, `${str}\n`);
 }
 
@@ -1339,9 +1342,9 @@ e8.defineCommand({
   run: () => {
     if (matchPartialFilenameRaw() === undefined) return;
     if (!e8.minibufferp()) e8.message("Completing file name...");
-    const [start, end, names, ...plist] = completeFileNameData();
-    const exit = plist[1] as unknown as ((text: string, status: "finished" | "exact" | "sole") => void) | undefined;
-    completionInRegion(start as number, end as number, names as unknown as () => string[], undefined, { exitFunction: exit });
+    // Only the text and its completions, as Emacs's completion-in-region gets them: no suffix added.
+    const [start, end, names] = completeFileNameData();
+    completionInRegion(start as number, end as number, names as unknown as () => string[]);
   },
 });
 

@@ -115,3 +115,24 @@ fn overlay_faces_do_not_grow() {
         .unwrap();
     assert_eq!(got, r#""[\"red after\",0,3,[\":foreground\",\"red3\"],0]""#);
 }
+
+/// ansi-color-apply-face-function may hold a function, as a lambda in Emacs.
+#[test]
+fn the_face_function_may_be_a_function() {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    let got = s
+        .eval_expression(
+            &mut ed,
+            r#"(() => {
+  e8.call("switch-to-buffer", "f");
+  const seen = [];
+  e8.setVariable("ansi-color-apply-face-function", (b, e, f) => { if (f) seen.push([b, e, f]); });
+  e8.insert("a\x1b[32mgreen\x1b[0m");
+  e8.funcall("ansi-color-apply-on-region", 0, e8.pointMax());
+  return JSON.stringify([e8.bufferText(), seen]);
+})()"#,
+        )
+        .unwrap();
+    assert_eq!(got, r#""[\"agreen\",[[1,6,[\":foreground\",\"green3\"]]]]""#);
+}

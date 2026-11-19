@@ -40,6 +40,8 @@
     ("carry-on" "\e[33myellow" " still" "\e[0m done")
     ("trailing-escape" "x\e")
     ("lone-escape" "a\eb\e(Bc")
+    ("fragment-then-sequence" "\e[\e[0m" "x")
+    ("wide-characters" "é\e[31mλ😀" "ü\e[0mx" "\e[44m🙂")
     ("bold-is-bright" :bright "\e[1;31mx\e[22my\e[1;41mz")
     ("bright-with-bold" :bright "\e[1;91mx\e[0;1;38;5;1my")))
 
