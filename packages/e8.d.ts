@@ -1896,14 +1896,11 @@ declare global {
        */
       "dired": [dirname: string];
       /**
-       * Change one mark to another on every file that has it.
-       *
-       * @param old text
-       * @param new text
+       * Change one mark to another on every file that has it: type the old mark, then the new.
        *
        * Defined in packages/dired.ts.
        */
-      "dired-change-marks": [old: string, new: string];
+      "dired-change-marks": [];
       /**
        * Put the names of the marked files, or this line's, in the kill ring, separated by spaces.
        *
@@ -2029,12 +2026,15 @@ declare global {
       /**
        * Replace the matches of a regexp in the marked files, asking about each, as query-replace-regexp does, file by file.
        *
+       * Y replaces the rest in every file without asking, N goes on to the next file. If you stop, M-x fileloop-continue goes on where you left off. With a prefix argument, only whole words.
+       *
        * @param from text
        * @param to text
+       * @param delimited raw prefix argument
        *
        * Defined in packages/dired-aux.ts.
        */
-      "dired-do-query-replace-regexp": [from: string, to: string];
+      "dired-do-query-replace-regexp": [from: string, to: string, delimited?: PrefixArg | boolean];
       /**
        * List the directory again, as g does.
        *
@@ -2069,6 +2069,14 @@ declare global {
        * Defined in packages/dired-aux.ts.
        */
       "dired-do-rename-regexp": [];
+      /**
+       * Search the marked files for a regexp, stopping at the first match; M-x fileloop-continue finds the next.
+       *
+       * @param regexp text
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "dired-do-search": [regexp: string];
       /**
        * Run a shell command on the marked files, or the one on this line.
        *
@@ -2316,7 +2324,7 @@ declare global {
        */
       "dired-sort-toggle-or-edit": [];
       /**
-       * Sum up Dired's most used keys in the echo area.
+       * Sum up Dired's most used keys in the echo area, showing the log of failures if there is one.
        *
        * Defined in packages/dired.ts.
        */
@@ -2340,13 +2348,15 @@ declare global {
        */
       "dired-unmark": [];
       /**
-       * Take a mark off every file that has it: the mark character typed, or every mark for RET.
+       * Take a mark off every file that has it: type the mark character, or RET for every mark.
        *
-       * @param mark text
+       * With a prefix argument, ask about each file: y or SPC to unmark it, n or DEL to pass it, ! to unmark the rest.
+       *
+       * @param arg raw prefix argument
        *
        * Defined in packages/dired.ts.
        */
-      "dired-unmark-all-files": [mark: string];
+      "dired-unmark-all-files": [arg?: PrefixArg | boolean];
       /**
        * Take every mark and flag off.
        *
@@ -2377,6 +2387,12 @@ declare global {
        * Defined in packages/dired.ts.
        */
       "dired-view-file": [];
+      /**
+       * Show the log of Dired's failures, at the last command's.
+       *
+       * Defined in packages/dired.ts.
+       */
+      "dired-why": [];
       /**
        * Disable a theme, its faces going back to what they were.
        *
@@ -2822,6 +2838,12 @@ declare global {
        * Defined in packages/filenotify.ts.
        */
       "file-notify-rm-all-watches": [];
+      /**
+       * Go on with the last operation over several files, where it was left.
+       *
+       * Defined in packages/fileloop.ts.
+       */
+      "fileloop-continue": [];
       /**
        * Fill the paragraph at or after point, breaking lines so none passes fill-column, or each paragraph in the region if it is active.
        *
@@ -6473,6 +6495,12 @@ declare global {
        */
       "query-replace-automatic": [];
       /**
+       * Replace this match and all the rest, in this buffer and the next ones, without asking.
+       *
+       * Defined in packages/replace.ts.
+       */
+      "query-replace-automatic-all": [];
+      /**
        * Go back to the last match asked about.
        *
        * Defined in packages/replace.ts.
@@ -6484,6 +6512,12 @@ declare global {
        * Defined in packages/replace.ts.
        */
       "query-replace-exit": [];
+      /**
+       * Leave the rest of this buffer and go on to the next one.
+       *
+       * Defined in packages/replace.ts.
+       */
+      "query-replace-exit-current": [];
       /**
        * Say what the keys do while query-replace asks.
        *
@@ -7960,6 +7994,18 @@ declare global {
        * Defined in packages/wdired.ts.
        */
       "wdired-finish-edit": [];
+      /**
+       * Set the permission bit at point to the key typed, if it can be that bit.
+       *
+       * Defined in packages/wdired.ts.
+       */
+      "wdired-set-bit": [];
+      /**
+       * Toggle the permission bit at point: on is r, w or x as its place says, off is -.
+       *
+       * Defined in packages/wdired.ts.
+       */
+      "wdired-toggle-bit": [];
       /**
        * Say what character is after point, in decimal, octal and hex, and how the file writes it if it is not ASCII; and where point is, as a position, a percentage of the buffer, and a column.
        *
@@ -9769,6 +9815,36 @@ declare global {
        */
       "dired-dwim-target": Value;
       /**
+       * Commands to guess for files, before the default ones: a list of [regexp, command...], each command a string, or a function of the file name giving one.
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "dired-guess-shell-alist-user": Value;
+      /**
+       * Whether the guessing regexps match file names case loosely.
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "dired-guess-shell-case-fold-search": Value;
+      /**
+       * GNU tar's name if it is installed, as tar or gtar; nil to find it.
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "dired-guess-shell-gnutar": Value;
+      /**
+       * Whether the guessed gzip and gunzip commands are given -q.
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "dired-guess-shell-gzip-quiet": Value;
+      /**
+       * Switches the guessed znew command is given, or nil.
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "dired-guess-shell-znew-switches": Value;
+      /**
        * Whether Dired-Hide-Details mode is on in this buffer. Use the command dired-hide-details-mode to change it.
        *
        * Defined in packages/dired.ts.
@@ -9820,6 +9896,12 @@ declare global {
        * Defined in packages/dired.ts.
        */
       "dired-listing-switches": Value;
+      /**
+       * The buffer Dired logs failures in.
+       *
+       * Defined in packages/dired.ts.
+       */
+      "dired-log-buffer": Value;
       /**
        * Keymap dired-mode-map.
        */
@@ -9876,6 +9958,12 @@ declare global {
        * Defined in packages/dired.ts.
        */
       "dired-recursive-deletes": Value;
+      /**
+       * Commands run with ! and & in Dired, newest first.
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "dired-shell-command-history": Value;
       /**
        * The program T runs to change the files' times.
        *
@@ -10272,6 +10360,12 @@ declare global {
        * Whether saving writes a new file and then renames it over the old one, so a failed save cannot leave the file half written. It breaks hard links.
        */
       "file-precious-flag": Value;
+      /**
+       * Whether a round reverts buffers whose files changed on disk: silent only those revert-without-query names, t asking about each, nil never.
+       *
+       * Defined in packages/fileloop.ts.
+       */
+      "fileloop-revert-buffers": Value;
       /**
        * The column filling breaks lines before. Each buffer has its own; C-x f sets it.
        *
@@ -11919,6 +12013,10 @@ declare global {
        */
       "mouse-position-function": Value;
       /**
+       * Keymap multi-query-replace-map.
+       */
+      "multi-query-replace-map": Value;
+      /**
        * Keymap narrow-map.
        */
       "narrow-map": Value;
@@ -13262,6 +13360,18 @@ declare global {
        */
       "shell-command-buffer-name-async": Value;
       /**
+       * Functions that guess commands for files, each given the list so far and the files and giving it back with its own added first.
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "shell-command-guess-functions": Value;
+      /**
+       * A command that opens a file with the program the system chooses: xdg-open if there is one, else open on macOS.
+       *
+       * Defined in packages/dired-aux.ts.
+       */
+      "shell-command-guess-open": Value;
+      /**
        * What tells the shell that the next argument is a command to run.
        *
        * Defined in packages/simple.ts.
@@ -13932,6 +14042,12 @@ declare global {
        */
       "visual-order-cursor-movement": Value;
       /**
+       * Whether the permission bits can be edited too: t lets each bit be typed, r, w, x or -, or toggled with SPC; advanced lets them be edited as any text. C-c C-c then sets the files' modes.
+       *
+       * Defined in packages/wdired.ts.
+       */
+      "wdired-allow-to-change-permissions": Value;
+      /**
        * Whether the targets of symbolic links can be edited too, to point them elsewhere.
        *
        * Defined in packages/wdired.ts.
@@ -13953,6 +14069,10 @@ declare global {
        * Keymap wdired-mode-map.
        */
       "wdired-mode-map": Value;
+      /**
+       * Keymap wdired-perm-mode-map.
+       */
+      "wdired-perm-mode-map": Value;
       /**
        * Spaces added before each column's keys.
        *

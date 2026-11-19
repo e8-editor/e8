@@ -1628,6 +1628,183 @@
         "sub/y.org": "sub/y.org\n"
       },
       "message": "(file-error Non-regular file Is a directory DIR/sub)"
+    },
+    {
+      "name": "dired-change-marks",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x C-j m m * c",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "*",
+          "D"
+        ],
+        "files": {
+          "a.txt": "one\n",
+          "b.txt": "two\n",
+          "c.org": "* c\n",
+          "sub/x.txt": "x\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "  DIR:\n  .\n  ..\nD a.txt\nD b.txt\n  c.org\n  sub\n",
+      "visible": "  DIR:\n  .\n  ..\nD a.txt\nD b.txt\n  c.org\n  sub\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "one\n",
+        "b.txt": "two\n",
+        "c.org": "* c\n",
+        "sub/": "",
+        "sub/x.txt": "x\n"
+      }
+    },
+    {
+      "name": "dired-change-flags-to-marks",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x C-j d d * c",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "D",
+          "*"
+        ],
+        "files": {
+          "a.txt": "one\n",
+          "b.txt": "two\n",
+          "c.org": "* c\n",
+          "sub/x.txt": "x\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "  DIR:\n  .\n  ..\n* a.txt\n* b.txt\n  c.org\n  sub\n",
+      "visible": "  DIR:\n  .\n  ..\n* a.txt\n* b.txt\n  c.org\n  sub\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "one\n",
+        "b.txt": "two\n",
+        "c.org": "* c\n",
+        "sub/": "",
+        "sub/x.txt": "x\n"
+      }
+    },
+    {
+      "name": "dired-change-marks-refuses-ret",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x C-j m * c",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "*",
+          "\r"
+        ],
+        "files": {
+          "a.txt": "one\n",
+          "b.txt": "two\n",
+          "c.org": "* c\n",
+          "sub/x.txt": "x\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "  DIR:\n  .\n  ..\n* a.txt\n  b.txt\n  c.org\n  sub\n",
+      "visible": "  DIR:\n  .\n  ..\n* a.txt\n  b.txt\n  c.org\n  sub\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid mark character: ‘\r’",
+      "files": {
+        "a.txt": "one\n",
+        "b.txt": "two\n",
+        "c.org": "* c\n",
+        "sub/": "",
+        "sub/x.txt": "x\n"
+      }
+    },
+    {
+      "name": "dired-unmark-all-files-of-one-mark",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x C-j m d M-DEL *",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.txt": "one\n",
+          "b.txt": "two\n",
+          "c.org": "* c\n",
+          "sub/x.txt": "x\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "  DIR:\n  .\n  ..\n  a.txt\nD b.txt\n  c.org\n  sub\n",
+      "visible": "  DIR:\n  .\n  ..\n  a.txt\nD b.txt\n  c.org\n  sub\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "one\n",
+        "b.txt": "two\n",
+        "c.org": "* c\n",
+        "sub/": "",
+        "sub/x.txt": "x\n"
+      }
+    },
+    {
+      "name": "dired-unmark-all-files-ret-means-all",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x C-j m d M-DEL RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.txt": "one\n",
+          "b.txt": "two\n",
+          "c.org": "* c\n",
+          "sub/x.txt": "x\n"
+        },
+        "find": "a.txt"
+      },
+      "text": "  DIR:\n  .\n  ..\n  a.txt\n  b.txt\n  c.org\n  sub\n",
+      "visible": "  DIR:\n  .\n  ..\n  a.txt\n  b.txt\n  c.org\n  sub\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "a.txt": "one\n",
+        "b.txt": "two\n",
+        "c.org": "* c\n",
+        "sub/": "",
+        "sub/x.txt": "x\n"
+      }
     }
   ]
 }

@@ -176,6 +176,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/eglot.ts", include_str!("../../../packages/eglot.ts")),
     ("packages/acp.ts", include_str!("../../../packages/acp.ts")),
     ("packages/replace.ts", include_str!("../../../packages/replace.ts")),
+    ("packages/fileloop.ts", include_str!("../../../packages/fileloop.ts")),
     ("packages/dired-aux.ts", include_str!("../../../packages/dired-aux.ts")),
     ("packages/dired-x.ts", include_str!("../../../packages/dired-x.ts")),
     ("packages/wdired.ts", include_str!("../../../packages/wdired.ts")),

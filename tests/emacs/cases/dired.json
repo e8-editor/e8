@@ -634,5 +634,77 @@
   },
   "find": "a.txt",
   "message": true
+ },
+ {
+  "name": "dired-change-marks",
+  "files": {
+   "a.txt": "one\n",
+   "b.txt": "two\n",
+   "c.org": "* c\n",
+   "sub/x.txt": "x\n"
+  },
+  "find": "a.txt",
+  "text": "",
+  "keys": "C-x C-j m m * c",
+  "answers": [
+   "*",
+   "D"
+  ]
+ },
+ {
+  "name": "dired-change-flags-to-marks",
+  "files": {
+   "a.txt": "one\n",
+   "b.txt": "two\n",
+   "c.org": "* c\n",
+   "sub/x.txt": "x\n"
+  },
+  "find": "a.txt",
+  "text": "",
+  "keys": "C-x C-j d d * c",
+  "answers": [
+   "D",
+   "*"
+  ]
+ },
+ {
+  "name": "dired-change-marks-refuses-ret",
+  "files": {
+   "a.txt": "one\n",
+   "b.txt": "two\n",
+   "c.org": "* c\n",
+   "sub/x.txt": "x\n"
+  },
+  "find": "a.txt",
+  "text": "",
+  "keys": "C-x C-j m * c",
+  "answers": [
+   "*",
+   "\r"
+  ]
+ },
+ {
+  "name": "dired-unmark-all-files-of-one-mark",
+  "files": {
+   "a.txt": "one\n",
+   "b.txt": "two\n",
+   "c.org": "* c\n",
+   "sub/x.txt": "x\n"
+  },
+  "find": "a.txt",
+  "text": "",
+  "keys": "C-x C-j m d M-DEL *"
+ },
+ {
+  "name": "dired-unmark-all-files-ret-means-all",
+  "files": {
+   "a.txt": "one\n",
+   "b.txt": "two\n",
+   "c.org": "* c\n",
+   "sub/x.txt": "x\n"
+  },
+  "find": "a.txt",
+  "text": "",
+  "keys": "C-x C-j m d M-DEL RET"
  }
 ]
