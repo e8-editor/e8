@@ -148,3 +148,25 @@ fn wdired_edits_permission_bits_and_searches_only_names() {
     let mode = std::os::unix::fs::PermissionsExt::mode(&fs::metadata(&file).unwrap().permissions()) & 0o777;
     assert_eq!(mode, 0o666);
 }
+
+/// Emacs 30: `.` in a round over several files stops the round; the
+/// prefix argument to Q means whole words, not which files; files no
+/// buffer visits are scanned without being visited unless they match.
+#[test]
+fn query_replace_stops_on_dot_and_visits_only_matching_files() {
+    let d = Driven::new("");
+    let dir = sample();
+    fs::write(dir.path().join("c.txt"), "nothing here\n").unwrap();
+    let path = format!("{}/", dir.path().display());
+    d.start(move |ed| ed.call("dired", vec![Arg::Str(path)]).unwrap());
+    d.eval(r#"e8.call("dired-mark-files-regexp", "\\.txt\\'");"#);
+    d.press("Q");
+    d.type_text("apple");
+    d.press("RET");
+    d.type_text("pear");
+    d.press("RET");
+    d.press(".");
+    assert_eq!(d.eval_expression(r#"e8.withCurrentBuffer("a.txt", () => e8.bufferText())"#), r#""pear and apple\n""#);
+    assert_eq!(d.eval_expression(r#"String(e8.getBuffer("b.txt") !== undefined)"#), r#""false""#, "the round stopped at a.txt");
+    assert_eq!(d.eval_expression(r#"String(e8.getBuffer("c.txt") !== undefined)"#), r#""false""#, "c.txt was never visited");
+}

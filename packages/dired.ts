@@ -726,18 +726,14 @@ e8.defineCommand({
  * dired-unmark-all-files: with `query`, asking about each file, y or SPC
  * to unmark it, n or DEL to pass it, ! to unmark the rest, q to stop.
  */
-export async function unmarkAll(which: string | undefined, query = false): Promise<void> {
+export function unmarkAll(which: string | undefined, query = false): void {
   let n = 0;
-  let all = !query;
+  const ask = query ? makeQuery() : undefined;
   for (let l = 0; l < e8.lineCount(); l++) {
     const f = fileLine(l);
     if (!f || f.mark === " " || (which !== undefined && f.mark !== which)) continue;
-    if (!all) {
-      const answer = await e8.readCharChoice(`Unmark file \`${f.name}'? (y, n, !, q) `, "yn!q \x7f");
-      if (answer === "q") break;
-      if (answer === "n" || answer === "\x7f") continue;
-      if (answer === "!") all = true;
-    }
+    // As dired-query asks: y or SPC, n or DEL, ! for the rest, q or ESC to stop.
+    if (ask && !ask(`Unmark file \u2018${f.name}\u2019?`)) continue;
     setMark(l, " ");
     n++;
   }
@@ -759,7 +755,7 @@ e8.defineCommand({
     // A key read in the echo area, as interactive "c" reads it.
     const char = keyChar(await e8.readChar("Remove marks (RET means all): "));
     if (char === undefined) e8.userError("Non-character input-event");
-    await unmarkAll(char === "\r" ? undefined : char, arg !== null);
+    unmarkAll(char === "\r" ? undefined : char, arg !== null);
   },
 });
 
@@ -1021,9 +1017,10 @@ export function diredLog(text: string | true): void {
         return;
       }
       // The group's start: after the formfeed ending the last group.
+      // Back a page, to just after the last formfeed, as backward-page goes.
       const start = e8.saveExcursion(() => {
-        const at = e8.bufferText(0, e8.point()).lastIndexOf("\f\n");
-        return at < 0 ? 0 : at + 2;
+        const at = e8.bufferText(0, e8.point()).lastIndexOf("\f");
+        return at < 0 ? 0 : at + 1;
       });
       e8.gotoChar(start);
       if (e8.point() !== e8.lineBeginningPosition()) e8.insert("\n");

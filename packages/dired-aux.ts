@@ -325,7 +325,10 @@ function gnutar(): string | null {
 e8.defineVariable({ name: "dired-guess-shell-gnutar", doc: "GNU tar's name if it is installed, as tar or gtar; nil to find it.", value: null });
 
 const gzq = (): string => (e8.variable("dired-guess-shell-gzip-quiet") === false ? "" : " -q");
-const znew = (): string => `znew${gzq()} ${String(e8.variable("dired-guess-shell-znew-switches") ?? "")}`.trimEnd();
+const znew = (): string => {
+  const switches = e8.variable("dired-guess-shell-znew-switches");
+  return `znew${gzq()} ${switches === null || switches === undefined || switches === false ? "" : String(switches)}`;
+};
 const sansExt = (file: string): string => file.replace(/\.[^./]*$/, "");
 type Guess = string | ((file: string) => string);
 
@@ -347,7 +350,7 @@ const GUESS_DEFAULT: [string, ...Guess[]][] = [
   ["\\.e?ps\\'", "ghostview", "xloadimage", "lpr"],
   ["\\.e?ps\\.g?z\\'", "gunzip -qc * | ghostview -", () => `gunzip${gzq()}`],
   ["\\.e?ps\\.Z\\'", "zcat * | ghostview -", znew],
-  ["\\.patch\\'", () => (e8.fileDirectoryP(String(e8.variable("default-directory") ?? ".") + ".git") ? "cat * | git apply" : "cat * | patch")],
+  ["\\.patch\\'", () => (inGitRepository() ? "cat * | git apply" : "cat * | patch")],
   ["\\.patch\\.g?z\\'", "gunzip -qc * | patch", () => `gunzip${gzq()}`],
   ["\\.patch\\.Z\\'", "zcat * | patch", znew],
   ["\\.\\(?:[0-9]\\|man\\)\\'", () => manCommand("cat * | tbl | nroff -man -h | col -b")],
@@ -384,10 +387,27 @@ const GUESS_OPTIONAL: [string, ...Guess[]][] = [
   ["\\.jpe?g\\'", "xloadimage"], ["\\.fig\\'", "xfig"], ["\\.out\\'", "xgraph"], ["\\.pdf\\'", "xpdf"], ["\\.doc\\'", "antiword", "strings"],
 ];
 
-/** How man reads a local page, as dired's guess for one asks Man-support-local-filenames: man-db's -l, else nroff. */
+/** Whether default-directory is in a Git repository, as vc-responsible-backend finds one in it or a parent. */
+function inGitRepository(): boolean {
+  let dir = e8.expandFileName(String(e8.variable("default-directory") ?? "."));
+  for (;;) {
+    if (e8.fileExistsP(`${e8.fileNameAsDirectory(dir)}.git`)) return true;
+    const parent = e8.fileNameDirectory(e8.directoryFileName(dir));
+    if (parent === undefined || parent === dir) return false;
+    dir = parent;
+  }
+}
+
+/**
+ * How man reads a local page, as dired's guess asks Man-support-local-filenames:
+ * man-db's "man -l" when man --help mentions --local-file, "man ./" when man
+ * reads a page by its path, else `fallback`, nroff.
+ */
 function manCommand(fallback: string): string {
   const help = e8.conditionCase(() => e8.callProcess(["man", "--help"]).output, { error: () => "" });
-  return /--local-file|-l/.test(help) ? "man -l" : fallback;
+  if (help.includes("--local-file")) return "man -l";
+  if (/\bpath\b|\.\/|\bfile\b/i.test(help) && !/man-db/i.test(help)) return "man ./";
+  return fallback;
 }
 
 /** The commands an alist guesses for every one of `files`, as dired-guess-default, without repeats. */
@@ -715,10 +735,10 @@ e8.defineCommand({
 
 // Searching the marked files.
 
-/** The marked files that are not directories, to search. */
-function searchFiles(): string[] {
+/** The marked files that are not directories, to search; `byPrefix` lets the prefix argument choose them, as A's does. */
+function searchFiles(byPrefix = true): string[] {
   requireDired();
-  return markedFiles(e8.prefixArg()).files.filter((f) => !e8.fileDirectoryP(f));
+  return markedFiles(byPrefix ? e8.prefixArg() : null).files.filter((f) => !e8.fileDirectoryP(f));
 }
 
 e8.defineCommand({
@@ -746,7 +766,8 @@ e8.defineCommand({
     { name: "delimited", kind: "prefix" },
   ],
   run: (from: string, to: string, delimited: e8.PrefixArg) => {
-    const files = searchFiles();
+    // The prefix argument means whole words, not which files, as dired-get-marked-files nil.
+    const files = searchFiles(false);
     // As dired-do-query-replace-regexp: a file visited read-only is refused.
     for (const file of files) {
       const buffer = fileBuffer(file);
@@ -764,7 +785,7 @@ e8.defineCommand({
   doc: "Search the marked files for a regexp, stopping at the first match; M-x fileloop-continue finds the next.",
   params: [{ name: "regexp", prompt: "Search marked files (regexp): ", history: "regexp-history" }],
   run: (regexp: string) => {
-    fileloopInitializeSearch(regexp, searchFiles(), "default");
+    fileloopInitializeSearch(regexp, searchFiles(false), "default");
     fileloopContinue();
   },
 });

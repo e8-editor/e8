@@ -11,7 +11,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { DEL_MARKER, currentDirectory, diredLog, fileLine, findLine, isDot, readin, requireDired, setMark } from "dired";
+import { DEL_MARKER, currentDirectory, diredLog, fileLine, logSummary, findLine, isDot, readin, requireDired, setMark } from "dired";
 import { diredRenameFile } from "dired-aux";
 import { eraseBuffer, PerBuffer } from "subr";
 
@@ -280,7 +280,9 @@ function inFileName(start: number, end: number): boolean {
   if (e8.getTextProperty(at, OLD_NAME) === undefined) at = e8.nextSinglePropertyChange(lineStart, OLD_NAME, lineEnd) ?? lineEnd;
   if (at >= lineEnd) return false;
   const nameEnd = e8.nextSinglePropertyChange(at + 1, OLD_LINK, lineEnd) ?? lineEnd;
-  return start >= at + 1 && end <= nameEnd;
+  if (start >= at + 1 && end <= nameEnd) return true;
+  // A link's target, after " -> ", as dired-symlink-filename is searched too.
+  return nameEnd < lineEnd && start >= nameEnd + 4 && end <= lineEnd;
 }
 
 /** A line's old and new names, and its link's old and new targets, as wdired-get-filename reads them. */
@@ -402,7 +404,7 @@ e8.defineCommand({
       const line = findLine(e8.fileNameNondirectory(file));
       if (line !== undefined) setMark(line, DEL_MARKER);
     }
-    if (errors > 0) e8.message(`${errors} actions failed--type ? for details`);
+    if (errors > 0) logSummary(`${errors} actions failed`, null);
     e8.setBufferModified(false);
   },
 });

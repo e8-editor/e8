@@ -395,6 +395,8 @@ const actions: [string[], string, string, (r: Replace) => void][] = [
   }],
   [["."], "query-replace-act-and-exit", "Replace this match and stop.", (r) => {
     replaceHere(r);
+    // A round over several buffers stops too, as perform-replace's keep-going is nil.
+    outcome = "stop";
     finish(r);
   }],
   [[","], "query-replace-act-and-stay", "Replace this match and stay here; y or n then moves on.", (r) => {
