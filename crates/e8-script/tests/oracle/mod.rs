@@ -396,6 +396,10 @@ pub fn run(case: &Case) -> State {
     let scripting = Scripting::new(&mut ed).expect("scripting starts");
     // As in Emacs, deleting deletes, which also keeps cases out of the trash.
     ed.set_variable("delete-by-moving-to-trash", e8_core::Value::Bool(false));
+    // The commands record.el enables, as Emacs asks first for them.
+    for command in ["narrow-to-region", "upcase-region", "downcase-region"] {
+        ed.put(command, "disabled", e8_core::Value::Null);
+    }
     // Lock files only where a case asks for them, as record.el has it.
     ed.set_variable("create-lockfiles", e8_core::Value::Bool(case.lockfiles));
     // Batch Emacs's frame: 80 columns, and 24 lines above the echo area.

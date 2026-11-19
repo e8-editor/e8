@@ -1719,6 +1719,33 @@ impl Editor {
         }
     }
 
+    /// For a command whose `disabled` property is set, runs
+    /// `disabled-command-function` instead, if that is set, as Emacs's
+    /// `command-execute` does for keys and M-x, though not
+    /// `call-interactively`: given the command's name, it asks, as novice.el's
+    /// does, and runs the command itself if told to. Whether it ran.
+    /// `keys` are those that ran it, when not this command's own, as M-x's.
+    pub fn run_disabled_command_function(&mut self, name: &str, keys: Option<&str>) -> bool {
+        if !self.get(name, "disabled").is_some_and(Value::is_true) {
+            return false;
+        }
+        let Some(function) = self.variable("disabled-command-function").filter(Value::is_true) else {
+            return false;
+        };
+        // The prefix argument typed is the running one, as command-execute
+        // makes it current-prefix-arg, for the function to hand on.
+        self.current_prefix_arg = self.prefix_arg.take();
+        self.this_command = Some(name.to_string());
+        let mut args = vec![Value::Symbol(name.to_string())];
+        if let Some(keys) = keys {
+            args.push(Value::Str(keys.to_string()));
+        }
+        if let Err(e) = self.funcall(&function, &args) {
+            self.fail(e);
+        }
+        true
+    }
+
     /// Runs a command as the command loop runs one bound to a key, as
     /// Emacs's `command-execute` does: for what a front end gives as a
     /// command rather than a key, such as the Mac's ⌘C, ⌘X and ⌘V.
@@ -1746,7 +1773,9 @@ impl Editor {
         }
         let (old_point, old_buffer, old_tick) = (self.buffer().point(), self.buffer().id, self.buffer().modified_tick());
         self.command_failed = false;
-        self.run_interactive(&name);
+        if !self.run_disabled_command_function(&name, None) {
+            self.run_interactive(&name);
+        }
         self.previous_amalgamating = self.amalgamating_now;
         self.this_command = self.last_command.clone();
         self.refresh_dynamic_collection();

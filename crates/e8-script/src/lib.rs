@@ -131,6 +131,8 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/help.ts", include_str!("../../../packages/help.ts")),
     ("packages/help-guide.ts", include_str!("../../../packages/help-guide.ts")),
     ("packages/descr-text.ts", include_str!("../../../packages/descr-text.ts")),
+    ("packages/rmc.ts", include_str!("../../../packages/rmc.ts")),
+    ("packages/novice.ts", include_str!("../../../packages/novice.ts")),
     ("packages/composite.ts", include_str!("../../../packages/composite.ts")),
     ("packages/prog-mode.ts", include_str!("../../../packages/prog-mode.ts")),
     ("packages/lisp-mode.ts", include_str!("../../../packages/lisp-mode.ts")),

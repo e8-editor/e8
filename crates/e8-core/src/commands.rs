@@ -1797,7 +1797,11 @@ fn minibuffer(ed: &mut Editor) {
                 ed.set_prefix_arg(ed.current_prefix_arg());
                 // The command run goes on command-history, as command-execute records it for M-x.
                 ed.record_next_command = true;
-                ed.run_interactive(args[0].as_str()?);
+                let name = args[0].as_str()?;
+                // A disabled command asks first, as command-execute has it ask.
+                if !ed.run_disabled_command_function(name, Some("M-x")) {
+                    ed.run_interactive(name);
+                }
                 Ok(())
             },
         )
