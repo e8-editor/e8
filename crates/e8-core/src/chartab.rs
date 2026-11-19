@@ -50,7 +50,19 @@ impl CharTable {
 
     /// Gives every character from `from` to `to` a value.
     pub(crate) fn set_range(&mut self, from: u32, to: u32, value: Value) {
-        let overlapping: Vec<u32> = self.runs.range(..=to).filter(|(_, (last, _))| *last >= from).map(|(first, _)| *first).collect();
+        // The runs are apart, so only the one starting before `from` and
+        // those starting from it to `to` can overlap: looked up, not
+        // scanned for, so a table built a run at a time takes linear time.
+        if from > to {
+            return;
+        }
+        let mut overlapping: Vec<u32> = Vec::new();
+        if let Some((&first, (last, _))) = self.runs.range(..from).next_back()
+            && *last >= from
+        {
+            overlapping.push(first);
+        }
+        overlapping.extend(self.runs.range(from..=to).map(|(first, _)| *first));
         for first in overlapping {
             let (last, old) = self.runs.remove(&first).expect("listed");
             if first < from {
@@ -252,22 +264,54 @@ impl Editor {
         Ok(out)
     }
 
+    /// A character's value of a property, as `get-char-code-property`:
+    /// what `put-char-code-property` gave it, else Unicode's as Emacs has
+    /// it, nil for a property it has none of.
+    pub fn get_char_code_property(&self, c: u32, property: &str) -> Value {
+        if let Some(v) = self.char_code_properties.get(&(property.to_string(), c)) {
+            return v.clone();
+        }
+        // A table handed out reads as itself, aset in it too, but for a name
+        // made from the code, which it does not hold.
+        if let Some(&id) = self.unicode_property_tables.get(property) {
+            let v = self.char_table_get(id, c);
+            if v != Value::Null || !matches!(property, "name" | "decomposition") {
+                return v;
+            }
+        }
+        crate::unidata::property(c, property).unwrap_or(Value::Null)
+    }
+
+    /// Gives a character a property's value, as `put-char-code-property`:
+    /// in the property's table too, if one was handed out.
+    pub fn put_char_code_property(&mut self, c: u32, property: &str, value: Value) {
+        if let Some(&id) = self.unicode_property_tables.get(property) {
+            let _ = self.char_table_set(id, c, value.clone());
+        }
+        self.char_code_properties.insert((property.to_string(), c), value);
+    }
+
     /// The char-table of a Unicode property, as
     /// `unicode-property-table-internal`: the same table each time it is
-    /// asked for, and `None` for a property E8 holds no data for, as
-    /// Emacs answers nil for one whose table it cannot load.
-    ///
-    /// E8 holds the bidi properties ([ADR 0047]), and no others.
-    ///
-    /// [ADR 0047]: ../../../../docs/adr/0047-bidirectional-text.md
+    /// asked for, and `None` for a property not in
+    /// `char-code-property-alist`, as Emacs answers nil for one whose
+    /// table it cannot load. A name made from the code, as a CJK
+    /// ideograph's, is not in the table, but `get-char-code-property`
+    /// gives it.
     pub fn unicode_property_table(&mut self, property: &str) -> Option<CharTableId> {
         if let Some(id) = self.unicode_property_tables.get(property) {
             return Some(*id);
         }
-        let (default, runs) = crate::bidi::property_runs(property)?;
+        let (default, runs) = crate::unidata::property_runs(property)?;
         let mut table = CharTable::new(property, default, 0);
         for (first, last, value) in runs {
             table.set_range(first, last, value);
+        }
+        // With what put-char-code-property gave characters before.
+        for ((p, c), v) in &self.char_code_properties {
+            if p == property {
+                table.set_range(*c, *c, v.clone());
+            }
         }
         let id = self.add_char_table(table);
         self.unicode_property_tables.insert(property.to_string(), id);

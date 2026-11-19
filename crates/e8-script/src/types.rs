@@ -1802,11 +1802,13 @@ const API: &str = r##"
    */
   function bidiFindOverriddenDirectionality(from: number, to: number, object?: BufferLike | string | PropertizedString, baseDir?: "left-to-right" | "right-to-left"): number | undefined;
   /**
-   * A character's Unicode property, as get-char-code-property: bidi-class
-   * ("L", "R", "AL", ...), mirroring and paired-bracket (a character),
-   * bracket-type ("o", "c" or "n") or mirrored ("Y" or "N").
+   * A character's value of a Unicode property, as get-char-code-property:
+   * "name", "general-category" ("Lu"), "decomposition" (its tag, if any,
+   * and character codes), "bidi-class" ("L", "R", "AL", ...), "mirroring",
+   * "uppercase" and the rest of char-code-property-alist, characters as
+   * codes, or what putCharCodeProperty gave it; undefined for none.
    */
-  function getCharCodeProperty(char: string | number, property: "bidi-class" | "mirroring" | "paired-bracket" | "bracket-type" | "mirrored"): string | undefined;
+  function getCharCodeProperty(char: string | number, property: string | symbol): Value | undefined;
   /** Whether the buffers, their names and modified flags, or the frames changed since it was last asked, as frame-or-buffer-changed-p. */
   function frameOrBufferChangedP(): boolean;
   /** The tab bar's height in lines, as tab-bar-height: E8 has none. */

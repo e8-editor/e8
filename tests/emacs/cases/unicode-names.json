@@ -1,0 +1,10 @@
+[
+  { "name": "insert-char-by-name", "text": "x", "point": 1, "keys": "C-x 8 RET", "answers": ["GREEK SMALL LETTER LAMBDA"] },
+  { "name": "insert-char-by-name-in-lower-case", "text": "", "keys": "C-x 8 RET", "answers": ["grinning face"] },
+  { "name": "insert-char-by-hex-with-a-count", "text": "", "keys": "C-u 3 C-x 8 RET", "answers": ["2a10"] },
+  { "name": "insert-char-by-hash-notation", "text": "", "keys": "C-x 8 RET", "answers": ["#x41"] },
+  { "name": "insert-char-by-old-name", "text": "", "keys": "C-x 8 RET", "answers": ["LINE FEED (LF)"] },
+  { "name": "insert-char-made-name", "text": "", "keys": "C-x 8 RET", "answers": ["CJK IDEOGRAPH-4E00"] },
+  { "name": "insert-char-variation-selector", "text": "", "keys": "C-x 8 RET", "answers": ["VARIATION SELECTOR-17"] },
+  { "name": "insert-char-not-a-name", "text": "", "keys": "C-x 8 RET", "answers": ["NO SUCH CHARACTER NAME"] }
+]

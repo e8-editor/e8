@@ -4,6 +4,7 @@
 // apropos.el (ADR 0064). Everything shown is made from E8's own
 // definitions and keymaps, never from Emacs's text.
 
+import { charToName } from "mule";
 import { allMatches, eraseBuffer } from "subr";
 
 // --- The *Help* buffer, with its history, after help-mode.el ---------------
@@ -313,7 +314,14 @@ function sameDefinition(a: Definition, b: Definition): boolean {
 
 /** How a definition reads in a listing, as help--describe-command writes it. */
 function describeDefinition(definition: Definition, translation: boolean): string {
-  if (Array.isArray(definition)) return translation ? definition.join(" ") : "Keyboard Macro";
+  if (Array.isArray(definition)) {
+    if (!translation) return "Keyboard Macro";
+    // The first character's name after a tab, as help--describe-command writes it.
+    const first = definition[0];
+    const code = typeof first === "number" ? first : typeof first === "string" && [...first].length === 1 ? first.codePointAt(0) : undefined;
+    const name = code === undefined ? undefined : charToName(code);
+    return definition.join(" ") + (name === undefined ? "" : `\t${name}`);
+  }
   if (e8.keymapp(definition)) return "Prefix Command";
   return String(definition);
 }

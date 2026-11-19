@@ -1,4 +1,4 @@
-import { allMatches, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine } from "subr";
+import { allMatches, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine, truthy } from "subr";
 // Basic editing commands that Emacs writes in Lisp, after its simple.el.
 // E8 loads this file at startup, before init.ts.
 
@@ -1281,21 +1281,25 @@ e8.defineCommand({
   name: "what-cursor-position",
   doc:
     "Say what character is after point, in decimal, octal and hex, and how the file writes it if it is not ASCII; " +
-    "and where point is, as a position, a percentage of the buffer, and a column.",
-  run: () => {
+    "and where point is, as a position, a percentage of the buffer, and a column. " +
+    "With a prefix argument, describe the character in *Help* as well, as describe-char.",
+  params: [{ name: "detail", kind: "prefix" }],
+  run: (detail: e8.Value) => {
     const pos = e8.point() + 1;
     const total = e8.bufferSize();
     const [beg, end] = [e8.pointMin() + 1, e8.pointMax() + 1];
     const percent = Math.round((100 * (pos - 1)) / Math.max(1, total));
     const col = e8.currentColumn();
+    const hscroll = e8.windowHscroll() === 0 ? "" : ` Hscroll=${e8.windowHscroll()}`;
     const narrowed = beg !== 1 || end !== total + 1;
     if (pos === end) {
-      e8.message(narrowed ? `point=${pos} of ${total} (${percent}%) <${beg}-${end}> column=${col}` : `point=${pos} of ${total} (EOB) column=${col}`);
+      e8.message(narrowed ? `point=${pos} of ${total} (${percent}%) <${beg}-${end}> column=${col}${hscroll}` : `point=${pos} of ${total} (EOB) column=${col}${hscroll}`);
       return;
     }
     const c = e8.bufferSubstringNoProperties(pos - 1, pos);
     const code = c.codePointAt(0)!;
-    const num = `${code}, #o${code.toString(8)}, #x${code.toString(16)}`;
+    const charName = truthy(e8.variable("what-cursor-show-names")) ? e8.funcall("char-to-name", code) : null;
+    const num = `${code}, #o${code.toString(8)}, #x${code.toString(16)}${typeof charName === "string" ? `, ${charName}` : ""}`;
     let encoding = `(${num})`;
     const display = e8.charProperty(pos - 1, "display");
     if (code >= 0x10ff80) {
@@ -1316,14 +1320,17 @@ e8.defineCommand({
         encoding = `(${num}, file ${bytes.length > 1 ? "..." : bytes.map((b) => `#x${b.codePointAt(0)!.toString(16).toUpperCase()}`).join(" ")})`;
       }
     }
+    // With a prefix argument, the character in detail too, as describe-char.
+    if (truthy(detail)) e8.call("describe-char", e8.point());
     const shown = code < 128 ? charDescription(c) : c;
     e8.message(
       narrowed
-        ? `Char: ${code < 256 ? charDescription(c) : c} ${encoding} point=${pos} of ${total} (${percent}%) <${beg}-${end}> column=${col}`
-        : `Char: ${shown} ${encoding} point=${pos} of ${total} (${percent}%) column=${col}`,
+        ? `Char: ${code < 256 ? charDescription(c) : c} ${encoding} point=${pos} of ${total} (${percent}%) <${beg}-${end}> column=${col}${hscroll}`
+        : `Char: ${shown} ${encoding} point=${pos} of ${total} (${percent}%) column=${col}${hscroll}`,
     );
   },
 });
+e8.defineVariable({ name: "what-cursor-show-names", doc: "Whether C-x = shows the character's Unicode name.", value: false });
 e8.bindKey("C-x =", "what-cursor-position");
 
 /** How many words there are from start to end, as count-words from Lisp: across fields. */

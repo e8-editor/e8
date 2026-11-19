@@ -271,7 +271,7 @@ fn the_primitives_answer_as_emacs_does() {
             &s,
             "JSON.stringify([e8.getCharCodeProperty(']', 'paired-bracket'), e8.getCharCodeProperty('(', 'bracket-type'), e8.getCharCodeProperty('<', 'mirroring'), e8.getCharCodeProperty('a', 'mirroring') ?? null, e8.getCharCodeProperty('<', 'mirrored')])"
         ),
-        r#""[\"[\",\"o\",\">\",null,\"Y\"]""#
+        r#""[91,\"o\",62,null,\"Y\"]""#
     );
     // The first paragraph reads left to right, the second right to left.
     assert_eq!(eval(&mut ed, &s, "e8.currentBidiParagraphDirection()"), "\"left-to-right\"");

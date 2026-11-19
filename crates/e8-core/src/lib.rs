@@ -21,6 +21,8 @@ mod category;
 // Written by tests/emacs/unicode.el; not every table is read yet.
 #[allow(dead_code)]
 mod chartab_data;
+pub mod unidata;
+mod unidata_data;
 mod colors_data;
 pub mod driver;
 pub mod font;

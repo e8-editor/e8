@@ -55,7 +55,7 @@ fn char_of(value: &Value) -> Result<u32> {
 }
 
 /// A character's script, as `char-script-table` gives it.
-fn script_of(c: u32) -> Option<&'static str> {
+pub fn script_of(c: u32) -> Option<&'static str> {
     let table = crate::chartab_data::SCRIPT;
     let i = table.partition_point(|&(_, last, _)| last < c);
     table.get(i).filter(|&&(first, _, _)| first <= c).map(|&(_, _, s)| crate::chartab_data::SCRIPT_NAMES[s as usize])

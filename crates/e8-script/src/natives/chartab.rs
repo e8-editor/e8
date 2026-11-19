@@ -41,6 +41,20 @@ fn char_code(value: &EditorValue) -> Option<u32> {
     }
 }
 
+/// A character, as Emacs's characterp takes one: a code from 0 to
+/// #x3FFFFF, or a string of one character.
+fn character(value: &EditorValue) -> Result<u32> {
+    let c = match value {
+        EditorValue::Number(n) if n.fract() == 0.0 && *n >= 0.0 && *n <= 0x3F_FFFF as f64 => Some(*n as u32),
+        EditorValue::Str(s) => {
+            let mut chars = s.chars();
+            chars.next().filter(|_| chars.next().is_none()).map(|c| c as u32)
+        }
+        _ => None,
+    };
+    c.ok_or_else(|| Error::signal("wrong-type-argument", "Wrong type argument: characterp", vec![value.clone()]))
+}
+
 /// A range as scripts give one: null for the default, a character, or [from, to].
 fn char_range(value: &EditorValue) -> Option<CharRange> {
     match value {
@@ -168,7 +182,7 @@ natives! {
         Ok(designators.into_iter().collect())
     }
 
-    /// The char-table of a Unicode property, as unicode-property-table-internal, or undefined for one E8 holds no data for.
+    /// The char-table of a Unicode property, as unicode-property-table-internal, or undefined for one not in char-code-property-alist.
     #[ts = "(property: string): CharTable | undefined"]
     pub fn unicodePropertyTableInternal(ed, property: String) -> Option<EditorValue> {
         Ok(ed.unicode_property_table(&property).map(ct))
@@ -186,6 +200,58 @@ natives! {
     pub fn putUnicodePropertyInternal(ed, t: EditorValue, c: EditorValue, v: EditorValue) {
         let c = char_code(&c).ok_or_else(|| type_error("Expected a character"))?;
         ed.char_table_set(table(t)?, c, v)
+    }
+
+    fn getCharCodeProperty(ed, c: EditorValue, property: String) -> EditorValue {
+        let c = character(&c)?;
+        Ok(ed.get_char_code_property(c, &property))
+    }
+
+    /// Gives a character a value of a property, as put-char-code-property.
+    #[ts = "(c: CharCode, property: string, value: Value): void"]
+    pub fn putCharCodeProperty(ed, c: EditorValue, property: String, value: EditorValue) {
+        let c = character(&c)?;
+        ed.put_char_code_property(c, &property, value);
+        Ok(())
+    }
+
+    /// What a value of a Unicode property means, as
+    /// char-code-property-description: "Letter, Uppercase" for the
+    /// general category Lu; undefined where Emacs has no words for it.
+    #[ts = "(property: string, value: Value): string | undefined"]
+    pub fn charCodePropertyDescription(ed, property: String, value: EditorValue) -> Option<String> {
+        let _ = ed;
+        let value = match value {
+            EditorValue::Number(n) => (n as i64).to_string(),
+            EditorValue::Str(s) => s,
+            EditorValue::Symbol(s) => s,
+            _ => return Ok(None),
+        };
+        Ok(e8_core::unidata::description(&property, &value).map(str::to_string))
+    }
+
+    /// The characters by their Unicode names, as ucs-names: each named
+    /// character's name and old name, LAMBDA for LAMDA and "BELL (BEL)",
+    /// from the ranges Emacs reads, as pairs of a name and its character.
+    #[ts = "(): [string, number][]"]
+    pub fn ucsNamesInternal(ed) -> EditorValue {
+        let _ = ed;
+        Ok(EditorValue::List(e8_core::unidata::ucs_names().into_iter().map(|(n, c)| EditorValue::List(vec![EditorValue::Str(n), EditorValue::Number(c as f64)])).collect()))
+    }
+
+    /// The Unicode properties get-char-code-property knows, as char-code-property-alist names them, in its order.
+    #[ts = "(): string[]"]
+    pub fn charCodePropertyNames(ed) -> Vec<String> {
+        let _ = ed;
+        Ok(e8_core::unidata::PROPERTIES.iter().map(|p| p.to_string()).collect())
+    }
+
+    /// A character's script, as (aref char-script-table CHAR) gives it: "latin", "han", "emoji".
+    #[ts = "(c: CharCode): string | undefined"]
+    pub fn charScript(ed, c: EditorValue) -> Option<String> {
+        let _ = ed;
+        let c = character(&c)?;
+        Ok(e8_core::fontset::script_of(c).map(str::to_string))
     }
 
     fn modifyCategoryEntry(ed, range: EditorValue, d: String, t: Opt<EditorValue>, reset: Opt<bool>) {

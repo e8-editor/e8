@@ -187,6 +187,8 @@ pub struct Editor {
     /// The char-table of each Unicode property asked for, as Emacs's
     /// `unicode-property-table-internal` hands out the same table again.
     pub(crate) unicode_property_tables: std::collections::HashMap<String, crate::chartab::CharTableId>,
+    /// What `put-char-code-property` gave characters, by property and code.
+    pub(crate) char_code_properties: std::collections::HashMap<(String, u32), crate::variables::Value>,
     /// The order a script put the charsets in and what it put on them,
     /// which Emacs keeps in its charset table ([ADR 0078]).
     ///
@@ -544,6 +546,7 @@ impl Editor {
             standard_case_table: None,
             standard_category_table: None,
             unicode_property_tables: Default::default(),
+            char_code_properties: Default::default(),
             charsets: Default::default(),
             ns_resources: Vec::new(),
             coding_plists: Vec::new(),
@@ -842,7 +845,11 @@ impl Editor {
             self.message("Command attempted to use minibuffer while in minibuffer");
             return;
         }
-        if prompts && let Err(e) = self.enter_recursive_minibuffer() {
+        // A command whose every argument that is asked for is read by its
+        // own code, as insert-char's by read-char-by-name, asks inside an
+        // open prompt, as that code binds enable-recursive-minibuffers in Emacs.
+        let reads_itself = command.params.iter().filter(|p| !p.kind.from_state()).all(|p| p.value_fn.is_some());
+        if prompts && let Err(e) = self.enter_recursive_minibuffer_if(reads_itself) {
             self.message(e.to_string());
             return;
         }
