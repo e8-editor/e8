@@ -95,12 +95,22 @@ natives! {
     /// Make `link` a symbolic link to `target`, kept as written, as make-symbolic-link; a file already there is replaced only if `okIfExists`.
     pub fn makeSymbolicLink(ed, target: String, link: String, ok_if_exists: Opt<bool>) {
         let link = ed.expand_file_name(&link);
+        let name = link.display().to_string();
+        let args = vec![EditorValue::Str(target.clone()), EditorValue::Str(name.clone()), EditorValue::Bool(ok_if_exists.0.unwrap_or(false))];
+        if let Some(r) = crate::natives::variables::handled_by(ed, "make-symbolic-link", &[&target, &name], args) {
+            return r.map(drop);
+        }
         ed.make_symbolic_link(&target, &link, ok_if_exists.0.unwrap_or(false))
     }
 
     /// Give a file another name, a hard link, as add-name-to-file; a file already there is replaced only if `okIfExists`.
     pub fn addNameToFile(ed, file: String, newname: String, ok_if_exists: Opt<bool>) {
         let (file, new) = (ed.expand_file_name(&file), ed.expand_file_name(&newname));
+        let (a, b) = (file.display().to_string(), new.display().to_string());
+        let args = vec![EditorValue::Str(a.clone()), EditorValue::Str(b.clone()), EditorValue::Bool(ok_if_exists.0.unwrap_or(false))];
+        if let Some(r) = crate::natives::variables::handled_by(ed, "add-name-to-file", &[&a, &b], args) {
+            return r.map(drop);
+        }
         ed.add_name_to_file(&file, &new, ok_if_exists.0.unwrap_or(false))
     }
 
@@ -236,10 +246,10 @@ natives! {
     }
 
     /// Forgets that auto-saving the current buffer failed, as
-    /// clear-buffer-auto-save-failure. E8 does not stop auto-saving a
-    /// buffer after failures, so there is nothing to forget.
+    /// clear-buffer-auto-save-failure: an auto-save that took more than a
+    /// minute keeps the buffer from being auto-saved for 20 minutes.
     pub fn clearBufferAutoSaveFailure(ed) {
-        let _ = ed;
+        ed.buffer_mut().clear_auto_save_failure();
         Ok(())
     }
 
@@ -387,6 +397,11 @@ natives! {
     /// name, default-directory being the directory.
     #[ts = "(file: string, directory: string, predicate?: ((name: string) => unknown) | string | null): string | true | undefined"]
     pub fn fileNameCompletion(ed, file: String, dir: String, predicate: EditorValue) -> Option<EditorValue> {
+        let name = ed.expand_file_name(&dir).display().to_string();
+        let args = vec![EditorValue::Str(file.clone()), EditorValue::Str(name.clone()), predicate.clone()];
+        if let Some(r) = crate::natives::variables::handled_by(ed, "file-name-completion", &[&name], args) {
+            return Ok(Some(r?).filter(|v| !v.is_nil()));
+        }
         let predicate = predicate.is_true().then_some(predicate);
         Ok(match ed.file_name_completion(&file, &dir, predicate.as_ref())? {
             EditorValue::Null => None,
@@ -398,6 +413,13 @@ natives! {
     /// file-name-all-completions: . and .. among them, a directory's ending
     /// in a slash.
     pub fn fileNameAllCompletions(ed, file: String, dir: String) -> Vec<String> {
+        let name = ed.expand_file_name(&dir).display().to_string();
+        if let Some(r) = crate::natives::variables::handled_by(ed, "file-name-all-completions", &[&name], vec![EditorValue::Str(file.clone()), EditorValue::Str(name.clone())]) {
+            return Ok(match r? {
+                EditorValue::List(items) => items.iter().filter_map(|i| i.as_str().map(str::to_string)).collect(),
+                _ => Vec::new(),
+            });
+        }
         ed.file_name_all_completions(&file, &dir)
     }
 
@@ -494,6 +516,30 @@ natives! {
     #[ts = "(file: string, flags: (\"create\" | \"delete\" | \"write\" | \"extend\" | \"attrib\" | \"link\" | \"rename\" | \"revoke\" | (string & {}))[] | null, callback: ((event: [number, string[], string, string?]) => void) | string): number"]
     pub fn kqueueAddWatch(ed, file: EditorValue, flags: EditorValue, callback: EditorValue) -> EditorValue {
         ed.kqueue_add_watch(&file, &flags, &callback)
+    }
+
+    /// Watch a file or directory with Linux's inotify, as inotify-add-watch:
+    /// `aspect` one name or a list of them (access, attrib, close-write,
+    /// close-nowrite, create, delete, delete-self, modify, move-self,
+    /// moved-from, moved-to, open, move, close, all-events, and dont-follow,
+    /// onlydir, ignored and unmount); `callback` is called with
+    /// `[descriptor, aspects, name, cookie]`. Returns the watch's descriptor,
+    /// one number where Emacs gives (DESCRIPTOR . ID). A file-notify-error
+    /// elsewhere than Linux.
+    #[ts = "(file: string, aspect: string | string[], callback: ((event: [number, string[], string, number]) => void) | string): number"]
+    pub fn inotifyAddWatch(ed, file: EditorValue, aspect: EditorValue, callback: EditorValue) -> EditorValue {
+        ed.inotify_add_watch(&file, &aspect, &callback)
+    }
+
+    /// Stop a watch inotifyAddWatch made, as inotify-rm-watch.
+    #[ts = "(descriptor: number): true"]
+    pub fn inotifyRmWatch(ed, descriptor: EditorValue) -> bool {
+        ed.inotify_rm_watch(&descriptor)
+    }
+
+    /// Whether a watch inotifyAddWatch made is in place, as inotify-valid-p.
+    pub fn inotifyValidP(ed, descriptor: EditorValue) -> bool {
+        Ok(ed.inotify_valid_p(&descriptor))
     }
 
     /// Stop a watch kqueueAddWatch made, as kqueue-rm-watch: true, or a file-notify-error if it is not one.

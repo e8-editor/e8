@@ -1200,6 +1200,21 @@ pub(crate) fn install(ed: &mut Editor) {
             Value::List(Vec::new()),
         ),
         Variable::new(
+            "system-type",
+            "The kind of system E8 runs on, as Emacs names it: \"darwin\" for macOS, \"gnu/linux\", \"berkeley-unix\" for the BSDs, \"windows-nt\", or \"gnu\" elsewhere.",
+            if cfg!(target_os = "macos") {
+                "darwin"
+            } else if cfg!(target_os = "linux") {
+                "gnu/linux"
+            } else if cfg!(any(target_os = "freebsd", target_os = "netbsd", target_os = "openbsd", target_os = "dragonfly")) {
+                "berkeley-unix"
+            } else if cfg!(windows) {
+                "windows-nt"
+            } else {
+                "gnu"
+            },
+        ),
+        Variable::new(
             "process-coding-system-alist",
             "Which coding systems to talk to a program in, by its name: an alist of an Emacs regexp and a coding system, a pair of them for decoding and encoding, or a function to call.",
             Value::List(Vec::new()),
@@ -1370,6 +1385,7 @@ pub(crate) fn install(ed: &mut Editor) {
         ("after-save-hook", "Run after saving a buffer to its file."),
         ("change-major-mode-hook", "Run before a major mode clears the buffer's own variables."),
         ("after-change-major-mode-hook", "Run after a major mode and its hooks have run."),
+        ("after-set-visited-file-name-hook", "Run after set-visited-file-name changes the file a buffer visits."),
     ] {
         ed.define_hook(name, doc);
     }

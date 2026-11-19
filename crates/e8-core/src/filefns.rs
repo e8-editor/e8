@@ -120,7 +120,7 @@ impl Editor {
 
     /// Offers an operation on a file to its handler, if it has one: the
     /// handler's value, or `None` to do the operation here.
-    pub(crate) fn handled(&mut self, operation: &str, file: &str, args: Vec<Value>) -> Option<Result<Value>> {
+    pub fn handled(&mut self, operation: &str, file: &str, args: Vec<Value>) -> Option<Result<Value>> {
         let handler = self.find_file_name_handler(file, operation)?;
         let mut all = vec![Value::Symbol(operation.to_string())];
         all.extend(args);
@@ -335,20 +335,22 @@ impl Editor {
                 _ => Vec::new(),
             });
         }
-        let mut names = crate::fileops::directory_files(Path::new(&dir))?;
-        if let Some(pattern) = pattern {
-            let mut kept = Vec::new();
-            for name in names {
-                if self.string_match(pattern, &name, 0, false)?.is_some() {
-                    kept.push(name);
-                }
+        // As dired.c reads them: in the directory's own order, the first
+        // COUNT that match, then sorted, or without NOSORT backwards, as
+        // Emacs conses each onto its list.
+        let mut names = Vec::new();
+        for name in crate::fileops::directory_files_unsorted(Path::new(&dir))? {
+            if count.is_some_and(|c| names.len() >= c) {
+                break;
             }
-            names = kept;
+            if pattern.map_or(Ok(true), |p| self.string_match(p, &name, 0, false).map(|m| m.is_some()))? {
+                names.push(name);
+            }
         }
-        // Unsorted, Emacs gives the directory's own order; sorted serves as well.
-        let _ = nosort;
-        if let Some(count) = count {
-            names.truncate(count);
+        if nosort {
+            names.reverse();
+        } else {
+            names.sort();
         }
         if full {
             let base = PathBuf::from(&dir);
@@ -594,7 +596,15 @@ impl Editor {
     /// no handler is asked, and the file holds `text` if given.
     pub fn make_temp_file_internal(&mut self, prefix: &str, dir_flag: TempKind, suffix: &str, text: Option<&str>) -> Result<String> {
         if dir_flag != TempKind::NameOnly {
-            return self.make_temp_file(prefix, dir_flag == TempKind::Directory, suffix, text);
+            // PREFIX as it is, a relative one from E8's working directory,
+            // as fileio.c leaves it unexpanded; make-temp-file expands it.
+            let cwd = fs::current_dir().unwrap_or_default();
+            let made = self.make_temp_file_in(&cwd, prefix, dir_flag == TempKind::Directory, suffix, text)?;
+            // The name as made, relative for a relative PREFIX, as Emacs gives it.
+            return Ok(match Path::new(&made).strip_prefix(&cwd) {
+                Ok(rel) if !fs::is_absolute(prefix) => rel.display().to_string(),
+                _ => made,
+            });
         }
         // Only a name, as Emacs's GT_NOCREATE: nothing is made, so nothing is asked.
         for _ in 0..100 {
@@ -614,7 +624,13 @@ impl Editor {
             Some(t) => PathBuf::from(t),
             None => crate::clock::temp_dir(),
         };
-        let base = if fs::is_absolute(prefix) { PathBuf::new() } else { base };
+        self.make_temp_file_in(&base, prefix, dir, suffix, text)
+    }
+
+    /// As [`make_temp_file`](Self::make_temp_file), a relative `prefix`
+    /// taken from `base`.
+    fn make_temp_file_in(&mut self, base: &Path, prefix: &str, dir: bool, suffix: &str, text: Option<&str>) -> Result<String> {
+        let base = if fs::is_absolute(prefix) { PathBuf::new() } else { base.to_path_buf() };
         // Making a file is writing one, which waits for the user's approval
         // while an agent acts, wherever it is.
         let place = base.join(prefix);

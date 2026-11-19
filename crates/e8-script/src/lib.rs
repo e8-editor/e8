@@ -119,6 +119,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/files.ts", include_str!("../../../packages/files.ts")),
     ("packages/env.ts", include_str!("../../../packages/env.ts")),
     ("packages/filenotify.ts", include_str!("../../../packages/filenotify.ts")),
+    ("packages/autorevert.ts", include_str!("../../../packages/autorevert.ts")),
     ("packages/easymenu.ts", include_str!("../../../packages/easymenu.ts")),
     ("packages/menu-bar.ts", include_str!("../../../packages/menu-bar.ts")),
     ("packages/tooltip.ts", include_str!("../../../packages/tooltip.ts")),

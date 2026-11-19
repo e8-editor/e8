@@ -148,6 +148,15 @@ pub(crate) fn group_name(gid: u32) -> String {
     unsafe { std::ffi::CStr::from_ptr(grp.gr_name) }.to_string_lossy().into_owned()
 }
 
+/// The names in a directory in the order the system lists them, `.` and
+/// `..` first, as readdir gives them to Emacs's `directory-files`.
+pub fn directory_files_unsorted(dir: &Path) -> Result<Vec<String>> {
+    let entries = fs::read_dir(dir).map_err(|e| file_error("Opening directory", &e, &[dir]))?;
+    let mut names = vec![".".to_string(), "..".to_string()];
+    names.extend(entries.filter_map(|e| e.ok()).map(|e| e.file_name().to_string_lossy().into_owned()));
+    Ok(names)
+}
+
 /// The names in a directory, with `.` and `..`, sorted, as Emacs's
 /// `directory-files`.
 pub fn directory_files(dir: &Path) -> Result<Vec<String>> {

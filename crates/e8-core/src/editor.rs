@@ -270,6 +270,8 @@ pub struct Editor {
     pub(crate) xwidgets: crate::xwidget::Xwidgets,
     /// The files and directories watched with kqueue-add-watch, as kqueue.c keeps them.
     pub(crate) kqueue: crate::kqueue::Kqueue,
+    /// The files and directories watched with inotify-add-watch, as inotify.c keeps them.
+    pub(crate) inotify: crate::inotify::Inotify,
     /// Whether the system the front end runs on looks dark, for choosing
     /// faces' colours where no theme gives the default face a background
     /// and `frame-background-mode` is unset; dark until a front end says.
@@ -582,6 +584,7 @@ impl Editor {
             sqlite: Default::default(),
             xwidgets: Default::default(),
             kqueue: Default::default(),
+            inotify: Default::default(),
             system_dark: true,
             quitting: Default::default(),
             command_loop: None,

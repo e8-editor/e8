@@ -399,5 +399,8 @@ e8.defineMajorMode({
   } as Record<string, e8.CommandName>,
   setup: () => {
     e8.addHook("tabulated-list-revert-hook", () => refresh(), { local: true });
+    // Always worth reverting, and quick, as Buffer-menu-mode tells Auto-Revert.
+    e8.makeLocalVariable("buffer-stale-function");
+    e8.setVariable("buffer-stale-function", e8.defun("Buffer-menu--stale", () => "fast"));
   },
 });

@@ -23,6 +23,9 @@ pub struct FileState {
     /// another file it is not, and the file counts as unchanged, as a
     /// cleared modtime does in Emacs.
     pub(crate) modtime_known: bool,
+    /// The file's size when its time was taken, as Emacs's modtime_size,
+    /// compared with the time; `None` when a time was given by hand.
+    pub(crate) modtime_size: Option<u64>,
     /// Whether the file was backed up since it was visited, as Emacs's
     /// `buffer-backed-up`: only the first save makes a backup.
     pub(crate) backed_up: bool,
@@ -31,6 +34,10 @@ pub struct FileState {
     pub(crate) auto_save: Option<PathBuf>,
     /// The buffer's tick when it was last auto-saved or saved.
     pub(crate) auto_saved_tick: u64,
+    /// When an auto-save of the buffer last took so long it was taken to
+    /// have failed, as Emacs's auto_save_failure_time: it is not tried
+    /// again for 20 minutes.
+    pub(crate) auto_save_failure: Option<SystemTime>,
     /// The buffer's tick when it was last visited, saved or reverted, as
     /// Emacs's SAVE_MODIFF.
     pub(crate) saved_tick: u64,
@@ -52,6 +59,11 @@ pub struct FileState {
 /// The modification time of a file, if it exists.
 fn modtime(path: &Path) -> Option<SystemTime> {
     fs::metadata(path).and_then(|m| m.modified()).ok()
+}
+
+/// A file's size, if it exists.
+fn file_size(path: &Path) -> Option<u64> {
+    fs::metadata(path).map(|m| m.len()).ok()
 }
 
 /// Where Emacs auto-saves a file: `#name#` beside it.
@@ -157,7 +169,7 @@ impl Buffer {
             return false;
         }
         match modtime(path) {
-            Some(now) => self.file.modtime != Some(now),
+            Some(now) => self.file.modtime != Some(now) || self.file.modtime_size.is_some_and(|size| file_size(path) != Some(size)),
             None => false,
         }
     }
@@ -173,6 +185,7 @@ impl Buffer {
     /// Emacs's `set-visited-file-modtime` does, the text aside.
     pub fn take_visited_file_modtime(&mut self) {
         self.file.modtime = self.path.as_deref().and_then(modtime);
+        self.file.modtime_size = self.path.as_deref().and_then(file_size);
         self.file.modtime_known = true;
     }
 
@@ -186,6 +199,7 @@ impl Buffer {
     /// `set-buffer-auto-saved`.
     pub fn set_buffer_auto_saved(&mut self) {
         self.file.auto_saved_tick = self.modified_tick();
+        self.file.auto_save_failure = None;
     }
 
     /// Takes a time as the visited file's modification time, as Emacs's
@@ -193,7 +207,14 @@ impl Buffer {
     /// not exist, as its -1 does.
     pub fn set_visited_file_modtime_to(&mut self, time: Option<SystemTime>) {
         self.file.modtime = time;
+        self.file.modtime_size = None;
         self.file.modtime_known = true;
+    }
+
+    /// Forgets that an auto-save of the buffer took too long, as
+    /// `clear-buffer-auto-save-failure`, so the next auto-save tries it.
+    pub fn clear_auto_save_failure(&mut self) {
+        self.file.auto_save_failure = None;
     }
 
     /// When the visited file was last modified, as the system says now.
@@ -222,7 +243,9 @@ impl Buffer {
     /// since, or made where there was none.
     pub fn verify_visited_file_modtime(&self) -> bool {
         let Some(path) = &self.path else { return true };
-        !self.file.modtime_known || modtime(path) == self.file.modtime
+        // The size too, when it was taken with the time, as Emacs compares
+        // modtime_size, so a change within the clock's grain is seen.
+        !self.file.modtime_known || (modtime(path) == self.file.modtime && self.file.modtime_size.is_none_or(|size| file_size(path).is_none_or(|now| now == size)))
     }
 
     /// Refuses the first change to an unmodified buffer whose file changed
@@ -484,7 +507,12 @@ impl Editor {
             if !b.needs_auto_save() {
                 continue;
             }
+            // Not again for 20 minutes after one that took too long.
+            if b.file.auto_save_failure.is_some_and(|t| crate::clock::system_now().duration_since(t).unwrap_or_default().as_secs() < 1200) {
+                continue;
+            }
             let auto = b.file.auto_save.clone().expect("needs_auto_save checks it");
+            let before = crate::clock::system_now();
             // Emacs writes auto-save files in its own coding, UTF-8 with
             // Unix line ends, whatever the visited file uses.
             match fs::write(&auto, b.text().to_string()) {
@@ -493,6 +521,12 @@ impl Editor {
                     saved = true;
                 }
                 Err(e) => failed = Some(format!("Auto-saving {}: {e}", b.name)),
+            }
+            // More than a minute is taken for a timeout, as a file system
+            // over the network gives, as do_auto_save takes it.
+            let after = crate::clock::system_now();
+            if after.duration_since(before).unwrap_or_default().as_secs() > 60 {
+                b.file.auto_save_failure = Some(after);
             }
         }
         if let Some(message) = failed {
@@ -541,7 +575,8 @@ impl Editor {
             }
             b.file.auto_save = Some(new);
         }
-        Ok(())
+        // As set-visited-file-name ends, so auto-revert follows the new name.
+        self.run_hooks("after-set-visited-file-name-hook")
     }
 
     /// Makes the current buffer visit no file, giving up the file's lock,
@@ -555,6 +590,9 @@ impl Editor {
         }
         b.path = None;
         b.file.modtime_known = false;
+        if let Err(e) = self.run_hooks("after-set-visited-file-name-hook") {
+            self.message(e.to_string());
+        }
     }
 
     /// Asks the front end to exit, as Emacs's `kill-emacs`.
