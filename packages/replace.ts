@@ -10,6 +10,7 @@
 // RET stops. Any other key stops and then runs.
 
 import { regexpQuote } from "subr";
+import { readBuffer } from "minibuffer";
 
 e8.defineFace({
   name: "query-replace",
@@ -771,13 +772,22 @@ e8.addHook("kill-buffer-hook", () => {
   if (e8.variable("major-mode") === "occur-mode") forgetOccurTargets(e8.currentBuffer().id);
 });
 
-/** What occur was last asked, to make *Occur* again with g. */
-let occurArgs: { regexp: string; buffer: string; region?: [number, number] } | undefined;
+/** A buffer occur searches, with the region it searches if not all of it. */
+type OccurTarget = { buffer: string; region?: [number, number] };
 
-/** Lists the lines matching `regexp` in *Occur*, as occur-1 does for one buffer; returns how many matches there are. */
-function occurIn(regexp: string, buffer: string, region?: [number, number]): number {
-  const caseFold = e8.withCurrentBuffer(buffer, () => regexpFoldsCase(regexp));
-  const lines: { line: number; text: string; spans: [number, number][]; target: number }[] = [];
+/** What occur was last asked, to make *Occur* again with g. */
+let occurArgs: { regexp: string; targets: OccurTarget[] } | undefined;
+
+/** A buffer's lines that match, each with its matches, and how many matches. */
+interface OccurSection {
+  target: OccurTarget;
+  lines: { line: number; text: string; spans: [number, number][]; target: number }[];
+  matches: number;
+}
+
+/** The lines matching `regexp` in a buffer, as occur-engine finds them for one buffer. */
+function occurSection(regexp: string, { buffer, region }: OccurTarget, caseFold: boolean): OccurSection {
+  const lines: OccurSection["lines"] = [];
   let matches = 0;
   e8.withCurrentBuffer(buffer, () =>
     e8.saveExcursion(() =>
@@ -798,21 +808,21 @@ function occurIn(regexp: string, buffer: string, region?: [number, number]): num
           const spans: [number, number][] = [];
           let from = 0;
           while (from <= text.length) {
-            const s = e8.stringMatch(regexp, text, { caseFold, start: from });
-            if (s === undefined) break;
+            const st = e8.stringMatch(regexp, text, { caseFold, start: from });
+            if (st === undefined) break;
             const f = e8.matchEnd(0)!;
-            if (f === s) {
-              from = s + 1;
+            if (f === st) {
+              from = st + 1;
               continue;
             }
-            spans.push([s, f]);
+            spans.push([st, f]);
             from = f;
           }
           if (spans.length === 0) spans.push([b - bol, b - bol]);
-          matches += spans.filter(([s, f]) => f > s).length || 1;
+          matches += spans.filter(([a, f]) => f > a).length || 1;
           if (line !== lastLine) {
             const id = nextOccurTarget++;
-            occurTargets.set(id, { buffer, matches: spans.map(([s, f]) => [e8.makeMarker(bol + s), e8.makeMarker(bol + f)]) });
+            occurTargets.set(id, { buffer, matches: spans.map(([a, f]) => [e8.makeMarker(bol + a), e8.makeMarker(bol + f)]) });
             lines.push({ line, text, spans, target: id });
             lastLine = line;
           }
@@ -822,52 +832,87 @@ function occurIn(regexp: string, buffer: string, region?: [number, number]): num
       }),
     ),
   );
+  return { target: { buffer, region }, lines, matches };
+}
+
+const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
+/** "N matches", and " in M lines" when there are more matches than lines, as occur-engine counts them. */
+const countDescr = (matches: number, lines: number) =>
+  `${matches} ${plural(matches, "match", "matches")}${lines === matches ? "" : ` in ${lines} ${plural(lines, "line", "lines")}`}`;
+
+/**
+ * Lists the lines matching `regexp` in each buffer in *Occur*, as occur-1
+ * does: a buffer's lines under a line saying how many matched there, and
+ * for several buffers the total first. Returns how many matches there are.
+ */
+function occurIn(regexp: string, targets: OccurTarget[]): number {
+  // Case folds as the buffer occur was asked from says, as occur-1 works it out once.
+  const caseFold = regexpFoldsCase(regexp);
+  const sections = targets.filter((t) => e8.getBuffer(t.buffer) !== undefined).map((t) => occurSection(regexp, t, caseFold));
+  const multi = targets.length > 1;
   e8.getBufferCreate("*Occur*");
   e8.withCurrentBuffer("*Occur*", () => {
     // The lines it listed before go, and their markers with them.
     const occur = e8.currentBuffer().id;
     forgetOccurTargets(occur);
-    for (const { target } of lines) occurTargets.get(target)!.occur = occur;
+    for (const section of sections) for (const { target } of section.lines) occurTargets.get(target)!.occur = occur;
     if (e8.variable("major-mode") !== "occur-mode") e8.call("occur-mode");
+    const titleFace = String(e8.variable("list-matching-lines-buffer-name-face") ?? "underline");
     e8.letBind({ "inhibit-read-only": true }, () => {
       e8.deleteRegion(e8.pointMin(), e8.pointMax());
-      const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
-      const header =
-        `${matches} ${plural(matches, "match", "matches")}` +
-        (lines.length === matches ? "" : ` in ${lines.length} ${plural(lines.length, "line", "lines")}`) +
-        ` for "${regexp}" in buffer: ${buffer}` +
-        (region === undefined ? "" : ` within region: ${region[0] + 1}-${region[1] + 1}`);
-      e8.insert(e8.propertize(header, { face: String(e8.variable("list-matching-lines-buffer-name-face") ?? "underline"), "read-only": true }));
-      e8.insert("\n");
-      for (const { line, text, spans, target } of lines) {
-        const start = e8.point();
-        e8.insert(e8.propertize(String(line).padStart(7) + ":", { face: String(e8.variable("list-matching-lines-prefix-face") ?? "shadow"), "occur-prefix": true, "read-only": true }));
-        // The line, its matches in list-matching-lines-face.
-        const face = String(e8.variable("list-matching-lines-face") ?? "match");
-        let at = 0;
-        for (const [b, f] of spans) {
-          if (f <= b) continue;
-          e8.insert(text.slice(at, b));
-          e8.insert(e8.propertize(text.slice(b, f), { face }));
-          at = f;
-        }
-        e8.insert(text.slice(at));
-        e8.putTextProperty(start, e8.point(), "occur-target", target);
-        e8.putTextProperty(start, e8.point(), "mouse-face", "highlight");
+      const found = sections.filter((sec) => sec.lines.length > 0);
+      if (multi && found.length > 0) {
+        const total = found.reduce((n, sec) => n + sec.matches, 0);
+        const lines = found.reduce((n, sec) => n + sec.lines.length, 0);
+        e8.insert(e8.propertize(`${countDescr(total, lines)} total for "${regexp}":`, { face: titleFace }));
         e8.insert("\n");
+      }
+      // The last buffer first, as occur-engine puts each buffer's lines at the top.
+      for (const { target, lines, matches } of [...found].reverse()) {
+        const { buffer, region } = target;
+        const header =
+          `${countDescr(matches, lines.length)}` +
+          // The regexp only for one buffer, as the total says it for several.
+          (multi ? "" : ` for "${regexp}"`) +
+          ` in buffer: ${buffer}` +
+          (region === undefined ? "" : ` within region: ${region[0] + 1}-${region[1] + 1}`);
+        e8.insert(e8.propertize(header, { face: titleFace, "read-only": true }));
+        e8.insert("\n");
+        for (const { line, text, spans, target: id } of lines) {
+          const start = e8.point();
+          e8.insert(e8.propertize(String(line).padStart(7) + ":", { face: String(e8.variable("list-matching-lines-prefix-face") ?? "shadow"), "occur-prefix": true, "read-only": true }));
+          // The line, its matches in list-matching-lines-face.
+          const face = String(e8.variable("list-matching-lines-face") ?? "match");
+          let at = 0;
+          for (const [b, f] of spans) {
+            if (f <= b) continue;
+            e8.insert(text.slice(at, b));
+            e8.insert(e8.propertize(text.slice(b, f), { face }));
+            at = f;
+          }
+          e8.insert(text.slice(at));
+          e8.putTextProperty(start, e8.point(), "occur-target", id);
+          e8.putTextProperty(start, e8.point(), "mouse-face", "highlight");
+          e8.insert("\n");
+        }
       }
     });
     e8.gotoChar(e8.pointMin());
     e8.setBufferModified(false);
   });
-  return matches;
+  return sections.reduce((n, sec) => n + sec.matches, 0);
 }
 
-/** Makes *Occur* for a regexp in a buffer, shows it and says how many matches, as occur. */
-function runOccur(regexp: string, buffer: string, region?: [number, number]): void {
-  occurArgs = { regexp, buffer, region };
-  const count = occurIn(regexp, buffer, region);
-  e8.message(`Searched 1 buffer; ${count === 0 ? "no" : String(count)} ${count === 1 ? "match" : "matches"} for "${regexp}"`);
+/** Makes *Occur* for a regexp in some buffers, shows it and says how many matches, as occur-1. */
+function runOccur(regexp: string, targets: OccurTarget[]): void {
+  if (regexp === "") e8.signal("error", "Occur doesn't work with the empty regexp");
+  occurArgs = { regexp, targets };
+  const count = occurIn(regexp, targets);
+  const live = targets.filter((t) => e8.getBuffer(t.buffer) !== undefined).length;
+  const killed = targets.length - live;
+  e8.message(
+    `Searched ${live} ${plural(live, "buffer", "buffers")}${killed === 0 ? "" : ` (${killed} killed)`}; ${count === 0 ? "no" : String(count)} ${plural(count, "match", "matches")} for "${regexp}"`,
+  );
   if (count === 0) {
     e8.call("kill-buffer", "*Occur*");
     return;
@@ -877,6 +922,67 @@ function runOccur(regexp: string, buffer: string, region?: [number, number]): vo
   e8.withCurrentBuffer("*Occur*", () => e8.runHooks("occur-hook"));
 }
 
+/** Reads the regexp occur lists lines for, the last one by default, as occur-read-primary-args. */
+export async function readOccurRegexp(): Promise<string> {
+  const history = e8.variable("regexp-history");
+  const def = Array.isArray(history) && typeof history[0] === "string" ? history[0] : undefined;
+  const answer = await e8.readString(def === undefined ? "List lines matching regexp: " : `List lines matching regexp (default ${def}): `, {
+    history: "regexp-history",
+  });
+  const regexp = answer === "" && def !== undefined ? def : answer;
+  if (regexp === "") e8.userError("Empty regexp");
+  return regexp;
+}
+
+/** Lists the lines matching a regexp in several buffers in *Occur*, as multi-occur. */
+export function multiOccur(buffers: string[], regexp: string): void {
+  runOccur(regexp, buffers.map((buffer) => ({ buffer })));
+}
+
+// For code, as Emacs's occur-1: the regexp, context lines (not shown in E8) and the buffers.
+e8.defun("occur-1", (regexp: string, _nlines: e8.Value, buffers: e8.Value[]) =>
+  multiOccur(
+    buffers.map((b) => e8.bufferName(b as string)).filter((b): b is string => b !== undefined),
+    regexp,
+  ),
+);
+
+e8.defineCommand({
+  name: "multi-occur",
+  doc: "Show all lines in buffers BUFS containing a match for REGEXP.\nThis function acts on multiple buffers; otherwise, it is exactly like\n`occur'.  When you invoke this command interactively, you must specify\nthe buffer names that you want, one by one.",
+  run: async () => {
+    const bufs = [readBuffer("First buffer to search: ", e8.bufferName(), true)];
+    for (;;) {
+      const next = readBuffer("Next buffer to search (RET to end): ", null, true);
+      if (next === "") break;
+      if (!bufs.includes(next)) bufs.push(next);
+    }
+    multiOccur(bufs, await readOccurRegexp());
+  },
+});
+
+e8.defineCommand({
+  name: "multi-occur-in-matching-buffers",
+  doc: "Show all lines matching REGEXP in buffers specified by BUFREGEXP.\nNormally BUFREGEXP matches against each buffer's visited file name,\nbut with a prefix argument it matches against the buffer name and includes also buffers that\ndon't visit files.",
+  params: [{ name: "allbufs", kind: "prefix" }],
+  run: async (allbufs: e8.PrefixArg) => {
+    const history = e8.variable("regexp-history");
+    const def = Array.isArray(history) && typeof history[0] === "string" ? history[0] : undefined;
+    const input = await e8.readString(
+      allbufs !== null ? "List lines in buffers whose names match regexp: " : "List lines in buffers whose filenames match regexp: ",
+      { history: "regexp-history" },
+    );
+    const bufregexp = input === "" ? def : input;
+    const regexp = await readOccurRegexp();
+    if (bufregexp === undefined) return;
+    const buffers = e8.bufferList().filter((b) => {
+      const name = allbufs !== null ? b : e8.withCurrentBuffer(b, () => e8.bufferFileName());
+      return typeof name === "string" && e8.stringMatch(bufregexp, name) !== undefined;
+    });
+    multiOccur(buffers, regexp);
+  },
+});
+
 e8.defineVariable({ name: "regexp-history", doc: "Regexps answered at prompts that ask for one, newest first.", value: [] });
 
 e8.defineCommand({
@@ -885,17 +991,11 @@ e8.defineCommand({
     "List the lines of the buffer, or of the region if it is active, that match a regexp, in *Occur*.\n\n" +
     "There RET goes to a line's match, C-o shows it, n and p go through them, and M-g n does from anywhere.",
   run: async () => {
-    const history = e8.variable("regexp-history");
-    const def = Array.isArray(history) && typeof history[0] === "string" ? history[0] : undefined;
-    const answer = await e8.readString(def === undefined ? "List lines matching regexp: " : `List lines matching regexp (default ${def}): `, {
-      history: "regexp-history",
-    });
-    const regexp = answer === "" && def !== undefined ? def : answer;
-    if (regexp === "") e8.userError("Empty regexp");
+    const regexp = await readOccurRegexp();
     const mark = e8.mark();
     const region: [number, number] | undefined =
       e8.regionActive() && mark !== undefined ? [Math.min(mark, e8.point()), Math.max(mark, e8.point())] : undefined;
-    runOccur(regexp, e8.bufferName(), region);
+    runOccur(regexp, [{ buffer: e8.bufferName(), region }]);
   },
 });
 e8.bindKey("M-s o", "occur");
@@ -981,7 +1081,7 @@ e8.defineCommand({
   name: "occur-revert-buffer",
   doc: "Make *Occur* again, for the same regexp in the same buffer.",
   run: () => {
-    if (occurArgs !== undefined) runOccur(occurArgs.regexp, occurArgs.buffer, occurArgs.region);
+    if (occurArgs !== undefined) runOccur(occurArgs.regexp, occurArgs.targets);
   },
 });
 

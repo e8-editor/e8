@@ -4,6 +4,7 @@
 // and s mark it to be killed or saved, and x does it.
 
 import { forwardLine } from "subr";
+import { multiOccur, readOccurRegexp } from "replace";
 import {
   tabulatedListGetId,
   tabulatedListGetEntry,
@@ -73,6 +74,20 @@ function markedBuffers(unmark = false): e8.Buffer[] {
   });
   return found;
 }
+
+e8.defineCommand({
+  name: "Buffer-menu-multi-occur",
+  doc: "Show all lines in marked buffers containing a match for a regexp.",
+  run: async () => {
+    const regexp = await readOccurRegexp();
+    multiOccur(
+      markedBuffers()
+        .map((b) => e8.bufferName(b))
+        .filter((b): b is string => b !== undefined),
+      regexp,
+    );
+  },
+});
 
 /** Gathers the entries and sets the columns, as list-buffers--refresh. */
 function refresh(oldBuffer?: e8.Buffer): void {
@@ -391,6 +406,7 @@ e8.defineMajorMode({
     U: "Buffer-menu-unmark-all",
     m: "Buffer-menu-mark",
     "%": "Buffer-menu-toggle-read-only",
+    "M-s a C-o": "Buffer-menu-multi-occur",
     b: "Buffer-menu-bury",
     V: "Buffer-menu-view",
     O: "Buffer-menu-view-other-window",
