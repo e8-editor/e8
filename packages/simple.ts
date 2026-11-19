@@ -1,4 +1,4 @@
-import { allMatches, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine, truthy } from "subr";
+import { allMatches, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine, readCharFromMinibuffer, truthy } from "subr";
 // Basic editing commands that Emacs writes in Lisp, after its simple.el.
 // E8 loads this file at startup, before init.ts.
 
@@ -1154,7 +1154,6 @@ function zap(arg: number, char: string, upTo: boolean): void {
   e8.setThisCommand("kill-region");
 }
 
-e8.defineVariable({ name: "read-char-history", doc: "Characters read by zap-to-char and its kin, newest first.", value: [] });
 
 for (const [name, doc, upTo] of [
   ["zap-to-char", "Kill up to and including the next occurrence of a character; with a prefix argument, the Nth, back if negative.", false],
@@ -1164,10 +1163,9 @@ for (const [name, doc, upTo] of [
     name,
     doc: `${doc}\n\nAn upper-case character is searched for exactly; others fold case as case-fold-search says.`,
     params: [{ name: "arg", kind: "count" }],
-    run: async (arg: number) => {
-      const char = keyChar(await e8.readChar(upTo ? "Zap up to char: " : "Zap to char: "));
-      if (char === undefined) e8.userError("Non-character input-event");
-      zap(arg, char!, upTo);
+    run: (arg: number) => {
+      // In the minibuffer, with a history, as Emacs 30 reads it.
+      zap(arg, readCharFromMinibuffer(upTo ? "Zap up to char: " : "Zap to char: "), upTo);
     },
   });
 }

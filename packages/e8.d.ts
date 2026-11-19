@@ -6818,6 +6818,23 @@ declare global {
        */
       "re-search-forward": [string: string, count?: number];
       /**
+       * Insert the character you type into the minibuffer and exit minibuffer.
+       * Discard all previous input before inserting and exiting the minibuffer.
+       *
+       * Defined in packages/subr.ts.
+       */
+      "read-char-from-minibuffer-insert-char": [];
+      /**
+       * Reject a disallowed character typed into the minibuffer.
+       * This command is intended to be bound to keys that users are not
+       * allowed to type into the minibuffer.  When the user types any
+       * such key, this command discard all minibuffer input and displays
+       * an error message.
+       *
+       * Defined in packages/subr.ts.
+       */
+      "read-char-from-minibuffer-insert-other": [];
+      /**
        * Make the buffer read-only, or editable again.
        *
        * A buffer visiting a file that cannot be written starts read-only. With a prefix argument, a positive number makes it read-only and zero or less editable.
@@ -13457,9 +13474,13 @@ declare global {
        */
       "read-char-by-name-sort": Value;
       /**
-       * Characters read by zap-to-char and its kin, newest first.
+       * Keymap read-char-from-minibuffer-map.
+       */
+      "read-char-from-minibuffer-map": Value;
+      /**
+       * The default history for the `read-char-from-minibuffer' function.
        *
-       * Defined in packages/simple.ts.
+       * Defined in packages/subr.ts.
        */
       "read-char-history": Value;
       /**

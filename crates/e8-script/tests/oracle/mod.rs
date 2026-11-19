@@ -352,8 +352,13 @@ fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answe
         } else if !input.is_empty() && !input.contains('/') {
             ed.set_minibuffer_input("");
         }
+        let asked = ed.prompt().map(str::to_string);
+        let depth = ed.minibuffer_depth();
         ed.type_text(&answer);
-        ed.handle_key(Key::parse("RET").expect("RET parses"));
+        // A prompt that ends on its first character, as read-char-from-minibuffer's, needs no RET.
+        if ed.minibuffer_depth() == depth && ed.prompt().map(str::to_string) == asked {
+            ed.handle_key(Key::parse("RET").expect("RET parses"));
+        }
     }
     note(ed);
     true

@@ -781,3 +781,86 @@ e8.defun("log", (arg: number, base?: number | null) => e8.logarithm(arg, base));
 e8.defun("ns-read-file-name", (prompt: string, dir?: string | null, mustmatch?: e8.Value, init?: string | null, _dirOnly?: e8.Value) =>
   e8.readFileName(prompt, { dir: dir ?? undefined, initial: init ?? undefined, mustMatch: mustmatch !== null && mustmatch !== undefined && mustmatch !== false }),
 );
+
+// Reading a character in the minibuffer, as subr.el's read-char-from-minibuffer.
+
+e8.defineVariable({ name: "read-char-history", doc: "The default history for the `read-char-from-minibuffer' function.", value: [] });
+e8.defineKeymap("read-char-from-minibuffer-map");
+e8.setKeymapParent("read-char-from-minibuffer-map", "minibuffer-local-map");
+e8.remapCommand(
+  "read-char-from-minibuffer-map",
+  "exit-minibuffer",
+  e8.defineCommand({
+    name: "read-char-from-minibuffer-insert-other",
+    doc: "Reject a disallowed character typed into the minibuffer.\nThis command is intended to be bound to keys that users are not\nallowed to type into the minibuffer.  When the user types any\nsuch key, this command discard all minibuffer input and displays\nan error message.",
+    run: () => {
+      if (!e8.minibufferp()) return;
+      e8.call("delete-minibuffer-contents");
+      e8.ding();
+      e8.discardInput();
+      // Not logged, as minibuffer-message's is not.
+      e8.message("Wrong answer", { log: false });
+      e8.sitFor(2);
+    },
+  }),
+);
+
+const readCharInsertChar = e8.defineCommand({
+  name: "read-char-from-minibuffer-insert-char",
+  doc: "Insert the character you type into the minibuffer and exit minibuffer.\nDiscard all previous input before inserting and exiting the minibuffer.",
+  run: () => {
+    if (!e8.minibufferp()) return;
+    e8.call("delete-minibuffer-contents");
+    e8.call("self-insert-command", 1);
+    e8.call("exit-minibuffer");
+  },
+});
+
+/** The keymap taking only `chars`, made once for each set, as read-char-from-minibuffer-map-hash keeps them. */
+function mapFor(chars: string[]): string {
+  const name = `read-char-from-minibuffer-map ${chars.join("")}`;
+  if (e8.keymapp(name)) return name;
+  e8.defineKeymap(name);
+  e8.setKeymapParent(name, "read-char-from-minibuffer-map");
+  for (const c of chars) e8.bindKey(c === " " ? "SPC" : c, readCharInsertChar, name);
+  e8.remapCommand(name, "self-insert-command", "read-char-from-minibuffer-insert-other");
+  return name;
+}
+
+/**
+ * Reads a character in the minibuffer, as read-char-from-minibuffer: the
+ * first character typed ends it, M-p and M-n go through `history` (none
+ * for "t"), and RET with nothing typed is a wrong answer; with `chars`,
+ * any other character is a wrong answer too. The prompt is then shown
+ * with the character after it.
+ */
+export function readCharFromMinibuffer(prompt: string, history = "read-char-history", chars?: string[]): string {
+  const map = chars === undefined ? "read-char-from-minibuffer-map" : mapFor(chars);
+  const setup = () => {
+    e8.removeHook("minibuffer-setup-hook", setup);
+    e8.useLocalMap(map);
+    // Once something is in the minibuffer, as typed or brought by M-p, it is the answer.
+    e8.addHook(
+      "post-command-hook",
+      () => {
+        if (e8.minibufferPromptEnd() + 1 <= e8.pointMax()) e8.call("exit-minibuffer");
+      },
+      { local: true },
+    );
+  };
+  e8.addHook("minibuffer-setup-hook", setup);
+  let result: string;
+  try {
+    result = e8.readString(prompt, { history });
+  } finally {
+    e8.removeHook("minibuffer-setup-hook", setup);
+  }
+  const char = result === "" ? "\r" : [...result][0]!;
+  e8.message(`${prompt}${char}`);
+  return char;
+}
+e8.defun("read-char-from-minibuffer", (prompt: string, chars?: e8.Value, history?: string) => {
+  const list = Array.isArray(chars) ? chars.map((c) => (typeof c === "number" ? String.fromCodePoint(c) : String(c))) : undefined;
+  // No history unless one is given, as Emacs's (or history t).
+  return readCharFromMinibuffer(prompt, typeof history === "string" ? history : "t", list);
+});
