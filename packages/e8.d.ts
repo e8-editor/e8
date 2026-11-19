@@ -1667,6 +1667,14 @@ declare global {
        */
       "describe-bindings": [];
       /**
+       * Describe the character after point: its position and code, charset, script, syntax and categories, how to type it, how the buffer, its file and the display hold it, its Unicode properties, and the text properties and overlays there.
+       *
+       * @param pos point
+       *
+       * Defined in packages/descr-text.ts.
+       */
+      "describe-char": [pos: number];
+      /**
        * Show what a coding system is: its mnemonic, aliases, documentation, type, line ends and the charsets it can write.
        *
        * With no name, show the coding systems in use now, as describe-current-coding-system.
@@ -1758,6 +1766,14 @@ declare global {
        * Defined in packages/help.ts.
        */
       "describe-symbol": [symbol: string];
+      /**
+       * Describe the overlays and text properties of the character after point.
+       *
+       * @param pos point
+       *
+       * Defined in packages/descr-text.ts.
+       */
+      "describe-text-properties": [pos: number];
       /**
        * Show a variable's documentation, its value in the current buffer, and its global value.
        *
@@ -3674,6 +3690,17 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "insert-buffer": [buffer: string];
+      /**
+       * Insert a character by its Unicode name or code, COUNT times: C-x 8 RET GREEK SMALL LETTER LAMBDA RET, or C-x 8 RET 3bb RET.
+       *
+       * Names complete, and *Completions* shows each character before its name. Typed, the character inherits the text properties around it.
+       *
+       * @param character text
+       * @param count prefix count
+       *
+       * Defined in packages/mule.ts.
+       */
+      "insert-char": [character: string, count?: number];
       /**
        * Insert a file's text after point, leaving point before it and the mark after it.
        *
@@ -8048,11 +8075,13 @@ declare global {
        */
       "wdired-toggle-bit": [];
       /**
-       * Say what character is after point, in decimal, octal and hex, and how the file writes it if it is not ASCII; and where point is, as a position, a percentage of the buffer, and a column.
+       * Say what character is after point, in decimal, octal and hex, and how the file writes it if it is not ASCII; and where point is, as a position, a percentage of the buffer, and a column. With a prefix argument, describe the character in *Help* as well, as describe-char.
+       *
+       * @param detail raw prefix argument
        *
        * Defined in packages/simple.ts.
        */
-      "what-cursor-position": [];
+      "what-cursor-position": [detail?: PrefixArg | boolean];
       /**
        * Say which line point is on, counting from the start of the buffer, and of the narrowing too if the buffer is narrowed.
        *
@@ -9707,6 +9736,12 @@ declare global {
        * Defined in packages/window.ts.
        */
       "delete-window-choose-selected": Value;
+      /**
+       * The Unicode properties describe-char shows, from char-code-property-alist: name, old-name, general-category, decomposition and the rest; t for all of them.
+       *
+       * Defined in packages/descr-text.ts.
+       */
+      "describe-char-unidata-list": Value;
       /**
        * Seconds idle after which the desktop is saved, if it has changed; nil or 0 for never.
        *
@@ -13077,6 +13112,12 @@ declare global {
        */
       "read-buffer-completion-ignore-case": Value;
       /**
+       * How read-char-by-name sorts the characters it completes: nil by name, "code" by code point.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "read-char-by-name-sort": Value;
+      /**
        * Characters read by zap-to-char and its kin, newest first.
        *
        * Defined in packages/simple.ts.
@@ -14206,6 +14247,12 @@ declare global {
        * Keymap wdired-perm-mode-map.
        */
       "wdired-perm-mode-map": Value;
+      /**
+       * Whether C-x = shows the character's Unicode name.
+       *
+       * Defined in packages/simple.ts.
+       */
+      "what-cursor-show-names": Value;
       /**
        * Spaces added before each column's keys.
        *
@@ -19143,12 +19190,30 @@ declare global {
     function categorySetMnemonics(set: string): string;
     /** The category set some designators make, as make-category-set; signals for a character that designates none. */
     function makeCategorySet(mnemonics: string): string;
-    /** The char-table of a Unicode property, as unicode-property-table-internal, or undefined for one E8 holds no data for. */
+    /** The char-table of a Unicode property, as unicode-property-table-internal, or undefined for one not in char-code-property-alist. */
     function unicodePropertyTableInternal(property: string): CharTable | undefined;
     /** A character's value in a Unicode property's table, as get-unicode-property-internal. */
     function getUnicodePropertyInternal(table: CharTable, c: CharCode): Value;
     /** Gives a character a value in a Unicode property's table, as put-unicode-property-internal. */
     function putUnicodePropertyInternal(table: CharTable, c: CharCode, value: Value): void;
+    /** Gives a character a value of a property, as put-char-code-property. */
+    function putCharCodeProperty(c: CharCode, property: string, value: Value): void;
+    /**
+     * What a value of a Unicode property means, as
+     * char-code-property-description: "Letter, Uppercase" for the
+     * general category Lu; undefined where Emacs has no words for it.
+     */
+    function charCodePropertyDescription(property: string, value: Value): string | undefined;
+    /**
+     * The characters by their Unicode names, as ucs-names: each named
+     * character's name and old name, LAMBDA for LAMDA and "BELL (BEL)",
+     * from the ranges Emacs reads, as pairs of a name and its character.
+     */
+    function ucsNamesInternal(): [string, number][];
+    /** The Unicode properties get-char-code-property knows, as char-code-property-alist names them, in its order. */
+    function charCodePropertyNames(): string[];
+    /** A character's script, as (aref char-script-table CHAR) gives it: "latin", "han", "emoji". */
+    function charScript(c: CharCode): string | undefined;
     /** The standard case table, which buffers without their own use, as standard-case-table. */
     function standardCaseTable(): CharTable;
     /** The current buffer's case table, as current-case-table. */
@@ -21537,11 +21602,13 @@ declare global {
      */
     function bidiFindOverriddenDirectionality(from: number, to: number, object?: BufferLike | string | PropertizedString, baseDir?: "left-to-right" | "right-to-left"): number | undefined;
     /**
-     * A character's Unicode property, as get-char-code-property: bidi-class
-     * ("L", "R", "AL", ...), mirroring and paired-bracket (a character),
-     * bracket-type ("o", "c" or "n") or mirrored ("Y" or "N").
+     * A character's value of a Unicode property, as get-char-code-property:
+     * "name", "general-category" ("Lu"), "decomposition" (its tag, if any,
+     * and character codes), "bidi-class" ("L", "R", "AL", ...), "mirroring",
+     * "uppercase" and the rest of char-code-property-alist, characters as
+     * codes, or what putCharCodeProperty gave it; undefined for none.
      */
-    function getCharCodeProperty(char: string | number, property: "bidi-class" | "mirroring" | "paired-bracket" | "bracket-type" | "mirrored"): string | undefined;
+    function getCharCodeProperty(char: string | number, property: string | symbol): Value | undefined;
     /** Whether the buffers, their names and modified flags, or the frames changed since it was last asked, as frame-or-buffer-changed-p. */
     function frameOrBufferChangedP(): boolean;
     /** The tab bar's height in lines, as tab-bar-height: E8 has none. */

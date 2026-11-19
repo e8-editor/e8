@@ -1,5 +1,6 @@
 import { fillRegionAsParagraph } from "fill";
-import { truthy } from "subr";
+import { completingReadWithMetadata } from "minibuffer";
+import { insertChar, truthy } from "subr";
 
 // Choosing coding systems, after mule.el and mule-cmds.el: how the buffer
 // is saved (C-x RET f), revisiting it in another (C-x RET r), giving the
@@ -736,6 +737,128 @@ e8.defun("latexenc-find-file-coding-system", (args: e8.Value[]) => {
   }
   return null;
 });
+
+// --- Characters by their Unicode names, after mule-cmds.el -----------------
+
+/** The names `ucsNames` gives, by name, made the first time it is asked for. */
+let ucsNamesTable: Map<string, number> | undefined;
+
+/**
+ * The characters by their Unicode names, as ucs-names: each name and old
+ * name in the ranges Emacs reads, not the CJK ideographs and the others
+ * named by their code.
+ */
+export function ucsNames(): Map<string, number> {
+  ucsNamesTable ??= new Map(e8.ucsNamesInternal());
+  return ucsNamesTable;
+}
+e8.defun("ucs-names", () => [...ucsNames()] as unknown as e8.Value);
+
+/** A character's Unicode name, else its old name, as char-to-name; undefined for none. */
+export function charToName(char: number): string | undefined {
+  // Nil for what is no character, as characterp says.
+  if (!Number.isInteger(char) || char < 0 || char > 0x3fffff) return undefined;
+  const name = e8.getCharCodeProperty(char, "name") ?? e8.getCharCodeProperty(char, "old-name");
+  return typeof name === "string" ? name : undefined;
+}
+e8.defun("char-to-name", (char: e8.Value) => (typeof char === "number" ? (charToName(char) ?? null) : null));
+
+/**
+ * The character a Unicode name names, as char-from-name: a name or old
+ * name from ucs-names, or one made from a code, as VARIATION SELECTOR-17
+ * or CJK COMPATIBILITY IDEOGRAPH-F900; `ignoreCase` folds case.
+ */
+export function charFromName(string: string, ignoreCase = false): number | undefined {
+  const found = ucsNames().get(ignoreCase ? string.toUpperCase() : string);
+  if (found !== undefined) return found;
+  // Lower-case hex too, as case-fold-search is on for Emacs's match.
+  const minus = /-[0-9A-F]+$/i.exec(string);
+  if (!minus) return undefined;
+  const vs = (ignoreCase ? /^VARIATION SELECTOR-/i : /^VARIATION SELECTOR-/).test(string);
+  const minusNum = -parseInt(minus[0].slice(1), vs ? 10 : 16);
+  if (Number.isNaN(minusNum)) return undefined;
+  const offset = vs ? (minusNum < -16 ? 0xe00ef : 0xfdff) : 0;
+  const code = offset - minusNum;
+  if (code < 0 || code > 0x10ffff) return undefined;
+  const name = e8.getCharCodeProperty(code, "name");
+  if (typeof name !== "string") return undefined;
+  return (ignoreCase ? name.toUpperCase() === string.toUpperCase() : name === string) ? code : undefined;
+}
+e8.defun("char-from-name", (string: string, ignoreCase?: e8.Value) => charFromName(String(string), truthy(ignoreCase ?? null)) ?? null);
+
+e8.defineVariable({
+  name: "read-char-by-name-sort",
+  doc: "How read-char-by-name sorts the characters it completes: nil by name, \"code\" by code point.",
+  value: null,
+});
+
+/**
+ * Reads a character by its Unicode name or its code, as
+ * read-char-by-name: a name or old name, completed, with the character
+ * shown before each, a hex code as 2A10, or #x2a10, 10r10768 or #o25020;
+ * with `allowSingle`, a character typed alone stands for itself.
+ */
+export function readCharByName(prompt: string, allowSingle = false): number {
+  const names = ucsNames();
+  const input = e8.letBind({ "completion-ignore-case": true, "enable-recursive-minibuffers": true }, () =>
+    completingReadWithMetadata(prompt, names.keys(), {
+      metadata: {
+        category: "unicode-name",
+        affixationFunction: (candidates) =>
+          candidates.map((name) => {
+            const c = names.get(name);
+            return [name, `${c === undefined ? " " : String.fromCodePoint(c)}\t`, ""];
+          }),
+        displaySortFunction:
+          e8.variable("read-char-by-name-sort") === "code"
+            ? (candidates) => [...candidates].sort((a, b) => (names.get(a) ?? 0) - (names.get(b) ?? 0))
+            : undefined,
+        groupFunction: truthy(e8.variable("completions-group"))
+          ? (name, transform) => {
+              if (transform) return name;
+              const c = names.get(name);
+              return (c === undefined ? undefined : e8.charScript(c)) ?? "ungrouped";
+            }
+          : undefined,
+      },
+    }),
+  ) as string;
+  let char: number | undefined = charFromName(input, true);
+  if (char === undefined && allowSingle && [...input].length === 1) char = input.codePointAt(0);
+  if (char === undefined && /^[0-9A-Fa-f]+$/.test(input)) char = parseInt(input, 16);
+  if (char === undefined) {
+    const m = /^#(?:([bBoOxX])|([0-9]+)[rR])([0-9a-zA-Z]+)$/.exec(input);
+    if (m) {
+      const radix = m[1] ? ({ b: 2, o: 8, x: 16 } as Record<string, number>)[m[1].toLowerCase()] : Number(m[2]);
+      // Every digit one of the radix's, as read would have it.
+      const digits = "0123456789abcdefghijklmnopqrstuvwxyz".slice(0, radix);
+      if (radix >= 2 && radix <= 36 && [...m[3].toLowerCase()].every((d) => digits.includes(d))) char = parseInt(m[3], radix);
+    }
+  }
+  // Emacs's raw bytes, #x3FFF80 up, are E8's from #x10FF80; its other
+  // characters beyond Unicode E8 cannot hold.
+  if (char !== undefined && char >= 0x3fff80 && char <= 0x3fffff) char = char - 0x3fff80 + 0x10ff80;
+  if (char === undefined || char < 0 || char > 0x10ffff || (char >= 0xd800 && char <= 0xdfff)) e8.signal("error", "Invalid character");
+  return char!;
+}
+e8.defun("read-char-by-name", (prompt: string, allowSingle?: e8.Value) => readCharByName(String(prompt), truthy(allowSingle ?? null)));
+
+e8.defineCommand({
+  name: "insert-char",
+  doc:
+    "Insert a character by its Unicode name or code, COUNT times: C-x 8 RET GREEK SMALL LETTER LAMBDA RET, or C-x 8 RET 3bb RET.\n\n" +
+    "Names complete, and *Completions* shows each character before its name. Typed, the character inherits the text properties around it.",
+  params: [
+    { name: "character", value: () => String(readCharByName("Insert character (Unicode name or hex): ")) },
+    { name: "count", kind: "count" },
+  ],
+  // Typed, it inherits, as Emacs's interactive spec passes INHERIT t.
+  run: (character: string | number, count?: number) => {
+    const code = typeof character === "number" ? character : Number(character);
+    insertChar(code, count ?? 1, e8.calledInteractively());
+  },
+});
+e8.bindKey("C-x 8 RET", "insert-char");
 
 // --- Language environments, after mule-cmds.el ------------------------------
 

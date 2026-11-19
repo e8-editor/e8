@@ -1,0 +1,331 @@
+61 name "LATIN SMALL LETTER A"
+61 general-category Ll
+61 canonical-combining-class 0
+61 bidi-class L
+61 decomposition (97)
+61 decimal-digit-value nil
+61 digit-value nil
+61 numeric-value nil
+61 mirrored N
+61 mirroring nil
+61 old-name nil
+61 iso-10646-comment nil
+61 uppercase 65
+61 lowercase nil
+61 titlecase 65
+61 special-uppercase nil
+61 special-lowercase nil
+61 special-titlecase nil
+61 paired-bracket nil
+61 bracket-type n
+41 name "LATIN CAPITAL LETTER A"
+41 general-category Lu
+41 canonical-combining-class 0
+41 bidi-class L
+41 decomposition (65)
+41 decimal-digit-value nil
+41 digit-value nil
+41 numeric-value nil
+41 mirrored N
+41 mirroring nil
+41 old-name nil
+41 iso-10646-comment nil
+41 uppercase nil
+41 lowercase 97
+41 titlecase nil
+41 special-uppercase nil
+41 special-lowercase nil
+41 special-titlecase nil
+41 paired-bracket nil
+41 bracket-type n
+E9 name "LATIN SMALL LETTER E WITH ACUTE"
+E9 general-category Ll
+E9 canonical-combining-class 0
+E9 bidi-class L
+E9 decomposition (101 769)
+E9 decimal-digit-value nil
+E9 digit-value nil
+E9 numeric-value nil
+E9 mirrored N
+E9 mirroring nil
+E9 old-name "LATIN SMALL LETTER E ACUTE"
+E9 iso-10646-comment nil
+E9 uppercase 201
+E9 lowercase nil
+E9 titlecase 201
+E9 special-uppercase nil
+E9 special-lowercase nil
+E9 special-titlecase nil
+E9 paired-bracket nil
+E9 bracket-type n
+BD name "VULGAR FRACTION ONE HALF"
+BD general-category No
+BD canonical-combining-class 0
+BD bidi-class ON
+BD decomposition (fraction 49 8260 50)
+BD decimal-digit-value nil
+BD digit-value nil
+BD numeric-value 0.5
+BD mirrored N
+BD mirroring nil
+BD old-name "FRACTION ONE HALF"
+BD iso-10646-comment nil
+BD uppercase nil
+BD lowercase nil
+BD titlecase nil
+BD special-uppercase nil
+BD special-lowercase nil
+BD special-titlecase nil
+BD paired-bracket nil
+BD bracket-type n
+300 name "COMBINING GRAVE ACCENT"
+300 general-category Mn
+300 canonical-combining-class 230
+300 bidi-class NSM
+300 decomposition (768)
+300 decimal-digit-value nil
+300 digit-value nil
+300 numeric-value nil
+300 mirrored N
+300 mirroring nil
+300 old-name "NON-SPACING GRAVE"
+300 iso-10646-comment nil
+300 uppercase nil
+300 lowercase nil
+300 titlecase nil
+300 special-uppercase nil
+300 special-lowercase nil
+300 special-titlecase nil
+300 paired-bracket nil
+300 bracket-type n
+5D0 name "HEBREW LETTER ALEF"
+5D0 general-category Lo
+5D0 canonical-combining-class 0
+5D0 bidi-class R
+5D0 decomposition (1488)
+5D0 decimal-digit-value nil
+5D0 digit-value nil
+5D0 numeric-value nil
+5D0 mirrored N
+5D0 mirroring nil
+5D0 old-name nil
+5D0 iso-10646-comment nil
+5D0 uppercase nil
+5D0 lowercase nil
+5D0 titlecase nil
+5D0 special-uppercase nil
+5D0 special-lowercase nil
+5D0 special-titlecase nil
+5D0 paired-bracket nil
+5D0 bracket-type n
+661 name "ARABIC-INDIC DIGIT ONE"
+661 general-category Nd
+661 canonical-combining-class 0
+661 bidi-class AN
+661 decomposition (1633)
+661 decimal-digit-value 1
+661 digit-value 1
+661 numeric-value 1
+661 mirrored N
+661 mirroring nil
+661 old-name nil
+661 iso-10646-comment nil
+661 uppercase nil
+661 lowercase nil
+661 titlecase nil
+661 special-uppercase nil
+661 special-lowercase nil
+661 special-titlecase nil
+661 paired-bracket nil
+661 bracket-type n
+2160 name "ROMAN NUMERAL ONE"
+2160 general-category Nl
+2160 canonical-combining-class 0
+2160 bidi-class L
+2160 decomposition (compat 73)
+2160 decimal-digit-value nil
+2160 digit-value nil
+2160 numeric-value 1
+2160 mirrored N
+2160 mirroring nil
+2160 old-name nil
+2160 iso-10646-comment nil
+2160 uppercase nil
+2160 lowercase 8560
+2160 titlecase nil
+2160 special-uppercase nil
+2160 special-lowercase nil
+2160 special-titlecase nil
+2160 paired-bracket nil
+2160 bracket-type n
+AC01 name "HANGUL SYLLABLE GAG"
+AC01 general-category Lo
+AC01 canonical-combining-class 0
+AC01 bidi-class L
+AC01 decomposition (44033)
+AC01 decimal-digit-value nil
+AC01 digit-value nil
+AC01 numeric-value nil
+AC01 mirrored N
+AC01 mirroring nil
+AC01 old-name nil
+AC01 iso-10646-comment nil
+AC01 uppercase nil
+AC01 lowercase nil
+AC01 titlecase nil
+AC01 special-uppercase nil
+AC01 special-lowercase nil
+AC01 special-titlecase nil
+AC01 paired-bracket nil
+AC01 bracket-type n
+4E00 name "CJK IDEOGRAPH-4E00"
+4E00 general-category Lo
+4E00 canonical-combining-class 0
+4E00 bidi-class L
+4E00 decomposition (19968)
+4E00 decimal-digit-value nil
+4E00 digit-value nil
+4E00 numeric-value nil
+4E00 mirrored N
+4E00 mirroring nil
+4E00 old-name nil
+4E00 iso-10646-comment nil
+4E00 uppercase nil
+4E00 lowercase nil
+4E00 titlecase nil
+4E00 special-uppercase nil
+4E00 special-lowercase nil
+4E00 special-titlecase nil
+4E00 paired-bracket nil
+4E00 bracket-type n
+1F600 name "GRINNING FACE"
+1F600 general-category So
+1F600 canonical-combining-class 0
+1F600 bidi-class ON
+1F600 decomposition (128512)
+1F600 decimal-digit-value nil
+1F600 digit-value nil
+1F600 numeric-value nil
+1F600 mirrored N
+1F600 mirroring nil
+1F600 old-name nil
+1F600 iso-10646-comment nil
+1F600 uppercase nil
+1F600 lowercase nil
+1F600 titlecase nil
+1F600 special-uppercase nil
+1F600 special-lowercase nil
+1F600 special-titlecase nil
+1F600 paired-bracket nil
+1F600 bracket-type n
+DF name "LATIN SMALL LETTER SHARP S"
+DF general-category Ll
+DF canonical-combining-class 0
+DF bidi-class L
+DF decomposition (223)
+DF decimal-digit-value nil
+DF digit-value nil
+DF numeric-value nil
+DF mirrored N
+DF mirroring nil
+DF old-name nil
+DF iso-10646-comment nil
+DF uppercase nil
+DF lowercase nil
+DF titlecase nil
+DF special-uppercase "SS"
+DF special-lowercase nil
+DF special-titlecase "Ss"
+DF paired-bracket nil
+DF bracket-type n
+130 name "LATIN CAPITAL LETTER I WITH DOT ABOVE"
+130 general-category Lu
+130 canonical-combining-class 0
+130 bidi-class L
+130 decomposition (73 775)
+130 decimal-digit-value nil
+130 digit-value nil
+130 numeric-value nil
+130 mirrored N
+130 mirroring nil
+130 old-name "LATIN CAPITAL LETTER I DOT"
+130 iso-10646-comment nil
+130 uppercase nil
+130 lowercase 105
+130 titlecase nil
+130 special-uppercase nil
+130 special-lowercase "i̇"
+130 special-titlecase nil
+130 paired-bracket nil
+130 bracket-type n
+28 name "LEFT PARENTHESIS"
+28 general-category Ps
+28 canonical-combining-class 0
+28 bidi-class ON
+28 decomposition (40)
+28 decimal-digit-value nil
+28 digit-value nil
+28 numeric-value nil
+28 mirrored Y
+28 mirroring 41
+28 old-name "OPENING PARENTHESIS"
+28 iso-10646-comment nil
+28 uppercase nil
+28 lowercase nil
+28 titlecase nil
+28 special-uppercase nil
+28 special-lowercase nil
+28 special-titlecase nil
+28 paired-bracket 41
+28 bracket-type o
+10FFFF name nil
+10FFFF general-category Cn
+10FFFF canonical-combining-class 0
+10FFFF bidi-class L
+10FFFF decomposition (1114111)
+10FFFF decimal-digit-value nil
+10FFFF digit-value nil
+10FFFF numeric-value nil
+10FFFF mirrored N
+10FFFF mirroring nil
+10FFFF old-name nil
+10FFFF iso-10646-comment nil
+10FFFF uppercase nil
+10FFFF lowercase nil
+10FFFF titlecase nil
+10FFFF special-uppercase nil
+10FFFF special-lowercase nil
+10FFFF special-titlecase nil
+10FFFF paired-bracket nil
+10FFFF bracket-type n
+7 name nil
+7 general-category Cc
+7 canonical-combining-class 0
+7 bidi-class BN
+7 decomposition (7)
+7 decimal-digit-value nil
+7 digit-value nil
+7 numeric-value nil
+7 mirrored N
+7 mirroring nil
+7 old-name "BELL"
+7 iso-10646-comment nil
+7 uppercase nil
+7 lowercase nil
+7 titlecase nil
+7 special-uppercase nil
+7 special-lowercase nil
+7 special-titlecase nil
+7 paired-bracket nil
+7 bracket-type n
+from LATIN SMALL LETTER A 97 97
+from latin small letter a nil 97
+from BELL 128276 128276
+from BELL (BEL) 7 7
+from VARIATION SELECTOR-17 917760 917760
+from CJK COMPATIBILITY IDEOGRAPH-F900 63744 63744
+from CJK IDEOGRAPH-4E00 19968 19968
+from GREEK SMALL LETTER LAMBDA 955 955
+from GREEK SMALL LETTER LAMDA 955 955
+from HANGUL SYLLABLE GA 44032 44032
+from NOPE nil nil

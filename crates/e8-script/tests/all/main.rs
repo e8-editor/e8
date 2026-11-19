@@ -24,6 +24,7 @@ mod changes;
 mod chartab;
 mod codings;
 mod codings_rest;
+mod unicode_names;
 mod comint;
 mod commands;
 mod compile;

@@ -1,0 +1,182 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "insert-char-by-name",
+      "input": {
+        "text": "x",
+        "point": 1,
+        "keys": "C-x 8 RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "GREEK SMALL LETTER LAMBDA"
+        ]
+      },
+      "text": "xλ",
+      "visible": "xλ",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-char-by-name-in-lower-case",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x 8 RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "grinning face"
+        ]
+      },
+      "text": "😀",
+      "visible": "😀",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-char-by-hex-with-a-count",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-u 3 C-x 8 RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2a10"
+        ]
+      },
+      "text": "⨐⨐⨐",
+      "visible": "⨐⨐⨐",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-char-by-hash-notation",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x 8 RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "#x41"
+        ]
+      },
+      "text": "A",
+      "visible": "A",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-char-by-old-name",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x 8 RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "LINE FEED (LF)"
+        ]
+      },
+      "text": "\n",
+      "visible": "\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-char-made-name",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x 8 RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "CJK IDEOGRAPH-4E00"
+        ]
+      },
+      "text": "一",
+      "visible": "一",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-char-variation-selector",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x 8 RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "VARIATION SELECTOR-17"
+        ]
+      },
+      "text": "󠄀",
+      "visible": "󠄀",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-char-not-a-name",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-x 8 RET",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "NO SUCH CHARACTER NAME"
+        ]
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid character"
+    }
+  ]
+}

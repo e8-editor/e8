@@ -1,5 +1,6 @@
-//! The bidi primitives for scripts, as Emacs's xdisp.c and
-//! `get-char-code-property` have them ([ADR 0047]).
+//! The bidi primitives for scripts, as Emacs's xdisp.c has them
+//! ([ADR 0047]); the bidi properties of characters are in chartab.rs,
+//! with the other Unicode properties.
 //!
 //! [ADR 0047]: ../../../../docs/adr/0047-bidirectional-text.md
 
@@ -7,18 +8,6 @@ use e8_core::bidi::{self, Direction};
 
 use crate::*;
 use crate::natives::{natives, Opt};
-
-/// A character given as a one-character string or a code point.
-fn char_of(value: &EditorValue) -> Option<char> {
-    match value {
-        EditorValue::Str(s) => {
-            let mut chars = s.chars();
-            chars.next().filter(|_| chars.next().is_none())
-        }
-        EditorValue::Number(n) => char::from_u32(*n as u32),
-        _ => None,
-    }
-}
 
 natives! {
     fn currentBidiParagraphDirection(ed) -> String {
@@ -58,26 +47,5 @@ natives! {
             return Ok(None);
         }
         Ok(ed.bidi_find_overridden_directionality(ed.buffer(), from, to, base))
-    }
-
-    fn getCharCodeProperty(ed, c: EditorValue, property: String) -> Option<String> {
-        let Some(c) = char_of(&c) else {
-            return Err(Error::signal("wrong-type-argument", "Expected a character", Vec::new()));
-        };
-        Ok(match property.as_str() {
-            "bidi-class" => Some(bidi::bidi_class(c).name().to_string()),
-            "mirroring" => bidi::mirror(c).map(String::from),
-            "paired-bracket" => bidi::paired_bracket(c).map(|(p, _)| p.to_string()),
-            "bracket-type" => Some(
-                match bidi::paired_bracket(c) {
-                    Some((_, true)) => "o",
-                    Some((_, false)) => "c",
-                    None => "n",
-                }
-                .to_string(),
-            ),
-            "mirrored" => Some(if bidi::mirrored(c) { "Y" } else { "N" }.to_string()),
-            _ => None,
-        })
     }
 }

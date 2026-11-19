@@ -50,7 +50,8 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Keyboard macros (`F3`, `F4`, `C-x (`, `C-x )`, `C-x e`).
 - Recursive edits (`C-M-c`, `C-]`, `top-level`).
 - The keys typed lately (`C-h l`).
-- Characters typed with `C-x 8` through `key-translation-map`.
+- Characters typed with `C-x 8` through `key-translation-map`, and by their Unicode names with `C-x 8 RET` (`insert-char`), names completing with each character shown before its name, or by a hex code.
+- Characters described: `C-u C-x =` (`describe-char`) shows a character's code, charset, script, syntax, categories, how to type it, its bytes in the buffer, its file and on the terminal, its Unicode properties and the text properties there; `get-char-code-property` gives every Unicode property Emacs has, names and old names, decompositions, digit values and case mappings among them, and `C-h b` names the characters key translations make.
 - Keys bound to keys as keyboard macros.
 - `sit-for` and `read-event` with a timeout.
 - Repeat (`C-x z`), and edit and run again a command that read its arguments in the minibuffer (`C-x ESC ESC`, `C-x M-:`), from `command-history`, which also keeps every command run with `M-x`. A goal column for `C-n` and `C-p` (`C-x C-n`, unset with `C-u C-x C-n`).

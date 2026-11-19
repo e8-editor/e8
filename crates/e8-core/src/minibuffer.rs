@@ -212,10 +212,17 @@ impl Editor {
     /// one, if `enable-recursive-minibuffers` is on, as in Emacs: the open
     /// prompt, and what waits for its answer, wait until the inner one is done.
     pub(crate) fn enter_recursive_minibuffer(&mut self) -> Result<()> {
+        self.enter_recursive_minibuffer_if(false)
+    }
+
+    /// As [`enter_recursive_minibuffer`](Editor::enter_recursive_minibuffer),
+    /// or regardless of `enable-recursive-minibuffers` with `allowed`, as
+    /// for code that binds it on, as read-char-by-name does.
+    pub(crate) fn enter_recursive_minibuffer_if(&mut self, allowed: bool) -> Result<()> {
         if self.prompt.is_none() {
             return Ok(());
         }
-        if !self.variable("enable-recursive-minibuffers").is_some_and(|v| v.is_true()) {
+        if !allowed && !self.variable("enable-recursive-minibuffers").is_some_and(|v| v.is_true()) {
             return Err(Error::new("Command attempted to use minibuffer while in minibuffer"));
         }
         let prompt = self.prompt.take().expect("checked above");

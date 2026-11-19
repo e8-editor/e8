@@ -1663,8 +1663,8 @@
     beep: () => native.ding(),
     redrawDisplay: () => native.redisplay(),
     redrawFrame: () => native.redisplay(),
-    // Bidirectional text, as xdisp.c's primitives and get-char-code-property
-    // answer about it (ADR 0047).
+    // Bidirectional text, as xdisp.c's primitives answer about it (ADR 0047),
+    // and get-char-code-property, which gives every Unicode property.
     bidiResolvedLevels: (vpos) => (vpos === undefined || vpos === null ? native.bidiResolvedLevels() : native.bidiResolvedLevels(vpos)) ?? undefined,
     bidiFindOverriddenDirectionality(from, to, object, baseDir) {
       const rtl = baseDir !== undefined && baseDir !== null && symbolName(baseDir) === "right-to-left";
