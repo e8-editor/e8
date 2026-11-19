@@ -1721,6 +1721,14 @@ declare global {
        */
       "describe-key-briefly": [key: string];
       /**
+       * Show a language environment: what it is for, sample text, and the charsets and coding systems it uses.
+       *
+       * @param language text
+       *
+       * Defined in packages/mule.ts.
+       */
+      "describe-language-environment": [language: string];
+      /**
        * Show the documentation of the current buffer's major mode and of the minor modes that are on, with their keys.
        *
        * Defined in packages/help.ts.
@@ -2604,7 +2612,7 @@ declare global {
        */
       "editorconfig-display-current-properties": [];
       /**
-       * Set how files indent and save from their .editorconfig files: indent_style, indent_size, tab_width, max_line_length, insert_final_newline and trim_trailing_whitespace.
+       * Set how files indent and save from their .editorconfig files: indent_style, indent_size, tab_width, max_line_length, insert_final_newline, trim_trailing_whitespace, and end_of_line and charset for the coding system files are read and written in.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
        *
@@ -6793,6 +6801,12 @@ declare global {
        */
       "replace-string": [from: string, to: string, delimited?: PrefixArg | boolean];
       /**
+       * Put the coding systems back as they are with no language environment: UTF-8 first for detection, and no default for new files.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "reset-language-environment": [];
+      /**
        * Reverse the order of the whole lines in the region.
        *
        * @param beg region start
@@ -6988,6 +7002,25 @@ declare global {
        */
       "search-forward": [string: string, count?: number];
       /**
+       * Show a buffer with point at a character its coding cannot write, as a *Warning* button does.
+       *
+       * @param buffer text
+       * @param pos text
+       *
+       * Defined in packages/mule.ts.
+       */
+      "select-safe-coding-system--goto": [buffer: string, pos: string];
+      /**
+       * Show a buffer with point at the next character its coding cannot write after the tenth, as *Warning*'s ... does.
+       *
+       * @param buffer text
+       * @param pos text
+       * @param coding text
+       *
+       * Defined in packages/mule.ts.
+       */
+      "select-safe-coding-system--next": [buffer: string, pos: string, coding: string];
+      /**
        * Insert the character you typed, as many times as the prefix argument says.
        *
        * @param n prefix count
@@ -7068,6 +7101,14 @@ declare global {
        * Defined in packages/simple.ts.
        */
       "set-goal-column": [arg?: PrefixArg | boolean];
+      /**
+       * Set up the editor for a language environment: the coding systems its files are read and written in, its charsets and its input method. Latin-1 is for Western Europe's languages, Japanese for Japanese.
+       *
+       * @param language text
+       *
+       * Defined in packages/mule.ts.
+       */
+      "set-language-environment": [language: string];
       /**
        * Set the mark at point and activate the region, saving the old mark on the mark ring.
        *
@@ -8761,6 +8802,18 @@ declare global {
        */
       "apropos-mode-map": Value;
       /**
+       * Which coding system to read a file in by its name, before anything else, the file's own coding: cookie included: an alist of an Emacs regexp and a coding system.
+       */
+      "auto-coding-alist": Value;
+      /**
+       * The file auto-coding-functions are asked about, bound while they are.
+       */
+      "auto-coding-file-name": Value;
+      /**
+       * Functions that say which coding system a file is in, asked after its coding: cookie: each is called with the file's size, auto-coding-file-name naming it, and gives a coding system or nil. E8 finds XML and HTML declarations itself, before them.
+       */
+      "auto-coding-functions": Value;
+      /**
        * The command typing a space or newline runs to break the line, when Auto Fill mode is on; nil when it is off. Each buffer has its own.
        */
       "auto-fill-function": Value;
@@ -9041,6 +9094,12 @@ declare global {
        */
       "buffer-file-coding-system": Value;
       /**
+       * The coding systems given by hand for the buffer's file, as a pair: for reading it, as C-x RET c gave, and for writing it, as C-x RET f gave. Saving tries only the one for writing, not the defaults, when it is set.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "buffer-file-coding-system-explicit": Value;
+      /**
        * Which text the invisible property hides.
        *
        * If true, any text whose invisible property is true is hidden. If a list, text is hidden when its invisible property names an entry: "name", or ["name", true] to show "..." in its place.
@@ -9100,6 +9159,10 @@ declare global {
        * Defined in packages/mule.ts.
        */
       "coding-system-history": Value;
+      /**
+       * Whether a coding coding-system-for-write forces is checked by select-safe-coding-system-function too, as C-x RET c binds it.
+       */
+      "coding-system-require-warning": Value;
       /**
        * Whether filling leaves two spaces after a colon.
        *
@@ -9463,6 +9526,18 @@ declare global {
        */
       "ctl-x-x-map": Value;
       /**
+       * The ISO 639 language of the language environment, as a name such as "ja".
+       *
+       * Defined in packages/mule.ts.
+       */
+      "current-iso639-language": Value;
+      /**
+       * The language environment set-language-environment last set up.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "current-language-environment": Value;
+      /**
        * How the cursor shows in the buffer's windows: t as the frame draws it, nil not at all, as menus and trees such as transient's and vundo's set it.
        */
       "cursor-type": Value;
@@ -9565,6 +9640,12 @@ declare global {
        */
       "default-file-name-coding-system": Value;
       /**
+       * The input method a language environment names, for when one is turned on.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "default-input-method": Value;
+      /**
        * How filling lines lines up: left, full (both edges), or none.
        *
        * Defined in packages/fill.ts.
@@ -9574,6 +9655,12 @@ declare global {
        * How processes' output is decoded and their input encoded: a list of the two coding systems.
        */
       "default-process-coding-system": Value;
+      /**
+       * The coding system for mail sent from a buffer with none of its own.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "default-sendmail-coding-system": Value;
       /**
        * Whether a keyboard macro is being defined, which the mode line shows as Def.
        */
@@ -10272,6 +10359,12 @@ declare global {
        * Suffixes to try after a program's name when looking for it along exec-path; none on these systems.
        */
       "exec-suffixes": Value;
+      /**
+       * Run when leaving a language environment, current-language-environment still naming it.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "exit-language-environment-hook": Value;
       /**
        * What M-x shell gives bash: no line editing, and interactive.
        *
@@ -11828,9 +11921,27 @@ declare global {
        */
       "kmacro-execute-before-append": Value;
       /**
+       * The language environments, each its name and then pairs of a key and its information: documentation, sample-text, charset, coding-system, coding-priority, input-method, nonascii-translation, iso639-language, tutorial, and setup-function and exit-function to call on entering and leaving it.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "language-info-alist": Value;
+      /**
+       * The coding system last chosen by name in the minibuffer.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "last-coding-system-specified": Value;
+      /**
        * The coding system the last file read or written, or text decoded or encoded, used.
        */
       "last-coding-system-used": Value;
+      /**
+       * How LaTeX's inputenc encodings, as \usepackage[latin1]{inputenc} names one, are coding systems.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "latex-inputenc-coding-alist": Value;
       /**
        * How many other matches incremental search highlights at most, around point.
        *
@@ -12846,6 +12957,12 @@ declare global {
        */
       "permanently-enabled-local-variables": Value;
       /**
+       * How a PO file's Content-Type charset names a coding system, for those whose names are not coding systems.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "po-content-type-charset-alist": Value;
+      /**
        * The function display-buffer makes a new frame with, giving the frame.
        *
        * Defined in packages/window.ts.
@@ -13294,6 +13411,16 @@ declare global {
        */
       "select-enable-clipboard": Value;
       /**
+       * A function select-safe-coding-system asks whether a safe default coding may be used without asking, overriding its own; nil for none.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "select-safe-coding-system-accept-default-p": Value;
+      /**
+       * The function writing a file asks whether its coding can write the text, with the region, the coding, nil and the file's name; it gives back the coding to use. mule.ts sets it to select-safe-coding-system.
+       */
+      "select-safe-coding-system-function": Value;
+      /**
        * The coding system for text cut and pasted between programs, or nil for the default.
        *
        * Defined in packages/mule-diag.ts.
@@ -13329,6 +13456,12 @@ declare global {
        * Defined in packages/paragraphs.ts.
        */
       "sentence-end-without-space": Value;
+      /**
+       * Run after a language environment is set up.
+       *
+       * Defined in packages/mule.ts.
+       */
+      "set-language-environment-hook": Value;
       /**
        * Values given to setenv so far, for M-p and M-n.
        *
@@ -16990,7 +17123,9 @@ declare global {
      * Write the current buffer to its file, as Emacs's basic-save-buffer-2:
      * the first save keeps the old file as name~, the text is written in
      * buffer-file-coding-system, and the buffer is then unmodified and its
-     * auto-save file deleted. Asks nothing; save-buffer does the asking.
+     * auto-save file deleted. If the coding cannot write the text,
+     * select-safe-coding-system-function asks which to use, as for any
+     * write; save-buffer asks the rest.
      */
     function writeVisitedFile(): void;
     /** Replace the current buffer's text with its file's, keeping point where it can, and mark it unmodified. */
@@ -21951,6 +22086,16 @@ declare global {
     function detectCodingRegion(start: number, end: number, highest: true): CodingSystem;
     /** The coding systems that can write all of a string, ["undecided"] for ASCII, as find-coding-systems-string. */
     function findCodingSystemsString(string: string): CodingSystem[];
+    /**
+     * What a file by this name, its text the `size` characters from point,
+     * says its coding is, and where, as find-auto-coding: the name in
+     * auto-coding-alist, a byte order mark ("auto-coding-regexp-alist"), a
+     * coding: cookie (":coding"), or an XML or HTML declaration
+     * ("auto-coding-functions").
+     */
+    function findAutoCoding(filename: string, size: number): [CodingSystem, string] | undefined;
+    /** The coding auto-coding-alist gives a file by this name, as auto-coding-alist-lookup. */
+    function autoCodingAlistLookup(filename: string): CodingSystem | undefined;
     /** The coding systems that can write all of a region, as find-coding-systems-region. */
     function findCodingSystemsRegion(start: number, end: number): CodingSystem[];
     /**

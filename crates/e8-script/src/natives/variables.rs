@@ -312,7 +312,9 @@ natives! {
     /// Write the current buffer to its file, as Emacs's basic-save-buffer-2:
     /// the first save keeps the old file as name~, the text is written in
     /// buffer-file-coding-system, and the buffer is then unmodified and its
-    /// auto-save file deleted. Asks nothing; save-buffer does the asking.
+    /// auto-save file deleted. If the coding cannot write the text,
+    /// select-safe-coding-system-function asks which to use, as for any
+    /// write; save-buffer asks the rest.
     pub fn writeVisitedFile(ed) {
         ed.write_visited_file()
     }

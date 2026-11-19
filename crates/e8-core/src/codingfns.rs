@@ -42,11 +42,13 @@ pub fn find_coding_systems(text: &str) -> Vec<String> {
     if text.is_ascii() {
         return vec!["undecided".into()];
     }
-    let mut found: Vec<String> = Coding::base_systems()
-        .filter(|c| !matches!(c.system().name, "undecided" | "prefer-utf-8"))
-        .filter(|c| text.chars().all(|ch| c.can_encode(ch)))
-        .map(|c| c.system().name.to_string())
-        .collect();
+    // One pass over the text, each character ruling out the codings that
+    // cannot write it; every coding writes ASCII.
+    let mut left: Vec<Coding> = Coding::base_systems().filter(|c| !matches!(c.system().name, "undecided" | "prefer-utf-8")).collect();
+    for ch in text.chars().filter(|c| !c.is_ascii()) {
+        left.retain(|c| c.can_encode(ch));
+    }
+    let mut found: Vec<String> = left.into_iter().map(|c| c.system().name.to_string()).collect();
     // Emacs's preferred coding first.
     if let Some(i) = found.iter().position(|n| n == "utf-8") {
         let utf8 = found.remove(i);
@@ -290,25 +292,9 @@ impl Editor {
             "coding-system-get" => {
                 let c = coding(0)?;
                 let prop = text_arg(args, 1)?;
-                // What coding-system-put put wins, as it replaces the property in Emacs's plist.
+                // With or without its colon, as Emacs looks for both.
                 let bare = prop.trim_start_matches(':');
-                let put = self
-                    .coding_plists
-                    .iter()
-                    .filter(|(n, _)| n == c.system().name)
-                    .flat_map(|(_, p)| p.iter())
-                    .find(|(k, _)| k.trim_start_matches(':') == bare)
-                    .map(|(_, v)| v.clone());
-                if let Some(value) = put {
-                    return Ok(value);
-                }
-                match prop.trim_start_matches(':') {
-                    "mime-charset" => c.system().mime_charset.map_or(Value::Null, |m| Value::Str(m.to_string())),
-                    "mnemonic" => Value::Str(c.system().mnemonic.to_string()),
-                    "name" => Value::Str(c.system().name.to_string()),
-                    "coding-type" => Value::Str(c.system().coding_type.to_string()),
-                    _ => Value::Null,
-                }
+                self.coding_plist(c).into_iter().find(|(k, _)| k.trim_start_matches(':') == bare).map_or(Value::Null, |(_, v)| v)
             }
             "encode-coding-string" => {
                 let (bytes, used) = coding(1)?.encode_lossy(&text_arg(args, 0)?);
@@ -349,6 +335,36 @@ impl Editor {
                 if highest { Value::Str(found[0].clone()) } else { strings(found) }
             }
             "find-coding-systems-string" => strings(find_coding_systems(&text_arg(args, 0)?)),
+            "auto-coding-alist-lookup" => match self.auto_coding_alist_lookup(&text_arg(args, 0)?)? {
+                Some(c) => Value::Str(c.name()),
+                None => Value::Null,
+            },
+            "find-auto-coding" => {
+                // What a file by this name, with this many characters from
+                // point, says its coding is, and where it says so.
+                let name = text_arg(args, 0)?;
+                if let Some(c) = self.auto_coding_alist_lookup(&name)? {
+                    return Ok(Value::List(vec![Value::Str(c.name()), Value::Str("auto-coding-alist".into())]));
+                }
+                // Only the head and the tail, where the cookie, the
+                // declarations and a Local Variables list are, as
+                // find-auto-coding looks no further.
+                let pt = self.buffer().point();
+                let end = (pt + number_arg(args, 1)?).min(self.buffer().point_max());
+                let text = if end - pt <= 8192 {
+                    self.region_text(pt, end)?
+                } else {
+                    format!("{}\n{}", self.region_text(pt, pt + 4096)?, self.region_text(end - 3000, end)?)
+                };
+                match coding::auto_coding_and_source(text.as_bytes()) {
+                    // By the name the file gives it, as Emacs interns what it reads.
+                    Some((_, given, source)) => Value::List(vec![Value::Str(given), Value::Str(source.into())]),
+                    None => match self.auto_coding_from_functions(&name)? {
+                        Some(c) => Value::List(vec![Value::Str(c.name()), Value::Str("auto-coding-functions".into())]),
+                        None => Value::Null,
+                    },
+                }
+            }
             "find-coding-systems-region" => {
                 let text = self.region_text(number_arg(args, 0)?, number_arg(args, 1)?)?;
                 strings(find_coding_systems(&text))
@@ -550,37 +566,20 @@ impl Editor {
                 self.set_variable(variable, value);
                 Value::Null
             }
-            "coding-system-plist" => {
-                let c = coding(0)?;
-                let system = c.system();
-                let str = |s: &str| Value::Str(s.to_string());
-                let mut plist = vec![
-                    str(":name"),
-                    str(system.name),
-                    str(":coding-type"),
-                    str(system.coding_type),
-                    str(":mnemonic"),
-                    Value::Number(system.mnemonic as u32 as f64),
-                    str(":ascii-compatible-p"),
-                    Value::Bool(ascii_compatible(system)),
-                ];
-                if let Some(mime) = system.mime_charset {
-                    plist.extend([str(":mime-charset"), str(mime)]);
-                }
-                // What a script put wins over what E8 works out, as it
-                // replaces the property in Emacs's own plist.
-                for (key, value) in self.coding_plists.iter().filter(|(n, _)| n == system.name).flat_map(|(_, p)| p.clone()) {
-                    match plist.chunks(2).position(|p| p[0].as_str() == Some(&key)) {
-                        Some(i) => plist[i * 2 + 1] = value,
-                        None => plist.extend([Value::Str(key), value]),
-                    }
-                }
-                Value::List(plist)
-            }
+            "coding-system-plist" => Value::List(self.coding_plist(coding(0)?).into_iter().flat_map(|(k, v)| [Value::Str(k), v]).collect()),
             "coding-system-put" => {
                 let c = coding(0)?;
                 let key = text_arg(args, 1)?;
                 let value = args.get(2).cloned().unwrap_or(Value::Null);
+                if key.trim_start_matches(':') == "mnemonic" {
+                    // The mode line shows the new letter, as Emacs writes it into the coding's attributes.
+                    let letter = match &value {
+                        Value::Number(n) => char::from_u32(*n as u32),
+                        Value::Str(s) => s.chars().next(),
+                        _ => None,
+                    };
+                    c.set_mnemonic(letter.ok_or_else(|| Error::new("Wrong type argument: characterp"))?);
+                }
                 let name = c.system().name.to_string();
                 let plist = match self.coding_plists.iter_mut().find(|(n, _)| *n == name) {
                     Some((_, plist)) => plist,
@@ -598,5 +597,47 @@ impl Editor {
             "clear-charset-maps" | "unify-charset" => Value::Null,
             _ => return Err(Error::new(format!("No coding primitive {name}"))),
         })
+    }
+}
+
+impl Editor {
+    /// A coding system's properties, as `coding-system-plist` gives them,
+    /// in Emacs's order: what E8 works out and what Emacs says of it, with
+    /// what `coding-system-put` put replacing or following them.
+    pub(crate) fn coding_plist(&self, c: Coding) -> Vec<(String, Value)> {
+        let system = c.system();
+        let (doc, category, charsets) = c.emacs_properties();
+        let str = |s: &str| Value::Str(s.to_string());
+        let mut plist = vec![
+            (":ascii-compatible-p".to_string(), Value::Bool(ascii_compatible(system))),
+            (":category".to_string(), Value::Str(category)),
+            (":name".to_string(), str(system.name)),
+        ];
+        if let Some(doc) = doc {
+            plist.push((":docstring".to_string(), str(doc)));
+        }
+        plist.push((":coding-type".to_string(), str(system.coding_type)));
+        plist.push((":mnemonic".to_string(), Value::Number(c.mnemonic_char() as u32 as f64)));
+        // iso-2022-7bit's is a symbol, the rest lists.
+        let list = match charsets.as_slice() {
+            ["iso-2022"] => str("iso-2022"),
+            [] => Value::Null,
+            names => Value::List(names.iter().map(|n| str(n)).collect()),
+        };
+        plist.push((":charset-list".to_string(), list));
+        if let Some(mime) = system.mime_charset {
+            plist.push((":mime-charset".to_string(), str(mime)));
+        }
+        if system.name == "prefer-utf-8" {
+            plist.push((":prefer-utf-8".to_string(), Value::Bool(true)));
+        }
+        for (key, value) in self.coding_plists.iter().filter(|(n, _)| n == system.name).flat_map(|(_, p)| p.clone()) {
+            match plist.iter_mut().find(|(k, _)| *k == key) {
+                Some((_, v)) if key == ":mnemonic" => *v = Value::Number(c.mnemonic_char() as u32 as f64),
+                Some((_, v)) => *v = value,
+                None => plist.push((key, value)),
+            }
+        }
+        plist
     }
 }

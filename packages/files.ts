@@ -1,4 +1,3 @@
-import { selectSafeCodingSystem } from "mule";
 import { regexpQuote } from "subr";
 
 // Choosing a major mode for a file, after Emacs's files.el.
@@ -1023,7 +1022,6 @@ function basicSaveBuffer(): void {
   e8.saveRestriction(() => {
     e8.widen();
     addFinalNewline();
-    selectSafeCodingSystem();
     // A directory that is not there yet is made if you say so.
     const dir = e8.fileNameDirectory(e8.expandFileName(file));
     if (dir !== undefined && !e8.fileExists(file) && !e8.fileExists(dir)) {

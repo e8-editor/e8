@@ -834,7 +834,7 @@
     codingSystemChangeEolConversion: (cs, eol) => coding("coding-system-change-eol-conversion", String(cs), eol ?? null),
     codingSystemChangeTextConversion: (eolCs, textCs) => coding("coding-system-change-text-conversion", String(eolCs), String(textCs)),
     codingSystemGet: (cs, prop) => coding("coding-system-get", String(cs), String(prop)) ?? undefined,
-    codingSystemMnemonic: (cs) => coding("coding-system-get", String(cs), "mnemonic"),
+    codingSystemMnemonic: (cs) => String.fromCodePoint(coding("coding-system-get", String(cs), "mnemonic")),
     encodeCodingString: (string, cs) => coding("encode-coding-string", String(string), String(cs)),
     decodeCodingString: (string, cs) => coding("decode-coding-string", String(string), String(cs)),
     encodeCodingRegion: (start, end, cs) => coding("encode-coding-region", start, end, String(cs)),
@@ -842,6 +842,8 @@
     detectCodingString: (string, highest = false) => coding("detect-coding-string", String(string), Boolean(highest)),
     detectCodingRegion: (start, end, highest = false) => coding("detect-coding-region", start, end, Boolean(highest)),
     findCodingSystemsString: (string) => coding("find-coding-systems-string", String(string)),
+    findAutoCoding: (filename, size) => coding("find-auto-coding", String(filename), size) ?? undefined,
+    autoCodingAlistLookup: (filename) => coding("auto-coding-alist-lookup", String(filename)) ?? undefined,
     findCodingSystemsRegion: (start, end) => coding("find-coding-systems-region", start, end),
     unencodableCharPosition: (start, end, cs, count, string) =>
       coding("unencodable-char-position", start, end, String(cs), count ?? null, string === undefined ? null : String(string)) ?? undefined,

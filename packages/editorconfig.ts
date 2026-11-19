@@ -7,6 +7,7 @@
 // chosen, as directory-local variables do.
 
 import { fileRelativeName } from "files";
+import { mergeCodingSystems as mergeCodings } from "mule";
 import { truthy } from "subr";
 
 e8.defineVariable({
@@ -270,12 +271,49 @@ function apply(): void {
 
 e8.addHook("hack-local-variables-hook", apply);
 
+/** The coding system end_of_line and charset make, as editorconfig-merge-coding-systems. */
+export function mergeCodingSystems(endOfLine: string | undefined, charset: string | undefined): string | undefined {
+  const eol = ({ lf: "undecided-unix", cr: "undecided-mac", crlf: "undecided-dos" } as Record<string, string>)[endOfLine ?? ""];
+  const cs = (
+    {
+      latin1: "iso-latin-1",
+      "utf-8": "utf-8",
+      "utf-8-bom": "utf-8-with-signature",
+      "utf-16be": "utf-16be-with-signature",
+      "utf-16le": "utf-16le-with-signature",
+    } as Record<string, string>
+  )[charset ?? ""];
+  return eol !== undefined && cs !== undefined ? mergeCodings(cs, eol) : (eol ?? cs);
+}
+
+/** Files being asked about, so asking does not ask again. */
+const gettingCodingSystem = new Set<string>();
+
+/**
+ * The coding a visited file's end_of_line and charset give, as
+ * editorconfig--get-coding-system on auto-coding-functions does while
+ * editorconfig-mode is on.
+ */
+function getCodingSystem(): string | null {
+  const file = e8.variable("auto-coding-file-name");
+  if (!truthy(e8.variable("editorconfig-mode")) || typeof file !== "string" || !e8.fileNameAbsoluteP(file) || gettingCodingSystem.has(file)) return null;
+  gettingCodingSystem.add(file);
+  try {
+    const props = properties(file);
+    return mergeCodingSystems(props.end_of_line, props.charset) ?? null;
+  } finally {
+    gettingCodingSystem.delete(file);
+  }
+}
+e8.defun("editorconfig--get-coding-system", (_size?: number) => getCodingSystem());
+e8.setDefault("auto-coding-functions", [...((e8.defaultValue("auto-coding-functions") as e8.Value[] | null) ?? []), "editorconfig--get-coding-system"]);
+
 e8.defineMinorMode({
   name: "editorconfig-mode",
   global: true,
   doc:
     "Set how files indent and save from their .editorconfig files: indent_style, indent_size, tab_width, " +
-    "max_line_length, insert_final_newline and trim_trailing_whitespace.",
+    "max_line_length, insert_final_newline, trim_trailing_whitespace, and end_of_line and charset for the coding system files are read and written in.",
 });
 
 e8.defineCommand({

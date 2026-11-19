@@ -2351,6 +2351,16 @@ const API: &str = r##"
   function detectCodingRegion(start: number, end: number, highest: true): CodingSystem;
   /** The coding systems that can write all of a string, ["undecided"] for ASCII, as find-coding-systems-string. */
   function findCodingSystemsString(string: string): CodingSystem[];
+  /**
+   * What a file by this name, its text the `size` characters from point,
+   * says its coding is, and where, as find-auto-coding: the name in
+   * auto-coding-alist, a byte order mark ("auto-coding-regexp-alist"), a
+   * coding: cookie (":coding"), or an XML or HTML declaration
+   * ("auto-coding-functions").
+   */
+  function findAutoCoding(filename: string, size: number): [CodingSystem, string] | undefined;
+  /** The coding auto-coding-alist gives a file by this name, as auto-coding-alist-lookup. */
+  function autoCodingAlistLookup(filename: string): CodingSystem | undefined;
   /** The coding systems that can write all of a region, as find-coding-systems-region. */
   function findCodingSystemsRegion(start: number, end: number): CodingSystem[];
   /**
