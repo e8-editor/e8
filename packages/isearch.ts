@@ -56,7 +56,17 @@ for (const [name, doc, value, local] of [
   ["isearch-push-state-function", "A function called as each state of the search is saved, which gives a function the state is restored with when DEL goes back to it, or nil.", null, false],
   ["isearch-filter-predicate", "A function of a match's start and end that says whether the search may stop there.", "isearch-filter-visible", false],
   ["isearch-message-prefix-add", "Text added before \"I-search\" in the search's prompt, such as \"history \".", null, false],
-  ["isearch-lazy-count", "Whether the prompt counts the matches.", false, false],
+  ["isearch-lazy-count", "Whether the prompt counts the matches: the current one and how many there are, as lazy-count-prefix-format puts them.", false, false],
+  ["lazy-count-prefix-format", "How the prompt starts with the count of matches when isearch-lazy-count is on, the current match and the total, or nil.", "%s/%s ", false],
+  ["lazy-count-suffix-format", "How the prompt ends with the count of matches when isearch-lazy-count is on, or nil.", null, false],
+  ["search-whitespace-regexp", "An Emacs regexp a run of spaces in the search string matches when isearch-lax-whitespace is on, or nil.", "[ \t]+", false],
+  ["isearch-lax-whitespace", "Whether a run of spaces in an ordinary search string matches search-whitespace-regexp.", true, false],
+  ["isearch-regexp-lax-whitespace", "Whether a run of spaces in a regexp search matches search-whitespace-regexp.", false, false],
+  ["isearch-regexp-function", "A function of the search string and LAX that makes the regexp searched for, as word-search-regexp for word search, or nil.", null, false],
+  ["search-default-mode", "The mode searches start in: nil for an ordinary search, t for a regexp, or a function as isearch-regexp-function.", null, false],
+  ["search-ring-update", "Whether M-p and M-n in a search search for the string they bring; nil, the default, edits it in the minibuffer instead.", false, false],
+  ["search-ring-yank-pointer", "Where M-p and M-n are in search-ring, or nil.", null, false],
+  ["regexp-search-ring-yank-pointer", "Where M-p and M-n are in regexp-search-ring, or nil.", null, false],
   ["isearch-repeat-on-direction-change", "Whether C-r after C-s, or C-s after C-r, first goes to the other end of the match, so the next search finds the one after it.", false, false],
   ["isearch-mode", "\" Isearch\" while a search is going on, else nil.", null, false],
   ["isearch-string", "The string being searched for.", "", false],
@@ -99,6 +109,7 @@ interface State {
   wrapped: boolean;
   barrier: number;
   caseFold: e8.Value;
+  regexpFunction: e8.Value;
   popFun: e8.Value | undefined;
   match: { start: number; end: number } | undefined;
 }
@@ -113,6 +124,8 @@ let lastCaseFold: e8.Value = true;
 let matchData: { start: number; end: number } | undefined;
 /** Where yanking a word goes on from after a failing search, as isearch--yank-prev-point. */
 let yankPrevPoint: number | undefined;
+/** Which match the search is at and how many there are, for isearch-lazy-count. */
+let lazyCount: { current: number; total: number } | undefined;
 /** The overlays on the match and the other matches. */
 let current: number | undefined;
 let others: number[] = [];
@@ -130,6 +143,7 @@ function getState(): State {
     wrapped: flag("isearch-wrapped"),
     barrier: Number(get("isearch-barrier") ?? 0),
     caseFold: get("isearch-case-fold-search") ?? null,
+    regexpFunction: get("isearch-regexp-function") ?? null,
     popFun: truthy(pushFn) ? (e8.funcall(pushFn as string) as e8.Value) : undefined,
     match: matchData,
   };
@@ -146,6 +160,7 @@ function setState(cmd: State): void {
   set("isearch-wrapped", cmd.wrapped);
   set("isearch-barrier", cmd.barrier);
   set("isearch-case-fold-search", cmd.caseFold);
+  set("isearch-regexp-function", cmd.regexpFunction);
   matchData = cmd.match;
   if (typeof cmd.popFun === "function" || (typeof cmd.popFun === "string" && e8.fboundp(cmd.popFun))) e8.funcall(cmd.popFun as string, cmd as unknown as e8.Value);
   e8.gotoChar(cmd.point);
@@ -193,17 +208,41 @@ export function isearchMessagePrefix(ellipsis = false, nonincremental = flag("is
     (wrapped && !truthy(get("isearch-wrap-function")) && (forward ? e8.point() > opoint : e8.point() < opoint) ? "over" : "") +
     (wrapped ? "wrapped " : "") +
     (!success && !truthy(get("isearch-case-fold-search")) ? "case-sensitive " : "") +
-    (flag("isearch-regexp") ? "regexp " : "") +
+    describeRegexpMode(get("isearch-regexp-function")) +
     str("isearch-message-prefix-add") +
     (nonincremental ? "search" : "I-search") +
     (forward ? "" : " backward") +
     ": ";
-  return m.charAt(0).toUpperCase() + m.slice(1);
+  return lazyCountFormat() + m.charAt(0).toUpperCase() + m.slice(1);
+}
+
+/**
+ * What the prompt says of the kind of search, as
+ * isearch--describe-regexp-mode: the regexp function's
+ * isearch-message-prefix, "regexp ", or nothing for the default mode.
+ */
+function describeRegexpMode(fnIn: e8.Value | undefined): string {
+  const fn = fnIn === true ? "word-search-regexp" : fnIn;
+  const regexp = flag("isearch-regexp");
+  const def = get("search-default-mode");
+  if (((truthy(def) && def === fn) || (def === true && regexp)) && (flag("isearch-success") || !(truthy(fn) || regexp))) return "";
+  if (truthy(fn)) return typeof fn === "string" ? String(e8.get(fn, "isearch-message-prefix") ?? "") : "";
+  if (regexp) return "regexp ";
+  if (typeof def === "string" || typeof def === "function") return "literal ";
+  return "";
+}
+
+/** The count of matches, the current one and the total, as isearch-lazy-count-format. */
+function lazyCountFormat(suffix = false): string {
+  const format = get(suffix ? "lazy-count-suffix-format" : "lazy-count-prefix-format");
+  if (typeof format !== "string" || !flag("isearch-lazy-count") || lazyCount === undefined || truthy(get("isearch-error")) || flag("isearch-suspended")) return "";
+  const parts = [String(lazyCount.current), String(lazyCount.total)];
+  return format.replace(/%s/g, () => parts.shift() ?? "");
 }
 
 function messageSuffix(): string {
   const error = get("isearch-error");
-  return truthy(error) ? ` [${String(error)}]` : "";
+  return lazyCountFormat(true) + (truthy(error) ? ` [${String(error)}]` : "");
 }
 
 /** Says where the search stands in the echo area, as isearch-message. */
@@ -218,12 +257,134 @@ function callMessage(cqHack = false, ellipsis = false): void {
   else isearchMessage(cqHack, ellipsis);
 }
 
+/** The parts of a string between matches of an Emacs regexp, empty ones left out, as split-string with OMIT-NULLS. */
+function splitString(text: string, separator: string): string[] {
+  const chars = [...text];
+  const parts: string[] = [];
+  let start = 0;
+  let from = 0;
+  while (from <= chars.length) {
+    const at = e8.stringMatch(separator, text, { start: from });
+    if (at === undefined) break;
+    const end = e8.matchEnd(0)!;
+    if (end === at) {
+      from = at + 1;
+      continue;
+    }
+    parts.push(chars.slice(start, at).join(""));
+    start = end;
+    from = end;
+  }
+  parts.push(chars.slice(start).join(""));
+  return parts.filter((p) => p !== "");
+}
+
+/**
+ * A regexp matching the words of a string with any punctuation between
+ * them, as word-search-regexp: whitespace at either end matches any, and
+ * with `lax` the end need not be a word's end.
+ */
+export function wordSearchRegexp(string: string, lax = false): string {
+  if (string === "") return "";
+  // Emacs's \W, by the syntax table, as word-search-regexp matches it.
+  const matches = (re: string) => e8.stringMatch(re, string) !== undefined;
+  if (matches("\\`\\W+\\'")) return "\\W+";
+  const words = splitString(string, "\\W+");
+  return (matches("\\`\\W") ? "\\W+" : "\\<") + words.map(regexpQuote).join("\\W+") + (matches("\\W\\'") ? "\\W+" : lax ? "" : "\\>");
+}
+e8.defun("word-search-regexp", (string: string, lax?: e8.Value) => wordSearchRegexp(string, truthy(lax)));
+e8.put("word-search-regexp", "isearch-message-prefix", "word ");
+
+/** Every syntax but word and symbol, as isearch-symbol-regexp's not-word-symbol-re. */
+const NOT_WORD_SYMBOL = "\\(?:\\s-\\|\\s.\\|\\s(\\|\\s)\\|\\s\"\\|\\s\\\\|\\s/\\|\\s$\\|\\s'\\|\\s<\\|\\s>\\|\\s!\\|\\s|\\)+";
+
+/**
+ * A regexp matching a string as symbols, as isearch-symbol-regexp: \\_<
+ * and \\_> around it, and anything but word and symbol characters
+ * between its symbols.
+ */
+export function isearchSymbolRegexp(string: string, lax = false): string {
+  if (string === "") return "";
+  const all = e8.stringMatch(`\\\`${NOT_WORD_SYMBOL}\\'`, string) !== undefined;
+  if (all) return NOT_WORD_SYMBOL;
+  const parts = splitString(string, NOT_WORD_SYMBOL);
+  return (
+    (e8.stringMatch(`\\\`${NOT_WORD_SYMBOL}`, string) !== undefined ? NOT_WORD_SYMBOL : "\\_<") +
+    parts.map(regexpQuote).join(NOT_WORD_SYMBOL) +
+    (e8.stringMatch(`${NOT_WORD_SYMBOL}\\'`, string) !== undefined ? NOT_WORD_SYMBOL : lax ? "" : "\\_>")
+  );
+}
+e8.defun("isearch-symbol-regexp", (string: string, lax?: e8.Value) => isearchSymbolRegexp(string, truthy(lax)));
+e8.put("isearch-symbol-regexp", "isearch-message-prefix", "symbol ");
+
+/**
+ * A regexp with each run of spaces outside brackets matching `spaces`, as
+ * Emacs's regexp engine treats them while search-spaces-regexp is set:
+ * spaces before a repetition operator stay as they are.
+ */
+export function laxSpaces(regexp: string, spaces: string): string {
+  let out = "";
+  let i = 0;
+  while (i < regexp.length) {
+    const c = regexp[i]!;
+    if (c === "\\") {
+      out += regexp.slice(i, i + 2);
+      i += 2;
+    } else if (c === "[") {
+      // A bracket expression, ] first and [:class:] inside it.
+      let j = i + 1;
+      if (regexp[j] === "^") j++;
+      if (regexp[j] === "]") j++;
+      while (j < regexp.length && regexp[j] !== "]") {
+        if (regexp[j] === "[" && regexp[j + 1] === ":") {
+          const close = regexp.indexOf(":]", j + 2);
+          j = close < 0 ? j + 1 : close + 2;
+        } else j++;
+      }
+      out += regexp.slice(i, j + 1);
+      i = j + 1;
+    } else if (c === " ") {
+      let j = i;
+      while (regexp[j] === " ") j++;
+      const next = regexp[j];
+      if (next === "*" || next === "+" || next === "?" || (next === "\\" && regexp[j + 1] === "{")) {
+        out += " ";
+        i++;
+      } else {
+        out += `\\(?:${spaces}\\)`;
+        i = j;
+      }
+    } else {
+      out += c;
+      i++;
+    }
+  }
+  return out;
+}
+
+/** Whether the regexp function should be lax as the string is still being typed, as isearch--lax-regexp-function-p. */
+const laxRegexpFunction = () => ["isearch-printing-char", "isearch-del-char"].includes(String(e8.thisCommand() ?? "")) || flag("isearch-yank-flag");
+
 /** The function searching the buffer for the string as a regexp or literally, in the search's direction, as isearch-search-fun-default gives. */
 export function isearchSearchFunDefault(): (string: string, bound?: e8.Value, noerror?: e8.Value) => number | undefined {
   return (string, bound, noerror) => {
     const forward = flag("isearch-forward");
     const options = { bound: typeof bound === "number" ? bound : undefined, noerror: truthy(noerror) };
-    if (flag("isearch-regexp")) return forward ? e8.reSearchForward(string, options) : e8.reSearchBackward(string, options);
+    const fn = get("isearch-regexp-function");
+    const regexp = flag("isearch-regexp");
+    const spaces = get("search-whitespace-regexp");
+    const lax = typeof spaces === "string" && spaces !== "" && flag(regexp ? "isearch-regexp-lax-whitespace" : "isearch-lax-whitespace") && string.includes(" ");
+    if (truthy(fn) || regexp || lax) {
+      let re: string;
+      if (truthy(fn)) {
+        // Lax while the string is typed, so a word not yet ended matches; not for lazy highlighting.
+        const laxWords = bound === undefined || bound === null ? laxRegexpFunction() : false;
+        if (laxWords) set("isearch-adjusted", "lax");
+        re = String(e8.funcall((fn === true ? "word-search-regexp" : fn) as string, string, laxWords));
+      } else re = regexp ? string : regexpQuote(string);
+      if (lax) re = laxSpaces(re, spaces as string);
+      return forward ? e8.reSearchForward(re, options) : e8.reSearchBackward(re, options);
+    }
     // A string is searched for literally, as search-forward does, which is
     // far faster in a large buffer than the regexp engine on it quoted.
     const m = e8.search(string, { backward: !forward, bound: options.bound });
@@ -346,8 +507,49 @@ function lazyHighlight(): void {
   );
 }
 
+/**
+ * Counts the matches in the buffer and which the search is at, for
+ * isearch-lazy-count, as lazy highlighting counts them over the whole
+ * buffer when the count is shown.
+ */
+function countMatches(): void {
+  lazyCount = undefined;
+  const string = str("isearch-string");
+  if (!flag("isearch-lazy-count") || string === "" || truthy(get("isearch-error"))) return;
+  const forward = get("isearch-forward") ?? true;
+  let total = 0;
+  let current = 0;
+  e8.saveExcursion(() =>
+    e8.letBind({ "case-fold-search": truthy(get("isearch-case-fold-search")) }, () => {
+      set("isearch-forward", true);
+      try {
+        const fn = isearchSearchFun();
+        const end = e8.pointMax();
+        e8.gotoChar(e8.pointMin());
+        for (;;) {
+          const found = e8.ignoreErrors(() => fn(string, end, true));
+          if (found === undefined || found === null) break;
+          const [b, e] = [e8.matchBeginning(0)!, e8.matchEnd(0)!];
+          if (b === e) {
+            if (e8.point() >= end) break;
+            e8.gotoChar(e8.point() + 1);
+            continue;
+          }
+          total++;
+          if (matchData && b === matchData.start && e === matchData.end) current = total;
+        }
+      } finally {
+        set("isearch-forward", forward);
+      }
+    }),
+  );
+  // Counted forward whichever way the search goes, as the prompt shows it.
+  lazyCount = { current, total };
+}
+
 /** Shows the search as it stands: the prompt, the match and the others, as isearch-update. */
 function isearchUpdate(): void {
+  countMatches();
   callMessage();
   clearHighlights();
   const otherEnd = get("isearch-other-end");
@@ -374,9 +576,15 @@ function ring(regexp: boolean): string[] {
 }
 
 /** Starts a search, as isearch-mode. */
-export function isearchMode(forward: boolean, regexp = false): void {
+export function isearchMode(forward: boolean, regexp = false, regexpFunction: e8.Value = null): void {
+  const def = get("search-default-mode");
+  const defIsFunction = typeof def === "string" || typeof def === "function";
   set("isearch-forward", forward);
-  set("isearch-regexp", regexp);
+  set("isearch-regexp", regexp || (!truthy(regexpFunction) && def === true));
+  set("isearch-regexp-function", truthy(regexpFunction) ? regexpFunction : defIsFunction && !regexp ? (def as e8.Value) : null);
+  set("search-ring-yank-pointer", null);
+  set("regexp-search-ring-yank-pointer", null);
+  lazyCount = undefined;
   lastCaseFold = get("isearch-case-fold-search") ?? true;
   set("isearch-case-fold-search", truthy(get("case-fold-search")));
   set("isearch-string", "");
@@ -567,21 +775,38 @@ const isearchBackwardRegexp = e8.defineCommand({
   run: (arg: e8.PrefixArg) => startOrRepeat(false, true, arg),
 });
 
+/**
+ * Repeats the search COUNT times in a direction, as isearch-repeat-forward
+ * and -backward with a prefix argument: a negative count goes the other
+ * way that many times and turns back, and turning round takes one more.
+ */
+function repeatWithCount(direction: "forward" | "backward", count: number): void {
+  const other = direction === "forward" ? "backward" : "forward";
+  if (count < 0) {
+    repeatWithCount(other, -count);
+    isearchRepeat(direction);
+  } else isearchRepeat(direction, flag("isearch-forward") === (direction === "forward") ? count : count + 1);
+}
+
 const repeatForward = e8.defineCommand({
   name: "isearch-repeat-forward",
-  doc: "Find the next match forward of the string being searched for.",
-  run: () => {
+  doc: "Find the next match forward of the string being searched for.\nWith a prefix argument, the COUNTth, or back for a negative one.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
     requireSearch();
-    isearchRepeat("forward");
+    if (arg === null) isearchRepeat("forward");
+    else repeatWithCount("forward", e8.prefixNumericValue(arg));
   },
 });
 
 const repeatBackward = e8.defineCommand({
   name: "isearch-repeat-backward",
-  doc: "Find the next match backward of the string being searched for.",
-  run: () => {
+  doc: "Find the next match backward of the string being searched for.\nWith a prefix argument, the COUNTth, or forward for a negative one.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
     requireSearch();
-    isearchRepeat("backward");
+    if (arg === null) isearchRepeat("backward");
+    else repeatWithCount("backward", e8.prefixNumericValue(arg));
   },
 });
 
@@ -732,6 +957,7 @@ const toggleRegexp = e8.defineCommand({
   run: () => {
     if (!searching()) isearchMode(true);
     set("isearch-regexp", !flag("isearch-regexp"));
+    if (flag("isearch-regexp")) set("isearch-regexp-function", null);
     set("isearch-success", true);
     set("isearch-adjusted", "toggle");
     isearchUpdate();
@@ -756,6 +982,235 @@ const toggleCaseFold = e8.defineCommand({
   },
 });
 
+/** Says something after the prompt until the next key, as isearch--momentary-message. */
+function momentaryMessage(text: string): void {
+  e8.letBind({ "message-log-max": null }, () => e8.message(`${isearchMessagePrefix(false)}${str("isearch-message")} [${text}]`));
+}
+
+/** Defines isearch-toggle-MODE on M-s KEY, as isearch-define-mode-toggle: a regexp function turned on or off, or `body` run. */
+function defineModeToggle(mode: string, key: string, fn: string | null, doc: string, body?: () => string | undefined): void {
+  const command = e8.defineCommand({
+    name: `isearch-toggle-${mode}`,
+    doc: `Toggle ${mode} searching on or off.${doc ? `\n${doc}` : ""}`,
+    run: () => {
+      if (!searching()) isearchMode(true);
+      if (fn !== null) {
+        set("isearch-regexp-function", get("isearch-regexp-function") === fn ? null : fn);
+        set("isearch-regexp", false);
+      }
+      const said = body?.();
+      set("isearch-success", true);
+      set("isearch-adjusted", "toggle");
+      isearchUpdate();
+      // As isearch--momentary-message, after the prompt until the next key, as M-c's.
+      if (said !== undefined) momentaryMessage(said);
+    },
+  });
+  e8.bindKey(`M-s ${key}`, command, "isearch-mode-map");
+}
+
+defineModeToggle("word", "w", "word-search-regexp", "Turning on word search turns off regexp mode.");
+defineModeToggle("symbol", "_", "isearch-symbol-regexp", "Turning on symbol search turns off regexp mode.");
+defineModeToggle(
+  "lax-whitespace",
+  "SPC",
+  null,
+  "In ordinary search, toggles the value of the variable\n`isearch-lax-whitespace'.  In regexp search, toggles the\nvalue of the variable `isearch-regexp-lax-whitespace'.",
+  () => {
+    const name = flag("isearch-regexp") ? "isearch-regexp-lax-whitespace" : "isearch-lax-whitespace";
+    set(name, !flag(name));
+    return flag(name) ? "match spaces loosely" : "match spaces literally";
+  },
+);
+
+/** The search ring the search uses, and its yank pointer's variable. */
+const ringNames = () => (flag("isearch-regexp") ? ["regexp-search-ring", "regexp-search-ring-yank-pointer"] : ["search-ring", "search-ring-yank-pointer"]) as [string, string];
+
+/** Moves through the search ring, the string the one there, as isearch-ring-adjust1. */
+function ringAdjust1(advance: boolean): void {
+  const [ringName, pointerName] = ringNames();
+  const items = ring(flag("isearch-regexp"));
+  void ringName;
+  if (items.length === 0) return;
+  const pointer = get(pointerName);
+  const from = typeof pointer === "number" ? pointer : advance ? 0 : -1;
+  const next = (((from + (advance ? -1 : 1)) % items.length) + items.length) % items.length;
+  set(pointerName, next);
+  set("isearch-string", items[next]!);
+  set("isearch-message", charDescription(items[next]!));
+}
+
+/** M-p and M-n: the string before or after in the ring, searched for or edited as search-ring-update says, as isearch-ring-adjust. */
+function ringAdjust(advance: boolean): void {
+  ringAdjust1(advance);
+  if (flag("search-ring-update")) {
+    callMessage(false, true);
+    isearchSearch();
+    pushState();
+    isearchUpdate();
+  } else editString();
+}
+
+e8.defineCommand({ name: "isearch-ring-advance", doc: "Advance to the next search string in the ring.", run: () => ringAdjust(true) });
+e8.defineCommand({ name: "isearch-ring-retreat", doc: "Retreat to the previous search string in the ring.", run: () => ringAdjust(false) });
+
+/**
+ * Where the part of the string that fails starts, as isearch-fail-pos:
+ * the length of the last state that succeeded, if the string starts with it.
+ */
+function failPos(): number | undefined {
+  if (flag("isearch-success") && !truthy(get("isearch-error"))) return undefined;
+  const ok = cmds.find((c) => c.success && c.error === undefined);
+  const current = str("isearch-string");
+  if (ok === undefined) return 0;
+  return ok.string.length < current.length && current.startsWith(ok.string) ? [...ok.string].length : 0;
+}
+
+/** What the minibuffer that edits the search string says to do next: the direction, set by C-s and C-r there. */
+let editForward: boolean | undefined;
+
+e8.defineKeymap("minibuffer-local-isearch-map");
+e8.setKeymapParent("minibuffer-local-isearch-map", "minibuffer-local-map");
+for (const [key, name, forward, doc] of [
+  ["C-s", "isearch-forward-exit-minibuffer", true, "Resume isearching forward from the minibuffer that edits the search string."],
+  ["C-r", "isearch-reverse-exit-minibuffer", false, "Resume isearching backward from the minibuffer that edits the search string."],
+] as const) {
+  const command = e8.defineCommand({
+    name,
+    doc,
+    run: () => {
+      editForward = forward;
+      e8.call("exit-minibuffer");
+    },
+  });
+  e8.bindKey(key, command, "minibuffer-local-isearch-map");
+}
+
+/**
+ * Edits the search string in the minibuffer, then searches on with it,
+ * as isearch-edit-string with with-isearch-suspended: the search ends
+ * while the string is read, RET resumes it, C-s and C-r resume it forward
+ * or backward, M-p and M-n go through the search ring, and C-g cancels
+ * the search.
+ */
+export function editString(): void {
+  const saved = {
+    string: str("isearch-string"),
+    forward: flag("isearch-forward"),
+    regexp: flag("isearch-regexp"),
+    regexpFunction: get("isearch-regexp-function") ?? null,
+    caseFold: get("isearch-case-fold-search") ?? null,
+    opoint: Number(get("isearch-opoint")),
+    cmds,
+    otherEnd: get("isearch-other-end"),
+  };
+  const prompt = isearchMessagePrefix(false);
+  const cursor = failPos() ?? [...saved.string].length;
+  set("isearch-suspended", true);
+  isearchDone(true, true);
+  const oldPoint = e8.point();
+  editForward = undefined;
+  let edited: string;
+  const setup = () => {
+    e8.removeHook("minibuffer-setup-hook", setup);
+    e8.useLocalMap("minibuffer-local-isearch-map");
+    e8.gotoChar(e8.minibufferPromptEnd() + cursor);
+  };
+  e8.addHook("minibuffer-setup-hook", setup);
+  try {
+    edited = e8.letBind({ "message-log-max": null, "history-add-new-input": false }, () =>
+      e8.readString(prompt, { initial: saved.string, history: saved.regexp ? "regexp-search-ring" : "search-ring" }),
+    );
+  } catch (e) {
+    // C-g: the search is cancelled from where it began, as isearch-abort after it.
+    e8.removeHook("minibuffer-setup-hook", setup);
+    set("isearch-suspended", false);
+    e8.gotoChar(saved.opoint);
+    throw e;
+  }
+  set("isearch-suspended", false);
+  const forward = editForward ?? saved.forward;
+  isearchMode(forward, saved.regexp, saved.regexpFunction);
+  set("isearch-opoint", saved.opoint);
+  cmds = saved.cmds;
+  set("isearch-string", edited);
+  set("isearch-message", charDescription(edited));
+  set("isearch-case-fold-search", saved.caseFold);
+  callMessage(false, true);
+  // Back to the start (end) of the old match, so the search can find it again.
+  if (typeof saved.otherEnd === "number" && oldPoint === e8.point() && forward === saved.forward) e8.gotoChar(saved.otherEnd);
+  if (edited === "") {
+    const previous = ring(saved.regexp)[0] ?? "";
+    set("isearch-string", previous);
+    set("isearch-message", charDescription(previous));
+    ringAdjust1(false);
+  }
+  isearchSearch();
+  pushState();
+  isearchUpdate();
+}
+
+const editStringCommand = e8.defineCommand({
+  name: "isearch-edit-string",
+  doc:
+    "Edit the search string in the minibuffer.\nThe following additional command keys are active while editing.\n\n" +
+    "RET to resume incremental searching with the edited string.\nC-s to resume isearching forward.\nC-r to resume isearching backward.",
+  run: () => {
+    requireSearch();
+    editString();
+  },
+});
+
+/** Starts a word search, as isearch-forward-word. */
+const forwardWord = e8.defineCommand({
+  name: "isearch-forward-word",
+  doc: "Do incremental search forward for a sequence of words.\nWith a prefix argument, do a regular string search instead.\nLike ordinary incremental search except that your input is treated\nas a sequence of words without regard to how the words are separated.",
+  params: [{ name: "notWord", kind: "prefix" }],
+  run: (notWord: e8.PrefixArg) => isearchMode(true, false, notWord === null ? "word-search-regexp" : null),
+});
+
+/** Starts a symbol search, as isearch-forward-symbol. */
+const forwardSymbol = e8.defineCommand({
+  name: "isearch-forward-symbol",
+  doc: "Do incremental search forward for a symbol.\nThe prefix argument is currently unused.\nLike ordinary incremental search except that your input is treated\nas a symbol surrounded by symbol boundary constructs \\_< and \\_>.",
+  run: () => isearchMode(true, false, "isearch-symbol-regexp"),
+});
+
+/**
+ * Searches for the symbol at point, as isearch-forward-symbol-at-point:
+ * with a prefix argument N, the Nth after it, back for a negative N.
+ */
+const forwardSymbolAtPoint = e8.defineCommand({
+  name: "isearch-forward-symbol-at-point",
+  doc: "Do incremental search forward for a symbol found near point.\nLike ordinary incremental search except that the symbol found at point\nis added to the search string initially as a regexp surrounded\nby symbol boundary constructs \\_< and \\_>.\nSee the command `isearch-forward-symbol' for more information.\nWith a prefix argument, search for ARGth symbol forward if ARG is\npositive, or search for ARGth symbol backward if ARG is negative.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    const count = arg === null ? undefined : e8.prefixNumericValue(arg);
+    isearchMode(true, false, "isearch-symbol-regexp");
+    // The symbol around point, as find-tag-default-bounds finds it.
+    const bounds = e8.saveExcursion((): [number, number] | undefined => {
+      const start = (e8.skipSyntaxBackward("w_"), e8.point());
+      const end = (e8.skipSyntaxForward("w_"), e8.point());
+      return start < end ? [start, end] : undefined;
+    });
+    if (bounds === undefined) {
+      set("isearch-error", "No symbol at point");
+      callMessage();
+      return;
+    }
+    const [start, end] = bounds;
+    if (start < e8.point()) e8.gotoChar(start);
+    set("isearch-yank-flag", true);
+    processSearchString(e8.bufferSubstringNoProperties(start, end), charDescription(e8.bufferSubstringNoProperties(start, end)));
+    // With a count, on to the COUNTth, as isearch-repeat-forward with it.
+    if (count !== undefined) repeatWithCount("forward", count);
+  },
+});
+
+e8.bindKey("M-s w", forwardWord);
+e8.bindKey("M-s _", forwardSymbol);
+e8.bindKey("M-s .", forwardSymbolAtPoint);
+
 e8.bindKey("C-s", isearchForward);
 e8.bindKey("C-r", isearchBackward);
 e8.bindKey("C-M-s", isearchForwardRegexp);
@@ -776,6 +1231,10 @@ for (const [keys, command] of [
   ["M-s r", toggleRegexp],
   ["M-c", toggleCaseFold],
   ["M-s c", toggleCaseFold],
+  ["M-e", editStringCommand],
+  ["M-s e", editStringCommand],
+  ["M-p", "isearch-ring-retreat"],
+  ["M-n", "isearch-ring-advance"],
 ] as const) {
   e8.bindKey(keys, command, "isearch-mode-map");
 }

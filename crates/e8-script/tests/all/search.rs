@@ -338,3 +338,90 @@ fn query_replace_regexp_says_regexp() {
     ed.press("!").unwrap();
     assert_eq!(text(&ed), "X b X");
 }
+
+/// M-e edits the search string in the minibuffer, prompted as the search
+/// is, the cursor where the string stops matching; RET resumes the search
+/// with the string edited, and C-r there resumes it backward.
+#[test]
+fn m_e_edits_the_search_string() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("s\n");
+    d.type_text("abc abd abx");
+    d.press("M-<");
+    d.press("C-s a b c M-e");
+    assert_eq!(d.prompt().as_deref(), Some("I-search: "));
+    d.press("DEL d RET");
+    // Searching again, from the start of the old match, to abd.
+    assert_eq!(d.point(), 7);
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("I-search: abd"));
+    d.press("RET");
+    assert_eq!(d.point(), 7);
+    // Failing, the cursor goes where the string stops matching.
+    d.press("M-< C-s a b q M-e");
+    assert_eq!(d.prompt().as_deref(), Some("Failing I-search: "));
+    assert_eq!(d.minibuffer_input(), "abq");
+    assert_eq!(d.with(|ed| ed.minibuffer_input_point()), 2);
+    d.press("C-e DEL x RET");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("I-search: abx"));
+    d.press("RET");
+    assert_eq!(d.point(), 11);
+    // C-r resumes backward, from the end of the old match: abd before it.
+    d.press("M-> C-r a b x M-e C-e DEL d C-r");
+    assert_eq!(d.with(|ed| ed.echo().map(str::to_string)).as_deref(), Some("I-search backward: abd"));
+    assert_eq!(d.point(), 4);
+    d.press("RET");
+    // C-g while editing cancels the whole search, back where it began.
+    d.press("M-< C-s a b d M-e C-g");
+    assert_eq!(d.point(), 0);
+    assert_eq!(d.prompt(), None);
+}
+
+/// M-p and M-n go through the search ring, editing the string brought, as
+/// search-ring-update nil has them.
+#[test]
+fn m_p_brings_back_earlier_searches_to_edit() {
+    let d = crate::driven::Driven::new("");
+    d.press("C-x b");
+    d.type_text("s\n");
+    d.type_text("xa xb xc");
+    d.press("M-< C-s x a RET M-< C-s x b RET M-<");
+    d.press("C-s M-p");
+    assert_eq!(d.minibuffer_input(), "xb");
+    d.press("RET");
+    assert_eq!(d.point(), 5);
+    d.press("RET M-< C-s M-p");
+    d.press("RET");
+    // The ring's pointer starts afresh each search: xb again first.
+    assert_eq!(d.point(), 5);
+    // Resuming restarts the search, and with it the ring's pointer, as
+    // with-isearch-suspended's comment says: xb again.
+    d.press("RET M-< C-s M-p RET M-p");
+    assert_eq!(d.minibuffer_input(), "xb");
+    d.press("RET RET");
+    assert_eq!(d.point(), 5);
+}
+
+/// The prompt names word and symbol searches, says what M-s SPC did, and
+/// with isearch-lazy-count counts the matches.
+#[test]
+fn prompts_name_the_kind_of_search_and_count_matches() {
+    let (mut ed, s) = setup("foo bar foo-bar foo bar");
+    ed.press("M-s w f o o").unwrap();
+    assert_eq!(ed.echo(), Some("Word I-search: foo"));
+    ed.press("M-s w").unwrap();
+    assert_eq!(ed.echo(), Some("I-search: foo"));
+    ed.press("M-s _").unwrap();
+    assert_eq!(ed.echo(), Some("Symbol I-search: foo"));
+    ed.press("M-s SPC").unwrap();
+    assert_eq!(ed.echo(), Some("Symbol I-search: foo [match spaces literally]"));
+    ed.press("M-s SPC RET").unwrap();
+    s.eval_expression(&mut ed, "e8.setDefault('isearch-lazy-count', true)").unwrap();
+    ed.press("M-< C-s f o o").unwrap();
+    assert_eq!(ed.echo(), Some("1/3 I-search: foo"));
+    ed.press("C-s").unwrap();
+    assert_eq!(ed.echo(), Some("2/3 I-search: foo"));
+    ed.press("C-r").unwrap();
+    assert_eq!(ed.echo(), Some("2/3 I-search backward: foo"));
+    ed.press("RET").unwrap();
+}

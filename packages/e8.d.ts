@@ -3866,6 +3866,17 @@ declare global {
        */
       "isearch-delete-char": [];
       /**
+       * Edit the search string in the minibuffer.
+       * The following additional command keys are active while editing.
+       *
+       * RET to resume incremental searching with the edited string.
+       * C-s to resume isearching forward.
+       * C-r to resume isearching backward.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-edit-string": [];
+      /**
        * End the search, leaving point at the match and the mark where the search started.
        *
        * Defined in packages/isearch.ts.
@@ -3882,6 +3893,12 @@ declare global {
        */
       "isearch-forward": [regexp?: PrefixArg | boolean];
       /**
+       * Resume isearching forward from the minibuffer that edits the search string.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-forward-exit-minibuffer": [];
+      /**
        * Search forward incrementally for a regular expression, in Emacs's syntax. See isearch-forward.
        *
        * @param regexp raw prefix argument
@@ -3889,6 +3906,40 @@ declare global {
        * Defined in packages/isearch.ts.
        */
       "isearch-forward-regexp": [regexp?: PrefixArg | boolean];
+      /**
+       * Do incremental search forward for a symbol.
+       * The prefix argument is currently unused.
+       * Like ordinary incremental search except that your input is treated
+       * as a symbol surrounded by symbol boundary constructs \_< and \_>.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-forward-symbol": [];
+      /**
+       * Do incremental search forward for a symbol found near point.
+       * Like ordinary incremental search except that the symbol found at point
+       * is added to the search string initially as a regexp surrounded
+       * by symbol boundary constructs \_< and \_>.
+       * See the command `isearch-forward-symbol' for more information.
+       * With a prefix argument, search for ARGth symbol forward if ARG is
+       * positive, or search for ARGth symbol backward if ARG is negative.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-forward-symbol-at-point": [arg?: PrefixArg | boolean];
+      /**
+       * Do incremental search forward for a sequence of words.
+       * With a prefix argument, do a regular string search instead.
+       * Like ordinary incremental search except that your input is treated
+       * as a sequence of words without regard to how the words are separated.
+       *
+       * @param notWord raw prefix argument
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-forward-word": [notWord?: PrefixArg | boolean];
       /**
        * Add the character typed to the search string, or for any other key, end the search and run the key.
        *
@@ -3910,6 +3961,24 @@ declare global {
        */
       "isearch-repeat-forward": [];
       /**
+       * Resume isearching backward from the minibuffer that edits the search string.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-reverse-exit-minibuffer": [];
+      /**
+       * Advance to the next search string in the ring.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-ring-advance": [];
+      /**
+       * Retreat to the previous search string in the ring.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-ring-retreat": [];
+      /**
        * Toggle case-fold searching on or off.
        * Toggles the value of the variable isearch-case-fold-search.
        *
@@ -3917,11 +3986,34 @@ declare global {
        */
       "isearch-toggle-case-fold": [];
       /**
+       * Toggle lax-whitespace searching on or off.
+       * In ordinary search, toggles the value of the variable
+       * `isearch-lax-whitespace'.  In regexp search, toggles the
+       * value of the variable `isearch-regexp-lax-whitespace'.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-toggle-lax-whitespace": [];
+      /**
        * Switch between searching for a string and for a regular expression; what is typed next searches the new way.
        *
        * Defined in packages/isearch.ts.
        */
       "isearch-toggle-regexp": [];
+      /**
+       * Toggle symbol searching on or off.
+       * Turning on symbol search turns off regexp mode.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-toggle-symbol": [];
+      /**
+       * Toggle word searching on or off.
+       * Turning on word search turns off regexp mode.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-toggle-word": [];
       /**
        * Add the next character after point to the search string, or as many as the prefix argument says.
        *
@@ -11567,7 +11659,13 @@ declare global {
        */
       "isearch-forward": Value;
       /**
-       * Whether the prompt counts the matches.
+       * Whether a run of spaces in an ordinary search string matches search-whitespace-regexp.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-lax-whitespace": Value;
+      /**
+       * Whether the prompt counts the matches: the current one and how many there are, as lazy-count-prefix-format puts them.
        *
        * Defined in packages/isearch.ts.
        */
@@ -11636,6 +11734,18 @@ declare global {
        * Defined in packages/isearch.ts.
        */
       "isearch-regexp": Value;
+      /**
+       * A function of the search string and LAX that makes the regexp searched for, as word-search-regexp for word search, or nil.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-regexp-function": Value;
+      /**
+       * Whether a run of spaces in a regexp search matches search-whitespace-regexp.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-regexp-lax-whitespace": Value;
       /**
        * Whether C-r after C-s, or C-s after C-r, first goes to the other end of the match, so the next search finds the one after it.
        *
@@ -12185,6 +12295,18 @@ declare global {
        */
       "latex-inputenc-coding-alist": Value;
       /**
+       * How the prompt starts with the count of matches when isearch-lazy-count is on, the current match and the total, or nil.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "lazy-count-prefix-format": Value;
+      /**
+       * How the prompt ends with the count of matches when isearch-lazy-count is on, or nil.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "lazy-count-suffix-format": Value;
+      /**
        * How many other matches incremental search highlights at most, around point.
        *
        * Defined in packages/isearch.ts.
@@ -12295,6 +12417,10 @@ declare global {
        * Earlier answers to minibuffer prompts for text, newest first.
        */
       "minibuffer-history": Value;
+      /**
+       * Keymap minibuffer-local-isearch-map.
+       */
+      "minibuffer-local-isearch-map": Value;
       /**
        * The keymap while a prompt is open, before the modes' and the global keymap.
        */
@@ -13451,6 +13577,12 @@ declare global {
        */
       "regexp-search-ring-max": Value;
       /**
+       * Where M-p and M-n are in regexp-search-ring, or nil.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "regexp-search-ring-yank-pointer": Value;
+      /**
        * The forms C-x ESC ESC offers with M-p and M-n, as printed.
        *
        * Defined in packages/simple.ts.
@@ -13637,6 +13769,12 @@ declare global {
        */
       "savehist-save-minibuffer-history": Value;
       /**
+       * The mode searches start in: nil for an ordinary search, t for a regexp, or a function as isearch-regexp-function.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "search-default-mode": Value;
+      /**
        * Strings searched for with incremental search, most recent first.
        *
        * Defined in packages/isearch.ts.
@@ -13649,11 +13787,29 @@ declare global {
        */
       "search-ring-max": Value;
       /**
+       * Whether M-p and M-n in a search search for the string they bring; nil, the default, edits it in the minibuffer instead.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "search-ring-update": Value;
+      /**
+       * Where M-p and M-n are in search-ring, or nil.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "search-ring-yank-pointer": Value;
+      /**
        * Whether a capital letter in the search string makes the search case-sensitive: not-yanks, the default, as t except that text yanked into the string is lowercased first.
        *
        * Defined in packages/isearch.ts.
        */
       "search-upper-case": Value;
+      /**
+       * An Emacs regexp a run of spaces in the search string matches when isearch-lax-whitespace is on, or nil.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "search-whitespace-regexp": Value;
       /**
        * Whether killing and copying put the text on the system clipboard, and yanking takes in what other programs put there.
        */
