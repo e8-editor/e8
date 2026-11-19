@@ -151,3 +151,31 @@ fn enable_and_disable_command_write_the_init_file() {
     assert!(std::fs::read_to_string(&init).unwrap().ends_with("e8.put(\"erase-buffer\", \"disabled\", false);\n"));
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+/// A command declined is still the last command, as Emacs's command loop
+/// makes it: typing after it starts an undo step of its own, and a kill
+/// after it does not join the kill before.
+#[test]
+fn a_declined_command_is_the_last_command() {
+    let d = driven();
+    d.press("M->");
+    d.type_text("ab");
+    d.press("C-x n n n");
+    d.type_text("c");
+    d.press("C-/");
+    assert_eq!(d.text(), "one\ntwo\nthree\nab");
+    d.press("M-< C-k C-x n n n C-k");
+    assert_eq!(d.with(|ed| ed.current_kill(0).ok()).as_deref(), Some("\n"));
+}
+
+/// M-x of a declined command puts nothing on command-history, not even
+/// the next command.
+#[test]
+fn m_x_declined_records_nothing() {
+    let d = driven();
+    d.press("M-x");
+    d.type_text("narrow-to-region");
+    d.press("RET n C-f");
+    let history = d.with(|ed| format!("{:?}", ed.variable("command-history")));
+    assert!(!history.contains("forward-char") && !history.contains("narrow-to-region"), "{history}");
+}

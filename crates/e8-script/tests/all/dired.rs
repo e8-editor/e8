@@ -313,7 +313,11 @@ fn reverting_a_narrowed_listing_lists_it_all_again() {
     // and the space free, change as other tests run.
     let listing = |ed: &Editor| text(ed).lines().filter_map(|l| l.split_whitespace().last().map(str::to_string)).collect::<Vec<_>>();
     let whole = listing(&ed);
-    ed.press("C-n C-n C-SPC C-n C-x n n g").unwrap();
+    // Enabled, as novice.el disables it for new users.
+    ed.put("narrow-to-region", "disabled", e8_core::Value::Null);
+    ed.press("C-n C-n C-SPC C-n C-x n n").unwrap();
+    assert!(ed.window_buffer().is_narrowed());
+    ed.press("g").unwrap();
     assert_eq!(ed.echo().filter(|e| e.contains("out of range")), None);
     assert!(!ed.window_buffer().is_narrowed());
     assert_eq!(listing(&ed), whole);

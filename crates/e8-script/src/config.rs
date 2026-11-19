@@ -104,10 +104,9 @@ fn start_in(
 /// Emacs reports a broken init file, and the editor starts anyway.
 pub fn load_init(ed: &mut Editor, scripting: &Scripting, dir: &Path) {
     let init = dir.join("init.ts");
-    if fs::path_exists(&init) {
-        // As Emacs's user-init-file, where enable-command writes.
-        ed.set_variable("user-init-file", e8_core::Value::Str(init.display().to_string()));
-    }
+    // As Emacs's user-init-file, where enable-command writes: the init file's
+    // name whether or not there is one yet, as Emacs's startup sets it.
+    ed.set_variable("user-init-file", e8_core::Value::Str(init.display().to_string()));
     if fs::path_exists(&init)
         && let Err(e) = scripting.load_file(ed, &init)
     {

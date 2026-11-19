@@ -1735,6 +1735,16 @@ impl Editor {
         // The prefix argument typed is the running one, as command-execute
         // makes it current-prefix-arg, for the function to hand on.
         self.current_prefix_arg = self.prefix_arg.take();
+        // Run with call-interactively, the command goes on no command-history, as in Emacs.
+        self.record_next_command = false;
+        let top = self.running == 0;
+        if top {
+            // A command of its own for undo, typing and kills, whether or not it runs.
+            self.amalgamating_now = false;
+            self.self_insert_run = 0;
+            self.claim_undo(self.current);
+            self.buffer_mut().command_boundary(false);
+        }
         self.this_command = Some(name.to_string());
         let mut args = vec![Value::Symbol(name.to_string())];
         if let Some(keys) = keys {
@@ -1742,6 +1752,10 @@ impl Editor {
         }
         if let Err(e) = self.funcall(&function, &args) {
             self.fail(e);
+        }
+        // The command becomes the last one, run or not, as Emacs's command loop sets last-command.
+        if top {
+            self.last_command = Some(name.to_string());
         }
         true
     }

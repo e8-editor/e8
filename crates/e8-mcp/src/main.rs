@@ -36,6 +36,9 @@ fn main() -> io::Result<()> {
     }
     let mut editor = Editor::new();
     let scripting = config::setup(&mut editor, !no_init);
+    // Keys an agent presses here have no one to answer a disabled command's
+    // question, so none asks, as if `!` had been answered.
+    editor.set_variable("disabled-command-function", e8_core::Value::Null);
     let mut stdout = io::stdout();
     for line in io::stdin().lock().lines() {
         let line = line?;
