@@ -109,3 +109,53 @@ fn save_some_buffers_offers_to_save_changed_abbrevs() {
     assert_eq!(d.message().as_deref(), Some("(No files need saving)"));
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+
+/// The reader takes what Emacs's prin1 and reader write: octal, hex,
+/// \s, \C- and \^ escapes, a backslash-space, characters as ?c, other Lisp
+/// in the file, hooks with empty expansions, :case-fixed and names in
+/// capitals, which are written back as read.
+#[test]
+fn the_abbrev_reader_takes_emacs_s_syntax() {
+    let dir = std::env::temp_dir().join(format!("e8-abbrev-read-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let file = dir.join("abbrev_defs");
+    std::fs::write(
+        &file,
+        ";;-*-coding: utf-8;-*-\n(setq my-char ?\\( other ?\\C-a)\n(define-abbrev-table 'global-abbrev-table\n  '(\n    (\"Cap\" \"Capital\" nil :count 0)\n    (\"esc\" \"\\101\\x42\\C-a\\^b x\\sy\\ z\" nil :count 2)\n    (\"sk\" \"\" my-skeleton :count 1)\n    (\"tex\" \"TeX\" nil :count 0 :case-fixed t)\n   ))\n\n",
+    )
+    .unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.call("read-abbrev-file", vec![Arg::Str(file.display().to_string())]).unwrap();
+    let got = s
+        .eval_expression(&mut ed, r#"JSON.stringify(["Cap", "cap", "esc", "sk", "tex", "TEX"].map((n) => e8.funcall("abbrev-expansion", n) ?? null))"#)
+        .unwrap();
+    assert_eq!(got, "\"[\\\"Capital\\\",null,\\\"AB\\\\u0001\\\\u0002 x yz\\\",\\\"\\\",\\\"TeX\\\",null]\"");
+    ed.call("write-abbrev-file", vec![Arg::Str(file.display().to_string())]).unwrap();
+    assert_eq!(
+        std::fs::read_to_string(&file).unwrap(),
+        ";;-*-coding: utf-8;-*-\n(define-abbrev-table 'global-abbrev-table\n  '(\n    (\"Cap\" \"Capital\" nil :count 0)\n    (\"esc\" \"AB\u{1}\u{2} x yz\" nil :count 2)\n    (\"sk\" \"\" my-skeleton :count 1)\n    (\"tex\" \"TeX\" nil :count 0 :case-fixed t)\n   ))\n\n"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+/// Edits in *Abbrevs* made the abbrevs with C-c C-c count as changed, and
+/// C-x C-s there saves them to the abbrev file.
+#[test]
+fn editing_the_abbrevs_changes_them_and_c_x_c_s_saves_them() {
+    let dir = std::env::temp_dir().join(format!("e8-abbrev-edit-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let file = dir.join("abbrev_defs");
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    s.eval_expression(&mut ed, &format!("(e8.setDefault('abbrev-file-name', {:?}), e8.call('define-global-abbrev', 'fb', 'foobar'), e8.setDefault('abbrevs-changed', false), 0)", file.display().to_string())).unwrap();
+    ed.call("edit-abbrevs", vec![]).unwrap();
+    s.eval_expression(&mut ed, r#"(e8.gotoChar(e8.search('"foobar"').start + 1), e8.deleteRegion(e8.point(), e8.point() + 6), e8.insert("baz"), 0)"#).unwrap();
+    ed.press("C-c C-c").unwrap();
+    assert_eq!(s.eval_expression(&mut ed, "e8.variable('abbrevs-changed')").unwrap(), "true");
+    ed.press("C-x C-s").unwrap();
+    assert!(std::fs::read_to_string(&file).unwrap().contains(r#"("fb" "baz" nil :count 0)"#));
+    assert_eq!(s.eval_expression(&mut ed, "e8.variable('abbrevs-changed')").unwrap(), "false");
+    let _ = std::fs::remove_dir_all(&dir);
+}

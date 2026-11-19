@@ -289,6 +289,22 @@ declare global {
        */
       "View-search-regexp-forward": [];
       /**
+       * Save all the user-level abbrev definitions in current buffer.
+       * The saved abbrevs are written to the file specified by
+       * `abbrev-file-name'.
+       *
+       * Defined in packages/abbrev.ts.
+       */
+      "abbrev-edit-save-buffer": [];
+      /**
+       * Save to FILE all the user-level abbrev definitions in current buffer.
+       *
+       * @param file file name
+       *
+       * Defined in packages/abbrev.ts.
+       */
+      "abbrev-edit-save-to-file": [file: string];
+      /**
        * Expand abbrevs as they are typed: a character that ends a word expands the word before it if it is an abbrev.
        *
        * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
@@ -2673,13 +2689,14 @@ declare global {
        */
       "edit-abbrevs": [];
       /**
-       * The mode of *Abbrevs*: edit the abbrevs listed, then C-c C-c to make them the abbrevs.
+       * The mode of *Abbrevs*: edit the abbrevs listed, then C-c C-c to make them the abbrevs, or C-x C-s to save them to the abbrev file too.
        *
        * Defined in packages/abbrev.ts.
        */
       "edit-abbrevs-mode": [];
       /**
-       * Make the abbrevs the ones *Abbrevs* lists now, as edit-abbrevs left them.
+       * Redefine abbrevs according to current buffer contents.
+       * Every abbrev not listed there goes, as define-abbrevs with ARG does.
        *
        * Defined in packages/abbrev.ts.
        */

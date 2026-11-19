@@ -1291,12 +1291,6 @@ function buffersNeedingSave(): string[] {
     .filter((b) => e8.withCurrentBuffer(b, () => e8.bufferFileName() !== undefined && e8.bufferModified()));
 }
 
-/**
- * Asks about saving each modified file buffer in turn, as Emacs's
- * save-some-buffers with map-y-or-n-p: y saves it, n skips it, ! saves the
- * rest, . saves it and stops, q stops. With `all`, saves them all without
- * asking.
- */
 e8.defineVariable({
   name: "save-some-buffers-functions",
   doc: "Functions to be run by `save-some-buffers' after saving the buffers.\nEach is called with nil and save-some-buffers' ARG to save what it saves, asking if it should, and returns non-nil to keep save-some-buffers quiet; called with `query', it says whether there is anything to save.",
@@ -1313,6 +1307,12 @@ function saveOtherThings(all: boolean): boolean {
   return quiet;
 }
 
+/**
+ * Asks about saving each modified file buffer in turn, as Emacs's
+ * save-some-buffers with map-y-or-n-p: y saves it, n skips it, ! saves the
+ * rest, . saves it and stops, q stops. With `all`, saves them all without
+ * asking. Then save-some-buffers-functions save what else needs it, as abbrevs.
+ */
 function saveSomeBuffers(all: boolean, interactive: boolean): void {
   const buffers = buffersNeedingSave();
   if (buffers.length === 0) {
