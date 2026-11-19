@@ -39,7 +39,10 @@ fn insert_char_by_name_or_code() {
     d.press("RET");
     assert_eq!(d.text(), "λ😀😀😀⨐A");
     eprintln!("first: {elapsed:?}");
-    assert!(elapsed < std::time::Duration::from_secs(5), "{elapsed:?}");
+    // Three times as long on CI's runners, as Org's timed tests allow:
+    // typing the name a key at a time in a debug build took 11 s on one.
+    let limit = std::time::Duration::from_secs(if std::env::var_os("CI").is_some() { 15 } else { 5 });
+    assert!(elapsed < limit, "{elapsed:?}");
 }
 
 fn describe(ed: &mut Editor, s: &Scripting, setup: &str, pos: usize) -> String {
