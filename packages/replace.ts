@@ -55,9 +55,20 @@ interface Replace {
   history: number[];
   current?: number;
   others: number[];
+  /** Whether it is one of several buffers, as fileloop replaces in, taking Y and N. */
+  multi?: boolean;
 }
 
 let replacing: Replace | undefined;
+
+/**
+ * How the last query-replace ended, for fileloop: "stop" when quit, "all"
+ * when Y said to replace in the remaining buffers without asking, "skip"
+ * when N said to go on to the next, else "done".
+ */
+let outcome: "done" | "stop" | "all" | "skip" = "done";
+/** Whether Y was typed, so the next buffers are replaced without asking, as automatic-all. */
+let multiAll = false;
 
 /** The range to work on: the active region from a key or M-x, else point to the end. */
 function scope(fromPoint = false, backward = false): { start: number; endMarker: number; limit: number } {
@@ -85,8 +96,29 @@ function endOf(marker: number): number {
   return e8.overlayStart(marker) ?? e8.pointMax();
 }
 
-/** Finds the next match from a position, stepping past empty matches where the last one ended. */
+/**
+ * Whether a buffer's isearch-filter-predicate lets a match be replaced, as
+ * perform-replace asks it; the default, which concerns invisible text, is
+ * left to the search.
+ */
+function allowed(m: { start: number; end: number }): boolean {
+  const p = e8.variable("isearch-filter-predicate");
+  if (p === null || p === undefined || p === false || p === "isearch-filter-visible") return true;
+  const ok = e8.saveExcursion(() => e8.funcall(p as string, m.start, m.end));
+  return ok !== null && ok !== false && ok !== undefined;
+}
+
+/** Finds the next match from a position, stepping past empty matches where the last one ended, and past matches the filter refuses. */
 function findFrom(r: Replace, from: number, end: number, lastEnd: number | undefined) {
+  for (let at = from; ; ) {
+    const m = findFromOnce(r, at, end, lastEnd);
+    if (m === undefined || allowed(m)) return m;
+    at = m.end > m.start ? m.end : m.end + 1;
+    if (at > end) return undefined;
+  }
+}
+
+function findFromOnce(r: Replace, from: number, end: number, lastEnd: number | undefined) {
   let m = e8.search(r.from, { from, regexp: r.regexp, bound: end, caseFold: r.caseFold });
   if (m && m.start === m.end && m.start === lastEnd) {
     if (from + 1 > end) return undefined;
@@ -97,8 +129,17 @@ function findFrom(r: Replace, from: number, end: number, lastEnd: number | undef
   return m;
 }
 
-/** Finds the match before a position, back to the limit, stepping past an empty match where the last one started. */
+/** Finds the match before a position, back to the limit, stepping past an empty match where the last one started, and past matches the filter refuses. */
 function findBack(r: Replace, from: number, lastStart: number | undefined) {
+  for (let at = from; ; ) {
+    const m = findBackOnce(r, at, lastStart);
+    if (m === undefined || allowed(m)) return m;
+    at = m.end > m.start ? m.start : m.start - 1;
+    if (at <= r.limit) return undefined;
+  }
+}
+
+function findBackOnce(r: Replace, from: number, lastStart: number | undefined) {
   // As perform-replace stops at the limit or the start of the buffer.
   if (from <= r.limit) return undefined;
   let m = e8.search(r.from, { from, regexp: r.regexp, backward: true, bound: r.limit, caseFold: r.caseFold });
@@ -215,7 +256,7 @@ function start(
   to: string,
   regexp: boolean,
   query: boolean,
-  options: { literal?: boolean; shown?: string; fromPoint?: boolean; delimited?: boolean; backward?: boolean } = {},
+  options: { literal?: boolean; shown?: string; fromPoint?: boolean; delimited?: boolean; backward?: boolean; multi?: boolean } = {},
 ) {
   if (from === "") throw new Error("Empty search string");
   const caseFold = e8.foldCaseFor(from, true);
@@ -245,6 +286,7 @@ function start(
     count: 0,
     history: [],
     others: [],
+    multi: options.multi,
   };
   if (!query) {
     replaceAll(r, start, marker);
@@ -254,7 +296,7 @@ function start(
   }
   endMarker = marker;
   replacing = r;
-  e8.setOverridingMap("query-replace-map");
+  e8.setOverridingMap(options.multi ? "multi-query-replace-map" : "query-replace-map");
   askNext(r);
 }
 
@@ -275,6 +317,43 @@ export function queryReplaceUntilDone(from: string, to: string, delimited = fals
       if (replacing !== undefined) finish(replacing);
     }
   }
+}
+
+/** Forgets that Y was typed, for a new round over several buffers. */
+export function resetMultiBuffer(): void {
+  multiAll = false;
+}
+
+/**
+ * Query-replaces `from` with `to` from point to the end of the buffer and
+ * returns once done, as perform-replace does for fileloop with
+ * multi-query-replace-map: Y replaces the rest here and in the buffers
+ * after without asking, N goes on to the next buffer. Returns whether to go
+ * on to the next buffer: not if quit.
+ */
+export function performReplaceUntilDone(from: string, to: string, regexp: boolean, delimited = false): boolean {
+  if (multiAll) {
+    start(from, to, regexp, false, { fromPoint: true, delimited });
+    return true;
+  }
+  outcome = "done";
+  start(from, to, regexp, true, { fromPoint: true, delimited, multi: true });
+  if (replacing !== undefined) {
+    waiting = replacing;
+    try {
+      e8.recursiveEdit();
+    } finally {
+      if (waiting !== undefined) {
+        waiting = undefined;
+        if (replacing !== undefined) {
+          outcome = "stop";
+          finish(replacing);
+        }
+      }
+    }
+  }
+  if ((outcome as string) === "all") multiAll = true;
+  return outcome !== "stop";
 }
 
 function asking(): Replace {
@@ -316,6 +395,8 @@ const actions: [string[], string, string, (r: Replace) => void][] = [
   }],
   [["."], "query-replace-act-and-exit", "Replace this match and stop.", (r) => {
     replaceHere(r);
+    // A round over several buffers stops too, as perform-replace's keep-going is nil.
+    outcome = "stop";
     finish(r);
   }],
   [[","], "query-replace-act-and-stay", "Replace this match and stay here; y or n then moves on.", (r) => {
@@ -335,7 +416,10 @@ const actions: [string[], string, string, (r: Replace) => void][] = [
     r.match = undefined;
     askNext(r);
   }],
-  [["q", "RET"], "query-replace-exit", "Stop replacing.", (r) => finish(r)],
+  [["q", "RET"], "query-replace-exit", "Stop replacing.", (r) => {
+    outcome = "stop";
+    finish(r);
+  }],
   [["?", "C-h"], "query-replace-help", "Say what the keys do while query-replace asks.", (r) => {
     e8.message(
       "y or SPC: replace, n or DEL: skip, !: replace the rest, .: replace and stop, " +
@@ -349,10 +433,43 @@ for (const [keys, name, doc, act] of actions) {
   for (const key of keys) e8.bindKey(key, command, "query-replace-map");
 }
 
+// Replacing in several buffers, as multi-query-replace-map adds: Y for
+// all the rest without asking, N for the next buffer.
+e8.defineKeymap("multi-query-replace-map");
+e8.setKeymapParent("multi-query-replace-map", "query-replace-map");
+e8.bindKey(
+  "Y",
+  e8.defineCommand({
+    name: "query-replace-automatic-all",
+    doc: "Replace this match and all the rest, in this buffer and the next ones, without asking.",
+    run: () => {
+      const r = asking();
+      replaceHere(r);
+      replaceAll(r, r.next, endMarker, r.match === undefined ? undefined : r.next);
+      outcome = "all";
+      finish(r);
+    },
+  }),
+  "multi-query-replace-map",
+);
+e8.bindKey(
+  "N",
+  e8.defineCommand({
+    name: "query-replace-exit-current",
+    doc: "Leave the rest of this buffer and go on to the next one.",
+    run: () => {
+      outcome = "skip";
+      finish(asking());
+    },
+  }),
+  "multi-query-replace-map",
+);
+
 const quit = e8.defineCommand({
   name: "query-replace-quit",
   doc: "Stop replacing, keeping what has been replaced.",
   run: () => {
+    outcome = "stop";
     finish(asking());
     e8.message("Quit");
   },
@@ -364,6 +481,8 @@ const otherKey = e8.defineCommand({
   doc: "Stop replacing and run the key typed, as query-replace does for keys it does not know.",
   run: () => {
     const key = e8.lastKey();
+    // Another key stops the round, as perform-replace's keep-going is then nil.
+    outcome = "stop";
     finish(asking());
     if (key !== undefined) e8.unreadKeys(key);
   },

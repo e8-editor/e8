@@ -7,6 +7,8 @@
 // delete-by-moving-to-trash says.
 
 import { defineGuide } from "help-guide";
+import { keyChar } from "simple";
+import { displayBuffer } from "window";
 import { eraseBuffer, truthy } from "subr";
 
 // Faces.
@@ -719,14 +721,21 @@ e8.defineCommand({
   },
 });
 
-function unmarkAll(which: string | undefined): void {
+/**
+ * Takes `which` mark off every file, or every mark for undefined, as
+ * dired-unmark-all-files: with `query`, asking about each file, y or SPC
+ * to unmark it, n or DEL to pass it, ! to unmark the rest, q to stop.
+ */
+export function unmarkAll(which: string | undefined, query = false): void {
   let n = 0;
+  const ask = query ? makeQuery() : undefined;
   for (let l = 0; l < e8.lineCount(); l++) {
     const f = fileLine(l);
-    if (f && f.mark !== " " && (which === undefined || f.mark === which)) {
-      setMark(l, " ");
-      n++;
-    }
+    if (!f || f.mark === " " || (which !== undefined && f.mark !== which)) continue;
+    // As dired-query asks: y or SPC, n or DEL, ! for the rest, q or ESC to stop.
+    if (ask && !ask(`Unmark file \u2018${f.name}\u2019?`)) continue;
+    setMark(l, " ");
+    n++;
   }
   e8.message(n === 1 ? "1 mark removed" : `${n} marks removed`);
 }
@@ -738,9 +747,16 @@ e8.defineCommand({
 });
 e8.defineCommand({
   name: "dired-unmark-all-files",
-  doc: "Take a mark off every file that has it: the mark character typed, or every mark for RET.",
-  params: [{ name: "mark", prompt: "Remove marks (RET means all): " }],
-  run: (char: string) => unmarkAll(char === "" ? undefined : char[0]),
+  doc:
+    "Take a mark off every file that has it: type the mark character, or RET for every mark.\n\n" +
+    "With a prefix argument, ask about each file: y or SPC to unmark it, n or DEL to pass it, ! to unmark the rest.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: async (arg: e8.PrefixArg) => {
+    // A key read in the echo area, as interactive "c" reads it.
+    const char = keyChar(await e8.readChar("Remove marks (RET means all): "));
+    if (char === undefined) e8.userError("Non-character input-event");
+    unmarkAll(char === "\r" ? undefined : char, arg !== null);
+  },
 });
 
 /** Marks the files a test picks, as dired-mark-if, saying how many. */
@@ -807,12 +823,28 @@ e8.defineCommand({
   doc: "Flag for deletion the auto-save files, named #like-this#. With a prefix argument, unflag them.",
   run: () => markIf((f) => /^#.*#$/.test(f.name), "auto save file", e8.prefixArg() !== null ? " " : DEL_MARKER),
 });
+/**
+ * Changes every `old` mark to `next`, as dired-change-marks: RET and
+ * characters that cannot be shown are no marks. A space as `old` changes
+ * only file lines, not the header's.
+ */
+export function changeMarks(old: string, next: string): void {
+  for (const c of [next, old]) {
+    if (c === "\r" || /[\x00-\x1f\x7f]/.test(c)) e8.userError(`Invalid mark character: \u2018${c}\u2019`);
+  }
+  for (let l = 0; l < e8.lineCount(); l++) if (fileLine(l)?.mark === old) setMark(l, next);
+}
+
 e8.defineCommand({
   name: "dired-change-marks",
-  doc: "Change one mark to another on every file that has it.",
-  params: [{ name: "old", prompt: "Change (old mark): " }, { name: "new", prompt: (old) => `Change ${old} marks to (new mark): ` }],
-  run: (old: string, next: string) => {
-    for (let l = 0; l < e8.lineCount(); l++) if (fileLine(l)?.mark === old[0]) setMark(l, next[0] ?? " ");
+  doc: "Change one mark to another on every file that has it: type the old mark, then the new.",
+  run: async () => {
+    // Each a key read in the echo area, as dired-change-marks reads them.
+    const old = keyChar(await e8.readChar("Change (old mark): "));
+    if (old === undefined) e8.userError("Non-character input-event");
+    const next = keyChar(await e8.readChar(`Change ${old} marks to (new mark): `));
+    if (next === undefined) e8.userError("Non-character input-event");
+    changeMarks(old!, next!);
   },
 });
 e8.defineCommand({
@@ -967,11 +999,76 @@ export function makeQuery(): (prompt: string) => boolean {
   };
 }
 
-/** States how a command over several files went, as dired-log-summary: one failure shows what was logged for it. */
-function logSummary(summary: string, files: string[], logged: string): void {
-  if (files.length === 1) e8.message(logged);
-  else e8.message(`${summary}--type ? for details (${files.map((f) => e8.fileNameNondirectory(f)).join(" ")})`);
+e8.defineVariable({ name: "dired-log-buffer", doc: "The buffer Dired logs failures in.", value: "*Dired log*" });
+
+/**
+ * Adds to the log of failures, as dired-log: `text` as it is, or `true`
+ * to end a group of failures, the time and buffer put at its start and a
+ * formfeed at its end.
+ */
+export function diredLog(text: string | true): void {
+  const from = e8.bufferName();
+  const log = e8.getBufferCreate(String(e8.variable("dired-log-buffer") ?? "*Dired log*"));
+  e8.withCurrentBuffer(log, () =>
+    e8.letBind({ "inhibit-read-only": true }, () => {
+      e8.gotoChar(e8.pointMax());
+      if (text !== true) {
+        e8.insert(text);
+        return;
+      }
+      // The group's start: after the formfeed ending the last group.
+      // Back a page, to just after the last formfeed, as backward-page goes.
+      const start = e8.saveExcursion(() => {
+        const at = e8.bufferText(0, e8.point()).lastIndexOf("\f");
+        return at < 0 ? 0 : at + 1;
+      });
+      e8.gotoChar(start);
+      if (e8.point() !== e8.lineBeginningPosition()) e8.insert("\n");
+      e8.insert(`${e8.currentTimeString()}\tBuffer \u2018${from}\u2019\n`);
+      e8.gotoChar(e8.pointMax());
+      e8.insert("\f\n");
+    }),
+  );
 }
+e8.defun("dired-log", (log: e8.Value) => diredLog(log === true ? true : String(log)));
+
+/**
+ * States how a command over several files went, as dired-log-summary: for
+ * one failure, what was logged for it; for more, the summary and the
+ * files, "--type ? for details"; and logs the summary, ending the group.
+ */
+export function logSummary(summary: string, failures: string[] | null): void {
+  if (failures !== null && failures.length === 1) {
+    const text = e8.withCurrentBuffer(String(e8.variable("dired-log-buffer") ?? "*Dired log*"), () => e8.bufferText());
+    const start = text.lastIndexOf("\f\n");
+    e8.message(text.slice(start < 0 ? 0 : start + 2).replace(/^\n/, "").replace(/\n$/, ""));
+  } else {
+    e8.message(failures ? `${summary}--type ? for details (${failures.map((f) => e8.fileNameNondirectory(f)).join(" ")})` : `${summary}--type ? for details`);
+  }
+  diredLog(`\n${summary}\n`);
+  diredLog(true);
+}
+e8.defun("dired-log-summary", (summary: string, failures: e8.Value) => logSummary(summary, Array.isArray(failures) ? (failures as string[]) : null));
+
+/** Shows the log of failures at its last group, as dired-why. */
+function diredWhy(): void {
+  const name = String(e8.variable("dired-log-buffer") ?? "*Dired log*");
+  if (!e8.getBuffer(name)) return;
+  const window = displayBuffer(name);
+  if (!window) return;
+  const before = e8.selectedWindow();
+  e8.selectWindow(window);
+  try {
+    const text = e8.bufferText();
+    const end = text.lastIndexOf("\f\n");
+    const start = text.lastIndexOf("\f\n", end - 1);
+    e8.gotoChar(start < 0 ? 0 : start + 2);
+    e8.callWithPrefix(0, "recenter");
+  } finally {
+    e8.selectWindow(before);
+  }
+}
+e8.defineCommand({ name: "dired-why", doc: "Show the log of Dired's failures, at the last command's.", run: diredWhy });
 
 /**
  * Makes a new file from each of `files`, as dired-create-files: `nameOf`
@@ -989,14 +1086,12 @@ export function createFiles(
   let done = 0;
   const failures: string[] = [];
   const skipped: string[] = [];
-  // The last failure, as dired-log writes it.
-  let logged = "";
   const overwriteQuery = makeQuery();
   for (const from of files) {
     gotoFile(from);
     let dest = nameOf(from);
     if (dest === from) {
-      logged = `Cannot ${operation.toLowerCase()} to same file: ${from}\n`;
+      diredLog(`Cannot ${operation.toLowerCase()} to same file: ${from}\n`);
       dest = undefined;
     }
     if (dest === undefined) {
@@ -1014,7 +1109,7 @@ export function createFiles(
     const overwrite = e8.fileExists(dest);
     if (overwrite && !overwriteQuery(`Overwrite \u2018${dest}\u2019?`)) {
       failures.push(from);
-      logged = `${operation}: \u2018${from}\u2019 to \u2018${dest}\u2019 failed:\n(file-already-exists File already exists ${dest})\n`;
+      diredLog(`${operation}: \u2018${from}\u2019 to \u2018${dest}\u2019 failed:\n(file-already-exists File already exists ${dest})\n`);
       continue;
     }
     // As dired-create-files, a file error is a failure to log; anything
@@ -1031,12 +1126,12 @@ export function createFiles(
       failures.push(from);
       const err = e as Partial<e8.SignalledError>;
       const printed = err.symbol ? `(${[err.symbol, ...(err.data ?? []).map(String)].join(" ")})` : String(err.message ?? e);
-      logged = `${operation}: \u2018${from}\u2019 to \u2018${dest}\u2019 failed:\n${printed}\n`;
+      diredLog(`${operation}: \u2018${from}\u2019 to \u2018${dest}\u2019 failed:\n${printed}\n`);
     }
   }
   const total = files.length;
-  if (failures.length > 0) logSummary(`${operation}: ${failures.length} of ${total} file${total === 1 ? "" : "s"} failed`, failures, logged);
-  else if (skipped.length > 0) logSummary(`${operation}: ${skipped.length} of ${total} file${total === 1 ? "" : "s"} skipped`, skipped, logged);
+  if (failures.length > 0) logSummary(`${operation}: ${failures.length} of ${total} file${total === 1 ? "" : "s"} failed`, failures);
+  else if (skipped.length > 0) logSummary(`${operation}: ${skipped.length} of ${total} file${total === 1 ? "" : "s"} skipped`, skipped);
   else e8.message(`${operation}: ${done} file${done === 1 ? "" : "s"} done`);
   moveToFilename();
 }
@@ -1283,8 +1378,11 @@ e8.defineMinorMode({
 
 e8.defineCommand({
   name: "dired-summary",
-  doc: "Sum up Dired's most used keys in the echo area.",
-  run: () => e8.message("d-elete, u-ndelete, x-punge, f-ind, o-ther window, R-ename, C-opy, h-elp"),
+  doc: "Sum up Dired's most used keys in the echo area, showing the log of failures if there is one.",
+  run: () => {
+    diredWhy();
+    e8.message("d-elete, u-ndelete, x-punge, f-ind, o-ther window, R-ename, C-opy, h-elp");
+  },
 });
 
 e8.defineCommand({

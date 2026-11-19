@@ -35,6 +35,7 @@ mod diff;
 mod display_buffer;
 mod ediff;
 mod dired;
+mod dired_rest;
 mod editorconfig;
 mod elisp;
 mod eglot;

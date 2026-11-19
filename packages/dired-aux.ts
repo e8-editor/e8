@@ -13,8 +13,10 @@
 
 import {
   MARKER, type Creator, caseFoldSearch, createFiles, currentDirectory, doCreateFiles, filenameAt, isDot, makeQuery, markIf, markOf,
-  markedFiles, markPrompt, on, readin, removeEntry, requireDired,
+  markedFiles, markPrompt, on, readin, removeEntry, requireDired, diredLog, logSummary,
 } from "dired";
+import { fileloopContinue, fileloopInitializeReplace, fileloopInitializeSearch } from "fileloop";
+import { executableFind } from "subr";
 import { matchesInFiles } from "xref";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -287,6 +289,232 @@ function doShellCommand(command: string, files: string[]): void {
   e8.withCurrentBuffer(e8.currentBuffer(), () => e8.call("shell-command", line));
 }
 
+// Guessing the command to run, after dired-aux.el's
+// dired-guess-shell-alist-default and shell-command-guess.
+
+for (const [name, doc, value] of [
+  ["dired-guess-shell-gzip-quiet", "Whether the guessed gzip and gunzip commands are given -q.", true],
+  ["dired-guess-shell-znew-switches", "Switches the guessed znew command is given, or nil.", null],
+  ["dired-guess-shell-case-fold-search", "Whether the guessing regexps match file names case loosely.", true],
+  ["dired-guess-shell-alist-user", "Commands to guess for files, before the default ones: a list of [regexp, command...], each command a string, or a function of the file name giving one.", []],
+  ["shell-command-guess-functions", "Functions that guess commands for files, each given the list so far and the files and giving it back with its own added first.", ["shell-command-guess-dired-optional", "shell-command-guess-mailcap", "shell-command-guess-xdg", "shell-command-guess-dired-default", "shell-command-guess-dired-user"]],
+  ["dired-shell-command-history", "Commands run with ! and & in Dired, newest first.", []],
+] as const) {
+  e8.defineVariable({ name, doc, value: value as e8.Value });
+}
+
+let gnutarFound: string | null | undefined;
+/** GNU tar's name, as dired-guess-shell-gnutar finds it: tar or gtar, if either is GNU's; else nil. */
+function gnutar(): string | null {
+  if (gnutarFound === undefined) {
+    const v = e8.variable("dired-guess-shell-gnutar");
+    if (v !== undefined && v !== null && v !== false) gnutarFound = String(v);
+    else {
+      gnutarFound = null;
+      for (const exe of ["tar", "gtar"]) {
+        const out = e8.conditionCase(() => e8.callProcess([exe, "--version"]).output, { error: () => "" });
+        if (out.includes("GNU tar")) {
+          gnutarFound = exe;
+          break;
+        }
+      }
+    }
+  }
+  return gnutarFound;
+}
+e8.defineVariable({ name: "dired-guess-shell-gnutar", doc: "GNU tar's name if it is installed, as tar or gtar; nil to find it.", value: null });
+
+const gzq = (): string => (e8.variable("dired-guess-shell-gzip-quiet") === false ? "" : " -q");
+const znew = (): string => {
+  const switches = e8.variable("dired-guess-shell-znew-switches");
+  return `znew${gzq()} ${switches === null || switches === undefined || switches === false ? "" : String(switches)}`;
+};
+const sansExt = (file: string): string => file.replace(/\.[^./]*$/, "");
+type Guess = string | ((file: string) => string);
+
+/** The default guesses, as dired-guess-shell-alist-default, regexps being Emacs's. */
+const GUESS_DEFAULT: [string, ...Guess[]][] = [
+  ["\\.tar\\'", () => (gnutar() ? `${gnutar()} xvf` : "tar xvf"),
+    (f) => (gnutar() ? `mkdir ${sansExt(f)}; ${gnutar()} -C ${sansExt(f)} -xvf` : `mkdir ${sansExt(f)}; tar -C ${sansExt(f)} -xvf`),
+    () => (gnutar() ? `${gnutar()} tvf` : "tar tvf")],
+  ["\\.tar\\.Z\\'", () => (gnutar() ? `${gnutar()} zxvf` : "zcat * | tar xvf -"), znew],
+  ["\\.t\\(ar\\.\\)?gz\\'", () => (gnutar() ? `${gnutar()} zxvf` : "gunzip -qc * | tar xvf -"),
+    (f) => (gnutar() ? `mkdir ${sansExt(f)}; ${gnutar()} -C ${sansExt(f)} -zxvf` : `mkdir ${sansExt(f)}; gunzip -qc * | tar -C ${sansExt(f)} -xvf -`),
+    () => `gunzip${gzq()}`, () => (gnutar() ? `${gnutar()} ztvf` : "gunzip -qc * | tar tvf -")],
+  ["\\.t\\(ar\\.bz2\\|bz\\)\\'", "bunzip2 -c * | tar xvf -", (f) => `mkdir ${sansExt(f)}; bunzip2 -c * | tar -C ${sansExt(f)} -xvf -`, "bunzip2"],
+  ["\\.t\\(ar\\.\\)?xz\\'", "unxz -c * | tar xvf -", (f) => `mkdir ${sansExt(f)}; unxz -c * | tar -C ${sansExt(f)} -xvf -`, "unxz"],
+  ["\\(?:\\.tar\\.zst\\|\\.tzst\\)\\'", "unzstd -c ? | tar -xf -"],
+  ["\\.zst\\'", "unzstd --rm"],
+  ["\\.shar\\.Z\\'", "zcat * | unshar"],
+  ["\\.shar\\.g?z\\'", "gunzip -qc * | unshar"],
+  ["\\.e?ps\\'", "ghostview", "xloadimage", "lpr"],
+  ["\\.e?ps\\.g?z\\'", "gunzip -qc * | ghostview -", () => `gunzip${gzq()}`],
+  ["\\.e?ps\\.Z\\'", "zcat * | ghostview -", znew],
+  ["\\.patch\\'", () => (inGitRepository() ? "cat * | git apply" : "cat * | patch")],
+  ["\\.patch\\.g?z\\'", "gunzip -qc * | patch", () => `gunzip${gzq()}`],
+  ["\\.patch\\.Z\\'", "zcat * | patch", znew],
+  ["\\.\\(?:[0-9]\\|man\\)\\'", () => manCommand("cat * | tbl | nroff -man -h | col -b")],
+  ["\\.\\(?:[0-9]\\|man\\)\\.g?z\\'", () => manCommand("gunzip -qc * | tbl | nroff -man -h | col -b"), () => `gunzip${gzq()}`],
+  ["\\.[0-9]\\.Z\\'", () => manCommand("zcat * | tbl | nroff -man -h | col -b"), znew],
+  ["\\.pod\\'", "perldoc", "pod2man * | nroff -man"],
+  ["\\.uu\\'", "uudecode"],
+  ["\\.sh\\'", "sh"],
+  ["\\.tex\\'", "latex", "tex"],
+  ["\\.texi\\(nfo\\)?\\'", "makeinfo", "texi2dvi"],
+  ["\\.rpm\\'", "rpm -qilp", "rpm -ivh"],
+  ["\\.dia\\'", "dia"],
+  ["\\.mgp\\'", "mgp"],
+  ["\\.zip\\'", "unzip", "unzip -l", (f) => `unzip${gzq()} -d ${sansExt(f)}`],
+  ["\\.zoo\\'", "zoo x//"],
+  ["\\.lzh\\'", "lharc x"],
+  ["\\.arc\\'", "arc x"],
+  ["\\.shar\\'", "unshar"],
+  ["\\.rar\\'", "unrar x"],
+  ["\\.7z\\'", "7z x"],
+  ["\\.g?z\\'", () => `gunzip${gzq()}`],
+  ["\\.dz\\'", "dictunzip"],
+  ["\\.bz2\\'", "bunzip2"],
+  ["\\.xz\\'", "unxz"],
+  ["\\.Z\\'", "uncompress", znew],
+  ["\\.sign?\\'", "gpg --verify"],
+];
+
+/** The optional guesses, viewers and players, as dired-guess-shell-alist-optional. */
+const GUESS_OPTIONAL: [string, ...Guess[]][] = [
+  ["\\.dvi\\'", "xdvi", "dvips"], ["\\.au\\'", "play"], ["\\.mpe?g\\'\\|\\.avi\\'", "xine -p"], ["\\.ogg\\'", "ogg123"],
+  ["\\.mp3\\'", "mpg123"], ["\\.wav\\'", "play"], ["\\.hqx\\'", "mcvert"], ["\\.xbm\\'", "bitmap"], ["\\.gp\\'", "gnuplot"],
+  ["\\.p[bgpn]m\\'", "xloadimage"], ["\\.gif\\'", "xloadimage"], ["\\.tif\\'", "xloadimage"], ["\\.png\\'", "display"],
+  ["\\.jpe?g\\'", "xloadimage"], ["\\.fig\\'", "xfig"], ["\\.out\\'", "xgraph"], ["\\.pdf\\'", "xpdf"], ["\\.doc\\'", "antiword", "strings"],
+];
+
+/** Whether default-directory is in a Git repository, as vc-responsible-backend finds one in it or a parent. */
+function inGitRepository(): boolean {
+  let dir = e8.expandFileName(String(e8.variable("default-directory") ?? "."));
+  for (;;) {
+    if (e8.fileExistsP(`${e8.fileNameAsDirectory(dir)}.git`)) return true;
+    const parent = e8.fileNameDirectory(e8.directoryFileName(dir));
+    if (parent === undefined || parent === dir) return false;
+    dir = parent;
+  }
+}
+
+/**
+ * How man reads a local page, as dired's guess asks Man-support-local-filenames:
+ * man-db's "man -l" when man --help mentions --local-file, "man ./" when man
+ * reads a page by its path, else `fallback`, nroff.
+ */
+function manCommand(fallback: string): string {
+  const help = e8.conditionCase(() => e8.callProcess(["man", "--help"]).output, { error: () => "" });
+  if (help.includes("--local-file")) return "man -l";
+  if (/\bpath\b|\.\/|\bfile\b/i.test(help) && !/man-db/i.test(help)) return "man ./";
+  return fallback;
+}
+
+/** The commands an alist guesses for every one of `files`, as dired-guess-default, without repeats. */
+function guessFrom(alist: [string, ...Guess[]][], files: string[]): string[] {
+  const fold = e8.variable("dired-guess-shell-case-fold-search") !== false;
+  const out: string[] = [];
+  for (const [regexp, ...commands] of alist) {
+    if (!files.every((f) => e8.stringMatch(regexp, f, { caseFold: fold }) !== undefined)) continue;
+    for (const c of commands) {
+      const command = typeof c === "function" ? c(files[0]!) : typeof c === "string" ? c : String(e8.funcall(c as string, files[0]!));
+      if (!out.includes(command)) out.push(command);
+    }
+  }
+  return out;
+}
+
+const userAlist = (): [string, ...Guess[]][] => ((e8.variable("dired-guess-shell-alist-user") as unknown as [string, ...Guess[]][] | null) ?? []);
+e8.defun("shell-command-guess-dired-user", (commands: string[], files: string[]) => [...guessFrom(userAlist(), files), ...(commands ?? [])]);
+e8.defun("shell-command-guess-dired-default", (commands: string[], files: string[]) => [...guessFrom(GUESS_DEFAULT, files), ...(commands ?? [])]);
+e8.defun("shell-command-guess-dired-optional", (commands: string[], files: string[]) => [...guessFrom(GUESS_OPTIONAL, files), ...(commands ?? [])]);
+
+/** The file's MIME type, as the file program gives it, for the system's guesses. */
+function mimeType(file: string): string | undefined {
+  const out = e8.conditionCase(() => e8.callProcess(["file", "--brief", "--mime-type", file]).output.trim(), { error: () => "" });
+  return out === "" ? undefined : out;
+}
+
+/**
+ * What ~/.mailcap and /etc/mailcap say views the files' type, as
+ * shell-command-guess-mailcap: each entry's command, "%s" taken out, as
+ * mailcap-file-default-commands gives it.
+ */
+e8.defun("shell-command-guess-mailcap", (commands: string[], files: string[]) => {
+  const type = files[0] !== undefined ? mimeType(files[0]) : undefined;
+  if (type === undefined) return commands ?? [];
+  const found: string[] = [];
+  for (const file of [`${e8.getenv("HOME") ?? ""}/.mailcap`, "/etc/mailcap", "/usr/etc/mailcap", "/usr/local/etc/mailcap"]) {
+    if (!e8.fileReadableP(file)) continue;
+    for (const line of e8.readTextFile(file).split("\n")) {
+      if (line.startsWith("#") || !line.includes(";")) continue;
+      const [kind, view] = line.split(";").map((p) => p.trim());
+      const [major, minor] = (kind ?? "").split("/");
+      const [tmajor, tminor] = type.split("/");
+      if (major === tmajor && (minor === undefined || minor === "*" || minor === tminor) && view) {
+        const command = view.replace(/\s*['"]?%s['"]?/, "").trim();
+        if (command && !found.includes(command)) found.push(command);
+      }
+    }
+  }
+  return [...found, ...(commands ?? [])];
+});
+
+/** The desktop applications XDG says open the files' type, as shell-command-guess-xdg: each one's Exec, its arguments taken off. */
+e8.defun("shell-command-guess-xdg", (commands: string[], files: string[]) => {
+  if (files[0] === undefined || !executableFind("xdg-mime")) return commands ?? [];
+  const run = (args: string[]) => e8.conditionCase(() => e8.callProcess(["xdg-mime", ...args]).output.trim(), { error: () => "" });
+  const type = run(["query", "filetype", files[0]]);
+  if (type === "") return commands ?? [];
+  const desktops = run(["query", "default", type]).split(";").filter((d) => d !== "");
+  const dirs = [`${e8.getenv("XDG_DATA_HOME") ?? `${e8.getenv("HOME") ?? ""}/.local/share`}`, ...(e8.getenv("XDG_DATA_DIRS") ?? "/usr/local/share:/usr/share").split(":")];
+  const found: string[] = [];
+  for (const desktop of desktops) {
+    for (const dir of dirs) {
+      const path = `${dir}/applications/${desktop}`;
+      if (!e8.fileReadableP(path)) continue;
+      const exec = /^Exec=(\S+)/m.exec(e8.readTextFile(path));
+      if (exec && !found.includes(exec[1]!)) found.push(exec[1]!);
+      break;
+    }
+  }
+  return [...found, ...(commands ?? [])];
+});
+
+e8.defineVariable({
+  name: "shell-command-guess-open",
+  doc: "A command that opens a file with the program the system chooses: xdg-open if there is one, else open on macOS.",
+  value: (executableFind("xdg-open") ? "xdg-open" : e8.variable("system-type") === "darwin" || e8.variable("system-type") === "gnu/linux" ? "open" : null) as e8.Value,
+});
+/** The system's own opener, as shell-command-guess-open. */
+e8.defun("shell-command-guess-open", (commands: string[]) => {
+  const open = e8.variable("shell-command-guess-open");
+  return typeof open === "string" ? [open, ...(commands ?? [])] : (commands ?? []);
+});
+
+/** The commands guessed for files, as shell-command-guess: each of shell-command-guess-functions in turn. */
+export function shellCommandGuess(files: string[]): string[] {
+  let commands: string[] = [];
+  const fns = (e8.variable("shell-command-guess-functions") as string[] | null) ?? [];
+  for (const fn of fns) commands = (e8.funcall(fn, commands as unknown as e8.Value, files as unknown as e8.Value) as unknown as string[]) ?? commands;
+  return commands;
+}
+
+/**
+ * Reads a shell command for files, as dired-guess-shell-command: with
+ * guesses, the first in the prompt, "{N guesses}" if more, all on M-n,
+ * and empty input taking the first.
+ */
+function guessShellCommand(prompt: string, files: string[]): string {
+  const guesses = shellCommandGuess(files);
+  if (guesses.length === 0) return e8.readString(prompt, { history: "dired-shell-command-history" });
+  let p = prompt.replace(/: $/, " ");
+  if (guesses.length > 1) p += `{${guesses.length} guesses} `;
+  p += `[${guesses[0]}]: `;
+  const value = e8.completingRead(p, guesses, { history: "dired-shell-command-history", default: guesses[0] });
+  return value === "" ? guesses[0]! : value;
+}
+
 /** Reads a command to run on the marked files, as dired-read-shell-command, then runs it. */
 function readAndRunShellCommand(prefix: string, async: boolean): void {
   requireDired();
@@ -294,7 +522,7 @@ function readAndRunShellCommand(prefix: string, async: boolean): void {
   const dir = currentDirectory();
   const { files } = markedFiles(arg, MARKER, false, "No files specified");
   const relative = files.map((f) => f.startsWith(dir) ? f.slice(dir.length) : f);
-  let command = e8.readString(`${prefix} on ${markPrompt(arg, files)}: `, { history: "shell-command-history" });
+  let command = guessShellCommand(`${prefix} on ${markPrompt(arg, files)}: `, relative);
   if (async && !/&[ \t]*$/.test(command)) command += " &";
   doShellCommand(command, relative);
 }
@@ -493,22 +721,24 @@ e8.defineCommand({
       try {
         if (compressFile(file) !== undefined) done++;
       } catch (e) {
-        failures.push(e8.fileNameNondirectory(file));
-        e8.message(String((e as Error).message ?? e));
+        // Logged, as dired-map-over-marks-check logs each failure.
+        failures.push(file);
+        diredLog(`Compress or uncompress \u2018${e8.fileNameNondirectory(file)}\u2019 failed:\n${String((e as Error).message ?? e)}\n`);
       }
     }
     readin(true);
-    if (failures.length > 0) e8.message(`Compress or uncompress: ${failures.length} of ${files.length} file${files.length === 1 ? "" : "s"} failed (${failures.join(" ")})`);
+    const total = files.length;
+    if (failures.length > 0) logSummary(`Compress or uncompress: ${failures.length} of ${total} file${total === 1 ? "" : "s"} failed`, failures);
     else e8.message(`Compress or uncompress: ${done} file${done === 1 ? "" : "s"}`);
   },
 });
 
 // Searching the marked files.
 
-/** The marked files that are not directories, to search. */
-function searchFiles(): string[] {
+/** The marked files that are not directories, to search; `byPrefix` lets the prefix argument choose them, as A's does. */
+function searchFiles(byPrefix = true): string[] {
   requireDired();
-  return markedFiles(e8.prefixArg()).files.filter((f) => !e8.fileDirectoryP(f));
+  return markedFiles(byPrefix ? e8.prefixArg() : null).files.filter((f) => !e8.fileDirectoryP(f));
 }
 
 e8.defineCommand({
@@ -526,26 +756,37 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "dired-do-query-replace-regexp",
-  doc: "Replace the matches of a regexp in the marked files, asking about each, as query-replace-regexp does, file by file.",
+  doc:
+    "Replace the matches of a regexp in the marked files, asking about each, as query-replace-regexp does, file by file.\n\n" +
+    "Y replaces the rest in every file without asking, N goes on to the next file. If you stop, " +
+    "M-x fileloop-continue goes on where you left off. With a prefix argument, only whole words.",
   params: [
     { name: "from", prompt: "Query replace regexp in marked files: ", history: "query-replace-history" },
     { name: "to", prompt: (from) => `Query replace regexp in marked files ${from} with: `, history: "query-replace-history" },
+    { name: "delimited", kind: "prefix" },
   ],
-  run: (from: string, to: string) => {
-    const files = searchFiles();
+  run: (from: string, to: string, delimited: e8.PrefixArg) => {
+    // The prefix argument means whole words, not which files, as dired-get-marked-files nil.
+    const files = searchFiles(false);
+    // As dired-do-query-replace-regexp: a file visited read-only is refused.
     for (const file of files) {
       const buffer = fileBuffer(file);
-      if (buffer !== undefined && e8.withCurrentBuffer(buffer, () => e8.bufferModified())) {
-        throw new Error(`Buffer \u2018${buffer}\u2019 has unsaved changes`);
+      if (buffer !== undefined && e8.withCurrentBuffer(buffer, () => e8.bufferReadOnly())) {
+        throw new Error(`File \u2018${file}\u2019 is visited read-only`);
       }
     }
-    for (const file of files) {
-      const text = e8.readTextFile(file);
-      if (e8.stringMatch(from, text) === undefined) continue;
-      e8.call("find-file", file);
-      e8.gotoChar(0);
-      e8.call("query-replace-regexp", from, to);
-    }
+    fileloopInitializeReplace(from, to, files, from === from.toLowerCase() ? false : "default", delimited !== null);
+    fileloopContinue();
+  },
+});
+
+e8.defineCommand({
+  name: "dired-do-search",
+  doc: "Search the marked files for a regexp, stopping at the first match; M-x fileloop-continue finds the next.",
+  params: [{ name: "regexp", prompt: "Search marked files (regexp): ", history: "regexp-history" }],
+  run: (regexp: string) => {
+    fileloopInitializeSearch(regexp, searchFiles(false), "default");
+    fileloopContinue();
   },
 });
 
