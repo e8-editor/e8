@@ -305,6 +305,44 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "isearch-lax-whitespace-backward",
+      "input": {
+        "text": "a b a\tb a   b c",
+        "point": 0,
+        "keys": "M-> C-r a SPC b C-r RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "a b a\tb a   b c",
+      "visible": "a b a\tb a   b c",
+      "point": 0,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-lax-whitespace-folds-case",
+      "input": {
+        "text": "A  B a b",
+        "point": 0,
+        "keys": "C-s a SPC b RET",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "A  B a b",
+      "visible": "A  B a b",
+      "point": 4,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

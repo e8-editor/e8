@@ -14,5 +14,7 @@
   {"name": "isearch-toggle-regexp-ends-word", "text": "a.c abc", "keys": "C-s M-s w M-r a . c RET"},
   {"name": "isearch-symbol-at-point-count", "text": "foo bar foo foox foo", "keys": "C-u 2 M-s . RET"},
   {"name": "isearch-symbol-at-point-folds-case", "text": "Foo bar foo Foo", "keys": "M-s . C-s RET"},
-  {"name": "isearch-again-then-ring", "text": "xa xb xc xa", "keys": "C-s x a RET C-s x b RET M-< C-s C-s C-s RET"}
+  {"name": "isearch-again-then-ring", "text": "xa xb xc xa", "keys": "C-s x a RET C-s x b RET M-< C-s C-s C-s RET"},
+  {"name": "isearch-lax-whitespace-backward", "text": "a b a\tb a   b c", "keys": "M-> C-r a SPC b C-r RET"},
+  {"name": "isearch-lax-whitespace-folds-case", "text": "A  B a b", "keys": "C-s a SPC b RET"}
 ]
