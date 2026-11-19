@@ -6818,6 +6818,16 @@ declare global {
        */
       "re-search-forward": [string: string, count?: number];
       /**
+       * Read abbrev definitions from file written with `write-abbrev-file'.
+       * Optional argument FILE is the name of the file to read;
+       * it defaults to the value of `abbrev-file-name'.
+       *
+       * @param file file name
+       *
+       * Defined in packages/abbrev.ts.
+       */
+      "read-abbrev-file": [file: string];
+      /**
        * Insert the character you type into the minibuffer and exit minibuffer.
        * Discard all previous input before inserting and exiting the minibuffer.
        *
@@ -8569,6 +8579,17 @@ declare global {
        */
       "winner-undo": [];
       /**
+       * Write all user-level abbrev definitions to a file of Lisp code.
+       * The file written can be loaded in another session to define the same abbrevs.
+       * The argument FILE is the file name to write.  If omitted or nil, it defaults
+       * to the value of `abbrev-file-name'.
+       *
+       * @param file file name
+       *
+       * Defined in packages/abbrev.ts.
+       */
+      "write-abbrev-file": [file: string];
+      /**
        * Write the current buffer to a file and visit that file instead.
        *
        * A directory writes a file of the visited file's name in it, or the buffer's. An existing file is overwritten only if you say so.
@@ -8914,6 +8935,12 @@ declare global {
        */
       "abbrev-all-caps": Value;
       /**
+       * Default name of file from which to read and where to save abbrevs: abbrev_defs in the configuration directory.
+       *
+       * Defined in packages/abbrev.ts.
+       */
+      "abbrev-file-name": Value;
+      /**
        * Whether Abbrev mode is on in this buffer. Use the command abbrev-mode to change it.
        *
        * Defined in packages/abbrev.ts.
@@ -8923,6 +8950,13 @@ declare global {
        * Keymap abbrev-mode-map.
        */
       "abbrev-mode-map": Value;
+      /**
+       * Non-nil if any word abbrevs were defined or altered.
+       * This causes `save-some-buffers' to offer to save the abbrevs.
+       *
+       * Defined in packages/abbrev.ts.
+       */
+      "abbrevs-changed": Value;
       /**
        * Seconds acp shutdown waits for the agent to exit before killing it. Shutdown first sends the agent's process group SIGTERM, so the agent can stop the processes it started itself.
        *
@@ -13710,6 +13744,13 @@ declare global {
        */
       "same-window-regexps": Value;
       /**
+       * Non-nil means save word abbrevs too when files are saved.
+       * If `silently', don't ask the user before saving.
+       *
+       * Defined in packages/abbrev.ts.
+       */
+      "save-abbrevs": Value;
+      /**
        * The file places are saved in: places in user-emacs-directory if nil.
        *
        * Defined in packages/saveplace.ts.
@@ -13743,6 +13784,13 @@ declare global {
        * Keymap save-place-mode-map.
        */
       "save-place-mode-map": Value;
+      /**
+       * Functions to be run by `save-some-buffers' after saving the buffers.
+       * Each is called with nil and save-some-buffers' ARG to save what it saves, asking if it should, and returns non-nil to keep save-some-buffers quiet; called with `query', it says whether there is anything to save.
+       *
+       * Defined in packages/files.ts.
+       */
+      "save-some-buffers-functions": Value;
       /**
        * More variables to save, such as kill-ring or search-ring.
        *

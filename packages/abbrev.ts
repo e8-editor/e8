@@ -9,6 +9,9 @@ import { keyChar } from "simple";
 
 e8.defineVariable({ name: "only-global-abbrevs", doc: "Whether the abbrev commands define only global abbrevs, not ones for the major mode.", value: false });
 e8.defineVariable({ name: "abbrev-all-caps", doc: "Whether an abbrev typed in capitals expands all in capitals, rather than with each word capitalized.", value: false });
+e8.defineVariable({ name: "abbrev-file-name", doc: "Default name of file from which to read and where to save abbrevs: abbrev_defs in the configuration directory.", value: null });
+e8.defineVariable({ name: "save-abbrevs", doc: "Non-nil means save word abbrevs too when files are saved.\nIf `silently', don't ask the user before saving.", value: true });
+e8.defineVariable({ name: "abbrevs-changed", doc: "Non-nil if any word abbrevs were defined or altered.\nThis causes `save-some-buffers' to offer to save the abbrevs.", value: false });
 
 /** The abbrev tables, by name, each abbrev's name in lower case to its expansion and how often it was used. */
 const tables = new Map<string, Map<string, { expansion: string; count: number }>>();
@@ -25,17 +28,27 @@ const table = (name: string) => {
   return t;
 };
 
-/** Defines an abbrev, as define-abbrev: an empty expansion undefines it. */
-export function defineAbbrev(tableName: string, name: string, expansion: string): void {
-  if (expansion === "") table(tableName).delete(name.toLowerCase());
-  else table(tableName).set(name.toLowerCase(), { expansion, count: 0 });
+/**
+ * Defines an abbrev, as define-abbrev: an empty expansion undefines it.
+ * A change marks the abbrevs changed, for saving them.
+ */
+export function defineAbbrev(tableName: string, name: string, expansion: string, count = 0): void {
+  const key = name.toLowerCase();
+  const old = tables.get(tableName)?.get(key);
+  if ((old?.expansion ?? "") !== expansion) e8.setDefault("abbrevs-changed", true);
+  if (expansion === "") table(tableName).delete(key);
+  else table(tableName).set(key, { expansion, count });
 }
 
 /** What an abbrev expands into in a table, matching case loosely, as abbrev-expansion. */
 const abbrevExpansion = (name: string, tableName: string): string | undefined => tables.get(tableName)?.get(name.toLowerCase())?.expansion;
 
-/** The tables to look abbrevs up in, the mode's first, as abbrev--active-tables. */
-const activeTables = (): string[] => [localTable(), GLOBAL];
+/**
+ * The tables to look abbrevs up in: the mode's, then the tables of the
+ * modes it is built on, which define-derived-mode makes its parents, then
+ * the global one, as abbrev--active-tables and abbrev-symbol go through them.
+ */
+const activeTables = (): string[] => [...e8.derivedModeAllParents().map((mode) => `${mode}-abbrev-table`), GLOBAL];
 
 /** The word before point and the abbrev it names, if any, as abbrev--before-point. */
 function abbrevBeforePoint(): { table: string; name: string; start: number; end: number } | undefined {
@@ -209,7 +222,172 @@ e8.defineCommand({
 e8.defineCommand({
   name: "kill-all-abbrevs",
   doc: "Forget every abbrev in every table.",
-  run: () => tables.clear(),
+  run: () => {
+    tables.clear();
+    e8.setDefault("abbrevs-changed", true);
+  },
+});
+
+// The abbrev file, as abbrev.el reads and writes it: Lisp that
+// define-abbrev-table forms, which E8 reads itself, so a file Emacs wrote
+// reads too.
+
+/** The file abbrevs are read from and saved to, as abbrev-file-name. */
+const abbrevFile = (): string => {
+  const named = e8.variable("abbrev-file-name");
+  return typeof named === "string" && named !== "" ? named : e8.expandFileName("abbrev_defs", String(e8.variable("user-emacs-directory") ?? "~/.config/e8/"));
+};
+
+/** A Lisp datum as the reader gives it: a string, a number, a symbol's name, or a list. */
+type Datum = string | number | { symbol: string } | Datum[];
+
+/** Reads the Lisp data in `text`, as `read` would, for the forms abbrev files have. */
+function readLisp(text: string): Datum[] {
+  let i = 0;
+  const skip = () => {
+    for (;;) {
+      while (i < text.length && /\s/.test(text[i]!)) i++;
+      if (text[i] !== ";") return;
+      while (i < text.length && text[i] !== "\n") i++;
+    }
+  };
+  const datum = (): Datum => {
+    skip();
+    const c = text[i];
+    if (c === undefined) throw new Error("End of file during parsing");
+    if (c === "(") {
+      i++;
+      const items: Datum[] = [];
+      for (;;) {
+        skip();
+        if (text[i] === ")") {
+          i++;
+          return items;
+        }
+        if (i >= text.length) throw new Error("End of file during parsing");
+        items.push(datum());
+      }
+    }
+    if (c === "'") {
+      i++;
+      return [{ symbol: "quote" }, datum()];
+    }
+    if (c === '"') {
+      i++;
+      let out = "";
+      while (i < text.length && text[i] !== '"') {
+        if (text[i] === "\\") {
+          const n = text[++i];
+          const escapes: Record<string, string> = { n: "\n", t: "\t", r: "\r", e: "\x1b", a: "\x07", f: "\f", "\n": "" };
+          out += n !== undefined && n in escapes ? escapes[n]! : (n ?? "");
+          i++;
+        } else out += text[i++];
+      }
+      i++;
+      return out;
+    }
+    const start = i;
+    while (i < text.length && !/[\s()'";]/.test(text[i]!)) i++;
+    const atom = text.slice(start, i);
+    return /^[-+]?\d+$/.test(atom) ? Number(atom) : { symbol: atom.replace(/\\(.)/g, "$1") };
+  };
+  const out: Datum[] = [];
+  for (skip(); i < text.length; skip()) out.push(datum());
+  return out;
+}
+
+const symbolName = (d: Datum | undefined): string | undefined => (d !== undefined && typeof d === "object" && !Array.isArray(d) ? d.symbol : undefined);
+/** A quoted datum's value, 'x as x. */
+const unquote = (d: Datum | undefined): Datum | undefined => (Array.isArray(d) && symbolName(d[0]) === "quote" ? d[1] : d);
+
+/**
+ * Defines the abbrevs a file's define-abbrev-table forms give, as loading
+ * it does: each abbrev (NAME EXPANSION HOOK :count N), or the older
+ * (NAME EXPANSION HOOK COUNT).
+ */
+function loadAbbrevs(text: string): void {
+  for (const form of readLisp(text)) {
+    if (!Array.isArray(form) || symbolName(form[0]) !== "define-abbrev-table") continue;
+    const name = symbolName(unquote(form[1]));
+    const abbrevs = unquote(form[2]);
+    if (name === undefined) continue;
+    table(name);
+    for (const entry of Array.isArray(abbrevs) ? abbrevs : []) {
+      if (!Array.isArray(entry) || typeof entry[0] !== "string" || typeof entry[1] !== "string") continue;
+      const at = entry.findIndex((d) => symbolName(d) === ":count");
+      const count = at >= 0 ? entry[at + 1] : entry[3];
+      if (entry.some((d, k) => symbolName(d) === ":system" && entry[k + 1] !== undefined && symbolName(entry[k + 1]) !== "nil")) continue;
+      defineAbbrev(name, entry[0], entry[1], typeof count === "number" ? count : 0);
+    }
+  }
+}
+
+/** Reads the abbrevs a file defines, as read-abbrev-file; the abbrevs are then unchanged. */
+export function readAbbrevFile(file = abbrevFile(), quietly = false): void {
+  if (!e8.fileReadableP(file)) e8.signal("file-missing", `Opening input file: No such file or directory, ${file}`, [file]);
+  if (!quietly) e8.message(`Loading ${file}...`);
+  loadAbbrevs(e8.readTextFile(file));
+  if (!quietly) e8.message(`Loading ${file}...done`);
+  e8.setDefault("abbrevs-changed", false);
+}
+
+/** A table as write-abbrev-file writes it, as insert-abbrev-table-description with READABLE nil. */
+function tableForm(name: string): string {
+  const entries = [...(tables.get(name) ?? new Map())].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+  if (entries.length === 0) return `(define-abbrev-table '${name} '())\n\n`;
+  return `(define-abbrev-table '${name}\n  '(\n${entries.map(([abbrev, { expansion, count }]) => `    (${lispString(abbrev)} ${lispString(expansion)} nil :count ${count})\n`).join("")}   ))\n\n`;
+}
+
+/** Writes every table with abbrevs in it to a file, sorted by name, as write-abbrev-file. */
+export function writeAbbrevFile(file = abbrevFile(), verbose = false): void {
+  const names = [...tables.keys()].filter((n) => (tables.get(n)?.size ?? 0) > 0).sort();
+  e8.writeTextFile(file, `;;-*-coding: utf-8;-*-\n${names.map(tableForm).join("")}`);
+  if (verbose) e8.message(`Wrote ${file}`);
+}
+
+e8.defineCommand({
+  name: "read-abbrev-file",
+  doc: "Read abbrev definitions from file written with `write-abbrev-file'.\nOptional argument FILE is the name of the file to read;\nit defaults to the value of `abbrev-file-name'.",
+  params: [{ name: "file", kind: "file", prompt: "Read abbrev file: " }],
+  run: (file: string) => readAbbrevFile(file || abbrevFile()),
+});
+e8.defun("quietly-read-abbrev-file", (file?: string) => readAbbrevFile(file ?? abbrevFile(), true));
+
+e8.defineCommand({
+  name: "write-abbrev-file",
+  doc: "Write all user-level abbrev definitions to a file of Lisp code.\nThe file written can be loaded in another session to define the same abbrevs.\nThe argument FILE is the file name to write.  If omitted or nil, it defaults\nto the value of `abbrev-file-name'.",
+  params: [{ name: "file", kind: "file", prompt: "Write abbrev file: " }],
+  run: (file: string) => writeAbbrevFile(file || abbrevFile(), true),
+});
+
+/**
+ * Offers to save changed abbrevs, as abbrev--possibly-save does on
+ * save-some-buffers-functions: asked whether to, unless save-abbrevs is
+ * silently or `all`; with `query`, only whether there is anything to save.
+ * True if it asked and was told no, which keeps save-some-buffers quiet.
+ */
+e8.defun("abbrev--possibly-save", (query?: e8.Value, all?: e8.Value) => {
+  const save = e8.variable("save-abbrevs");
+  const changed = e8.variable("abbrevs-changed");
+  const on = (v: e8.Value | undefined) => v !== null && v !== undefined && v !== false;
+  if (query === "query") return on(save) && on(changed);
+  if (!on(save) || !on(changed)) return false;
+  let declined = false;
+  if (on(all) || save === "silently" || e8.yOrNP(`Save abbrevs in ${abbrevFile()}? `)) writeAbbrevFile();
+  else declined = true;
+  // Not asked again, whether saved or not.
+  e8.setDefault("abbrevs-changed", false);
+  return declined;
+});
+e8.setDefault("save-some-buffers-functions", [...((e8.defaultValue("save-some-buffers-functions") as e8.Value[] | undefined) ?? []), "abbrev--possibly-save"]);
+
+// At startup the abbrev file is read if there is one, as Emacs's startup
+// reads it after the init file, and the abbrevs then count as unchanged.
+e8.addHook("emacs-startup-hook", () => {
+  if (e8.variable("noninteractive") !== true && e8.fileReadableP(abbrevFile())) {
+    e8.conditionCase(() => readAbbrevFile(abbrevFile(), true), { error: (e) => e8.message(e.message) });
+  }
+  e8.setDefault("abbrevs-changed", false);
 });
 
 for (const [keys, command] of [

@@ -1297,12 +1297,36 @@ function buffersNeedingSave(): string[] {
  * rest, . saves it and stops, q stops. With `all`, saves them all without
  * asking.
  */
+e8.defineVariable({
+  name: "save-some-buffers-functions",
+  doc: "Functions to be run by `save-some-buffers' after saving the buffers.\nEach is called with nil and save-some-buffers' ARG to save what it saves, asking if it should, and returns non-nil to keep save-some-buffers quiet; called with `query', it says whether there is anything to save.",
+  value: [],
+});
+
+/** Runs save-some-buffers-functions, as save-some-buffers does after the buffers: whether one asked to keep quiet. */
+function saveOtherThings(all: boolean): boolean {
+  let quiet = false;
+  for (const f of (e8.variable("save-some-buffers-functions") ?? []) as e8.Value[]) {
+    const said = e8.funcall(f as string, null, all);
+    quiet = (said !== null && said !== undefined && said !== false) || quiet;
+  }
+  return quiet;
+}
+
 function saveSomeBuffers(all: boolean, interactive: boolean): void {
   const buffers = buffersNeedingSave();
   if (buffers.length === 0) {
-    if (interactive) e8.message("(No files need saving)");
+    // Other things, as abbrevs, are offered too.
+    const quiet = saveOtherThings(all);
+    if (interactive && !quiet) e8.message("(No files need saving)");
     return;
   }
+  saveTheseBuffers(buffers, all);
+  saveOtherThings(all);
+}
+
+/** Asks about saving each of `buffers`, or saves them all, as save-some-buffers' map-y-or-n-p. */
+function saveTheseBuffers(buffers: string[], all: boolean): void {
   const save = (buffer: string) => e8.withCurrentBuffer(buffer, () => basicSaveBuffer());
   if (all) {
     buffers.forEach(save);
