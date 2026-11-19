@@ -84,6 +84,8 @@ struct Out {
     bytes: Vec<u8>,
     /// Set once nothing more will be written: the thread stops.
     done: bool,
+    /// Bytes the writing thread has taken and is writing to the socket.
+    writing: bool,
 }
 
 #[derive(Default)]
@@ -171,15 +173,19 @@ impl Shared {
                 if out.bytes.is_empty() {
                     return;
                 }
+                out.writing = true;
                 std::mem::take(&mut out.bytes)
             };
-            // Room for more, and for whoever waits for it to be written.
+            // Room for more.
             shared.writable.notify_all();
-            if socket.write_all(&bytes).and_then(|_| socket.flush()).is_err() {
+            let failed = socket.write_all(&bytes).and_then(|_| socket.flush()).is_err();
+            // Written, for whoever waits for it before shutting the socket.
+            shared.out().writing = false;
+            shared.writable.notify_all();
+            if failed {
                 shared.died("The connection closed");
                 return;
             }
-            shared.writable.notify_all();
         }
     }
 
@@ -195,7 +201,8 @@ impl Shared {
     /// Waits until what was queued has gone to the socket.
     fn wait_written(&self) {
         let mut out = self.out();
-        while !out.bytes.is_empty() && !out.done {
+        // Queued or still being written: the bytes the thread took count.
+        while (!out.bytes.is_empty() || out.writing) && !out.done {
             out = self.writable.wait(out).unwrap_or_else(|e| e.into_inner());
         }
     }

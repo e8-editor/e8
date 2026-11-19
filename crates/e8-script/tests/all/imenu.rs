@@ -144,3 +144,38 @@ fn the_index_goes_on_the_menu_bar() {
     eval(&mut ed, &s, &format!(r#"e8.gotoChar(e8.pointMax()); e8.call({});"#, serde_json::to_string(&alpha).unwrap()));
     assert_eq!(value(&mut ed, &s, "String(e8.point())"), "0");
 }
+
+/// An empty index is made again next time, as Emacs's nil is; an index
+/// function that gives numbers has them kept as markers; makeIndex, for
+/// packages, always makes the index afresh.
+#[test]
+fn empty_indexes_are_remade_and_numbers_kept_as_markers() {
+    let (mut ed, s) = setup();
+    eval(
+        &mut ed,
+        &s,
+        r#"globalThis.items = [];
+        e8.setVariable("imenu-create-index-function", e8.defun("my-index", () => items.map((x) => [...x])));"#,
+    );
+    assert!(value(&mut ed, &s, r#"e8.conditionCase(() => { imenu.makeIndexAlist(); return "made"; }, { error: (e) => e.message })"#).starts_with("No items"));
+    eval(&mut ed, &s, r#"items.push(["one", 20]);"#);
+    assert_eq!(value(&mut ed, &s, "JSON.stringify(shape(imenu.makeIndexAlist()))"), r#"[["*Rescan*",-99],["one",20]]"#);
+    eval(&mut ed, &s, r#"e8.gotoChar(0); e8.insert("xxxx");"#);
+    assert_eq!(value(&mut ed, &s, "JSON.stringify(shape(imenu.makeIndexAlist()))"), r#"[["*Rescan*",-99],["one",24]]"#);
+    eval(&mut ed, &s, r#"items.push(["two", 30]);"#);
+    assert_eq!(value(&mut ed, &s, "JSON.stringify(imenu.makeIndex())"), r#"[["one",20],["two",30]]"#);
+}
+
+/// A new major mode gives the buffer a local map without the Index menu;
+/// imenu-add-menubar-index, run again from its hook, puts it back.
+#[test]
+fn the_menu_bar_index_comes_back_after_a_new_major_mode() {
+    let (mut ed, s) = setup();
+    ed.call("imenu-add-menubar-index", vec![]).unwrap();
+    let has = |ed: &mut Editor| value(ed, &s, r#"String(e8.keymapp(e8.lookupKey(e8.currentLocalMap() ?? "global-map", "<menu-bar> <index>")))"#);
+    assert_eq!(has(&mut ed), "true");
+    eval(&mut ed, &s, r#"e8.call("text-mode"); e8.setVariable("imenu-generic-expression", [[null, "^def \\([a-z_]+\\)", 1]]);"#);
+    assert_eq!(has(&mut ed), "false");
+    ed.call("imenu-add-menubar-index", vec![]).unwrap();
+    assert_eq!(has(&mut ed), "true");
+}

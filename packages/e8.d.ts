@@ -3543,11 +3543,25 @@ declare global {
       /**
        * Go to a definition in the buffer, chosen by name with completion from the buffer's index.
        *
-       * Kinds of definition, such as Fn or Struct, open a list of their own. The mark is pushed first.
+       * Kinds of definition, such as Fn or Struct, open a list of their own; *Rescan* makes the index again. The mark is pushed first.
        *
        * Defined in packages/imenu.ts.
        */
       "imenu": [];
+      /**
+       * Put the buffer's index on the menu bar as Index, as a function for mode hooks.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-add-menubar-index": [];
+      /**
+       * Put the buffer's index on the menu bar, named as asked.
+       *
+       * @param name text
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-add-to-menubar": [name: string];
       /**
        * Add the prefix argument, 1 by default, to the number in a register; to one with text, or none, add the region's text.
        *
@@ -10838,11 +10852,29 @@ declare global {
        */
       "imenu--history-list": Value;
       /**
+       * The index made for this buffer, kept until rescanned.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu--index-alist": Value;
+      /**
        * Functions run after M-x imenu goes to an item.
        *
        * Defined in packages/imenu.ts.
        */
       "imenu-after-jump-hook": Value;
+      /**
+       * Whether the index is made afresh each time, rather than kept until *Rescan* is chosen.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-auto-rescan": Value;
+      /**
+       * The size, in characters, above which a buffer's index is kept even with imenu-auto-rescan.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-auto-rescan-maxout": Value;
       /**
        * Whether imenu-generic-expression's regexps match case loosely.
        *
@@ -10850,23 +10882,125 @@ declare global {
        */
       "imenu-case-fold-search": Value;
       /**
-       * The function that makes the buffer's index: a list of [name, position], or [name, items] for a submenu.
+       * The function that makes the buffer's index, called with no arguments, as imenu--index-alist holds it.
        *
        * Defined in packages/imenu.ts.
        */
       "imenu-create-index-function": Value;
       /**
-       * For imenu-default-create-index-function: a list of [menu-title, regexp, group], each regexp an Emacs regexp whose group is a definition's name; a null title puts the items at the top.
+       * The function that goes to an item, called with its name and position.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-default-goto-function": Value;
+      /**
+       * Whether the completions are listed at once.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-eager-completion-buffer": Value;
+      /**
+       * For imenu-default-create-index-function: a function giving the name of the definition at point.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-extract-index-name-function": Value;
+      /**
+       * Whether to offer the index as one list: prefix puts each submenu's name before its items' names; nil keeps the submenus.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-flatten": Value;
+      /**
+       * For imenu-default-create-index-function: a list of [menu-title, regexp, index, function?, ...arguments], each regexp an Emacs regexp, or a function searching backwards, whose group `index` is a definition's name; a null title puts the items at the top.
        *
        * Defined in packages/imenu.ts.
        */
       "imenu-generic-expression": Value;
       /**
-       * What spaces in index names are shown as, so a name reads as one word in completion.
+       * Whether imenu-generic-expression's matches inside comments and strings are passed over.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-generic-skip-comments-and-strings": Value;
+      /**
+       * What goes between a submenu's name and an item's when the index is flattened.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-level-separator": Value;
+      /**
+       * The most seconds making the index may take.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-max-index-time": Value;
+      /**
+       * If a number, the longest an index name is; longer ones are cut.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-max-item-length": Value;
+      /**
+       * The most items a menu of the index holds before it is split into submenus.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-max-items": Value;
+      /**
+       * The buffer's characters-modified tick when the menu bar's index was last made.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-menubar-modified-tick": Value;
+      /**
+       * A function of two strings saying whether a name matches an index item's; nil for equality.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-name-lookup-function": Value;
+      /**
+       * For imenu-default-create-index-function: a function moving point back to the previous definition, nil if there is none.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-prev-index-position-function": Value;
+      /**
+       * How the menu bar's index is sorted: a function of two items, true if the first comes first, as imenu--sort-by-name; nil for the order found.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-sort-function": Value;
+      /**
+       * What spaces in index names are shown as, so a name reads as one word in completion; nil to leave them.
        *
        * Defined in packages/imenu.ts.
        */
       "imenu-space-replacement": Value;
+      /**
+       * Whether submenus come before items in the menu bar's index.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-submenus-on-top": Value;
+      /**
+       * Syntax to give characters while imenu-generic-expression's regexps match: [character or string, syntax descriptor] pairs.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-syntax-alist": Value;
+      /**
+       * Whether index positions are markers, which follow edits, rather than numbers.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-use-markers": Value;
+      /**
+       * Whether to choose from a menu rather than with completion: true always, on-mouse when imenu was run from the mouse, nil never.
+       *
+       * Defined in packages/imenu.ts.
+       */
+      "imenu-use-popup-menu": Value;
       /**
        * The command that indents the current line, as the major mode says. indent-according-to-mode runs it.
        *

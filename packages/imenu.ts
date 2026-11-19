@@ -146,17 +146,15 @@ e8.defun("imenu-flush-cache", flushCache);
 export function makeIndexAlist(noerror = false): IndexAlistItem[] {
   let index = v("imenu--index-alist") as IndexAlistItem[] | null;
   const auto = truthy(v("imenu-auto-rescan"));
-  const keep = index !== null && index !== undefined && (!auto || e8.bufferSize() > (Number(v("imenu-auto-rescan-maxout")) || 600000));
+  // An empty index is nil, as in Emacs, and made again next time.
+  const keep = Array.isArray(index) && index.length > 0 && (!auto || e8.bufferSize() > (Number(v("imenu-auto-rescan-maxout")) || 600000));
   if (!keep) {
-    const fn = v("imenu-create-index-function") ?? "imenu-default-create-index-function";
-    index = e8.saveExcursion(() =>
-      e8.saveRestriction(() => {
-        e8.widen();
-        return e8.funcall(fn as string) as unknown as IndexAlistItem[] | null;
-      }),
-    );
+    index = createIndex();
+    // Kept positions follow edits: a function that gave numbers, as some
+    // modes' do, has them made markers, as Emacs's own give markers.
+    if (index && truthy(v("imenu-use-markers"))) markPositions(index);
     if (index) truncateItems(index);
-    e8.setVariable("imenu--index-alist", (index ?? null) as unknown as e8.Value);
+    e8.setVariable("imenu--index-alist", (index && index.length > 0 ? index : null) as unknown as e8.Value);
   }
   if ((!index || index.length === 0) && !noerror) unavailable("No items suitable for an index found in this buffer");
   const items = index ?? [];
@@ -164,11 +162,37 @@ export function makeIndexAlist(noerror = false): IndexAlistItem[] {
 }
 e8.defun("imenu--make-index-alist", (noerror?: e8.Value) => makeIndexAlist(truthy(noerror)) as unknown as e8.Value);
 
-/** The index with positions as numbers and without *Rescan*, for packages that list it, as consult-imenu does. */
+/** The index as imenu-create-index-function makes it now, over the whole buffer. */
+function createIndex(): IndexAlistItem[] | null {
+  const fn = v("imenu-create-index-function") ?? "imenu-default-create-index-function";
+  return e8.saveExcursion(() =>
+    e8.saveRestriction(() => {
+      e8.widen();
+      return e8.funcall(fn as string) as unknown as IndexAlistItem[] | null;
+    }),
+  );
+}
+
+/** Each number in an index made a marker. */
+function markPositions(items: IndexAlistItem[]): void {
+  for (const item of items) {
+    if (isSubmenu(item)) markPositions(item[1]);
+    else if (typeof item[1] === "number" && item[1] >= 0) item[1] = e8.makeMarker(item[1]);
+  }
+}
+
+/**
+ * The index made afresh, its positions numbers, without *Rescan*, for
+ * packages that list it, as consult-imenu calls imenu-create-index-function
+ * itself rather than take the kept one. An empty index is an error.
+ */
 export function makeIndex(): IndexItem[] {
   const numbers = (items: IndexAlistItem[]): IndexItem[] =>
-    items.filter((i) => !isRescan(i)).map((item) => (isSubmenu(item) ? [item[0], numbers(item[1])] : [item[0], position(item[1]), ...item.slice(2)]) as IndexItem);
-  return numbers(makeIndexAlist());
+    items.map((item) => (isSubmenu(item) ? [item[0], numbers(item[1])] : [item[0], position(item[1]), ...item.slice(2)]) as IndexItem);
+  const index = createIndex();
+  if (!index || index.length === 0) unavailable("No items suitable for an index found in this buffer");
+  truncateItems(index);
+  return numbers(index);
 }
 
 /** The item a name stands for, at any depth, as imenu--in-alist. */
@@ -252,8 +276,9 @@ export function genericIndex(patterns: GenericPattern[]): IndexAlistItem[] {
             found = truthy(regexp() as e8.Value);
           } else {
             found = e8.reSearchBackward(regexp as string, { noerror: true, caseFold: fold }) !== undefined;
-            // An invisible definition does not count.
-            while (found && e8.invisibleP(e8.point())) {
+            // An invisible definition does not count: the search goes on
+            // to the next, which counts whatever it is, as imenu.el's loop does.
+            if (found && truthy(e8.invisibleP(e8.point()) as e8.Value)) {
               found = e8.reSearchBackward(regexp as string, { noerror: true, caseFold: fold }) !== undefined;
             }
           }
@@ -275,7 +300,9 @@ export function genericIndex(patterns: GenericPattern[]): IndexAlistItem[] {
             const state = e8.syntaxPpss();
             return state.inString !== null || state.inComment !== null;
           });
-          const same = (item: IndexAlistItem) => item[0] === name && position(item[1]) === beg && (fn === undefined || item[2] === fn);
+          const extra = fn !== undefined ? [fn, ...args] : [];
+          const same = (item: IndexAlistItem) =>
+            item[0] === name && position(item[1]) === beg && item.length === extra.length + 2 && extra.every((x, k) => JSON.stringify(item[k + 2]) === JSON.stringify(x));
           if (!inComment && !menu.some(same)) {
             const where = markers ? e8.makeMarker(beg) : beg;
             menu.unshift((fn !== undefined ? [name, where, fn, ...args] : [name, where]) as IndexAlistItem);
@@ -336,9 +363,10 @@ async function completionBuffer(items: IndexAlistItem[], prompt?: string): Promi
   const prepared = items.map((item) => [shown(item[0]), ...item.slice(1)] as IndexAlistItem);
   let name = symbolAtPoint();
   if (name !== undefined) name = findDefault(name, prepared) ?? name;
+  // The prompt names it only if it is in the index; M-n offers it anyway, as format-prompt and completing-read's default do.
   const fallback = name !== undefined && inAlist(name, prepared) ? name : undefined;
   const p = prompt ?? (fallback === undefined ? "Index item: " : `Index item (default ${fallback}): `);
-  const chosen = await e8.completingRead(p, prepared.map((i) => i[0]), { requireMatch: true, default: fallback, history: "imenu--history-list", category: "imenu" });
+  const chosen = await e8.completingRead(p, prepared.map((i) => i[0]), { requireMatch: true, default: name, history: "imenu--history-list", category: "imenu" });
   const choice = prepared.find((i) => i[0] === (chosen === "" ? fallback : chosen));
   if (choice === undefined) return undefined;
   return isSubmenu(choice) ? completionBuffer(choice[1], p) : choice;
@@ -459,7 +487,9 @@ function updateMenubar(): void {
   }));
   if (key === lastMenubarIndex.get(id)) return;
   lastMenubarIndex.set(id, key);
-  const [, menu] = splitMenu(splitSubmenus(index), e8.bufferName());
+  let [, menu] = splitMenu(splitSubmenus(index), e8.bufferName());
+  // A lone submenu's items are the menu's own, as imenu-update-menubar has them.
+  if (menu.length === 1 && isSubmenu(menu[0]!) && menu[0]![1].length > 0) menu = menu[0]![1];
   const all: IndexAlistItem[] = [];
   const items = menuItems(menu, all);
   menubarItems.set(id, all);
@@ -481,8 +511,10 @@ const supportsImenu = (): boolean =>
 export function addToMenubar(name: string): void {
   if (!supportsImenu()) unavailable(`The mode \`${String(v("mode-name") ?? v("major-mode"))}' does not support Imenu`);
   const id = e8.currentBuffer().id;
-  if (menubarKeymaps.has(id)) return;
+  // Already there if the local map has it, as Emacs looks; a new major mode
+  // gives the buffer a new local map without it.
   const local = e8.currentLocalMap();
+  if (local && e8.keymapp(e8.lookupKey(local, "<menu-bar> <index>"))) return;
   const map = e8.makeSparseKeymap(local ?? null);
   const index = e8.makeSparseKeymap(null, "Imenu");
   e8.defineMenuItem(map, "<menu-bar> <index>", { label: name, binding: index });
