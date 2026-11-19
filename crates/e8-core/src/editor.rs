@@ -678,6 +678,7 @@ impl Editor {
         let first = crate::window::Window::new(1, editor.buffers[0].id, 80, 24);
         editor.windows.push(first);
         variables::install(&mut editor);
+        crate::callproc::install(&mut editor);
         crate::modeline::install(&mut editor);
         crate::bidi_display::install(&mut editor);
         faces::install(&mut editor);

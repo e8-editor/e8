@@ -402,6 +402,9 @@ natives! {
             sentinel: handler(sentinel),
             coding: coding_pair(options.get("coding"))?,
             tls: None,
+            stop: options.flag("stop"),
+            nowait: options.flag("nowait"),
+            datagram: options.get("type").and_then(EditorValue::as_str) == Some("datagram"),
         };
         let name = ed.make_network_process(spec)?;
         Ok(ProcObj(ed.process_named(&name).expect("just opened")))
@@ -415,6 +418,7 @@ natives! {
             sentinel: handler(sentinel),
             coding: coding_pair(options.get("coding"))?,
             noquery: options.flag("noquery"),
+            stop: options.flag("stop"),
         };
         let name = ed.make_pipe_process(spec)?;
         Ok(ProcObj(ed.process_named(&name).expect("just made")))
@@ -596,7 +600,10 @@ natives! {
     /// its name for point in that buffer, `[":file", FILE]` for a file, or
     /// `[DESTINATION, STDERR]` to send standard error elsewhere, STDERR
     /// null to throw it away, true to keep it with the output, or a file
-    /// name. `display` is accepted and ignored. Returns the exit code, a
+    /// name. With `display`, output going into a buffer is shown there
+    /// line by line as it comes. Codings are coding-system-for-read and
+    /// -write if bound, else process-coding-system-alist's for the
+    /// program, else default-process-coding-system's. Returns the exit code, a
     /// description of the signal that ended the program, as "Killed: 9",
     /// or undefined if not waited for. Asks the agent's permission first.
     #[ts = "(start: number | string | null, end: number | null, program: string, del?: boolean | null, destination?: CallProcessDestination, display?: boolean | null, ...args: string[]): number | string | undefined"]
@@ -635,7 +642,8 @@ natives! {
             command.push(text.to_string());
         }
         let delete = del.is_some_and(|d| d.is_true());
-        let result = ed.call_process_region(input, delete, &command, &destination)?;
+        let display = display_and_args.0.first().is_some_and(EditorValue::is_true);
+        let result = ed.call_process_region(input, delete, &command, &destination, display)?;
         Ok((!result.is_nil()).then_some(result))
     }
 
@@ -707,26 +715,16 @@ natives! {
     }
 
     /// An environment variable's value, as getenv-internal: from `env`, a
-    /// list of "NAME=VALUE" strings, if given, true for one listed as
-    /// "NAME" alone, which unsets it; else from process-environment if it
-    /// is set, else E8's own environment. Undefined if it is not set.
-    #[ts = "(variable: string, env?: string[]): string | true | undefined"]
+    /// list of "NAME=VALUE" strings, if it is one, true for a name listed
+    /// alone; else, `env` being a frame or left out, from
+    /// process-environment, where a name alone unsets it. Undefined if it
+    /// is not set.
+    #[ts = "(variable: string, env?: string[] | Frame | null): string | true | undefined"]
     pub fn getenvInternal(ed, variable: String, env: Option<EditorValue>) -> Option<EditorValue> {
-        let lookup = |list: &[EditorValue]| -> Option<EditorValue> {
-            list.iter().filter_map(EditorValue::as_str).find_map(|entry| match entry.strip_prefix(variable.as_str()) {
-                Some("") => Some(EditorValue::Bool(true)),
-                Some(rest) => rest.strip_prefix('=').map(|v| EditorValue::Str(v.to_string())),
-                None => None,
-            })
-        };
-        if let Some(EditorValue::List(list)) = &env {
-            return Ok(lookup(list));
-        }
-        if let Some(EditorValue::List(list)) = ed.variable("process-environment") {
-            // An entry naming it alone unsets it, as getenv then finds nothing.
-            return Ok(lookup(&list).filter(|v| !matches!(v, EditorValue::Bool(true))));
-        }
-        Ok(std::env::var(&variable).ok().map(EditorValue::Str))
+        Ok(match &env {
+            Some(EditorValue::List(list)) => ed.getenv_internal(&variable, Some(list)),
+            _ => ed.getenv_internal(&variable, None),
+        })
     }
 
     /// An address as Emacs writes one, as format-network-address: from
@@ -753,14 +751,27 @@ natives! {
                 _ => return Err(Error::new("Unsupported family")),
             },
         };
-        let numeric = hints.as_ref().and_then(|h| h.as_str()) == Some("numeric");
+        let numeric = match hints.as_ref().filter(|h| !h.is_nil()) {
+            None => false,
+            Some(h) if h.as_str() == Some("numeric") => true,
+            Some(_) => return Err(Error::new("Unsupported hints value")),
+        };
+        if !name.is_ascii() {
+            return Err(Error::new(format!("Non-ASCII hostname {name} detected, please use `puny-encode-domain'")));
+        }
         let addresses: Vec<std::net::IpAddr> = if numeric {
             name.parse::<std::net::IpAddr>().into_iter().collect()
         } else {
             use std::net::ToSocketAddrs;
             match (name.as_str(), 0).to_socket_addrs() {
                 Ok(found) => found.map(|a| a.ip()).collect(),
-                Err(_) => Vec::new(),
+                Err(_) => {
+                    // Said in the echo area, as Emacs says getaddrinfo's error.
+                    if let Some(why) = e8_core::sysdep::lookup_failure(&name) {
+                        ed.message(why);
+                    }
+                    Vec::new()
+                }
             }
         };
         let mut out: Vec<Vec<u32>> = Vec::new();
@@ -864,23 +875,47 @@ natives! {
         }
     }
 
-    /// A datagram process's address, as process-datagram-address:
-    /// undefined, as E8 has no datagram (UDP) processes, which is what
-    /// Emacs gives for any other process.
-    #[ts = "(process: ProcessLike): undefined"]
-    pub fn processDatagramAddress(ed, process: EditorValue) -> Option<bool> {
-        process_arg(&process)?.id(ed)?;
-        Ok(None)
+    /// A datagram process's address, as process-datagram-address: where
+    /// what it sends goes, as `[a, b, c, d, port]` or eight 16-bit words and
+    /// a port for IPv6; undefined for a server not yet heard from, or a
+    /// process that sends no datagrams.
+    #[ts = "(process: ProcessLike): number[] | undefined"]
+    pub fn processDatagramAddress(ed, process: EditorValue) -> Option<Vec<u32>> {
+        let id = process_arg(&process)?.id(ed)?;
+        Ok(ed.process_datagram_address(id).flatten().map(|addr| {
+            let mut v = address_vector(addr.ip());
+            *v.last_mut().expect("an address has a port") = addr.port() as u32;
+            v
+        }))
     }
 
-    /// Set a datagram process's address, as set-process-datagram-address:
-    /// undefined, "error setting address", as E8 has no datagram (UDP)
-    /// processes and Emacs gives that for any other process.
-    #[ts = "(process: ProcessLike, address: unknown): undefined"]
-    pub fn setProcessDatagramAddress(ed, process: EditorValue, address: EditorValue) -> Option<bool> {
-        let _ = address;
-        process_arg(&process)?.id(ed)?;
-        Ok(None)
+    /// Set where a datagram process sends to, as
+    /// set-process-datagram-address: `address` as processDatagramAddress
+    /// gives one, or "host:port". Returns it, or undefined if it is no
+    /// address or the process sends no datagrams.
+    #[ts = "(process: ProcessLike, address: number[] | string): number[] | string | undefined"]
+    pub fn setProcessDatagramAddress(ed, process: EditorValue, address: EditorValue) -> Option<EditorValue> {
+        let id = process_arg(&process)?.id(ed)?;
+        let addr = match &address {
+            EditorValue::List(items) => {
+                let n: Option<Vec<u16>> = items.iter().map(|v| v.as_number().filter(|n| n.fract() == 0.0 && (0.0..=65535.0).contains(n)).map(|n| n as u16)).collect();
+                match n.as_deref() {
+                    Some([a, b, c, d, port]) if [a, b, c, d].iter().all(|x| **x <= 255) => {
+                        Some(std::net::SocketAddr::from(([*a as u8, *b as u8, *c as u8, *d as u8], *port)))
+                    }
+                    Some([w @ .., port]) if w.len() == 8 => {
+                        let ip = std::net::Ipv6Addr::new(w[0], w[1], w[2], w[3], w[4], w[5], w[6], w[7]);
+                        Some(std::net::SocketAddr::from((ip, *port)))
+                    }
+                    _ => None,
+                }
+            }
+            v => v.as_str().and_then(|s| s.parse().ok()),
+        };
+        Ok(match addr {
+            Some(addr) if ed.set_process_datagram_address(id, addr) => Some(address),
+            _ => None,
+        })
     }
 
     /// Interrupt a process, as internal-default-interrupt-process, what
@@ -953,6 +988,23 @@ natives! {
     pub fn serialProcessConfigure(ed, args: Fields) {
         let pairs: Vec<(String, EditorValue)> = args.0.into_iter().map(|(k, v)| (format!(":{k}"), v)).collect();
         ed.serial_process_configure(&pairs)
+    }
+
+    /// call-process as Emacs takes it: the program, its input file or
+    /// none, DESTINATION, then DISPLAY and the arguments in one, as
+    /// QuickJS's functions take at most seven parameters.
+    fn callProcessFile(ed, program: String, infile: Option<String>, destination: EditorValue, display_and_args: Rest<EditorValue>) -> Option<EditorValue> {
+        let destination = ed.call_destination(&destination)?;
+        let mut command = vec![program];
+        for arg in display_and_args.0.iter().skip(1) {
+            let text = arg.as_str().ok_or_else(|| {
+                Error::signal("wrong-type-argument", format!("Wrong type argument: stringp, {arg}"), vec![EditorValue::Symbol("stringp".into()), arg.clone()])
+            })?;
+            command.push(text.to_string());
+        }
+        let display = display_and_args.0.first().is_some_and(EditorValue::is_true);
+        let result = ed.call_process_file(&command, infile.as_deref(), &destination, display)?;
+        Ok((!result.is_nil()).then_some(result))
     }
 
     fn callProcess(ed, command: Vec<String>, directory: Option<String>, input: Option<String>) -> Record {
@@ -1094,9 +1146,9 @@ fn process_primitive(ed: &mut Editor, op: &str, process: &Proc, args: &[EditorVa
         "stop-process" | "continue-process" => {
             let id = process.id(ed)?;
             let stop = op == "stop-process";
-            // A serial port is kept from being read, or read again; a
-            // program is signalled.
-            if !ed.set_serial_stopped(id, stop) {
+            // A serial port, connection or pipe process is kept from being
+            // read, or read again; a program is signalled.
+            if !ed.set_serial_stopped(id, stop) && !ed.set_process_stopped(id, stop) {
                 let signal = e8_core::process::signal_number(if stop { "TSTP" } else { "CONT" }).unwrap_or(0);
                 ed.signal_process_group(name, signal, flag(0))?;
             }

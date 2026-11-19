@@ -43,6 +43,10 @@ pub fn run_with(ed: &mut Editor, scripting: &Scripting, args: &[String]) -> i32 
             other => Err(Error::new(format!("Unknown option `{other}'"))),
         };
         if let Err(e) = result {
+            // kill-emacs unwinds what was running, and is no error.
+            if ed.should_quit() {
+                return ed.exit_status();
+            }
             eprintln!("{e}");
             return 255;
         }

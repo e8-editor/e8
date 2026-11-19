@@ -639,13 +639,14 @@ export function defineGlobalizedMinorMode(name: string, mode: e8.CommandName, do
   });
 }
 
-/** Where a program is along PATH, as executable-find. */
+/**
+ * Where a program is, as executable-find: the first file along exec-path,
+ * with one of exec-suffixes, that can be run and is not a directory.
+ */
 export function executableFind(program: string): string | undefined {
-  if (program.includes("/")) return e8.fileExecutableP(e8.expandFileName(program)) ? program : undefined;
-  for (const dir of (e8.getenv("PATH") ?? "").split(":")) {
-    if (dir && e8.fileExecutableP(`${dir}/${program}`)) return `${dir}/${program}`;
-  }
-  return undefined;
+  const path = e8.variable("exec-path");
+  const suffixes = e8.variable("exec-suffixes");
+  return e8.locateFileInternal(program, Array.isArray(path) ? (path as (string | null)[]) : [], Array.isArray(suffixes) ? (suffixes as string[]) : null, 1);
 }
 
 export class PerBuffer<T> {

@@ -573,3 +573,30 @@ pub fn tty_name() -> Option<String> {
 pub fn tty_name() -> Option<String> {
     None
 }
+
+/// Why a host name does not resolve, as Emacs's
+/// network_lookup_address_info_1 words it, "HOST/0 MESSAGE" with
+/// getaddrinfo's own message; None if it resolves.
+pub fn lookup_failure(host: &str) -> Option<String> {
+    #[cfg(unix)]
+    {
+        let c = std::ffi::CString::new(host).ok()?;
+        let mut res: *mut libc::addrinfo = std::ptr::null_mut();
+        // SAFETY: c is NUL-terminated, the hints are null, and res, which
+        // getaddrinfo fills in on success, is freed at once.
+        let ret = unsafe { libc::getaddrinfo(c.as_ptr(), std::ptr::null(), std::ptr::null(), &mut res) };
+        if ret == 0 {
+            // SAFETY: res came from a getaddrinfo that succeeded.
+            unsafe { libc::freeaddrinfo(res) };
+            return None;
+        }
+        // SAFETY: gai_strerror returns a static NUL-terminated string.
+        let text = unsafe { std::ffi::CStr::from_ptr(libc::gai_strerror(ret)) }.to_string_lossy().into_owned();
+        Some(format!("{host}/0 {text}"))
+    }
+    #[cfg(not(unix))]
+    {
+        use std::net::ToSocketAddrs;
+        (host, 0).to_socket_addrs().err().map(|e| format!("{host}/0 {e}"))
+    }
+}

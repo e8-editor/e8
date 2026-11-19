@@ -1415,6 +1415,8 @@ const API: &str = r##"
     coding?: string | [string, string];
     /** Whether exiting E8 goes ahead without asking while it is open. */
     noquery?: boolean;
+    /** Start it kept from being read, its status "stop", until continue-process, as :stop. */
+    stop?: boolean;
   }
   /**
    * Where callProcessRegion puts what a program writes, as call-process's
@@ -1466,8 +1468,22 @@ const API: &str = r##"
     service: number | string | true;
     /** "local" for a Unix socket; TCP otherwise. */
     family?: "local";
-    /** Listen for connections, each of which becomes a process of its own. */
+    /** Listen for connections, each of which becomes a process of its own; with type "datagram", take datagrams from anyone. */
     server?: boolean;
+    /**
+     * "datagram" for UDP, as `:type datagram`: each string sent is one
+     * datagram, to the host and port, or for a server to whoever sent the
+     * last one; each that comes is one piece of output.
+     */
+    type?: "stream" | "datagram";
+    /**
+     * Return at once, connecting meanwhile, as :nowait: the status is
+     * "connect" until the sentinel is told "open\n", or "failed with code
+     * N\n" with the system's error number. Sending waits for the connection.
+     */
+    nowait?: boolean;
+    /** Start it kept from being read, its status "stop", until continue-process, as :stop. */
+    stop?: boolean;
     filter?: ((process: Process, output: string) => void) | string | symbol | true | null;
     /** Told "deleted\n", "connection broken by remote peer\n", or for a server's new connection "open from HOST\n". */
     sentinel?: ((process: Process, event: string) => void) | string | symbol | null;
@@ -1585,7 +1601,7 @@ const API: &str = r##"
    * server "listen", or undefined for a name no listed process has. A
    * process that has gone answers still, as these all do.
    */
-  function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | "stop" | undefined;
+  function processStatus(process: ProcessLike): "run" | "exit" | "signal" | "open" | "closed" | "listen" | "stop" | "connect" | "failed" | undefined;
   /** Whether a process is running, or a connection or server open, as process-live-p. */
   function processLiveP(process: ProcessLike): boolean;
   /** How a process's output is decoded and its input encoded, as process-coding-system. */
@@ -1644,6 +1660,18 @@ const API: &str = r##"
    * and what it wrote. Asks the agent's permission first.
    */
   function callProcess(command: string[], options?: { directory?: string; input?: string }): { exit: number; output: string };
+  /**
+   * Run a program and wait for it, as Emacs's call-process takes it: its
+   * input the file `infile`, or none; what it writes going where
+   * `destination` says, as callProcessRegion's does; with `display`, shown
+   * line by line as it comes. The program is looked for along exec-path,
+   * runs in default-directory with process-environment, and its output is
+   * decoded as coding-system-for-read, else process-coding-system-alist
+   * says, else default-process-coding-system. Returns the exit code, a
+   * description of the signal that ended it, as "Killed: 9", or undefined
+   * if not waited for. Asks the agent's permission first.
+   */
+  function callProcess(program: string, infile?: string | null, destination?: CallProcessDestination, display?: boolean | null, ...args: string[]): number | string | undefined;
   /**
    * Where a window's text starts, the selected window's by default, at the
    * start of its top line, as window-start. Another window's start moves

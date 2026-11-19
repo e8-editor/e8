@@ -727,13 +727,19 @@ impl Editor {
     /// Reports an error the command loop did not handle: its message in
     /// the echo area with `context` before it, and the bell, as Emacs's
     /// `command-error-default-function` does. `--batch` writes it to
-    /// standard error instead, as Emacs's does with no frame up.
+    /// standard error and exits with status 255 instead, as Emacs's does
+    /// when it is not interactive: what is running is unwound.
     pub fn command_error_default_function(&mut self, message: &str, context: &str, condition: Option<&str>) -> Result<()> {
         // Leaving a minibuffer only rings; any other error throws away
         // what was typed ahead first, as keyboard.c does.
         if condition == Some("minibuffer-quit") {
             self.message(format!("{context}{message}"));
             return self.ding();
+        }
+        if self.noninteractive() {
+            eprintln!("{context}{message}");
+            self.kill_emacs_with_status(255)?;
+            return Err(crate::fileio::exiting());
         }
         self.discard_input();
         self.show_error(format!("{context}{message}"));

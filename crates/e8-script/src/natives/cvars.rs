@@ -309,14 +309,21 @@ natives! {
         Ok(EditorValue::Null)
     }
 
-    /// The first file along a path that is `filename` with one of `suffixes`, as locate-file-internal; undefined if none.
+    /// The first file along a path that is `filename` with one of
+    /// `suffixes`, as locate-file-internal; undefined if none. A null in
+    /// the path is default-directory. `predicate` is what the file must
+    /// pass: none, a file that is not a directory; a number, an access(2)
+    /// mode, 1 to run, 2 to write and 4 to read, as Emacs's 1 for
+    /// file-executable-p; a function, called with the file's name, true
+    /// for it, a directory only if it answers "dir-ok".
     #[ts = "(filename: string, path: (string | null)[], suffixes?: string[] | null, predicate?: Value): string | undefined"]
-    pub fn locateFileInternal(ed, filename: String, path: Vec<EditorValue>, suffixes: Opt<EditorValue>, _predicate: Opt<EditorValue>) -> Option<String> {
+    pub fn locateFileInternal(ed, filename: String, path: Vec<EditorValue>, suffixes: Opt<EditorValue>, predicate: Opt<EditorValue>) -> Option<String> {
         let suffixes: Vec<String> = match suffixes.0 {
             Some(EditorValue::List(items)) => items.iter().filter_map(|s| s.as_str().map(str::to_string)).collect(),
-            _ => vec![String::new()],
+            _ => Vec::new(),
         };
-        let dirs: Vec<String> = if std::path::Path::new(&filename).is_absolute() {
+        let suffixes = if suffixes.is_empty() { vec![String::new()] } else { suffixes };
+        let dirs: Vec<String> = if e8_core::file_name_absolute_p(&filename) {
             vec![String::new()]
         } else {
             path.iter().map(|d| d.as_str().map_or_else(|| ed.default_directory().to_string_lossy().into_owned(), str::to_string)).collect()
@@ -324,9 +331,25 @@ natives! {
         for dir in dirs {
             for suffix in &suffixes {
                 let candidate = if dir.is_empty() { format!("{filename}{suffix}") } else { format!("{}/{filename}{suffix}", dir.trim_end_matches('/')) };
-                let expanded = ed.expand_file_name(&candidate);
-                if e8_core::vfs::path_exists(&expanded) && !e8_core::vfs::path_is_dir(&expanded) {
-                    return Ok(Some(expanded.to_string_lossy().into_owned()));
+                let expanded = ed.expand_file_name(&candidate).to_string_lossy().into_owned();
+                let is_dir = e8_core::vfs::path_is_dir(&expanded);
+                let passes = match &predicate.0 {
+                    None | Some(EditorValue::Null) | Some(EditorValue::Bool(false)) => e8_core::vfs::path_exists(&expanded) && !is_dir,
+                    Some(EditorValue::Number(mode)) => {
+                        let mode = *mode as i64;
+                        !is_dir
+                            && e8_core::vfs::path_exists(&expanded)
+                            && (mode & 1 == 0 || ed.file_executable_p(&expanded)?)
+                            && (mode & 2 == 0 || ed.file_writable_p(&expanded)?)
+                            && (mode & 4 == 0 || ed.file_readable_p(&expanded)?)
+                    }
+                    Some(f) => {
+                        let answer = ed.funcall(f, &[EditorValue::Str(expanded.clone())])?;
+                        answer.is_true() && (!is_dir || answer.as_str() == Some("dir-ok"))
+                    }
+                };
+                if passes {
+                    return Ok(Some(expanded));
                 }
             }
         }

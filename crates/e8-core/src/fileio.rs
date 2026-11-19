@@ -562,6 +562,17 @@ impl Editor {
         self.kill_emacs_with_status(0)
     }
 
+    /// As [`Editor::kill_emacs_with_status`], and in batch mode an error
+    /// that unwinds what is running, as Emacs's kill-emacs exits there and
+    /// then: the batch runner sees E8 is quitting and exits with the status.
+    pub fn kill_emacs_now(&mut self, status: i32) -> Result<()> {
+        self.kill_emacs_with_status(status)?;
+        if self.noninteractive() {
+            return Err(exiting());
+        }
+        Ok(())
+    }
+
     /// As [`Editor::kill_emacs`], the program exiting with `status`, as
     /// `(kill-emacs 1)` does: batch mode's runs report failure this way.
     pub fn kill_emacs_with_status(&mut self, status: i32) -> Result<()> {
@@ -611,6 +622,13 @@ fn write_synced(path: &Path, bytes: &[u8], like: Option<&fs::Metadata>) -> std::
         fs::set_permissions(path, meta.permissions())?;
     }
     Ok(())
+}
+
+
+/// What unwinds code when batch E8 exits in the middle of it, as
+/// kill-emacs does: a condition no handler for `error` catches.
+pub(crate) fn exiting() -> Error {
+    Error::signal("kill-emacs", "Exiting", Vec::new())
 }
 
 #[cfg(test)]

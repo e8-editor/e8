@@ -80,7 +80,9 @@ pub fn define_error(symbol: &str, parent: &str) {
 }
 
 /// The conditions an error symbol belongs to, itself first, as its
-/// `error-conditions` property lists them. `quit` is not an `error`.
+/// `error-conditions` property lists them. `quit` is not an `error`, nor
+/// is `kill-emacs`, which unwinds code when batch E8 exits in the middle
+/// of it.
 pub fn error_conditions(symbol: &str) -> Vec<String> {
     let mut out = vec![symbol.to_string()];
     let mut current = symbol.to_string();
@@ -98,7 +100,7 @@ pub fn error_conditions(symbol: &str) -> Vec<String> {
             _ => break,
         }
     }
-    if symbol != "quit" && !out.iter().any(|c| c == "quit" || c == "error") {
+    if symbol != "quit" && symbol != "kill-emacs" && !out.iter().any(|c| c == "quit" || c == "error") {
         out.push("error".to_string());
     }
     out
