@@ -1609,3 +1609,59 @@ fn the_tags_menu_takes_the_frames_width_and_lists_inherited_tags_as_org_does() {
     assert_eq!(lines[3].matches('[').count(), 9, "{text}");
     assert_eq!(ed.window_list().len(), 2);
 }
+
+/// C-u C-u C-c C-w goes to where the last refile put its entry, through the
+/// org-refile-last-stored bookmark; C-2 refiles to the running clock's entry.
+#[test]
+fn refile_goes_back_to_the_last_refile_and_files_to_the_clock() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    // Long enough that the bookmark keeps the text around it, as Emacs's finds its place by.
+    std::fs::write(dir.path().join("main.org"), "* B\n* A\nthe body of A\n* Clocked\nthe body of the clocked one\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    s.eval_expression(&mut ed, &format!(r#"(e8.setVariable("user-emacs-directory", {:?}), e8.setVariable("e8--today", "2026-11-04"), 1)"#, format!("{}/", dir.path().display()))).unwrap();
+    ed.call("find-file", vec![Arg::Str(dir.path().join("main.org").display().to_string())]).unwrap();
+    ed.press("C-n C-c C-w B RET").unwrap();
+    assert_eq!(text(&ed), "* B\n** A\nthe body of A\n* Clocked\nthe body of the clocked one\n");
+    ed.press("M-> C-u C-u C-c C-w").unwrap();
+    assert_eq!(ed.echo(), Some("This is the location of the last refile"));
+    assert_eq!(s.eval_expression(&mut ed, "e8.point()").unwrap(), "4");
+    // The clock on Clocked; B goes under it.
+    let at = find(&ed, "* Clocked");
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-c C-x C-i M-< C-2 C-c C-w").unwrap();
+    assert!(text(&ed).starts_with("* Clocked\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 12:00]\n:END:\nthe body of the clocked one\n** B\n*** A\n"), "{:?}", text(&ed));
+    let file = dir.path().join("main.org").display().to_string();
+    assert_eq!(ed.echo().map(str::to_string), Some(format!("Refile to \"Clocked\" in file {file}: done")));
+}
+
+/// Outline paths complete a level at a time, and kept targets are checked:
+/// a heading renamed since is refused until C-0 C-c C-w clears them.
+#[test]
+fn refile_paths_complete_in_steps_and_the_cache_is_checked() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("main.org"), "* Note\n* A\n** a\n*** deep\n* B\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.call("find-file", vec![Arg::Str(dir.path().join("main.org").display().to_string())]).unwrap();
+    s.eval_expression(
+        &mut ed,
+        r#"(e8.setVariable("org-refile-targets", [[null, ":maxlevel", 3]]), e8.setVariable("org-refile-use-outline-path", true), e8.setVariable("org-refile-use-cache", true), 1)"#,
+    )
+    .unwrap();
+    // Under A/, its own path and the next level's, each with what shows after it, as org-olpath-completing-read offers them.
+    s.eval_typescript(
+        &mut ed,
+        "steps.ts",
+        r#"import("org-refile").then(({ olpathTable }) => e8.message(JSON.stringify(olpathTable(["Note/", "A/", "A/a/", "A/a/deep/", "B/", "x/y/ (other.org)"])("")).concat(" ", JSON.stringify(olpathTable(["A/", "A/a/", "A/a/deep/"])("A/")))));"#.to_string(),
+    )
+    .unwrap();
+    assert_eq!(ed.echo(), Some(r#"["Note/","A/","B/","x/ (other.org)"] ["A/","A/a/"]"#));
+    ed.press("C-c C-w A / a / RET").unwrap();
+    assert_eq!(text(&ed), "* A\n** a\n*** deep\n*** Note\n* B\n");
+    // B renamed after its target was kept.
+    ed.press("M-> C-p C-e x M-< C-c C-w B / RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), Some("Invalid refile position, please clear the cache with ‘C-0 C-c C-w’ before refiling".into()));
+    ed.press("C-0 C-c C-w").unwrap();
+    assert_eq!(ed.echo(), Some("Refile cache has been cleared"));
+}

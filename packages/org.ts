@@ -4040,7 +4040,7 @@ e8.defineCommand({
 });
 
 /** Whether text is one or more subtrees: it starts with a heading and none after is higher, as org-kill-is-subtree-p says. */
-function killIsSubtree(text: string): boolean {
+export function killIsSubtree(text: string): boolean {
   const first = /^(?:[ \t\n\r]*?\n)?(\*+) /.exec(text);
   if (!first) return false;
   const level = first[1].length;
