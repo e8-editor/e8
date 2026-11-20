@@ -5630,13 +5630,13 @@ declare global {
        */
       "org-global-cycle": [];
       /**
-       * Copy the ID of the entry at point, making one if there is none, to the kill ring.
+       * Copy the ID of the entry at point to the kill ring. Create an ID if necessary.
        *
        * Defined in packages/org-id.ts.
        */
       "org-id-copy": [];
       /**
-       * Make an ID for the entry at point, or the file before its first heading, if it has none, and copy it to the kill ring.
+       * Create an ID for the current entry and return it. If the entry already has an ID, just return it. With a prefix argument, force the creation of a new ID.
        *
        * @param force raw prefix argument
        *
@@ -5644,13 +5644,19 @@ declare global {
        */
       "org-id-get-create": [force?: PrefixArg | boolean];
       /**
-       * Go to the entry with an ID read.
+       * Switch to the buffer containing the entry with id ID. Move the cursor to that entry in that buffer.
        *
        * @param id text
        *
        * Defined in packages/org-id.ts.
        */
       "org-id-goto": [id: string];
+      /**
+       * Scan relevant files for IDs. Store the relation between files and corresponding IDs. This will scan all agenda files, org-id-extra-files, all open Org files, and all files currently mentioned in org-id-locations.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-update-id-locations": [];
       /**
        * Indent the block at point.
        * Signal an error when not at a block.
@@ -13015,11 +13021,65 @@ declare global {
        */
       "org-hide-leading-stars": Value;
       /**
-       * Files besides the agenda files that org-id-find looks in for IDs.
+       * Files to be searched for IDs, besides the agenda files, or the name of a variable that holds them.
        *
        * Defined in packages/org-id.ts.
        */
       "org-id-extra-files": Value;
+      /**
+       * List of files that contain IDs.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-files": Value;
+      /**
+       * Whether IDs made by the org and ts methods end in @ and the machine's name.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-include-domain": Value;
+      /**
+       * The file for remembering in which file an ID was defined, or nil for .org-id-locations in user-emacs-directory.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-locations-file": Value;
+      /**
+       * Whether the files in org-id-locations-file are written relative to its directory, for folders shared across systems but mounted at different roots.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-locations-file-relative": Value;
+      /**
+       * How new IDs are made: uuid (or uuidgen) for a random UUID, org for the time in base 36, reversed, ts for the time as org-id-ts-format writes it; org and ts add @ and the machine's name with org-id-include-domain.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-method": Value;
+      /**
+       * The file name org-id-get records a new ID under instead of the buffer's, for contents in a temporary buffer.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-overriding-file-name": Value;
+      /**
+       * The prefix of new IDs, before a colon, or nil for none.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-prefix": Value;
+      /**
+       * Whether IDs are tracked through files, so that links work globally, in org-id-locations, saved in org-id-locations-file when E8 exits.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-track-globally": Value;
+      /**
+       * How org-id-method ts writes the time, as format-time-string.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-ts-format": Value;
       /**
        * How deep in the outline M-x imenu lists headings.
        *
