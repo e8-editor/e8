@@ -665,3 +665,94 @@ export function startupVisibility(): void {
   hideAllDrawers();
   showEmptyLines("t");
 }
+
+e8.defineVariable({
+  name: "org-fold-show-context-detail",
+  doc:
+    "How much is shown around a place Org goes to in folded text, as [context, span] lists, a context being agenda, " +
+    "org-goto, occur-tree, tags-tree, link-search, mark-goto, bookmark-jump, isearch or default. A span is minimal " +
+    "(the heading, and the entry if not on it), local (the heading, entry and next heading), ancestors (minimal and " +
+    "the headings above), ancestors-full (ancestors and the whole subtree), lineage (local, the headings above and " +
+    "their siblings), tree (ancestors with each one's children), or canonical (tree with each one's entry). One span " +
+    "alone is used everywhere.",
+  value: [
+    ["agenda", "local"],
+    ["bookmark-jump", "lineage"],
+    ["isearch", "lineage"],
+    ["default", "ancestors"],
+  ],
+});
+
+/** The heading whose entry the position is in, as org-back-to-heading finds it. */
+function headingAtOrBefore(all: Heading[], pos: number): number | undefined {
+  return headingIndex(all, lineAt(pos));
+}
+
+/** Shows the heading lines of a heading's siblings, as org-fold-show-siblings does. */
+function showSiblings(all: Heading[], i: number): void {
+  const level = all[i].level;
+  for (let k = i + 1; k < all.length && all[k].level >= level; k++) if (all[k].level === level) showHeadingLine(all[k]);
+  for (let k = i - 1; k >= 0 && all[k].level >= level; k--) if (all[k].level === level) showHeadingLine(all[k]);
+}
+
+/**
+ * Shows what DETAIL says around point, as org-fold-show-set-visibility
+ * does: nil, minimal, local, ancestors, ancestors-full, lineage, tree,
+ * canonical or t.
+ */
+export function showSetVisibility(detail: string | null): void {
+  const pos = e8.point();
+  const all = headings();
+  const i = headingAtOrBefore(all, pos);
+  const atHeading = i !== undefined && all[i].line === lineAt(pos);
+  if (atHeading && detail !== "local") showHeadingLine(all[i]);
+  else {
+    // org-fold-show-entry: from the end of the line before the heading, or the buffer's start, to the next heading.
+    if (i === undefined) flag(e8.pointMin(), all.find((h) => h.start > pos)?.start ?? e8.pointMax(), false);
+    else showEntry(all, i);
+    // A fold of a drawer or block point is in opens too.
+    if (e8.invisibleAt(pos)) {
+      for (const id of e8.overlaysAt(pos)) {
+        const spec = String(e8.overlayGet(id, "invisible"));
+        if (FOLD_SPECS.includes(spec)) flag(e8.overlayStart(id) ?? pos, e8.overlayEnd(id) ?? pos, false, spec);
+      }
+    }
+    if (i !== undefined) {
+      if (detail === "tree" || detail === "canonical" || detail === "t") showChildren(all, i);
+      else if (detail !== null && detail !== "minimal" && detail !== "ancestors" && detail !== "ancestors-full") {
+        // outline-next-heading, then org-fold-heading there: the last heading's own line if there is none after.
+        const next = all.find((h) => h.start > pos);
+        showHeadingLine(next ?? all[all.length - 1]);
+      }
+    }
+  }
+  // The rest of the subtree from point, as org-fold-show-subtree; before the first heading, the rest of the buffer.
+  if (i === undefined) {
+    if (detail === "ancestors-full") flag(pos, e8.pointMax(), false);
+    return;
+  }
+  if (detail === "ancestors-full") flag(pos, nextSameOrHigher(all, i)?.start ?? e8.pointMax(), false);
+  if (detail === "lineage") showSiblings(all, i);
+  if (detail === "ancestors" || detail === "ancestors-full" || detail === "lineage" || detail === "tree" || detail === "canonical" || detail === "t") {
+    for (const a of ancestors(all, i)) {
+      showHeadingLine(all[a]);
+      if (detail === "canonical" || detail === "t") showEntry(all, a);
+      if (detail === "tree" || detail === "canonical" || detail === "t") showChildren(all, a);
+    }
+  }
+}
+
+/**
+ * Makes point and what is around it show, as org-fold-show-context does,
+ * as much as org-fold-show-context-detail gives `key`, or its default.
+ */
+export function showContext(key?: string): void {
+  const detail = e8.variable("org-fold-show-context-detail");
+  let span: e8.Value | undefined;
+  if (!Array.isArray(detail)) span = detail;
+  else {
+    const find = (k: string) => (detail.find((e) => Array.isArray(e) && e[0] === k) as e8.Value[] | undefined)?.[1];
+    span = (key !== undefined ? find(key) : undefined) ?? find("default");
+  }
+  showSetVisibility(span === null || span === undefined || span === false ? null : span === true ? "t" : String(span));
+}

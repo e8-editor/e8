@@ -2,9 +2,8 @@
 // deadlines and timestamps from org-agenda-files, and the list of TODO
 // items, in the *Org Agenda* buffer, whose keys act on the entries they show.
 
-import { type DateTime, type Heading, PLANNING, allKeywords, at, entryEnd, headings, isDone, keywordLines, today } from "org";
+import { type DateTime, type Heading, PLANNING, allKeywords, at, categories, category, entryEnd, headings, isDone, keywordLines, today } from "org";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
-import { propertyLocalValues, propertySeparator, topLocalValues } from "org-list";
 import { getLocation, gotoLastStored, refile } from "org-refile";
 import { allMatches, charCount, eraseBuffer } from "subr";
 
@@ -139,16 +138,6 @@ function headingOf(item: AgendaItem): number {
   return (item.marks && e8.markerPosition(item.marks.heading)) ?? item.heading;
 }
 
-/** The buffer's category, as org-refresh-category-properties sets it: the last #+CATEGORY, or the file's name. */
-function category(): string {
-  for (let l = e8.lineCount() - 1; l >= 0; l--) {
-    const m = /^[ \t]*#\+CATEGORY:[ \t]*(\S.*?)[ \t]*$/i.exec(e8.lineText(l));
-    if (m) return m[1];
-  }
-  const file = e8.bufferFileName();
-  return file ? (file.split("/").pop() ?? file).replace(/\.[^.]*$/, "") : "???";
-}
-
 /** The string after a time on the grid and on entries, as org-agenda-time-grid's third element. */
 function gridDots(): string {
   const grid = e8.variable("org-agenda-time-grid");
@@ -168,29 +157,6 @@ function timeOf(ts: string): AgendaItem["time"] {
   const [h, min] = [Number(m[1]), Number(m[2])];
   const field = m[3] === undefined ? clockTime(h, min) + gridDots() : `${clockTime(h, min)}-${Number(m[3])}:${m[4]}`;
   return { field, minutes: h * 60 + min };
-}
-
-/**
- * Each heading's category, as org-agenda-format-item asks org-get-category
- * for it: inherited, with CATEGORY+ adding to it.
- */
-function categories(all: Heading[]): string[] {
-  // As org-get-category, org-entry-get-with-inheritance of CATEGORY: the
-  // buffer's own is org-data's, the drawer before the first heading's or
-  // else the keyword's or the file's name, and "nil" is none, "???".
-  const top = topLocalValues("CATEGORY");
-  const data = top?.[0] !== undefined ? [top[0], ...top[1]] : [category(), ...(top?.[1] ?? [])];
-  const separator = propertySeparator("CATEGORY");
-  const stack: { level: number; values: string[] }[] = [];
-  return all.map((h) => {
-    while (stack.length > 0 && stack[stack.length - 1].level >= h.level) stack.pop();
-    const local = propertyLocalValues(h.line, "CATEGORY");
-    const parent = stack.length > 0 ? stack[stack.length - 1].values : data;
-    const values = local?.[0] !== undefined ? [local[0], ...local[1]] : [...parent, ...(local?.[1] ?? [])];
-    stack.push({ level: h.level, values });
-    const cat = values.join(separator);
-    return cat === "nil" ? "???" : cat;
-  });
 }
 
 /**

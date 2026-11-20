@@ -76,6 +76,7 @@ mod mouse_positions;
 mod org;
 mod org_id;
 mod org_select;
+mod org_sparse_tree;
 mod org_src;
 mod overlays;
 mod package_vc;
