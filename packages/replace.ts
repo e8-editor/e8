@@ -772,8 +772,8 @@ e8.addHook("kill-buffer-hook", () => {
   if (e8.variable("major-mode") === "occur-mode") forgetOccurTargets(e8.currentBuffer().id);
 });
 
-/** A buffer occur searches, with the region it searches if not all of it. */
-type OccurTarget = { buffer: string; region?: [number, number] };
+/** A buffer occur searches, the buffer itself rather than its name, with the region it searches if not all of it. */
+type OccurTarget = { buffer: e8.Buffer; region?: [number, number] };
 
 /** What occur was last asked, to make *Occur* again with g. */
 let occurArgs: { regexp: string; targets: OccurTarget[] } | undefined;
@@ -786,7 +786,8 @@ interface OccurSection {
 }
 
 /** The lines matching `regexp` in a buffer, as occur-engine finds them for one buffer. */
-function occurSection(regexp: string, { buffer, region }: OccurTarget, caseFold: boolean): OccurSection {
+function occurSection(regexp: string, { buffer: bufferObject, region }: OccurTarget, caseFold: boolean): OccurSection {
+  const buffer = e8.bufferName(bufferObject)!;
   const lines: OccurSection["lines"] = [];
   let matches = 0;
   e8.withCurrentBuffer(buffer, () =>
@@ -832,7 +833,7 @@ function occurSection(regexp: string, { buffer, region }: OccurTarget, caseFold:
       }),
     ),
   );
-  return { target: { buffer, region }, lines, matches };
+  return { target: { buffer: bufferObject, region }, lines, matches };
 }
 
 const plural = (n: number, one: string, many: string) => (n === 1 ? one : many);
@@ -848,8 +849,13 @@ const countDescr = (matches: number, lines: number) =>
 function occurIn(regexp: string, targets: OccurTarget[]): number {
   // Case folds as the buffer occur was asked from says, as occur-1 works it out once.
   const caseFold = regexpFoldsCase(regexp);
-  const sections = targets.filter((t) => e8.getBuffer(t.buffer) !== undefined).map((t) => occurSection(regexp, t, caseFold));
-  const multi = targets.length > 1;
+  const live = targets.filter((t) => e8.bufferLiveP(t.buffer));
+  // An *Occur* searched keeps its lines under another name, and a new one is made, as occur-1 renames it.
+  const old = e8.getBuffer("*Occur*");
+  if (old !== undefined && live.some((t) => t.buffer === old)) e8.withCurrentBuffer(old, () => e8.call("rename-uniquely"));
+  const sections = live.map((t) => occurSection(regexp, t, caseFold));
+  // Several buffers as the live ones count them, as occur-engine gets them.
+  const multi = live.length > 1;
   e8.getBufferCreate("*Occur*");
   e8.withCurrentBuffer("*Occur*", () => {
     // The lines it listed before go, and their markers with them.
@@ -869,7 +875,8 @@ function occurIn(regexp: string, targets: OccurTarget[]): number {
       }
       // The last buffer first, as occur-engine puts each buffer's lines at the top.
       for (const { target, lines, matches } of [...found].reverse()) {
-        const { buffer, region } = target;
+        const { region } = target;
+        const buffer = e8.bufferName(target.buffer);
         const header =
           `${countDescr(matches, lines.length)}` +
           // The regexp only for one buffer, as the total says it for several.
@@ -908,7 +915,7 @@ function runOccur(regexp: string, targets: OccurTarget[]): void {
   if (regexp === "") e8.signal("error", "Occur doesn't work with the empty regexp");
   occurArgs = { regexp, targets };
   const count = occurIn(regexp, targets);
-  const live = targets.filter((t) => e8.getBuffer(t.buffer) !== undefined).length;
+  const live = targets.filter((t) => e8.bufferLiveP(t.buffer)).length;
   const killed = targets.length - live;
   e8.message(
     `Searched ${live} ${plural(live, "buffer", "buffers")}${killed === 0 ? "" : ` (${killed} killed)`}; ${count === 0 ? "no" : String(count)} ${plural(count, "match", "matches")} for "${regexp}"`,
@@ -935,15 +942,25 @@ export async function readOccurRegexp(): Promise<string> {
 }
 
 /** Lists the lines matching a regexp in several buffers in *Occur*, as multi-occur. */
-export function multiOccur(buffers: string[], regexp: string): void {
-  runOccur(regexp, buffers.map((buffer) => ({ buffer })));
+export function multiOccur(buffers: (string | e8.Buffer)[], regexp: string): void {
+  runOccur(
+    regexp,
+    // A buffer killed already counts as killed, as occur-1 counts it.
+    buffers.flatMap((b) => {
+      const buffer = typeof b === "string" ? e8.getBuffer(b) : b;
+      return buffer === undefined ? [] : [{ buffer }];
+    }),
+  );
 }
 
 // For code, as Emacs's occur-1: the regexp, context lines (not shown in E8) and the buffers.
 e8.defun("occur-1", (regexp: string, _nlines: e8.Value, buffers: e8.Value[]) =>
-  multiOccur(
-    buffers.map((b) => e8.bufferName(b as string)).filter((b): b is string => b !== undefined),
+  runOccur(
     regexp,
+    buffers.flatMap((b) => {
+      const buffer = typeof b === "string" ? e8.getBuffer(b) : (b as e8.Buffer);
+      return buffer === undefined ? [] : [{ buffer }];
+    }),
   ),
 );
 
@@ -952,10 +969,11 @@ e8.defineCommand({
   doc: "Show all lines in buffers BUFS containing a match for REGEXP.\nThis function acts on multiple buffers; otherwise, it is exactly like\n`occur'.  When you invoke this command interactively, you must specify\nthe buffer names that you want, one by one.",
   run: async () => {
     const bufs = [readBuffer("First buffer to search: ", e8.bufferName(), true)];
+    // A buffer named twice is searched twice, as Emacs's cl-pushnew of new strings leaves it.
     for (;;) {
       const next = readBuffer("Next buffer to search (RET to end): ", null, true);
       if (next === "") break;
-      if (!bufs.includes(next)) bufs.push(next);
+      bufs.push(next);
     }
     multiOccur(bufs, await readOccurRegexp());
   },
@@ -977,7 +995,8 @@ e8.defineCommand({
     if (bufregexp === undefined) return;
     const buffers = e8.bufferList().filter((b) => {
       const name = allbufs !== null ? b : e8.withCurrentBuffer(b, () => e8.bufferFileName());
-      return typeof name === "string" && e8.stringMatch(bufregexp, name) !== undefined;
+      // As string-match, which follows case-fold-search.
+      return typeof name === "string" && e8.stringMatch(bufregexp, name, { caseFold: e8.variable("case-fold-search") !== false && e8.variable("case-fold-search") !== null }) !== undefined;
     });
     multiOccur(buffers, regexp);
   },
@@ -995,7 +1014,7 @@ e8.defineCommand({
     const mark = e8.mark();
     const region: [number, number] | undefined =
       e8.regionActive() && mark !== undefined ? [Math.min(mark, e8.point()), Math.max(mark, e8.point())] : undefined;
-    runOccur(regexp, [{ buffer: e8.bufferName(), region }]);
+    runOccur(regexp, [{ buffer: e8.currentBuffer(), region }]);
   },
 });
 e8.bindKey("M-s o", "occur");

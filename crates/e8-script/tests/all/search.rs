@@ -493,3 +493,36 @@ fn multi_occur_lists_the_buffers_as_emacs_does() {
         .unwrap()
     );
 }
+
+/// g in *Occur* after a buffer it listed was killed lists the live one as
+/// one buffer and counts the killed one, as Emacs's occur-1 does; *Occur*
+/// itself searched keeps its lines under another name.
+#[test]
+fn occur_again_counts_killed_buffers_and_keeps_a_searched_occur() {
+    let (mut ed, s) = setup("");
+    let got = s
+        .eval_expression(
+            &mut ed,
+            r#"(() => {
+  e8.withCurrentBuffer(e8.getBufferCreate("alpha"), () => e8.insert("one apple\napple apple pie\n"));
+  e8.withCurrentBuffer(e8.getBufferCreate("beta"), () => e8.insert("an apple a day\n"));
+  e8.funcall("occur-1", "apple", null, ["alpha", "beta"]);
+  e8.call("kill-buffer", "beta");
+  e8.withCurrentBuffer("*Occur*", () => e8.call("occur-revert-buffer"));
+  const again = [e8.withCurrentBuffer("*Occur*", () => e8.bufferText()), e8.currentMessage()];
+  e8.funcall("occur-1", "apple", null, ["*Occur*", "alpha"]);
+  return JSON.stringify([...again, e8.bufferList().filter((b) => b.startsWith("*Occur*")).sort()]);
+})()"#,
+        )
+        .unwrap();
+    let got: String = serde_json::from_str(&got).unwrap();
+    assert_eq!(
+        got,
+        serde_json::to_string(&serde_json::json!([
+            "3 matches in 2 lines for \"apple\" in buffer: alpha\n      1:one apple\n      2:apple apple pie\n",
+            "Searched 1 buffer (1 killed); 3 matches for \"apple\"",
+            ["*Occur*", "*Occur*<2>"]
+        ]))
+        .unwrap()
+    );
+}

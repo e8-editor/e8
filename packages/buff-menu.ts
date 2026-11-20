@@ -80,12 +80,7 @@ e8.defineCommand({
   doc: "Show all lines in marked buffers containing a match for a regexp.",
   run: async () => {
     const regexp = await readOccurRegexp();
-    multiOccur(
-      markedBuffers()
-        .map((b) => e8.bufferName(b))
-        .filter((b): b is string => b !== undefined),
-      regexp,
-    );
+    multiOccur(markedBuffers(), regexp);
   },
 });
 
