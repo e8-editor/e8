@@ -184,14 +184,22 @@ function writeBack(edit: Edit, text: string): void {
     if (e8.bufferSubstringNoProperties(beg, end) === text) return;
     // Wherever the Org buffer is narrowed to now, as org-edit-src-exit
     // narrows to the block itself to put the text back.
-    e8.saveExcursion(() =>
-      e8.saveRestriction(() => {
-        e8.widen();
-        e8.gotoChar(beg);
-        e8.deleteRegion(beg, end);
-        e8.insert(text);
-      }),
-    );
+    // Only what differs changes, so point and markers in the block keep their
+    // places, as org-replace-buffer-contents writes it back.
+    const scratch = e8.generateNewBufferName(" *org-src-write-back*");
+    e8.getBufferCreate(scratch);
+    try {
+      e8.withCurrentBuffer(scratch, () => e8.insert(text));
+      e8.saveExcursion(() =>
+        e8.saveRestriction(() => {
+          e8.widen();
+          e8.narrowToRegion(beg, end);
+          e8.replaceBufferContents(scratch, 0.1);
+        }),
+      );
+    } finally {
+      e8.call("kill-buffer", scratch);
+    }
   });
 }
 
@@ -365,5 +373,15 @@ e8.defun("org-src-font-lock-fontify-block", (lang: e8.Value, start: e8.Value, en
     e8.setBufferModified(false);
   });
   for (const [a, b, face] of runs) e8.putTextProperty(from + a, from + b, "face", face);
+  return true;
+});
+
+/**
+ * Fills the source block at point in its language's mode, in its edit
+ * buffer, as org-fill-element does for a src-block: the paragraph there,
+ * or the region if it is active there.
+ */
+e8.defun("org-src--fill-paragraph", (justify?: e8.Value) => {
+  doInEditBuffer(() => e8.callWithPrefix(justify === null || justify === undefined || justify === false ? null : 4, "fill-paragraph"));
   return true;
 });
