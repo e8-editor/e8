@@ -113,12 +113,14 @@ fn regex_like(quoted: &str, len: usize) -> bool {
 }
 
 #[test]
-fn an_id_needs_a_file_and_the_locations_can_be_relative() {
+fn an_id_without_a_file_is_not_recorded_and_the_locations_can_be_relative() {
     let mut f = Fixture::new();
     f.ed.window_buffer_mut().set_text("* H\n");
     f.ed.call("org-mode", vec![]).unwrap();
-    let err = f.ed.call("org-id-get-create", vec![]).unwrap_err().to_string();
-    assert!(err.contains("`org-id-get' expects a file-visiting buffer"), "{err}");
+    // Emacs signals here; E8 makes the ID and records no file for it.
+    f.ed.call("org-id-get-create", vec![]).unwrap();
+    assert!(f.ed.window_buffer().slice(0..f.ed.window_buffer().len()).contains(":ID:"));
+    assert_eq!(f.eval(r#"JSON.stringify(e8.variable("org-id-files"))"#), r#""[]""#);
     let b = f.write("b.org", "* B\n");
     f.visit(&b);
     f.eval(r#"e8.setVariable("org-id-locations-file-relative", true)"#);
@@ -132,4 +134,35 @@ fn an_id_needs_a_file_and_the_locations_can_be_relative() {
     assert_ne!(before, after);
     let text = f.ed.window_buffer().slice(0..f.ed.window_buffer().len());
     assert_eq!(text.matches(":ID:").count(), 1, "{text}");
+}
+
+#[test]
+fn a_file_visited_through_a_symlink_is_gone_to_in_its_own_buffer() {
+    let mut f = Fixture::new();
+    std::fs::create_dir(f.path("real")).unwrap();
+    std::os::unix::fs::symlink(f.path("real"), f.path("link")).unwrap();
+    f.write("real/s.org", "* S\n:PROPERTIES:\n:ID: s1\n:END:\n");
+    let link = f.path("link/s.org");
+    f.visit(&link);
+    f.ed.call("org-id-update-id-locations", vec![]).unwrap();
+    f.eval(r#"e8.call("switch-to-buffer", "*scratch*")"#);
+    f.ed.call("org-id-goto", vec![e8_core::Arg::Str("s1".into())]).unwrap();
+    assert_eq!(f.eval("e8.bufferName(e8.currentBuffer())"), "\"s.org\"");
+    let names = f.eval("JSON.stringify(e8.bufferList().map((b) => e8.bufferName(b)))");
+    assert!(!names.contains("s.org<2>"), "{names}");
+}
+
+#[test]
+fn a_files_own_id_goes_after_its_first_comments_and_an_empty_scan_says_nothing() {
+    let mut f = Fixture::new();
+    let x = f.write("x.org", "# c\n#+title: X\nText\n");
+    f.visit(&x);
+    f.ed.call("org-id-get-create", vec![]).unwrap();
+    let text = f.ed.window_buffer().slice(0..f.ed.window_buffer().len());
+    assert!(text.starts_with("# c\n:PROPERTIES:\n:ID:"), "{text:?}");
+    // No files to scan: nothing is said, as Emacs's checksum of none matches its first.
+    let mut g = Fixture::new();
+    g.ed.clear_message();
+    assert_eq!(g.eval(r#"JSON.stringify(e8.funcall("org-id-find", "nope") ?? null)"#), r#""null""#);
+    assert_ne!(g.ed.echo(), Some("0 files scanned, 0 files contains IDs, and 0 IDs found."));
 }

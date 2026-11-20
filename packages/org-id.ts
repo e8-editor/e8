@@ -13,7 +13,8 @@
 import { headings, headingIndex, linkSetParameters } from "org";
 import { elementAt } from "org-element";
 import { entryGet, entryPut, topGet } from "org-list";
-import { fileRelativeName } from "files";
+import { fileRelativeName, findBufferVisiting } from "files";
+import { showContext } from "ol";
 import { truthy } from "subr";
 
 e8.defineVariable({
@@ -35,7 +36,7 @@ e8.defineVariable({ name: "org-id-files", doc: "List of files that contain IDs."
 e8.defineVariable({
   name: "org-id-extra-files",
   doc: "Files to be searched for IDs, besides the agenda files, or the name of a variable that holds them.",
-  value: [],
+  value: "org-agenda-text-search-extra-files",
 });
 e8.defineVariable({
   name: "org-id-method",
@@ -83,7 +84,7 @@ export function orgIdNew(prefix?: string): string {
   if (method === "uuid" || method === "uuidgen") unique = orgIdUuid();
   else if (method === "org") unique = [...timeToB36()].reverse().join("") + domain();
   else if (method === "ts") unique = e8.formatTimeString(String(e8.variable("org-id-ts-format"))) + domain();
-  else e8.signal("error", "Invalid `org-id-method'");
+  else e8.signal("error", "Invalid ‘org-id-method’");
   return head + unique;
 }
 e8.defun("org-id-new", (prefix?: string | null) => orgIdNew(prefix ?? undefined));
@@ -118,10 +119,20 @@ function putId(id: string): void {
     // As org-entry-put on org-data: an ID line already there, as ":ID: nil", is replaced.
     if (drawer) entryPut(drawer.start - 1, "ID", id);
     else {
-      e8.gotoChar(0);
+      // After blank lines and comments, as org-get-property-block makes org-data's.
+      let line = 0;
+      while (line < e8.lineCount() && /^[ \t]*$/.test(e8.lineText(line))) line++;
+      while (line < e8.lineCount() && /^[ \t]*#(?: |$)/.test(e8.lineText(line))) line++;
+      e8.gotoChar(line < e8.lineCount() ? e8.lineStart(line) : e8.pointMax());
       e8.insert(`:PROPERTIES:\n:ID:       ${id}\n:END:\n`);
     }
   });
+}
+
+/** The file of the current buffer, or of the buffer an indirect one shares its text with, as buffer-file-name of buffer-base-buffer. */
+function baseFileName(): string | undefined {
+  const base = e8.bufferBaseBuffer();
+  return base ? e8.withCurrentBuffer(base, () => e8.bufferFileName()) : e8.bufferFileName();
 }
 
 /**
@@ -137,7 +148,7 @@ export function orgIdGet(create = false, prefix?: string): string | undefined {
   const fresh = orgIdNew(prefix);
   putId(fresh);
   const overriding = e8.variable("org-id-overriding-file-name");
-  addLocation(fresh, typeof overriding === "string" ? overriding : e8.bufferFileName());
+  addLocation(fresh, typeof overriding === "string" ? overriding : baseFileName());
   return fresh;
 }
 
@@ -170,7 +181,7 @@ e8.defineCommand({
 /** Each ID's file, abbreviated, as the hash table org-id-locations is once loaded; undefined until then. */
 let locations: Map<string, string> | undefined;
 /** The files scanned last, with when each changed, as org-id--locations-checksum. */
-let checksum: string | undefined;
+let checksum: string = JSON.stringify([]);
 
 /** The file org-id-locations is kept in: org-id-locations-file, or .org-id-locations in user-emacs-directory. */
 function locationsFile(): string {
@@ -245,7 +256,7 @@ export function locationsLoad(): void {
         ]);
     }
   } catch {
-    e8.message(`Could not read \`org-id-locations' from ${file}, setting it to nil`);
+    e8.message(`Could not read ‘org-id-locations’ from ${file}, setting it to nil`);
     alist = [];
   }
   e8.setVariable("org-id-files", alist.map((x) => x[0]));
@@ -255,8 +266,11 @@ e8.defun("org-id-locations-load", locationsLoad);
 
 /** Records that ID is in FILE, as org-id-add-location. */
 export function addLocation(id: string, file: string | undefined): void {
-  if (!file) e8.signal("error", "`org-id-get' expects a file-visiting buffer");
-  const afile = e8.abbreviateFileName(file!);
+  // Emacs signals "‘org-id-get’ expects a file-visiting buffer" here; E8
+  // leaves the ID made but unrecorded, as packages' buffers with no file
+  // (org-roam's tests among them) make IDs.
+  if (!file) return;
+  const afile = e8.abbreviateFileName(file);
   if (!tracking() || !id) return;
   if (locations === undefined) locationsLoad();
   locations!.set(id, afile);
@@ -297,7 +311,8 @@ function withOrgTempBuffer<T>(body: () => T): T {
   try {
     return e8.withCurrentBuffer(buffer, () => {
       // As delay-mode-hooks: Org mode's parser, without what hooks would turn on.
-      e8.letBind({ "org-mode-hook": null }, () => e8.call("org-mode"));
+      const hooks = ["org-mode-hook", "outline-mode-hook", "text-mode-hook", "after-change-major-mode-hook", "change-major-mode-after-body-hook"];
+      e8.letBind(Object.fromEntries(hooks.map((h) => [h, null])), () => e8.call("org-mode"));
       return body();
     });
   } finally {
@@ -322,12 +337,12 @@ function bufferIds(): string[] {
  * unless none of them has changed since it last did.
  */
 export function updateIdLocations(files: string[] = [], silent = false): void {
-  if (!tracking()) e8.signal("error", "Please turn on `org-id-track-globally' if you want to track IDs");
+  if (!tracking()) e8.signal("error", "Please turn on ‘org-id-track-globally’ if you want to track IDs");
   const all = [
     ...new Set([...agendaFiles(), ...extraFiles(), ...idFiles(), ...openOrgFiles(), ...files].map((f) => e8.fileTruename(e8.expandFileName(f)))),
   ];
   const sum = JSON.stringify([...all].sort().map((f) => (e8.fileExists(f) ? [f, e8.fileAttributes(f)?.modified ?? null] : null)));
-  if (sum === checksum && locations !== undefined) return;
+  if (sum === checksum) return;
   const alist: string[][] = [];
   const seen = new Set<string>();
   let ndup = 0;
@@ -367,8 +382,8 @@ e8.defineCommand({
 
 /** The file org-id-locations says ID is in, else the current buffer's, as org-id-find-id-file. */
 export function findIdFile(id: string): string | undefined {
-  if (locations === undefined || locations.size === 0) locationsLoad();
-  return locations!.get(id) ?? e8.bufferFileName();
+  if (locations === undefined) locationsLoad();
+  return locations!.get(id) ?? baseFileName();
 }
 e8.defun("org-id-find-id-file", (id: string) => findIdFile(id));
 
@@ -390,7 +405,7 @@ function findEntryWithId(id: string): number | undefined {
 /** ID's entry in FILE, as its name and position, as org-id-find-id-in-file: in the buffer visiting it, else read afresh. */
 export function findIdInFile(id: string, file: string | undefined): [string, number] | undefined {
   if (!file || !e8.fileExists(e8.expandFileName(file))) return undefined;
-  const visiting = e8.getFileBuffer(e8.expandFileName(file));
+  const visiting = findBufferVisiting(e8.expandFileName(file));
   const pos = visiting
     ? e8.withCurrentBuffer(visiting, () => {
         if (!e8.derivedModeP("org-mode")) e8.call("org-mode");
@@ -424,9 +439,17 @@ export function orgIdGoto(id: string): void {
   const found = orgIdFind(id);
   if (!found) e8.signal("error", `Cannot find entry with ID "${id}"`);
   const [file, pos] = found!;
+  // The buffer visiting it, by its true name too, else the file visited.
   const target = e8.expandFileName(file);
-  if (e8.bufferFileName() !== target) e8.call("find-file", target);
+  const buffer = findBufferVisiting(target);
+  if (buffer !== undefined) {
+    if (buffer !== e8.bufferName(e8.currentBuffer())) e8.call("switch-to-buffer", buffer);
+  } else e8.call("find-file", target);
   e8.gotoChar(pos);
+  // At the entry's start, as org-id-find gives it; a package's answer may be a line inside it.
+  const line = entryLine();
+  e8.gotoChar(line !== undefined ? e8.lineStart(line) : e8.pointMin());
+  showContext(e8.point());
 }
 
 e8.defineCommand({

@@ -79,7 +79,7 @@ export function jump(pos: number): void {
 }
 
 /** Shows the headings above a position if it is folded away, as org-fold-show-context does. */
-function showContext(pos: number): void {
+export function showContext(pos: number): void {
   const all = headings();
   const i = headingIndex(all, lineAt(pos));
   if (i !== undefined && folded(Math.max(0, all[i].start - 1), "outline")) {
