@@ -1522,6 +1522,8 @@ fn log_into_drawer_property_says_where_notes_go() {
 #[test]
 fn ids_before_the_first_heading_are_org_datas() {
     let kill = |ed: &mut Editor, s: &mut Scripting| {
+        // A new ID is recorded under a file: this one, as for a buffer copied back to it.
+        s.eval_expression(ed, r#"(e8.setVariable("org-id-track-globally", false), e8.setVariable("org-id-overriding-file-name", "/tmp/e8-id.org"))"#).unwrap();
         call(ed, "org-id-copy", &[]);
         s.eval_expression(ed, "e8.currentKill(0)").unwrap()
     };
