@@ -2,7 +2,7 @@
 // deadlines and timestamps from org-agenda-files, and the list of TODO
 // items, in the *Org Agenda* buffer, whose keys act on the entries they show.
 
-import { type DateTime, type Heading, PLANNING, allKeywords, at, categories, category, entryEnd, headings, isDone, keywordLines, today } from "org";
+import { type DateTime, type Heading, PLANNING, allKeywords, at, categories, category, entryEnd, headingIndex, headings, isDone, keywordLines, makeTagsMatcher, scanTags, today } from "org";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
 import { allMatches, charCount, eraseBuffer } from "subr";
@@ -418,7 +418,7 @@ function byUrgency(items: AgendaItem[]): AgendaItem[] {
 }
 
 /** What the agenda buffer shows, for its keys to act on and g to rebuild. */
-let agendaView: { kind: "week"; start: number } | { kind: "todo" } = { kind: "todo" };
+let agendaView: { kind: "week"; start: number } | { kind: "todo" } | { kind: "tags"; todoOnly: boolean; match: string } = { kind: "todo" };
 let agendaLines: (AgendaItem | undefined)[] = [];
 
 /**
@@ -601,9 +601,48 @@ function todoList(): void {
   showAgenda(lines, 0);
 }
 
+/**
+ * The headings a tags, properties and TODO match picks in org-agenda-files,
+ * as org-tags-view shows them, the most urgent first. With `todoOnly`, only
+ * those whose TODO state is not done.
+ */
+function tagsView(todoOnly: boolean, match?: string): void {
+  if (match !== undefined && !/\S/.test(match)) match = undefined;
+  // Read where org-agenda was called from, as org-make-tags-matcher reads it before the agenda is prepared.
+  const matcher = makeTagsMatcher(match, todoOnly);
+  const items: AgendaItem[] = [];
+  for (const buffer of agendaBuffers()) {
+    e8.withCurrentBuffer(buffer, () =>
+      widened(() => {
+        if (e8.variable("major-mode") !== "org-mode" && !e8.derivedModeP("org-mode")) throw new Error(`Agenda file ${e8.bufferFileName()} is not in Org mode`);
+        const all = headings();
+        const cats = categories(all);
+        scanTags(
+          (h) => {
+            const cat = cats[headingIndex(all, h.line)!];
+            const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
+            items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: priorityValue(h) });
+          },
+          matcher,
+          matcher.todoOnly,
+        );
+      }),
+    );
+  }
+  const lines: { text: string; item?: AgendaItem }[] = [
+    { text: `Headlines with TAGS match: ${matcher.match}` },
+    { text: "Press \u2018C-u r\u2019 to search again" },
+  ];
+  for (const item of byUrgency(items)) lines.push({ text: item.text, item });
+  agendaView = { kind: "tags", todoOnly: matcher.todoOnly, match: matcher.match };
+  showAgenda(lines, 0);
+}
+
 function redoAgenda(): void {
   const line = e8.lineOf(e8.point());
   if (agendaView.kind === "week") weekAgenda(agendaView.start);
+  // C-u r asks for the match again, as the tags view's redo command does.
+  else if (agendaView.kind === "tags") tagsView(agendaView.todoOnly, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.match);
   else todoList();
   e8.gotoChar(e8.lineStart(Math.min(line, e8.lineCount() - 1)));
 }
@@ -620,13 +659,24 @@ const todoListCommand = e8.defineCommand({
   run: () => todoList(),
 });
 
+const tagsViewCommand = e8.defineCommand({
+  name: "org-tags-view",
+  doc:
+    "Show the headings in org-agenda-files a match picks: tags, properties and TODO states, as C-c \\ in Org reads it. " +
+    "With a prefix argument, only those with a TODO state not done.",
+  params: [{ name: "todoOnly", kind: "prefix" }],
+  run: (todoOnly) => tagsView(todoOnly !== null && todoOnly !== undefined),
+});
+
 e8.defineCommand({
   name: "org-agenda",
-  doc: "Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list.",
+  doc: "Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, M for those with a TODO state not done.",
   run: () => {
     const key = agendaDispatch();
     if (key === "a") weekAgenda(weekStart(dayNumber(today_())));
     else if (key === "t") todoList();
+    else if (key === "m") e8.callInteractively(tagsViewCommand);
+    else if (key === "M") e8.callWithPrefix(e8.prefixArg() ?? [4], tagsViewCommand);
     else e8.userError(`E8 does not have that agenda view yet: ${key}`);
   },
 });
@@ -865,6 +915,7 @@ e8.defineMajorMode({
 
 void agendaList;
 void todoListCommand;
+void tagsViewCommand;
 
 e8.defineCommand({
   name: "org-agenda-refile",

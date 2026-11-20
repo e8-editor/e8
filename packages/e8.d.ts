@@ -6442,6 +6442,14 @@ declare global {
        */
       "org-tags-sparse-tree": [todoOnly?: PrefixArg | boolean];
       /**
+       * Show the headings in org-agenda-files a match picks: tags, properties and TODO states, as C-c \ in Org reads it. With a prefix argument, only those with a TODO state not done.
+       *
+       * @param todoOnly raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-tags-view": [todoOnly?: PrefixArg | boolean];
+      /**
        * Insert an active timestamp, such as <2026-10-28 Wed>, for a date read in the minibuffer; on a timestamp, change it.
        *
        * Empty is today; +3 is three days on, and +2w, +1m and +1y work too; fri is the next Friday; 2026-11-03, 11-03 and 3 are the next such date; add a time as 10:30. With C-u, the time now goes in too.
