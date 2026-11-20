@@ -5733,7 +5733,7 @@ declare global {
        */
       "org-insert-link": [link: string, description: string];
       /**
-       * Insert a block, #+begin_TYPE and #+end_TYPE, around the region if it is active. Asks for its type by the key org-structure-template-alist gives it: TAB, RET or SPC ends a key that starts longer ones, and TAB first types the name.
+       * Insert a block, #+begin_TYPE and #+end_TYPE, around the region if it is active. Asks for its type in *Org Select* by the key org-structure-template-alist gives it, keys with a first letter in common in a submenu under it; TAB, RET or SPC types the name.
        *
        * Defined in packages/org.ts.
        */
