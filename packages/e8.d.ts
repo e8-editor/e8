@@ -5166,7 +5166,7 @@ declare global {
        */
       "org-add-note": [];
       /**
-       * Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list.
+       * Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, M for those with a TODO state not done.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -6441,6 +6441,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-tags-sparse-tree": [todoOnly?: PrefixArg | boolean];
+      /**
+       * Show the headings in org-agenda-files a match picks: tags, properties and TODO states, as C-c \ in Org reads it. With a prefix argument, only those with a TODO state not done.
+       *
+       * @param todoOnly raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-tags-view": [todoOnly?: PrefixArg | boolean];
       /**
        * Insert an active timestamp, such as <2026-10-28 Wed>, for a date read in the minibuffer; on a timestamp, change it.
        *
@@ -12963,6 +12971,18 @@ declare global {
        */
       "org-agenda-show-inherited-tags": Value;
       /**
+       * Whether the agenda leaves out entries in subtrees tagged ARCHIVE.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-skip-archived-trees": Value;
+      /**
+       * Whether the agenda leaves out entries in subtrees whose heading starts with COMMENT.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-skip-comment-trees": Value;
+      /**
        * The time grid: when it is drawn, its times as HHMM, the string after a time, and the line drawn.
        *
        * Defined in packages/org-agenda.ts.
@@ -13801,7 +13821,7 @@ declare global {
        */
       "org-tags-history": Value;
       /**
-       * Whether a tags match goes on into the subtree of a heading it matched, rather than going past it.
+       * Whether a tags match goes on into the subtree of a heading it matched, rather than going past it; "indented" puts dots for its level before each line in the agenda.
        *
        * Defined in packages/org.ts.
        */

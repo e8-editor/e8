@@ -1028,6 +1028,769 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "tags-view",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "work"
+        ]
+      },
+      "text": "Headlines with TAGS match: work\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  Sub task                                             :proj:work::\n  e8-agenda:  DONE Old thing                                       :proj::work:\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "visible": "Headlines with TAGS match: work\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  Sub task                                             :proj:work::\n  e8-agenda:  DONE Old thing                                       :proj::work:\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-todo-only",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "M",
+          "work"
+        ]
+      },
+      "text": "Headlines with TAGS match: work\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "visible": "Headlines with TAGS match: work\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-exclusion-and-priority",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "proj-work"
+        ]
+      },
+      "text": "Headlines with TAGS match: proj-work\nPress ‘C-u r’ to search again\n  e8-agenda:  [#A] Urgent                                          :proj::home:\n  e8-agenda:  WAIT Other                                                :proj::\n",
+      "visible": "Headlines with TAGS match: proj-work\nPress ‘C-u r’ to search again\n  e8-agenda:  [#A] Urgent                                          :proj::home:\n  e8-agenda:  WAIT Other                                                :proj::\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-property",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "Effort=\"1:00\""
+        ]
+      },
+      "text": "Headlines with TAGS match: Effort=\"1:00\"\nPress ‘C-u r’ to search again\n  e8-agenda:  WAIT Other                                                :proj::\n",
+      "visible": "Headlines with TAGS match: Effort=\"1:00\"\nPress ‘C-u r’ to search again\n  e8-agenda:  WAIT Other                                                :proj::\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-todo-part",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "/WAIT|TODO"
+        ]
+      },
+      "text": "Headlines with TAGS match: /WAIT|TODO\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  WAIT Other                                                :proj::\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "visible": "Headlines with TAGS match: /WAIT|TODO\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  WAIT Other                                                :proj::\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-no-match",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "nothing"
+        ]
+      },
+      "text": "Headlines with TAGS match: nothing\nPress ‘C-u r’ to search again\n",
+      "visible": "Headlines with TAGS match: nothing\nPress ‘C-u r’ to search again\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-redo",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "work"
+        ]
+      },
+      "text": "Headlines with TAGS match: work\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  Sub task                                             :proj:work::\n  e8-agenda:  DONE Old thing                                       :proj::work:\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "visible": "Headlines with TAGS match: work\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  Sub task                                             :proj:work::\n  e8-agenda:  DONE Old thing                                       :proj::work:\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-search-again",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "C-u r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "work",
+          "home"
+        ]
+      },
+      "text": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-agenda:  [#A] Urgent                                          :proj::home:\n",
+      "visible": "Headlines with TAGS match: home\nPress ‘C-u r’ to search again\n  e8-agenda:  [#A] Urgent                                          :proj::home:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-done-from-the-view",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "n n n t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "work"
+        ]
+      },
+      "text": "Headlines with TAGS match: work\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  TODO Sub task                                        :proj:work::\n  e8-agenda:  DONE Old thing                                       :proj::work:\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "visible": "Headlines with TAGS match: work\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Write report                                    :proj::work:\n  e8-agenda:  TODO Sub task                                        :proj:work::\n  e8-agenda:  DONE Old thing                                       :proj::work:\n  e8-agenda:  TODO [#C] Low                                        :proj::work:\n",
+      "point": 142,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 142,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-go-to-an-entry",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+        "point": 0,
+        "keys": "n n RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "home"
+        ]
+      },
+      "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+      "visible": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+      "point": 107,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 107,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-keeps-file-order",
+      "input": {
+        "text": "* TODO Low thing :t:\n* TODO [#A] High thing :t:\n* [#C] Lowest :t:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "t"
+        ]
+      },
+      "text": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Low thing                                                :t:\n  e8-agenda:  TODO [#A] High thing                                          :t:\n  e8-agenda:  [#C] Lowest                                                   :t:\n",
+      "visible": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Low thing                                                :t:\n  e8-agenda:  TODO [#A] High thing                                          :t:\n  e8-agenda:  [#C] Lowest                                                   :t:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-skips-comment-and-archived-trees",
+      "input": {
+        "text": "* COMMENT Hidden :t:\n** Under comment :t:\n* Old :t:ARCHIVE:\n** Under archive :t:\n* Shown :t:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "t"
+        ]
+      },
+      "text": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  Shown                                                         :t:\n",
+      "visible": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  Shown                                                         :t:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-includes-them-when-asked",
+      "input": {
+        "text": "* COMMENT Hidden :t:\n** Under comment :t:\n* Old :t:ARCHIVE:\n** Under archive :t:\n* Shown :t:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "t"
+        ],
+        "vars": {
+          "org-agenda-skip-archived-trees": false,
+          "org-agenda-skip-comment-trees": false
+        }
+      },
+      "text": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  COMMENT Hidden                                                :t:\n  e8-agenda:  Under comment                                                 :t:\n  e8-agenda:  Old                                                   :t:ARCHIVE:\n  e8-agenda:  Under archive                                        :ARCHIVE::t:\n  e8-agenda:  Shown                                                         :t:\n",
+      "visible": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  COMMENT Hidden                                                :t:\n  e8-agenda:  Under comment                                                 :t:\n  e8-agenda:  Old                                                   :t:ARCHIVE:\n  e8-agenda:  Under archive                                        :ARCHIVE::t:\n  e8-agenda:  Shown                                                         :t:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-archived-file",
+      "input": {
+        "text": "#+FILETAGS: :ARCHIVE:\n* A :t:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "t"
+        ]
+      },
+      "text": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n",
+      "visible": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-indented",
+      "input": {
+        "text": "* TODO Low thing :t:\n** Child :x:\n*** Grand :t:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "t"
+        ],
+        "vars": {
+          "org-tags-match-list-sublevels": "'indented"
+        }
+      },
+      "text": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Low thing                                                :t:\n  e8-agenda:  .Child                                                     :t::x:\n  e8-agenda:  ..Grand                                                    :x::t:\n",
+      "visible": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Low thing                                                :t:\n  e8-agenda:  .Child                                                     :t::x:\n  e8-agenda:  ..Grand                                                    :x::t:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-indented-done-from-the-view",
+      "input": {
+        "text": "* TODO Low thing :t:\n** Child :x:\n*** Grand :t:\n",
+        "point": 0,
+        "keys": "n n n t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "t"
+        ],
+        "vars": {
+          "org-tags-match-list-sublevels": "'indented"
+        }
+      },
+      "text": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Low thing                                                :t:\n  e8-agenda:  TODO Child                                                 :t::x:\n  e8-agenda:  ..Grand                                                    :x::t:\n",
+      "visible": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda:  TODO Low thing                                                :t:\n  e8-agenda:  TODO Child                                                 :t::x:\n  e8-agenda:  ..Grand                                                    :x::t:\n",
+      "point": 139,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 139,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
     }
   ]
 }

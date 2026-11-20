@@ -371,5 +371,320 @@
     "keys": "",
     "name": "todo-list-category-file-name",
     "text": "* TODO A\n:PROPERTIES:\n:CATEGORY+: plus\n:END:\n* TODO B\n"
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "name": "tags-view",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "work"
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "name": "tags-view-todo-only",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "M",
+      "work"
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "name": "tags-view-exclusion-and-priority",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "proj-work"
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "name": "tags-view-property",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "Effort=\"1:00\""
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "name": "tags-view-todo-part",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "/WAIT|TODO"
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "name": "tags-view-no-match",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "nothing"
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "g",
+    "name": "tags-view-redo",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "work"
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "C-u r",
+    "name": "tags-view-search-again",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "work",
+      "home"
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "n n n t",
+    "name": "tags-view-done-from-the-view",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "work"
+    ]
+  },
+  {
+    "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "n n RET",
+    "name": "tags-view-go-to-an-entry",
+    "call": [
+      "org-agenda"
+    ],
+    "answers": [
+      "m",
+      "home"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-keeps-file-order",
+    "text": "* TODO Low thing :t:\n* TODO [#A] High thing :t:\n* [#C] Lowest :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-skips-comment-and-archived-trees",
+    "text": "* COMMENT Hidden :t:\n** Under comment :t:\n* Old :t:ARCHIVE:\n** Under archive :t:\n* Shown :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-includes-them-when-asked",
+    "text": "* COMMENT Hidden :t:\n** Under comment :t:\n* Old :t:ARCHIVE:\n** Under archive :t:\n* Shown :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ],
+    "vars": {
+      "org-agenda-skip-archived-trees": false,
+      "org-agenda-skip-comment-trees": false
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-archived-file",
+    "text": "#+FILETAGS: :ARCHIVE:\n* A :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-indented",
+    "text": "* TODO Low thing :t:\n** Child :x:\n*** Grand :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ],
+    "vars": {
+      "org-tags-match-list-sublevels": "'indented"
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "n n n t",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-indented-done-from-the-view",
+    "text": "* TODO Low thing :t:\n** Child :x:\n*** Grand :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ],
+    "vars": {
+      "org-tags-match-list-sublevels": "'indented"
+    }
   }
 ]
