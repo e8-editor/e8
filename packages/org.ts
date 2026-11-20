@@ -14,7 +14,7 @@
 // "org-hide-block" for blocks. A link's brackets and target are hidden by
 // an "org-link" text property, so [[https://gnu.org][GNU]] shows as GNU.
 
-import { jump, type Link, linkHere, searchInBuffer } from "ol";
+import { jump, type Link, linkHere, searchInBuffer, showContext } from "ol";
 import { type Elem, elementAt, endBeforeBlank, keepingParse, PLANNING, parseShifts, startsElement } from "org-element";
 import {
   ancestors,
@@ -83,6 +83,7 @@ import {
   textIndentation,
   toggleCheckbox,
   writeStruct,
+  entryGet,
   propertyLocalValues,
   propertySeparator,
   topLocalValues,
@@ -6258,13 +6259,391 @@ e8.defineCommand({
   },
 });
 
+/**
+ * The values a property may take, as org-property-get-allowed-values reads
+ * NAME_ALL, inherited: each read as Lisp, so a string's quotes go and a
+ * number is written as Lisp writes it; :ETC means others may be typed.
+ */
+function allowedValues(h: Heading, property: string): { values: string[]; restricted: boolean } {
+  const all = entryGetInherited(h, `${property}_ALL`, false);
+  const values: string[] = [];
+  let restricted = true;
+  for (const m of allMatches(/"((?:[^"\\]|\\.)*)"|(\S+)/g, all ?? "")) {
+    if (m[1] !== undefined) values.push(m[1].replace(/\\(.)/g, "$1"));
+    else if (m[2] === ":ETC") restricted = false;
+    else values.push(/^[-+]?(\d+\.?\d*|\.\d+)$/.test(m[2]) ? String(Number(m[2])) : m[2]);
+  }
+  return { values, restricted };
+}
+
+/** Whether TEXT is a duration Org reads, as org-duration-to-minutes checks: H:MM, H:MM:SS, a number, or units such as 1h 30min. */
+function validDuration(text: string): boolean {
+  const t = text.trim();
+  return /^\d+(?::\d{2}){1,2}$/.test(t) || /^[-+]?\d*\.?\d+$/.test(t) || /^(\s*[-+]?\d*\.?\d+\s*(min|h|d|w|m|y))+(\s+\d+(:\d{2}){1,2})?$/.test(t);
+}
+
+/**
+ * Sets the entry's Effort, as org-set-effort: to the next of the allowed
+ * values with INCREMENT, else to VALUE, else one read, of the allowed ones
+ * if there are any.
+ */
+function setEffort(increment: boolean, value?: string): void {
+  const [all, i] = backToHeading();
+  const h = all[i];
+  const property = String(e8.variable("org-effort-property") ?? "Effort");
+  const { values: allowed, restricted } = allowedValues(h, property);
+  const current = entryGet(h.line, property);
+  let next: string;
+  if (increment) {
+    if (allowed.length === 0) e8.userError("Allowed effort values are not set");
+    const at = current === undefined ? -1 : allowed.indexOf(current);
+    if (at < 0 || at + 1 >= allowed.length) e8.userError(`Unknown value ${current === undefined ? "nil" : JSON.stringify(current)} among allowed values`);
+    next = allowed[at + 1];
+  } else next = value ?? e8.completingRead("Effort: ", allowed, { requireMatch: allowed.length > 0 && restricted });
+  if (!validDuration(next)) e8.signal("error", `Invalid duration format: ${JSON.stringify(next)}`);
+  if (next !== current) e8.saveExcursion(() => entryPut(h.line, property, next));
+  e8.message(`${property} is now ${next}`);
+}
+
+e8.defineVariable({ name: "org-effort-property", doc: "The property that holds an entry's estimated effort.", value: "Effort" });
+
 e8.defineCommand({
   name: "org-set-effort",
-  doc: "Set the Effort property of the entry point is in, as 0:30 or 1h.",
-  params: [{ name: "value", prompt: "Effort: " }],
-  run: (value: string) => {
-    const [all, i] = backToHeading();
-    entryPut(all[i].line, "Effort", value);
+  doc: "Set the effort property of the current entry, from its allowed values (Effort_ALL) if it has any; with a prefix argument, to the next of them.",
+  params: [{ name: "increment", kind: "prefix" }],
+  run: (increment: e8.Value) => setEffort(increment !== null && increment !== undefined),
+});
+
+e8.defineCommand({
+  name: "org-inc-effort",
+  doc: "Increment the value of the effort property in the current entry.",
+  run: () => setEffort(true),
+});
+
+// Blocks, as org-next-block and org-previous-block go to them.
+
+/**
+ * Goes N blocks on, or back with BACKWARD, to the line that opens each,
+ * as org-next-block: a #+BEGIN line that opens a block element.
+ */
+function nextBlock(n: number, backward: boolean): void {
+  const origin = e8.point();
+  let count = n;
+  let found: number | undefined;
+  let line = lineAt();
+  const types = ["center-block", "comment-block", "dynamic-block", "example-block", "export-block", "quote-block", "special-block", "src-block", "verse-block"];
+  // From the line's start back, or its end on, as Org starts its search.
+  const step = backward ? -1 : 1;
+  // Within the narrowing, as Org's search is.
+  const first = lineAt(e8.pointMin());
+  const last = lineAt(e8.pointMax());
+  for (let l = backward ? line - 1 : line + 1; l >= first && l <= last && count > 0; l += step) {
+    if (!/^[ \t]*#\+BEGIN/i.test(e8.lineText(l))) continue;
+    const el = elementAt(e8.lineStart(l));
+    if (el && types.includes(el.type) && e8.lineStart(l) <= el.begin) {
+      found = el.begin;
+      count--;
+    }
+  }
+  if (count === 0 && found !== undefined) {
+    e8.gotoChar(found);
+    showContext(found);
+    return;
+  }
+  e8.gotoChar(origin);
+  e8.userError(`No ${backward ? "previous" : "further"} code blocks`);
+}
+
+e8.defineCommand({
+  name: "org-next-block",
+  doc: "Jump to the next block; with a count, that many on.",
+  params: [{ name: "arg", kind: "count" }],
+  run: (n: number) => nextBlock(n, false),
+});
+
+e8.defineCommand({
+  name: "org-previous-block",
+  doc: "Jump to the previous block; with a count, that many back.",
+  params: [{ name: "arg", kind: "count" }],
+  run: (n: number) => nextBlock(n, true),
+});
+
+// Sorting, as org-sort and org-sort-entries.
+
+e8.defineHook("org-after-sorting-entries-or-items-hook", "Run after entries or items have been sorted, point in the parent's line or the first entry.");
+
+/** Text as it shows: emphasis markers and links' brackets gone, as org-sort-remove-invisible, nested ones too. */
+function sortRemoveInvisible(s: string): string {
+  let out = s;
+  for (let prev = ""; prev !== out; ) {
+    prev = out;
+    out = out
+      .replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_m, l: string, d?: string) => d ?? l)
+      .replace(/<((?:https?|ftp|mailto|file|doi|id|news|shell|elisp|help|info):[^>\n]*)>/g, "$1")
+      .replace(/(^|[\s\-('"{])([*\/_=~+])(\S|\S.*?\S)\2(?=[\s\-.,:!?;'")}\[*\/_=~+]|$)/g, "$1$3");
+  }
+  return out;
+}
+
+/** A string's leading number, as string-to-number reads it, else 0. */
+function stringToNumber(s: string): number {
+  const m = /^[ \t\n]*([-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?)/i.exec(s);
+  return m ? Number(m[1]) : 0;
+}
+
+/** A timestamp's time in seconds, as org-time-string-to-seconds. */
+function timestampSeconds(ts: string): number {
+  const m = /(\d{4})-(\d{2})-(\d{2})(?:[^\]>\n]*?(\d{1,2}):(\d{2}))?/.exec(ts);
+  if (!m) return 0;
+  return e8.encodeTime([0, Number(m[5] ?? 0), Number(m[4] ?? 0), Number(m[3]), Number(m[2]), Number(m[1])]);
+}
+
+/** The minutes an entry's CLOCK lines add up to, as org-clock-sum counts them: from their timestamps, else their => duration. */
+function clockMinutes(text: string): number {
+  let minutes = 0;
+  for (const line of text.split("\n")) {
+    const clock = /^[ \t]*CLOCK:[ \t]*(.*)$/.exec(line);
+    if (!clock) continue;
+    const range = /\[([^\]]+)\]--\[([^\]]+)\]/.exec(clock[1]);
+    if (range) minutes += Math.floor((timestampSeconds(range[2]) - timestampSeconds(range[1])) / 60);
+    else {
+      const d = /=>[ \t]*(\d+):(\d{2})/.exec(clock[1]);
+      if (d) minutes += Number(d[1]) * 60 + Number(d[2]);
+    }
+  }
+  return minutes;
+}
+
+/** The properties the buffer's entries and keywords name, and Org's special ones, sorted, as org-buffer-property-keys with specials. */
+function bufferPropertyKeys(): string[] {
+  const keys = new Set<string>(["ALLTAGS", "BLOCKED", "CLOCKSUM", "CLOCKSUM_T", "CLOSED", "DEADLINE", "FILE", "ITEM", "PRIORITY", "SCHEDULED", "TAGS", "TIMESTAMP", "TIMESTAMP_IA", "TODO"]);
+  for (const [, , text] of keywordLines()) {
+    const m = /^#\+PROPERTY:[ \t]*(\S+)/i.exec(text);
+    if (m) keys.add(m[1].replace(/\+$/, ""));
+  }
+  let inDrawer = false;
+  for (let l = 0; l < e8.lineCount(); l++) {
+    const text = e8.lineText(l);
+    if (/^[ \t]*:PROPERTIES:[ \t]*$/i.test(text)) inDrawer = true;
+    else if (/^[ \t]*:END:[ \t]*$/i.test(text)) inDrawer = false;
+    else if (inDrawer) {
+      const m = /^[ \t]*:(\S+?):/.exec(text);
+      if (m) keys.add(m[1].replace(/\+$/, ""));
+    }
+  }
+  return [...keys].sort();
+}
+
+/**
+ * Sorts the children of the entry at point, the entries of the region or
+ * the top-level entries, as org-sort-entries: by SORTING-TYPE, a
+ * character of a, n, p, r, o, t, s, d, c, k or f, a capital reversing it.
+ */
+function sortEntries(withCase: boolean, sortingType?: string): void {
+  let start: number;
+  let end: number;
+  let what: string;
+  const all0 = headings();
+  const here = headingIndex(all0, lineAt());
+  if (orgRegionActive()) {
+    const rb = Math.min(e8.point(), e8.mark()!);
+    const re = Math.max(e8.point(), e8.mark()!);
+    start = all0.find((h) => h.start >= e8.lineStart(lineAt(rb)))?.start ?? e8.pointMax();
+    // To the next heading after the subtree the region ends in, as org-end-of-subtree with TO-HEADING.
+    const atEnd = headingIndex(all0, lineAt(re));
+    end = atEnd === undefined ? e8.pointMax() : subtreeRegion(all0, atEnd)[1];
+    what = "region";
+    e8.gotoChar(start);
+  } else if (here !== undefined) {
+    start = all0[here].start;
+    e8.gotoChar(subtreeRegion(all0, here)[1]);
+    if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+    // Back over blank lines, then the line after them, as org-back-over-empty-lines with forward-line.
+    let back = e8.point();
+    while (back > start && /^[ \t]*$/.test(e8.lineText(lineAt(back - 1))) && lineAt(back - 1) !== lineAt(back)) back = e8.lineStart(lineAt(back - 1));
+    end = back < e8.point() ? e8.lineStart(lineAt(back) + 1) : e8.point();
+    what = "children";
+    e8.gotoChar(start);
+    e8.call("outline-show-subtree");
+    const all = headings();
+    e8.gotoChar(all[headingIndex(all, lineAt())! + 1]?.start ?? e8.pointMax());
+  } else {
+    start = all0[0]?.start ?? e8.pointMax();
+    // A last line with text gets a newline, as Org's (looking-at ".*?\\S-") asks.
+    e8.gotoChar(e8.lineStart(lineAt(e8.pointMax())));
+    if (/\S/.test(e8.lineText(lineAt()))) {
+      e8.gotoChar(e8.lineEnd(lineAt()));
+      e8.insert("\n");
+    }
+    end = e8.pointMax();
+    what = "top-level";
+    e8.gotoChar(start);
+    e8.call("outline-show-all");
+  }
+  const beg = e8.point();
+  if (beg >= end) {
+    e8.gotoChar(start);
+    e8.userError("Nothing to sort");
+  }
+  const stars = /^(\*+)/.exec(e8.lineText(lineAt()))?.[1] ?? "*";
+  let txt = e8.bufferSubstringNoProperties(beg, end);
+  if (!txt.endsWith("\n")) txt += "\n";
+  if (stars !== "*" && new RegExp(`^${stars.slice(1).replace(/\*/g, "\\*")}[ \\t\\n]`, "m").test(txt)) e8.userError("Region to sort contains a level above the first entry");
+  let type = sortingType;
+  if (type === undefined) {
+    e8.message(
+      `Sort ${what}: [a]lpha  [n]umeric  [p]riority  p[r]operty  todo[o]rder  [f]unc\n               [t]ime [s]cheduled  [d]eadline  [c]reated  cloc[k]ing\n               A/N/P/R/O/F/T/S/D/C/K means reversed:`,
+    );
+    type = e8.readCharExclusive();
+  }
+  const dcst = type.toLowerCase();
+  let property: string | undefined;
+  let getkey: string | undefined;
+  let compare: string | undefined;
+  if (dcst === "f") {
+    getkey = e8.completingRead("Function for extracting keys: ", []);
+    compare = e8.completingRead("Function for comparing keys (empty for default `sort-subr' predicate): ", []);
+  }
+  if (dcst === "r") property = e8.completingRead("Property: ", bufferPropertyKeys(), { requireMatch: true });
+  e8.message("Sorting entries...");
+  e8.saveRestriction(() => {
+    e8.narrowToRegion(start, end);
+    // A newline at its end, as Org puts one there before sorting.
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.pointMax());
+      if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+    });
+    // A Local Variables list at the buffer's end stays there, as org-preserve-local-variables keeps it.
+    const atBufferEnd = e8.saveRestriction(() => (e8.widen(), e8.pointMax())) === e8.pointMax();
+    const lv = atBufferEnd ? /^[^\n]*Local Variables:[^\n]*\n(?:[^\n]*\n)*?[^\n]*End:[^\n]*\n?$/m.exec(e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax())) : null;
+    const sortEnd = lv ? e8.pointMax() - charCount(lv[0]) : e8.pointMax();
+    const all = headings();
+    const level = stars.length;
+    const starsRe = new RegExp(`^${stars.replace(/\*/g, "\\*")} +`);
+    // The records, as sort-subr finds them: from one of the first's level to
+    // the next of that level, or the end when a higher heading comes first,
+    // as outline-forward-same-level fails.
+    const records: { h: Heading; start: number; end: number }[] = [];
+    let pos = beg;
+    while (pos < sortEnd) {
+      const h = all.find((x) => x.start === pos);
+      if (!h) break;
+      let recEnd = sortEnd;
+      for (const x of all) {
+        if (x.start <= pos || x.start >= sortEnd) continue;
+        if (x.level < level) break;
+        if (x.level === level) {
+          recEnd = x.start;
+          break;
+        }
+      }
+      records.push({ h, start: pos, end: recEnd });
+      const next = all.find((x) => x.start >= recEnd && x.start < sortEnd && starsRe.test(e8.lineText(x.line)) && x.level === level);
+      if (!next || recEnd >= sortEnd) break;
+      pos = next.start;
+    }
+    const now = e8.currentTime();
+    const caseFn = (s: string) => (withCase ? s : s.toLowerCase());
+    const keyOf = (r: (typeof records)[number]): string | number => {
+      const text = e8.bufferSubstringNoProperties(r.start, r.end);
+      // The entry's own text, to its next heading, as org's searches bound by outline-next-heading.
+      const next = all.find((x) => x.start > r.start);
+      const entryText = e8.bufferSubstringNoProperties(r.start, next && next.start < r.end ? next.start : r.end);
+      const title = sortRemoveInvisible(r.h.title.replace(/^COMMENT[ \t]+/, ""));
+      switch (dcst) {
+        case "n":
+          return stringToNumber(title);
+        case "a":
+          return caseFn(title);
+        case "k":
+          return clockMinutes(text);
+        case "t": {
+          const m = /<\d{4}-\d{2}-\d{2}[^>\n]*>/.exec(entryText) ?? /[[<]\d{4}-\d{2}-\d{2}[^\]>\n]*[\]>]/.exec(entryText);
+          return m ? timestampSeconds(m[0]) : now;
+        }
+        case "c": {
+          // An inactive timestamp alone, as org-ts-regexp1: a date, its day and a time, no range or repeater.
+          const m = /^[ \t]*\[(\d{4}-\d{2}-\d{2}(?: +[^\]\s\d+>-]+)?(?: +\d{1,2}:\d{2})?)\]/m.exec(entryText);
+          return m ? timestampSeconds(m[1]) : now;
+        }
+        case "s": {
+          const m = /SCHEDULED: *<([^>]+)>/.exec(entryText);
+          return m ? timestampSeconds(m[1]) : now;
+        }
+        case "d": {
+          const m = /DEADLINE: *<([^>]+)>/.exec(entryText);
+          return m ? timestampSeconds(m[1]) : now;
+        }
+        case "p": {
+          const m = /\[#([A-Z0-9]+)\]/.exec(e8.lineText(r.h.line));
+          return (m ? m[1] : String(e8.variable("org-priority-default") ?? "B")).codePointAt(0)!;
+        }
+        case "r":
+          return entryGet(r.h.line, property!) ?? "";
+        case "o": {
+          const kws = allKeywords();
+          const m = r.h.todo;
+          const tail = m === undefined ? 0 : kws.length - kws.indexOf(m);
+          return m !== undefined && isDone(m) ? 99 + tail : 99 - tail;
+        }
+        case "f": {
+          const v = e8.saveExcursion(() => (e8.gotoChar(r.start), e8.funcall(getkey!)));
+          return typeof v === "string" ? caseFn(v) : (v as number);
+        }
+        default:
+          return e8.signal("error", `Invalid sorting type \`${type}'`);
+      }
+    };
+    const keyed = records.map((r, i) => ({ i, key: keyOf(r), text: e8.bufferSubstring(r.start, r.end) }));
+    // As sort-subr: reversed, the records are taken last first, sorted, and turned round again.
+    const reverse = dcst !== type;
+    const numeric = typeof keyed[0]?.key === "number";
+    const less = (a: string | number, b: string | number): boolean => {
+      if (dcst === "a") return e8.stringCollateLessp(String(a), String(b));
+      if (dcst === "f" && compare) return truthy(e8.funcall(compare, a, b) ?? null);
+      // The first key's kind picks the comparison, as sort-subr's does.
+      return numeric ? Number(a) < Number(b) : String(a) < String(b);
+    };
+    let list = reverse ? [...keyed].reverse() : keyed;
+    list = sortByPredicate(list, (x, y) => less(x.key, y.key));
+    if (reverse) list.reverse();
+    // Unchanged order leaves the buffer as it was, as with-buffer-unmodified-if-unchanged.
+    if (records.length > 0 && list.some((k, i) => k.i !== i)) {
+      const from = records[0].start;
+      const to = records[records.length - 1].end;
+      e8.saveExcursion(() => {
+        e8.deleteRegion(from, to);
+        e8.gotoChar(from);
+        for (const k of list) e8.insert(k.text);
+      });
+    }
+  });
+  // The drawers folded again, as org-cycle-hide-drawers 'all, and point at the start, as Org leaves it.
+  hideDrawersIn(lineAt(start), Math.min(end, e8.pointMax()));
+  e8.gotoChar(start);
+  e8.runHooks("org-after-sorting-entries-or-items-hook");
+  e8.message("Sorting entries...done");
+}
+
+e8.defineCommand({
+  name: "org-sort-entries",
+  doc:
+    "Sort entries on a certain level of an outline tree: the region's, else the children of the entry at point, " +
+    "else the top-level ones, by a key read: a for alpha, n numeric, p priority, r property, o TODO order, f a " +
+    "function, t time, s scheduled, d deadline, c created, k clocking; a capital reverses it. With a prefix argument, case counts.",
+  params: [{ name: "with-case", kind: "prefix" }],
+  run: (withCase: e8.Value) => sortEntries(withCase !== null && withCase !== undefined),
+});
+
+const sortCommand = e8.defineCommand({
+  name: "org-sort",
+  doc: "Sort the entries at point, or the table or plain list there, as org-sort-entries, org-table-sort-lines or org-sort-list do.",
+  params: [{ name: "with-case", kind: "prefix" }],
+  run: (withCase: e8.Value) => {
+    if (atTable()) e8.userError("E8 does not sort table lines yet");
+    // On an item's own line, as org-at-item-p.
+    if (itemLine(lineAt())) e8.userError("E8 does not sort plain lists yet");
+    sortEntries(withCase !== null && withCase !== undefined);
   },
 });
 
@@ -7403,6 +7782,11 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c C-x p": setProperty,
   "C-c C-x b": treeToIndirectBuffer,
   "C-c C-w": refileCommand,
+  "C-c ^": sortCommand,
+  "C-c C-x e": "org-set-effort",
+  "C-c C-x E": "org-inc-effort",
+  "C-c M-f": "org-next-block",
+  "C-c M-b": "org-previous-block",
   "C-c C-M-w": refileReverseCommand,
   "C-c M-w": refileCopyCommand,
   "C-c C-x d": insertDrawer,
