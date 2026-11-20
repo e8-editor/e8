@@ -481,7 +481,6 @@ function groupDescription(layout: Layout): Text | undefined {
   return desc === undefined ? undefined : face(desc, "transient-heading");
 }
 
-/** The text of a group's lines, as transient--insert-group. */
 /** A cell of the menu: its text, and the suffix it shows if any. */
 type Cell = [Text, Suffix | undefined];
 
@@ -500,6 +499,7 @@ function insertCell([text, s]: Cell): void {
 /** The text property that says which suffix's key a button runs. */
 const SUFFIX_PROPERTY = "transient--suffix";
 
+/** The text of a group's lines, as transient--insert-group. */
 function insertGroup(layout: Layout, parent?: Layout): void {
   const desc = groupDescription(layout);
   if (desc !== undefined) {
@@ -571,6 +571,7 @@ function show(): void {
   // The suffix the menu's cursor is on, to put it back on after redrawing, as transient--show's focus.
   const window = active.window !== undefined && e8.windowList().includes(active.window) ? active.window : undefined;
   const focus = navigation && window !== undefined ? buttonAt(e8.windowPoint(window)) : undefined;
+  const focusHeading = navigation && window !== undefined && focus === undefined ? headingAt(e8.windowPoint(window)) : undefined;
   let focusAt = 0;
   e8.withCurrentBuffer(BUFFER, () => {
     e8.letBind({ "inhibit-read-only": true }, () => {
@@ -584,6 +585,15 @@ function show(): void {
       e8.gotoChar(e8.pointMin());
       // As transient--goto-button: on the same suffix, else the first.
       if (focus !== undefined) focusAt = findButton((key) => key === focus) ?? findButton(() => true) ?? 0;
+      else if (focusHeading !== undefined) {
+        // As transient--goto-button with a heading: the line starting with it.
+        for (let l = 0; l < e8.lineCount(); l++) {
+          if (e8.lineText(l).startsWith(focusHeading)) {
+            focusAt = e8.lineStart(l);
+            break;
+          }
+        }
+      }
     });
     // With navigation the cursor shows where the arrow keys have gone, as cursor-in-non-selected-windows box.
     for (const [name, value] of [
@@ -629,6 +639,17 @@ function buttonAt(pos: number): string | undefined {
   });
 }
 
+/** The heading at POS in the menu, from its line's start to where its face ends, as transient--heading-at-point. */
+function headingAt(pos: number): string | undefined {
+  if (!e8.bufferLiveP(e8.getBuffer(BUFFER))) return undefined;
+  return e8.withCurrentBuffer(BUFFER, () => {
+    if (pos >= e8.pointMax() || e8.getTextProperty(pos, "face") !== "transient-heading") return undefined;
+    const start = e8.lineStart(e8.lineOf(pos));
+    const end = e8.nextSinglePropertyChange(start, "face", e8.lineEnd(e8.lineOf(pos))) ?? e8.lineEnd(e8.lineOf(pos));
+    return e8.bufferSubstringNoProperties(start, end);
+  });
+}
+
 /** Where the first button in the current buffer whose key passes TEST starts. */
 function findButton(test: (key: string) => boolean): number | undefined {
   for (let pos = e8.pointMin(); pos < e8.pointMax(); ) {
@@ -670,6 +691,19 @@ function kbdKeys(key: string): string {
     .join(" ");
 }
 
+/**
+ * The keys of popup navigation: transient-popup-navigation-map's, and the
+ * mouse keys transient-button-map binds on the buttons, which a click
+ * elsewhere hands on as if they were not bound there.
+ */
+const NAVIGATION_KEYS = (): [string, e8.DefinedCommand | string][] => [
+  ["<up>", transientBackwardButton],
+  ["<down>", transientForwardButton],
+  ["M-RET", transientPushButton],
+  ["<down-mouse-1>", "ignore"],
+  ...["mouse-1", "mouse-2"].flatMap((m) => [`<${m}>`, `<double-${m}>`, `<triple-${m}>`, `<drag-${m}>`].map((k) => [k, transientPushButton] as [string, e8.DefinedCommand])),
+];
+
 /** The commands common to every menu that its keys run, by key, as transient-map binds them under the suffixes'. */
 const commonKeys = new Map<string, string>();
 
@@ -696,12 +730,8 @@ function bindKeys(): void {
     ["C-t", transientShow],
     ["?", transientHelp],
     ["C-h", transientHelp],
-    ["<up>", transientBackwardButton],
-    ["<down>", transientForwardButton],
-    ["M-RET", transientPushButton],
-    ["<mouse-1>", transientPushButton],
-    ["<mouse-2>", transientPushButton],
-    ["<down-mouse-1>", "ignore"],
+    // As transient-popup-navigation-map, there only with popup navigation.
+    ...(truthy(e8.variable("transient-enable-popup-navigation")) ? NAVIGATION_KEYS() : []),
     ["C-M-p", transientHistoryPrev],
     ["C-M-n", transientHistoryNext],
     ["C-x s", transientSet],
@@ -1292,24 +1322,29 @@ const transientScrollDown = e8.defineCommand({
 
 /**
  * Moves the menu's cursor N buttons on, back if N is negative, going round
- * at either end, as forward-button with wrap does in transient's window.
+ * at either end, as forward-button with wrap does in transient's window:
+ * once round to the first button it reached, it stops there; with N 0 it
+ * goes to the start of the button it is on.
  */
 function moveButton(n: number): void {
-  if (!truthy(e8.variable("transient-enable-popup-navigation"))) {
-    e8.message(`To enable use of \`${e8.thisCommand()}', please customize \`transient-enable-popup-navigation'`);
-    return;
-  }
   inMenuWindow(() => {
     const starts = buttonStarts();
-    if (starts.length === 0) return;
     const at = e8.point();
-    // The button point is in, or the one before it when it is between
-    // buttons; going back from between two, the one before is the first.
-    let i = starts.findIndex((p, j) => at >= p && (j + 1 === starts.length || at < starts[j + 1]));
     const inside = e8.getTextProperty(at, SUFFIX_PROPERTY) !== undefined;
-    if (i < 0) i = n > 0 ? -1 : starts.length;
-    else if (!inside && n < 0) i++;
-    const to = (((i + n) % starts.length) + starts.length) % starts.length;
+    // The last button starting at or before point.
+    let current = -1;
+    for (let j = 0; j < starts.length && starts[j] <= at; j++) current = j;
+    if (n === 0 || starts.length === 0) {
+      if (n === 0 && inside) e8.gotoChar(starts[current]);
+      else e8.userError("No buttons!");
+      return;
+    }
+    const len = starts.length;
+    // next-button finds the one after the button point is in; previous-button
+    // the one before it, or the one point is after when between two.
+    const first = n > 0 ? (current + 1) % len : ((inside ? current - 1 : current) + len) % len;
+    const steps = Math.abs(n);
+    const to = steps > len ? first : (((first + (n > 0 ? steps - 1 : -(steps - 1))) % len) + len) % len;
     e8.gotoChar(starts[to]);
   });
 }
@@ -1336,16 +1371,31 @@ const transientPushButton = e8.defineCommand({
     const mouse = /mouse/.test(e8.thisCommandKeys()) ? e8.lastMouseEvent() : undefined;
     let key: string | undefined;
     if (mouse) {
-      if (mouse.window !== active.window || mouse.position === undefined) return;
-      key = e8.withCurrentBuffer(BUFFER, () => e8.getTextProperty(mouse.position!, SUFFIX_PROPERTY)) as string | undefined;
+      if (mouse.window === active.window && mouse.position !== undefined) {
+        key = e8.withCurrentBuffer(BUFFER, () => e8.getTextProperty(mouse.position!, SUFFIX_PROPERTY)) as string | undefined;
+      }
     } else if (active.window !== undefined && e8.windowList().includes(active.window)) {
       const at = e8.windowPoint(active.window);
       key = e8.withCurrentBuffer(BUFFER, () => (at < e8.pointMax() ? e8.getTextProperty(at, SUFFIX_PROPERTY) : undefined)) as string | undefined;
     }
     const s = key === undefined ? undefined : active.suffixes.find((x) => x.key === key);
-    if (s) runSuffix(s);
+    if (s) return runSuffix(s);
+    // Off a button the key is not the button's: a click does what it does
+    // elsewhere where the menu lets other commands run, else it is refused.
+    const last = e8.thisCommandKeys().split(" ").pop() ?? "";
+    const global = mouse ? (e8.lookupKey(e8.currentGlobalMap(), last) ?? e8.lookupKey(e8.currentGlobalMap(), plainMouseKey(last))) : undefined;
+    if (global !== undefined && typeof global === "string" && prefixes.get(active.prefix)?.transientNonSuffix) {
+      e8.callInteractively(global as e8.CommandName);
+      return;
+    }
+    invalid("Unbound suffix");
   },
 });
+
+/** A mouse key as a plain click, as an unbound double click or drag is read as one: "<double-mouse-1>" is "<mouse-1>". */
+function plainMouseKey(key: string): string {
+  return key.replace(/^<(?:double-|triple-|drag-)?(mouse-\d)>$/, "<$1>");
+}
 
 const transientShow = e8.defineCommand({
   name: "transient-show",

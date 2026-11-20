@@ -46,6 +46,7 @@ const reads = e8.defineCommand({
   run: (who: e8.Value, n: e8.Value) => e8.message(`read ${JSON.stringify(who)} ${JSON.stringify(n)}`),
 });
 transientDefinePrefix("tm-arg-menu", { groups: [{ description: "Arg", items: [["p", "Prefix", arg], ["r", "Reads", reads]] }] });
+transientDefinePrefix("tm-free", { transientNonSuffix: true, groups: [{ description: "Free", items: [["x", "Hello", hello]] }] });
 transientDefinePrefix("tm-tall", {
   groups: [{ description: "Tall", items: Array.from({ length: 30 }, (_, i) => [String.fromCharCode(i < 26 ? 97 + i : 65 + i - 26), `Item ${i}`, hello] as [string, string, typeof hello]) }],
 });
@@ -404,11 +405,68 @@ fn a_click_on_a_suffix_runs_it() {
 }
 
 #[test]
-fn without_popup_navigation_the_arrow_keys_say_so() {
+fn without_popup_navigation_the_arrow_keys_are_not_the_menus() {
     let (mut ed, s, _pkgs) = setup();
     s.eval_expression(&mut ed, r#"e8.setVariable("transient-enable-popup-navigation", false)"#).unwrap();
     ed.call("tm-main", vec![]).unwrap();
     ed.press("<down>").unwrap();
-    assert_eq!(ed.echo(), Some("To enable use of `transient-forward-button', please customize `transient-enable-popup-navigation'"));
+    assert_eq!(ed.echo(), Some("Unbound suffix: `<down>' (Use `C-g' to abort, `?' for help)"));
     assert!(menu(&ed).unwrap().starts_with("Left"));
+}
+
+#[test]
+fn counts_go_round_once_and_off_a_button_there_is_nothing_to_run() {
+    let (mut ed, s, _pkgs) = setup();
+    ed.call("tm-main", vec![]).unwrap();
+    // On the heading, C-u 0 finds no button, and M-RET none to run.
+    ed.press("C-u 0 <down>").unwrap();
+    assert_eq!(ed.echo(), Some("No buttons!"));
+    ed.press("M-RET").unwrap();
+    assert_eq!(ed.echo(), Some("Unbound suffix: `M-RET' (Use `C-g' to abort, `?' for help)"));
+    // Past the last of three, forward-button stops at the first it reached.
+    ed.press("C-u 5 <down>").unwrap();
+    let at = menu_point(&mut ed, &s);
+    assert!(menu_at(&ed, at).starts_with(" b Bump"), "{:?}", menu_at(&ed, at));
+    ed.press("C-u 2 <down>").unwrap();
+    let at = menu_point(&mut ed, &s);
+    assert_eq!(menu_at(&ed, at), " h Hello");
+    ed.press("C-u 2 <up>").unwrap();
+    let at = menu_point(&mut ed, &s);
+    assert!(menu_at(&ed, at).starts_with(" b Bump"), "{:?}", menu_at(&ed, at));
+}
+
+#[test]
+fn a_heading_keeps_the_cursor_when_the_menu_is_drawn_again() {
+    let (mut ed, s, _pkgs) = setup();
+    ed.call("args-menu", vec![]).unwrap();
+    let actions = menu(&ed).unwrap().find("Actions").unwrap();
+    s.eval_expression(&mut ed, &format!(r#"e8.setWindowPoint(e8.windowList().find((w) => e8.windowBuffer(w) === " *transient*"), {actions})"#)).unwrap();
+    ed.press("- v").unwrap();
+    let at = menu_point(&mut ed, &s);
+    assert_eq!(menu_at(&ed, at), "Actions");
+}
+
+#[test]
+fn clicks_off_a_suffix_are_refused_or_do_what_they_do_elsewhere() {
+    let (mut ed, s, _pkgs) = setup();
+    ed.window_buffer_mut().set_text("one two three");
+    ed.window_buffer_mut().set_point(0);
+    let source = ed.selected_window();
+    let click = |ed: &mut Editor, window, at| ed.mouse(e8_core::Key::parse("<mouse-1>").unwrap(), e8_core::MouseEvent { window, position: Some(at), start: None });
+    ed.call("tm-main", vec![]).unwrap();
+    let menu_window = ed.windows().iter().find(|w| w.buffer.name == " *transient*").map(|w| w.id).unwrap();
+    click(&mut ed, menu_window, 0);
+    assert_eq!(ed.echo(), Some("Unbound suffix: `<mouse-1>' (Use `C-g' to abort, `?' for help)"));
+    assert!(menu(&ed).is_some());
+    ed.press("C-g").unwrap();
+    // A menu that lets other commands run lets a click move point.
+    ed.call("tm-free", vec![]).unwrap();
+    click(&mut ed, source, 4);
+    assert_eq!(s.eval_expression(&mut ed, "e8.windowPoint(e8.selectedWindow())").unwrap(), "4");
+    assert!(menu(&ed).is_some());
+    // A double click on a suffix runs it, as an unbound double click is read as a click.
+    let menu_window = ed.windows().iter().find(|w| w.buffer.name == " *transient*").map(|w| w.id).unwrap();
+    let at = menu(&ed).unwrap().find("Hello").unwrap();
+    ed.mouse(e8_core::Key::parse("<double-mouse-1>").unwrap(), e8_core::MouseEvent { window: menu_window, position: Some(at), start: None });
+    assert_eq!(ed.echo(), Some("Hello"));
 }
