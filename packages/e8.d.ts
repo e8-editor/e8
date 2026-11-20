@@ -5698,6 +5698,12 @@ declare global {
        */
       "org-id-update-id-locations": [];
       /**
+       * Increment the value of the effort property in the current entry.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-inc-effort": [];
+      /**
        * Indent the block at point.
        * Signal an error when not at a block.
        *
@@ -5909,6 +5915,14 @@ declare global {
        */
       "org-narrow-to-subtree": [];
       /**
+       * Jump to the next block; with a count, that many on.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-next-block": [arg?: number];
+      /**
        * Move to the item after the one point is in.
        *
        * Defined in packages/org-element.ts.
@@ -5962,6 +5976,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-paste-subtree": [];
+      /**
+       * Jump to the previous block; with a count, that many back.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-previous-block": [arg?: number];
       /**
        * Move to the item before the one point is in.
        *
@@ -6059,13 +6081,13 @@ declare global {
        */
       "org-self-insert-command": [];
       /**
-       * Set the Effort property of the entry point is in, as 0:30 or 1h.
+       * Set the effort property of the current entry, from its allowed values (Effort_ALL) if it has any; with a prefix argument, to the next of them.
        *
-       * @param value text
+       * @param increment raw prefix argument
        *
        * Defined in packages/org.ts.
        */
-      "org-set-effort": [value: string];
+      "org-set-effort": [increment?: PrefixArg | boolean];
       /**
        * In the current entry, set a property to a value, adding a property drawer if there is none.
        *
@@ -6151,6 +6173,22 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-show-all": [];
+      /**
+       * Sort the entries at point, or the table or plain list there, as org-sort-entries, org-table-sort-lines or org-sort-list do.
+       *
+       * @param with-case raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-sort": [withCase?: PrefixArg | boolean];
+      /**
+       * Sort entries on a certain level of an outline tree: the region's, else the children of the entry at point, else the top-level ones, by a key read: a for alpha, n numeric, p priority, r property, o TODO order, f a function, t time, s scheduled, d deadline, c created, k clocking; a capital reverses it. With a prefix argument, case counts.
+       *
+       * @param with-case raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-sort-entries": [withCase?: PrefixArg | boolean];
       /**
        * Show the speed commands, the keys that run commands at the start of a heading.
        *
@@ -13047,6 +13085,12 @@ declare global {
        */
       "org-edit-src-persistent-message": Value;
       /**
+       * The property that holds an entry's estimated effort.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-effort-property": Value;
+      /**
        * What a folded heading shows after it in place of ..., a string, or nil for ....
        *
        * Defined in packages/org.ts.
@@ -17379,6 +17423,10 @@ declare global {
        * Functions called where org-refile has put the subtree, before it goes from where it was.
        */
       "org-after-refile-insert-hook": Value;
+      /**
+       * Run after entries or items have been sorted, point in the parent's line or the first entry.
+       */
+      "org-after-sorting-entries-or-items-hook": Value;
       /**
        * Functions called after a heading's TODO state changes, at the heading.
        */

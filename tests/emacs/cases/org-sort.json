@@ -1,0 +1,190 @@
+[
+  {
+    "name": "sort-children-alphabetically",
+    "text": "* P\n** banana\n** Apple\n** cherry\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-children-reversed",
+    "text": "* P\n** banana\n** Apple\n** cherry\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "A"
+    ]
+  },
+  {
+    "name": "sort-children-with-case",
+    "text": "* P\n** b\n** B\n** a\n** A\n",
+    "keys": "C-u C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-numerically",
+    "text": "* P\n** 10 x\n** 9 y\n** 100 z\n** none\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "sort-by-priority",
+    "text": "* P\n** [#C] c\n** none\n** [#A] a\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "p"
+    ]
+  },
+  {
+    "name": "sort-by-todo-order",
+    "text": "* P\n** DONE d\n** plain\n** TODO t\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "o"
+    ]
+  },
+  {
+    "name": "sort-by-property",
+    "text": "* P\n** x\n:PROPERTIES:\n:Rank: 2\n:END:\n** y\n:PROPERTIES:\n:Rank: 1\n:END:\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "r",
+      "Rank"
+    ]
+  },
+  {
+    "name": "sort-by-scheduled",
+    "text": "* P\n** late\nSCHEDULED: <2026-12-01 Tue>\n** early\nSCHEDULED: <2026-01-05 Mon>\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "sort-top-level",
+    "text": "intro\n* b\n* a\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-keeps-equal-keys-in-order-reversed",
+    "text": "* P\n** a\nfirst\n** a\nsecond\n** b\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "A"
+    ]
+  },
+  {
+    "name": "sort-with-blank-lines",
+    "text": "* P\n** b\n\n** a\n\n* Q\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-links-and-emphasis",
+    "text": "* P\n** [[x][zeta]]\n** *alpha*\n** beta\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-nothing",
+    "text": "* P\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "next-and-previous-block",
+    "text": "#+begin_src sh\nx\n#+end_src\ntext\n#+begin_example\ny\n#+end_example\n",
+    "keys": "C-c M-f C-c M-f C-c M-b",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "no-further-block",
+    "text": "#+begin_src sh\nx\n#+end_src\n",
+    "keys": "C-c M-f C-c M-f",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "inc-effort",
+    "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00\n:Effort: 0:10\n:END:\n",
+    "keys": "M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "answers": [
+      "org-inc-effort"
+    ]
+  }
+]

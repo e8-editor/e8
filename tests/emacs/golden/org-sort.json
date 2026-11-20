@@ -1,0 +1,387 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "sort-children-alphabetically",
+      "input": {
+        "text": "* P\n** banana\n** Apple\n** cherry\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** Apple\n** banana\n** cherry\n",
+      "visible": "* P\n** Apple\n** banana\n** cherry\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-children-reversed",
+      "input": {
+        "text": "* P\n** banana\n** Apple\n** cherry\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "A"
+        ]
+      },
+      "text": "* P\n** cherry\n** banana\n** Apple\n",
+      "visible": "* P\n** cherry\n** banana\n** Apple\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-children-with-case",
+      "input": {
+        "text": "* P\n** b\n** B\n** a\n** A\n",
+        "point": 0,
+        "keys": "C-u C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** A\n** B\n** a\n** b\n",
+      "visible": "* P\n** A\n** B\n** a\n** b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-numerically",
+      "input": {
+        "text": "* P\n** 10 x\n** 9 y\n** 100 z\n** none\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "* P\n** none\n** 9 y\n** 10 x\n** 100 z\n",
+      "visible": "* P\n** none\n** 9 y\n** 10 x\n** 100 z\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-by-priority",
+      "input": {
+        "text": "* P\n** [#C] c\n** none\n** [#A] a\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "p"
+        ]
+      },
+      "text": "* P\n** [#A] a\n** none\n** [#C] c\n",
+      "visible": "* P\n** [#A] a\n** none\n** [#C] c\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-by-todo-order",
+      "input": {
+        "text": "* P\n** DONE d\n** plain\n** TODO t\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "o"
+        ]
+      },
+      "text": "* P\n** TODO t\n** plain\n** DONE d\n",
+      "visible": "* P\n** TODO t\n** plain\n** DONE d\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-by-property",
+      "input": {
+        "text": "* P\n** x\n:PROPERTIES:\n:Rank: 2\n:END:\n** y\n:PROPERTIES:\n:Rank: 1\n:END:\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "Rank"
+        ]
+      },
+      "text": "* P\n** y\n:PROPERTIES:\n:Rank: 1\n:END:\n** x\n:PROPERTIES:\n:Rank: 2\n:END:\n",
+      "visible": "* P\n** y\n:PROPERTIES:\n** x\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-by-scheduled",
+      "input": {
+        "text": "* P\n** late\nSCHEDULED: <2026-12-01 Tue>\n** early\nSCHEDULED: <2026-01-05 Mon>\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ]
+      },
+      "text": "* P\n** early\nSCHEDULED: <2026-01-05 Mon>\n** late\nSCHEDULED: <2026-12-01 Tue>\n",
+      "visible": "* P\n** early\nSCHEDULED: <2026-01-05 Mon>\n** late\nSCHEDULED: <2026-12-01 Tue>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-top-level",
+      "input": {
+        "text": "intro\n* b\n* a\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "intro\n* a\n* b\n",
+      "visible": "intro\n* a\n* b\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-keeps-equal-keys-in-order-reversed",
+      "input": {
+        "text": "* P\n** a\nfirst\n** a\nsecond\n** b\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "A"
+        ]
+      },
+      "text": "* P\n** b\n** a\nfirst\n** a\nsecond\n",
+      "visible": "* P\n** b\n** a\nfirst\n** a\nsecond\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-with-blank-lines",
+      "input": {
+        "text": "* P\n** b\n\n** a\n\n* Q\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** a\n\n** b\n\n* Q\n",
+      "visible": "* P\n** a\n\n** b\n\n* Q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-links-and-emphasis",
+      "input": {
+        "text": "* P\n** [[x][zeta]]\n** *alpha*\n** beta\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** *alpha*\n** beta\n** [[x][zeta]]\n",
+      "visible": "* P\n** *alpha*\n** beta\n** zeta\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-nothing",
+      "input": {
+        "text": "* P\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n",
+      "visible": "* P\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing to sort"
+    },
+    {
+      "name": "next-and-previous-block",
+      "input": {
+        "text": "#+begin_src sh\nx\n#+end_src\ntext\n#+begin_example\ny\n#+end_example\n",
+        "point": 0,
+        "keys": "C-c M-f C-c M-f C-c M-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src sh\nx\n#+end_src\ntext\n#+begin_example\ny\n#+end_example\n",
+      "visible": "#+begin_src sh\nx\n#+end_src\ntext\n#+begin_example\ny\n#+end_example\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No further code blocks"
+    },
+    {
+      "name": "no-further-block",
+      "input": {
+        "text": "#+begin_src sh\nx\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c M-f C-c M-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src sh\nx\n#+end_src\n",
+      "visible": "#+begin_src sh\nx\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No further code blocks"
+    },
+    {
+      "name": "inc-effort",
+      "input": {
+        "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00\n:Effort: 0:10\n:END:\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-inc-effort"
+        ],
+        "message": true
+      },
+      "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00\n:Effort:   0:30\n:END:\n",
+      "visible": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 1:00\n:Effort:   0:30\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Effort is now 0:30"
+    }
+  ]
+}
