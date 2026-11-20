@@ -590,5 +590,276 @@
       ]
     ],
     "today": "2026-11-04"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-unnarrowed-then-abort",
+    "text": "* Tasks [0/1]\n** TODO a\n",
+    "keys": "C-c C-k",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Tasks"
+        ],
+        "* TODO new",
+        ":unnarrowed",
+        true
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-unnarrowed-counts-the-entry",
+    "text": "* Tasks [0/1]\n** TODO a\n",
+    "keys": "C-c C-c",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Tasks"
+        ],
+        "* TODO new",
+        ":unnarrowed",
+        true
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-plain-cursor-only",
+    "text": "* Inbox\n* Next\n",
+    "keys": "t y p e d C-c C-c",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "%?"
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-plain-cursor-only-at-the-end",
+    "text": "* Inbox\n",
+    "keys": "t y p e d C-c C-c",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "%?"
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-plain-checkbox-counts",
+    "text": "* Shop [0/1]\n- [ ] milk\n",
+    "keys": "C-c C-c",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file+headline",
+          "FILE",
+          "Shop"
+        ],
+        "- [ ] eggs"
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-plain-clocked-at-once",
+    "text": "* Inbox\n",
+    "keys": "",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "text",
+        ":clock-in",
+        true,
+        ":immediate-finish",
+        true
+      ]
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-literal-tags-stay",
+    "text": "* x\n",
+    "keys": "C-c C-c",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* foo :bar:"
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-tabs-untabified",
+    "text": "* Inbox\n",
+    "keys": "C-c C-c",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* a\tb\n\tc"
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "answers": [
+      "t"
+    ],
+    "name": "capture-a-week-tree",
+    "text": "* x\n",
+    "keys": "C-c C-c",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* entry",
+        ":tree-type",
+        "'week"
+      ]
+    ],
+    "today": "2026-11-04"
   }
 ]

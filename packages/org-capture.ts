@@ -4,9 +4,10 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, formatTimestamp, type Heading, headings, parseDate, parseHeading, subtreeRegion, today, updateParentTodoStatistics } from "org";
+import { alignTags, formatTimestamp, type Heading, headings, parseDate, parseHeading, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics } from "org";
 import { clockIn, clockOut, runningEntry } from "org-clock";
 import { findDateCreate } from "org-datetree";
+import { ancestors, flag, showHeadingLine } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, orgMks, titleWithoutCookies } from "org-macs";
 import { charCount, truthy } from "subr";
@@ -14,13 +15,13 @@ import { charCount, truthy } from "subr";
 e8.defineVariable({
   name: "org-capture-templates",
   doc:
-    "The capture templates: lists of a key, a description, the type (entry), a target such as " +
+    "The capture templates: lists of a key, a description, the type (entry or plain), a target such as " +
     '["file", NAME], ["file+headline", NAME, HEADING], ["file+olp", NAME, HEADING, SUBHEADING...] or ' +
     '["file+olp+datetree", NAME, HEADING...], the template text, and options such as ":tree-type", "week".',
   value: [],
 });
 for (const [name, doc] of [
-  ["org-capture-before-finalize-hook", "Run before the capture is finished, in the capture's buffer, narrowed to the entry."],
+  ["org-capture-before-finalize-hook", "Run before the capture is finished, in the capture's buffer, widened to the entire buffer."],
   ["org-capture-after-finalize-hook", "Run after the capture is finished and the windows are back as they were."],
   ["org-capture-prepare-finalize-hook", "Run before the capture is finished, as it begins to finish, in the capture's buffer."],
 ]) e8.defineHook(name, doc);
@@ -39,13 +40,13 @@ function captureTemplates(): CaptureTemplate[] {
   return [["t", "Task", "entry", ["file+headline", "", "Tasks"], "* TODO %?\n  %u\n  %a"]];
 }
 
-/** A template's option, as its properties plist gives it. */
 /** How many blank lines go before or after a captured entry: the option, else :empty-lines, else none. */
 function emptyLines(t: CaptureTemplate, name: string): number {
   const n = option(t, name) ?? option(t, ":empty-lines");
   return typeof n === "number" && n > 0 ? n : 0;
 }
 
+/** A template's option, as its properties plist gives it. */
 function option(t: CaptureTemplate, name: string): e8.Value | undefined {
   const rest = t.slice(5);
   for (let i = 0; i + 1 < rest.length; i += 2) if (rest[i] === name) return rest[i + 1];
@@ -80,19 +81,20 @@ function annotation(): string {
 /**
  * Fills a template's escapes in one pass of REGEXP over TEXT, as
  * org-capture-fill-template does each kind: an escape after an odd number
- * of backslashes is left as written, and half the backslashes go, as
- * org-capture-escaped-% unescapes them. REPLACE gets the match and the
- * line before it as filled so far.
+ * of backslashes is left as written, and half the backslashes before it
+ * go, as org-capture-escaped-% unescapes them, those an earlier
+ * replacement ended with too, as Emacs searches the buffer it fills.
+ * REPLACE gets the match and the line before it as filled so far.
  */
 function fillPass(text: string, regexp: RegExp, replace: (m: RegExpExecArray, lineBefore: string) => string): string {
   let out = "";
   let last = 0;
   regexp.lastIndex = 0;
   for (let m = regexp.exec(text); m !== null; m = regexp.exec(text)) {
-    let n = 0;
-    while (m.index - 1 - n >= last && text[m.index - 1 - n] === "\\") n++;
-    out += text.slice(last, m.index - n) + "\\".repeat(n - Math.floor((n + 1) / 2));
-    out += n % 2 === 1 ? m[0] : replace(m, /[^\n]*$/.exec(out)![0]);
+    let pending = out + text.slice(last, m.index);
+    const n = /\\*$/.exec(pending)![0].length;
+    pending = pending.slice(0, pending.length - Math.floor((n + 1) / 2));
+    out = pending + (n % 2 === 1 ? m[0] : replace(m, /[^\n]*$/.exec(pending)![0]));
     last = m.index + m[0].length;
     if (m[0] === "") regexp.lastIndex++;
   }
@@ -102,14 +104,23 @@ function fillPass(text: string, regexp: RegExp, replace: (m: RegExpExecArray, li
 /** A link's parts, as the template's %A, %l and %L take them from %a. */
 const LINK = /\[\[(.*?)\](\[.*?\])?\]/;
 
-/** Tabs as spaces to the next tab stop, as untabify makes them. */
+/** Tabs as spaces to the next tab stop, as untabify makes them in an Org buffer: by display columns, every eight. */
 function untabify(text: string): string {
-  const width = Number(e8.variable("tab-width") ?? 8) || 8;
   return text
     .split("\n")
     .map((line) => {
       let out = "";
-      for (const c of line) out += c === "\t" ? " ".repeat(width - (charCount(out) % width)) : c;
+      let column = 0;
+      for (const c of line) {
+        if (c === "\t") {
+          const pad = 8 - (column % 8);
+          out += " ".repeat(pad);
+          column += pad;
+        } else {
+          out += c;
+          column += e8.stringWidth(c);
+        }
+      }
       return out;
     })
     .join("\n");
@@ -120,13 +131,16 @@ function untabify(text: string): string {
  * does: first %<format>, %:keyword and the letters (%a, %A, %c, %f, %F, %i,
  * %k, %K, %l, %L, %n, %t, %T, %u, %U, %x), then in turn what %^ asks for
  * (%^{prompt|default|choice...}, %^g, %^G, %^t, %^T, %^u, %^U, %^C), then
- * %\N for the Nth answer; and where %? puts the cursor. Blank lines go from
- * its start, and blanks from its end.
+ * %\N for the Nth answer, all ignoring case as Emacs's search does; then no
+ * blank lines first and a newline last, and tabs untabified, %? still in it,
+ * and where %? is the cursor goes. Also the lines %^g put tags on.
  */
-function fillTemplate(template: string, context: Context = { annotation: "", initial: "", tags: [] }): { text: string; cursor?: number } {
+function fillTemplate(template: string, context: Context = { annotation: "", initial: "", tags: [] }): { text: string; cursor?: number; tagLines: number[] } {
   const now = today(true);
   const day = { year: now.year, month: now.month, day: now.day };
-  const time = e8.encodeTime([0, now.minute ?? 0, now.hour ?? 0, now.day, now.month, now.year]);
+  // The time now, or noon on a fixed day, as tests fix org-current-effective-time.
+  const fixed = typeof e8.variable("e8--today") === "string" && e8.variable("e8--today") !== "";
+  const time = fixed ? e8.encodeTime([0, now.minute ?? 0, now.hour ?? 0, now.day, now.month, now.year]) : e8.currentTime();
   const a = context.annotation === "[[]]" ? "" : context.annotation;
   let kill = "";
   try {
@@ -136,9 +150,9 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
   }
   const letters: Record<string, () => string> = {
     a: () => a,
-    A: () => (LINK.test(a) ? a.replace(LINK, "[[$1][%^{Link description}]]") : a),
-    l: () => (LINK.test(a) ? a.replace(LINK, "[[$1]]") : a),
-    L: () => (LINK.test(a) ? a.replace(LINK, "$1") : a),
+    A: () => (LINK.test(a) ? a.replace(LINK, (_m, l: string) => `[[${l}][%^{Link description}]]`) : a),
+    l: () => (LINK.test(a) ? a.replace(LINK, (_m, l: string) => `[[${l}]]`) : a),
+    L: () => (LINK.test(a) ? a.replace(LINK, (_m, l: string) => l) : a),
     c: () => kill,
     f: () => (context.file === undefined ? "" : e8.fileNameNondirectory(context.file)),
     F: () => context.file ?? "",
@@ -151,17 +165,21 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
     U: () => `[${formatTimestamp(now, true)}]`,
     x: () => "",
   };
-  let text = fillPass(template, /%(:[-A-Za-z]+|<([^>\n]+)>|[aAcfFikKlLntTuUx])/g, (m, lineBefore) => {
+  let text = fillPass(template, /%(:[-A-Za-z]+|<([^>\n]+)>|[aAcfFikKlLntTuUx])/gi, (m, lineBefore) => {
     const value = m[1];
     if (value.startsWith("<")) return e8.formatTimeString(m[2], time);
     // As org-store-link-plist holds them for the capture.
     if (value.startsWith(":")) return value === ":annotation" ? a : value === ":initial" ? context.initial : "";
     // Each line after the first starts as the line %i is on does.
-    if (value === "i") return context.initial.replace(/\n/g, `\n${lineBefore}`);
-    return letters[value]();
+    if (value === "i") return context.initial.replace(/\n/g, () => `\n${lineBefore}`);
+    // %I and the other capitals no letter is, as Emacs's case-folding search finds them and fails.
+    const fill = letters[value];
+    if (!fill) return e8.signal("wrong-type-argument", "Wrong type argument: char-or-string-p, nil");
+    return fill();
   });
   const strings: string[] = [];
-  text = fillPass(text, /%\^(?:\{([^}]*)\})?([CgGLptTuU])?/g, (m, lineBefore) => {
+  const tagLines: number[] = [];
+  text = fillPass(text, /%\^(?:\{([^}]*)\})?([CgGLptTuU])?/gi, (m, lineBefore) => {
     const items = m[1] === undefined ? undefined : m[1].split("|");
     const prompt = items?.[0];
     const dflt = items?.[1];
@@ -171,6 +189,8 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
       const tags = answer.split(/[ \t]*:[ \t]*/).filter((t) => t !== "").join(":");
       if (tags === "") return "";
       const after = text.slice(m.index + m[0].length, m.index + m[0].length + 1);
+      // A heading's tags are aligned, as org-capture-fill-template aligns them where it puts them.
+      if (/^\*+ /.test(lineBefore)) tagLines.push(fillLine(text, m.index));
       return `${lineBefore.endsWith(":") ? "" : ":"}${tags}${after === ":" ? "" : ":"}`;
     }
     if (key === "C") {
@@ -186,6 +206,8 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
       return key === "u" || key === "U" ? `[${stamp}]` : `<${stamp}>`;
     }
     if (key === "L" || key === "p") e8.userError(`E8 does not fill %^${key} yet`);
+    // Keys in other cases, as a case-folding search finds them, are none Org knows.
+    if (key !== undefined) e8.signal("error", `Unknown template placeholder: "%^${key}"`);
     const label = prompt ?? "Enter string";
     const answer = e8.completingRead(dflt !== undefined && dflt !== "" ? `${label} (default ${dflt}): ` : `${label}: `, items?.slice(2) ?? [], {
       default: dflt,
@@ -193,7 +215,24 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
     strings.push(answer);
     return answer;
   });
-  text = untabify(fillPass(text, /%\\([1-9][0-9]*)/g, (m) => strings[Number(m[1]) - 1] ?? ""));
+  text = fillPass(text, /%\\([1-9][0-9]*)/g, (m) => {
+    const answer = strings[Number(m[1]) - 1];
+    return answer ?? e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil");
+  });
+  // No blank lines first: from the line the text starts on.
+  const firstText = text.search(/[^ \t\n]/);
+  if (firstText < 0) text = "";
+  else {
+    const lineStart = text.lastIndexOf("\n", firstText - 1) + 1;
+    const dropped = text.slice(0, lineStart).split("\n").length - 1;
+    for (let i = 0; i < tagLines.length; i++) tagLines[i] -= dropped;
+    text = text.slice(lineStart);
+    // A newline last, after the rest of the line the text ends on.
+    const lastText = text.search(/[^ \t\n][ \t\n]*$/);
+    const lineEnd = text.indexOf("\n", lastText);
+    text = `${lineEnd < 0 ? text : text.slice(0, lineEnd)}\n`;
+  }
+  text = untabify(text);
   // %? is where the cursor goes, its first, as org-capture--position-cursor finds it.
   let cursor: number | undefined;
   const q = text.indexOf("%?");
@@ -201,19 +240,11 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
     cursor = charCount(text.slice(0, q));
     text = text.slice(0, q) + text.slice(q + 2);
   }
-  // As org-capture-fill-template ends: no blank lines first, and a newline last.
-  const lead = /^[ \t\n]*/.exec(text)![0];
-  const cut = lead.lastIndexOf("\n") + 1;
-  if (cursor !== undefined) cursor = Math.max(0, cursor - charCount(text.slice(0, cut)));
-  text = text.slice(cut);
-  let body = text.replace(/[ \t\n]*$/, "");
-  // A %? after the text keeps the blank it is on, as Org trims with %? still in the text.
-  if (cursor !== undefined && cursor > charCount(body)) body = [...text].slice(0, cursor).join("");
-  const lastLine = body.length === 0 ? "" : text.slice(body.length).split("\n")[0];
-  text = body.length === 0 ? "" : `${body}${lastLine}\n`;
-  if (cursor !== undefined) cursor = Math.min(cursor, charCount(text));
-  return { text, cursor };
+  return { text, cursor, tagLines };
 }
+
+/** Which line of TEXT position AT is on, from 0. */
+const fillLine = (text: string, at: number): number => text.slice(0, at).split("\n").length - 1;
 
 /** What a capture under way changed, to finish or undo it. */
 let capturing:
@@ -228,6 +259,9 @@ let capturing:
     interrupted?: { buffer: string; marker: e8.Marker };
     resume?: boolean;
     template: CaptureTemplate;
+    wconf: e8.WindowConfiguration;
+    /** Where the captured entry ends, as Org's :end-marker. */
+    entryEnd: e8.Marker;
     /** Where the captured entry starts, to go to with :jump-to-captured and remember as the last stored. */
     entry: e8.Marker;
   }
@@ -249,6 +283,8 @@ function captureWith(key: string): void {
     ? String(e8.variable("org-default-notes-file") ?? "~/.notes")
     : e8.expandFileName(target[1], typeof dir === "string" ? e8.expandFileName(dir) : undefined);
   const from = e8.windowBuffer() ?? "";
+  // The windows as they are, to put back when the capture ends, as :return-to-wconf.
+  const wconf = e8.currentWindowConfiguration();
   // A marker, as the buffer the capture came from stays editable below it.
   const point = e8.makeMarker(e8.point());
   const mark = e8.mark();
@@ -256,13 +292,15 @@ function captureWith(key: string): void {
     ? e8.bufferSubstringNoProperties(Math.min(mark, e8.point()), Math.max(mark, e8.point()))
     : "";
   const link = annotation();
-  const originalFile = e8.bufferFileName();
+  // A Dired buffer's directory, as :original-file is for one.
+  const originalFile = e8.bufferFileName() ?? (e8.derivedModeP("dired-mode") ? String(e8.variable("default-directory") ?? "") : undefined);
   const running = runningEntry();
   const clockContext = running
     ? e8.withCurrentBuffer(running.buffer, () => {
         const h = headings().find((x) => x.start === running.start);
         const path = e8.bufferFileName();
-        const title = h?.title ?? "";
+        // Links as their descriptions, as org-clock-heading shows them.
+        const title = (h?.title ?? "").replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_m, l: string, d?: string) => d ?? l);
         return { title, link: path === undefined ? "" : `[[file:${e8.abbreviateFileName(path)}::*${title}][${title}]]` };
       })
     : undefined;
@@ -365,9 +403,10 @@ function captureWith(key: string): void {
     const beg = e8.point();
     e8.insert(leveled);
     const end = e8.point();
+    // Tags aligned where the entry was demoted or %^g put them, as Org aligns them; others left as written.
     for (let l = lineAt(beg); l < lineAt(end); l++) {
       const h = parseHeading(l);
-      if (h && h.tagsAt !== undefined) alignTags(l);
+      if (h && h.tagsAt !== undefined && (shift !== 0 || filled.tagLines.includes(l - lineAt(beg)))) alignTags(l);
     }
     if (type !== "plain") e8.message(`Clipboard pasted as level ${level} subtree`);
     // Blank lines after it go too, and the template's come, as org-capture-empty-lines-after.
@@ -380,12 +419,24 @@ function captureWith(key: string): void {
     }
     const endPos = e8.point();
     // Narrowed to it, unless :unnarrowed, as org-capture-narrow.
-    if (!truthy(option(t, ":unnarrowed") ?? null)) e8.narrowToRegion(beg, endPos === e8.bufferSize() ? endPos : endPos - 1);
+    // Plain text without its last newline, an entry with it at the end of the buffer.
+    const narrowEnd = type === "plain" ? Math.max(beg, endPos - 1) : endPos === e8.bufferSize() ? endPos : endPos - 1;
+    if (!truthy(option(t, ":unnarrowed") ?? null)) e8.narrowToRegion(beg, narrowEnd);
     e8.gotoChar(cursor === undefined ? beg : beg + cursor);
     e8.callWithPrefix(1, "org-capture-mode");
     return { beg, end: endPos, level, cursor: e8.point() };
   });
-  capturing = { buffer, from, point, level: placed.level, modified, template: t, entry: e8.withCurrentBuffer(buffer, () => e8.makeMarker(placed.beg)) };
+  capturing = {
+    buffer,
+    from,
+    point,
+    level: placed.level,
+    modified,
+    template: t,
+    wconf,
+    entry: e8.withCurrentBuffer(buffer, () => e8.makeMarker(placed.beg)),
+    entryEnd: e8.withCurrentBuffer(buffer, () => e8.makeMarker(placed.end, { advances: true })),
+  };
   // :clock-in starts a clock on the entry, stopping one running, as org-capture does.
   const clockOption = option(t, ":clock-in");
   if (clockOption !== undefined && clockOption !== null && clockOption !== false) {
@@ -393,11 +444,18 @@ function captureWith(key: string): void {
     if (running) capturing.interrupted = { buffer: running.buffer, marker: e8.withCurrentBuffer(running.buffer, () => e8.makeMarker(running.start)) };
     const resume = option(t, ":clock-resume");
     capturing.resume = resume !== undefined && resume !== null && resume !== false;
+    // On the heading the capture is in, widened, as plain text's is its target's.
     e8.withCurrentBuffer(buffer, () => {
-      e8.saveExcursion(() => {
-        e8.gotoChar(placed.beg);
-        clockIn();
-      });
+      e8.saveExcursion(() =>
+        e8.saveRestriction(() => {
+          e8.widen();
+          e8.gotoChar(placed.beg);
+          clockIn();
+          // The clock's drawer stays shown, as Org folds it in the indirect buffer it captures in, not the file's.
+          const h = headings().filter((x) => x.start <= placed.beg).at(-1);
+          if (h) flag(h.start, e8.markerPosition(capturing!.entryEnd) ?? e8.pointMax(), false, "org-hide-drawer");
+        }),
+      );
     });
     capturing.clocked = true;
   }
@@ -419,9 +477,9 @@ function endCapture(): void {
     e8.widen();
     e8.callWithPrefix(-1, "org-capture-mode");
   });
-  e8.call("delete-other-windows");
-  e8.setWindowBuffer(undefined, state.from);
-  e8.gotoChar(e8.markerPosition(state.point) ?? e8.point());
+  // The windows as they were, as org-capture-finalize sets :return-to-wconf back.
+  e8.setWindowConfiguration(state.wconf);
+  if (e8.bufferLiveP(e8.getBuffer(state.from))) e8.withCurrentBuffer(state.from, () => e8.gotoChar(e8.markerPosition(state.point) ?? e8.point()));
   e8.deleteMarker(state.point);
 }
 
@@ -440,7 +498,7 @@ e8.defineCommand({
   params: [{ name: "goto", kind: "prefix" }],
   run: (goto: e8.PrefixArg) => {
     // With C-u C-u, to where the last capture went, as org-capture-goto-last-stored.
-    if (Array.isArray(goto) && goto[0] === 16) return e8.call(gotoLastStored);
+    if (Array.isArray(goto) && goto[0] === 16) return goLastStored();
     // As org-capture-select-template, Org's one default template when there are none.
     const chosen = orgMks(captureTemplates() as unknown as e8.Value[][], "Select a capture template\n=========================", "Template key: ", [
       ["C", "Customize org-capture-templates"],
@@ -473,36 +531,50 @@ const captureFinalize = e8.defineCommand({
             clockIn();
           });
         });
-        e8.message("Interrupted clock resumed");
+        e8.message("Interrupted clock has been resumed");
       }
       if (interrupted) e8.deleteMarker(interrupted.marker);
     }
-    // The parent's statistics cookie counts the new entry, as
-    // org-capture-finalize brings it up to date from the entry's heading.
-    if (buffer !== undefined) {
-      e8.withCurrentBuffer(buffer, () =>
-        e8.saveExcursion(() => {
-          const start = e8.pointMin();
-          e8.saveRestriction(() => {
-            e8.widen();
-            if (parseHeading(lineAt(start))) updateParentTodoStatistics(lineAt(start));
-          });
-        }),
-      );
-    }
-    if (state) e8.withCurrentBuffer(state.buffer, () => e8.runHooks("org-capture-before-finalize-hook"));
-    // Where it went, as the bookmark org-capture-last-stored, as org-capture-store-last-position.
+    // The statistics cookies count the new entry, as org-capture-finalize
+    // brings them up to date from the heading the entry is, or is in.
     if (state) {
       e8.withCurrentBuffer(state.buffer, () =>
-        e8.saveExcursion(() => {
-          e8.gotoChar(e8.markerPosition(state.entry) ?? e8.point());
-          try {
-            bookmarkSet(lastStoredBookmark());
-          } catch (err) {
-            e8.message(`Bookmark set error: (error ${JSON.stringify(err instanceof Error ? err.message : String(err))})`);
-          }
-        }),
+        e8.saveExcursion(() =>
+          e8.saveRestriction(() => {
+            e8.widen();
+            const pos = e8.markerPosition(state.entry) ?? e8.point();
+            const h = headings().filter((x) => x.start <= pos).at(-1);
+            if (h) {
+              e8.gotoChar(h.start);
+              updateParentTodoStatistics(h.line);
+              updateCheckboxCount();
+            }
+          }),
+        ),
       );
+    }
+    // Where it went, as org-capture-last-stored-marker and the bookmark, as
+    // org-capture-store-last-position, widened so the bookmark keeps the text around it.
+    if (state) {
+      e8.withCurrentBuffer(state.buffer, () =>
+        e8.saveExcursion(() =>
+          e8.saveRestriction(() => {
+            e8.widen();
+            e8.gotoChar(e8.markerPosition(state.entry) ?? e8.point());
+            if (lastStored) e8.deleteMarker(lastStored);
+            lastStored = e8.makeMarker(e8.point());
+            const name = lastStoredBookmark();
+            if (name === undefined) return;
+            try {
+              bookmarkSet(name);
+            } catch (err) {
+              e8.message(`Bookmark set error: (error ${JSON.stringify(err instanceof Error ? err.message : String(err))})`);
+            }
+          }),
+        ),
+      );
+      // Widened, as Org runs it.
+      e8.withCurrentBuffer(state.buffer, () => e8.saveRestriction(() => (e8.widen(), e8.runHooks("org-capture-before-finalize-hook"))));
     }
     endCapture();
     if (buffer !== undefined && !(state && truthy(option(state.template, ":no-save") ?? null))) {
@@ -512,28 +584,48 @@ const captureFinalize = e8.defineCommand({
     }
     e8.runHooks("org-capture-after-finalize-hook");
     // To the entry, as org-capture-goto-last-stored, with :jump-to-captured or C-u.
-    if (state && (truthy(option(state.template, ":jump-to-captured") ?? null) || e8.prefixArg() !== null)) {
-      e8.call("switch-to-buffer", state.buffer);
-      e8.gotoChar(e8.markerPosition(state.entry) ?? e8.point());
+    if (state && (truthy(option(state.template, ":jump-to-captured") ?? null) || e8.prefixArg() !== null)) goLastStored();
+    if (state) {
+      e8.deleteMarker(state.entry);
+      e8.deleteMarker(state.entryEnd);
     }
-    if (state) e8.deleteMarker(state.entry);
   },
 });
 
-/** The name of the bookmark Org sets where it last captured, from org-bookmark-names-plist. */
-function lastStoredBookmark(): string {
+/** Where the last capture went, as org-capture-last-stored-marker. */
+let lastStored: e8.Marker | undefined;
+
+/** The name of the bookmark Org sets where it last captured, from org-bookmark-names-plist: none when it names none. */
+function lastStoredBookmark(): string | undefined {
   const v = e8.variable("org-bookmark-names-plist");
   if (Array.isArray(v)) for (let i = 0; i + 1 < v.length; i += 2) if (v[i] === ":last-capture" && typeof v[i + 1] === "string") return v[i + 1] as string;
-  return "org-capture-last-stored";
+  return undefined;
+}
+
+/** Goes to where the last capture went, its marker if its buffer is there, else its bookmark, as org-goto-marker-or-bmk. */
+function goLastStored(): void {
+  const buffer = lastStored && e8.markerBuffer(lastStored);
+  if (lastStored && buffer !== undefined) {
+    e8.call("switch-to-buffer", buffer);
+    const pos = e8.markerPosition(lastStored) ?? e8.point();
+    if (pos < e8.pointMin() || pos > e8.pointMax()) e8.widen();
+    e8.gotoChar(pos);
+  } else {
+    const name = lastStoredBookmark();
+    if (name === undefined) e8.userError("Cannot find location");
+    jumpTo(name!, "switch-to-buffer");
+  }
+  // Shown if folded, as org-fold-show-context.
+  const all = headings();
+  const i = all.findIndex((h, j) => h.start <= e8.point() && (all[j + 1] === undefined || all[j + 1].start > e8.point()));
+  if (i >= 0) for (const a of [i, ...ancestors(all, i)]) showHeadingLine(all[a]);
+  e8.message("This is the last note stored by a capture process");
 }
 
 const gotoLastStored = e8.defineCommand({
   name: "org-capture-goto-last-stored",
   doc: "Go to the location where the last capture note was stored.",
-  run: () => {
-    jumpTo(lastStoredBookmark(), "switch-to-buffer");
-    e8.message("This is the last note stored by a capture process");
-  },
+  run: () => goLastStored(),
 });
 
 const captureKill = e8.defineCommand({
@@ -553,9 +645,14 @@ const captureKill = e8.defineCommand({
         });
       });
     }
-    // The entry as it is now: what the narrowing shows, and the newline after it.
+    e8.withCurrentBuffer(state.buffer, () => e8.runHooks("org-capture-prepare-finalize-hook"));
+    // The entry as it is now: what the narrowing shows, and the newline after
+    // it, or where it went when not narrowed, as Org's begin and end markers.
     e8.withCurrentBuffer(state.buffer, () => {
-      const [start, end] = [e8.pointMin(), e8.pointMax()];
+      const narrowed = e8.pointMin() > 0 || e8.pointMax() < e8.bufferSize();
+      const [start, end] = narrowed
+        ? [e8.pointMin(), e8.pointMax()]
+        : [e8.markerPosition(state.entry) ?? e8.pointMin(), Math.max(0, (e8.markerPosition(state.entryEnd) ?? e8.pointMax()) - 1)];
       e8.widen();
       // Killed, as org-capture-kill does, so it can be yanked back. Emacs
       // kills in the capture buffer, whose mark is its own.
@@ -567,7 +664,10 @@ const captureKill = e8.defineCommand({
       if (!state.modified) e8.setBufferModified(false);
     });
     e8.deleteMarker(state.entry);
+    e8.deleteMarker(state.entryEnd);
     endCapture();
+    // As org-capture-kill goes through org-capture-finalize, which runs it.
+    e8.runHooks("org-capture-after-finalize-hook");
     e8.message("Capture aborted");
   },
 });

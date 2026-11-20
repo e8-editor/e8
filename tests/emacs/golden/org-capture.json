@@ -815,6 +815,378 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "capture-unnarrowed-then-abort",
+      "input": {
+        "text": "* Tasks [0/1]\n** TODO a\n",
+        "point": 2,
+        "keys": "C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Tasks"
+            ],
+            "* TODO new",
+            ":unnarrowed",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Tasks [0/1]\n** TODO a\n",
+      "visible": "* Tasks [0/1]\n** TODO a\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** TODO new\n"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-unnarrowed-counts-the-entry",
+      "input": {
+        "text": "* Tasks [0/1]\n** TODO a\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Tasks"
+            ],
+            "* TODO new",
+            ":unnarrowed",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Tasks [0/2]\n** TODO a\n** TODO new\n",
+      "visible": "* Tasks [0/2]\n** TODO a\n** TODO new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-plain-cursor-only",
+      "input": {
+        "text": "* Inbox\n* Next\n",
+        "point": 2,
+        "keys": "t y p e d C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "plain",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "%?"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\ntyped\n* Next\n",
+      "visible": "* Inbox\ntyped\n* Next\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-plain-cursor-only-at-the-end",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "t y p e d C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "plain",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "%?"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\ntyped\n",
+      "visible": "* Inbox\ntyped\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-plain-checkbox-counts",
+      "input": {
+        "text": "* Shop [0/1]\n- [ ] milk\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "plain",
+            [
+              "file+headline",
+              "FILE",
+              "Shop"
+            ],
+            "- [ ] eggs"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Shop [0/2]\n- [ ] milk\n- [ ] eggs\n",
+      "visible": "* Shop [0/2]\n- [ ] milk\n- [ ] eggs\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-plain-clocked-at-once",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "plain",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "text",
+            ":clock-in",
+            true,
+            ":immediate-finish",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 12:00]--[2026-11-04 Wed 12:00] =>  0:00\n:END:\ntext\n",
+      "visible": "* Inbox\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 12:00]--[2026-11-04 Wed 12:00] =>  0:00\n:END:\ntext\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-literal-tags-stay",
+      "input": {
+        "text": "* x\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file",
+              "FILE"
+            ],
+            "* foo :bar:"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* x\n* foo :bar:\n",
+      "visible": "* x\n* foo :bar:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-tabs-untabified",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* a\tb\n\tc"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** a     b\n        c\n",
+      "visible": "* Inbox\n** a     b\n        c\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-a-week-tree",
+      "input": {
+        "text": "* x\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* entry",
+            ":tree-type",
+            "'week"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* x\n* 2026\n** 2026-W45\n*** 2026-11-04 Wednesday\n**** entry\n",
+      "visible": "* x\n* 2026\n** 2026-W45\n*** 2026-11-04 Wednesday\n**** entry\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

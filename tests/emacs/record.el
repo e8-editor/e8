@@ -345,6 +345,8 @@ answers come, and then from its answers, as save-some-buffers' do."
                                  (mapcar (lambda (x)
                                            (pcase x
                                              ((pred (lambda (v) (and (stringp v) (string-prefix-p ":" v)))) (intern x))
+                                             ;; A symbol as 'week, as vars have them.
+                                             ((pred (lambda (v) (and (stringp v) (string-prefix-p "'" v)))) (intern (substring x 1)))
                                              ('t t)
                                              (:json-false nil)
                                              (_ x)))

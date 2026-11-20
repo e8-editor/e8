@@ -12873,7 +12873,7 @@ declare global {
        */
       "org-capture-mode-map": Value;
       /**
-       * The capture templates: lists of a key, a description, the type (entry), a target such as ["file", NAME], ["file+headline", NAME, HEADING], ["file+olp", NAME, HEADING, SUBHEADING...] or ["file+olp+datetree", NAME, HEADING...], the template text, and options such as ":tree-type", "week".
+       * The capture templates: lists of a key, a description, the type (entry or plain), a target such as ["file", NAME], ["file+headline", NAME, HEADING], ["file+olp", NAME, HEADING, SUBHEADING...] or ["file+olp+datetree", NAME, HEADING...], the template text, and options such as ":tree-type", "week".
        *
        * Defined in packages/org-capture.ts.
        */
@@ -17312,7 +17312,7 @@ declare global {
        */
       "org-capture-after-finalize-hook": Value;
       /**
-       * Run before the capture is finished, in the capture's buffer, narrowed to the entry.
+       * Run before the capture is finished, in the capture's buffer, widened to the entire buffer.
        */
       "org-capture-before-finalize-hook": Value;
       /**
