@@ -13103,6 +13103,12 @@ declare global {
        */
       "org-log-repeat": Value;
       /**
+       * Whether the newest state note goes first, right after the heading or at the top of its drawer; false keeps them in the order they were taken. #+STARTUP: logstatesreversed or nologstatesreversed says for a file.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-log-states-order-reversed": Value;
+      /**
        * Whether commands such as C-c C-t act on every heading in the active region.
        *
        * Defined in packages/org.ts.

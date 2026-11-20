@@ -1,0 +1,179 @@
+[
+  {
+    "name": "logging-property-logdone",
+    "text": "* TODO Task\n:PROPERTIES:\n:LOGGING: logdone\n:END:\nbody\n#+TODO: TODO | DONE\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-property-state-time",
+    "text": "* TODO Task\n:PROPERTIES:\n:LOGGING: DONE(!)\n:END:\nbody\n#+TODO: TODO | DONE\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-property-nil-turns-off",
+    "text": "* TODO Task\n:PROPERTIES:\n:LOGGING: nil\n:END:\nbody\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-log-done": "time"
+    }
+  },
+  {
+    "name": "logging-property-inherited",
+    "text": "* Parent\n:PROPERTIES:\n:LOGGING: DONE(!) logdone\n:END:\n** TODO Child\nbody\n#+TODO: TODO | DONE\n",
+    "keys": "C-n C-n C-n C-n C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-file-property",
+    "text": "* TODO Task\nbody\n#+PROPERTY: LOGGING DONE(!)\n#+TODO: TODO | DONE\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-startup-logdone",
+    "text": "* TODO Task\nbody\n#+STARTUP: logdone\n#+TODO: TODO | DONE\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-startup-logdrawer",
+    "text": "* TODO Task\nbody\n#+STARTUP: logdrawer\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-file-log-into-drawer",
+    "text": "* TODO Task\nbody\n#+PROPERTY: LOG_INTO_DRAWER NOTES\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-oldest-first-in-drawer",
+    "text": "* TODO Task\n:LOGBOOK:\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n:END:\nbody\n#+STARTUP: logdrawer nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-oldest-first-without-drawer",
+    "text": "* TODO Task\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n- State \"WAIT\"       from \"TODO\"       [2026-11-02 Mon 09:00] \\\\\n  a note\nbody\n#+TODO: TODO(!) WAIT(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-log-states-order-reversed": false
+    }
+  },
+  {
+    "name": "logging-newest-first-without-drawer",
+    "text": "* TODO Task\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\nbody\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-oldest-first-blank-after-heading",
+    "text": "* TODO a\n\n* b\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-oldest-first-blank-then-body",
+    "text": "* TODO a\n\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-oldest-first-notes-then-blank",
+    "text": "* TODO a\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-oldest-first-two-blank-lines",
+    "text": "* TODO a\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n\n\n- State \"TODO\"       from              [2026-11-02 Mon 09:00]\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-property-repeat-logs-the-state-back",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed +1d>\n:PROPERTIES:\n:LOGGING: TODO(!) DONE(!)\n:END:\n#+TODO: TODO | DONE\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-top-property-drawer",
+    "text": ":PROPERTIES:\n:LOGGING: DONE(!)\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE\n",
+    "keys": "C-n C-n C-n C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-startup-any-case",
+    "text": "* TODO Task\nbody\n#+STARTUP: LogDone\n#+TODO: TODO | DONE\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "logging-file-property-without-value",
+    "text": "* TODO Task\nbody\n#+PROPERTY: LOGGING \n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  }
+]
