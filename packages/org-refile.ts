@@ -2,7 +2,7 @@
 // under a heading org-refile-targets names, in this file or another, chosen
 // by its title or, with org-refile-use-outline-path, its outline path.
 
-import { copySubtree, type Heading, headings, pasteSubtree, subtreeRegion } from "org";
+import { addLogNote, copySubtree, type Heading, headings, pasteSubtree, subtreeRegion } from "org";
 import { ancestors, showHeadingLine } from "org-fold";
 import { entryHeading } from "org-list";
 import { edDelete, lineAt } from "org-macs";
@@ -17,6 +17,11 @@ defvar(
 );
 defvar("org-refile-use-outline-path", null, "Whether targets are named by their outline paths, Parent/Child, rather than their titles: t, or file, title, full-file-path or buffer-name to start the path with that.");
 defvar("org-outline-path-complete-in-steps", true, "Whether outline paths complete a level at a time. E8 completes them whole.");
+defvar(
+  "org-log-refile",
+  null,
+  'Whether refiling is logged in the entry refiled: "time" for a note of when, "note" to ask for one too, nil for nothing. #+STARTUP: logrefile, lognoterefile or nologrefile says for a file.',
+);
 defvar("org-refile-history", null, "The targets chosen before, newest first.");
 defvar("org-refile-target-verify-function", null, "A function called at each heading that may be a target, which says whether it is one.");
 e8.defineHook("org-after-refile-insert-hook", "Functions called where org-refile has put the subtree, before it goes from where it was.");
@@ -198,6 +203,9 @@ function refile(answer: string | undefined, keep: boolean): void {
       if (e8.point() !== e8.lineStart(lineAt())) e8.call("newline");
       pastedAt = e8.point();
       pasteSubtree(level as e8.PrefixArg);
+      // Logged where it went, as org-log-refile says.
+      const log = e8.variable("org-log-refile");
+      if (log !== null && log !== undefined && log !== false) addLogNote(lineAt(pastedAt), "refile", undefined, undefined, { how: log === "time" || log === "state" ? log : "note" });
       e8.runHooks("org-after-refile-insert-hook");
     });
   });

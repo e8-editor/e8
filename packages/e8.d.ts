@@ -5981,7 +5981,7 @@ declare global {
        */
       "org-return-and-maybe-indent": [];
       /**
-       * Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it.
+       * Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date.
        *
        * @param date text
        *
@@ -13091,17 +13091,41 @@ declare global {
        */
       "org-log-into-drawer": Value;
       /**
+       * Whether stopping a clock asks for a note, put after the CLOCK: line. #+STARTUP: lognoteclock-out or nolognoteclock-out says for a file.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-log-note-clock-out": Value;
+      /**
        * Headings for notes added to entries, by purpose: %t the time, %T it active, %d and %D the date, %s the new state, %S the old, %u the user's login and %U name.
        *
        * Defined in packages/org.ts.
        */
       "org-log-note-headings": Value;
       /**
+       * Whether changing or removing an entry's DEADLINE is logged: "time", "note" or false, as org-log-reschedule. #+STARTUP: logredeadline, lognoteredeadline or nologredeadline says for a file.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-log-redeadline": Value;
+      /**
+       * Whether refiling is logged in the entry refiled: "time" for a note of when, "note" to ask for one too, nil for nothing. #+STARTUP: logrefile, lognoterefile or nologrefile says for a file.
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-log-refile": Value;
+      /**
        * What marking a repeating task done records: "time" for a LAST_REPEAT property and a note of the change, false for nothing.
        *
        * Defined in packages/org.ts.
        */
       "org-log-repeat": Value;
+      /**
+       * Whether changing or removing an entry's SCHEDULED date is logged: "time" for a note of when, "note" to ask for one too, false for nothing. #+STARTUP: logreschedule, lognotereschedule or nologreschedule says for a file.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-log-reschedule": Value;
       /**
        * Whether the newest state note goes first, right after the heading or at the top of its drawer; false keeps them in the order they were taken. #+STARTUP: logstatesreversed or nologstatesreversed says for a file.
        *
