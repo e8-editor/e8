@@ -84,6 +84,7 @@ import {
   toggleCheckbox,
   writeStruct,
   entryGet,
+  setLineIndenter,
 } from "org-list";
 import {
   charAt,
@@ -2447,18 +2448,21 @@ export function adaptColumn(line: number): number {
  */
 function atHeadlineData(pos: number, el: Elem | undefined = elementAt(pos)): boolean {
   if (!el || el.type === "headline") return false;
+  // Only inside a heading.
+  let up = el.parent;
+  while (up && up.type !== "headline") up = up.parent;
+  if (!up) return false;
   let top: Elem = el;
   while (top.parent && top.parent.type !== "section") top = top.parent;
-  if (top.parent?.type !== "section") return false;
+  if (top.type === "planning" || top.type === "property-drawer") return true;
   const text = e8.lineText(lineAt(top.begin));
-  if (PLANNING.test(text) || /^[ \t]*:PROPERTIES:[ \t]*$/i.test(text)) return true;
-  const drawer = /^[ \t]*:((?:\w|[-_])+):[ \t]*$/.exec(text);
+  const drawer = top.type === "drawer" ? /^[ \t]*:((?:\w|[-_])+):[ \t]*$/.exec(text) : null;
   if (drawer) {
     const all = headings();
     const i = headingIndex(all, lineAt(pos));
     return drawer[1] === logDrawer(i === undefined ? undefined : all[i]);
   }
-  if (/^[ \t]*CLOCK:/.test(text) && top.begin > 0) return isHeadingLine(e8.lineText(lineAt(top.begin - 1))) || atHeadlineData(top.begin - 1);
+  if (top.type === "clock" && top.begin > 0) return isHeadingLine(e8.lineText(lineAt(top.begin - 1))) || atHeadlineData(top.begin - 1);
   return false;
 }
 
@@ -2520,7 +2524,7 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
 }
 
 /** Indents a line as org-indent-line does, keeping point in the text or after the indentation. */
-function indentLine(line: number): void {
+export function indentLine(line: number): void {
   const text = e8.lineText(line);
   const ls = e8.lineStart(line);
   const block = elementAt(ls);
@@ -2565,6 +2569,7 @@ function indentLine(line: number): void {
     moveToColumn(column);
   }
 }
+setLineIndenter(indentLine);
 
 /** Moves point to a column on its line, or to the line's end, as move-to-column does. */
 export function moveToColumn(column: number): void {
@@ -2929,11 +2934,16 @@ export function cycleLevel(): boolean {
     const k = headingIndex(all, line - 1);
     prev = k === undefined ? 0 : all[k].level;
   }
+  // Without shifting text, as org-cycle-level binds org-adapt-indentation to nil.
   const promote = (n: number): void => {
-    for (let i = 0; i < n; i++) e8.call("org-do-promote");
+    e8.letBind({ "org-adapt-indentation": false }, () => {
+      for (let i = 0; i < n; i++) e8.call("org-do-promote");
+    });
   };
   const demote = (n: number): void => {
-    for (let i = 0; i < n; i++) e8.call("org-do-demote");
+    e8.letBind({ "org-adapt-indentation": false }, () => {
+      for (let i = 0; i < n; i++) e8.call("org-do-demote");
+    });
   };
   if (prev === 0) promote(cur - 1);
   else if (prev === cur) demote(1);
@@ -3587,6 +3597,14 @@ function changeLevel(h: Heading, by: number): void {
  * blocks whose indentation is kept are left as they are.
  */
 function fixupIndentation(headingLine: number, diff: number): void {
+  // In the whole buffer, as org-with-wide-buffer, so a narrowing's end is not the entry's.
+  e8.saveRestriction(() => {
+    e8.widen();
+    fixupIndentationWide(headingLine, diff);
+  });
+}
+
+function fixupIndentationWide(headingLine: number, diff: number): void {
   const all = headings();
   const i = headingIndex(all, headingLine)!;
   const endLine = i + 1 < all.length ? all[i + 1].line : e8.lineCount();
@@ -3600,9 +3618,9 @@ function fixupIndentation(headingLine: number, diff: number): void {
       l = close + 1;
     }
   }
-  if (l < endLine && /^[ \t]*:LOGBOOK:[ \t]*$/.test(e8.lineText(l))) {
+  if (l < endLine && /^[ \t]*:LOGBOOK:[ \t]*$/i.test(e8.lineText(l))) {
     let close = l + 1;
-    while (close < endLine && !/^[ \t]*:END:[ \t]*$/.test(e8.lineText(close))) close++;
+    while (close < endLine && !/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(close))) close++;
     if (close < endLine && textIndentation(e8.lineText(l)) + diff >= 0) {
       for (let k = l; k <= close; k++) {
         if (diff > 0) edInsert(e8.lineStart(k), " ".repeat(diff));
@@ -3619,8 +3637,14 @@ function fixupIndentation(headingLine: number, diff: number): void {
     const text = e8.lineText(k);
     if (/^[ \t]*$/.test(text) || isHeadingLine(text)) continue;
     if (footnote.test(text)) {
-      const fn = elementAt(e8.lineStart(k));
-      if (fn !== undefined && fn.end > e8.lineStart(k)) k = lineAt(Math.max(fn.end - 1, e8.lineStart(k)));
+      // A footnote definition runs to the next one, a heading or two blank lines, as Org's element does.
+      let m = k + 1;
+      while (m < endLine) {
+        const t = e8.lineText(m);
+        if (footnote.test(t) || isHeadingLine(t) || (/^[ \t]*$/.test(t) && m + 1 < endLine && /^[ \t]*$/.test(e8.lineText(m + 1)))) break;
+        m++;
+      }
+      k = m - 1;
       continue;
     }
     lines.push(k);

@@ -1329,6 +1329,13 @@ function propertyDrawerEnd(line: number): number | undefined {
   return undefined;
 }
 
+/** Indents a line as org-indent-line does; org.ts, which has it, sets it. */
+let lineIndenter: (line: number) => void = () => {};
+
+export function setLineIndenter(f: (line: number) => void): void {
+  lineIndenter = f;
+}
+
 /**
  * Sets a property in a heading's property drawer, adding the drawer after
  * its planning line, folded, if there is none, as org-entry-put does.
@@ -1350,10 +1357,7 @@ export function entryPut(headingLine: number, property: string, value: string): 
       line = lineAt(begin);
       // Indented as Org indents it, as org-insert-property-drawer's org-indent-region.
       e8.saveExcursion(() => {
-        for (const l of [line, line + 1]) {
-          e8.gotoChar(e8.lineStart(l));
-          e8.call("org-indent-line");
-        }
+        for (const l of [line, line + 1]) lineIndenter(l);
       });
     }
     const close = propertyDrawerEnd(line) as number;
@@ -1375,7 +1379,7 @@ export function entryPut(headingLine: number, property: string, value: string): 
     const propertyLine = lineAt(at);
     e8.saveExcursion(() => {
       e8.gotoChar(e8.lineStart(propertyLine));
-      e8.call("org-indent-line");
+      lineIndenter(propertyLine);
     });
   });
 }

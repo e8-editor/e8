@@ -567,6 +567,131 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "adapt-demote-narrowed",
+      "input": {
+        "text": "* A\n  a\n* B\n  b\n",
+        "point": 0,
+        "keys": "C-x n s M-<right> C-x n w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** A\n   a\n* B\n  b\n",
+      "visible": "** A\n   a\n* B\n  b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-promote-narrowed",
+      "input": {
+        "text": "** A\n   a\n** B\n   b\n",
+        "point": 0,
+        "keys": "C-x n s M-<left> C-x n w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  a\n** B\n   b\n",
+      "visible": "* A\n  a\n** B\n   b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-cycle-level-keeps-text",
+      "input": {
+        "text": "* A\n** \n   text\n",
+        "point": 7,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n* \n   text\n",
+      "visible": "* A\n* \n   text\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-demote-skips-footnote",
+      "input": {
+        "text": "* A\n  body\n[fn:1] a\n\n  more\n",
+        "point": 0,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** A\n   body\n[fn:1] a\n\n  more\n",
+      "visible": "** A\n   body\n[fn:1] a\n\n  more\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headline-data-after-top-drawer",
+      "input": {
+        "text": ":PROPERTIES:\n:X: 1\n:END:\n  text\n* A\n",
+        "point": 0,
+        "keys": "C-n C-n C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": ":PROPERTIES:\n:X: 1\n:END:\ntext\n* A\n",
+      "visible": ":PROPERTIES:\n:X: 1\n:END:\ntext\n* A\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
