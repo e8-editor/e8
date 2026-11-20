@@ -84,6 +84,8 @@ import {
   toggleCheckbox,
   writeStruct,
   entryGet,
+  propertyLocalValues,
+  propertySeparator,
   setLineIndenter,
 } from "org-list";
 import {
@@ -125,6 +127,18 @@ const variables: [string, string, e8.Value][] = [
   ],
   ["org-startup-truncated", "Whether org-mode turns on truncate-lines, so long lines run off the window.", true],
   ["org-use-fast-todo-selection", "Whether C-c C-t asks for a state by its key, when the states have keys as TODO(t) gives them: auto does, nil cycles.", "auto"],
+  [
+    "org-global-properties",
+    "Properties every entry inherits, as [name, value] lists, after those a file gives in #+PROPERTY: lines. " +
+      "A property drawer's value comes before these.",
+    null,
+  ],
+  [
+    "org-property-separators",
+    "What joins a property's values when NAME+ adds to it, as [names, separator] lists, where names is a list of " +
+      "property names or a regexp matching them. Others are joined by a space.",
+    null,
+  ],
   ["org-log-into-drawer", "Whether notes about state changes go into a drawer: t for LOGBOOK, or the drawer's name; nil puts them in the entry.", false],
   ["org-treat-insert-todo-heading-as-state-change", "Whether inserting a TODO heading logs it as a change to that state.", false],
   ["org-todo-keyword-faces", "Faces for TODO keywords, as [keyword, face] lists: a face's name, a colour, or a list of attributes such as [\":foreground\", \"#b48ead\", \":weight\", \"bold\"].", null],
@@ -502,45 +516,103 @@ function logHow(state: string | undefined, previous: string | undefined): string
 }
 
 /**
- * A property of the heading's entry or, failing that, of a heading above
- * it, or else a #+PROPERTY: line's, as org-entry-get with inheritance and
- * literal nil finds it: "nil" is given back as it is.
+ * A property's value for the heading's entry, inherited as
+ * org-entry-get-with-inheritance finds it: the first base value going up
+ * from the entry through the headings above it to the drawer before the
+ * first heading, with every NAME+ value met on the way after it, or else
+ * a #+PROPERTY: line's, org-global-properties' or Org's own, all joined by
+ * the property's separator. "nil" is no value unless `literalNil`.
  */
-export function entryGetInherited(h: Heading, property: string): string | undefined {
+export function entryGetInherited(h: Heading, property: string, literalNil = true): string | undefined {
+  let values: string[] = [];
+  // Takes an element's values in front of those below it, saying whether it had the base value.
+  const take = (local: [string | undefined, string[]] | undefined): boolean => {
+    if (local === undefined) return false;
+    const [base, extra] = local;
+    values = base === undefined ? [...extra, ...values] : [base, ...extra, ...values];
+    return base !== undefined;
+  };
   const all = headings();
+  let found = false;
   let i = headingIndex(all, h.line);
   let level = Infinity;
   for (; i !== undefined && i >= 0; i--) {
     if (all[i]!.level >= level) continue;
     level = all[i]!.level;
-    const p = entryGet(all[i]!.line, property);
-    if (p !== undefined) return p;
+    if (take(propertyLocalValues(all[i]!.line, property))) {
+      found = true;
+      break;
+    }
     if (level === 1) break;
   }
-  return topProperty(property) ?? fileProperty(property);
+  if (!found) found = take(topLocalValues(property));
+  if (!found) {
+    const global = globalProperty(property);
+    if (global !== undefined) values = [global, ...values];
+  }
+  if (values.length === 0) return undefined;
+  const value = values.join(propertySeparator(property));
+  return literalNil || value !== "nil" ? value : undefined;
 }
 
-/** A property of the drawer before the first heading, at the top of the file after comments and keywords, as org-data's. */
-function topProperty(property: string): string | undefined {
+/**
+ * A property's values in the drawer before the first heading, as the
+ * org-data element has them: the drawer comes first in the buffer, after
+ * blank lines and then comment lines only.
+ */
+function topLocalValues(property: string): [string | undefined, string[]] | undefined {
   return e8.saveRestriction(() => {
     e8.widen();
-    for (let l = 0; l < e8.lineCount(); l++) {
-      const text = e8.lineText(l);
-      if (/^[ \t]*$/.test(text) || /^[ \t]*#/.test(text)) continue;
-      // entryGet looks under a heading line, so ask from the line before the drawer.
-      return /^[ \t]*:PROPERTIES:[ \t]*$/i.test(text) ? entryGet(l - 1, property) : undefined;
-    }
-    return undefined;
+    const n = e8.lineCount();
+    let l = 0;
+    // As org-skip-whitespace, then comments as org-at-comment-p sees them.
+    while (l < n && /^[ \t]*$/.test(e8.lineText(l))) l++;
+    while (l < n && /^[ \t]*#(?: |$)/.test(e8.lineText(l))) l++;
+    if (l >= n || !/^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(l))) return undefined;
+    // propertyLocalValues looks under a heading line, so ask from the line before the drawer.
+    return propertyLocalValues(l - 1, property);
   });
 }
 
-/** A #+PROPERTY: line's value for `property`, the last line's if several, as org-file-properties keeps them. */
-function fileProperty(property: string): string | undefined {
+/** Values every entry inherits that have no drawer of their own, as org-global-properties-fixed holds them. */
+const GLOBAL_PROPERTIES_FIXED: [string, string][] = [
+  ["VISIBILITY_ALL", "folded children content all"],
+  ["CLOCK_MODELINE_TOTAL_ALL", "current today repeat all auto"],
+];
+
+/**
+ * A property's value from #+PROPERTY: lines, org-global-properties or
+ * Org's fixed ones, the first that has it, as
+ * org--property-global-or-keyword-value with literal nil finds it.
+ */
+function globalProperty(property: string): string | undefined {
+  const keyword = keywordProperty(property);
+  if (keyword !== undefined) return keyword;
+  const key = property.toLowerCase();
+  const user = e8.variable("org-global-properties");
+  if (Array.isArray(user)) {
+    for (const e of user) {
+      if (Array.isArray(e) && typeof e[0] === "string" && e[0].toLowerCase() === key) return typeof e[1] === "string" ? e[1] : undefined;
+    }
+  }
+  return GLOBAL_PROPERTIES_FIXED.find(([k]) => k.toLowerCase() === key)?.[1];
+}
+
+/**
+ * A property's value from #+PROPERTY: lines, as org-keyword-properties
+ * collects them: a later line replaces an earlier one, and a NAME+ line
+ * adds its value after a space.
+ */
+function keywordProperty(property: string): string | undefined {
+  const key = property.toLowerCase();
   let value: string | undefined;
   for (const [, , text] of keywordLines()) {
     // A name and a value, as org-collect-keywords trims them: a name alone is no property.
     const m = /^#\+PROPERTY:[ \t]+(\S+)[ \t]+(\S.*?)[ \t]*$/i.exec(text);
-    if (m && m[1].toLowerCase() === property.toLowerCase()) value = m[2];
+    if (!m) continue;
+    const appending = m[1].endsWith("+");
+    if ((appending ? m[1].slice(0, -1) : m[1]).toLowerCase() !== key) continue;
+    value = appending && value !== undefined ? `${value} ${m[2]}` : m[2];
   }
   return value;
 }

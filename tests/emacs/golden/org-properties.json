@@ -417,6 +417,383 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "global-properties-log-into-drawer",
+      "input": {
+        "text": "* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 2,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-global-properties": {
+            "LOG_INTO_DRAWER": "NOTES"
+          }
+        }
+      },
+      "text": "* DONE Task\n:NOTES:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": "* DONE Task\n:NOTES:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "keyword-property-before-global",
+      "input": {
+        "text": "#+PROPERTY: LOG_INTO_DRAWER LOGBOOK\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 38,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-global-properties": {
+            "LOG_INTO_DRAWER": "NOTES"
+          }
+        }
+      },
+      "text": "#+PROPERTY: LOG_INTO_DRAWER LOGBOOK\n* DONE Task\n:LOGBOOK:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": "#+PROPERTY: LOG_INTO_DRAWER LOGBOOK\n* DONE Task\n:LOGBOOK:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "top-drawer-before-global",
+      "input": {
+        "text": ":PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 44,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-global-properties": {
+            "LOG_INTO_DRAWER": "NOTES"
+          }
+        }
+      },
+      "text": ":PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n:MINE:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": ":PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n:MINE:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "top-drawer-after-comments",
+      "input": {
+        "text": "# a comment\n#\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 58,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "# a comment\n#\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n:MINE:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": "# a comment\n#\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n:MINE:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "top-drawer-after-blank-lines",
+      "input": {
+        "text": "\n\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 46,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "\n\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n:MINE:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": "\n\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n:MINE:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "no-top-drawer-after-keyword",
+      "input": {
+        "text": "#+TITLE: Notes\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 59,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "#+TITLE: Notes\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": "#+TITLE: Notes\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "no-top-drawer-after-comment-and-blank",
+      "input": {
+        "text": "# a comment\n\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 57,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "# a comment\n\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": "# a comment\n\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 62,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-plus-adds-to-parent",
+      "input": {
+        "text": "* Parent\n:PROPERTIES:\n:LOGGING: logdone\n:END:\n** TODO Child\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+        "point": 49,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* Parent\n:PROPERTIES:\n:LOGGING: logdone\n:END:\n** DONE Child\nCLOSED: [2026-11-04 Wed 12:00]\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "visible": "* Parent\n:PROPERTIES:\n:LOGGING: logdone\n:END:\n** DONE Child\nCLOSED: [2026-11-04 Wed 12:00]\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-without-plus-replaces",
+      "input": {
+        "text": "* Parent\n:PROPERTIES:\n:LOGGING: logdone\n:END:\n** TODO Child\n:PROPERTIES:\n:LOGGING: DONE(!)\n:END:\nbody\n",
+        "point": 49,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* Parent\n:PROPERTIES:\n:LOGGING: logdone\n:END:\n** DONE Child\n:PROPERTIES:\n:LOGGING: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "visible": "* Parent\n:PROPERTIES:\n:LOGGING: logdone\n:END:\n** DONE Child\n:PROPERTIES:\n:LOGGING: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-plus-adds-to-keyword",
+      "input": {
+        "text": "#+PROPERTY: LOGGING logdone\n* TODO Task\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+        "point": 30,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "#+PROPERTY: LOGGING logdone\n* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "visible": "#+PROPERTY: LOGGING logdone\n* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "keyword-plus-adds-to-keyword",
+      "input": {
+        "text": "#+PROPERTY: LOGGING logdone\n#+PROPERTY: LOGGING+ DONE(!)\n* TODO Task\nbody\n",
+        "point": 59,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "#+PROPERTY: LOGGING logdone\n#+PROPERTY: LOGGING+ DONE(!)\n* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "visible": "#+PROPERTY: LOGGING logdone\n#+PROPERTY: LOGGING+ DONE(!)\n* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-plus-adds-to-global",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+        "point": 2,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-global-properties": {
+            "LOGGING": "logdone"
+          }
+        }
+      },
+      "text": "* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "visible": "* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-plus-adds-to-top-drawer",
+      "input": {
+        "text": ":PROPERTIES:\n:LOGGING: logdone\n:END:\n* Parent\n** TODO Child\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+        "point": 49,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": ":PROPERTIES:\n:LOGGING: logdone\n:END:\n* Parent\n** DONE Child\nCLOSED: [2026-11-04 Wed 12:00]\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "visible": ":PROPERTIES:\n:LOGGING: logdone\n:END:\n* Parent\n** DONE Child\nCLOSED: [2026-11-04 Wed 12:00]\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-plus-in-every-level",
+      "input": {
+        "text": ":PROPERTIES:\n:LOGGING+: logdone\n:END:\n* Parent\n:PROPERTIES:\n:LOGGING+: nologdone\n:END:\n** TODO Child\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+        "point": 90,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": ":PROPERTIES:\n:LOGGING+: logdone\n:END:\n* Parent\n:PROPERTIES:\n:LOGGING+: nologdone\n:END:\n** DONE Child\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "visible": ":PROPERTIES:\n:LOGGING+: logdone\n:END:\n* Parent\n:PROPERTIES:\n:LOGGING+: nologdone\n:END:\n** DONE Child\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n",
+      "point": 95,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "last-base-value-counts",
+      "input": {
+        "text": "* TODO Task\n:PROPERTIES:\n:LOG_INTO_DRAWER: FIRST\n:LOG_INTO_DRAWER: SECOND\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 2,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE Task\n:PROPERTIES:\n:LOG_INTO_DRAWER: FIRST\n:LOG_INTO_DRAWER: SECOND\n:END:\n:SECOND:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": "* DONE Task\n:PROPERTIES:\n:LOG_INTO_DRAWER: FIRST\n:LOG_INTO_DRAWER: SECOND\n:END:\n:SECOND:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "property-separators",
+      "input": {
+        "text": ":PROPERTIES:\n:LOG_INTO_DRAWER: MY\n:END:\n* TODO Task\n:PROPERTIES:\n:LOG_INTO_DRAWER+: NOTES\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+        "point": 42,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-property-separators": {
+            "LOG_INTO": "_"
+          }
+        }
+      },
+      "text": ":PROPERTIES:\n:LOG_INTO_DRAWER: MY\n:END:\n* DONE Task\n:PROPERTIES:\n:LOG_INTO_DRAWER+: NOTES\n:END:\n:MY_NOTES:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "visible": ":PROPERTIES:\n:LOG_INTO_DRAWER: MY\n:END:\n* DONE Task\n:PROPERTIES:\n:LOG_INTO_DRAWER+: NOTES\n:END:\n:MY_NOTES:\nbody\n#+TODO: TODO | DONE(!)\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

@@ -1384,18 +1384,59 @@ export function entryPut(headingLine: number, property: string, value: string): 
   });
 }
 
-/** A property's value in a heading's property drawer, as org-entry-get reads it, ignoring case. */
-export function entryGet(headingLine: number, property: string): string | undefined {
+/**
+ * A property's values in the property drawer under `headingLine`, as
+ * org--property-local-values reads them with literal nil: the base value,
+ * the last NAME line's, and each NAME+ line's in order, ignoring case.
+ * Undefined when the drawer has neither.
+ */
+export function propertyLocalValues(headingLine: number, property: string): [string | undefined, string[]] | undefined {
   let line = headingLine + 1;
   if (line < e8.lineCount() && PLANNING.test(e8.lineText(line))) line++;
   const close = propertyDrawerEnd(line);
   if (close === undefined) return undefined;
-  const re = new RegExp(`^[ \\t]*:${escapeRegExp(property)}:(?:[ \\t]+(.*?))?[ \\t]*$`, "i");
+  const re = new RegExp(`^[ \\t]*:${escapeRegExp(property)}(\\+?):(?:[ \\t]+(.*?))?[ \\t]*$`, "i");
+  let base: string | undefined;
+  const extra: string[] = [];
   for (let l = line + 1; l < close; l++) {
     const m = re.exec(e8.lineText(l));
-    if (m) return m[1] ?? "";
+    if (!m) continue;
+    // As the parser's plist-put: a later NAME line replaces an earlier one.
+    if (m[1] === "+") extra.push(m[2] ?? "");
+    else base = m[2] ?? "";
   }
-  return undefined;
+  return base === undefined && extra.length === 0 ? undefined : [base, extra];
+}
+
+/** What joins a property's values, as org--property-get-separator finds it in org-property-separators, else a space. */
+export function propertySeparator(property: string): string {
+  const specs = e8.variable("org-property-separators");
+  if (!Array.isArray(specs)) return " ";
+  const caseFold = e8.variable("case-fold-search");
+  for (const spec of specs) {
+    if (!Array.isArray(spec) || typeof spec[1] !== "string") continue;
+    const key = spec[0];
+    if (Array.isArray(key) ? key.includes(property) : typeof key === "string" && e8.stringMatch(key, property, { caseFold: caseFold !== false && caseFold !== null }) !== undefined) {
+      return spec[1];
+    }
+  }
+  return " ";
+}
+
+/**
+ * A property's value in a heading's property drawer, as org-entry-get
+ * reads it without inheritance, ignoring case: the base value and the
+ * NAME+ values joined by the property's separator. "nil" is no value
+ * unless `literalNil`.
+ */
+export function entryGet(headingLine: number, property: string, literalNil = false): string | undefined {
+  const local = propertyLocalValues(headingLine, property);
+  if (local === undefined) return undefined;
+  const [base, extra] = local;
+  const values = (literalNil || base !== "nil") && base !== undefined ? [base, ...extra] : extra;
+  if (values.length === 0) return undefined;
+  const value = values.join(propertySeparator(property));
+  return literalNil || value !== "nil" ? value : undefined;
 }
 
 /** The properties Org works out itself, which org-entry-put cannot set, as org-special-properties lists them. */
@@ -1428,7 +1469,7 @@ export const setProperty = e8.defineCommand({
       return;
     }
     if (SPECIAL_PROPERTIES.includes(upper)) throw new Error(`The ${property} property cannot be set with \`org-entry-put'`);
-    if (entryGet(h.line, property) === value) return;
+    if (entryGet(h.line, property, true) === value) return;
     const p = marker(e8.point());
     entryPut(h.line, property, value);
     e8.gotoChar(p.pos);

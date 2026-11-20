@@ -12949,6 +12949,12 @@ declare global {
        */
       "org-fontify-whole-block-delimiter-line": Value;
       /**
+       * Properties every entry inherits, as [name, value] lists, after those a file gives in #+PROPERTY: lines. A property drawer's value comes before these.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-global-properties": Value;
+      /**
        * What marks a day the habit was done in its graph.
        *
        * Defined in packages/org-habit.ts.
@@ -13178,6 +13184,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-priority-lowest": Value;
+      /**
+       * What joins a property's values when NAME+ adds to it, as [names, separator] lists, where names is a list of property names or a regexp matching them. Others are joined by a space.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-property-separators": Value;
       /**
        * Dates answered to Org's date prompt, newest first.
        *
