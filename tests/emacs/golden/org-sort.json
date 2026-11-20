@@ -382,6 +382,465 @@
       "modified": true,
       "error": null,
       "message": "Effort is now 0:30"
+    },
+    {
+      "name": "sort-a-region-ending-in-a-heading",
+      "input": {
+        "text": "* c\n* b\n* a\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* b\n* c\n* a\n",
+      "visible": "* b\n* c\n* a\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-a-region-with-blank-lines",
+      "input": {
+        "text": "* c\n* b\n\n\n* a\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* b\n\n\n* c\n* a\n",
+      "visible": "* b\n\n\n* c\n* a\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-a-region-without-a-final-newline",
+      "input": {
+        "text": "* c\n* b\n* a",
+        "point": 0,
+        "keys": "C-SPC M-> C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* a\n* b\n* c\n",
+      "visible": "* a\n* b\n* c\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-top-level-ending-in-spaces",
+      "input": {
+        "text": "x\n* b\n* a\n  ",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "x\n* a\n  \n* b\n",
+      "visible": "x\n* a\n  \n* b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-folds-drawers-again",
+      "input": {
+        "text": "* P\n** b\n:PROPERTIES:\n:ID: 1\n:END:\n:LOGBOOK:\n- note\n:END:\n** a\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** a\n** b\n:PROPERTIES:\n:ID: 1\n:END:\n:LOGBOOK:\n- note\n:END:\n",
+      "visible": "* P\n** a\n** b\n:PROPERTIES:\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-a-region-before-the-first-heading",
+      "input": {
+        "text": "intro\nmore\n* b\n* a\n",
+        "point": 0,
+        "keys": "C-SPC C-f C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "intro\nmore\n* a\n* b\n",
+      "visible": "intro\nmore\n* a\n* b\n",
+      "point": 11,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-stops-at-a-higher-heading",
+      "input": {
+        "text": "* P\n**** c\n** m\n**** a\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n**** c\n** m\n**** a\n",
+      "visible": "* P\n**** c\n** m\n**** a\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sort-keeps-local-variables-last",
+      "input": {
+        "text": "x\n* b\n* a\n# Local Variables:\n# foo: 1\n# End:\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "x\n* a\n* b\n# Local Variables:\n# foo: 1\n# End:\n",
+      "visible": "x\n* a\n* b\n# Local Variables:\n# foo: 1\n# End:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-comment-keys",
+      "input": {
+        "text": "* P\n** COMMENT-x\n** b\n** COMMENT\n** COMMENT a\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** COMMENT a\n** b\n** COMMENT\n** COMMENT-x\n",
+      "visible": "* P\n** COMMENT a\n** b\n** COMMENT\n** COMMENT-x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-nested-emphasis-and-angle-links",
+      "input": {
+        "text": "* P\n** */b/*\n** a\n** <https://z>\n** https://y\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** a\n** */b/*\n** https://y\n** <https://z>\n",
+      "visible": "* P\n** a\n** */b/*\n** https://y\n** <https://z>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-by-clocking",
+      "input": {
+        "text": "* P\n** a\nCLOCK: [2026-11-04 Wed 10:00]--[2026-11-04 Wed 12:00] =>  0:30\n** b\nCLOCK: [2026-11-04 Wed 10:00]--[2026-11-04 Wed 11:00] =>  1:00\n** c\nnote => 9:00\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "k"
+        ]
+      },
+      "text": "* P\n** c\nnote => 9:00\n** b\nCLOCK: [2026-11-04 Wed 10:00]--[2026-11-04 Wed 11:00] =>  1:00\n** a\nCLOCK: [2026-11-04 Wed 10:00]--[2026-11-04 Wed 12:00] =>  0:30\n",
+      "visible": "* P\n** c\nnote => 9:00\n** b\nCLOCK: [2026-11-04 Wed 10:00]--[2026-11-04 Wed 11:00] =>  1:00\n** a\nCLOCK: [2026-11-04 Wed 10:00]--[2026-11-04 Wed 12:00] =>  0:30\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-by-created",
+      "input": {
+        "text": "* P\n** a\n[2026-05-01 Fri 10:00-11:00]\n** b\n[2026-03-01 Sun]\n** c\n[2026-04-01 Wed +1w]\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c"
+        ]
+      },
+      "text": "* P\n** b\n[2026-03-01 Sun]\n** a\n[2026-05-01 Fri 10:00-11:00]\n** c\n[2026-04-01 Wed +1w]\n",
+      "visible": "* P\n** b\n[2026-03-01 Sun]\n** a\n[2026-05-01 Fri 10:00-11:00]\n** c\n[2026-04-01 Wed +1w]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-wide-characters",
+      "input": {
+        "text": "* P\n** z 😀😀\nSCHEDULED: <2026-01-05 Mon>\n*** child\n** y\nSCHEDULED: <2026-06-01 Mon>\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ]
+      },
+      "text": "* P\n** z 😀😀\nSCHEDULED: <2026-01-05 Mon>\n*** child\n** y\nSCHEDULED: <2026-06-01 Mon>\n",
+      "visible": "* P\n** z 😀😀\nSCHEDULED: <2026-01-05 Mon>\n*** child\n** y\nSCHEDULED: <2026-06-01 Mon>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sort-from-an-items-second-line",
+      "input": {
+        "text": "* P\n- item\n  more\n** b\n** a\n",
+        "point": 11,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n- item\n  more\n** a\n** b\n",
+      "visible": "* P\n- item\n  more\n** a\n** b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-by-a-plus-property",
+      "input": {
+        "text": "* P\n** y\n:PROPERTIES:\n:Rank+: 2\n:END:\n** x\n:PROPERTIES:\n:Rank: 1\n:END:\n",
+        "point": 0,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "Rank"
+        ]
+      },
+      "text": "* P\n** x\n:PROPERTIES:\n:Rank: 1\n:END:\n** y\n:PROPERTIES:\n:Rank+: 2\n:END:\n",
+      "visible": "* P\n** x\n:PROPERTIES:\n** y\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inc-effort-read-as-lisp",
+      "input": {
+        "text": "* T\n:PROPERTIES:\n:Effort_ALL: \"0:10\" 01 1.50\n:Effort: 0:10\n:END:\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-inc-effort"
+        ]
+      },
+      "text": "* T\n:PROPERTIES:\n:Effort_ALL: \"0:10\" 01 1.50\n:Effort:   1\n:END:\n",
+      "visible": "* T\n:PROPERTIES:\n:Effort_ALL: \"0:10\" 01 1.50\n:Effort:   1\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inc-effort-without-a-value",
+      "input": {
+        "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30\n:END:\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-inc-effort"
+        ]
+      },
+      "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30\n:END:\n",
+      "visible": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Unknown value nil among allowed values"
+    },
+    {
+      "name": "set-effort-not-a-duration",
+      "input": {
+        "text": "* T\n",
+        "point": 0,
+        "keys": "C-c C-x e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "abc"
+        ]
+      },
+      "text": "* T\n",
+      "visible": "* T\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid duration format: \"abc\""
+    },
+    {
+      "name": "set-effort-etc-allows-others",
+      "input": {
+        "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 :ETC\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2:00"
+        ],
+        "message": true
+      },
+      "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 :ETC\n:Effort:   2:00\n:END:\n",
+      "visible": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 :ETC\n:Effort:   2:00\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Effort is now 2:00"
     }
   ]
 }

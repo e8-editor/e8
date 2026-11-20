@@ -6259,10 +6259,27 @@ e8.defineCommand({
   },
 });
 
-/** The values a property may take, as org-property-get-allowed-values reads NAME_ALL, inherited, split at spaces. */
-function allowedValues(h: Heading, property: string): string[] {
+/**
+ * The values a property may take, as org-property-get-allowed-values reads
+ * NAME_ALL, inherited: each read as Lisp, so a string's quotes go and a
+ * number is written as Lisp writes it; :ETC means others may be typed.
+ */
+function allowedValues(h: Heading, property: string): { values: string[]; restricted: boolean } {
   const all = entryGetInherited(h, `${property}_ALL`, false);
-  return all === undefined ? [] : all.split(/[ \t]+/).filter((v) => v !== "");
+  const values: string[] = [];
+  let restricted = true;
+  for (const m of allMatches(/"((?:[^"\\]|\\.)*)"|(\S+)/g, all ?? "")) {
+    if (m[1] !== undefined) values.push(m[1].replace(/\\(.)/g, "$1"));
+    else if (m[2] === ":ETC") restricted = false;
+    else values.push(/^[-+]?(\d+\.?\d*|\.\d+)$/.test(m[2]) ? String(Number(m[2])) : m[2]);
+  }
+  return { values, restricted };
+}
+
+/** Whether TEXT is a duration Org reads, as org-duration-to-minutes checks: H:MM, H:MM:SS, a number, or units such as 1h 30min. */
+function validDuration(text: string): boolean {
+  const t = text.trim();
+  return /^\d+(?::\d{2}){1,2}$/.test(t) || /^[-+]?\d*\.?\d+$/.test(t) || /^(\s*[-+]?\d*\.?\d+\s*(min|h|d|w|m|y))+(\s+\d+(:\d{2}){1,2})?$/.test(t);
 }
 
 /**
@@ -6274,15 +6291,16 @@ function setEffort(increment: boolean, value?: string): void {
   const [all, i] = backToHeading();
   const h = all[i];
   const property = String(e8.variable("org-effort-property") ?? "Effort");
-  const allowed = allowedValues(h, property);
+  const { values: allowed, restricted } = allowedValues(h, property);
   const current = entryGet(h.line, property);
   let next: string;
   if (increment) {
     if (allowed.length === 0) e8.userError("Allowed effort values are not set");
-    const at = allowed.indexOf(current ?? "\0");
-    if (at < 0 || at + 1 >= allowed.length) e8.userError(`Unknown value ${JSON.stringify(current ?? null)} among allowed values`);
+    const at = current === undefined ? -1 : allowed.indexOf(current);
+    if (at < 0 || at + 1 >= allowed.length) e8.userError(`Unknown value ${current === undefined ? "nil" : JSON.stringify(current)} among allowed values`);
     next = allowed[at + 1];
-  } else next = value ?? e8.completingRead("Effort: ", allowed, { requireMatch: allowed.length > 0 });
+  } else next = value ?? e8.completingRead("Effort: ", allowed, { requireMatch: allowed.length > 0 && restricted });
+  if (!validDuration(next)) e8.signal("error", `Invalid duration format: ${JSON.stringify(next)}`);
   if (next !== current) e8.saveExcursion(() => entryPut(h.line, property, next));
   e8.message(`${property} is now ${next}`);
 }
@@ -6316,7 +6334,10 @@ function nextBlock(n: number, backward: boolean): void {
   const types = ["center-block", "comment-block", "dynamic-block", "example-block", "export-block", "quote-block", "special-block", "src-block", "verse-block"];
   // From the line's start back, or its end on, as Org starts its search.
   const step = backward ? -1 : 1;
-  for (let l = backward ? line - 1 : line + 1; l >= 0 && l < e8.lineCount() && count > 0; l += step) {
+  // Within the narrowing, as Org's search is.
+  const first = lineAt(e8.pointMin());
+  const last = lineAt(e8.pointMax());
+  for (let l = backward ? line - 1 : line + 1; l >= first && l <= last && count > 0; l += step) {
     if (!/^[ \t]*#\+BEGIN/i.test(e8.lineText(l))) continue;
     const el = elementAt(e8.lineStart(l));
     if (el && types.includes(el.type) && e8.lineStart(l) <= el.begin) {
@@ -6351,11 +6372,17 @@ e8.defineCommand({
 
 e8.defineHook("org-after-sorting-entries-or-items-hook", "Run after entries or items have been sorted, point in the parent's line or the first entry.");
 
-/** Text as it shows: emphasis markers and links' brackets gone, as org-sort-remove-invisible. */
+/** Text as it shows: emphasis markers and links' brackets gone, as org-sort-remove-invisible, nested ones too. */
 function sortRemoveInvisible(s: string): string {
-  return s
-    .replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_m, l: string, d?: string) => d ?? l)
-    .replace(/(^|[\s\-('"{])([*\/_=~+])(\S|\S.*?\S)\2(?=[\s\-.,:!?;'")}\[]|$)/g, "$1$3");
+  let out = s;
+  for (let prev = ""; prev !== out; ) {
+    prev = out;
+    out = out
+      .replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_m, l: string, d?: string) => d ?? l)
+      .replace(/<((?:https?|ftp|mailto|file|doi|id|news|shell|elisp|help|info):[^>\n]*)>/g, "$1")
+      .replace(/(^|[\s\-('"{])([*\/_=~+])(\S|\S.*?\S)\2(?=[\s\-.,:!?;'")}\[*\/_=~+]|$)/g, "$1$3");
+  }
+  return out;
 }
 
 /** A string's leading number, as string-to-number reads it, else 0. */
@@ -6369,6 +6396,42 @@ function timestampSeconds(ts: string): number {
   const m = /(\d{4})-(\d{2})-(\d{2})(?:[^\]>\n]*?(\d{1,2}):(\d{2}))?/.exec(ts);
   if (!m) return 0;
   return e8.encodeTime([0, Number(m[5] ?? 0), Number(m[4] ?? 0), Number(m[3]), Number(m[2]), Number(m[1])]);
+}
+
+/** The minutes an entry's CLOCK lines add up to, as org-clock-sum counts them: from their timestamps, else their => duration. */
+function clockMinutes(text: string): number {
+  let minutes = 0;
+  for (const line of text.split("\n")) {
+    const clock = /^[ \t]*CLOCK:[ \t]*(.*)$/.exec(line);
+    if (!clock) continue;
+    const range = /\[([^\]]+)\]--\[([^\]]+)\]/.exec(clock[1]);
+    if (range) minutes += Math.floor((timestampSeconds(range[2]) - timestampSeconds(range[1])) / 60);
+    else {
+      const d = /=>[ \t]*(\d+):(\d{2})/.exec(clock[1]);
+      if (d) minutes += Number(d[1]) * 60 + Number(d[2]);
+    }
+  }
+  return minutes;
+}
+
+/** The properties the buffer's entries and keywords name, and Org's special ones, sorted, as org-buffer-property-keys with specials. */
+function bufferPropertyKeys(): string[] {
+  const keys = new Set<string>(["ALLTAGS", "BLOCKED", "CLOCKSUM", "CLOCKSUM_T", "CLOSED", "DEADLINE", "FILE", "ITEM", "PRIORITY", "SCHEDULED", "TAGS", "TIMESTAMP", "TIMESTAMP_IA", "TODO"]);
+  for (const [, , text] of keywordLines()) {
+    const m = /^#\+PROPERTY:[ \t]*(\S+)/i.exec(text);
+    if (m) keys.add(m[1].replace(/\+$/, ""));
+  }
+  let inDrawer = false;
+  for (let l = 0; l < e8.lineCount(); l++) {
+    const text = e8.lineText(l);
+    if (/^[ \t]*:PROPERTIES:[ \t]*$/i.test(text)) inDrawer = true;
+    else if (/^[ \t]*:END:[ \t]*$/i.test(text)) inDrawer = false;
+    else if (inDrawer) {
+      const m = /^[ \t]*:(\S+?):/.exec(text);
+      if (m) keys.add(m[1].replace(/\+$/, ""));
+    }
+  }
+  return [...keys].sort();
 }
 
 /**
@@ -6385,20 +6448,14 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
   if (orgRegionActive()) {
     const rb = Math.min(e8.point(), e8.mark()!);
     const re = Math.max(e8.point(), e8.mark()!);
-    const first = all0.find((h) => h.start >= e8.lineStart(lineAt(rb)));
-    start = first?.start ?? e8.pointMax();
+    start = all0.find((h) => h.start >= e8.lineStart(lineAt(rb)))?.start ?? e8.pointMax();
+    // To the next heading after the subtree the region ends in, as org-end-of-subtree with TO-HEADING.
     const atEnd = headingIndex(all0, lineAt(re));
-    end = atEnd === undefined ? e8.lineEnd(lineAt(re)) : subtreeRegion(all0, atEnd)[1];
-    // To the end of the region's last subtree, as org-end-of-subtree.
-    if (atEnd !== undefined) {
-      const last = subtreeRegion(all0, atEnd)[1];
-      end = last === e8.pointMax() ? last : last - 1;
-    }
+    end = atEnd === undefined ? e8.pointMax() : subtreeRegion(all0, atEnd)[1];
     what = "region";
     e8.gotoChar(start);
   } else if (here !== undefined) {
-    const h = all0[here];
-    start = h.start;
+    start = all0[here].start;
     e8.gotoChar(subtreeRegion(all0, here)[1]);
     if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
     // Back over blank lines, then the line after them, as org-back-over-empty-lines with forward-line.
@@ -6411,10 +6468,13 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
     const all = headings();
     e8.gotoChar(all[headingIndex(all, lineAt())! + 1]?.start ?? e8.pointMax());
   } else {
-    e8.gotoChar(e8.pointMin());
     start = all0[0]?.start ?? e8.pointMax();
-    e8.gotoChar(e8.pointMax());
-    if (/\S/.test(e8.lineText(lineAt()))) e8.insert("\n");
+    // A last line with text gets a newline, as Org's (looking-at ".*?\\S-") asks.
+    e8.gotoChar(e8.lineStart(lineAt(e8.pointMax())));
+    if (/\S/.test(e8.lineText(lineAt()))) {
+      e8.gotoChar(e8.lineEnd(lineAt()));
+      e8.insert("\n");
+    }
     end = e8.pointMax();
     what = "top-level";
     e8.gotoChar(start);
@@ -6444,47 +6504,66 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
     getkey = e8.completingRead("Function for extracting keys: ", []);
     compare = e8.completingRead("Function for comparing keys (empty for default `sort-subr' predicate): ", []);
   }
-  if (dcst === "r") {
-    const keys = new Set<string>();
-    for (const [, , text] of e8.matchingLines("^[ \t]*:[^ \t:]+:")) {
-      const m = /^[ \t]*:([^ \t:]+):/.exec(text);
-      if (m && !/^(PROPERTIES|END)$/i.test(m[1]) && !m[1].endsWith("+")) keys.add(m[1]);
-    }
-    property = e8.completingRead("Property: ", [...keys], { requireMatch: true });
-  }
+  if (dcst === "r") property = e8.completingRead("Property: ", bufferPropertyKeys(), { requireMatch: true });
   e8.message("Sorting entries...");
   e8.saveRestriction(() => {
     e8.narrowToRegion(start, end);
+    // A newline at its end, as Org puts one there before sorting.
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.pointMax());
+      if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+    });
+    // A Local Variables list at the buffer's end stays there, as org-preserve-local-variables keeps it.
+    const atBufferEnd = e8.saveRestriction(() => (e8.widen(), e8.pointMax())) === e8.pointMax();
+    const lv = atBufferEnd ? /^[^\n]*Local Variables:[^\n]*\n(?:[^\n]*\n)*?[^\n]*End:[^\n]*\n?$/m.exec(e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax())) : null;
+    const sortEnd = lv ? e8.pointMax() - charCount(lv[0]) : e8.pointMax();
     const all = headings();
     const level = stars.length;
-    // The records: each entry of the first one's level, to the next.
-    const recs = all.filter((h) => h.start >= beg && h.level === level);
-    const records = recs.map((h, i) => ({ h, start: h.start, end: recs[i + 1]?.start ?? e8.pointMax() }));
+    const starsRe = new RegExp(`^${stars.replace(/\*/g, "\\*")} +`);
+    // The records, as sort-subr finds them: from one of the first's level to
+    // the next of that level, or the end when a higher heading comes first,
+    // as outline-forward-same-level fails.
+    const records: { h: Heading; start: number; end: number }[] = [];
+    let pos = beg;
+    while (pos < sortEnd) {
+      const h = all.find((x) => x.start === pos);
+      if (!h) break;
+      let recEnd = sortEnd;
+      for (const x of all) {
+        if (x.start <= pos || x.start >= sortEnd) continue;
+        if (x.level < level) break;
+        if (x.level === level) {
+          recEnd = x.start;
+          break;
+        }
+      }
+      records.push({ h, start: pos, end: recEnd });
+      const next = all.find((x) => x.start >= recEnd && x.start < sortEnd && starsRe.test(e8.lineText(x.line)) && x.level === level);
+      if (!next || recEnd >= sortEnd) break;
+      pos = next.start;
+    }
     const now = e8.currentTime();
     const caseFn = (s: string) => (withCase ? s : s.toLowerCase());
     const keyOf = (r: (typeof records)[number]): string | number => {
       const text = e8.bufferSubstringNoProperties(r.start, r.end);
-      const entryText = text.slice(0, (() => {
-        const next = all.find((x) => x.start > r.start);
-        return next && next.start < r.end ? [...e8.bufferSubstringNoProperties(r.start, next.start)].length : text.length;
-      })());
-      const title = sortRemoveInvisible(r.h.title.replace(/^COMMENT\b ?/, ""));
+      // The entry's own text, to its next heading, as org's searches bound by outline-next-heading.
+      const next = all.find((x) => x.start > r.start);
+      const entryText = e8.bufferSubstringNoProperties(r.start, next && next.start < r.end ? next.start : r.end);
+      const title = sortRemoveInvisible(r.h.title.replace(/^COMMENT[ \t]+/, ""));
       switch (dcst) {
         case "n":
           return stringToNumber(title);
         case "a":
           return caseFn(title);
-        case "k": {
-          let minutes = 0;
-          for (const m of allMatches(/=>\s*(\d+):(\d{2})/g, text)) minutes += Number(m[1]) * 60 + Number(m[2]);
-          return minutes;
-        }
+        case "k":
+          return clockMinutes(text);
         case "t": {
           const m = /<\d{4}-\d{2}-\d{2}[^>\n]*>/.exec(entryText) ?? /[[<]\d{4}-\d{2}-\d{2}[^\]>\n]*[\]>]/.exec(entryText);
           return m ? timestampSeconds(m[0]) : now;
         }
         case "c": {
-          const m = /^[ \t]*\[(\d{4}-\d{2}-\d{2}[^\]\n]*)\]/m.exec(entryText);
+          // An inactive timestamp alone, as org-ts-regexp1: a date, its day and a time, no range or repeater.
+          const m = /^[ \t]*\[(\d{4}-\d{2}-\d{2}(?: +[^\]\s\d+>-]+)?(?: +\d{1,2}:\d{2})?)\]/m.exec(entryText);
           return m ? timestampSeconds(m[1]) : now;
         }
         case "s": {
@@ -6515,18 +6594,21 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
           return e8.signal("error", `Invalid sorting type \`${type}'`);
       }
     };
-    const keyed = records.map((r) => ({ r, key: keyOf(r), text: e8.bufferSubstring(r.start, r.end) }));
+    const keyed = records.map((r, i) => ({ i, key: keyOf(r), text: e8.bufferSubstring(r.start, r.end) }));
     // As sort-subr: reversed, the records are taken last first, sorted, and turned round again.
     const reverse = dcst !== type;
+    const numeric = typeof keyed[0]?.key === "number";
     const less = (a: string | number, b: string | number): boolean => {
       if (dcst === "a") return e8.stringCollateLessp(String(a), String(b));
       if (dcst === "f" && compare) return truthy(e8.funcall(compare, a, b) ?? null);
-      return typeof a === "number" && typeof b === "number" ? a < b : String(a) < String(b);
+      // The first key's kind picks the comparison, as sort-subr's does.
+      return numeric ? Number(a) < Number(b) : String(a) < String(b);
     };
     let list = reverse ? [...keyed].reverse() : keyed;
     list = sortByPredicate(list, (x, y) => less(x.key, y.key));
     if (reverse) list.reverse();
-    if (records.length > 0) {
+    // Unchanged order leaves the buffer as it was, as with-buffer-unmodified-if-unchanged.
+    if (records.length > 0 && list.some((k, i) => k.i !== i)) {
       const from = records[0].start;
       const to = records[records.length - 1].end;
       e8.saveExcursion(() => {
@@ -6537,12 +6619,7 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
     }
   });
   // The drawers folded again, as org-cycle-hide-drawers 'all, and point at the start, as Org leaves it.
-  e8.saveExcursion(() => {
-    const endLine = lineAt(Math.min(end, e8.pointMax()));
-    for (let l = lineAt(start); l <= endLine && l < e8.lineCount(); l++) {
-      if (DRAWER_RE.test(e8.lineText(l))) toggleDrawerOrBlock(l, true);
-    }
-  });
+  hideDrawersIn(lineAt(start), Math.min(end, e8.pointMax()));
   e8.gotoChar(start);
   e8.runHooks("org-after-sorting-entries-or-items-hook");
   e8.message("Sorting entries...done");
@@ -6564,7 +6641,8 @@ const sortCommand = e8.defineCommand({
   params: [{ name: "with-case", kind: "prefix" }],
   run: (withCase: e8.Value) => {
     if (atTable()) e8.userError("E8 does not sort table lines yet");
-    if (inItem(lineAt())) e8.userError("E8 does not sort plain lists yet");
+    // On an item's own line, as org-at-item-p.
+    if (itemLine(lineAt())) e8.userError("E8 does not sort plain lists yet");
     sortEntries(withCase !== null && withCase !== undefined);
   },
 });
@@ -7705,6 +7783,8 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c C-x b": treeToIndirectBuffer,
   "C-c C-w": refileCommand,
   "C-c ^": sortCommand,
+  "C-c C-x e": "org-set-effort",
+  "C-c C-x E": "org-inc-effort",
   "C-c M-f": "org-next-block",
   "C-c M-b": "org-previous-block",
   "C-c C-M-w": refileReverseCommand,

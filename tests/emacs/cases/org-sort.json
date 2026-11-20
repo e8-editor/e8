@@ -186,5 +186,235 @@
     "answers": [
       "org-inc-effort"
     ]
+  },
+  {
+    "name": "sort-a-region-ending-in-a-heading",
+    "text": "* c\n* b\n* a\n",
+    "keys": "C-SPC C-n C-f C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-a-region-with-blank-lines",
+    "text": "* c\n* b\n\n\n* a\n",
+    "keys": "C-SPC C-n C-f C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-a-region-without-a-final-newline",
+    "text": "* c\n* b\n* a",
+    "keys": "C-SPC M-> C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-top-level-ending-in-spaces",
+    "text": "x\n* b\n* a\n  ",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-folds-drawers-again",
+    "text": "* P\n** b\n:PROPERTIES:\n:ID: 1\n:END:\n:LOGBOOK:\n- note\n:END:\n** a\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-a-region-before-the-first-heading",
+    "text": "intro\nmore\n* b\n* a\n",
+    "keys": "C-SPC C-f C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-stops-at-a-higher-heading",
+    "text": "* P\n**** c\n** m\n**** a\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-keeps-local-variables-last",
+    "text": "x\n* b\n* a\n# Local Variables:\n# foo: 1\n# End:\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-comment-keys",
+    "text": "* P\n** COMMENT-x\n** b\n** COMMENT\n** COMMENT a\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-nested-emphasis-and-angle-links",
+    "text": "* P\n** */b/*\n** a\n** <https://z>\n** https://y\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-by-clocking",
+    "text": "* P\n** a\nCLOCK: [2026-11-04 Wed 10:00]--[2026-11-04 Wed 12:00] =>  0:30\n** b\nCLOCK: [2026-11-04 Wed 10:00]--[2026-11-04 Wed 11:00] =>  1:00\n** c\nnote => 9:00\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "k"
+    ]
+  },
+  {
+    "name": "sort-by-created",
+    "text": "* P\n** a\n[2026-05-01 Fri 10:00-11:00]\n** b\n[2026-03-01 Sun]\n** c\n[2026-04-01 Wed +1w]\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "c"
+    ]
+  },
+  {
+    "name": "sort-wide-characters",
+    "text": "* P\n** z 😀😀\nSCHEDULED: <2026-01-05 Mon>\n*** child\n** y\nSCHEDULED: <2026-06-01 Mon>\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "sort-from-an-items-second-line",
+    "text": "* P\n- item\n  more\n** b\n** a\n",
+    "keys": "C-c ^",
+    "point": 11,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-by-a-plus-property",
+    "text": "* P\n** y\n:PROPERTIES:\n:Rank+: 2\n:END:\n** x\n:PROPERTIES:\n:Rank: 1\n:END:\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "r",
+      "Rank"
+    ]
+  },
+  {
+    "name": "inc-effort-read-as-lisp",
+    "text": "* T\n:PROPERTIES:\n:Effort_ALL: \"0:10\" 01 1.50\n:Effort: 0:10\n:END:\n",
+    "keys": "M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "org-inc-effort"
+    ]
+  },
+  {
+    "name": "inc-effort-without-a-value",
+    "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30\n:END:\n",
+    "keys": "M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "org-inc-effort"
+    ]
+  },
+  {
+    "name": "set-effort-not-a-duration",
+    "text": "* T\n",
+    "keys": "C-c C-x e",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "abc"
+    ]
+  },
+  {
+    "name": "set-effort-etc-allows-others",
+    "text": "* T\n:PROPERTIES:\n:Effort_ALL: 0:10 0:30 :ETC\n:END:\n",
+    "keys": "C-c C-x e",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "2:00"
+    ],
+    "message": true
   }
 ]
