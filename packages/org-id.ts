@@ -8,7 +8,7 @@
 // org-id-find to answer first, as org-roam-id.el does.
 
 import { headings, headingIndex, linkSetParameters } from "org";
-import { entryGet, entryPut } from "org-list";
+import { entryGet, entryPut, topGet } from "org-list";
 
 e8.defineVariable({ name: "org-id-extra-files", doc: "Files besides the agenda files that org-id-find looks in for IDs.", value: [] });
 
@@ -28,8 +28,10 @@ function entryLine(): number | undefined {
 
 /** The ID of the file-level property drawer at the top of the buffer, before any heading, as org-roam's file nodes keep it. */
 function fileLevelDrawer(): { start: number; end: number } | undefined {
+  // Where org-data's drawer is: after blank lines, then comment lines.
   let line = 0;
-  while (line < e8.lineCount() && /^\s*#/.test(e8.lineText(line)) && !/^\s*#\+/i.test(e8.lineText(line))) line++;
+  while (line < e8.lineCount() && /^[ \t]*$/.test(e8.lineText(line))) line++;
+  while (line < e8.lineCount() && /^[ \t]*#(?: |$)/.test(e8.lineText(line))) line++;
   if (line >= e8.lineCount() || !/^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(line))) return undefined;
   for (let l = line + 1; l < e8.lineCount(); l++) {
     if (/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(l))) return { start: line, end: l };
@@ -49,19 +51,13 @@ export function orgIdGet(create = false): string | undefined {
     return fresh;
   }
   const drawer = fileLevelDrawer();
-  if (drawer) {
-    for (let l = drawer.start + 1; l < drawer.end; l++) {
-      const m = /^[ \t]*:ID:[ \t]+(\S+)/i.exec(e8.lineText(l));
-      if (m) return m[1];
-    }
-  }
-  if (!create) return undefined;
+  const id = topGet("ID");
+  if (id || !create) return id || undefined;
   const fresh = orgIdUuid();
   e8.saveExcursion(() => {
-    if (drawer) {
-      e8.gotoChar(e8.lineStart(drawer.end));
-      e8.insert(`:ID:       ${fresh}\n`);
-    } else {
+    // As org-entry-put on org-data: an ID line already there, as ":ID: nil", is replaced.
+    if (drawer) entryPut(drawer.start - 1, "ID", fresh);
+    else {
       e8.gotoChar(0);
       e8.insert(`:PROPERTIES:\n:ID:       ${fresh}\n:END:\n`);
     }

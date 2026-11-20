@@ -4,7 +4,7 @@
 
 import { type DateTime, type Heading, PLANNING, allKeywords, at, entryEnd, headings, isDone, keywordLines, today } from "org";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
-import { entryGet } from "org-list";
+import { propertyLocalValues, propertySeparator, topLocalValues } from "org-list";
 import { allMatches, charCount, eraseBuffer } from "subr";
 
 e8.defineVariable({
@@ -170,19 +170,25 @@ function timeOf(ts: string): AgendaItem["time"] {
 }
 
 /**
- * Each heading's category, as org-refresh-category-properties sets them: a
- * CATEGORY property in its drawer, or its nearest ancestor's, or the
- * buffer's.
+ * Each heading's category, as org-agenda-format-item asks org-get-category
+ * for it: inherited, with CATEGORY+ adding to it.
  */
 function categories(all: Heading[]): string[] {
-  const base = category();
-  const stack: { level: number; cat: string }[] = [];
+  // As org-get-category, org-entry-get-with-inheritance of CATEGORY: the
+  // buffer's own is org-data's, the drawer before the first heading's or
+  // else the keyword's or the file's name, and "nil" is none, "???".
+  const top = topLocalValues("CATEGORY");
+  const data = top?.[0] !== undefined ? [top[0], ...top[1]] : [category(), ...(top?.[1] ?? [])];
+  const separator = propertySeparator("CATEGORY");
+  const stack: { level: number; values: string[] }[] = [];
   return all.map((h) => {
     while (stack.length > 0 && stack[stack.length - 1].level >= h.level) stack.pop();
-    const own = entryGet(h.line, "CATEGORY");
-    const cat = own !== undefined && own !== "" ? own : (stack[stack.length - 1]?.cat ?? base);
-    stack.push({ level: h.level, cat });
-    return cat;
+    const local = propertyLocalValues(h.line, "CATEGORY");
+    const parent = stack.length > 0 ? stack[stack.length - 1].values : data;
+    const values = local?.[0] !== undefined ? [local[0], ...local[1]] : [...parent, ...(local?.[1] ?? [])];
+    stack.push({ level: h.level, values });
+    const cat = values.join(separator);
+    return cat === "nil" ? "???" : cat;
   });
 }
 
@@ -231,7 +237,7 @@ function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: bo
   let text = e8.lineText(h.line).replace(/^\*+[ \t]+/, "");
   if (h.tagsAt !== undefined) text = text.slice(0, text.length - (e8.lineEnd(h.line) - h.tagsAt) - 0).replace(/[ \t]+$/, "");
   if (removeTimestamp) text = text.replace(/<\d{4}-\d{2}-\d{2}[^>\n]*>/, "");
-  const line = `  ${`${cat}:`.padEnd(12)}${time === undefined ? "" : `${time.field.padEnd(11)} `}${leader === "" ? "" : `${leader} `}${text}`;
+  const line = `  ${(cat === "" ? "" : `${cat}:`).padEnd(12)}${time === undefined ? "" : `${time.field.padEnd(11)} `}${leader === "" ? "" : `${leader} `}${text}`;
   const tags = displayedTags(h);
   if (tags === "") return line;
   const width = (e8.windowSize()?.width ?? 80) - 1;

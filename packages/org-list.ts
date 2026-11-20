@@ -1408,6 +1408,25 @@ export function propertyLocalValues(headingLine: number, property: string): [str
   return base === undefined && extra.length === 0 ? undefined : [base, extra];
 }
 
+/**
+ * A property's values in the drawer before the first heading, as the
+ * org-data element has them: the drawer comes first in the buffer, after
+ * blank lines and then comment lines only.
+ */
+export function topLocalValues(property: string): [string | undefined, string[]] | undefined {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const n = e8.lineCount();
+    let l = 0;
+    // As org-skip-whitespace, then comments as org-at-comment-p sees them.
+    while (l < n && /^[ \t]*$/.test(e8.lineText(l))) l++;
+    while (l < n && /^[ \t]*#(?: |$)/.test(e8.lineText(l))) l++;
+    if (l >= n || !/^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(l))) return undefined;
+    // propertyLocalValues looks under a heading line, so ask from the line before the drawer.
+    return propertyLocalValues(l - 1, property);
+  });
+}
+
 /** What joins a property's values, as org--property-get-separator finds it in org-property-separators, else a space. */
 export function propertySeparator(property: string): string {
   const specs = e8.variable("org-property-separators");
@@ -1416,7 +1435,8 @@ export function propertySeparator(property: string): string {
   for (const spec of specs) {
     if (!Array.isArray(spec) || typeof spec[1] !== "string") continue;
     const key = spec[0];
-    if (Array.isArray(key) ? key.includes(property) : typeof key === "string" && e8.stringMatch(key, property, { caseFold: caseFold !== false && caseFold !== null }) !== undefined) {
+    // As string-match-p, which leaves the match data alone.
+    if (Array.isArray(key) ? key.includes(property) : typeof key === "string" && e8.emacsRegexp(key, { caseFold: caseFold !== false && caseFold !== null }).test(property)) {
       return spec[1];
     }
   }
@@ -1430,7 +1450,16 @@ export function propertySeparator(property: string): string {
  * unless `literalNil`.
  */
 export function entryGet(headingLine: number, property: string, literalNil = false): string | undefined {
-  const local = propertyLocalValues(headingLine, property);
+  return localValue(propertyLocalValues(headingLine, property), property, literalNil);
+}
+
+/** A property's value in the drawer before the first heading, as org-entry-get reads it there without inheritance. */
+export function topGet(property: string, literalNil = false): string | undefined {
+  return localValue(topLocalValues(property), property, literalNil);
+}
+
+/** One value from an element's base and NAME+ values, as org-entry-get joins them. */
+function localValue(local: [string | undefined, string[]] | undefined, property: string, literalNil: boolean): string | undefined {
   if (local === undefined) return undefined;
   const [base, extra] = local;
   const values = (literalNil || base !== "nil") && base !== undefined ? [base, ...extra] : extra;
@@ -1469,7 +1498,7 @@ export const setProperty = e8.defineCommand({
       return;
     }
     if (SPECIAL_PROPERTIES.includes(upper)) throw new Error(`The ${property} property cannot be set with \`org-entry-put'`);
-    if (entryGet(h.line, property, true) === value) return;
+    if (entryGet(h.line, property) === value) return;
     const p = marker(e8.point());
     entryPut(h.line, property, value);
     e8.gotoChar(p.pos);

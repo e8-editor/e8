@@ -83,9 +83,9 @@ import {
   textIndentation,
   toggleCheckbox,
   writeStruct,
-  entryGet,
   propertyLocalValues,
   propertySeparator,
+  topLocalValues,
   setLineIndenter,
 } from "org-list";
 import {
@@ -524,6 +524,14 @@ function logHow(state: string | undefined, previous: string | undefined): string
  * the property's separator. "nil" is no value unless `literalNil`.
  */
 export function entryGetInherited(h: Heading, property: string, literalNil = true): string | undefined {
+  // As the element lineage, which reaches the headings above a narrowing.
+  return e8.saveRestriction(() => {
+    e8.widen();
+    return entryGetInheritedWide(h, property, literalNil);
+  });
+}
+
+function entryGetInheritedWide(h: Heading, property: string, literalNil: boolean): string | undefined {
   let values: string[] = [];
   // Takes an element's values in front of those below it, saying whether it had the base value.
   const take = (local: [string | undefined, string[]] | undefined): boolean => {
@@ -553,25 +561,6 @@ export function entryGetInherited(h: Heading, property: string, literalNil = tru
   if (values.length === 0) return undefined;
   const value = values.join(propertySeparator(property));
   return literalNil || value !== "nil" ? value : undefined;
-}
-
-/**
- * A property's values in the drawer before the first heading, as the
- * org-data element has them: the drawer comes first in the buffer, after
- * blank lines and then comment lines only.
- */
-function topLocalValues(property: string): [string | undefined, string[]] | undefined {
-  return e8.saveRestriction(() => {
-    e8.widen();
-    const n = e8.lineCount();
-    let l = 0;
-    // As org-skip-whitespace, then comments as org-at-comment-p sees them.
-    while (l < n && /^[ \t]*$/.test(e8.lineText(l))) l++;
-    while (l < n && /^[ \t]*#(?: |$)/.test(e8.lineText(l))) l++;
-    if (l >= n || !/^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(l))) return undefined;
-    // propertyLocalValues looks under a heading line, so ask from the line before the drawer.
-    return propertyLocalValues(l - 1, property);
-  });
 }
 
 /** Values every entry inherits that have no drawer of their own, as org-global-properties-fixed holds them. */
@@ -606,14 +595,19 @@ function globalProperty(property: string): string | undefined {
 function keywordProperty(property: string): string | undefined {
   const key = property.toLowerCase();
   let value: string | undefined;
-  for (const [, , text] of keywordLines()) {
-    // A name and a value, as org-collect-keywords trims them: a name alone is no property.
-    const m = /^#\+PROPERTY:[ \t]+(\S+)[ \t]+(\S.*?)[ \t]*$/i.exec(text);
-    if (!m) continue;
-    const appending = m[1].endsWith("+");
-    if ((appending ? m[1].slice(0, -1) : m[1]).toLowerCase() !== key) continue;
-    value = appending && value !== undefined ? `${value} ${m[2]}` : m[2];
-  }
+  e8.saveRestriction(() => {
+    e8.widen();
+    for (const [line, , text] of e8.matchingLines("^[ \t]*#\\+PROPERTY:", { caseFold: true })) {
+      // A name and a value, as org-collect-keywords trims them: a name alone is no property.
+      const m = /^[ \t]*#\+PROPERTY:[ \t]*(\S+)[ \t]+(\S.*?)[ \t]*$/i.exec(text);
+      if (!m) continue;
+      const appending = m[1].endsWith("+");
+      if ((appending ? m[1].slice(0, -1) : m[1]).toLowerCase() !== key) continue;
+      // A keyword, not a line of a block that looks like one.
+      if (elementAt(e8.lineStart(line))?.type !== "keyword") continue;
+      value = appending && value !== undefined ? `${value} ${m[2]}` : m[2];
+    }
+  });
   return value;
 }
 
