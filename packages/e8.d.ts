@@ -5159,6 +5159,13 @@ declare global {
        */
       "org--refile-to": [target: string];
       /**
+       * Add a note to the current entry.
+       * This is done in the same way as adding a state change note.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-add-note": [];
+      /**
        * Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list.
        *
        * Defined in packages/org-agenda.ts.
@@ -5743,6 +5750,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-insert-todo-heading-respect-content": [];
+      /**
+       * Abort storing current note, or show just branches.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-kill-note-or-show-branches": [];
       /**
        * Fix the indentation, bullets and checkboxes of the list point is in.
        *
@@ -6448,6 +6461,12 @@ declare global {
        * Defined in packages/outline.ts.
        */
       "outline-show-all": [];
+      /**
+       * Show all subheadings of this heading, but not their bodies.
+       *
+       * Defined in packages/outline.ts.
+       */
+      "outline-show-branches": [];
       /**
        * Show the headings directly under the heading point is under, hiding their text.
        *
@@ -12906,6 +12925,12 @@ declare global {
        */
       "org-fast-tag-selection-single-key": Value;
       /**
+       * Function to be called when C-c C-c is used, as in *Org Note*.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-finish-function": Value;
+      /**
        * What typing or deleting next to folded text does: "smart" unfolds it and goes ahead where the edit is predictable, and otherwise stops so it can be repeated with the text showing; "show" unfolds and goes ahead, "show-and-error" unfolds and stops, "error" stops, and false allows the edit.
        *
        * Defined in packages/org.ts.
@@ -13036,6 +13061,12 @@ declare global {
        */
       "org-indirect-buffer-display": Value;
       /**
+       * Whether org-mode leaves out its startup visibility and indentation.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-inhibit-startup": Value;
+      /**
        * Whether links show only their description, hiding the brackets and target.
        *
        * Defined in packages/org.ts.
@@ -13060,6 +13091,12 @@ declare global {
        */
       "org-log-into-drawer": Value;
       /**
+       * Headings for notes added to entries, by purpose: %t the time, %T it active, %d and %D the date, %s the new state, %S the old, %u the user's login and %U name.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-log-note-headings": Value;
+      /**
        * What marking a repeating task done records: "time" for a LAST_REPEAT property and a note of the change, false for nothing.
        *
        * Defined in packages/org.ts.
@@ -13081,6 +13118,12 @@ declare global {
        * Keymap org-mode-map.
        */
       "org-mode-map": Value;
+      /**
+       * Whether the note being stored was cancelled, while org-finish-function runs.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-note-abort": Value;
       /**
        * Whether outline paths complete a level at a time. E8 completes them whole.
        *
@@ -17035,6 +17078,10 @@ declare global {
        */
       "occur-mode-hook": Value;
       /**
+       * Hook triggered after a note is stored.
+       */
+      "org-after-note-stored-hook": Value;
+      /**
        * Functions called where org-refile has put the subtree, before it goes from where it was.
        */
       "org-after-refile-insert-hook": Value;
@@ -17110,6 +17157,10 @@ declare global {
        * Functions called with the buffer once org-indent-mode has indented all of it.
        */
       "org-indent-post-buffer-init-functions": Value;
+      /**
+       * Hook that is run after an Org log buffer is created.
+       */
+      "org-log-buffer-setup-hook": Value;
       /**
        * Run after entering Org mode, after the hooks of the modes it is built on.
        */

@@ -12,7 +12,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { type DateTime, formatTimestamp, type Heading, headingIndex, headings, isDone, today } from "org";
+import { type DateTime, formatTimestamp, type Heading, headingIndex, headings, isDone, logDrawer, today } from "org";
 import { toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
@@ -60,13 +60,16 @@ export function durationFromMinutes(minutes: number): string {
   return days > 0 ? `${days}d ${hm}` : hm;
 }
 
-/** The drawer CLOCK: lines go in, as org-clock-drawer-name: nil for none. */
-function drawerName(): string | undefined {
+/**
+ * The drawer CLOCK: lines go in, as org-clock-drawer-name: nil for none;
+ * with org-clock-into-drawer t, the drawer notes go in, as the heading's
+ * LOG_INTO_DRAWER or org-log-into-drawer names it, else LOGBOOK.
+ */
+function drawerName(h?: Heading): string | undefined {
   const into = e8.variable("org-clock-into-drawer");
   if (typeof into === "string" && into !== "") return into;
   if (into === null || into === false) return undefined;
-  const log = e8.variable("org-log-into-drawer");
-  return typeof log === "string" && log !== "" ? log : "LOGBOOK";
+  return logDrawer(h) ?? "LOGBOOK";
 }
 
 const CLOCK_LINE = /^[ \t]*CLOCK: \[(\d{4})-(\d\d)-(\d\d) \S+ (\d\d):(\d\d)\](?:--\[[^\]]*\] =>\s+(?:(\d+)d )?(\d+):(\d\d))?[ \t]*$/;
@@ -98,7 +101,7 @@ function clockedBefore(all: Heading[], i: number): number {
 function findPosition(all: Heading[], i: number): number {
   const h = all[i];
   const end = all[i + 1]?.start ?? e8.bufferSize();
-  const drawer = drawerName();
+  const drawer = drawerName(h);
   if (drawer !== undefined) {
     const opener = new RegExp(`^[ \\t]*:${drawer.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}:[ \\t]*$`, "i");
     for (let l = h.line + 1; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
@@ -231,14 +234,13 @@ export function clockOut(failQuietly = false): void {
   e8.runHooks("org-clock-out-hook");
 }
 
-/** Takes away the clock drawer the line before `line` opened, if it is now empty, as org-remove-empty-drawer-at. */
+/** Takes away the drawer the line before `line` opened, if it is now empty, as org-remove-empty-drawer-at: any drawer, whatever its name. */
 function removeEmptyDrawer(line: number): void {
-  const drawer = drawerName();
-  if (drawer === undefined || line < 1) return;
+  if (line < 1) return;
   // In the whole buffer, as org-remove-empty-drawer-at's org-with-wide-buffer.
   e8.saveRestriction(() => {
     e8.widen();
-    if (new RegExp(`^[ \\t]*:${drawer}:[ \\t]*$`, "i").test(e8.lineText(line - 1)) && /^[ \t]*:END:[ \t]*$/i.test(e8.lineText(line))) {
+    if (/^[ \t]*:[\w-]+:[ \t]*$/.test(e8.lineText(line - 1)) && !/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(line - 1)) && /^[ \t]*:END:[ \t]*$/i.test(e8.lineText(line))) {
       e8.deleteRegion(e8.lineStart(line - 1), lineStartOrEnd(line + 1));
     }
   });
