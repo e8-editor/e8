@@ -326,5 +326,50 @@
     "keys": "",
     "name": "date-ranges-show-each-day",
     "text": "* Trip <2026-11-17 Tue>--<2026-11-19 Thu>\n* Conference\n<2026-11-20 Fri 09:00>--<2026-11-22 Sun 17:00>\n* TODO Long\n<2026-11-14 Sat>--<2026-11-18 Wed>\n"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-list-category-inheritance",
+    "text": "#+CATEGORY: file\n* P\n:PROPERTIES:\n:CATEGORY: par\n:END:\n** TODO C1\n:PROPERTIES:\n:CATEGORY: nil\n:END:\n** TODO C2\n** TODO C3\n:PROPERTIES:\n:CATEGORY+: x\n:END:\n** TODO C4\n:PROPERTIES:\n:CATEGORY:\n:END:\n* TODO Q\n"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-list-category-top-drawer",
+    "text": ":PROPERTIES:\n:CATEGORY: top\n:CATEGORY+: more\n:END:\n* TODO A\n* B\n** TODO C\n:PROPERTIES:\n:CATEGORY+: deep\n:END:\n"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-list-category-file-name",
+    "text": "* TODO A\n:PROPERTIES:\n:CATEGORY+: plus\n:END:\n* TODO B\n"
   }
 ]

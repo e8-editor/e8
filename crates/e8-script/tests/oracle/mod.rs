@@ -508,7 +508,16 @@ pub fn run(case: &Case) -> State {
             serde_json::Value::Number(n) => e8_core::Value::Number(n.as_f64().expect("a number")),
             // A string starting with ' is a symbol in Emacs, a string in E8, as 'headline-data.
             serde_json::Value::String(s) => e8_core::Value::Str(s.strip_prefix('\'').unwrap_or(s).to_string()),
-            _ => panic!("{}: {name} must be a number, string or boolean", case.name),
+            // An object is an alist of strings in Emacs, [name, value] lists in E8.
+            serde_json::Value::Object(o) => e8_core::Value::List(
+                o.iter()
+                    .map(|(k, v)| {
+                        let v = v.as_str().unwrap_or_else(|| panic!("{}: {name}'s values must be strings", case.name));
+                        e8_core::Value::List(vec![e8_core::Value::Str(k.clone()), e8_core::Value::Str(v.to_string())])
+                    })
+                    .collect(),
+            ),
+            _ => panic!("{}: {name} must be a number, string, boolean or object of strings", case.name),
         };
         ed.make_local_variable(name);
         ed.set_variable(name, value);

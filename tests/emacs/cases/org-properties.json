@@ -222,5 +222,317 @@
     "modes": [
       "org-mode"
     ]
+  },
+  {
+    "name": "global-properties-log-into-drawer",
+    "text": "* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "vars": {
+      "org-global-properties": {
+        "LOG_INTO_DRAWER": "NOTES"
+      }
+    },
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 2
+  },
+  {
+    "name": "keyword-property-before-global",
+    "text": "#+PROPERTY: LOG_INTO_DRAWER LOGBOOK\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "vars": {
+      "org-global-properties": {
+        "LOG_INTO_DRAWER": "NOTES"
+      }
+    },
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 38
+  },
+  {
+    "name": "top-drawer-before-global",
+    "text": ":PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "vars": {
+      "org-global-properties": {
+        "LOG_INTO_DRAWER": "NOTES"
+      }
+    },
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 44
+  },
+  {
+    "name": "top-drawer-after-comments",
+    "text": "# a comment\n#\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 58
+  },
+  {
+    "name": "top-drawer-after-blank-lines",
+    "text": "\n\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 46
+  },
+  {
+    "name": "no-top-drawer-after-keyword",
+    "text": "#+TITLE: Notes\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 59
+  },
+  {
+    "name": "no-top-drawer-after-comment-and-blank",
+    "text": "# a comment\n\n:PROPERTIES:\n:LOG_INTO_DRAWER: MINE\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 57
+  },
+  {
+    "name": "logging-plus-adds-to-parent",
+    "text": "* Parent\n:PROPERTIES:\n:LOGGING: logdone\n:END:\n** TODO Child\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 49
+  },
+  {
+    "name": "logging-without-plus-replaces",
+    "text": "* Parent\n:PROPERTIES:\n:LOGGING: logdone\n:END:\n** TODO Child\n:PROPERTIES:\n:LOGGING: DONE(!)\n:END:\nbody\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 49
+  },
+  {
+    "name": "logging-plus-adds-to-keyword",
+    "text": "#+PROPERTY: LOGGING logdone\n* TODO Task\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 30
+  },
+  {
+    "name": "keyword-plus-adds-to-keyword",
+    "text": "#+PROPERTY: LOGGING logdone\n#+PROPERTY: LOGGING+ DONE(!)\n* TODO Task\nbody\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 59
+  },
+  {
+    "name": "logging-plus-adds-to-global",
+    "text": "* TODO Task\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+    "vars": {
+      "org-global-properties": {
+        "LOGGING": "logdone"
+      }
+    },
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 2
+  },
+  {
+    "name": "logging-plus-adds-to-top-drawer",
+    "text": ":PROPERTIES:\n:LOGGING: logdone\n:END:\n* Parent\n** TODO Child\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 49
+  },
+  {
+    "name": "logging-plus-in-every-level",
+    "text": ":PROPERTIES:\n:LOGGING+: logdone\n:END:\n* Parent\n:PROPERTIES:\n:LOGGING+: nologdone\n:END:\n** TODO Child\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\nbody\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 90
+  },
+  {
+    "name": "last-base-value-counts",
+    "text": "* TODO Task\n:PROPERTIES:\n:LOG_INTO_DRAWER: FIRST\n:LOG_INTO_DRAWER: SECOND\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 2
+  },
+  {
+    "name": "property-separators",
+    "text": ":PROPERTIES:\n:LOG_INTO_DRAWER: MY\n:END:\n* TODO Task\n:PROPERTIES:\n:LOG_INTO_DRAWER+: NOTES\n:END:\nbody\n#+TODO: TODO | DONE(!)\n",
+    "vars": {
+      "org-property-separators": {
+        "LOG_INTO": "_"
+      }
+    },
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 42
+  },
+  {
+    "name": "inherited-through-narrowing",
+    "text": "* P\n:PROPERTIES:\n:LOG_INTO_DRAWER: NOTES\n:END:\n** TODO C\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-x n s C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 50
+  },
+  {
+    "name": "plus-through-narrowing",
+    "text": ":PROPERTIES:\n:LOGGING: logdone\n:END:\n* P\n:PROPERTIES:\n:LOGGING+: DONE(!)\n:END:\n** TODO C\nbody\n",
+    "keys": "C-x n s C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 82
+  },
+  {
+    "name": "nil-base-with-plus-inherited",
+    "text": "* P\n:PROPERTIES:\n:LOGGING: nil\n:LOGGING+: logdone\n:END:\n** TODO C\nbody\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 59
+  },
+  {
+    "name": "nil-keyword-property",
+    "text": "#+PROPERTY: LOG_INTO_DRAWER nil\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 34,
+    "vars": {
+      "org-log-into-drawer": true
+    }
+  },
+  {
+    "name": "nil-global-property",
+    "text": "* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 2,
+    "vars": {
+      "org-log-into-drawer": true,
+      "org-global-properties": {
+        "LOG_INTO_DRAWER": "nil"
+      }
+    }
+  },
+  {
+    "name": "keyword-property-without-space",
+    "text": "#+PROPERTY:LOG_INTO_DRAWER NOTES\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 35
+  },
+  {
+    "name": "keyword-property-indented",
+    "text": "  #+PROPERTY: LOG_INTO_DRAWER NOTES\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 38
+  },
+  {
+    "name": "keyword-property-in-block-is-none",
+    "text": "#+begin_example\n#+PROPERTY: LOG_INTO_DRAWER NOTES\n#+end_example\n* TODO Task\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 66
+  },
+  {
+    "name": "deeper-heading-skips-levels",
+    "text": "* P\n:PROPERTIES:\n:LOG_INTO_DRAWER: NOTES\n:END:\n*** TODO C\nbody\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "point": 51
+  },
+  {
+    "name": "set-property-same-as-joined-value",
+    "text": "* H\n:PROPERTIES:\n:X: nil\n:X+: a\n:END:\n",
+    "point": 2,
+    "call": [
+      "org-set-property",
+      "X",
+      "a"
+    ],
+    "keys": "",
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "set-property-to-nil-again",
+    "text": "* H\n:PROPERTIES:\n:X:   nil\n:END:\n",
+    "point": 2,
+    "call": [
+      "org-set-property",
+      "X",
+      "nil"
+    ],
+    "keys": "",
+    "modes": [
+      "org-mode"
+    ]
   }
 ]
