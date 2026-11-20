@@ -90,3 +90,19 @@ fn the_line_and_scroll_commands_by_their_names() {
     assert_eq!(ed.buffer().point(), 7);
     assert_eq!(run(&mut ed, &s, "return e8.commandNames().includes('scroll-up') && e8.commandNames().includes('scroll-down');"), "true");
 }
+
+/// Code calls scroll-up and scroll-down with a count of lines, or none for
+/// nearly a screen, as Lisp calls (scroll-up 3) and (scroll-up).
+#[test]
+fn scroll_up_and_down_take_a_count_from_code() {
+    let (mut ed, s) = setup();
+    ed.type_text(&"x\n".repeat(100));
+    ed.set_window_size(ed.selected_window(), 80, 10);
+    ed.call("beginning-of-buffer", vec![]).unwrap();
+    ed.redisplay();
+    // Each line is two characters, so a window start of 2n is line n.
+    assert_eq!(run(&mut ed, &s, "e8.call('scroll-up', 3); return e8.windowStart();"), "6");
+    assert_eq!(run(&mut ed, &s, "e8.call('scroll-down', 1); return e8.windowStart();"), "4");
+    assert_eq!(run(&mut ed, &s, "e8.call('scroll-up'); return e8.windowStart() > 4;"), "true");
+    assert_eq!(run(&mut ed, &s, "const before = e8.windowStart(); e8.call('scroll-down'); return e8.windowStart() < before;"), "true");
+}
