@@ -5447,6 +5447,14 @@ declare global {
        */
       "org-clock-cancel": [];
       /**
+       * Show each subtree's clocked time after its heading, over org-clock-display-default-range, and the file's in the echo area. With C-u, today's time; with C-u C-u, a range read; with C-u C-u C-u, all the time, in the echo area only. A change, or C-c C-c, takes the times away.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-display": [arg?: PrefixArg | boolean];
+      /**
        * Go to the entry with the running clock, or the last one clocked.
        *
        * Defined in packages/org-clock.ts.
@@ -5470,6 +5478,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-out": [];
+      /**
+       * Take away the times org-clock-display shows after the headings.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-remove-overlays": [];
       /**
        * Show all headings, hiding the text under them.
        *
@@ -13113,6 +13127,18 @@ declare global {
        */
       "org-capture-templates": Value;
       /**
+       * The time org-clock-display sums with no prefix argument: "today", "yesterday", "thisweek", "lastweek", "thismonth", "lastmonth", "thisyear", "lastyear" or "untilnow".
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-display-default-range": Value;
+      /**
+       * The minutes the last clock sum found in the whole file.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-file-total-minutes": Value;
+      /**
        * Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.
        *
        * Defined in packages/org-clock.ts.
@@ -13130,6 +13156,18 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-out-when-done": Value;
+      /**
+       * The overlays org-clock-display shows the headings' times with, in this buffer.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-overlays": Value;
+      /**
+       * Whether the running clock's time counts in a clock sum over a range.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-report-include-clocking-task": Value;
       /**
        * Whether C-c C-c asks before running a source block: true asks, false runs it, and a function of the block's language and code decides.
        *
@@ -13196,6 +13234,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-ellipsis": Value;
+      /**
+       * The hour before which a time counts as the day before, for clock ranges.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-extend-today-until": Value;
       /**
        * Whether fast tag selection offers the TODO states with their keys too, a key setting the heading's state.
        *
@@ -16423,6 +16467,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-checkbox-statistics-todo": FaceAttributes;
+      /**
+       * The times org-clock-display shows after the headings.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-overlay": FaceAttributes;
       /**
        * ~Code~.
        *

@@ -1,0 +1,222 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "clock-display-all-time",
+      "input": {
+        "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+        "point": 0,
+        "keys": "C-u C-u C-u C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "visible": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 1d 5:10 (29 hours and 10 minutes)"
+    },
+    {
+      "name": "clock-display-all-time-narrowed",
+      "input": {
+        "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+        "point": 0,
+        "keys": "C-n C-x n s C-u C-u C-u C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "visible": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 1:50 (1 hours and 50 minutes)"
+    },
+    {
+      "name": "clock-display-none",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-u C-u C-u C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 0:00 (0 hours and 0 minutes)"
+    },
+    {
+      "name": "clock-display-then-remove",
+      "input": {
+        "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+        "point": 0,
+        "keys": "C-u 5 C-c C-x C-d C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "visible": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Temporary highlights/overlays removed from current buffer"
+    },
+    {
+      "name": "clock-display-clocksum-match",
+      "input": {
+        "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+        "point": 0,
+        "keys": "C-u C-u C-u C-c C-x C-d C-c \\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "CLOCKSUM>=\"2:00\""
+        ],
+        "message": true
+      },
+      "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "visible": "* Project\n** Task B\n*** Sub\n* Other\n* Empty",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 1d 5:10 (29 hours and 10 minutes)"
+    },
+    {
+      "name": "clock-display-clocksum-number",
+      "input": {
+        "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+        "point": 0,
+        "keys": "C-u C-u C-u C-c C-x C-d C-c \\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "CLOCKSUM>1"
+        ],
+        "message": true
+      },
+      "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "visible": "* Project\n** Task B\n*** Sub\n* Other\n* Empty",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 1d 5:10 (29 hours and 10 minutes)"
+    },
+    {
+      "name": "clock-display-clocksum-without-display",
+      "input": {
+        "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+        "point": 0,
+        "keys": "C-c \\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "CLOCKSUM>1"
+        ],
+        "message": true
+      },
+      "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "visible": "* Project\n* Other\n* Empty",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "clock-display-numeric-prefix",
+      "input": {
+        "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+        "point": 0,
+        "keys": "C-u 5 C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "visible": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 1d 5:10 (29 hours and 10 minutes)"
+    },
+    {
+      "name": "clock-display-long",
+      "input": {
+        "text": "* A\nCLOCK: [2026-11-01 Sun 08:00]--[2026-11-03 Tue 09:15] => 49:15\n",
+        "point": 0,
+        "keys": "C-u C-u C-u C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nCLOCK: [2026-11-01 Sun 08:00]--[2026-11-03 Tue 09:15] => 49:15\n",
+      "visible": "* A\nCLOCK: [2026-11-01 Sun 08:00]--[2026-11-03 Tue 09:15] => 49:15\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 2d 1:15 (49 hours and 15 minutes)"
+    }
+  ]
+}

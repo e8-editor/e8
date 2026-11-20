@@ -1,0 +1,101 @@
+[
+  {
+    "name": "clock-display-all-time",
+    "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+    "keys": "C-u C-u C-u C-c C-x C-d",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-display-all-time-narrowed",
+    "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+    "keys": "C-n C-x n s C-u C-u C-u C-c C-x C-d",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-display-none",
+    "text": "* A\n* B\n",
+    "keys": "C-u C-u C-u C-c C-x C-d",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-display-then-remove",
+    "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+    "keys": "C-u 5 C-c C-x C-d C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-display-clocksum-match",
+    "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+    "keys": "C-u C-u C-u C-c C-x C-d C-c \\",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "answers": [
+      "CLOCKSUM>=\"2:00\""
+    ]
+  },
+  {
+    "name": "clock-display-clocksum-number",
+    "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+    "keys": "C-u C-u C-u C-c C-x C-d C-c \\",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "answers": [
+      "CLOCKSUM>1"
+    ]
+  },
+  {
+    "name": "clock-display-clocksum-without-display",
+    "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+    "keys": "C-c \\",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "answers": [
+      "CLOCKSUM>1"
+    ]
+  },
+  {
+    "name": "clock-display-numeric-prefix",
+    "text": "* Project\n** Task A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\nCLOCK: [2026-11-03 Tue 14:00]--[2026-11-03 Tue 14:20] =>  0:20\n:END:\n** Task B\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-05 Thu 09:15] => 25:15\n:END:\n*** Sub\nCLOCK: => 2:05\n* Other\n#+begin_example\nCLOCK: [2026-11-04 Wed 08:00]--[2026-11-04 Wed 09:00] =>  1:00\n#+end_example\n* Empty\n",
+    "keys": "C-u 5 C-c C-x C-d",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-display-long",
+    "text": "* A\nCLOCK: [2026-11-01 Sun 08:00]--[2026-11-03 Tue 09:15] => 49:15\n",
+    "keys": "C-u C-u C-u C-c C-x C-d",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  }
+]
