@@ -40,6 +40,7 @@ import {
   showEntry,
   showHeadingLine,
   showLevels,
+  showContext as foldShowContext,
   startupVisibility,
   toggleDrawerOrBlock,
   withoutFoldChecks,
@@ -86,6 +87,7 @@ import {
   entryGet,
   propertyLocalValues,
   propertySeparator,
+  topGet,
   topLocalValues,
   setLineIndenter,
 } from "org-list";
@@ -110,7 +112,8 @@ import { defineGuide } from "help-guide";
 import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand, refileReverseCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
-import { allMatches, charCount, eraseBuffer, escapeRegExp, forwardLine, truthy } from "subr";
+import { allMatches, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
+import { isearchNoUpperCaseP } from "isearch";
 export { PLANNING } from "org-element";
 
 // Variables
@@ -633,6 +636,39 @@ export function allKeywords(): string[] {
 
 export function isDone(keyword: string | undefined): boolean {
   return keyword !== undefined && todoSets().some((s) => s.done.includes(keyword));
+}
+
+/** The buffer's category, as org-refresh-category-properties sets it: the last #+CATEGORY, or the file's name. */
+export function category(): string {
+  for (let l = e8.lineCount() - 1; l >= 0; l--) {
+    const m = /^[ \t]*#\+CATEGORY:[ \t]*(\S.*?)[ \t]*$/i.exec(e8.lineText(l));
+    if (m) return m[1];
+  }
+  const file = e8.bufferFileName();
+  return file ? (file.split("/").pop() ?? file).replace(/\.[^.]*$/, "") : "???";
+}
+
+/**
+ * Each heading's category, as org-agenda-format-item asks org-get-category
+ * for it: inherited, with CATEGORY+ adding to it.
+ */
+export function categories(all: Heading[]): string[] {
+  // As org-get-category, org-entry-get-with-inheritance of CATEGORY: the
+  // buffer's own is org-data's, the drawer before the first heading's or
+  // else the keyword's or the file's name, and "nil" is none, "???".
+  const top = topLocalValues("CATEGORY");
+  const data = top?.[0] !== undefined ? [top[0], ...top[1]] : [category(), ...(top?.[1] ?? [])];
+  const separator = propertySeparator("CATEGORY");
+  const stack: { level: number; values: string[] }[] = [];
+  return all.map((h) => {
+    while (stack.length > 0 && stack[stack.length - 1].level >= h.level) stack.pop();
+    const local = propertyLocalValues(h.line, "CATEGORY");
+    const parent = stack.length > 0 ? stack[stack.length - 1].values : data;
+    const values = local?.[0] !== undefined ? [local[0], ...local[1]] : [...parent, ...(local?.[1] ?? [])];
+    stack.push({ level: h.level, values });
+    const cat = values.join(separator);
+    return cat === "nil" ? "???" : cat;
+  });
 }
 
 // Headings
@@ -7176,6 +7212,12 @@ const ctrlCCtrlC = e8.defineCommand({
   run: () => {
     // As Org, the hook first: ob-core's function on it runs a source block point is in.
     // In *Org Note* and the like, finish it, as org-finish-function says, before anything else.
+    // A sparse tree's highlights go first, as Org takes away its temporary overlays.
+    if (occurHighlights().length > 0) {
+      removeOccurHighlights(false);
+      e8.message("Temporary highlights/overlays removed from current buffer");
+      return;
+    }
     const finish = e8.variable("org-finish-function");
     if (truthy(finish)) {
       e8.funcall(finish as string);
@@ -7777,6 +7819,8 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c C-k": "org-kill-note-or-show-branches",
   "C-c ,": "org-priority",
   "C-c C-q": setTagsCommand,
+  "C-c /": "org-sparse-tree",
+  "C-c \\": "org-match-sparse-tree",
   "C-c C-c": ctrlCCtrlC,
   "C-c C-x C-b": "org-toggle-checkbox",
   "C-c C-x p": setProperty,
@@ -7868,6 +7912,868 @@ defineGuide("org-mode", {
   ],
 });
 
+// Sparse trees, after org.el's org-sparse-tree, org-occur, org-scan-tags and org-make-tags-matcher.
+
+for (const [name, doc, value] of [
+  ["org-highlight-sparse-tree-matches", "Whether a sparse tree highlights what it matched.", true],
+  ["org-remove-highlights-with-change", "Whether a sparse tree's highlights go at the next change to the buffer. C-c C-c takes them away too.", true],
+  [
+    "org-occur-case-fold-search",
+    'Whether org-occur ignores case: true, false, or "smart" to ignore it only when the regexp has no capital letters.',
+    true,
+  ],
+  ["org-sparse-tree-open-archived-trees", "Whether a sparse tree shows matches in archived subtrees, which otherwise stay folded.", false],
+  [
+    "org-sparse-tree-default-date-type",
+    'Which timestamps the date sparse trees look at: nil for SCHEDULED and DEADLINE, or "all", "scheduled", "deadline", "active", "inactive" or "closed". c in org-sparse-tree cycles through them.',
+    null,
+  ],
+  ["org-tags-match-list-sublevels", "Whether a tags match goes on into the subtree of a heading it matched, rather than going past it.", true],
+  [
+    "org-use-property-inheritance",
+    "Which properties an entry takes from the headings above it when a match asks for them: true for all, false for none, a list of names, or a regexp.",
+    false,
+  ],
+  ["org-group-tags", "Whether a group tag in a match stands for the tags of its group too, as the TAGS line's { GROUP : TAG ... } gives them.", true],
+  [
+    "org-tags-exclude-from-inheritance",
+    "Tags headings never take from the headings above them or the file.",
+    [],
+  ],
+  ["org-inhibit-highlight-removal", "Whether org-remove-occur-highlights leaves the highlights alone, for code making several sparse trees.", false],
+  ["org-occur-highlights", "The overlays highlighting a sparse tree's matches in this buffer.", null],
+] as const) {
+  e8.defineVariable({ name, doc, value: value as e8.Value });
+}
+e8.defineHook("org-occur-hook", "Run after org-occur has made a sparse tree; by default it goes to the first heading, at the window's top.");
+
+/** Goes to the first heading and shows it at the top of the buffer's window, as org-first-headline-recenter. */
+function firstHeadlineRecenter(): void {
+  const window = getBufferWindow();
+  if (window === undefined) return;
+  e8.gotoChar(e8.pointMin());
+  if (e8.reSearchForward("^\\(\\*+ \\)", { noerror: true, caseFold: false }) !== undefined) e8.setWindowStart(window, e8.lineStart(lineAt()));
+}
+e8.defun("org-first-headline-recenter", firstHeadlineRecenter);
+e8.addHook("org-occur-hook", firstHeadlineRecenter);
+
+/** The overlays highlighting the sparse tree's matches, as org-occur-highlights. */
+function occurHighlights(): number[] {
+  const value = e8.variable("org-occur-highlights");
+  return Array.isArray(value) ? (value as number[]) : [];
+}
+
+/** Highlights a match, as org-highlight-new-match does. */
+function highlightNewMatch(beg: number, end: number): void {
+  const id = e8.makeOverlay(beg, end, { face: "secondary-selection", "org-type": "org-occur" });
+  e8.makeLocalVariable("org-occur-highlights");
+  e8.setVariable("org-occur-highlights", [id, ...occurHighlights()]);
+}
+
+/** As removeOccurHighlights from before-change-functions, where it then takes itself off. */
+function removeOccurHighlightsOnChange(): void {
+  removeOccurHighlights(false);
+}
+
+/**
+ * Takes away the sparse tree's highlights, as org-remove-occur-highlights
+ * does, and unless `noremove` stops doing so at each change.
+ */
+export function removeOccurHighlights(noremove: boolean): void {
+  if (truthy(e8.variable("org-inhibit-highlight-removal"))) return;
+  for (const id of occurHighlights()) if (e8.overlayStart(id) !== undefined) e8.deleteOverlay(id);
+  if (e8.variable("org-occur-highlights") !== null) {
+    e8.makeLocalVariable("org-occur-highlights");
+    e8.setVariable("org-occur-highlights", null);
+  }
+  if (!noremove) e8.removeHook("before-change-functions", removeOccurHighlightsOnChange, { local: true });
+}
+
+e8.defineCommand({
+  name: "org-remove-occur-highlights",
+  doc: "Remove the highlights of a sparse tree from the buffer.",
+  run: () => removeOccurHighlights(false),
+});
+
+/** Folds the archived subtrees again, as org-fold-hide-archived-subtrees does after showing matches. */
+function hideArchivedSubtrees(beg: number, end: number): void {
+  const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  e8.saveRestriction(() => {
+    e8.widen();
+    const all = headings();
+    for (let i = headingIndex(all, lineAt(beg)) ?? 0; i < all.length && all[i].start < end; i++) {
+      if (!all[i].tags.includes(tag)) continue;
+      foldSubtree(all[i].line);
+      const next = nextSameOrHigher(all, i);
+      if (next === undefined) break;
+      i = all.indexOf(next) - 1;
+    }
+  });
+}
+
+/**
+ * Makes a sparse tree of the matches of `regexp`, as org-occur does: the
+ * buffer folded to its top headings, each match shown with as much around
+ * it as org-fold-show-context-detail gives occur-tree, and highlighted.
+ * With `keepPrevious`, an earlier tree's matches stay as they are. A
+ * `callback`, called at each match's end, says whether it counts. Returns
+ * how many did.
+ */
+export function orgOccur(regexp: string, keepPrevious = false, callback?: () => boolean): number {
+  if (regexp === "") e8.userError("Regexp cannot be empty");
+  if (!keepPrevious) removeOccurHighlights(true);
+  let count = 0;
+  e8.saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    if (!keepPrevious || occurHighlights().length === 0) overview();
+    const setting = e8.variable("org-occur-case-fold-search");
+    const caseFold = setting === "smart" ? isearchNoUpperCaseP(regexp, true) : truthy(setting);
+    while (e8.reSearchForward(regexp, { noerror: true, caseFold }) !== undefined) {
+      const [beg, end] = [e8.matchBeginning(0)!, e8.matchEnd(0)!];
+      // An empty match would be found again where it is, for ever.
+      if (beg === end && end < e8.pointMax()) e8.gotoChar(end + 1);
+      if (callback !== undefined && !e8.saveExcursion(() => callback())) continue;
+      count++;
+      if (truthy(e8.variable("org-highlight-sparse-tree-matches"))) highlightNewMatch(beg, end);
+      e8.saveExcursion(() => {
+        e8.gotoChar(end);
+        foldShowContext("occur-tree");
+      });
+      if (e8.point() >= e8.pointMax()) break;
+    }
+  });
+  if (truthy(e8.variable("org-remove-highlights-with-change"))) e8.addHook("before-change-functions", removeOccurHighlightsOnChange, { local: true });
+  if (!truthy(e8.variable("org-sparse-tree-open-archived-trees"))) hideArchivedSubtrees(e8.pointMin(), e8.pointMax());
+  e8.runHooks("org-occur-hook");
+  return count;
+}
+
+e8.defineCommand({
+  name: "org-occur",
+  doc:
+    "Make a compact tree showing the matches of a regexp: the lines matching it and the headings above them, the rest folded. " +
+    "With a prefix argument, the matches of an earlier sparse tree stay. C-c C-c removes the highlights.",
+  params: [
+    { name: "regexp", prompt: "Regexp: " },
+    { name: "keep", kind: "prefix" },
+  ],
+  run: (regexp, keep) => {
+    const count = orgOccur(regexp, truthy(keep));
+    e8.message(`${count} match(es) for regexp ${regexp}`);
+  },
+});
+
+/** Goes `n` sparse tree matches on, or back if negative, as org-occur-next-match does for next-error. */
+function occurNextMatch(n: number): number {
+  const back = n < 0;
+  const limit = back ? e8.pointMin() : e8.pointMax();
+  const start = e8.point();
+  let left = Math.abs(n);
+  for (;;) {
+    const p = back ? e8.previousSingleCharPropertyChange(e8.point(), "org-type") : e8.nextSingleCharPropertyChange(e8.point(), "org-type");
+    if (p === limit) {
+      e8.gotoChar(start);
+      e8.userError("No more matches");
+    }
+    if (overlayTypeAt(p) === "org-occur" && --left === 0) {
+      e8.gotoChar(p);
+      return p;
+    }
+    e8.gotoChar(p);
+  }
+}
+
+/** The org-type an overlay gives a position, as get-char-property reads it. */
+function overlayTypeAt(pos: number): e8.Value | undefined {
+  for (const id of e8.overlaysAt(pos)) {
+    const type = e8.overlayGet(id, "org-type");
+    if (type !== undefined && type !== null) return type;
+  }
+  return undefined;
+}
+
+e8.defun("org-occur-next-match", (n: number) => occurNextMatch(n));
+
+// Tags and property matches
+
+/** A heading being matched: its state, its tags with those it inherits, as org-get-tags gives them, and its level. */
+type MatchContext = { todo: string | undefined; tags: string[]; level: number; h: Heading; category: () => string };
+
+/** The inherited tags a heading keeps, as org-remove-uninherited-tags. */
+function removeUninheritedTags(tags: string[]): string[] {
+  const use = e8.variable("org-use-tag-inheritance");
+  const exclude = e8.variable("org-tags-exclude-from-inheritance");
+  const excluded = Array.isArray(exclude) ? exclude.map(String) : [];
+  if (use === true) return tags.filter((t) => !excluded.includes(t));
+  if (!truthy(use)) return [];
+  if (typeof use === "string") return tags.filter((t) => e8.stringMatch(use, t) !== undefined && !excluded.includes(t));
+  if (Array.isArray(use)) return tags.filter((t) => use.map(String).includes(t));
+  return tags;
+}
+
+/**
+ * Each heading's tags, the file's and those above it first, as org-get-tags
+ * gives them: a tag once, where it comes last.
+ */
+function allTagsOf(all: Heading[]): string[][] {
+  const file = fileTags();
+  const stack: Heading[] = [];
+  const inherit = truthy(e8.variable("org-use-tag-inheritance"));
+  return all.map((h) => {
+    while (stack.length > 0 && stack[stack.length - 1].level >= h.level) stack.pop();
+    stack.push(h);
+    if (!inherit) return h.tags;
+    const tags = [...removeUninheritedTags([...file, ...stack.slice(0, -1).flatMap((a) => a.tags)]), ...h.tags];
+    return tags.filter((t, j) => !tags.slice(j + 1).includes(t));
+  });
+}
+
+/** Whether a property is inherited, as org-property-inherit-p. */
+function propertyInheritP(property: string): boolean {
+  const use = e8.variable("org-use-property-inheritance");
+  if (use === true) return true;
+  if (!truthy(use)) return false;
+  if (typeof use === "string") return e8.stringMatch(use, property) !== undefined;
+  if (Array.isArray(use)) return use.some((p) => String(p).toUpperCase() === property.toUpperCase());
+  throw new Error("Invalid setting of `org-use-property-inheritance'");
+}
+
+/** The properties Org works out itself, as org-special-properties lists them. */
+const SPECIAL_PROPERTIES = [
+  "ALLTAGS", "BLOCKED", "CLOCKSUM", "CLOCKSUM_T", "CLOSED", "DEADLINE", "FILE", "ITEM", "PRIORITY", "SCHEDULED", "TAGS", "TIMESTAMP", "TIMESTAMP_IA", "TODO",
+];
+
+const tagString = (tags: string[]): string | undefined => (tags.length > 0 ? `:${tags.join(":")}:` : undefined);
+
+/** A special property's value at a heading, as org-entry-properties works it out. */
+function specialProperty(ctx: MatchContext, name: string): string | undefined {
+  const h = ctx.h;
+  switch (name) {
+    case "ITEM":
+      return h.title.replace(/\t/g, " ");
+    case "TODO":
+      return h.todo;
+    case "PRIORITY":
+      return h.priority ?? String(e8.variable("org-priority-default") ?? "B");
+    case "FILE":
+      return e8.bufferFileName() ?? undefined;
+    case "TAGS":
+      return tagString(h.tags);
+    case "ALLTAGS":
+      return tagString(ctx.tags);
+    case "BLOCKED":
+      return "";
+    case "CLOSED":
+    case "DEADLINE":
+    case "SCHEDULED": {
+      const line = h.line + 1;
+      if (line >= e8.lineCount() || !PLANNING.test(e8.lineText(line))) return undefined;
+      const m = new RegExp(`${name}:[ \\t]*([[<]\\d{4}-\\d{2}-\\d{2}(?: .*?)?[\\]>])`).exec(e8.lineText(line));
+      return m?.[1];
+    }
+    case "TIMESTAMP":
+    case "TIMESTAMP_IA": {
+      const open = name === "TIMESTAMP" ? "<" : "[";
+      const found = (line: number) => tsMatches(line).find((t) => t.text.startsWith(open))?.text;
+      const own = found(h.line);
+      if (own !== undefined) return own;
+      const all = headings();
+      const i = headingIndex(all, h.line)!;
+      const end = all[i + 1]?.line ?? e8.lineCount();
+      let line = h.line + 1;
+      if (line < end && PLANNING.test(e8.lineText(line))) line++;
+      for (; line < end; line++) {
+        const ts = found(line);
+        if (ts !== undefined) return ts;
+      }
+      return undefined;
+    }
+    default:
+      // CLOCKSUM and CLOCKSUM_T, which only a clock display sets.
+      return undefined;
+  }
+}
+
+/** A property's value for a match, as org-entry-get with inheritance `selective` reads it. */
+function matchProperty(ctx: MatchContext, name: string): string | undefined {
+  if (SPECIAL_PROPERTIES.includes(name)) return specialProperty(ctx, name);
+  if (propertyInheritP(name)) {
+    const value = entryGetInherited(ctx.h, name, false);
+    return value === "nil" ? undefined : value;
+  }
+  return entryGet(ctx.h.line, name);
+}
+
+/** The groups of the tag table, each its tag and those it stands for, as org-tag-alist-to-groups. */
+function tagGroups(): [string, string[]][] {
+  const groups: [string, string[]][] = [];
+  let status: false | true | "append" = false;
+  let current: string[] = [];
+  for (const [tag] of currentTagAlist()) {
+    if (tag === ":startgroup" || tag === ":startgrouptag") status = true;
+    else if (tag === ":endgroup" || tag === ":endgrouptag") {
+      if (status === "append") groups.push([current[0], current.slice(1)]);
+      status = false;
+      current = [];
+    } else if (tag === ":grouptags") status = "append";
+    else if (status === "append") current.push(tag);
+    else if (status === true && !isTagKeyword(tag)) current = [tag];
+  }
+  return groups;
+}
+
+/** A group's tags and those of the groups among them, as org--tags-expand-group. */
+function tagsExpandGroup(group: string[], groups: [string, string[]][], expanded: string[]): string[] {
+  for (const tag of group) {
+    if (expanded.includes(tag)) continue;
+    expanded.unshift(tag);
+    const g = groups.find(([k]) => k === tag);
+    if (g !== undefined) expanded = tagsExpandGroup(g[1], groups, expanded);
+  }
+  return expanded;
+}
+
+/** Characters a tag is made of, as org-mode-tags-syntax-table's word characters. */
+const TAG_CHAR = /[\p{L}\p{N}_@]/u;
+
+/** An Emacs regexp matching any of some strings, as regexp-opt makes one. */
+const regexpOpt = (strings: string[]): string => `\\(?:${strings.map((s) => s.replace(/[[*.\\?+^$]/g, "\\$&")).join("\\|")}\\)`;
+
+/**
+ * A match with each group tag in it a regexp for the group's tags, as
+ * org-tags-expand does when org-group-tags is on.
+ */
+function tagsExpand(match: string): string {
+  if (!/\S/.test(match)) throw new Error(`Invalid match tag: "${match}"`);
+  if (!truthy(e8.variable("org-group-tags"))) return match;
+  const groups = tagGroups();
+  if (groups.length === 0) return match;
+  // Regexps in braces are left as they are.
+  const braces: [number, number][] = [];
+  for (const m of match.matchAll(/\{.+?\}/g)) braces.push([m.index!, m.index! + m[0].length]);
+  let out = "";
+  let i = 0;
+  while (i < match.length) {
+    const key = groups.find(([k]) => match.slice(i, i + k.length).toLowerCase() === k.toLowerCase());
+    const before = i > 0 ? match[i - 1] : "";
+    const after = key ? (match[i + key[0].length] ?? "") : "";
+    if (key && !TAG_CHAR.test(before) && !TAG_CHAR.test(after) && !braces.some(([a, b]) => a <= i && i < b)) {
+      const regexps: string[] = [];
+      const regular: string[] = [];
+      for (const tag of tagsExpandGroup([match.slice(i, i + key[0].length)], groups, [])) {
+        const m = /\{(.+?)\}/.exec(tag);
+        if (m) regexps.unshift(m[1]);
+        else regular.unshift(tag);
+      }
+      const words = `\\<${regexpOpt(regular.reverse())}\\>`;
+      const re = regexps.reverse().join("\\|");
+      out += regular.length === 0 ? `{${re}}` : regexps.length === 0 ? `{${words}}` : `{${words}\\|${re}}`;
+      i += key[0].length;
+    } else {
+      out += match[i];
+      i++;
+    }
+  }
+  return out;
+}
+
+/** Splits a string at a separator, leaving out one at either end, as org-split-string. */
+function splitString(s: string, separator: RegExp): string[] {
+  const parts = s.split(separator);
+  if (parts.length > 1 && parts[0] === "") parts.shift();
+  if (parts.length > 1 && parts[parts.length - 1] === "") parts.pop();
+  return parts;
+}
+
+/** A term of a match: a sign, then a regexp in braces, a property comparison, or a tag. */
+const MATCH_TERM =
+  /^&?([-+:])?(\{[^}]+\}|((?:[\p{L}\p{N}_]+|\\\S)+)([<=>]=?|[!/]=|<>)(\*)?(\{[^}]+\}|"[^"]*"|-?[.0-9]+(?:[eE][-+]?[0-9]+)?)|[\p{L}\p{N}_@#%]+)/u;
+
+/** A string's leading number, as string-to-number reads it, else 0. */
+function leadingNumber(s: string): number {
+  const m = /^[ \t\n]*([-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?)/i.exec(s);
+  return m ? Number(m[1]) : 0;
+}
+
+/** A timestamp's time in seconds, or 0 if it has none, as org-2ft. */
+function floatTime(s: string): number {
+  return /\d{4}-\d{2}-\d{2}/.test(s) ? timestampSeconds(s) : 0;
+}
+
+/** The time a match compares with, as org-matcher-time: a timestamp, <now>, <today>, <tomorrow>, <yesterday> or <+2d>. */
+function matcherTime(s: string): number {
+  const now = e8.floatTime();
+  const t = today();
+  const day = e8.encodeTime([0, 0, 0, t.day, t.month, t.year]);
+  if (s === "<now>") return now;
+  if (s === "<today>") return day;
+  if (s === "<tomorrow>") return day + 86400;
+  if (s === "<yesterday>") return day - 86400;
+  const m = /^<([-+][0-9]+)([hdwmy])>$/.exec(s);
+  if (m) {
+    const unit: Record<string, number> = { h: 3600, d: 86400, w: 604800, m: 2678400, y: 31557600 };
+    return (m[2] === "h" ? now : day) + Number(m[1]) * unit[m[2]];
+  }
+  return floatTime(s);
+}
+
+/** How an operator compares numbers, strings or times, as org-op-to-function. */
+function comparison(op: string, kind: "number" | "string" | "time"): (a: never, b: never) => boolean {
+  const name = op === "==" ? "=" : op === "=<" ? "<=" : op === "=>" ? ">=" : op === "!=" || op === "/=" ? "<>" : op;
+  if (kind === "time") {
+    const both = (f: (a: number, b: number) => boolean) => (a: string, b: number) => {
+      const x = floatTime(a);
+      return x > 0 && b > 0 && f(x, b);
+    };
+    // org-time<> compares with =, as its \= reads as the symbol =.
+    const ops: Record<string, (a: number, b: number) => boolean> = { "<": (a, b) => a < b, ">": (a, b) => a > b, "<=": (a, b) => a <= b, ">=": (a, b) => a >= b, "=": (a, b) => a === b, "<>": (a, b) => a === b };
+    return both(ops[name]) as never;
+  }
+  const ops: Record<string, (a: number | string, b: number | string) => boolean> = {
+    "<": (a, b) => a < b, ">": (a, b) => a > b, "<=": (a, b) => a <= b, ">=": (a, b) => a >= b, "=": (a, b) => a === b, "<>": (a, b) => a !== b,
+  };
+  return ops[name] as never;
+}
+
+/** The test a property term makes, as org-make-tags-matcher turns it into Lisp. */
+function propertyTest(name: string, op: string, star: boolean, operand: string): (ctx: MatchContext) => boolean {
+  const property = name.replace(/\\(.)/g, "$1").toUpperCase();
+  const get = (ctx: MatchContext): string | undefined =>
+    property === "LEVEL" ? String(ctx.level) : property === "CATEGORY" ? ctx.category() : property === "TODO" ? ctx.todo : matchProperty(ctx, property);
+  const regexp = operand.startsWith("{");
+  const quoted = operand.startsWith('"');
+  const timep = /^"[[<](?:[0-9]+|now|today|tomorrow|[+-][0-9]+[dmwy]).*[\]>]"$/.test(operand);
+  let test: (ctx: MatchContext) => boolean;
+  if (regexp) {
+    const re = operand.slice(1, -1);
+    const not = ["<>", "!=", "/="].includes(op);
+    test = (ctx) => (e8.stringMatch(re, get(ctx) ?? "", { caseFold: true }) !== undefined) !== not;
+  } else if (timep) {
+    const value = matcherTime(operand.slice(1, -1));
+    const f = comparison(op, "time") as unknown as (a: string, b: number) => boolean;
+    test = (ctx) => f(get(ctx) ?? "", value);
+  } else if (quoted) {
+    const value = operand.slice(1, -1);
+    const f = comparison(op, "string") as unknown as (a: string, b: string) => boolean;
+    test = (ctx) => f(get(ctx) ?? "", value);
+  } else {
+    const value = leadingNumber(operand);
+    const f = comparison(op, "number") as unknown as (a: number, b: number) => boolean;
+    test = (ctx) => f(leadingNumber(get(ctx) ?? ""), value);
+  }
+  return star ? (ctx) => get(ctx) !== undefined && test(ctx) : test;
+}
+
+export interface TagsMatcher {
+  /** The match as given. */
+  match: string;
+  /** Whether a heading matches. */
+  test: (ctx: MatchContext) => boolean;
+  /** Whether the match asks for headings with a TODO state not done only, as /! does. */
+  todoOnly: boolean;
+}
+
+/** Tags completion for a match: the tag after the last operator, as org-tags-completion-function. */
+function tagsCompletion(tags: string[]): (input: string) => string[] {
+  return (input) => {
+    const m = /^(.*[-+:&,|])([^-+:&,|]*)$/.exec(input);
+    const prefix = m ? m[1] : "";
+    return tags.map((t) => prefix + t);
+  };
+}
+
+/**
+ * The test a match string makes, as org-make-tags-matcher builds it: tags,
+ * +TAG, -TAG, {regexp}, PROP="value", PROP>3, LEVEL<2, TODO="WAIT" and the
+ * like joined by & and |, then after a / the TODO states to match, or after
+ * /! only those not done. With no match, one is read.
+ */
+export function makeTagsMatcher(match?: string): TagsMatcher {
+  if (match === undefined) {
+    const tags = bufferTags().map(([t]) => t);
+    match = e8.completingRead("Match: ", tagsCompletion(tags), { history: "org-tags-history" });
+  }
+  const given = match;
+  let todoOnly = false;
+  match = tagsExpand(match);
+  let start = 0;
+  for (const m of match.matchAll(/\/+/g)) start = m.index!;
+  const slash = /\/+/.exec(match.slice(start));
+  let tagsPart: string;
+  let todoPart: string | undefined;
+  if (slash !== null && !match.slice(start).includes('"')) {
+    tagsPart = match.slice(0, start + slash.index);
+    todoPart = match.slice(start + slash.index + slash[0].length);
+    if (todoPart.startsWith("!")) {
+      todoOnly = true;
+      todoPart = todoPart.slice(1);
+    }
+    if (/^\s*$/.test(todoPart)) todoPart = undefined;
+  } else tagsPart = match;
+  let tagsTest: ((ctx: MatchContext) => boolean) | undefined;
+  if (/\S/.test(tagsPart)) {
+    const ors: ((ctx: MatchContext) => boolean)[] = [];
+    const terms = splitString(tagsPart, /\|/);
+    while (terms.length > 0) {
+      let term = terms.shift()!;
+      // A | after a backslash is part of the term.
+      while (term.endsWith("\\") && terms.length > 0) term += "|" + terms.shift();
+      const ands: ((ctx: MatchContext) => boolean)[] = [];
+      for (let m = MATCH_TERM.exec(term); m !== null; m = MATCH_TERM.exec(term)) {
+        const minus = m[1] === "-";
+        const tag = m[2];
+        let test: (ctx: MatchContext) => boolean;
+        if (tag.startsWith("{")) {
+          const re = tag.slice(1, -1);
+          test = (ctx) => ctx.tags.some((t) => e8.stringMatch(re, t, { caseFold: true }) !== undefined);
+        } else if (m[3] !== undefined) test = propertyTest(m[3], m[4], m[5] !== undefined, m[6]);
+        else test = (ctx) => ctx.tags.includes(tag);
+        ands.push(minus ? (ctx) => !test(ctx) : test);
+        term = term.slice(m[0].length);
+      }
+      ors.push((ctx) => ands.every((f) => f(ctx)));
+    }
+    tagsTest = (ctx) => ors.some((f) => f(ctx));
+  }
+  let todoTest: ((ctx: MatchContext) => boolean) | undefined;
+  if (todoPart !== undefined && /\S/.test(todoPart)) {
+    const ors: (((ctx: MatchContext) => boolean) | undefined)[] = [];
+    for (let term of splitString(todoPart, /\|/)) {
+      const ands: ((ctx: MatchContext) => boolean)[] = [];
+      for (let m = MATCH_TERM.exec(term); m !== null; m = MATCH_TERM.exec(term)) {
+        const minus = m[1] === "-";
+        const kwd = m[2];
+        const test = kwd.startsWith("{")
+          ? (ctx: MatchContext) => {
+              // As string-match on a heading with no state, an error.
+              if (ctx.todo === undefined) e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil", ["stringp", null]);
+              return e8.stringMatch(kwd.slice(1, -1), ctx.todo!, { caseFold: true }) !== undefined;
+            }
+          : (ctx: MatchContext) => ctx.todo === kwd;
+        ands.push(minus ? (ctx) => !test(ctx) : test);
+        term = term.slice(m[0].length);
+      }
+      // A term with nothing in it matches nothing, as (car nil).
+      ors.push(ands.length === 0 ? undefined : (ctx) => ands.every((f) => f(ctx)));
+    }
+    todoTest = (ctx) => ors.some((f) => f !== undefined && f(ctx));
+  }
+  let test: (ctx: MatchContext) => boolean =
+    tagsTest && todoTest ? (ctx) => tagsTest!(ctx) && todoTest!(ctx) : (tagsTest ?? todoTest ?? (() => true));
+  if (todoOnly) {
+    const inner = test;
+    test = (ctx) => ctx.todo !== undefined && !isDone(ctx.todo) && allKeywords().includes(ctx.todo) && inner(ctx);
+  }
+  return { match: given, test, todoOnly };
+}
+
+/**
+ * Calls `action` at each heading in the accessible portion that `matcher`
+ * matches, with point at its start, as org-scan-tags does, or with
+ * "sparse-tree" makes a sparse tree of them. With `todoOnly`, only
+ * headings with a TODO state count. Returns what the calls returned.
+ */
+export function scanTags<T>(action: "sparse-tree" | ((h: Heading) => T), matcher: TagsMatcher | true, todoOnly: boolean): T[] {
+  const results: T[] = [];
+  const keywords = allKeywords();
+  const sublevels = truthy(e8.variable("org-tags-match-list-sublevels"));
+  e8.saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    if (action === "sparse-tree") {
+      overview();
+      removeOccurHighlights(false);
+    }
+    const [min, max] = [e8.pointMin(), e8.pointMax()];
+    const all = e8.saveRestriction(() => (e8.widen(), headings()));
+    const tags = allTagsOf(all);
+    let cats: string[] | undefined;
+    for (let i = 0; i < all.length; i++) {
+      const h = all[i];
+      if (h.start < min || h.start >= max) continue;
+      const at = i;
+      const ctx: MatchContext = { todo: h.todo, tags: tags[i], level: h.level, h, category: () => (cats ??= e8.saveRestriction(() => (e8.widen(), categories(all))))[at] };
+      if (todoOnly && (h.todo === undefined || !keywords.includes(h.todo))) continue;
+      if (matcher !== true && !matcher.test(ctx)) continue;
+      e8.gotoChar(h.start);
+      if (action === "sparse-tree") {
+        if (truthy(e8.variable("org-highlight-sparse-tree-matches"))) highlightNewMatch(h.start, h.start + h.level);
+        foldShowContext("tags-tree");
+      } else results.push(e8.saveExcursion(() => action(h)));
+      if (!sublevels) {
+        const next = nextSameOrHigher(all, i);
+        i = next === undefined ? all.length : all.indexOf(next) - 1;
+      }
+    }
+  });
+  if (action === "sparse-tree" && !truthy(e8.variable("org-sparse-tree-open-archived-trees"))) hideArchivedSubtrees(e8.pointMin(), e8.pointMax());
+  return results;
+}
+
+/** Makes a sparse tree of the headings a match picks, as org-match-sparse-tree. */
+export function matchSparseTree(todoOnly: boolean, match?: string): void {
+  const matcher = makeTagsMatcher(match);
+  scanTags("sparse-tree", matcher, todoOnly || matcher.todoOnly);
+}
+
+const matchSparseTreeCommand = e8.defineCommand({
+  name: "org-match-sparse-tree",
+  doc:
+    "Make a sparse tree of the headings a match picks: tags (+work-boss, work|home), properties (PRIORITY=\"A\", LEVEL>1, " +
+    "Effort<\"1:00\"), and after a / TODO states (/TODO|WAIT, or /! for those not done). With a prefix argument, only headings with a TODO state.",
+  params: [{ name: "todoOnly", kind: "prefix" }],
+  run: (todoOnly) => matchSparseTree(truthy(todoOnly)),
+});
+e8.defineCommand({
+  name: "org-tags-sparse-tree",
+  doc: "Make a sparse tree of the headings a match picks, as org-match-sparse-tree.",
+  params: [{ name: "todoOnly", kind: "prefix" }],
+  run: (todoOnly) => matchSparseTree(truthy(todoOnly)),
+});
+
+/** The TODO states not done, as a regexp alternative, as org-not-done-regexp. */
+function notDoneRegexp(): string {
+  return `\\(${todoSets().flatMap((s) => s.todo).map((k) => k.replace(/[[*.\\?+^$]/g, "\\$&")).join("\\|")}\\)`;
+}
+
+e8.defineCommand({
+  name: "org-show-todo-tree",
+  doc:
+    "Make a sparse tree of the headings with a TODO state not done. With C-u, of those with a state read, or several as KWD1|KWD2; " +
+    "with a number N, of those with the Nth state.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    const keywords = todoSets().flatMap((s) => [...s.todo, ...s.done]);
+    const quote = (k: string) => k.replace(/[[*.\\?+^$]/g, "\\$&");
+    let re: string;
+    if (arg === null || arg === undefined) re = `${notDoneRegexp()}\\s-`;
+    else if (Array.isArray(arg) && arg[0] === 4) {
+      const kwd = e8.completingRead("Keyword (or KWD1|KWD2|...): ", keywords);
+      re = `\\(${splitString(kwd, /\|/).map(quote).join("\\|")}\\)\\(?:[ \t]\\|$\\)`;
+    } else {
+      const n = e8.prefixNumericValue(arg);
+      if (n > keywords.length) e8.userError(`Invalid prefix argument: ${Array.isArray(arg) ? `(${arg[0]})` : String(arg)}`);
+      // As nth, a count below 1 takes the first.
+      re = quote(keywords[Math.max(n, 1) - 1]);
+    }
+    // org-occur folds case as org-occur-case-fold-search says, whatever org-show-todo-tree binds case-fold-search to.
+    const count = orgOccur(`^\\*+  *${re}`);
+    e8.message(`${count} TODO entries found`);
+  },
+});
+
+/** The days from today to a timestamp's date, as org-timestamp-to-now. */
+function daysFromToday(ts: string): number {
+  const m = /(\d{4})-(\d{2})-(\d{2})/.exec(ts);
+  if (!m) return 0;
+  const t = today();
+  return (Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])) - Date.UTC(t.year, t.month - 1, t.day)) / 86400000;
+}
+
+/** Whether point's entry is done, as org-entry-is-done-p. */
+function entryDoneHere(): boolean {
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  return i !== undefined && isDone(all[i].todo);
+}
+
+e8.defineCommand({
+  name: "org-check-deadlines",
+  doc:
+    "Make a sparse tree of the deadlines due within org-deadline-warning-days, or past, in entries not done. " +
+    "With a number, within that many days; with C-u, all of them.",
+  params: [{ name: "ndays", kind: "prefix" }],
+  run: (ndays) => {
+    const days = Array.isArray(ndays) && ndays[0] === 4 ? 100000 : ndays !== null && ndays !== undefined ? e8.prefixNumericValue(ndays) : Math.abs(Number(e8.variable("org-deadline-warning-days") ?? 14));
+    const count = orgOccur("\\<DEADLINE: *<\\([^>]+\\)>", false, () => {
+      const ts = e8.matchString(1) ?? "";
+      return daysFromToday(ts) <= days && !entryDoneHere();
+    });
+    e8.message(`${count} deadlines past-due or due within ${days} days`);
+  },
+});
+
+/** The date sparse trees' timestamp type, as org-ts-type, which c in org-sparse-tree cycles. */
+let tsType: string | null = null;
+
+/** The regexp for timestamps of a type, as org-re-timestamp. */
+function reTimestamp(type: string | null): string {
+  const date = "[[:digit:]]\\{4\\}-[[:digit:]]\\{2\\}-[[:digit:]]\\{2\\}\\(?: .*?\\)?";
+  switch (type) {
+    case "all":
+      return `[[<]\\(${date}\\)[]>]`;
+    case "active":
+      return `<\\(${date}\\)>`;
+    case "inactive":
+      return `\\[\\(${date}\\)\\]`;
+    case "scheduled":
+      return "\\<SCHEDULED: *<\\([^>]+\\)>";
+    case "deadline":
+      return "\\<DEADLINE: *<\\([^>]+\\)>";
+    case "closed":
+      return "\\<CLOSED: *\\[\\([^]]+\\)\\]";
+    default:
+      return "\\<\\(?:\\(?:DEADLINE\\|SCHEDULED\\):\\) *<\\([^>]+\\)>";
+  }
+}
+
+/** Elements whose timestamps org-element-context does not find as timestamp objects: a planning line's are its own, and the others hold only characters. */
+const NO_OBJECTS = ["planning", "src-block", "example-block", "export-block", "fixed-width", "comment", "comment-block", "keyword", "node-property", "property-drawer", "clock"];
+
+/**
+ * Whether a match counts for a date sparse tree, as their callbacks ask:
+ * a timestamp for all, active and inactive, else on a planning line.
+ */
+function dateMatchCounts(type: string | null): boolean {
+  const end = e8.matchEnd(0)!;
+  if (type === "all" || type === "active" || type === "inactive") {
+    const type = elementAt(Math.max(e8.pointMin(), end - 1))?.type;
+    return type === undefined || !NO_OBJECTS.includes(type);
+  }
+  const line = lineAt(end);
+  if (!PLANNING.test(e8.lineText(line)) || line === 0) return false;
+  const all = headings();
+  const i = headingIndex(all, line);
+  return i !== undefined && all[i].line === line - 1;
+}
+
+/** A date read as org-read-date reads one, as YYYY-MM-DD with any time after it. */
+function readDate(prompt?: string): string {
+  const t = today();
+  const def = `${t.year}-${String(t.month).padStart(2, "0")}-${String(t.day).padStart(2, "0")}`;
+  const input = e8.readString(`${prompt ?? "Date+time"} [${def}]: `, { history: "org-read-date-history" });
+  const d = parseDate(input);
+  const date = `${d.year}-${String(d.month).padStart(2, "0")}-${String(d.day).padStart(2, "0")}`;
+  return d.hour === undefined ? date : `${date} ${String(d.hour).padStart(2, "0")}:${String(d.minute ?? 0).padStart(2, "0")}`;
+}
+
+/** Makes a sparse tree of the timestamps for which `test` holds of their time in seconds. */
+function dateSparseTree(test: (seconds: number) => boolean): number {
+  const type = tsType;
+  return orgOccur(reTimestamp(type), false, () => {
+    const ts = e8.matchString(1) ?? "";
+    return dateMatchCounts(type) && test(timestampSeconds(ts));
+  });
+}
+
+e8.defineCommand({
+  name: "org-check-before-date",
+  doc: "Make a sparse tree of the deadlines and scheduled dates before a date.",
+  params: [{ name: "date", value: () => readDate() }],
+  run: (d) => {
+    const limit = timestampSeconds(d);
+    e8.message(`${dateSparseTree((s) => s < limit)} entries before ${d}`);
+  },
+});
+
+e8.defineCommand({
+  name: "org-check-after-date",
+  doc: "Make a sparse tree of the deadlines and scheduled dates on or after a date.",
+  params: [{ name: "date", value: () => readDate() }],
+  run: (d) => {
+    const limit = timestampSeconds(d);
+    e8.message(`${dateSparseTree((s) => !(s < limit))} entries after ${d}`);
+  },
+});
+
+e8.defineCommand({
+  name: "org-check-dates-range",
+  doc: "Make a sparse tree of the deadlines and scheduled dates from one date up to another.",
+  params: [
+    { name: "start", value: () => readDate("Range starts") },
+    { name: "end", value: () => readDate("Range end") },
+  ],
+  run: (start, end) => {
+    const [from, to] = [timestampSeconds(start), timestampSeconds(end)];
+    e8.message(`${dateSparseTree((s) => !(s < from) && s < to)} entries between ${start} and ${end}`);
+  },
+});
+
+const DATE_TYPES: (string | null)[] = [null, "all", "scheduled", "deadline", "active", "inactive", "closed"];
+
+const DATE_TYPE_NAMES: Record<string, string> = {
+  all: "all timestamps",
+  scheduled: "only scheduled",
+  deadline: "only deadline",
+  active: "only active timestamps",
+  inactive: "only inactive timestamps",
+  closed: "with a closed timestamp",
+};
+
+/** Runs a command as call-interactively does, with a prefix argument, its parameters read as keys would. */
+function interactively(arg: e8.PrefixArg, command: e8.CommandName | e8.DefinedCommand): void {
+  if (arg !== null && arg !== undefined) e8.setPrefixArg(arg);
+  e8.callInteractively(command);
+}
+
+/** Asks which sparse tree to make and makes it, as org-sparse-tree. */
+function sparseTree(arg: e8.PrefixArg, type?: string | null): void {
+  const t = type ?? (e8.variable("org-sparse-tree-default-date-type") as string | null) ?? null;
+  tsType = t;
+  e8.message(
+    "Sparse tree: [r]egexp [t]odo [T]odo-kwd [m]atch [p]roperty\n" +
+      "             [d]eadlines [b]efore-date [a]fter-date [D]ates range\n" +
+      `             [c]ycle through date types: ${(t !== null && DATE_TYPE_NAMES[t]) || "scheduled/deadline"}`,
+  );
+  const answer = e8.readCharExclusive();
+  switch (answer) {
+    case "c":
+      return sparseTree(arg, DATE_TYPES[DATE_TYPES.indexOf(t) + 1] ?? null);
+    case "d":
+      return interactively(arg, "org-check-deadlines");
+    case "b":
+      return interactively(arg, "org-check-before-date");
+    case "a":
+      return interactively(arg, "org-check-after-date");
+    case "D":
+      return interactively(arg, "org-check-dates-range");
+    case "t":
+      return interactively(arg, "org-show-todo-tree");
+    case "T":
+      return interactively([4], "org-show-todo-tree");
+    case "m":
+      return interactively(arg, matchSparseTreeCommand);
+    case "p":
+    case "P": {
+      const kwd = e8.completingRead("Property: ", bufferPropertyKeys()).replace(/-/g, "\\-");
+      let value = e8.completingRead("Value: ", propertyValues(kwd.replace(/\\-/g, "-")));
+      if (!/^\{.*\}$/.test(value)) value = `"${value}"`;
+      return matchSparseTree(truthy(arg), `${kwd}=${value}`);
+    }
+    case "r":
+    case "R":
+    case "/":
+      return interactively(arg, "org-occur");
+    default:
+      e8.userError(`No such sparse tree command "${answer}"`);
+  }
+}
+
+/** Every value a property has in the buffer, as org-property-values. */
+function propertyValues(key: string): string[] {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const all = headings();
+    const out: string[] = [];
+    const top = topGet(key);
+    if (top !== undefined) out.push(top);
+    for (const h of all) {
+      const v = entryGet(h.line, key);
+      if (v !== undefined && !out.includes(v)) out.push(v);
+    }
+    return out;
+  });
+}
+
+e8.defineCommand({
+  name: "org-sparse-tree",
+  doc:
+    "Make a sparse tree, asking which: r a regexp's matches (or /), t the headings with a TODO state not done, T those with a " +
+    "state read, m those a tags and properties match picks, p those with a property's value, d the deadlines due soon, b and a " +
+    "the dates before and after a date, D those between two; c cycles which timestamps the dates look at.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => sparseTree(arg),
+});
+
 e8.defineMajorMode({
   name: "org-mode",
   modeName: "Org",
@@ -7885,6 +8791,9 @@ e8.defineMajorMode({
   setup: () => {
     e8.setVariable("outline-regexp", "\\*+ ");
     e8.setVariable("imenu-create-index-function", orgImenuGetTree);
+    // M-g n and M-g p go between a sparse tree's matches.
+    e8.makeLocalVariable("next-error-function");
+    e8.setVariable("next-error-function", "org-occur-next-match");
     e8.addToInvisibilitySpec("org-hide-drawer", { ellipsis: true });
     e8.addToInvisibilitySpec("org-hide-block", { ellipsis: true });
     e8.addToInvisibilitySpec("org-link");

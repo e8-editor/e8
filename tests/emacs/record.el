@@ -209,6 +209,27 @@ the key, and asking again for anything but y or n, as Emacs does."
     (while (not (member (substring answer 0 (min 1 (length answer))) '("y" "n")))
       (setq answer (e8-oracle--answer nil)))
     (string-prefix-p "y" answer)))
+;; call-interactively reads an interactive spec's s in C, past the advice
+;; on read-string, so a command whose spec has only s, p and P codes has
+;; its arguments read here instead, as Lisp, for the case's answers.
+(defun e8-oracle--call-interactively (call function &optional record-flag keys)
+  "Call FUNCTION as CALL does, reading the strings its spec asks for with read-string."
+  (let* ((spec (and (symbolp function) (commandp function)
+                    (cadr (interactive-form function))))
+         (items (and (stringp spec) (split-string spec "\n"))))
+    (if (and items
+             (cl-some (lambda (item) (string-prefix-p "s" item)) items)
+             (cl-every (lambda (item) (and (> (length item) 0) (memq (aref item 0) '(?s ?p ?P)))) items))
+        (apply function
+               (mapcar (lambda (item)
+                         (pcase (aref item 0)
+                           (?s (read-string (substring item 1)))
+                           (?P current-prefix-arg)
+                           (?p (prefix-numeric-value current-prefix-arg))))
+                       items))
+      (funcall call function record-flag keys))))
+(advice-add 'call-interactively :around #'e8-oracle--call-interactively)
+
 (defun e8-oracle--no-minibuffer (&rest _)
   (error "Minibuffer read in batch"))
 ;; Dired lists directories as E8 does, with Emacs's own ls, sorting

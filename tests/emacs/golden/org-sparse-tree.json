@@ -1,0 +1,2244 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "sparse-regexp",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-regexp-slash",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "/",
+          "body"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-regexp-case-folded",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "APPLE"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-regexp-smart-case",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "Apple"
+        ],
+        "vars": {
+          "org-occur-case-fold-search": "'smart"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-regexp-no-match",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "nothing-here"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-regexp-in-drawer",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "Rank: 10"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-regexp-empty",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          ""
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Regexp cannot be empty"
+    },
+    {
+      "name": "sparse-unknown-command",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "x"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such sparse tree command \"x\""
+    },
+    {
+      "name": "sparse-todo-tree",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-todo-keyword",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "T",
+          "WAIT"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-todo-keywords",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "T",
+          "TODO|DONE"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-todo-nth",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-u 2 C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-todo-nth-too-big",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-u 9 C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid prefix argument: 9"
+    },
+    {
+      "name": "sparse-match-tag",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "work"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-tag-inherited",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "home"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-plus-minus",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "+work-urgent"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-minus-only",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "-work"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-or",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "urgent|home"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-tag-regexp",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{^h}"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-number",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Rank>5"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-number-equal",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Rank=3"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-string",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Effort=\"2:00\""
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-not-equal",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Rank<>3"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-not-equal-starred",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Rank<>*3"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-property-regexp",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Rank={^1}"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-level",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-todo-property",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "TODO=\"WAIT\""
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-priority",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "PRIORITY=\"A\""
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-item",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "ITEM={eta}"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-scheduled-time",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "SCHEDULED<\"<2026-11-15>\""
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-closed-time",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "CLOSED>=\"[2026-11-01]\""
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-category",
+      "input": {
+        "text": "#+CATEGORY: cat\n#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "CATEGORY=\"cat\""
+        ]
+      },
+      "text": "#+CATEGORY: cat\n#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+CATEGORY: cat\n#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-todo-part",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "/WAIT"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-todo-or",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "/TODO|WAIT"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-todo-not",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "home/-WAIT"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-not-done",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "work/!"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-todo-regexp-errors",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "/{T}"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: stringp, nil"
+    },
+    {
+      "name": "sparse-match-todo-only",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-u C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "work"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-command",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c \\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "home"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-and",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "work&LEVEL=1"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-colon",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          ":work"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-property",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "p",
+          "Rank",
+          "10"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-property-regexp",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "p",
+          "Rank",
+          "{.}"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-deadlines",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-deadlines-all",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-u C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-before-date",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "2026-11-15"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-after-date",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "2026-11-15"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-dates-range",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "D",
+          "2026-01-01",
+          "2026-11-12"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-before-date-all-types",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "b",
+          "2026-11-20"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-after-date-active",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "c",
+          "c",
+          "c",
+          "a",
+          "2026-11-01"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-before-date-inactive",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "c",
+          "c",
+          "c",
+          "c",
+          "b",
+          "2026-11-20"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-before-date-closed",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "c",
+          "c",
+          "c",
+          "c",
+          "c",
+          "b",
+          "2026-12-31"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-before-date-scheduled",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "c",
+          "b",
+          "2026-12-31"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-cycle-back-to-default",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "c",
+          "c",
+          "c",
+          "c",
+          "c",
+          "c",
+          "b",
+          "2026-12-31"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-then-remove-highlights",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c / C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-next-match",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c / M-g n M-g n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 135,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-next-match-runs-out",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c / M-g n M-g n M-g n M-g n",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 135,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No more matches"
+    },
+    {
+      "name": "sparse-previous-match",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c / M-> M-g p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 135,
+      "mark": 27,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-keeps-previous",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c / C-u C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "Alpha",
+          "r",
+          "zeta"
+        ]
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tags-sublevels-off",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "work|home"
+        ],
+        "vars": {
+          "org-tags-match-list-sublevels": false
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-context-minimal",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple in"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'minimal"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tags-context-minimal",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'minimal"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-context-local",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple in"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'local"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n*** Gamma\napple in gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tags-context-local",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'local"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\nbeta body\n*** Gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-context-ancestors",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple in"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'ancestors"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tags-context-ancestors",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'ancestors"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-context-ancestors-full",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple in"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'ancestors-full"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\napple in gamma\n\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tags-context-ancestors-full",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'ancestors-full"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-context-lineage",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple in"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'lineage"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\napple in gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tags-context-lineage",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'lineage"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-context-tree",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple in"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'tree"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n*** Gamma\napple in gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tags-context-tree",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'tree"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\n** Beta :home:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-context-canonical",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple in"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'canonical"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tags-context-canonical",
+      "input": {
+        "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'canonical"
+        }
+      },
+      "text": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\nbeta body\n*** Gamma\napple in gamma\n** TODO Theta\nDEADLINE: <2099-11-25 Wed>\n* DONE Delta :work:urgent:\nCLOSED: [2026-11-01 Sun]\n:PROPERTIES:\n:Rank: 3\n:Effort: 2:00\n:END:\ndelta text <2026-12-01 Tue>\n* WAIT Epsilon :home:\nDEADLINE: <2020-01-01 Wed>\n:PROPERTIES:\n:Rank: 10\n:END:\nepsilon [2026-11-05 Thu]\n* Zeta\nDEADLINE: <2026-11-16 Mon>\nzeta ends\n",
+      "visible": "#+TODO: TODO WAIT | DONE\n* TODO [#A] Alpha :work:\nSCHEDULED: <2026-11-10 Tue>\nAlpha body with apple\n** Beta :home:\n** TODO Theta\n* DONE Delta :work:urgent:\n* WAIT Epsilon :home:\n* Zeta",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-archived-stays-folded",
+      "input": {
+        "text": "* A\n** Old :ARCHIVE:\napple old\n** New\napple new\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple"
+        ]
+      },
+      "text": "* A\n** Old :ARCHIVE:\napple old\n** New\napple new\n",
+      "visible": "* A\n** Old :ARCHIVE:\n** New\napple new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-archived-open",
+      "input": {
+        "text": "* A\n** Old :ARCHIVE:\napple old\n** New\napple new\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple"
+        ],
+        "vars": {
+          "org-sparse-tree-open-archived-trees": true
+        }
+      },
+      "text": "* A\n** Old :ARCHIVE:\napple old\n** New\napple new\n",
+      "visible": "* A\n** Old :ARCHIVE:\napple old\n** New\napple new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-group-tag",
+      "input": {
+        "text": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Work"
+        ]
+      },
+      "text": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:\n",
+      "visible": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-group-tag-minus",
+      "input": {
+        "text": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "-Work"
+        ]
+      },
+      "text": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:\n",
+      "visible": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-group-off",
+      "input": {
+        "text": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Work"
+        ],
+        "vars": {
+          "org-group-tags": false
+        }
+      },
+      "text": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:\n",
+      "visible": "#+TAGS: { Work : Lab Conf }\n* A :Lab:\n* B :Conf:\n* C :Home:\n* D :Work:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-filetags",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "proj"
+        ]
+      },
+      "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+      "visible": "#+FILETAGS: :proj:\n* A :x:\n** B\n*** C :y:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-property-not-inherited",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Owner=\"me\""
+        ]
+      },
+      "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+      "visible": "#+FILETAGS: :proj:\n* A :x:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-property-inherited",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Owner=\"me\""
+        ],
+        "vars": {
+          "org-use-property-inheritance": true
+        }
+      },
+      "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+      "visible": "#+FILETAGS: :proj:\n* A :x:\n** B\n*** C :y:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-alltags",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "ALLTAGS={:x:}"
+        ]
+      },
+      "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+      "visible": "#+FILETAGS: :proj:\n* A :x:\n** B\n*** C :y:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-tags-local",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "TAGS={:y:}"
+        ]
+      },
+      "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+      "visible": "#+FILETAGS: :proj:\n* A :x:\n** B\n*** C :y:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-no-inheritance",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "x"
+        ],
+        "vars": {
+          "org-use-tag-inheritance": false
+        }
+      },
+      "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+      "visible": "#+FILETAGS: :proj:\n* A :x:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-excluded-from-inheritance",
+      "input": {
+        "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "x"
+        ],
+        "vars": {
+          "org-tags-exclude-from-inheritance": [
+            "x"
+          ]
+        }
+      },
+      "text": "#+FILETAGS: :proj:\n* A :x:\n:PROPERTIES:\n:Owner: me\n:END:\n** B\n*** C :y:\n",
+      "visible": "#+FILETAGS: :proj:\n* A :x:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

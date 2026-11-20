@@ -5408,6 +5408,39 @@ declare global {
        */
       "org-capture-mode": [];
       /**
+       * Make a sparse tree of the deadlines and scheduled dates on or after a date.
+       *
+       * @param date text
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-check-after-date": [date: string];
+      /**
+       * Make a sparse tree of the deadlines and scheduled dates before a date.
+       *
+       * @param date text
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-check-before-date": [date: string];
+      /**
+       * Make a sparse tree of the deadlines and scheduled dates from one date up to another.
+       *
+       * @param start text
+       * @param end text
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-check-dates-range": [start: string, end: string];
+      /**
+       * Make a sparse tree of the deadlines due within org-deadline-warning-days, or past, in entries not done. With a number, within that many days; with C-u, all of them.
+       *
+       * @param ndays raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-check-deadlines": [ndays?: PrefixArg | boolean];
+      /**
        * Cancel the running clock, taking its CLOCK: line away.
        *
        * Defined in packages/org-clock.ts.
@@ -5827,6 +5860,14 @@ declare global {
        */
       "org-mark-subtree": [];
       /**
+       * Make a sparse tree of the headings a match picks: tags (+work-boss, work|home), properties (PRIORITY="A", LEVEL>1, Effort<"1:00"), and after a / TODO states (/TODO|WAIT, or /! for those not done). With a prefix argument, only headings with a TODO state.
+       *
+       * @param todoOnly raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-match-sparse-tree": [todoOnly?: PrefixArg | boolean];
+      /**
        * M-RET in Org: insert a heading at the level of the one point is under, or an item in a list.
        *
        * At the start of a line it goes before it; in the middle, the rest of the line goes to the new heading (org-M-RET-may-split-line); at the end, after it.
@@ -5934,6 +5975,15 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-next-visible-heading": [];
+      /**
+       * Make a compact tree showing the matches of a regexp: the lines matching it and the headings above them, the rest folded. With a prefix argument, the matches of an earlier sparse tree stay. C-c C-c removes the highlights.
+       *
+       * @param regexp text
+       * @param keep raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-occur": [regexp: string, keep?: PrefixArg | boolean];
       /**
        * Follow the link point is on: [[*Heading]], [[#custom-id]], [[target]] and [[Heading]] within the buffer, and file links such as [[file:notes.org::*Heading]] in another buffer.
        *
@@ -6050,6 +6100,12 @@ declare global {
        * Defined in packages/org-refile.ts.
        */
       "org-refile-reverse": [arg?: PrefixArg | boolean];
+      /**
+       * Remove the highlights of a sparse tree from the buffer.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-remove-occur-highlights": [];
       /**
        * RET in Org: in a table, move to the next row; elsewhere start a new line, indented as org-indent-line does.
        *
@@ -6174,6 +6230,14 @@ declare global {
        */
       "org-show-all": [];
       /**
+       * Make a sparse tree of the headings with a TODO state not done. With C-u, of those with a state read, or several as KWD1|KWD2; with a number N, of those with the Nth state.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-show-todo-tree": [arg?: PrefixArg | boolean];
+      /**
        * Sort the entries at point, or the table or plain list there, as org-sort-entries, org-table-sort-lines or org-sort-list do.
        *
        * @param with-case raw prefix argument
@@ -6189,6 +6253,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-sort-entries": [withCase?: PrefixArg | boolean];
+      /**
+       * Make a sparse tree, asking which: r a regexp's matches (or /), t the headings with a TODO state not done, T those with a state read, m those a tags and properties match picks, p those with a property's value, d the deadlines due soon, b and a the dates before and after a date, D those between two; c cycles which timestamps the dates look at.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-sparse-tree": [arg?: PrefixArg | boolean];
       /**
        * Show the speed commands, the keys that run commands at the start of a heading.
        *
@@ -6361,6 +6433,14 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-wrap-region": [];
+      /**
+       * Make a sparse tree of the headings a match picks, as org-match-sparse-tree.
+       *
+       * @param todoOnly raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-tags-sparse-tree": [todoOnly?: PrefixArg | boolean];
       /**
        * Insert an active timestamp, such as <2026-10-28 Wed>, for a date read in the minibuffer; on a timestamp, change it.
        *
@@ -13127,6 +13207,12 @@ declare global {
        */
       "org-fold-catch-invisible-edits": Value;
       /**
+       * How much is shown around a place Org goes to in folded text, as [context, span] lists, a context being agenda, org-goto, occur-tree, tags-tree, link-search, mark-goto, bookmark-jump, isearch or default. A span is minimal (the heading, and the entry if not on it), local (the heading, entry and next heading), ancestors (minimal and the headings above), ancestors-full (ancestors and the whole subtree), lineage (local, the headings above and their siblings), tree (ancestors with each one's children), or canonical (tree with each one's entry). One span alone is used everywhere.
+       *
+       * Defined in packages/org-fold.ts.
+       */
+      "org-fold-show-context-detail": Value;
+      /**
        * Whether the text of a done heading gets the face org-headline-done.
        *
        * Defined in packages/org.ts.
@@ -13144,6 +13230,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-global-properties": Value;
+      /**
+       * Whether a group tag in a match stands for the tags of its group too, as the TAGS line's { GROUP : TAG ... } gives them.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-group-tags": Value;
       /**
        * What marks a day the habit was done in its graph.
        *
@@ -13204,6 +13296,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-hide-leading-stars": Value;
+      /**
+       * Whether a sparse tree highlights what it matched.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-highlight-sparse-tree-matches": Value;
       /**
        * Files to be searched for IDs, besides the agenda files, or the name of a variable that holds them.
        *
@@ -13311,6 +13409,12 @@ declare global {
        */
       "org-indirect-buffer-display": Value;
       /**
+       * Whether org-remove-occur-highlights leaves the highlights alone, for code making several sparse trees.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-inhibit-highlight-removal": Value;
+      /**
        * Whether org-mode leaves out its startup visibility and indentation.
        *
        * Defined in packages/org.ts.
@@ -13405,6 +13509,18 @@ declare global {
        */
       "org-note-abort": Value;
       /**
+       * Whether org-occur ignores case: true, false, or "smart" to ignore it only when the regexp has no capital letters.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-occur-case-fold-search": Value;
+      /**
+       * The overlays highlighting a sparse tree's matches in this buffer.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-occur-highlights": Value;
+      /**
        * Whether outline paths complete a level at a time, as file names do, rather than whole.
        *
        * Defined in packages/org-refile.ts.
@@ -13489,6 +13605,12 @@ declare global {
        */
       "org-refile-use-outline-path": Value;
       /**
+       * Whether a sparse tree's highlights go at the next change to the buffer. C-c C-c takes them away too.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-remove-highlights-with-change": Value;
+      /**
        * Whether RET on a link follows it, as C-c C-o does, rather than breaking the line.
        *
        * Defined in packages/org.ts.
@@ -13506,6 +13628,18 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-scheduled-delay-days": Value;
+      /**
+       * Which timestamps the date sparse trees look at: nil for SCHEDULED and DEADLINE, or "all", "scheduled", "deadline", "active", "inactive" or "closed". c in org-sparse-tree cycles through them.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-sparse-tree-default-date-type": Value;
+      /**
+       * Whether a sparse tree shows matches in archived subtrees, which otherwise stay folded.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-sparse-tree-open-archived-trees": Value;
       /**
        * Whether C-o in a table inserts a row rather than opening a line.
        *
@@ -13655,11 +13789,23 @@ declare global {
        */
       "org-tags-column": Value;
       /**
+       * Tags headings never take from the headings above them or the file.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-tags-exclude-from-inheritance": Value;
+      /**
        * Tags answered to org-set-tags-command, newest first.
        *
        * Defined in packages/org.ts.
        */
       "org-tags-history": Value;
+      /**
+       * Whether a tags match goes on into the subtree of a heading it matched, rather than going past it.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-tags-match-list-sublevels": Value;
       /**
        * Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second.
        *
@@ -13696,6 +13842,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-use-fast-todo-selection": Value;
+      /**
+       * Which properties an entry takes from the headings above it when a match asks for them: true for all, false for none, a list of names, or a regexp.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-use-property-inheritance": Value;
       /**
        * Whether single keys at the start of a heading run org-speed-commands' commands rather than typing. A function is asked, with point where the key was typed, whether they run there too: agent-shell has them run anywhere in the transcript, as Org's manual has them run on any of a heading's stars.
        *
@@ -17523,6 +17675,10 @@ declare global {
        * Run after entering Org mode, after the hooks of the modes it is built on.
        */
       "org-mode-hook": Value;
+      /**
+       * Run after org-occur has made a sparse tree; by default it goes to the first heading, at the window's top.
+       */
+      "org-occur-hook": Value;
       /**
        * Run after Org-Src mode is turned on or off.
        */
