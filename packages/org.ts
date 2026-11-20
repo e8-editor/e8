@@ -7928,7 +7928,7 @@ for (const [name, doc, value] of [
     'Which timestamps the date sparse trees look at: nil for SCHEDULED and DEADLINE, or "all", "scheduled", "deadline", "active", "inactive" or "closed". c in org-sparse-tree cycles through them.',
     null,
   ],
-  ["org-tags-match-list-sublevels", "Whether a tags match goes on into the subtree of a heading it matched, rather than going past it.", true],
+  ["org-tags-match-list-sublevels", 'Whether a tags match goes on into the subtree of a heading it matched, rather than going past it; "indented" puts dots for its level before each line in the agenda.', true],
   [
     "org-use-property-inheritance",
     "Which properties an entry takes from the headings above it when a match asks for them: true for all, false for none, a list of names, or a regexp.",

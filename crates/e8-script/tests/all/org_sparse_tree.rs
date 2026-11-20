@@ -179,8 +179,8 @@ fn next_error_goes_between_matches() {
 }
 
 /// The agenda's tags view gathers the matches of every agenda file, each
-/// with its file's category and the tags it inherits there, most urgent
-/// first, then in the files' order, and a file narrowed is read whole, as org-tags-view widens it.
+/// with its file's category and the tags it inherits there, in the
+/// files' order, and a file narrowed is read whole, as org-tags-view widens it.
 #[test]
 fn the_tags_view_reads_every_agenda_file() {
     let (mut ed, s) = org("");
@@ -206,9 +206,28 @@ fn the_tags_view_reads_every_agenda_file() {
     let agenda = ed.buffers().iter().find(|b| b.name == "*Org Agenda*").map(|b| b.slice(0..b.len())).unwrap();
     let lines: Vec<&str> = agenda.lines().map(|l| l.trim_end()).collect();
     assert_eq!(lines[0], "Headlines with TAGS match: w");
-    assert!(lines[2].starts_with("  beta:       [#A] Three") && lines[2].ends_with(":w:"), "{agenda}");
-    // Of the same priority, in org-agenda-files' order, as category-keep keeps them.
-    assert!(lines[3].starts_with("  alpha:      TODO One") && lines[3].ends_with(":x::w:"), "{agenda}");
+    // In org-agenda-files' order whatever their priority, as org-scan-tags gives its lines no urgency to sort by.
+    assert!(lines[2].starts_with("  alpha:      TODO One") && lines[2].ends_with(":x::w:"), "{agenda}");
+    assert!(lines[3].starts_with("  beta:       [#A] Three") && lines[3].ends_with(":w:"), "{agenda}");
     assert!(lines[4].starts_with("  beta:       Four") && lines[4].ends_with(":w::"), "{agenda}");
     assert_eq!(lines.len(), 5, "{agenda}");
+}
+
+/// C-u before org-agenda reaches the tags view through m, which then keeps
+/// to entries with a TODO state not done, as org-tags-view's "P" reads
+/// the prefix org-agenda was given.
+#[test]
+fn a_prefix_before_the_agenda_makes_m_keep_to_todo_entries() {
+    let (mut ed, s) = org("");
+    let dir = tempfile::tempdir().unwrap();
+    let a = dir.path().join("alpha.org");
+    std::fs::write(&a, "* TODO One :w:\n* DONE Two :w:\n* Three :w:\n").unwrap();
+    s.eval_typescript(&mut ed, "files.ts", format!("e8.setVariable(\"org-agenda-files\", [{:?}]);", a.to_str().unwrap())).unwrap();
+    let agenda = |ed: &Editor| ed.buffers().iter().find(|b| b.name == "*Org Agenda*").map(|b| b.slice(0..b.len())).unwrap();
+    press_answering(&mut ed, "C-u M-x o r g - a g e n d a RET m", &["w"]);
+    let shown = agenda(&ed);
+    assert!(shown.contains("TODO One") && !shown.contains("Two") && !shown.contains("Three"), "{shown}");
+    press_answering(&mut ed, "M-x o r g - a g e n d a RET m", &["w"]);
+    let shown = agenda(&ed);
+    assert!(shown.contains("TODO One") && shown.contains("DONE Two") && shown.contains("Three"), "{shown}");
 }

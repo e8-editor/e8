@@ -23,6 +23,16 @@ e8.defineVariable({
   value: true,
 });
 e8.defineVariable({
+  name: "org-agenda-skip-archived-trees",
+  doc: "Whether the agenda leaves out entries in subtrees tagged ARCHIVE.",
+  value: true,
+});
+e8.defineVariable({
+  name: "org-agenda-skip-comment-trees",
+  doc: "Whether the agenda leaves out entries in subtrees whose heading starts with COMMENT.",
+  value: true,
+});
+e8.defineVariable({
   name: "org-deadline-warning-days",
   doc: "How many days ahead today's agenda warns of a deadline, unless its timestamp says, as -3d does; 0 or less applies whatever it says.",
   value: 14,
@@ -200,8 +210,8 @@ function displayedTags(h: Heading): string {
   return `:${inherited.join(":")}:${h.tags.length === 0 ? ":" : `:${h.tags.join(":")}:`}`;
 }
 
-function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: boolean, time?: AgendaItem["time"]): string {
-  let text = e8.lineText(h.line).replace(/^\*+[ \t]+/, "");
+function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: boolean, time?: AgendaItem["time"], prefix = ""): string {
+  let text = prefix + e8.lineText(h.line).replace(/^\*+[ \t]+/, "");
   if (h.tagsAt !== undefined) text = text.slice(0, text.length - (e8.lineEnd(h.line) - h.tagsAt) - 0).replace(/[ \t]+$/, "");
   if (removeTimestamp) text = text.replace(/<\d{4}-\d{2}-\d{2}[^>\n]*>/, "");
   const line = `  ${(cat === "" ? "" : `${cat}:`).padEnd(12)}${time === undefined ? "" : `${time.field.padEnd(11)} `}${leader === "" ? "" : `${leader} `}${text}`;
@@ -602,8 +612,35 @@ function todoList(): void {
 }
 
 /**
+ * The headings the agenda leaves out, as org-agenda-skip does: those in a
+ * subtree tagged ARCHIVE, or every one with ARCHIVE among the file's tags,
+ * while org-agenda-skip-archived-trees is on, and those in a COMMENT
+ * subtree while org-agenda-skip-comment-trees is.
+ */
+function skippedHeadings(all: Heading[]): boolean[] {
+  const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  const archived = e8.variable("org-agenda-skip-archived-trees") !== false && e8.variable("org-agenda-skip-archived-trees") !== null;
+  const comments = e8.variable("org-agenda-skip-comment-trees") !== false && e8.variable("org-agenda-skip-comment-trees") !== null;
+  const fileArchived = archived && keywordLines().some(([, , text]) => {
+    const m = /^#\+FILETAGS:(.*)$/i.exec(text);
+    return m !== null && m[1].split(/[:\s]+/).includes(tag);
+  });
+  const stack: { level: number; skip: boolean }[] = [];
+  return all.map((h) => {
+    while (stack.length > 0 && stack[stack.length - 1].level >= h.level) stack.pop();
+    const skip =
+      fileArchived ||
+      (stack.length > 0 && stack[stack.length - 1].skip) ||
+      (archived && h.tags.includes(tag)) ||
+      (comments && /^COMMENT(?:[ \t]|$)/.test(h.title));
+    stack.push({ level: h.level, skip });
+    return skip;
+  });
+}
+
+/**
  * The headings a tags, properties and TODO match picks in org-agenda-files,
- * as org-tags-view shows them, the most urgent first. With `todoOnly`, only
+ * as org-tags-view shows them, in the files' order. With `todoOnly`, only
  * those whose TODO state is not done.
  */
 function tagsView(todoOnly: boolean, match?: string): void {
@@ -617,11 +654,17 @@ function tagsView(todoOnly: boolean, match?: string): void {
         if (e8.variable("major-mode") !== "org-mode" && !e8.derivedModeP("org-mode")) throw new Error(`Agenda file ${e8.bufferFileName()} is not in Org mode`);
         const all = headings();
         const cats = categories(all);
+        const skipped = skippedHeadings(all);
+        const indented = e8.variable("org-tags-match-list-sublevels") === "indented";
         scanTags(
           (h) => {
-            const cat = cats[headingIndex(all, h.line)!];
+            const i = headingIndex(all, h.line)!;
+            if (skipped[i]) return;
+            const cat = cats[i];
+            const prefix = indented ? ".".repeat(h.level - 1) : "";
             const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
-            items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: priorityValue(h) });
+            // No urgency, as org-scan-tags gives its lines none: they keep the files' order.
+            items.push({ ...item, text: agendaLine(h, cat, "", false, undefined, prefix), urgency: 0 });
           },
           matcher,
           matcher.todoOnly,
@@ -633,7 +676,7 @@ function tagsView(todoOnly: boolean, match?: string): void {
     { text: `Headlines with TAGS match: ${matcher.match}` },
     { text: "Press \u2018C-u r\u2019 to search again" },
   ];
-  for (const item of byUrgency(items)) lines.push({ text: item.text, item });
+  for (const item of items) lines.push({ text: item.text, item });
   agendaView = { kind: "tags", todoOnly: matcher.todoOnly, match: matcher.match };
   showAgenda(lines, 0);
 }
@@ -675,7 +718,8 @@ e8.defineCommand({
     const key = agendaDispatch();
     if (key === "a") weekAgenda(weekStart(dayNumber(today_())));
     else if (key === "t") todoList();
-    else if (key === "m") e8.callInteractively(tagsViewCommand);
+    // With the prefix argument org-agenda had, as call-interactively hands on current-prefix-arg.
+    else if (key === "m") e8.callWithPrefix(e8.prefixArg(), tagsViewCommand);
     else if (key === "M") e8.callWithPrefix(e8.prefixArg() ?? [4], tagsViewCommand);
     else e8.userError(`E8 does not have that agenda view yet: ${key}`);
   },
@@ -730,6 +774,7 @@ function redrawEntry(item: AgendaItem): void {
       if (!other || other.buffer !== item.buffer || headingOf(other) !== heading) continue;
       const text = e8.withCurrentBuffer(item.buffer, () => widened(() => {
         const h = headings().find((x) => x.start === heading);
+        // Without the tags view's dots, as org-agenda-change-all-lines writes the line from the heading alone.
         return h ? agendaLine(h, other.cat, other.leader, other.removeTimestamp, other.time) : other.text;
       }));
       other.text = text;

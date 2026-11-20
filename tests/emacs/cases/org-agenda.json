@@ -562,5 +562,129 @@
       "m",
       "home"
     ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-keeps-file-order",
+    "text": "* TODO Low thing :t:\n* TODO [#A] High thing :t:\n* [#C] Lowest :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-skips-comment-and-archived-trees",
+    "text": "* COMMENT Hidden :t:\n** Under comment :t:\n* Old :t:ARCHIVE:\n** Under archive :t:\n* Shown :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-includes-them-when-asked",
+    "text": "* COMMENT Hidden :t:\n** Under comment :t:\n* Old :t:ARCHIVE:\n** Under archive :t:\n* Shown :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ],
+    "vars": {
+      "org-agenda-skip-archived-trees": false,
+      "org-agenda-skip-comment-trees": false
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-archived-file",
+    "text": "#+FILETAGS: :ARCHIVE:\n* A :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-indented",
+    "text": "* TODO Low thing :t:\n** Child :x:\n*** Grand :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ],
+    "vars": {
+      "org-tags-match-list-sublevels": "'indented"
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "n n n t",
+    "call": [
+      "org-agenda"
+    ],
+    "name": "tags-view-indented-done-from-the-view",
+    "text": "* TODO Low thing :t:\n** Child :x:\n*** Grand :t:\n",
+    "answers": [
+      "m",
+      "t"
+    ],
+    "vars": {
+      "org-tags-match-list-sublevels": "'indented"
+    }
   }
 ]
