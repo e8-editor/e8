@@ -7212,8 +7212,10 @@ const ctrlCCtrlC = e8.defineCommand({
   run: () => {
     // As Org, the hook first: ob-core's function on it runs a source block point is in.
     // In *Org Note* and the like, finish it, as org-finish-function says, before anything else.
-    // A sparse tree's highlights go first, as Org takes away its temporary overlays.
-    if (occurHighlights().length > 0) {
+    // A sparse tree's highlights and org-clock-display's times go first, as Org takes away its temporary overlays.
+    const clockShown = Array.isArray(e8.variable("org-clock-overlays")) && (e8.variable("org-clock-overlays") as e8.Value[]).length > 0;
+    if (occurHighlights().length > 0 || clockShown) {
+      if (clockShown) e8.call("org-clock-remove-overlays" as e8.CommandName);
       removeOccurHighlights(false);
       e8.message("Temporary highlights/overlays removed from current buffer");
       return;
@@ -7945,6 +7947,8 @@ for (const [name, doc, value] of [
 ] as const) {
   e8.defineVariable({ name, doc, value: value as e8.Value });
 }
+// Kept when the major mode is set again, so the highlights can still be taken away, as Org's are.
+e8.put("org-occur-highlights", "permanent-local", true);
 e8.defineHook("org-occur-hook", "Run after org-occur has made a sparse tree; by default it goes to the first heading, at the window's top.");
 
 /** Goes to the first heading and shows it at the top of the buffer's window, as org-first-headline-recenter. */
@@ -8192,10 +8196,23 @@ function specialProperty(ctx: MatchContext, name: string): string | undefined {
       }
       return undefined;
     }
+    case "CLOCKSUM":
+    case "CLOCKSUM_T": {
+      // As a clock sum left them on the heading: all its time, or today's.
+      const minutes = e8.getTextProperty(h.start, name === "CLOCKSUM" ? ":org-clock-minutes" : ":org-clock-minutes-today");
+      return typeof minutes === "number" ? durationFromMinutes(minutes) : undefined;
+    }
     default:
-      // CLOCKSUM and CLOCKSUM_T, which only a clock display sets.
       return undefined;
   }
+}
+
+/** Minutes as Org writes a duration, as org-duration-from-minutes: 0:05, or 1d 2:03 past a day. */
+export function durationFromMinutes(minutes: number): string {
+  const days = Math.floor(minutes / 1440);
+  const rest = minutes - days * 1440;
+  const hm = `${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}`;
+  return days > 0 ? `${days}d ${hm}` : hm;
 }
 
 /** A property's value for a match, as org-entry-get with inheritance `selective` reads it. */

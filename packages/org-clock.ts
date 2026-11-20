@@ -12,12 +12,13 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { addLogNote, type DateTime, formatTimestamp, type Heading, headingIndex, headings, isDone, logDrawer, today } from "org";
+import { addLogNote, type DateTime, durationFromMinutes, formatTimestamp, type Heading, headingIndex, headings, isDone, logDrawer, parseDate, today } from "org";
+import { elementAt } from "org-element";
 import { toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
 import { setRunningClock } from "org-refile";
-import { truthy } from "subr";
+import { charCount, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("org-clock-into-drawer", true, "Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.");
@@ -55,13 +56,6 @@ function millis(t: DateTime): number {
   return e8.encodeTime([0, t.minute ?? 0, t.hour ?? 0, t.day, t.month, t.year, null, -1, null]) * 1000;
 }
 
-/** Minutes as Org writes a duration: 0:05, or 1d 2:03 past a day, as org-duration-from-minutes. */
-export function durationFromMinutes(minutes: number): string {
-  const days = Math.floor(minutes / 1440);
-  const rest = minutes - days * 1440;
-  const hm = `${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}`;
-  return days > 0 ? `${days}d ${hm}` : hm;
-}
 
 /**
  * The drawer CLOCK: lines go in, as org-clock-drawer-name: nil for none;
@@ -158,6 +152,11 @@ export function runningEntry(): { buffer: string; start: number } | undefined {
   return buffer === undefined || start === undefined ? undefined : { buffer, start };
 }
 
+/** A heading's text with each link as its description, or its target if it has none, as the links show. */
+function linkDescriptions(text: string): string {
+  return text.replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_, l: string, d?: string) => d ?? l);
+}
+
 /** Starts a clock on the entry at point, stopping one running elsewhere, as org-clock-in. */
 export function clockIn(): void {
   const [all, i] = headingHere();
@@ -170,7 +169,7 @@ export function clockIn(): void {
     }
     clockOut();
   }
-  const title = h.title.replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_, l: string, d?: string) => d ?? l);
+  const title = linkDescriptions(h.title);
   const before = clockedBefore(all, i);
   const start = now();
   const stamp = `[${formatTimestamp(start, true)}]`;
@@ -353,12 +352,271 @@ e8.addHook("kill-emacs-query-functions", () => {
   return true;
 });
 
+// Summing clocked time and showing it on the headings, as org-clock-sum and org-clock-display do.
+
+defvar(
+  "org-clock-display-default-range",
+  "thisyear",
+  'The time org-clock-display sums with no prefix argument: "today", "yesterday", "thisweek", "lastweek", "thismonth", "lastmonth", "thisyear", "lastyear" or "untilnow".',
+);
+defvar("org-extend-today-until", 0, "The hour before which a time counts as the day before, for clock ranges.");
+defvar("org-clock-report-include-clocking-task", false, "Whether the running clock's time counts in a clock sum over a range.");
+defvar("org-clock-file-total-minutes", null, "The minutes the last clock sum in this buffer found in the whole file.");
+defvar("org-clock-overlays", null, "The overlays org-clock-display shows the headings' times with, in this buffer.");
+// Kept when the major mode is set again, so the times can still be taken away, as Org's are.
+e8.put("org-clock-overlays", "permanent-local", true);
+e8.defineFace({
+  name: "org-clock-overlay",
+  doc: "The times org-clock-display shows after the headings.",
+  attributes: { inherit: "secondary-selection" },
+});
+
+/**
+ * The start and end, in seconds, of a range a key names, and how it is
+ * written, as org-clock-special-range: today, yesterday, thisweek,
+ * lastweek, thismonth, lastmonth, thisyear, lastyear, untilnow or
+ * interactive, a key with a shift as today-2 or thisweek-1, or a year,
+ * 2026, a month, 2026-11, an ISO week, 2026-W47, or a day, 2026-11-20.
+ */
+export function clockSpecialRange(key: string, time = millis(now()) / 1000): [number | undefined, number, string] {
+  const tm = e8.decodeTime(time) as number[];
+  let [m, h, d, month, y, dow] = [tm[1], tm[2], tm[3], tm[4], tm[5], tm[6]];
+  let shift = 0;
+  let k = key;
+  let match: RegExpExecArray | null;
+  if (/^[0-9]+$/.test(k)) [y, month, d, k] = [Number(k), 1, 1, "year"];
+  else if ((match = /^([0-9]+)-([0-9]{1,2})$/.exec(k))) [y, month, d, k] = [Number(match[1]), Number(match[2]), 1, "month"];
+  else if ((match = /^([0-9]+)-[wW]([0-9]{1,2})$/.exec(k))) {
+    // The Monday of ISO week W: the week holding 4 January, moved on.
+    const jan4 = new Date(Date.UTC(Number(match[1]), 0, 4));
+    const monday = new Date(jan4.getTime() - ((jan4.getUTCDay() + 6) % 7) * 86400000 + (Number(match[2]) - 1) * 7 * 86400000);
+    [d, month, y, dow, k] = [monday.getUTCDate(), monday.getUTCMonth() + 1, monday.getUTCFullYear(), 1, "week"];
+  } else if ((match = /^([0-9]+)-([0-9]{1,2})-([0-9]{1,2})$/.exec(k))) [y, month, d, k] = [Number(match[1]), Number(match[2]), Number(match[3]), "day"];
+  else if ((match = /([-+][0-9]+)$/.exec(k))) {
+    shift = Number(match[1]);
+    k = k.slice(0, match.index);
+  }
+  if (shift === 0) {
+    const last: Record<string, string> = { yesterday: "today", lastweek: "week", lastmonth: "month", lastyear: "year" };
+    if (k in last) [k, shift] = [last[k], -1];
+  }
+  const extend = Number(e8.variable("org-extend-today-until") ?? 0);
+  let [h1, d1, month1, y1]: (number | undefined)[] = [];
+  if (k === "day" || k === "today") [m, h, h1, d] = [0, extend, 24 + extend, d + shift];
+  else if (k === "week" || k === "thisweek") {
+    const diff = -7 * shift + ((dow + 7 - 1) % 7);
+    [m, h, d] = [0, extend, d - diff];
+    d1 = d + 7;
+  } else if (k === "month" || k === "thismonth") {
+    [h, m, d, month] = [extend, 0, 1, month + shift];
+    month1 = month + 1;
+  } else if (k === "year" || k === "thisyear") {
+    [m, h, d, month, y] = [0, extend, 1, 1, y + shift];
+    y1 = y + 1;
+  } else if (k !== "interactive" && k !== "untilnow") e8.userError(`No such time block ${k}`);
+  const encode = (min: number, hour: number, day: number, mon: number, year: number) => e8.encodeTime([0, min, hour, day, mon, year, null, -1, null]);
+  const readDate = (prompt: string) => {
+    const t = parseDate(e8.readString(`${prompt} `), true);
+    return encode(t.minute ?? 0, t.hour ?? 0, t.day, t.month, t.year);
+  };
+  const start = k === "interactive" ? readDate("Range start?") : k === "untilnow" ? undefined : encode(m, h, d, month, y);
+  const end = k === "interactive" ? readDate("Range end?") : k === "untilnow" ? time : encode(m, h1 ?? h, d1 ?? d, month1 ?? month, y1 ?? y);
+  const text =
+    k === "day" || k === "today"
+      ? e8.formatTimeString("%A, %B %d, %Y", start)
+      : k === "week" || k === "thisweek"
+        ? e8.formatTimeString("week %G-W%V", start)
+        : k === "month" || k === "thismonth"
+          ? e8.formatTimeString("%B %Y", start)
+          : k === "year" || k === "thisyear"
+            ? e8.formatTimeString("the year %Y", start)
+            : k === "untilnow"
+              ? "now"
+              : `${e8.formatTimeString("%Y-%m-%d", start)}--${e8.formatTimeString("%Y-%m-%d", end)}`;
+  return [start, end, text];
+}
+
+/** A CLOCK: line's start and end in seconds, or undefined if they are not times. */
+function clockTimes(text: string): [number, number] | undefined {
+  // Two dashes only, as the clock element reads a range; Org counts nothing for others.
+  const ts = /\[(\d{4})-(\d{2})-(\d{2})[^\]]*?(\d{1,2}):(\d{2})[^\]]*\]--\[(\d{4})-(\d{2})-(\d{2})[^\]]*?(\d{1,2}):(\d{2})[^\]]*\]/.exec(text);
+  if (!ts) return undefined;
+  const n = ts.slice(1).map(Number);
+  return [e8.encodeTime([0, n[4], n[3], n[2], n[1], n[0], null, -1, null]), e8.encodeTime([0, n[9], n[8], n[7], n[6], n[5], null, -1, null])];
+}
+
+/**
+ * Sums each subtree's clocked time, as org-clock-sum does, putting the
+ * minutes on its heading line as the `prop` text property: the CLOCK:
+ * lines' time within `tstart` and `tend` (seconds), or all of it, and the
+ * lines giving only => H:MM. `filter`, called at a heading, leaves out
+ * those for which it is false. Returns the file's total.
+ */
+export function clockSum(tstart?: number, tend?: number, filter?: () => boolean, prop = ":org-clock-minutes"): number {
+  let total = 0;
+  e8.withSilentModifications(() => {
+    const [min, max] = [e8.pointMin(), e8.pointMax()];
+    for (const name of [prop, ":org-clock-force-headline-inclusion"]) e8.removeTextProperty(min, max, name);
+    const all = headings();
+    const lines = e8.matchingLines("^\\*+[ \t]\\|^[ \t]*CLOCK:[ \t]*\\(?:\\[.*?\\]-+\\[.*?\\]\\|=>[ \t]+[0-9]+:[0-9]+\\)", { caseFold: false, start: min, end: max });
+    let ltimes: number[] = new Array(30).fill(0);
+    let t1 = 0;
+    const running = runningEntry();
+    for (let k = lines.length - 1; k >= 0; k--) {
+      const [line, start, text] = lines[k];
+      const hi = headingIndex(all, line);
+      const isHeading = hi !== undefined && all[hi].line === line;
+      const naked = /^[ \t]*CLOCK:[ \t]*=>[ \t]+([0-9]+):([0-9]+)/.exec(text);
+      if (!isHeading && !naked && elementAt(start)?.type === "clock") {
+        const times = clockTimes(text);
+        if (times !== undefined) {
+          const dt = (tend !== undefined ? Math.min(times[1], tend) : times[1]) - (tstart !== undefined ? Math.max(times[0], tstart) : times[0]);
+          if (dt > 0) t1 += Math.floor(dt / 60);
+        }
+      } else if (naked && !isHeading) t1 += Number(naked[2]) + 60 * Number(naked[1]);
+      else if (isHeading) {
+        const h = all[hi];
+        if (
+          truthy(e8.variable("org-clock-report-include-clocking-task")) &&
+          running !== undefined &&
+          running.buffer === e8.bufferName() &&
+          running.start === h.start &&
+          tstart !== undefined &&
+          tend !== undefined &&
+          clock !== undefined &&
+          clock.start / 1000 >= tstart &&
+          clock.start / 1000 <= tend
+        ) {
+          t1 += Math.floor((millis(now()) - clock.start) / 60000);
+        }
+        const forced = truthy(e8.getTextProperty(h.start, ":org-clock-force-headline-inclusion"));
+        const included = filter === undefined || e8.saveExcursion(() => (e8.gotoChar(h.start), filter()));
+        const level = h.level;
+        while (level >= ltimes.length) ltimes = [...ltimes, ...new Array(ltimes.length).fill(0)];
+        if (t1 > 0 || ltimes[level] > 0) {
+          if (included || forced) {
+            if (included) for (let l = 0; l <= level; l++) ltimes[l] += t1;
+            e8.putTextProperty(h.start, h.end, prop, ltimes[level]);
+            if (filter !== undefined) for (const a of ancestorsOf(all, hi)) e8.putTextProperty(all[a].start, all[a].end, ":org-clock-force-headline-inclusion", true);
+          }
+          t1 = 0;
+          for (let l = level; l < ltimes.length; l++) ltimes[l] = 0;
+        }
+      }
+    }
+    total = ltimes[0];
+  });
+  e8.makeLocalVariable("org-clock-file-total-minutes");
+  e8.setVariable("org-clock-file-total-minutes", total);
+  return total;
+}
+
+/** The headings above heading i, nearest first. */
+function ancestorsOf(all: Heading[], i: number): number[] {
+  const found: number[] = [];
+  let level = all[i].level;
+  for (let j = i - 1; j >= 0 && level > 1; j--) {
+    if (all[j].level < level) {
+      found.push(j);
+      level = all[j].level;
+    }
+  }
+  return found;
+}
+
+/** The clock overlays in this buffer. */
+function clockOverlays(): number[] {
+  const value = e8.variable("org-clock-overlays");
+  return Array.isArray(value) ? (value as number[]) : [];
+}
+
+/** Whether org-clock-display's times show in this buffer. */
+export const clockOverlaysShown = (): boolean => clockOverlays().length > 0;
+
+/**
+ * Shows a heading's time after its title, as org-clock-put-overlay does:
+ * the title, dots in the shadow face up to column 60, and the time.
+ */
+function putClockOverlay(h: Heading, minutes: number): void {
+  const col = e8.bufferSubstringNoProperties(h.start, h.titleAt).length;
+  // org-indent-mode's prefix, a propertized string.
+  const prefix = e8.getTextProperty(h.start, "line-prefix");
+  const prefixLength = prefix === undefined || prefix === null ? 0 : charCount(String(prefix));
+  // The title as it shows, its links as their descriptions, measured as org-string-width measures what is visible.
+  const title = truthy(e8.variable("org-link-descriptive") ?? true) ? linkDescriptions(h.title) : h.title;
+  const dots = Math.max(60 - col - e8.stringWidth(title) - prefixLength, 0);
+  const text = e8.concat(title, e8.propertize("\u00b7".repeat(dots), { face: "shadow" }), e8.propertize(` ${durationFromMinutes(minutes).padStart(9)} `, { face: "org-clock-overlay" }));
+  const id = e8.makeOverlay(h.titleAt, h.end, { display: text });
+  e8.makeLocalVariable("org-clock-overlays");
+  e8.setVariable("org-clock-overlays", [id, ...clockOverlays()]);
+}
+
+/** As removeClockOverlays from before-change-functions, where it then takes itself off. */
+function removeClockOverlaysOnChange(): void {
+  removeClockOverlays(false);
+}
+
+/** Takes away org-clock-display's times, as org-clock-remove-overlays does. */
+export function removeClockOverlays(noremove: boolean): void {
+  if (truthy(e8.variable("org-inhibit-highlight-removal"))) return;
+  for (const id of clockOverlays()) if (e8.overlayStart(id) !== undefined) e8.deleteOverlay(id);
+  if (e8.variable("org-clock-overlays") !== null) {
+    e8.makeLocalVariable("org-clock-overlays");
+    e8.setVariable("org-clock-overlays", null);
+  }
+  if (!noremove) e8.removeHook("before-change-functions", removeClockOverlaysOnChange, { local: true });
+}
+
+e8.defineCommand({
+  name: "org-clock-remove-overlays",
+  doc: "Take away the times org-clock-display shows after the headings.",
+  run: () => removeClockOverlays(false),
+});
+
+const RANGES = ["today", "yesterday", "thisweek", "lastweek", "thismonth", "lastmonth", "thisyear", "lastyear", "interactive"];
+
+e8.defineCommand({
+  name: "org-clock-display",
+  doc:
+    "Show each subtree's clocked time after its heading, over org-clock-display-default-range, and the file's in the echo area. " +
+    "With C-u, today's time; with C-u C-u, a range read; with C-u C-u C-u, all the time, in the echo area only. A change, or C-c C-c, takes the times away.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    removeClockOverlays(false);
+    // Only C-u's forms, not the numbers typed: C-4 sums all the time, as Org compares with '(4).
+    const raw = Array.isArray(arg) ? arg[0] : undefined;
+    const todayp = raw === 4;
+    const customp = raw === 16;
+    const prop = arg === null || arg === undefined ? ":org-clock-minutes-default" : todayp ? ":org-clock-minutes-today" : customp ? ":org-clock-minutes-custom" : ":org-clock-minutes";
+    let range: [number | undefined, number, string];
+    if (arg === null || arg === undefined) range = clockSpecialRange(String(e8.variable("org-clock-display-default-range") ?? "thisyear"));
+    else if (todayp) range = clockSpecialRange("today");
+    else if (customp) {
+      const key = e8.completingRead("Range: ", RANGES, { requireMatch: true });
+      range = clockSpecialRange(key);
+    } else range = [undefined, Infinity, ""];
+    const total = arg === null || arg === undefined || todayp || customp ? clockSum(range[0], range[1], undefined, prop) : clockSum(undefined, undefined, undefined, prop);
+    if (raw !== 64) {
+      for (const h of headings()) {
+        const time = e8.getTextProperty(h.start, prop);
+        // Not on a heading with no title, where org-clock-put-overlay fails.
+        if (typeof time === "number" && h.title !== "") putClockOverlay(h, time);
+      }
+      if (truthy(e8.variable("org-remove-highlights-with-change"))) e8.addHook("before-change-functions", removeClockOverlaysOnChange, { local: true });
+    }
+    const [hh, mm] = [Math.floor(total / 60), total % 60];
+    const what = todayp ? "Total file time for today" : customp ? "Total file time (custom)" : "Total file time";
+    e8.message(`${what}: ${durationFromMinutes(total)} (${hh} hours and ${mm} minutes)`);
+  },
+});
+
 for (const [keys, command] of [
   ["C-c C-x C-i", "org-clock-in"],
   ["C-c C-x C-o", "org-clock-out"],
   ["C-c C-x C-q", "org-clock-cancel"],
   ["C-c C-x C-j", "org-clock-goto"],
   ["C-c C-x C-x", "org-clock-in-last"],
+  ["C-c C-x C-d", "org-clock-display"],
 ] as const) {
   e8.defineKey("org-mode-map", keys, command);
 }

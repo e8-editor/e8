@@ -1354,7 +1354,7 @@ fn clock_durations_are_written_as_org_writes_them() {
     let file = dir.path().join("durations.ts");
     std::fs::write(
         &file,
-        r#"import { durationFromMinutes } from "org-clock";
+        r#"import { durationFromMinutes } from "org";
            e8.setVariable("e8--durations", [59, 61, 600, 1440, 1500, 3000, 90061].map(durationFromMinutes).join(" "));"#,
     )
     .unwrap();

@@ -74,6 +74,7 @@ mod mouse;
 mod menus;
 mod mouse_positions;
 mod org;
+mod org_clock_display;
 mod org_id;
 mod org_select;
 mod org_sparse_tree;
