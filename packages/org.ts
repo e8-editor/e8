@@ -163,6 +163,11 @@ const variables: [string, string, e8.Value][] = [
     true,
   ],
   [
+    "org-log-states-order-reversed",
+    "Whether the newest state note goes first, right after the heading or at the top of its drawer; false keeps them in the order they were taken. #+STARTUP: logstatesreversed or nologstatesreversed says for a file.",
+    true,
+  ],
+  [
     "org-log-repeat",
     'What marking a repeating task done records: "time" for a LAST_REPEAT property and a note of the change, false for nothing.',
     "time",
@@ -339,6 +344,17 @@ interface TodoSet {
  * Reads a list of states such as TODO NEXT | DONE, as org-set-regexps-and-options
  * does: each may have a fast-access key and logging, as TODO(t!) or WAIT(w@/!).
  */
+/** A TODO keyword with its key and what to log, as WAIT(w@/!). */
+const KEYWORD_SPEC = /^(.*?)(?:\(([^!@/])?([!@])?(?:\/([!@]))?\))?$/;
+
+/** What a keyword such as WAIT(w@/!) logs entering and leaving it, as org-extract-log-state-settings reads it. */
+function logStateSettings(word: string): [string, string | undefined, string | undefined] | undefined {
+  const m = KEYWORD_SPEC.exec(word);
+  if (!m || (m[3] === undefined && m[4] === undefined)) return undefined;
+  const how = (x?: string) => (x === undefined ? undefined : x === "!" ? "time" : "note");
+  return [m[1], how(m[3]), how(m[4])];
+}
+
 function todoSetFrom(words: string[]): TodoSet | undefined {
   const keys: [string, string | undefined][] = [];
   const logs: [string, string | undefined, string | undefined][] = [];
@@ -349,13 +365,12 @@ function todoSetFrom(words: string[]): TodoSet | undefined {
       names.push(w);
       continue;
     }
-    // As org-extract-log-state-settings reads them.
-    const m = /^(.*?)(?:\(([^!@/])?([!@])?(?:\/([!@]))?\))?$/.exec(w)!;
+    const m = KEYWORD_SPEC.exec(w)!;
     const name = m[1].replace(/\(.*\)$/, "");
     names.push(name);
     keys.push([name, m[2]]);
-    const how = (x?: string) => (x === undefined ? undefined : x === "!" ? "time" : "note");
-    if (m[3] !== undefined || m[4] !== undefined) logs.push([name, how(m[3]), how(m[4])]);
+    const log = logStateSettings(w);
+    if (log !== undefined) logs.push([name, log[1], log[2]]);
   }
   if (names.filter((n) => n !== "|").length === 0) return undefined;
   const bar = names.indexOf("|");
@@ -406,9 +421,101 @@ function storeTodoSets(): void {
 }
 
 /** How a change from one state to another is logged, as org-todo works out dolog: "time", "note" or nothing. */
+/** The LOGGING property's states, while a state change it covers runs, as org-todo binds org-todo-log-states. */
+let localLogStates: [string, string | undefined, string | undefined][] | undefined;
+
+/** What each state logs, as org-todo-log-states: the LOGGING property's, or the keywords'. */
+function logStates(): [string, string | undefined, string | undefined][] {
+  return localLogStates ?? todoSets().flatMap((s) => s.logs);
+}
+
+/**
+ * Runs `f` with the logging a LOGGING property's words ask for, as
+ * org-todo binds org-log-done, org-log-repeat and org-todo-log-states
+ * and org-local-logging sets them: none but what the words name, as
+ * logdone, lognoterepeat or WAIT(@).
+ */
+function withLocalLogging<T>(value: string, f: () => T): T {
+  let logDone: e8.Value = false;
+  let logRepeat: e8.Value = false;
+  const states: [string, string | undefined, string | undefined][] = [];
+  const keywords = todoSets().flatMap((s) => [...s.todo, ...s.done]);
+  for (const w of value.split(/\s+/).filter((w) => w !== "")) {
+    const option = STARTUP_LOG_OPTIONS[w];
+    if (option !== undefined) {
+      if (option[0] === "org-log-done") logDone = option[1];
+      else if (option[0] === "org-log-repeat") logRepeat = option[1];
+      continue;
+    }
+    const log = logStateSettings(w);
+    if (log !== undefined && keywords.includes(log[0])) states.unshift(log);
+  }
+  const outer = localLogStates;
+  localLogStates = states;
+  try {
+    return e8.letBind({ "org-log-done": logDone, "org-log-repeat": logRepeat }, f);
+  } finally {
+    localLogStates = outer;
+  }
+}
+
+/** The #+STARTUP: words about logging and the variables they set, as org-startup-options has them. */
+const STARTUP_LOG_OPTIONS: Record<string, [string, e8.Value]> = {
+  logdone: ["org-log-done", "time"],
+  lognotedone: ["org-log-done", "note"],
+  nologdone: ["org-log-done", false],
+  "lognoteclock-out": ["org-log-note-clock-out", true],
+  "nolognoteclock-out": ["org-log-note-clock-out", false],
+  logrepeat: ["org-log-repeat", "state"],
+  lognoterepeat: ["org-log-repeat", "note"],
+  logdrawer: ["org-log-into-drawer", true],
+  nologdrawer: ["org-log-into-drawer", false],
+  logstatesreversed: ["org-log-states-order-reversed", true],
+  nologstatesreversed: ["org-log-states-order-reversed", false],
+  nologrepeat: ["org-log-repeat", false],
+  logreschedule: ["org-log-reschedule", "time"],
+  lognotereschedule: ["org-log-reschedule", "note"],
+  nologreschedule: ["org-log-reschedule", false],
+  logredeadline: ["org-log-redeadline", "time"],
+  lognoteredeadline: ["org-log-redeadline", "note"],
+  nologredeadline: ["org-log-redeadline", false],
+  logrefile: ["org-log-refile", "time"],
+  lognoterefile: ["org-log-refile", "note"],
+  nologrefile: ["org-log-refile", false],
+};
+
 function logHow(state: string | undefined, previous: string | undefined): string | undefined {
-  const logs = todoSets().flatMap((s) => s.logs);
+  const logs = logStates();
   return (state === undefined ? undefined : logs.find(([k]) => k === state)?.[1]) ?? (previous === undefined ? undefined : logs.find(([k]) => k === previous)?.[2]);
+}
+
+/**
+ * A property of the heading's entry or, failing that, of a heading above
+ * it, or else a #+PROPERTY: line's, as org-entry-get with inheritance and
+ * literal nil finds it: "nil" is given back as it is.
+ */
+export function entryGetInherited(h: Heading, property: string): string | undefined {
+  const all = headings();
+  let i = headingIndex(all, h.line);
+  let level = Infinity;
+  for (; i !== undefined && i >= 0; i--) {
+    if (all[i]!.level >= level) continue;
+    level = all[i]!.level;
+    const p = entryGet(all[i]!.line, property);
+    if (p !== undefined) return p;
+    if (level === 1) break;
+  }
+  return fileProperty(property);
+}
+
+/** A #+PROPERTY: line's value for `property`, the last line's if several, as org-file-properties keeps them. */
+function fileProperty(property: string): string | undefined {
+  let value: string | undefined;
+  for (const [, , text] of keywordLines()) {
+    const m = /^#\+PROPERTY:[ \t]+(\S+)(?:[ \t]+(.*?))?[ \t]*$/i.exec(text);
+    if (m && m[1].toLowerCase() === property.toLowerCase()) value = m[2] ?? "";
+  }
+  return value;
 }
 
 /**
@@ -417,18 +524,8 @@ function logHow(state: string | undefined, previous: string | undefined): string
  * LOGBOOK, "nil" for none, or the drawer's name), else the variable.
  */
 export function logDrawer(h?: Heading): string | undefined {
-  if (h !== undefined) {
-    const all = headings();
-    let i = headingIndex(all, h.line);
-    let level = Infinity;
-    for (; i !== undefined && i >= 0; i--) {
-      if (all[i]!.level >= level) continue;
-      level = all[i]!.level;
-      const p = entryGet(all[i]!.line, "LOG_INTO_DRAWER");
-      if (p !== undefined) return p === "nil" ? undefined : p === "t" ? "LOGBOOK" : p;
-      if (level === 1) break;
-    }
-  }
+  const p = h === undefined ? undefined : entryGetInherited(h, "LOG_INTO_DRAWER");
+  if (p !== undefined) return p === "nil" ? undefined : p === "t" ? "LOGBOOK" : p;
   const v = e8.variable("org-log-into-drawer");
   return v === true ? "LOGBOOK" : typeof v === "string" && v !== "" ? v : undefined;
 }
@@ -1195,7 +1292,13 @@ function logBeginning(h: Heading, create = false): number {
     const end = i === undefined ? e8.bufferSize() : (all[i + 1]?.start ?? e8.bufferSize());
     const opener = new RegExp(`^[ \t]*:${escapeRegExp(drawer)}:[ \t]*$`, "i");
     for (let l = lineAt(meta); l < e8.lineCount() && e8.lineStart(l) < end; l++) {
-      if (opener.test(e8.lineText(l))) return lineStartOrEnd(l + 1);
+      if (!opener.test(e8.lineText(l))) continue;
+      if (truthy(e8.variable("org-log-states-order-reversed"))) return lineStartOrEnd(l + 1);
+      // Oldest first, at the end of the drawer, as org-log-beginning goes to its contents' end.
+      for (let k = l + 1; k < e8.lineCount() && e8.lineStart(k) < end; k++) {
+        if (/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(k))) return e8.lineStart(k);
+      }
+      return lineStartOrEnd(l + 1);
     }
     if (!create) return meta;
     let at = meta;
@@ -1220,8 +1323,45 @@ function logBeginning(h: Heading, create = false): number {
   let p = endpos;
   while (p < e8.bufferSize() && /[ \t\n]/.test(e8.bufferText(p, p + 1))) p++;
   p = e8.lineStart(lineAt(p));
+  // Oldest first, after the state notes already there, as org-skip-over-state-notes.
+  if (!truthy(e8.variable("org-log-states-order-reversed"))) p = afterStateNotes(p);
   if (p < endpos) p = endpos;
   return p === e8.lineStart(lineAt(p)) ? p : lineStartOrEnd(lineAt(p) + 1);
+}
+
+/**
+ * Where the list of state notes starting at `p` ends: the start of the
+ * line after the last one's text, as org-skip-over-state-notes and the
+ * skip back over blank lines after it in org-log-beginning.
+ */
+function afterStateNotes(p: number): number {
+  const headings = (e8.variable("org-log-note-headings") ?? []) as e8.Value[];
+  const entry = headings.find((h) => Array.isArray(h) && h[0] === "state") as e8.Value[] | undefined;
+  const format = typeof entry?.[1] === "string" ? entry[1] : "";
+  const pattern = escapeRegExp(format)
+    .replace(/%-?\d*([tTdDsSuU])/g, (_m, c: string) => ({ t: "\\[[^\\]\n]+\\]", d: "\\[[^\\]\n]+\\]", T: "<[^>\n]+>", D: "<[^>\n]+>", s: '(?:"\\S+")?', S: '(?:"\\S+")?', u: ".*?", U: ".*?" })[c]!)
+    .replace(/ +/g, " +");
+  const note = new RegExp(`^([ \\t]*)- +${pattern}`);
+  let line = lineAt(p);
+  let last = -1;
+  while (line < e8.lineCount()) {
+    const m = note.exec(e8.lineText(line));
+    if (!m) break;
+    // The item's own lines, indented under its bullet, and blank lines inside it.
+    let next = line + 1;
+    last = line;
+    while (next < e8.lineCount()) {
+      const text = e8.lineText(next);
+      if (/^[ \t]*$/.test(text)) {
+        next++;
+        continue;
+      }
+      if (/^[ \t]*/.exec(text)![0].length <= m[1].length) break;
+      last = next++;
+    }
+    line = next;
+  }
+  return last < 0 ? p : lineStartOrEnd(last + 1);
 }
 
 /** Adds a note about a state change to a heading's entry, as org-store-log-note does for a repeating task. */
@@ -1274,7 +1414,10 @@ function storeLogNote(headingLine: number, purpose: string, state: string | unde
       edInsert(at, "\n");
     }
     e8.gotoChar(at);
-    indentLine(lineAt(at));
+    // In a list, as the notes before it, at its top level; else as any line, as org-store-log-note indents.
+    const item = inItem(lineAt(at));
+    if (item !== undefined) e8.indentLineTo(listStruct(lineAt(item))[0]!.ind);
+    else indentLine(lineAt(at));
     edInsert(e8.point(), `- ${items[0]}`);
     // Each further line under the item's text, as org-list-item-body-column puts it.
     const body = listBodyColumn(e8.lineStart(lineAt()));
@@ -1296,10 +1439,6 @@ let pendingNote:
   | { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; returnTo: e8.Marker; windows: e8.WindowConfiguration }
   | undefined;
 
-/**
- * Opens *Org Note* to take a note about the entry at `headingLine`, as
- * org-add-log-note: C-c C-c stores it in the entry's log, C-c C-k cancels it.
- */
 /** The note set up by the command running, opened once it ends, as org-add-log-setup leaves it for post-command-hook. */
 let noteSetup: { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; command?: string; depth: number } | undefined;
 
@@ -3911,6 +4050,13 @@ function nextState(current: string | undefined, direction: number, across = fals
  * repeat, then point just after the keyword if it was near it.
  */
 function todo(direction: number, state?: string, across = false): void {
+  const [all0, i0] = backToHeading();
+  const logging = entryGetInherited(all0[i0], "LOGGING");
+  if (logging !== undefined) withLocalLogging(logging, () => todoLogged(direction, state, across));
+  else todoLogged(direction, state, across);
+}
+
+function todoLogged(direction: number, state?: string, across = false): void {
   const [all, i] = backToHeading();
   const h = all[i];
   const before = h.todo;
@@ -3920,7 +4066,7 @@ function todo(direction: number, state?: string, across = false): void {
   const logDone = e8.variable("org-log-done");
   const dolog = logHow(next, before);
   // As org-todo: CLOSED goes when the state does, or goes back to not done; it comes when done.
-  if (todoSets().some((s) => s.logs.length > 0) || (logDone !== null && logDone !== false)) {
+  if (logStates().length > 0 || (logDone !== null && logDone !== false && logDone !== undefined)) {
     const notDone = (k: string | undefined) => k !== undefined && !isDone(k);
     if (next === undefined || (notDone(next) && !notDone(before))) setPlanning(h.line, "CLOSED", undefined);
     if (isDone(next) && !isDone(before) && logDone !== null && logDone !== false) setPlanning(h.line, "CLOSED", `[${formatTimestamp(today(true), true)}]`);
@@ -6621,6 +6767,16 @@ e8.defineMajorMode({
       }
     }
     if (indented) e8.callWithPrefix(1, "org-indent-mode");
+    // The logging #+STARTUP: words set their variables for the buffer, as org-set-regexps-and-options does.
+    for (const [, , text] of keywordLines()) {
+      const m = /^#\+STARTUP:(.*)$/i.exec(text);
+      for (const word of m ? m[1].trim().split(/\s+/) : []) {
+        const option = STARTUP_LOG_OPTIONS[word];
+        if (option === undefined) continue;
+        e8.makeLocalVariable(option[0]);
+        e8.setVariable(option[0], option[1]);
+      }
+    }
     // C-M-\ indents the region as Org does, as org-mode sets it.
     e8.makeLocalVariable("indent-region-function");
     e8.setVariable("indent-region-function", "org-indent-region");
