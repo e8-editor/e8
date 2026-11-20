@@ -5346,15 +5346,23 @@ declare global {
       /**
        * Capture a note, asking for one of org-capture-templates by its key in *Org Select*: its entry goes into its target file, shown narrowed to it. C-c C-c files it and C-c C-k takes it away.
        *
+       * @param goto raw prefix argument
+       *
        * Defined in packages/org-capture.ts.
        */
-      "org-capture": [];
+      "org-capture": [goto?: PrefixArg | boolean];
       /**
        * Finish the capture: the entry stays in its file, which is saved, and the windows go back to how they were.
        *
        * Defined in packages/org-capture.ts.
        */
       "org-capture-finalize": [];
+      /**
+       * Go to the location where the last capture note was stored.
+       *
+       * Defined in packages/org-capture.ts.
+       */
+      "org-capture-goto-last-stored": [];
       /**
        * Abort the capture: the entry goes again, and the windows go back to how they were.
        *
@@ -12865,7 +12873,7 @@ declare global {
        */
       "org-capture-mode-map": Value;
       /**
-       * The capture templates: lists of a key, a description, the type (entry), a target such as ["file", NAME], ["file+headline", NAME, HEADING], ["file+olp", NAME, HEADING, SUBHEADING...] or ["file+olp+datetree", NAME, HEADING...], the template text, and options such as ":tree-type", "week".
+       * The capture templates: lists of a key, a description, the type (entry or plain), a target such as ["file", NAME], ["file+headline", NAME, HEADING], ["file+olp", NAME, HEADING, SUBHEADING...] or ["file+olp+datetree", NAME, HEADING...], the template text, and options such as ":tree-type", "week".
        *
        * Defined in packages/org-capture.ts.
        */
@@ -17300,6 +17308,14 @@ declare global {
        */
       "org-babel-tangle-finished-hook": Value;
       /**
+       * Run after the capture is finished and the windows are back as they were.
+       */
+      "org-capture-after-finalize-hook": Value;
+      /**
+       * Run before the capture is finished, in the capture's buffer, widened to the entire buffer.
+       */
+      "org-capture-before-finalize-hook": Value;
+      /**
        * Run after Org-Capture mode is turned on or off.
        */
       "org-capture-mode-hook": Value;
@@ -17311,6 +17327,10 @@ declare global {
        * Run after Org-Capture mode is turned on.
        */
       "org-capture-mode-on-hook": Value;
+      /**
+       * Run before the capture is finished, as it begins to finish, in the capture's buffer.
+       */
+      "org-capture-prepare-finalize-hook": Value;
       /**
        * Functions called when a clock is cancelled.
        */

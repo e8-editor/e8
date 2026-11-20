@@ -504,8 +504,12 @@ pub fn run(case: &Case) -> State {
             fn convert(v: &serde_json::Value, file: &str) -> e8_core::Value {
                 match v {
                     serde_json::Value::String(s) if s == "FILE" => e8_core::Value::Str(file.to_string()),
-                    serde_json::Value::String(s) => e8_core::Value::Str(s.clone()),
+                    // A symbol as 'week in Emacs, a string in E8.
+                    serde_json::Value::String(s) => e8_core::Value::Str(s.strip_prefix('\'').unwrap_or(s).to_string()),
                     serde_json::Value::Array(items) => e8_core::Value::List(items.iter().map(|i| convert(i, file)).collect()),
+                    // Options' values, as ":prepend", true.
+                    serde_json::Value::Bool(b) => e8_core::Value::Bool(*b),
+                    serde_json::Value::Number(n) => e8_core::Value::Number(n.as_f64().expect("a number")),
                     _ => e8_core::Value::Null,
                 }
             }
