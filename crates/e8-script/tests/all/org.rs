@@ -1565,3 +1565,28 @@ fn property_separators_join_values_added_with_plus() {
         assert!(t.contains(&format!("{drawer}\n- State \"DONE\"")), "{t:?}");
     }
 }
+
+/// org-tag-persistent-alist's tags come first in every file's table, unless
+/// #+STARTUP: noptag; a group's tag ends " : " in the menu, as Emacs 30.2 drew it here.
+#[test]
+fn persistent_tags_come_first_and_noptag_leaves_them_out() {
+    let menu = |ed: &Editor| ed.buffers().iter().find(|b| b.name == " *Org tags*").map(|b| b.slice(0..b.len())).unwrap();
+    let (mut ed, s) = org("#+TAGS: [ GTD : Control ] home(h)\n* T\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-tag-persistent-alist", [["urgent", "u"]]), 1)"#).unwrap();
+    let at = find(&ed, "* T") + 2;
+    ed.window_buffer_mut().set_point(at);
+    ed.set_frame_size(80, 24);
+    ed.press("C-c C-q u h RET").unwrap();
+    assert!(text(&ed).ends_with(":urgent:home:\n"), "{:?}", text(&ed));
+    assert_eq!(
+        menu(&ed),
+        "Inherited:  \nCurrent:    urgent home\n\n  [u] urgent    \n[ [g] GTD     : [c] Control   ]\n  [h] home      \n"
+    );
+    let (mut ed, s) = org("#+STARTUP: noptag\n#+TAGS: home(h)\n* T\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-tag-persistent-alist", [["urgent", "u"]]), 1)"#).unwrap();
+    ed.call("org-mode", vec![]).unwrap();
+    let at = find(&ed, "* T") + 2;
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-c C-q u h RET").unwrap();
+    assert!(text(&ed).ends_with(":home:\n"), "{:?}", text(&ed));
+}

@@ -1,0 +1,580 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "tags-line-groups-keep-one",
+      "input": {
+        "text": "#+TAGS: { contracting(c) novels(n) private(p) } other(o) emacs(e)\n* Task :private:\n",
+        "point": 68,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n",
+          "e",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: { contracting(c) novels(n) private(p) } other(o) emacs(e)\n* Task                                                         :novels:emacs:\n",
+      "visible": "#+TAGS: { contracting(c) novels(n) private(p) } other(o) emacs(e)\n* Task                                                         :novels:emacs:\n",
+      "point": 68,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-line-without-keys-reads-them",
+      "input": {
+        "text": "#+TAGS: work home @phone\n* Task\n",
+        "point": 27,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "work:home"
+        ]
+      },
+      "text": "#+TAGS: work home @phone\n* Task                                                            :work:home:\n",
+      "visible": "#+TAGS: work home @phone\n* Task                                                            :work:home:\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "buffer-tags-without-a-table",
+      "input": {
+        "text": "* A :x:\n* B\n",
+        "point": 10,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "x:y"
+        ]
+      },
+      "text": "* A :x:\n* B                                                                     :x:y:\n",
+      "visible": "* A :x:\n* B                                                                     :x:y:\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "bang-turns-groups-off",
+      "input": {
+        "text": "#+TAGS: { a(a) b(b) }\n* T\n",
+        "point": 24,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "!",
+          "b",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: { a(a) b(b) }\n* T                                                                     :a:b:\n",
+      "visible": "#+TAGS: { a(a) b(b) }\n* T                                                                     :a:b:\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "groups-keep-one-without-bang",
+      "input": {
+        "text": "#+TAGS: { a(a) b(b) }\n* T\n",
+        "point": 24,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "b",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: { a(a) b(b) }\n* T                                                                       :b:\n",
+      "visible": "#+TAGS: { a(a) b(b) }\n* T                                                                       :b:\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "space-clears-the-tags",
+      "input": {
+        "text": "#+TAGS: a(a) b(b) c(c)\n* T :a:b:\n",
+        "point": 25,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " ",
+          "c",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: a(a) b(b) c(c)\n* T                                                                       :c:\n",
+      "visible": "#+TAGS: a(a) b(b) c(c)\n* T                                                                       :c:\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "single-key-exits-after-one",
+      "input": {
+        "text": "#+TAGS: a(a) b(b)\n* T\n",
+        "point": 20,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "vars": {
+          "org-fast-tag-selection-single-key": true
+        }
+      },
+      "text": "#+TAGS: a(a) b(b)\n* T                                                                       :a:\n",
+      "visible": "#+TAGS: a(a) b(b)\n* T                                                                       :a:\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-c-turns-single-key-off",
+      "input": {
+        "text": "#+TAGS: a(a) b(b)\n* T\n",
+        "point": 20,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "\u0003",
+          "a",
+          "b",
+          "\r"
+        ],
+        "vars": {
+          "org-fast-tag-selection-single-key": true
+        }
+      },
+      "text": "#+TAGS: a(a) b(b)\n* T                                                                     :a:b:\n",
+      "visible": "#+TAGS: a(a) b(b)\n* T                                                                     :a:b:\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "expert-exits-after-one",
+      "input": {
+        "text": "#+TAGS: a(a) b(b)\n* T\n",
+        "point": 20,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b"
+        ],
+        "vars": {
+          "org-fast-tag-selection-single-key": "'expert"
+        }
+      },
+      "text": "#+TAGS: a(a) b(b)\n* T                                                                       :b:\n",
+      "visible": "#+TAGS: a(a) b(b)\n* T                                                                       :b:\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "expert-c-c-shows-the-window",
+      "input": {
+        "text": "#+TAGS: a(a) b(b)\n* T\n",
+        "point": 20,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "\u0003",
+          "a",
+          "b",
+          "\r"
+        ],
+        "vars": {
+          "org-fast-tag-selection-single-key": "'expert"
+        }
+      },
+      "text": "#+TAGS: a(a) b(b)\n* T                                                                       :a:\n",
+      "visible": "#+TAGS: a(a) b(b)\n* T                                                                       :a:\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "keys-assigned-past-taken-ones",
+      "input": {
+        "text": "#+TAGS: apple(a) avocado banana\n* T\n",
+        "point": 34,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "c",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: apple(a) avocado banana\n* T                                                          :avocado:banana:\n",
+      "visible": "#+TAGS: apple(a) avocado banana\n* T                                                          :avocado:banana:\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "at-tags-get-their-second-letter",
+      "input": {
+        "text": "#+TAGS: @home @work\n* T\n",
+        "point": 22,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "h",
+          "w",
+          "\r"
+        ],
+        "vars": {
+          "org-use-fast-tag-selection": true
+        }
+      },
+      "text": "#+TAGS: @home @work\n* T                                                             :@home:@work:\n",
+      "visible": "#+TAGS: @home @work\n* T                                                             :@home:@work:\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "group-tags-name-their-group",
+      "input": {
+        "text": "#+TAGS: [ GTD : Control Persp ]\n* T\n",
+        "point": 34,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "g",
+          "c",
+          "\r"
+        ],
+        "vars": {
+          "org-use-fast-tag-selection": true
+        }
+      },
+      "text": "#+TAGS: [ GTD : Control Persp ]\n* T                                                             :GTD:Control:\n",
+      "visible": "#+TAGS: [ GTD : Control Persp ]\n* T                                                             :GTD:Control:\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "todo-keys-beside-the-tags",
+      "input": {
+        "text": "#+TODO: TODO(t) | DONE(d)\n#+TAGS: x(x)\n* TODO T\n",
+        "point": 41,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d",
+          "x",
+          "\r"
+        ],
+        "vars": {
+          "org-fast-tag-selection-include-todo": true
+        }
+      },
+      "text": "#+TODO: TODO(t) | DONE(d)\n#+TAGS: x(x)\n* DONE T                                                                  :x:\n",
+      "visible": "#+TODO: TODO(t) | DONE(d)\n#+TAGS: x(x)\n* DONE T                                                                  :x:\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "q-quits-when-no-tag-has-it",
+      "input": {
+        "text": "#+TAGS: a(a)\n* T :a:\n",
+        "point": 15,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "q"
+        ]
+      },
+      "text": "#+TAGS: a(a)\n* T :a:\n",
+      "visible": "#+TAGS: a(a)\n* T :a:\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Quit"
+    },
+    {
+      "name": "q-is-a-tag-when-one-has-it",
+      "input": {
+        "text": "#+TAGS: quiet(q)\n* T\n",
+        "point": 19,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: quiet(q)\n* T                                                                   :quiet:\n",
+      "visible": "#+TAGS: quiet(q)\n* T                                                                   :quiet:\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-u-aligns-every-headings-tags",
+      "input": {
+        "text": "* A :x:\n* B                 :y:\n",
+        "point": 2,
+        "keys": "C-u C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A                                                                       :x:\n* B                                                                       :y:\n",
+      "visible": "* A                                                                       :x:\n* B                                                                       :y:\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "before-the-first-heading",
+      "input": {
+        "text": "Intro\n* H\n",
+        "point": 0,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Intro\n* H\n",
+      "visible": "Intro\n* H\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Setting file tags is not supported yet"
+    },
+    {
+      "name": "tab-types-a-tag",
+      "input": {
+        "text": "#+TAGS: a(a)\n* T\n",
+        "point": 15,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "\t",
+          "zz",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: a(a)\n* T                                                                    :zz:a:\n",
+      "visible": "#+TAGS: a(a)\n* T                                                                    :zz:a:\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "several-tags-lines",
+      "input": {
+        "text": "#+TAGS: a(a)\n#+TAGS: b(b)\n* T\n",
+        "point": 28,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "b",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: a(a)\n#+TAGS: b(b)\n* T                                                                     :a:b:\n",
+      "visible": "#+TAGS: a(a)\n#+TAGS: b(b)\n* T                                                                     :a:b:\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "named-group",
+      "input": {
+        "text": "#+TAGS: { a(a) b(b) }\n* T :b:\n",
+        "point": 24,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: { a(a) b(b) }\n* T                                                                       :a:\n",
+      "visible": "#+TAGS: { a(a) b(b) }\n* T                                                                       :a:\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-in-a-block-are-no-table",
+      "input": {
+        "text": "#+begin_example\n#+TAGS: a(a)\n#+end_example\n* T :x:\n",
+        "point": 45,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "y"
+        ]
+      },
+      "text": "#+begin_example\n#+TAGS: a(a)\n#+end_example\n* T                                                                       :y:\n",
+      "visible": "#+begin_example\n#+TAGS: a(a)\n#+end_example\n* T                                                                       :y:\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

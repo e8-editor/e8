@@ -1061,6 +1061,7 @@ pub(crate) fn install(ed: &mut Editor) {
         ("link", "Links.", FaceAttrs { foreground: Some("accent-ink".into()), underline: on.clone(), ..Default::default() }),
         ("highlight", "Highlighting, such as of what the mouse is over.", FaceAttrs { background: Some("sunken".into()), ..Default::default() }),
         ("region", "The active region.", FaceAttrs { background: Some("selection".into()), ..Default::default() }),
+        ("secondary-selection", "The secondary selection, and text marked beside the region, as the tags Org's fast tag selection is choosing.", FaceAttrs { background: Some("sunken".into()), ..Default::default() }),
         ("error", "Errors.", bold("bad")),
         ("warning", "Warnings.", bold("warn")),
         ("success", "Success.", bold("good")),

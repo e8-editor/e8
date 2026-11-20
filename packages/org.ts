@@ -496,6 +496,7 @@ const STARTUP_LOG_OPTIONS: Record<string, [string, e8.Value]> = {
   lognoterepeat: ["org-log-repeat", "note"],
   logdrawer: ["org-log-into-drawer", true],
   nologdrawer: ["org-log-into-drawer", false],
+  noptag: ["org-tag-persistent-alist", null],
   logstatesreversed: ["org-log-states-order-reversed", true],
   nologstatesreversed: ["org-log-states-order-reversed", false],
   nologrepeat: ["org-log-repeat", false],
@@ -4739,9 +4740,26 @@ e8.defineVariable({
 });
 e8.defineVariable({
   name: "org-fast-tag-selection-single-key",
-  doc: "Whether picking a tag by its key in fast tag selection finishes at once.",
+  doc: "Whether picking a tag by its key in fast tag selection finishes at once; expert also leaves the tags unshown until C-c.",
   value: false,
 });
+e8.defineVariable({
+  name: "org-tag-persistent-alist",
+  doc: "Tags offered in every file, before org-tag-alist's or a file's TAGS lines', as [tag, key] lists; #+STARTUP: noptag leaves them out.",
+  value: [],
+});
+e8.defineVariable({
+  name: "org-fast-tag-selection-maximum-tags",
+  doc: "How many tags without keys of their own and outside groups fast tag selection shows, each given a key in turn.",
+  value: 56,
+});
+e8.defineVariable({
+  name: "org-fast-tag-selection-include-todo",
+  doc: "Whether fast tag selection offers the TODO states with their keys too, a key setting the heading's state.",
+  value: false,
+});
+e8.defineVariable({ name: "org-use-tag-inheritance", doc: "Whether headings inherit the tags of those above them and the file's.", value: true });
+e8.defineFace({ name: "org-tag-group", doc: "The tag that names a group of tags.", attributes: { inherit: "org-tag" } });
 
 /** The tags of the file and the headings above, as org-get-tags gives the inherited ones. */
 function inheritedTags(all: Heading[], i: number): string[] {
@@ -4754,150 +4772,449 @@ function inheritedTags(all: Heading[], i: number): string[] {
   return out;
 }
 
+// Tag tables, as org-tag-alist and the TAGS keyword give them.
+
+/** A tag table's entry: a tag and its key, or a keyword such as :startgroup with a group's name. */
+type TagEntry = [string, string | undefined];
+const TAG_KEYWORDS = new Set([":startgroup", ":endgroup", ":startgrouptag", ":endgrouptag", ":grouptags", ":newline"]);
+const isTagKeyword = (tag: string): boolean => TAG_KEYWORDS.has(tag);
+
+/** A tag table from a variable's value: [tag, key] lists, a key a character or its code. */
+function tagTable(value: e8.Value): TagEntry[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((e): TagEntry[] => {
+    if (typeof e === "string") return [[e, undefined]];
+    if (!Array.isArray(e) || typeof e[0] !== "string") return [];
+    const key = e[1];
+    return [[e[0], typeof key === "number" ? String.fromCodePoint(key) : typeof key === "string" && key !== "" ? key : undefined]];
+  });
+}
+
+/**
+ * The table a TAGS keyword's value, its lines joined, makes, as
+ * org-tag-string-to-alist: { } and [ ] around groups, : after a group's
+ * tag, (k) after a tag for its key, and a line's end a :newline.
+ */
+export function tagStringToAlist(s: string): TagEntry[] {
+  const out: TagEntry[] = [];
+  let groupFlag = false;
+  for (const line of s.split("\n").filter((l) => l !== "")) {
+    out.push([":newline", undefined]);
+    const tokens = line.split(/[ \t\n\r\f\v]+/).filter((t) => t !== "");
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      if (token === "{" || token === "[") {
+        out.push([token === "{" ? ":startgroup" : ":startgrouptag", undefined]);
+        if (tokens[i + 2] === ":") groupFlag = true;
+      } else if (token === "}" || token === "]") {
+        out.push([token === "}" ? ":endgroup" : ":endgrouptag", undefined]);
+        groupFlag = false;
+      } else if (token === ":") out.push([":grouptags", undefined]);
+      else {
+        const m = /^([\p{L}\p{N}_@#%]+|\{.+?\})(?:\((.)\))?$/u.exec(token);
+        // Tags in groups whether or not they came before, as one may be in several.
+        if (m && (groupFlag || !out.some(([t]) => t === m[1]))) out.push([m[1], m[2]]);
+      }
+    }
+  }
+  return out.slice(1);
+}
+
+/** ALIST1's tags before ALIST2's, its tags already in ALIST2 left out unless in a group, as org--tag-add-to-alist. */
+function tagAddToAlist(alist1: TagEntry[], alist2: TagEntry[]): TagEntry[] {
+  if (alist2.length === 0) return alist1;
+  if (alist1.length === 0) return alist2;
+  const add: TagEntry[] = [];
+  let groupFlag = false;
+  for (const e of alist1) {
+    if (e[0] === ":startgrouptag" || e[0] === ":startgroup") groupFlag = true;
+    else if (e[0] === ":endgrouptag" || e[0] === ":endgroup") groupFlag = false;
+    if (isTagKeyword(e[0]) || groupFlag || !alist2.some(([t]) => t === e[0])) add.push(e);
+  }
+  return [...add, ...alist2];
+}
+
+/**
+ * The buffer's tag table, as org-current-tag-alist: org-tag-persistent-alist's
+ * tags, then the TAGS lines' or else org-tag-alist's.
+ */
+export function currentTagAlist(): TagEntry[] {
+  const lines: string[] = [];
+  for (const [line, , text] of keywordLines()) {
+    const m = /^#\+TAGS:(.*)$/i.exec(text);
+    if (m && elementAt(e8.lineStart(line))?.type === "keyword") lines.push(m[1].trim());
+  }
+  const base = lines.length > 0 ? tagStringToAlist(lines.join("\n")) : tagTable(e8.variable("org-tag-alist") ?? null);
+  return tagAddToAlist(tagTable(e8.variable("org-tag-persistent-alist") ?? null), base);
+}
+
+/** The tags of the file and of every heading, for completion, as org-get-buffer-tags. */
+function bufferTags(): TagEntry[] {
+  const seen = new Set<string>();
+  for (const h of headings()) for (const t of h.tags) seen.add(t);
+  for (const t of fileTags()) seen.add(t);
+  return [...seen].map((t): TagEntry => [t, undefined]);
+}
+
+/** The tags FILETAGS lines give the whole file. */
+function fileTags(): string[] {
+  const out: string[] = [];
+  for (const [, , text] of keywordLines()) {
+    const m = /^#\+FILETAGS:(.*)$/i.exec(text);
+    if (m) for (const t of m[1].split(/[:\s]+/)) if (t !== "" && !out.includes(t)) out.push(t);
+  }
+  return out;
+}
+
+/** A TODO state's face, as org-get-todo-face: its own from org-todo-keyword-faces, else org-done or org-todo. */
+function todoFaceOf(kw: string): e8.Value {
+  return faceFromFaceOrColor("org-todo", alistGet("org-todo-keyword-faces", kw) ?? null) ?? (isDone(kw) ? "org-done" : "org-todo");
+}
+
+/**
+ * The states with their fast-access keys, in groups by sequence, as
+ * org-todo-key-alist: keys the states do not give are assigned as
+ * org-assign-fast-keys does, from their names, else from 0 on.
+ */
+function todoKeyAlist(): TagEntry[] {
+  const alist: TagEntry[] = [];
+  for (const set of todoSets()) alist.push([":startgroup", undefined], ...set.keys.map(([k, c]): TagEntry => [k, c]), [":endgroup", undefined]);
+  const out: TagEntry[] = [];
+  let alt = "0".codePointAt(0)!;
+  for (let i = 0; i < alist.length; i++) {
+    const e = alist[i];
+    if (isTagKeyword(e[0]) || e[1] !== undefined) {
+      out.push(e);
+      continue;
+    }
+    const used = [...out, ...alist.slice(i + 1)];
+    let chars = [...e[0].toLowerCase()];
+    if (chars[0] === "@") chars = chars.slice(1);
+    while (chars.length > 0 && used.some(([, k]) => k === chars[0])) chars.shift();
+    if (chars.length === 0) while (used.some(([, k]) => k === String.fromCodePoint(alt))) alt++;
+    out.push([e[0], chars[0] ?? String.fromCodePoint(alt)]);
+  }
+  return out;
+}
+
+/** The keys fast tag selection gives tags without their own, in turn, as org--fast-tag-selection-keys. */
+const FAST_TAG_KEYS = [..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~"];
+
+/** Tags as a heading writes them: :a:b:, or nothing for none, as org-make-tag-string. */
+const makeTagString = (tags: string[]): string => (tags.length === 0 ? "" : `:${tags.join(":")}:`);
+
 /**
  * Picks tags by single keys in " *Org tags*", as org-fast-tag-selection:
  * a key toggles its tag, keeping one tag of a group; SPC clears them, TAB
- * types one, RET accepts and C-g quits. Returns the tags, or undefined.
+ * types one, ! turns groups off, C-c makes the next change finish (or,
+ * with the expert interface, shows the tags), RET accepts and C-g or q
+ * quits. A TODO state's key, with TODO-TABLE, sets the heading's state.
+ * Returns the tags as a:b, or undefined.
  */
-function fastTagSelection(current: string[], inherited: string[], table: e8.Value[][]): string[] | undefined {
-  type Entry = { tag?: string; key?: string; special?: string };
-  const entries: Entry[] = table.map((e) => (typeof e[0] === "string" && e[0].startsWith(":") ? { special: e[0] } : { tag: String(e[0]), key: e[1] === undefined || e[1] === null ? undefined : String(e[1]) }));
-  const tags = entries.filter((e) => e.tag !== undefined);
-  const field = 3 + 1 + 3 + Math.max(0, ...tags.map((e) => e8.stringWidth(e.tag!)));
-  // Tags without keys get their first letters, or the next free key, as Org assigns them.
-  const pool = [..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*+-=<>,.?/;|"];
-  const used = new Set(tags.map((e) => e.key).filter((k): k is string => k !== undefined));
-  for (const e of tags) {
-    if (e.key !== undefined) continue;
-    const first = e.tag!.replace(/^@/, "")[0]?.toLowerCase();
-    e.key = first !== undefined && !used.has(first) ? first : pool.find((c) => !used.has(c)) ?? " ";
-    used.add(e.key);
-  }
-  const groups: string[][] = [];
-  let tagsNow = [...current];
-  let single = e8.variable("org-fast-tag-selection-single-key") === true;
+function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTableIn: TagEntry[], todoTable: TagEntry[]): string | undefined {
+  const tagAlist = [...tagTableIn, ...todoTable];
+  // Room for "[c]", a space, a group's " : " and the longest tag.
+  const fieldWidth = 3 + 1 + 3 + Math.max(0, ...tagAlist.map(([t]) => (isTagKeyword(t) ? 0 : e8.stringWidth(t))));
+  const origin = e8.currentBuffer();
+  let expert = e8.variable("org-fast-tag-selection-single-key") === "expert";
+  let tabTags: string[] | undefined;
+  const bindingChars = [...FAST_TAG_KEYS];
+  let charsLeft = Number(e8.variable("org-fast-tag-selection-maximum-tags") ?? FAST_TAG_KEYS.length);
+  let exitAfterNext: boolean | "now" = truthy(e8.variable("org-fast-tag-selection-single-key"));
+  let groups: string[][] | undefined = [];
+  const local: TagEntry[] = [];
   const name = " *Org tags*";
-  const draw = () => {
-    e8.letBind({ "inhibit-read-only": true }, () => {
-      eraseBuffer();
-      const put = (text: string, face?: string) => {
-        const at = e8.point();
-        e8.insert(text);
-        if (face) e8.putTextProperty(at, e8.point(), "face", face);
-      };
-      put(`${"Inherited:".padEnd(12)}`);
-      put(inherited.join(" "), "org-done");
-      put(`\n${"Current:".padEnd(12)}`);
-      put(tagsNow.join(" "), "org-todo");
-      put("\n");
-      // The third line says when the next key finishes, as org-fast-tag-show-exit.
-      if (single) put(`${" ".repeat(Math.max(0, (e8.windowSize()?.width ?? 80) - 19))} Next change exits`, "org-warning");
-      put("\n");
-      let n = 0;
-      let inGroup = false;
-      groups.length = 0;
-      const perRow = Math.max(1, Math.floor(((e8.windowSize()?.width ?? 80) - 4) / field));
-      for (const e of entries) {
-        if (e.special === ":startgroup") {
-          groups.push([]);
-          inGroup = true;
-          if (n !== 0) {
-            n = 0;
-            put("\n");
-          }
-          put("{ ");
-        } else if (e.special === ":endgroup") {
-          inGroup = false;
-          n = 0;
-          put("}\n");
-        } else if (e.special === ":newline") {
-          if (n !== 0) {
-            n = 0;
-            put("\n");
-          }
-        } else if (e.tag !== undefined) {
-          if (inGroup) groups[groups.length - 1].push(e.tag);
-          if (n === 0 && !inGroup) put("  ");
-          put(`[${e.key}] `);
-          put(e.tag, tagsNow.includes(e.tag) ? "org-todo" : inherited.includes(e.tag) ? "org-done" : undefined);
-          put(" ".repeat(Math.max(0, field - 4 - charCount(e.tag))));
-          if (++n === perRow) {
-            put("\n");
-            if (inGroup) put("  ");
-            n = 0;
-          }
-        }
+  // Tags with keys of their own and tags in groups always show; others while keys are left.
+  {
+    let ingroup = false;
+    for (const [t, k] of tagAlist) {
+      if (t === ":startgroup" || t === ":startgrouptag") ingroup = true;
+      else if (t === ":endgroup" || t === ":endgrouptag") ingroup = false;
+      else if (k !== undefined) charsLeft--;
+      else if (t === ":newline" || t === ":grouptags") continue;
+      else if (ingroup) charsLeft--;
+    }
+  }
+  // The tags being chosen show on the heading, as org-tags-overlay.
+  const line = lineAt();
+  const lineText = e8.lineText(line);
+  const tagged = /^\*+ (?:.*[ \t])?(:[\p{L}\p{N}_@#%:]+:)[ \t]*$/u.exec(lineText);
+  let ovStart: number, ovEnd: number, ovPrefix: string;
+  if (tagged) {
+    ovStart = e8.lineStart(line) + charCount(lineText.slice(0, lineText.lastIndexOf(tagged[1])));
+    ovEnd = ovStart + charCount(tagged[1]);
+    ovPrefix = "";
+  } else {
+    ovStart = e8.lineEnd(line) - 1;
+    ovEnd = ovStart + 1;
+    const column = e8.saveExcursion(() => (e8.gotoChar(e8.lineEnd(line)), e8.currentColumn()));
+    const tagsColumn = Number(e8.variable("org-tags-column") ?? -77);
+    ovPrefix = e8.bufferSubstringNoProperties(ovStart, ovEnd) + (column > tagsColumn ? " " : " ".repeat(tagsColumn - column));
+  }
+  const overlay = e8.makeOverlay(Math.max(e8.lineStart(line), ovStart), Math.min(e8.lineEnd(line), ovEnd));
+  const showOverlay = () => e8.overlayPut(overlay, "display", e8.concat(ovPrefix, e8.propertize(makeTagString(currentTags), { face: ["secondary-selection", "org-tag"] })));
+  showOverlay();
+  const width = () => e8.windowSize()?.width ?? 80;
+  const fastTagInsert = (kwd: string, tags: string[], face: string, end = "") => {
+    e8.insert(`${kwd}:`.padEnd(12));
+    e8.insert(e8.propertize(tags.join(" "), { face }));
+    e8.insert(end);
+  };
+  // Says on the third line whether the next change finishes, as org-fast-tag-show-exit.
+  const showExit = (flag: boolean | "now") => {
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.lineStart(2));
+      const text = e8.lineText(2);
+      const m = /[ \t]+Next change exits/.exec(text);
+      if (m) e8.deleteRegion(e8.lineStart(2) + charCount(text.slice(0, m.index)), e8.lineStart(2) + charCount(text.slice(0, m.index + m[0].length)));
+      if (flag) {
+        e8.gotoChar(e8.lineEnd(2));
+        // As org-move-to-column with FORCE: spaces up to the column.
+        const col = e8.currentColumn();
+        if (col < width() - 19) e8.insert(" ".repeat(width() - 19 - col));
+        e8.insert(e8.propertize(" Next change exits", { face: "org-warning" }));
       }
-      put("\n");
-      e8.gotoChar(0);
     });
   };
-  /** Adds a tag or takes it away; adding one takes away the others of its group, as org--add-or-remove-tag. */
-  const toggle = (tag: string) => {
-    if (tagsNow.includes(tag)) tagsNow = tagsNow.filter((t) => t !== tag);
-    else {
-      const group = groups.find((g) => g.includes(tag));
-      if (group) tagsNow = tagsNow.filter((t) => !group.includes(t));
-      tagsNow.push(tag);
-    }
-    // In the order of the table, as Org sorts them.
-    const order = tags.map((e) => e.tag!);
-    tagsNow.sort((a, b) => (order.indexOf(a) < 0 ? 1e6 : order.indexOf(a)) - (order.indexOf(b) < 0 ? 1e6 : order.indexOf(b)));
+  const showWindow = () => {
+    const below = e8.splitWindow(undefined, "below");
+    e8.selectWindow(below);
+    e8.call("switch-to-buffer", name);
+    e8.call("shrink-window-if-larger-than-buffer");
   };
-  return e8.saveWindowExcursion(() => {
-    e8.call("switch-to-buffer-other-window", name);
-    try {
-      for (;;) {
-        draw();
-        e8.call("shrink-window-if-larger-than-buffer");
-        const key = e8.readKey(`[a-z..]:toggle [SPC]:clear [RET]:accept [TAB]:edit [!] ${groups.length === 0 ? "no " : ""}groups [C-c]:${single ? "single" : "multi"}`);
-        let changed = false;
-        if (key === "RET") return tagsNow;
-        if (key === "C-g" || (key === "q" && !tags.some((e) => e.key === "q"))) e8.signal("quit", "Quit");
-        if (key === "C-c") single = !single;
-        else if (key === "SPC") {
-          tagsNow = [];
-          changed = true;
-        } else if (key === "TAB") {
-          const known = [...new Set([...tags.map((e) => e.tag!), ...headings().flatMap((h) => h.tags)])];
-          const typed = e8.completingRead("Tag: ", known).trim();
-          if (typed !== "") toggle(typed);
-          changed = true;
-        } else {
-          const entry = tags.find((e) => e.key === key);
-          if (entry) {
-            toggle(entry.tag!);
-            changed = true;
-          }
+  e8.getBufferCreate(name);
+  try {
+    return e8.saveWindowExcursion(() =>
+      e8.saveExcursion(() => {
+        if (expert) e8.setBuffer(name);
+        else {
+          const below = e8.splitWindow(undefined, "below");
+          e8.selectWindow(below);
+          e8.call("switch-to-buffer", name);
         }
-        if (changed && single) return tagsNow;
-      }
-    } finally {
-      // The window goes; the buffer stays, as Org leaves it.
-      for (const w of e8.windowList()) if (e8.windowBuffer(w) === name && e8.windowList().length > 1) e8.deleteWindow(w);
-    }
-  });
+        return e8.letBind({ "inhibit-read-only": true }, () => {
+          eraseBuffer();
+          fastTagInsert("Inherited", inheritedTags, "org-done", "\n");
+          fastTagInsert("Current", currentTags, "org-todo", "\n\n");
+          showExit(exitAfterNext);
+          let fieldNumber = 0;
+          let ingroup = false;
+          let intaggroup = false;
+          const perRow = Math.floor((width() - 4) / fieldWidth);
+          for (let i = 0; i < tagAlist.length; i++) {
+            const [tag, key] = tagAlist[i];
+            const next = tagAlist[i + 1]?.[0];
+            if (tag === ":startgroup") {
+              groups!.push([]);
+              ingroup = true;
+              if (fieldNumber !== 0) {
+                fieldNumber = 0;
+                e8.insert("\n");
+              }
+              e8.insert(`${key !== undefined ? `${key}: ` : ""}{ `);
+            } else if (tag === ":endgroup") {
+              ingroup = false;
+              fieldNumber = 0;
+              e8.insert(`}${key !== undefined ? ` (${key}) ` : ""}\n`);
+            } else if (tag === ":startgrouptag") {
+              intaggroup = true;
+              if (fieldNumber !== 0) {
+                fieldNumber = 0;
+                e8.insert("\n");
+              }
+              e8.insert("[ ");
+            } else if (tag === ":endgrouptag") {
+              intaggroup = false;
+              fieldNumber = 0;
+              e8.insert("]\n");
+            } else if (tag === ":newline") {
+              if (fieldNumber !== 0) {
+                fieldNumber = 0;
+                e8.insert("\n");
+                while (tagAlist[i + 1]?.[0] === ":newline") {
+                  e8.insert("\n");
+                  i++;
+                }
+              }
+            } else if (tag === ":grouptags") {
+              // The tag before names the group: its padding ends " : " instead.
+              e8.deleteRegion(e8.point() - 3, e8.point());
+              e8.insert(" : ");
+            } else {
+              let ch: string;
+              if (key !== undefined) ch = key;
+              else {
+                if (!ingroup && !intaggroup) charsLeft--;
+                // The tag's first letter, after an @, else the first key free.
+                const auto = [...(tag.startsWith("@") ? tag.slice(1) : tag).toLowerCase()][0] ?? "";
+                const taken = (c: string) => local.some(([, k]) => k === c) || tagTableIn.some(([, k]) => k === c);
+                if (taken(auto)) {
+                  while (bindingChars.length > 0 && taken(bindingChars[0])) bindingChars.shift();
+                  ch = bindingChars[0] ?? " ";
+                } else ch = auto;
+              }
+              if (ingroup) groups![groups!.length - 1].push(tag);
+              const face: e8.Value | undefined = next === ":grouptags"
+                ? "org-tag-group"
+                : !tagTableIn.some(([t]) => t === tag)
+                  ? todoFaceOf(tag)
+                  : currentTags.includes(tag)
+                    ? "org-todo"
+                    : inheritedTags.includes(tag)
+                      ? "org-done"
+                      : undefined;
+              if (ingroup || intaggroup || key !== undefined || charsLeft > 0) {
+                if (fieldNumber === 0 && !ingroup && !intaggroup) e8.insert("  ");
+                e8.insert(`[${ch}] `);
+                e8.insert(face === undefined ? tag : e8.propertize(tag, { face }));
+                e8.insert(" ".repeat(Math.max(0, fieldWidth - 4 - charCount(tag))));
+                local.push([tag, ch]);
+                if (++fieldNumber === perRow) {
+                  if (next !== ":endgroup" && next !== ":endgrouptag") {
+                    e8.insert("\n");
+                    if (ingroup || intaggroup) e8.insert("  ");
+                  }
+                  fieldNumber = 0;
+                }
+              }
+            }
+          }
+          e8.insert("\n");
+          e8.gotoChar(e8.pointMin());
+          if (!expert) e8.call("shrink-window-if-larger-than-buffer");
+          for (;;) {
+            const message =
+              `[a-z..]:toggle [SPC]:clear [RET]:accept [TAB]:edit [!] ${groups === undefined || groups.length === 0 ? "no " : ""}groups` +
+              (expert ? " [C-c]:window" : exitAfterNext ? " [C-c]:single" : " [C-c]:multi");
+            const input = e8.readKey(message);
+            if (input === "RET") return currentTags.join(":");
+            if (input === "!") {
+              // Groups off, and their braces gone, as org-fast-tag-selection's !.
+              groups = groups === undefined ? [] : undefined;
+              for (const [l, , text] of e8.matchingLines("[{}]")) {
+                const start = e8.lineStart(l);
+                [...text].forEach((c, j) => {
+                  if (c === "{" || c === "}") {
+                    e8.deleteRegion(start + j, start + j + 1);
+                    e8.gotoChar(start + j);
+                    e8.insert(" ");
+                  }
+                });
+              }
+            } else if (input === "C-c") {
+              if (!expert) {
+                exitAfterNext = !exitAfterNext;
+                showExit(exitAfterNext);
+              } else {
+                expert = false;
+                showWindow();
+              }
+            } else if (input === "C-g" || (input === "q" && !local.some(([, k]) => k === "q"))) {
+              e8.signal("quit", "Quit");
+            } else if (input === "SPC" || input === " ") {
+              currentTags = [];
+              if (exitAfterNext) exitAfterNext = "now";
+            } else if (input === "TAB") {
+              tabTags ??= tagAddToAlist(e8.withCurrentBuffer(origin, bufferTags), tagTableIn)
+                .map(([t]) => t)
+                .filter((t) => !isTagKeyword(t));
+              const typed = e8.completingRead("Tag: ", tabTags);
+              if (/\S/.test(typed)) {
+                if (!tabTags.includes(typed)) tabTags.unshift(typed);
+                currentTags = addOrRemoveTag(typed, currentTags, groups);
+              }
+              if (exitAfterNext) exitAfterNext = "now";
+            } else {
+              const kw = todoTable.find(([t, k]) => !isTagKeyword(t) && k === input)?.[0];
+              const tag = kw === undefined ? local.find(([, k]) => k === input)?.[0] : undefined;
+              if (kw !== undefined) {
+                e8.withCurrentBuffer(origin, () => e8.saveExcursion(() => todo(0, kw)));
+                if (exitAfterNext) exitAfterNext = "now";
+              } else if (tag !== undefined) {
+                currentTags = addOrRemoveTag(tag, currentTags, groups);
+                if (exitAfterNext) exitAfterNext = "now";
+              }
+            }
+            // In the order the tags show, as Org sorts them.
+            const order = local.map(([t]) => t);
+            currentTags = [...currentTags].sort((x, y) => {
+              const ix = order.indexOf(x);
+              const iy = order.indexOf(y);
+              return ix < 0 || iy < 0 ? 0 : ix - iy;
+            });
+            if (exitAfterNext === "now") return currentTags.join(":");
+            // The current tags again, on the second line, on the heading and in the grid.
+            e8.gotoChar(e8.lineStart(1));
+            e8.deleteRegion(e8.point(), e8.lineEnd(1));
+            fastTagInsert("Current", currentTags, "org-todo");
+            showOverlay();
+            const from = e8.point();
+            for (const [l, , text] of e8.matchingLines("\\[.\\] [[:alnum:]_@#%]+")) {
+              for (const m of allMatches(/\[.\] ([\p{L}\p{N}_@#%]+)/gu, text)) {
+                const start = e8.lineStart(l) + charCount(text.slice(0, (m.index ?? 0) + 4));
+                if (start < from) continue;
+                const t = m[1];
+                e8.putTextProperty(start, start + charCount(t), "face", currentTags.includes(t) ? "org-todo" : inheritedTags.includes(t) ? "org-done" : "default");
+              }
+            }
+            e8.gotoChar(e8.pointMin());
+          }
+        });
+      }),
+    );
+  } finally {
+    e8.deleteOverlay(overlay);
+  }
+}
+
+/** Adds TAG or takes it away; added, the others of its group go, as org--add-or-remove-tag. */
+function addOrRemoveTag(tag: string, current: string[], groups: string[][] | undefined): string[] {
+  if (current.includes(tag)) return current.filter((t) => t !== tag);
+  let out = current;
+  for (const g of groups ?? []) if (g.includes(tag)) out = out.filter((t) => !g.includes(t));
+  return [tag, ...out];
 }
 
 const setTagsCommand = e8.defineCommand({
   name: "org-set-tags-command",
   doc:
-    "Set the tags of the heading point is under. With keys in org-tag-alist, pick them by their keys in " +
-    "*Org tags*; else type them, as :work:home: or work home, empty for none. With C-u C-u, type them anyway.",
+    "Set the tags for the current visible entry. With C-u, realign all tags in the buffer. With C-u C-u, " +
+    "do not offer the fast tag selection interface. Tags are picked by their keys in *Org tags* when the table " +
+    "gives keys (org-use-fast-tag-selection), else typed with completion.",
   run: () => {
-    const [all, i] = backToHeading();
-    const table = e8.variable("org-tag-alist");
-    const fast = e8.variable("org-use-fast-tag-selection");
-    const keyed = Array.isArray(table) && table.some((e) => Array.isArray(e) && e[1] !== undefined && e[1] !== null && !String(e[0]).startsWith(":"));
     const arg = e8.prefixArg();
-    const typed = Array.isArray(arg) && arg[0] === 16;
-    if (!typed && Array.isArray(table) && table.length > 0 && (fast === true || (fast === "auto" && keyed))) {
-      const chosen = fastTagSelection(all[i].tags, inheritedTags(all, i), table as e8.Value[][]);
-      if (chosen !== undefined) setTags(chosen);
-      return;
+    if (Array.isArray(arg) && arg[0] === 4) return e8.callWithPrefix(arg, "org-align-tags");
+    const fast = Array.isArray(arg) && arg[0] === 16 ? null : e8.variable("org-use-fast-tag-selection");
+    const all = headings();
+    const i = headingIndex(all, lineAt());
+    if (i === undefined) e8.userError("Setting file tags is not supported yet");
+    const h = all[i!];
+    const localTable = currentTagAlist();
+    const table = localTable.length > 0 ? localTable : bufferTags();
+    const current = h.tags;
+    // Inherited ones, without the heading's own, as org-get-tags keeps the most local.
+    const inherited = truthy(e8.variable("org-use-tag-inheritance")) ? inheritedTags(all, i!).filter((t) => !current.includes(t)) : [];
+    let tags: string | undefined;
+    if (fast === true || (truthy(fast) && table.some(([, k]) => k !== undefined))) {
+      tags = e8.saveExcursion(() => {
+        e8.gotoChar(h.start);
+        const todo = truthy(e8.variable("org-fast-tag-selection-include-todo")) ? todoKeyAlist() : [];
+        return fastTagSelection(current, inherited, table, todo);
+      });
+    } else {
+      const answer = e8.completingRead(
+        "Tags: ",
+        table.map(([t]) => t).filter((t) => !isTagKeyword(t)),
+        { initial: makeTagString(current), history: "org-tags-history" },
+      );
+      tags = answer.split(/[ \t]*:[ \t]*/).filter((t) => t !== "").join(":");
     }
-    const answer = e8.readString("Tags: ", { history: "org-tags-history" });
-    setTags(answer.split(/[:\s,]+/).filter((t) => t !== ""));
+    // Characters a tag cannot have part tags, as org-set-tags-command's.
+    const cleaned = (tags ?? "").replace(/[^\p{L}\p{N}_@#%]+/gu, ":");
+    e8.saveExcursion(() => {
+      e8.gotoChar(h.start);
+      setTags(cleaned.split(":").filter((t) => t !== ""));
+    });
   },
 });
 

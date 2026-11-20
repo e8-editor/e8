@@ -294,6 +294,22 @@ struct Answering {
     quit_for_answers: bool,
 }
 
+/// Gives a key read the answer's first character, as record.el's read-char
+/// does: a control character, as "\r" or "\u0003", as its key, RET or C-c.
+fn answer_char(ed: &mut Editor, answer: &str) {
+    match answer.chars().next() {
+        Some('\r') => ed.handle_key(Key::parse("RET").expect("RET parses")),
+        Some('\t') => ed.handle_key(Key::parse("TAB").expect("TAB parses")),
+        Some('\u{1b}') => ed.handle_key(Key::parse("ESC").expect("ESC parses")),
+        Some(c) if (c as u32) < 32 => {
+            let letter = char::from_u32(c as u32 + 96).expect("a letter");
+            ed.handle_key(Key::parse(&format!("C-{letter}")).expect("a control key parses"));
+        }
+        Some(c) => ed.type_text(&c.to_string()),
+        None => {}
+    }
+}
+
 /// Answers the open prompt, or a key read partway through a command, with
 /// the case's next answer, as record.el does; with none left, reading the
 /// minibuffer is an error, as batch Emacs would read it from standard
@@ -322,7 +338,7 @@ fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answe
     };
     if ed.prompt().is_none() {
         let answer = answering.borrow_mut().answers.pop_front().expect("checked above");
-        ed.type_text(&answer.chars().take(1).collect::<String>());
+        answer_char(ed, &answer);
         note(ed);
         return true;
     }
@@ -340,7 +356,7 @@ fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answe
     // A question read by a key takes the answer's first character, as
     // record.el's read-char does; others take it typed and RET.
     if ed.prompt_reads_char() {
-        ed.type_text(&answer.chars().take(1).collect::<String>());
+        answer_char(ed, &answer);
     } else {
         // record.el's answers replace what a prompt starts with; a
         // relative file name stays in the directory it shows.
