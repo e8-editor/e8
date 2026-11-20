@@ -177,3 +177,38 @@ fn next_error_goes_between_matches() {
     ed.press("M-g p").unwrap();
     assert_eq!(ed.window_buffer().point(), find(&ed, "apple here"));
 }
+
+/// The agenda's tags view gathers the matches of every agenda file, each
+/// with its file's category and the tags it inherits there, most urgent
+/// first, then in the files' order, and a file narrowed is read whole, as org-tags-view widens it.
+#[test]
+fn the_tags_view_reads_every_agenda_file() {
+    let (mut ed, s) = org("");
+    let dir = tempfile::tempdir().unwrap();
+    let (a, b) = (dir.path().join("alpha.org"), dir.path().join("beta.org"));
+    std::fs::write(&a, "#+FILETAGS: :x:\n* TODO One :w:\n* Two\n").unwrap();
+    std::fs::write(&b, "* [#A] Three :w:\n** Four\n* Five :other:\n").unwrap();
+    s.eval_typescript(&mut ed, "files.ts", format!("e8.setVariable(\"org-agenda-files\", [{:?}, {:?}]);", a.to_str().unwrap(), b.to_str().unwrap()))
+        .unwrap();
+    // beta.org narrowed to its last heading.
+    eval(&mut ed, &s, &format!(r#"(e8.withCurrentBuffer(e8.findFileNoselect({:?}), () => e8.narrowToRegion(e8.bufferSize() - 15, e8.bufferSize())), 1)"#, b.to_str().unwrap()));
+    let mut left: std::collections::VecDeque<&str> = ["w"].into();
+    ed.set_input_source(move |ed| {
+        if ed.prompt().is_none() {
+            return false;
+        }
+        let Some(answer) = left.pop_front() else { return false };
+        ed.type_text(answer);
+        ed.handle_key(e8_core::Key::parse("RET").unwrap());
+        true
+    });
+    ed.call("org-tags-view", vec![]).unwrap();
+    let agenda = ed.buffers().iter().find(|b| b.name == "*Org Agenda*").map(|b| b.slice(0..b.len())).unwrap();
+    let lines: Vec<&str> = agenda.lines().map(|l| l.trim_end()).collect();
+    assert_eq!(lines[0], "Headlines with TAGS match: w");
+    assert!(lines[2].starts_with("  beta:       [#A] Three") && lines[2].ends_with(":w:"), "{agenda}");
+    // Of the same priority, in org-agenda-files' order, as category-keep keeps them.
+    assert!(lines[3].starts_with("  alpha:      TODO One") && lines[3].ends_with(":x::w:"), "{agenda}");
+    assert!(lines[4].starts_with("  beta:       Four") && lines[4].ends_with(":w::"), "{agenda}");
+    assert_eq!(lines.len(), 5, "{agenda}");
+}
