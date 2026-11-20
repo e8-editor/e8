@@ -1665,3 +1665,23 @@ fn refile_paths_complete_in_steps_and_the_cache_is_checked() {
     ed.press("C-0 C-c C-w").unwrap();
     assert_eq!(ed.echo(), Some("Refile cache has been cleared"));
 }
+
+/// C-3 copies, even into the entry's own subtree, as Org skips that check
+/// with an argument; C-u C-u shows the place it goes to if folded.
+#[test]
+fn refile_copies_into_its_own_subtree_and_unfolds_the_last_place() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("main.org"), "* A\nbody\n** a\n* B\n** x\nthe body of x, long enough\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.call("find-file", vec![Arg::Str(dir.path().join("main.org").display().to_string())]).unwrap();
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-refile-targets", [[null, ":maxlevel", 2]]), 1)"#).unwrap();
+    ed.press("C-3 C-c C-w a RET").unwrap();
+    assert_eq!(text(&ed), "* A\nbody\n** a\n*** A\nbody\n**** a\n* B\n** x\nthe body of x, long enough\n");
+    assert_eq!(s.eval_expression(&mut ed, "e8.point()").unwrap(), "0");
+    // Folded, the last place shows when gone back to.
+    ed.press("M-x o r g - o v e r v i e w RET M-> C-u C-u C-c C-w").unwrap();
+    let at: usize = s.eval_expression(&mut ed, "e8.point()").unwrap().parse().unwrap();
+    assert_eq!(at, find(&ed, "*** A"));
+    assert_eq!(s.eval_expression(&mut ed, "e8.invisibleP(e8.point())").unwrap(), "false");
+}

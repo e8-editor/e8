@@ -107,7 +107,7 @@ import {
 import { fillContextPrefix, fillRegionAsParagraph } from "fill";
 import { defineGuide } from "help-guide";
 import { withHelpWindow } from "help";
-import { refileCommand, refileCopyCommand } from "org-refile";
+import { refileCommand, refileCopyCommand, refileReverseCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
 import { allMatches, charCount, eraseBuffer, escapeRegExp, forwardLine, truthy } from "subr";
 export { PLANNING } from "org-element";
@@ -7403,6 +7403,7 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c C-x p": setProperty,
   "C-c C-x b": treeToIndirectBuffer,
   "C-c C-w": refileCommand,
+  "C-c C-M-w": refileReverseCommand,
   "C-c M-w": refileCopyCommand,
   "C-c C-x d": insertDrawer,
   "C-x n s": narrowToSubtree,

@@ -365,5 +365,62 @@
       "org-log-refile": "'time"
     },
     "today": "2026-11-04"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-with-an-empty-region",
+    "text": "* A\nbody\n* B\n",
+    "keys": "C-SPC C-c C-w",
+    "point": 5,
+    "answers": [
+      "B"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-copy-keeps-point",
+    "text": "* A\nbody of A\n* B\n",
+    "keys": "C-3 C-c C-w",
+    "point": 8,
+    "answers": [
+      "B"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-reversed-to-the-file",
+    "text": "* A\n* B\n* C\n",
+    "keys": "C-c C-w",
+    "point": 8,
+    "answers": [
+      "e8-oracle-refile.org/"
+    ],
+    "vars": {
+      "org-refile-use-outline-path": "'file",
+      "org-reverse-note-order": true
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-a-heading-with-links",
+    "text": "* See [[https://x.org]] and [[a][b]]\n* B\n",
+    "keys": "C-c C-w",
+    "point": 0,
+    "answers": [
+      "B"
+    ],
+    "message": true
   }
 ]

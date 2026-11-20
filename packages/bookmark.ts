@@ -200,6 +200,8 @@ e8.defineCommand({
 /** Names the place point is at, replacing a bookmark of that name unless NO-OVERWRITE, as bookmark-set given a name. */
 export function bookmarkSet(name: string, noOverwrite = false): void {
   const file = e8.bufferFileName();
+  // As bookmark-make-record-default: a bookmark is a place in a file.
+  if (file === undefined) e8.signal("error", "Buffer not visiting a file or directory");
   const size = Number(e8.variable("bookmark-search-size") ?? 16);
   const p = e8.point();
   const b: Bookmark = {

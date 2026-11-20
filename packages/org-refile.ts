@@ -7,7 +7,7 @@ import { bookmarkSet, jumpTo } from "bookmark";
 import { addLogNote, alignTags, copySubtree, type Heading, headings, killIsSubtree, parseHeading, pasteSubtree, subtreeRegion } from "org";
 import { ancestors, showHeadingLine } from "org-fold";
 import { entryHeading } from "org-list";
-import { edDelete, lineAt } from "org-macs";
+import { edDelete, lineAt, orgRegionActive } from "org-macs";
 import { truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -128,7 +128,7 @@ function cacheGet(key: string): Target[] | undefined {
   if (set === undefined) return undefined;
   for (const t of set) {
     if (typeof t.start !== "number" && e8.markerBuffer(t.start) === undefined) {
-      e8.message("Please regenerate the refile cache with `C-0 C-c C-w'");
+      e8.message("Please regenerate the refile cache with ‘C-0 C-c C-w’");
       return undefined;
     }
   }
@@ -156,7 +156,8 @@ export function refileTargets(defaultBuffer: string = e8.bufferName()): Target[]
       e8.withCurrentBuffer(buffer, () => {
         if (!e8.derivedModeP("org-mode")) e8.signal("error", `Major mode in refile target buffer "${buffer}" must be ‘org-mode’`);
         const file = e8.bufferFileName();
-        const key = JSON.stringify([file ?? buffer, kind, value, outline]);
+        // By the file and the spec only, as org-refile-cache-get's identifiers.
+        const key = JSON.stringify([file ?? null, kind, value]);
         const kept = cacheGet(key);
         if (kept) {
           targets.push(...kept);
@@ -283,11 +284,16 @@ function newChild(parent: Target, child: string): Target {
           level = all[i].level;
           e8.gotoChar(subtreeRegion(all, i)[1]);
         }
-        // Back over blank lines, as org-back-over-empty-lines does with org-blank-before-new-entry's heading auto.
+        // Back over blank lines, as org-back-over-empty-lines does when
+        // org-blank-before-new-entry's heading entry is on; else to the line before's start.
         const before = e8.point();
-        let at = before;
-        while (at > e8.pointMin() && /[ \t\n\r]/.test(e8.bufferSubstringNoProperties(at - 1, at))) at--;
-        e8.gotoChar(at);
+        const blank = e8.variable("org-blank-before-new-entry");
+        const heading = Array.isArray(blank) ? (blank.find((e) => Array.isArray(e) && e[0] === "heading") as e8.Value[] | undefined)?.[1] : "auto";
+        if (truthy(heading ?? null)) {
+          let at = before;
+          while (at > e8.pointMin() && /[ \t\n\r]/.test(e8.bufferSubstringNoProperties(at - 1, at))) at--;
+          e8.gotoChar(at);
+        } else if (e8.point() < e8.pointMax()) e8.gotoChar(e8.lineStart(Math.max(0, lineAt() - 1)));
         e8.gotoChar(Math.min(e8.lineEnd(lineAt()) + 1, e8.pointMax()));
         if (e8.point() > before) e8.gotoChar(before);
         e8.insert(`\n${"*".repeat(pos >= 0 && level !== undefined ? level + 1 : 1)} ${child}\n`);
@@ -362,10 +368,19 @@ export function setRunningClock(f: typeof runningClock): void {
 }
 
 /** Goes to where the last refile put its entry, as org-refile-goto-last-stored. */
-function gotoLastStored(): void {
+export function gotoLastStored(): void {
   const name = plistGet("org-bookmark-names-plist", ":last-refile");
   jumpTo(typeof name === "string" ? name : "org-refile-last-stored", "switch-to-buffer");
+  // As bookmark-after-jump-hook's org-bookmark-jump-unhide: the place shows if folded.
+  if (e8.derivedModeP("org-mode")) showContext(e8.point());
   e8.message("This is the location of the last refile");
+}
+
+/** Shows the heading at POS and those above it, as org-fold-show-context does. */
+function showContext(pos: number): void {
+  const all = headings();
+  const i = all.findIndex((h, j) => h.start <= pos && (all[j + 1] === undefined || all[j + 1].start > pos));
+  if (i >= 0) for (const a of [i, ...ancestors(all, i)]) showHeadingLine(all[a]);
 }
 
 e8.defineCommand({
@@ -392,7 +407,8 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
   const listN = isList ? (arg as number[])[0] : undefined;
   if (arg === 0 || listN === 64) return cacheClear();
   const actionmsg = msg ?? (arg === 3 ? "Refile (and keep)" : "Refile");
-  const regionp = e8.regionActive() && e8.mark() !== undefined;
+  // As org-region-active-p, use-region-p: an active region that is not empty.
+  const regionp = orgRegionActive();
   let regionStart = regionp ? Math.min(e8.point(), e8.mark()!) : 0;
   let regionEnd = regionp ? Math.max(e8.point(), e8.mark()!) : 0;
   const keep = arg === 3 || truthy(e8.variable("org-refile-keep"));
@@ -421,7 +437,8 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
   } else if (rfloc) it = rfloc;
   else {
     let headingText = "";
-    if (!isList) headingText = linkDisplay(e8.saveExcursion(() => subtreeHeading().title));
+    // Each link as its description, or nothing, as org-refile replaces org-link-bracket-re with its second group.
+    if (!isList) headingText = e8.saveExcursion(() => subtreeHeading().title).replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_, _link: string, desc?: string) => desc ?? "");
     it = getLocation(
       isList ? "Goto" : regionp ? `${actionmsg} region to` : `${actionmsg} subtree "${headingText}" to`,
       defaultBuffer,
@@ -433,7 +450,7 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
   const [name, t] = it;
   const pos = startOf(t);
   const same = t.buffer === e8.bufferName();
-  if (!goto && pos >= 0 && same) {
+  if ((arg === null || arg === undefined) && pos >= 0 && same) {
     const inside = regionp
       ? pos >= regionStart && pos <= regionEnd
       : e8.saveExcursion(() => {
@@ -453,7 +470,7 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
     if (i >= 0) for (const a of [i, ...ancestors(all, i)]) showHeadingLine(all[a]);
     return;
   }
-  // What goes: the region's text, or the subtree, copied.
+  // What goes: the region's text, or the subtree, copied; point stays, as org-copy-subtree leaves it.
   let start: number;
   let end: number;
   if (regionp) {
@@ -461,14 +478,16 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
     end = regionEnd;
     e8.killNew(e8.bufferSubstringNoProperties(start, end));
   } else {
+    const here = e8.point();
     const h = subtreeHeading();
     const all = headings();
     [start, end] = subtreeRegion(all, all.findIndex((x) => x.start === h.start));
     e8.gotoChar(h.start);
     copySubtree(false, 1, false);
+    e8.gotoChar(here);
   }
   // Back here after, whatever goes in before it, as Org's origin marker advancing.
-  const origin = e8.makeMarker(start, { advances: true });
+  const origin = e8.makeMarker(e8.point(), { advances: true });
   e8.withCurrentBuffer(t.buffer, () => {
     const reversed = notesOrderReversed();
     e8.saveExcursion(() =>
@@ -484,7 +503,8 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
         } else {
           level = 1;
           if (!reversed) e8.gotoChar(e8.pointMax());
-          else e8.gotoChar(there[0]?.start ?? e8.pointMax());
+          // The first heading after the start, as outline-next-heading from point-min.
+          else e8.gotoChar(there.find((h) => h.start > e8.pointMin())?.start ?? e8.pointMax());
         }
         if (e8.point() !== e8.lineStart(lineAt())) e8.call("newline");
         const pastedAt = e8.point();
@@ -497,14 +517,15 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
             for (const h of headings()) if (h.start >= pastedAt && h.start < pastedEnd) addLogNote(h.line, "refile", undefined, undefined, { how: "time" });
           } else addLogNote(lineAt(pastedAt), "refile", undefined, undefined, { how: log === "time" || log === "state" ? log : "note" });
         }
-        e8.gotoChar(pastedAt);
+        // At the heading pasted, past any blank lines before it, as point is after org-paste-subtree.
+        e8.gotoChar(headings().find((h) => h.start >= pastedAt)?.start ?? pastedAt);
         if (truthy(e8.variable("org-auto-align-tags") ?? true)) alignTags(lineAt());
         const bookmark = plistGet("org-bookmark-names-plist", ":last-refile");
         if (typeof bookmark === "string") {
           try {
             bookmarkSet(bookmark);
           } catch (err) {
-            e8.message(`Bookmark set error: ${err instanceof Error ? err.message : String(err)}`);
+            e8.message(`Bookmark set error: (error ${JSON.stringify(err instanceof Error ? err.message : String(err))})`);
           }
         }
         e8.deactivateMark();
@@ -516,7 +537,17 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
   const back = e8.markerPosition(origin) ?? start;
   e8.deleteMarker(origin);
   e8.gotoChar(back);
-  if (!keep) edDelete(back, Math.min(back + (end - start), e8.pointMax()));
+  if (!keep) {
+    if (regionp) edDelete(back, Math.min(back + (end - start), e8.pointMax()));
+    else {
+      // The subtree point is in, from its heading, as org-back-to-heading and org-end-of-subtree find it.
+      const h = subtreeHeading();
+      const all = headings();
+      const [s, e] = subtreeRegion(all, all.findIndex((x) => x.start === h.start));
+      edDelete(s, e);
+      e8.gotoChar(s);
+    }
+  }
   const file = t.file ?? e8.withCurrentBuffer(t.buffer, () => e8.bufferFileName() ?? t.buffer);
   e8.message(`${actionmsg} to "${name}" in file ${file}: done`);
 }
@@ -551,6 +582,13 @@ export const refileCommand = e8.defineCommand({
     "C-0 or C-u C-u C-u, clear the targets kept (org-refile-use-cache); with 2, refile to the running clock; with 3, copy.",
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => refile(arg ?? null),
+});
+
+export const refileReverseCommand = e8.defineCommand({
+  name: "org-refile-reverse",
+  doc: "Refile while temporarily toggling org-reverse-note-order. So if org-refile would append the entry as the last entry under the target heading, org-refile-reverse will prepend it as the first entry, and vice-versa.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => e8.letBind({ "org-reverse-note-order": !notesOrderReversed() }, () => refile(arg ?? null)),
 });
 
 export const refileCopyCommand = e8.defineCommand({

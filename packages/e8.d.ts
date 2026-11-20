@@ -5262,11 +5262,13 @@ declare global {
        */
       "org-agenda-redo": [];
       /**
-       * Refile the entry the agenda line at point shows.
+       * Refile the item at point. With C-u, go to the target instead; with C-u C-u, to where the last refile put its entry; with C-0 or C-u C-u C-u, clear the targets kept.
+       *
+       * @param goto raw prefix argument
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-refile": [];
+      "org-agenda-refile": [goto?: PrefixArg | boolean];
       /**
        * Set the tags of the entry the agenda line at point shows.
        *
@@ -5980,6 +5982,14 @@ declare global {
        * Defined in packages/org-refile.ts.
        */
       "org-refile-goto-last-stored": [];
+      /**
+       * Refile while temporarily toggling org-reverse-note-order. So if org-refile would append the entry as the last entry under the target heading, org-refile-reverse will prepend it as the first entry, and vice-versa.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-refile-reverse": [arg?: PrefixArg | boolean];
       /**
        * RET in Org: in a table, move to the next row; elsewhere start a new line, indented as org-indent-line does.
        *
