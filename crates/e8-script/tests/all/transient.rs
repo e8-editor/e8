@@ -352,3 +352,63 @@ fn c_m_p_goes_back_to_earlier_values_and_c_u_reaches_the_suffix() {
     ed.press("C-u r B o b RET").unwrap();
     assert_eq!(ed.echo(), Some(r#"read "Bob" [4]"#));
 }
+
+/// The menu's window point, as the cursor shows it there.
+fn menu_point(ed: &mut Editor, s: &Scripting) -> usize {
+    s.eval_expression(ed, r#"e8.windowPoint(e8.windowList().find((w) => e8.windowBuffer(w) === " *transient*"))"#).unwrap().parse().unwrap()
+}
+
+/// What the menu shows from a position on, to its line's end.
+fn menu_at(ed: &Editor, at: usize) -> String {
+    let text: Vec<char> = menu(ed).unwrap().chars().collect();
+    text[at..].iter().take_while(|c| **c != '\n').collect()
+}
+
+#[test]
+fn arrow_keys_go_from_suffix_to_suffix_and_m_ret_runs_one() {
+    let (mut ed, s, _pkgs) = setup();
+    ed.call("tm-main", vec![]).unwrap();
+    // The cursor starts at the menu's top, and goes to each button in turn, round at the ends.
+    assert_eq!(menu_point(&mut ed, &s), 0);
+    ed.press("<down>").unwrap();
+    let at = menu_point(&mut ed, &s);
+    assert!(menu_at(&ed, at).starts_with(" b Bump"), "{:?}", menu_at(&ed, at));
+    ed.press("<down>").unwrap();
+    let at = menu_point(&mut ed, &s);
+    assert_eq!(menu_at(&ed, at), " s Sub");
+    ed.press("<down> <down>").unwrap();
+    let at = menu_point(&mut ed, &s);
+    assert!(menu_at(&ed, at).starts_with(" b Bump"), "{:?}", menu_at(&ed, at));
+    ed.press("<up>").unwrap();
+    let at = menu_point(&mut ed, &s);
+    assert_eq!(menu_at(&ed, at), " h Hello");
+    // A suffix that stays keeps the cursor on its button when the menu is drawn again.
+    ed.press("<up> <up>").unwrap();
+    ed.press("M-RET").unwrap();
+    assert_eq!(count(&ed), 1.0);
+    let at = menu_point(&mut ed, &s);
+    assert!(menu_at(&ed, at).starts_with(" b Bump"), "{:?}", menu_at(&ed, at));
+    ed.press("<down> M-RET").unwrap();
+    assert!(menu(&ed).unwrap().starts_with("Sub\n x Hello"), "{:?}", menu(&ed));
+}
+
+#[test]
+fn a_click_on_a_suffix_runs_it() {
+    let (mut ed, _s, _pkgs) = setup();
+    ed.call("tm-main", vec![]).unwrap();
+    let window = ed.windows().iter().find(|w| w.buffer.name == " *transient*").map(|w| w.id).unwrap();
+    let at = menu(&ed).unwrap().chars().collect::<String>().find("Hello").unwrap();
+    ed.mouse(e8_core::Key::parse("<mouse-1>").unwrap(), e8_core::MouseEvent { window, position: Some(at), start: None });
+    assert_eq!(ed.echo(), Some("Hello"));
+    assert_eq!(menu(&ed), None);
+}
+
+#[test]
+fn without_popup_navigation_the_arrow_keys_say_so() {
+    let (mut ed, s, _pkgs) = setup();
+    s.eval_expression(&mut ed, r#"e8.setVariable("transient-enable-popup-navigation", false)"#).unwrap();
+    ed.call("tm-main", vec![]).unwrap();
+    ed.press("<down>").unwrap();
+    assert_eq!(ed.echo(), Some("To enable use of `transient-forward-button', please customize `transient-enable-popup-navigation'"));
+    assert!(menu(&ed).unwrap().starts_with("Left"));
+}
