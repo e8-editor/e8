@@ -15,7 +15,7 @@
 // an "org-link" text property, so [[https://gnu.org][GNU]] shows as GNU.
 
 import { jump, type Link, linkHere, searchInBuffer } from "ol";
-import { type Elem, elementAt, endBeforeBlank, keepingParse, parseShifts, startsElement } from "org-element";
+import { type Elem, elementAt, endBeforeBlank, keepingParse, PLANNING, parseShifts, startsElement } from "org-element";
 import {
   ancestors,
   BLOCK_BEGIN,
@@ -1433,11 +1433,11 @@ function storeLogNote(
   lines: string[],
   time = `[${formatTimestamp(today(true), true)}]`,
   place?: number,
-): void {
+): boolean {
   const h = parseHeading(headingLine);
-  if (!h) return;
+  if (!h) return false;
   let heading = logNoteHeading(purpose, state, previous, time);
-  if (heading.trim() === "" && lines.length === 0) return;
+  if (heading.trim() === "" && lines.length === 0) return false;
   const items = [...lines];
   if (heading.trim() !== "") {
     if (lines.length > 0) heading += " \\\\";
@@ -1471,6 +1471,7 @@ function storeLogNote(
   });
   e8.gotoChar(p.pos);
   dropMarker(p);
+  return true;
 }
 
 // Notes taken in *Org Note*, as org-add-log-note and org-store-log-note.
@@ -1484,6 +1485,9 @@ let pendingNote:
 let noteSetup:
   | { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; how: string; extra?: string; at?: e8.Marker; command?: string; depth: number }
   | undefined;
+
+/** How many notes have been set up, so a state change can tell whether its hook set up another, which replaces its own, as org-add-log-setup's one setup. */
+let setups = 0;
 
 /** Frees a setup's or a note's markers. */
 function freeNoteMarkers(n: { heading: e8.Marker; at?: e8.Marker; returnTo?: e8.Marker }): void {
@@ -1501,6 +1505,7 @@ function freeNoteMarkers(n: { heading: e8.Marker; at?: e8.Marker; returnTo?: e8.
  * as a clock's, is stored there rather than where the log begins.
  */
 export function addLogNote(headingLine: number, purpose: string, state?: string, previous?: string, opts: { how?: string; extra?: string; at?: number } = {}): void {
+  setups++;
   if (noteSetup !== undefined) freeNoteMarkers(noteSetup);
   noteSetup = {
     heading: e8.makeMarker(e8.lineStart(headingLine)),
@@ -1535,14 +1540,15 @@ function openLogNote(): void {
   if (setup.how === "time" || setup.how === "state") {
     const source = e8.markerBuffer(setup.heading);
     if (source !== undefined) {
-      e8.withCurrentBuffer(source, () =>
+      const stored = e8.withCurrentBuffer(source, () =>
         e8.saveRestriction(() => {
           e8.widen();
-          storeLogNote(lineAt(e8.markerPosition(setup.heading)!), purpose, state, previous, [], setup.time, setup.at && e8.markerPosition(setup.at));
-          e8.runHooks("org-after-note-stored-hook");
+          const stored = storeLogNote(lineAt(e8.markerPosition(setup.heading)!), purpose, state, previous, [], setup.time, setup.at && e8.markerPosition(setup.at));
+          if (stored) e8.runHooks("org-after-note-stored-hook");
+          return stored;
         }),
       );
-      e8.message("Note stored");
+      if (stored) e8.message("Note stored");
     }
     freeNoteMarkers(setup);
     return;
@@ -4161,7 +4167,10 @@ function todoLogged(direction: number, state?: string, across = false): void {
       if (logRepeat === "note") setup.how = "note";
     } else setup = { purpose: "state", how: logRepeat === "note" ? "note" : "time", state: repeat[0], previous: repeat[1] };
   }
+  const setupsBefore = setups;
   e8.runHooks("org-after-todo-state-change-hook");
+  // A note the hook set up, as stopping the clock does, replaces the state's.
+  if (setups !== setupsBefore) setup = undefined;
   fixPositionAfterTodo(h.line);
   // Org stores the note from post-command-hook, after the command, asking
   // for one in *Org Note* when the state's @ says so.
@@ -5100,6 +5109,33 @@ const inactiveTimestamp = e8.defineCommand({
 
 e8.defineVariable({ name: "org-read-date-history", doc: "Dates answered to Org's date prompt, newest first.", value: [] });
 
+/**
+ * Puts `what` with timestamp `ts` at the start of the planning line under
+ * a heading, taking out its old one and the keywords `remove` names, each
+ * up to the next keyword, as org-add-planning-info does; a new line if
+ * there is none. Always rewrites the line, so the buffer is modified.
+ */
+function addPlanningInfo(headingLine: number, what: string, ts: string, remove: string[]): void {
+  const next = headingLine + 1;
+  if (!(next < e8.lineCount() && PLANNING.test(e8.lineText(next)))) {
+    const end = e8.lineEnd(headingLine);
+    replaceText(end, end, `\n${what}: ${ts}`);
+    return;
+  }
+  const text = e8.lineText(next);
+  const ind = /^[ \t]*/.exec(text)![0].length;
+  let rest = text.slice(ind);
+  for (const type of [what, ...remove]) {
+    const m = new RegExp(`\\b${type}: *${type === "CLOSED" ? "\\[[^\\]\\n]+\\]" : "<[^>\\n]+>"}`).exec(rest);
+    if (!m) continue;
+    const after = rest.slice(m.index + m[0].length);
+    const k = /(?:SCHEDULED|DEADLINE|CLOSED):[ \t]*[<[]/.exec(after);
+    rest = rest.slice(0, m.index) + (k ? after.slice(k.index) : "");
+  }
+  rest = rest.replace(/[ \t]+$/, "");
+  replaceText(e8.lineStart(next) + ind, e8.lineEnd(next), `${what}: ${ts}${rest === "" ? "" : " "}${rest}`);
+}
+
 /** Sets or, with undefined, removes a planning keyword's timestamp on the line after a heading. */
 function setPlanning(headingLine: number, keyword: string, ts: string | undefined): void {
   const next = headingLine + 1;
@@ -5122,6 +5158,17 @@ function setPlanning(headingLine: number, keyword: string, ts: string | undefine
   else replaceText(ls, e8.lineEnd(next), updated);
 }
 
+/** Whether the prefix argument is C-u C-u. */
+function doublePrefix(): boolean {
+  const arg = e8.prefixArg();
+  return Array.isArray(arg) && arg[0] === 16;
+}
+
+/** A date as a count of days, to tell how many lie between two. */
+function dayCount(d: DateTime): number {
+  return Math.floor(Date.UTC(d.year, d.month - 1, d.day) / 86400000);
+}
+
 function plan(keyword: string, input: string): void {
   const [all, i] = backToHeading();
   const deadline = keyword === "DEADLINE";
@@ -5129,7 +5176,22 @@ function plan(keyword: string, input: string): void {
   const next = all[i].line + 1;
   const old = next < e8.lineCount() ? new RegExp(`${keyword}: *([<[][^>\\]\\n]*[>\\]])`).exec(e8.lineText(next))?.[1] : undefined;
   // As org--deadline-or-schedule: the change is logged as org-log-reschedule or org-log-redeadline says.
-  const howOf = (x: e8.Value | undefined) => (x === "note" ? "note" : "time");
+  // time and state store only the heading; anything else, t included, asks for a note, as org-add-log-note.
+  const howOf = (x: e8.Value | undefined) => (x === "time" || x === "state" ? x : "note");
+  // C-u C-u: a warning or delay for the date there, as org--deadline-or-schedule asks.
+  if (doublePrefix()) {
+    const lines = [all[i].line, next].filter((l) => l < e8.lineCount());
+    for (const l of lines) {
+      const m = new RegExp(`\\b${keyword}: *<([^>]+)>`).exec(e8.lineText(l));
+      if (!m) continue;
+      const d = /^(\d{4})-(\d{2})-(\d{2})/.exec(m[1]);
+      const days = d ? Math.abs(dayCount(parseDate(input)) - dayCount({ year: +d[1], month: +d[2], day: +d[3] })) : 0;
+      const start = e8.lineStart(l) + m.index;
+      replaceText(start, start + m[0].length, `${keyword}: <${m[1].replace(/ -[0-9]+[hdwmy]/, "")} -${days}d>`);
+      return;
+    }
+    e8.userError(deadline ? "No deadline information to update" : "No scheduled information to update");
+  }
   if (Array.isArray(e8.prefixArg())) {
     if (old === undefined) {
       e8.message(deadline ? "Entry had no deadline to remove" : "Entry was not scheduled");
@@ -5144,16 +5206,8 @@ function plan(keyword: string, input: string): void {
   // The old date's repeater and warning stay, as org--deadline-or-schedule keeps them.
   const inserted = `<${formatTimestamp(date)}>`;
   const ts = withRepeater(inserted, old);
-  if (ts === old) {
-    // The same date written again, as org-add-planning-info replaces it, so the buffer is modified.
-    const m = new RegExp(`${keyword}: *`).exec(e8.lineText(next))!;
-    const from = e8.lineStart(next) + m.index + m[0].length;
-    e8.saveExcursion(() => {
-      e8.deleteRegion(from, from + old.length);
-      e8.gotoChar(from);
-      e8.insert(old);
-    });
-  } else setPlanning(all[i].line, keyword, ts);
+  // At the start of the planning line, CLOSED taken out, as org-add-planning-info with closed to remove.
+  addPlanningInfo(all[i].line, keyword, ts, ["CLOSED"]);
   if (old !== undefined && truthy(log) && old !== inserted) addLogNote(all[i].line, deadline ? "redeadline" : "reschedule", inserted, old, { how: howOf(log) });
   e8.message(`${deadline ? "Deadline on" : "Scheduled to"} ${ts}`);
 }
@@ -5161,14 +5215,30 @@ function plan(keyword: string, input: string): void {
 const schedule = e8.defineCommand({
   name: "org-schedule",
   doc: "Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date.",
-  params: [{ name: "date", prompt: "Date: ", history: "org-read-date-history", value: () => (Array.isArray(e8.prefixArg()) ? "" : undefined) }],
+  params: [
+    {
+      name: "date",
+      // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
+      prompt: () => (doublePrefix() ? "Delay until: " : "Date: "),
+      history: "org-read-date-history",
+      value: () => (Array.isArray(e8.prefixArg()) && !doublePrefix() ? "" : undefined),
+    },
+  ],
   run: (input) => plan("SCHEDULED", input),
 });
 
 const deadline = e8.defineCommand({
   name: "org-deadline",
   doc: "Give the heading point is under a deadline, read as org-timestamp reads it. With C-u, remove it.",
-  params: [{ name: "date", prompt: "Date: ", history: "org-read-date-history", value: () => (Array.isArray(e8.prefixArg()) ? "" : undefined) }],
+  params: [
+    {
+      name: "date",
+      // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
+      prompt: () => (doublePrefix() ? "Warn starting from: " : "Date: "),
+      history: "org-read-date-history",
+      value: () => (Array.isArray(e8.prefixArg()) && !doublePrefix() ? "" : undefined),
+    },
+  ],
   run: (input) => plan("DEADLINE", input),
 });
 

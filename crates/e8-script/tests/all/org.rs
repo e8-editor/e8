@@ -197,7 +197,8 @@ fn scheduling_and_deadlines_go_on_the_planning_line() {
     call(&mut ed, "org-schedule", &["2026-11-03"]);
     assert_eq!(text(&ed), "* Task\nSCHEDULED: <2026-11-03 Tue>\nbody\n");
     call(&mut ed, "org-deadline", &["2026-11-05 15:00"]);
-    assert_eq!(text(&ed), "* Task\nSCHEDULED: <2026-11-03 Tue> DEADLINE: <2026-11-05 Thu 15:00>\nbody\n");
+    // At the start of the line, as org-add-planning-info puts it.
+    assert_eq!(text(&ed), "* Task\nDEADLINE: <2026-11-05 Thu 15:00> SCHEDULED: <2026-11-03 Tue>\nbody\n");
     ed.call_with_prefix("org-schedule", vec![Arg::Str(String::new())], Some(e8_core::PrefixArg::Universal(4))).unwrap();
     assert_eq!(text(&ed), "* Task\nDEADLINE: <2026-11-05 Thu 15:00>\nbody\n");
 }

@@ -16,6 +16,7 @@ import { addLogNote, type DateTime, formatTimestamp, type Heading, headingIndex,
 import { toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
+import { truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("org-clock-into-drawer", true, "Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.");
@@ -223,10 +224,10 @@ export function clockOut(failQuietly = false): void {
           removed = true;
           e8.deleteRegion(e8.lineStart(line), lineStartOrEnd(line + 1));
           removeEmptyDrawer(line);
-        } else if (e8.variable("org-log-note-clock-out") === true) {
+        } else if (truthy(e8.variable("org-log-note-clock-out"))) {
           // A note after the clock, as org-clock-out sets one up, the task named above it.
           const headingLine = lineAt(e8.markerPosition(running.heading) ?? 0);
-          const task = e8.lineText(headingLine).replace(/^\*+[ \t]+/, "").replace(/[ \t]+:[\w@#%:]+:[ \t]*$/, "");
+          const task = e8.lineText(headingLine).replace(/^\*+[ \t]+/, "").replace(/[ \t]+:[\p{L}\p{N}_@#%:]+:[ \t]*$/u, "");
           addLogNote(headingLine, "clock-out", undefined, undefined, { extra: `# Task: ${task}\n\n`, at: e8.lineEnd(line) });
         }
       });
@@ -337,7 +338,8 @@ e8.addHook("org-after-todo-state-change-hook", () => {
   const all = headings();
   const i = headingIndex(all, lineAt());
   if (i === undefined || e8.markerBuffer(clock.heading) !== e8.bufferName() || e8.markerPosition(clock.heading) !== all[i].start) return;
-  if (isDone(all[i].todo)) clockOut(true);
+  // With no note for the clock, as org-clock-out-if-current binds org-log-note-clock-out.
+  if (isDone(all[i].todo)) e8.letBind({ "org-log-note-clock-out": false }, () => clockOut(true));
 });
 
 // Before exiting, a running clock is offered to be stopped and its file saved, as org-clock-kill-emacs-query.

@@ -354,6 +354,175 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "deadline-goes-first-on-the-planning-line",
+      "input": {
+        "text": "* Task\nSCHEDULED: <2026-11-03 Tue>\nbody\n",
+        "point": 0,
+        "keys": "C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-05"
+        ]
+      },
+      "text": "* Task\nDEADLINE: <2026-11-05 Thu> SCHEDULED: <2026-11-03 Tue>\nbody\n",
+      "visible": "* Task\nDEADLINE: <2026-11-05 Thu> SCHEDULED: <2026-11-03 Tue>\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "schedule-takes-closed-out",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-11-01 Sun 10:00] DEADLINE: <2026-11-09 Mon>\nbody\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ]
+      },
+      "text": "* DONE Task\nSCHEDULED: <2026-11-06 Fri> DEADLINE: <2026-11-09 Mon>\nbody\n",
+      "visible": "* DONE Task\nSCHEDULED: <2026-11-06 Fri> DEADLINE: <2026-11-09 Mon>\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "schedule-same-date-takes-closed-out",
+      "input": {
+        "text": "* DONE Task\nCLOSED: [2026-11-01 Sun 10:00] SCHEDULED: <2026-11-04 Wed>\nbody\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-04"
+        ]
+      },
+      "text": "* DONE Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n",
+      "visible": "* DONE Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "delay-with-c-u-c-u",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed +1w>\nbody\n#+STARTUP: logreschedule\n",
+        "point": 0,
+        "keys": "C-u C-u C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-07"
+        ]
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed +1w -3d>\nbody\n#+STARTUP: logreschedule\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-04 Wed +1w -3d>\nbody\n#+STARTUP: logreschedule\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "warning-with-c-u-c-u",
+      "input": {
+        "text": "* TODO Task\nDEADLINE: <2026-11-10 Tue -1d>\nbody\n",
+        "point": 0,
+        "keys": "C-u C-u C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-07"
+        ]
+      },
+      "text": "* TODO Task\nDEADLINE: <2026-11-10 Tue -3d>\nbody\n",
+      "visible": "* TODO Task\nDEADLINE: <2026-11-10 Tue -3d>\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clocked-done-takes-the-clock-note",
+      "input": {
+        "text": "* TODO Task\nbody\n#+STARTUP: lognoteclock-out lognotedone\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-t d o n e C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\n- CLOSING NOTE [2026-11-04 Wed 12:00] \\\\\n  done\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 12:00]--[2026-11-04 Wed 12:00] =>  0:00\n:END:\nbody\n#+STARTUP: lognoteclock-out lognotedone\n",
+      "visible": "* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\n- CLOSING NOTE [2026-11-04 Wed 12:00] \\\\\n  done\n:LOGBOOK:\nbody\n#+STARTUP: lognoteclock-out lognotedone\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clocked-done-state-time-gives-way",
+      "input": {
+        "text": "* TODO Task\nbody\n#+STARTUP: lognoteclock-out\n#+TODO: TODO | DONE(!)\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-t d o n e C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "done* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 12:00]--[2026-11-04 Wed 12:00] =>  0:00\n:END:\nbody\n#+STARTUP: lognoteclock-out\n#+TODO: TODO | DONE(!)\n",
+      "visible": "done* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n:LOGBOOK:\nbody\n#+STARTUP: lognoteclock-out\n#+TODO: TODO | DONE(!)\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "‘C-c C-c’ can do nothing useful here"
     }
   ]
 }

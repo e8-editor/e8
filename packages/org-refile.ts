@@ -205,7 +205,7 @@ function refile(answer: string | undefined, keep: boolean): void {
       pasteSubtree(level as e8.PrefixArg);
       // Logged where it went, as org-log-refile says.
       const log = e8.variable("org-log-refile");
-      if (log !== null && log !== undefined && log !== false) addLogNote(lineAt(pastedAt), "refile", undefined, undefined, { how: log === "note" ? "note" : "time" });
+      if (log !== null && log !== undefined && log !== false) addLogNote(lineAt(pastedAt), "refile", undefined, undefined, { how: log === "time" || log === "state" ? log : "note" });
       e8.runHooks("org-after-refile-insert-hook");
     });
   });

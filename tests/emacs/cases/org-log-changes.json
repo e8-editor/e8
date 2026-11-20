@@ -161,5 +161,83 @@
       "org-mode"
     ],
     "today": "2026-11-04"
+  },
+  {
+    "name": "deadline-goes-first-on-the-planning-line",
+    "text": "* Task\nSCHEDULED: <2026-11-03 Tue>\nbody\n",
+    "keys": "C-c C-d",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-05"
+    ]
+  },
+  {
+    "name": "schedule-takes-closed-out",
+    "text": "* DONE Task\nCLOSED: [2026-11-01 Sun 10:00] DEADLINE: <2026-11-09 Mon>\nbody\n",
+    "keys": "C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ]
+  },
+  {
+    "name": "schedule-same-date-takes-closed-out",
+    "text": "* DONE Task\nCLOSED: [2026-11-01 Sun 10:00] SCHEDULED: <2026-11-04 Wed>\nbody\n",
+    "keys": "C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-04"
+    ]
+  },
+  {
+    "name": "delay-with-c-u-c-u",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed +1w>\nbody\n#+STARTUP: logreschedule\n",
+    "keys": "C-u C-u C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-07"
+    ]
+  },
+  {
+    "name": "warning-with-c-u-c-u",
+    "text": "* TODO Task\nDEADLINE: <2026-11-10 Tue -1d>\nbody\n",
+    "keys": "C-u C-u C-c C-d",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-07"
+    ]
+  },
+  {
+    "name": "clocked-done-takes-the-clock-note",
+    "text": "* TODO Task\nbody\n#+STARTUP: lognoteclock-out lognotedone\n",
+    "keys": "C-c C-x C-i C-c C-t d o n e C-c C-c",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "clocked-done-state-time-gives-way",
+    "text": "* TODO Task\nbody\n#+STARTUP: lognoteclock-out\n#+TODO: TODO | DONE(!)\n",
+    "keys": "C-c C-x C-i C-c C-t d o n e C-c C-c",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
   }
 ]
