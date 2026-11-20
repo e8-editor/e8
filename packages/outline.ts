@@ -157,6 +157,13 @@ const commands: { [name: string]: [string, () => void] } = {
     const [all, i] = heading();
     showChildren(all, i);
   }],
+  "outline-show-branches": ["Show all subheadings of this heading, but not their bodies.", () => {
+    const [all, i] = heading();
+    const end = subtreeEnd(all, i);
+    // The bodies hidden, then every heading under it shown, as (outline-show-children 1000).
+    flag(all[i].end, end, true);
+    for (const h of all.slice(i + 1).filter((h) => h.start <= end)) flag(h.start - 1, h.end, false);
+  }],
   "outline-hide-body": ["Hide all text except headings.", () => {
     const all = headings();
     all.forEach((_, i) => flag(all[i].end, entryEnd(all, i), true));

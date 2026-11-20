@@ -83,6 +83,7 @@ import {
   textIndentation,
   toggleCheckbox,
   writeStruct,
+  entryGet,
 } from "org-list";
 import {
   charAt,
@@ -303,6 +304,26 @@ function shiftSelectError(): never {
 // TODO states
 
 e8.defineHook("org-after-todo-state-change-hook", "Functions called after a heading's TODO state changes, at the heading.");
+e8.defineHook("org-log-buffer-setup-hook", "Hook that is run after an Org log buffer is created.");
+e8.defineHook("org-after-note-stored-hook", "Hook triggered after a note is stored.");
+e8.defineVariable({
+  name: "org-log-note-headings",
+  doc: "Headings for notes added to entries, by purpose: %t the time, %T it active, %d and %D the date, %s the new state, %S the old, %u the user's login and %U name.",
+  value: [
+    ["done", "CLOSING NOTE %t"],
+    ["state", "State %-12s from %-12S %t"],
+    ["note", "Note taken on %t"],
+    ["reschedule", "Rescheduled from %S on %t"],
+    ["delschedule", "Not scheduled, was %S on %t"],
+    ["redeadline", "New deadline from %S on %t"],
+    ["deldeadline", "Removed deadline, was %S on %t"],
+    ["refile", "Refiled on %t"],
+    ["clock-out", ""],
+  ],
+});
+e8.defineVariable({ name: "org-finish-function", doc: "Function to be called when C-c C-c is used, as in *Org Note*.", value: null, local: true });
+e8.defineVariable({ name: "org-note-abort", doc: "Whether the note being stored was cancelled, while org-finish-function runs.", value: false });
+e8.defineVariable({ name: "org-inhibit-startup", doc: "Whether org-mode leaves out its startup visibility and indentation.", value: false });
 e8.defineHook("org-ctrl-c-ctrl-c-hook", "Functions C-c C-c tries first, until one returns true, which ends it, as running a source block does.");
 
 interface TodoSet {
@@ -390,8 +411,24 @@ function logHow(state: string | undefined, previous: string | undefined): string
   return (state === undefined ? undefined : logs.find(([k]) => k === state)?.[1]) ?? (previous === undefined ? undefined : logs.find(([k]) => k === previous)?.[2]);
 }
 
-/** The drawer notes go in, as org-log-into-drawer says: LOGBOOK for t, or the name given. */
-function logDrawer(): string | undefined {
+/**
+ * The drawer notes go in, as the org-log-into-drawer function says: the
+ * LOG_INTO_DRAWER property of the heading or one above it ("t" for
+ * LOGBOOK, "nil" for none, or the drawer's name), else the variable.
+ */
+function logDrawer(h?: Heading): string | undefined {
+  if (h !== undefined) {
+    const all = headings();
+    let i = headingIndex(all, h.line);
+    let level = Infinity;
+    for (; i !== undefined && i >= 0; i--) {
+      if (all[i]!.level >= level) continue;
+      level = all[i]!.level;
+      const p = entryGet(all[i]!.line, "LOG_INTO_DRAWER");
+      if (p !== undefined) return p === "nil" ? undefined : p === "t" ? "LOGBOOK" : p;
+      if (level === 1) break;
+    }
+  }
   const v = e8.variable("org-log-into-drawer");
   return v === true ? "LOGBOOK" : typeof v === "string" && v !== "" ? v : undefined;
 }
@@ -1149,7 +1186,7 @@ const narrowToBlock = e8.defineCommand({
 let newDrawerLine: number | undefined;
 
 function logBeginning(h: Heading, create = false): number {
-  const drawer = logDrawer();
+  const drawer = logDrawer(h);
   if (drawer !== undefined) {
     // As org-log-beginning: at the top of the drawer, newest first, made after the entry's metadata if need be.
     const meta = endOfMetaData(h);
@@ -1189,8 +1226,43 @@ function logBeginning(h: Heading, create = false): number {
 
 /** Adds a note about a state change to a heading's entry, as org-store-log-note does for a repeating task. */
 function storeStateNote(headingLine: number, state: string, previous: string | undefined): void {
+  storeLogNote(headingLine, "state", state, previous, []);
+}
+
+/**
+ * The heading of a logged note, as org-log-note-headings has it for the
+ * purpose, with its %-escapes put in: %t the time, %s the new state and
+ * %S the old one, quoted, padded where the format says (%-12s).
+ */
+function logNoteHeading(purpose: string, state: string | undefined, previous: string | undefined, time: string): string {
+  const headings = (e8.variable("org-log-note-headings") ?? []) as e8.Value[];
+  const entry = headings.find((h) => Array.isArray(h) && h[0] === purpose) as e8.Value[] | undefined;
+  const format = typeof entry?.[1] === "string" ? entry[1] : "";
+  const quote = (x: string | undefined) => (x === undefined ? "" : /^[<[]\d{4}-/.test(x) ? `"[${x.slice(1, -1)}]"` : `"${x}"`);
+  const date = time.replace(/ \d{2}:\d{2}\]$/, "]");
+  return format.replace(/%(-?\d*)([tTdDsSuU%])/g, (_m, width: string, c: string) => {
+    const value =
+      { t: time, T: `<${time.slice(1, -1)}>`, d: date, D: `<${date.slice(1, -1)}>`, s: quote(state), S: quote(previous), u: String(e8.getenv("USER") ?? ""), U: String(e8.variable("user-full-name") ?? ""), "%": "%" }[c] ?? "";
+    const w = Number(width || "0");
+    return w < 0 ? value.padEnd(-w, " ") : value.padStart(w, " ");
+  });
+}
+
+/**
+ * Logs a note in an entry, at the top of its log (or its LOGBOOK drawer),
+ * as org-store-log-note: an item headed as org-log-note-headings says for
+ * the purpose, the note's lines after it, the heading then ending in \\\\.
+ */
+function storeLogNote(headingLine: number, purpose: string, state: string | undefined, previous: string | undefined, lines: string[], time = `[${formatTimestamp(today(true), true)}]`): void {
   const h = parseHeading(headingLine);
   if (!h) return;
+  let heading = logNoteHeading(purpose, state, previous, time);
+  if (heading.trim() === "" && lines.length === 0) return;
+  const items = [...lines];
+  if (heading.trim() !== "") {
+    if (lines.length > 0) heading += " \\\\";
+    items.unshift(heading);
+  }
   const p = marker(e8.point());
   newDrawerLine = undefined;
   withoutFoldChecks(() => {
@@ -1201,18 +1273,106 @@ function storeStateNote(headingLine: number, state: string, previous: string | u
     } else if (/^[ \t]*\S/.test(e8.bufferText(at, e8.lineEnd(lineAt(at))))) {
       edInsert(at, "\n");
     }
-    const pad = (x: string): string => x.padEnd(12, " ");
-    const time = `[${formatTimestamp(today(true), true)}]`;
-    const note = `State ${pad(`"${state}"`)} from ${pad(previous === undefined ? "" : `"${previous}"`)} ${time}`;
     e8.gotoChar(at);
     indentLine(lineAt(at));
-    edInsert(e8.point(), `- ${note}`);
+    edInsert(e8.point(), `- ${items[0]}`);
+    // Each further line under the item's text, as org-list-item-body-column puts it.
+    const body = listBodyColumn(e8.lineStart(lineAt()));
+    for (const line of items.slice(1)) {
+      edInsert(e8.point(), "\n");
+      if (line !== "") edInsert(e8.point(), " ".repeat(body) + line);
+    }
     if (newDrawerLine !== undefined) toggleDrawerOrBlock(newDrawerLine, true);
     newDrawerLine = undefined;
   });
   e8.gotoChar(p.pos);
   dropMarker(p);
 }
+
+// Notes taken in *Org Note*, as org-add-log-note and org-store-log-note.
+
+/** The note being taken: where it goes, what for, and what to go back to. */
+let pendingNote:
+  | { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; returnTo: e8.Marker; windows: e8.WindowConfiguration }
+  | undefined;
+
+/**
+ * Opens *Org Note* to take a note about the entry at `headingLine`, as
+ * org-add-log-note: C-c C-c stores it in the entry's log, C-c C-k cancels it.
+ */
+export function addLogNote(headingLine: number, purpose: string, state?: string, previous?: string): void {
+  const windows = e8.currentWindowConfiguration();
+  const returnTo = e8.makeMarker(e8.point());
+  pendingNote = { heading: e8.makeMarker(e8.lineStart(headingLine)), purpose, state, previous, time: `[${formatTimestamp(today(true), true)}]`, returnTo, windows };
+  const what =
+    {
+      "clock-out": "stopped clock",
+      done: "closed todo item",
+      reschedule: "rescheduling",
+      delschedule: "no longer scheduled",
+      redeadline: "changing deadline",
+      deldeadline: "removing deadline",
+      refile: "refiling",
+      note: "this entry",
+      state: `state change from "${previous ?? ""}" to "${state ?? ""}"`,
+    }[purpose] ?? "this entry";
+  e8.getBufferCreate("*Org Note*");
+  e8.call("pop-to-buffer", "*Org Note*");
+  e8.letBind({ "inhibit-read-only": true }, () => e8.deleteRegion(e8.pointMin(), e8.pointMax()));
+  e8.letBind({ "org-inhibit-startup": true }, () => e8.call("org-mode"));
+  e8.insert(`# Insert note for ${what}.\n# Finish with C-c C-c, or cancel with C-c C-k.\n\n`);
+  e8.makeLocalVariable("org-finish-function");
+  e8.setVariable("org-finish-function", "org-store-log-note");
+  e8.runHooks("org-log-buffer-setup-hook");
+}
+
+/** Stores the note *Org Note* holds, unless `abort`, and goes back to where it was asked for, as org-store-log-note. */
+function storeNoteFromBuffer(abort: boolean): void {
+  const note = pendingNote;
+  pendingNote = undefined;
+  let text = e8.bufferText(e8.pointMin(), e8.pointMax());
+  e8.call("kill-buffer", e8.bufferName());
+  if (note === undefined) return;
+  while (/^# .*\n[ \t\n]*/.test(text)) text = text.replace(/^# .*\n[ \t\n]*/, "");
+  text = text.replace(/\s+$/, "");
+  const lines = text === "" ? [] : text.split("\n");
+  const source = e8.markerBuffer(note.heading);
+  if (!abort && source !== undefined) {
+    e8.withCurrentBuffer(source, () =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        storeLogNote(lineAt(e8.markerPosition(note.heading)!), note.purpose, note.state, note.previous, lines, note.time);
+        e8.runHooks("org-after-note-stored-hook");
+      }),
+    );
+    e8.message("Note stored");
+  }
+  e8.setWindowConfiguration(note.windows);
+  const back = e8.markerBuffer(note.returnTo);
+  if (back !== undefined) e8.withCurrentBuffer(back, () => e8.gotoChar(e8.markerPosition(note.returnTo)!));
+  e8.deleteMarker(note.heading);
+  e8.deleteMarker(note.returnTo);
+}
+e8.defun("org-store-log-note", () => storeNoteFromBuffer(truthy(e8.variable("org-note-abort"))));
+
+e8.defineCommand({
+  name: "org-add-note",
+  doc: "Add a note to the current entry.\nThis is done in the same way as adding a state change note.",
+  run: () => {
+    const [all, i] = backToHeading();
+    addLogNote(all[i].line, "note");
+  },
+});
+
+e8.defineCommand({
+  name: "org-kill-note-or-show-branches",
+  doc: "Abort storing current note, or show just branches.",
+  run: () => {
+    if (truthy(e8.variable("org-finish-function"))) {
+      e8.letBind({ "org-note-abort": true }, () => e8.funcall(e8.variable("org-finish-function") as string));
+    } else e8.call("outline-show-branches");
+  },
+});
 
 export const COOKIE = /\[(\d*\/\d*|\d*%)\]/g;
 const HAS_COOKIE = /\[(\d*\/\d*|\d*%)\]/;
@@ -3706,11 +3866,17 @@ function todo(direction: number, state?: string, across = false): void {
   updateParentTodoStatistics(h.line);
   let note: [string, string | undefined] | undefined;
   if (isDone(next) && !isDone(before)) note = autoRepeat(h.line, before, next as string);
+  const asked = !note && next !== undefined && dolog === "note";
   if (!note && next !== undefined && dolog !== undefined) note = [next, before];
+  // org-log-done note: a closing note, when the state itself logs nothing.
+  const closing = !note && isDone(next) && !isDone(before) && logDone === "note";
   e8.runHooks("org-after-todo-state-change-hook");
   fixPositionAfterTodo(h.line);
-  // Org stores the note from post-command-hook, after the command.
-  if (note) storeStateNote(h.line, note[0], note[1]);
+  // Org stores the note from post-command-hook, after the command, asking
+  // for one in *Org Note* when the state's @ says so.
+  if (asked) addLogNote(h.line, "state", note![0], note![1]);
+  else if (closing) addLogNote(h.line, "done", next, before);
+  else if (note) storeStateNote(h.line, note[0], note[1]);
 }
 
 /**
@@ -5683,6 +5849,12 @@ const ctrlCCtrlC = e8.defineCommand({
   run: () => {
     // As Org, the hook first: ob-core's function on it runs a source block point is in.
     if (truthy(e8.runHookWithArgsUntilSuccess("org-ctrl-c-ctrl-c-hook"))) return;
+    // In *Org Note* and the like, finish it, as org-finish-function says.
+    const finish = e8.variable("org-finish-function");
+    if (truthy(finish)) {
+      e8.funcall(finish as string);
+      return;
+    }
     const line = lineAt();
     const text = e8.lineText(line);
     if (/^[ \t]*$/.test(text)) nothingUseful();
@@ -6250,6 +6422,8 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "S-<left>": shiftLeft,
   "S-<right>": shiftRight,
   "C-c C-t": todoCommand,
+  "C-c C-z": "org-add-note",
+  "C-c C-k": "org-kill-note-or-show-branches",
   "C-c ,": "org-priority",
   "C-c C-q": setTagsCommand,
   "C-c C-c": ctrlCCtrlC,

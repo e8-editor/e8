@@ -1338,3 +1338,45 @@ fn links_find_headings_in_any_case_and_text_in_other_files() {
     assert_eq!(ed.window_buffer().name, "main.rs");
     assert_eq!(ed.window_buffer().point(), 14);
 }
+
+/// A state with @ asks for a note in *Org Note*, as Org does: C-c C-c
+/// stores it under the state's line, which then ends in \\, C-c C-k
+/// cancels it, and C-c C-z takes a note on its own.
+#[test]
+fn notes_are_taken_in_org_note_as_org_takes_them() {
+    let (mut ed, s) = logging_org("* Task\nbody\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-todo-keywords", [["TODO(t)", "WAIT(w@)", "|", "DONE(d)"]]), e8.call("org-mode"), 0)"#).unwrap();
+    ed.press("C-f C-f C-c C-t w").unwrap();
+    assert_eq!(ed.window_buffer().name, "*Org Note*");
+    assert_eq!(text(&ed), "# Insert note for state change from \"\" to \"WAIT\".\n# Finish with C-c C-c, or cancel with C-c C-k.\n\n");
+    ed.type_text("waiting on Bob\nand Ann");
+    ed.press("C-c C-c").unwrap();
+    assert_eq!(ed.window_buffer().name, "*scratch*");
+    assert_eq!(
+        text(&ed),
+        "* WAIT Task\n:LOGBOOK:\n- State \"WAIT\"       from              [2026-11-04 Wed 12:00] \\\\\n  waiting on Bob\n  and Ann\n:END:\nbody\n"
+    );
+    assert_eq!(ed.window_list().len(), 1, "the note's window goes");
+    // Cancelled, nothing is logged, though the state changed.
+    ed.press("C-c C-t t C-c C-t w").unwrap();
+    ed.type_text("never mind");
+    ed.press("C-c C-k").unwrap();
+    assert!(!text(&ed).contains("never mind"), "{}", text(&ed));
+    // A note on its own.
+    ed.press("C-c C-z").unwrap();
+    ed.type_text("remember this");
+    ed.press("C-c C-c").unwrap();
+    assert!(text(&ed).contains(":LOGBOOK:\n- Note taken on [2026-11-04 Wed 12:00] \\\\\n  remember this\n"), "{}", text(&ed));
+}
+
+/// LOG_INTO_DRAWER on a heading or one above it says where notes go, as
+/// the org-log-into-drawer function reads it, over the variable.
+#[test]
+fn log_into_drawer_property_says_where_notes_go() {
+    let (mut ed, _s) = logging_org("* Parent\n:PROPERTIES:\n:LOG_INTO_DRAWER: NOTES\n:END:\n** Child\nbody\n");
+    ed.press("C-n C-n C-n C-n C-f C-f C-f C-c C-t t").unwrap();
+    assert_eq!(
+        text(&ed),
+        "* Parent\n:PROPERTIES:\n:LOG_INTO_DRAWER: NOTES\n:END:\n** TODO Child\n:NOTES:\n- State \"TODO\"       from              [2026-11-04 Wed 12:00]\n:END:\nbody\n"
+    );
+}
