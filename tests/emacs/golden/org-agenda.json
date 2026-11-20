@@ -899,6 +899,135 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "todo-list-category-inheritance",
+      "input": {
+        "text": "#+CATEGORY: file\n* P\n:PROPERTIES:\n:CATEGORY: par\n:END:\n** TODO C1\n:PROPERTIES:\n:CATEGORY: nil\n:END:\n** TODO C2\n** TODO C3\n:PROPERTIES:\n:CATEGORY+: x\n:END:\n** TODO C4\n:PROPERTIES:\n:CATEGORY:\n:END:\n* TODO Q\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  ???:        TODO C1\n  par:        TODO C2\n  par x:      TODO C3\n              TODO C4\n  file:       TODO Q\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  ???:        TODO C1\n  par:        TODO C2\n  par x:      TODO C3\n              TODO C4\n  file:       TODO Q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-list-category-top-drawer",
+      "input": {
+        "text": ":PROPERTIES:\n:CATEGORY: top\n:CATEGORY+: more\n:END:\n* TODO A\n* B\n** TODO C\n:PROPERTIES:\n:CATEGORY+: deep\n:END:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  top more:   TODO A\n  top more deep:TODO C\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  top more:   TODO A\n  top more deep:TODO C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-list-category-file-name",
+      "input": {
+        "text": "* TODO A\n:PROPERTIES:\n:CATEGORY+: plus\n:END:\n* TODO B\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda plus:TODO A\n  e8-agenda:  TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda plus:TODO A\n  e8-agenda:  TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
     }
   ]
 }
