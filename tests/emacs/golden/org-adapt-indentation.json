@@ -1,0 +1,697 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "adapt-tab-indents-body",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 0,
+        "keys": "C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  body\n",
+      "visible": "* A\n  body\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-tab-indents-body-level-two",
+      "input": {
+        "text": "** A\nbody\n",
+        "point": 0,
+        "keys": "C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** A\n   body\n",
+      "visible": "** A\n   body\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-tab-on-blank-line",
+      "input": {
+        "text": "* A\n\n",
+        "point": 0,
+        "keys": "C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  \n",
+      "visible": "* A\n  \n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-return-indents",
+      "input": {
+        "text": "* A\nbody",
+        "point": 0,
+        "keys": "C-n C-e RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\nbody\nx",
+      "visible": "* A\nbody\nx",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-tab-follows-previous",
+      "input": {
+        "text": "* A\n   first\nsecond\n",
+        "point": 0,
+        "keys": "C-n C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n   first\n   second\n",
+      "visible": "* A\n   first\n   second\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-demote-shifts-body",
+      "input": {
+        "text": "* A\n  body\n  more\n** B\n   sub\n",
+        "point": 0,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** A\n   body\n   more\n** B\n   sub\n",
+      "visible": "** A\n   body\n   more\n** B\n   sub\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-promote-shifts-body",
+      "input": {
+        "text": "** A\n   body\n*** B\n    sub\n",
+        "point": 0,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  body\n*** B\n    sub\n",
+      "visible": "* A\n  body\n*** B\n    sub\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-demote-subtree-shifts-body",
+      "input": {
+        "text": "* A\n  body\n** B\n   sub\n",
+        "point": 0,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** A\n   body\n*** B\n    sub\n",
+      "visible": "** A\n   body\n*** B\n    sub\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-schedule-indents-planning",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ],
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  SCHEDULED: <2026-11-06 Fri>\nbody\n",
+      "visible": "* A\n  SCHEDULED: <2026-11-06 Fri>\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-property-drawer-indented",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "FOO",
+          "bar"
+        ],
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  :PROPERTIES:\n  :FOO:      bar\n  :END:\nbody\n",
+      "visible": "* A\n  :PROPERTIES:\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-logbook-indented",
+      "input": {
+        "text": "* TODO A\nbody\n#+TODO: TODO(!) | DONE(!)\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true,
+          "org-log-into-drawer": true
+        }
+      },
+      "text": "* DONE A\n  :LOGBOOK:\n  - State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n  :END:\nbody\n#+TODO: TODO(!) | DONE(!)\n",
+      "visible": "* DONE A\n  :LOGBOO\nbody\n#+TODO: TODO(!) | DONE(!)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headline-data-tab-body-not-indented",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 0,
+        "keys": "C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": "* A\nbody\n",
+      "visible": "* A\nbody\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "headline-data-planning-indented",
+      "input": {
+        "text": "* A\nSCHEDULED: <2026-11-04 Wed>\nbody\n",
+        "point": 0,
+        "keys": "C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": "* A\n  SCHEDULED: <2026-11-04 Wed>\nbody\n",
+      "visible": "* A\n  SCHEDULED: <2026-11-04 Wed>\nbody\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headline-data-schedule",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ],
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": "* A\n  SCHEDULED: <2026-11-06 Fri>\nbody\n",
+      "visible": "* A\n  SCHEDULED: <2026-11-06 Fri>\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headline-data-demote-shifts-data-only",
+      "input": {
+        "text": "* A\n  SCHEDULED: <2026-11-04 Wed>\n  body\n",
+        "point": 0,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": "** A\n   SCHEDULED: <2026-11-04 Wed>\n  body\n",
+      "visible": "** A\n   SCHEDULED: <2026-11-04 Wed>\n  body\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-nil-tab",
+      "input": {
+        "text": "* A\n  body\n",
+        "point": 0,
+        "keys": "C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": false
+        }
+      },
+      "text": "* A\nbody\n",
+      "visible": "* A\nbody\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-indent-region",
+      "input": {
+        "text": "* A\nbody\n- item\n  more\n** B\ntext\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  body\n  - item\n    more\n** B\n   text\n",
+      "visible": "* A\n  body\n  - item\n    more\n** B\n   text\n",
+      "point": 0,
+      "mark": 42,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headline-data-indent-region",
+      "input": {
+        "text": "* A\nSCHEDULED: <2026-11-04 Wed>\n:PROPERTIES:\n:X: 1\n:END:\nbody\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": "* A\n  SCHEDULED: <2026-11-04 Wed>\n  :PROPERTIES:\n  :X:        1\n  :END:\nbody\n",
+      "visible": "* A\n  SCHEDULED: <2026-11-04 Wed>\n  :PROPERTIES:\n  :X:        1\n  :END:\nbody\n",
+      "point": 0,
+      "mark": 77,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headline-data-property-drawer",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 0,
+        "keys": "C-c C-x p",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "FOO",
+          "bar"
+        ],
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": "* A\n  :PROPERTIES:\n  :FOO:      bar\n  :END:\nbody\n",
+      "visible": "* A\n  :PROPERTIES:\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-promote-gives-up-at-margin",
+      "input": {
+        "text": "** A\n   body\n  close\n",
+        "point": 0,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  body\n close\n",
+      "visible": "* A\n  body\n close\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-demote-keeps-preserved-block",
+      "input": {
+        "text": "* A\n  #+begin_src emacs-lisp\n  (x)\n  #+end_src\n",
+        "point": 0,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true,
+          "org-src-preserve-indentation": true
+        }
+      },
+      "text": "** A\n   #+begin_src emacs-lisp\n  (x)\n   #+end_src\n",
+      "visible": "** A\n   #+begin_src emacs-lisp\n  (x)\n   #+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-demote-shifts-logbook",
+      "input": {
+        "text": "* A\n  :LOGBOOK:\n  - note\n  :END:\n  body\n",
+        "point": 0,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": "** A\n   :LOGBOOK:\n   - note\n   :END:\n  body\n",
+      "visible": "** A\n   :LOGBOOK:\n   - note\n   :END:\n  body\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-demote-narrowed",
+      "input": {
+        "text": "* A\n  a\n* B\n  b\n",
+        "point": 0,
+        "keys": "C-x n s M-<right> C-x n w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** A\n   a\n* B\n  b\n",
+      "visible": "** A\n   a\n* B\n  b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-promote-narrowed",
+      "input": {
+        "text": "** A\n   a\n** B\n   b\n",
+        "point": 0,
+        "keys": "C-x n s M-<left> C-x n w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n  a\n** B\n   b\n",
+      "visible": "* A\n  a\n** B\n   b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-cycle-level-keeps-text",
+      "input": {
+        "text": "* A\n** \n   text\n",
+        "point": 7,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* A\n* \n   text\n",
+      "visible": "* A\n* \n   text\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-demote-skips-footnote",
+      "input": {
+        "text": "* A\n  body\n[fn:1] a\n\n  more\n",
+        "point": 0,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "** A\n   body\n[fn:1] a\n\n  more\n",
+      "visible": "** A\n   body\n[fn:1] a\n\n  more\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headline-data-after-top-drawer",
+      "input": {
+        "text": ":PROPERTIES:\n:X: 1\n:END:\n  text\n* A\n",
+        "point": 0,
+        "keys": "C-n C-n C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": ":PROPERTIES:\n:X: 1\n:END:\ntext\n* A\n",
+      "visible": ":PROPERTIES:\n:X: 1\n:END:\ntext\n* A\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

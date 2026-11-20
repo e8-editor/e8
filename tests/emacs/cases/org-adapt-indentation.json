@@ -1,0 +1,343 @@
+[
+  {
+    "name": "adapt-tab-indents-body",
+    "text": "* A\nbody\n",
+    "keys": "C-n TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-tab-indents-body-level-two",
+    "text": "** A\nbody\n",
+    "keys": "C-n TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-tab-on-blank-line",
+    "text": "* A\n\n",
+    "keys": "C-n TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-return-indents",
+    "text": "* A\nbody",
+    "keys": "C-n C-e RET x",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-tab-follows-previous",
+    "text": "* A\n   first\nsecond\n",
+    "keys": "C-n C-n TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-demote-shifts-body",
+    "text": "* A\n  body\n  more\n** B\n   sub\n",
+    "keys": "M-<right>",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-promote-shifts-body",
+    "text": "** A\n   body\n*** B\n    sub\n",
+    "keys": "M-<left>",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-demote-subtree-shifts-body",
+    "text": "* A\n  body\n** B\n   sub\n",
+    "keys": "M-S-<right>",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-schedule-indents-planning",
+    "text": "* A\nbody\n",
+    "keys": "C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    },
+    "answers": [
+      "2026-11-06"
+    ]
+  },
+  {
+    "name": "adapt-property-drawer-indented",
+    "text": "* A\nbody\n",
+    "keys": "C-c C-x p",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    },
+    "answers": [
+      "FOO",
+      "bar"
+    ]
+  },
+  {
+    "name": "adapt-logbook-indented",
+    "text": "* TODO A\nbody\n#+TODO: TODO(!) | DONE(!)\n",
+    "keys": "C-c C-t",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true,
+      "org-log-into-drawer": true
+    }
+  },
+  {
+    "name": "headline-data-tab-body-not-indented",
+    "text": "* A\nbody\n",
+    "keys": "C-n TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": "'headline-data"
+    }
+  },
+  {
+    "name": "headline-data-planning-indented",
+    "text": "* A\nSCHEDULED: <2026-11-04 Wed>\nbody\n",
+    "keys": "C-n TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": "'headline-data"
+    }
+  },
+  {
+    "name": "headline-data-schedule",
+    "text": "* A\nbody\n",
+    "keys": "C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": "'headline-data"
+    },
+    "answers": [
+      "2026-11-06"
+    ]
+  },
+  {
+    "name": "headline-data-demote-shifts-data-only",
+    "text": "* A\n  SCHEDULED: <2026-11-04 Wed>\n  body\n",
+    "keys": "M-<right>",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": "'headline-data"
+    }
+  },
+  {
+    "name": "adapt-nil-tab",
+    "text": "* A\n  body\n",
+    "keys": "C-n TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": false
+    }
+  },
+  {
+    "name": "adapt-indent-region",
+    "text": "* A\nbody\n- item\n  more\n** B\ntext\n",
+    "keys": "C-x h C-M-\\",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "headline-data-indent-region",
+    "text": "* A\nSCHEDULED: <2026-11-04 Wed>\n:PROPERTIES:\n:X: 1\n:END:\nbody\n",
+    "keys": "C-x h C-M-\\",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": "'headline-data"
+    }
+  },
+  {
+    "name": "headline-data-property-drawer",
+    "text": "* A\nbody\n",
+    "keys": "C-c C-x p",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": "'headline-data"
+    },
+    "answers": [
+      "FOO",
+      "bar"
+    ]
+  },
+  {
+    "name": "adapt-promote-gives-up-at-margin",
+    "text": "** A\n   body\n  close\n",
+    "keys": "M-<left>",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-demote-keeps-preserved-block",
+    "text": "* A\n  #+begin_src emacs-lisp\n  (x)\n  #+end_src\n",
+    "keys": "M-<right>",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true,
+      "org-src-preserve-indentation": true
+    }
+  },
+  {
+    "name": "adapt-demote-shifts-logbook",
+    "text": "* A\n  :LOGBOOK:\n  - note\n  :END:\n  body\n",
+    "keys": "M-<right>",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": "'headline-data"
+    }
+  },
+  {
+    "name": "adapt-demote-narrowed",
+    "text": "* A\n  a\n* B\n  b\n",
+    "keys": "C-x n s M-<right> C-x n w",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-promote-narrowed",
+    "text": "** A\n   a\n** B\n   b\n",
+    "keys": "C-x n s M-<left> C-x n w",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "adapt-cycle-level-keeps-text",
+    "text": "* A\n** \n   text\n",
+    "keys": "TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    },
+    "point": 7
+  },
+  {
+    "name": "adapt-demote-skips-footnote",
+    "text": "* A\n  body\n[fn:1] a\n\n  more\n",
+    "keys": "M-<right>",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": true
+    }
+  },
+  {
+    "name": "headline-data-after-top-drawer",
+    "text": ":PROPERTIES:\n:X: 1\n:END:\n  text\n* A\n",
+    "keys": "C-n C-n C-n TAB",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-adapt-indentation": "'headline-data"
+    }
+  }
+]

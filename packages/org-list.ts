@@ -5,7 +5,6 @@
 // org-list-write-struct does.
 
 import {
-  alignNodeProperty,
   allKeywords,
   type Heading,
   headingIndex,
@@ -1330,6 +1329,13 @@ function propertyDrawerEnd(line: number): number | undefined {
   return undefined;
 }
 
+/** Indents a line as org-indent-line does; org.ts, which has it, sets it. */
+let lineIndenter: (line: number) => void = () => {};
+
+export function setLineIndenter(f: (line: number) => void): void {
+  lineIndenter = f;
+}
+
 /**
  * Sets a property in a heading's property drawer, adding the drawer after
  * its planning line, folded, if there is none, as org-entry-put does.
@@ -1349,6 +1355,10 @@ export function entryPut(headingLine: number, property: string, value: string): 
       hideOverlay(e8.lineEnd(lineAt(endPos) - 1), endPos, "org-hide-drawer");
       if (endPos === e8.bufferSize() || begin === 0) edInsert(endPos, "\n");
       line = lineAt(begin);
+      // Indented as Org indents it, as org-insert-property-drawer's org-indent-region.
+      e8.saveExcursion(() => {
+        for (const l of [line, line + 1]) lineIndenter(l);
+      });
     }
     const close = propertyDrawerEnd(line) as number;
     const re = new RegExp(`^[ \\t]*:${escapeRegExp(property)}:`, "i");
@@ -1365,8 +1375,12 @@ export function entryPut(headingLine: number, property: string, value: string): 
       edInsert(at, "\n");
     }
     edInsert(at, `:${property}: ${value}`);
-    // As org-entry-put ends with org-indent-line, which aligns a property's value.
-    alignNodeProperty(lineAt(at));
+    // As org-entry-put ends with org-indent-line, which indents the line and aligns a property's value.
+    const propertyLine = lineAt(at);
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.lineStart(propertyLine));
+      lineIndenter(propertyLine);
+    });
   });
 }
 

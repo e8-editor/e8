@@ -360,7 +360,12 @@ answers come, and then from its answers, as save-some-buffers' do."
       ;; Variables for the case, buffer-local: true and false are t and nil.
       (dolist (var (alist-get 'vars case))
         (set (make-local-variable (car var))
-             (pcase (cdr var) (:json-false nil) ('t t) (v v))))
+             (pcase (cdr var)
+               (:json-false nil)
+               ('t t)
+               ;; A string starting with ' is a symbol, as 'headline-data.
+               ((and (pred stringp) v (guard (string-prefix-p "'" v))) (intern (substring v 1)))
+               (v v))))
       ;; A completion function offering the case's strings for the word at point.
       (when-let* ((strings (alist-get 'capf case)))
         (add-hook 'completion-at-point-functions

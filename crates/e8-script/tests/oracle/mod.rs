@@ -506,7 +506,8 @@ pub fn run(case: &Case) -> State {
         let value = match value {
             serde_json::Value::Bool(b) => e8_core::Value::Bool(*b),
             serde_json::Value::Number(n) => e8_core::Value::Number(n.as_f64().expect("a number")),
-            serde_json::Value::String(s) => e8_core::Value::Str(s.clone()),
+            // A string starting with ' is a symbol in Emacs, a string in E8, as 'headline-data.
+            serde_json::Value::String(s) => e8_core::Value::Str(s.strip_prefix('\'').unwrap_or(s).to_string()),
             _ => panic!("{}: {name} must be a number, string or boolean", case.name),
         };
         ed.make_local_variable(name);
