@@ -28,7 +28,7 @@
 // cut to fit; with transient-show-popup nil it does not show until C-h.
 
 import { withHelpWindow } from "help";
-import { truthy } from "subr";
+import { getBufferWindow, truthy, withSelectedWindow } from "subr";
 
 e8.defineFace({ name: "transient-heading", doc: "Face used for headings.", attributes: { inherit: "font-lock-keyword-face" } });
 e8.defineFace({ name: "transient-key", doc: "Face used for keys.", attributes: { inherit: "font-lock-builtin-face" } });
@@ -614,7 +614,18 @@ function bindKeys(): void {
     ["C-g", quitOne],
     ["C-q", quitAll],
     ["ESC ESC ESC", quitAll],
+    ["C-z", transientSuspend],
+    ["C-v", transientScrollUp],
+    ["C-M-v", transientScrollDown],
+    ["<next>", transientScrollUp],
+    ["<prior>", transientScrollDown],
+    ["C-u", "universal-argument"],
+    ["C--", "negative-argument"],
+    ["C-t", transientShow],
+    ["?", transientHelp],
     ["C-h", transientHelp],
+    ["C-M-p", transientHistoryPrev],
+    ["C-M-n", transientHistoryNext],
     ["C-x s", transientSet],
     ["C-x C-s", transientSave],
     ["C-x C-k", transientReset],
@@ -624,7 +635,7 @@ function bindKeys(): void {
     ["C-x t", transientToggleCommon],
     ["C-x a", transientToggleLevelLimit],
   ] as const) {
-    if (e8.lookupKey(map, key) === undefined) e8.defineKey(map, key, command);
+    if (e8.lookupKey(map, key) === undefined) e8.defineKey(map, key, command as e8.CommandName | e8.DefinedCommand);
   }
   e8.setKeymapParent(MAP, null);
   e8.setKeymapParent(MAP, map);
@@ -688,8 +699,18 @@ function callSuffix(command: string): void {
   lastArgs = { prefix, args: currentArgs() };
   e8.setOverridingMap(null);
   e8.letBind({ "transient-current-command": prefix, "transient-current-prefix": prefix }, () => {
-    e8.callInteractively(command as e8.CommandName);
+    interactively(command);
   });
+}
+
+/**
+ * Runs a suffix as keys would, with the prefix argument its key was given,
+ * as transient runs the suffix as the command of the key itself.
+ */
+function interactively(command: string): void {
+  const arg = e8.prefixArg();
+  if (arg === null || arg === undefined) e8.callInteractively(command as e8.CommandName);
+  else e8.callWithPrefix(arg, command as e8.CommandName);
 }
 
 function runSuffix(s: Suffix): void {
@@ -729,7 +750,7 @@ function runSuffix(s: Suffix): void {
     exit(false);
     lastArgs = { prefix, args };
     try {
-      e8.letBind({ "transient-current-command": prefix, "transient-current-prefix": prefix }, () => e8.callInteractively(s.command as e8.CommandName));
+      e8.letBind({ "transient-current-command": prefix, "transient-current-prefix": prefix }, () => interactively(s.command));
     } finally {
       if (parent && !active) {
         values = parent.values;
@@ -749,7 +770,7 @@ function runSuffix(s: Suffix): void {
   exit(false);
   lastArgs = { prefix, args };
   try {
-    e8.letBind({ "transient-current-command": prefix, "transient-current-prefix": prefix }, () => e8.callInteractively(s.command as e8.CommandName));
+    e8.letBind({ "transient-current-command": prefix, "transient-current-prefix": prefix }, () => interactively(s.command));
   } finally {
     if (parent && !active) {
       values = parent.values;
@@ -1087,12 +1108,101 @@ const transientHelp = e8.defineCommand({
       if (s.kind === "infix") doc = `${String(describe(s.description) ?? s.argument)} (${s.argument})\n\n${s.options.doc ?? `An argument of ${prefix}.`}`;
       else target = s.command;
     }
-    exit(true);
+    // The menu is suspended while the help shows, and q there resumes it,
+    // as transient-help with transient--do-suspend and transient-resume-mode.
+    suspend();
+    const configuration = e8.currentWindowConfiguration();
     if (doc !== undefined) {
       // In help-mode, as describe-variable shows an infix's, even in a *Help* made afresh.
       const text = `${target ?? ""}${target ? "\n\n" : ""}${doc}\n`;
       withHelpWindow(() => e8.insert(text));
     } else if (target) e8.call("describe-function" as e8.CommandName, target);
+    // As transient--describe-function: the help's window is selected.
+    const window = getBufferWindow("*Help*");
+    if (window === undefined) return;
+    e8.selectWindow(window);
+    e8.withCurrentBuffer(e8.windowBuffer(window)!, () => {
+      restoreConfiguration = configuration;
+      e8.callWithPrefix(1, transientResumeMode);
+    });
+    e8.message("Type q to resume transient command.");
+  },
+});
+
+// Suspending and resuming, as transient-suspend and transient-resume.
+
+/** The windows as they were before help showed, to put back when the menu resumes, as transient--restore-winconf. */
+let restoreConfiguration: e8.WindowConfiguration | undefined;
+
+/** Puts the menu away, keeping it on the stack to come back to, as transient--do-suspend. */
+function suspend(): void {
+  if (!active) return;
+  stack.push({ prefix: active.prefix, values, returnHere: false });
+  exit(false);
+}
+
+const transientSuspend = e8.defineCommand({
+  name: "transient-suspend",
+  doc: "Suspend the current transient. It can later be resumed using transient-resume, while no other transient is active.",
+  run: () => suspend(),
+});
+
+const transientResume = e8.defineCommand({
+  name: "transient-resume",
+  doc: "Resume a previously suspended stack of transients.",
+  run: () => {
+    const helping = truthy(e8.variable("transient-resume-mode"));
+    if (stack.length === 0 && !helping) return void e8.message("No suspended transient command");
+    const configuration = helping ? restoreConfiguration : undefined;
+    if (helping) {
+      restoreConfiguration = undefined;
+      e8.callWithPrefix(-1, transientResumeMode);
+      e8.call("quit-window");
+    }
+    if (stack.length === 0) return;
+    if (configuration) e8.setWindowConfiguration(configuration);
+    const top = stack.pop()!;
+    values = top.values;
+    setup(top.prefix, e8.currentBuffer(), true);
+  },
+});
+
+const transientResumeMode = e8.defineMinorMode({ name: "transient-resume-mode", doc: "Auxiliary minor-mode used to resume a transient after viewing help." });
+// As transient-resume-mode-map: what would leave the help resumes the menu too.
+e8.remapCommand("transient-resume-mode-map", "quit-window", transientResume);
+
+// Popup navigation, as transient's.
+
+/** Runs BODY in the menu's window, as with-selected-window transient--window. */
+function inMenuWindow(body: () => void): void {
+  const window = active?.window;
+  if (window === undefined || !e8.windowList().includes(window)) return;
+  withSelectedWindow(window, body);
+}
+
+const transientScrollUp = e8.defineCommand({
+  name: "transient-scroll-up",
+  doc: "Scroll text of transient popup window upward ARG lines. If ARG is nil scroll near full screen. This is a wrapper around scroll-up-command (which see).",
+  params: [{ name: "arg", kind: "prefix" }],
+  shiftSelect: true,
+  run: (arg: e8.Value) => inMenuWindow(() => (arg === null || arg === undefined ? e8.call("scroll-up-command") : e8.callWithPrefix(arg as e8.PrefixArg, "scroll-up-command"))),
+});
+
+const transientScrollDown = e8.defineCommand({
+  name: "transient-scroll-down",
+  doc: "Scroll text of transient popup window down ARG lines. If ARG is nil scroll near full screen. This is a wrapper around scroll-down-command (which see).",
+  params: [{ name: "arg", kind: "prefix" }],
+  shiftSelect: true,
+  run: (arg: e8.Value) => inMenuWindow(() => (arg === null || arg === undefined ? e8.call("scroll-down-command") : e8.callWithPrefix(arg as e8.PrefixArg, "scroll-down-command"))),
+});
+
+const transientShow = e8.defineCommand({
+  name: "transient-show",
+  doc: "Show the transient's state in the popup buffer.",
+  run: () => {
+    if (!active) return;
+    popupForced = true;
+    refresh();
   },
 });
 

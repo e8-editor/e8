@@ -39,6 +39,8 @@ transientDefinePrefix("tm-levels", {
   ],
 });
 transientDefinePrefix("tm-outer", { groups: [{ description: "Outer", items: [["l", "Levels", "tm-levels"]] }] });
+const arg = e8.defineCommand({ name: "tm-arg", params: [{ name: "n", kind: "prefix" }], run: (n: e8.Value) => e8.message(`arg ${JSON.stringify(n)}`) });
+transientDefinePrefix("tm-arg-menu", { groups: [{ description: "Arg", items: [["p", "Prefix", arg]] }] });
 transientDefinePrefix("tm-tall", {
   groups: [{ description: "Tall", items: Array.from({ length: 30 }, (_, i) => [String.fromCharCode(i < 26 ? 97 + i : 65 + i - 26), `Item ${i}`, hello] as [string, string, typeof hello]) }],
 });
@@ -225,4 +227,76 @@ fn without_a_popup_the_menu_shows_on_c_h_and_c_h_describes_a_suffix() {
     ed.press("C-h h").unwrap();
     assert_eq!(menu(&ed), None);
     assert!(ed.find_buffer("*Help*").is_some());
+}
+
+#[test]
+fn help_suspends_the_menu_and_q_resumes_it() {
+    let (mut ed, s, _pkgs) = setup();
+    ed.call("tm-main", vec![]).unwrap();
+    ed.press("b ? h").unwrap();
+    assert_eq!(menu(&ed), None);
+    assert_eq!(ed.echo(), Some("Type q to resume transient command."));
+    let selected = s.eval_expression(&mut ed, "e8.windowBuffer(e8.selectedWindow())").unwrap();
+    assert_eq!(selected, "\"*Help*\"");
+    // q leaves the help and brings the menu back, with its keys.
+    ed.press("q").unwrap();
+    assert!(menu(&ed).unwrap().starts_with("Left"), "{:?}", menu(&ed));
+    let shown = s.eval_expression(&mut ed, "JSON.stringify(e8.windowList().map((w) => e8.windowBuffer(w)))").unwrap();
+    assert!(!shown.contains("*Help*"), "{shown}");
+    ed.press("b").unwrap();
+    assert_eq!(count(&ed), 2.0);
+}
+
+#[test]
+fn c_z_suspends_the_menus_and_transient_resume_brings_them_back() {
+    let (mut ed, _s, _pkgs) = setup();
+    ed.call("transient-resume", vec![]).unwrap();
+    assert_eq!(ed.echo(), Some("No suspended transient command"));
+    ed.call("tm-main", vec![]).unwrap();
+    ed.press("s C-z").unwrap();
+    assert_eq!(menu(&ed), None);
+    // The keys are the buffer's own while it is suspended.
+    ed.press("b").unwrap();
+    assert_eq!(count(&ed), 0.0);
+    ed.call("transient-resume", vec![]).unwrap();
+    assert!(menu(&ed).unwrap().starts_with("Sub\n x Hello"), "{:?}", menu(&ed));
+    // The menu the sub-menu was entered from is still there to go back to.
+    ed.press("C-g").unwrap();
+    assert!(menu(&ed).unwrap().starts_with("Left"), "{:?}", menu(&ed));
+}
+
+#[test]
+fn c_v_and_c_m_v_scroll_a_menu_cut_to_fit() {
+    let (mut ed, s, _pkgs) = setup();
+    ed.set_frame_size(80, 20);
+    ed.call("tm-tall", vec![]).unwrap();
+    let start = |ed: &mut Editor| {
+        s.eval_expression(ed, r#"e8.windowStart(e8.windowList().find((w) => e8.windowBuffer(w) === " *transient*"))"#).unwrap()
+    };
+    assert_eq!(start(&mut ed), "0");
+    ed.press("C-v").unwrap();
+    assert_ne!(start(&mut ed), "0");
+    ed.press("C-M-v").unwrap();
+    assert_eq!(start(&mut ed), "0");
+    // Still in the menu.
+    ed.press("b").unwrap();
+    assert_eq!(ed.echo(), Some("Hello"));
+}
+
+#[test]
+fn c_m_p_goes_back_to_earlier_values_and_c_u_reaches_the_suffix() {
+    let (mut ed, _s, _pkgs) = setup();
+    ed.call("args-menu", vec![]).unwrap();
+    ed.press("- v s").unwrap();
+    assert_eq!(ed.echo(), Some(r#"["--all","--verbose"]"#));
+    ed.call("args-menu", vec![]).unwrap();
+    ed.press("C-M-p s").unwrap();
+    assert_eq!(ed.echo(), Some(r#"["--all","--verbose"]"#));
+    ed.call("tm-arg-menu", vec![]).unwrap();
+    ed.press("p").unwrap();
+    let plain = ed.echo().map(str::to_string);
+    ed.call("tm-arg-menu", vec![]).unwrap();
+    ed.press("C-u p").unwrap();
+    assert_ne!(ed.echo().map(str::to_string), plain);
+    assert_eq!(menu(&ed), None);
 }
