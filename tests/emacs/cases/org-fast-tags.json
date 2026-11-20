@@ -1,0 +1,391 @@
+[
+  {
+    "name": "tags-line-groups-keep-one",
+    "text": "#+TAGS: { contracting(c) novels(n) private(p) } other(o) emacs(e)\n* Task :private:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 68,
+    "answers": [
+      "n",
+      "e",
+      "\r"
+    ]
+  },
+  {
+    "name": "tags-line-without-keys-reads-them",
+    "text": "#+TAGS: work home @phone\n* Task\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 27,
+    "answers": [
+      "work:home"
+    ]
+  },
+  {
+    "name": "buffer-tags-without-a-table",
+    "text": "* A :x:\n* B\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "answers": [
+      "x:y"
+    ]
+  },
+  {
+    "name": "bang-turns-groups-off",
+    "text": "#+TAGS: { a(a) b(b) }\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 24,
+    "answers": [
+      "a",
+      "!",
+      "b",
+      "\r"
+    ]
+  },
+  {
+    "name": "groups-keep-one-without-bang",
+    "text": "#+TAGS: { a(a) b(b) }\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 24,
+    "answers": [
+      "a",
+      "b",
+      "\r"
+    ]
+  },
+  {
+    "name": "space-clears-the-tags",
+    "text": "#+TAGS: a(a) b(b) c(c)\n* T :a:b:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 25,
+    "answers": [
+      " ",
+      "c",
+      "\r"
+    ]
+  },
+  {
+    "name": "single-key-exits-after-one",
+    "text": "#+TAGS: a(a) b(b)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "vars": {
+      "org-fast-tag-selection-single-key": true
+    },
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "c-c-turns-single-key-off",
+    "text": "#+TAGS: a(a) b(b)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "vars": {
+      "org-fast-tag-selection-single-key": true
+    },
+    "answers": [
+      "\u0003",
+      "a",
+      "b",
+      "\r"
+    ]
+  },
+  {
+    "name": "expert-exits-after-one",
+    "text": "#+TAGS: a(a) b(b)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "vars": {
+      "org-fast-tag-selection-single-key": "'expert"
+    },
+    "answers": [
+      "b"
+    ]
+  },
+  {
+    "name": "expert-c-c-shows-the-window",
+    "text": "#+TAGS: a(a) b(b)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "vars": {
+      "org-fast-tag-selection-single-key": "'expert"
+    },
+    "answers": [
+      "\u0003",
+      "a",
+      "b",
+      "\r"
+    ]
+  },
+  {
+    "name": "keys-assigned-past-taken-ones",
+    "text": "#+TAGS: apple(a) avocado banana\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 34,
+    "answers": [
+      "b",
+      "c",
+      "\r"
+    ]
+  },
+  {
+    "name": "at-tags-get-their-second-letter",
+    "text": "#+TAGS: @home @work\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 22,
+    "vars": {
+      "org-use-fast-tag-selection": true
+    },
+    "answers": [
+      "h",
+      "w",
+      "\r"
+    ]
+  },
+  {
+    "name": "group-tags-name-their-group",
+    "text": "#+TAGS: [ GTD : Control Persp ]\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 34,
+    "vars": {
+      "org-use-fast-tag-selection": true
+    },
+    "answers": [
+      "g",
+      "c",
+      "\r"
+    ]
+  },
+  {
+    "name": "todo-keys-beside-the-tags",
+    "text": "#+TODO: TODO(t) | DONE(d)\n#+TAGS: x(x)\n* TODO T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 41,
+    "vars": {
+      "org-fast-tag-selection-include-todo": true
+    },
+    "answers": [
+      "d",
+      "x",
+      "\r"
+    ]
+  },
+  {
+    "name": "q-quits-when-no-tag-has-it",
+    "text": "#+TAGS: a(a)\n* T :a:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 15,
+    "answers": [
+      "a",
+      "q"
+    ]
+  },
+  {
+    "name": "q-is-a-tag-when-one-has-it",
+    "text": "#+TAGS: quiet(q)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 19,
+    "answers": [
+      "q",
+      "\r"
+    ]
+  },
+  {
+    "name": "c-u-aligns-every-headings-tags",
+    "text": "* A :x:\n* B                 :y:\n",
+    "keys": "C-u C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2
+  },
+  {
+    "name": "before-the-first-heading",
+    "text": "Intro\n* H\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0
+  },
+  {
+    "name": "tab-types-a-tag",
+    "text": "#+TAGS: a(a)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 15,
+    "answers": [
+      "a",
+      "\t",
+      "zz",
+      "\r"
+    ]
+  },
+  {
+    "name": "several-tags-lines",
+    "text": "#+TAGS: a(a)\n#+TAGS: b(b)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 28,
+    "answers": [
+      "a",
+      "b",
+      "\r"
+    ]
+  },
+  {
+    "name": "named-group",
+    "text": "#+TAGS: { a(a) b(b) }\n* T :b:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 24,
+    "answers": [
+      "a",
+      "\r"
+    ]
+  },
+  {
+    "name": "tags-in-a-block-are-no-table",
+    "text": "#+begin_example\n#+TAGS: a(a)\n#+end_example\n* T :x:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 45,
+    "answers": [
+      "y"
+    ]
+  },
+  {
+    "name": "buffer-tags-keyed-last-first",
+    "text": "* A :ab:\n* B :ac:\n* C\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "\r"
+    ],
+    "point": 20,
+    "vars": {
+      "org-use-fast-tag-selection": true
+    }
+  },
+  {
+    "name": "unchanged-tags-are-aligned",
+    "text": "#+TAGS: a(a)\n* T :a:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "\r"
+    ],
+    "point": 15
+  },
+  {
+    "name": "duplicate-tags-become-one",
+    "text": "#+TAGS: a(a)\n* T :a:a:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "\r"
+    ],
+    "point": 15
+  },
+  {
+    "name": "point-after-the-stars-moves-on",
+    "text": "#+TAGS: a(a)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "\r"
+    ],
+    "point": 14
+  },
+  {
+    "name": "indented-tags-line",
+    "text": "  #+TAGS: a(a)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "\r"
+    ],
+    "point": 17
+  },
+  {
+    "name": "inherited-and-own-tag-once",
+    "text": "#+FILETAGS: :a:b:\n#+TAGS: a(a) b(b) c(c)\n* P :a:\n** C :b:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "c",
+      "\r"
+    ],
+    "point": 52
+  }
+]

@@ -1565,3 +1565,47 @@ fn property_separators_join_values_added_with_plus() {
         assert!(t.contains(&format!("{drawer}\n- State \"DONE\"")), "{t:?}");
     }
 }
+
+/// org-tag-persistent-alist's tags come first in every file's table, unless
+/// #+STARTUP: noptag; a group's tag ends " : " in the menu, as Emacs 30.2 drew it here.
+#[test]
+fn persistent_tags_come_first_and_noptag_leaves_them_out() {
+    let menu = |ed: &Editor| ed.buffers().iter().find(|b| b.name == " *Org tags*").map(|b| b.slice(0..b.len())).unwrap();
+    let (mut ed, s) = org("#+TAGS: [ GTD : Control ] home(h)\n* T\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-tag-persistent-alist", [["urgent", "u"]]), 1)"#).unwrap();
+    let at = find(&ed, "* T") + 2;
+    ed.window_buffer_mut().set_point(at);
+    ed.set_frame_size(80, 24);
+    ed.press("C-c C-q u h RET").unwrap();
+    assert!(text(&ed).ends_with(":urgent:home:\n"), "{:?}", text(&ed));
+    assert_eq!(
+        menu(&ed),
+        "Inherited:  \nCurrent:    urgent home\n\n  [u] urgent    \n[ [g] GTD     : [c] Control   ]\n  [h] home      \n"
+    );
+    let (mut ed, s) = org("#+STARTUP: noptag\n#+TAGS: home(h)\n* T\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-tag-persistent-alist", [["urgent", "u"]]), 1)"#).unwrap();
+    ed.call("org-mode", vec![]).unwrap();
+    let at = find(&ed, "* T") + 2;
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-c C-q u h RET").unwrap();
+    assert!(text(&ed).ends_with(":home:\n"), "{:?}", text(&ed));
+}
+
+/// The tags show across the frame, its other windows gone meanwhile, as
+/// org-display-buffer-split shows them, and inherited tags in the order
+/// org-get-tags keeps them, each where it comes last.
+#[test]
+fn the_tags_menu_takes_the_frames_width_and_lists_inherited_tags_as_org_does() {
+    let menu = |ed: &Editor| ed.buffers().iter().find(|b| b.name == " *Org tags*").map(|b| b.slice(0..b.len())).unwrap();
+    let (mut ed, _s) = org("#+FILETAGS: :a:b:\n#+TAGS: c(c) d(d) e(e) f(f) g(g) h(h) i(i) j(j) k(k) l(l)\n* P :a:\n** C\n");
+    ed.set_frame_size(80, 24);
+    let at = find(&ed, "** C") + 3;
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-x 3 C-c C-q c RET").unwrap();
+    let text = menu(&ed);
+    let lines: Vec<&str> = text.lines().collect();
+    assert_eq!(lines[0], "Inherited:  b a");
+    // Nine to a row of 80 columns, (80 - 4) / 8.
+    assert_eq!(lines[3].matches('[').count(), 9, "{text}");
+    assert_eq!(ed.window_list().len(), 2);
+}

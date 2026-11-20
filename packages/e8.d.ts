@@ -6028,7 +6028,7 @@ declare global {
        */
       "org-set-tags": [tags: string];
       /**
-       * Set the tags of the heading point is under. With keys in org-tag-alist, pick them by their keys in *Org tags*; else type them, as :work:home: or work home, empty for none. With C-u C-u, type them anyway.
+       * Set the tags for the current visible entry. With C-u, realign all tags in the buffer. With C-u C-u, do not offer the fast tag selection interface. Tags are picked by their keys in *Org tags* when the table gives keys (org-use-fast-tag-selection), else typed with completion.
        *
        * Defined in packages/org.ts.
        */
@@ -12925,7 +12925,19 @@ declare global {
        */
       "org-ellipsis": Value;
       /**
-       * Whether picking a tag by its key in fast tag selection finishes at once.
+       * Whether fast tag selection offers the TODO states with their keys too, a key setting the heading's state.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-fast-tag-selection-include-todo": Value;
+      /**
+       * How many tags without keys of their own and outside groups fast tag selection shows, each given a key in turn.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-fast-tag-selection-maximum-tags": Value;
+      /**
+       * Whether picking a tag by its key in fast tag selection finishes at once; expert also leaves the tags unshown until C-c.
        *
        * Defined in packages/org.ts.
        */
@@ -13429,6 +13441,12 @@ declare global {
        */
       "org-tag-faces": Value;
       /**
+       * Tags offered in every file, before org-tag-alist's or a file's TAGS lines', as [tag, key] lists; #+STARTUP: noptag leaves them out.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-tag-persistent-alist": Value;
+      /**
        * Where tags go on a heading line: a negative column aligns their end there, a positive one their start.
        *
        * Defined in packages/org.ts.
@@ -13482,6 +13500,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-use-speed-commands": Value;
+      /**
+       * Whether headings inherit the tags of those above them and the file's.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-use-tag-inheritance": Value;
       /**
        * Whether C-y folds the subtrees it yanks, unless folding would hide text after them.
        *
@@ -16260,6 +16284,12 @@ declare global {
        */
       "org-tag": FaceAttributes;
       /**
+       * The tag that names a group of tags.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-tag-group": FaceAttributes;
+      /**
        * Link targets, such as <<target>>.
        *
        * Defined in packages/org.ts.
@@ -16353,6 +16383,10 @@ declare global {
        * The active region.
        */
       "region": FaceAttributes;
+      /**
+       * The secondary selection, and text marked beside the region, as the tags Org's fast tag selection is choosing.
+       */
+      "secondary-selection": FaceAttributes;
       /**
        * A here-document.
        *
