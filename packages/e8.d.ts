@@ -5981,7 +5981,7 @@ declare global {
        */
       "org-return-and-maybe-indent": [];
       /**
-       * Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it.
+       * Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date.
        *
        * @param date text
        *
