@@ -1797,6 +1797,16 @@ function fillAsParagraph(beg: number, end: number, justify: string | undefined):
   e8.letBind({ "fill-prefix": prefix ?? null, "adaptive-fill-mode": prefix === undefined || prefix !== "" ? true : null }, () => fillRegionAsParagraph(beg, end, justify));
 }
 
+/** A line that is an affiliated keyword, as #+CAPTION and #+NAME, which belongs to the element after it. */
+const AFFILIATED = /^[ \t]*#\+(?:CAPTION|DATA|HEADERS?|LABEL|NAME|PLOT|RESNAME|RESULT|RESULTS|SOURCE|SRCNAME|TBLNAME|ATTR_[-_A-Za-z0-9]+)(?:\[.*\])?:/i;
+
+/** Whether a paragraph is a LaTeX environment, \\begin{X} to \\end{X}, which org-element makes its own element and Org never fills. */
+function latexEnvironment(beg: number, end: number): boolean {
+  const text = e8.bufferText(beg, end).replace(/\s+$/, "");
+  const m = /^[ \t]*\\begin\{([A-Za-z0-9*]+)\}/.exec(text);
+  return m !== null && new RegExp(`\\\\end\\{${m[1]!.replace(/\*/g, "\\*")}\\}[ \t]*$`).test(text);
+}
+
 /**
  * Fills the element at point where Org fills, as org-fill-element: a
  * paragraph, cut at its line breaks (\\\\ at a line's end); a comment's
@@ -1807,6 +1817,8 @@ function fillAsParagraph(beg: number, end: number, justify: string | undefined):
 function orgFillElement(justify: string | undefined): void {
   const element = e8.saveExcursion(() => {
     e8.gotoChar(e8.lineEnd(lineAt()));
+    // An affiliated keyword belongs to the element after it, as org-element-at-point has it.
+    while (AFFILIATED.test(e8.lineText(lineAt())) && lineAt() + 1 < e8.lineCount()) e8.gotoChar(e8.lineEnd(lineAt() + 1));
     return elementAt(e8.point());
   });
   if (element === undefined) return;
@@ -1828,10 +1840,18 @@ function orgFillElement(justify: string | undefined): void {
       let end = Math.min(e8.pointMax(), element.contentsEnd ?? endBeforeBlank(element));
       // At an affiliated keyword, nothing.
       if (lineEndHere < beg) return;
+      if (latexEnvironment(element.begin, end)) return;
       e8.saveExcursion(() => {
         const cuts = [beg];
         const text = e8.bufferText(beg, end);
-        for (const m of allMatches(/\\\\[ \t]*\n/g, text)) cuts.push(beg + [...text.slice(0, m.index + m[0].length)].length);
+        // Verbatim and code, where a \\\\ is no line break, over at most two lines, as Org's emphasis.
+        const literal = allMatches(/(^|[-\s('"{])([=~])(\S|\S[^]*?\S)\2(?=[-\s.,:!?;'")}[\]]|$)/g, text)
+          .filter((m) => (m[3]!.match(/\n/g) ?? []).length <= 1)
+          .map((m) => [m.index + m[1]!.length, m.index + m[0].length] as const);
+        for (const m of allMatches(/(?<!\\)\\\\[ \t]*\n/g, text)) {
+          if (literal.some(([a, b]) => a < m.index && m.index < b)) continue;
+          cuts.push(beg + [...text.slice(0, m.index + m[0].length)].length);
+        }
         for (const c of cuts.filter((c) => c !== end).reverse()) {
           fillAsParagraph(c, end, justify);
           end = c;
@@ -1916,9 +1936,10 @@ function orgFillParagraph(justify: string | undefined, region: boolean): void {
       e8.skipCharsBackward(" \t\n");
       while (e8.point() > start) {
         orgFillElement(justify);
-        // Back to the element before, as org-backward-paragraph goes.
+        // Back to the start of the element, as org-backward-paragraph goes, so a
+        // comment's blank # lines and its other paragraphs are passed over.
         const el = elementAt(e8.lineStart(lineAt()));
-        e8.gotoChar(Math.max(start, el?.type === "paragraph" ? (el.contentsBegin ?? el.begin) : e8.lineStart(lineAt())));
+        e8.gotoChar(Math.max(start, el?.begin ?? e8.lineStart(lineAt())));
         e8.gotoChar(e8.lineStart(lineAt()));
         e8.skipCharsBackward(" \t\n");
       }
@@ -1948,6 +1969,26 @@ e8.defineCommand({
     orgFillParagraph(justify === null ? undefined : "full", true);
   },
 });
+/** Where an Org element starts, as org-element-paragraph-separate without its ^: Emacs 30.2's value in org-mode. */
+const ORG_PARAGRAPH_START =
+  "\\(?:\\*+ \\|\\[fn:[-_[:word:]]+\\]\\|%%(\\|[ \t]*\\(?:$\\||\\|\\+\\(?:-+\\+\\)+[ \t]*$\\|#\\(?: \\|$\\|\\+\\(?:BEGIN_\\S-+\\|\\S-+\\(?:\\[.*\\]\\)?:[ \t]*\\)\\)\\|:\\(?: \\|$\\|[-_[:word:]]+:[ \t]*$\\)\\|-\\{5,\\}[ \t]*$\\|\\\\begin{\\([A-Za-z0-9*]+\\)}\\|\\(?:^[\t ]*CLOCK:\\(?:[\t ]+\\(?:\\[\\([[:digit:]]\\{4\\}-[[:digit:]]\\{2\\}-[[:digit:]]\\{2\\}\\(?: .*?\\)?\\)\\]\\)\\(?:--\\(?:\\[\\([[:digit:]]\\{4\\}-[[:digit:]]\\{2\\}-[[:digit:]]\\{2\\}\\(?: .*?\\)?\\)\\]\\)[\t ]+=>[\t ]+[[:digit:]]+:[[:digit:]][[:digit:]]\\)?\\|[\t ]+=>[\t ]+[[:digit:]]+:[[:digit:]][[:digit:]]\\)[\t ]*$\\)\\|\\(?:[-+*]\\|\\(?:[0-9]+\\)[.)]\\)\\(?:[ \t]\\|$\\)\\)\\)";
+
+/** A line break here would make an Org line break, \\\\ at a line's end, as org-fill-line-break-nobreak-p. */
+e8.defun("org-fill-line-break-nobreak-p", () =>
+  e8.saveExcursion(() => {
+    e8.skipCharsBackward(" \t");
+    e8.skipCharsBackward("\\\\");
+    return e8.lookingAt("\\\\\\\\\\($\\|[^\\]\\)");
+  }),
+);
+/** A line break here would make a {{{n}}} macro an item, as org-fill-n-macro-as-item-nobreak-p. */
+e8.defun("org-fill-n-macro-as-item-nobreak-p", () => e8.lookingAt("[ \t]*{{{n\\(?:([^\n)]*)\\)?}}}[.)]\\(?:$\\| \\)"));
+/** A line break here would split a timestamp, as org-fill-paragraph-with-timestamp-nobreak-p. */
+e8.defun("org-fill-paragraph-with-timestamp-nobreak-p", () => {
+  const p = e8.point();
+  return tsMatches(lineAt()).some((ts) => ts.start < p && p <= ts.end);
+});
+
 const GREATER_ELEMENTS = ["center-block", "drawer", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
 
 /**
@@ -6342,6 +6383,17 @@ e8.defineMajorMode({
     // Auto Fill breaks lines only where Org fills them, as org-setup-filling sets it.
     e8.makeLocalVariable("normal-auto-fill-function");
     e8.setVariable("normal-auto-fill-function", "org-auto-fill-function");
+    // As org-setup-filling: M-x fill-paragraph fills as Org does, and lines
+    // never break where the rest would start a new element or split an object.
+    for (const [name, value] of [
+      ["fill-paragraph-function", "org-fill-paragraph"],
+      ["paragraph-start", ORG_PARAGRAPH_START],
+      ["paragraph-separate", ORG_PARAGRAPH_START],
+      ["fill-nobreak-predicate", ["org-fill-line-break-nobreak-p", "org-fill-n-macro-as-item-nobreak-p", "org-fill-paragraph-with-timestamp-nobreak-p"]],
+    ] as const) {
+      e8.makeLocalVariable(name);
+      e8.setVariable(name, value as unknown as e8.Value);
+    }
     e8.addHook("jit-lock-functions", fontify, { local: true });
     e8.addHook("after-change-functions", foldsAfterChange, { local: true });
     e8.addHook("after-change-functions", headingsAfterChange, { local: true });

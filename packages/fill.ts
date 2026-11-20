@@ -53,6 +53,12 @@ e8.defineVariable({
   local: true,
 });
 e8.defineVariable({
+  name: "fill-nobreak-predicate",
+  doc: "Functions called, with point where a line would break, to say it must not break there; any true stops it, as Org's keep a timestamp whole.",
+  value: [],
+  local: true,
+});
+e8.defineVariable({
   name: "normal-auto-fill-function",
   doc: "The command Auto Fill mode puts in auto-fill-function. Some major modes set it.",
   value: "do-auto-fill",
@@ -262,9 +268,18 @@ function fillNobreakP(): boolean {
       return true;
     }
   }
+  // Not where the rest of the line would start a paragraph, as paragraph-start says.
   let q = p;
   while (q < e8.pointMax() && " \t".includes(charAt(q))) q++;
-  return q < e8.bufferSize() && charAt(q) !== "\n" && charAt(q) === "\f";
+  if (q < e8.pointMax() && charAt(q) !== "\n") {
+    const start = e8.variable("paragraph-start");
+    if (typeof start === "string" ? e8.lookingAt(start, q) : charAt(q) === "\f") return true;
+  }
+  // Nor where a mode's fill-nobreak-predicate says not, as Org's keep timestamps and line breaks whole.
+  for (const f of (e8.variable("fill-nobreak-predicate") ?? []) as e8.Value[]) {
+    if (truthy(e8.funcall(f as string))) return true;
+  }
+  return false;
 }
 
 /** Moves back to where the line should break, after `linebeg`, as fill-move-to-break-point. */

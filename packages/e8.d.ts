@@ -10833,6 +10833,12 @@ declare global {
        */
       "fill-column": Value;
       /**
+       * Functions called, with point where a line would break, to say it must not break there; any true stops it, as Org's keep a timestamp whole.
+       *
+       * Defined in packages/fill.ts.
+       */
+      "fill-nobreak-predicate": Value;
+      /**
        * A command M-q runs instead of filling plain text, as major modes such as Org set it, or nil.
        *
        * Defined in packages/fill.ts.
