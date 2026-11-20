@@ -447,8 +447,7 @@
         "visit": "e8-oracle-refile.org",
         "answers": [
           "B"
-        ],
-        "message": true
+        ]
       },
       "text": "* A\n* B\n** A\n",
       "visible": "* A\n* B\n** A\n",
@@ -457,8 +456,7 @@
       "mark_active": false,
       "kill_ring": [],
       "modified": true,
-      "error": null,
-      "message": "Refile (and keep) to \"B\" in file /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-oracle-refile.org: done"
+      "error": null
     },
     {
       "name": "refile-to-a-new-parent",
@@ -776,8 +774,7 @@
         "visit": "e8-oracle-refile.org",
         "answers": [
           "B"
-        ],
-        "message": true
+        ]
       },
       "text": "* B\n** See [[https://x.org]] and [[a][b]]\n",
       "visible": "* B\n** See https://x.org and b\n",
@@ -786,8 +783,7 @@
       "mark_active": false,
       "kill_ring": [],
       "modified": true,
-      "error": null,
-      "message": "Refile to \"B\" in file /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-oracle-refile.org: done"
+      "error": null
     }
   ]
 }

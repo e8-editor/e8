@@ -237,7 +237,6 @@
     "answers": [
       "B"
     ],
-    "message": true,
     "visit": "e8-oracle-refile.org"
   },
   {
@@ -420,7 +419,6 @@
     "point": 0,
     "answers": [
       "B"
-    ],
-    "message": true
+    ]
   }
 ]
