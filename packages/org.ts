@@ -505,15 +505,30 @@ export function entryGetInherited(h: Heading, property: string): string | undefi
     if (p !== undefined) return p;
     if (level === 1) break;
   }
-  return fileProperty(property);
+  return topProperty(property) ?? fileProperty(property);
+}
+
+/** A property of the drawer before the first heading, at the top of the file after comments and keywords, as org-data's. */
+function topProperty(property: string): string | undefined {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    for (let l = 0; l < e8.lineCount(); l++) {
+      const text = e8.lineText(l);
+      if (/^[ \t]*$/.test(text) || /^[ \t]*#/.test(text)) continue;
+      // entryGet looks under a heading line, so ask from the line before the drawer.
+      return /^[ \t]*:PROPERTIES:[ \t]*$/i.test(text) ? entryGet(l - 1, property) : undefined;
+    }
+    return undefined;
+  });
 }
 
 /** A #+PROPERTY: line's value for `property`, the last line's if several, as org-file-properties keeps them. */
 function fileProperty(property: string): string | undefined {
   let value: string | undefined;
   for (const [, , text] of keywordLines()) {
-    const m = /^#\+PROPERTY:[ \t]+(\S+)(?:[ \t]+(.*?))?[ \t]*$/i.exec(text);
-    if (m && m[1].toLowerCase() === property.toLowerCase()) value = m[2] ?? "";
+    // A name and a value, as org-collect-keywords trims them: a name alone is no property.
+    const m = /^#\+PROPERTY:[ \t]+(\S+)[ \t]+(\S.*?)[ \t]*$/i.exec(text);
+    if (m && m[1].toLowerCase() === property.toLowerCase()) value = m[2];
   }
   return value;
 }
@@ -1323,8 +1338,13 @@ function logBeginning(h: Heading, create = false): number {
   let p = endpos;
   while (p < e8.bufferSize() && /[ \t\n]/.test(e8.bufferText(p, p + 1))) p++;
   p = e8.lineStart(lineAt(p));
-  // Oldest first, after the state notes already there, as org-skip-over-state-notes.
-  if (!truthy(e8.variable("org-log-states-order-reversed"))) p = afterStateNotes(p);
+  // Oldest first, after the state notes already there, as org-skip-over-state-notes,
+  // then back over the blank lines after them, as org-log-beginning does.
+  if (!truthy(e8.variable("org-log-states-order-reversed"))) {
+    p = afterStateNotes(p);
+    while (p > 0 && /[ \t\n]/.test(e8.bufferText(p - 1, p))) p--;
+    p = lineStartOrEnd(lineAt(p) + 1);
+  }
   if (p < endpos) p = endpos;
   return p === e8.lineStart(lineAt(p)) ? p : lineStartOrEnd(lineAt(p) + 1);
 }
@@ -1353,6 +1373,8 @@ function afterStateNotes(p: number): number {
     while (next < e8.lineCount()) {
       const text = e8.lineText(next);
       if (/^[ \t]*$/.test(text)) {
+        // Two blank lines end the list, as org-list-end-re.
+        if (next + 1 < e8.lineCount() && /^[ \t]*$/.test(e8.lineText(next + 1))) return lineStartOrEnd(last + 1);
         next++;
         continue;
       }
@@ -4081,8 +4103,13 @@ function todoLogged(direction: number, state?: string, across = false): void {
   // A repeat, as org-auto-repeat-maybe: a note already set up is taken as
   // a note if org-log-repeat is note, else the repeat is logged as its state.
   const repeat = isDone(next) && !isDone(before) ? autoRepeat(h.line, before, next as string) : undefined;
-  if (repeat !== undefined) {
-    const logRepeat = e8.variable("org-log-repeat");
+  // With a LOGGING property, the state the repeat goes back to logs as it
+  // says, as org-auto-repeat-maybe's own org-todo reads LOGGING again.
+  const back = repeat !== undefined && localLogStates !== undefined ? parseHeading(h.line)?.todo : undefined;
+  const backLog = back !== undefined ? logHow(back, next) : undefined;
+  if (backLog !== undefined) setup = { purpose: "state", how: backLog, state: back, previous: next };
+  const logRepeat = e8.variable("org-log-repeat");
+  if (repeat !== undefined && truthy(logRepeat)) {
     if (setup !== undefined) {
       if (logRepeat === "note") setup.how = "note";
     } else setup = { purpose: "state", how: logRepeat === "note" ? "note" : "time", state: repeat[0], previous: repeat[1] };
@@ -4152,7 +4179,7 @@ function fastTodoSelection(current: string | undefined): string | undefined {
 /**
  * When a heading marked done has a repeating timestamp, puts it back to
  * its state and moves the timestamps on, as org-auto-repeat-maybe does.
- * Returns the note to log, if org-log-repeat says to.
+ * Returns the state it was marked and the one before, if it repeated.
  */
 function autoRepeat(line: number, last: string | undefined, done: string): [string, string] | undefined {
   const h = parseHeading(line) as Heading;
@@ -4187,7 +4214,7 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   repeatEntry(parseHeading(line) as Heading);
   e8.gotoChar(p.pos);
   dropMarker(p);
-  return log ? [done, last ?? ""] : undefined;
+  return [done, last ?? ""];
 }
 
 /**
@@ -6771,7 +6798,8 @@ e8.defineMajorMode({
     for (const [, , text] of keywordLines()) {
       const m = /^#\+STARTUP:(.*)$/i.exec(text);
       for (const word of m ? m[1].trim().split(/\s+/) : []) {
-        const option = STARTUP_LOG_OPTIONS[word];
+        // Any case, as org-set-regexps-and-options's assoc-string.
+        const option = STARTUP_LOG_OPTIONS[word.toLowerCase()];
         if (option === undefined) continue;
         e8.makeLocalVariable(option[0]);
         e8.setVariable(option[0], option[1]);

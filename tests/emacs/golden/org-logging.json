@@ -249,6 +249,182 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "logging-oldest-first-blank-after-heading",
+      "input": {
+        "text": "* TODO a\n\n* b\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE a\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n* b\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+      "visible": "* DONE a\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n* b\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-oldest-first-blank-then-body",
+      "input": {
+        "text": "* TODO a\n\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE a\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+      "visible": "* DONE a\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-oldest-first-notes-then-blank",
+      "input": {
+        "text": "* TODO a\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE a\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+      "visible": "* DONE a\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-oldest-first-two-blank-lines",
+      "input": {
+        "text": "* TODO a\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n\n\n- State \"TODO\"       from              [2026-11-02 Mon 09:00]\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE a\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n\n- State \"TODO\"       from              [2026-11-02 Mon 09:00]\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+      "visible": "* DONE a\n- State \"TODO\"       from              [2026-11-01 Sun 09:00]\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n\n- State \"TODO\"       from              [2026-11-02 Mon 09:00]\nbody\n#+STARTUP: nologstatesreversed\n#+TODO: TODO(!) | DONE(!)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-property-repeat-logs-the-state-back",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed +1d>\n:PROPERTIES:\n:LOGGING: TODO(!) DONE(!)\n:END:\n#+TODO: TODO | DONE\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-05 Thu +1d>\n:PROPERTIES:\n:LOGGING: TODO(!) DONE(!)\n:END:\n- State \"TODO\"       from \"DONE\"       [2026-11-04 Wed 12:00]\n#+TODO: TODO | DONE\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-05 Thu +1d>\n:PROPERTIES:\n:LOGGING: TODO(!) DONE(!)\n:END:\n- State \"TODO\"       from \"DONE\"       [2026-11-04 Wed 12:00]\n#+TODO: TODO | DONE\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-top-property-drawer",
+      "input": {
+        "text": ":PROPERTIES:\n:LOGGING: DONE(!)\n:END:\n* TODO Task\nbody\n#+TODO: TODO | DONE\n",
+        "point": 0,
+        "keys": "C-n C-n C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": ":PROPERTIES:\n:LOGGING: DONE(!)\n:END:\n* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+TODO: TODO | DONE\n",
+      "visible": ":PROPERTIES:\n:LOGGING: DONE(!)\n:END:\n* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+TODO: TODO | DONE\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-startup-any-case",
+      "input": {
+        "text": "* TODO Task\nbody\n#+STARTUP: LogDone\n#+TODO: TODO | DONE\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: LogDone\n#+TODO: TODO | DONE\n",
+      "visible": "* DONE Task\nCLOSED: [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: LogDone\n#+TODO: TODO | DONE\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logging-file-property-without-value",
+      "input": {
+        "text": "* TODO Task\nbody\n#+PROPERTY: LOGGING \n#+TODO: TODO(!) | DONE(!)\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+PROPERTY: LOGGING \n#+TODO: TODO(!) | DONE(!)\n",
+      "visible": "* DONE Task\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\nbody\n#+PROPERTY: LOGGING \n#+TODO: TODO(!) | DONE(!)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
