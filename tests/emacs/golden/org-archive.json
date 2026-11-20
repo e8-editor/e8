@@ -1,0 +1,287 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "archive-under-a-heading-in-the-file",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO Task :work:\nbody\n* Other\n",
+        "point": 23,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Other\n\n* Archive\n\n** TODO Task                                                           :work:\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_LTAGS: work\n:END:\nbody\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Other\n\n* Archive\n\n** TODO Task                                                           :work:\n:PROPERTIES:\nbody\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO Task :work:\nbody\n",
+        "* TODO Task :work:\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-to-the-top-level-of-the-file",
+      "input": {
+        "text": "#+ARCHIVE: ::\n* A\nbody\n* B\n",
+        "point": 14,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::\n* B\n\n* A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\nbody\n",
+      "visible": "#+ARCHIVE: ::\n* B\n\n* A\n:PROPERTIES:\nbody\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\nbody\n",
+        "* A\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-a-child-keeps-inherited-tags",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* P :p:\n** C :c:\nbody\n* Q\n",
+        "point": 31,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* P :p:\n* Q\n\n* Archive\n\n** C                                                                    :p:c:\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: P\n:ARCHIVE_ITAGS: p\n:ARCHIVE_LTAGS: c\n:END:\nbody\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* P :p:\n* Q\n\n* Archive\n\n** C                                                                    :p:c:\n:PROPERTIES:\nbody\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** C :c:\nbody\n",
+        "** C :c:\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-first-with-reversed-order",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* Task\n* Archive\n** old\n",
+        "point": 23,
+        "keys": "C-c $",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-reversed-order": true,
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n** old\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** Task\n:PROPERTIES:\n** old\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-marked-done",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO Task\n",
+        "point": 23,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-mark-done": true,
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** DONE Task\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** DONE Task\n:PROPERTIES:\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO Task\n\n",
+        "* TODO Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-tag-toggled",
+      "input": {
+        "text": "* H\nbody\n",
+        "point": 0,
+        "keys": "C-c C-x a C-c C-x a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "* H\nbody\n",
+      "visible": "* H",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Subtree unarchived"
+    },
+    {
+      "name": "archive-default-command",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* Task\n",
+        "point": 23,
+        "keys": "C-c C-x C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** Task\n:PROPERTIES:\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-statistics-updated",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* P [1/2]\n** DONE a\n** TODO b\n",
+        "point": 33,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* P [0/1]\n** TODO b\n\n* Archive\n\n** DONE a\n:PROPERTIES:\n:ARCHIVE_TODO: DONE\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: P\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* P [0/1]\n** TODO b\n\n* Archive\n\n** DONE a\n:PROPERTIES:\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** DONE a\n",
+        "** DONE a\n"
+      ],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

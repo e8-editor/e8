@@ -5294,6 +5294,36 @@ declare global {
        */
       "org-align-tags": [];
       /**
+       * Set the ARCHIVE tag.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-set-tag": [];
+      /**
+       * Move the current subtree to the archive: org-archive-location's heading in this file or another, or the location an ARCHIVE property or #+ARCHIVE: line gives, with properties saying when and from where it came.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-subtree": [];
+      /**
+       * Archive the current subtree with the default command, org-archive-default-command.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-subtree-default": [];
+      /**
+       * Archive the current subtree with the default command, asking first.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-subtree-default-with-confirmation": [];
+      /**
+       * Archive the current heading by moving it under the archive sibling, a sibling headed org-archive-sibling-heading with the ARCHIVE tag, made at the end of the parent's subtree if there is none.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-to-archive-sibling": [];
+      /**
        * Break the line past fill-column as Auto Fill does, but only where Org fills: never in a heading, a table, a keyword or a block.
        *
        * Defined in packages/org.ts.
@@ -6357,6 +6387,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-todo-set": [state: string];
+      /**
+       * Toggle the archive tag for the current headline, folding its subtree when it is set.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-toggle-archive-tag": [];
       /**
        * Tick or untick the checkbox of the item point is on, or of the items in the region or under the heading. With C-u, add a checkbox to the item, or remove its checkbox.
        *
@@ -12827,6 +12863,66 @@ declare global {
        */
       "org-agenda-window-setup": Value;
       /**
+       * The command C-c C-x C-a archives with.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-default-command": Value;
+      /**
+       * What a new archive file starts with, %s this file's name; nil for nothing.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-file-header-format": Value;
+      /**
+       * Where archived subtrees go, as FILE::HEADING: %s in either is this file's name; an empty FILE is this file, an empty HEADING the top level, and "datetree/" a date tree. A #+ARCHIVE: line or an ARCHIVE property says otherwise.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-location": Value;
+      /**
+       * Whether an archived entry is marked done, or the done state to mark it with.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-mark-done": Value;
+      /**
+       * Whether an archived tree goes first under its archive heading rather than last.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-reversed-order": Value;
+      /**
+       * What an archived entry keeps of where it was, each as an ARCHIVE_ property: time, file, ltags, itags, todo, category and olpath.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-save-context-info": Value;
+      /**
+       * The heading of the sibling C-c C-x A archives under.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-sibling-heading": Value;
+      /**
+       * Whether an archived subtree gets the tags it inherited: t, infile when archived in this file, or nil.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-subtree-add-inherited-tags": Value;
+      /**
+       * When the archive file is saved after archiving: t, from-org, from-agenda, or nil.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-subtree-save-file-p": Value;
+      /**
+       * The tag that marks a subtree archived where it is.
+       *
+       * Defined in packages/org-archive.ts.
+       */
+      "org-archive-tag": Value;
+      /**
        * The header arguments every source block has unless it says otherwise: pairs of an argument and its value.
        *
        * Defined in packages/ob-core.ts.
@@ -17291,6 +17387,10 @@ declare global {
        * Run after entering Org-Agenda mode, after the hooks of the modes it is built on.
        */
       "org-agenda-mode-hook": Value;
+      /**
+       * Run in the archived subtree's buffer, before it is cut, after it is put in its archive.
+       */
+      "org-archive-hook": Value;
       /**
        * Run after a source block has run and its results are in the buffer.
        */

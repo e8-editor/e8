@@ -380,6 +380,9 @@ answers come, and then from its answers, as save-some-buffers' do."
                ('t t)
                ;; A string starting with ' is a symbol, as 'headline-data.
                ((and (pred stringp) v (guard (string-prefix-p "'" v))) (intern (substring v 1)))
+               ;; A list of strings, those starting with ' symbols, as ("'time" "'todo").
+               ((and (pred listp) v (guard (and v (cl-every #'stringp v))))
+                (mapcar (lambda (x) (if (string-prefix-p "'" x) (intern (substring x 1)) x)) v))
                ;; An object is an alist of strings, as (("NAME" . "value")).
                ((and `((,(pred symbolp) . ,_) . ,_) v)
                 (mapcar (lambda (c) (cons (symbol-name (car c)) (cdr c))) v))

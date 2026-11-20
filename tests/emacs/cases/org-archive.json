@@ -1,0 +1,165 @@
+[
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-under-a-heading-in-the-file",
+    "text": "#+ARCHIVE: ::* Archive\n* TODO Task :work:\nbody\n* Other\n",
+    "keys": "C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-to-the-top-level-of-the-file",
+    "text": "#+ARCHIVE: ::\n* A\nbody\n* B\n",
+    "keys": "C-c C-x C-s",
+    "point": 14,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-a-child-keeps-inherited-tags",
+    "text": "#+ARCHIVE: ::* Archive\n* P :p:\n** C :c:\nbody\n* Q\n",
+    "keys": "C-c C-x C-s",
+    "point": 31,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-first-with-reversed-order",
+    "text": "#+ARCHIVE: ::* Archive\n* Task\n* Archive\n** old\n",
+    "keys": "C-c $",
+    "point": 23,
+    "vars": {
+      "org-archive-reversed-order": true,
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-marked-done",
+    "text": "#+ARCHIVE: ::* Archive\n* TODO Task\n",
+    "keys": "C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-mark-done": true,
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-tag-toggled",
+    "text": "* H\nbody\n",
+    "keys": "C-c C-x a C-c C-x a",
+    "point": 0,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-default-command",
+    "text": "#+ARCHIVE: ::* Archive\n* Task\n",
+    "keys": "C-c C-x C-a",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-statistics-updated",
+    "text": "#+ARCHIVE: ::* Archive\n* P [1/2]\n** DONE a\n** TODO b\n",
+    "keys": "C-c C-x C-s",
+    "point": 33,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  }
+]
