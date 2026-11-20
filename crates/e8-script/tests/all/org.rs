@@ -572,6 +572,32 @@ fn structure_templates_with_a_common_letter_make_a_submenu() {
     assert_eq!(typed(alist, "", "C-c C-, q"), "a\n#+begin_quote\n|#+end_quote\nb\n");
 }
 
+/// A menu taller than its window can be scrolled with C-n, C-p, C-v and
+/// M-v, as org--mks-read-key lets it, and a key still chooses after.
+#[test]
+fn org_select_scrolls_a_long_menu() {
+    let (mut ed, s) = org("a\n");
+    ed.set_frame_size(80, 16);
+    s.eval_expression(
+        &mut ed,
+        r#"(e8.setVariable("org-structure-template-alist", [..."abcdefghijklmnopqrstuvwxyzABCD"].map((k) => [k, `src ${k}`])),
+            globalThis.scrolls = [],
+            e8.adviceAdd("scroll-up-command", "before", () => globalThis.scrolls.push(`up ${e8.bufferName()}`)),
+            e8.adviceAdd("scroll-down-command", "before", () => globalThis.scrolls.push(`down ${e8.bufferName()}`)), 0)"#,
+    )
+    .unwrap();
+    ed.press("C-c C-, C-v C-n M-v C-p z").unwrap();
+    assert_eq!(text(&ed), "#+begin_src z\n#+end_src\na\n");
+    let scrolls = s.eval_expression(&mut ed, "globalThis.scrolls.join(\", \")").unwrap();
+    // M-v goes back as far as C-v went, which leaves C-n's line for C-p.
+    assert_eq!(scrolls.trim_matches('"'), "up *Org Select*, up *Org Select*, down *Org Select*, down *Org Select*");
+    // A menu that fits has no scrolling: C-v is a key it does not take.
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-structure-template-alist", [["q", "quote"]]), globalThis.scrolls = [], 0)"#).unwrap();
+    ed.press("C-c C-, C-v q").unwrap();
+    assert_eq!(s.eval_expression(&mut ed, "globalThis.scrolls.length").unwrap(), "0");
+    assert!(text(&ed).contains("#+begin_quote\n#+end_quote\n"), "{}", text(&ed));
+}
+
 #[test]
 fn org_insert_structure_template_asks_by_key() {
     // As Emacs 30's C-c C-, leaves them.

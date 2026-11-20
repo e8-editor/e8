@@ -111,6 +111,19 @@ export function edDelete(from: number, to: number): string {
 }
 
 
+/** Scrolls *Org Select* for a key, as org-scroll: a line with C-n and C-p, a screen with C-v and M-v, saying so at either end. */
+function mksScroll(key: string): void {
+  const down = key === "C-n" || key === "C-v";
+  if (e8.posVisibleInWindowP(down ? e8.pointMax() : e8.pointMin()) !== undefined) {
+    e8.message(down ? "End of buffer" : "Beginning of buffer");
+    return;
+  }
+  const command = down ? "scroll-up-command" : "scroll-down-command";
+  // A line ignores errors, as org-scroll's ignore-errors around (scroll-up 1).
+  if (key === "C-n" || key === "C-p") e8.conditionCase(() => e8.callWithPrefix(1, command), { error: () => undefined });
+  else e8.call(command);
+}
+
 /**
  * Asks for one of a table's entries by its keys, a key at a time, as
  * org-mks does: *Org Select* lists the entries and prefixes a key can
@@ -155,9 +168,17 @@ export function orgMks(table: e8.Value[][], title: string, prompt = "Select: ", 
         });
         e8.gotoChar(0);
         e8.call("shrink-window-if-larger-than-buffer");
+        // A menu taller than its window can be scrolled, as org--mks-read-key and org-scroll let it.
+        const navigation = e8.posVisibleInWindowP(Math.max(e8.pointMax() - 1, 0)) === undefined;
+        e8.makeLocalVariable("header-line-format");
+        e8.setVariable("header-line-format", navigation ? "Use C-n, C-p, C-v, M-v to navigate." : null);
         let pressed: string;
         for (;;) {
           const key = e8.readKey(prompt);
+          if (navigation && (key === "C-n" || key === "C-p" || key === "C-v" || key === "M-v")) {
+            mksScroll(key);
+            continue;
+          }
           pressed = key === "SPC" || key === "TAB" || key === "RET" ? "\t" : key;
           if (pressed === "C-g" || allowed.has(pressed)) break;
           e8.message(`Invalid key: ‘${pressed}’`);
