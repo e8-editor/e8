@@ -161,5 +161,187 @@
         "'ltags"
       ]
     }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-twice-in-a-row",
+    "text": "#+ARCHIVE: ::* Archive\n* A\n* B\n* Archive\n",
+    "keys": "C-c C-x C-s C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-the-last-child-keeps-the-cookie",
+    "text": "#+ARCHIVE: ::* Archive\n* P [0/2]\n** TODO a\n** DONE b\n* Q\n",
+    "keys": "C-c C-x C-s",
+    "point": 43,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-with-a-checkbox-cookie",
+    "text": "#+ARCHIVE: ::* Archive\n* P [1/2]\n- [X] a\n- [ ] b\n** C\n** D\n",
+    "keys": "C-c C-x C-s",
+    "point": 49,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-heading-found-ignoring-case",
+    "text": "#+ARCHIVE: ::* Archive\n* Task\n* ARCHIVE\n** old\n",
+    "keys": "C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-first-keyword-counts",
+    "text": "#+ARCHIVE: ::* First\n#+ARCHIVE: ::* Second\n* Task\n",
+    "keys": "C-c C-x C-s",
+    "point": 43,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-tag-set-moves-to-the-line-start",
+    "text": "* Heading\nbody\n",
+    "keys": "C-c C-x a",
+    "point": 4,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-narrowed-keeps-the-outline-path",
+    "text": "#+ARCHIVE: ::* Archive\n* P :p:\n** C\n* Q\n",
+    "keys": "C-x n s C-c C-x C-s C-x n w",
+    "point": 31,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-without-tag-inheritance",
+    "text": "#+ARCHIVE: ::* Archive\n* P :p:\n** C\n",
+    "keys": "C-c C-x C-s",
+    "point": 31,
+    "vars": {
+      "org-use-tag-inheritance": false,
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-header-with-percent",
+    "text": "* Task\n",
+    "keys": "C-c C-x C-s",
+    "point": 0,
+    "vars": {
+      "org-archive-location": "::* Done (100%%)",
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
   }
 ]

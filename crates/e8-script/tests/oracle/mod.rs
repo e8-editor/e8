@@ -549,7 +549,7 @@ pub fn run(case: &Case) -> State {
                     })
                     .collect(),
             ),
-            _ => panic!("{}: {name} must be a number, string, boolean or object of strings", case.name),
+            _ => panic!("{}: {name} must be a number, string, boolean, list of strings or object of strings", case.name),
         };
         ed.make_local_variable(name);
         ed.set_variable(name, value);

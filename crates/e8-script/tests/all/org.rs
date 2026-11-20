@@ -1716,9 +1716,10 @@ fn capture_fills_kills_names_and_the_clock_and_goes_back_to_the_last() {
 
 /// C-c C-x A files the entry under an Archive sibling, made with the
 /// ARCHIVE tag, with the time; C-c C-x C-s files it in FILE_archive, a new
-/// file with Org's header, saved, or in a date tree.
+/// file with Org's mode line and header, saved; a buffer with no file
+/// cannot be archived.
 #[test]
-fn archiving_to_the_sibling_another_file_and_a_date_tree() {
+fn archiving_to_the_sibling_and_another_file() {
     let (mut ed, s) = org("* P\n** a\nbody a\n** b\n");
     s.eval_expression(&mut ed, r#"(e8.setVariable("e8--today", "2026-11-04"), 1)"#).unwrap();
     ed.window_buffer_mut().set_point(4);
@@ -1755,4 +1756,22 @@ fn archiving_to_the_sibling_another_file_and_a_date_tree() {
     ed.window_buffer_mut().set_point(at);
     // A buffer needs a file to archive from.
     assert!(ed.press("C-c C-x C-s").is_err() || ed.take_error().is_some());
+}
+
+/// Archiving to the sibling twice files each entry once, and the counts and
+/// fold are those of the sibling the entry went under.
+#[test]
+fn archiving_to_the_sibling_twice_and_under_the_right_parent() {
+    let (mut ed, s) = org("* P\n** a\n** b\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("e8--today", "2026-11-04"), 1)"#).unwrap();
+    ed.press("M-< C-n C-c C-x A C-c C-x A").unwrap();
+    let t = text(&ed);
+    assert_eq!(t.matches("*** a").count(), 1, "{t:?}");
+    assert_eq!(t.matches("*** b").count(), 1, "{t:?}");
+    assert_eq!(t.matches(":ARCHIVE_TIME:").count(), 2, "{t:?}");
+    let (mut ed, _s) = org("* P1\n** Archive :ARCHIVE:\n*** x\n* P2 [0/1]\n** TODO a\n");
+    let at = find(&ed, "** TODO a");
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-c C-x A").unwrap();
+    assert!(text(&ed).contains("* P2 [0/0]\n"), "{:?}", text(&ed));
 }
