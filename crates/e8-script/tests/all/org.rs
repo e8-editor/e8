@@ -560,6 +560,18 @@ fn org_tempo_expands_templates_once_required() {
     assert_eq!(typed("", "<s", "TAB"), "a\n<s|\nb\n");
 }
 
+/// Keys sharing a first letter make a submenu in *Org Select*, as
+/// org--insert-structure-template-mks builds it: a one-letter key is
+/// chosen there with TAB, a longer one cut to two letters.
+#[test]
+fn structure_templates_with_a_common_letter_make_a_submenu() {
+    let alist = r#"e8.setVariable("org-structure-template-alist", [["s", "src"], ["se", "src emacs-lisp"], ["sht", "src sh"], ["q", "quote"]])"#;
+    assert_eq!(typed(alist, "", "C-c C-, s TAB"), "a\n#+begin_src |\n#+end_src\nb\n");
+    assert_eq!(typed(alist, "", "C-c C-, s e"), "a\n#+begin_src emacs-lisp\n|#+end_src\nb\n");
+    assert_eq!(typed(alist, "", "C-c C-, s h"), "a\n#+begin_src sh\n|#+end_src\nb\n");
+    assert_eq!(typed(alist, "", "C-c C-, q"), "a\n#+begin_quote\n|#+end_quote\nb\n");
+}
+
 #[test]
 fn org_insert_structure_template_asks_by_key() {
     // As Emacs 30's C-c C-, leaves them.

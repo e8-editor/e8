@@ -1,0 +1,128 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "structure-template-by-key",
+      "input": {
+        "text": "a\n",
+        "point": 0,
+        "keys": "C-c C-,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ]
+      },
+      "text": "#+begin_quote\n#+end_quote\na\n",
+      "visible": "#+begin_quote\n#+end_quote\na\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "structure-template-src",
+      "input": {
+        "text": "a\n",
+        "point": 0,
+        "keys": "C-c C-,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ]
+      },
+      "text": "#+begin_src \n#+end_src\na\n",
+      "visible": "#+begin_src \n#+end_src\na\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "structure-template-capital-key",
+      "input": {
+        "text": "a\n",
+        "point": 0,
+        "keys": "C-c C-,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "C"
+        ]
+      },
+      "text": "#+begin_comment\n#+end_comment\na\n",
+      "visible": "#+begin_comment\n#+end_comment\na\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "structure-template-tab-asks-for-the-name",
+      "input": {
+        "text": "a\n",
+        "point": 0,
+        "keys": "C-c C-,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "\t",
+          "quote"
+        ]
+      },
+      "text": "#+begin_quote\n#+end_quote\na\n",
+      "visible": "#+begin_quote\n#+end_quote\na\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "structure-template-space-asks-for-the-name",
+      "input": {
+        "text": "a\n",
+        "point": 0,
+        "keys": "C-c C-,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " ",
+          "SRC python"
+        ]
+      },
+      "text": "#+BEGIN_SRC python\n#+END_SRC\na\n",
+      "visible": "#+BEGIN_SRC python\n#+END_SRC\na\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}
