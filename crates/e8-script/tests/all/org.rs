@@ -1685,3 +1685,31 @@ fn refile_copies_into_its_own_subtree_and_unfolds_the_last_place() {
     assert_eq!(at, find(&ed, "*** A"));
     assert_eq!(s.eval_expression(&mut ed, "e8.invisibleP(e8.point())").unwrap(), "false");
 }
+
+/// %c is the latest kill, %n user-full-name and %k the clocked entry's
+/// title; C-u C-u org-capture goes to where the last capture went.
+#[test]
+fn capture_fills_kills_names_and_the_clock_and_goes_back_to_the_last() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let path = dir.path().join("notes.org");
+    std::fs::write(&path, "* Inbox\n* Working on it\nlong enough text for a bookmark's context\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.call("find-file", vec![Arg::Str(path.display().to_string())]).unwrap();
+    s.eval_expression(
+        &mut ed,
+        &format!(
+            r#"(e8.setVariable("e8--today", "2026-11-04"), e8.setVariable("user-full-name", "Ann Example"), e8.setVariable("org-capture-templates", [["t", "T", "entry", ["file+headline", {:?}, "Inbox"], "* %c by %n during %k%?\n"]]), 1)"#,
+            path.display().to_string()
+        ),
+    )
+    .unwrap();
+    let at = find(&ed, "* Working");
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-c C-x C-i").unwrap();
+    s.eval_expression(&mut ed, r#"(e8.killNew("the kill"), 1)"#).unwrap();
+    ed.press("M-x o r g - c a p t u r e RET t C-c C-c").unwrap();
+    assert!(text(&ed).starts_with("* Inbox\n** the kill by Ann Example during Working on it\n"), "{:?}", text(&ed));
+    ed.press("M-> C-u C-u M-x o r g - c a p t u r e RET").unwrap();
+    assert_eq!(s.eval_expression(&mut ed, "e8.point()").unwrap(), "8");
+}

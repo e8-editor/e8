@@ -5581,7 +5581,7 @@ for (const [name, n, what, doc] of [
  * days from today, or +2w, +1m, +1y; 2026-11-03, 11-03 or 3 for the next such
  * date; a weekday such as fri for the next one; and a time such as 10:30.
  */
-function parseDate(input: string, withTime = false): DateTime {
+export function parseDate(input: string, withTime = false): DateTime {
   let text = input.trim().toLowerCase();
   const base = today();
   let time: [number, number] | undefined;

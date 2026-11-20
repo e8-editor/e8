@@ -253,5 +253,342 @@
     "call": [
       "org-capture"
     ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-prepended-under-a-headline",
+    "text": "* one\n* Inbox\n** old\n",
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* TODO %?\n",
+        ":prepend",
+        true
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-prepended-to-the-file",
+    "text": "intro\n* one\n",
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* TODO %?\n",
+        ":prepend",
+        true
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-finished-at-once",
+    "text": "* Inbox\n",
+    "keys": "",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* TODO done\n",
+        ":immediate-finish",
+        true
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-unnarrowed",
+    "text": "* one\n* Inbox\n** old\n",
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* TODO %?\n",
+        ":unnarrowed",
+        true
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-jumps-to-the-entry",
+    "text": "* one\n* Inbox\n",
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* TODO %?\n",
+        ":jump-to-captured",
+        true
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-plain-text",
+    "text": "* Inbox\nbody\n* two\n",
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "some text %?"
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-plain-text-prepended",
+    "text": "* Inbox\nbody\n* two\n",
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "some text %?",
+        ":prepend",
+        true
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-prompts-and-answers",
+    "text": "* Inbox\n",
+    "keys": "C-c C-c",
+    "answers": [
+      "t",
+      "Ann",
+      ""
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %^{Name} met at %^{Where|office|home}, %\\1%?\n"
+      ]
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-a-date-asked",
+    "text": "* Inbox\n",
+    "keys": "C-c C-c",
+    "answers": [
+      "t",
+      "2026-11-10",
+      "2026-11-11 10:30"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* Due %^t %^U%?\n"
+      ]
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-time-format-and-file",
+    "text": "* Inbox\n",
+    "keys": "C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %<%Y-%m> from %f%?\n"
+      ]
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "call": [
+      "org-capture"
+    ],
+    "point": 2,
+    "name": "capture-escaped-percent",
+    "text": "* Inbox\n",
+    "keys": "C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* \\%t stays and %t goes%?\n"
+      ]
+    ],
+    "today": "2026-11-04"
   }
 ]

@@ -357,6 +357,464 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "capture-prepended-under-a-headline",
+      "input": {
+        "text": "* one\n* Inbox\n** old\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO %?\n",
+            ":prepend",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\n* Inbox\n** TODO new\n** old\n",
+      "visible": "* one\n* Inbox\n** TODO new\n** old\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-prepended-to-the-file",
+      "input": {
+        "text": "intro\n* one\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file",
+              "FILE"
+            ],
+            "* TODO %?\n",
+            ":prepend",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "intro\n* TODO new\n* one\n",
+      "visible": "intro\n* TODO new\n* one\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-finished-at-once",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO done\n",
+            ":immediate-finish",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** TODO done\n",
+      "visible": "* Inbox\n** TODO done\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-unnarrowed",
+      "input": {
+        "text": "* one\n* Inbox\n** old\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO %?\n",
+            ":unnarrowed",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\n* Inbox\n** old\n** TODO new\n",
+      "visible": "* one\n* Inbox\n** old\n** TODO new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-jumps-to-the-entry",
+      "input": {
+        "text": "* one\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO %?\n",
+            ":jump-to-captured",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\n* Inbox\n** TODO new\n",
+      "visible": "* one\n* Inbox\n** TODO new\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-plain-text",
+      "input": {
+        "text": "* Inbox\nbody\n* two\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "plain",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "some text %?"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\nbody\nsome text new\n* two\n",
+      "visible": "* Inbox\nbody\nsome text new\n* two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-plain-text-prepended",
+      "input": {
+        "text": "* Inbox\nbody\n* two\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "plain",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "some text %?",
+            ":prepend",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\nsome text new\nbody\n* two\n",
+      "visible": "* Inbox\nsome text new\nbody\n* two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-prompts-and-answers",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %^{Name} met at %^{Where|office|home}, %\\1%?\n"
+          ]
+        ],
+        "answers": [
+          "t",
+          "Ann",
+          ""
+        ]
+      },
+      "text": "* Inbox\n** Ann met at office, Ann\n",
+      "visible": "* Inbox\n** Ann met at office, Ann\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-a-date-asked",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* Due %^t %^U%?\n"
+          ]
+        ],
+        "answers": [
+          "t",
+          "2026-11-10",
+          "2026-11-11 10:30"
+        ]
+      },
+      "text": "* Inbox\n** Due <2026-11-10 Tue> [2026-11-11 Wed 10:30]\n",
+      "visible": "* Inbox\n** Due <2026-11-10 Tue> [2026-11-11 Wed 10:30]\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-time-format-and-file",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %<%Y-%m> from %f%?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** 2026-11 from e8-capture.org\n",
+      "visible": "* Inbox\n** 2026-11 from e8-capture.org\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-escaped-percent",
+      "input": {
+        "text": "* Inbox\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* \\%t stays and %t goes%?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** %t stays and <2026-11-04 Wed> goes\n",
+      "visible": "* Inbox\n** %t stays and <2026-11-04 Wed> goes\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

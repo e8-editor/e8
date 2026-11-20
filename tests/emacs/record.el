@@ -38,6 +38,7 @@
 ;; types them.  The first error is recorded.
 
 (require 'json)
+(require 'cl-lib)
 
 ;; Batch mode starts with these off; interactive Emacs has them on.
 (transient-mark-mode 1)
@@ -337,6 +338,18 @@ answers come, and then from its answers, as save-some-buffers' do."
                                           (cdr (nth 3 tpl))))
                             (nth 4 tpl)))
                     (alist-get 'capture_templates case)))
+      ;; Options after the template, as ":prepend", true: keywords and t.
+      (setq org-capture-templates
+            (cl-mapcar (lambda (tpl json)
+                         (append tpl
+                                 (mapcar (lambda (x)
+                                           (pcase x
+                                             ((pred (lambda (v) (and (stringp v) (string-prefix-p ":" v)))) (intern x))
+                                             ('t t)
+                                             (:json-false nil)
+                                             (_ x)))
+                                         (nthcdr 5 json))))
+                       org-capture-templates (alist-get 'capture_templates case)))
       ;; A fixed day for the agenda, as YYYY-MM-DD.
       (advice-remove 'org-today #'e8-oracle--today)
       (advice-remove 'org-current-effective-time #'e8-oracle--now)
