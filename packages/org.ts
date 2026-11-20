@@ -7947,6 +7947,8 @@ for (const [name, doc, value] of [
 ] as const) {
   e8.defineVariable({ name, doc, value: value as e8.Value });
 }
+// Kept when the major mode is set again, so the highlights can still be taken away, as Org's are.
+e8.put("org-occur-highlights", "permanent-local", true);
 e8.defineHook("org-occur-hook", "Run after org-occur has made a sparse tree; by default it goes to the first heading, at the window's top.");
 
 /** Goes to the first heading and shows it at the top of the buffer's window, as org-first-headline-recenter. */

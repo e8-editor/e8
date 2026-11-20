@@ -217,6 +217,98 @@
       "modified": false,
       "error": null,
       "message": "Total file time: 2d 1:15 (49 hours and 15 minutes)"
+    },
+    {
+      "name": "clock-display-numeric-four-is-all-time",
+      "input": {
+        "text": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+        "point": 0,
+        "keys": "C-4 C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+      "visible": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 1:00 (1 hours and 0 minutes)"
+    },
+    {
+      "name": "clock-display-numeric-sixteen-is-all-time",
+      "input": {
+        "text": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+        "point": 0,
+        "keys": "C-1 C-6 C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+      "visible": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 1:00 (1 hours and 0 minutes)"
+    },
+    {
+      "name": "clock-display-numeric-sixty-four-is-all-time",
+      "input": {
+        "text": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+        "point": 0,
+        "keys": "M-6 4 C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+      "visible": "* Old\nCLOCK: [2020-01-02 Thu 09:00]--[2020-01-02 Thu 10:00] =>  1:00\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 1:00 (1 hours and 0 minutes)"
+    },
+    {
+      "name": "clock-display-one-dash-counts-nothing",
+      "input": {
+        "text": "* A\nCLOCK: [2026-11-20 Fri 10:00]-[2026-11-20 Fri 11:00]\n* B\nCLOCK: [2026-11-20 Fri 10:00]---[2026-11-20 Fri 11:00]\n* C\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 10:30]\n",
+        "point": 0,
+        "keys": "C-u C-u C-u C-c C-x C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nCLOCK: [2026-11-20 Fri 10:00]-[2026-11-20 Fri 11:00]\n* B\nCLOCK: [2026-11-20 Fri 10:00]---[2026-11-20 Fri 11:00]\n* C\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 10:30]\n",
+      "visible": "* A\nCLOCK: [2026-11-20 Fri 10:00]-[2026-11-20 Fri 11:00]\n* B\nCLOCK: [2026-11-20 Fri 10:00]---[2026-11-20 Fri 11:00]\n* C\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 10:30]\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Total file time: 0:30 (0 hours and 30 minutes)"
     }
   ]
 }

@@ -18,7 +18,7 @@ import { toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
 import { setRunningClock } from "org-refile";
-import { truthy } from "subr";
+import { charCount, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("org-clock-into-drawer", true, "Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.");
@@ -152,6 +152,11 @@ export function runningEntry(): { buffer: string; start: number } | undefined {
   return buffer === undefined || start === undefined ? undefined : { buffer, start };
 }
 
+/** A heading's text with each link as its description, or its target if it has none, as the links show. */
+function linkDescriptions(text: string): string {
+  return text.replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_, l: string, d?: string) => d ?? l);
+}
+
 /** Starts a clock on the entry at point, stopping one running elsewhere, as org-clock-in. */
 export function clockIn(): void {
   const [all, i] = headingHere();
@@ -164,7 +169,7 @@ export function clockIn(): void {
     }
     clockOut();
   }
-  const title = h.title.replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_, l: string, d?: string) => d ?? l);
+  const title = linkDescriptions(h.title);
   const before = clockedBefore(all, i);
   const start = now();
   const stamp = `[${formatTimestamp(start, true)}]`;
@@ -356,8 +361,10 @@ defvar(
 );
 defvar("org-extend-today-until", 0, "The hour before which a time counts as the day before, for clock ranges.");
 defvar("org-clock-report-include-clocking-task", false, "Whether the running clock's time counts in a clock sum over a range.");
-defvar("org-clock-file-total-minutes", 0, "The minutes the last clock sum found in the whole file.");
+defvar("org-clock-file-total-minutes", null, "The minutes the last clock sum in this buffer found in the whole file.");
 defvar("org-clock-overlays", null, "The overlays org-clock-display shows the headings' times with, in this buffer.");
+// Kept when the major mode is set again, so the times can still be taken away, as Org's are.
+e8.put("org-clock-overlays", "permanent-local", true);
 e8.defineFace({
   name: "org-clock-overlay",
   doc: "The times org-clock-display shows after the headings.",
@@ -431,7 +438,8 @@ export function clockSpecialRange(key: string, time = millis(now()) / 1000): [nu
 
 /** A CLOCK: line's start and end in seconds, or undefined if they are not times. */
 function clockTimes(text: string): [number, number] | undefined {
-  const ts = /\[(\d{4})-(\d{2})-(\d{2})[^\]]*?(\d{1,2}):(\d{2})[^\]]*\]-+\[(\d{4})-(\d{2})-(\d{2})[^\]]*?(\d{1,2}):(\d{2})[^\]]*\]/.exec(text);
+  // Two dashes only, as the clock element reads a range; Org counts nothing for others.
+  const ts = /\[(\d{4})-(\d{2})-(\d{2})[^\]]*?(\d{1,2}):(\d{2})[^\]]*\]--\[(\d{4})-(\d{2})-(\d{2})[^\]]*?(\d{1,2}):(\d{2})[^\]]*\]/.exec(text);
   if (!ts) return undefined;
   const n = ts.slice(1).map(Number);
   return [e8.encodeTime([0, n[4], n[3], n[2], n[1], n[0], null, -1, null]), e8.encodeTime([0, n[9], n[8], n[7], n[6], n[5], null, -1, null])];
@@ -498,6 +506,7 @@ export function clockSum(tstart?: number, tend?: number, filter?: () => boolean,
     }
     total = ltimes[0];
   });
+  e8.makeLocalVariable("org-clock-file-total-minutes");
   e8.setVariable("org-clock-file-total-minutes", total);
   return total;
 }
@@ -530,10 +539,13 @@ export const clockOverlaysShown = (): boolean => clockOverlays().length > 0;
  */
 function putClockOverlay(h: Heading, minutes: number): void {
   const col = e8.bufferSubstringNoProperties(h.start, h.titleAt).length;
+  // org-indent-mode's prefix, a propertized string.
   const prefix = e8.getTextProperty(h.start, "line-prefix");
-  const prefixLength = typeof prefix === "string" ? prefix.length : 0;
-  const dots = Math.max(60 - col - e8.stringWidth(h.title) - prefixLength, 0);
-  const text = e8.concat(h.title, e8.propertize("\u00b7".repeat(dots), { face: "shadow" }), e8.propertize(` ${durationFromMinutes(minutes).padStart(9)} `, { face: "org-clock-overlay" }));
+  const prefixLength = prefix === undefined || prefix === null ? 0 : charCount(String(prefix));
+  // The title as it shows, its links as their descriptions, measured as org-string-width measures what is visible.
+  const title = truthy(e8.variable("org-link-descriptive") ?? true) ? linkDescriptions(h.title) : h.title;
+  const dots = Math.max(60 - col - e8.stringWidth(title) - prefixLength, 0);
+  const text = e8.concat(title, e8.propertize("\u00b7".repeat(dots), { face: "shadow" }), e8.propertize(` ${durationFromMinutes(minutes).padStart(9)} `, { face: "org-clock-overlay" }));
   const id = e8.makeOverlay(h.titleAt, h.end, { display: text });
   e8.makeLocalVariable("org-clock-overlays");
   e8.setVariable("org-clock-overlays", [id, ...clockOverlays()]);
@@ -571,7 +583,8 @@ e8.defineCommand({
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg) => {
     removeClockOverlays(false);
-    const raw = Array.isArray(arg) ? arg[0] : arg;
+    // Only C-u's forms, not the numbers typed: C-4 sums all the time, as Org compares with '(4).
+    const raw = Array.isArray(arg) ? arg[0] : undefined;
     const todayp = raw === 4;
     const customp = raw === 16;
     const prop = arg === null || arg === undefined ? ":org-clock-minutes-default" : todayp ? ":org-clock-minutes-today" : customp ? ":org-clock-minutes-custom" : ":org-clock-minutes";
@@ -586,7 +599,8 @@ e8.defineCommand({
     if (raw !== 64) {
       for (const h of headings()) {
         const time = e8.getTextProperty(h.start, prop);
-        if (typeof time === "number") putClockOverlay(h, time);
+        // Not on a heading with no title, where org-clock-put-overlay fails.
+        if (typeof time === "number" && h.title !== "") putClockOverlay(h, time);
       }
       if (truthy(e8.variable("org-remove-highlights-with-change"))) e8.addHook("before-change-functions", removeClockOverlaysOnChange, { local: true });
     }

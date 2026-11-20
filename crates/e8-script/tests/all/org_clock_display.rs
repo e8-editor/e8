@@ -101,3 +101,26 @@ fn the_times_go_at_a_change_or_c_c_c_c() {
     ed.press("x").unwrap();
     assert!(shown(&mut ed, &s).is_empty());
 }
+
+/// Under org-indent-mode the dots stop short by the line prefix, so the
+/// time still ends at column 60 as the line shows; a link in the title
+/// shows and counts as its description; and the times can be taken away
+/// after org-mode is set again, as org-clock-overlays is permanent-local.
+#[test]
+fn indented_headings_links_and_setting_the_mode_again() {
+    let doc = "* P\n** Q\n*** Task A\nCLOCK: [2026-11-20 Fri 08:00]--[2026-11-20 Fri 09:00] =>  1:00\n* See [[https://example.com][docs]] :tag:\nCLOCK: [2026-11-20 Fri 08:00]--[2026-11-20 Fri 08:30] =>  0:30\n";
+    let (mut ed, s) = org(doc);
+    ed.call("org-indent-mode", vec![]).unwrap();
+    ed.press("C-u 5 C-c C-x C-d").unwrap();
+    let times = shown(&mut ed, &s);
+    // "*** " before the title, and org-indent's prefix of two columns on the heading line.
+    let prefix = eval(&mut ed, &s, r#"String(e8.getTextProperty(e8.lineStart(2), "line-prefix") ?? "").length"#);
+    assert_eq!(prefix, "2");
+    let dots = 60 - 4 - 6 - 2;
+    assert!(times.contains(&format!("Task A{}      1:00 ", "\u{b7}".repeat(dots))), "{times:?}");
+    assert!(times.contains(&format!("See docs{}      0:30 ", "\u{b7}".repeat(60 - 2 - 8))), "{times:?}");
+    ed.call("org-mode", vec![]).unwrap();
+    ed.press("C-c C-c").unwrap();
+    assert_eq!(ed.echo(), Some("Temporary highlights/overlays removed from current buffer"));
+    assert!(shown(&mut ed, &s).is_empty());
+}
