@@ -153,8 +153,8 @@ while the case's keys are queued would read those instead."
   "The case's fixed day, for org-today."
   e8-oracle--today)
 
-(defun e8-oracle--now ()
-  "Noon on the case's fixed day, for org-current-effective-time, as E8's tests stamp times."
+(defun e8-oracle--now (&rest _)
+  "Noon on the case's fixed day, for org-current-effective-time and org-current-time, as E8's tests stamp times."
   (let ((d (calendar-gregorian-from-absolute e8-oracle--today)))
     (encode-time (list 0 0 12 (nth 1 d) (nth 0 d) (nth 2 d) nil -1 nil))))
 
@@ -340,13 +340,15 @@ answers come, and then from its answers, as save-some-buffers' do."
       ;; A fixed day for the agenda, as YYYY-MM-DD.
       (advice-remove 'org-today #'e8-oracle--today)
       (advice-remove 'org-current-effective-time #'e8-oracle--now)
+      (advice-remove 'org-current-time #'e8-oracle--now)
       (when-let* ((day (alist-get 'today case)))
         (setq e8-oracle--today
               (calendar-absolute-from-gregorian
                (let ((d (mapcar #'string-to-number (split-string day "-"))))
                  (list (nth 1 d) (nth 2 d) (nth 0 d)))))
         (advice-add 'org-today :override #'e8-oracle--today)
-        (advice-add 'org-current-effective-time :override #'e8-oracle--now))
+        (advice-add 'org-current-effective-time :override #'e8-oracle--now)
+        (advice-add 'org-current-time :override #'e8-oracle--now))
       (unless (alist-get 'find case)
         (buffer-enable-undo)
         (set-buffer-modified-p nil))

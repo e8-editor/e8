@@ -12,7 +12,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { type DateTime, formatTimestamp, type Heading, headingIndex, headings, isDone, logDrawer, today } from "org";
+import { addLogNote, type DateTime, formatTimestamp, type Heading, headingIndex, headings, isDone, logDrawer, today } from "org";
 import { toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
@@ -21,6 +21,7 @@ const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable
 defvar("org-clock-into-drawer", true, "Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.");
 defvar("org-clock-out-when-done", true, "Whether marking the clocked entry done stops the clock.");
 defvar("org-clock-out-remove-zero-time-clocks", false, "Whether a clock stopped after no time is taken out.");
+defvar("org-log-note-clock-out", false, "Whether stopping a clock asks for a note, put after the CLOCK: line. #+STARTUP: lognoteclock-out or nolognoteclock-out says for a file.");
 defvar("org-mode-line-string", "", "What the mode line shows of the running clock: its time and its entry's heading.");
 e8.defineHook("org-clock-in-hook", "Functions called when a clock starts.");
 e8.defineHook("org-clock-out-hook", "Functions called when a clock stops.");
@@ -222,6 +223,11 @@ export function clockOut(failQuietly = false): void {
           removed = true;
           e8.deleteRegion(e8.lineStart(line), lineStartOrEnd(line + 1));
           removeEmptyDrawer(line);
+        } else if (e8.variable("org-log-note-clock-out") === true) {
+          // A note after the clock, as org-clock-out sets one up, the task named above it.
+          const headingLine = lineAt(e8.markerPosition(running.heading) ?? 0);
+          const task = e8.lineText(headingLine).replace(/^\*+[ \t]+/, "").replace(/[ \t]+:[\w@#%:]+:[ \t]*$/, "");
+          addLogNote(headingLine, "clock-out", undefined, undefined, { extra: `# Task: ${task}\n\n`, at: e8.lineEnd(line) });
         }
       });
     });

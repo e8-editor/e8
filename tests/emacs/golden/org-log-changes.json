@@ -1,0 +1,359 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "reschedule-logs-time",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: logreschedule\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-06 Fri>\n- Rescheduled from \"[2026-11-04 Wed]\" on [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: logreschedule\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-06 Fri>\n- Rescheduled from \"[2026-11-04 Wed]\" on [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: logreschedule\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Note stored"
+    },
+    {
+      "name": "reschedule-same-date-logs-nothing",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: logreschedule\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-04"
+        ]
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: logreschedule\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: logreschedule\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "reschedule-keeps-repeater-logs-old",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed +1w>\nbody\n#+STARTUP: logreschedule\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-06 Fri +1w>\n- Rescheduled from \"[2026-11-04 Wed +1w]\" on [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: logreschedule\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-06 Fri +1w>\n- Rescheduled from \"[2026-11-04 Wed +1w]\" on [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: logreschedule\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Note stored"
+    },
+    {
+      "name": "schedule-first-logs-nothing",
+      "input": {
+        "text": "* TODO Task\nbody\n#+STARTUP: logreschedule\n",
+        "point": 0,
+        "keys": "C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ],
+        "message": true
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-06 Fri>\nbody\n#+STARTUP: logreschedule\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-06 Fri>\nbody\n#+STARTUP: logreschedule\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Scheduled to <2026-11-06 Fri>"
+    },
+    {
+      "name": "unschedule-logs",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: logreschedule\n",
+        "point": 0,
+        "keys": "C-u C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true
+      },
+      "text": "* TODO Task\n- Not scheduled, was \"[2026-11-04 Wed]\" on [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: logreschedule\n",
+      "visible": "* TODO Task\n- Not scheduled, was \"[2026-11-04 Wed]\" on [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: logreschedule\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Note stored"
+    },
+    {
+      "name": "unschedule-nothing-says-so",
+      "input": {
+        "text": "* TODO Task\nbody\n",
+        "point": 0,
+        "keys": "C-u C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true
+      },
+      "text": "* TODO Task\nbody\n",
+      "visible": "* TODO Task\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Entry was not scheduled"
+    },
+    {
+      "name": "redeadline-logs-in-drawer",
+      "input": {
+        "text": "* TODO Task\nDEADLINE: <2026-11-04 Wed +1w>\nbody\n#+STARTUP: logredeadline logdrawer\n",
+        "point": 0,
+        "keys": "C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-09"
+        ],
+        "message": true
+      },
+      "text": "* TODO Task\nDEADLINE: <2026-11-09 Mon +1w>\n:LOGBOOK:\n- New deadline from \"[2026-11-04 Wed +1w]\" on [2026-11-04 Wed 12:00]\n:END:\nbody\n#+STARTUP: logredeadline logdrawer\n",
+      "visible": "* TODO Task\nDEADLINE: <2026-11-09 Mon +1w>\n:LOGBOOK:\nbody\n#+STARTUP: logredeadline logdrawer\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Note stored"
+    },
+    {
+      "name": "remove-deadline-logs",
+      "input": {
+        "text": "* TODO Task\nDEADLINE: <2026-11-04 Wed>\nbody\n#+STARTUP: logredeadline\n",
+        "point": 0,
+        "keys": "C-u C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true
+      },
+      "text": "* TODO Task\n- Removed deadline, was \"[2026-11-04 Wed]\" on [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: logredeadline\n",
+      "visible": "* TODO Task\n- Removed deadline, was \"[2026-11-04 Wed]\" on [2026-11-04 Wed 12:00]\nbody\n#+STARTUP: logredeadline\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Note stored"
+    },
+    {
+      "name": "remove-no-deadline-says-so",
+      "input": {
+        "text": "* TODO Task\nbody\n",
+        "point": 0,
+        "keys": "C-u C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true
+      },
+      "text": "* TODO Task\nbody\n",
+      "visible": "* TODO Task\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Entry had no deadline to remove"
+    },
+    {
+      "name": "reschedule-note",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: lognotereschedule\n",
+        "point": 0,
+        "keys": "C-c C-s m o v e d C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ]
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-06 Fri>\n- Rescheduled from \"[2026-11-04 Wed]\" on [2026-11-04 Wed 12:00] \\\\\n  moved\nbody\n#+STARTUP: lognotereschedule\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-06 Fri>\n- Rescheduled from \"[2026-11-04 Wed]\" on [2026-11-04 Wed 12:00] \\\\\n  moved\nbody\n#+STARTUP: lognotereschedule\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "reschedule-note-cancelled",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: lognotereschedule\n",
+        "point": 0,
+        "keys": "C-c C-s m o v e d C-c C-k",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ]
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-06 Fri>\nbody\n#+STARTUP: lognotereschedule\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-06 Fri>\nbody\n#+STARTUP: lognotereschedule\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-logs-time",
+      "input": {
+        "text": "* one\nbody\n* two\nmore\n#+STARTUP: logrefile\n",
+        "point": 0,
+        "keys": "C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "today": "2026-11-04",
+        "answers": [
+          "two"
+        ]
+      },
+      "text": "* two\nmore\n#+STARTUP: logrefile\n** one\n- Refiled on [2026-11-04 Wed 12:00]\nbody\n",
+      "visible": "* two\nmore\n#+STARTUP: logrefile\n** one\n- Refiled on [2026-11-04 Wed 12:00]\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-note",
+      "input": {
+        "text": "* one\nbody\n* two\nmore\n#+STARTUP: lognoterefile\n",
+        "point": 0,
+        "keys": "C-c C-w w h y C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "today": "2026-11-04",
+        "answers": [
+          "two"
+        ]
+      },
+      "text": "* two\nmore\n#+STARTUP: lognoterefile\n** one\n- Refiled on [2026-11-04 Wed 12:00] \\\\\n  why\nbody\n",
+      "visible": "* two\nmore\n#+STARTUP: lognoterefile\n** one\n- Refiled on [2026-11-04 Wed 12:00] \\\\\n  why\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-out-note",
+      "input": {
+        "text": "* TODO Task\nbody\n#+STARTUP: lognoteclock-out\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o d o n e C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* TODO Task\n:LOGBOOK:\nCLOCK: [2026-11-04 Wed 12:00]--[2026-11-04 Wed 12:00] =>  0:00\n- done\n:END:\nbody\n#+STARTUP: lognoteclock-out\n",
+      "visible": "* TODO Task\n:LOGBOOK:\nbody\n#+STARTUP: lognoteclock-out\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

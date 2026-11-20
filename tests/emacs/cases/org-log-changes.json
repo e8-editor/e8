@@ -1,0 +1,165 @@
+[
+  {
+    "name": "reschedule-logs-time",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: logreschedule\n",
+    "keys": "C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ],
+    "message": true
+  },
+  {
+    "name": "reschedule-same-date-logs-nothing",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: logreschedule\n",
+    "keys": "C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-04"
+    ]
+  },
+  {
+    "name": "reschedule-keeps-repeater-logs-old",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed +1w>\nbody\n#+STARTUP: logreschedule\n",
+    "keys": "C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ],
+    "message": true
+  },
+  {
+    "name": "schedule-first-logs-nothing",
+    "text": "* TODO Task\nbody\n#+STARTUP: logreschedule\n",
+    "keys": "C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ],
+    "message": true
+  },
+  {
+    "name": "unschedule-logs",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: logreschedule\n",
+    "keys": "C-u C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "message": true
+  },
+  {
+    "name": "unschedule-nothing-says-so",
+    "text": "* TODO Task\nbody\n",
+    "keys": "C-u C-c C-s",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "message": true
+  },
+  {
+    "name": "redeadline-logs-in-drawer",
+    "text": "* TODO Task\nDEADLINE: <2026-11-04 Wed +1w>\nbody\n#+STARTUP: logredeadline logdrawer\n",
+    "keys": "C-c C-d",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-09"
+    ],
+    "message": true
+  },
+  {
+    "name": "remove-deadline-logs",
+    "text": "* TODO Task\nDEADLINE: <2026-11-04 Wed>\nbody\n#+STARTUP: logredeadline\n",
+    "keys": "C-u C-c C-d",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "message": true
+  },
+  {
+    "name": "remove-no-deadline-says-so",
+    "text": "* TODO Task\nbody\n",
+    "keys": "C-u C-c C-d",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "message": true
+  },
+  {
+    "name": "reschedule-note",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: lognotereschedule\n",
+    "keys": "C-c C-s m o v e d C-c C-c",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ]
+  },
+  {
+    "name": "reschedule-note-cancelled",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-04 Wed>\nbody\n#+STARTUP: lognotereschedule\n",
+    "keys": "C-c C-s m o v e d C-c C-k",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ]
+  },
+  {
+    "name": "refile-logs-time",
+    "text": "* one\nbody\n* two\nmore\n#+STARTUP: logrefile\n",
+    "keys": "C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "two"
+    ],
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-note",
+    "text": "* one\nbody\n* two\nmore\n#+STARTUP: lognoterefile\n",
+    "keys": "C-c C-w w h y C-c C-c",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "two"
+    ],
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "clock-out-note",
+    "text": "* TODO Task\nbody\n#+STARTUP: lognoteclock-out\n",
+    "keys": "C-c C-x C-i C-c C-x C-o d o n e C-c C-c",
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  }
+]

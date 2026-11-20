@@ -163,6 +163,16 @@ const variables: [string, string, e8.Value][] = [
     true,
   ],
   [
+    "org-log-reschedule",
+    'Whether changing or removing an entry\'s SCHEDULED date is logged: "time" for a note of when, "note" to ask for one too, false for nothing. #+STARTUP: logreschedule, lognotereschedule or nologreschedule says for a file.',
+    false,
+  ],
+  [
+    "org-log-redeadline",
+    'Whether changing or removing an entry\'s DEADLINE is logged: "time", "note" or false, as org-log-reschedule. #+STARTUP: logredeadline, lognoteredeadline or nologredeadline says for a file.',
+    false,
+  ],
+  [
     "org-log-states-order-reversed",
     "Whether the newest state note goes first, right after the heading or at the top of its drawer; false keeps them in the order they were taken. #+STARTUP: logstatesreversed or nologstatesreversed says for a file.",
     true,
@@ -1415,7 +1425,15 @@ function logNoteHeading(purpose: string, state: string | undefined, previous: st
  * as org-store-log-note: an item headed as org-log-note-headings says for
  * the purpose, the note's lines after it, the heading then ending in \\\\.
  */
-function storeLogNote(headingLine: number, purpose: string, state: string | undefined, previous: string | undefined, lines: string[], time = `[${formatTimestamp(today(true), true)}]`): void {
+function storeLogNote(
+  headingLine: number,
+  purpose: string,
+  state: string | undefined,
+  previous: string | undefined,
+  lines: string[],
+  time = `[${formatTimestamp(today(true), true)}]`,
+  place?: number,
+): void {
   const h = parseHeading(headingLine);
   if (!h) return;
   let heading = logNoteHeading(purpose, state, previous, time);
@@ -1428,7 +1446,8 @@ function storeLogNote(headingLine: number, purpose: string, state: string | unde
   const p = marker(e8.point());
   newDrawerLine = undefined;
   withoutFoldChecks(() => {
-    let at = logBeginning(h, true);
+    // A clock's note right after the clock, as org-store-log-note leaves it; else where the log begins.
+    let at = place ?? logBeginning(h, true);
     if (at !== e8.lineStart(lineAt(at))) {
       edInsert(at, "\n");
       at++;
@@ -1458,24 +1477,39 @@ function storeLogNote(headingLine: number, purpose: string, state: string | unde
 
 /** The note being taken: where it goes, what for, and what to go back to. */
 let pendingNote:
-  | { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; returnTo: e8.Marker; windows: e8.WindowConfiguration }
+  | { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; at?: e8.Marker; returnTo: e8.Marker; windows: e8.WindowConfiguration }
   | undefined;
 
 /** The note set up by the command running, opened once it ends, as org-add-log-setup leaves it for post-command-hook. */
-let noteSetup: { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; command?: string; depth: number } | undefined;
+let noteSetup:
+  | { heading: e8.Marker; purpose: string; state?: string; previous?: string; time: string; how: string; extra?: string; at?: e8.Marker; command?: string; depth: number }
+  | undefined;
+
+/** Frees a setup's or a note's markers. */
+function freeNoteMarkers(n: { heading: e8.Marker; at?: e8.Marker; returnTo?: e8.Marker }): void {
+  e8.deleteMarker(n.heading);
+  if (n.at !== undefined) e8.deleteMarker(n.at);
+  if (n.returnTo !== undefined) e8.deleteMarker(n.returnTo);
+}
 
 /**
  * Sets up a note about the entry at `headingLine`, taken in *Org Note*
  * once the command ends, as org-add-log-setup: a later setup in the same
  * command replaces it, so over a region the last entry gets the note.
+ * With `how` "time" or "state" the note is only its heading, stored then;
+ * `extra` goes in *Org Note* after its header, and a note `at` a place,
+ * as a clock's, is stored there rather than where the log begins.
  */
-export function addLogNote(headingLine: number, purpose: string, state?: string, previous?: string): void {
-  if (noteSetup !== undefined) e8.deleteMarker(noteSetup.heading);
+export function addLogNote(headingLine: number, purpose: string, state?: string, previous?: string, opts: { how?: string; extra?: string; at?: number } = {}): void {
+  if (noteSetup !== undefined) freeNoteMarkers(noteSetup);
   noteSetup = {
     heading: e8.makeMarker(e8.lineStart(headingLine)),
     purpose,
     state,
     previous,
+    how: opts.how ?? "note",
+    extra: opts.extra,
+    at: opts.at === undefined ? undefined : e8.makeMarker(opts.at),
     time: `[${formatTimestamp(today(true), true)}]`,
     command: e8.thisCommand(),
     depth: e8.recursionDepth(),
@@ -1497,13 +1531,26 @@ function openLogNote(): void {
   noteSetup = undefined;
   if (setup === undefined) return;
   const { purpose, state, previous } = setup;
+  // Only the heading, stored at once, as org-add-log-note does for time and state.
+  if (setup.how === "time" || setup.how === "state") {
+    const source = e8.markerBuffer(setup.heading);
+    if (source !== undefined) {
+      e8.withCurrentBuffer(source, () =>
+        e8.saveRestriction(() => {
+          e8.widen();
+          storeLogNote(lineAt(e8.markerPosition(setup.heading)!), purpose, state, previous, [], setup.time, setup.at && e8.markerPosition(setup.at));
+          e8.runHooks("org-after-note-stored-hook");
+        }),
+      );
+      e8.message("Note stored");
+    }
+    freeNoteMarkers(setup);
+    return;
+  }
   const windows = e8.currentWindowConfiguration();
   const returnTo = e8.makeMarker(e8.point());
   // A note left open, its buffer killed, is forgotten.
-  if (pendingNote !== undefined) {
-    e8.deleteMarker(pendingNote.heading);
-    e8.deleteMarker(pendingNote.returnTo);
-  }
+  if (pendingNote !== undefined) freeNoteMarkers(pendingNote);
   pendingNote = { ...setup, returnTo, windows };
   const source = e8.markerBuffer(setup.heading);
   if (source !== undefined) {
@@ -1532,6 +1579,7 @@ function openLogNote(): void {
   e8.letBind({ "inhibit-read-only": true }, () => e8.deleteRegion(e8.pointMin(), e8.pointMax()));
   e8.letBind({ "org-inhibit-startup": true }, () => e8.call("org-mode"));
   e8.insert(`# Insert note for ${what}.\n# Finish with C-c C-c, or cancel with C-c C-k.\n\n`);
+  if (setup.extra !== undefined) e8.insert(setup.extra);
   e8.makeLocalVariable("org-finish-function");
   e8.setVariable("org-finish-function", "org-store-log-note");
   e8.runHooks("org-log-buffer-setup-hook");
@@ -1552,7 +1600,7 @@ function storeNoteFromBuffer(abort: boolean): void {
     e8.withCurrentBuffer(source, () =>
       e8.saveRestriction(() => {
         e8.widen();
-        storeLogNote(lineAt(e8.markerPosition(note.heading)!), note.purpose, note.state, note.previous, lines, note.time);
+        storeLogNote(lineAt(e8.markerPosition(note.heading)!), note.purpose, note.state, note.previous, lines, note.time, note.at && e8.markerPosition(note.at));
         e8.runHooks("org-after-note-stored-hook");
       }),
     );
@@ -1561,8 +1609,7 @@ function storeNoteFromBuffer(abort: boolean): void {
   e8.setWindowConfiguration(note.windows);
   const back = e8.markerBuffer(note.returnTo);
   if (back !== undefined) e8.withCurrentBuffer(back, () => e8.gotoChar(e8.markerPosition(note.returnTo)!));
-  e8.deleteMarker(note.heading);
-  e8.deleteMarker(note.returnTo);
+  freeNoteMarkers(note);
 }
 e8.defun("org-store-log-note", () => storeNoteFromBuffer(truthy(e8.variable("org-note-abort"))));
 
@@ -5077,29 +5124,51 @@ function setPlanning(headingLine: number, keyword: string, ts: string | undefine
 
 function plan(keyword: string, input: string): void {
   const [all, i] = backToHeading();
+  const deadline = keyword === "DEADLINE";
+  const log = e8.variable(deadline ? "org-log-redeadline" : "org-log-reschedule");
+  const next = all[i].line + 1;
+  const old = next < e8.lineCount() ? new RegExp(`${keyword}: *([<[][^>\\]\\n]*[>\\]])`).exec(e8.lineText(next))?.[1] : undefined;
+  // As org--deadline-or-schedule: the change is logged as org-log-reschedule or org-log-redeadline says.
+  const howOf = (x: e8.Value | undefined) => (x === "note" ? "note" : "time");
   if (Array.isArray(e8.prefixArg())) {
+    if (old === undefined) {
+      e8.message(deadline ? "Entry had no deadline to remove" : "Entry was not scheduled");
+      return;
+    }
+    if (truthy(log)) addLogNote(all[i].line, deadline ? "deldeadline" : "delschedule", undefined, old, { how: howOf(log) });
     setPlanning(all[i].line, keyword, undefined);
-    e8.message(`Item is no longer ${keyword === "DEADLINE" ? "due" : "scheduled"}.`);
+    e8.message(deadline ? "Entry no longer has a deadline." : "Entry is no longer scheduled.");
     return;
   }
   const date = parseDate(input);
   // The old date's repeater and warning stay, as org--deadline-or-schedule keeps them.
-  const next = all[i].line + 1;
-  const old = next < e8.lineCount() ? new RegExp(`${keyword}: *([<[][^>\\]\\n]*[>\\]])`).exec(e8.lineText(next))?.[1] : undefined;
-  setPlanning(all[i].line, keyword, withRepeater(`<${formatTimestamp(date)}>`, old));
+  const inserted = `<${formatTimestamp(date)}>`;
+  const ts = withRepeater(inserted, old);
+  if (ts === old) {
+    // The same date written again, as org-add-planning-info replaces it, so the buffer is modified.
+    const m = new RegExp(`${keyword}: *`).exec(e8.lineText(next))!;
+    const from = e8.lineStart(next) + m.index + m[0].length;
+    e8.saveExcursion(() => {
+      e8.deleteRegion(from, from + old.length);
+      e8.gotoChar(from);
+      e8.insert(old);
+    });
+  } else setPlanning(all[i].line, keyword, ts);
+  if (old !== undefined && truthy(log) && old !== inserted) addLogNote(all[i].line, deadline ? "redeadline" : "reschedule", inserted, old, { how: howOf(log) });
+  e8.message(`${deadline ? "Deadline on" : "Scheduled to"} ${ts}`);
 }
 
 const schedule = e8.defineCommand({
   name: "org-schedule",
-  doc: "Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it.",
-  params: [{ name: "date", prompt: "Date: ", history: "org-read-date-history" }],
+  doc: "Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date.",
+  params: [{ name: "date", prompt: "Date: ", history: "org-read-date-history", value: () => (Array.isArray(e8.prefixArg()) ? "" : undefined) }],
   run: (input) => plan("SCHEDULED", input),
 });
 
 const deadline = e8.defineCommand({
   name: "org-deadline",
   doc: "Give the heading point is under a deadline, read as org-timestamp reads it. With C-u, remove it.",
-  params: [{ name: "date", prompt: "Date: ", history: "org-read-date-history" }],
+  params: [{ name: "date", prompt: "Date: ", history: "org-read-date-history", value: () => (Array.isArray(e8.prefixArg()) ? "" : undefined) }],
   run: (input) => plan("DEADLINE", input),
 });
 
