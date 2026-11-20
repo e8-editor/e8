@@ -8,6 +8,97 @@ A package that is a repository of its own keeps its news in a NEWS file
 of the same form, which 'C-h P' shows under its description.
 
 
+* Changes in E8 0.5.19
+
+** Org can ask for a note when a state changes, in *Org Note*.
+A keyword with '@', as 'WAIT(w@)', opens *Org Note* to write why; 'C-c
+C-c' stores the note and 'C-c C-k' leaves it out.  'C-c C-z' adds a
+note to the entry at any time.  Notes go into the LOGBOOK drawer when
+'org-log-into-drawer' or a LOG_INTO_DRAWER property asks for one.
+
+** Org's logging is set as Org sets it.
+The LOGGING property, inherited from a parent entry, the '#+STARTUP:'
+words 'logdone', 'lognotedone', 'logrepeat', 'logreschedule',
+'logredeadline', 'logrefile', 'lognoteclock-out', 'logdrawer',
+'logstatesreversed' and the rest, and '#+PROPERTY:' lines all decide
+what is logged.  With 'org-log-states-order-reversed' nil, notes are
+kept oldest first.
+
+** Org logs rescheduling, deadline changes, refiling and clocking out.
+As 'org-log-reschedule', 'org-log-redeadline', 'org-log-refile' and
+'org-log-note-clock-out' ask, with a time or a note.  'C-u C-u C-c C-s'
+and 'C-u C-u C-c C-d' set a delay or a warning period, as in Org.
+
+** 'org-adapt-indentation' works, both t and 'headline-data'.
+Text under a heading is indented to its level, and moves with the
+heading when it is promoted or demoted; with 'headline-data' only the
+planning line and drawers are.
+
+** 'C-c C-,' offers block templates in *Org Select*, as Org does.
+Templates whose keys start alike are grouped under their first key.
+A menu taller than its window scrolls with 'C-n', 'C-p', 'C-v' and
+'M-v'.
+
+** 'M-q' in Org fills as 'org-fill-paragraph' does.
+Paragraphs, list items, comments and source blocks each fill in their
+own way.
+
+** Shell and comint buffers show ANSI colours as Emacs does.
+'ansi-color.el' is ported: the eight colours, 256 colours and RGB,
+and faint, blink and inverse text.  A coloured prompt keeps its
+colours.  'comint-use-prompt-regexp' works, and TAB completes file
+names at the prompt, and in shell-mode environment variables and
+commands too.
+
+** Commands disabled for new users ask first, as in Emacs.
+'C-x n n', 'C-x C-u', 'C-x C-l', 'C-x <' and the rest say why they are
+disabled and offer to run them, or to enable them for good in init.ts.
+
+** Isearch searches for words and symbols, and edits its string.
+'M-s w', 'M-s _' and 'M-s .' start or toggle word and symbol search.
+A space matches any run of whitespace, toggled by 'M-s SPC'.  'M-e'
+edits the search string, 'M-p' and 'M-n' bring back earlier searches,
+and 'isearch-lazy-count' shows which match is current.
+
+** 'zap-to-char' reads its character in the minibuffer, as Emacs 30's.
+'M-z M-p' zaps to the same character again.
+
+** Abbrevs are saved and read in Emacs's 'abbrev_defs' format.
+An abbrev file written by Emacs reads in E8.  E8 offers to save
+changed abbrevs, and a mode's abbrevs work in modes built on it.
+
+** 'multi-occur' searches several buffers.
+'multi-occur-in-matching-buffers' picks them by name, and 'M-s a C-o'
+in the buffer list searches the marked ones.
+
+** Programs run with 'process-environment' and are found along 'exec-path'.
+'setenv' and 'getenv' are commands.  'call-process' takes Emacs's
+arguments.
+
+** Auto-revert as Emacs has it.
+'auto-revert-mode', 'auto-revert-tail-mode' and
+'global-auto-revert-mode' are told of changes as files change, and
+can revert Dired and the buffer list too.
+
+** Imenu keeps its index until *Rescan*, and can be on the menu bar.
+
+** Dired guesses commands for '!' and '&', and 'Q' replaces in the marked files.
+'* c' and 'M-DEL' read their marks as a key.  Failures are logged in
+*Dired log*, which '?' shows.  wdired can change permissions.
+
+** Saving text the file's coding cannot write asks which coding to use.
+As Emacs does, listing the characters in *Warning*.  'C-x RET l' sets
+a language environment, and a file's coding is found from XML and
+HTML declarations, PO headers and LaTeX's inputenc.
+
+** Characters by their Unicode names.
+'C-x 8 RET' inserts a character by name or code, and 'C-u C-x ='
+describes the character at point, as Emacs does.
+
+** TAB again scrolls a long *Completions* list.
+'scroll-up' and 'scroll-down' failed when called from code.
+
+
 * Changes in E8 0.5.18
 
 ** 'C-M-i' ('completion-at-point') completes in the buffer, as Emacs does.
