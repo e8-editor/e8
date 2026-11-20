@@ -2239,6 +2239,367 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "sparse-match-todo-only-leaves-done-out",
+      "input": {
+        "text": "* P\n** TODO a :w:\n** DONE b :w:\n** c :w:\n",
+        "point": 0,
+        "keys": "C-u C-c \\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "w"
+        ]
+      },
+      "text": "* P\n** TODO a :w:\n** DONE b :w:\n** c :w:\n",
+      "visible": "* P\n** TODO a :w:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-property-todo-only-leaves-done-out",
+      "input": {
+        "text": "* P\n** TODO a\n:PROPERTIES:\n:R: 1\n:END:\n** DONE b\n:PROPERTIES:\n:R: 1\n:END:\n",
+        "point": 0,
+        "keys": "C-u C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "p",
+          "R",
+          "1"
+        ]
+      },
+      "text": "* P\n** TODO a\n:PROPERTIES:\n:R: 1\n:END:\n** DONE b\n:PROPERTIES:\n:R: 1\n:END:\n",
+      "visible": "* P\n** TODO a",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-group-tag-longer-key",
+      "input": {
+        "text": "#+TAGS: { Work : Lab } { Workshop : Conf }\n* P\n** a :Conf:\n** b :Workshop:\n** c :Lab:\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Workshop"
+        ]
+      },
+      "text": "#+TAGS: { Work : Lab } { Workshop : Conf }\n* P\n** a :Conf:\n** b :Workshop:\n** c :Lab:\n",
+      "visible": "#+TAGS: { Work : Lab } { Workshop : Conf }\n* P\n** a :Conf:\n** b :Workshop:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-only-bar",
+      "input": {
+        "text": "* P\n** a :w:\n** b\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "|"
+        ]
+      },
+      "text": "* P\n** a :w:\n** b\n",
+      "visible": "* P",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-empty-term-errors",
+      "input": {
+        "text": "* P\n** a :w:\n** b\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "w||x"
+        ]
+      },
+      "text": "* P\n** a :w:\n** b\n",
+      "visible": "* P\n** a :w:\n** b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Args out of range: \"\", -1, nil"
+    },
+    {
+      "name": "sparse-match-priority-anywhere",
+      "input": {
+        "text": "* P\n** Fix [#A] thing\n** [#a] x\n** none\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "PRIORITY=\"A\""
+        ]
+      },
+      "text": "* P\n** Fix [#A] thing\n** [#a] x\n** none\n",
+      "visible": "* P\n** Fix [#A] thing",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-priority-lower-case",
+      "input": {
+        "text": "* P\n** Fix [#A] thing\n** [#a] x\n** none\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "PRIORITY=\"a\""
+        ]
+      },
+      "text": "* P\n** Fix [#A] thing\n** [#a] x\n** none\n",
+      "visible": "* P\n** [#a] x",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-dates-skip-verbatim-and-links",
+      "input": {
+        "text": "* a\nSee =<2026-01-01 Thu>= here\n* b\n<2026-01-02 Fri>\n* c\n[[x][<2026-01-03 Sat>]]\n* d\n~<2026-01-04 Sun>~\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "b",
+          "2026-12-31"
+        ]
+      },
+      "text": "* a\nSee =<2026-01-01 Thu>= here\n* b\n<2026-01-02 Fri>\n* c\n[[x][<2026-01-03 Sat>]]\n* d\n~<2026-01-04 Sun>~\n",
+      "visible": "* a\n* b\n<2026-01-02 Fri>\n* c\n* d",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-property-inheritance-regexp-folds-case",
+      "input": {
+        "text": "* a\n:PROPERTIES:\n:Owner: me\n:END:\n** b\n*** c\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "OWNER=\"me\""
+        ],
+        "vars": {
+          "org-use-property-inheritance": "owner"
+        }
+      },
+      "text": "* a\n:PROPERTIES:\n:Owner: me\n:END:\n** b\n*** c\n",
+      "visible": "* a\n** b\n*** c",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-tag-inheritance-regexp-folds-case",
+      "input": {
+        "text": "* a :Foo:\n** b\n*** c\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "Foo"
+        ],
+        "vars": {
+          "org-use-tag-inheritance": "foo"
+        }
+      },
+      "text": "* a :Foo:\n** b\n*** c\n",
+      "visible": "* a :Foo:\n** b\n*** c",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-deadline-before-first-heading",
+      "input": {
+        "text": "DEADLINE: <2020-01-01 Wed>\n* a\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ]
+      },
+      "text": "DEADLINE: <2020-01-01 Wed>\n* a\n",
+      "visible": "DEADLINE: <2020-01-01 Wed>\n* a",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 1 in buffer *e8-oracle*"
+    },
+    {
+      "name": "sparse-deadline-not-a-time",
+      "input": {
+        "text": "* a\nDEADLINE: <soon>\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ]
+      },
+      "text": "* a\nDEADLINE: <soon>\n",
+      "visible": "* a",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not an Org time string: soon"
+    },
+    {
+      "name": "sparse-context-ancestors-full-before-first-heading",
+      "input": {
+        "text": "apple\n* a\n** b\nx\n* c\ny\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r",
+          "apple"
+        ],
+        "vars": {
+          "org-fold-show-context-detail": "'ancestors-full"
+        }
+      },
+      "text": "apple\n* a\n** b\nx\n* c\ny\n",
+      "visible": "apple\n* a\n** b\nx\n* c\ny\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sparse-match-level-odd-levels",
+      "input": {
+        "text": "* a\nx\n*** b\ny\n***** c\nz\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* a\nx\n*** b\ny\n***** c\nz\n",
+      "visible": "* a\n*** b",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

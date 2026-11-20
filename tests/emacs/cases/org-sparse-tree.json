@@ -1204,5 +1204,198 @@
         "x"
       ]
     }
+  },
+  {
+    "name": "sparse-match-todo-only-leaves-done-out",
+    "text": "* P\n** TODO a :w:\n** DONE b :w:\n** c :w:\n",
+    "keys": "C-u C-c \\",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "w"
+    ]
+  },
+  {
+    "name": "sparse-property-todo-only-leaves-done-out",
+    "text": "* P\n** TODO a\n:PROPERTIES:\n:R: 1\n:END:\n** DONE b\n:PROPERTIES:\n:R: 1\n:END:\n",
+    "keys": "C-u C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "p",
+      "R",
+      "1"
+    ]
+  },
+  {
+    "name": "sparse-match-group-tag-longer-key",
+    "text": "#+TAGS: { Work : Lab } { Workshop : Conf }\n* P\n** a :Conf:\n** b :Workshop:\n** c :Lab:\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "Workshop"
+    ]
+  },
+  {
+    "name": "sparse-match-only-bar",
+    "text": "* P\n** a :w:\n** b\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "|"
+    ]
+  },
+  {
+    "name": "sparse-match-empty-term-errors",
+    "text": "* P\n** a :w:\n** b\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "w||x"
+    ]
+  },
+  {
+    "name": "sparse-match-priority-anywhere",
+    "text": "* P\n** Fix [#A] thing\n** [#a] x\n** none\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "PRIORITY=\"A\""
+    ]
+  },
+  {
+    "name": "sparse-match-priority-lower-case",
+    "text": "* P\n** Fix [#A] thing\n** [#a] x\n** none\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "PRIORITY=\"a\""
+    ]
+  },
+  {
+    "name": "sparse-dates-skip-verbatim-and-links",
+    "text": "* a\nSee =<2026-01-01 Thu>= here\n* b\n<2026-01-02 Fri>\n* c\n[[x][<2026-01-03 Sat>]]\n* d\n~<2026-01-04 Sun>~\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "c",
+      "b",
+      "2026-12-31"
+    ]
+  },
+  {
+    "name": "sparse-property-inheritance-regexp-folds-case",
+    "text": "* a\n:PROPERTIES:\n:Owner: me\n:END:\n** b\n*** c\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "OWNER=\"me\""
+    ],
+    "vars": {
+      "org-use-property-inheritance": "owner"
+    }
+  },
+  {
+    "name": "sparse-tag-inheritance-regexp-folds-case",
+    "text": "* a :Foo:\n** b\n*** c\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "Foo"
+    ],
+    "vars": {
+      "org-use-tag-inheritance": "foo"
+    }
+  },
+  {
+    "name": "sparse-deadline-before-first-heading",
+    "text": "DEADLINE: <2020-01-01 Wed>\n* a\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "sparse-deadline-not-a-time",
+    "text": "* a\nDEADLINE: <soon>\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "sparse-context-ancestors-full-before-first-heading",
+    "text": "apple\n* a\n** b\nx\n* c\ny\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "r",
+      "apple"
+    ],
+    "vars": {
+      "org-fold-show-context-detail": "'ancestors-full"
+    }
+  },
+  {
+    "name": "sparse-match-level-odd-levels",
+    "text": "* a\nx\n*** b\ny\n***** c\nz\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "LEVEL=2"
+    ],
+    "vars": {
+      "org-odd-levels-only": true
+    }
   }
 ]

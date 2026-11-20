@@ -726,8 +726,11 @@ export function showSetVisibility(detail: string | null): void {
       }
     }
   }
-  if (i === undefined) return;
-  // The rest of the subtree from point, as org-fold-show-subtree.
+  // The rest of the subtree from point, as org-fold-show-subtree; before the first heading, the rest of the buffer.
+  if (i === undefined) {
+    if (detail === "ancestors-full") flag(pos, e8.pointMax(), false);
+    return;
+  }
   if (detail === "ancestors-full") flag(pos, nextSameOrHigher(all, i)?.start ?? e8.pointMax(), false);
   if (detail === "lineage") showSiblings(all, i);
   if (detail === "ancestors" || detail === "ancestors-full" || detail === "lineage" || detail === "tree" || detail === "canonical" || detail === "t") {

@@ -8106,7 +8106,8 @@ function removeUninheritedTags(tags: string[]): string[] {
   const excluded = Array.isArray(exclude) ? exclude.map(String) : [];
   if (use === true) return tags.filter((t) => !excluded.includes(t));
   if (!truthy(use)) return [];
-  if (typeof use === "string") return tags.filter((t) => e8.stringMatch(use, t) !== undefined && !excluded.includes(t));
+  // Case folded, as org-scan-tags binds case-fold-search.
+  if (typeof use === "string") return tags.filter((t) => e8.stringMatch(use, t, { caseFold: true }) !== undefined && !excluded.includes(t));
   if (Array.isArray(use)) return tags.filter((t) => use.map(String).includes(t));
   return tags;
 }
@@ -8133,7 +8134,7 @@ function propertyInheritP(property: string): boolean {
   const use = e8.variable("org-use-property-inheritance");
   if (use === true) return true;
   if (!truthy(use)) return false;
-  if (typeof use === "string") return e8.stringMatch(use, property) !== undefined;
+  if (typeof use === "string") return e8.stringMatch(use, property, { caseFold: true }) !== undefined;
   if (Array.isArray(use)) return use.some((p) => String(p).toUpperCase() === property.toUpperCase());
   throw new Error("Invalid setting of `org-use-property-inheritance'");
 }
@@ -8153,8 +8154,11 @@ function specialProperty(ctx: MatchContext, name: string): string | undefined {
       return h.title.replace(/\t/g, " ");
     case "TODO":
       return h.todo;
-    case "PRIORITY":
-      return h.priority ?? String(e8.variable("org-priority-default") ?? "B");
+    case "PRIORITY": {
+      // The first cookie on the line, of any case, as org-priority-regexp finds it from the heading's start.
+      const m = /^.*?\[#([A-Z0-9]+)\]/i.exec(e8.lineText(h.line));
+      return m?.[1] ?? String(e8.variable("org-priority-default") ?? "B");
+    }
     case "FILE":
       return e8.bufferFileName() ?? undefined;
     case "TAGS":
@@ -8254,10 +8258,14 @@ function tagsExpand(match: string): string {
   let out = "";
   let i = 0;
   while (i < match.length) {
-    const key = groups.find(([k]) => match.slice(i, i + k.length).toLowerCase() === k.toLowerCase());
+    // The longest key that is a whole word here, as regexp-opt's alternatives try the longer first.
     const before = i > 0 ? match[i - 1] : "";
-    const after = key ? (match[i + key[0].length] ?? "") : "";
-    if (key && !TAG_CHAR.test(before) && !TAG_CHAR.test(after) && !braces.some(([a, b]) => a <= i && i < b)) {
+    const key = TAG_CHAR.test(before)
+      ? undefined
+      : groups
+          .filter(([k]) => match.slice(i, i + k.length).toLowerCase() === k.toLowerCase() && !TAG_CHAR.test(match[i + k.length] ?? ""))
+          .sort((a, b) => b[0].length - a[0].length)[0];
+    if (key && !braces.some(([a, b]) => a <= i && i < b)) {
       const regexps: string[] = [];
       const regular: string[] = [];
       for (const tag of tagsExpandGroup([match.slice(i, i + key[0].length)], groups, [])) {
@@ -8279,9 +8287,10 @@ function tagsExpand(match: string): string {
 
 /** Splits a string at a separator, leaving out one at either end, as org-split-string. */
 function splitString(s: string, separator: RegExp): string[] {
+  if (!separator.test(s)) return [s];
   const parts = s.split(separator);
-  if (parts.length > 1 && parts[0] === "") parts.shift();
-  if (parts.length > 1 && parts[parts.length - 1] === "") parts.pop();
+  if (parts[0] === "") parts.shift();
+  if (parts.length > 0 && parts[parts.length - 1] === "") parts.pop();
   return parts;
 }
 
@@ -8335,11 +8344,16 @@ function comparison(op: string, kind: "number" | "string" | "time"): (a: never, 
   return ops[name] as never;
 }
 
+/** A heading's level counting only odd ones with org-odd-levels-only, as org-reduced-level. */
+function reducedLevel(level: number): number {
+  return e8.variable("org-odd-levels-only") === true ? Math.floor(level / 2) + 1 : level;
+}
+
 /** The test a property term makes, as org-make-tags-matcher turns it into Lisp. */
 function propertyTest(name: string, op: string, star: boolean, operand: string): (ctx: MatchContext) => boolean {
   const property = name.replace(/\\(.)/g, "$1").toUpperCase();
   const get = (ctx: MatchContext): string | undefined =>
-    property === "LEVEL" ? String(ctx.level) : property === "CATEGORY" ? ctx.category() : property === "TODO" ? ctx.todo : matchProperty(ctx, property);
+    property === "LEVEL" ? String(reducedLevel(ctx.level)) : property === "CATEGORY" ? ctx.category() : property === "TODO" ? ctx.todo : matchProperty(ctx, property);
   const regexp = operand.startsWith("{");
   const quoted = operand.startsWith('"');
   const timep = /^"[[<](?:[0-9]+|now|today|tomorrow|[+-][0-9]+[dmwy]).*[\]>]"$/.test(operand);
@@ -8386,15 +8400,14 @@ function tagsCompletion(tags: string[]): (input: string) => string[] {
  * The test a match string makes, as org-make-tags-matcher builds it: tags,
  * +TAG, -TAG, {regexp}, PROP="value", PROP>3, LEVEL<2, TODO="WAIT" and the
  * like joined by & and |, then after a / the TODO states to match, or after
- * /! only those not done. With no match, one is read.
+ * /! only those not done, as `todoOnly` asks too. With no match, one is read.
  */
-export function makeTagsMatcher(match?: string): TagsMatcher {
+export function makeTagsMatcher(match?: string, todoOnly = false): TagsMatcher {
   if (match === undefined) {
     const tags = bufferTags().map(([t]) => t);
     match = e8.completingRead("Match: ", tagsCompletion(tags), { history: "org-tags-history" });
   }
   const given = match;
-  let todoOnly = false;
   match = tagsExpand(match);
   let start = 0;
   for (const m of match.matchAll(/\/+/g)) start = m.index!;
@@ -8416,6 +8429,8 @@ export function makeTagsMatcher(match?: string): TagsMatcher {
     const terms = splitString(tagsPart, /\|/);
     while (terms.length > 0) {
       let term = terms.shift()!;
+      // As (substring term -1) on an empty term between two |.
+      if (term === "") e8.signal("args-out-of-range", 'Args out of range: "", -1, nil', ["", -1, null]);
       // A | after a backslash is part of the term.
       while (term.endsWith("\\") && terms.length > 0) term += "|" + terms.shift();
       const ands: ((ctx: MatchContext) => boolean)[] = [];
@@ -8511,8 +8526,9 @@ export function scanTags<T>(action: "sparse-tree" | ((h: Heading) => T), matcher
 
 /** Makes a sparse tree of the headings a match picks, as org-match-sparse-tree. */
 export function matchSparseTree(todoOnly: boolean, match?: string): void {
-  const matcher = makeTagsMatcher(match);
-  scanTags("sparse-tree", matcher, todoOnly || matcher.todoOnly);
+  // The prefix argument restricts the match itself to states not done, as org-match-sparse-tree binds org--matcher-tags-todo-only.
+  const matcher = makeTagsMatcher(match, todoOnly);
+  scanTags("sparse-tree", matcher, matcher.todoOnly);
 }
 
 const matchSparseTreeCommand = e8.defineCommand({
@@ -8564,7 +8580,7 @@ e8.defineCommand({
 /** The days from today to a timestamp's date, as org-timestamp-to-now. */
 function daysFromToday(ts: string): number {
   const m = /(\d{4})-(\d{2})-(\d{2})/.exec(ts);
-  if (!m) return 0;
+  if (!m) throw new Error(`Not an Org time string: ${ts}`);
   const t = today();
   return (Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])) - Date.UTC(t.year, t.month - 1, t.day)) / 86400000;
 }
@@ -8573,7 +8589,9 @@ function daysFromToday(ts: string): number {
 function entryDoneHere(): boolean {
   const all = headings();
   const i = headingIndex(all, lineAt());
-  return i !== undefined && isDone(all[i].todo);
+  // At the start, where outline-back-to-heading's search gave up.
+  if (i === undefined) throw new Error(`Before first headline at position ${e8.pointMin() + 1} in buffer ${e8.bufferName()}`);
+  return isDone(all[i].todo);
 }
 
 e8.defineCommand({
@@ -8620,14 +8638,34 @@ function reTimestamp(type: string | null): string {
 const NO_OBJECTS = ["planning", "src-block", "example-block", "export-block", "fixed-width", "comment", "comment-block", "keyword", "node-property", "property-drawer", "clock"];
 
 /**
+ * Whether a position is in verbatim or code text (=...=, ~...~) or a
+ * link, where org-element-context finds no timestamp object.
+ */
+function inVerbatimOrLink(pos: number): boolean {
+  const line = lineAt(pos);
+  const text = e8.lineText(line);
+  const col = pos - e8.lineStart(line);
+  const inside = (re: RegExp, lead = 0) => {
+    for (const m of allMatches(re, text)) {
+      const start = charCount(text.slice(0, m.index! + lead));
+      const end = charCount(text.slice(0, m.index! + m[0].length));
+      if (start <= col && col < end) return true;
+    }
+    return false;
+  };
+  return inside(/\[\[(?:[^\][\\]|\\.)+\](?:\[[^\n]+?\])?\]/g) || inside(/(?:^|[\s\-({'"])([=~])\S(?:[^\n]*?\S)?\1(?=[\s\-.,;:!?'")}\[]|$)/g, 1);
+}
+
+/**
  * Whether a match counts for a date sparse tree, as their callbacks ask:
  * a timestamp for all, active and inactive, else on a planning line.
  */
 function dateMatchCounts(type: string | null): boolean {
   const end = e8.matchEnd(0)!;
   if (type === "all" || type === "active" || type === "inactive") {
-    const type = elementAt(Math.max(e8.pointMin(), end - 1))?.type;
-    return type === undefined || !NO_OBJECTS.includes(type);
+    const at = Math.max(e8.pointMin(), end - 1);
+    const type = elementAt(at)?.type;
+    return (type === undefined || !NO_OBJECTS.includes(type)) && !inVerbatimOrLink(at);
   }
   const line = lineAt(end);
   if (!PLANNING.test(e8.lineText(line)) || line === 0) return false;
