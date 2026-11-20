@@ -13133,7 +13133,7 @@ declare global {
        */
       "org-clock-display-default-range": Value;
       /**
-       * The minutes the last clock sum found in the whole file.
+       * The minutes the last clock sum in this buffer found in the whole file.
        *
        * Defined in packages/org-clock.ts.
        */
