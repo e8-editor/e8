@@ -1713,3 +1713,65 @@ fn capture_fills_kills_names_and_the_clock_and_goes_back_to_the_last() {
     ed.press("M-> C-u C-u M-x o r g - c a p t u r e RET").unwrap();
     assert_eq!(s.eval_expression(&mut ed, "e8.point()").unwrap(), "8");
 }
+
+/// C-c C-x A files the entry under an Archive sibling, made with the
+/// ARCHIVE tag, with the time; C-c C-x C-s files it in FILE_archive, a new
+/// file with Org's mode line and header, saved; a buffer with no file
+/// cannot be archived.
+#[test]
+fn archiving_to_the_sibling_and_another_file() {
+    let (mut ed, s) = org("* P\n** a\nbody a\n** b\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("e8--today", "2026-11-04"), 1)"#).unwrap();
+    ed.window_buffer_mut().set_point(4);
+    ed.press("C-c C-x A").unwrap();
+    assert_eq!(
+        text(&ed),
+        "* P\n** b\n** Archive                                                          :ARCHIVE:\n*** a\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\nbody a\n"
+    );
+
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    let path = dir.path().join("notes.org");
+    std::fs::write(&path, "* TODO Task\nbody\n* Other\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    s.eval_expression(&mut ed, r#"(e8.setVariable("e8--today", "2026-11-04"), 1)"#).unwrap();
+    ed.call("find-file", vec![Arg::Str(path.display().to_string())]).unwrap();
+    ed.press("C-c C-x C-s").unwrap();
+    assert_eq!(text(&ed), "* Other\n");
+    let archive = std::fs::read_to_string(dir.path().join("notes.org_archive")).unwrap();
+    let full = path.display().to_string();
+    let file = s.eval_expression(&mut ed, &format!("e8.abbreviateFileName({full:?})")).unwrap();
+    assert_eq!(
+        archive,
+        format!(
+            "#    -*- mode: org -*-\n\n\nArchived entries from file {full}\n\n\n* TODO Task\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:ARCHIVE_FILE: {}\n:ARCHIVE_CATEGORY: notes\n:ARCHIVE_TODO: TODO\n:END:\nbody\n",
+            file.trim_matches('"')
+        )
+    );
+    assert_eq!(ed.echo().map(str::to_string), Some(format!("Subtree archived in file: {}", file.trim_matches('"').to_string() + "_archive")));
+
+    let (mut ed, s) = org("#+ARCHIVE: ::datetree/\n* Done thing\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("e8--today", "2026-11-04"), e8.setVariable("org-archive-save-context-info", []), 1)"#).unwrap();
+    let at = find(&ed, "* Done");
+    ed.window_buffer_mut().set_point(at);
+    // A buffer needs a file to archive from.
+    assert!(ed.press("C-c C-x C-s").is_err() || ed.take_error().is_some());
+}
+
+/// Archiving to the sibling twice files each entry once, and the counts and
+/// fold are those of the sibling the entry went under.
+#[test]
+fn archiving_to_the_sibling_twice_and_under_the_right_parent() {
+    let (mut ed, s) = org("* P\n** a\n** b\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("e8--today", "2026-11-04"), 1)"#).unwrap();
+    ed.press("M-< C-n C-c C-x A C-c C-x A").unwrap();
+    let t = text(&ed);
+    assert_eq!(t.matches("*** a").count(), 1, "{t:?}");
+    assert_eq!(t.matches("*** b").count(), 1, "{t:?}");
+    assert_eq!(t.matches(":ARCHIVE_TIME:").count(), 2, "{t:?}");
+    let (mut ed, _s) = org("* P1\n** Archive :ARCHIVE:\n*** x\n* P2 [0/1]\n** TODO a\n");
+    let at = find(&ed, "** TODO a");
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-c C-x A").unwrap();
+    assert!(text(&ed).contains("* P2 [0/0]\n"), "{:?}", text(&ed));
+}
