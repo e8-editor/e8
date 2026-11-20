@@ -2,6 +2,7 @@
 // Org's own rules when it replaces text, and the edits that keep them.
 
 import { eraseBuffer } from "subr";
+import { fitWindowToBuffer, popToBuffer, windowFullWidthP } from "window";
 
 /**
  * A marker of the core's, as Emacs's: it moves with every edit to its
@@ -195,4 +196,22 @@ export function orgMks(table: e8.Value[][], title: string, prompt = "Select: ", 
       if (e8.bufferList().includes(name)) e8.call("kill-buffer", name);
     }
   });
+}
+
+/**
+ * Shows BUFFER below the selected window's, the frame split in two, as
+ * pop-to-buffer with org-display-buffer-split: the other windows go first.
+ */
+export function orgPopToBufferSplit(buffer: string): void {
+  try {
+    e8.call("delete-other-windows");
+  } catch {
+    // As ignore-errors: a window that cannot be the only one stays with the others.
+  }
+  popToBuffer(buffer, ["display-buffer-in-direction", ["direction", "down"]]);
+}
+
+/** Fits WINDOW to its buffer unless it is beside another, as org-fit-window-to-buffer. */
+export function orgFitWindowToBuffer(window: e8.Window = e8.selectedWindow()): void {
+  if (windowFullWidthP(window)) fitWindowToBuffer(window);
 }

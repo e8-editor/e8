@@ -302,7 +302,9 @@ fn answer_char(ed: &mut Editor, answer: &str) {
         Some('\t') => ed.handle_key(Key::parse("TAB").expect("TAB parses")),
         Some('\u{1b}') => ed.handle_key(Key::parse("ESC").expect("ESC parses")),
         Some(c) if (c as u32) < 32 => {
-            let letter = char::from_u32(c as u32 + 96).expect("a letter");
+            // C-@ for 0, C-a to C-z, then C-[ to C-_, as the ASCII control characters are.
+            let base = if (1..=26).contains(&(c as u32)) { 96 } else { 64 };
+            let letter = char::from_u32(c as u32 + base).expect("a character");
             ed.handle_key(Key::parse(&format!("C-{letter}")).expect("a control key parses"));
         }
         Some(c) => ed.type_text(&c.to_string()),

@@ -575,6 +575,157 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "buffer-tags-keyed-last-first",
+      "input": {
+        "text": "* A :ab:\n* B :ac:\n* C\n",
+        "point": 20,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "\r"
+        ],
+        "vars": {
+          "org-use-fast-tag-selection": true
+        }
+      },
+      "text": "* A :ab:\n* B :ac:\n* C                                                                      :ac:\n",
+      "visible": "* A :ab:\n* B :ac:\n* C                                                                      :ac:\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "unchanged-tags-are-aligned",
+      "input": {
+        "text": "#+TAGS: a(a)\n* T :a:\n",
+        "point": 15,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: a(a)\n* T                                                                       :a:\n",
+      "visible": "#+TAGS: a(a)\n* T                                                                       :a:\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "duplicate-tags-become-one",
+      "input": {
+        "text": "#+TAGS: a(a)\n* T :a:a:\n",
+        "point": 15,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: a(a)\n* T                                                                       :a:\n",
+      "visible": "#+TAGS: a(a)\n* T                                                                       :a:\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "point-after-the-stars-moves-on",
+      "input": {
+        "text": "#+TAGS: a(a)\n* T\n",
+        "point": 14,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: a(a)\n* T                                                                       :a:\n",
+      "visible": "#+TAGS: a(a)\n* T                                                                       :a:\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indented-tags-line",
+      "input": {
+        "text": "  #+TAGS: a(a)\n* T\n",
+        "point": 17,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "\r"
+        ]
+      },
+      "text": "  #+TAGS: a(a)\n* T                                                                       :a:\n",
+      "visible": "  #+TAGS: a(a)\n* T                                                                       :a:\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "inherited-and-own-tag-once",
+      "input": {
+        "text": "#+FILETAGS: :a:b:\n#+TAGS: a(a) b(b) c(c)\n* P :a:\n** C :b:\n",
+        "point": 52,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "c",
+          "\r"
+        ]
+      },
+      "text": "#+FILETAGS: :a:b:\n#+TAGS: a(a) b(b) c(c)\n* P :a:\n** C                                                                    :b:c:\n",
+      "visible": "#+FILETAGS: :a:b:\n#+TAGS: a(a) b(b) c(c)\n* P :a:\n** C                                                                    :b:c:\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

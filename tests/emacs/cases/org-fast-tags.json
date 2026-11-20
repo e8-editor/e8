@@ -308,5 +308,84 @@
     "answers": [
       "y"
     ]
+  },
+  {
+    "name": "buffer-tags-keyed-last-first",
+    "text": "* A :ab:\n* B :ac:\n* C\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "\r"
+    ],
+    "point": 20,
+    "vars": {
+      "org-use-fast-tag-selection": true
+    }
+  },
+  {
+    "name": "unchanged-tags-are-aligned",
+    "text": "#+TAGS: a(a)\n* T :a:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "\r"
+    ],
+    "point": 15
+  },
+  {
+    "name": "duplicate-tags-become-one",
+    "text": "#+TAGS: a(a)\n* T :a:a:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "\r"
+    ],
+    "point": 15
+  },
+  {
+    "name": "point-after-the-stars-moves-on",
+    "text": "#+TAGS: a(a)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "\r"
+    ],
+    "point": 14
+  },
+  {
+    "name": "indented-tags-line",
+    "text": "  #+TAGS: a(a)\n* T\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "\r"
+    ],
+    "point": 17
+  },
+  {
+    "name": "inherited-and-own-tag-once",
+    "text": "#+FILETAGS: :a:b:\n#+TAGS: a(a) b(b) c(c)\n* P :a:\n** C :b:\n",
+    "keys": "C-c C-q",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "c",
+      "\r"
+    ],
+    "point": 52
   }
 ]

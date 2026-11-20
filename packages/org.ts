@@ -98,7 +98,9 @@ import {
   marker,
   type Marker,
   markers,
+  orgFitWindowToBuffer,
   orgMks,
+  orgPopToBufferSplit,
   orgRegionActive,
   placeMarkers,
 } from "org-macs";
@@ -4707,7 +4709,11 @@ function alignTagsAway(line: number): void {
 function setTags(tags: string[]): void {
   const [all, i] = backToHeading();
   const h = all[i];
-  if (tags.join(":") === h.tags.join(":")) return;
+  // Unchanged tags are aligned again all the same, as org-set-tags does.
+  if (tags.join(":") === h.tags.join(":")) {
+    if (tags.length > 0) alignTags(h.line);
+    return;
+  }
   // The tags go, and the spaces before them, or trailing spaces if there are none.
   const text = e8.lineText(h.line);
   const before = text.slice(0, h.tagsAt !== undefined ? indexOf(h.line, text, h.tagsAt) : text.length).replace(/[ \t]+$/, "");
@@ -4760,17 +4766,6 @@ e8.defineVariable({
 });
 e8.defineVariable({ name: "org-use-tag-inheritance", doc: "Whether headings inherit the tags of those above them and the file's.", value: true });
 e8.defineFace({ name: "org-tag-group", doc: "The tag that names a group of tags.", attributes: { inherit: "org-tag" } });
-
-/** The tags of the file and the headings above, as org-get-tags gives the inherited ones. */
-function inheritedTags(all: Heading[], i: number): string[] {
-  const out: string[] = [];
-  for (const [, , text] of keywordLines()) {
-    const m = /^#\+FILETAGS:(.*)$/i.exec(text);
-    if (m) for (const t of m[1].split(/[:\s]+/)) if (t !== "" && !out.includes(t)) out.push(t);
-  }
-  for (const a of ancestors(all, i).reverse()) for (const t of all[a].tags) if (!out.includes(t)) out.push(t);
-  return out;
-}
 
 // Tag tables, as org-tag-alist and the TAGS keyword give them.
 
@@ -4840,10 +4835,14 @@ function tagAddToAlist(alist1: TagEntry[], alist2: TagEntry[]): TagEntry[] {
  */
 export function currentTagAlist(): TagEntry[] {
   const lines: string[] = [];
-  for (const [line, , text] of keywordLines()) {
-    const m = /^#\+TAGS:(.*)$/i.exec(text);
-    if (m && elementAt(e8.lineStart(line))?.type === "keyword") lines.push(m[1].trim());
-  }
+  e8.saveRestriction(() => {
+    e8.widen();
+    // Indented too, as org-collect-keywords reads keywords.
+    for (const [line, , text] of e8.matchingLines("^[ \t]*#\\+TAGS:", { caseFold: true })) {
+      const m = /^[ \t]*#\+TAGS:(.*)$/i.exec(text);
+      if (m && elementAt(e8.lineStart(line))?.type === "keyword") lines.push(m[1].trim());
+    }
+  });
   const base = lines.length > 0 ? tagStringToAlist(lines.join("\n")) : tagTable(e8.variable("org-tag-alist") ?? null);
   return tagAddToAlist(tagTable(e8.variable("org-tag-persistent-alist") ?? null), base);
 }
@@ -4853,7 +4852,8 @@ function bufferTags(): TagEntry[] {
   const seen = new Set<string>();
   for (const h of headings()) for (const t of h.tags) seen.add(t);
   for (const t of fileTags()) seen.add(t);
-  return [...seen].map((t): TagEntry => [t, undefined]);
+  // Last first, as hash-table-keys gives them.
+  return [...seen].reverse().map((t): TagEntry => [t, undefined]);
 }
 
 /** The tags FILETAGS lines give the whole file. */
@@ -4921,7 +4921,8 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
   const bindingChars = [...FAST_TAG_KEYS];
   let charsLeft = Number(e8.variable("org-fast-tag-selection-maximum-tags") ?? FAST_TAG_KEYS.length);
   let exitAfterNext: boolean | "now" = truthy(e8.variable("org-fast-tag-selection-single-key"));
-  let groups: string[][] | undefined = [];
+  // The groups' tags; nil (empty) when there are none, and after ! nil or t, as Org's.
+  let groups: string[][] | true = [];
   const local: TagEntry[] = [];
   const name = " *Org tags*";
   // Tags with keys of their own and tags in groups always show; others while keys are left.
@@ -4969,29 +4970,22 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
       if (m) e8.deleteRegion(e8.lineStart(2) + charCount(text.slice(0, m.index)), e8.lineStart(2) + charCount(text.slice(0, m.index + m[0].length)));
       if (flag) {
         e8.gotoChar(e8.lineEnd(2));
-        // As org-move-to-column with FORCE: spaces up to the column.
-        const col = e8.currentColumn();
-        if (col < width() - 19) e8.insert(" ".repeat(width() - 19 - col));
+        // As org-move-to-column with FORCE: indented up to the column, with tabs as indent-tabs-mode says.
+        if (e8.currentColumn() < width() - 19) e8.indentTo(width() - 19);
         e8.insert(e8.propertize(" Next change exits", { face: "org-warning" }));
       }
     });
   };
   const showWindow = () => {
-    const below = e8.splitWindow(undefined, "below");
-    e8.selectWindow(below);
-    e8.call("switch-to-buffer", name);
-    e8.call("shrink-window-if-larger-than-buffer");
+    orgPopToBufferSplit(name);
+    orgFitWindowToBuffer();
   };
   e8.getBufferCreate(name);
   try {
     return e8.saveWindowExcursion(() =>
       e8.saveExcursion(() => {
         if (expert) e8.setBuffer(name);
-        else {
-          const below = e8.splitWindow(undefined, "below");
-          e8.selectWindow(below);
-          e8.call("switch-to-buffer", name);
-        }
+        else orgPopToBufferSplit(name);
         return e8.letBind({ "inhibit-read-only": true }, () => {
           eraseBuffer();
           fastTagInsert("Inherited", inheritedTags, "org-done", "\n");
@@ -5005,7 +4999,7 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
             const [tag, key] = tagAlist[i];
             const next = tagAlist[i + 1]?.[0];
             if (tag === ":startgroup") {
-              groups!.push([]);
+              (groups as string[][]).push([]);
               ingroup = true;
               if (fieldNumber !== 0) {
                 fieldNumber = 0;
@@ -5053,11 +5047,11 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
                   ch = bindingChars[0] ?? " ";
                 } else ch = auto;
               }
-              if (ingroup) groups![groups!.length - 1].push(tag);
+              if (ingroup) (groups as string[][])[(groups as string[][]).length - 1].push(tag);
               const face: e8.Value | undefined = next === ":grouptags"
                 ? "org-tag-group"
                 : !tagTableIn.some(([t]) => t === tag)
-                  ? todoFaceOf(tag)
+                  ? e8.withCurrentBuffer(origin, () => todoFaceOf(tag))
                   : currentTags.includes(tag)
                     ? "org-todo"
                     : inheritedTags.includes(tag)
@@ -5081,16 +5075,16 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
           }
           e8.insert("\n");
           e8.gotoChar(e8.pointMin());
-          if (!expert) e8.call("shrink-window-if-larger-than-buffer");
+          if (!expert) orgFitWindowToBuffer();
           for (;;) {
             const message =
-              `[a-z..]:toggle [SPC]:clear [RET]:accept [TAB]:edit [!] ${groups === undefined || groups.length === 0 ? "no " : ""}groups` +
+              `[a-z..]:toggle [SPC]:clear [RET]:accept [TAB]:edit [!] ${groups === true || groups.length > 0 ? "" : "no "}groups` +
               (expert ? " [C-c]:window" : exitAfterNext ? " [C-c]:single" : " [C-c]:multi");
             const input = e8.readKey(message);
             if (input === "RET") return currentTags.join(":");
             if (input === "!") {
               // Groups off, and their braces gone, as org-fast-tag-selection's !.
-              groups = groups === undefined ? [] : undefined;
+              groups = groups === true || groups.length > 0 ? [] : true;
               for (const [l, , text] of e8.matchingLines("[{}]")) {
                 const start = e8.lineStart(l);
                 [...text].forEach((c, j) => {
@@ -5137,10 +5131,10 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
             }
             // In the order the tags show, as Org sorts them.
             const order = local.map(([t]) => t);
-            currentTags = [...currentTags].sort((x, y) => {
+            // B comes after A in the grid, as Org's predicate says.
+            currentTags = sortByPredicate(currentTags, (x, y) => {
               const ix = order.indexOf(x);
-              const iy = order.indexOf(y);
-              return ix < 0 || iy < 0 ? 0 : ix - iy;
+              return ix >= 0 && order.indexOf(y) > ix;
             });
             if (exitAfterNext === "now") return currentTags.join(":");
             // The current tags again, on the second line, on the heading and in the grid.
@@ -5167,11 +5161,40 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
   }
 }
 
+/**
+ * LIST sorted by LESS as Emacs's sort does a short list, the same on every
+ * engine: its first run, reversed if descending, then each element after
+ * it inserted by binary search, as timsort sorts fewer than 64.
+ */
+function sortByPredicate<T>(list: T[], less: (a: T, b: T) => boolean): T[] {
+  const a = [...list];
+  if (a.length < 2) return a;
+  let run = 2;
+  if (less(a[1], a[0])) {
+    while (run < a.length && less(a[run], a[run - 1])) run++;
+    a.splice(0, run, ...a.slice(0, run).reverse());
+  } else while (run < a.length && !less(a[run], a[run - 1])) run++;
+  for (let i = run; i < a.length; i++) {
+    const pivot = a[i];
+    let lo = 0;
+    let hi = i;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (less(pivot, a[mid])) hi = mid;
+      else lo = mid + 1;
+    }
+    a.splice(i, 1);
+    a.splice(lo, 0, pivot);
+  }
+  return a;
+}
+
 /** Adds TAG or takes it away; added, the others of its group go, as org--add-or-remove-tag. */
-function addOrRemoveTag(tag: string, current: string[], groups: string[][] | undefined): string[] {
+function addOrRemoveTag(tag: string, current: string[], groups: string[][] | true): string[] {
   if (current.includes(tag)) return current.filter((t) => t !== tag);
   let out = current;
-  for (const g of groups ?? []) if (g.includes(tag)) out = out.filter((t) => !g.includes(t));
+  // Org signals here when ! has made groups t; E8 takes it as none.
+  for (const g of groups === true ? [] : groups) if (g.includes(tag)) out = out.filter((t) => !g.includes(t));
   return [tag, ...out];
 }
 
@@ -5191,9 +5214,17 @@ const setTagsCommand = e8.defineCommand({
     const h = all[i!];
     const localTable = currentTagAlist();
     const table = localTable.length > 0 ? localTable : bufferTags();
-    const current = h.tags;
-    // Inherited ones, without the heading's own, as org-get-tags keeps the most local.
-    const inherited = truthy(e8.variable("org-use-tag-inheritance")) ? inheritedTags(all, i!).filter((t) => !current.includes(t)) : [];
+    // As org-get-tags: with inheritance, the file's and the headings' above, then the heading's own,
+    // each tag once where it comes last; those of the heading are its current ones.
+    let current = h.tags;
+    let inherited: string[] = [];
+    if (truthy(e8.variable("org-use-tag-inheritance"))) {
+      const itags = [...fileTags(), ...ancestors(all, i!).reverse().flatMap((a) => all[a].tags)];
+      const tagged = [...itags.map((t) => [t, true] as const), ...current.map((t) => [t, false] as const)];
+      const kept = tagged.filter(([t], j) => !tagged.slice(j + 1).some(([u]) => u === t));
+      inherited = kept.filter(([, inh]) => inh).map(([t]) => t);
+      current = kept.filter(([, inh]) => !inh).map(([t]) => t);
+    }
     let tags: string | undefined;
     if (fast === true || (truthy(fast) && table.some(([, k]) => k !== undefined))) {
       tags = e8.saveExcursion(() => {
@@ -5215,6 +5246,10 @@ const setTagsCommand = e8.defineCommand({
       e8.gotoChar(h.start);
       setTags(cleaned.split(":").filter((t) => t !== ""));
     });
+    // Point just after the stars goes past the space after them, as org-set-tags-command ends.
+    const bol = e8.lineStart(lineAt());
+    const stars = e8.bufferSubstringNoProperties(bol, e8.point());
+    if (/^\**$/.test(stars) && e8.point() < e8.pointMax() && e8.bufferSubstringNoProperties(e8.point(), e8.point() + 1) === " ") e8.gotoChar(e8.point() + 1);
   },
 });
 
