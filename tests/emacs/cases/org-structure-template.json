@@ -1,0 +1,59 @@
+[
+  {
+    "name": "structure-template-by-key",
+    "text": "a\n",
+    "keys": "C-c C-,",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "structure-template-src",
+    "text": "a\n",
+    "keys": "C-c C-,",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "structure-template-capital-key",
+    "text": "a\n",
+    "keys": "C-c C-,",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "C"
+    ]
+  },
+  {
+    "name": "structure-template-tab-asks-for-the-name",
+    "text": "a\n",
+    "keys": "C-c C-,",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "\t",
+      "quote"
+    ]
+  },
+  {
+    "name": "structure-template-space-asks-for-the-name",
+    "text": "a\n",
+    "keys": "C-c C-,",
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      " ",
+      "SRC python"
+    ]
+  }
+]

@@ -96,6 +96,7 @@ import {
   marker,
   type Marker,
   markers,
+  orgMks,
   orgRegionActive,
   placeMarkers,
 } from "org-macs";
@@ -6843,29 +6844,53 @@ export function upcaseBlock(type: string): boolean {
 }
 
 /**
+ * Two-character keys for a submenu's entries, as
+ * org--insert-structure-template-unique-keys makes them: a one-letter key
+ * gets a TAB after it, a longer one is cut to its first letter and the
+ * first of its others not taken, shortest keys first.
+ */
+function structureTemplateUniqueKeys(keys: string[]): string[] {
+  const menu = new Map<string, string>();
+  for (const key of [...keys].sort((a, b) => [...a].length - [...b].length)) {
+    const chars = [...key];
+    const potential =
+      chars.length === 1 ? `${key}\t` : chars.length === 2 ? key : chars.slice(1).map((c) => chars[0] + c).find((k) => !menu.has(k));
+    if (potential === undefined || menu.has(potential)) e8.userError(`Could not make unique key for \`${key}'`);
+    menu.set(potential, key);
+  }
+  return [...menu.entries()].sort((a, b) => keys.indexOf(a[1]) - keys.indexOf(b[1])).map(([k]) => k);
+}
+
+/**
  * Asks for a block type by its key in org-structure-template-alist, as
- * org--insert-structure-template-mks does: a key that starts longer ones
- * is ended with TAB, RET or SPC, and TAB first asks for the type by name.
+ * org--insert-structure-template-mks does, in *Org Select*: keys sharing a
+ * first letter make a submenu under it, and TAB, RET or SPC asks for the
+ * type by name.
  */
 function readStructureType(): string {
-  const templates = structureTemplates();
-  const menu = templates.map(([key, type]) => `[${key}] ${type}`).join("  ");
-  let typed = "";
-  for (;;) {
-    const key = e8.readKey(`${menu}  [TAB] write the type\nKey: ${typed}`);
-    if (typed === "" && key === "TAB") {
-      const type = e8.readString("Structure type: ");
-      if (type === "") e8.userError("Empty structure type");
-      return type;
+  const templates: [string, string][] = [...structureTemplates(), ["\t", "Press TAB, RET or SPC to write block name"]];
+  const starts: string[] = [];
+  for (const [key] of templates) if (!starts.includes([...key][0])) starts.push([...key][0]);
+  const table: e8.Value[][] = [];
+  for (const letter of starts) {
+    const sub = templates.filter(([k]) => k.startsWith(letter));
+    if (sub.length === 1) {
+      table.push([letter, sub[0][1], ""]);
+      continue;
     }
-    const exact = templates.find(([k]) => k === typed);
-    if (exact && (key === "TAB" || key === "RET" || key === "SPC")) return exact[1];
-    if ([...key].length !== 1) e8.userError("No such template");
-    typed += key;
-    const starting = templates.filter(([k]) => k.startsWith(typed));
-    if (starting.length === 0) e8.userError("No such template");
-    if (starting.length === 1 && starting[0][0] === typed) return starting[0][1];
+    // A submenu, described by its first three types.
+    const long = sub.length > 3;
+    table.push([letter, sub.slice(0, long ? 3 : sub.length).map(([, t]) => t).join(", ") + (long ? ", ..." : "")]);
+    const keys = structureTemplateUniqueKeys(sub.map(([k]) => k));
+    sub.forEach(([, type], i) => table.push([keys[i], type, ""]));
   }
+  const chosen = orgMks(table, "Select a key\n============", "Key: ") as e8.Value[];
+  if (chosen[0] === "\t") {
+    const type = e8.readString("Structure type: ");
+    if (type === "") e8.userError("Empty structure type");
+    return type;
+  }
+  return String(chosen[1]);
 }
 
 /** Puts a block around the region, or an empty one at point, as org-insert-structure-template. */
@@ -6919,8 +6944,8 @@ export function insertStructureTemplate(type: string): void {
 const insertStructureTemplateCommand = e8.defineCommand({
   name: "org-insert-structure-template",
   doc:
-    "Insert a block, #+begin_TYPE and #+end_TYPE, around the region if it is active. Asks for its type by the key " +
-    "org-structure-template-alist gives it: TAB, RET or SPC ends a key that starts longer ones, and TAB first types the name.",
+    "Insert a block, #+begin_TYPE and #+end_TYPE, around the region if it is active. Asks for its type in *Org Select* by " +
+    "the key org-structure-template-alist gives it, keys with a first letter in common in a submenu under it; TAB, RET or SPC types the name.",
   run: () => insertStructureTemplate(readStructureType()),
 });
 
