@@ -73,6 +73,12 @@ declare global {
        */
       "Buffer-menu-mode": [];
       /**
+       * Show all lines in marked buffers containing a match for a regexp.
+       *
+       * Defined in packages/buff-menu.ts.
+       */
+      "Buffer-menu-multi-occur": [];
+      /**
        * Mark this line's buffer as not modified, or with a prefix argument as modified.
        *
        * @param arg raw prefix argument
@@ -4914,6 +4920,26 @@ declare global {
        * Defined in packages/window.ts.
        */
       "move-to-window-line-top-bottom": [arg?: PrefixArg | boolean];
+      /**
+       * Show all lines in buffers BUFS containing a match for REGEXP.
+       * This function acts on multiple buffers; otherwise, it is exactly like
+       * `occur'.  When you invoke this command interactively, you must specify
+       * the buffer names that you want, one by one.
+       *
+       * Defined in packages/replace.ts.
+       */
+      "multi-occur": [];
+      /**
+       * Show all lines matching REGEXP in buffers specified by BUFREGEXP.
+       * Normally BUFREGEXP matches against each buffer's visited file name,
+       * but with a prefix argument it matches against the buffer name and includes also buffers that
+       * don't visit files.
+       *
+       * @param allbufs raw prefix argument
+       *
+       * Defined in packages/replace.ts.
+       */
+      "multi-occur-in-matching-buffers": [allbufs?: PrefixArg | boolean];
       /**
        * Scroll the window for the mouse wheel or a trackpad.
        *
