@@ -365,6 +365,9 @@ answers come, and then from its answers, as save-some-buffers' do."
                ('t t)
                ;; A string starting with ' is a symbol, as 'headline-data.
                ((and (pred stringp) v (guard (string-prefix-p "'" v))) (intern (substring v 1)))
+               ;; An object is an alist of strings, as (("NAME" . "value")).
+               ((and `((,(pred symbolp) . ,_) . ,_) v)
+                (mapcar (lambda (c) (cons (symbol-name (car c)) (cdr c))) v))
                (v v))))
       ;; A completion function offering the case's strings for the word at point.
       (when-let* ((strings (alist-get 'capf case)))

@@ -1515,3 +1515,51 @@ fn log_into_drawer_property_says_where_notes_go() {
         "* Parent\n:PROPERTIES:\n:LOG_INTO_DRAWER: NOTES\n:END:\n** TODO Child\n:NOTES:\n- State \"TODO\"       from              [2026-11-04 Wed 12:00]\n:END:\nbody\n"
     );
 }
+
+/// The ID before the first heading is org-data's, as org-id-get reads it: in
+/// a drawer after blank and comment lines only, and "nil" is none, so a new
+/// ID replaces it.
+#[test]
+fn ids_before_the_first_heading_are_org_datas() {
+    let kill = |ed: &mut Editor, s: &mut Scripting| {
+        call(ed, "org-id-copy", &[]);
+        s.eval_expression(ed, "e8.currentKill(0)").unwrap()
+    };
+    let (mut ed, mut s) = org("# a comment\n:PROPERTIES:\n:ID: abc\n:END:\n* H\n");
+    ed.window_buffer_mut().set_point(0);
+    assert_eq!(kill(&mut ed, &mut s), "\"abc\"");
+
+    // "#x" is no comment, so the drawer is not the file's: a new one is made.
+    let (mut ed, mut s) = org("#x\n:PROPERTIES:\n:ID: abc\n:END:\n* H\n");
+    ed.window_buffer_mut().set_point(0);
+    assert_ne!(kill(&mut ed, &mut s), "\"abc\"");
+
+    let (mut ed, mut s) = org(":PROPERTIES:\n:ID: nil\n:END:\n* H\n");
+    ed.window_buffer_mut().set_point(0);
+    let id = kill(&mut ed, &mut s);
+    assert_ne!(id, "\"nil\"");
+    let t = text(&ed);
+    assert_eq!(t.matches(":ID:").count(), 1, "{t:?}");
+    assert!(t.contains(id.trim_matches('"')), "{t:?}");
+}
+
+/// org-property-separators names properties by a list, compared with their
+/// case, or by a regexp; the values of a property NAME+ adds to are joined
+/// by its separator.
+#[test]
+fn property_separators_join_values_added_with_plus() {
+    let doc = ":PROPERTIES:\n:LOG_INTO_DRAWER: MY\n:END:\n* TODO Task\n:PROPERTIES:\n:LOG_INTO_DRAWER+: NOTES\n:END:\nbody\n#+TODO: TODO | DONE(!)\n";
+    let names = |name: &str| {
+        Value::List(vec![Value::List(vec![Value::List(vec![Value::Str(name.into())]), Value::Str("-".into())])])
+    };
+    for (separators, drawer) in [(names("LOG_INTO_DRAWER"), ":MY-NOTES:"), (names("log_into_drawer"), ":MY NOTES:")] {
+        let (mut ed, _s) = org(doc);
+        ed.set_variable("e8--today", Value::Str("2026-11-04".into()));
+        ed.set_variable("org-property-separators", separators);
+        let at = find(&ed, "TODO Task");
+        ed.window_buffer_mut().set_point(at);
+        ed.press("C-c C-t").unwrap();
+        let t = text(&ed);
+        assert!(t.contains(&format!("{drawer}\n- State \"DONE\"")), "{t:?}");
+    }
+}
