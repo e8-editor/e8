@@ -1369,6 +1369,102 @@ fn notes_are_taken_in_org_note_as_org_takes_them() {
     assert!(text(&ed).contains(":LOGBOOK:\n- Note taken on [2026-11-04 Wed 12:00] \\\\\n  remember this\n"), "{}", text(&ed));
 }
 
+/// A repeat asks for a note when org-log-repeat is note, as
+/// org-auto-repeat-maybe sets one up; C-c C-c finishes a note before
+/// org-ctrl-c-ctrl-c-hook runs; a note over a region of entries is the last's.
+#[test]
+fn repeats_ask_for_notes_and_notes_finish_first() {
+    let (mut ed, s) = logging_org("* TODO Task\nSCHEDULED: <2026-11-04 Wed +1d>\n");
+    s.eval_expression(
+        &mut ed,
+        r#"(e8.setVariable("org-todo-keywords", [["TODO", "|", "DONE"]]), e8.setVariable("org-log-done", undefined),
+            e8.setVariable("org-log-repeat", "note"), e8.addHook("org-ctrl-c-ctrl-c-hook", () => true), e8.call("org-mode"), 0)"#,
+    )
+    .unwrap();
+    ed.press("C-c C-t").unwrap();
+    assert_eq!(ed.window_buffer().name, "*Org Note*");
+    assert_eq!(ed.window_list().len(), 2, "the note beside the entry");
+    ed.type_text("again tomorrow");
+    ed.press("C-c C-c").unwrap();
+    assert_eq!(ed.window_buffer().name, "*scratch*");
+    let t = text(&ed);
+    assert!(t.starts_with("* TODO Task\nSCHEDULED: <2026-11-05 Thu +1d>\n"), "{t}");
+    assert!(t.contains("- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00] \\\\\n  again tomorrow\n"), "{t}");
+}
+
+/// As org-todo then org-auto-repeat-maybe set notes up: a state's ! wins
+/// over org-log-done's note, and a closing note stays one when
+/// org-log-repeat asks for a note.
+#[test]
+fn repeats_log_as_org_sets_their_notes_up() {
+    let (mut ed, s) = logging_org("* TODO Task\nSCHEDULED: <2026-11-04 Wed +1d>\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-log-done", "note"), e8.setVariable("org-log-repeat", "time"), 0)"#).unwrap();
+    ed.press("C-c C-t d").unwrap();
+    assert_eq!(ed.window_buffer().name, "*scratch*", "DONE(d!) logs the time, asking nothing");
+    let t = text(&ed);
+    assert!(t.contains("- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]\n"), "{t}");
+    let (mut ed, s) = logging_org("* TODO Task\nSCHEDULED: <2026-11-04 Wed +1d>\n");
+    s.eval_expression(
+        &mut ed,
+        r#"(e8.setVariable("org-todo-keywords", [["TODO", "|", "DONE"]]), e8.setVariable("org-log-done", "note"),
+            e8.setVariable("org-log-repeat", "note"), e8.call("org-mode"), 0)"#,
+    )
+    .unwrap();
+    ed.press("C-c C-t").unwrap();
+    assert_eq!(ed.window_buffer().name, "*Org Note*");
+    ed.type_text("closed");
+    ed.press("C-c C-c").unwrap();
+    let t = text(&ed);
+    assert!(t.contains("- CLOSING NOTE [2026-11-04 Wed 12:00] \\\\\n  closed\n"), "{t}");
+}
+
+/// A note set up by a command run from code, not keys, opens only after
+/// that command, as org-add-log-note checks this-command.
+#[test]
+fn a_note_from_a_command_called_by_code_waits() {
+    let (mut ed, s) = logging_org("* Task\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-todo-keywords", [["WAIT(@)", "|", "DONE"]]), e8.call("org-mode"), 0)"#).unwrap();
+    ed.call("org-todo", vec![]).unwrap();
+    assert!(text(&ed).starts_with("* WAIT Task"), "{}", text(&ed));
+    ed.press("C-f").unwrap();
+    assert_eq!(ed.window_buffer().name, "*scratch*", "no note pops up under another command");
+}
+
+/// A clock line removed for taking no time takes its empty drawer with it,
+/// whatever LOG_INTO_DRAWER named it, as org-remove-empty-drawer-at.
+#[test]
+fn a_zero_time_clock_takes_its_empty_drawer_whatever_its_name() {
+    let (mut ed, s) = logging_org("* Parent\n:PROPERTIES:\n:LOG_INTO_DRAWER: NOTES\n:END:\n** Child\n");
+    s.eval_expression(&mut ed, r#"(e8.setVariable("org-clock-out-remove-zero-time-clocks", true), 0)"#).unwrap();
+    ed.press("M-> C-p C-c C-x C-i C-c C-x C-o").unwrap();
+    assert_eq!(text(&ed), "* Parent\n:PROPERTIES:\n:LOG_INTO_DRAWER: NOTES\n:END:\n** Child\n");
+}
+
+/// C-c C-k with no note to cancel folds the subtree to its headings, as
+/// org-kill-note-or-show-branches does.
+#[test]
+fn c_c_c_k_shows_branches_without_a_note() {
+    let (mut ed, _s) = logging_org("* A\nbody\n** B\nb body\n*** C\nc body\n* D\n");
+    ed.press("C-c C-k").unwrap();
+    let invisible = |ed: &Editor, what: &str| ed.invisible_in(ed.window_buffer(), find(ed, what)).is_some();
+    assert!(invisible(&ed, "body\n** B"), "A's body hidden");
+    assert!(!invisible(&ed, "** B"), "B shown");
+    assert!(invisible(&ed, "b body"), "B's body hidden");
+    assert!(!invisible(&ed, "*** C"), "C shown");
+    assert!(invisible(&ed, "c body"), "C's body hidden");
+    assert!(!invisible(&ed, "* D"), "D shown");
+}
+
+/// Clocks go into the drawer LOG_INTO_DRAWER names when
+/// org-clock-into-drawer is t, as org-clock-into-drawer reads it.
+#[test]
+fn clocks_go_into_the_drawer_log_into_drawer_names() {
+    let (mut ed, _s) = logging_org("* Parent\n:PROPERTIES:\n:LOG_INTO_DRAWER: NOTES\n:END:\n** Child\n");
+    ed.press("M-> C-p C-c C-x C-i C-c C-x C-o").unwrap();
+    let t = text(&ed);
+    assert!(t.contains("** Child\n:NOTES:\nCLOCK: [2026-11-04 Wed 12:00]--[2026-11-04 Wed 12:00] =>  0:00\n:END:\n"), "{t}");
+}
+
 /// LOG_INTO_DRAWER on a heading or one above it says where notes go, as
 /// the org-log-into-drawer function reads it, over the variable.
 #[test]
