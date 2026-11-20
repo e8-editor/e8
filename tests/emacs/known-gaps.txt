@@ -11,8 +11,10 @@ org-fuzz-8/seed13-0613-c-e-m-s-return  # copying Org's stale match data
 # planning timestamps.
 org-fuzz-9/seed16-0666-m-s-right---c-return  # malformed planning timestamp
 
-# E8's Org does not read org-adapt-indentation yet (docs/differences.md).
-org-structure/indent-region-with-adapted-indentation  # no org-adapt-indentation
+# Org folds a LOGBOOK drawer it makes from where its text started before
+# org-indent-region indented it, so ":LOGBOO" shows and "K:" is folded away;
+# E8 folds the drawer after its name.
+org-adapt-indentation/adapt-logbook-indented  # Org folds from a stale position
 
 # E8 sets this-command for a command another command calls, as the speed
 # key's org-speed-move-safe calls outline-up-heading; Emacs sets it only from

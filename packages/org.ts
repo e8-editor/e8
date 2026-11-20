@@ -1340,6 +1340,12 @@ function logBeginning(h: Heading, create = false): number {
       const text = `:${drawer}:\n:END:`;
       edInsert(at, text);
       if (atBlank || atNonBlankStart) edInsert(at + charCount(text), "\n");
+      // Both lines indented as Org indents them, as org-log-beginning's org-indent-region.
+      e8.saveExcursion(() => {
+        indentLine(lineAt(at));
+        indentLine(lineAt(at) + 1);
+      });
+      at = e8.lineStart(lineAt(at));
     });
     newDrawerLine = lineAt(at);
     return lineStartOrEnd(lineAt(at) + 1);
@@ -2424,6 +2430,39 @@ e8.defun("org-fill-paragraph-with-timestamp-nobreak-p", () => {
 const GREATER_ELEMENTS = ["center-block", "drawer", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
 
 /**
+ * The column text under the heading `line` is in starts at, as
+ * org-adapt-indentation says: one past its stars when set, else 0.
+ */
+export function adaptColumn(line: number): number {
+  if (!truthy(e8.variable("org-adapt-indentation"))) return 0;
+  const all = headings();
+  const i = headingIndex(all, line);
+  return i === undefined ? 0 : all[i].level + 1;
+}
+
+/**
+ * Whether the element at `pos` is a heading's data, as
+ * org--at-headline-data-p says: its planning line, property drawer, the
+ * drawer notes go in, or a clock line right after the heading or its data.
+ */
+function atHeadlineData(pos: number, el: Elem | undefined = elementAt(pos)): boolean {
+  if (!el || el.type === "headline") return false;
+  let top: Elem = el;
+  while (top.parent && top.parent.type !== "section") top = top.parent;
+  if (top.parent?.type !== "section") return false;
+  const text = e8.lineText(lineAt(top.begin));
+  if (PLANNING.test(text) || /^[ \t]*:PROPERTIES:[ \t]*$/i.test(text)) return true;
+  const drawer = /^[ \t]*:((?:\w|[-_])+):[ \t]*$/.exec(text);
+  if (drawer) {
+    const all = headings();
+    const i = headingIndex(all, lineAt(pos));
+    return drawer[1] === logDrawer(i === undefined ? undefined : all[i]);
+  }
+  if (/^[ \t]*CLOCK:/.test(text) && top.begin > 0) return isHeadingLine(e8.lineText(lineAt(top.begin - 1))) || atHeadlineData(top.begin - 1);
+  return false;
+}
+
+/**
  * The column Org expects a line to start at, given the element it is in, as
  * org--get-expected-indentation works it out: with the buffer widened, so
  * a narrowing that starts inside an item still lines up with its text.
@@ -2440,7 +2479,8 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
   const indentOf = (pos: number): number => textIndentation(e8.lineText(lineAt(pos)));
   if (contentsp) {
     if (type === "section") return expectedIndentWide(el?.parent, true, line);
-    if (type === undefined || type === "headline") return 0;
+    // One past the stars with org-adapt-indentation, else the margin.
+    if (type === undefined || type === "headline") return adaptColumn(line);
     if (type === "item" || type === "plain-list") return listBodyColumn((el as Elem).begin);
     return indentOf((el as Elem).begin);
   }
@@ -2454,6 +2494,13 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
     for (let parent = previous; parent && parent.end <= start; parent = parent.parent) previous = parent;
     if (!previous || previous.type === "org-data") return 0;
     if (previous.end > start) return expectedIndentWide(previous, true, line);
+    // With headline-data, what follows the heading's data starts at the margin.
+    if (
+      e8.variable("org-adapt-indentation") === "headline-data" &&
+      !atHeadlineData(start, el) &&
+      (isHeadingLine(e8.lineText(lineAt(start - 1))) || atHeadlineData(start - 1, previous))
+    )
+      return 0;
     if (previous.begin === e8.lineStart(lineAt(previous.begin))) return indentOf(previous.begin);
     return expectedIndentWide(previous.parent, true, line);
   }
@@ -2492,6 +2539,13 @@ function indentLine(line: number): void {
   }
   if (isHeadingLine(text) || blockBefore(line) !== undefined) return;
   const el = elementAt(ls);
+  // With headline-data, only the heading's data is indented, not what follows it, as org-indent-line.
+  if (
+    e8.variable("org-adapt-indentation") === "headline-data" &&
+    !atHeadlineData(ls, el) &&
+    (el?.type === "headline" || (el !== undefined && el.begin > 0 && (isHeadingLine(e8.lineText(lineAt(el.begin - 1))) || atHeadlineData(el.begin - 1))))
+  )
+    return;
   if (el && (el.type === "plain-list" || el.type === "item") && el.begin === ls) return;
   const want = expectedIndent(el, false, line);
   const ws = /^[ \t]*/.exec(text)?.[0] ?? "";
@@ -3518,9 +3572,77 @@ function changeLevel(h: Heading, by: number): void {
   const change = (): void => {
     replaceKeepingPoint(h.start, h.start + h.level + 1, `${"*".repeat(h.level + by)} `);
     if (h.tags.length > 0) alignTagsAway(h.line);
+    if (truthy(e8.variable("org-adapt-indentation"))) e8.saveExcursion(() => fixupIndentation(h.line, by));
   };
   if (by > 0) withoutFoldChecks(change);
   else change();
+}
+
+/**
+ * Shifts an entry's text by `diff` columns after its heading's level
+ * changed, as org-fixup-indentation does: the planning line and property
+ * drawer indented afresh, the LOGBOOK drawer shifted, and with
+ * org-adapt-indentation t the rest shifted too, unless that would take a
+ * line past the margin or make it a heading; blank lines, headings and
+ * blocks whose indentation is kept are left as they are.
+ */
+function fixupIndentation(headingLine: number, diff: number): void {
+  const all = headings();
+  const i = headingIndex(all, headingLine)!;
+  const endLine = i + 1 < all.length ? all[i + 1].line : e8.lineCount();
+  let l = headingLine + 1;
+  if (l < endLine && PLANNING.test(e8.lineText(l))) indentLine(l++);
+  if (l < endLine && /^[ \t]*:PROPERTIES:[ \t]*$/i.test(e8.lineText(l))) {
+    let close = l + 1;
+    while (close < endLine && !/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(close))) close++;
+    if (close < endLine) {
+      for (let k = l; k <= close; k++) indentLine(k);
+      l = close + 1;
+    }
+  }
+  if (l < endLine && /^[ \t]*:LOGBOOK:[ \t]*$/.test(e8.lineText(l))) {
+    let close = l + 1;
+    while (close < endLine && !/^[ \t]*:END:[ \t]*$/.test(e8.lineText(close))) close++;
+    if (close < endLine && textIndentation(e8.lineText(l)) + diff >= 0) {
+      for (let k = l; k <= close; k++) {
+        if (diff > 0) edInsert(e8.lineStart(k), " ".repeat(diff));
+        else e8.deleteRegion(e8.lineStart(k), e8.lineStart(k) + Math.min(-diff, charCount(e8.lineText(k))));
+      }
+      l = close + 1;
+    }
+  }
+  if (diff === 0 || e8.variable("org-adapt-indentation") !== true) return;
+  const footnote = /^\[fn:[-_\w]+\]/;
+  // The lines to shift: past footnote definitions, blank lines and headings, and the inside of blocks whose indentation is kept.
+  const lines: number[] = [];
+  for (let k = l; k < endLine; k++) {
+    const text = e8.lineText(k);
+    if (/^[ \t]*$/.test(text) || isHeadingLine(text)) continue;
+    if (footnote.test(text)) {
+      const fn = elementAt(e8.lineStart(k));
+      if (fn !== undefined && fn.end > e8.lineStart(k)) k = lineAt(Math.max(fn.end - 1, e8.lineStart(k)));
+      continue;
+    }
+    lines.push(k);
+    if (/^[ \t]*#\+BEGIN_(EXAMPLE|SRC)/i.test(text)) {
+      const block = elementAt(e8.lineStart(k));
+      if (block !== undefined && preservesIndentation(block)) {
+        // The block's last line, its #+END_, is shifted; what is inside is not.
+        const last = lineAt(Math.max(endBeforeBlank(block) - 1, block.begin));
+        if (last > k) k = last - 1;
+      }
+    }
+  }
+  // Shifting left gives up if it would take a line past the margin or make it a heading or a footnote definition.
+  if (diff < 0) {
+    for (const k of lines) {
+      const text = e8.lineText(k);
+      const ind = textIndentation(text);
+      const rest = text.replace(/^[ \t]*/, "");
+      if (ind < -diff || (ind === -diff && (/^\*+ /.test(rest) || footnote.test(rest)))) return;
+    }
+  }
+  for (const k of lines) indentLineTo(k, textIndentation(e8.lineText(k)) + diff);
 }
 
 /** Moves point past the space after the stars or TODO state it is at, as org-fix-position-after-promote does. */
@@ -5119,7 +5241,8 @@ function addPlanningInfo(headingLine: number, what: string, ts: string, remove: 
   const next = headingLine + 1;
   if (!(next < e8.lineCount() && PLANNING.test(e8.lineText(next)))) {
     const end = e8.lineEnd(headingLine);
-    replaceText(end, end, `\n${what}: ${ts}`);
+    // Indented one past the stars with org-adapt-indentation, as org-add-planning-info.
+    replaceText(end, end, `\n${" ".repeat(adaptColumn(headingLine))}${what}: ${ts}`);
     return;
   }
   const text = e8.lineText(next);
@@ -5143,7 +5266,7 @@ function setPlanning(headingLine: number, keyword: string, ts: string | undefine
   if (!planning) {
     if (ts === undefined) return;
     const end = e8.lineEnd(headingLine);
-    replaceText(end, end, `\n${keyword}: ${ts}`);
+    replaceText(end, end, `\n${" ".repeat(adaptColumn(headingLine))}${keyword}: ${ts}`);
     return;
   }
   const text = e8.lineText(next);
