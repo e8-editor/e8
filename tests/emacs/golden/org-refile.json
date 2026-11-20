@@ -326,6 +326,468 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "refile-a-region-of-subtrees",
+      "input": {
+        "text": "* A\n** a1\n** a2\n* B\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ]
+      },
+      "text": "* A\n** a1\n** a2\n* B\n",
+      "visible": "* A\n** a1\n** a2\n* B\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot refile to position inside the tree or region"
+    },
+    {
+      "name": "refile-a-region-not-subtrees",
+      "input": {
+        "text": "* A\nsome text\nmore\n* B\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ]
+      },
+      "text": "* A\n** some text\nmore\n* B\n",
+      "visible": "* A\n** some text\nmore\n* B\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": "The region is not a (sequence of) subtree(s)"
+    },
+    {
+      "name": "refile-a-region-within-a-subtree",
+      "input": {
+        "text": "* A\nsome text\nmore\n* B\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ],
+        "vars": {
+          "org-refile-active-region-within-subtree": true
+        }
+      },
+      "text": "* A\n** some text\nmore\n* B\n",
+      "visible": "* A\n** some text\nmore\n* B\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Cannot refile to position inside the tree or region"
+    },
+    {
+      "name": "refile-first-with-reverse-note-order",
+      "input": {
+        "text": "* A\n** old\n* B\n",
+        "point": 11,
+        "keys": "C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "A"
+        ],
+        "vars": {
+          "org-reverse-note-order": true
+        }
+      },
+      "text": "* A\n** B\n** old\n",
+      "visible": "* A\n** B\n** old\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-and-keep-with-3",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-3 C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ],
+        "message": true
+      },
+      "text": "* A\n* B\n** A\n",
+      "visible": "* A\n* B\n** A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Refile (and keep) to \"B\" in file /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-oracle-refile.org: done"
+    },
+    {
+      "name": "refile-to-a-new-parent",
+      "input": {
+        "text": "* A\n* B\n** b\n",
+        "point": 0,
+        "keys": "C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B/New"
+        ],
+        "vars": {
+          "org-refile-allow-creating-parent-nodes": true,
+          "org-refile-use-outline-path": true
+        }
+      },
+      "text": "* B\n** b\n\n** New\n*** A\n",
+      "visible": "* B\n** b\n\n** New\n*** A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-to-a-new-parent-confirmed",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B/New",
+          "y"
+        ],
+        "vars": {
+          "org-refile-allow-creating-parent-nodes": "'confirm",
+          "org-refile-use-outline-path": true
+        }
+      },
+      "text": "* B\n\n** New\n*** A\n",
+      "visible": "* B\n\n** New\n*** A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-to-a-new-parent-refused",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B/New",
+          "n"
+        ],
+        "vars": {
+          "org-refile-allow-creating-parent-nodes": "'confirm",
+          "org-refile-use-outline-path": true
+        }
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "refile-cache-cleared-with-0",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-0 C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "message": true
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Refile cache has been cleared"
+    },
+    {
+      "name": "refile-reversed-goes-before-the-first-child",
+      "input": {
+        "text": "* A\n** a\n*** deep\n* B\n",
+        "point": 18,
+        "keys": "C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "A"
+        ],
+        "vars": {
+          "org-reverse-note-order": true
+        }
+      },
+      "text": "* A\n** B\n** a\n*** deep\n",
+      "visible": "* A\n** B\n** a\n*** deep\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-a-region-ending-at-a-line-end",
+      "input": {
+        "text": "* A\n** a1\n** a2\n* B\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-e C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ]
+      },
+      "text": "* A\n\n* B\n** a1\n** a2\n",
+      "visible": "* A\n\n* B\n** a1\n** a2\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-a-region-within-a-subtree-to-a-line-end",
+      "input": {
+        "text": "* A\nsome text\nmore\n* B\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-e C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ],
+        "vars": {
+          "org-refile-active-region-within-subtree": true
+        }
+      },
+      "text": "* A\n\n* B\n** some text\nmore\n",
+      "visible": "* A\n\n* B\n** some text\nmore\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-a-region-with-logging",
+      "input": {
+        "text": "* A\n** a1\n** a2\n* B\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-e C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "today": "2026-11-04",
+        "answers": [
+          "B"
+        ],
+        "vars": {
+          "org-log-refile": "'time"
+        }
+      },
+      "text": "* A\n\n* B\n** a1\n** a2\n- Refiled on [2026-11-04 Wed 12:00]",
+      "visible": "* A\n\n* B\n** a1\n** a2\n- Refiled on [2026-11-04 Wed 12:00]",
+      "point": 4,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-with-an-empty-region",
+      "input": {
+        "text": "* A\nbody\n* B\n",
+        "point": 5,
+        "keys": "C-SPC C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ]
+      },
+      "text": "* B\n** A\nbody\n",
+      "visible": "* B\n** A\nbody\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-copy-keeps-point",
+      "input": {
+        "text": "* A\nbody of A\n* B\n",
+        "point": 8,
+        "keys": "C-3 C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ]
+      },
+      "text": "* A\nbody of A\n* B\n** A\nbody of A\n",
+      "visible": "* A\nbody of A\n* B\n** A\nbody of A\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-reversed-to-the-file",
+      "input": {
+        "text": "* A\n* B\n* C\n",
+        "point": 8,
+        "keys": "C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "e8-oracle-refile.org/"
+        ],
+        "vars": {
+          "org-refile-use-outline-path": "'file",
+          "org-reverse-note-order": true
+        }
+      },
+      "text": "* A\n* C\n* B\n",
+      "visible": "* A\n* C\n* B\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "refile-a-heading-with-links",
+      "input": {
+        "text": "* See [[https://x.org]] and [[a][b]]\n* B\n",
+        "point": 0,
+        "keys": "C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-refile.org",
+        "answers": [
+          "B"
+        ],
+        "message": true
+      },
+      "text": "* B\n** See [[https://x.org]] and [[a][b]]\n",
+      "visible": "* B\n** See https://x.org and b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Refile to \"B\" in file /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-oracle-refile.org: done"
     }
   ]
 }

@@ -193,26 +193,33 @@ e8.defineCommand({
     const file = e8.bufferFileName();
     const def = current.get(e8.bufferName()) ?? (file !== undefined ? file.replace(/.*\//, "") : e8.bufferName());
     const answer = await e8.readString(`Set bookmark (default ${def}): `, { history: "bookmark-history" });
-    const name = answer === "" ? def : answer;
-    const size = Number(e8.variable("bookmark-search-size") ?? 16);
-    const p = e8.point();
-    const b: Bookmark = {
-      name,
-      filename: file === undefined ? undefined : e8.abbreviateFileName(file),
-      front: e8.pointMax() - p >= size ? e8.bufferSubstringNoProperties(p, p + size) : undefined,
-      rear: p - e8.pointMin() >= size ? e8.bufferSubstringNoProperties(p - size, p) : undefined,
-      position: p,
-    };
-    const list = bookmarks();
-    if (arg === null) {
-      const i = list.findIndex((x) => x.name === name);
-      if (i >= 0) list.splice(i, 1);
-    }
-    list.unshift(b);
-    current.set(e8.bufferName(), name);
-    changed();
+    bookmarkSet(answer === "" ? def : answer, arg !== null);
   },
 });
+
+/** Names the place point is at, replacing a bookmark of that name unless NO-OVERWRITE, as bookmark-set given a name. */
+export function bookmarkSet(name: string, noOverwrite = false): void {
+  const file = e8.bufferFileName();
+  // As bookmark-make-record-default: a bookmark is a place in a file.
+  if (file === undefined) e8.signal("error", "Buffer not visiting a file or directory");
+  const size = Number(e8.variable("bookmark-search-size") ?? 16);
+  const p = e8.point();
+  const b: Bookmark = {
+    name,
+    filename: file === undefined ? undefined : e8.abbreviateFileName(file),
+    front: e8.pointMax() - p >= size ? e8.bufferSubstringNoProperties(p, p + size) : undefined,
+    rear: p - e8.pointMin() >= size ? e8.bufferSubstringNoProperties(p - size, p) : undefined,
+    position: p,
+  };
+  const list = bookmarks();
+  if (!noOverwrite) {
+    const i = list.findIndex((x) => x.name === name);
+    if (i >= 0) list.splice(i, 1);
+  }
+  list.unshift(b);
+  current.set(e8.bufferName(), name);
+  changed();
+}
 
 /** Goes to a bookmark's place: its file, at its context or else its position, as bookmark-default-handler. */
 export function jumpTo(name: string, how: "switch-to-buffer" | "switch-to-buffer-other-window"): void {

@@ -16,6 +16,7 @@ import { addLogNote, type DateTime, formatTimestamp, type Heading, headingIndex,
 import { toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
+import { setRunningClock } from "org-refile";
 import { truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -361,3 +362,11 @@ for (const [keys, command] of [
 ] as const) {
   e8.defineKey("org-mode-map", keys, command);
 }
+
+// C-2 C-c C-w refiles to the running clock's entry, as org-refile reads org-clock-hd-marker.
+setRunningClock(() => {
+  const entry = runningEntry();
+  if (!entry) return undefined;
+  const title = e8.withCurrentBuffer(entry.buffer, () => headings().find((h) => h.start === entry.start)?.title ?? "");
+  return { ...entry, title };
+});

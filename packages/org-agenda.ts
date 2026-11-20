@@ -5,6 +5,7 @@
 import { type DateTime, type Heading, PLANNING, allKeywords, at, entryEnd, headings, isDone, keywordLines, today } from "org";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { propertyLocalValues, propertySeparator, topLocalValues } from "org-list";
+import { getLocation, gotoLastStored, refile } from "org-refile";
 import { allMatches, charCount, eraseBuffer } from "subr";
 
 e8.defineVariable({
@@ -745,7 +746,6 @@ for (const [name, command, doc] of [
   ["org-agenda-clock-in", "org-clock-in", "Start a clock on the entry the agenda line at point shows."],
   ["org-agenda-set-tags", "org-set-tags-command", "Set the tags of the entry the agenda line at point shows."],
   ["org-agenda-priority", "org-priority", "Set the priority of the entry the agenda line at point shows."],
-  ["org-agenda-refile", "org-refile", "Refile the entry the agenda line at point shows."],
 ] as const) {
   e8.defineCommand({ name, doc, run: () => atEntry(command as e8.CommandName) });
 }
@@ -899,3 +899,27 @@ e8.defineMajorMode({
 
 void agendaList;
 void todoListCommand;
+
+e8.defineCommand({
+  name: "org-agenda-refile",
+  doc: "Refile the item at point. With C-u, go to the target instead; with C-u C-u, to where the last refile put its entry; with C-0 or C-u C-u C-u, clear the targets kept.",
+  params: [{ name: "goto", kind: "prefix" }],
+  run: (goto: e8.PrefixArg) => {
+    const g = goto ?? null;
+    const list = Array.isArray(g) ? (g as number[])[0] : undefined;
+    if (g === 0 || list === 64) return refile(0);
+    if (list === 16) return gotoLastStored();
+    // Asked from the agenda, of the entry's buffer, as org-agenda-refile does.
+    const item = agendaItemHere();
+    const rfloc = getLocation(g !== null ? "Goto" : "Refile to", item.buffer, e8.variable("org-refile-allow-creating-parent-nodes") ?? null);
+    if (!rfloc) return;
+    if (g !== null) return refile(g, item.buffer, rfloc);
+    e8.withCurrentBuffer(item.buffer, () => {
+      e8.saveExcursion(() => widened(() => {
+        e8.gotoChar(headingOf(item));
+        refile(null, item.buffer, rfloc);
+      }));
+    });
+    e8.call("org-agenda-redo");
+  },
+});

@@ -167,5 +167,260 @@
       "org-mode"
     ],
     "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-a-region-of-subtrees",
+    "text": "* A\n** a1\n** a2\n* B\n",
+    "keys": "C-SPC C-n C-n C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "answers": [
+      "B"
+    ],
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-a-region-not-subtrees",
+    "text": "* A\nsome text\nmore\n* B\n",
+    "keys": "C-SPC C-n C-n C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "answers": [
+      "B"
+    ],
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-a-region-within-a-subtree",
+    "text": "* A\nsome text\nmore\n* B\n",
+    "keys": "C-SPC C-n C-n C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "answers": [
+      "B"
+    ],
+    "vars": {
+      "org-refile-active-region-within-subtree": true
+    },
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-first-with-reverse-note-order",
+    "text": "* A\n** old\n* B\n",
+    "keys": "C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "answers": [
+      "A"
+    ],
+    "vars": {
+      "org-reverse-note-order": true
+    },
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-and-keep-with-3",
+    "text": "* A\n* B\n",
+    "keys": "C-3 C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "answers": [
+      "B"
+    ],
+    "message": true,
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-to-a-new-parent",
+    "text": "* A\n* B\n** b\n",
+    "keys": "C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "answers": [
+      "B/New"
+    ],
+    "vars": {
+      "org-refile-allow-creating-parent-nodes": true,
+      "org-refile-use-outline-path": true
+    },
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-to-a-new-parent-confirmed",
+    "text": "* A\n* B\n",
+    "keys": "C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "answers": [
+      "B/New",
+      "y"
+    ],
+    "vars": {
+      "org-refile-allow-creating-parent-nodes": "'confirm",
+      "org-refile-use-outline-path": true
+    },
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-to-a-new-parent-refused",
+    "text": "* A\n* B\n",
+    "keys": "C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "answers": [
+      "B/New",
+      "n"
+    ],
+    "vars": {
+      "org-refile-allow-creating-parent-nodes": "'confirm",
+      "org-refile-use-outline-path": true
+    },
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-cache-cleared-with-0",
+    "text": "* A\n* B\n",
+    "keys": "C-0 C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "message": true,
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "name": "refile-reversed-goes-before-the-first-child",
+    "text": "* A\n** a\n*** deep\n* B\n",
+    "keys": "C-c C-w",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "answers": [
+      "A"
+    ],
+    "vars": {
+      "org-reverse-note-order": true
+    },
+    "visit": "e8-oracle-refile.org"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-a-region-ending-at-a-line-end",
+    "text": "* A\n** a1\n** a2\n* B\n",
+    "keys": "C-SPC C-n C-e C-c C-w",
+    "point": 4,
+    "answers": [
+      "B"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-a-region-within-a-subtree-to-a-line-end",
+    "text": "* A\nsome text\nmore\n* B\n",
+    "keys": "C-SPC C-n C-e C-c C-w",
+    "point": 4,
+    "answers": [
+      "B"
+    ],
+    "vars": {
+      "org-refile-active-region-within-subtree": true
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-a-region-with-logging",
+    "text": "* A\n** a1\n** a2\n* B\n",
+    "keys": "C-SPC C-n C-e C-c C-w",
+    "point": 4,
+    "answers": [
+      "B"
+    ],
+    "vars": {
+      "org-log-refile": "'time"
+    },
+    "today": "2026-11-04"
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-with-an-empty-region",
+    "text": "* A\nbody\n* B\n",
+    "keys": "C-SPC C-c C-w",
+    "point": 5,
+    "answers": [
+      "B"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-copy-keeps-point",
+    "text": "* A\nbody of A\n* B\n",
+    "keys": "C-3 C-c C-w",
+    "point": 8,
+    "answers": [
+      "B"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-reversed-to-the-file",
+    "text": "* A\n* B\n* C\n",
+    "keys": "C-c C-w",
+    "point": 8,
+    "answers": [
+      "e8-oracle-refile.org/"
+    ],
+    "vars": {
+      "org-refile-use-outline-path": "'file",
+      "org-reverse-note-order": true
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-refile.org",
+    "name": "refile-a-heading-with-links",
+    "text": "* See [[https://x.org]] and [[a][b]]\n* B\n",
+    "keys": "C-c C-w",
+    "point": 0,
+    "answers": [
+      "B"
+    ],
+    "message": true
   }
 ]

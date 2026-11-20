@@ -5262,11 +5262,13 @@ declare global {
        */
       "org-agenda-redo": [];
       /**
-       * Refile the entry the agenda line at point shows.
+       * Refile the item at point. With C-u, go to the target instead; with C-u C-u, to where the last refile put its entry; with C-0 or C-u C-u C-u, clear the targets kept.
+       *
+       * @param goto raw prefix argument
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-refile": [];
+      "org-agenda-refile": [goto?: PrefixArg | boolean];
       /**
        * Set the tags of the entry the agenda line at point shows.
        *
@@ -5961,17 +5963,33 @@ declare global {
        */
       "org-promote-subtree": [];
       /**
-       * Move the subtree at point under another heading, asking which: one org-refile-targets names, by default a top-level heading of this buffer. It goes in as that heading's last child. With C-u, go to the heading instead.
+       * Move the entry or entries at point to another heading, one org-refile-targets names, by default a top-level heading of this buffer, as its last child (first with org-reverse-note-order). With an active region, its subtrees move. With C-u, go to the heading instead; with C-u C-u, to where the last refile put its entry; with C-0 or C-u C-u C-u, clear the targets kept (org-refile-use-cache); with 2, refile to the running clock; with 3, copy.
+       *
+       * @param arg raw prefix argument
        *
        * Defined in packages/org-refile.ts.
        */
-      "org-refile": [];
+      "org-refile": [arg?: PrefixArg | boolean];
       /**
-       * Copy the subtree at point under another heading, asking which, as org-refile does but keeping the original.
+       * Like org-refile, but preserve the refiled subtree.
        *
        * Defined in packages/org-refile.ts.
        */
       "org-refile-copy": [];
+      /**
+       * Go to the location where the last refile was stored.
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-refile-goto-last-stored": [];
+      /**
+       * Refile while temporarily toggling org-reverse-note-order. So if org-refile would append the entry as the last entry under the target heading, org-refile-reverse will prepend it as the first entry, and vice-versa.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-refile-reverse": [arg?: PrefixArg | boolean];
       /**
        * RET in Org: in a table, move to the next row; elsewhere start a new line, indented as org-indent-line does.
        *
@@ -12831,6 +12849,12 @@ declare global {
        */
       "org-blank-before-new-entry": Value;
       /**
+       * The names of the bookmarks Org sets where it last captured and refiled, as a plist; nil for none.
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-bookmark-names-plist": Value;
+      /**
        * Whether Org-Capture mode is on in this buffer. Use the command org-capture-mode to change it.
        *
        * Defined in packages/org-capture.ts.
@@ -13233,7 +13257,7 @@ declare global {
        */
       "org-note-abort": Value;
       /**
-       * Whether outline paths complete a level at a time. E8 completes them whole.
+       * Whether outline paths complete a level at a time, as file names do, rather than whole.
        *
        * Defined in packages/org-refile.ts.
        */
@@ -13269,11 +13293,29 @@ declare global {
        */
       "org-read-date-history": Value;
       /**
+       * Whether an active region that is not whole subtrees can be refiled, its first line made a heading.
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-refile-active-region-within-subtree": Value;
+      /**
+       * Whether a new heading can be made under a target by typing its path and "/new heading": t, confirm to ask first, or nil.
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-refile-allow-creating-parent-nodes": Value;
+      /**
        * The targets chosen before, newest first.
        *
        * Defined in packages/org-refile.ts.
        */
       "org-refile-history": Value;
+      /**
+       * Whether refiling copies the subtree, leaving it where it was too.
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-refile-keep": Value;
       /**
        * A function called at each heading that may be a target, which says whether it is one.
        *
@@ -13287,6 +13329,12 @@ declare global {
        */
       "org-refile-targets": Value;
       /**
+       * Whether the targets are kept between refiles, until C-0 C-c C-w clears them.
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-refile-use-cache": Value;
+      /**
        * Whether targets are named by their outline paths, Parent/Child, rather than their titles: t, or file, title, full-file-path or buffer-name to start the path with that.
        *
        * Defined in packages/org-refile.ts.
@@ -13298,6 +13346,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-return-follows-link": Value;
+      /**
+       * Whether refiled entries go in as the first child of their target rather than the last: t, or a list of [regexp, flag] lists by file name.
+       *
+       * Defined in packages/org-refile.ts.
+       */
+      "org-reverse-note-order": Value;
       /**
        * How many days after its date a scheduled entry waits to show, unless its timestamp says, as -2d does; less than 0 applies whatever it says.
        *
