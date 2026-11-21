@@ -178,6 +178,7 @@ while the case's keys are queued would read those instead."
 (defvar org-clock-default-task)
 (defvar org-clock-interrupted-task)
 (defvar org-clock-mode-line-timer)
+(defvar org-markers-to-move)
 
 (defun e8-oracle--clocked-time ()
   "The running clock's minutes counted to noon on the case's fixed day, as E8's tests count them."
@@ -355,6 +356,7 @@ answers come, and then from its answers, as save-some-buffers' do."
           (remove-hook 'kill-buffer-hook #'org-check-running-clock t)))
       (when (timerp org-clock-mode-line-timer) (cancel-timer org-clock-mode-line-timer))
       (setq org-clock-history nil)
+      (setq org-markers-to-move nil)
       (set-marker org-clock-default-task nil)
       (set-marker org-clock-interrupted-task nil))
     ;; A fresh set of buffers, as E8 starts each case with: only the
