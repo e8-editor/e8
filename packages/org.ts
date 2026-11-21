@@ -96,6 +96,7 @@ import {
   dropMarker,
   edDelete,
   edInsert,
+  invisibleHere,
   lineAt,
   lineStartOrEnd,
   marker,
@@ -6002,7 +6003,7 @@ e8.defineCommand({
     if (m === undefined || buffer === undefined) e8.signal("error", "Marker does not point anywhere");
     e8.call("pop-to-buffer-same-window", buffer);
     e8.gotoChar(e8.markerPosition(m) ?? e8.point());
-    if (e8.invisibleAt(e8.point())) foldShowContext("mark-goto");
+    if (invisibleHere()) foldShowContext("mark-goto");
   },
 });
 

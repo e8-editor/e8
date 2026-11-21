@@ -242,5 +242,25 @@
       "outline-mode"
     ],
     "message": true
+  },
+  {
+    "name": "outline-backward-same-level-to-a-deeper-first-heading",
+    "text": "** A\n* B\nb\n",
+    "keys": "M-> C-c C-b",
+    "point": 0,
+    "modes": [
+      "outline-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "outline-forward-same-level-before-first-heading",
+    "text": "intro\n* A\n* B\n",
+    "keys": "C-c C-f",
+    "point": 0,
+    "modes": [
+      "outline-mode"
+    ],
+    "message": true
   }
 ]

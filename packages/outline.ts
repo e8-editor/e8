@@ -122,10 +122,13 @@ function outlineOverlay(start: number, end: number): void {
 e8.defun("outline-isearch-open-invisible", () => e8.call("outline-show-entry"));
 
 /** The heading at point, or an error as in Emacs. */
+// Signalled before the first heading, as outline-back-to-heading does.
+e8.defineError("outline-before-first-heading");
+
 function heading(): [Heading[], number] {
   const all = headings();
   const i = currentHeading(all);
-  if (i === undefined) throw new Error("Before first heading");
+  if (i === undefined) e8.signal("outline-before-first-heading", "Before first heading");
   return [all, i];
 }
 
@@ -154,7 +157,8 @@ const commands: { [name: string]: [string, () => void] } = {
   }],
   "outline-show-entry": ["Show the text of the heading point is under, but not its subheadings.", () => {
     const [all, i] = heading();
-    flag(all[i].end, entryEnd(all, i), false);
+    // From the newline before the heading, so a hidden heading shows too.
+    flag(Math.max(0, all[i].start - 1), entryEnd(all, i), false);
   }],
   "outline-show-children": ["Show the headings directly under the heading point is under, hiding their text.", () => {
     const [all, i] = heading();
@@ -202,13 +206,14 @@ function sameLevel(n: number, forward: boolean): void {
   const here = e8.lineOf(e8.point());
   let i = -1;
   for (let k = 0; k < visible.length && visible[k].line <= here; k++) i = k;
-  if (i < 0) throw new Error("before first heading");
+  if (i < 0) e8.signal("outline-before-first-heading", "Before first heading");
   e8.gotoChar(visible[i].start);
   for (; n > 0; n--) {
     const level = visible[i].level;
     let k = i;
+    // Back, a deeper heading at the very start of the buffer stops the search and is taken, as outline-get-last-sibling does.
     do k += forward ? 1 : -1;
-    while (k >= 0 && k < visible.length && visible[k].level > level);
+    while (k >= 0 && k < visible.length && visible[k].level > level && (forward || visible[k].start > e8.pointMin()));
     if (k < 0 || k >= visible.length || visible[k].level < level) throw new Error(forward ? "No following same-level heading" : "No previous same-level heading");
     i = k;
     e8.gotoChar(visible[i].start);

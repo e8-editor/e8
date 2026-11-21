@@ -64,6 +64,17 @@ export function orgRegionActive(): boolean {
 }
 
 /** The line a position is on, point's by default. */
+/**
+ * Whether the character at point is hidden, or at the end of a line, the
+ * one before, as (or (org-invisible-p) (org-invisible-p2)) checks.
+ */
+export function invisibleHere(): boolean {
+  const p = e8.point();
+  if (e8.invisibleAt(p)) return true;
+  const eol = p === e8.pointMax() || e8.charAfter(p) === "\n";
+  return eol && p > e8.pointMin() && e8.invisibleAt(p - 1);
+}
+
 export function lineAt(pos = e8.point()): number {
   return e8.lineOf(pos);
 }

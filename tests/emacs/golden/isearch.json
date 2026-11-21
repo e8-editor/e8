@@ -417,6 +417,111 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "isearch-opens-a-deep-fold",
+      "input": {
+        "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n",
+        "point": 0,
+        "keys": "S-TAB C-s n e e d l e RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n",
+      "visible": "* One\n** Sub\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n",
+      "point": 36,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-opens-a-deep-fold-other-key",
+      "input": {
+        "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n",
+        "point": 0,
+        "keys": "S-TAB C-s n e e d l e C-a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n",
+      "visible": "* One\n** Sub\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n",
+      "point": 30,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-opens-a-deeper-fold",
+      "input": {
+        "text": "* One\nalpha\n** Sub\nx\n*** Deep\ny\n**** Deeper\nneedle here\n*** Deep2\nz\n** Sub2\nbeta\n* Two\n",
+        "point": 0,
+        "keys": "S-TAB C-s n e e d l e RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* One\nalpha\n** Sub\nx\n*** Deep\ny\n**** Deeper\nneedle here\n*** Deep2\nz\n** Sub2\nbeta\n* Two\n",
+      "visible": "* One\n** Sub\n*** Deep\n**** Deeper\nneedle here\n*** Deep2\nz\n** Sub2\nbeta\n* Two\n",
+      "point": 50,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-opens-a-deep-fold-from-contents",
+      "input": {
+        "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n",
+        "point": 0,
+        "keys": "S-TAB S-TAB C-s n e e d l e RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n",
+      "visible": "* One\n** Sub\n*** Deep\nneedle here\n** Sub2\n* Two\n",
+      "point": 36,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "isearch-opens-a-hidden-outline-heading",
+      "input": {
+        "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n",
+        "point": 0,
+        "keys": "C-c C-d C-s n e e d RET",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n",
+      "visible": "* One\n** Sub\nneedle here\n* Two\nbeta\n",
+      "point": 28,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

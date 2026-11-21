@@ -16,7 +16,7 @@
 import { headingIndex, headings, markRingPush } from "org";
 import { isearchMode } from "isearch";
 import { overview, showContext, showSetVisibility } from "org-fold";
-import { lineAt } from "org-macs";
+import { invisibleHere, lineAt } from "org-macs";
 import { getLocation } from "org-refile";
 import { eraseBuffer, truthy } from "subr";
 import { fitWindowToBuffer, quitWindow } from "window";
@@ -206,7 +206,8 @@ export function gotoLocation(help = HELP): [number | undefined, string | undefin
       e8.message("Select location and press RET");
       e8.useLocalMap("org-goto-map");
       try {
-        e8.recursiveEdit();
+        // What a search opens stays open until it ends, as org-goto-location binds isearch-hide-immediately.
+        e8.letBind({ "isearch-hide-immediately": null }, () => e8.recursiveEdit());
       } finally {
         if (e8.windowLiveP(helpWindow)) quitWindow(true, helpWindow);
       }
@@ -254,6 +255,6 @@ e8.defineCommand({
     }
     markRingPush(start);
     e8.gotoChar(selected);
-    if (e8.invisibleAt(e8.point())) showContext("org-goto");
+    if (invisibleHere()) showContext("org-goto");
   },
 });

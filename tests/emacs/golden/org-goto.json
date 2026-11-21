@@ -531,6 +531,52 @@
       "modified": false,
       "error": null,
       "message": "Mark set"
+    },
+    {
+      "name": "outline-backward-same-level-to-a-deeper-first-heading",
+      "input": {
+        "text": "** A\n* B\nb\n",
+        "point": 0,
+        "keys": "M-> C-c C-b",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "** A\n* B\nb\n",
+      "visible": "** A\n* B\nb\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "outline-forward-same-level-before-first-heading",
+      "input": {
+        "text": "intro\n* A\n* B\n",
+        "point": 0,
+        "keys": "C-c C-f",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "intro\n* A\n* B\n",
+      "visible": "intro\n* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first heading",
+      "message": null
     }
   ]
 }
