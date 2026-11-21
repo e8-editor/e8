@@ -1,19 +1,23 @@
 // Archiving, after Org's org-archive.el: C-c C-x C-s (or C-c $) moves the
 // subtree at point to its archive location, by default a file next to this
-// one named FILE_archive, with properties saying where it came from;
-// C-c C-x A moves it under an Archive sibling instead, and C-c C-x a
-// toggles its ARCHIVE tag.
+// one named FILE_archive, with properties saying where it came from, or,
+// with C-u, every tree with no open TODO, with C-u C-u every one dated
+// before today; C-c C-x A moves it under an Archive sibling instead, and
+// C-c C-x a toggles its ARCHIVE tag. With the region active, each acts on
+// every heading in it.
 
 import {
   allKeywords,
   copySubtree,
   entryGetInherited,
+  forEachHeadingInRegion,
   formatTimestamp,
   type Heading,
   headingIndex,
   headings,
   isDone,
   keywordLines,
+  notDoneRegexp,
   pasteSubtree,
   setTodo,
   subtreeRegion,
@@ -23,8 +27,8 @@ import {
 import { findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
 import { entryPut } from "org-list";
-import { lineAt } from "org-macs";
-import { truthy } from "subr";
+import { dropMarker, lineAt, marker } from "org-macs";
+import { regexpQuote, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar(
@@ -232,14 +236,12 @@ export function archiveSubtree(): void {
         const there = headings();
         const hi = headingIndex(there, lineAt())!;
         e8.gotoChar(reversed ? (there[hi + 1]?.start ?? e8.pointMax()) : subtreeRegion(there, hi)[1]);
-        // Back over blank lines, then two newlines (one in a date tree) before the tree.
+        // Back over blank lines, then two newlines (one in a date tree) before the tree, in one change, as replace-match makes it.
         let back = e8.point();
         while (back > e8.pointMin() && /[ \t\r\n]/.test(e8.bufferSubstringNoProperties(back - 1, back))) back--;
-        let fwd = back;
-        while (fwd < e8.pointMax() && /[ \t\r\n]/.test(e8.bufferSubstringNoProperties(fwd, fwd + 1))) fwd++;
-        e8.deleteRegion(back, fwd);
         e8.gotoChar(back);
-        e8.insert(datetree ? "\n" : "\n\n");
+        e8.lookingAt("[ \t\r\n]*");
+        e8.gotoChar(e8.replaceMatch(datetree ? "\n" : "\n\n", { literal: true }).end);
       } else if (reversed) {
         e8.gotoChar(headings().find((x) => x.start >= e8.pointMin())?.start ?? e8.pointMax());
       } else {
@@ -298,12 +300,155 @@ export function archiveSubtree(): void {
   revealAndSkipBlank();
 }
 
+/**
+ * Archives, or with tag tags ARCHIVE, the trees predicate picks, asking for
+ * each, as org-archive-all-matches: the children of the heading point is
+ * on, else every top-level tree. Predicate is called at a tree's heading
+ * with where its subtree ends, and gives the reason to ask with, or
+ * undefined to pass it by.
+ */
+function archiveAllMatches(predicate: (end: number) => string | undefined, tag: boolean): void {
+  const archiveTag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  const question = tag ? "Set ARCHIVE tag? " : "Move subtree to archive? ";
+  const here = headings().find((h) => h.line === lineAt());
+  let re: string;
+  let begm, endm;
+  if (here) {
+    re = `^${"\\*".repeat(here.level + (truthy(e8.variable("org-odd-levels-only") ?? null) ? 2 : 1))} `;
+    begm = marker(e8.point());
+    // Point stays at the subtree's end, as org-end-of-subtree leaves it there.
+    e8.gotoChar(treeEnd(here.start));
+    endm = marker(e8.point());
+  } else {
+    re = "^\\* ";
+    begm = marker(e8.pointMin());
+    endm = marker(e8.pointMax());
+  }
+  let count = 0;
+  try {
+    e8.saveExcursion(() => {
+      e8.gotoChar(begm.pos);
+      while (e8.reSearchForward(re, { bound: endm.pos, noerror: true, caseFold: false }) !== undefined) {
+        const beg = e8.matchBeginning()!;
+        const end = treeEnd(beg);
+        e8.gotoChar(beg);
+        const reason = predicate(end);
+        e8.gotoChar(beg);
+        const tagged = tag && e8.lookingAt(`.*:${regexpQuote(archiveTag)}:`);
+        if (reason !== undefined && !tagged && e8.yOrNP(`${question}(${reason})`)) {
+          if (tag) {
+            e8.gotoChar(beg);
+            toggleArchiveTag();
+            e8.gotoChar(beg);
+          } else archiveSubtree();
+          count++;
+        } else e8.gotoChar(end);
+      }
+    });
+  } finally {
+    dropMarker(begm);
+    dropMarker(endm);
+  }
+  e8.message(`${count} trees archived`);
+}
+
+/** Where the subtree whose heading starts at start ends, back over the blank lines before the next heading, as org-end-of-subtree. */
+function treeEnd(start: number): number {
+  const all = headings();
+  let end = subtreeRegion(all, headingIndex(all, lineAt(start))!)[1];
+  if (end > start && /[\n\r]/.test(e8.bufferSubstringNoProperties(end - 1, end))) {
+    end--;
+    while (end > e8.pointMin() && /[\n\r\t ]/.test(e8.bufferSubstringNoProperties(end - 1, end))) end--;
+  }
+  return end;
+}
+
+/** Archives the trees with no open TODO, as org-archive-all-done; with tag, tags them. */
+function archiveAllDone(tag: boolean): void {
+  // org-not-done-heading-regexp, matched in case.
+  const re = `^\\(\\*+\\)\\(?: +${notDoneRegexp()}\\)\\(?: +\\(.*?\\)\\)?[ \t]*$`;
+  archiveAllMatches((end) => (e8.reSearchForward(re, { bound: end, noerror: true, caseFold: false }) === undefined ? "no open TODO items" : undefined), tag);
+}
+
+/** The days from today to a timestamp's date, as org-timestamp-to-now. */
+function daysToNow(ts: string): number {
+  const m = /(\d+)-(\d+)-(\d+)/.exec(ts)!;
+  const t = today();
+  return (Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])) - Date.UTC(t.year, t.month - 1, t.day)) / 86400000;
+}
+
+/** Archives the trees whose first active timestamp is before today, a range ending before today too, as org-archive-all-old. */
+function archiveAllOld(tag: boolean): void {
+  // org-ts-regexp.
+  const tsRe = "<\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\(?: .*?\\)?\\)>";
+  archiveAllMatches((end) => {
+    if (e8.reSearchForward(tsRe, { bound: end, noerror: true }) === undefined) return undefined;
+    const ts = e8.matchString(0)!;
+    if (daysToNow(ts) >= 0) return undefined;
+    if (!e8.lookingAt(`--\\(${tsRe}\\)`)) return `old timestamp ${ts}`;
+    return daysToNow(e8.matchString(1)!) < 0 ? `old timestamp ${ts}${e8.matchString(0)!}` : undefined;
+  }, tag);
+}
+
+/**
+ * Runs body at every heading in the active region, as org-archive's
+ * commands give org-map-entries when org-loop-over-headlines-in-active-region
+ * is on, its value where to go on from. A C-u or C-u C-u, put in the form
+ * Org builds as it is, is called as a function there, and C-- read as a
+ * variable, as Org does. Returns whether it applied.
+ */
+function eachHeadingInRegion(body: () => number | void, prefix: e8.PrefixArg): boolean {
+  const fails = (): never =>
+    Array.isArray(prefix)
+      ? e8.signal("invalid-function", `Invalid function: ${prefix[0]}`, [prefix[0]])
+      : e8.signal("void-variable", "Symbol’s value as variable is void: -", ["-"]);
+  if ((Array.isArray(prefix) || prefix === "-") && forEachHeadingInRegion(fails, { hiddenPoint: true, hidden: true })) return true;
+  // Each heading on its own, as Org binds the variable to nil around the loop.
+  const once = () => e8.letBind({ "org-loop-over-headlines-in-active-region": null }, body) as number | void;
+  return forEachHeadingInRegion(once, { hiddenPoint: true, hidden: true, narrow: true });
+}
+
+/**
+ * Goes back to the heading shown at or above point, as org-back-to-heading
+ * without INVISIBLE-OK: where a hidden heading the loop reached is left
+ * for one shown, within the region it narrowed to.
+ */
+function backToShownHeading(): number {
+  const all = headings();
+  for (let i = headingIndex(all, lineAt()); i !== undefined && i >= 0; i--) {
+    if (all[i].start >= e8.pointMin() && !e8.invisibleAt(all[i].start)) {
+      e8.gotoChar(all[i].start);
+      return all[i].start;
+    }
+  }
+  return e8.userError(`Before first headline at position ${e8.pointMin() + 1} in buffer ${e8.bufferName()}`);
+}
+
+/** org-archive-subtree with its prefix argument: C-u for the trees with no open TODO, C-u C-u for those dated before today. */
+function archiveSubtreeWith(findDone: e8.PrefixArg): void {
+  if (
+    eachHeadingInRegion(() => {
+      const from = backToShownHeading();
+      archiveSubtreeWith(findDone);
+      return from;
+    }, findDone)
+  )
+    return;
+  if (Array.isArray(findDone) && findDone[0] === 4) archiveAllDone(false);
+  else if (Array.isArray(findDone) && findDone[0] === 16) archiveAllOld(false);
+  else archiveSubtree();
+}
+
 const archiveSubtreeCommand = e8.defineCommand({
   name: "org-archive-subtree",
   doc:
     "Move the current subtree to the archive: org-archive-location's heading in this file or another, or the " +
-    "location an ARCHIVE property or #+ARCHIVE: line gives, with properties saying when and from where it came.",
-  run: () => archiveSubtree(),
+    "location an ARCHIVE property or #+ARCHIVE: line gives, with properties saying when and from where it came. " +
+    "With C-u, archive the trees with no open TODO, and with C-u C-u those with a timestamp before today, asking " +
+    "for each: the children of the heading point is on, else every top-level tree. With the region active, " +
+    "archive every heading in it (org-loop-over-headlines-in-active-region).",
+  params: [{ name: "findDone", kind: "prefix" }],
+  run: (findDone) => archiveSubtreeWith(findDone),
 });
 
 /** Folds the subtree point is in, its heading's line left showing, as org-fold-subtree: to its end, the next heading's start. */
@@ -326,90 +471,111 @@ function toggleArchiveTag(): boolean {
   return on;
 }
 
+/** org-toggle-archive-tag with its prefix argument: with one, tag the trees with no open TODO. */
+function toggleArchiveTagWith(findDone: e8.PrefixArg): void {
+  if (eachHeadingInRegion(() => toggleArchiveTagWith(findDone), findDone)) return;
+  if (truthy(findDone)) {
+    archiveAllDone(true);
+    return;
+  }
+  let set = false;
+  e8.saveExcursion(() => {
+    set = toggleArchiveTag();
+    if (set) foldSubtree();
+  });
+  if (set) e8.gotoChar(e8.lineStart(lineAt()));
+  e8.message(`Subtree ${set ? "archived" : "unarchived"}`);
+}
+
 const toggleArchiveTagCommand = e8.defineCommand({
   name: "org-toggle-archive-tag",
-  doc: "Toggle the archive tag for the current headline, folding its subtree when it is set.",
-  run: () => {
-    const set = toggleArchiveTag();
-    if (set) {
-      foldSubtree();
-      e8.gotoChar(e8.lineStart(lineAt()));
-    }
-    e8.message(`Subtree ${set ? "archived" : "unarchived"}`);
-  },
+  doc:
+    "Toggle the archive tag for the current headline, folding its subtree when it is set. With a prefix argument, " +
+    "offer to tag each child, or each top-level tree, with no open TODO. With the region active, toggle every heading in it.",
+  params: [{ name: "findDone", kind: "prefix" }],
+  run: (findDone) => toggleArchiveTagWith(findDone),
 });
+
+/** Sets the ARCHIVE tag, as org-archive-set-tag: on every heading of an active region. */
+function setArchiveTag(): void {
+  if (eachHeadingInRegion(setArchiveTag, null)) return;
+  const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  const [all, i] = headingHere();
+  if (!all[i].tags.includes(tag)) toggleArchiveTag();
+}
 
 e8.defineCommand({
   name: "org-archive-set-tag",
-  doc: "Set the ARCHIVE tag.",
-  run: () => {
-    const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
-    const [all, i] = headingHere();
-    if (!all[i].tags.includes(tag)) toggleArchiveTag();
-  },
+  doc: "Set the ARCHIVE tag, on every heading of an active region.",
+  run: () => setArchiveTag(),
 });
 
 const toSiblingCommand = e8.defineCommand({
   name: "org-archive-to-archive-sibling",
-  doc: "Archive the current heading by moving it under the archive sibling, a sibling headed org-archive-sibling-heading with the ARCHIVE tag, made at the end of the parent's subtree if there is none.",
-  run: () => {
-    const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
-    const name = String(e8.variable("org-archive-sibling-heading") ?? "Archive");
-    e8.saveRestriction(() => {
-      e8.widen();
-      const [all, i] = headingHere();
-      const h = all[i];
-      const leader = `${"*".repeat(h.level)} `;
-      const pos = e8.makeMarker(h.start, { advances: true });
-      // The parent's subtree, or the whole buffer at the top level.
-      const up = ancestors(all, i)[0];
-      const [b, e] = up === undefined ? [e8.pointMin(), e8.pointMax()] : subtreeRegion(all, up);
-      const text = e8.bufferSubstringNoProperties(b, e);
-      const re = new RegExp(`^${leader.replace(/\*/g, "\\*")}[ \\t]*${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[ \\t]*:${tag}:`, "mi");
-      const m = re.exec(text);
-      let sibling: number;
-      if (m) sibling = b + [...text.slice(0, m.index)].length;
-      else {
-        e8.gotoChar(e);
-        if (e8.point() !== e8.lineStart(lineAt())) e8.call("newline");
-        sibling = e8.point();
-        e8.insert(`${leader}${name}\n`);
-        e8.gotoChar(sibling);
-        e8.call("org-set-tags", tag);
-      }
-      const there = headings();
-      const si = there.findIndex((x) => x.start === sibling);
-      const reversed = truthy(e8.variable("org-archive-reversed-order"));
-      const target = e8.makeMarker(reversed ? (there[si + 1]?.start ?? e8.pointMax()) : subtreeRegion(there, si)[1]);
-      e8.saveExcursion(() => {
-        e8.gotoChar(e8.markerPosition(pos)!);
-        subtreeKill(true);
-      });
-      e8.gotoChar(e8.markerPosition(target)!);
-      e8.deleteMarker(target);
-      const pastedAt = e8.point();
-      pasteSubtree((h.level + 1) as e8.PrefixArg);
-      const pasted = headings().find((x) => x.start >= pastedAt);
-      if (pasted) entryPut(pasted.line, "ARCHIVE_TIME", formatTimestamp(today(true), true));
-      // The sibling folded, as org-fold-subtree, and the counts above brought up to date.
-      // The heading the tree went under, as outline-up-heading from it.
-      const now = headings();
-      const pi = now.findIndex((x) => x.start >= pastedAt);
-      const above = pi < 0 ? undefined : ancestors(now, pi)[0];
-      const sib = above === undefined ? undefined : now[above];
-      if (sib) {
-        e8.gotoChar(sib.start);
-        foldSubtree();
-        if (truthy(e8.variable("org-provide-todo-statistics") ?? true)) updateParentTodoStatistics(sib.line);
-      }
-      e8.gotoChar(e8.markerPosition(pos) ?? e8.point());
-      e8.deleteMarker(pos);
-    });
-    // No paste message, as org-paste-subtree called from code says nothing.
-    e8.message("", { log: false });
-    revealAndSkipBlank();
-  },
+  doc:
+    "Archive the current heading by moving it under the archive sibling, a sibling headed org-archive-sibling-heading with the ARCHIVE tag, " +
+    "made at the end of the parent's subtree if there is none.",
+  run: () => archiveToSibling(),
 });
+
+/** Moves the heading at point under its archive sibling, as org-archive-to-archive-sibling. */
+function archiveToSibling(): void {
+  const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  const name = String(e8.variable("org-archive-sibling-heading") ?? "Archive");
+  e8.saveRestriction(() => {
+    e8.widen();
+    const [all, i] = headingHere();
+    const h = all[i];
+    const leader = `${"*".repeat(h.level)} `;
+    const pos = e8.makeMarker(h.start, { advances: true });
+    // The parent's subtree, or the whole buffer at the top level.
+    const up = ancestors(all, i)[0];
+    const [b, e] = up === undefined ? [e8.pointMin(), e8.pointMax()] : subtreeRegion(all, up);
+    const text = e8.bufferSubstringNoProperties(b, e);
+    const re = new RegExp(`^${leader.replace(/\*/g, "\\*")}[ \\t]*${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[ \\t]*:${tag}:`, "mi");
+    const m = re.exec(text);
+    let sibling: number;
+    if (m) sibling = b + [...text.slice(0, m.index)].length;
+    else {
+      e8.gotoChar(e);
+      if (e8.point() !== e8.lineStart(lineAt())) e8.call("newline");
+      sibling = e8.point();
+      e8.insert(`${leader}${name}\n`);
+      e8.gotoChar(sibling);
+      e8.call("org-set-tags", tag);
+    }
+    const there = headings();
+    const si = there.findIndex((x) => x.start === sibling);
+    const reversed = truthy(e8.variable("org-archive-reversed-order"));
+    const target = e8.makeMarker(reversed ? (there[si + 1]?.start ?? e8.pointMax()) : subtreeRegion(there, si)[1]);
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.markerPosition(pos)!);
+      subtreeKill(true);
+    });
+    e8.gotoChar(e8.markerPosition(target)!);
+    e8.deleteMarker(target);
+    const pastedAt = e8.point();
+    pasteSubtree((h.level + 1) as e8.PrefixArg);
+    const pasted = headings().find((x) => x.start >= pastedAt);
+    if (pasted) entryPut(pasted.line, "ARCHIVE_TIME", formatTimestamp(today(true), true));
+    // The sibling folded, as org-fold-subtree, and the counts above brought up to date.
+    // The heading the tree went under, as outline-up-heading from it.
+    const now = headings();
+    const pi = now.findIndex((x) => x.start >= pastedAt);
+    const above = pi < 0 ? undefined : ancestors(now, pi)[0];
+    const sib = above === undefined ? undefined : now[above];
+    if (sib) {
+      e8.gotoChar(sib.start);
+      foldSubtree();
+      if (truthy(e8.variable("org-provide-todo-statistics") ?? true)) updateParentTodoStatistics(sib.line);
+    }
+    e8.gotoChar(e8.markerPosition(pos) ?? e8.point());
+    e8.deleteMarker(pos);
+  });
+  // No paste message, as org-paste-subtree called from code says nothing.
+  e8.message("", { log: false });
+  revealAndSkipBlank();
+}
 
 /** Archives with org-archive-default-command, as org-archive-subtree-default. */
 function archiveDefault(): void {

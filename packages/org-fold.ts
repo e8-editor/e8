@@ -447,7 +447,11 @@ export function fixFoldsAround(from: number, to: number): void {
   if (foldChecksOff) return;
   const a = e8.lineStart(Math.max(0, lineAt(from) - 1));
   const b = lineStartOrEnd(lineAt(to) + 2);
-  for (const id of e8.overlaysIn(a, b)) checkFold(id);
+  // The region found as the buffer shows, its folds checked widened, as Org's are.
+  e8.saveRestriction(() => {
+    e8.widen();
+    for (const id of e8.overlaysIn(a, b)) checkFold(id);
+  });
 }
 
 /**

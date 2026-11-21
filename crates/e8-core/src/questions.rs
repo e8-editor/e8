@@ -36,7 +36,9 @@ impl Editor {
         if self.variable("use-short-answers").is_some_and(|v| v.is_true()) {
             return self.y_or_n_p(question);
         }
-        Ok(self.read_answer(question, &["yes", "no"])? == "yes")
+        // A space before the choices if the question has none, as fns.c's yes-or-no-p puts one.
+        let question = if question.ends_with([' ', '\t']) || question.is_empty() { question.to_string() } else { format!("{question} ") };
+        Ok(self.read_answer(&question, &["yes", "no"])? == "yes")
     }
 
     /// Asks a yes or no question in a dialog, as subr.el's `y-or-n-p` and
@@ -69,7 +71,9 @@ impl Editor {
         if self.use_dialog_box_p() {
             return self.ask_in_dialog(question);
         }
-        Ok(self.ask(question, Some(vec!['y', 'n']), Vec::new(), "(y or n) ".into())? == "y")
+        // A space before the choices if the question has none, as subr.el's y-or-n-p pads it.
+        let question = if question.ends_with(' ') || question.is_empty() { question.to_string() } else { format!("{question} ") };
+        Ok(self.ask(&question, Some(vec!['y', 'n']), Vec::new(), "(y or n) ".into())? == "y")
     }
 
     /// Asks a question answered by one of `chars`, as Emacs's
