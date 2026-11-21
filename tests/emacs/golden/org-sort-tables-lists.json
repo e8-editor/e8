@@ -1,0 +1,1257 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "table-sort-a-col1",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 97,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 97,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-A-col1",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 97,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "A"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| apple   |     2 |                  | 1d 1:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| apple   |     2 |                  | 1d 1:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 97,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-n-col2",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 107,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 107,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-N-col2",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 107,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "N"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 107,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-t-col3",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 115,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| apple   |     2 |                  | 1d 1:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| apple   |     2 |                  | 1d 1:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 115,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-T-col3",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 115,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "T"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 115,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-t-col4",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 134,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| apple   |     2 |                  | 1d 1:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| apple   |     2 |                  | 1d 1:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 134,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-T-col4",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 134,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "T"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 134,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-with-case",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 97,
+        "keys": "C-u C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 97,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-numbers-as-text",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 107,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 107,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-from-lower-row",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 201,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 207,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-after-hline",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 387,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 387,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "table-sort-on-hline",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 50,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field"
+    },
+    {
+      "name": "table-sort-header",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "table-sort-bad-type",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 97,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "z"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 97,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid sorting type ‘z’"
+    },
+    {
+      "name": "table-sort-before-first",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 94,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "2",
+          "n"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 94,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-region",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 144,
+        "keys": "C-SPC C-n C-n C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 144,
+      "mark": 94,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-region-mid",
+      "input": {
+        "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+        "point": 107,
+        "keys": "C-SPC C-n C-n C-n C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "visible": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| apple   |     2 |                  | 1d 1:00 |\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+      "point": 107,
+      "mark": 94,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-sorted",
+      "input": {
+        "text": "| a |\n| b |\n| c |\n",
+        "point": 2,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| a |\n| b |\n| c |\n",
+      "visible": "| a |\n| b |\n| c |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "table-sort-indented",
+      "input": {
+        "text": "  | b | 2 |\n  | a | 1 |\n  | c |\n",
+        "point": 4,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "  | a | 1 |\n  | b | 2 |\n  | c |\n",
+      "visible": "  | a | 1 |\n  | b | 2 |\n  | c |\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-short-rows",
+      "input": {
+        "text": "| b | 2 |\n| a |\n| c | 1 |\n",
+        "point": 6,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "| a |\n| c | 1 |\n| b | 2 |\n",
+      "visible": "| a |\n| c | 1 |\n| b | 2 |\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-links",
+      "input": {
+        "text": "| [[x][zed]] |\n| [[y][alpha]] |\n| beta |\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| [[y][alpha]] |\n| beta |\n| [[x][zed]] |\n",
+      "visible": "| alpha |\n| beta |\n| zed |\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-numbers-text",
+      "input": {
+        "text": "| 10 |\n| 9x |\n| abc |\n| -1 |\n| 1e2 |\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "| -1 |\n| abc |\n| 9x |\n| 10 |\n| 1e2 |\n",
+      "visible": "| -1 |\n| abc |\n| 9x |\n| 10 |\n| 1e2 |\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-in-item",
+      "input": {
+        "text": "- item\n  | b |\n  | a |\n",
+        "point": 12,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- item\n  | a |\n  | b |\n",
+      "visible": "- item\n  | a |\n  | b |\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-unchanged",
+      "input": {
+        "text": "| a |\n| b |\n",
+        "point": 2,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "| a |\n| b |\n",
+      "visible": "| a |\n| b |\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "list-sort-a",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- [-] 10 apples\n- 2 pears\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- banana <2026-03-01 Sun>\n- [ ] cherry\n\ntext after\n",
+      "visible": "- [-] 10 apples\n- 2 pears\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- banana <2026-03-01 Sun>\n- [ ] cherry\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-A",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "A"
+        ]
+      },
+      "text": "- [ ] cherry\n- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- 2 pears\n- [-] 10 apples\n\ntext after\n",
+      "visible": "- [ ] cherry\n- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- 2 pears\n- [-] 10 apples\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-n",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "n"
+        ]
+      },
+      "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- 2 pears\n- [-] 10 apples\n\ntext after\n",
+      "visible": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- 2 pears\n- [-] 10 apples\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-N",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "N"
+        ]
+      },
+      "text": "- [-] 10 apples\n- 2 pears\n- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n\ntext after\n",
+      "visible": "- [-] 10 apples\n- 2 pears\n- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-t",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- banana <2026-03-01 Sun>\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+      "visible": "- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- banana <2026-03-01 Sun>\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-T",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "T"
+        ]
+      },
+      "text": "- [ ] cherry\n- [-] 10 apples\n- 2 pears\n- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n\ntext after\n",
+      "visible": "- [ ] cherry\n- [-] 10 apples\n- 2 pears\n- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-x",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "x"
+        ]
+      },
+      "text": "- banana <2026-03-01 Sun>\n- 2 pears\n- [ ] cherry\n- [-] 10 apples\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n\ntext after\n",
+      "visible": "- banana <2026-03-01 Sun>\n- 2 pears\n- [ ] cherry\n- [-] 10 apples\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-X",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "X"
+        ]
+      },
+      "text": "- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [-] 10 apples\n- [ ] cherry\n- banana <2026-03-01 Sun>\n- 2 pears\n\ntext after\n",
+      "visible": "- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [-] 10 apples\n- [ ] cherry\n- banana <2026-03-01 Sun>\n- 2 pears\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-with-case",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-u C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- [-] 10 apples\n- 2 pears\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- banana <2026-03-01 Sun>\n- [ ] cherry\n\ntext after\n",
+      "visible": "- [-] 10 apples\n- 2 pears\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- banana <2026-03-01 Sun>\n- [ ] cherry\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-from-sublist",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 71,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub a\n  - sub b\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+      "visible": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub a\n  - sub b\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+      "point": 67,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-from-continued",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 57,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+      "visible": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+      "point": 138,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Nothing to sort"
+    },
+    {
+      "name": "list-sort-bad-type",
+      "input": {
+        "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "q"
+        ]
+      },
+      "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+      "visible": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid sorting type ‘q’"
+    },
+    {
+      "name": "list-sort-numbered",
+      "input": {
+        "text": "1. c\n2. a\n3. b\n",
+        "point": 1,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "1. a\n2. b\n3. c\n",
+      "visible": "1. a\n2. b\n3. c\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-numbered-paren",
+      "input": {
+        "text": "1) c\n2) a\n   more\n3) b\n",
+        "point": 1,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "1) a\n   more\n2) b\n3) c\n",
+      "visible": "1) a\n   more\n2) b\n3) c\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-blank-lines",
+      "input": {
+        "text": "- c\n\n- a\n\n- b\n",
+        "point": 1,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- a\n\n- b\n\n- c\n",
+      "visible": "- a\n\n- b\n\n- c\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-in-entry",
+      "input": {
+        "text": "* H\n- b\n- a\n* I\n- d\n- c\n",
+        "point": 5,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* H\n- a\n- b\n* I\n- d\n- c\n",
+      "visible": "* H\n- a\n- b\n* I\n- d\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-description",
+      "input": {
+        "text": "- zed :: last\n- alpha :: first\n",
+        "point": 1,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- alpha :: first\n- zed :: last\n",
+      "visible": "- alpha :: first\n- zed :: last\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-indented",
+      "input": {
+        "text": "  - b\n  - a\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "  - a\n  - b\n",
+      "visible": "  - a\n  - b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-emphasis",
+      "input": {
+        "text": "- /zed/\n- *bee*\n- ant\n",
+        "point": 1,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- ant\n- *bee*\n- /zed/\n",
+      "visible": "- ant\n- *bee*\n- /zed/\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-hook-point",
+      "input": {
+        "text": "- b\n- a\n",
+        "point": 1,
+        "keys": "C-c ^ C-f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-sublist-numbered-parent",
+      "input": {
+        "text": "1. x\n   - b\n   - a\n1. y\n",
+        "point": 8,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "1. x\n   - a\n   - b\n1. y\n",
+      "visible": "1. x\n   - a\n   - b\n1. y\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-sublist-indent",
+      "input": {
+        "text": "- x\n   - b\n   - a\n   - c\n-  y\n",
+        "point": 7,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- x\n   - a\n   - b\n   - c\n-  y\n",
+      "visible": "- x\n   - a\n   - b\n   - c\n-  y\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-sort-sublist-checkboxes",
+      "input": {
+        "text": "- [ ] parent [0/2]\n  - [ ] b\n  - [X] a\n",
+        "point": 21,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "- [ ] parent [0/2]\n  - [X] a\n  - [ ] b\n",
+      "visible": "- [ ] parent [0/2]\n  - [X] a\n  - [ ] b\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-durations-no-space",
+      "input": {
+        "text": "| 1d1:00 |\n| 2h1:00 |\n| 0:30 |\n| 1:00 |\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "| 0:30 |\n| 1:00 |\n| 2h1:00 |\n| 1d1:00 |\n",
+      "visible": "| 0:30 |\n| 1:00 |\n| 2h1:00 |\n| 1d1:00 |\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-sort-bad-timestamp",
+      "input": {
+        "text": "| <2026-03-01Sun> |\n| <2026-01-01 Thu> |\n| <2025-01-01 Wed> |\n",
+        "point": 3,
+        "keys": "C-c ^",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "| <2026-03-01Sun> |\n| <2025-01-01 Wed> |\n| <2026-01-01 Thu> |\n",
+      "visible": "| <2026-03-01Sun> |\n| <2025-01-01 Wed> |\n| <2026-01-01 Thu> |\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

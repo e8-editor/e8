@@ -35,6 +35,7 @@ import {
   parseDate,
   plistGet,
   reducedLevel,
+  tableSortLines,
   today,
   updateDblock,
 } from "org";
@@ -1083,6 +1084,24 @@ function writeClocktableDefault(ipos: number, tables: TableData[], params: e8.Va
   e8.gotoChar(ipos);
   e8.skipCharsForward("^|");
   e8.call("org-table-align");
+  const sort = p(":sort");
+  if (Array.isArray(sort) && sort.length >= 2) {
+    // From the third data line, the first after the total, by its column, as Org sorts with org-table-sort-lines.
+    e8.saveExcursion(() => {
+      let rows = 0;
+      for (let line = lineAt(); line < e8.lineCount() && /^[ \t]*\|/.test(e8.lineText(line)); line++) {
+        if (/^[ \t]*\|-/.test(e8.lineText(line)) || ++rows < 3) continue;
+        const text = e8.lineText(line);
+        let bars = 0;
+        let i = 0;
+        for (; i < text.length && bars < Number(sort[0]); i++) if (text[i] === "|") bars++;
+        e8.gotoChar(e8.lineStart(line) + charCount(text.slice(0, Math.min(i + 1, text.length))));
+        const type = sort[1];
+        tableSortLines(false, false, typeof type === "number" ? String.fromCodePoint(type) : String(str(type)));
+        return;
+      }
+    });
+  }
   if (recalc) e8.call("org-table-recalculate");
   return totalTime;
 }

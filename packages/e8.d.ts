@@ -6388,6 +6388,14 @@ declare global {
        */
       "org-sort-entries": [withCase?: PrefixArg | boolean];
       /**
+       * Sort the items of the list point is in by their first lines: a alphabetically, n numerically, t by time, x by checkbox, f by a function; a capital reverses it. Sublists move with their items. With a prefix argument, case counts.
+       *
+       * @param with-case raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-sort-list": [withCase?: PrefixArg | boolean];
+      /**
        * Make a sparse tree, asking which: r a regexp's matches (or /), t the headings with a TODO state not done, T those with a state read, m those a tags and properties match picks, p those with a property's value, d the deadlines due soon, b and a the dates before and after a date, D those between two; c cycles which timestamps the dates look at.
        *
        * @param arg raw prefix argument
@@ -6561,6 +6569,14 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-recalculate": [];
+      /**
+       * Sort the table's lines between the rules around point, or the region's, by the column point is in: a alphabetically, n numerically, t by time or duration, f by a function; a capital reverses it. With a prefix argument, case counts.
+       *
+       * @param with-case raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-table-sort-lines": [withCase?: PrefixArg | boolean];
       /**
        * Split the field at point, as M-RET does in a table: the text after point goes to the same field in the next row.
        *
