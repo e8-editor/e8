@@ -88,6 +88,8 @@ import {
   entryGet,
   propertyLocalValues,
   propertySeparator,
+  currentLine,
+  orderedHere,
   radioButtonsHere,
   toggleRadioButton,
   topGet,
@@ -7552,13 +7554,33 @@ function ctrlCCtrlCItem(line: number, arg: e8.PrefixArg): void {
   fixItemEnd(struct);
   fixBul(struct, prevs);
   fixInd(struct, parents);
-  fixBox(struct, parents);
+  const blocking = fixBox(struct, parents, orderedHere());
   if (box && sameStruct(struct, old)) {
     if (c16) e8.message("Checkboxes already reset");
     else e8.userError(`Cannot toggle this checkbox: ${box === "[X]" ? "all subitems checked" : "unchecked subitems"}`);
-    return;
+  } else {
+    applyStruct(struct, old);
+    updateCheckboxCount();
   }
-  applyStruct(struct, old);
+  if (blocking !== undefined) e8.message(`Checkboxes were removed due to empty box at line ${currentLine(blocking)}`);
+}
+
+/**
+ * C-c C-c on a plain list, from its affiliated keywords, as org-ctrl-c-ctrl-c
+ * does: with C-u, every item of the list gets a box, or loses it if the
+ * first had one; with C-u C-u every box is [-]; else the list is repaired.
+ */
+function ctrlCCtrlCPlainList(first: number, arg: e8.PrefixArg): void {
+  if (e8.variable("org-list-checkbox-radio-mode") === true) return toggleRadioButton(arg);
+  const begin = e8.lineStart(first);
+  const struct = listStruct(first);
+  const old = copyStruct(struct);
+  const firstBox = getItem(struct, begin).checkbox;
+  const c4 = Array.isArray(arg) && arg[0] === 4;
+  const c16 = Array.isArray(arg) && arg[0] === 16;
+  const newBox = c16 ? "[-]" : c4 ? (firstBox ? undefined : "[ ]") : firstBox === "[X]" ? "[ ]" : "[X]";
+  if (arg !== null && arg !== undefined) for (const pos of allItems(begin, prevsAlist(struct))) getItem(struct, pos).checkbox = newBox;
+  if (sameStruct(writeStruct(struct, parentsAlist(struct), old), old)) e8.message("Cannot update this checkbox");
   updateCheckboxCount();
 }
 
@@ -7610,6 +7632,36 @@ const ctrlCCtrlC = e8.defineCommand({
       e8.call("org-table-align");
       return;
     }
+    // On a list's affiliated keyword, as #+ATTR_ORG:, Org's context is the list.
+    if (AFFILIATED.test(text)) {
+      let l = line;
+      while (l + 1 < e8.lineCount() && AFFILIATED.test(e8.lineText(l + 1))) l++;
+      const first = l + 1;
+      let list = first < e8.lineCount() && itemLine(first) ? elementAt(e8.lineStart(first)) : undefined;
+      while (list && list.type !== "plain-list") list = list.parent;
+      if (list && list.begin === e8.lineStart(first)) {
+        ctrlCCtrlCPlainList(first, e8.prefixArg());
+        return;
+      }
+      // Otherwise they are the next element's, as Org's context is: a table
+      // is recalculated, a source block run by the hook above, and most others
+      // can do nothing. #+PLOT: runs gnuplot in Org, which E8 does not.
+      let next = first < e8.lineCount() ? elementAt(e8.lineStart(first)) : undefined;
+      while (next?.parent && next.parent.begin === e8.lineStart(first)) next = next.parent;
+      if (next && next.begin === e8.lineStart(first) && !/^[ \t]*#\+PLOT:/i.test(text)) {
+        if (next.type === "table") {
+          e8.saveExcursion(() => {
+            e8.gotoChar(next!.begin);
+            e8.call("org-table-recalculate");
+          });
+          return;
+        }
+        const nothing = ["paragraph", "quote-block", "center-block", "special-block", "verse-block", "example-block", "export-block", "comment-block", "drawer", "fixed-width"];
+        if (nothing.includes(next.type)) nothingUseful();
+      }
+    }
+    // Inside an example, export or comment block, a #+ line is the block's text.
+    if (/^(?:example|export|comment)-block$/.test(elementAt(e8.point())?.type ?? "") && /^[ \t]*#\+/.test(text)) nothingUseful();
     const dblock = elementAt(e8.point());
     if (dblock?.type === "dynamic-block") {
       e8.saveExcursion(() => {
@@ -7618,7 +7670,7 @@ const ctrlCCtrlC = e8.defineCommand({
       });
       return;
     }
-    if (/^#\+\S*:/.test(text)) {
+    if (/^[ \t]*#\+\S*:/.test(text)) {
       storeTodoSets();
       e8.call("font-lock-flush");
       e8.message("Local setup has been refreshed");

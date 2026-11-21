@@ -1,0 +1,791 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "ordered-c-c-in-turn",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 55,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [X] two\n- [ ] three\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [X] two\n- [ ] three\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-c-c-out-of-turn",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle this checkbox: unchecked subitems",
+      "message": null
+    },
+    {
+      "name": "ordered-c-c-untick-first",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 45,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-toggle-in-turn",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 55,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [X] two\n- [ ] three\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [X] two\n- [ ] three\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-toggle-out-of-turn",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 65,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Checkbox blocked because of unchecked box at line 6",
+      "message": null
+    },
+    {
+      "name": "ordered-toggle-region",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 49,
+        "keys": "C-SPC C-n C-n C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [X] two\n- [X] three\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [X] two\n- [X] three\n",
+      "point": 71,
+      "mark": 49,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "ordered-toggle-heading",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n- [ ] two\n",
+        "point": 0,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [X] two\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [X] two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-radio",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 65,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "point": 65,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-nil",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: nil\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 65,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: nil\n:END:\n- [X] one\n- [ ] two\n- [X] three\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: nil\n:END:\n- [X] one\n- [ ] two\n- [X] three\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-inherited-not",
+      "input": {
+        "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** C\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 66,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** C\n- [X] one\n- [ ] two\n- [X] three\n",
+      "visible": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** C\n- [X] one\n- [ ] two\n- [X] three\n",
+      "point": 66,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-nested",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n  - [X] a\n  - [ ] b\n- [ ] two\n",
+        "point": 75,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [-] one\n  - [X] a\n  - [ ] b\n- [ ] two\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [-] one\n  - [X] a\n  - [ ] b\n- [ ] two\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checkboxes were removed due to empty box at line 7"
+    },
+    {
+      "name": "ordered-nested-child",
+      "input": {
+        "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n  - [X] a\n  - [ ] b\n- [ ] two\n",
+        "point": 61,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n  - [X] a\n  - [X] b\n- [ ] two\n",
+      "visible": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n  - [X] a\n  - [X] b\n- [ ] two\n",
+      "point": 61,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-top-drawer",
+      "input": {
+        "text": ":PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+        "point": 57,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": ":PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "visible": ":PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle this checkbox: unchecked subitems",
+      "message": null
+    },
+    {
+      "name": "plain-list-keyword-c-c",
+      "input": {
+        "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+      "visible": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Cannot update this checkbox"
+    },
+    {
+      "name": "plain-list-keyword-c-u",
+      "input": {
+        "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+ATTR_ORG: :width 5\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "visible": "#+ATTR_ORG: :width 5\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-list-keyword-c-u-boxed",
+      "input": {
+        "text": "#+NAME: l\n- [ ] one\n- [X] two\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- one\n- two\n",
+      "visible": "#+NAME: l\n- one\n- two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-list-keyword-c-u-c-u",
+      "input": {
+        "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+        "point": 0,
+        "keys": "C-u C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+ATTR_ORG: :width 5\n- [-] one\n- [-] two\n- [-] three\n",
+      "visible": "#+ATTR_ORG: :width 5\n- [-] one\n- [-] two\n- [-] three\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-list-keyword-repairs",
+      "input": {
+        "text": "#+NAME: l\n1. one\n5. two\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n1. one\n2. two\n",
+      "visible": "#+NAME: l\n1. one\n2. two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-list-keyword-stack",
+      "input": {
+        "text": "#+NAME: l\n#+ATTR_ORG: :x 1\n- one\n- two\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n#+ATTR_ORG: :x 1\n- [ ] one\n- [ ] two\n",
+      "visible": "#+NAME: l\n#+ATTR_ORG: :x 1\n- [ ] one\n- [ ] two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-list-keyword-nested",
+      "input": {
+        "text": "#+NAME: l\n- one\n  - a\n- two\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n- [ ] one\n  - a\n- [ ] two\n",
+      "visible": "#+NAME: l\n- [ ] one\n  - a\n- [ ] two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "plain-list-keyword-blank",
+      "input": {
+        "text": "#+NAME: l\n\n- one\n",
+        "point": 0,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\n\n- one\n",
+      "visible": "#+NAME: l\n\n- one\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "plain-list-keyword-paragraph",
+      "input": {
+        "text": "#+NAME: l\ntext\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: l\ntext\n",
+      "visible": "#+NAME: l\ntext\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "plain-list-keyword-radio-mode",
+      "input": {
+        "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+        "point": 0,
+        "keys": "M-x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-list-checkbox-radio-mode"
+        ],
+        "message": true
+      },
+      "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+      "visible": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle checkbox outside of a list",
+      "message": "Org-List-Checkbox-Radio mode enabled in current buffer"
+    },
+    {
+      "name": "plain-list-keyword-cookie",
+      "input": {
+        "text": "* H [0/2]\n#+NAME: l\n- one\n- two\n",
+        "point": 10,
+        "keys": "C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H [0/2]\n#+NAME: l\n- [ ] one\n- [ ] two\n",
+      "visible": "* H [0/2]\n#+NAME: l\n- [ ] one\n- [ ] two\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "ordered-narrowed-line",
+      "input": {
+        "text": "* Other\n\n* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- two\n- [X] three\n",
+        "point": 58,
+        "keys": "C-x n s C-u C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Other\n\n* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "visible": "* Other\n\n* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checkboxes were removed due to empty box at line 8"
+    },
+    {
+      "name": "ordered-narrowed-toggle",
+      "input": {
+        "text": "* Other\n\n* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- two\n- [X] three\n",
+        "point": 58,
+        "keys": "C-x n s C-u C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Other\n\n* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "visible": "* Other\n\n* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Checkboxes were removed due to unchecked box at line 8"
+    },
+    {
+      "name": "keyword-above-table",
+      "input": {
+        "text": "#+NAME: t\n| a |  b |\n|  1 | 2 |\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: t\n| a |  b |\n|  1 | 2 |\n",
+      "visible": "#+NAME: t\n| a |  b |\n|  1 | 2 |\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "keyword-above-quote",
+      "input": {
+        "text": "#+NAME: q\n#+begin_quote\nx\n#+end_quote\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: q\n#+begin_quote\nx\n#+end_quote\n",
+      "visible": "#+NAME: q\n#+begin_quote\nx\n#+end_quote\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "keyword-above-drawer",
+      "input": {
+        "text": "#+NAME: d\n:DRAWER:\nx\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: d\n:DRAWER:\nx\n:END:\n",
+      "visible": "#+NAME: d\n:DRAWER:\nx\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "keyword-above-fixed-width",
+      "input": {
+        "text": "#+NAME: f\n: x\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: f\n: x\n",
+      "visible": "#+NAME: f\n: x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "keyword-in-example",
+      "input": {
+        "text": "#+begin_example\n#+NAME: x\n#+end_example\n",
+        "point": 17,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_example\n#+NAME: x\n#+end_example\n",
+      "visible": "#+begin_example\n#+NAME: x\n#+end_example\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "keyword-indented-in-item",
+      "input": {
+        "text": "- a\n  #+NAME: x\n- b\n",
+        "point": 6,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- a\n  #+NAME: x\n- b\n",
+      "visible": "- a\n  #+NAME: x\n- b\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "keyword-indented",
+      "input": {
+        "text": "  #+TODO: A | B\n* A x\n",
+        "point": 3,
+        "keys": "C-c C-c S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "  #+TODO: A | B\n* A x\n",
+      "visible": "  #+TODO: A | B\n* A x\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’",
+      "message": "Local setup has been refreshed"
+    },
+    {
+      "name": "keyword-above-keyword",
+      "input": {
+        "text": "#+NAME: n\n#+TITLE: t\n",
+        "point": 0,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+NAME: n\n#+TITLE: t\n",
+      "visible": "#+NAME: n\n#+TITLE: t\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Local setup has been refreshed"
+    }
+  ]
+}
