@@ -5279,50 +5279,56 @@ const setTagsCommand = e8.defineCommand({
     const arg = e8.prefixArg();
     if (Array.isArray(arg) && arg[0] === 4) return e8.callWithPrefix(arg, "org-align-tags");
     const fast = Array.isArray(arg) && arg[0] === 16 ? null : e8.variable("org-use-fast-tag-selection");
-    const all = headings();
-    const i = headingIndex(all, lineAt());
-    if (i === undefined) e8.userError("Setting file tags is not supported yet");
-    const h = all[i!];
-    const localTable = currentTagAlist();
-    const table = localTable.length > 0 ? localTable : bufferTags();
-    // As org-get-tags: with inheritance, the file's and the headings' above, then the heading's own,
-    // each tag once where it comes last; those of the heading are its current ones.
-    let current = h.tags;
-    let inherited: string[] = [];
-    if (truthy(e8.variable("org-use-tag-inheritance"))) {
-      const itags = [...fileTags(), ...ancestors(all, i!).reverse().flatMap((a) => all[a].tags)];
-      const tagged = [...itags.map((t) => [t, true] as const), ...current.map((t) => [t, false] as const)];
-      const kept = tagged.filter(([t], j) => !tagged.slice(j + 1).some(([u]) => u === t));
-      inherited = kept.filter(([, inh]) => inh).map(([t]) => t);
-      current = kept.filter(([, inh]) => !inh).map(([t]) => t);
-    }
-    let tags: string | undefined;
-    if (fast === true || (truthy(fast) && table.some(([, k]) => k !== undefined))) {
-      tags = e8.saveExcursion(() => {
-        e8.gotoChar(h.start);
-        const todo = truthy(e8.variable("org-fast-tag-selection-include-todo")) ? todoKeyAlist() : [];
-        return fastTagSelection(current, inherited, table, todo);
-      });
-    } else {
-      const answer = e8.completingRead(
-        "Tags: ",
-        table.map(([t]) => t).filter((t) => !isTagKeyword(t)),
-        { initial: makeTagString(current), history: "org-tags-history" },
-      );
-      tags = answer.split(/[ \t]*:[ \t]*/).filter((t) => t !== "").join(":");
-    }
-    // Characters a tag cannot have part tags, as org-set-tags-command's.
-    const cleaned = (tags ?? "").replace(/[^\p{L}\p{N}_@#%]+/gu, ":");
-    e8.saveExcursion(() => {
-      e8.gotoChar(h.start);
-      setTags(cleaned.split(":").filter((t) => t !== ""));
-    });
-    // Point just after the stars goes past the space after them, as org-set-tags-command ends.
+    // With the region active, each heading in it, as Org maps the command over them, passing over hidden subtrees.
+    if (!forEachHeadingInRegion(() => setTagsHere(fast), { hiddenPoint: true })) setTagsHere(fast);
+    // Point just after the stars goes past the space after them, as Org leaves it once the tags are set.
     const bol = e8.lineStart(lineAt());
     const stars = e8.bufferSubstringNoProperties(bol, e8.point());
-    if (/^\**$/.test(stars) && e8.point() < e8.pointMax() && e8.bufferSubstringNoProperties(e8.point(), e8.point() + 1) === " ") e8.gotoChar(e8.point() + 1);
+    if (/^\*+$/.test(stars) && e8.point() < e8.pointMax() && e8.bufferSubstringNoProperties(e8.point(), e8.point() + 1) === " ") e8.gotoChar(e8.point() + 1);
   },
 });
+
+/** Reads tags for the heading point is under and sets them, as one call of org-set-tags-command does. */
+function setTagsHere(fast: e8.Value | undefined): void {
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  if (i === undefined) e8.userError("Setting file tags is not supported yet");
+  const h = all[i!];
+  const localTable = currentTagAlist();
+  const table = localTable.length > 0 ? localTable : bufferTags();
+  // As org-get-tags: with inheritance, the file's and the headings' above, then the heading's own,
+  // each tag once where it comes last; those of the heading are its current ones.
+  let current = h.tags;
+  let inherited: string[] = [];
+  if (truthy(e8.variable("org-use-tag-inheritance"))) {
+    const itags = [...fileTags(), ...ancestors(all, i!).reverse().flatMap((a) => all[a].tags)];
+    const tagged = [...itags.map((t) => [t, true] as const), ...current.map((t) => [t, false] as const)];
+    const kept = tagged.filter(([t], j) => !tagged.slice(j + 1).some(([u]) => u === t));
+    inherited = kept.filter(([, inh]) => inh).map(([t]) => t);
+    current = kept.filter(([, inh]) => !inh).map(([t]) => t);
+  }
+  let tags: string | undefined;
+  if (fast === true || (truthy(fast) && table.some(([, k]) => k !== undefined))) {
+    tags = e8.saveExcursion(() => {
+      e8.gotoChar(h.start);
+      const todo = truthy(e8.variable("org-fast-tag-selection-include-todo")) ? todoKeyAlist() : [];
+      return fastTagSelection(current, inherited, table, todo);
+    });
+  } else {
+    const answer = e8.completingRead(
+      "Tags: ",
+      table.map(([t]) => t).filter((t) => !isTagKeyword(t)),
+      { initial: makeTagString(current), history: "org-tags-history" },
+    );
+    tags = answer.split(/[ \t]*:[ \t]*/).filter((t) => t !== "").join(":");
+  }
+  // Characters a tag cannot have part tags, as org-set-tags-command's.
+  const cleaned = (tags ?? "").replace(/[^\p{L}\p{N}_@#%]+/gu, ":");
+  e8.saveExcursion(() => {
+    e8.gotoChar(h.start);
+    setTags(cleaned.split(":").filter((t) => t !== ""));
+  });
+}
 
 e8.defineVariable({ name: "org-tags-history", doc: "Tags answered to org-set-tags-command, newest first.", value: [] });
 
@@ -7685,11 +7691,8 @@ const ctrlCCtrlC = e8.defineCommand({
       return;
     }
     if (headingHere()) {
-      // With the region active, Org sets the tags of each heading that starts
-      // in it, which may be none.
-      const region = e8.variable("org-loop-over-headlines-in-active-region") === true ? headingsInRegion() : undefined;
-      if (region && region.length === 0) return;
-      if (region) e8.gotoChar(region[0].start);
+      // Where point is, as Org's fallback for a heading calls it: with the
+      // region active, the command sets the tags of each heading in it.
       e8.callInteractively("org-set-tags-command");
       return;
     }

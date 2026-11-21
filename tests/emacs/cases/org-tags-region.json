@@ -1,0 +1,151 @@
+[
+  {
+    "name": "tags-region-each",
+    "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+    "keys": "C-SPC C-n C-n C-n C-n C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ]
+  },
+  {
+    "name": "tags-region-c-c",
+    "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+    "keys": "C-SPC C-n C-n C-n C-n C-p C-p C-p C-p C-c C-c",
+    "point": 38,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "x",
+      "y",
+      "z"
+    ]
+  },
+  {
+    "name": "tags-region-mid-line",
+    "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+    "keys": "C-SPC C-n C-n C-n C-c C-c",
+    "point": 2,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "name": "tags-region-mid-line-c-q",
+    "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+    "keys": "C-SPC C-n C-n C-n C-c C-q",
+    "point": 2,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "name": "tags-region-no-headings",
+    "text": "* h\ntext\nmore\n",
+    "keys": "C-SPC C-n C-c C-q",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "tags-region-off",
+    "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+    "keys": "C-SPC C-n C-n C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a"
+    ],
+    "vars": {
+      "org-loop-over-headlines-in-active-region": false
+    }
+  },
+  {
+    "name": "tags-region-folded",
+    "text": "* one\n** hidden\nbody\n* two\n",
+    "keys": "TAB C-SPC C-n C-n C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "name": "tags-region-point-hidden",
+    "text": "#+STARTUP: overview\n* one\n** hidden\nbody\n* two\n",
+    "keys": "C-SPC C-n C-c C-q",
+    "point": 37,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "name": "tags-region-to-heading-start",
+    "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+    "keys": "C-SPC C-n C-n C-n C-a C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "b"
+    ]
+  },
+  {
+    "name": "tags-region-empty-answer",
+    "text": "* one :t:\n* two :u:\n",
+    "keys": "C-SPC C-n C-n C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "tags-region-fast",
+    "text": "#+TAGS: work(w) home(h)\n* one\n* two\n",
+    "keys": "C-SPC C-n C-n C-c C-q",
+    "point": 24,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "w",
+      "\r",
+      "h",
+      "\r"
+    ]
+  }
+]
