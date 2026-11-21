@@ -343,3 +343,31 @@ fn a_dynamic_table_keeps_icompletes_rotation() {
     d.press("C-j");
     assert_eq!(d.text(), "apricot");
 }
+
+/// The RET that answers a waiting command runs no post-command-hook, as
+/// in Emacs, where exit-minibuffer throws out of the minibuffer's command
+/// loop first: the hook runs for the keys typed into the prompt, and once
+/// the asking command is done.
+#[test]
+fn the_answering_key_runs_no_post_command_hook() {
+    let d = Driven::new(
+        r#"
+        const ran: string[] = [];
+        (globalThis as any).ran = ran;
+        e8.addHook("post-command-hook", () => { ran.push(String(e8.thisCommand())); });
+        e8.defineCommand({
+          name: "ask-name",
+          run: () => {
+            const name = e8.readString("Name: ");
+            ran.push(`answered ${name}`);
+          },
+        });
+        "#,
+    );
+    d.mx("ask-name");
+    d.type_text("Al");
+    d.press("RET");
+    // After those of typing the command's name for M-x.
+    let ran = d.eval_expression("(globalThis as any).ran.slice(-4).join(' ')");
+    assert_eq!(ran, r#""self-insert-command self-insert-command answered Al ask-name""#);
+}

@@ -1,0 +1,287 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "tags-region-each",
+      "input": {
+        "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-n C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ]
+      },
+      "text": "* one                                                                     :a:\n** two                                                                    :b:\ntext\n* three                                                                   :c:\n* four\n",
+      "visible": "* one                                                                     :a:\n** two                                                                    :b:\ntext\n* three                                                                   :c:\n* four\n",
+      "point": 239,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-region-c-c",
+      "input": {
+        "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+        "point": 38,
+        "keys": "C-SPC C-n C-n C-n C-n C-p C-p C-p C-p C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      "text": "* one\n** two\ntext\n* three                                                                   :x:\n* four                                                                    :y:\n",
+      "visible": "* one\n** two\ntext\n* three                                                                   :x:\n* four                                                                    :y:\n",
+      "point": 12,
+      "mark": 102,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "End of buffer"
+    },
+    {
+      "name": "tags-region-mid-line",
+      "input": {
+        "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-n C-n C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "b"
+        ]
+      },
+      "text": "* one\n** two                                                                    :a:\ntext\n* three                                                                   :b:\n* four\n",
+      "visible": "* one\n** two                                                                    :a:\ntext\n* three                                                                   :b:\n* four\n",
+      "point": 91,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-region-mid-line-c-q",
+      "input": {
+        "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+        "point": 2,
+        "keys": "C-SPC C-n C-n C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "b"
+        ]
+      },
+      "text": "* one\n** two                                                                    :a:\ntext\n* three                                                                   :b:\n* four\n",
+      "visible": "* one\n** two                                                                    :a:\ntext\n* three                                                                   :b:\n* four\n",
+      "point": 91,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-region-no-headings",
+      "input": {
+        "text": "* h\ntext\nmore\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* h\ntext\nmore\n",
+      "visible": "* h\ntext\nmore\n",
+      "point": 9,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tags-region-off",
+      "input": {
+        "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a"
+        ],
+        "vars": {
+          "org-loop-over-headlines-in-active-region": false
+        }
+      },
+      "text": "* one\n** two                                                                    :a:\ntext\n* three :old:\n* four\n",
+      "visible": "* one\n** two                                                                    :a:\ntext\n* three :old:\n* four\n",
+      "point": 84,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-region-folded",
+      "input": {
+        "text": "* one\n** hidden\nbody\n* two\n",
+        "point": 0,
+        "keys": "TAB C-SPC C-n C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "b"
+        ]
+      },
+      "text": "* one                                                                     :a:\n** hidden\nbody\n* two                                                                     :b:\n",
+      "visible": "* one                                                                     :a:\n* two                                                                     :b:\n",
+      "point": 171,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-region-point-hidden",
+      "input": {
+        "text": "#+STARTUP: overview\n* one\n** hidden\nbody\n* two\n",
+        "point": 37,
+        "keys": "C-SPC C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "b"
+        ]
+      },
+      "text": "#+STARTUP: overview\n* one\n** hidden\nbody\n* two                                                                     :a:\n",
+      "visible": "#+STARTUP: overview\n* one\n* two                                                                     :a:\n",
+      "point": 43,
+      "mark": 37,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-region-to-heading-start",
+      "input": {
+        "text": "* one\n** two\ntext\n* three :old:\n* four\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-n C-a C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "b"
+        ]
+      },
+      "text": "* one                                                                     :a:\n** two                                                                    :b:\ntext\n* three :old:\n* four\n",
+      "visible": "* one                                                                     :a:\n** two                                                                    :b:\ntext\n* three :old:\n* four\n",
+      "point": 161,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-region-empty-answer",
+      "input": {
+        "text": "* one :t:\n* two :u:\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "",
+          ""
+        ]
+      },
+      "text": "* one\n* two\n",
+      "visible": "* one\n* two\n",
+      "point": 12,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-region-fast",
+      "input": {
+        "text": "#+TAGS: work(w) home(h)\n* one\n* two\n",
+        "point": 24,
+        "keys": "C-SPC C-n C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "w",
+          "\r",
+          "h",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: work(w) home(h)\n* one                                                                  :work:\n* two                                                                  :home:\n",
+      "visible": "#+TAGS: work(w) home(h)\n* one                                                                  :work:\n* two                                                                  :home:\n",
+      "point": 180,
+      "mark": 24,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

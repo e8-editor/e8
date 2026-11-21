@@ -1795,7 +1795,12 @@ impl Editor {
         self.refresh_dynamic_collection();
         // Parses since the last primitive, as highlighting's, are told too.
         self.run_treesit_notifiers();
-        if let Err(e) = self.run_hooks("post-command-hook") {
+        // A command that answers a command waiting partway, as RET a prompt's,
+        // runs no post-command-hook: in Emacs exit-minibuffer throws out of the
+        // minibuffer's command loop before it, and the hook runs once the
+        // asking command is done.
+        let answered = self.keyboard.waits.last().is_some_and(|done| done(self));
+        if !answered && let Err(e) = self.run_hooks("post-command-hook") {
             self.message(format!("Error in post-command-hook: {e}"));
         }
         self.this_command = None;

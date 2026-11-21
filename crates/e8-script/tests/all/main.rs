@@ -82,6 +82,7 @@ mod org_id;
 mod org_search_view;
 mod org_select;
 mod org_sort_tables_lists;
+mod org_tags_region;
 mod org_sparse_tree;
 mod org_src;
 mod overlays;
