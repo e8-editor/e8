@@ -5954,6 +5954,66 @@ export function linkSetParameters(type: string, parameters: LinkParameters): voi
   linkTypes.set(type, parameters);
 }
 
+// Org's mark ring, as org-mark-ring and org-mark-ring-last-goto: the places
+// before jumps, newest first, org-mark-ring-length of them.
+
+e8.defineVariable({ name: "org-mark-ring-length", doc: "How many places Org's mark ring keeps, for C-c & to go back to.", value: 4 });
+
+/** The ring's markers, a slot each, newest at `head`, and where the last C-c & went. */
+const markRing: { slots: (e8.Marker | undefined)[]; head: number; lastGoto: number | undefined } = { slots: [], head: 0, lastGoto: undefined };
+
+/** The ring's size, fixed when first used, as org-mark-ring is made when org.el loads. */
+function markRingSize(): number {
+  if (markRing.slots.length === 0) markRing.slots = new Array(Math.max(1, Number(e8.variable("org-mark-ring-length") ?? 4))).fill(undefined);
+  return markRing.slots.length;
+}
+
+/**
+ * Saves a place in Org's mark ring, point by default, and in the buffer's
+ * own mark ring, as org-mark-ring-push does, saying C-c & goes back.
+ */
+export function markRingPush(pos = e8.point(), buffer: e8.BufferLike = e8.currentBuffer()): void {
+  e8.withCurrentBuffer(buffer, () => e8.pushMark(pos));
+  const size = markRingSize();
+  markRing.head = (markRing.head + size - 1) % size;
+  const old = markRing.slots[markRing.head];
+  if (old !== undefined) e8.deleteMarker(old);
+  markRing.slots[markRing.head] = e8.makeMarker(pos, { buffer: e8.bufferName(buffer) });
+  e8.message("Position saved to mark ring, go back with \u2018C-c &\u2019.");
+}
+
+e8.defineCommand({
+  name: "org-mark-ring-push",
+  doc: "Save point in Org's mark ring, for C-c & to come back to.",
+  run: () => markRingPush(),
+});
+
+e8.defineCommand({
+  name: "org-mark-ring-goto",
+  doc: "Go back to the place saved last in Org's mark ring; again, to the one before, and so on round the ring. With a count, that many back.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n) => {
+    const size = markRingSize();
+    // Going on from the last C-c & when repeated, as org-mark-ring-goto compares last-command.
+    const at = e8.lastCommand() === "org-mark-ring-goto" ? ((markRing.lastGoto ?? markRing.head) + n) % size : markRing.head;
+    markRing.lastGoto = at;
+    const m = markRing.slots[at];
+    const buffer = m === undefined ? undefined : e8.markerBuffer(m);
+    if (m === undefined || buffer === undefined) e8.signal("error", "Marker does not point anywhere");
+    e8.call("pop-to-buffer-same-window", buffer);
+    e8.gotoChar(e8.markerPosition(m) ?? e8.point());
+    if (e8.invisibleAt(e8.point())) foldShowContext("mark-goto");
+  },
+});
+
+/** Goes to an internal link's place, as org-link-open does: Org's mark ring first remembers where point was. */
+function followInternal(path: string): void {
+  markRingPush();
+  const pos = searchInBuffer(path);
+  e8.gotoChar(pos);
+  showContext(pos);
+}
+
 function openLink(link: Link): void {
   const path = link.path;
   const type = /^([a-z][a-z0-9+.-]*):(.*)$/is.exec(path);
@@ -5967,17 +6027,20 @@ function openLink(link: Link): void {
     const [name, search] = file.split("::");
     const dir = (e8.bufferFileName() ?? "").replace(/[^/]*$/, "");
     const full = /^[/~]/.test(name) ? name : dir + name;
+    // Where point was, kept if the link leads to another place in Org, as org-open-file's save-position-maybe does.
+    const [oldBuffer, oldPos, oldOrg] = [e8.currentBuffer(), e8.point(), e8.variable("major-mode") === "org-mode"];
     e8.call("find-file", full);
     if (search) {
       if (/^\d+$/.test(search)) e8.gotoChar(e8.lineStart(Number(search) - 1));
       else jump(searchInBuffer(search));
     }
+    if (oldOrg && e8.derivedModeP("org-mode") && (e8.currentBuffer().id !== oldBuffer.id || e8.point() !== oldPos)) markRingPush(oldPos, oldBuffer);
     return;
   }
   if (/^[a-z][a-z0-9+.-]*:/i.test(path) && !/^(id|file):/.test(path)) {
     throw new Error(`E8 cannot open ${path.split(":")[0]} links yet: ${path}`);
   }
-  jump(searchInBuffer(path));
+  followInternal(path);
 }
 
 const openAtPoint = e8.defineCommand({
@@ -7822,6 +7885,9 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c ,": "org-priority",
   "C-c C-q": setTagsCommand,
   "C-c /": "org-sparse-tree",
+  "C-c %": "org-mark-ring-push",
+  "C-c &": "org-mark-ring-goto",
+  "C-c C-j": "org-goto",
   "C-c \\": "org-match-sparse-tree",
   "C-c C-c": ctrlCCtrlC,
   "C-c C-x C-b": "org-toggle-checkbox",

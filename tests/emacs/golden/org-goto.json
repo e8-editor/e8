@@ -1,0 +1,536 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "goto-down-and-ret",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j <down> <down> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 105,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-quit",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 20,
+        "keys": "C-c C-j <down> C-g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Quit"
+    },
+    {
+      "name": "goto-cycle-into-a-subtree",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 15,
+        "keys": "C-c C-j TAB <down> <down> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 69,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-isearch-a-heading",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j b e t a RET RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 111,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-isearch-skips-body-and-tags",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j b e t a C-s RET RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 111,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-isearch-case",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j D e e p RET RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 94,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-left-on-heading",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j <down> C-e <left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 15,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-right-not-on-heading",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 15,
+        "keys": "C-c C-j TAB C-n <right> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 16,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-from-inside-a-subtree",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 95,
+        "keys": "C-c C-j <down> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 105,
+      "mark": 95,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-then-back-with-the-mark-ring",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j <down> <down> RET C-c &",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-no-auto-isearch",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j n n RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-goto-auto-isearch": false
+        }
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 105,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-no-auto-isearch-quit",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j n q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-goto-auto-isearch": false
+        }
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Quit"
+    },
+    {
+      "name": "goto-no-auto-isearch-same-level",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 15,
+        "keys": "C-c C-j f f b RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-goto-auto-isearch": false
+        }
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 105,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-outline-path",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-u C-c C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-goto.org",
+        "answers": [
+          "Project/Task B/Deep/"
+        ],
+        "message": true,
+        "vars": {
+          "org-outline-path-complete-in-steps": false
+        }
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 86,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-outline-path-interface",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 0,
+        "keys": "C-c C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-goto.org",
+        "answers": [
+          "Other/"
+        ],
+        "message": true,
+        "vars": {
+          "org-goto-interface": "'outline-path-completion",
+          "org-outline-path-complete-in-steps": false
+        }
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 119,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "goto-keeps-the-buffer-folded",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 15,
+        "keys": "S-TAB C-c C-j TAB <down> <down> <down> RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\n* Beta things\n* Other :beta:",
+      "point": 105,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "mark-ring-push-and-goto",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 62,
+        "keys": "C-c % M-> C-c &",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 62,
+      "mark": 62,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "mark-ring-goto-twice",
+      "input": {
+        "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+        "point": 62,
+        "keys": "C-c % C-n C-n C-c % M-> C-c & C-c &",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "visible": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+      "point": 62,
+      "mark": 79,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    },
+    {
+      "name": "internal-link-then-back",
+      "input": {
+        "text": "* A\nSee [[Target]] here.\n* B\n* Target\nbody\n",
+        "point": 12,
+        "keys": "C-c C-o C-c &",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nSee [[Target]] here.\n* B\n* Target\nbody\n",
+      "visible": "* A\nSee Target here.\n* B\n* Target\nbody\n",
+      "point": 12,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "outline-forward-same-level",
+      "input": {
+        "text": "* A\n** a1\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-f C-c C-f",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** a1\n* B\n* C\n",
+      "visible": "* A\n** a1\n* B\n* C\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "outline-forward-same-level-at-end",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-c C-f C-c C-f",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No following same-level heading",
+      "message": null
+    },
+    {
+      "name": "outline-backward-same-level",
+      "input": {
+        "text": "* A\n** a1\n* B\nb\n",
+        "point": 0,
+        "keys": "M-> C-c C-b",
+        "modes": [
+          "outline-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\n** a1\n* B\nb\n",
+      "visible": "* A\n** a1\n* B\nb\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Mark set"
+    }
+  ]
+}

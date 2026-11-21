@@ -142,5 +142,23 @@
       "python-mode",
       "hs-minor-mode"
     ]
+  },
+  {
+    "name": "hs-isearch-opens-a-hidden-block",
+    "text": "function a() {\n  one();\n  needle();\n}\n\n// needle in\n// a comment\nfunction b() {\n  needle();\n}\n",
+    "keys": "C-c @ C-M-h C-s n e e d l e RET",
+    "modes": [
+      "js-mode",
+      "hs-minor-mode"
+    ]
+  },
+  {
+    "name": "hs-isearch-skips-a-hidden-comment",
+    "text": "function a() {\n  one();\n  needle();\n}\n\n// needle in\n// a comment\nfunction b() {\n  needle();\n}\n",
+    "keys": "C-c @ C-M-h M-> C-r n e e d l e C-r RET",
+    "modes": [
+      "js-mode",
+      "hs-minor-mode"
+    ]
   }
 ]

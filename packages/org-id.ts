@@ -10,7 +10,7 @@
 // org-roam, which knows every ID of its directory, advises org-id-find to
 // answer first, as org-roam-id.el does.
 
-import { headings, headingIndex, linkSetParameters } from "org";
+import { headings, headingIndex, linkSetParameters, markRingPush } from "org";
 import { elementAt } from "org-element";
 import { entryGet, entryPut, topGet } from "org-list";
 import { fileRelativeName, findBufferVisiting } from "files";
@@ -459,7 +459,13 @@ e8.defineCommand({
   run: (id: string) => orgIdGoto(id),
 });
 
-linkSetParameters("id", { follow: (path) => orgIdGoto(path.replace(/::.*$/, "")) });
+// Org's mark ring remembers where point was, as org-id-open pushes it.
+linkSetParameters("id", {
+  follow: (path) => {
+    markRingPush();
+    orgIdGoto(path.replace(/::.*$/, ""));
+  },
+});
 
 // Saved when E8 exits, as org-id.el adds org-id-locations-save to kill-emacs-hook unless in batch.
 if (!truthy(e8.variable("noninteractive"))) e8.addHook("kill-emacs-hook", () => locationsSave());

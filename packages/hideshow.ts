@@ -46,6 +46,31 @@ e8.defineVariable({
   doc: "A function called with each overlay hideshow makes to hide text, which can give it a display of its own.",
   value: null,
 });
+e8.defineVariable({
+  name: "hs-isearch-open",
+  doc: "Which hidden blocks isearch opens when search-invisible is open: code, comment, t for both, or nil for neither.",
+  value: "code",
+});
+// Isearch shows a block its match is in while it is there, and for good
+// where it ends, as hs-isearch-show-temporary and hs-isearch-show.
+e8.defun("hs-isearch-show", (ov: e8.Value) => e8.deleteOverlay(Number(ov)));
+e8.defun("hs-isearch-show-temporary", (overlay: e8.Value, hideP: e8.Value) => {
+  const ov = Number(overlay);
+  if (truthy(hideP)) {
+    const saved = e8.overlayGet(ov, "hs-isearch-display");
+    if (truthy(saved)) {
+      e8.overlayPut(ov, "display", saved!);
+      e8.overlayPut(ov, "hs-isearch-display", null);
+    }
+  } else {
+    const display = e8.overlayGet(ov, "display");
+    if (truthy(display)) {
+      e8.overlayPut(ov, "hs-isearch-display", display!);
+      e8.overlayPut(ov, "display", null);
+    }
+  }
+  e8.overlayPut(ov, "invisible", truthy(hideP) ? "hs" : null);
+});
 e8.defineHook("hs-hide-hook", "Run at the end of the commands that hide blocks.");
 e8.defineHook("hs-show-hook", "Run at the end of the commands that show blocks.");
 
@@ -145,6 +170,11 @@ function discardOverlays(from: number, to: number): void {
 /** An overlay hiding `b` to `e`, of kind "code" or "comment", as hs-make-overlay. */
 function makeOverlay(b: number, e: number, kind: string, bOffset = 0, eOffset = 0): number {
   const o = e8.makeOverlay(b, e, { invisible: "hs", hs: kind, "hs-b-offset": bOffset, "hs-e-offset": eOffset });
+  const open = e8.variable("hs-isearch-open");
+  if (open === true || open === kind || (open === "block" && kind === "code")) {
+    e8.overlayPut(o, "isearch-open-invisible", "hs-isearch-show");
+    e8.overlayPut(o, "isearch-open-invisible-temporary", "hs-isearch-show-temporary");
+  }
   const setUp = e8.variable("hs-set-up-overlay");
   if (truthy(setUp)) e8.funcall(setUp as string, o);
   return o;

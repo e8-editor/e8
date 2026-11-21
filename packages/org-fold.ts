@@ -21,8 +21,21 @@ import { charCount, escapeRegExp } from "subr";
 export function hideOverlay(start: number, end: number, spec: string): void {
   // Text inserted at either end goes outside, as with org-fold-core's
   // overlays, which advance at the front only.
-  e8.makeOverlay(start, end, { invisible: spec, evaporate: true }, { frontAdvance: true });
+  e8.makeOverlay(start, end, { invisible: spec, evaporate: true, "isearch-open-invisible": "org-fold-core--isearch-show" }, { frontAdvance: true });
 }
+
+// Isearch opens a fold its match is in while it is there, and for good
+// where it ends, showing the match's context as org-fold-show-context-detail
+// says for isearch, as org-fold-core--isearch-show and org-fold--isearch-reveal.
+e8.defun("org-fold-core--isearch-show", (overlay: e8.Value) => {
+  const ov = Number(overlay);
+  const [beg, end, spec] = [e8.overlayStart(ov), e8.overlayEnd(ov), e8.overlayGet(ov, "invisible")];
+  if (beg === undefined || end === undefined) return;
+  if (beg < e8.point() && e8.point() < end) showContext("isearch");
+  // The whole fold opens, though showing the context cut it into pieces.
+  e8.deleteOverlay(ov);
+  if (typeof spec === "string") flag(beg, end, false, spec);
+});
 
 /**
  * Hides or shows the text from start up to end, as Emacs's org-fold-region
