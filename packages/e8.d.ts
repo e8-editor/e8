@@ -5954,6 +5954,14 @@ declare global {
        */
       "org-kill-note-or-show-branches": [];
       /**
+       * Make the checkboxes of Org's lists radio buttons: C-c C-c on an item ticks it and unticks the others.
+       *
+       * Run from a key or M-x, it turns the mode on if it is off and off if it is on. A positive prefix argument turns it on and zero or a negative one turns it off. Called from code without an argument, it turns the mode on.
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-list-checkbox-radio-mode": [];
+      /**
        * Fix the indentation, bullets and checkboxes of the list point is in.
        *
        * Defined in packages/org-element.ts.
@@ -6703,6 +6711,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-toggle-narrow-to-subtree": [];
+      /**
+       * Tick the checkbox of the item at point and untick the others of its list. With C-u, take its box away; with C-u C-u, make it [-].
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-toggle-radio-button": [arg?: PrefixArg | boolean];
       /**
        * Show the current subtree in an indirect buffer of its own, narrowed to it: the same text, folded apart.
        *
@@ -13769,6 +13785,16 @@ declare global {
        */
       "org-link-history": Value;
       /**
+       * Whether Org-List-Checkbox-Radio mode is on in this buffer. Use the command org-list-checkbox-radio-mode to change it.
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-list-checkbox-radio-mode": Value;
+      /**
+       * Keymap org-list-checkbox-radio-mode-map.
+       */
+      "org-list-checkbox-radio-mode-map": Value;
+      /**
        * What marking a heading done records: false for nothing, "time" for a CLOSED: timestamp under it.
        *
        * Defined in packages/org.ts.
@@ -18021,6 +18047,18 @@ declare global {
        * Functions called with the buffer once org-indent-mode has indented all of it.
        */
       "org-indent-post-buffer-init-functions": Value;
+      /**
+       * Run after Org-List-Checkbox-Radio mode is turned on or off.
+       */
+      "org-list-checkbox-radio-mode-hook": Value;
+      /**
+       * Run after Org-List-Checkbox-Radio mode is turned off.
+       */
+      "org-list-checkbox-radio-mode-off-hook": Value;
+      /**
+       * Run after Org-List-Checkbox-Radio mode is turned on.
+       */
+      "org-list-checkbox-radio-mode-on-hook": Value;
       /**
        * Hook that is run after an Org log buffer is created.
        */
