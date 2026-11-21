@@ -5236,6 +5236,30 @@ declare global {
        */
       "org-agenda-list": [];
       /**
+       * Add a word to the search view's string, and ask for it again.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-manipulate-query-add": [];
+      /**
+       * Add a regexp to the search view's string, and ask for it again.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-manipulate-query-add-re": [];
+      /**
+       * Add a word not wanted to the search view's string, and ask for it again.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-manipulate-query-subtract": [];
+      /**
+       * Add a regexp not wanted to the search view's string, and ask for it again.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-manipulate-query-subtract-re": [];
+      /**
        * The mode of the *Org Agenda* buffer. n and p move between lines, RET goes to an entry and TAB shows it in another window, t changes its TODO state, g rebuilds the agenda, f and b move a week, . goes to today, and q leaves.
        *
        * Defined in packages/org-agenda.ts.
@@ -6204,6 +6228,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-schedule": [date: string];
+      /**
+       * Show the entries in org-agenda-files that a phrase picks, or a Boolean search: words and {regexps} each needed, or with - not wanted, "quoted" for spaces. Starting with * looks in headings only, ! at TODO entries only, : for whole words. With a prefix argument, only TODO entries not done.
+       *
+       * @param todoOnly raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-search-view": [todoOnly?: PrefixArg | boolean];
       /**
        * Insert the character typed, as self-insert-command does, keeping a table aligned.
        *
@@ -13069,6 +13101,30 @@ declare global {
        */
       "org-agenda-mode-map": Value;
       /**
+       * The strings searched for in the search view, most recent first.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-search-history": Value;
+      /**
+       * Whether the search view's string is always a Boolean search of words, "quoted phrases" and {regexps}, each needed, or with - not wanted; when nil, the default, it is one phrase unless it starts with +, - or {.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-search-view-always-boolean": Value;
+      /**
+       * Whether the search view's words match only whole words, not parts of words.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-search-view-force-full-words": Value;
+      /**
+       * The deepest level of heading the search view shows: a match deeper shows its heading at this level. 0, the default, for any.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-search-view-max-outline-level": Value;
+      /**
        * Whether the time grid shows the time now, as org-agenda-current-time-string.
        *
        * Defined in packages/org-agenda.ts.
@@ -13092,6 +13148,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-skip-comment-trees": Value;
+      /**
+       * Files the search view searches besides org-agenda-files.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-text-search-extra-files": Value;
       /**
        * The time grid: when it is drawn, its times as HHMM, the string after a time, and the line drawn.
        *

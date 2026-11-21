@@ -1791,6 +1791,960 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "search-view-phrase",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "milk"
+        ]
+      },
+      "text": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n",
+      "visible": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-phrase-across-lines",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "gardens   and milk"
+        ]
+      },
+      "text": "Search words: gardens   and milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n",
+      "visible": "Search words: gardens   and milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-boolean",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "+milk -gardens"
+        ]
+      },
+      "text": "Search words: +milk -gardens\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  DONE Old milk\n",
+      "visible": "Search words: +milk -gardens\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  DONE Old milk\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-regexp",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "{b..k}"
+        ]
+      },
+      "text": "Search words: {b..k}\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n",
+      "visible": "Search words: {b..k}\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-regexp-excluded",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "+milk -{sh.p}"
+        ]
+      },
+      "text": "Search words: +milk -{sh.p}\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n",
+      "visible": "Search words: +milk -{sh.p}\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-headlines-only",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "*milk"
+        ]
+      },
+      "text": "Search words: *milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  DONE Old milk\n",
+      "visible": "Search words: *milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  DONE Old milk\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-todo-only",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "!milk"
+        ]
+      },
+      "text": "Search words: !milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n",
+      "visible": "Search words: !milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-todo-only-key",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "S",
+          "milk"
+        ]
+      },
+      "text": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n",
+      "visible": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-quoted",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "+\"corner shop\""
+        ]
+      },
+      "text": "Search words: +\"corner shop\"\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n",
+      "visible": "Search words: +\"corner shop\"\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-full-words",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          ":+mil"
+        ]
+      },
+      "text": "Search words: :+mil\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n",
+      "visible": "Search words: :+mil\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-only-negative",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "-milk"
+        ]
+      },
+      "text": "Search words: -milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Child mentions gardens\n  e8-agenda:  Other\n",
+      "visible": "Search words: -milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Child mentions gardens\n  e8-agenda:  Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-redo",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "milk"
+        ]
+      },
+      "text": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n",
+      "visible": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-fresh-search",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "C-u r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "milk",
+          "gardens"
+        ]
+      },
+      "text": "Search words: gardens\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n  e8-agenda:  Child mentions gardens\n",
+      "visible": "Search words: gardens\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n  e8-agenda:  Child mentions gardens\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-add-word",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "[",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "+milk",
+          "+milk +shop"
+        ]
+      },
+      "text": "Search words: +milk +shop\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n",
+      "visible": "Search words: +milk +shop\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-max-level",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "gardens"
+        ],
+        "vars": {
+          "org-agenda-search-view-max-outline-level": 1
+        }
+      },
+      "text": "Search words: gardens\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n",
+      "visible": "Search words: gardens\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-force-full-words",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "+mil"
+        ],
+        "vars": {
+          "org-agenda-search-view-force-full-words": true
+        }
+      },
+      "text": "Search words: +mil\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n",
+      "visible": "Search words: +mil\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-always-boolean",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "milk gardens"
+        ],
+        "vars": {
+          "org-agenda-search-view-always-boolean": true
+        }
+      },
+      "text": "Search words: milk gardens\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n",
+      "visible": "Search words: milk gardens\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-before-first-heading",
+      "input": {
+        "text": "milk in the preamble\n* A\nno\n* B milk\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "milk"
+        ]
+      },
+      "text": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  B milk\n",
+      "visible": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  B milk\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-visit",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "n n RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "gardens"
+        ]
+      },
+      "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+      "visible": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*e8-oracle*",
+          "point": 44,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-includes-comment-when-asked",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "milk"
+        ],
+        "vars": {
+          "org-agenda-skip-comment-trees": false
+        }
+      },
+      "text": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n  e8-agenda:  COMMENT Hidden milk\n",
+      "visible": "Search words: milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  TODO Buy milk                                              :shop:\n  e8-agenda:  Read book\n  e8-agenda:  DONE Old milk\n  e8-agenda:  COMMENT Hidden milk\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
     }
   ]
 }
