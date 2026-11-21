@@ -2,7 +2,8 @@
 // starts a clock on the entry at point, a CLOCK: line in its LOGBOOK drawer,
 // and the mode line shows how long it has run; C-c C-x C-o stops it,
 // writing the end and the duration; C-c C-x C-q cancels it and C-c C-x C-j
-// goes back to its entry.
+// goes back to its entry. Clock tables, the dynamic block
+// #+BEGIN: clocktable, sum the clocked time by heading.
 //
 // Copyright (C) 2004-2025 Free Software Foundation, Inc.
 // Ported to E8 in 2026.
@@ -12,13 +13,37 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { addLogNote, type DateTime, durationFromMinutes, formatTimestamp, type Heading, headingIndex, headings, isDone, logDrawer, parseDate, today } from "org";
+import {
+  addLogNote,
+  agendaFiles,
+  combinePlists,
+  createDblock,
+  type DateTime,
+  durationFromMinutes,
+  dynamicBlockDefine,
+  entryGetAt,
+  findDblock,
+  formatTimestamp,
+  type Heading,
+  headingIndex,
+  headings,
+  isDone,
+  logDrawer,
+  makeTagsMatcher,
+  matchContexts,
+  matcherTime,
+  parseDate,
+  plistGet,
+  reducedLevel,
+  today,
+  updateDblock,
+} from "org";
 import { elementAt } from "org-element";
-import { toggleDrawerOrBlock } from "org-fold";
+import { showEntry, toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
 import { setRunningClock } from "org-refile";
-import { charCount, truthy } from "subr";
+import { charCount, forwardLine, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("org-clock-into-drawer", true, "Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.");
@@ -374,14 +399,17 @@ e8.defineFace({
 /**
  * The start and end, in seconds, of a range a key names, and how it is
  * written, as org-clock-special-range: today, yesterday, thisweek,
- * lastweek, thismonth, lastmonth, thisyear, lastyear, untilnow or
- * interactive, a key with a shift as today-2 or thisweek-1, or a year,
- * 2026, a month, 2026-11, an ISO week, 2026-W47, or a day, 2026-11-20.
+ * lastweek, thismonth, lastmonth, thisq, lastq, thisyear, lastyear,
+ * untilnow or interactive, a key with a shift as today-2 or thisweek-1,
+ * or a year, 2026, a month, 2026-11, an ISO week, 2026-W47, a quarter,
+ * 2026-Q4, or a day, 2026-11-20. Weeks start on WSTART's day, 1 for
+ * Monday, and months on MSTART's.
  */
-export function clockSpecialRange(key: string, time = millis(now()) / 1000): [number | undefined, number, string] {
+export function clockSpecialRange(key: string, time = millis(now()) / 1000, wstart?: number, mstart?: number): [number | undefined, number, string] {
   const tm = e8.decodeTime(time) as number[];
   let [m, h, d, month, y, dow] = [tm[1], tm[2], tm[3], tm[4], tm[5], tm[6]];
   let shift = 0;
+  let q = month >= 10 ? 4 : month >= 7 ? 3 : month >= 4 ? 2 : 1;
   let k = key;
   let match: RegExpExecArray | null;
   if (/^[0-9]+$/.test(k)) [y, month, d, k] = [Number(k), 1, 1, "year"];
@@ -391,25 +419,44 @@ export function clockSpecialRange(key: string, time = millis(now()) / 1000): [nu
     const jan4 = new Date(Date.UTC(Number(match[1]), 0, 4));
     const monday = new Date(jan4.getTime() - ((jan4.getUTCDay() + 6) % 7) * 86400000 + (Number(match[2]) - 1) * 7 * 86400000);
     [d, month, y, dow, k] = [monday.getUTCDate(), monday.getUTCMonth() + 1, monday.getUTCFullYear(), 1, "week"];
+  } else if ((match = /^([0-9]+)-[qQ]([1-4])$/.exec(k))) {
+    // The quarter's own first day, as org-quarter-to-date's ISO date comes to.
+    [q, y, dow, k] = [Number(match[2]), Number(match[1]), 1, "quarter"];
   } else if ((match = /^([0-9]+)-([0-9]{1,2})-([0-9]{1,2})$/.exec(k))) [y, month, d, k] = [Number(match[1]), Number(match[2]), Number(match[3]), "day"];
   else if ((match = /([-+][0-9]+)$/.exec(k))) {
     shift = Number(match[1]);
     k = k.slice(0, match.index);
+    if ((k === "quarter" || k === "thisq") && shift > 0) throw new Error("Looking forward with quarters isn’t implemented");
   }
   if (shift === 0) {
-    const last: Record<string, string> = { yesterday: "today", lastweek: "week", lastmonth: "month", lastyear: "year" };
+    const last: Record<string, string> = { yesterday: "today", lastweek: "week", lastmonth: "month", lastyear: "year", lastq: "quarter" };
     if (k in last) [k, shift] = [last[k], -1];
   }
   const extend = Number(e8.variable("org-extend-today-until") ?? 0);
-  let [h1, d1, month1, y1]: (number | undefined)[] = [];
+  let [h1, d1, month1, y1, shiftedy, shiftedq]: (number | undefined)[] = [];
   if (k === "day" || k === "today") [m, h, h1, d] = [0, extend, 24 + extend, d + shift];
   else if (k === "week" || k === "thisweek") {
-    const diff = -7 * shift + ((dow + 7 - 1) % 7);
+    const diff = -7 * shift + (((dow + 7 - (wstart ?? 1)) % 7) + 7) % 7;
     [m, h, d] = [0, extend, d - diff];
     d1 = d + 7;
   } else if (k === "month" || k === "thismonth") {
-    [h, m, d, month] = [extend, 0, 1, month + shift];
+    [h, m, d, month] = [extend, 0, mstart ?? 1, month + shift];
     month1 = month + 1;
+  } else if (k === "quarter" || k === "thisq") {
+    if (q - 1 + shift < 0) {
+      // A shift into earlier years, as Org works it out with cl-floor.
+      const interval = -(q - 1 + shift);
+      const [years, quarters] = [Math.floor(interval / 4), interval % 4];
+      const shiftedm = quarters === 0 ? 1 : 13 - 3 * quarters;
+      [shiftedy, shiftedq] = quarters === 0 ? [y - years, 1] : [y - (1 + years), 5 - quarters];
+      [m, h, d, month, y] = [0, extend, 1, shiftedm, shiftedy];
+      month1 = 3 + shiftedm;
+    } else if (q + shift > 0) {
+      [shiftedq, shiftedy] = [q + shift, y];
+      const qshift = 3 * (q + shift - 1);
+      [m, h, d, month] = [0, extend, 1, 1 + qshift];
+      month1 = 4 + qshift;
+    }
   } else if (k === "year" || k === "thisyear") {
     [m, h, d, month, y] = [0, extend, 1, 1, y + shift];
     y1 = y + 1;
@@ -421,6 +468,7 @@ export function clockSpecialRange(key: string, time = millis(now()) / 1000): [nu
   };
   const start = k === "interactive" ? readDate("Range start?") : k === "untilnow" ? undefined : encode(m, h, d, month, y);
   const end = k === "interactive" ? readDate("Range end?") : k === "untilnow" ? time : encode(m, h1 ?? h, d1 ?? d, month1 ?? month, y1 ?? y);
+  const ordinal = (n: number | undefined) => (n === undefined ? "" : (["1st", "2nd", "3rd", "4th"][n - 1] ?? ""));
   const text =
     k === "day" || k === "today"
       ? e8.formatTimeString("%A, %B %d, %Y", start)
@@ -430,9 +478,11 @@ export function clockSpecialRange(key: string, time = millis(now()) / 1000): [nu
           ? e8.formatTimeString("%B %Y", start)
           : k === "year" || k === "thisyear"
             ? e8.formatTimeString("the year %Y", start)
-            : k === "untilnow"
-              ? "now"
-              : `${e8.formatTimeString("%Y-%m-%d", start)}--${e8.formatTimeString("%Y-%m-%d", end)}`;
+            : k === "quarter" || k === "thisq"
+              ? `${ordinal(shiftedq)} quarter of ${shiftedy ?? ""}`
+              : k === "untilnow"
+                ? "now"
+                : "(Range interactively set)";
   return [start, end, text];
 }
 
@@ -628,3 +678,567 @@ setRunningClock(() => {
   const title = e8.withCurrentBuffer(entry.buffer, () => headings().find((h) => h.start === entry.start)?.title ?? "");
   return { ...entry, title };
 });
+
+// Clock tables, as org-clock.el writes them: the dynamic block
+// #+BEGIN: clocktable, which C-c C-x C-r makes or brings up to date.
+
+const kw = (name: string) => e8.intern(name);
+
+/** The date of an absolute day, as calendar-gregorian-from-absolute counts them from 1 January of year 1: [month, day, year]. */
+function gregorianFromAbsolute(n: number): [number, number, number] {
+  const t = new Date((n - 719163) * 86400000);
+  return [t.getUTCMonth() + 1, t.getUTCDate(), t.getUTCFullYear()];
+}
+
+/** The absolute day of an ISO week's day in a year, 0 being Sunday, as calendar-iso-to-absolute. */
+function isoToAbsolute(week: number, day: number, year: number): number {
+  const jan1 = new Date(0);
+  jan1.setUTCFullYear(year, 0, 1);
+  const jan4 = Math.floor(jan1.getTime() / 86400000) + 719163 + 3;
+  // The Monday on or before 4 January, as calendar-dayname-on-or-before; absolute day 0 is a Sunday.
+  const monday = jan4 - ((((jan4 - 1) % 7) + 7) % 7);
+  return monday + 7 * (week - 1) + (day === 0 ? 6 : day - 1);
+}
+
+defvar(
+  "org-clocktable-defaults",
+  [
+    kw(":maxlevel"), 2, kw(":lang"), "en", kw(":scope"), kw("file"), kw(":block"), null, kw(":wstart"), 1, kw(":mstart"), 1,
+    kw(":tstart"), null, kw(":tend"), null, kw(":step"), null, kw(":stepskip0"), null, kw(":fileskip0"), null, kw(":tags"), null,
+    kw(":match"), null, kw(":emphasize"), null, kw(":link"), null, kw(":narrow"), kw("40!"), kw(":indent"), true,
+    kw(":filetitle"), null, kw(":hidefiles"), null, kw(":formula"), null, kw(":timestamp"), null, kw(":level"), null,
+    kw(":tcolumns"), null, kw(":formatter"), null,
+  ],
+  "Default properties for clock tables, which a clock table's own parameters override.",
+);
+defvar("org-clock-clocktable-default-properties", [kw(":maxlevel"), 2], "The properties a new clock table's #+BEGIN: line starts with.");
+defvar("org-clock-clocktable-formatter", "org-clocktable-write-default", "The function writing a clock table from its data, which a table's :formatter overrides.");
+defvar(
+  "org-clock-clocktable-language-setup",
+  [
+    ["en", "File", "L", "Timestamp", "Headline", "Time", "ALL", "Total time", "File time", "Clock summary at"],
+    ["de", "Datei", "E", "Zeitstempel", "Kopfzeile", "Dauer", "GESAMT", "Gesamtdauer", "Dateizeit", "Erstellt am"],
+    ["es", "Archivo", "N", "Fecha y hora", "Tarea", "Duración", "TODO", "Duración total", "Tiempo archivo", "Generado el"],
+    ["fr", "Fichier", "N", "Horodatage", "En-tête", "Durée", "TOUT", "Durée totale", "Durée fichier", "Horodatage sommaire à"],
+    ["nl", "Bestand", "N", "Tijdstip", "Hoofding", "Duur", "ALLES", "Totale duur", "Bestandstijd", "Klok overzicht op"],
+    ["nn", "Fil", "N", "Tidspunkt", "Overskrift", "Tid", "ALLE", "Total tid", "Filtid", "Tidsoversyn"],
+    ["pl", "Plik", "P", "Data i godzina", "Nagłówek", "Czas", "WSZYSTKO", "Czas całkowity", "Czas pliku", "Poddumowanie zegara na"],
+    ["pt-BR", "Arquivo", "N", "Data e hora", "Título", "Hora", "TODOS", "Hora total", "Hora do arquivo", "Resumo das horas em"],
+    ["sk", "Súbor", "L", "Časová značka", "Záhlavie", "Čas", "VŠETKO", "Celkový čas", "Čas súboru", "Časový súhrn pre"],
+  ],
+  "The words clock tables are written with, in each language :lang names.",
+);
+defvar("org-clock-total-time-cell-format", "*%s*", "How a clock table writes its total time and the words before it.");
+defvar("org-clock-file-time-cell-format", "*%s*", "How a clock table writes a file's time and the words before it.");
+
+/** A clock table's word in LANG, as org-clock--translate. */
+function translate(s: string, lang: string): string {
+  const i = ["File", "L", "Timestamp", "Headline", "Time", "ALL", "Total time", "File time", "Clock summary at"].indexOf(s) + 1;
+  const setup = e8.variable("org-clock-clocktable-language-setup");
+  const row = Array.isArray(setup) ? setup.find((r) => Array.isArray(r) && typeof r[0] === "string" && r[0].toLowerCase() === lang.toLowerCase()) : undefined;
+  const word = Array.isArray(row) ? row[i] : undefined;
+  return typeof word === "string" ? word : s;
+}
+
+/** A parameter's value as Org formats it with %s: a symbol's name, a number's digits. */
+function str(v: e8.Value | undefined): string | undefined {
+  if (v === null || v === undefined || v === false) return undefined;
+  if (typeof v === "symbol") return e8.symbolName(v);
+  return typeof v === "string" ? v : e8.prin1ToString(v, true);
+}
+
+/** Org's timestamp formats, as org-time-stamp-format: with a time or not, active or inactive. */
+function stampFormat(withTime: boolean, inactive: boolean): string {
+  const f = withTime ? "%Y-%m-%d %a %H:%M" : "%Y-%m-%d %a";
+  return inactive ? `[${f}]` : `<${f}>`;
+}
+
+/** A clock table's start or end as seconds: an Org time string, an absolute day as the agenda counts them, or a (MONTH DAY YEAR) list. */
+function tableTime(v: e8.Value): number | undefined {
+  if (v === null || v === undefined || v === false) return undefined;
+  if (typeof v === "number") {
+    v = gregorianFromAbsolute(v);
+  }
+  if (Array.isArray(v)) {
+    const [mo, da, yr] = v as number[];
+    return matcherTime(`${String(yr).padStart(4, " ")}-${String(mo).padStart(2, "0")}-${String(da).padStart(2, "0")}`);
+  }
+  return matcherTime(String(str(v)));
+}
+
+/** Shortens S to MAX characters at a space if it can, ending it with ..., as org-shorten-string. */
+function shortenString(s: string, max: number): string {
+  const chars = Array.from(s);
+  if (chars.length <= max) return s;
+  const n = Math.max(max - 4, 1);
+  const m = new RegExp(`^([^\\n]{1,${n}}[^ ])(?: |$)`, "u").exec(s);
+  return m ? `${m[1]}...` : `${chars.slice(0, Math.max(max - 3, 0)).join("")}...`;
+}
+
+/** Org's bracket link, its target in group 1 and description in 2, as org-link-bracket-re. */
+const LINK_BRACKET = /\[\[((?:[^\][\\]|\\(?:\\\\)*[\][]|\\+[^\][])+)\](?:\[([\s\S]+?)\])?\]/g;
+
+/** A link as Org writes one, its target's brackets escaped, as org-link-make-string. */
+function linkMakeString(link: string, description: string): string {
+  const desc = /\S/.test(description) ? description.trim().replace(/\]$/, "]​").replace(/(\])(\])/g, "$1​$2") : undefined;
+  const escaped = link.replace(/(\\*)([\][]|$)/g, (_m, bs: string, c: string) => `${bs}${bs}${c === "" ? "" : "\\"}${c}`);
+  return `[[${escaped}]${desc === undefined ? "" : `[${desc}]`}]`;
+}
+
+/** A heading's title without TODO keyword, priority, COMMENT or tags, as org-get-heading t t t t. */
+function bareHeadline(h: Heading): string {
+  return h.title.replace(/^COMMENT[ \t]+/, "");
+}
+
+/** One heading's row in a clock table, as org-clock-get-table-data lists it. */
+type TableEntry = [level: number, headline: string, tags: string[], timestamp: string | null, minutes: number, properties: [string, string][]];
+/** One file's part of a clock table: its name, its time and its headings. */
+type TableData = [file: string | null, minutes: number, entries: TableEntry[]];
+
+/**
+ * The clocked headings of the accessible part of the buffer, as
+ * org-clock-get-table-data: each heading with time, to :maxlevel, its
+ * title made a link with :link, its tags with :tags, its first planning or
+ * other timestamp with :timestamp and the :properties asked for.
+ */
+function clockTableData(file: string | null, params: e8.Value[]): TableData {
+  const maxlevel = Number(plistGet(params, ":maxlevel") ?? 3);
+  const block = str(plistGet(params, ":block"));
+  let ts = tableTime(plistGet(params, ":tstart"));
+  let te = tableTime(plistGet(params, ":tend"));
+  if (block !== undefined) {
+    const range = clockSpecialRange(block, undefined, Number(plistGet(params, ":wstart") ?? 1), Number(plistGet(params, ":mstart") ?? 1));
+    // Org takes the range as strings, to the minute.
+    [ts, te] = [range[0] === undefined ? undefined : Math.floor(range[0] / 60) * 60, Math.floor(range[1] / 60) * 60];
+  }
+  const link = truthy(plistGet(params, ":link"));
+  const tags = truthy(plistGet(params, ":tags"));
+  const timestamp = truthy(plistGet(params, ":timestamp"));
+  const properties = propertyNames(plistGet(params, ":properties"));
+  const inherit = truthy(plistGet(params, ":inherit-props"));
+  const match = plistGet(params, ":match");
+  const wide = e8.saveRestriction(() => (e8.widen(), headings()));
+  const contexts = matchContexts(wide);
+  const matcher = typeof match === "string" ? makeTagsMatcher(match) : undefined;
+  const total = clockSum(ts, te, matcher && (() => matcher.test(contexts(headingIndex(wide, lineAt()) as number))));
+  const entries: TableEntry[] = [];
+  const [min, max] = [e8.pointMin(), e8.pointMax()];
+  const fileName = e8.bufferFileName() ?? undefined;
+  for (let i = 0; i < wide.length; i++) {
+    const h = wide[i];
+    if (h.start < min || h.start >= max) continue;
+    const time = e8.getTextProperty(h.start, ":org-clock-minutes");
+    if (typeof time !== "number" || time <= 0) continue;
+    const level = reducedLevel(h.level);
+    if (level > maxlevel) continue;
+    const headline = bareHeadline(h);
+    let hdl = headline;
+    if (link) {
+      const search = `*${headline.replace(/\[[0-9]*(?:%|\/[0-9]*)\]/g, " ").replace(/[ \t]+/g, " ").trim()}`;
+      const description = headline.replace(/\[[0-9]*(?:%|\/[0-9]*)\]/g, "").replace(LINK_BRACKET, (_m, target: string, desc?: string) => desc ?? target).trim();
+      hdl = linkMakeString(fileName === undefined ? search : `file:${fileName}::${search}`, description);
+    }
+    const ctx = contexts(i);
+    const tsp = timestamp ? (["SCHEDULED", "DEADLINE", "TIMESTAMP", "TIMESTAMP_IA"].map((p) => entryGetAt(ctx, p, false)).find((v) => v !== undefined) ?? null) : null;
+    const props: [string, string][] = [];
+    for (const p of properties) {
+      const v = entryGetAt(ctx, p, inherit);
+      if (v !== undefined) props.push([p, v]);
+    }
+    entries.push([level, hdl, tags ? ctx.tags : [], tsp, time, props]);
+  }
+  return [file, total, entries];
+}
+
+/** Moves to the heading whose subtree a clock table's tree or treeN scope covers, as Org climbs with org-up-heading-safe. */
+function climbToTree(level?: number): void {
+  const all = headings();
+  let i = headingIndex(all, lineAt());
+  if (i === undefined) return;
+  const parentOf = (j: number) => {
+    for (let k = j - 1; k >= 0; k--) if (all[k].level < all[j].level) return k;
+    return undefined;
+  };
+  for (;;) {
+    const p = parentOf(i);
+    if (p === undefined || all[p].start < e8.pointMin()) break;
+    i = p;
+    if (level !== undefined && reducedLevel(all[i].level) <= level) break;
+  }
+  e8.gotoChar(all[i].start);
+}
+
+/** The names of :properties, which must be strings, as Org's mapconcat and org-entry-get need. */
+function propertyNames(v: e8.Value): string[] {
+  if (!Array.isArray(v)) return [];
+  return v.map((p) => (typeof p === "string" ? p : e8.signal("wrong-type-argument", `Wrong type argument: stringp, ${e8.prin1ToString(p)}`, [e8.intern("stringp"), p])));
+}
+
+/**
+ * Writes the clock table whose #+BEGIN: line gave PARAMS at point, as
+ * org-dblock-write:clocktable: the time clocked in the file, the subtree,
+ * the tree or the agenda files, over :block or :tstart to :tend, in steps
+ * with :step. Returns the total minutes.
+ */
+function writeClocktable(params: e8.Value[]): number | undefined {
+  params = combinePlists(e8.variable("org-clocktable-defaults"), params);
+  const scope = plistGet(params, ":scope");
+  const scopeName = typeof scope === "symbol" ? e8.symbolName(scope) : undefined;
+  const treeLevel = scopeName !== undefined ? /^tree([0-9]+)$/.exec(scopeName) : null;
+  let files: string[] | undefined;
+  if (scopeName === "agenda") files = agendaFiles();
+  else if (scopeName === "agenda-with-archives") files = e8.funcall("org-add-archive-files", agendaFiles()) as string[];
+  else if (scopeName === "file-with-archives") {
+    const base = e8.bufferFileName();
+    files = base ? (e8.funcall("org-add-archive-files", [base]) as string[]) : [];
+  } else if (scope === null || scopeName === "nil" || scopeName === "file" || scopeName === "subtree" || scopeName === "tree" || treeLevel) files = undefined;
+  else if (Array.isArray(scope)) files = scope.map(String);
+  else if (typeof scope === "function" || (scopeName !== undefined && e8.fboundp(scopeName))) files = (e8.funcall((scopeName ?? scope) as string) ?? []) as string[];
+  else e8.userError(`Unknown scope: ${e8.prin1ToString(scope)}`);
+  const block = str(plistGet(params, ":block"));
+  let ts = plistGet(params, ":tstart");
+  let te = plistGet(params, ":tend");
+  if (block !== undefined) {
+    const range = clockSpecialRange(block, undefined, Number(plistGet(params, ":wstart") ?? 1), Number(plistGet(params, ":mstart") ?? 1));
+    [ts, te] = [range[0] ?? null, range[1]];
+  }
+  if (truthy(plistGet(params, ":step"))) {
+    if (block === undefined && !(truthy(ts) && truthy(te))) e8.userError("Clocktable ‘:step’ can only be used with ‘:block’ or ‘:tstart’, ‘:tend’");
+    clocktableSteps(params);
+    return undefined;
+  }
+  const origin = e8.point();
+  let tables: TableData[];
+  if (files !== undefined) {
+    tables = files.map((file) =>
+      e8.withCurrentBuffer(e8.findFileNoselect(file), () => e8.saveExcursion(() => e8.saveRestriction(() => clockTableData(file, params)))),
+    );
+  } else {
+    tables = [
+      e8.saveRestriction(() => {
+        if (scopeName === "file") e8.widen();
+        else if (scopeName === "subtree") e8.call("org-narrow-to-subtree");
+        else if (scopeName === "tree" || treeLevel) {
+          climbToTree(treeLevel ? Number(treeLevel[1]) : undefined);
+          e8.call("org-narrow-to-subtree");
+        }
+        return clockTableData(null, params);
+      }),
+    ];
+  }
+  const multifile = !truthy(plistGet(params, ":hidefiles")) && files !== undefined && scopeName !== "file-with-archives";
+  const formatter = plistGet(params, ":formatter") ?? e8.variable("org-clock-clocktable-formatter") ?? "org-clocktable-write-default";
+  const name = typeof formatter === "symbol" ? e8.symbolName(formatter) : formatter;
+  const all = combinePlists(params, [kw(":multifile"), multifile]);
+  if (name === "org-clocktable-write-default") return writeClocktableDefault(origin, tables, all);
+  return e8.funcall(name as string, origin, tables as unknown as e8.Value, all) as number;
+}
+
+/** A file's #+TITLE:, as org-get-title reads it. */
+function fileTitle(file: string): string | undefined {
+  return e8.withCurrentBuffer(e8.findFileNoselect(file), () => {
+    const titles = e8.matchingLines("^[ \t]*#\\+TITLE:", { caseFold: true, start: e8.pointMin(), end: e8.pointMax() })
+      .map(([, , text]) => text.replace(/^[ \t]*#\+TITLE:[ \t]*/i, "").trim())
+      .filter((t) => t !== "");
+    return titles.length > 0 ? titles.join(" ") : undefined;
+  });
+}
+
+/**
+ * Writes a clock table at IPOS from TABLES, as org-clocktable-write-default:
+ * a caption, a header line, the total, and each file's time and headings,
+ * with the columns PARAMS ask for; then aligns it.
+ */
+function writeClocktableDefault(ipos: number, tables: TableData[], params: e8.Value[]): number {
+  const p = (key: string) => plistGet(params, key);
+  const lang = str(p(":lang")) ?? "en";
+  const multifile = truthy(p(":multifile"));
+  const block = str(p(":block"));
+  const header = p(":header");
+  const link = truthy(p(":link"));
+  const maxlevel = Number(p(":maxlevel") ?? 3);
+  const emph = truthy(p(":emphasize"));
+  const compact = truthy(p(":compact"));
+  let narrow: e8.Value = p(":narrow") ?? (compact ? kw("40!") : null);
+  const filetitle = truthy(p(":filetitle"));
+  const level = !compact && truthy(p(":level"));
+  const timestamp = truthy(p(":timestamp"));
+  const tags = truthy(p(":tags"));
+  const properties = propertyNames(p(":properties"));
+  const tcolumns = p(":tcolumns");
+  let timeColumns = 1;
+  if (!compact && maxlevel >= 2) {
+    const levels = tables.filter(([, t]) => typeof t === "number" && t !== 0).flatMap(([, , entries]) => entries.map((e) => e[0]));
+    timeColumns = Math.min(maxlevel, typeof tcolumns === "number" ? tcolumns : 100, levels.length === 0 ? 1 : Math.max(...levels));
+  }
+  const indent = compact || truthy(p(":indent"));
+  const formula = p(":formula");
+  const percent = typeof formula === "symbol" && e8.symbolName(formula) === "%";
+  const totalTime = tables.reduce((sum, [, t]) => sum + (t ?? 0), 0);
+  const totalFormat = String(e8.variable("org-clock-total-time-cell-format") ?? "*%s*");
+  const fileFormat = String(e8.variable("org-clock-file-time-cell-format") ?? "*%s*");
+  let narrowCut = false;
+  if (typeof narrow === "number" && link) {
+    e8.message("Using hard narrowing in clocktable to allow for links");
+    narrow = kw(`${narrow}!`);
+  }
+  if (narrow !== null && typeof narrow !== "number") {
+    const m = typeof narrow === "symbol" ? /^([0-9]+)!$/.exec(e8.symbolName(narrow)) : null;
+    if (!m) e8.userError(`Invalid value ${str(narrow)} of :narrow property in clock table`);
+    narrowCut = true;
+    narrow = Number(m[1]);
+  }
+  const bars = (n: number) => "|".repeat(Math.max(0, n));
+  e8.gotoChar(ipos);
+  const put = (text: string) => e8.insertBeforeMarkers(text);
+  if (typeof header === "string") put(header);
+  else {
+    const range = block === undefined ? "" : `, for ${clockSpecialRange(block, undefined, Number(p(":wstart") ?? 1), Number(p(":mstart") ?? 1))[2]}.`;
+    put(`#+CAPTION: ${translate("Clock summary at", lang)} ${e8.formatTimeString(stampFormat(true, true), millis(now()) / 1000)}${range}\n`);
+  }
+  if (typeof narrow === "number" && !narrowCut) {
+    put(`|${multifile ? "|" : ""}${level ? "|" : ""}${timestamp ? "|" : ""}${tags ? "|" : ""}${bars(properties.length)}<${narrow}>| |\n`);
+  }
+  put(
+    "|" +
+      (multifile ? `${translate("File", lang)}|` : "") +
+      (level ? `${translate("L", lang)}|` : "") +
+      (timestamp ? `${translate("Timestamp", lang)}|` : "") +
+      (tags ? "Tags |" : "") +
+      (properties.length > 0 ? `${properties.join("|")}|` : "") +
+      `${translate("Headline", lang)}|` +
+      `${translate("Time", lang)}|` +
+      bars(timeColumns - 1) +
+      (percent ? "%|\n" : "\n"),
+  );
+  put(
+    "|-\n|" +
+      (multifile ? `| ${translate("ALL", lang)} ` : "") +
+      (level ? "|" : "") +
+      (timestamp ? "|" : "") +
+      (tags ? "|" : "") +
+      bars(properties.length) +
+      `${e8.format(totalFormat, translate("Total time", lang))}| ` +
+      e8.format(totalFormat, durationFromMinutes(totalTime)) +
+      "|" +
+      bars(timeColumns - 1) +
+      (!percent ? "" : totalTime === 0 ? "0.0|" : "100.0|") +
+      "\n",
+  );
+  if (totalTime > 0) {
+    for (const [fileName, fileTime, entries] of tables) {
+      if (!(fileTime > 0) && truthy(p(":fileskip0"))) continue;
+      put("|-\n");
+      if (multifile) {
+        const name = String(fileName ?? "");
+        const shown = filetitle ? (fileTitle(name) ?? e8.fileNameNondirectory(name)) : e8.fileNameNondirectory(name);
+        put(
+          `| ${shown} ${level ? "| " : ""} | ${timestamp ? "| " : ""}${tags ? "| " : ""}${bars(properties.length)}` +
+            `${e8.format(fileFormat, translate("File time", lang))} | *${durationFromMinutes(fileTime)}*|${bars(timeColumns - 1)}` +
+            (percent ? ` ${e8.format("%.1f", (100 * fileTime) / totalTime)} |` : "") +
+            "\n",
+        );
+      }
+      if (maxlevel > 0) {
+        for (const [lvl, headline0, tgs, tsp, time, props] of entries) {
+          let headline = headline0;
+          if (narrowCut) {
+            const whole = new RegExp(`^${LINK_BRACKET.source}$`).exec(headline);
+            headline = whole && whole[2] !== undefined ? `[[${whole[1]}][${shortenString(whole[2], narrow as number)}]]` : shortenString(headline, narrow as number);
+          }
+          const field = (f: string) => (!emph ? `${f} |` : lvl === 1 ? `*${f}* |` : lvl === 2 ? `/${f}/ |` : `${f} |`);
+          put(
+            "|" +
+              (multifile ? "|" : "") +
+              (level ? `${lvl}|` : "") +
+              (timestamp ? `${tsp ?? ""}|` : "") +
+              (tags ? `${tgs.join(", ")}|` : "") +
+              (properties.length > 0 ? `${properties.map((name) => props.find(([k]) => k === name)?.[1] ?? "").join("|")}|` : "") +
+              (indent ? (lvl === 1 ? "" : `\\_${" ".repeat(2 * (lvl - 1))}`) : "") +
+              field(headline) +
+              bars(Math.min(timeColumns, lvl) - 1) +
+              field(durationFromMinutes(time)) +
+              bars(timeColumns - lvl) +
+              (percent ? e8.format("%.1f |", (100 * time) / totalTime) : "") +
+              "\n",
+          );
+        }
+      }
+    }
+  }
+  e8.deleteRegion(e8.point() - 1, e8.point());
+  let recalc = false;
+  if (formula === null || percent) {
+    const contents = p(":content");
+    const m = typeof contents === "string" && /\S/.test(contents) ? /^([ \t]*#\+tblfm:.*)/im.exec(contents) : null;
+    if (m) {
+      recalc = true;
+      e8.insert(`\n${m[1]}`);
+      forwardLine(-1);
+    }
+  } else if (typeof formula === "string") {
+    e8.insert(`\n#+TBLFM: ${formula}`);
+    recalc = true;
+  } else e8.userError("Invalid :formula parameter in clocktable");
+  e8.gotoChar(ipos);
+  e8.skipCharsForward("^|");
+  e8.call("org-table-align");
+  if (recalc) e8.call("org-table-recalculate");
+  return totalTime;
+}
+
+/**
+ * Writes a clock table for each step of :step, day, week, semimonth,
+ * month, quarter or year, through :block or from :tstart to :tend, as
+ * org-clocktable-steps, leaving out empty ones with :stepskip0.
+ */
+function clocktableSteps(params: e8.Value[]): void {
+  const skipEmpty = truthy(plistGet(params, ":stepskip0"));
+  const step = str(plistGet(params, ":step")) ?? "";
+  const headers: Record<string, string> = {
+    day: "Daily report: ",
+    week: "Weekly report starting on: ",
+    semimonth: "Semimonthly report starting on: ",
+    month: "Monthly report starting on: ",
+    year: "Annual report starting on: ",
+    quarter: "Quarterly report starting on: ",
+  };
+  const stepHeader = headers[step];
+  if (stepHeader === undefined) e8.userError(`Unknown ‘:step’ specification: ${e8.prin1ToString(plistGet(params, ":step"))}`);
+  const weekStart = Number(plistGet(params, ":wstart") ?? 1);
+  const monthStart = Number(plistGet(params, ":mstart") ?? 1);
+  const block = str(plistGet(params, ":block"));
+  const range = block === undefined ? undefined : clockSpecialRange(block, undefined, weekStart, monthStart);
+  const extend = Number(e8.variable("org-extend-today-until") ?? 0);
+  const encode = (min: number, hour: number, day: number, mon: number, year: number) => e8.encodeTime([0, min, hour, day, mon, year, null, -1, null]);
+  const fromDay = (n: number) => {
+    const [mo, da, yr] = gregorianFromAbsolute(n);
+    return encode(0, extend, da, mo, yr);
+  };
+  // Times from the range are taken as Org writes them, to the minute.
+  const minute = (t: number) => Math.floor(t / 60) * 60;
+  const startValue = range ? range[0] : plistGet(params, ":tstart");
+  let start = typeof startValue === "number" ? (range ? minute(startValue) : fromDay(startValue)) : matcherTime(str(startValue) ?? "<2003-01-01 Thu 00:00>");
+  const endValue = range ? range[1] : plistGet(params, ":tend");
+  const end = typeof endValue === "number" ? (range ? minute(endValue) : fromDay(endValue)) : matcherTime(str(endValue) ?? "");
+  while (start < end) {
+    if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+    e8.insert(`\n${stepHeader}${e8.formatTimeString(stampFormat(false, true), start)}\n`);
+    const [, , , d, m, y, dow] = e8.decodeTime(start) as number[];
+    let next: number;
+    if (step === "day") next = encode(0, extend, d + 1, m, y);
+    else if (step === "week") next = encode(0, extend, d + (dow === weekStart ? 7 : (((weekStart - dow) % 7) + 7) % 7), m, y);
+    else if (step === "semimonth") next = encode(0, 0, d < 16 ? 16 : 1, d < 16 ? m : m + 1, y);
+    else if (step === "month") next = encode(0, 0, monthStart, m + 1, y);
+    else if (step === "quarter") next = encode(0, 0, monthStart, m + 3, y);
+    else next = encode(0, extend, 1, 1, y + 1);
+    const tableBegin = e8.lineStart(lineAt() - 1);
+    const stepTime = writeClocktable(
+      combinePlists(params, [
+        kw(":header"), "", kw(":step"), null, kw(":block"), null,
+        kw(":tstart"), e8.formatTimeString(stampFormat(true, true), start),
+        kw(":tend"), e8.formatTimeString(stampFormat(true, true), end < next ? end : next),
+      ]),
+    );
+    e8.reSearchForward("^[ \t]*#\\+END:", { caseFold: true });
+    if (skipEmpty && stepTime === 0) e8.deleteRegion(tableBegin, e8.lineStart(lineAt()));
+    start = next;
+    forwardLine(-1);
+    e8.gotoChar(e8.lineEnd(lineAt()));
+  }
+}
+
+e8.defun("org-dblock-write:clocktable", (params: e8.Value[]) => writeClocktable(params));
+e8.defun("org-clocktable-write-default", (ipos: number, tables: TableData[], params: e8.Value[]) => writeClocktableDefault(ipos, tables, params));
+
+/** Where the clock table point is in starts, as org-in-clocktable-p. */
+function inClocktable(): number | undefined {
+  const pos = e8.point();
+  return e8.saveExcursion(() => {
+    e8.gotoChar(e8.lineEnd(lineAt()));
+    if (e8.reSearchBackward("^[ \t]*#\\+BEGIN:[ \t]+clocktable", { noerror: true, caseFold: true }) === undefined) return undefined;
+    const start = e8.matchBeginning(0) as number;
+    if (e8.reSearchForward("^[ \t]*#\\+END:.*", { noerror: true, caseFold: true }) === undefined) return undefined;
+    return (e8.matchEnd(0) as number) >= pos ? start : undefined;
+  });
+}
+
+e8.defineCommand({
+  name: "org-clock-report",
+  doc:
+    "Bring the clock table point is in up to date, or make one: of the subtree, or of the file before the first heading, " +
+    "its other parameters from org-clock-clocktable-default-properties. With C-u, update the buffer's first clock table.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
+    removeClockOverlays(false);
+    if (truthy(arg)) {
+      findDblock("clocktable");
+      const all = headings();
+      const i = headingIndex(all, lineAt());
+      if (i !== undefined) showEntry(all, i);
+    }
+    const start = inClocktable();
+    if (start === undefined) {
+      const first = headings()[0];
+      const before = first === undefined || first.start > e8.point();
+      createDblock(
+        combinePlists([kw(":scope"), kw(before ? "file" : "subtree")], e8.variable("org-clock-clocktable-default-properties"), [kw(":name"), "clocktable"]),
+      );
+    } else e8.gotoChar(start);
+    updateDblock();
+  },
+});
+
+dynamicBlockDefine("clocktable", "org-clock-report");
+
+/**
+ * Moves the :block of the clock table whose #+BEGIN: line point is on N
+ * steps of its own size, back for left and down, on for right and up,
+ * and writes the table again, as org-clocktable-shift.
+ */
+function clocktableShift(dir: string, arg: e8.PrefixArg): boolean {
+  let n = e8.prefixNumericValue(arg);
+  if (dir === "left" || dir === "down") n = -n;
+  return e8.saveExcursion(() => {
+    e8.gotoChar(e8.lineStart(lineAt()));
+    if (!e8.lookingAt("^[ \t]*#\\+BEGIN:[ \t]+clocktable\\>.*?:block[ \t]+\\(\\S-+\\)", undefined, { caseFold: true })) {
+      e8.userError("Line needs a :block definition before this command works");
+    }
+    const [b, e] = [e8.matchBeginning(1) as number, e8.matchEnd(1) as number];
+    let s = e8.matchString(1) as string;
+    const renamed: Record<string, string> = { yesterday: "today-1", lastweek: "thisweek-1", lastmonth: "thismonth-1", lastyear: "thisyear-1", lastq: "thisq-1" };
+    s = renamed[s] ?? s;
+    let ins: string | undefined;
+    let m: RegExpExecArray | null;
+    const encode = (day: number, mon: number, year: number) => e8.encodeTime([0, 0, 0, day, mon, year, null, -1, null]);
+    if ((m = /^(today|thisweek|thismonth|thisyear|thisq)([-+][0-9]+)?$/.exec(s))) {
+      const shift = (m[2] === undefined ? 0 : Number(m[2])) + n;
+      ins = shift === 0 ? m[1] : `${m[1]}${shift > 0 ? "+" : ""}${shift}`;
+    } else if ((m = /([0-9]+)(-([wWqQ]?)([0-9]{1,2})(-([0-9]{1,2}))?)?/.exec(s))) {
+      let y = Number(m[1]);
+      const wp = m[3];
+      let mw = m[4] === undefined ? undefined : Number(m[4]);
+      const d = m[6] === undefined ? undefined : Number(m[6]);
+      // Org encodes the day with no month, which signals.
+      if (d !== undefined) e8.signal("wrong-type-argument", "Wrong type argument: fixnump, nil", [e8.intern("fixnump"), null]);
+      else if (wp !== undefined && /[wW]/.test(wp) && mw !== undefined) {
+        const [mo, da, yr] = gregorianFromAbsolute(isoToAbsolute(mw + n, 1, y));
+        ins = e8.formatTimeString("%G-W%V", encode(da, mo, yr));
+      } else if (wp !== undefined && /[qQ]/.test(wp) && mw !== undefined) {
+        if (mw + n > 4) [mw, y] = [0, y + 1];
+        if (mw + n === 0) [mw, y] = [5, y - 1];
+        ins = `${y}-Q${mw + n}`;
+      } else if (mw !== undefined) ins = e8.formatTimeString("%Y-%m", encode(1, mw + n, y));
+      else ins = String(y + n);
+    } else e8.userError("Cannot shift clocktable block");
+    e8.gotoChar(b);
+    e8.insert(ins);
+    e8.deleteRegion(e8.point(), e8.point() + (e - b));
+    e8.gotoChar(e8.lineStart(lineAt()));
+    updateDblock();
+    return true;
+  });
+}
+
+e8.defun("org-clocktable-shift", clocktableShift);
+

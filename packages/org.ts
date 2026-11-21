@@ -20,6 +20,7 @@ import {
   ancestors,
   BLOCK_BEGIN,
   BLOCK_END,
+  DBLOCK_BEGIN,
   checkInvisibleEditMaybe,
   contents,
   cycleHeading,
@@ -2544,7 +2545,7 @@ e8.defun("org-fill-paragraph-with-timestamp-nobreak-p", () => {
   return tsMatches(lineAt()).some((ts) => ts.start < p && p <= ts.end);
 });
 
-const GREATER_ELEMENTS = ["center-block", "drawer", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
+const GREATER_ELEMENTS = ["center-block", "drawer", "dynamic-block", "headline", "item", "plain-list", "property-drawer", "quote-block", "section", "special-block", "table"];
 
 /**
  * The column text under the heading `line` is in starts at, as
@@ -2854,7 +2855,7 @@ function preservesIndentation(el: Elem): boolean {
   return e8.variable("org-src-preserve-indentation") === true || /\s-i(\s|$)/.test(e8.lineText(lineAt(el.begin)));
 }
 
-const BLOCK_TYPES = ["comment-block", "center-block", "example-block", "export-block", "quote-block", "special-block", "src-block", "verse-block"];
+const BLOCK_TYPES = ["comment-block", "center-block", "dynamic-block", "example-block", "export-block", "quote-block", "special-block", "src-block", "verse-block"];
 
 /** Whether point's line opens a block that is closed, as org-at-block-p checks with org-block-regexp. */
 function atBlock(): boolean {
@@ -2937,7 +2938,7 @@ function orgCycle(arg: e8.PrefixArg): void {
     }
     const line = lineAt();
     const text = e8.lineText(line);
-    if ((DRAWER.test(text) && !/^[ \t]*:END:/i.test(text)) || BLOCK_BEGIN.test(text)) {
+    if ((DRAWER.test(text) && !/^[ \t]*:END:/i.test(text)) || BLOCK_BEGIN.test(text) || DBLOCK_BEGIN.test(text)) {
       if (toggleDrawerOrBlock(line)) {
         // As org-fold--hide-wrapper-toggle does, point is left where it shows.
         if (e8.point() > 0 && e8.invisibleAt(e8.point() - 1)) e8.gotoChar(e8.lineStart(line));
@@ -7190,6 +7191,16 @@ function atTableP(): boolean {
   });
 }
 
+/**
+ * Shifts the :block of the clock table whose #+BEGIN: line point is on,
+ * as org-clocktable-try-shift; false if point is on no such line.
+ */
+function clocktableTryShift(dir: "up" | "down" | "left" | "right"): boolean {
+  if (!e8.lookingAt("[ \t]*#\\+BEGIN:[ \t]+clocktable\\>", e8.lineStart(lineAt()), { caseFold: true })) return false;
+  e8.funcall("org-clocktable-shift", dir, e8.prefixArg());
+  return true;
+}
+
 const shiftUp = e8.defineCommand({
   name: "org-shiftup",
   doc: "S-<up> in Org: make a timestamp later, raise a heading's priority, or move to the previous item.",
@@ -7197,6 +7208,7 @@ const shiftUp = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-up");
     else if (headingHere()) e8.call("org-priority-up");
     else if (itemHere()) e8.call("org-previous-item");
+    else if (clocktableTryShift("up")) return;
     else if (atTableP()) e8.call("org-table-move-cell-up");
     else shiftSelectError();
   },
@@ -7209,6 +7221,7 @@ const shiftDown = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-down");
     else if (headingHere()) e8.call("org-priority-down");
     else if (itemHere()) e8.call("org-next-item");
+    else if (clocktableTryShift("down")) return;
     else if (atTableP()) e8.call("org-table-move-cell-down");
     else shiftSelectError();
   },
@@ -7225,6 +7238,7 @@ const shiftRight = e8.defineCommand({
     }
     else if (itemLine(lineAt())) cycleListBullet();
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
+    else if (clocktableTryShift("right")) return;
     else if (atTableP()) e8.call("org-table-move-cell-right");
     else shiftSelectError();
   },
@@ -7241,6 +7255,7 @@ const shiftLeft = e8.defineCommand({
     }
     else if (itemLine(lineAt())) cycleListBullet("previous");
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
+    else if (clocktableTryShift("left")) return;
     else if (atTableP()) e8.call("org-table-move-cell-left");
     else shiftSelectError();
   },
@@ -7334,6 +7349,14 @@ const ctrlCCtrlC = e8.defineCommand({
       e8.call("org-table-align");
       return;
     }
+    const dblock = elementAt(e8.point());
+    if (dblock?.type === "dynamic-block") {
+      e8.saveExcursion(() => {
+        e8.gotoChar(dblock.begin);
+        updateDblock();
+      });
+      return;
+    }
     if (/^#\+\S*:/.test(text)) {
       storeTodoSets();
       e8.call("font-lock-flush");
@@ -7362,6 +7385,234 @@ const ctrlCCtrlC = e8.defineCommand({
       return;
     }
     nothingUseful();
+  },
+});
+
+// Dynamic blocks, as org.el has them: #+BEGIN: NAME PARAMETERS, written
+// again by the function org-dblock-write:NAME.
+
+/** A dynamic block's first line, its name in group 1 and its parameters in 3, as org-dblock-start-re. */
+export const DBLOCK_START_RE = "^[ \t]*#\\+\\(?:BEGIN\\|begin\\):[ \t]+\\(\\S-+\\)\\([ \t]+\\(.*\\)\\)?";
+/** A dynamic block's last line, as org-dblock-end-re. */
+export const DBLOCK_END_RE = "^[ \t]*#\\+\\(?:END\\|end\\)\\([: \t\r\n]\\|$\\)";
+
+/** A property list's value for KEY, a keyword's name, as plist-get. */
+export function plistGet(plist: e8.Value | undefined, key: string): e8.Value {
+  if (!Array.isArray(plist)) return null;
+  for (let i = 0; i + 1 < plist.length; i += 2) {
+    const k = plist[i];
+    if (typeof k === "symbol" && e8.symbolName(k) === key) return plist[i + 1];
+  }
+  return null;
+}
+
+/** Sets KEY in a property list, at the end if it was not there, as plist-put; returns the list. */
+export function plistPut(plist: e8.Value[], key: string, value: e8.Value): e8.Value[] {
+  for (let i = 0; i + 1 < plist.length; i += 2) {
+    const k = plist[i];
+    if (typeof k === "symbol" && e8.symbolName(k) === key) {
+      plist[i + 1] = value;
+      return plist;
+    }
+  }
+  plist.push(e8.intern(key), value);
+  return plist;
+}
+
+/** Property lists merged, later ones winning, as org-combine-plists. */
+export function combinePlists(...plists: (e8.Value | undefined)[]): e8.Value[] {
+  const out: e8.Value[] = [];
+  for (const p of plists) if (Array.isArray(p)) for (let i = 0; i + 1 < p.length; i += 2) plistPut(out, e8.symbolName(p[i] as symbol), p[i + 1]);
+  return out;
+}
+
+/**
+ * The agenda files, as (org-agenda-files t) lists them: each name
+ * expanded in org-directory, a directory standing for its Org files.
+ */
+export function agendaFiles(): string[] {
+  const files = e8.variable("org-agenda-files");
+  if (!Array.isArray(files)) return [];
+  const dir = e8.variable("org-directory");
+  const base = typeof dir === "string" ? e8.expandFileName(dir) : undefined;
+  return (files as e8.Value[]).flatMap((f) => {
+    const file = e8.expandFileName(String(f), base);
+    return e8.fileDirectoryP(file) ? e8.directoryFiles(file, { full: true, match: "\\`[^.].*\\.org\\'" }) : [file];
+  });
+}
+
+/** Goes to the first dynamic block named NAME and returns where it starts, as org-find-dblock; stays put if there is none. */
+export function findDblock(name: string): number | undefined {
+  const pos = e8.saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    return e8.reSearchForward(`^[ \t]*#\\+\\(?:BEGIN\\|begin\\):[ \t]+${name}\\>`, { noerror: true, caseFold: true }) === undefined
+      ? undefined
+      : e8.matchBeginning(0);
+  });
+  if (pos !== undefined) e8.gotoChar(pos);
+  return pos;
+}
+
+/**
+ * Makes an empty dynamic block on the line after point's, unless that
+ * line is blank, its parameters from PLIST, its name from :name, and
+ * leaves point on its first line, as org-create-dblock.
+ */
+export function createDblock(plist: e8.Value[]): void {
+  if (/\S/.test(e8.lineText(lineAt()))) {
+    e8.gotoChar(e8.lineEnd(lineAt()));
+    e8.insert("\n");
+  }
+  const col = e8.currentColumn();
+  let text = `#+BEGIN: ${String(plistGet(plist, ":name"))}`;
+  for (let i = 0; i < plist.length; ) {
+    const k = plist[i];
+    if (typeof k === "symbol" && e8.symbolName(k) === ":name") i += 2;
+    else text += ` ${e8.prin1ToString(plist[i++])}`;
+  }
+  e8.insert(`${text}\n\n${" ".repeat(col)}#+END:\n`);
+  forwardLine(-3);
+}
+
+/**
+ * Empties the dynamic block point is at the start of, leaving point on
+ * the blank line inside, and returns its parameters with :name, its
+ * :indentation-column and what it held as :content, as org-prepare-dblock.
+ */
+export function prepareDblock(): e8.Value[] {
+  if (!e8.lookingAt(DBLOCK_START_RE, undefined, { caseFold: true })) e8.userError("Not at a dynamic block");
+  const begdel = (e8.matchEnd(0) as number) + 1;
+  const name = e8.matchString(1) as string;
+  const read = e8.readFromString(`(${e8.matchString(3) ?? ""})`)[0];
+  const params: e8.Value[] = [e8.intern(":name"), name, ...(Array.isArray(read) ? read : [])];
+  // A key without its value, as plist-put finds it.
+  if (params.length % 2 !== 0) e8.signal("wrong-type-argument", `Wrong type argument: plistp, ${e8.prin1ToString(params)}`, [e8.intern("plistp"), params]);
+  const col = e8.saveExcursion(() => {
+    e8.gotoChar(e8.lineStart(lineAt()));
+    e8.skipCharsForward(" \t");
+    return e8.currentColumn();
+  });
+  plistPut(params, ":indentation-column", col);
+  if (e8.reSearchForward(DBLOCK_END_RE, { noerror: true, caseFold: true }) === undefined) throw new Error("Dynamic block not terminated");
+  const end = e8.matchBeginning(0) as number;
+  params.push(e8.intern(":content"), e8.bufferText(begdel, end));
+  e8.deleteRegion(begdel, end);
+  e8.gotoChar(begdel);
+  e8.insert("\n");
+  e8.gotoChar(begdel);
+  return params;
+}
+
+/** Goes to the first line of the dynamic block point is in, as org-beginning-of-dblock, or signals. */
+function beginningOfDblock(): void {
+  const pos = e8.point();
+  e8.gotoChar(e8.lineEnd(lineAt()));
+  if (e8.reSearchBackward(DBLOCK_START_RE, { noerror: true, caseFold: true }) !== undefined) {
+    const beg = e8.matchBeginning(0) as number;
+    if (e8.reSearchForward(DBLOCK_END_RE, { noerror: true, caseFold: true }) !== undefined && (e8.matchEnd(0) as number) > pos) {
+      e8.gotoChar(beg);
+      return;
+    }
+  }
+  e8.gotoChar(pos);
+  throw new Error("Not in a dynamic block");
+}
+
+/**
+ * Writes the dynamic block point is at the start of again, as
+ * org-update-dblock: empties it, calls org-dblock-write:NAME with its
+ * parameters, and indents what it wrote as its first line is.
+ */
+export function updateDblock(): void {
+  e8.saveExcursion(() => {
+    const pos = e8.point();
+    const line = lineAt() - lineAt(e8.pointMin()) + 1;
+    const params = prepareDblock();
+    const name = plistGet(params, ":name") as string;
+    const indent = Number(plistGet(params, ":indentation-column") ?? 0);
+    e8.message(`Updating dynamic block ‘${name}’ at line ${line}...`);
+    e8.funcall(`org-dblock-write:${name}`, params);
+    e8.message(`Updating dynamic block ‘${name}’ at line ${line}...done`);
+    e8.gotoChar(pos);
+    if (indent > 0) {
+      e8.saveExcursion(() => {
+        beginningOfDblock();
+        forwardLine(1);
+        const pad = " ".repeat(indent);
+        while (!e8.lookingAt(DBLOCK_END_RE, undefined, { caseFold: true })) {
+          e8.insert(pad);
+          if (forwardLine(1) !== 0) return;
+        }
+        if (e8.lookingAt("[ \t]+")) e8.replaceMatch("");
+        e8.insert(pad);
+      });
+    }
+  });
+}
+
+/** Runs COMMAND at each dynamic block in the buffer, saying so when one fails, as org-map-dblocks. */
+function mapDblocks(command: () => void): void {
+  e8.saveExcursion(() => {
+    e8.gotoChar(e8.pointMin());
+    while (e8.reSearchForward(DBLOCK_START_RE, { noerror: true, caseFold: true }) !== undefined) {
+      e8.gotoChar(e8.matchBeginning(0) as number);
+      e8.saveExcursion(() =>
+        e8.conditionCase(command, {
+          error: () => e8.message("Error during update of dynamic block"),
+        }),
+      );
+      if (e8.reSearchForward(DBLOCK_END_RE, { noerror: true, caseFold: true }) === undefined) throw new Error("Dynamic block not terminated");
+    }
+  });
+}
+
+/** The kinds of dynamic block C-c C-x x inserts, and the function inserting each, as org-dynamic-block-alist. */
+const dynamicBlocks: [string, string | ((...args: e8.Value[]) => unknown)][] = [];
+
+/** Makes TYPE a kind of dynamic block C-c C-x x inserts by calling FUNC, as org-dynamic-block-define. */
+export function dynamicBlockDefine(type: string, func: string | ((...args: e8.Value[]) => unknown)): void {
+  const known = dynamicBlocks.find(([t]) => t === type);
+  if (known) known[1] = func;
+  else dynamicBlocks.unshift([type, func]);
+}
+e8.defun("org-dynamic-block-define", dynamicBlockDefine);
+
+e8.defineCommand({
+  name: "org-dblock-update",
+  doc: "Update the dynamic block point is in, as its #+BEGIN: line says. With C-u, update every dynamic block in the buffer.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    if (truthy(arg)) e8.call("org-update-all-dblocks");
+    else {
+      if (!e8.lookingAt(DBLOCK_START_RE, undefined, { caseFold: true })) beginningOfDblock();
+      updateDblock();
+    }
+  },
+});
+
+e8.defineCommand({
+  name: "org-update-dblock",
+  doc: "Update the dynamic block whose #+BEGIN: line point is at the start of.",
+  run: () => updateDblock(),
+});
+
+e8.defineCommand({
+  name: "org-update-all-dblocks",
+  doc: "Update every dynamic block in an Org buffer.",
+  run: () => {
+    if (e8.derivedModeP("org-mode")) mapDblocks(updateDblock);
+  },
+});
+
+e8.defineCommand({
+  name: "org-dynamic-block-insert-dblock",
+  doc: "Insert a dynamic block of a kind read with completion, such as a clock table.",
+  params: [{ name: "type", kind: "string", prompt: "Dynamic block: ", collection: () => dynamicBlocks.map(([t]) => t) }],
+  run: (type: string) => {
+    const f = dynamicBlocks.find(([t]) => t === type)?.[1];
+    if (f === undefined) throw new Error(`No such dynamic block: ${e8.prin1ToString(type)}`);
+    if (typeof f === "string" && e8.commandp(f)) e8.callInteractively(f as e8.CommandName);
+    else e8.funcall(f);
   },
 });
 
@@ -7923,6 +8174,8 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c \\": "org-match-sparse-tree",
   "C-c C-c": ctrlCCtrlC,
   "C-c C-x C-b": "org-toggle-checkbox",
+  "C-c C-x C-u": "org-dblock-update",
+  "C-c C-x x": "org-dynamic-block-insert-dblock",
   "C-c C-x p": setProperty,
   "C-c C-x b": treeToIndirectBuffer,
   "C-c C-w": refileCommand,
@@ -8199,7 +8452,7 @@ e8.defun("org-occur-next-match", (n: number) => occurNextMatch(n));
 // Tags and property matches
 
 /** A heading being matched: its state, its tags with those it inherits, as org-get-tags gives them, and its level. */
-type MatchContext = { todo: string | undefined; tags: string[]; level: number; h: Heading; category: () => string };
+export type MatchContext = { todo: string | undefined; tags: string[]; level: number; h: Heading; category: () => string };
 
 /** The inherited tags a heading keeps, as org-remove-uninherited-tags. */
 function removeUninheritedTags(tags: string[]): string[] {
@@ -8280,8 +8533,12 @@ function specialProperty(ctx: MatchContext, name: string): string | undefined {
     case "TIMESTAMP":
     case "TIMESTAMP_IA": {
       const open = name === "TIMESTAMP" ? "<" : "[";
-      const found = (line: number) => tsMatches(line).find((t) => t.text.startsWith(open))?.text;
-      const own = found(h.line);
+      // Timestamps the parser takes as objects, in the heading or in the
+      // elements that hold objects, as org-element-context finds them.
+      const objects = ["paragraph", "table", "table-row", "verse-block", "item"];
+      const found = (line: number, any = false) =>
+        tsMatches(line).find((t) => t.text.startsWith(open) && (any || objects.includes(elementAt(t.start)?.type ?? "")))?.text;
+      const own = found(h.line, true);
       if (own !== undefined) return own;
       const all = headings();
       const i = headingIndex(all, h.line)!;
@@ -8317,6 +8574,27 @@ export function durationFromMinutes(minutes: number): string {
 function matchProperty(ctx: MatchContext, name: string): string | undefined {
   if (SPECIAL_PROPERTIES.includes(name)) return specialProperty(ctx, name);
   if (propertyInheritP(name)) {
+    const value = entryGetInherited(ctx.h, name, false);
+    return value === "nil" ? undefined : value;
+  }
+  return entryGet(ctx.h.line, name);
+}
+
+/**
+ * Each heading's context as a match sees it, among ALL, the whole
+ * buffer's headings, for code that looks at headings outside a scan, as
+ * the clock table's :match, :tags and :properties do.
+ */
+export function matchContexts(all: Heading[]): (i: number) => MatchContext {
+  const tags = allTagsOf(all);
+  let cats: string[] | undefined;
+  return (i) => ({ todo: all[i].todo, tags: tags[i], level: all[i].level, h: all[i], category: () => (cats ??= categories(all))[i] });
+}
+
+/** A property's value at a heading as org-entry-get reads it, special ones too, inherited if INHERIT. */
+export function entryGetAt(ctx: MatchContext, name: string, inherit: boolean): string | undefined {
+  if (SPECIAL_PROPERTIES.includes(name)) return specialProperty(ctx, name);
+  if (inherit) {
     const value = entryGetInherited(ctx.h, name, false);
     return value === "nil" ? undefined : value;
   }
@@ -8425,7 +8703,7 @@ function floatTime(s: string): number {
 }
 
 /** The time a match compares with, as org-matcher-time: a timestamp, <now>, <today>, <tomorrow>, <yesterday> or <+2d>. */
-function matcherTime(s: string): number {
+export function matcherTime(s: string): number {
   const now = e8.floatTime();
   const t = today();
   const day = e8.encodeTime([0, 0, 0, t.day, t.month, t.year]);

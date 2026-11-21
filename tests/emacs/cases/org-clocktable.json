@@ -1,0 +1,1060 @@
+[
+  {
+    "name": "clocktable-file",
+    "text": "#+BEGIN: clocktable :scope file :maxlevel 3\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-defaults",
+    "text": "#+BEGIN: clocktable \n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-maxlevel-1",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-maxlevel-0",
+    "text": "#+BEGIN: clocktable :maxlevel 0\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-thisweek",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block thisweek\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-lastweek",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block lastweek\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-today",
+    "text": "#+BEGIN: clocktable :block today\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-month",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block 2026-11\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-isoweek",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block 2026-W45\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-quarter",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block 2026-Q4\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-thisq",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block thisq\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-lastq",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block lastq\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-year",
+    "text": "#+BEGIN: clocktable :block 2026\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-day",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block 2026-11-03\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-wstart",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block thisweek :wstart 0\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-block-mstart",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block thismonth :mstart 3\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-tstart-tend",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :tstart \"<2026-11-03 Tue>\" :tend \"<2026-11-05 Thu>\"\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-tstart-time",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :tstart \"<2026-11-03 Tue 09:30>\" :tend \"<2026-11-10 Tue 15:00>\"\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-step-day",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block 2026-W45 :step day\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-step-day-skip0",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :block 2026-W45 :step day :stepskip0 t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-step-week",
+    "text": "#+BEGIN: clocktable :maxlevel 2 :tstart \"<2026-11-01 Sun>\" :tend \"<2026-11-20 Fri>\" :step week\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-step-month",
+    "text": "#+BEGIN: clocktable :block 2026 :step month :stepskip0 t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-step-semimonth",
+    "text": "#+BEGIN: clocktable :block 2026-11 :step semimonth\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-step-without-block",
+    "text": "#+BEGIN: clocktable :step day\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-step-unknown",
+    "text": "#+BEGIN: clocktable :block 2026-11 :step fortnight\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-emphasize",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :emphasize t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-link",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :link t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-tags",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :tags t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-timestamp",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :timestamp t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-level",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :level t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-properties",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :properties (\"Effort\" \"TODO\")\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-properties-inherit",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :properties (\"Effort\") :inherit-props t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-match",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :match \"work\"\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-match-todo",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :match \"TODO=\\\"TODO\\\"\"\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-percent",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :formula %\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-narrow-int",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :narrow 20\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-narrow-cut",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :narrow 12!\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-narrow-link",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :narrow 15 :link t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-narrow-bad",
+    "text": "#+BEGIN: clocktable :narrow foo\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-compact",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :compact t\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-no-indent",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :indent nil\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-tcolumns",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :tcolumns 2\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-lang",
+    "text": "#+BEGIN: clocktable :maxlevel 2 :lang \"de\" :block 2026-11\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-header",
+    "text": "#+BEGIN: clocktable :header \"#+NAME: times\\n\"\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-fileskip0",
+    "text": "#+BEGIN: clocktable :fileskip0 t :block 2025\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-nothing",
+    "text": "#+BEGIN: clocktable :block 2020\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-unknown-scope",
+    "text": "#+BEGIN: clocktable :scope nowhere\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-bad-formula",
+    "text": "#+BEGIN: clocktable :formula 3\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-scope-subtree",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\n#+BEGIN: clocktable :scope subtree :maxlevel 4\n#+END:\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 360,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-scope-tree",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\n#+BEGIN: clocktable :scope tree :maxlevel 4\n#+END:\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 360,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-scope-tree1",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\n#+BEGIN: clocktable :scope tree1 :maxlevel 4\n#+END:\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 360,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-scope-tree2",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\n#+BEGIN: clocktable :scope tree2 :maxlevel 4\n#+END:\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 360,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-scope-tree3",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\n#+BEGIN: clocktable :scope tree3 :maxlevel 4\n#+END:\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 360,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-scope-nil",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\n#+BEGIN: clocktable :scope nil :maxlevel 4\n#+END:\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 360,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-replaces-old",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n| old | table |\nsome text\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-indented",
+    "text": "- item\n  #+BEGIN: clocktable :maxlevel 1\n  #+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 9,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-report-top",
+    "text": "Notes.\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-report"
+    ]
+  },
+  {
+    "name": "clock-report-subtree",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "M-x",
+    "point": 91,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-report"
+    ]
+  },
+  {
+    "name": "clock-report-in-body",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "M-x",
+    "point": 613,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-report"
+    ]
+  },
+  {
+    "name": "clock-report-updates",
+    "text": "#+BEGIN: clocktable :maxlevel 1\nold\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "M-x",
+    "point": 30,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-report"
+    ]
+  },
+  {
+    "name": "clock-report-c-u",
+    "text": "#+BEGIN: clocktable :maxlevel 1\nold\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-u M-x",
+    "point": 744,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-report"
+    ]
+  },
+  {
+    "name": "clock-report-twice",
+    "text": "Notes.\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "M-x M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-report",
+      "org-clock-report"
+    ]
+  },
+  {
+    "name": "clock-report-blank-line",
+    "text": "\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-report"
+    ]
+  },
+  {
+    "name": "dblock-update-inside",
+    "text": "#+BEGIN: clocktable :maxlevel 1\nold\nold\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-x C-u",
+    "point": 34,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-update-end-line",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-n C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-update-outside",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-x C-u",
+    "point": 742,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-update-all",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\n#+BEGIN: clocktable :block 2026-11 :maxlevel 1\n#+END:\nNothing clocked.\n",
+    "keys": "C-u C-c C-x C-u",
+    "point": 796,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-unknown",
+    "text": "#+BEGIN: nosuch :a 1\nold\n#+END:\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-unterminated",
+    "text": "#+BEGIN: clocktable\nold\n",
+    "keys": "C-c C-x C-u",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-insert-clocktable",
+    "text": "* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-x x",
+    "point": 676,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "clocktable"
+    ]
+  },
+  {
+    "name": "dblock-lower-case",
+    "text": "#+begin: clocktable :maxlevel 1\n#+end:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-month-right",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026-11\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-month-left",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026-01\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<left>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-today-left",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block today\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<left>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-yesterday-right",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block yesterday\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-thisweek-up",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block thisweek-2\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<up>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-lastweek-down",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block lastweek\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<down>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-isoweek-right",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026-W45\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-isoweek-wrap",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026-W53\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-quarter-right",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026-Q4\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-quarter-left",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026-Q1\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<left>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-year-left",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<left>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-day-right",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026-11-03\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-thisq-left",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block thisq\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<left>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-lastq-right",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block lastq\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-count",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block 2026-11\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-u 3 S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-untilnow",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :block untilnow\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-shift-no-block",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "S-<right>",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-forward-element",
+    "text": "Intro.\n\n#+BEGIN: clocktable :maxlevel 1\n| a | 1 |\n\n| b | 2 |\n#+END:\n\nText.\n#+BEGIN: other\n#+END:\nMore.\n",
+    "keys": "C-c M-f C-c M-f C-c M-f",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-forward-element-inside",
+    "text": "Intro.\n\n#+BEGIN: clocktable :maxlevel 1\n| a | 1 |\n\n| b | 2 |\n#+END:\n\nText.\n#+BEGIN: other\n#+END:\nMore.\n",
+    "keys": "C-c M-f C-c M-f",
+    "point": 40,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-backward-element",
+    "text": "Intro.\n\n#+BEGIN: clocktable :maxlevel 1\n| a | 1 |\n\n| b | 2 |\n#+END:\n\nText.\n#+BEGIN: other\n#+END:\nMore.\n",
+    "keys": "C-c M-b C-c M-b C-c M-b",
+    "point": 103,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-mark-element",
+    "text": "Intro.\n\n#+BEGIN: clocktable :maxlevel 1\n| a | 1 |\n\n| b | 2 |\n#+END:\n\nText.\n#+BEGIN: other\n#+END:\nMore.\n",
+    "keys": "M-h",
+    "point": 11,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-fill-paragraph-keeps-it",
+    "text": "Intro.\n\n#+BEGIN: clocktable :maxlevel 1\n| a | 1 |\n\n| b | 2 |\n#+END:\n\nText.\n#+BEGIN: other\n#+END:\nMore.\n",
+    "keys": "M-q",
+    "point": 11,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-timestamp-objects",
+    "text": "#+BEGIN: clocktable :timestamp t\n#+END:\n\n* Created\n:PROPERTIES:\n:CREATED: [2026-11-01 Sun 10:00]\n:END:\nSome text [2026-11-05 Thu]\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n* Dated\n#+DATE: [2026-11-03 Tue]\nSome text [2026-11-05 Thu]\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n* Verse\n#+begin_verse\nv [2026-11-02 Mon]\n#+end_verse\nSome text [2026-11-05 Thu]\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n* Listed\n- item [2026-11-06 Fri]\n| cell | <2026-11-07 Sat> |\n# comment [2026-11-08 Sun]\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-bad-plist",
+    "text": "#+BEGIN: clocktable :tags :maxlevel 2\nold\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-bad-plist-end",
+    "text": "#+BEGIN: clocktable :maxlevel 2 :link\nold\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-property-symbol",
+    "text": "#+BEGIN: clocktable :properties (Effort)\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-tab-folds",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n| a |\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "TAB",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-tab-unfolds",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n| a |\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "TAB TAB",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-narrow-to-block",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n| a |\nb\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-x n b",
+    "point": 35,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-indent-block",
+    "text": "- item\n#+BEGIN: x\ntext\n#+END:\n",
+    "keys": "M-x",
+    "point": 8,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-indent-block"
+    ]
+  },
+  {
+    "name": "dblock-indent-end-in-item",
+    "text": "- item\n  #+BEGIN: x\n  text\n#+END:\n",
+    "keys": "TAB",
+    "point": 30,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "dblock-narrow-to-element",
+    "text": "#+BEGIN: clocktable :maxlevel 1\n| a |\nb\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-x n e",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  }
+]
