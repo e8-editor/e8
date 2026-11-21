@@ -1,0 +1,439 @@
+[
+  {
+    "name": "clock-select-recent",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "2"
+    ]
+  },
+  {
+    "name": "clock-select-current",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "c"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-select-interrupted",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "i"
+    ]
+  },
+  {
+    "name": "clock-select-quit",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "clock-select-x",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "x"
+    ]
+  },
+  {
+    "name": "clock-select-invalid",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "z"
+    ]
+  },
+  {
+    "name": "clock-select-none",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-select-after-out",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i C-c C-x C-o M-< C-c C-n C-c C-x C-i C-c C-x C-o C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "2"
+    ]
+  },
+  {
+    "name": "clock-select-no-interrupted",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i C-c C-x C-o M-< C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "i"
+    ]
+  },
+  {
+    "name": "clock-default-task",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-u C-u C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "clock-default-task-mark",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-n C-c C-n M-x M-< C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-mark-default-task",
+      "d"
+    ]
+  },
+  {
+    "name": "clock-history-length",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "3"
+    ],
+    "vars": {
+      "org-clock-history-length": 2
+    }
+  },
+  {
+    "name": "clock-history-dups",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "3"
+    ]
+  },
+  {
+    "name": "clock-goto-select",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-u C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "2"
+    ]
+  },
+  {
+    "name": "clock-goto-select-quit",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-n C-u C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "clock-in-last-select",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i C-c C-x C-o C-u C-c C-x C-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "2"
+    ]
+  },
+  {
+    "name": "clock-effort-modify",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-n C-c C-x C-i M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-modify-effort-estimate",
+      "+0:30"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-effort-modify-minutes",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-modify-effort-estimate",
+      "45"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-effort-modify-less",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-n C-c C-x C-i M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-modify-effort-estimate",
+      "-1:30"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-effort-modify-units",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-modify-effort-estimate",
+      "2h"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-effort-modify-bad",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-modify-effort-estimate",
+      "soon"
+    ]
+  },
+  {
+    "name": "clock-effort-modify-no-clock",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-modify-effort-estimate"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-effort-set-while-clocked",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-n C-c C-x C-i C-c C-x e",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "2:00"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-start-since-repeat",
+    "text": "* A\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-20 Fri 10:00]\n:END:\n",
+    "keys": "C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  },
+  {
+    "name": "clock-start-modeline-total",
+    "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: today\n:END:\n",
+    "keys": "C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  },
+  {
+    "name": "clock-start-modeline-current",
+    "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: current\n:END:\n",
+    "keys": "C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  },
+  {
+    "name": "clock-start-total-variable",
+    "text": "* A\n",
+    "keys": "C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true,
+    "vars": {
+      "org-clock-mode-line-total": "'today"
+    }
+  },
+  {
+    "name": "clock-start-unknown-total",
+    "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: never\n:END:\n",
+    "keys": "C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  },
+  {
+    "name": "clock-select-after-three",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "2"
+    ]
+  },
+  {
+    "name": "clock-select-first",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "1"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-in-last-message",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i C-c C-x C-o C-c C-x C-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  },
+  {
+    "name": "clock-effort-add-none",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-modify-effort-estimate",
+      "+30"
+    ]
+  },
+  {
+    "name": "clock-effort-fraction",
+    "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+    "keys": "M-< C-c C-x C-i M-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "org-clock-modify-effort-estimate",
+      "90.5"
+    ],
+    "message": true
+  }
+]

@@ -20,8 +20,11 @@ import {
   createDblock,
   type DateTime,
   durationFromMinutes,
+  durationToMinutes,
+  categories,
   dynamicBlockDefine,
   entryGetAt,
+  entryGetInherited,
   findDblock,
   formatTimestamp,
   type Heading,
@@ -41,10 +44,10 @@ import {
 } from "org";
 import { elementAt } from "org-element";
 import { showEntry, toggleDrawerOrBlock } from "org-fold";
-import { endOfMetaData } from "org-list";
+import { endOfMetaData, entryGet, entryPut } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
 import { setRunningClock } from "org-refile";
-import { charCount, forwardLine, truthy } from "subr";
+import { charCount, eraseBuffer, forwardLine, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("org-clock-into-drawer", true, "Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.");
@@ -56,6 +59,14 @@ e8.defineHook("org-clock-in-hook", "Functions called when a clock starts.");
 e8.defineHook("org-clock-out-hook", "Functions called when a clock stops.");
 e8.defineHook("org-clock-cancel-hook", "Functions called when a clock is cancelled.");
 e8.defineFace({ name: "org-mode-line-clock", doc: "The running clock in the mode line.", attributes: { inherit: "mode-line" } });
+e8.defineFace({ name: "org-mode-line-clock-overrun", doc: "The running clock in the mode line once it has run past the entry's effort.", attributes: { inherit: "mode-line", background: "red" } });
+defvar("org-clock-mode-line-total", "auto", 'Which clocked time the mode line shows: "all", "today", "repeat" since LAST_REPEAT, "current" for this clock only, or "auto", since LAST_REPEAT if the entry has one, else all. An entry\'s CLOCK_MODELINE_TOTAL overrides it.');
+defvar("org-clock-history-length", 5, "How many recently clocked tasks C-u C-c C-x C-i offers.");
+defvar("org-clock-current-task", null, "The running clock's entry's title, without TODO keyword, priority, COMMENT or tags.");
+defvar("org-clock-effort", null, "The running clock's entry's effort, shown in the mode line after the time clocked.");
+defvar("org-clock-task-overrun-text", null, "Text put before the clock in the mode line once it runs past the effort; nil shows the time in org-mode-line-clock-overrun instead.");
+defvar("org-clock-string-limit", 0, "How long the clock in the mode line may be, cut there; 0 for no limit.");
+defvar("org-show-notification-handler", null, "A function given each Org notification, as a clock running past its effort; nil shows it in the echo area.");
 
 /** The running clock: its CLOCK: line, its heading's title, and when it started. */
 interface Clock {
@@ -70,6 +81,14 @@ interface Clock {
 let clock: Clock | undefined;
 /** Where the last clock ran, for C-c C-x C-j and C-c C-x C-x after it stops. */
 let last: e8.Marker | undefined;
+/** The entries clocked lately, the latest first, as org-clock-history. */
+let history: e8.Marker[] = [];
+/** The task C-u C-u C-c C-x C-i marked, offered as d, as org-clock-default-task. */
+let defaultTask: e8.Marker | undefined;
+/** The clock a clock-in stopped, offered as i, as org-clock-interrupted-task. */
+let interruptedTask: e8.Marker | undefined;
+/** Whether the clock running past its effort has been told already, as org-clock-notification-was-shown. */
+let notified = false;
 let timer: number | undefined;
 
 /** Now, or the day tests fix at noon, as an Org time. */
@@ -106,14 +125,41 @@ function headingHere(): [Heading[], number] {
 }
 
 /** The minutes the entry's closed clocks add up to, as org-clock-sum-current-item. */
-function clockedBefore(all: Heading[], i: number): number {
-  const end = all[i + 1]?.start ?? e8.bufferSize();
-  let minutes = 0;
-  for (let l = all[i].line + 1; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
-    const m = CLOCK_LINE.exec(e8.lineText(l));
-    if (m && m[7] !== undefined) minutes += Number(m[6] ?? 0) * 1440 + Number(m[7]) * 60 + Number(m[8]);
+function clockedBefore(all: Heading[], i: number): { minutes: number; extra: string } {
+  // From when, as org-clock-get-sum-start: CLOCK_MODELINE_TOTAL or
+  // org-clock-mode-line-total says, auto meaning since LAST_REPEAT if there is one.
+  const h = all[i];
+  const own = entryGet(h.line, "CLOCK_MODELINE_TOTAL");
+  const inherited = e8.variable("org-use-property-inheritance") === true ? entryGetInherited(h, "CLOCK_MODELINE_TOTAL", false) : own;
+  const setting = e8.variable("org-clock-mode-line-total");
+  const cmt = inherited ?? (typeof setting === "symbol" ? e8.symbolName(setting) : String(setting ?? "auto"));
+  const lr = entryGet(h.line, "LAST_REPEAT");
+  let tstart: number | undefined;
+  let extra = "";
+  if (cmt === "current") {
+    extra = "showing time in current clock instance";
+    tstart = millis(now()) / 1000;
+  } else if (cmt === "today") {
+    extra = "showing today's task time.";
+    const extend = Number(e8.variable("org-extend-today-until") ?? 0);
+    const t = now();
+    const day = (t.hour ?? 0) < extend ? t.day - 1 : t.day;
+    tstart = e8.encodeTime([0, 0, extend, day, t.month, t.year, null, -1, null]);
+  } else if (cmt === "all" || (cmt === "auto" && lr === undefined)) {
+    extra = "showing entire task time.";
+  } else if (cmt === "repeat" || (cmt === "auto" && lr !== undefined)) {
+    extra = "showing task time since last repeat.";
+    tstart = lr === undefined ? undefined : matcherTime(lr);
   }
-  return minutes;
+  // The whole subtree's, as org-clock-sum-current-item.
+  const minutes = e8.saveExcursion(() =>
+    e8.saveRestriction(() => {
+      e8.gotoChar(h.start);
+      e8.call("org-narrow-to-subtree");
+      return clockSum(tstart);
+    }),
+  );
+  return { minutes, extra };
 }
 
 /**
@@ -148,11 +194,56 @@ function findPosition(all: Heading[], i: number): number {
   return e8.lineStart(lineAt(at) + 1);
 }
 
-/** Shows the clock in every mode line, as org-clock-update-mode-line. */
+/** The minutes clocked on the running clock's entry, this clock's and before, as org-clock-get-clocked-time. */
+function clockedTime(): number {
+  return clock ? Math.max(0, Math.floor((millis(now()) - clock.start) / 60000)) + clock.before : 0;
+}
+
+/** Says once that the clock has run past the entry's effort, as org-clock-notify-once-if-expired; returns whether it has. */
+function notifyOnceIfExpired(): boolean {
+  if (!clock) return false;
+  const effort = e8.variable("org-clock-effort");
+  const minutes = typeof effort === "string" ? durationToMinutes(effort) : 0;
+  const overrun = minutes !== 0 && clockedTime() >= minutes;
+  if (!overrun) notified = false;
+  else if (!notified) {
+    notified = true;
+    const text = `Task ‘${clock.title}’ should be finished by now. (${String(effort)})`;
+    const handler = e8.variable("org-show-notification-handler");
+    if (typeof handler === "function") e8.funcall(handler, text);
+    else if (typeof handler === "symbol" && e8.fboundp(e8.symbolName(handler))) e8.funcall(e8.symbolName(handler), text);
+    else if (typeof handler === "string" && e8.fboundp(handler)) e8.funcall(handler, text);
+    else e8.message(text);
+  }
+  return overrun;
+}
+
+/** Shows the clock in every mode line, with the entry's effort if it has one, as org-clock-update-mode-line. */
 function updateModeLine(): void {
   if (!clock) return;
-  const minutes = Math.max(0, Math.floor((millis(now()) - clock.start) / 60000)) + clock.before;
-  e8.setVariable("org-mode-line-string", e8.propertize(`[${durationFromMinutes(minutes)}] (${clock.title}) `, { face: "org-mode-line-clock" }));
+  const effort = e8.variable("org-clock-effort");
+  const overrun = typeof effort === "string" && notifyOnceIfExpired();
+  const overrunText = e8.variable("org-clock-task-overrun-text");
+  const face = { face: "org-mode-line-clock" };
+  const done = durationFromMinutes(clockedTime());
+  let text =
+    typeof effort === "string"
+      ? e8.concat(
+          e8.propertize("[", face),
+          e8.propertize(done, { face: overrun && typeof overrunText !== "string" ? "org-mode-line-clock-overrun" : "org-mode-line-clock" }),
+          e8.propertize(`/${durationFromMinutes(durationToMinutes(effort))}] (${clock.title}) `, face),
+        )
+      : e8.propertize(`[${done}] (${clock.title}) `, face);
+  const limit = Number(e8.variable("org-clock-string-limit") ?? 0);
+  const chars = Array.from(text.string);
+  if (limit > 0 && chars.length > limit) {
+    text = new e8.PropertizedString(
+      chars.slice(0, limit).join(""),
+      text.properties.filter(([from]) => from < limit).map(([from, to, props]) => [from, Math.min(to, limit), props]),
+    );
+  }
+  if (overrun && typeof overrunText === "string") text = e8.concat(e8.propertize(overrunText, { face: "org-mode-line-clock-overrun" }), text);
+  e8.setVariable("org-mode-line-string", text);
   const global = e8.variable("global-mode-string");
   const sym = e8.intern("org-mode-line-string");
   const list = Array.isArray(global) ? global : [""];
@@ -183,20 +274,163 @@ function linkDescriptions(text: string): string {
   return text.replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_, l: string, d?: string) => d ?? l);
 }
 
-/** Starts a clock on the entry at point, stopping one running elsewhere, as org-clock-in. */
-export function clockIn(): void {
+/** A marker at POS in BUFFER. */
+function markerIn(buffer: string, pos: number): e8.Marker {
+  return e8.withCurrentBuffer(buffer, () => e8.makeMarker(pos));
+}
+
+/** Whether two markers point at the same place, as equal compares them. */
+function sameMarker(a: e8.Marker, b: e8.Marker): boolean {
+  return e8.markerBuffer(a) === e8.markerBuffer(b) && e8.markerPosition(a) === e8.markerPosition(b);
+}
+
+/** Puts a heading at the front of the clock history, once, keeping org-clock-history-length, as org-clock-history-push. */
+function historyPush(buffer: string, pos: number): void {
+  const length = Math.max(1, Number(e8.variable("org-clock-history-length") ?? 5));
+  const m = markerIn(buffer, pos);
+  history = history.filter((x) => {
+    const keep = e8.markerBuffer(x) !== undefined && !sameMarker(x, m);
+    if (!keep) e8.deleteMarker(x);
+    return keep;
+  });
+  for (const x of history.splice(length - 1)) e8.deleteMarker(x);
+  history.unshift(m);
+}
+
+/** A task's line in *Clock Task Select*: its key, category and heading without tags, as org-clock-insert-selection-line. */
+function selectionLine(key: string, m: e8.Marker): string | undefined {
+  const buffer = e8.markerBuffer(m);
+  if (buffer === undefined) return undefined;
+  return e8.withCurrentBuffer(buffer, () =>
+    e8.saveRestriction(() => {
+      e8.widen();
+      const all = headings();
+      const i = headingIndex(all, lineAt(e8.markerPosition(m) ?? 0));
+      if (i === undefined) return undefined;
+      const h = all[i];
+      const task = e8.lineText(h.line).slice(h.level + 1).replace(/[ \t]+:[\p{L}\p{N}_@#%:]+:[ \t]*$/u, "").replace(/[ \t]+$/, "");
+      return `[${key}] ${categories(all)[i].padEnd(12)}  ${task}\n`;
+    }),
+  );
+}
+
+/**
+ * Offers the clocked tasks in *Clock Task Select* and reads one by its
+ * key, as org-clock-select-task: d the default task, i the interrupted
+ * one, c the running one, and 1 to 9, then A on, the recent ones; q or x
+ * gives none.
+ */
+function selectTask(prompt: string): e8.Marker | undefined {
+  const recent = history.filter((m, k) => k === 0 || !sameMarker(m, history[k - 1]));
+  if (recent.length === 0) e8.userError("No recent clock");
+  const choices: [string, e8.Marker][] = [];
+  const parts: (string | e8.PropertizedString)[] = [];
+  const add = (header: string | undefined, key: string, m: e8.Marker | undefined) => {
+    if (m === undefined || e8.markerBuffer(m) === undefined) return;
+    if (header !== undefined) parts.push(e8.propertize(`${header}\n`, { face: "bold" }));
+    const line = selectionLine(key, m);
+    if (line === undefined) return;
+    parts.push(line);
+    choices.push([key, m]);
+  };
+  add("Default Task", "d", defaultTask);
+  add("The task interrupted by starting the last one", "i", interruptedTask);
+  if (clock) add("Current Clocking Task", "c", clock.line);
+  parts.push(e8.propertize("Recent Tasks\n", { face: "bold" }));
+  let n = 0;
+  for (const m of recent) {
+    if (e8.markerBuffer(m) === undefined) continue;
+    n++;
+    add(undefined, n < 10 ? String.fromCharCode(48 + n) : String.fromCharCode(65 + n - 10), m);
+  }
+  return e8.saveWindowExcursion(() => {
+    const name = "*Clock Task Select*";
+    e8.getBufferCreate(name);
+    e8.call("switch-to-buffer-other-window", name);
+    eraseBuffer();
+    e8.insert(e8.concat(...parts));
+    e8.runHooks("org-clock-before-select-task-hook");
+    e8.gotoChar(e8.pointMin());
+    let key: string;
+    try {
+      e8.message(prompt);
+      key = e8.readCharExclusive();
+    } finally {
+      if (e8.getBuffer(name) !== undefined) e8.call("kill-buffer", name);
+    }
+    if (key === "q" || key === "x") return undefined;
+    const found = choices.find(([k]) => k === key);
+    if (found === undefined) e8.userError(`Invalid task choice ${key}`);
+    return found![1];
+  });
+}
+
+/** Marks the entry point is in as the default task, as org-clock-mark-default-task. */
+function markDefaultTask(): void {
   const [all, i] = headingHere();
-  const h = all[i];
+  if (defaultTask !== undefined) e8.deleteMarker(defaultTask);
+  defaultTask = e8.makeMarker(all[i].start);
+}
+
+/**
+ * Starts a clock on the entry at point, stopping one running elsewhere, as
+ * org-clock-in: with C-u on a task picked from those clocked lately, and
+ * with C-u C-u on the entry at point, marking it the default task.
+ */
+export function clockIn(select?: e8.PrefixArg): void {
+  const raw = Array.isArray(select) ? select[0] : undefined;
+  let selected: e8.Marker | undefined;
+  if (raw === 4) {
+    const task = selectTask("Clock-in on task: ");
+    if (task === undefined) throw new Error("Abort");
+    selected = task;
+  }
+  if (raw === 16) markDefaultTask();
+  if (selected !== undefined) {
+    const buffer = e8.markerBuffer(selected) as string;
+    const pos = e8.markerPosition(selected) ?? 0;
+    e8.withCurrentBuffer(buffer, () =>
+      e8.saveExcursion(() =>
+        e8.saveRestriction(() => {
+          e8.widen();
+          e8.gotoChar(pos);
+          clockInHere(pos);
+        }),
+      ),
+    );
+  } else clockInHere();
+}
+
+/**
+ * Starts a clock on the entry at point, as org-clock-in once it knows
+ * where. A task picked is the same as the running one only when its place,
+ * SELECTED, is the running entry's heading, as Org compares it: the
+ * running task picked as c is its clock line, so it is clocked again.
+ */
+function clockInHere(selected?: number): void {
+  let [all, i] = headingHere();
+  let h = all[i];
+  notified = false;
   if (clock) {
     const pos = e8.markerPosition(clock.heading);
-    if (e8.markerBuffer(clock.heading) === e8.bufferName() && pos === h.start) {
+    if (e8.markerBuffer(clock.heading) === e8.bufferName() && pos === (selected ?? h.start)) {
       e8.message(`Clock continues in "${clock.title}"`);
       return;
     }
+    // The task interrupted, to go back to with i.
+    if (interruptedTask !== undefined) e8.deleteMarker(interruptedTask);
+    interruptedTask = markerIn(e8.markerBuffer(clock.line) as string, e8.markerPosition(clock.line) ?? 0);
     clockOut();
+    // Read again: stopping the clock wrote its end, which may be before this heading.
+    [all, i] = headingHere();
+    h = all[i];
+  } else if (interruptedTask !== undefined) {
+    e8.deleteMarker(interruptedTask);
+    interruptedTask = undefined;
   }
+  historyPush(e8.bufferName(), h.start);
   const title = linkDescriptions(h.title);
-  const before = clockedBefore(all, i);
+  const { minutes: before, extra } = clockedBefore(all, i);
   const start = now();
   const stamp = `[${formatTimestamp(start, true)}]`;
   e8.saveExcursion(() => {
@@ -208,11 +442,13 @@ export function clockIn(): void {
       clock = { line: e8.makeMarker(at), heading: e8.makeMarker(h.start), title, start: millis(start), before };
     });
   });
+  e8.setVariable("org-clock-current-task", h.title.replace(/^COMMENT[ \t]+/, ""));
+  e8.setVariable("org-clock-effort", entryGet(h.line, String(e8.variable("org-effort-property") ?? "Effort")) ?? null);
   if (last) e8.deleteMarker(last);
   last = e8.makeMarker(h.start);
   updateModeLine();
   timer = e8.runWithTimer(60, 60, updateModeLine);
-  e8.message(`Clock starts at ${stamp} - `);
+  e8.message(`Clock starts at ${stamp} - ${extra}`);
   e8.runHooks("org-clock-in-hook");
 }
 
@@ -262,6 +498,7 @@ export function clockOut(failQuietly = false): void {
   e8.deleteMarker(running.line);
   e8.deleteMarker(running.heading);
   clock = undefined;
+  e8.setVariable("org-clock-current-task", null);
   clearModeLine();
   e8.message(`Clock stopped at ${te} after ${durationFromMinutes(minutes)}${removed ? " => LINE REMOVED" : ""}`);
   e8.runHooks("org-clock-out-hook");
@@ -281,8 +518,50 @@ function removeEmptyDrawer(line: number): void {
 
 e8.defineCommand({
   name: "org-clock-in",
-  doc: "Start a clock on the entry point is in: a CLOCK: line in its LOGBOOK drawer, the time shown in the mode line. A clock running elsewhere stops first.",
-  run: () => clockIn(),
+  doc:
+    "Start a clock on the entry point is in: a CLOCK: line in its LOGBOOK drawer, the time shown in the mode line. A clock running elsewhere stops first. " +
+    "With C-u, on a task picked from those clocked lately; with C-u C-u, on this entry, marking it the default task.",
+  params: [{ name: "select", kind: "prefix" }],
+  run: (select: e8.PrefixArg) => clockIn(select),
+});
+
+e8.defineHook("org-clock-before-select-task-hook", "Functions called in *Clock Task Select* before a task is read.");
+e8.defun("org-clock-update-mode-line", () => updateModeLine());
+
+e8.defineCommand({
+  name: "org-clock-mark-default-task",
+  doc: "Mark the entry point is in as the default task, which C-u C-c C-x C-i always offers as d.",
+  run: () => markDefaultTask(),
+});
+
+e8.defineCommand({
+  name: "org-clock-modify-effort-estimate",
+  doc: "Set the clocked entry's effort, hh:mm or minutes, or with a leading + or - change it by that much; the mode line shows it after the time clocked.",
+  run: () => {
+    if (!clock) {
+      e8.message("Clock is not currently active");
+      return;
+    }
+    const current = e8.variable("org-clock-effort");
+    const value = e8.readString(`Set effort (hh:mm or mm${typeof current === "string" ? `, prefix + to add to ${current}` : ""}): `);
+    const sign = value[0];
+    let minutes: number;
+    if (sign === "+" || sign === "-") {
+      // Org reads the missing effort as a duration, which signals.
+      if (typeof current !== "string") e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil", [e8.intern("stringp"), null]);
+      const base = durationToMinutes(current as string);
+      const by = durationToMinutes(value.slice(1));
+      minutes = sign === "+" ? base + by : base - by;
+    } else minutes = durationToMinutes(value);
+    const effort = durationFromMinutes(Math.max(0, minutes));
+    e8.setVariable("org-clock-effort", effort);
+    const running = clock;
+    e8.withCurrentBuffer(e8.markerBuffer(running.heading) as string, () =>
+      e8.saveExcursion(() => entryPut(lineAt(e8.markerPosition(running.heading) ?? 0), "Effort", effort)),
+    );
+    updateModeLine();
+    e8.message(`Effort is now ${effort}`);
+  },
 });
 
 e8.defineCommand({
@@ -320,6 +599,7 @@ e8.defineCommand({
     e8.deleteMarker(running.line);
     e8.deleteMarker(running.heading);
     clock = undefined;
+    e8.setVariable("org-clock-current-task", null);
     clearModeLine();
     e8.message("Clock canceled");
     e8.runHooks("org-clock-cancel-hook");
@@ -328,8 +608,24 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "org-clock-goto",
-  doc: "Go to the entry with the running clock, or the last one clocked.",
-  run: () => {
+  doc: "Go to the entry with the running clock, or the last one clocked. With C-u, to a task picked from those clocked lately.",
+  params: [{ name: "select", kind: "prefix" }],
+  run: (select: e8.PrefixArg) => {
+    if (select !== null && select !== undefined) {
+      const task = selectTask("Select task to go to: ");
+      if (task === undefined) e8.userError("No task selected");
+      e8.call("switch-to-buffer", e8.markerBuffer(task!) as string);
+      const pos = e8.markerPosition(task!) ?? 0;
+      if (pos < e8.pointMin() || pos > e8.pointMax()) e8.widen();
+      e8.gotoChar(pos);
+      const all = headings();
+      const i = headingIndex(all, lineAt());
+      if (i !== undefined) {
+        showEntry(all, i);
+        e8.gotoChar(all[i].start);
+      }
+      return;
+    }
     const target = clock?.heading ?? last;
     const buffer = target === undefined ? undefined : e8.markerBuffer(target);
     if (target === undefined || buffer === undefined) e8.userError("No active or recent clock task");
@@ -341,8 +637,10 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "org-clock-in-last",
-  doc: "Start a clock again on the entry clocked last.",
-  run: () => {
+  doc: "Start a clock again on the entry clocked last. With C-u, on a task picked from those clocked lately.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    if (Array.isArray(arg) && arg[0] === 4) return clockIn(arg);
     if (clock) {
       e8.message(`Already clocking in on "${clock.title}"`);
       return;
@@ -355,6 +653,7 @@ e8.defineCommand({
         clockIn();
       });
     });
+    e8.message(`Clocking back: ${String(e8.variable("org-clock-current-task"))} (in ${buffer})`);
   },
 });
 

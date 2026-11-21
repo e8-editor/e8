@@ -75,6 +75,7 @@ mod menus;
 mod mouse_positions;
 mod org;
 mod org_archive;
+mod org_clock_mode_line;
 mod org_clocktable;
 mod org_clock_display;
 mod org_goto;

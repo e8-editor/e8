@@ -6441,6 +6441,11 @@ function setEffort(increment: boolean, value?: string): void {
   } else next = value ?? e8.completingRead("Effort: ", allowed, { requireMatch: allowed.length > 0 && restricted });
   if (!validDuration(next)) e8.signal("error", `Invalid duration format: ${JSON.stringify(next)}`);
   if (next !== current) e8.saveExcursion(() => entryPut(h.line, property, next));
+  // The clocked task's effort in the mode line too, as Org matches it by title.
+  if (h.title.replace(/^COMMENT[ \t]+/, "") === e8.variable("org-clock-current-task") && e8.fboundp("org-clock-update-mode-line")) {
+    e8.setVariable("org-clock-effort", next);
+    e8.funcall("org-clock-update-mode-line");
+  }
   e8.message(`${property} is now ${next}`);
 }
 
@@ -6792,6 +6797,19 @@ function durationMinutes(text: string): number | undefined {
   if (new RegExp(`^(?:[ \\t]*[0-9]+(?:\\.[0-9]*)?[ \\t]*(?:${names}))+[ \\t]*$`).test(text)) return sum(text);
   const mixed = new RegExp(`^((?:[ \\t]*[0-9]+(?:\\.[0-9]*)?[ \\t]*(?:${names}))+)[ \\t]*([0-9]+(?::[0-9]{2}){1,2})[ \\t]*$`).exec(text);
   return mixed ? sum(mixed[1]) + hms(mixed[2]) : undefined;
+}
+
+/**
+ * Minutes in a duration, as org-duration-to-minutes reads it: what
+ * durationMinutes reads, a bare number as minutes, or "" as none; else
+ * Org's error.
+ */
+export function durationToMinutes(text: string): number {
+  if (text === "") return 0;
+  const minutes = durationMinutes(text);
+  if (minutes !== undefined) return minutes;
+  if (/^[0-9]+(?:\.[0-9]*)?$/.test(text)) return Number(text);
+  return e8.signal("error", `Invalid duration format: ${JSON.stringify(text)}`);
 }
 
 /** A sort record: its key and where it is. */
@@ -8882,6 +8900,11 @@ function specialProperty(ctx: MatchContext, name: string): string | undefined {
 
 /** Minutes as Org writes a duration, as org-duration-from-minutes: 0:05, or 1d 2:03 past a day. */
 export function durationFromMinutes(minutes: number): string {
+  // Whole minutes, halves to even, as Emacs's round.
+  if (!Number.isInteger(minutes)) {
+    const r = Math.round(minutes);
+    minutes = Math.abs(minutes % 1) === 0.5 && r % 2 !== 0 ? r - 1 : r;
+  }
   const days = Math.floor(minutes / 1440);
   const rest = minutes - days * 1440;
   const hm = `${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}`;
