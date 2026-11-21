@@ -100,6 +100,20 @@ function blockAt(line: number, limit: number): { type: string; close: number } |
   return undefined;
 }
 
+/**
+ * The line that closes a dynamic block a line opens, as
+ * org-element-dynamic-block-parser finds it: `#+BEGIN:` and a name, then
+ * `#+END:` on a line of its own before limit and the next heading.
+ */
+function dynamicBlockEnd(line: number, limit: number): number | undefined {
+  if (!/^[ \t]*#\+BEGIN:[ \t]*[\p{L}\p{N}]/iu.test(e8.lineText(line))) return undefined;
+  for (let l = line + 1; l < e8.lineCount() && e8.lineStart(l) < limit; l++) {
+    if (/^[ \t]*#\+END:?[ \t]*$/i.test(e8.lineText(l))) return l;
+    if (isHeadingLine(e8.lineText(l))) return undefined;
+  }
+  return undefined;
+}
+
 /** A comment line, as org-element reads one: a hash, then a space or nothing. */
 const COMMENT_LINE = /^[ \t]*#(?: |$)/;
 
@@ -213,6 +227,15 @@ function parseElements(
       e = elem(block.type, p, Math.min(lineStartOrEnd(block.close + 1), to), parent, greater && inside ? lineStartOrEnd(line + 1) : undefined);
       if (greater && inside) e.contentsEnd = e8.lineStart(block.close);
       if (GREATER_BLOCKS.includes(block.type) && inside) parseElements(e, e.contentsBegin as number, e.contentsEnd as number, false);
+    } else if (p === e8.lineStart(line) && dynamicBlockEnd(line, to) !== undefined) {
+      // A greater element, as a clock table's table is parsed inside it.
+      const close = dynamicBlockEnd(line, to) as number;
+      const inside = close > line + 1;
+      e = elem("dynamic-block", p, Math.min(lineStartOrEnd(close + 1), to), parent, inside ? lineStartOrEnd(line + 1) : undefined);
+      if (inside) {
+        e.contentsEnd = e8.lineStart(close);
+        parseElements(e, e.contentsBegin as number, e.contentsEnd, false);
+      }
     } else if (p === e8.lineStart(line) && /^[ \t]*-{5,}[ \t]*$/.test(text)) {
       e = elem("horizontal-rule", p, Math.min(next, to), parent);
     } else if (p === e8.lineStart(line) && /^[ \t]*CLOCK:/.test(text)) {

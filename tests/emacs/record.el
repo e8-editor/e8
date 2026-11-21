@@ -159,6 +159,18 @@ while the case's keys are queued would read those instead."
   (let ((d (calendar-gregorian-from-absolute e8-oracle--today)))
     (encode-time (list 0 0 12 (nth 1 d) (nth 0 d) (nth 2 d) nil -1 nil))))
 
+(defun e8-oracle--range-now (args)
+  "Org's special ranges counted from noon on the case's fixed day, as E8's tests count them."
+  (if (nth 1 args) args (append (list (car args) (e8-oracle--now)) (nthcdr 2 args))))
+
+(defun e8-oracle--caption-now (write ipos tables params)
+  "A clock table's caption stamped with noon on the case's fixed day, not the clock's time."
+  (unwind-protect (funcall write ipos tables params)
+    (save-excursion
+      (goto-char ipos)
+      (when (looking-at "#\\+CAPTION: [^[\n]*\\(\\[[^]\n]*\\]\\)")
+        (replace-match (format-time-string "[%Y-%m-%d %a %H:%M]" (e8-oracle--now)) t t nil 1)))))
+
 (require 'calendar)
 (defvar org-agenda-files)
 (defvar org-capture-templates)
@@ -377,6 +389,8 @@ answers come, and then from its answers, as save-some-buffers' do."
       (advice-remove 'org-today #'e8-oracle--today)
       (advice-remove 'org-current-effective-time #'e8-oracle--now)
       (advice-remove 'org-current-time #'e8-oracle--now)
+      (advice-remove 'org-clock-special-range #'e8-oracle--range-now)
+      (advice-remove 'org-clocktable-write-default #'e8-oracle--caption-now)
       (when-let* ((day (alist-get 'today case)))
         (setq e8-oracle--today
               (calendar-absolute-from-gregorian
@@ -384,7 +398,10 @@ answers come, and then from its answers, as save-some-buffers' do."
                  (list (nth 1 d) (nth 2 d) (nth 0 d)))))
         (advice-add 'org-today :override #'e8-oracle--today)
         (advice-add 'org-current-effective-time :override #'e8-oracle--now)
-        (advice-add 'org-current-time :override #'e8-oracle--now))
+        (advice-add 'org-current-time :override #'e8-oracle--now)
+        (require 'org-clock)
+        (advice-add 'org-clock-special-range :filter-args #'e8-oracle--range-now)
+        (advice-add 'org-clocktable-write-default :around #'e8-oracle--caption-now))
       (unless (alist-get 'find case)
         (buffer-enable-undo)
         (set-buffer-modified-p nil))

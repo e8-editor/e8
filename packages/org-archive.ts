@@ -25,6 +25,7 @@ import {
   updateParentTodoStatistics,
 } from "org";
 import { findDateCreate } from "org-datetree";
+import { elementAt } from "org-element";
 import { ancestors, flag, showHeadingLine } from "org-fold";
 import { entryPut } from "org-list";
 import { dropMarker, lineAt, marker } from "org-macs";
@@ -91,6 +92,39 @@ function keywordLocation(): string | undefined {
   }
   return undefined;
 }
+
+/**
+ * The archive files this buffer archives to that exist, as
+ * org-all-archive-files: its archive location's, then each ARCHIVE
+ * property's.
+ */
+function allArchiveFiles(): string[] {
+  const current = e8.bufferFileName() ?? "";
+  const files = [computeLocation(keywordLocation() ?? String(e8.variable("org-archive-location") ?? "%s_archive::"), current)[0]];
+  e8.saveRestriction(() => {
+    e8.widen();
+    for (const [, start, text] of e8.matchingLines("^[ \t]*:ARCHIVE:", { caseFold: true, start: e8.pointMin(), end: e8.pointMax() })) {
+      if (elementAt(start)?.type !== "node-property") continue;
+      const value = /^[ \t]*:ARCHIVE:(?:[ \t]+(.*?))?[ \t]*$/i.exec(text)?.[1] ?? "";
+      const [file] = computeLocation(value, current);
+      if (/\S/.test(file) && !files.includes(file)) files.push(file);
+    }
+  });
+  return files.filter((f) => e8.fileExistsP(f));
+}
+
+/** FILES with each one's archive files after it, those that exist, as org-add-archive-files. */
+export function addArchiveFiles(files: string[]): string[] {
+  const out: string[] = [];
+  for (const f of files) {
+    if (!e8.fileExistsP(f)) continue;
+    for (const g of [f, ...e8.withCurrentBuffer(e8.findFileNoselect(f), allArchiveFiles)]) {
+      if (!out.some((o) => e8.expandFileName(o) === e8.expandFileName(g))) out.push(g);
+    }
+  }
+  return out;
+}
+e8.defun("org-add-archive-files", (files: string[]) => addArchiveFiles(Array.isArray(files) ? files.map(String) : []));
 
 /** The tags of the file, as FILETAGS lines give them. */
 function fileTags(): string[] {

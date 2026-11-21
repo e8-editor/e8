@@ -3,6 +3,7 @@
 // items, in the *Org Agenda* buffer, whose keys act on the entries they show.
 
 import {
+  agendaFiles,
   type DateTime,
   type Heading,
   PLANNING,
@@ -241,11 +242,8 @@ function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: bo
 
 /** The buffers of org-agenda-files, visited if need be. */
 function agendaBuffers(): string[] {
-  const files = e8.variable("org-agenda-files");
-  if (!Array.isArray(files) || files.length === 0) return [];
-  // Relative names are in org-directory, as org-agenda-files expands them.
-  const dir = e8.variable("org-directory");
-  return (files as string[]).map((file) => e8.findFileNoselect(e8.expandFileName(String(file), typeof dir === "string" ? e8.expandFileName(dir) : undefined)));
+  // Relative names are in org-directory, and directories stand for their Org files, as org-agenda-files expands them.
+  return agendaFiles().map((file) => e8.findFileNoselect(file));
 }
 
 /**

@@ -573,14 +573,18 @@ e8.addHook("post-command-hook", () => {
 export const DRAWER = /^[ \t]*:([\w-]+):[ \t]*$/;
 export const BLOCK_BEGIN = /^[ \t]*#\+begin_(\S+)/i;
 export const BLOCK_END = /^[ \t]*#\+end_(\S+)/i;
+/** A dynamic block's first and last lines, as org-element reads them. */
+export const DBLOCK_BEGIN = /^[ \t]*#\+BEGIN:[ \t]*[\p{L}\p{N}]/iu;
+export const DBLOCK_END = /^[ \t]*#\+END:?[ \t]*$/i;
 
 /** The lines a drawer or block starting at a line runs to, or undefined if it is not closed. */
 function closingLine(line: number): number | undefined {
   const text = e8.lineText(line);
   const block = BLOCK_BEGIN.exec(text);
+  const dblock = !block && DBLOCK_BEGIN.test(text);
   for (let l = line + 1; l < e8.lineCount(); l++) {
     const t = e8.lineText(l);
-    if (block ? BLOCK_END.test(t) : /^[ \t]*:END:[ \t]*$/i.test(t)) return l;
+    if (block ? BLOCK_END.test(t) : dblock ? DBLOCK_END.test(t) : /^[ \t]*:END:[ \t]*$/i.test(t)) return l;
     if (isHeadingLine(t)) return undefined;
   }
   return undefined;
@@ -590,7 +594,7 @@ function closingLine(line: number): number | undefined {
 export function toggleDrawerOrBlock(line: number, hide?: boolean): boolean {
   const close = closingLine(line);
   if (close === undefined) return false;
-  const spec = BLOCK_BEGIN.test(e8.lineText(line)) ? "org-hide-block" : "org-hide-drawer";
+  const spec = BLOCK_BEGIN.test(e8.lineText(line)) || DBLOCK_BEGIN.test(e8.lineText(line)) ? "org-hide-block" : "org-hide-drawer";
   const start = e8.lineEnd(line);
   flag(start, e8.lineEnd(close), hide ?? !folded(start, spec), spec);
   return true;
@@ -600,11 +604,12 @@ export function toggleDrawerOrBlock(line: number, hide?: boolean): boolean {
 export function openerOf(line: number): number | undefined {
   const text = e8.lineText(line);
   const end = BLOCK_END.exec(text);
-  if (!end && !/^[ \t]*:END:[ \t]*$/i.test(text)) return undefined;
+  const dend = !end && DBLOCK_END.test(text);
+  if (!end && !dend && !/^[ \t]*:END:[ \t]*$/i.test(text)) return undefined;
   for (let l = line - 1; l >= 0; l--) {
     const t = e8.lineText(l);
     if (isHeadingLine(t)) return undefined;
-    if (end ? BLOCK_BEGIN.test(t) : DRAWER.test(t) && !/^[ \t]*:END:/i.test(t)) return closingLine(l) === line ? l : undefined;
+    if (end ? BLOCK_BEGIN.test(t) : dend ? DBLOCK_BEGIN.test(t) : DRAWER.test(t) && !/^[ \t]*:END:/i.test(t)) return closingLine(l) === line ? l : undefined;
     if (!end && /^[ \t]*:END:/i.test(t)) return undefined;
   }
   return undefined;

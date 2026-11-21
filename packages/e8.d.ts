@@ -5521,6 +5521,14 @@ declare global {
        */
       "org-clock-remove-overlays": [];
       /**
+       * Bring the clock table point is in up to date, or make one: of the subtree, or of the file before the first heading, its other parameters from org-clock-clocktable-default-properties. With C-u, update the buffer's first clock table.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-report": [arg?: PrefixArg | boolean];
+      /**
        * Show all headings, hiding the text under them.
        *
        * Defined in packages/org.ts.
@@ -5594,6 +5602,14 @@ declare global {
        * Defined in packages/org-element.ts.
        */
       "org-cycle-list-bullet": [];
+      /**
+       * Update the dynamic block point is in, as its #+BEGIN: line says. With C-u, update every dynamic block in the buffer.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-dblock-update": [arg?: PrefixArg | boolean];
       /**
        * Give the heading point is under a deadline, read as org-timestamp reads it. With C-u, remove it.
        *
@@ -5674,6 +5690,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-drag-line-forward": [arg?: number];
+      /**
+       * Insert a dynamic block of a kind read with completion, such as a clock table.
+       *
+       * @param type text
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-dynamic-block-insert-dblock": [type: string];
       /**
        * Edit the element at point in a buffer of its own: a source or example block in its language's mode.
        *
@@ -6673,6 +6697,18 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-tree-to-indirect-buffer": [arg?: PrefixArg | boolean];
+      /**
+       * Update every dynamic block in an Org buffer.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-update-all-dblocks": [];
+      /**
+       * Update the dynamic block whose #+BEGIN: line point is at the start of.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-update-dblock": [];
       /**
        * Bring the statistics cookies, such as [1/3], of the heading or item point is in up to date.
        *
@@ -13289,11 +13325,35 @@ declare global {
        */
       "org-capture-templates": Value;
       /**
+       * The properties a new clock table's #+BEGIN: line starts with.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-clocktable-default-properties": Value;
+      /**
+       * The function writing a clock table from its data, which a table's :formatter overrides.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-clocktable-formatter": Value;
+      /**
+       * The words clock tables are written with, in each language :lang names.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-clocktable-language-setup": Value;
+      /**
        * The time org-clock-display sums with no prefix argument: "today", "yesterday", "thisweek", "lastweek", "thismonth", "lastmonth", "thisyear", "lastyear" or "untilnow".
        *
        * Defined in packages/org-clock.ts.
        */
       "org-clock-display-default-range": Value;
+      /**
+       * How a clock table writes a file's time and the words before it.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-file-time-cell-format": Value;
       /**
        * The minutes the last clock sum in this buffer found in the whole file.
        *
@@ -13330,6 +13390,18 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-report-include-clocking-task": Value;
+      /**
+       * How a clock table writes its total time and the words before it.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-total-time-cell-format": Value;
+      /**
+       * Default properties for clock tables, which a clock table's own parameters override.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clocktable-defaults": Value;
       /**
        * Whether C-c C-c asks before running a source block: true asks, false runs it, and a function of the block's language and code decides.
        *
