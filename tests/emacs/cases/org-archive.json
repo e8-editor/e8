@@ -682,5 +682,93 @@
       ]
     },
     "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-region-within-a-narrowing",
+    "text": "#+ARCHIVE: ::* Archive\n* P\n** A\n** B\n* Q\n* R\n",
+    "keys": "C-x n s C-n C-SPC M-> C-c C-x C-s C-x n w",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-tag-all-done-lowercase-tag",
+    "text": "intro\n* DONE A :archive:\n* DONE B\n",
+    "keys": "C-u C-c C-x a",
+    "point": 0,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-region-starting-in-a-fold",
+    "text": "#+ARCHIVE: ::* Archive\n* A\n** B\n* C\n",
+    "keys": "S-TAB C-e C-SPC M-> C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-region-negative-argument",
+    "text": "#+ARCHIVE: ::* Archive\n* A\n* B\n",
+    "keys": "C-SPC M-> C-- C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "message": true
   }
 ]

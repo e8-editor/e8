@@ -1164,6 +1164,151 @@
       "modified": true,
       "error": null,
       "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "archive-region-within-a-narrowing",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* P\n** A\n** B\n* Q\n* R\n",
+        "point": 23,
+        "keys": "C-x n s C-n C-SPC M-> C-c C-x C-s C-x n w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* P\n* Archive\n\n** A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: P\n:END:\n\n** B\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: P\n:END:\n\n* Q\n* R\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* P\n* Archive\n\n** A\n:PROPERTIES:\n\n** B\n:PROPERTIES:\n\n* Q\n* R\n",
+      "point": 27,
+      "mark": 27,
+      "mark_active": false,
+      "kill_ring": [
+        "** B\n\n",
+        "** B\n\n",
+        "** A\n",
+        "** A\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "archive-tag-all-done-lowercase-tag",
+      "input": {
+        "text": "intro\n* DONE A :archive:\n* DONE B\n",
+        "point": 0,
+        "keys": "C-u C-c C-x a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "n"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "intro\n* DONE A :archive:\n* DONE B                                                            :ARCHIVE:\n",
+      "visible": "intro\n* DONE A :archive:\n* DONE B                                                            :ARCHIVE:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 trees archived"
+    },
+    {
+      "name": "archive-region-starting-in-a-fold",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* A\n** B\n* C\n",
+        "point": 23,
+        "keys": "S-TAB C-e C-SPC M-> C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* A\n** B\n* C\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* A\n* C\n",
+      "point": 36,
+      "mark": 26,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 27 in buffer *e8-oracle*",
+      "message": "Mark set"
+    },
+    {
+      "name": "archive-region-negative-argument",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* A\n* B\n",
+        "point": 23,
+        "keys": "C-SPC M-> C-- C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* A\n* B\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* A\n* B\n",
+      "point": 31,
+      "mark": 23,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Symbol’s value as variable is void: -",
+      "message": "Mark set"
     }
   ]
 }

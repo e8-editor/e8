@@ -4600,13 +4600,13 @@ let mapRegionStart: Marker | undefined;
  * point to the end of a hidden subtree it starts in. With hidden, headings
  * hidden when reached are visited too. With narrow, the region is narrowed
  * to as org-map-entries narrows, so what body adds at the end of the
- * buffer goes there. With fromHeading, the next heading is looked for from
- * where this one started, as a body that removes its subtree, as
- * org-archive-subtree does, sets org-map-continue-from.
+ * buffer goes there. A body that returns a position has the next heading
+ * looked for from there, as one that sets org-map-continue-from, as
+ * org-archive-subtree does before it removes its subtree.
  */
 export function forEachHeadingInRegion(
-  body: () => void,
-  { hiddenPoint = false, hidden = false, narrow = false, fromHeading = false } = {},
+  body: () => number | void,
+  { hiddenPoint = false, hidden = false, narrow = false } = {},
 ): boolean {
   const mark = e8.mark();
   if (!orgRegionActive() || mark === undefined || e8.variable("org-loop-over-headlines-in-active-region") !== true) return false;
@@ -4623,7 +4623,7 @@ export function forEachHeadingInRegion(
   const outer = mapRegionStart;
   mapRegionStart = marker(rb);
   const atHeadingStart = re === e8.lineStart(lineAt(re)) && parseHeading(lineAt(re)) !== undefined;
-  const end = marker(atHeadingStart ? re : (headings().find((h) => h.start > re)?.start ?? e8.bufferSize()));
+  const end = marker(atHeadingStart ? re : (headings().find((h) => h.start > re)?.start ?? e8.pointMax()));
   const origin = marker(e8.point());
   const loop = () => {
     let at = marker(rb);
@@ -4634,10 +4634,10 @@ export function forEachHeadingInRegion(
       at = marker(h.end);
       if (!hidden && e8.invisibleAt(h.start)) continue;
       e8.gotoChar(h.start);
-      const line = e8.lineText(h.line);
-      body();
-      // From where it started, unless the heading is still there.
-      if (fromHeading && !(h.start < e8.pointMax() && e8.lineText(lineAt(h.start)) === line && h.start === e8.lineStart(lineAt(h.start)))) at.pos = h.start;
+      const tick = e8.bufferCharsModifiedTick();
+      const from = body();
+      // Not back to where nothing changed, which would go round for ever.
+      if (typeof from === "number" && (from > h.start || e8.bufferCharsModifiedTick() !== tick)) at.pos = from;
     }
     dropMarker(at);
   };
