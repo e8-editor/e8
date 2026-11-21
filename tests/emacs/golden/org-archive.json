@@ -598,6 +598,572 @@
       ],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "archive-all-done-at-the-top",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* DONE A\n* TODO B\n* C\n** TODO D\n* E\n** DONE F\n",
+        "point": 0,
+        "keys": "C-u C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "y",
+          "n"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO B\n* C\n** TODO D\n* Archive\n\n** DONE A\n:PROPERTIES:\n:ARCHIVE_TODO: DONE\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n** E\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** DONE F\n\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO B\n* C\n** TODO D\n* Archive\n\n** DONE A\n:PROPERTIES:\n\n** E\n:PROPERTIES:\n*** DONE F\n\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* E\n** DONE F\n\n",
+        "* E\n** DONE F\n\n",
+        "* DONE A\n",
+        "* DONE A\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "2 trees archived"
+    },
+    {
+      "name": "archive-all-done-children",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* Project\n** DONE A\n** TODO B\n** C\n*** DONE D\n*** TODO E\n** F\n* Other\n",
+        "point": 26,
+        "keys": "C-u C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "n"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Project\n** TODO B\n** C\n*** DONE D\n*** TODO E\n** F\n* Other\n\n* Archive\n\n** DONE A\n:PROPERTIES:\n:ARCHIVE_TODO: DONE\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: Project\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Project\n** TODO B\n** C\n*** DONE D\n*** TODO E\n** F\n* Other\n\n* Archive\n\n** DONE A\n:PROPERTIES:\n",
+      "point": 74,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** DONE A\n",
+        "** DONE A\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "1 trees archived"
+    },
+    {
+      "name": "archive-all-done-declined",
+      "input": {
+        "text": "* Project\n** DONE A\n** B\n",
+        "point": 3,
+        "keys": "C-u C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "n",
+          "n"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "* Project\n** DONE A\n** B\n",
+      "visible": "* Project\n** DONE A\n** B\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "0 trees archived"
+    },
+    {
+      "name": "archive-all-done-on-a-body-line",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* A\nbody\n* TODO B\n",
+        "point": 27,
+        "keys": "C-u C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "n"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO B\n\n* Archive\n\n** A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\nbody\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO B\n\n* Archive\n\n** A\n:PROPERTIES:\nbody\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\nbody\n",
+        "* A\nbody\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "1 trees archived"
+    },
+    {
+      "name": "archive-all-done-lowercase-todo",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* Project\n** todo A\n** DONE B\n",
+        "point": 23,
+        "keys": "C-u C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "y"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Project\n* Archive\n\n** todo A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: Project\n:END:\n\n** DONE B\n:PROPERTIES:\n:ARCHIVE_TODO: DONE\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: Project\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Project\n* Archive\n\n** todo A\n:PROPERTIES:\n\n** DONE B\n:PROPERTIES:\n\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** DONE B\n\n",
+        "** DONE B\n\n",
+        "** todo A\n",
+        "** todo A\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "2 trees archived"
+    },
+    {
+      "name": "archive-all-old",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* A\nSCHEDULED: <2020-01-01 Wed>\n* B\n<2090-01-01 Sun>\n* C\n<2020-01-01 Wed>--<2090-01-01 Sun>\n* D\n<2020-01-01 Wed>--<2020-01-05 Sun>\n* E\n[2020-01-01 Wed]\n* F\ntext <2020-02-02 Sun> and <2090-01-01 Sun>\n* G\n<2090-01-01 Sun> <2020-01-01 Wed>\n",
+        "point": 0,
+        "keys": "C-u C-u C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "y",
+          "y",
+          "n"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* B\n<2090-01-01 Sun>\n* C\n<2020-01-01 Wed>--<2090-01-01 Sun>\n* E\n[2020-01-01 Wed]\n* G\n<2090-01-01 Sun> <2020-01-01 Wed>\n\n* Archive\n\n** A\nSCHEDULED: <2020-01-01 Wed>\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n** D\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n<2020-01-01 Wed>--<2020-01-05 Sun>\n\n** F\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\ntext <2020-02-02 Sun> and <2090-01-01 Sun>\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* B\n<2090-01-01 Sun>\n* C\n<2020-01-01 Wed>--<2090-01-01 Sun>\n* E\n[2020-01-01 Wed]\n* G\n<2090-01-01 Sun> <2020-01-01 Wed>\n\n* Archive\n\n** A\nSCHEDULED: <2020-01-01 Wed>\n:PROPERTIES:\n\n** D\n:PROPERTIES:\n<2020-01-01 Wed>--<2020-01-05 Sun>\n\n** F\n:PROPERTIES:\ntext <2020-02-02 Sun> and <2090-01-01 Sun>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* F\ntext <2020-02-02 Sun> and <2090-01-01 Sun>\n",
+        "* F\ntext <2020-02-02 Sun> and <2090-01-01 Sun>\n",
+        "* D\n<2020-01-01 Wed>--<2020-01-05 Sun>\n",
+        "* D\n<2020-01-01 Wed>--<2020-01-05 Sun>\n",
+        "* A\nSCHEDULED: <2020-01-01 Wed>\n",
+        "* A\nSCHEDULED: <2020-01-01 Wed>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "3 trees archived"
+    },
+    {
+      "name": "archive-all-old-children",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* P\n** A\n<2020-01-01 Wed>\n** B\n*** C\n<2020-03-03 Tue>\n** D\n",
+        "point": 23,
+        "keys": "C-u C-u C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "y",
+          "n"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* P\n** D\n\n* Archive\n\n** A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: P\n:END:\n<2020-01-01 Wed>\n\n** B\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: P\n:END:\n*** C\n<2020-03-03 Tue>\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* P\n** D\n\n* Archive\n\n** A\n:PROPERTIES:\n<2020-01-01 Wed>\n\n** B\n:PROPERTIES:\n*** C\n<2020-03-03 Tue>\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** B\n*** C\n<2020-03-03 Tue>\n",
+        "** B\n*** C\n<2020-03-03 Tue>\n",
+        "** A\n<2020-01-01 Wed>\n",
+        "** A\n<2020-01-01 Wed>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "2 trees archived"
+    },
+    {
+      "name": "archive-tag-all-done",
+      "input": {
+        "text": "* Project\n** DONE A\n** TODO B\n** C :ARCHIVE:\n** D\n",
+        "point": 0,
+        "keys": "C-u C-c C-x a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "n"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "* Project\n** DONE A                                                           :ARCHIVE:\n** TODO B\n** C :ARCHIVE:\n** D\n",
+      "visible": "* Project\n** DONE A                                                           :ARCHIVE:\n** TODO B\n** C :ARCHIVE:\n** D\n",
+      "point": 117,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 trees archived"
+    },
+    {
+      "name": "archive-tag-all-done-top",
+      "input": {
+        "text": "* DONE A\n* TODO B\n* C\n",
+        "point": 0,
+        "keys": "C-u C-c C-x a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "y"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "* DONE A\n* TODO B\n* C\n",
+      "visible": "* DONE A\n* TODO B\n* C\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "0 trees archived"
+    },
+    {
+      "name": "archive-region-every-heading",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* DONE A\n* B\n** C\n* D\n* E\n",
+        "point": 23,
+        "keys": "C-SPC C-u 4 C-n C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** DONE A\n:PROPERTIES:\n:ARCHIVE_TODO: DONE\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n** B\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** C\n\n** D\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n* E\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** DONE A\n:PROPERTIES:\n\n** B\n:PROPERTIES:\n*** C\n\n** D\n:PROPERTIES:\n\n* E\n",
+      "point": 23,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [
+        "* D\n\n",
+        "* D\n\n",
+        "* B\n** C\n",
+        "* B\n** C\n",
+        "* DONE A\n",
+        "* DONE A\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "archive-region-in-the-middle",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* A\n* B\ntext\n* C\n* D\n",
+        "point": 30,
+        "keys": "C-SPC C-n C-n C-n C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* A\n* B\ntext\n* Archive\n\n** C\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n** D\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* A\n* B\ntext\n* Archive\n\n** C\n:PROPERTIES:\n\n** D\n:PROPERTIES:\n\n",
+      "point": 36,
+      "mark": 30,
+      "mark_active": false,
+      "kill_ring": [
+        "* D\n\n",
+        "* D\n\n",
+        "* C\n",
+        "* C\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "archive-region-set-tag",
+      "input": {
+        "text": "* A\n* B\n** C\n* D\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n C-n C-c C-x a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "* A                                                                 :ARCHIVE:\n* B                                                                 :ARCHIVE:\n** C                                                                :ARCHIVE:\n* D\n",
+      "visible": "* A                                                                 :ARCHIVE:\n* B                                                                 :ARCHIVE:* D\n",
+      "point": 234,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Subtree archived [3 times]"
+    },
+    {
+      "name": "archive-region-all-done",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* P\n** DONE A\n** B\n* Q\n** DONE C\n* R\n",
+        "point": 23,
+        "keys": "C-SPC C-u 5 C-n C-u C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "y",
+          "n",
+          "y"
+        ],
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* P\n** DONE A\n** B\n* Q\n** DONE C\n* R\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* P\n** DONE A\n** B\n* Q\n** DONE C\n* R\n",
+      "point": 56,
+      "mark": 23,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid function: 4",
+      "message": "Mark set"
+    },
+    {
+      "name": "archive-region-folded",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* A\n** B\n* C\n",
+        "point": 23,
+        "keys": "S-TAB C-SPC C-n C-n C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** B\n\n** C\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** A\n:PROPERTIES:\n*** B\n\n** C\n:PROPERTIES:\n\n",
+      "point": 23,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [
+        "* C\n\n",
+        "* C\n\n",
+        "* A\n** B\n",
+        "* A\n** B\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Subtree archived under heading: * Archive"
     }
   ]
 }

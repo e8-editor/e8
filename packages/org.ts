@@ -1084,7 +1084,15 @@ function currentIndex(): HeadingIndex {
     const sorted = [...keywords].sort((a, b) => b.length - a.length);
     const changes = headingChanges.get(name);
     headingChanges.delete(name);
-    const followed = index !== undefined && index.keywords === keywordsKey && changes !== undefined && followChanges(index, changes, keywords, sorted);
+    // Widened, as a change at a narrowing's end may move headings past it.
+    const followed =
+      index !== undefined &&
+      index.keywords === keywordsKey &&
+      changes !== undefined &&
+      e8.saveRestriction(() => {
+        e8.widen();
+        return followChanges(index!, changes, keywords, sorted);
+      });
     if (!followed) {
       index = { tick, size: e8.bufferSize(), keywords: keywordsKey, all: scanHeadings(keywords, sorted), pending: [], epoch: 0, shared: false };
       headingIndexes.set(name, index);
@@ -4572,7 +4580,7 @@ const todoCommand = e8.defineCommand({
         todo(1, fastTodoSelection(all[i].todo) ?? "");
       } else todo(1);
     };
-    if (!forEachHeadingInRegion(change, true)) change();
+    if (!forEachHeadingInRegion(change, { hiddenPoint: true })) change();
   },
 });
 
@@ -4586,12 +4594,24 @@ let mapRegionStart: Marker | undefined;
  * Runs body at each visible heading in the active region, as org-map-entries
  * does for commands when org-loop-over-headlines-in-active-region is on.
  * Returns whether it applied.
+ *
+ * With hiddenPoint, a command that gives org-map-entries (when
+ * (org-invisible-p) (org-end-of-subtree nil t)) to skip with only moves
+ * point to the end of a hidden subtree it starts in. With hidden, headings
+ * hidden when reached are visited too. With narrow, the region is narrowed
+ * to as org-map-entries narrows, so what body adds at the end of the
+ * buffer goes there. With fromHeading, the next heading is looked for from
+ * where this one started, as a body that removes its subtree, as
+ * org-archive-subtree does, sets org-map-continue-from.
  */
-function forEachHeadingInRegion(body: () => void, todoQuirk = false): boolean {
+export function forEachHeadingInRegion(
+  body: () => void,
+  { hiddenPoint = false, hidden = false, narrow = false, fromHeading = false } = {},
+): boolean {
   const mark = e8.mark();
   if (!orgRegionActive() || mark === undefined || e8.variable("org-loop-over-headlines-in-active-region") !== true) return false;
   const [rb, re] = [Math.min(mark, e8.point()), Math.max(mark, e8.point())];
-  if (todoQuirk && e8.invisibleAt(e8.point())) {
+  if (hiddenPoint && e8.invisibleAt(e8.point())) {
     // org-todo gives org-map-entries (when (org-invisible-p) (org-end-of-subtree
     // nil t)) to skip with, which runs once, there and then: point goes to the
     // end of the hidden subtree, and that position skips every heading.
@@ -4605,18 +4625,29 @@ function forEachHeadingInRegion(body: () => void, todoQuirk = false): boolean {
   const atHeadingStart = re === e8.lineStart(lineAt(re)) && parseHeading(lineAt(re)) !== undefined;
   const end = marker(atHeadingStart ? re : (headings().find((h) => h.start > re)?.start ?? e8.bufferSize()));
   const origin = marker(e8.point());
-  try {
+  const loop = () => {
     let at = marker(rb);
     for (;;) {
       const h = headings().find((x) => x.start >= at.pos && x.start < end.pos);
       if (!h) break;
       dropMarker(at);
       at = marker(h.end);
-      if (e8.invisibleAt(h.start)) continue;
+      if (!hidden && e8.invisibleAt(h.start)) continue;
       e8.gotoChar(h.start);
+      const line = e8.lineText(h.line);
       body();
+      // From where it started, unless the heading is still there.
+      if (fromHeading && !(h.start < e8.pointMax() && e8.lineText(lineAt(h.start)) === line && h.start === e8.lineStart(lineAt(h.start)))) at.pos = h.start;
     }
     dropMarker(at);
+  };
+  try {
+    if (narrow)
+      e8.saveRestriction(() => {
+        e8.narrowToRegion(rb, end.pos);
+        loop();
+      });
+    else loop();
   } finally {
     e8.gotoChar(origin.pos);
     dropMarker(origin);
@@ -7190,7 +7221,7 @@ const shiftRight = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-up-day");
     // org-todo, which loops over the headings in an active region.
     else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(1, undefined, true), true)) todo(1, undefined, true);
+      if (!forEachHeadingInRegion(() => todo(1, undefined, true), { hiddenPoint: true })) todo(1, undefined, true);
     }
     else if (itemLine(lineAt())) cycleListBullet();
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
@@ -7206,7 +7237,7 @@ const shiftLeft = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-down-day");
     // org-todo, which loops over the headings in an active region.
     else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(-1, undefined, true), true)) todo(-1, undefined, true);
+      if (!forEachHeadingInRegion(() => todo(-1, undefined, true), { hiddenPoint: true })) todo(-1, undefined, true);
     }
     else if (itemLine(lineAt())) cycleListBullet("previous");
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();

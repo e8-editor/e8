@@ -5328,17 +5328,19 @@ declare global {
        */
       "org-align-tags": [];
       /**
-       * Set the ARCHIVE tag.
+       * Set the ARCHIVE tag, on every heading of an active region.
        *
        * Defined in packages/org-archive.ts.
        */
       "org-archive-set-tag": [];
       /**
-       * Move the current subtree to the archive: org-archive-location's heading in this file or another, or the location an ARCHIVE property or #+ARCHIVE: line gives, with properties saying when and from where it came.
+       * Move the current subtree to the archive: org-archive-location's heading in this file or another, or the location an ARCHIVE property or #+ARCHIVE: line gives, with properties saying when and from where it came. With C-u, archive the trees with no open TODO, and with C-u C-u those with a timestamp before today, asking for each: the children of the heading point is on, else every top-level tree. With the region active, archive every heading in it (org-loop-over-headlines-in-active-region).
+       *
+       * @param findDone raw prefix argument
        *
        * Defined in packages/org-archive.ts.
        */
-      "org-archive-subtree": [];
+      "org-archive-subtree": [findDone?: PrefixArg | boolean];
       /**
        * Archive the current subtree with the default command, org-archive-default-command.
        *
@@ -6622,11 +6624,13 @@ declare global {
        */
       "org-todo-set": [state: string];
       /**
-       * Toggle the archive tag for the current headline, folding its subtree when it is set.
+       * Toggle the archive tag for the current headline, folding its subtree when it is set. With a prefix argument, offer to tag each child, or each top-level tree, with no open TODO. With the region active, toggle every heading in it.
+       *
+       * @param findDone raw prefix argument
        *
        * Defined in packages/org-archive.ts.
        */
-      "org-toggle-archive-tag": [];
+      "org-toggle-archive-tag": [findDone?: PrefixArg | boolean];
       /**
        * Tick or untick the checkbox of the item point is on, or of the items in the region or under the heading. With C-u, add a checkbox to the item, or remove its checkbox.
        *

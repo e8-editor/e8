@@ -343,5 +343,344 @@
         "'ltags"
       ]
     }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-all-done-at-the-top",
+    "text": "#+ARCHIVE: ::* Archive\n* DONE A\n* TODO B\n* C\n** TODO D\n* E\n** DONE F\n",
+    "keys": "C-u C-c C-x C-s",
+    "point": 0,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "y",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-all-done-children",
+    "text": "#+ARCHIVE: ::* Archive\n* Project\n** DONE A\n** TODO B\n** C\n*** DONE D\n*** TODO E\n** F\n* Other\n",
+    "keys": "C-u C-c C-x C-s",
+    "point": 26,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-all-done-declined",
+    "text": "* Project\n** DONE A\n** B\n",
+    "keys": "C-u C-c C-x C-s",
+    "point": 3,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "n",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-all-done-on-a-body-line",
+    "text": "#+ARCHIVE: ::* Archive\n* A\nbody\n* TODO B\n",
+    "keys": "C-u C-c C-x C-s",
+    "point": 27,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-all-done-lowercase-todo",
+    "text": "#+ARCHIVE: ::* Archive\n* Project\n** todo A\n** DONE B\n",
+    "keys": "C-u C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "y"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-all-old",
+    "text": "#+ARCHIVE: ::* Archive\n* A\nSCHEDULED: <2020-01-01 Wed>\n* B\n<2090-01-01 Sun>\n* C\n<2020-01-01 Wed>--<2090-01-01 Sun>\n* D\n<2020-01-01 Wed>--<2020-01-05 Sun>\n* E\n[2020-01-01 Wed]\n* F\ntext <2020-02-02 Sun> and <2090-01-01 Sun>\n* G\n<2090-01-01 Sun> <2020-01-01 Wed>\n",
+    "keys": "C-u C-u C-c C-x C-s",
+    "point": 0,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "y",
+      "y",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-all-old-children",
+    "text": "#+ARCHIVE: ::* Archive\n* P\n** A\n<2020-01-01 Wed>\n** B\n*** C\n<2020-03-03 Tue>\n** D\n",
+    "keys": "C-u C-u C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "y",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-tag-all-done",
+    "text": "* Project\n** DONE A\n** TODO B\n** C :ARCHIVE:\n** D\n",
+    "keys": "C-u C-c C-x a",
+    "point": 0,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "n"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-tag-all-done-top",
+    "text": "* DONE A\n* TODO B\n* C\n",
+    "keys": "C-u C-c C-x a",
+    "point": 0,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "y"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-region-every-heading",
+    "text": "#+ARCHIVE: ::* Archive\n* DONE A\n* B\n** C\n* D\n* E\n",
+    "keys": "C-SPC C-u 4 C-n C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-region-in-the-middle",
+    "text": "#+ARCHIVE: ::* Archive\n* A\n* B\ntext\n* C\n* D\n",
+    "keys": "C-SPC C-n C-n C-n C-c C-x C-s",
+    "point": 30,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-region-set-tag",
+    "text": "* A\n* B\n** C\n* D\n",
+    "keys": "C-SPC C-n C-n C-n C-c C-x a",
+    "point": 0,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-region-all-done",
+    "text": "#+ARCHIVE: ::* Archive\n* P\n** DONE A\n** B\n* Q\n** DONE C\n* R\n",
+    "keys": "C-SPC C-u 5 C-n C-u C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "answers": [
+      "y",
+      "n",
+      "y"
+    ],
+    "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-oracle-archive.org",
+    "today": "2026-11-04",
+    "name": "archive-region-folded",
+    "text": "#+ARCHIVE: ::* Archive\n* A\n** B\n* C\n",
+    "keys": "S-TAB C-SPC C-n C-n C-c C-x C-s",
+    "point": 23,
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "message": true
   }
 ]
