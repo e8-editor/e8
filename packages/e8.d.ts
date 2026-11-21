@@ -5176,7 +5176,7 @@ declare global {
        */
       "org-add-note": [];
       /**
-       * Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, M for those with a TODO state not done.
+       * Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, M for those with a TODO state not done, s for the entries a search picks, S for those with a TODO state not done.
        *
        * Defined in packages/org-agenda.ts.
        */

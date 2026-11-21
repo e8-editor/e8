@@ -2745,6 +2745,148 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "search-view-phrase-over-a-line-end",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens\nand milk\n* todo list for the party\n* TODO Real task\n** Deep child mentions zebra\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "gardens and milk"
+        ]
+      },
+      "text": "Search words: gardens and milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n",
+      "visible": "Search words: gardens and milk\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Read book\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-todo-only-ignores-case",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens\nand milk\n* todo list for the party\n* TODO Real task\n** Deep child mentions zebra\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "S",
+          "party"
+        ]
+      },
+      "text": "Search words: party\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  todo list for the party\n",
+      "visible": "Search words: party\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  todo list for the party\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "search-view-fresh-search-after-todo-only",
+      "input": {
+        "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens\nand milk\n* todo list for the party\n* TODO Real task\n** Deep child mentions zebra\n",
+        "point": 0,
+        "keys": "C-u r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "s",
+          "!task",
+          "child"
+        ]
+      },
+      "text": "Search words: child\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Deep child mentions zebra\n",
+      "visible": "Search words: child\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda:  Deep child mentions zebra\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
     }
   ]
 }

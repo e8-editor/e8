@@ -16,6 +16,7 @@ import {
   isDone,
   keywordLines,
   makeTagsMatcher,
+  notDoneRegexp,
   reducedLevel,
   scanTags,
   today,
@@ -449,7 +450,7 @@ let agendaView:
   | { kind: "week"; start: number }
   | { kind: "todo" }
   | { kind: "tags"; todoOnly: boolean; match: string }
-  | { kind: "search"; todoOnly: boolean; string: string; boolean: boolean } = { kind: "todo" };
+  | { kind: "search"; todoOnly: boolean; todoOnlyArg: boolean; string: string; boolean: boolean } = { kind: "todo" };
 let agendaLines: (AgendaItem | undefined)[] = [];
 
 /**
@@ -718,7 +719,8 @@ for (const [name, value, doc] of [
 
 /** Splits the search string into its words, a word ending in \ joined to the next and a {regexp} kept whole, as org-search-view does. */
 function searchWords(string: string): string[] {
-  const split = string.split(/\s+/).filter((w) => w !== "");
+  // On the whitespace split-string's default takes, not every Unicode space.
+  const split = string.split(/[ \f\t\n\r\v]+/).filter((w) => w !== "");
   const joined: string[] = [];
   while (split.length > 0) {
     let w = split.shift()!;
@@ -745,7 +747,8 @@ function searchWords(string: string): string[] {
  * with : matches whole words. `editAt` asks for the string again with
  * point there, counting from 1, as [ and ] do.
  */
-function searchView(todoOnly: boolean, string?: string, editAt?: number): void {
+function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): void {
+  let todoOnly = todoOnlyArg;
   let fullWords = truthy(e8.variable("org-agenda-search-view-force-full-words"));
   if (editAt !== undefined || string === undefined || !/\S/.test(string)) {
     const prompt = truthy(e8.variable("org-agenda-search-view-always-boolean")) ? "[+-]Word/{Regexp} ...: " : "Phrase or [+-]Word/{Regexp} ...: ";
@@ -822,6 +825,8 @@ function searchView(todoOnly: boolean, string?: string, editAt?: number): void {
           const skipped = skippedHeadings(all);
           const maxLevel = Number(e8.variable("org-agenda-search-view-max-outline-level") ?? 0);
           const tooDeep = (k: number) => maxLevel !== 0 && reducedLevel(all[k].level) > maxLevel;
+          // Any line of the entry, ignoring case, as org-search-view matches it against the entry's text.
+          const todoRegexp = `^\\*+[ \t]+${notDoneRegexp()}`;
           e8.gotoChar(Math.max(e8.pointMin(), all[0].start - 1));
           while (e8.reSearchForward(regexp, { noerror: true, caseFold: true }) !== undefined) {
             const lastSearchEnd = e8.point();
@@ -842,7 +847,7 @@ function searchView(todoOnly: boolean, string?: string, editAt?: number): void {
             }
             const text = e8.bufferSubstringNoProperties(beg, headlinesOnly ? e8.lineEnd(h.line) : end);
             const has = (re: string) => e8.stringMatch(re, text, { caseFold: true }) !== undefined;
-            const wanted = minus.every((re) => !has(re)) && plus.every(has) && (!todoOnly || (h.todo !== undefined && !isDone(h.todo)));
+            const wanted = minus.every((re) => !has(re)) && plus.every(has) && (!todoOnly || has(todoRegexp));
             if (wanted) {
               const cat = cats[i];
               const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
@@ -859,7 +864,8 @@ function searchView(todoOnly: boolean, string?: string, editAt?: number): void {
     { text: "Press \u2018[\u2019, \u2018]\u2019 to add/sub word, \u2018{\u2019, \u2018}\u2019 to add/sub regexp, \u2018C-u r\u2019 for a fresh search" },
   ];
   for (const item of items) lines.push({ text: item.text, item });
-  agendaView = { kind: "search", todoOnly, string: query, boolean };
+  // The argument, not what ! made it, for C-u r, as the redo command is made before ! is read; the query's own for [ and ].
+  agendaView = { kind: "search", todoOnly, todoOnlyArg, string: query, boolean };
   showAgenda(lines, 0);
 }
 
@@ -869,7 +875,7 @@ function redoAgenda(): void {
   // C-u r asks for the match again, as the tags view's redo command does.
   else if (agendaView.kind === "tags") tagsView(agendaView.todoOnly, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.match);
   // And the search view's, for the string.
-  else if (agendaView.kind === "search") searchView(agendaView.todoOnly, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.string);
+  else if (agendaView.kind === "search") searchView(agendaView.todoOnlyArg, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.string);
   else todoList();
   e8.gotoChar(e8.lineStart(Math.min(line, e8.lineCount() - 1)));
 }
@@ -920,7 +926,7 @@ function manipulateQuery(char: string): void {
   let string = view.string.replace(/(?: +| +[-+](?:\{\})?)$/, "");
   const added: Record<string, string> = { "[": " +", "]": " -", "{": " +{}", "}": " -{}" };
   string += view.boolean ? added[char] : " ";
-  searchView(view.todoOnly, string, string.length + (char === "{" || char === "}" ? 0 : 1));
+  searchView(view.todoOnly, string, charCount(string) + (char === "{" || char === "}" ? 0 : 1));
 }
 
 const queryCommands = ([["add", "[", "a word"], ["subtract", "]", "a word not wanted"], ["add-re", "{", "a regexp"], ["subtract-re", "}", "a regexp not wanted"]] as const).map(
@@ -937,7 +943,9 @@ const queryCommands = ([["add", "[", "a word"], ["subtract", "]", "a word not wa
 
 e8.defineCommand({
   name: "org-agenda",
-  doc: "Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, M for those with a TODO state not done.",
+  doc:
+    "Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, " +
+    "M for those with a TODO state not done, s for the entries a search picks, S for those with a TODO state not done.",
   run: () => {
     const key = agendaDispatch();
     if (key === "a") weekAgenda(weekStart(dayNumber(today_())));

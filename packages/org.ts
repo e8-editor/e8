@@ -8631,7 +8631,7 @@ e8.defineCommand({
 });
 
 /** The TODO states not done, as a regexp alternative, as org-not-done-regexp. */
-function notDoneRegexp(): string {
+export function notDoneRegexp(): string {
   return `\\(${todoSets().flatMap((s) => s.todo).map((k) => k.replace(/[[*.\\?+^$]/g, "\\$&")).join("\\|")}\\)`;
 }
 
