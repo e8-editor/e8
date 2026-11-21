@@ -8429,7 +8429,7 @@ function comparison(op: string, kind: "number" | "string" | "time"): (a: never, 
 }
 
 /** A heading's level counting only odd ones with org-odd-levels-only, as org-reduced-level. */
-function reducedLevel(level: number): number {
+export function reducedLevel(level: number): number {
   return e8.variable("org-odd-levels-only") === true ? Math.floor(level / 2) + 1 : level;
 }
 
@@ -8631,7 +8631,7 @@ e8.defineCommand({
 });
 
 /** The TODO states not done, as a regexp alternative, as org-not-done-regexp. */
-function notDoneRegexp(): string {
+export function notDoneRegexp(): string {
   return `\\(${todoSets().flatMap((s) => s.todo).map((k) => k.replace(/[[*.\\?+^$]/g, "\\$&")).join("\\|")}\\)`;
 }
 

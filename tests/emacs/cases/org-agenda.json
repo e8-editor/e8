@@ -686,5 +686,457 @@
     "vars": {
       "org-tags-match-list-sublevels": "'indented"
     }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-phrase",
+    "answers": [
+      "s",
+      "milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-phrase-across-lines",
+    "answers": [
+      "s",
+      "gardens   and milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-boolean",
+    "answers": [
+      "s",
+      "+milk -gardens"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-regexp",
+    "answers": [
+      "s",
+      "{b..k}"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-regexp-excluded",
+    "answers": [
+      "s",
+      "+milk -{sh.p}"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-headlines-only",
+    "answers": [
+      "s",
+      "*milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-todo-only",
+    "answers": [
+      "s",
+      "!milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-todo-only-key",
+    "answers": [
+      "S",
+      "milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-quoted",
+    "answers": [
+      "s",
+      "+\"corner shop\""
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-full-words",
+    "answers": [
+      "s",
+      ":+mil"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-only-negative",
+    "answers": [
+      "s",
+      "-milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "g",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-redo",
+    "answers": [
+      "s",
+      "milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "C-u r",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-fresh-search",
+    "answers": [
+      "s",
+      "milk",
+      "gardens"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "[",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-add-word",
+    "answers": [
+      "s",
+      "+milk",
+      "+milk +shop"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-max-level",
+    "answers": [
+      "s",
+      "gardens"
+    ],
+    "vars": {
+      "org-agenda-search-view-max-outline-level": 1
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-force-full-words",
+    "answers": [
+      "s",
+      "+mil"
+    ],
+    "vars": {
+      "org-agenda-search-view-force-full-words": true
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-always-boolean",
+    "answers": [
+      "s",
+      "milk gardens"
+    ],
+    "vars": {
+      "org-agenda-search-view-always-boolean": true
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "milk in the preamble\n* A\nno\n* B milk\n",
+    "name": "search-view-before-first-heading",
+    "answers": [
+      "s",
+      "milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "n n RET",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-visit",
+    "answers": [
+      "s",
+      "gardens"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens and milk\n* DONE Old milk\n** Child mentions gardens\n* COMMENT Hidden milk\n* Other\nnothing here\n",
+    "name": "search-view-includes-comment-when-asked",
+    "answers": [
+      "s",
+      "milk"
+    ],
+    "vars": {
+      "org-agenda-skip-comment-trees": false
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens\nand milk\n* todo list for the party\n* TODO Real task\n** Deep child mentions zebra\n",
+    "name": "search-view-phrase-over-a-line-end",
+    "answers": [
+      "s",
+      "gardens and milk"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens\nand milk\n* todo list for the party\n* TODO Real task\n** Deep child mentions zebra\n",
+    "name": "search-view-todo-only-ignores-case",
+    "answers": [
+      "S",
+      "party"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "C-u r",
+    "call": [
+      "org-agenda"
+    ],
+    "text": "* TODO Buy milk :shop:\nfrom the corner shop\n* Read book\nabout gardens\nand milk\n* todo list for the party\n* TODO Real task\n** Deep child mentions zebra\n",
+    "name": "search-view-fresh-search-after-todo-only",
+    "answers": [
+      "s",
+      "!task",
+      "child"
+    ]
   }
 ]

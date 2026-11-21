@@ -77,6 +77,7 @@ mod org;
 mod org_clock_display;
 mod org_goto;
 mod org_id;
+mod org_search_view;
 mod org_select;
 mod org_sparse_tree;
 mod org_src;

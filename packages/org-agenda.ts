@@ -2,10 +2,28 @@
 // deadlines and timestamps from org-agenda-files, and the list of TODO
 // items, in the *Org Agenda* buffer, whose keys act on the entries they show.
 
-import { type DateTime, type Heading, PLANNING, allKeywords, at, categories, category, entryEnd, headingIndex, headings, isDone, keywordLines, makeTagsMatcher, scanTags, today } from "org";
+import {
+  type DateTime,
+  type Heading,
+  PLANNING,
+  allKeywords,
+  at,
+  categories,
+  category,
+  entryEnd,
+  headingIndex,
+  headings,
+  isDone,
+  keywordLines,
+  makeTagsMatcher,
+  notDoneRegexp,
+  reducedLevel,
+  scanTags,
+  today,
+} from "org";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
-import { allMatches, charCount, eraseBuffer } from "subr";
+import { allMatches, charCount, eraseBuffer, regexpQuote, truthy } from "subr";
 
 e8.defineVariable({
   name: "org-agenda-window-setup",
@@ -428,7 +446,11 @@ function byUrgency(items: AgendaItem[]): AgendaItem[] {
 }
 
 /** What the agenda buffer shows, for its keys to act on and g to rebuild. */
-let agendaView: { kind: "week"; start: number } | { kind: "todo" } | { kind: "tags"; todoOnly: boolean; match: string } = { kind: "todo" };
+let agendaView:
+  | { kind: "week"; start: number }
+  | { kind: "todo" }
+  | { kind: "tags"; todoOnly: boolean; match: string }
+  | { kind: "search"; todoOnly: boolean; todoOnlyArg: boolean; string: string; boolean: boolean } = { kind: "todo" };
 let agendaLines: (AgendaItem | undefined)[] = [];
 
 /**
@@ -681,11 +703,179 @@ function tagsView(todoOnly: boolean, match?: string): void {
   showAgenda(lines, 0);
 }
 
+for (const [name, value, doc] of [
+  [
+    "org-agenda-search-view-always-boolean",
+    false,
+    "Whether the search view's string is always a Boolean search of words, \"quoted phrases\" and {regexps}, each needed, or with - not wanted; when nil, the default, it is one phrase unless it starts with +, - or {.",
+  ],
+  ["org-agenda-search-view-force-full-words", false, "Whether the search view's words match only whole words, not parts of words."],
+  ["org-agenda-search-view-max-outline-level", 0, "The deepest level of heading the search view shows: a match deeper shows its heading at this level. 0, the default, for any."],
+  ["org-agenda-text-search-extra-files", [], "Files the search view searches besides org-agenda-files."],
+  ["org-agenda-search-history", [], "The strings searched for in the search view, most recent first."],
+] as const) {
+  e8.defineVariable({ name, value: value as unknown as e8.Value, doc });
+}
+
+/** Splits the search string into its words, a word ending in \ joined to the next and a {regexp} kept whole, as org-search-view does. */
+function searchWords(string: string): string[] {
+  // On the whitespace split-string's default takes, not every Unicode space.
+  const split = string.split(/[ \f\t\n\r\v]+/).filter((w) => w !== "");
+  const joined: string[] = [];
+  while (split.length > 0) {
+    let w = split.shift()!;
+    while (/\\$/.test(w) && split.length > 0) w = `${w.slice(0, -1)} ${split.shift()}`;
+    joined.push(w);
+  }
+  const words: string[] = [];
+  while (joined.length > 0) {
+    let w = joined.shift()!;
+    if (/^[-+]?\{/.test(w) && !/\}$/.test(w)) {
+      while (joined.length > 0 && !/\}$/.test(joined[0])) w = `${w} ${joined.shift()}`;
+      w = `${w} ${joined.shift() ?? ""}`;
+    }
+    words.push(w);
+  }
+  return words;
+}
+
+/**
+ * The entries in org-agenda-files, and org-agenda-text-search-extra-files,
+ * a phrase or a Boolean search of words and regexps picks, as
+ * org-search-view shows them. A string starting with * looks in headings
+ * only, with ! at TODO entries not done only, as `todoOnly` does too, and
+ * with : matches whole words. `editAt` asks for the string again with
+ * point there, counting from 1, as [ and ] do.
+ */
+function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): void {
+  let todoOnly = todoOnlyArg;
+  let fullWords = truthy(e8.variable("org-agenda-search-view-force-full-words"));
+  if (editAt !== undefined || string === undefined || !/\S/.test(string)) {
+    const prompt = truthy(e8.variable("org-agenda-search-view-always-boolean")) ? "[+-]Word/{Regexp} ...: " : "Phrase or [+-]Word/{Regexp} ...: ";
+    const at = editAt;
+    const place = () => {
+      e8.removeHook("minibuffer-setup-hook", place);
+      if (at !== undefined) e8.gotoChar(Math.min(e8.minibufferPromptEnd() + at - 1, e8.pointMax()));
+    };
+    if (at !== undefined) e8.addHook("minibuffer-setup-hook", place);
+    try {
+      string = e8.readString(prompt, { initial: editAt !== undefined ? string : undefined, history: "org-agenda-search-history" });
+    } finally {
+      e8.removeHook("minibuffer-setup-hook", place);
+    }
+  }
+  const query = string;
+  let words = query;
+  let headlinesOnly = false;
+  if (words.startsWith("*")) [headlinesOnly, words] = [true, words.slice(1)];
+  if (words.startsWith("!")) [todoOnly, words] = [true, words.slice(1)];
+  if (words.startsWith(":")) [fullWords, words] = [true, words.slice(1)];
+  // Read in the agenda buffer, as org-agenda-prepare has made it current by then.
+  const alwaysBoolean = e8.withCurrentBuffer(e8.getBufferCreate(AGENDA), () => truthy(e8.variable("org-agenda-search-view-always-boolean")));
+  const boolean = alwaysBoolean || /^[-+{]/.test(words);
+  let list = searchWords(words);
+  if (boolean) {
+    // "Quoted words" are one, with their spaces.
+    const quoted: string[] = [];
+    while (list.length > 0) {
+      let w = list.shift()!;
+      if (w.startsWith('"') || (w.length > 1 && "+-".includes(w[0]) && w[1] === '"')) {
+        while (list.length > 0 && !w.endsWith('"')) w = `${w} ${list.shift()}`;
+      }
+      w = w.replace(/^([-+]?)"/, "$1");
+      if (w.endsWith('"')) w = w.slice(0, -1);
+      quoted.push(w);
+    }
+    list = quoted;
+  }
+  const plus: string[] = [];
+  const minus: string[] = [];
+  if (boolean) {
+    for (let w of list) {
+      let neg = false;
+      if (w.startsWith("-")) [neg, w] = [true, w.slice(1)];
+      else if (w.startsWith("+")) w = w.slice(1);
+      const re = /^\{.*\}$/s.test(w) ? w.slice(1, -1) : fullWords ? `\\<${regexpQuote(w.toLowerCase())}\\>` : regexpQuote(w.toLowerCase());
+      (neg ? minus : plus).unshift(re);
+    }
+  } else plus.push(list.map((w) => regexpQuote(w)).join("\\s-+"));
+  // The longest searched for, the others checked in each entry it finds.
+  plus.sort((a, b) => b.length - a.length);
+  let regexp = "^\\*+ ";
+  if (plus.length > 0) {
+    regexp = plus.shift()!;
+    if (headlinesOnly) regexp = `^\\*+ .*?${regexp}`;
+  }
+  const extra = e8.variable("org-agenda-text-search-extra-files");
+  const files = (Array.isArray(extra) ? extra : []).filter((f): f is string => typeof f === "string");
+  const buffers = agendaBuffers();
+  for (const file of files) {
+    const buffer = e8.findFileNoselect(e8.expandFileName(file));
+    if (!buffers.includes(buffer)) buffers.push(buffer);
+  }
+  const items: AgendaItem[] = [];
+  for (const buffer of buffers) {
+    e8.withCurrentBuffer(buffer, () =>
+      widened(() =>
+        e8.saveExcursion(() => {
+          if (e8.variable("major-mode") !== "org-mode" && !e8.derivedModeP("org-mode")) throw new Error(`Agenda file ${e8.bufferFileName()} is not in Org mode`);
+          const all = headings();
+          if (all.length === 0) return;
+          const cats = categories(all);
+          const skipped = skippedHeadings(all);
+          const maxLevel = Number(e8.variable("org-agenda-search-view-max-outline-level") ?? 0);
+          const tooDeep = (k: number) => maxLevel !== 0 && reducedLevel(all[k].level) > maxLevel;
+          // Any line of the entry, ignoring case, as org-search-view matches it against the entry's text.
+          const todoRegexp = `^\\*+[ \t]+${notDoneRegexp()}`;
+          e8.gotoChar(Math.max(e8.pointMin(), all[0].start - 1));
+          while (e8.reSearchForward(regexp, { noerror: true, caseFold: true }) !== undefined) {
+            const lastSearchEnd = e8.point();
+            let i = headingIndex(all, e8.lineOf(e8.point()));
+            if (i === undefined) continue;
+            while (i > 0 && tooDeep(i)) i--;
+            const h = all[i];
+            const beg = e8.lineStart(h.line);
+            let next = i + 1;
+            while (next < all.length && tooDeep(next)) next++;
+            const end = all[next]?.start ?? e8.pointMax();
+            if (skipped[i]) {
+              // On from the end of the subtree, as org-agenda-skip goes there.
+              let after = i + 1;
+              while (after < all.length && all[after].level > h.level) after++;
+              e8.gotoChar(Math.max(e8.point(), (all[after]?.start ?? e8.pointMax() + 1) - 1));
+              continue;
+            }
+            const text = e8.bufferSubstringNoProperties(beg, headlinesOnly ? e8.lineEnd(h.line) : end);
+            const has = (re: string) => e8.stringMatch(re, text, { caseFold: true }) !== undefined;
+            const wanted = minus.every((re) => !has(re)) && plus.every(has) && (!todoOnly || has(todoRegexp));
+            if (wanted) {
+              const cat = cats[i];
+              const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
+              items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: 1000 });
+            }
+            e8.gotoChar(Math.max(end - 1, lastSearchEnd));
+          }
+        }),
+      ),
+    );
+  }
+  const lines: { text: string; item?: AgendaItem }[] = [
+    { text: `Search words: ${query}` },
+    { text: "Press \u2018[\u2019, \u2018]\u2019 to add/sub word, \u2018{\u2019, \u2018}\u2019 to add/sub regexp, \u2018C-u r\u2019 for a fresh search" },
+  ];
+  for (const item of items) lines.push({ text: item.text, item });
+  // The argument, not what ! made it, for C-u r, as the redo command is made before ! is read; the query's own for [ and ].
+  agendaView = { kind: "search", todoOnly, todoOnlyArg, string: query, boolean };
+  showAgenda(lines, 0);
+}
+
 function redoAgenda(): void {
   const line = e8.lineOf(e8.point());
   if (agendaView.kind === "week") weekAgenda(agendaView.start);
   // C-u r asks for the match again, as the tags view's redo command does.
   else if (agendaView.kind === "tags") tagsView(agendaView.todoOnly, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.match);
+  // And the search view's, for the string.
+  else if (agendaView.kind === "search") searchView(agendaView.todoOnlyArg, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.string);
   else todoList();
   e8.gotoChar(e8.lineStart(Math.min(line, e8.lineCount() - 1)));
 }
@@ -711,9 +901,51 @@ const tagsViewCommand = e8.defineCommand({
   run: (todoOnly) => tagsView(todoOnly !== null && todoOnly !== undefined),
 });
 
+const searchViewCommand = e8.defineCommand({
+  name: "org-search-view",
+  doc:
+    "Show the entries in org-agenda-files that a phrase picks, or a Boolean search: words and {regexps} each needed, or with - " +
+    "not wanted, \"quoted\" for spaces. Starting with * looks in headings only, ! at TODO entries only, : for whole words. " +
+    "With a prefix argument, only TODO entries not done.",
+  params: [{ name: "todoOnly", kind: "prefix" }],
+  run: (todoOnly) => searchView(todoOnly !== null && todoOnly !== undefined),
+});
+
+/**
+ * Adds to the search view's string and asks for it again, as
+ * org-agenda-manipulate-query: in a Boolean search, " +" or " -" for a
+ * word, " +{}" or " -{}" for a regexp, with point inside the braces.
+ */
+function manipulateQuery(char: string): void {
+  if (agendaView.kind !== "search") {
+    const type = agendaView.kind === "week" ? "agenda" : agendaView.kind;
+    throw new Error(`Cannot manipulate query for ${type}-type agenda buffers`);
+  }
+  const view = agendaView;
+  // What earlier calls added and was not used.
+  let string = view.string.replace(/(?: +| +[-+](?:\{\})?)$/, "");
+  const added: Record<string, string> = { "[": " +", "]": " -", "{": " +{}", "}": " -{}" };
+  string += view.boolean ? added[char] : " ";
+  searchView(view.todoOnly, string, charCount(string) + (char === "{" || char === "}" ? 0 : 1));
+}
+
+const queryCommands = ([["add", "[", "a word"], ["subtract", "]", "a word not wanted"], ["add-re", "{", "a regexp"], ["subtract-re", "}", "a regexp not wanted"]] as const).map(
+  ([name, char, what]) =>
+    [
+      char,
+      e8.defineCommand({
+        name: `org-agenda-manipulate-query-${name}`,
+        doc: `Add ${what} to the search view's string, and ask for it again.`,
+        run: () => manipulateQuery(char),
+      }),
+    ] as const,
+);
+
 e8.defineCommand({
   name: "org-agenda",
-  doc: "Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, M for those with a TODO state not done.",
+  doc:
+    "Show an agenda view, asking which by its key in *Agenda Commands*: a for the week's agenda, t for the TODO list, m for the headings a tags match picks, " +
+    "M for those with a TODO state not done, s for the entries a search picks, S for those with a TODO state not done.",
   run: () => {
     const key = agendaDispatch();
     if (key === "a") weekAgenda(weekStart(dayNumber(today_())));
@@ -721,6 +953,8 @@ e8.defineCommand({
     // With the prefix argument org-agenda had, as call-interactively hands on current-prefix-arg.
     else if (key === "m") e8.callWithPrefix(e8.prefixArg(), tagsViewCommand);
     else if (key === "M") e8.callWithPrefix(e8.prefixArg() ?? [4], tagsViewCommand);
+    else if (key === "s") e8.callWithPrefix(e8.prefixArg(), searchViewCommand);
+    else if (key === "S") e8.callWithPrefix(e8.prefixArg() ?? [4], searchViewCommand);
     else e8.userError(`E8 does not have that agenda view yet: ${key}`);
   },
 });
@@ -935,6 +1169,12 @@ e8.defineMajorMode({
     "The mode of the *Org Agenda* buffer. n and p move between lines, RET goes to an entry and TAB shows it in " +
     "another window, t changes its TODO state, g rebuilds the agenda, f and b move a week, . goes to today, " +
     "and q leaves.",
+  // Lines run off the window, and n and p move by them, as org-agenda-mode sets up.
+  setup: () => {
+    if (truthy(e8.variable("org-startup-truncated"))) e8.setVariable("truncate-lines", true);
+    e8.makeLocalVariable("line-move-visual");
+    e8.setVariable("line-move-visual", null);
+  },
   bindings: {
     n: agendaNext,
     p: agendaPrevious,
@@ -955,6 +1195,7 @@ e8.defineMajorMode({
     ":": "org-agenda-set-tags",
     ",": "org-agenda-priority",
     w: "org-agenda-refile",
+    ...Object.fromEntries(queryCommands),
   },
 });
 
