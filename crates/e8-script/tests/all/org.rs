@@ -1018,7 +1018,7 @@ fn clocks_go_into_the_logbook_as_emacs_puts_them() {
     ed.press("C-f C-f C-f C-f C-f C-f C-f C-c C-x C-i").unwrap();
     assert_eq!(text(&ed), entry("CLOCK: [2026-11-04 Wed 12:00]\n"));
     assert_eq!(ed.window_buffer().point(), 7);
-    assert_eq!(ed.echo(), Some("Clock starts at [2026-11-04 Wed 12:00] - "));
+    assert_eq!(ed.echo(), Some("Clock starts at [2026-11-04 Wed 12:00] - showing entire task time."));
     let mode_line = s.eval_expression(&mut ed, r#"String(e8.variable("org-mode-line-string"))"#).unwrap();
     assert_eq!(mode_line.trim_matches('"'), "[0:00] (Task) ");
     ed.press("C-c C-x C-o").unwrap();

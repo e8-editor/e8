@@ -171,6 +171,25 @@ while the case's keys are queued would read those instead."
       (when (looking-at "#\\+CAPTION: [^[\n]*\\(\\[[^]\n]*\\]\\)")
         (replace-match (format-time-string "[%Y-%m-%d %a %H:%M]" (e8-oracle--now)) t t nil 1)))))
 
+(defvar org-clock-start-time)
+(defvar org-clock-total-time)
+(defvar org-clock-marker)
+(defvar org-clock-history)
+(defvar org-clock-default-task)
+(defvar org-clock-interrupted-task)
+(defvar org-clock-mode-line-timer)
+
+(defun e8-oracle--clocked-time ()
+  "The running clock's minutes counted to noon on the case's fixed day, as E8's tests count them."
+  (+ (floor (float-time (time-subtract (e8-oracle--now) org-clock-start-time)) 60)
+     (or org-clock-total-time 0)))
+
+(defun e8-oracle--notification (notification)
+  "An Org notification in the echo area, as E8 shows one with no handler, not through D-Bus, which batch Emacs has none of."
+  (message "%s" notification))
+
+(advice-add 'org-show-notification :override #'e8-oracle--notification)
+
 (require 'calendar)
 (defvar org-agenda-files)
 (defvar org-capture-templates)
@@ -327,6 +346,17 @@ answers come, and then from its answers, as save-some-buffers' do."
     ;; grow the echo area and leave the windows a line short after it.
     (set-frame-size (selected-frame) 80 24)
     (set-frame-size (selected-frame) 80 25)
+    ;; A clock an earlier case left running is forgotten, not asked about
+    ;; as its buffer goes, and the clock's history starts afresh, as each
+    ;; E8 case starts with none.
+    (when (featurep 'org-clock)
+      (when (marker-buffer org-clock-marker)
+        (with-current-buffer (marker-buffer org-clock-marker)
+          (remove-hook 'kill-buffer-hook #'org-check-running-clock t)))
+      (when (timerp org-clock-mode-line-timer) (cancel-timer org-clock-mode-line-timer))
+      (setq org-clock-history nil)
+      (set-marker org-clock-default-task nil)
+      (set-marker org-clock-interrupted-task nil))
     ;; A fresh set of buffers, as E8 starts each case with: only the
     ;; ones Emacs needs, whose names start with a space, and its own.
     (dolist (b (buffer-list))
@@ -391,6 +421,7 @@ answers come, and then from its answers, as save-some-buffers' do."
       (advice-remove 'org-current-time #'e8-oracle--now)
       (advice-remove 'org-clock-special-range #'e8-oracle--range-now)
       (advice-remove 'org-clocktable-write-default #'e8-oracle--caption-now)
+      (advice-remove 'org-clock-get-clocked-time #'e8-oracle--clocked-time)
       (when-let* ((day (alist-get 'today case)))
         (setq e8-oracle--today
               (calendar-absolute-from-gregorian
@@ -401,7 +432,8 @@ answers come, and then from its answers, as save-some-buffers' do."
         (advice-add 'org-current-time :override #'e8-oracle--now)
         (require 'org-clock)
         (advice-add 'org-clock-special-range :filter-args #'e8-oracle--range-now)
-        (advice-add 'org-clocktable-write-default :around #'e8-oracle--caption-now))
+        (advice-add 'org-clocktable-write-default :around #'e8-oracle--caption-now)
+        (advice-add 'org-clock-get-clocked-time :override #'e8-oracle--clocked-time))
       (unless (alist-get 'find case)
         (buffer-enable-undo)
         (set-buffer-modified-p nil))

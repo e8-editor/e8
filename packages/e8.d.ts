@@ -5491,23 +5491,41 @@ declare global {
        */
       "org-clock-display": [arg?: PrefixArg | boolean];
       /**
-       * Go to the entry with the running clock, or the last one clocked.
+       * Go to the entry with the running clock, or the last one clocked. With C-u, to a task picked from those clocked lately.
+       *
+       * @param select raw prefix argument
        *
        * Defined in packages/org-clock.ts.
        */
-      "org-clock-goto": [];
+      "org-clock-goto": [select?: PrefixArg | boolean];
       /**
-       * Start a clock on the entry point is in: a CLOCK: line in its LOGBOOK drawer, the time shown in the mode line. A clock running elsewhere stops first.
+       * Start a clock on the entry point is in: a CLOCK: line in its LOGBOOK drawer, the time shown in the mode line. A clock running elsewhere stops first. With C-u, on a task picked from those clocked lately; with C-u C-u, on this entry, marking it the default task.
+       *
+       * @param select raw prefix argument
        *
        * Defined in packages/org-clock.ts.
        */
-      "org-clock-in": [];
+      "org-clock-in": [select?: PrefixArg | boolean];
       /**
-       * Start a clock again on the entry clocked last.
+       * Start a clock again on the entry clocked last. With C-u, on a task picked from those clocked lately.
+       *
+       * @param arg raw prefix argument
        *
        * Defined in packages/org-clock.ts.
        */
-      "org-clock-in-last": [];
+      "org-clock-in-last": [arg?: PrefixArg | boolean];
+      /**
+       * Mark the entry point is in as the default task, which C-u C-c C-x C-i always offers as d.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-mark-default-task": [];
+      /**
+       * Set the clocked entry's effort, hh:mm or minutes, or with a leading + or - change it by that much; the mode line shows it after the time clocked.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-modify-effort-estimate": [];
       /**
        * Stop the running clock, writing when it stopped and how long it ran.
        *
@@ -13375,11 +13393,23 @@ declare global {
        */
       "org-clock-clocktable-language-setup": Value;
       /**
+       * The running clock's entry's title, without TODO keyword, priority, COMMENT or tags.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-current-task": Value;
+      /**
        * The time org-clock-display sums with no prefix argument: "today", "yesterday", "thisweek", "lastweek", "thismonth", "lastmonth", "thisyear", "lastyear" or "untilnow".
        *
        * Defined in packages/org-clock.ts.
        */
       "org-clock-display-default-range": Value;
+      /**
+       * The running clock's entry's effort, shown in the mode line after the time clocked.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-effort": Value;
       /**
        * How a clock table writes a file's time and the words before it.
        *
@@ -13393,11 +13423,23 @@ declare global {
        */
       "org-clock-file-total-minutes": Value;
       /**
+       * How many recently clocked tasks C-u C-c C-x C-i offers.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-history-length": Value;
+      /**
        * Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.
        *
        * Defined in packages/org-clock.ts.
        */
       "org-clock-into-drawer": Value;
+      /**
+       * Which clocked time the mode line shows: "all", "today", "repeat" since LAST_REPEAT, "current" for this clock only, or "auto", since LAST_REPEAT if the entry has one, else all. An entry's CLOCK_MODELINE_TOTAL overrides it.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-mode-line-total": Value;
       /**
        * Whether a clock stopped after no time is taken out.
        *
@@ -13422,6 +13464,18 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-report-include-clocking-task": Value;
+      /**
+       * How long the clock in the mode line may be, cut there; 0 for no limit.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-string-limit": Value;
+      /**
+       * Text put before the clock in the mode line once it runs past the effort; nil shows the time in org-mode-line-clock-overrun instead.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-task-overrun-text": Value;
       /**
        * How a clock table writes its total time and the words before it.
        *
@@ -13996,6 +14050,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-scheduled-delay-days": Value;
+      /**
+       * A function given each Org notification, as a clock running past its effort; nil shows it in the echo area.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-show-notification-handler": Value;
       /**
        * Which timestamps the date sparse trees look at: nil for SCHEDULED and DEADLINE, or "all", "scheduled", "deadline", "active", "inactive" or "closed". c in org-sparse-tree cycles through them.
        *
@@ -16976,6 +17036,12 @@ declare global {
        */
       "org-mode-line-clock": FaceAttributes;
       /**
+       * The running clock in the mode line once it has run past the entry's effort.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-mode-line-clock-overrun": FaceAttributes;
+      /**
        * Priority cookies, such as [#A].
        *
        * Defined in packages/org.ts.
@@ -18011,6 +18077,10 @@ declare global {
        * Run before the capture is finished, as it begins to finish, in the capture's buffer.
        */
       "org-capture-prepare-finalize-hook": Value;
+      /**
+       * Functions called in *Clock Task Select* before a task is read.
+       */
+      "org-clock-before-select-task-hook": Value;
       /**
        * Functions called when a clock is cancelled.
        */

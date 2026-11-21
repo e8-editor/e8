@@ -1,0 +1,854 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "clock-select-recent",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "2"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 113,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-select-current",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "c"
+        ],
+        "message": true
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 83,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock starts at [2026-11-21 Sat 12:00] - showing entire task time."
+    },
+    {
+      "name": "clock-select-interrupted",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "i"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 113,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-select-quit",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "q"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Abort"
+    },
+    {
+      "name": "clock-select-x",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "x"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Abort"
+    },
+    {
+      "name": "clock-select-invalid",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "z"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid task choice z"
+    },
+    {
+      "name": "clock-select-none",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No recent clock"
+    },
+    {
+      "name": "clock-select-after-out",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i C-c C-x C-o M-< C-c C-n C-c C-x C-i C-c C-x C-o C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "2"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 113,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-select-no-interrupted",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i C-c C-x C-o M-< C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "i"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 83,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid task choice i"
+    },
+    {
+      "name": "clock-default-task",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-u C-u C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "d"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n:LOGBOOK:\n",
+      "point": 229,
+      "mark": 113,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-default-task-mark",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-n C-c C-n M-x M-< C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-mark-default-task",
+          "d"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": 120,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-history-length",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "3"
+        ],
+        "vars": {
+          "org-clock-history-length": 2
+        }
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n:LOGBOOK:\n",
+      "point": 199,
+      "mark": 83,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid task choice 3"
+    },
+    {
+      "name": "clock-history-dups",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "3"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 0,
+      "mark": 113,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid task choice 3"
+    },
+    {
+      "name": "clock-goto-select",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-u C-c C-x C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "2"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 0,
+      "mark": 83,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-goto-select-quit",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-n C-u C-c C-x C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "q"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 87,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No task selected"
+    },
+    {
+      "name": "clock-in-last-select",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i C-c C-x C-o C-u C-c C-x C-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "2"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 113,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-effort-modify",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-n C-c C-x C-i M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-modify-effort-estimate",
+          "+0:30"
+        ],
+        "message": true
+      },
+      "text": "* A\n* B\n:PROPERTIES:\n:Effort:   1:30\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* C\n",
+      "visible": "* A\n* B\n:PROPERTIES:\n:Effort:   1:30\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 4,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Effort is now 1:30"
+    },
+    {
+      "name": "clock-effort-modify-minutes",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-modify-effort-estimate",
+          "45"
+        ],
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:Effort:   0:45\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:PROPERTIES:\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Effort is now 0:45"
+    },
+    {
+      "name": "clock-effort-modify-less",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-n C-c C-x C-i M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-modify-effort-estimate",
+          "-1:30"
+        ],
+        "message": true
+      },
+      "text": "* A\n* B\n:PROPERTIES:\n:Effort:   0:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* C\n",
+      "visible": "* A\n* B\n:PROPERTIES:\n:Effort:   0:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 4,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Effort is now 0:00"
+    },
+    {
+      "name": "clock-effort-modify-units",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-modify-effort-estimate",
+          "2h"
+        ],
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:Effort:   2:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:PROPERTIES:\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Effort is now 2:00"
+    },
+    {
+      "name": "clock-effort-modify-bad",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-modify-effort-estimate",
+          "soon"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid duration format: \"soon\""
+    },
+    {
+      "name": "clock-effort-modify-no-clock",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-modify-effort-estimate"
+        ],
+        "message": true
+      },
+      "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Clock is not currently active"
+    },
+    {
+      "name": "clock-effort-set-while-clocked",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-n C-c C-x C-i C-c C-x e",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "2:00"
+        ],
+        "message": true
+      },
+      "text": "* A\n* B\n:PROPERTIES:\n:Effort:   2:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* C\n",
+      "visible": "* A\n* B\n:PROPERTIES:\n:Effort:   2:00\n:END:\n:LOGBOOK:\n* C\n",
+      "point": 4,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Effort is now 2:00"
+    },
+    {
+      "name": "clock-start-since-repeat",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-20 Fri 10:00]\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-20 Fri 10:00]\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* A\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-20 Fri 10:00]\n:END:\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock starts at [2026-11-21 Sat 12:00] - showing task time since last repeat."
+    },
+    {
+      "name": "clock-start-modeline-total",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: today\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: today\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: today\n:END:\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock starts at [2026-11-21 Sat 12:00] - showing today's task time."
+    },
+    {
+      "name": "clock-start-modeline-current",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: current\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: current\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: current\n:END:\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock starts at [2026-11-21 Sat 12:00] - showing time in current clock instance"
+    },
+    {
+      "name": "clock-start-total-variable",
+      "input": {
+        "text": "* A\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true,
+        "vars": {
+          "org-clock-mode-line-total": "'today"
+        }
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* A\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock starts at [2026-11-21 Sat 12:00] - showing today's task time."
+    },
+    {
+      "name": "clock-start-unknown-total",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: never\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: never\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* A\n:PROPERTIES:\n:CLOCK_MODELINE_TOTAL: never\n:END:\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock starts at [2026-11-21 Sat 12:00] - "
+    },
+    {
+      "name": "clock-select-after-three",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "2"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n:LOGBOOK:\n",
+      "point": 229,
+      "mark": 83,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-select-first",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-< C-c C-n C-c C-x C-i M-< C-c C-n C-c C-n C-c C-x C-i C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "1"
+        ],
+        "message": true
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\n* C\n:LOGBOOK:\n",
+      "point": 199,
+      "mark": 83,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock continues in \"C\""
+    },
+    {
+      "name": "clock-in-last-message",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i C-c C-x C-o C-c C-x C-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clocking back: A (in *e8-oracle*)"
+    },
+    {
+      "name": "clock-effort-add-none",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-modify-effort-estimate",
+          "+30"
+        ]
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Wrong type argument: stringp, nil"
+    },
+    {
+      "name": "clock-effort-fraction",
+      "input": {
+        "text": "* A\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+        "point": 0,
+        "keys": "M-< C-c C-x C-i M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "org-clock-modify-effort-estimate",
+          "90.5"
+        ],
+        "message": true
+      },
+      "text": "* A\n:PROPERTIES:\n:Effort:   1:30\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "visible": "* A\n:PROPERTIES:\n:LOGBOOK:\n* B\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Effort is now 1:30"
+    }
+  ]
+}
