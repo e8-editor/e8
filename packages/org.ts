@@ -3961,12 +3961,14 @@ export function moveSubtree(arg: number): void {
     }
   }
   const txt = e8.bufferText(beg, end);
+  saveMarkersInRegion(beg, end);
   edDelete(beg, end);
   let p = ins > beg ? ins - (end - beg) : ins;
   if (beg > 0) flag(beg - 1, beg, false);
   if (p > 0) flag(p - 1, p, false);
   if (p !== e8.lineStart(lineAt(p)) && e8.bufferText(p, p + 1) === "\n") p++;
   edInsert(p, txt, true);
+  reinstallMarkersInRegion(p);
   if (e8.point() !== e8.lineStart(lineAt())) edInsert(e8.point(), "\n");
   e8.gotoChar(p);
   while (e8.point() < e8.bufferSize() && /[ \t\n\r]/.test(e8.bufferText(e8.point(), e8.point() + 1))) {
@@ -4030,6 +4032,48 @@ function cleanVisibilityAfterMove(all: Heading[], k: number): void {
   showEmptyLines("overview", [from, end]);
 }
 
+// Markers that move with a subtree, as org-save-markers-in-region keeps
+// org-markers-to-move.
+
+/** Functions giving the markers a package keeps, which follow a subtree cut and pasted or moved. */
+const markerKeepers: (() => (e8.Marker | undefined)[])[] = [];
+
+/** Has the markers KEEP gives follow subtrees cut and pasted, moved or refiled, as Org checks its clock's, notes' and agenda's. */
+export function keepMarkersThroughMoves(keep: () => (e8.Marker | undefined)[]): void {
+  markerKeepers.push(keep);
+}
+
+/** The markers saved from the last subtree cut, each with how far into it it was, as org-markers-to-move. */
+let markersToMove: [e8.Marker, number][] = [];
+
+/** Notes the kept markers from BEG to END in this buffer and how far into it each is, as org-save-markers-in-region. */
+export function saveMarkersInRegion(beg: number, end: number): void {
+  markersToMove = [];
+  // This buffer's, or its base buffer's when it is indirect, as org-check-and-save-marker takes.
+  const buffers = [e8.bufferName(), e8.bufferBaseBuffer()?.name].filter((b) => b !== undefined);
+  for (const keep of markerKeepers) {
+    for (const m of keep()) {
+      if (m === undefined || !buffers.includes(e8.markerBuffer(m) as string)) continue;
+      const pos = e8.markerPosition(m);
+      if (pos !== undefined && pos >= beg && pos < end) markersToMove.push([m, pos - beg]);
+    }
+  }
+}
+
+/** Forgets the markers saved, as Org sets org-markers-to-move to nil after archiving cuts a subtree. */
+export function clearMarkersToMove(): void {
+  markersToMove = [];
+}
+
+/** Puts the saved markers back as far into the text now at BEG, in this buffer, as org-reinstall-markers-in-region. */
+export function reinstallMarkersInRegion(beg: number): void {
+  for (const [m, offset] of markersToMove) e8.setMarker(m, beg + offset, e8.bufferName());
+  markersToMove = [];
+}
+
+// A note's place moves with its entry, as Org saves org-log-note-marker.
+keepMarkersThroughMoves(() => [noteSetup?.heading, noteSetup?.at, pendingNote?.heading, pendingNote?.at]);
+
 // Subtrees and the kill ring
 
 /**
@@ -4057,10 +4101,12 @@ function subtreeToCopy(n: number, visible: boolean): [number, number, boolean] {
  * interactively it takes what looks like the subtree, the nearest heading
  * that shows; otherwise, as org-cut-subtree calls it, what is really there.
  */
-export function copySubtree(cut: boolean, n: number, visible: boolean): void {
+export function copySubtree(cut: boolean, n: number, visible: boolean, forceStoreMarkers = false): void {
   const p = e8.point();
   const [beg, end, folded] = underHeadingAboveNarrowing() ? subtreeFromNarrowingStart(n) : subtreeToCopy(n, visible);
   if (end <= beg) return;
+  // The markers in it go with it when it is pasted, as for a cut or a refile's copy.
+  if (cut || forceStoreMarkers) saveMarkersInRegion(beg, end);
   const mark = e8.mark();
   // Point after the mark, as Org passes them in order, so a kill joining
   // an earlier one goes after it.
@@ -4147,6 +4193,7 @@ export function pasteSubtree(level: e8.PrefixArg): void {
     e8.insert(txt);
     if (!txt.endsWith("\n")) e8.insert("\n");
   });
+  reinstallMarkersInRegion(beg);
   const end = e8.point();
   e8.gotoChar(beg);
   while (e8.point() < e8.bufferSize() && /[ \t\n\r]/.test(e8.bufferText(e8.point(), e8.point() + 1))) {

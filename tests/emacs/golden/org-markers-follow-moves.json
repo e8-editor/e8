@@ -1,0 +1,334 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "clock-moved-down",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i M-<down> C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* B\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n* C\n",
+      "visible": "* B\n* A\n:LOGBOOK:\ntext\n* C\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock stopped at [2026-11-21 Sat 12:00] after 0:00"
+    },
+    {
+      "name": "clock-moved-down-twice",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i M-<down> M-<down> C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* B\n* C\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n",
+      "visible": "* B\n* C\n* A\n:LOGBOOK:\ntext\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-moved-up",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "M-> C-p C-c C-x C-i M-<up> M-<up> C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* C\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* A\ntext\n* B\n",
+      "visible": "* C\n:LOGBOOK:\n* A\ntext\n* B\n",
+      "point": 0,
+      "mark": 83,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-cut-pasted",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-w M-> C-c C-x C-y C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* B\n* C\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n",
+      "visible": "* B\n* C\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n",
+      "point": 8,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\ntext\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-cut-pasted-c-y",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-w M-> C-y C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* B\n* C\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\ntext\n",
+      "visible": "* B\n* C\n* A",
+      "point": 63,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\ntext\n"
+      ],
+      "modified": true,
+      "error": "Clock start time is gone"
+    },
+    {
+      "name": "clock-copied-pasted",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x M-w M-> C-c C-x C-y C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n* B\n* C\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\ntext\n",
+      "visible": "* A\n:LOGBOOK:\ntext\n* B\n* C\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\ntext\n",
+      "point": 96,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\ntext\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-refiled",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-w C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "B"
+        ],
+        "files": {
+          "t.org": "* A\ntext\n* B\n* C\n"
+        },
+        "find": "t.org"
+      },
+      "text": "* B\n** A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n* C\n",
+      "visible": "* B\n** A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n* C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "t.org": "* A\ntext\n* B\n* C\n"
+      }
+    },
+    {
+      "name": "clock-in-last-after-move",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o M-<down> C-c C-x C-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* B\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n* C\n",
+      "visible": "* B\n* A\n:LOGBOOK:\ntext\n* C\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clocking back: A (in *e8-oracle*)"
+    },
+    {
+      "name": "clock-goto-after-move",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i M-<down> M-< C-c C-x C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* B\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\ntext\n* C\n",
+      "visible": "* B\n* A\n:LOGBOOK:\ntext\n* C\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-select-after-move",
+      "input": {
+        "text": "* A\ntext\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o M-<down> C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* B\n* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n* C\n",
+      "visible": "* B\n* A\n:LOGBOOK:\ntext\n* C\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-archived-sibling",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* A\n* B\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-x C-i C-c C-x C-s C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* A\n* B\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* B\n\n* Archive\n\n** A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: t\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* B\n\n* Archive\n\n** A\n:PROPERTIES:\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+        "* A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n"
+      ],
+      "modified": true,
+      "error": null,
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* A\n* B\n"
+      }
+    },
+    {
+      "name": "clock-moved-subtree-child",
+      "input": {
+        "text": "* P\n** A\n* B\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-x C-i M-< M-<down> C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* B\n* P\n** A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "* B\n* P\n** A\n:LOGBOOK:\n",
+      "point": 4,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-moved-past-it",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-x C-i M-< M-<down> C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* B\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* A\n",
+      "visible": "* B\n:LOGBOOK:\n* A\n",
+      "point": 83,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

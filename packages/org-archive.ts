@@ -8,6 +8,7 @@
 
 import {
   allKeywords,
+  clearMarkersToMove,
   copySubtree,
   entryGetInherited,
   forEachHeadingInRegion,
@@ -62,7 +63,8 @@ const formatName = (fmt: string, name: string): string => fmt.replace(/%([%s])/g
  */
 function subtreeKill(cut: boolean): void {
   const saved = e8.thisCommand();
-  copySubtree(cut, 1, false);
+  // A copy too keeps the markers in it, to go with it, as org-archive-subtree copies with force-store-markers.
+  copySubtree(cut, 1, false, true);
   if (saved !== undefined) e8.setThisCommand(saved as e8.CommandName);
 }
 
@@ -318,6 +320,8 @@ export function archiveSubtree(): void {
   e8.gotoChar(e8.markerPosition(origin) ?? h0.start);
   e8.deleteMarker(origin);
   subtreeKill(true);
+  // Nothing more to move, as org-archive-subtree clears org-markers-to-move after its cut.
+  clearMarkersToMove();
   // The statistics of the heading above point's count it gone, as org-up-heading-safe and org-update-statistics-cookies.
   if (truthy(e8.variable("org-provide-todo-statistics") ?? true)) {
     e8.saveExcursion(() => {

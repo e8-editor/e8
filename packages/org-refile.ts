@@ -4,7 +4,7 @@
 // org-refile-use-outline-path, its outline path, a level at a time.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { addLogNote, alignTags, copySubtree, type Heading, headings, killIsSubtree, parseHeading, pasteSubtree, subtreeRegion } from "org";
+import { addLogNote, alignTags, copySubtree, type Heading, headings, killIsSubtree, parseHeading, pasteSubtree, saveMarkersInRegion, subtreeRegion } from "org";
 import { ancestors, showHeadingLine } from "org-fold";
 import { entryHeading } from "org-list";
 import { edDelete, lineAt, orgRegionActive } from "org-macs";
@@ -477,13 +477,14 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
     start = regionStart;
     end = regionEnd;
     e8.killNew(e8.bufferSubstringNoProperties(start, end));
+    saveMarkersInRegion(start, end);
   } else {
     const here = e8.point();
     const h = subtreeHeading();
     const all = headings();
     [start, end] = subtreeRegion(all, all.findIndex((x) => x.start === h.start));
     e8.gotoChar(h.start);
-    copySubtree(false, 1, false);
+    copySubtree(false, 1, false, true);
     e8.gotoChar(here);
   }
   // Back here after, whatever goes in before it, as Org's origin marker advancing.

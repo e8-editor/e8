@@ -19,3 +19,11 @@ Two rules for when one is taken up. A departure leaves files as Emacs and Org wo
 **Idea.** E8's vertico knows the rows it shows, so it could cut each annotation's last field where the minibuffer's window ends instead, and line the annotations up by the candidates on screen, not every one seen. An option of E8's vertico and marginalia, off by default, since it changes what every completion looks like.
 
 **Needs.** A way for vertico to tell the annotator the width left on each row, or to cut the annotation itself, as it already cuts candidates that run past the edge.
+
+## Org's markers after a copy, and the agenda's after a move
+
+**Org.** `org-markers-to-move`, the markers a cut subtree carries to where it is pasted, is reset only when a subtree is cut or pasted. A `C-y` of the cut subtree leaves it, and a copy without `force-store-markers` does not reset it, so the next `C-c C-x C-y`, of a different subtree, moves the running clock's or the clock history's markers into that text. And `org-agenda-save-markers-for-cut-and-paste` saves nothing, as it looks for the agenda's markers in the agenda buffer rather than the Org file they point into, so an agenda line goes to the wrong entry after `M-<down>` moves its own. E8 does both as Org does.
+
+**Idea.** Reset the list whenever a subtree is copied or yanked, and save the agenda's markers from the files they point into, so they follow their entries as the clock's do.
+
+**Needs.** Only the change in `org.ts` and a keeper in `org-agenda.ts` registered with `keepMarkersThroughMoves`.

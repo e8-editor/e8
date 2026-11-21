@@ -1,0 +1,157 @@
+[
+  {
+    "name": "clock-moved-down",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i M-<down> C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  },
+  {
+    "name": "clock-moved-down-twice",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i M-<down> M-<down> C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-moved-up",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "M-> C-p C-c C-x C-i M-<up> M-<up> C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-cut-pasted",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i C-c C-x C-w M-> C-c C-x C-y C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-cut-pasted-c-y",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i C-c C-x C-w M-> C-y C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-copied-pasted",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i C-c C-x M-w M-> C-c C-x C-y C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-refiled",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i C-c C-w C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "B"
+    ],
+    "files": {
+      "t.org": "* A\ntext\n* B\n* C\n"
+    },
+    "find": "t.org"
+  },
+  {
+    "name": "clock-in-last-after-move",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i C-c C-x C-o M-<down> C-c C-x C-x",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  },
+  {
+    "name": "clock-goto-after-move",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i M-<down> M-< C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-select-after-move",
+    "text": "* A\ntext\n* B\n* C\n",
+    "keys": "C-c C-x C-i C-c C-x C-o M-<down> C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clock-archived-sibling",
+    "text": "#+ARCHIVE: ::* Archive\n* A\n* B\n",
+    "keys": "C-c C-n C-c C-x C-i C-c C-x C-s C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "files": {
+      "t.org": "#+ARCHIVE: ::* Archive\n* A\n* B\n"
+    },
+    "find": "t.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "clock-moved-subtree-child",
+    "text": "* P\n** A\n* B\n",
+    "keys": "C-c C-n C-c C-x C-i M-< M-<down> C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-moved-past-it",
+    "text": "* A\n* B\n",
+    "keys": "C-c C-n C-c C-x C-i M-< M-<down> C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  }
+]

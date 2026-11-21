@@ -31,6 +31,7 @@ import {
   headingIndex,
   headings,
   isDone,
+  keepMarkersThroughMoves,
   logDrawer,
   makeTagsMatcher,
   matchContexts,
@@ -89,6 +90,9 @@ let defaultTask: e8.Marker | undefined;
 let interruptedTask: e8.Marker | undefined;
 /** Whether the clock running past its effort has been told already, as org-clock-notification-was-shown. */
 let notified = false;
+
+// The clock's markers follow its entry when moved, cut and pasted or refiled, as org-clock-save-markers-for-cut-and-paste.
+keepMarkersThroughMoves(() => [clock?.line, clock?.heading, last, defaultTask, interruptedTask, ...history]);
 let timer: number | undefined;
 
 /** Now, or the day tests fix at noon, as an Org time. */
