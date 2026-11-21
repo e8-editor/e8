@@ -1,0 +1,345 @@
+[
+  {
+    "name": "ordered-c-c-in-turn",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 55,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-c-c-out-of-turn",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 65,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-c-c-untick-first",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 45,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-toggle-in-turn",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-x C-b",
+    "point": 55,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-toggle-out-of-turn",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-x C-b",
+    "point": 65,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-toggle-region",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-SPC C-n C-n C-c C-x C-b",
+    "point": 49,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-toggle-heading",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n- [ ] two\n",
+    "keys": "C-c C-x C-b",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-radio",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-x C-r",
+    "point": 65,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-nil",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: nil\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 65,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-inherited-not",
+    "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** C\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 66,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-nested",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n  - [X] a\n  - [ ] b\n- [ ] two\n",
+    "keys": "C-c C-c",
+    "point": 75,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-nested-child",
+    "text": "* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [ ] one\n  - [X] a\n  - [ ] b\n- [ ] two\n",
+    "keys": "C-c C-c",
+    "point": 61,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-top-drawer",
+    "text": ":PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- [ ] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 57,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-c-c",
+    "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-c-u",
+    "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+    "keys": "C-u C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-c-u-boxed",
+    "text": "#+NAME: l\n- [ ] one\n- [X] two\n",
+    "keys": "C-u C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-c-u-c-u",
+    "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+    "keys": "C-u C-u C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-repairs",
+    "text": "#+NAME: l\n1. one\n5. two\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-stack",
+    "text": "#+NAME: l\n#+ATTR_ORG: :x 1\n- one\n- two\n",
+    "keys": "C-u C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-nested",
+    "text": "#+NAME: l\n- one\n  - a\n- two\n",
+    "keys": "C-u C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-blank",
+    "text": "#+NAME: l\n\n- one\n",
+    "keys": "C-u C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-paragraph",
+    "text": "#+NAME: l\ntext\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "plain-list-keyword-radio-mode",
+    "text": "#+ATTR_ORG: :width 5\n- one\n- [X] two\n- three\n",
+    "keys": "M-x C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "answers": [
+      "org-list-checkbox-radio-mode"
+    ]
+  },
+  {
+    "name": "plain-list-keyword-cookie",
+    "text": "* H [0/2]\n#+NAME: l\n- one\n- two\n",
+    "keys": "C-u C-c C-c",
+    "point": 10,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-narrowed-line",
+    "text": "* Other\n\n* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- two\n- [X] three\n",
+    "keys": "C-x n s C-u C-c C-c",
+    "point": 58,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "ordered-narrowed-toggle",
+    "text": "* Other\n\n* Steps\n:PROPERTIES:\n:ORDERED: t\n:END:\n- [X] one\n- two\n- [X] three\n",
+    "keys": "C-x n s C-u C-c C-x C-b",
+    "point": 58,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "keyword-above-table",
+    "text": "#+NAME: t\n| a |  b |\n|  1 | 2 |\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "keyword-above-quote",
+    "text": "#+NAME: q\n#+begin_quote\nx\n#+end_quote\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "keyword-above-drawer",
+    "text": "#+NAME: d\n:DRAWER:\nx\n:END:\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "keyword-above-fixed-width",
+    "text": "#+NAME: f\n: x\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "keyword-in-example",
+    "text": "#+begin_example\n#+NAME: x\n#+end_example\n",
+    "keys": "C-c C-c",
+    "point": 17,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "keyword-indented-in-item",
+    "text": "- a\n  #+NAME: x\n- b\n",
+    "keys": "C-c C-c",
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "keyword-indented",
+    "text": "  #+TODO: A | B\n* A x\n",
+    "keys": "C-c C-c S-<right>",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "keyword-above-keyword",
+    "text": "#+NAME: n\n#+TITLE: t\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  }
+]

@@ -616,8 +616,13 @@ export function fixInd(struct: Struct, parents: Alist, bulletSize?: number): voi
   }
 }
 
-/** Gives parents with checkboxes the state of their children's, as org-list-struct-fix-box does. */
-export function fixBox(struct: Struct, parents: Alist): void {
+/**
+ * Gives parents with checkboxes the state of their children's, as
+ * org-list-struct-fix-box does. With ORDERED, a box can be ticked only
+ * after every box before it: those after the first empty one are emptied
+ * again, and the first empty one's item is returned.
+ */
+export function fixBox(struct: Struct, parents: Alist, ordered = false): number | undefined {
   const parentList: number[] = [];
   for (const e of struct) {
     const parent = parents.get(e.pos);
@@ -632,6 +637,23 @@ export function fixBox(struct: Struct, parents: Alist): void {
     else if (boxes.includes("[X]")) e.checkbox = "[X]";
     else if (boxes.includes("[ ]")) e.checkbox = "[ ]";
   }
+  if (!ordered) return undefined;
+  const index = struct.findIndex((e) => e.checkbox === "[ ]");
+  if (index < 0 || !struct.slice(index).some((e) => e.checkbox === "[X]")) return undefined;
+  for (const e of struct.slice(index)) if (e.checkbox) e.checkbox = "[ ]";
+  fixBox(struct, parents);
+  return struct[index].pos;
+}
+
+/** Whether the entry point is in has an ORDERED property, as (org-entry-get nil "ORDERED") reads it. */
+export function orderedHere(): boolean {
+  const h = entryHeading();
+  return (h ? entryGet(h.line, "ORDERED") : topGet("ORDERED")) !== undefined;
+}
+
+/** A position's line number, counted from the buffer's start even when narrowed, as org-current-line. */
+export function currentLine(pos: number): number {
+  return lineAt(pos) + 1;
 }
 
 /** Works out items' ends again after their indentation changed, as org-list-struct-fix-item-end does. */
@@ -1237,6 +1259,8 @@ export function toggleCheckbox(arg: e8.PrefixArg): void {
   if (atRadioList()) return toggleRadioButton(arg);
   const saved = marker(e8.point());
   const presence = Array.isArray(arg) && arg[0] === 4;
+  const ordered = orderedHere();
+  let single = false;
   try {
     let limUp: number;
     let limDown: Marker;
@@ -1261,6 +1285,7 @@ export function toggleCheckbox(arg: e8.PrefixArg): void {
       limUp = found;
       limDown = marker(limit);
     } else if (itemLine(lineAt())) {
+      single = true;
       limUp = e8.lineStart(lineAt());
       limDown = marker(e8.lineEnd(lineAt()));
     } else throw new Error("Not at an item or heading, and no active region");
@@ -1280,7 +1305,14 @@ export function toggleCheckbox(arg: e8.PrefixArg): void {
         if (e.pos < limUp || e.pos > limDown.pos) continue;
         if (e.checkbox !== undefined || presence) e.checkbox = ref;
       }
-      fixBox(struct, parents);
+      const blocking = fixBox(struct, parents, ordered);
+      // An ORDERED entry's box ticked out of turn, as Org reports it.
+      if (single && blocking !== undefined && limUp > blocking) {
+        dropMarker(bottom);
+        dropMarker(limDown);
+        throw new Error(`Checkbox blocked because of unchecked box at line ${currentLine(blocking)}`);
+      }
+      if (blocking !== undefined) e8.message(`Checkboxes were removed due to unchecked box at line ${currentLine(blocking)}`);
       applyStruct(struct, old);
       at = bottom.pos;
       dropMarker(bottom);
@@ -1336,7 +1368,7 @@ export function toggleRadioButton(arg: e8.PrefixArg): void {
   const fresh = cbox && c4 && items[0] === cpos ? undefined : "[ ]";
   for (const pos of items) getItem(struct, pos).checkbox = fresh;
   if (fresh !== undefined) getItem(struct, cpos).checkbox = c4 ? (cbox ? undefined : "[ ]") : c16 ? (cbox ? undefined : "[-]") : cbox === "[X]" ? "[ ]" : "[X]";
-  fixBox(struct, parents);
+  fixBox(struct, parents, orderedHere());
   applyStruct(struct, old);
   updateCheckboxCount();
 }
