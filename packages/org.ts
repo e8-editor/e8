@@ -6767,15 +6767,277 @@ e8.defineCommand({
   run: (withCase: e8.Value) => sortEntries(withCase !== null && withCase !== undefined),
 });
 
+/** Minutes in a duration Org reads, as org-duration-to-minutes: H:MM, H:MM:SS, units such as 1d 3h, or both. */
+function durationMinutes(text: string): number | undefined {
+  // The units org-duration-units names, longest first, as org-duration-set-regexps orders them.
+  const setting = e8.variable("org-duration-units");
+  const units: Record<string, number> = Array.isArray(setting)
+    ? Object.fromEntries((setting as e8.Value[]).filter(Array.isArray).map((u) => [String((u as e8.Value[])[0]), Number((u as e8.Value[])[1])]))
+    : { min: 1, h: 60, d: 1440, w: 10080, m: 43200, y: 525960 };
+  const names = Object.keys(units).sort((a, b) => b.length - a.length).map(escapeRegExp).join("|");
+  const unit = new RegExp(`([0-9]+(?:\\.[0-9]*)?)[ \\t]*(${names})`, "g");
+  const hms = (t: string) => {
+    const [h, m, sec] = t.trim().split(":").map(Number);
+    return (sec ?? 0) / 60 + m + 60 * h;
+  };
+  if (/^[ \t]*[0-9]+(?::[0-9]{2}){1,2}[ \t]*$/.test(text)) return hms(text);
+  const sum = (t: string) => [...t.matchAll(unit)].reduce((n, m) => n + Number(m[1]) * units[m[2]], 0);
+  if (new RegExp(`^(?:[ \\t]*[0-9]+(?:\\.[0-9]*)?[ \\t]*(?:${names}))+[ \\t]*$`).test(text)) return sum(text);
+  const mixed = new RegExp(`^((?:[ \\t]*[0-9]+(?:\\.[0-9]*)?[ \\t]*(?:${names}))+)[ \\t]*([0-9]+(?::[0-9]{2}){1,2})[ \\t]*$`).exec(text);
+  return mixed ? sum(mixed[1]) + hms(mixed[2]) : undefined;
+}
+
+/** A sort record: its key and where it is. */
+type SortRecord = { key: string | number; start: number; end: number };
+
+/**
+ * Puts RECORDS, found in buffer order, in order of their keys, as
+ * sort-subr does: stably, REVERSE turning the order round with records of
+ * equal keys kept as they were, LESS comparing keys if given, else numbers
+ * by < and strings by string<. The text between records stays, and the
+ * buffer is left alone if nothing moves. Returns whether anything moved.
+ */
+function sortRecords(records: SortRecord[], reverse: boolean, less?: (a: string | number, b: string | number) => boolean): boolean {
+  if (records.length === 0) return false;
+  const indexed = records.map((r, i) => ({ ...r, i }));
+  const compare = less ?? ((a: string | number, b: string | number) => (typeof a === "number" && typeof b === "number" ? a < b : String(a) < String(b)));
+  let list = reverse ? [...indexed].reverse() : indexed;
+  list = sortByPredicate(list, (x, y) => compare(x.key, y.key));
+  if (reverse) list.reverse();
+  if (list.every((r, i) => r.i === i)) return false;
+  const min = records[0].start;
+  let text = "";
+  for (let k = 0; k < records.length; k++) {
+    if (k > 0) text += e8.bufferSubstring(records[k - 1].end, records[k].start);
+    text += e8.bufferSubstring(list[k].start, list[k].end);
+  }
+  e8.deleteRegion(min, records[records.length - 1].end);
+  e8.gotoChar(min);
+  e8.insert(text);
+  return true;
+}
+
+/** Reads a key-extracting and a comparing function for sorting by f, as org-read-function asks for them. */
+function readSortFunctions(): [string, string | undefined] {
+  const getkey = e8.completingRead("Function for extracting keys: ", []);
+  const compare = e8.completingRead("Function for comparing keys (empty for default ‘sort-subr’ predicate): ", []);
+  return [getkey, compare === "" ? undefined : compare];
+}
+
+/** The text of field N of a table line, as org-table-get-field reads it, or "". */
+function tableField(line: number, n: number): string {
+  const fields = e8.lineText(line).replace(/^[ \t]*\|/, "").split("|");
+  return n >= 1 && n <= fields.length - (/\|[ \t]*$/.test(e8.lineText(line)) ? 1 : 0) ? fields[n - 1] : "";
+}
+
+/**
+ * Sorts the table's lines between the rules around point, or the region's,
+ * by the column point is in, as org-table-sort-lines: alphabetically,
+ * numerically, by time or by a function, a capital reversing it.
+ */
+export function tableSortLines(withCase: boolean, interactive: boolean, sortingType?: string): void {
+  if (orgRegionActive()) e8.gotoChar(Math.min(e8.point(), e8.mark()!));
+  // Point must be in a field, or before a data line's first.
+  e8.saveExcursion(() => {
+    e8.skipCharsBackward(" \t");
+    if (e8.point() === e8.lineStart(lineAt())) {
+      const bar = e8.lineText(lineAt()).indexOf("|");
+      if (bar >= 0) e8.gotoChar(e8.lineStart(lineAt()) + charCount(e8.lineText(lineAt()).slice(0, bar + 1)));
+    }
+    const before = e8.bufferText(e8.lineStart(lineAt()), e8.point());
+    const after = e8.bufferText(e8.point(), e8.lineEnd(lineAt()));
+    if (!(atTable() && /[^ \t]/.test(before) && !/^[ \t]*\|-/.test(e8.lineText(lineAt())) && /[^ \t]/.test(after))) e8.userError("Not in table data field");
+  });
+  const current = (e8.bufferText(e8.lineStart(lineAt()), e8.point()).match(/\|/g) ?? []).length;
+  const column = current > 0 ? current : interactive ? Number(e8.readString("Use column N for sorting: ")) : 1;
+  const type = sortingType ?? e8.readCharExclusive("Sort Table: [a]lphabetic, [n]umeric, [t]ime, [f]unc.  A/N/T/F means reversed: ");
+  const dcst = type.toLowerCase();
+  if (!"antf".includes(dcst) || dcst === "") e8.userError(`Invalid sorting type ‘${type}’`);
+  let first = lineAt();
+  while (first > 0 && /^[ \t]*\|/.test(e8.lineText(first - 1))) first--;
+  let last = lineAt();
+  while (last + 1 < e8.lineCount() && /^[ \t]*\|/.test(e8.lineText(last + 1))) last++;
+  const [tstart, tend] = [e8.lineStart(first), lineStartOrEnd(last + 1)];
+  let functions: [string, string | undefined] | undefined;
+  if (dcst === "f") {
+    if (!interactive) throw new Error("Missing key extractor to sort rows");
+    functions = readSortFunctions();
+  }
+  e8.saveRestriction(() => {
+    if (orgRegionActive()) {
+      const [rb, re] = [Math.min(e8.point(), e8.mark()!), Math.max(e8.point(), e8.mark()!)];
+      e8.gotoChar(rb);
+      e8.narrowToRegion(rb, lineStartOrEnd(lineAt(re) + 1));
+    } else {
+      let from = tstart;
+      for (let l = lineAt() - 1; l >= first; l--) {
+        if (/^[ \t]*\|-/.test(e8.lineText(l))) {
+          from = e8.lineStart(l + 1);
+          break;
+        }
+      }
+      let to = tend;
+      for (let l = lineAt(); l <= last; l++) {
+        if (/^[ \t]*\|-/.test(e8.lineText(l))) {
+          to = e8.lineStart(l);
+          break;
+        }
+      }
+      e8.narrowToRegion(from, to);
+    }
+    const row = lineAt() - lineAt(e8.pointMin());
+    const col = e8.currentColumn();
+    const key = (field: string): string | number => {
+      const f = field.trim();
+      if (dcst === "n") return stringToNumber(f);
+      if (dcst === "a") return sortRemoveInvisible(f);
+      if (dcst === "t") {
+        const ts = /[[<][0-9]{4}-[0-9]{2}-[0-9]{2}(?: [^\n]*?)?[\]>]/.exec(f);
+        if (ts) return timestampSeconds(ts[0]);
+        const d = durationMinutes(f);
+        if (d !== undefined) return d;
+        const hm = /\b[0-9]+:[0-9]{2}\b/.exec(f);
+        return hm ? (durationMinutes(hm[0]) ?? 0) : 0;
+      }
+      return e8.funcall(functions![0], f) as string | number;
+    };
+    // The records: from point-min, each data line to its end, as sort-subr goes with Org's functions.
+    const records: SortRecord[] = [];
+    let pos = e8.pointMin();
+    while (pos < e8.pointMax()) {
+      const line = lineAt(pos);
+      const end = Math.min(e8.lineEnd(line), e8.pointMax());
+      // A key that is not there is the record's text, as sort-subr takes it.
+      records.push({ key: key(tableField(line, column)) ?? e8.bufferSubstringNoProperties(pos, end), start: pos, end });
+      let next = line + 1;
+      while (lineStartOrEnd(next) < e8.pointMax() && !/^[ \t]*\|(?!-)/.test(e8.lineText(next))) next++;
+      pos = lineStartOrEnd(next);
+      if (next >= e8.lineCount()) break;
+    }
+    const less =
+      dcst === "a"
+        ? // Org asks to ignore case without C-u, which Emacs's collation on macOS, by code point, does not do.
+          (a: string | number, b: string | number) => e8.stringCollateLessp(String(a), String(b))
+        : dcst === "f"
+          ? functions![1] && ((a: string | number, b: string | number) => truthy(e8.funcall(functions![1]!, a, b) ?? null))
+          : (a: string | number, b: string | number) => Number(a) < Number(b);
+    sortRecords(records, dcst !== type, less || undefined);
+    // Back to the field point was in.
+    e8.gotoChar(e8.pointMin());
+    forwardLine(row);
+    e8.moveToColumn(col);
+  });
+}
+
+/**
+ * Sorts the items of the list point is in, sublists moving with their
+ * items, as org-sort-list: alphabetically or numerically by their first
+ * line, by time, by checkbox or by a function, a capital reversing it.
+ */
+function sortList(withCase: boolean, interactive: boolean, sortingType?: string): void {
+  const caseFn = (s: string) => (withCase ? s : s.toLowerCase());
+  const struct = listStruct(lineAt());
+  const prevs = prevsAlist(struct);
+  const items = allItems(e8.lineStart(lineAt()), prevs);
+  const start = items[0];
+  const end = getItem(struct, items[items.length - 1]).end;
+  let type = sortingType;
+  if (type === undefined) {
+    e8.message("Sort plain list: [a]lpha  [n]umeric  [t]ime  [f]unc  [x]checked  A/N/T/F/X means reversed:");
+    type = e8.readCharExclusive();
+  }
+  const dcst = type.toLowerCase();
+  let functions: [string, string | undefined] | undefined;
+  if (dcst === "f") {
+    if (!interactive) throw new Error("Missing key extractor");
+    functions = readSortFunctions();
+  }
+  e8.message("Sorting items...");
+  e8.saveRestriction(() => {
+    e8.narrowToRegion(start, end);
+    const now = e8.floatTime();
+    const key = (pos: number): string | number | undefined => {
+      const line = lineAt(pos);
+      const text = e8.lineText(line);
+      const m = /^[ \t]*[-+*0-9.)]+([ \t]+\[[- X]\])?[ \t]+/.exec(text);
+      if (!m) return undefined;
+      const rest = text.slice(m[0].length);
+      switch (dcst) {
+        case "n":
+          return stringToNumber(sortRemoveInvisible(rest));
+        case "a":
+          return caseFn(sortRemoveInvisible(rest));
+        case "t": {
+          // After the bullet and any counter, as org-at-item-timer-p looks.
+          const timer = /^[ \t]*(?:[-+*]|[0-9]+[.)])[ \t]+(?:\[@(?:start:)?[0-9]+\][ \t]*)?([0-9]+):([0-9]+):([0-9]+)[ \t]+::[ \t]+/.exec(text);
+          if (timer) return Number(timer[1]) * 3600 + Number(timer[2]) * 60 + Number(timer[3]);
+          const ts = /<[0-9]{4}-[0-9]{2}-[0-9]{2}(?: [^>\n]*?)?>/.exec(text) ?? /[[<][0-9]{4}-[0-9]{2}-[0-9]{2}(?: [^\]>\n]*?)?[\]>]/.exec(text);
+          return ts ? timestampSeconds(ts[0]) : now;
+        }
+        case "x":
+          return m[1] ?? "";
+        case "f": {
+          const v = e8.saveExcursion(() => (e8.gotoChar(pos), e8.funcall(functions![0])));
+          return typeof v === "string" ? caseFn(v) : (v as number);
+        }
+        default:
+          throw new Error(`Invalid sorting type ‘${type}’`);
+      }
+    };
+    e8.gotoChar(e8.pointMin());
+    const records: SortRecord[] = [];
+    for (const pos of items) {
+      const recEnd = itemEndBeforeBlank(struct, pos);
+      const k = key(pos);
+      // A key that is not there is the record's text, as sort-subr takes it.
+      records.push({ key: k ?? e8.bufferSubstringNoProperties(pos, recEnd), start: pos, end: recEnd });
+    }
+    const less =
+      dcst === "a"
+        ? (a: string | number, b: string | number) => e8.stringCollateLessp(String(a), String(b))
+        : dcst === "f"
+          ? functions![1] && ((a: string | number, b: string | number) => truthy(e8.funcall(functions![1]!, a, b) ?? null))
+          : dcst === "t"
+            ? (a: string | number, b: string | number) => Number(a) < Number(b)
+            : undefined;
+    sortRecords(records, dcst !== type, less || undefined);
+    e8.gotoChar(e8.pointMin());
+    // The sorted list read and fixed again, as org-list-repair does still narrowed to it.
+    const repaired = listStruct(lineAt());
+    writeStruct(repaired, parentsAlist(repaired));
+    e8.runHooks("org-after-sorting-entries-or-items-hook");
+    e8.message("Sorting items...done");
+  });
+}
+
+e8.defineCommand({
+  name: "org-table-sort-lines",
+  doc:
+    "Sort the table's lines between the rules around point, or the region's, by the column point is in: " +
+    "a alphabetically, n numerically, t by time or duration, f by a function; a capital reverses it. With a prefix argument, case counts.",
+  params: [{ name: "with-case", kind: "prefix" }],
+  run: (withCase: e8.Value) => tableSortLines(withCase !== null && withCase !== undefined, true),
+});
+
+e8.defineCommand({
+  name: "org-sort-list",
+  doc:
+    "Sort the items of the list point is in by their first lines: a alphabetically, n numerically, t by time, " +
+    "x by checkbox, f by a function; a capital reverses it. Sublists move with their items. With a prefix argument, case counts.",
+  params: [{ name: "with-case", kind: "prefix" }],
+  run: (withCase: e8.Value) => sortList(withCase !== null && withCase !== undefined, true),
+});
+
 const sortCommand = e8.defineCommand({
   name: "org-sort",
   doc: "Sort the entries at point, or the table or plain list there, as org-sort-entries, org-table-sort-lines or org-sort-list do.",
   params: [{ name: "with-case", kind: "prefix" }],
   run: (withCase: e8.Value) => {
-    if (atTable()) e8.userError("E8 does not sort table lines yet");
+    const caseMatters = withCase !== null && withCase !== undefined;
+    if (atTableP()) tableSortLines(caseMatters, true);
     // On an item's own line, as org-at-item-p.
-    if (itemLine(lineAt())) e8.userError("E8 does not sort plain lists yet");
-    sortEntries(withCase !== null && withCase !== undefined);
+    else if (itemLine(lineAt())) sortList(caseMatters, true);
+    else sortEntries(caseMatters);
   },
 });
 

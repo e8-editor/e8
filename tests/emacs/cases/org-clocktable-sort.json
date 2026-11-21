@@ -1,0 +1,32 @@
+[
+  {
+    "name": "clocktable-sort-time",
+    "text": "#+BEGIN: clocktable :maxlevel 3 :sort (2 . ?N)\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-sort-alpha",
+    "text": "#+BEGIN: clocktable :maxlevel 1 :sort (1 . ?A)\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clocktable-sort-emphasized",
+    "text": "#+BEGIN: clocktable :maxlevel 2 :emphasize t :sort (1 . ?a)\n#+END:\n\n* Project A\n:LOGBOOK:\nCLOCK: [2026-11-02 Mon 09:00]--[2026-11-02 Mon 10:30] =>  1:30\n:END:\n** TODO Task one [1/2] :x:\nSCHEDULED: <2026-11-05 Thu>\n:PROPERTIES:\n:Effort: 1:00\n:END:\n:LOGBOOK:\nCLOCK: [2026-11-03 Tue 09:00]--[2026-11-03 Tue 09:45] =>  0:45\nCLOCK: [2026-11-17 Tue 09:00]--[2026-11-17 Tue 09:20] =>  0:20\n:END:\n*** Deep [[https://example.com][site]]\nCLOCK: [2026-11-04 Wed 09:00]--[2026-11-04 Wed 09:10] =>  0:10\n** COMMENT Hidden\nCLOCK: [2026-11-18 Wed 10:00]--[2026-11-18 Wed 10:05] =>  0:05\n* Project B with a rather long title that goes past forty characters :work:\n:PROPERTIES:\n:Effort: 2:00\n:END:\nCLOCK: [2026-11-10 Tue 14:00]--[2026-11-10 Tue 16:00] =>  2:00\n* Project C\nNothing clocked.\n",
+    "keys": "C-c C-c",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  }
+]

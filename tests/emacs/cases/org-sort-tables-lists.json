@@ -1,0 +1,653 @@
+[
+  {
+    "name": "table-sort-a-col1",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 97,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-A-col1",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 97,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "A"
+    ]
+  },
+  {
+    "name": "table-sort-n-col2",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 107,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "table-sort-N-col2",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 107,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "N"
+    ]
+  },
+  {
+    "name": "table-sort-t-col3",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 115,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "t"
+    ]
+  },
+  {
+    "name": "table-sort-T-col3",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 115,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "T"
+    ]
+  },
+  {
+    "name": "table-sort-t-col4",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 134,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "t"
+    ]
+  },
+  {
+    "name": "table-sort-T-col4",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 134,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "T"
+    ]
+  },
+  {
+    "name": "table-sort-with-case",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-u C-c ^",
+    "point": 97,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-numbers-as-text",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 107,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-from-lower-row",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 201,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "table-sort-after-hline",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 387,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-on-hline",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 50,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-header",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-bad-type",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 97,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "z"
+    ]
+  },
+  {
+    "name": "table-sort-before-first",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-c ^",
+    "point": 94,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "2",
+      "n"
+    ]
+  },
+  {
+    "name": "table-sort-region",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-SPC C-n C-n C-c ^",
+    "point": 144,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-region-mid",
+    "text": "| Name    | Count | When             | Took  |\n|---------+-------+------------------+-------|\n| banana  |    10 | <2026-03-01 Sun> | 1:30  |\n| Apple   |     2 | [2026-01-05 Mon] | 0:45  |\n| cherry  |   100 | <2025-12-24 Thu> | 2h    |\n| apple   |     2 |                  | 1d 1:00 |\n| *bold*  |   -3  | <2026-03-01 Sun 08:00> | 15:00 |\n|---------+-------+------------------+-------|\n| total   |   111 |                  |       |\n",
+    "keys": "C-SPC C-n C-n C-n C-c ^",
+    "point": 107,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "table-sort-sorted",
+    "text": "| a |\n| b |\n| c |\n",
+    "keys": "C-c ^",
+    "point": 2,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-indented",
+    "text": "  | b | 2 |\n  | a | 1 |\n  | c |\n",
+    "keys": "C-c ^",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-short-rows",
+    "text": "| b | 2 |\n| a |\n| c | 1 |\n",
+    "keys": "C-c ^",
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "table-sort-links",
+    "text": "| [[x][zed]] |\n| [[y][alpha]] |\n| beta |\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-numbers-text",
+    "text": "| 10 |\n| 9x |\n| abc |\n| -1 |\n| 1e2 |\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "table-sort-in-item",
+    "text": "- item\n  | b |\n  | a |\n",
+    "keys": "C-c ^",
+    "point": 12,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-unchanged",
+    "text": "| a |\n| b |\n",
+    "keys": "C-c ^",
+    "point": 2,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-a",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-A",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "A"
+    ]
+  },
+  {
+    "name": "list-sort-n",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "list-sort-N",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "N"
+    ]
+  },
+  {
+    "name": "list-sort-t",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "t"
+    ]
+  },
+  {
+    "name": "list-sort-T",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "T"
+    ]
+  },
+  {
+    "name": "list-sort-x",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "x"
+    ]
+  },
+  {
+    "name": "list-sort-X",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "X"
+    ]
+  },
+  {
+    "name": "list-sort-with-case",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-u C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-from-sublist",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 71,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-from-continued",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 57,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-bad-type",
+    "text": "- banana <2026-03-01 Sun>\n- [X] Apple [2026-01-05 Mon]\n  continued\n  - sub b\n  - sub a\n- [ ] cherry\n- [-] 10 apples\n- 2 pears\n\ntext after\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "list-sort-numbered",
+    "text": "1. c\n2. a\n3. b\n",
+    "keys": "C-c ^",
+    "point": 1,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-numbered-paren",
+    "text": "1) c\n2) a\n   more\n3) b\n",
+    "keys": "C-c ^",
+    "point": 1,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-blank-lines",
+    "text": "- c\n\n- a\n\n- b\n",
+    "keys": "C-c ^",
+    "point": 1,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-in-entry",
+    "text": "* H\n- b\n- a\n* I\n- d\n- c\n",
+    "keys": "C-c ^",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-description",
+    "text": "- zed :: last\n- alpha :: first\n",
+    "keys": "C-c ^",
+    "point": 1,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-indented",
+    "text": "  - b\n  - a\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-emphasis",
+    "text": "- /zed/\n- *bee*\n- ant\n",
+    "keys": "C-c ^",
+    "point": 1,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-hook-point",
+    "text": "- b\n- a\n",
+    "keys": "C-c ^ C-f",
+    "point": 1,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-sublist-numbered-parent",
+    "text": "1. x\n   - b\n   - a\n1. y\n",
+    "keys": "C-c ^",
+    "point": 8,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-sublist-indent",
+    "text": "- x\n   - b\n   - a\n   - c\n-  y\n",
+    "keys": "C-c ^",
+    "point": 7,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "list-sort-sublist-checkboxes",
+    "text": "- [ ] parent [0/2]\n  - [ ] b\n  - [X] a\n",
+    "keys": "C-c ^",
+    "point": 21,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "table-sort-durations-no-space",
+    "text": "| 1d1:00 |\n| 2h1:00 |\n| 0:30 |\n| 1:00 |\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "t"
+    ]
+  },
+  {
+    "name": "table-sort-bad-timestamp",
+    "text": "| <2026-03-01Sun> |\n| <2026-01-01 Thu> |\n| <2025-01-01 Wed> |\n",
+    "keys": "C-c ^",
+    "point": 3,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "t"
+    ]
+  }
+]
