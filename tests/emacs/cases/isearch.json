@@ -12,5 +12,17 @@
   {"name": "isearch-yank-word", "text": "foo bar foo bar", "keys": "C-s C-w C-s RET"},
   {"name": "isearch-again-uses-the-last-string", "text": "xa xb xc", "keys": "C-s x RET C-s C-s RET"},
   {"name": "isearch-turning-round", "text": "ab ab ab", "keys": "M-> C-r a b C-r C-s RET"},
-  {"name": "isearch-space", "text": "a b a  b", "keys": "C-s a SPC b RET"}
+  {"name": "isearch-space", "text": "a b a  b", "keys": "C-s a SPC b RET"},
+  {"name": "isearch-opens-a-fold-and-keeps-it-open", "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n* Three\nneedle again\n", "keys": "S-TAB C-s n e e d l e RET", "modes": ["org-mode"]},
+  {"name": "isearch-hides-a-fold-it-moves-past", "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n* Three\nneedle again\n", "keys": "S-TAB C-s n e e d l e C-s RET", "modes": ["org-mode"]},
+  {"name": "isearch-back-to-a-hidden-match", "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n* Three\nneedle again\n", "keys": "S-TAB C-s n e e d l e C-s DEL RET", "modes": ["org-mode"]},
+  {"name": "isearch-other-key-opens-the-fold", "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n* Three\nneedle again\n", "keys": "S-TAB C-s n e e d l e C-a", "modes": ["org-mode"]},
+  {"name": "isearch-search-invisible-nil-skips-folds", "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n* Three\nneedle again\n", "keys": "S-TAB C-s n e e d l e RET", "modes": ["org-mode"], "vars": {"search-invisible": false}},
+  {"name": "isearch-toggle-invisible", "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n* Three\nneedle again\n", "keys": "S-TAB C-s M-s i n e e d l e RET", "modes": ["org-mode"]},
+  {"name": "isearch-opens-an-outline-fold", "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n", "keys": "C-c C-t C-s n e e d RET", "modes": ["outline-mode"]},
+  {"name": "isearch-opens-a-deep-fold", "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n", "keys": "S-TAB C-s n e e d l e RET", "modes": ["org-mode"]},
+  {"name": "isearch-opens-a-deep-fold-other-key", "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n", "keys": "S-TAB C-s n e e d l e C-a", "modes": ["org-mode"]},
+  {"name": "isearch-opens-a-deeper-fold", "text": "* One\nalpha\n** Sub\nx\n*** Deep\ny\n**** Deeper\nneedle here\n*** Deep2\nz\n** Sub2\nbeta\n* Two\n", "keys": "S-TAB C-s n e e d l e RET", "modes": ["org-mode"]},
+  {"name": "isearch-opens-a-deep-fold-from-contents", "text": "* One\nalpha\n** Sub\nx\n*** Deep\nneedle here\n** Sub2\nbeta\n* Two\n", "keys": "S-TAB S-TAB C-s n e e d l e RET", "modes": ["org-mode"]},
+  {"name": "isearch-opens-a-hidden-outline-heading", "text": "* One\nalpha text\n** Sub\nneedle here\n* Two\nbeta\n", "keys": "C-c C-d C-s n e e d RET", "modes": ["outline-mode"]}
 ]

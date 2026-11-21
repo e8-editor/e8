@@ -115,14 +115,20 @@ function flag(start: number, end: number, hide: boolean): void {
 
 function outlineOverlay(start: number, end: number): void {
   // Front-advance, as outline-flag-region makes its overlays.
-  e8.makeOverlay(start, end, { invisible: "outline", evaporate: true }, { frontAdvance: true });
+  e8.makeOverlay(start, end, { invisible: "outline", evaporate: true, "isearch-open-invisible": "outline-isearch-open-invisible" }, { frontAdvance: true });
 }
 
+// Where isearch ends in a fold, the entry shows, as outline-isearch-open-invisible.
+e8.defun("outline-isearch-open-invisible", () => e8.call("outline-show-entry"));
+
 /** The heading at point, or an error as in Emacs. */
+// Signalled before the first heading, as outline-back-to-heading does.
+e8.defineError("outline-before-first-heading");
+
 function heading(): [Heading[], number] {
   const all = headings();
   const i = currentHeading(all);
-  if (i === undefined) throw new Error("Before first heading");
+  if (i === undefined) e8.signal("outline-before-first-heading", "Before first heading");
   return [all, i];
 }
 
@@ -151,7 +157,8 @@ const commands: { [name: string]: [string, () => void] } = {
   }],
   "outline-show-entry": ["Show the text of the heading point is under, but not its subheadings.", () => {
     const [all, i] = heading();
-    flag(all[i].end, entryEnd(all, i), false);
+    // From the newline before the heading, so a hidden heading shows too.
+    flag(Math.max(0, all[i].start - 1), entryEnd(all, i), false);
   }],
   "outline-show-children": ["Show the headings directly under the heading point is under, hiding their text.", () => {
     const [all, i] = heading();
@@ -186,6 +193,46 @@ function moveToHeading(direction: number): void {
 for (const [name, [doc, run]] of Object.entries(commands)) {
   e8.defineCommand({ name, doc, run });
 }
+
+/**
+ * Moves `n` headings of the same level on, or back, without leaving the
+ * heading above, as outline-forward-same-level and
+ * outline-backward-same-level do over the headings that show: from the
+ * one point is under, as outline-back-to-heading finds it, an error where
+ * there are no more.
+ */
+function sameLevel(n: number, forward: boolean): void {
+  const visible = headings().filter((h) => h.start === 0 || !e8.invisibleAt(h.start - 1));
+  const here = e8.lineOf(e8.point());
+  let i = -1;
+  for (let k = 0; k < visible.length && visible[k].line <= here; k++) i = k;
+  if (i < 0) e8.signal("outline-before-first-heading", "Before first heading");
+  e8.gotoChar(visible[i].start);
+  for (; n > 0; n--) {
+    const level = visible[i].level;
+    let k = i;
+    // Back, a deeper heading at the very start of the buffer stops the search and is taken, as outline-get-last-sibling does.
+    do k += forward ? 1 : -1;
+    while (k >= 0 && k < visible.length && visible[k].level > level && (forward || visible[k].start > e8.pointMin()));
+    if (k < 0 || k >= visible.length || visible[k].level < level) throw new Error(forward ? "No following same-level heading" : "No previous same-level heading");
+    i = k;
+    e8.gotoChar(visible[i].start);
+  }
+}
+
+e8.defineCommand({
+  name: "outline-forward-same-level",
+  doc: "Move forward to the next heading of the same level as this one, or as many as the prefix argument says, within the heading above.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n) => sameLevel(n, true),
+});
+
+e8.defineCommand({
+  name: "outline-backward-same-level",
+  doc: "Move back to the previous heading of the same level as this one, or as many as the prefix argument says, within the heading above.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n) => sameLevel(n, false),
+});
 
 e8.defineCommand({
   name: "outline-cycle",
@@ -290,6 +337,9 @@ const outlineKeys: { [keys: string]: e8.CommandName } = {
   "C-a": "outline-show-all",
   "C-n": "outline-next-visible-heading",
   "C-p": "outline-previous-visible-heading",
+  "C-f": "outline-forward-same-level",
+  "C-b": "outline-backward-same-level",
+  "C-u": "outline-up-heading",
 };
 const withPrefix = (prefix: string) =>
   Object.fromEntries(Object.entries(outlineKeys).map(([keys, command]) => [`${prefix} ${keys}`, command]));

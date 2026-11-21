@@ -4015,6 +4015,16 @@ declare global {
        */
       "isearch-toggle-case-fold": [];
       /**
+       * Toggle invisible searching on or off.
+       * This determines whether to search inside invisible text or not.
+       * Toggles the variable `isearch-invisible' between values
+       * nil and a non-nil value of the option `search-invisible'
+       * (or `open' if `search-invisible' is nil).
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-toggle-invisible": [];
+      /**
        * Toggle lax-whitespace searching on or off.
        * In ordinary search, toggles the value of the variable
        * `isearch-lax-whitespace'.  In regexp search, toggles the
@@ -5717,6 +5727,44 @@ declare global {
        */
       "org-global-cycle": [];
       /**
+       * Go to another place in this buffer, keeping its folding: find it in a copy folded to its top headings, with the arrows, TAB and isearch of the headings, and press RET, or C-g to stay. With org-goto-interface outline-path-completion, or the other with a prefix argument, complete a heading's outline path instead. Org's mark ring remembers where point was.
+       *
+       * @param alternative raw prefix argument
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto": [alternative?: PrefixArg | boolean];
+      /**
+       * Finish org-goto by going to the heading point is on, at its start.
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto-left": [];
+      /**
+       * Start an isearch of the headings with the character typed.
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto-local-auto-isearch": [];
+      /**
+       * Finish org-goto where point was, not moving it.
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto-quit": [];
+      /**
+       * Finish org-goto by going to the place point is at.
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto-ret": [];
+      /**
+       * Finish org-goto by going to the heading point is on.
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto-right": [];
+      /**
        * Copy the ID of the entry at point to the kill ring. Create an ID if necessary.
        *
        * Defined in packages/org-id.ts.
@@ -5867,6 +5915,20 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-mark-element": [];
+      /**
+       * Go back to the place saved last in Org's mark ring; again, to the one before, and so on round the ring. With a count, that many back.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-mark-ring-goto": [n?: number];
+      /**
+       * Save point in Org's mark ring, for C-c & to come back to.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-mark-ring-push": [];
       /**
        * Make the region the subtree point is in: point at its heading, the mark at its end.
        *
@@ -6604,6 +6666,14 @@ declare global {
        */
       "other-window": [count?: number];
       /**
+       * Move back to the previous heading of the same level as this one, or as many as the prefix argument says, within the heading above.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/outline.ts.
+       */
+      "outline-backward-same-level": [n?: number];
+      /**
        * On a heading, cycle its visibility: folded, then its children, then its whole subtree.
        *
        * Anywhere else, indent as TAB usually does.
@@ -6617,6 +6687,14 @@ declare global {
        * Defined in packages/outline.ts.
        */
       "outline-cycle-buffer": [];
+      /**
+       * Move forward to the next heading of the same level as this one, or as many as the prefix argument says, within the heading above.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/outline.ts.
+       */
+      "outline-forward-same-level": [n?: number];
       /**
        * Hide all text except headings.
        *
@@ -11535,6 +11613,12 @@ declare global {
        */
       "hs-hide-comments-when-hiding-all": Value;
       /**
+       * Which hidden blocks isearch opens when search-invisible is open: code, comment, t for both, or nil for neither.
+       *
+       * Defined in packages/hideshow.ts.
+       */
+      "hs-isearch-open": Value;
+      /**
        * Whether Hs-Minor mode is on in this buffer. Use the command hs-minor-mode to change it.
        *
        * Defined in packages/hideshow.ts.
@@ -12001,6 +12085,18 @@ declare global {
        * Defined in packages/isearch.ts.
        */
       "isearch-forward": Value;
+      /**
+       * Whether text a search opened is hidden again as soon as the match moves off it; when nil, it stays open until the search ends.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-hide-immediately": Value;
+      /**
+       * What search-invisible was as this search began, which M-s i toggles.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "isearch-invisible": Value;
       /**
        * Whether a run of spaces in an ordinary search string matches search-whitespace-regexp.
        *
@@ -13295,6 +13391,28 @@ declare global {
        */
       "org-global-properties": Value;
       /**
+       * Whether typing in org-goto's copy of the buffer starts an isearch of its headings. When false, q quits, n and p go to the next and previous heading, f and b to the next and previous of the same level, and u up.
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto-auto-isearch": Value;
+      /**
+       * How org-goto finds the place: "outline", in a folded copy of the buffer, or "outline-path-completion", completing the headings' outline paths as org-refile does.
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto-interface": Value;
+      /**
+       * Keymap org-goto-map.
+       */
+      "org-goto-map": Value;
+      /**
+       * The deepest headings org-goto offers with outline-path-completion.
+       *
+       * Defined in packages/org-goto.ts.
+       */
+      "org-goto-max-level": Value;
+      /**
        * Whether a group tag in a match stands for the tags of its group too, as the TAGS line's { GROUP : TAG ... } gives them.
        *
        * Defined in packages/org.ts.
@@ -13556,6 +13674,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-loop-over-headlines-in-active-region": Value;
+      /**
+       * How many places Org's mark ring keeps, for C-c & to go back to.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-mark-ring-length": Value;
       /**
        * What the mode line shows of the running clock: its time and its entry's heading.
        *
@@ -14495,6 +14619,12 @@ declare global {
        * Defined in packages/isearch.ts.
        */
       "search-default-mode": Value;
+      /**
+       * Whether a search matches invisible text: t matches it, nil does not, and open, the default, opens what an overlay with an isearch-open-invisible property hides, as outline's and Org's folds, while the match is in it, and for good where the search ends.
+       *
+       * Defined in packages/isearch.ts.
+       */
+      "search-invisible": Value;
       /**
        * Strings searched for with incremental search, most recent first.
        *

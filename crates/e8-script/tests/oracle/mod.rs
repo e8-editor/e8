@@ -323,7 +323,9 @@ fn answer_once(ed: &mut Editor, answering: &std::rc::Rc<std::cell::RefCell<Answe
     // read-char-from-minibuffer one; otherwise the case's next key, as
     // C-q reads it.
     if ed.prompt().is_none() && !(ed.reading_single_key() && left > 0) {
-        if !ed.reading_key() {
+        // A recursive edit, as org-goto's, runs the case's next keys as
+        // commands, as batch Emacs's command loop reads them.
+        if !ed.reading_key() && ed.recursive_edit_depth() == 0 {
             return false;
         }
         let Some(key) = answering.borrow_mut().keys.pop_front() else { return false };

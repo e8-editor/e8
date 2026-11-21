@@ -353,6 +353,50 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "hs-isearch-opens-a-hidden-block",
+      "input": {
+        "text": "function a() {\n  one();\n  needle();\n}\n\n// needle in\n// a comment\nfunction b() {\n  needle();\n}\n",
+        "point": 0,
+        "keys": "C-c @ C-M-h C-s n e e d l e RET",
+        "modes": [
+          "js-mode",
+          "hs-minor-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "function a() {\n  one();\n  needle();\n}\n\n// needle in\n// a comment\nfunction b() {\n  needle();\n}\n",
+      "visible": "function a() {\n  one();\n  needle();\n}\n\n// needle in\nfunction b() {}\n",
+      "point": 32,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "hs-isearch-skips-a-hidden-comment",
+      "input": {
+        "text": "function a() {\n  one();\n  needle();\n}\n\n// needle in\n// a comment\nfunction b() {\n  needle();\n}\n",
+        "point": 0,
+        "keys": "C-c @ C-M-h M-> C-r n e e d l e C-r RET",
+        "modes": [
+          "js-mode",
+          "hs-minor-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "function a() {\n  one();\n  needle();\n}\n\n// needle in\n// a comment\nfunction b() {\n  needle();\n}\n",
+      "visible": "function a() {}\n\n// needle in\nfunction b() {}\n",
+      "point": 42,
+      "mark": 94,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

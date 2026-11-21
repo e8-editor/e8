@@ -21,13 +21,28 @@ import { charCount, escapeRegExp } from "subr";
 export function hideOverlay(start: number, end: number, spec: string): void {
   // Text inserted at either end goes outside, as with org-fold-core's
   // overlays, which advance at the front only.
-  e8.makeOverlay(start, end, { invisible: spec, evaporate: true }, { frontAdvance: true });
+  e8.makeOverlay(start, end, { invisible: spec, evaporate: true, "isearch-open-invisible": "org-fold-core--isearch-show" }, { frontAdvance: true });
 }
+
+// Isearch opens a fold its match is in while it is there, and for good
+// where it ends, showing the match's context as org-fold-show-context-detail
+// says for isearch, as org-fold-core--isearch-show and org-fold--isearch-reveal.
+e8.defun("org-fold-core--isearch-show", (overlay: e8.Value) => {
+  const ov = Number(overlay);
+  const [beg, end] = [e8.overlayStart(ov), e8.overlayEnd(ov)];
+  if (beg === undefined || end === undefined) return;
+  if (beg < e8.point() && e8.point() < end) showContext("isearch");
+  // Showing the context may have cut the fold, this overlay left as its
+  // piece after what shows, as remove-overlays leaves it: only that opens.
+  e8.deleteOverlay(ov);
+});
 
 /**
  * Hides or shows the text from start up to end, as Emacs's org-fold-region
  * does: overlays hiding it with `spec` are removed, cut back where they
- * reach outside it, and a new one hides it.
+ * reach outside it, and a new one hides it. An overlay cut in two is kept
+ * as the piece after, a copy before, as remove-overlays does, which is the
+ * piece isearch opens where it ends in it.
  */
 export function flag(start: number, end: number, hide: boolean, spec = "outline"): void {
   // Positions outside the buffer are brought inside, as make-overlay does,
@@ -38,9 +53,13 @@ export function flag(start: number, end: number, hide: boolean, spec = "outline"
   for (const id of e8.overlaysIn(start, end)) {
     if (e8.overlayGet(id, "invisible") !== spec) continue;
     const [from, to] = [e8.overlayStart(id) ?? start, e8.overlayEnd(id) ?? end];
-    e8.deleteOverlay(id);
-    if (from < start) hideOverlay(from, start, spec);
-    if (to > end) hideOverlay(end, to, spec);
+    if (from < start) {
+      if (to > end) {
+        hideOverlay(from, start, spec);
+        e8.moveOverlay(id, end, to);
+      } else e8.moveOverlay(id, from, start);
+    } else if (to > end) e8.moveOverlay(id, end, to);
+    else e8.deleteOverlay(id);
   }
   if (hide && end > start) hideOverlay(start, end, spec);
 }

@@ -1,0 +1,266 @@
+[
+  {
+    "name": "goto-down-and-ret",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j <down> <down> RET",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-quit",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j <down> C-g",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-cycle-into-a-subtree",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j TAB <down> <down> RET",
+    "point": 15,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-isearch-a-heading",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j b e t a RET RET",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-isearch-skips-body-and-tags",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j b e t a C-s RET RET",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-isearch-case",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j D e e p RET RET",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-left-on-heading",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j <down> C-e <left>",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-right-not-on-heading",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j TAB C-n <right> RET",
+    "point": 15,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-from-inside-a-subtree",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j <down> RET",
+    "point": 95,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-then-back-with-the-mark-ring",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j <down> <down> RET C-c &",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-no-auto-isearch",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j n n RET",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "vars": {
+      "org-goto-auto-isearch": false
+    }
+  },
+  {
+    "name": "goto-no-auto-isearch-quit",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j n q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "vars": {
+      "org-goto-auto-isearch": false
+    }
+  },
+  {
+    "name": "goto-no-auto-isearch-same-level",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j f f b RET",
+    "point": 15,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "vars": {
+      "org-goto-auto-isearch": false
+    }
+  },
+  {
+    "name": "goto-outline-path",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-u C-c C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "answers": [
+      "Project/Task B/Deep/"
+    ],
+    "vars": {
+      "org-outline-path-complete-in-steps": false
+    },
+    "visit": "e8-goto.org"
+  },
+  {
+    "name": "goto-outline-path-interface",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "answers": [
+      "Other/"
+    ],
+    "vars": {
+      "org-goto-interface": "'outline-path-completion",
+      "org-outline-path-complete-in-steps": false
+    },
+    "visit": "e8-goto.org"
+  },
+  {
+    "name": "goto-keeps-the-buffer-folded",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "S-TAB C-c C-j TAB <down> <down> <down> RET",
+    "point": 15,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "mark-ring-push-and-goto",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c % M-> C-c &",
+    "point": 62,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "mark-ring-goto-twice",
+    "text": "#+TITLE: Notes\n* Project\nMentions beta here.\n** Task A :work:\ntext a\n** Task B\ntext b\n*** Deep\ndeep text\n* Beta things\n* Other :beta:\nother text\n",
+    "keys": "C-c % C-n C-n C-c % M-> C-c & C-c &",
+    "point": 62,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "internal-link-then-back",
+    "text": "* A\nSee [[Target]] here.\n* B\n* Target\nbody\n",
+    "keys": "C-c C-o C-c &",
+    "point": 12,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "outline-forward-same-level",
+    "text": "* A\n** a1\n* B\n* C\n",
+    "keys": "C-c C-f C-c C-f",
+    "point": 0,
+    "modes": [
+      "outline-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "outline-forward-same-level-at-end",
+    "text": "* A\n* B\n",
+    "keys": "C-c C-f C-c C-f",
+    "point": 0,
+    "modes": [
+      "outline-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "outline-backward-same-level",
+    "text": "* A\n** a1\n* B\nb\n",
+    "keys": "M-> C-c C-b",
+    "point": 0,
+    "modes": [
+      "outline-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "outline-backward-same-level-to-a-deeper-first-heading",
+    "text": "** A\n* B\nb\n",
+    "keys": "M-> C-c C-b",
+    "point": 0,
+    "modes": [
+      "outline-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "outline-forward-same-level-before-first-heading",
+    "text": "intro\n* A\n* B\n",
+    "keys": "C-c C-f",
+    "point": 0,
+    "modes": [
+      "outline-mode"
+    ],
+    "message": true
+  }
+]

@@ -55,6 +55,19 @@ for (const [name, doc, value, local] of [
   ["isearch-wrap-function", "The function that moves point to where a failing search wraps round to, instead of the other end of the buffer, or nil.", null, false],
   ["isearch-push-state-function", "A function called as each state of the search is saved, which gives a function the state is restored with when DEL goes back to it, or nil.", null, false],
   ["isearch-filter-predicate", "A function of a match's start and end that says whether the search may stop there.", "isearch-filter-visible", false],
+  [
+    "search-invisible",
+    "Whether a search matches invisible text: t matches it, nil does not, and open, the default, opens what an overlay with an isearch-open-invisible property hides, as outline's and Org's folds, while the match is in it, and for good where the search ends.",
+    "open",
+    false,
+  ],
+  [
+    "isearch-hide-immediately",
+    "Whether text a search opened is hidden again as soon as the match moves off it; when nil, it stays open until the search ends.",
+    true,
+    false,
+  ],
+  ["isearch-invisible", "What search-invisible was as this search began, which M-s i toggles.", "open", false],
   ["isearch-message-prefix-add", "Text added before \"I-search\" in the search's prompt, such as \"history \".", null, false],
   ["isearch-lazy-count", "Whether the prompt counts the matches: the current one and how many there are, as lazy-count-prefix-format puts them.", false, false],
   ["lazy-count-prefix-format", "How the prompt starts with the count of matches when isearch-lazy-count is on, the current match and the total, or nil.", "%s/%s ", false],
@@ -126,6 +139,10 @@ let matchData: { start: number; end: number } | undefined;
 let yankPrevPoint: number | undefined;
 /** Which match the search is at and how many there are, for isearch-lazy-count. */
 let lazyCount: { current: number; total: number } | undefined;
+/** The overlays a search has opened, as isearch-opened-overlays. */
+let openedOverlays: number[] = [];
+/** Whether the last match was all in text that cannot be opened, as isearch-hidden. */
+let hidden = false;
 /** The overlays on the match and the other matches. */
 let current: number | undefined;
 let others: number[] = [];
@@ -447,7 +464,119 @@ export function isearchSearchFun(): (string: string, bound?: e8.Value, noerror?:
   return e8.funcall(f as string) as unknown as (string: string, bound?: e8.Value, noerror?: e8.Value) => number | undefined;
 }
 
-e8.defun("isearch-filter-visible", () => true);
+/** Opens an overlay while the search is in it, as isearch-open-overlay-temporary. */
+function openOverlayTemporary(ov: number): void {
+  const temporary = e8.overlayGet(ov, "isearch-open-invisible-temporary");
+  if (truthy(temporary)) e8.funcall(temporary as string, ov, null);
+  else {
+    e8.overlayPut(ov, "isearch-invisible", e8.overlayGet(ov, "invisible") ?? null);
+    e8.overlayPut(ov, "invisible", null);
+  }
+}
+
+/** Hides an opened overlay again, or opens it for good if the search ended in it, as isearch-open-necessary-overlays. */
+function openNecessaryOverlays(ov: number): void {
+  const start = e8.overlayStart(ov);
+  const end = e8.overlayEnd(ov);
+  // Gone, as when opening one overlay deleted another.
+  if (start === undefined || end === undefined) return;
+  const inside = e8.point() > start && e8.point() <= end;
+  const temporary = e8.overlayGet(ov, "isearch-open-invisible-temporary");
+  if (inside || !truthy(temporary)) {
+    e8.overlayPut(ov, "invisible", e8.overlayGet(ov, "isearch-invisible") ?? null);
+    e8.overlayPut(ov, "isearch-invisible", null);
+  }
+  if (inside) e8.funcall(e8.overlayGet(ov, "isearch-open-invisible") as string, ov);
+  else if (truthy(temporary)) e8.funcall(temporary as string, ov, true);
+}
+
+/** Hides what the search opened, but what holds point, which opens for good, as isearch-clean-overlays. */
+export function isearchCleanOverlays(): void {
+  if (openedOverlays.length === 0) return;
+  const opened = openedOverlays;
+  openedOverlays = [];
+  for (const ov of opened) openNecessaryOverlays(ov);
+}
+
+/** Whether `start0` to `end0` and `start1` to `end1` overlap, as isearch-intersects-p. */
+function intersects(start0: number, end0: number, start1: number, end1: number): boolean {
+  return (
+    (start0 >= start1 && start0 < end1) ||
+    (end0 > start1 && end0 <= end1) ||
+    (start1 >= start0 && start1 < end0) ||
+    (end1 > start0 && end1 <= end0)
+  );
+}
+
+/** Hides again the opened overlays the match from `beg` to `end` is not in, as isearch-close-unnecessary-overlays. */
+function closeUnnecessaryOverlays(beg: number, end: number): void {
+  const opened = openedOverlays;
+  openedOverlays = [];
+  for (const ov of opened) {
+    const start = e8.overlayStart(ov);
+    const stop = e8.overlayEnd(ov);
+    if (start === undefined || stop === undefined) continue;
+    if (intersects(beg, end, start, stop)) {
+      openedOverlays.push(ov);
+      continue;
+    }
+    const temporary = e8.overlayGet(ov, "isearch-open-invisible-temporary");
+    if (truthy(temporary)) e8.funcall(temporary as string, ov, true);
+    else {
+      e8.overlayPut(ov, "invisible", e8.overlayGet(ov, "isearch-invisible") ?? null);
+      e8.overlayPut(ov, "isearch-invisible", null);
+    }
+  }
+}
+
+/**
+ * Whether all the text from `beg` to `end` is invisible, as
+ * isearch-range-invisible: with search-invisible open, text hidden only by
+ * overlays that can be opened is opened instead, while the match is in it.
+ */
+function rangeInvisible(beg: number, end: number): boolean {
+  if (beg === end) return false;
+  const mode = get("search-invisible");
+  let canBeOpened = mode === "open" || mode === "can-be-opened";
+  const crossing: number[] = [];
+  if (canBeOpened && flag("isearch-hide-immediately") && mode !== "can-be-opened") closeUnnecessaryOverlays(beg, end);
+  let pos = beg;
+  while (pos < end && e8.invisibleP(pos)) {
+    if (e8.invisibleP(e8.getTextProperty(pos, "invisible") ?? null)) {
+      // Text hidden by a text property cannot be opened.
+      pos = e8.nextSinglePropertyChange(pos, "invisible", end) ?? end;
+      canBeOpened = false;
+      continue;
+    }
+    if (canBeOpened) {
+      const here: number[] = [];
+      for (const o of e8.overlaysAt(pos)) {
+        if (!e8.invisibleP(e8.overlayGet(o, "invisible") ?? null)) continue;
+        if (truthy(e8.overlayGet(o, "isearch-open-invisible"))) here.push(o);
+        else canBeOpened = false;
+      }
+      // Once each, though other overlays' ends cut the run: opened twice, one would forget what it hid.
+      if (canBeOpened) crossing.unshift(...here.filter((o) => !crossing.includes(o)));
+    }
+    pos = e8.nextOverlayChange(pos);
+  }
+  if (pos < end) return false;
+  if (canBeOpened && crossing.length > 0) {
+    if (mode !== "can-be-opened") {
+      openedOverlays = [...openedOverlays, ...crossing];
+      for (const o of crossing) openOverlayTemporary(o);
+    }
+    return false;
+  }
+  hidden = true;
+  return true;
+}
+
+e8.defun("isearch-filter-visible", (beg: e8.Value, end: e8.Value) => {
+  const [b, e] = [Number(beg), Number(end)];
+  if (e8.textPropertyNotAll(b, e, "inhibit-isearch", null) !== undefined) return null;
+  return get("search-invisible") === true || !rangeInvisible(b, e);
+});
 
 /** Searches for the string, moving point to the match if found, as isearch-search-string. */
 function searchString(string: string, bound: number | undefined, noerror: boolean): number | undefined {
@@ -465,7 +594,7 @@ function isearchSearch(): void {
   }
   e8.conditionCase(
     () =>
-      e8.letBind({ "case-fold-search": truthy(get("isearch-case-fold-search")) }, () => {
+      e8.letBind({ "case-fold-search": truthy(get("isearch-case-fold-search")), "search-invisible": get("isearch-invisible") ?? null }, () => {
         set("isearch-error", null);
         const filter = get("isearch-filter-predicate");
         for (;;) {
@@ -473,7 +602,7 @@ function isearchSearch(): void {
           set("isearch-success", found);
           if (!found) break;
           const [b, e] = [e8.matchBeginning(0)!, e8.matchEnd(0)!];
-          if (!truthy(filter) || filter === "isearch-filter-visible" || truthy(e8.funcall(filter as string, b, e))) break;
+          if (!truthy(filter) || truthy(e8.funcall(filter as string, b, e))) break;
           if (b === e) {
             const forward = flag("isearch-forward");
             if (forward ? e8.point() >= e8.pointMax() : e8.point() <= e8.pointMin()) {
@@ -639,6 +768,9 @@ export function isearchMode(forward: boolean, regexp = false, regexpFunction: e8
   set("isearch-yank-flag", false);
   set("isearch-error", null);
   set("isearch-other-end", null);
+  set("isearch-invisible", get("search-invisible") ?? null);
+  openedOverlays = [];
+  hidden = false;
   justStarted = true;
   matchData = undefined;
   yankPrevPoint = undefined;
@@ -676,7 +808,10 @@ function requireSearch(): void {
 
 /** Searches again with the string grown, as isearch-search-and-update. */
 function searchAndUpdate(): void {
-  if (flag("isearch-success") || flag("isearch-regexp")) {
+  // A string found only in text that cannot be opened may now be partly visible, so it is searched for again.
+  const wasHidden = hidden;
+  hidden = false;
+  if (flag("isearch-success") || flag("isearch-regexp") || wasHidden) {
     const forward = flag("isearch-forward");
     const opoint = Number(get("isearch-opoint"));
     const barrier = Number(get("isearch-barrier"));
@@ -880,6 +1015,7 @@ const printingCharCommand = e8.defineCommand({
       return;
     }
     isearchDone();
+    isearchCleanOverlays();
     if (key !== undefined) e8.unreadKeys(key);
   },
 });
@@ -890,6 +1026,13 @@ const deleteChar = e8.defineCommand({
   run: () => {
     requireSearch();
     if (cmds.length > 1) popState();
+    // Going back to a hidden match opens it again, and closes the others.
+    if (get("isearch-invisible") === "open" && flag("isearch-hide-immediately")) {
+      const otherEnd = get("isearch-other-end");
+      if (typeof otherEnd === "number") {
+        e8.letBind({ "search-invisible": "open" }, () => rangeInvisible(Math.min(e8.point(), otherEnd), Math.max(e8.point(), otherEnd)));
+      } else closeUnnecessaryOverlays(e8.point(), e8.point());
+    }
     isearchUpdate();
   },
 });
@@ -921,6 +1064,7 @@ const exit = e8.defineCommand({
   run: () => {
     requireSearch();
     isearchDone();
+    isearchCleanOverlays();
   },
 });
 
@@ -929,6 +1073,7 @@ function isearchCancel(): void {
   if (truthy(get("isearch-push-state-function")) && cmds.length > 0) setState(cmds[cmds.length - 1]);
   else e8.gotoChar(Number(get("isearch-opoint")));
   isearchDone(true);
+  isearchCleanOverlays();
   e8.message("Quit");
 }
 
@@ -1073,6 +1218,17 @@ defineModeToggle(
   },
 );
 
+defineModeToggle(
+  "invisible",
+  "i",
+  null,
+  "This determines whether to search inside invisible text or not.\nToggles the variable `isearch-invisible' between values\nnil and a non-nil value of the option `search-invisible'\n(or `open' if `search-invisible' is nil).",
+  () => {
+    set("isearch-invisible", flag("isearch-invisible") ? null : truthy(get("search-invisible")) ? get("search-invisible")! : "open");
+    return flag("isearch-invisible") ? "match invisible text" : "match visible text";
+  },
+);
+
 /** The search ring the search uses, and its yank pointer's variable. */
 const ringNames = () => (flag("isearch-regexp") ? ["regexp-search-ring", "regexp-search-ring-yank-pointer"] : ["search-ring", "search-ring-yank-pointer"]) as [string, string];
 
@@ -1196,6 +1352,7 @@ export function editString(): void {
       if (truthy(get("isearch-push-state-function")) && cmds.length > 0) setState(cmds[cmds.length - 1]!);
       else e8.gotoChar(saved.opoint);
       isearchDone(true);
+      isearchCleanOverlays();
       throw quit;
     }
     while ((!flag("isearch-success") || truthy(get("isearch-error"))) && cmds.length > 1) popState();
