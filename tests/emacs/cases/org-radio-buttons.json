@@ -1,0 +1,243 @@
+[
+  {
+    "name": "radio-key-tick",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-x C-r",
+    "point": 47,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-untick",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-x C-r",
+    "point": 37,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-c-c-tick",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 47,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-c-c-untick",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 37,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-toggle-checkbox-tick",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-x C-b",
+    "point": 47,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-toggle-checkbox-untick",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-x C-b",
+    "point": 37,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-plain-list",
+    "text": "- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-x C-r",
+    "point": 26,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-no-boxes",
+    "text": "- one\n- two\n- three\n",
+    "keys": "C-c C-x C-r",
+    "point": 8,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-c-u",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-u C-c C-x C-r",
+    "point": 47,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-c-u-first",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-u C-c C-x C-r",
+    "point": 27,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-c-u-no-boxes",
+    "text": "- one\n- two\n- three\n",
+    "keys": "C-u C-c C-x C-r",
+    "point": 8,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-c-u-c-u",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-u C-u C-c C-x C-r",
+    "point": 47,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-c-u-c-u-box",
+    "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-u C-u C-c C-x C-r",
+    "point": 37,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-outside",
+    "text": "text\n- one\n- two\n- three\n",
+    "keys": "C-c C-x C-r",
+    "point": 1,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-continuation",
+    "text": "- [ ] one\n  more\n- [X] two\n",
+    "keys": "C-c C-x C-r",
+    "point": 12,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-nested",
+    "text": "- [ ] parent\n  - [ ] a\n  - [ ] b\n- [ ] other\n",
+    "keys": "C-c C-x C-r",
+    "point": 15,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-key-parent",
+    "text": "- [ ] parent\n  - [ ] a\n  - [ ] b\n- [ ] other\n",
+    "keys": "C-c C-x C-r",
+    "point": 39,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-attr-nil",
+    "text": "#+ATTR_ORG: :radio nil\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 49,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-attr-with-name",
+    "text": "#+NAME: choice\n#+attr_org: :width 10 :radio yes\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 74,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-attr-blank-line",
+    "text": "#+ATTR_ORG: :radio t\n\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 48,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-nested-attr",
+    "text": "- [ ] parent\n  #+ATTR_ORG: :radio t\n  - [X] a\n  - [ ] b\n",
+    "keys": "C-c C-c",
+    "point": 50,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-cookie",
+    "text": "* Choice [0/3]\n#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 60,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-mode",
+    "text": "- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "M-x C-c C-c",
+    "point": 26,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "org-list-checkbox-radio-mode"
+    ]
+  },
+  {
+    "name": "radio-mode-outside-org",
+    "text": "- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "M-x",
+    "point": 0,
+    "modes": [
+      "text-mode"
+    ],
+    "answers": [
+      "org-list-checkbox-radio-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "radio-attr-bad-name",
+    "text": "#+ATTR_ORG: :radio t\n#+NAME[s]: x\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 60,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "radio-attr-caption-secondary",
+    "text": "#+ATTR_ORG: :radio t\n#+CAPTION[s]: x\n- [ ] one\n- [X] two\n- [ ] three\n",
+    "keys": "C-c C-c",
+    "point": 63,
+    "modes": [
+      "org-mode"
+    ]
+  }
+]

@@ -16,7 +16,7 @@ import {
   setTodo,
   updateCheckboxCount,
 } from "org";
-import { drawerEnd, PLANNING } from "org-element";
+import { AFFILIATED, drawerEnd, elementAt, PLANNING } from "org-element";
 import { fixFoldsAround, flag, FOLD_SPECS, foldChecksOff, hideOverlay, withoutFoldChecks } from "org-fold";
 import {
   dropMarker,
@@ -1234,6 +1234,7 @@ export function nextListItem(): void {
  * org-toggle-checkbox does. With C-u, adds or removes checkboxes.
  */
 export function toggleCheckbox(arg: e8.PrefixArg): void {
+  if (atRadioList()) return toggleRadioButton(arg);
   const saved = marker(e8.point());
   const presence = Array.isArray(arg) && arg[0] === 4;
   try {
@@ -1291,6 +1292,75 @@ export function toggleCheckbox(arg: e8.PrefixArg): void {
   }
   updateCheckboxCount();
 }
+
+// Radio buttons: a list whose checkboxes allow one ticked, as Org's
+// #+ATTR_ORG: :radio t and org-list-checkbox-radio-mode make them.
+
+/**
+ * Whether point's line is an item of a radio list: the innermost list it
+ * is in has `:radio` other than nil in an #+ATTR_ORG: line among its
+ * affiliated keywords, as org-at-radio-list-p.
+ */
+export function atRadioList(): boolean {
+  const line = lineAt();
+  if (!itemLine(line)) return false;
+  let e = elementAt(e8.lineStart(line));
+  while (e && e.type !== "plain-list") e = e.parent;
+  if (!e) return false;
+  // The keywords directly above the list, the nearest first, as Org searches back from its first item.
+  for (let l = lineAt(e.begin) - 1; l >= 0 && AFFILIATED.test(e8.lineText(l)); l--) {
+    const m = /^[ \t]*#\+attr_org:.* :radio (\S+)/i.exec(e8.lineText(l));
+    if (m) return m[1] !== "nil";
+  }
+  return false;
+}
+
+/**
+ * Ticks the item at point and unticks the others of its list, as
+ * org-toggle-radio-button: C-u takes the item's box away, or with no box
+ * gives every item an empty one; C-u C-u makes it [-].
+ */
+export function toggleRadioButton(arg: e8.PrefixArg): void {
+  const line = lineAt();
+  if (!itemLine(line)) e8.userError("Cannot toggle checkbox outside of a list");
+  const cpos = e8.lineStart(line);
+  const struct = listStruct(line);
+  const parents = parentsAlist(struct);
+  const prevs = prevsAlist(struct);
+  const old = copyStruct(struct);
+  const cbox = getItem(struct, cpos).checkbox;
+  const items = allItems(cpos, prevs);
+  const c4 = Array.isArray(arg) && arg[0] === 4;
+  const c16 = Array.isArray(arg) && arg[0] === 16;
+  // Org leaves out the empty boxes only for C-u on the list's first item with a box.
+  const fresh = cbox && c4 && items[0] === cpos ? undefined : "[ ]";
+  for (const pos of items) getItem(struct, pos).checkbox = fresh;
+  if (fresh !== undefined) getItem(struct, cpos).checkbox = c4 ? (cbox ? undefined : "[ ]") : c16 ? (cbox ? undefined : "[-]") : cbox === "[X]" ? "[ ]" : "[X]";
+  fixBox(struct, parents);
+  applyStruct(struct, old);
+  updateCheckboxCount();
+}
+
+e8.defineMinorMode({
+  name: "org-list-checkbox-radio-mode",
+  doc: "Make the checkboxes of Org's lists radio buttons: C-c C-c on an item ticks it and unticks the others.",
+  lighter: " CheckBoxRadio",
+  onChange: () => {
+    if (e8.variable("major-mode") !== "org-mode") e8.userError("Cannot turn this mode outside org-mode buffers");
+  },
+});
+
+/** Whether C-c C-c treats point's list as radio buttons, as its list says or org-list-checkbox-radio-mode. */
+export function radioButtonsHere(): boolean {
+  return atRadioList() || e8.variable("org-list-checkbox-radio-mode") === true;
+}
+
+e8.defineCommand({
+  name: "org-toggle-radio-button",
+  doc: "Tick the checkbox of the item at point and untick the others of its list. With C-u, take its box away; with C-u C-u, make it [-].",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => toggleRadioButton(arg),
+});
 
 /**
  * Where a heading's planning line and property drawer end, as

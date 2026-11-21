@@ -114,6 +114,13 @@ function dynamicBlockEnd(line: number, limit: number): number | undefined {
   return undefined;
 }
 
+/**
+ * An affiliated keyword's line, as org-element--affiliated-re: CAPTION
+ * and RESULTS with an optional [secondary value], the other keywords
+ * Org lists, and export attributes.
+ */
+export const AFFILIATED = /^[ \t]*#\+(?:(?:CAPTION|RESULTS)(?:\[.*\])?|DATA|HEADERS?|LABEL|NAME|PLOT|RESNAME|RESULT|SOURCE|SRCNAME|TBLNAME|ATTR_[-_A-Za-z0-9]+):/i;
+
 /** A comment line, as org-element reads one: a hash, then a space or nothing. */
 const COMMENT_LINE = /^[ \t]*#(?: |$)/;
 

@@ -1,0 +1,560 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "radio-key-tick",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 47,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-untick",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 37,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-c-c-tick",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 47,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-c-c-untick",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 37,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-toggle-checkbox-tick",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 47,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-toggle-checkbox-untick",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 37,
+        "keys": "C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [ ] three\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-plain-list",
+      "input": {
+        "text": "- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 26,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [ ] one\n- [ ] two\n- [X] three\n",
+      "visible": "- [ ] one\n- [ ] two\n- [X] three\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-no-boxes",
+      "input": {
+        "text": "- one\n- two\n- three\n",
+        "point": 8,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [ ] one\n- [X] two\n- [ ] three\n",
+      "visible": "- [ ] one\n- [X] two\n- [ ] three\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-c-u",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 47,
+        "keys": "C-u C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- three\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-c-u-first",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 27,
+        "keys": "C-u C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- one\n- two\n- three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- one\n- two\n- three\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-c-u-no-boxes",
+      "input": {
+        "text": "- one\n- two\n- three\n",
+        "point": 8,
+        "keys": "C-u C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [ ] one\n- [ ] two\n- [ ] three\n",
+      "visible": "- [ ] one\n- [ ] two\n- [ ] three\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-c-u-c-u",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 47,
+        "keys": "C-u C-u C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- three\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-c-u-c-u-box",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 37,
+        "keys": "C-u C-u C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n- [ ] one\n- two\n- [ ] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n- [ ] one\n- two\n- [ ] three\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-outside",
+      "input": {
+        "text": "text\n- one\n- two\n- three\n",
+        "point": 1,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "text\n- one\n- two\n- three\n",
+      "visible": "text\n- one\n- two\n- three\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle checkbox outside of a list"
+    },
+    {
+      "name": "radio-key-continuation",
+      "input": {
+        "text": "- [ ] one\n  more\n- [X] two\n",
+        "point": 12,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [ ] one\n  more\n- [X] two\n",
+      "visible": "- [ ] one\n  more\n- [X] two\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot toggle checkbox outside of a list"
+    },
+    {
+      "name": "radio-key-nested",
+      "input": {
+        "text": "- [ ] parent\n  - [ ] a\n  - [ ] b\n- [ ] other\n",
+        "point": 15,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [-] parent\n  - [X] a\n  - [ ] b\n- [ ] other\n",
+      "visible": "- [-] parent\n  - [X] a\n  - [ ] b\n- [ ] other\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-key-parent",
+      "input": {
+        "text": "- [ ] parent\n  - [ ] a\n  - [ ] b\n- [ ] other\n",
+        "point": 39,
+        "keys": "C-c C-x C-r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [ ] parent\n  - [ ] a\n  - [ ] b\n- [X] other\n",
+      "visible": "- [ ] parent\n  - [ ] a\n  - [ ] b\n- [X] other\n",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-attr-nil",
+      "input": {
+        "text": "#+ATTR_ORG: :radio nil\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 49,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio nil\n- [ ] one\n- [X] two\n- [X] three\n",
+      "visible": "#+ATTR_ORG: :radio nil\n- [ ] one\n- [X] two\n- [X] three\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-attr-with-name",
+      "input": {
+        "text": "#+NAME: choice\n#+attr_org: :width 10 :radio yes\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 74,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+NAME: choice\n#+attr_org: :width 10 :radio yes\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "visible": "#+NAME: choice\n#+attr_org: :width 10 :radio yes\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "point": 74,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-attr-blank-line",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 48,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n\n- [ ] one\n- [X] two\n- [X] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n\n- [ ] one\n- [X] two\n- [X] three\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-nested-attr",
+      "input": {
+        "text": "- [ ] parent\n  #+ATTR_ORG: :radio t\n  - [X] a\n  - [ ] b\n",
+        "point": 50,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [-] parent\n  #+ATTR_ORG: :radio t\n  - [ ] a\n  - [X] b\n",
+      "visible": "- [-] parent\n  #+ATTR_ORG: :radio t\n  - [ ] a\n  - [X] b\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-cookie",
+      "input": {
+        "text": "* Choice [0/3]\n#+ATTR_ORG: :radio t\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 60,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Choice [1/3]\n#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "visible": "* Choice [1/3]\n#+ATTR_ORG: :radio t\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "point": 58,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-mode",
+      "input": {
+        "text": "- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 26,
+        "keys": "M-x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-list-checkbox-radio-mode"
+        ]
+      },
+      "text": "- [ ] one\n- [ ] two\n- [X] three\n",
+      "visible": "- [ ] one\n- [ ] two\n- [X] three\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-mode-outside-org",
+      "input": {
+        "text": "- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 0,
+        "keys": "M-x",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "org-list-checkbox-radio-mode"
+        ],
+        "message": true
+      },
+      "text": "- [ ] one\n- [X] two\n- [ ] three\n",
+      "visible": "- [ ] one\n- [X] two\n- [ ] three\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot turn this mode outside org-mode buffers",
+      "message": null
+    },
+    {
+      "name": "radio-attr-bad-name",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n#+NAME[s]: x\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 60,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n#+NAME[s]: x\n- [ ] one\n- [X] two\n- [X] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n#+NAME[s]: x\n- [ ] one\n- [X] two\n- [X] three\n",
+      "point": 60,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "radio-attr-caption-secondary",
+      "input": {
+        "text": "#+ATTR_ORG: :radio t\n#+CAPTION[s]: x\n- [ ] one\n- [X] two\n- [ ] three\n",
+        "point": 63,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+ATTR_ORG: :radio t\n#+CAPTION[s]: x\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "visible": "#+ATTR_ORG: :radio t\n#+CAPTION[s]: x\n- [ ] one\n- [ ] two\n- [X] three\n",
+      "point": 63,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

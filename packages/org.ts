@@ -15,7 +15,7 @@
 // an "org-link" text property, so [[https://gnu.org][GNU]] shows as GNU.
 
 import { jump, type Link, linkHere, searchInBuffer, showContext } from "ol";
-import { type Elem, elementAt, endBeforeBlank, keepingParse, PLANNING, parseShifts, startsElement } from "org-element";
+import { AFFILIATED, type Elem, elementAt, endBeforeBlank, keepingParse, PLANNING, parseShifts, startsElement } from "org-element";
 import {
   ancestors,
   BLOCK_BEGIN,
@@ -88,6 +88,8 @@ import {
   entryGet,
   propertyLocalValues,
   propertySeparator,
+  radioButtonsHere,
+  toggleRadioButton,
   topGet,
   topLocalValues,
   setLineIndenter,
@@ -2352,9 +2354,6 @@ function fillAsParagraph(beg: number, end: number, justify: string | undefined):
   // An empty prefix is kept as it is rather than worked out again, as for Auto Fill.
   e8.letBind({ "fill-prefix": prefix ?? null, "adaptive-fill-mode": prefix === undefined || prefix !== "" ? true : null }, () => fillRegionAsParagraph(beg, end, justify));
 }
-
-/** A line that is an affiliated keyword, as #+CAPTION and #+NAME, which belongs to the element after it. */
-const AFFILIATED = /^[ \t]*#\+(?:CAPTION|DATA|HEADERS?|LABEL|NAME|PLOT|RESNAME|RESULT|RESULTS|SOURCE|SRCNAME|TBLNAME|ATTR_[-_A-Za-z0-9]+)(?:\[.*\])?:/i;
 
 /** Whether a paragraph is a LaTeX environment, \\begin{X} to \\end{X}, which org-element makes its own element and Org never fills. */
 function latexEnvironment(beg: number, end: number): boolean {
@@ -7643,7 +7642,8 @@ const ctrlCCtrlC = e8.defineCommand({
       return;
     }
     if (itemLine(line)) {
-      ctrlCCtrlCItem(line, e8.prefixArg());
+      if (radioButtonsHere()) toggleRadioButton(e8.prefixArg());
+      else ctrlCCtrlCItem(line, e8.prefixArg());
       return;
     }
     nothingUseful();
@@ -8436,6 +8436,7 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c \\": "org-match-sparse-tree",
   "C-c C-c": ctrlCCtrlC,
   "C-c C-x C-b": "org-toggle-checkbox",
+  "C-c C-x C-r": "org-toggle-radio-button",
   "C-c C-x C-u": "org-dblock-update",
   "C-c C-x x": "org-dynamic-block-insert-dblock",
   "C-c C-x p": setProperty,
