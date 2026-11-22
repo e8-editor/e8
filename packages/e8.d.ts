@@ -5316,11 +5316,25 @@ declare global {
        */
       "org-agenda-previous-line": [];
       /**
-       * Set the priority of the entry the agenda line at point shows, or remove it with SPC.
+       * Set the priority of the entry the agenda line at point shows, to the key typed, or remove it with SPC. With C-u, say its priority.
+       *
+       * @param force raw prefix argument
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-priority": [];
+      "org-agenda-priority": [force?: PrefixArg | boolean];
+      /**
+       * Lower the priority of the entry the agenda line at point shows.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-priority-down": [];
+      /**
+       * Raise the priority of the entry the agenda line at point shows.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-priority-up": [];
       /**
        * Leave the agenda: its window goes, or another buffer takes its place.
        *
@@ -6312,19 +6326,25 @@ declare global {
        */
       "org-previous-visible-heading": [];
       /**
-       * Set the priority of the heading point is under to a letter, or remove it with SPC or an empty answer.
+       * Set the priority of the heading point is under to the key typed, or remove it with SPC. With C-u, say its priority instead. From code, setPriority from org takes up, down, remove or a character.
        *
-       * @param priority text
+       * @param action raw prefix argument
        *
        * Defined in packages/org.ts.
        */
-      "org-priority": [priority: string];
+      "org-priority": [action?: PrefixArg | boolean];
       /**
        * Lower the priority of the heading point is under: none starts at the default, and below the lowest is none.
        *
        * Defined in packages/org.ts.
        */
       "org-priority-down": [];
+      /**
+       * Say the priority of the heading on point's line, as a number: a thousand for each step below org-priority-lowest.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-priority-show": [];
       /**
        * Raise the priority of the heading point is under: none starts at the default, and above the highest is none.
        *
@@ -14413,17 +14433,35 @@ declare global {
        */
       "org-priority-default": Value;
       /**
-       * The highest priority, a capital letter.
+       * Whether the priority commands work; when nil, they refuse, so a priority is never set by accident.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-priority-enable-commands": Value;
+      /**
+       * A function of a heading's text giving its priority as a number, instead of its cookie and org-priority-lowest.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-priority-get-priority-function": Value;
+      /**
+       * The highest priority, a capital letter, or a number for numeric priorities.
        *
        * Defined in packages/org.ts.
        */
       "org-priority-highest": Value;
       /**
-       * The lowest priority, a capital letter.
+       * The lowest priority, a capital letter, or a number for numeric priorities.
        *
        * Defined in packages/org.ts.
        */
       "org-priority-lowest": Value;
+      /**
+       * Whether raising or lowering a heading with no priority starts at org-priority-default, rather than one above or below it.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-priority-start-cycle-with-default": Value;
       /**
        * What joins a property's values when NAME+ adds to it, as [names, separator] lists, where names is a list of property names or a regexp matching them. Others are joined by a space.
        *
