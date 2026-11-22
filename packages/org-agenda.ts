@@ -23,7 +23,7 @@ import {
   scanTags,
   today,
 } from "org";
-import { setAgendaEntryHere } from "ol";
+import { setAgendaEntryHere, storeLink } from "ol";
 import { addArchiveFiles } from "org-archive";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
@@ -978,6 +978,18 @@ const occurInAgendaFiles = e8.defineCommand({
       return buffer;
     });
     multiOccur(buffers, regexp);
+  },
+});
+
+e8.defineCommand({
+  name: "org-occur-link-in-agenda-files",
+  doc: "Make a link to here, as org-store-link does, and list its places in the agenda files and org-agenda-text-search-extra-files, as org-occur-in-agenda-files.",
+  run: () => {
+    const link = e8.conditionCase(
+      () => storeLink(null, false),
+      { error: () => e8.signal("error", "Unable to create a link to here") as never },
+    );
+    e8.call(occurInAgendaFiles, regexpQuote(typeof link === "string" ? link : ""));
   },
 });
 

@@ -7129,8 +7129,7 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
   let getkey: string | undefined;
   let compare: string | undefined;
   if (dcst === "f") {
-    getkey = e8.completingRead("Function for extracting keys: ", []);
-    compare = e8.completingRead("Function for comparing keys (empty for default `sort-subr' predicate): ", []);
+    [getkey, compare] = readSortFunctions();
   }
   if (dcst === "r") property = e8.completingRead("Property: ", bufferPropertyKeys(), { requireMatch: true });
   e8.message("Sorting entries...");
@@ -7356,11 +7355,21 @@ function sortRecords(records: SortRecord[], reverse: boolean, less?: (a: string 
   return true;
 }
 
-/** Reads a key-extracting and a comparing function for sorting by f, as org-read-function asks for them. */
+/** A function's name, completed from those defined, as org-read-function reads it; empty is none with ALLOW-EMPTY. */
+function orgReadFunction(prompt: string, allowEmpty = false): string | undefined {
+  const names: string[] = [];
+  e8.mapatoms((name) => {
+    if (e8.fboundp(name)) names.push(name);
+  });
+  const answer = e8.completingRead(prompt, names, { requireMatch: true });
+  return allowEmpty && answer === "" ? undefined : answer;
+}
+
+/** Reads a key-extracting and a comparing function for sorting by f, as Org's sorting commands ask for them. */
 function readSortFunctions(): [string, string | undefined] {
-  const getkey = e8.completingRead("Function for extracting keys: ", []);
-  const compare = e8.completingRead("Function for comparing keys (empty for default ‘sort-subr’ predicate): ", []);
-  return [getkey, compare === "" ? undefined : compare];
+  const getkey = orgReadFunction("Function for extracting keys: ") as string;
+  const compare = orgReadFunction("Function for comparing keys (empty for default `sort-subr' predicate): ", true);
+  return [getkey, compare];
 }
 
 /** The text of field N of a table line, as org-table-get-field reads it, or "". */

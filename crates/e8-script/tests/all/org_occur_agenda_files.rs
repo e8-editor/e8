@@ -45,3 +45,23 @@ fn slash_in_the_agenda_menu() {
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert!(occur_text(&ed).contains("needle here"));
 }
+
+/// org-occur-link-in-agenda-files lists where the link to here is written.
+#[test]
+fn the_link_to_here_in_the_agenda_files() {
+    let mut ed = Editor::new();
+    let _s = Scripting::new(&mut ed).unwrap();
+    let dir = tempfile::tempdir().unwrap();
+    let a = dir.path().join("a.org");
+    let b = dir.path().join("b.org");
+    std::fs::write(&a, "* Target\n").unwrap();
+    let a_link = format!("[[file:{}::*Target][Target]]", a.display());
+    std::fs::write(&b, format!("* Notes\nsee {a_link}\nnothing here\n")).unwrap();
+    ed.set_variable("org-agenda-files", Value::List(vec![Value::Str(b.to_str().unwrap().into())]));
+    ed.call("find-file", vec![Arg::Str(a.to_str().unwrap().into())]).unwrap();
+    ed.press("M-x o r g - o c c u r - l i n k - i n - a g e n d a - f i l e s RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    let text = occur_text(&ed);
+    assert!(text.contains("see [[file:"), "{text}");
+    assert!(!text.contains("nothing here"), "{text}");
+}

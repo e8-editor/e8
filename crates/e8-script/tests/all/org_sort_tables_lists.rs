@@ -107,3 +107,16 @@ fn entries_in_order_leave_the_buffer_unmodified() {
     assert_eq!(text(&ed), "* P\n** B\n** A\n");
     assert!(ed.window_buffer().is_modified());
 }
+
+/// The functions are read with completion, as org-read-function: a name
+/// that is no function is not taken.
+#[test]
+fn sort_functions_must_be_functions() {
+    let (mut ed, _s) = org("| bb |\n| a |\n| ccc |\n");
+    ed.window_buffer_mut().set_point(2);
+    // "no-such" is refused and the prompt stays, to be answered again.
+    ed.press("C-c ^ f n o - s u c h RET C-a C-k t e s t - l e n g t h RET RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), Some("[No match]".into()));
+    let b = ed.window_buffer();
+    assert_eq!(b.slice(0..b.len()), "| a |\n| bb |\n| ccc |\n");
+}
