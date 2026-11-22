@@ -1,0 +1,485 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-t-heading-bol",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-emulate-tab": true
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-t-heading-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 6,
+  "vars": {
+   "org-cycle-emulate-tab": true
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-t-body-start",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 9,
+  "vars": {
+   "org-cycle-emulate-tab": true
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-t-body-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 15,
+  "vars": {
+   "org-cycle-emulate-tab": true
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-t-blank-line",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 21,
+  "vars": {
+   "org-cycle-emulate-tab": true
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-t-before-first-heading",
+  "text": "intro\n* A\n",
+  "keys": "TAB",
+  "point": 2,
+  "vars": {
+   "org-cycle-emulate-tab": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-exc-hl-bol-heading-bol",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-emulate-tab": "'exc-hl-bol"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-exc-hl-bol-heading-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 6,
+  "vars": {
+   "org-cycle-emulate-tab": "'exc-hl-bol"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-exc-hl-bol-body-start",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 9,
+  "vars": {
+   "org-cycle-emulate-tab": "'exc-hl-bol"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-exc-hl-bol-body-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 15,
+  "vars": {
+   "org-cycle-emulate-tab": "'exc-hl-bol"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-exc-hl-bol-blank-line",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 21,
+  "vars": {
+   "org-cycle-emulate-tab": "'exc-hl-bol"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-exc-hl-bol-before-first-heading",
+  "text": "intro\n* A\n",
+  "keys": "TAB",
+  "point": 2,
+  "vars": {
+   "org-cycle-emulate-tab": "'exc-hl-bol"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-white-heading-bol",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-emulate-tab": "'white"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-white-heading-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 6,
+  "vars": {
+   "org-cycle-emulate-tab": "'white"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-white-body-start",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 9,
+  "vars": {
+   "org-cycle-emulate-tab": "'white"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-white-body-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 15,
+  "vars": {
+   "org-cycle-emulate-tab": "'white"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-white-blank-line",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 21,
+  "vars": {
+   "org-cycle-emulate-tab": "'white"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-white-before-first-heading",
+  "text": "intro\n* A\n",
+  "keys": "TAB",
+  "point": 2,
+  "vars": {
+   "org-cycle-emulate-tab": "'white"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-whitestart-heading-bol",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-emulate-tab": "'whitestart"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-whitestart-heading-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 6,
+  "vars": {
+   "org-cycle-emulate-tab": "'whitestart"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-whitestart-body-start",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 9,
+  "vars": {
+   "org-cycle-emulate-tab": "'whitestart"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-whitestart-body-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 15,
+  "vars": {
+   "org-cycle-emulate-tab": "'whitestart"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-whitestart-blank-line",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 21,
+  "vars": {
+   "org-cycle-emulate-tab": "'whitestart"
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-whitestart-before-first-heading",
+  "text": "intro\n* A\n",
+  "keys": "TAB",
+  "point": 2,
+  "vars": {
+   "org-cycle-emulate-tab": "'whitestart"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-nil-heading-bol",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-emulate-tab": false
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-nil-heading-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 6,
+  "vars": {
+   "org-cycle-emulate-tab": false
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-nil-body-start",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 9,
+  "vars": {
+   "org-cycle-emulate-tab": false
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-nil-body-mid",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 15,
+  "vars": {
+   "org-cycle-emulate-tab": false
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-nil-blank-line",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "TAB",
+  "point": 21,
+  "vars": {
+   "org-cycle-emulate-tab": false
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-nil-before-first-heading",
+  "text": "intro\n* A\n",
+  "keys": "TAB",
+  "point": 2,
+  "vars": {
+   "org-cycle-emulate-tab": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-tab-1",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "C-1 TAB",
+  "point": 33,
+  "vars": {},
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-tab-2",
+  "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+  "keys": "S-<tab> C-2 TAB",
+  "point": 0,
+  "vars": {},
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-tab-minus-1",
+  "text": "* A\n** B\nb\n*** C\ntext c\n* D\n",
+  "keys": "S-<tab> TAB C-n TAB C-n TAB C-n C-- C-1 TAB",
+  "point": 0,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-tab-at-top",
+  "text": "* A\nbody\n* D\n",
+  "keys": "C-2 TAB",
+  "point": 0,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-tab-before-heading",
+  "text": "intro\n* A\n",
+  "keys": "C-1 TAB",
+  "point": 0,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "read-only-tab-in-body",
+  "text": "* A\nbody text\n",
+  "keys": "C-x C-q TAB",
+  "point": 8,
+  "vars": {}
+ }
+]

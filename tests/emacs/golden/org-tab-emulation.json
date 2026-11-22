@@ -1,0 +1,942 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "emulate-t-heading-bol",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": true
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-t-heading-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": true
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-t-body-start",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 9,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": true
+        }
+      },
+      "text": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-t-body-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 15,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": true
+        }
+      },
+      "text": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-t-blank-line",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": true
+        }
+      },
+      "text": "* A\n** B\n  body text\n  \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n  body text\n  \nmore\n*** C\ntext c\n* D\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-t-before-first-heading",
+      "input": {
+        "text": "intro\n* A\n",
+        "point": 2,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-emulate-tab": true
+        }
+      },
+      "text": "intro\n* A\n",
+      "visible": "intro\n* A\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "emulate-exc-hl-bol-heading-bol",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'exc-hl-bol"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-exc-hl-bol-heading-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'exc-hl-bol"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-exc-hl-bol-body-start",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 9,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'exc-hl-bol"
+        }
+      },
+      "text": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-exc-hl-bol-body-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 15,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'exc-hl-bol"
+        }
+      },
+      "text": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-exc-hl-bol-blank-line",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'exc-hl-bol"
+        }
+      },
+      "text": "* A\n** B\n  body text\n  \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n  body text\n  \nmore\n*** C\ntext c\n* D\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-exc-hl-bol-before-first-heading",
+      "input": {
+        "text": "intro\n* A\n",
+        "point": 2,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-emulate-tab": "'exc-hl-bol"
+        }
+      },
+      "text": "intro\n* A\n",
+      "visible": "intro\n* A\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "emulate-white-heading-bol",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'white"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-white-heading-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'white"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-white-body-start",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 9,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'white"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-white-body-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 15,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'white"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-white-blank-line",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'white"
+        }
+      },
+      "text": "* A\n** B\n  body text\n  \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n  body text\n  \nmore\n*** C\ntext c\n* D\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-white-before-first-heading",
+      "input": {
+        "text": "intro\n* A\n",
+        "point": 2,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-emulate-tab": "'white"
+        }
+      },
+      "text": "intro\n* A\n",
+      "visible": "intro\n* A\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 1 in buffer *e8-oracle*"
+    },
+    {
+      "name": "emulate-whitestart-heading-bol",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'whitestart"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-whitestart-heading-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'whitestart"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-whitestart-body-start",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 9,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'whitestart"
+        }
+      },
+      "text": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\nbody text\n   \nmore\n*** C\ntext c\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-whitestart-body-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 15,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'whitestart"
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-whitestart-blank-line",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": "'whitestart"
+        }
+      },
+      "text": "* A\n** B\n  body text\n  \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n  body text\n  \nmore\n*** C\ntext c\n* D\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-whitestart-before-first-heading",
+      "input": {
+        "text": "intro\n* A\n",
+        "point": 2,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-emulate-tab": "'whitestart"
+        }
+      },
+      "text": "intro\n* A\n",
+      "visible": "intro\n* A\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 1 in buffer *e8-oracle*"
+    },
+    {
+      "name": "emulate-nil-heading-bol",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": false
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-nil-heading-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": false
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-nil-body-start",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 9,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": false
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-nil-body-mid",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 15,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": false
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-nil-blank-line",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": false
+        }
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-nil-before-first-heading",
+      "input": {
+        "text": "intro\n* A\n",
+        "point": 2,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-emulate-tab": false
+        }
+      },
+      "text": "intro\n* A\n",
+      "visible": "intro\n* A\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 1 in buffer *e8-oracle*"
+    },
+    {
+      "name": "numeric-tab-1",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 33,
+        "keys": "C-1 TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "numeric-tab-2",
+      "input": {
+        "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+        "point": 0,
+        "keys": "S-<tab> C-2 TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "* A\n** B\n  body text\n   \nmore\n*** C\ntext c\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Already at top level of the outline",
+      "message": null
+    },
+    {
+      "name": "numeric-tab-minus-1",
+      "input": {
+        "text": "* A\n** B\nb\n*** C\ntext c\n* D\n",
+        "point": 0,
+        "keys": "S-<tab> TAB C-n TAB C-n TAB C-n C-- C-1 TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* A\n** B\nb\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\nb\n*** C\ntext c\n* D\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "numeric-tab-at-top",
+      "input": {
+        "text": "* A\nbody\n* D\n",
+        "point": 0,
+        "keys": "C-2 TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* A\nbody\n* D\n",
+      "visible": "* A\nbody\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Already at top level of the outline"
+    },
+    {
+      "name": "numeric-tab-before-heading",
+      "input": {
+        "text": "intro\n* A\n",
+        "point": 0,
+        "keys": "C-1 TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "intro\n* A\n",
+      "visible": "intro\n* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Before first headline at position 1 in buffer *e8-oracle*"
+    },
+    {
+      "name": "read-only-tab-in-body",
+      "input": {
+        "text": "* A\nbody text\n",
+        "point": 8,
+        "keys": "C-x C-q TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* A\nbody text\n",
+      "visible": "* A\nbody text\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

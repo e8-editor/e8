@@ -13871,6 +13871,12 @@ declare global {
        */
       "org-confirm-babel-evaluate": Value;
       /**
+       * Where TAB in Org indents as TAB does elsewhere, rather than cycling the heading above: t everywhere but on headings, exc-hl-bol everywhere but at a heading's start, white only on blank lines, whitestart only before a line's first non-blank, nil nowhere.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-emulate-tab": Value;
+      /**
        * Whether TAB at the very start of the buffer, not on a heading, cycles the whole buffer as S-TAB does.
        *
        * Defined in packages/org.ts.
@@ -18793,6 +18799,10 @@ declare global {
        * Run after Org-Src mode is turned on.
        */
       "org-src-mode-on-hook": Value;
+      /**
+       * Functions TAB in Org tries after it has found no heading or item to cycle, each until one gives true.
+       */
+      "org-tab-after-check-for-cycling-hook": Value;
       /**
        * Functions TAB in Org tries where it would indent, not being on a heading, an item, a table or a block, each until one gives true.
        */
