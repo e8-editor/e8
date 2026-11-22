@@ -338,9 +338,17 @@ e8.defineVariable({
  */
 function clockModeLineHeading(h: Heading): string {
   const fn = e8.variable("org-clock-heading-function");
+  const name = typeof fn === "symbol" ? e8.symbolName(fn) : undefined;
   let title: string;
-  if (fn !== null && fn !== undefined && fn !== false) {
-    const v = e8.saveExcursion(() => (e8.gotoChar(h.start), e8.funcall(typeof fn === "symbol" ? e8.symbolName(fn) : (fn as string))));
+  // Only a function, as functionp checks: a name not defined yet gives the heading.
+  if (typeof fn === "function" || (name !== undefined && e8.fboundp(name))) {
+    const v = e8.saveExcursion(() =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        e8.gotoChar(h.start);
+        return e8.funcall(typeof fn === "function" ? fn : (name as string));
+      }),
+    );
     title = typeof v === "string" ? v : String(v ?? "");
   } else title = linkDescriptions(h.title.replace(/^COMMENT[ \t]+/, ""));
   e8.setVariable("org-clock-heading", title);
@@ -1262,7 +1270,29 @@ for (const [keys, command] of [
   e8.defineKey("org-mode-map", keys, command);
 }
 
-// C-2 C-c C-w refiles to the running clock's entry, as org-refile reads org-clock-hd-marker.
+/**
+ * Names the running clock's task again from its heading, and shows it in
+ * the mode line, as org-clock-update-mode-line with REFRESH: as a kept
+ * capture's clock does once its heading is written.
+ */
+export function refreshClockHeading(): void {
+  if (!clock) return;
+  const buffer = e8.markerBuffer(clock.heading);
+  const pos = e8.markerPosition(clock.heading);
+  if (buffer === undefined || pos === undefined) return;
+  const title = e8.withCurrentBuffer(buffer, () =>
+    e8.saveRestriction(() => {
+      e8.widen();
+      const all = headings();
+      const i = headingIndex(all, lineAt(pos));
+      return i === undefined ? "???" : clockModeLineHeading(all[i]);
+    }),
+  );
+  clock.title = title;
+  e8.setVariable("org-clock-heading", title);
+  updateModeLine();
+}
+
 // For C-2 C-c C-w: the running clock's entry, named by org-clock-heading.
 setRunningClock(() => {
   const entry = runningEntry();

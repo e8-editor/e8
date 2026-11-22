@@ -252,8 +252,11 @@ export function olpathTable(table: string[]): (input: string) => string[] {
 
 /** Whether a target's heading is still the one it was, as org-refile-check-position. */
 function checkPosition(t: Target): void {
-  // A target in a buffer with no file, unless cached as a marker, as Org's needs one.
-  if (typeof t.start === "number" && t.file === undefined) e8.userError("Please indicate a target file in the refile path");
+  // A target in a buffer with no file, as Org's needs one; a kept marker's Org finds the file of with none.
+  if (t.file === undefined) {
+    if (typeof t.start === "number") e8.userError("Please indicate a target file in the refile path");
+    e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil");
+  }
   if (t.title === undefined) return;
   const ok = e8.withCurrentBuffer(typeof t.start === "number" ? t.buffer : (e8.markerBuffer(t.start) ?? t.buffer), () =>
     e8.saveRestriction(() => {
@@ -433,6 +436,8 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
   let goto = arg !== null && arg !== undefined && arg !== 3;
   const clock = arg === 2 ? runningClock() : undefined;
   if (clock) {
+    // Its file, which Org visits, as find-file-noselect needs one.
+    if (e8.withCurrentBuffer(clock.buffer, () => e8.bufferFileName()) === undefined) e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil");
     it = [clock.title || "running clock", { name: clock.title || "running clock", file: e8.withCurrentBuffer(clock.buffer, () => e8.bufferFileName()), buffer: clock.buffer, start: clock.start }];
     goto = false;
   } else if (rfloc) it = rfloc;
