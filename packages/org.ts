@@ -4456,11 +4456,6 @@ function nextState(current: string | undefined, direction: number, across = fals
   return k >= 0 && k < states.length ? states[k] : undefined;
 }
 
-/**
- * Changes the TODO state of the heading point is under, as org-todo does:
- * the keyword, then the tags, CLOSED, the parent's statistics and a
- * repeat, then point just after the keyword if it was near it.
- */
 // TODO dependencies: what may block a change of state, as org.el's
 // org-blocker-hook and its two functions.
 
@@ -4475,12 +4470,35 @@ e8.defineVariable({ name: "org-track-ordered-property-with-tag", doc: "Whether o
 let blockEntryBlocking = "";
 let blockedByCheckboxes = false;
 
-/** A heading's text after its stars, as org-get-heading gives it. */
+/** A heading's TODO state, priority, title and tags, one space between, as org-get-heading gives them. */
 function headingText(line: number): string {
-  return e8.lineText(line).replace(/^\*+[ \t]+/, "").replace(/^\*+$/, "");
+  const h = parseHeading(line);
+  if (!h) return e8.lineText(line).replace(/^\*+[ \t]*/, "");
+  return [h.todo, h.priority === undefined ? undefined : `[#${h.priority}]`, h.title, h.tags.length > 0 ? `:${h.tags.join(":")}:` : undefined]
+    .filter((x) => x !== undefined && x !== "")
+    .join(" ");
 }
 
-/** Whether a change of TODO state goes ahead: those it is not, before the change looks at. */
+/** The parent of heading I, the first before it at a lower level, or undefined at the top. */
+function parentIndex(all: Heading[], i: number): number | undefined {
+  for (let k = i - 1; k >= 0; k--) if (all[k].level < all[i].level) return k;
+  return undefined;
+}
+
+/** Whether changes of state made in body only say they are blocked, as Org's org-todo called from code does. */
+let blockingFromCode = 0;
+
+/** Runs body as a call of org-todo from code, a blocked change only said. */
+export function todoFromCode<T>(body: () => T): T {
+  blockingFromCode++;
+  try {
+    return body();
+  } finally {
+    blockingFromCode--;
+  }
+}
+
+/** Whether a change of TODO state is one the dependencies look at: from not done to done, as both of Org's functions ask. */
 function changeIsToDone(change: e8.Value[]): boolean {
   const get = (k: string) => change[change.indexOf(k) + 1];
   const from = get(":from");
@@ -4491,7 +4509,8 @@ function changeIsToDone(change: e8.Value[]): boolean {
   return true;
 }
 
-e8.defun("org-block-todo-from-children-or-siblings-or-parent", (change: e8.Value[]) => {
+/** Org's org-block-todo-from-children-or-siblings-or-parent, put on org-blocker-hook by name. */
+function blockFromHierarchy(change: e8.Value[]): boolean | null {
   if (!truthy(e8.variable("org-enforce-todo-dependencies"))) return true;
   if (!changeIsToDone(change)) return true;
   const all = headings();
@@ -4504,36 +4523,39 @@ e8.defun("org-block-todo-from-children-or-siblings-or-parent", (change: e8.Value
       return null;
     }
   }
-  // With an ORDERED parent, an earlier sibling to do blocks it, and so does a blocked ancestor.
   const notDone = (h: Heading) => h.todo !== undefined && !isDone(h.todo);
-  const orderedBlock = (child: number): Heading | undefined => {
-    const parent = ancestors(all, child)[0];
-    if (parent === undefined || !truthy(entryGet(all[parent].line, "ORDERED") ?? null) || entryGet(all[parent].line, "ORDERED") === "nil") return undefined;
-    // From the line after the parent to the child, as Org searches for a heading to do.
-    return all.slice(parent + 1, child).find(notDone);
+  // Under an ORDERED parent, the first heading to do from the line after
+  // the parent to the child, nephews too, as Org searches for one.
+  const orderedBlock = (parent: number, child: number): Heading | undefined => {
+    if (entryGet(all[parent].line, "ORDERED") === undefined) return undefined;
+    for (let k = parent + 1; k < child; k++) if (notDone(all[k])) return all[k];
+    return undefined;
   };
   let child = i;
-  if (ancestors(all, child)[0] === undefined) return true;
-  const first = orderedBlock(child);
+  let parent = parentIndex(all, child);
+  if (parent === undefined) return true;
+  const first = orderedBlock(parent, child);
   if (first) {
     blockEntryBlocking = e8.lineText(first.line);
     return null;
   }
+  // A blocked ancestor to do blocks it too, named by the heading found.
   for (;;) {
-    const parent = ancestors(all, child)[0];
-    if (parent === undefined || !notDone(all[parent])) return true;
+    if (!notDone(all[parent])) return true;
     child = parent;
-    if (ancestors(all, child)[0] === undefined) return true;
-    // Named by the heading found, as org-get-heading there after the search.
-    const found = orderedBlock(child);
+    parent = parentIndex(all, child);
+    if (parent === undefined) return true;
+    const found = orderedBlock(parent, child);
     if (found) {
       blockEntryBlocking = headingText(found.line);
       return null;
     }
   }
-});
+}
+e8.defun("org-block-todo-from-children-or-siblings-or-parent", blockFromHierarchy);
 
-e8.defun("org-block-todo-from-checkboxes", (change: e8.Value[]) => {
+/** Org's org-block-todo-from-checkboxes, put on org-blocker-hook by name. */
+function blockFromCheckboxes(change: e8.Value[]): boolean | null {
   if (!truthy(e8.variable("org-enforce-todo-checkbox-dependencies"))) return true;
   if (!changeIsToDone(change)) return true;
   const all = headings();
@@ -4547,15 +4569,21 @@ e8.defun("org-block-todo-from-checkboxes", (change: e8.Value[]) => {
     }
   }
   return true;
-});
+}
+e8.defun("org-block-todo-from-checkboxes", blockFromCheckboxes);
 
-/** Puts a named function on org-blocker-hook's global value, or takes it off, as org-mode's add-hook and remove-hook do. */
-function hookBlocker(name: string, on: boolean): void {
-  const value = e8.defaultValue("org-blocker-hook");
-  const list = Array.isArray(value) ? value : value === null || value === undefined || value === false ? [] : [value];
-  const has = list.includes(name);
-  if (on && !has) e8.setDefault("org-blocker-hook", [name, ...list]);
-  else if (!on && has) e8.setDefault("org-blocker-hook", list.filter((f) => f !== name));
+/** The checks org-mode has put on org-blocker-hook, as its add-hook and remove-hook keep them there once. */
+const blockersHooked = new Set<(change: e8.Value[]) => boolean | null>();
+
+/** Puts a check on org-blocker-hook, or takes it off, as org-mode does when it starts. */
+function hookBlocker(check: (change: e8.Value[]) => boolean | null, on: boolean): void {
+  if (on && !blockersHooked.has(check)) {
+    e8.addHook("org-blocker-hook", check);
+    blockersHooked.add(check);
+  } else if (!on && blockersHooked.has(check)) {
+    e8.removeHook("org-blocker-hook", check);
+    blockersHooked.delete(check);
+  }
 }
 
 /** Bypasses blocking for the change C-u C-u C-u C-c C-t makes, as org-todo sets org-blocker-hook to nil. */
@@ -4579,8 +4607,8 @@ function todoChangeAllowed(h: Heading, change: e8.Value, before: string | undefi
   if (allowed) return true;
   const reason = blockedByCheckboxes ? "contained checkboxes" : `"${blockEntryBlocking}"`;
   const message = `TODO state change from ${before ?? "nil"} to ${next ?? "nil"} blocked (by ${reason})`;
-  // A loop over the region calls org-todo from code, so a blocked heading is only said, and the loop goes on.
-  if (e8.calledInteractively() && mapRegionStart === undefined) e8.userError(message);
+  // Only said from code, in a keyboard macro and in a loop over the region, which calls org-todo from code, so it goes on.
+  if (e8.calledInteractively() && mapRegionStart === undefined && blockingFromCode === 0 && !e8.executingKbdMacro()) e8.userError(message);
   e8.message(message);
   return false;
 }
@@ -4622,6 +4650,11 @@ e8.defineCommand({
   },
 });
 
+/**
+ * Changes the TODO state of the heading point is under, as org-todo does:
+ * the keyword, then the tags, CLOSED, the parent's statistics and a
+ * repeat, then point just after the keyword if it was near it.
+ */
 function todo(direction: number, state?: string, across = false): void {
   const [all0, i0] = backToHeading();
   const logging = entryGetInherited(all0[i0], "LOGGING");
@@ -4758,6 +4791,8 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   const p = marker(e8.point());
   e8.gotoChar(h.start);
   replaceTodoKeyword(parseHeading(line) as Heading, to);
+  // Back to do, as org-auto-repeat-maybe's own org-todo, which org-trigger-hook is told of first.
+  e8.saveExcursion(() => e8.runHooks("org-trigger-hook", [":type", "todo-state-change", ":from", done, ":to", to ?? null, ":position", h.start]));
   if (parseHeading(line)?.tagsAt !== undefined) alignTagsAway(line);
   updateParentTodoStatistics(line);
   setPlanning(line, "CLOSED", undefined);
@@ -5454,7 +5489,8 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
               const kw = todoTable.find(([t, k]) => !isTagKeyword(t) && k === input)?.[0];
               const tag = kw === undefined ? local.find(([, k]) => k === input)?.[0] : undefined;
               if (kw !== undefined) {
-                e8.withCurrentBuffer(origin, () => e8.saveExcursion(() => todo(0, kw)));
+                // From code, as Org's (org-todo todo-keyword): a blocked change is only said.
+                e8.withCurrentBuffer(origin, () => e8.saveExcursion(() => todoFromCode(() => todo(0, kw))));
                 if (exitAfterNext) exitAfterNext = "now";
               } else if (tag !== undefined) {
                 currentTags = addOrRemoveTag(tag, currentTags, groups);
@@ -9950,8 +9986,8 @@ e8.defineMajorMode({
     e8.makeLocalVariable("next-error-function");
     e8.setVariable("next-error-function", "org-occur-next-match");
     // The dependency checks go on org-blocker-hook, or off it, as the options say now, as org-mode adds them.
-    hookBlocker("org-block-todo-from-children-or-siblings-or-parent", truthy(e8.variable("org-enforce-todo-dependencies")));
-    hookBlocker("org-block-todo-from-checkboxes", truthy(e8.variable("org-enforce-todo-checkbox-dependencies")));
+    hookBlocker(blockFromHierarchy, truthy(e8.variable("org-enforce-todo-dependencies")));
+    hookBlocker(blockFromCheckboxes, truthy(e8.variable("org-enforce-todo-checkbox-dependencies")));
     e8.addToInvisibilitySpec("org-hide-drawer", { ellipsis: true });
     e8.addToInvisibilitySpec("org-hide-block", { ellipsis: true });
     e8.addToInvisibilitySpec("org-link");

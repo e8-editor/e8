@@ -1596,7 +1596,11 @@ export const setProperty = e8.defineCommand({
     const upper = property.toUpperCase();
     if (upper === "TODO") {
       if (value !== "" && !allKeywords().includes(value)) throw new Error(`"${value}" is not a valid TODO state`);
-      setTodo(h, value === "" ? undefined : value);
+      // As org-todo, as org-entry-put changes it, so dependencies and logging apply.
+      e8.saveExcursion(() => {
+        e8.gotoChar(h.start);
+        e8.call("org-todo-set", value);
+      });
       return;
     }
     if (SPECIAL_PROPERTIES.includes(upper)) throw new Error(`The ${property} property cannot be set with \`org-entry-put'`);
