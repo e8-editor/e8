@@ -95,9 +95,11 @@ function narrowToSubtree(): void {
  * Finds or makes the heading for a date in the date tree between start and
  * end, its year headings at `base`, as org-datetree-find-date-create does
  * by day, org-datetree-find-month-create by month and
- * org-datetree-find-iso-week-create by week. Returns where it starts.
+ * org-datetree-find-iso-week-create by week. Each level below is `step`
+ * stars deeper, two with org-odd-levels-only, as org-do-demote makes it.
+ * Returns where it starts.
  */
-export function findDateCreate(d: Day, grouping: "day" | "month" | "week", base: number, start: number, end: number): number {
+export function findDateCreate(d: Day, grouping: "day" | "month" | "week", base: number, start: number, end: number, step = 1): number {
   return e8.saveRestriction(() => {
     e8.narrowToRegion(start, end);
     e8.gotoChar(e8.pointMin());
@@ -105,17 +107,17 @@ export function findDateCreate(d: Day, grouping: "day" | "month" | "week", base:
       const { year, week } = isoWeek(d);
       findCreate(/^([12][0-9]{3})$/, year, base, String(year));
       narrowToSubtree();
-      findCreate(new RegExp(`^${year}-W([0-5][0-9])$`), week, base + 1, `${year}-W${two(week)}`);
+      findCreate(new RegExp(`^${year}-W([0-5][0-9])$`), week, base + step, `${year}-W${two(week)}`);
       narrowToSubtree();
     } else {
       findCreate(/^([12][0-9]{3})$/, d.year, base, String(d.year));
       narrowToSubtree();
       const first = new Date(Date.UTC(d.year, d.month - 1, 1));
-      findCreate(new RegExp(`^${d.year}-([01][0-9]) \\w+$`), d.month, base + 1, `${d.year}-${two(d.month)} ${MONTHS[first.getUTCMonth()]}`);
+      findCreate(new RegExp(`^${d.year}-([01][0-9]) \\w+$`), d.month, base + step, `${d.year}-${two(d.month)} ${MONTHS[first.getUTCMonth()]}`);
       if (grouping === "month") return e8.point();
       narrowToSubtree();
     }
     const weekday = new Date(Date.UTC(d.year, d.month - 1, d.day)).getUTCDay();
-    return findCreate(new RegExp(`^${d.year}-${two(d.month)}-([0123][0-9]) \\w+$`), d.day, base + 2, `${d.year}-${two(d.month)}-${two(d.day)} ${DAYS[weekday]}`);
+    return findCreate(new RegExp(`^${d.year}-${two(d.month)}-([0123][0-9]) \\w+$`), d.day, base + 2 * step, `${d.year}-${two(d.month)}-${two(d.day)} ${DAYS[weekday]}`);
   });
 }

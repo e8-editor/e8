@@ -1,0 +1,203 @@
+[
+  {
+    "name": "archive-datetree-under-date-tree",
+    "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** Old\n* TODO Task\nbody\n",
+    "keys": "C-c C-x C-s",
+    "point": 73,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-datetree-under-date-tree-empty",
+    "text": "#+ARCHIVE: ::datetree/\n* Notes\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n* Task\n",
+    "keys": "C-c C-x C-s",
+    "point": 74,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-datetree-sub-under-date-tree",
+    "text": "#+ARCHIVE: ::datetree/*\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n* Task\n",
+    "keys": "C-c C-x C-s",
+    "point": 67,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-datetree-narrowed",
+    "text": "#+ARCHIVE: ::datetree/\n* Other\n* Task\n",
+    "keys": "C-x n s C-c C-x C-s",
+    "point": 31,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-olpath-comment",
+    "text": "#+ARCHIVE: ::* Archive\n* COMMENT Parent\n** Task\n",
+    "keys": "C-c C-x C-s",
+    "point": 40,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-olpath-comments",
+    "text": "#+ARCHIVE: ::* Archive\n* COMMENT Parent\n** COMMENT Mid\n*** Task\n",
+    "keys": "C-c C-x C-s",
+    "point": 55,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-odd-levels",
+    "text": "#+ARCHIVE: ::* Archive\n#+STARTUP: odd\n* A\n*** B\n* C\n",
+    "keys": "C-c C-x C-s",
+    "point": 38,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-odd-levels-top",
+    "text": "#+ARCHIVE: ::\n#+STARTUP: odd\n* C\n*** A\n",
+    "keys": "C-c C-x C-s",
+    "point": 33,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-odd-levels-datetree",
+    "text": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* A\n",
+    "keys": "C-c C-x C-s",
+    "point": 38,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    }
+  },
+  {
+    "name": "archive-odd-levels-var",
+    "text": "#+ARCHIVE: ::* Archive\n* A\n*** B\n",
+    "keys": "C-c C-x C-s",
+    "point": 23,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ],
+      "org-odd-levels-only": true
+    }
+  }
+]

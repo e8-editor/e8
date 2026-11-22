@@ -186,6 +186,11 @@ const variables: [string, string, e8.Value][] = [
   ],
   ["org-M-RET-may-split-line", "Whether M-RET in the middle of a line splits it, the rest going to the new heading or item.", true],
   [
+    "org-odd-levels-only",
+    "Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file. Archiving and date trees follow it; promoting, demoting and making headings do not yet.",
+    false,
+  ],
+  [
     "org-loop-over-headlines-in-active-region",
     "Whether commands such as C-c C-t act on every heading in the active region.",
     true,
@@ -497,7 +502,7 @@ function withLocalLogging<T>(value: string, f: () => T): T {
   }
 }
 
-/** The #+STARTUP: words about logging and the variables they set, as org-startup-options has them. */
+/** The #+STARTUP: words about logging and levels and the variables they set, as org-startup-options has them. */
 const STARTUP_LOG_OPTIONS: Record<string, [string, e8.Value]> = {
   logdone: ["org-log-done", "time"],
   lognotedone: ["org-log-done", "note"],
@@ -521,6 +526,8 @@ const STARTUP_LOG_OPTIONS: Record<string, [string, e8.Value]> = {
   logrefile: ["org-log-refile", "time"],
   lognoterefile: ["org-log-refile", "note"],
   nologrefile: ["org-log-refile", false],
+  odd: ["org-odd-levels-only", true],
+  oddeven: ["org-odd-levels-only", false],
 };
 
 function logHow(state: string | undefined, previous: string | undefined): string | undefined {

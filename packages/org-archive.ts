@@ -30,7 +30,7 @@ import {
 import { findDateCreate } from "org-datetree";
 import { elementAt } from "org-element";
 import { ancestors, flag, showEmptyLines, showSetVisibility } from "org-fold";
-import { entryPut } from "org-list";
+import { entryGet, entryPut } from "org-list";
 import { dropMarker, lineAt, marker } from "org-macs";
 import { regexpQuote, truthy } from "subr";
 
@@ -209,10 +209,13 @@ export function archiveSubtree(): void {
   let heading: string | undefined = heading0;
   let datetree = false;
   let datetreeSub = false;
+  // Levels step by two with org-odd-levels-only, as org-level-increment says.
+  const odd = truthy(e8.variable("org-odd-levels-only") ?? null);
   const dt = /^datetree\/(\**)/.exec(heading);
   if (dt) {
+    // A date tree is three levels, its day's at the fifth with odd levels only.
     datetreeSub = dt[1].length > 0;
-    heading = "*".repeat(3 + dt[1].length) + heading.slice(dt[0].length);
+    heading = "*".repeat((odd ? 5 : 3) + (odd ? 2 : 1) * dt[1].length) + heading.slice(dt[0].length);
     datetree = true;
   }
   let level = 0;
@@ -226,14 +229,17 @@ export function archiveSubtree(): void {
     file,
     itags: tags.inherited.join(" "),
     ltags: tags.local.join(" "),
-    // Links as their descriptions and without statistics cookies, as org-get-outline-path gives them.
+    // Links as their descriptions, without COMMENT or statistics cookies, as org-get-outline-path gives them.
     olpath: ancestors(all0, i0)
       .reverse()
-      .map((a) => all0[a].title.replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_m, l: string, d?: string) => d ?? l).replace(/\[[0-9]*(?:%|\/[0-9]*)\]/g, "").trim())
+      .map((a) => all0[a].title.replace(/^COMMENT(?:[ \t]+|$)/, "").replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_m, l: string, d?: string) => d ?? l).replace(/\[[0-9]*(?:%|\/[0-9]*)\]/g, "").trim())
       .join("/"),
     time,
     todo: h0.todo,
   };
+  // This buffer's TODO states, which marking the archived tree done uses in the archive too, as Org binds them there.
+  const sourceKeywords = allKeywords();
+  const sourceDone = sourceKeywords.filter((k) => isDone(k));
   const origin = e8.makeMarker(h0.start);
   // Copied as it shows, within a narrowing, as Org copies it.
   e8.saveExcursion(() => {
@@ -259,7 +265,13 @@ export function archiveSubtree(): void {
         // The day it was closed, else today, as org-datetree-find-date-create.
         const closed = /CLOSED: \[(\d{4})-(\d{2})-(\d{2})/.exec(e8.withCurrentBuffer(thisBuffer, () => e8.lineText(h0.line + 1)));
         const day = closed ? { year: Number(closed[1]), month: Number(closed[2]), day: Number(closed[3]) } : { year: now.year, month: now.month, day: now.day };
-        const at = findDateCreate(day, "day", 1, e8.pointMin(), e8.pointMax());
+        // Under the first heading with a DATE_TREE property, a level below it, as org-datetree-find-date-create looks, widened.
+        const step = truthy(e8.variable("org-odd-levels-only") ?? null) ? 2 : 1;
+        e8.widen();
+        const all = headings();
+        const top = all.findIndex((x) => entryGet(x.line, "DATE_TREE") !== undefined);
+        const [b, e] = top < 0 ? [e8.pointMin(), e8.pointMax()] : subtreeRegion(all, top);
+        const at = findDateCreate(day, "day", top < 0 ? 1 : all[top].level + step, b, top < 0 || e === e8.pointMax() ? e : e - 1, step);
         const there = headings();
         narrowed = subtreeRegion(there, there.findIndex((x) => x.start === at));
         // Without the newline before the next heading, as org-narrow-to-subtree.
@@ -294,7 +306,8 @@ export function archiveSubtree(): void {
         if (!(datetree && e8.point() === e8.lineStart(lineAt()))) e8.insert("\n");
       }
       const pastedAt = e8.point();
-      pasteSubtree(Math.max(1, level + (heading !== undefined ? 1 : 0)) as e8.PrefixArg);
+      // A level below the heading, or the top, as org-get-valid-level gives it.
+      pasteSubtree((heading !== undefined ? Math.max(1, level + (odd ? 2 : 1)) : odd ? 1 + 2 * Math.floor(level / 2) : Math.max(1, level)) as e8.PrefixArg);
       const pasted = headings().find((x) => x.start >= pastedAt);
       if (pasted) {
         e8.gotoChar(pasted.start);
@@ -302,10 +315,10 @@ export function archiveSubtree(): void {
         if (tags.inherited.length > 0 && ((addTags === "infile" && infile) || addTags === true)) e8.call("org-set-tags", tags.tags.join(":"));
         // Done, as org-archive-mark-done says, without logging: its state if a done one, else the first done state.
         const markDone = e8.variable("org-archive-mark-done");
-        const nowHeading = headings().find((x) => x.start === pasted.start);
-        if (truthy(markDone ?? null) && nowHeading && (nowHeading.todo === undefined || !isDone(nowHeading.todo))) {
-          const done = allKeywords().filter((k) => isDone(k));
-          const state = typeof markDone === "string" && done.includes(markDone) ? markDone : done[0];
+        // Read with this file's states, not the archive's, as Org binds them.
+        const nowHeading = parseHeading(lineAt(pasted.start), sourceKeywords);
+        if (truthy(markDone ?? null) && nowHeading && (nowHeading.todo === undefined || !sourceDone.includes(nowHeading.todo))) {
+          const state = typeof markDone === "string" && sourceDone.includes(markDone) ? markDone : sourceDone[0];
           if (state !== undefined) setTodo(nowHeading, state);
         }
         const info = e8.variable("org-archive-save-context-info");
