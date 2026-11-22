@@ -427,50 +427,91 @@ function todoSetFrom(words: string[]): TodoSet | undefined {
 export function keywordLines(): [number, number, string][] {
   return e8.saveRestriction(() => {
     e8.widen();
-    const own = e8.matchingLines("^#\\+", { caseFold: true });
+    // Indented too, and only keywords, not lines in an example or source
+    // block, as org-collect-keywords takes them; their text unindented.
+    const own = keywordEntries(e8.matchingLines("^[ \t]*#\\+", { caseFold: true }));
     // A #+SETUPFILE: line's file's keywords in its place, as org-collect-keywords follows them; their lines are -1.
     if (!own.some(([, , text]) => /^#\+SETUPFILE:/i.test(text))) return own;
     const base = e8.bufferBaseBuffer();
     const file = base === undefined ? e8.bufferFileName() : e8.withCurrentBuffer(base, () => e8.bufferFileName());
-    const visited = new Set<string>(file === undefined ? [] : [file]);
-    return own.flatMap((entry) => [entry, ...setupFileLinesOf(entry[2], e8.variable("default-directory") as string, visited).map((t): [number, number, string] => [-1, -1, t])]);
+    const chain = file === undefined ? [] : [file];
+    return own.flatMap((entry) => [entry, ...setupFileLinesOf(entry[2], e8.variable("default-directory") as string, chain).map((t): [number, number, string] => [-1, -1, t])]);
   });
 }
 
-/** Each setup file's "#+" lines, by its name, with when it was read, so a file read once is not read again until it changes. */
-const setupFileCache = new Map<string, { modified: number; lines: string[] }>();
+/** Each setup file's keyword lines, by its true name, with its time and size when read, so a file is read again only when it changes. */
+const setupFileCache = new Map<string, { modified: number; size: number; lines: string[] }>();
+
+/** The blocks whose lines are no keywords, as Org's parser takes them: example, source, export, comment and verse. */
+const VERBATIM_BLOCK = /^[ \t]*#\+begin_(example|src|export|comment|verse)\b/i;
+
+/**
+ * The keywords among "#+" lines, in order, unindented: those in an
+ * example, source, export, comment or verse block left out, as Org's
+ * parser finds no keyword there. The block's own lines are among those
+ * given, so one pass over them tells.
+ */
+function keywordEntries(lines: [number, number, string][]): [number, number, string][] {
+  const out: [number, number, string][] = [];
+  let inBlock: string | undefined;
+  for (const [line, start, text] of lines) {
+    if (inBlock !== undefined) {
+      if (new RegExp(`^[ \\t]*#\\+end_${inBlock}[ \\t]*$`, "i").test(text)) inBlock = undefined;
+      continue;
+    }
+    const b = VERBATIM_BLOCK.exec(text);
+    if (b) inBlock = b[1].toLowerCase();
+    else if (/^[ \t]*#\+\S*:/.test(text)) out.push([line, start, text.trimStart()]);
+  }
+  return out;
+}
+
+/** A setup file's keyword lines, as keywordEntries finds them. */
+function keywordTextsOf(text: string): string[] {
+  return keywordEntries(text.split("\n").map((t, i): [number, number, string] => [i, 0, t])).map(([, , t]) => t);
+}
 
 /**
  * The keyword lines a #+SETUPFILE: line brings in, as org--collect-keywords-1
  * reads them: the file named, relative to DIR, unquoted, its own setup
- * files followed in their places, each file once; a URL is left out, as E8
- * fetches none for it, and so is a file that cannot be read.
+ * files followed in their places, a file not read again within its own
+ * chain of setup files (CHAIN). A URL is left out, as E8 fetches none for
+ * it; a file that cannot be read is said and left out, as
+ * org-file-contents does with NOERROR.
  */
-function setupFileLinesOf(text: string, dir: string, visited: Set<string>): string[] {
+function setupFileLinesOf(text: string, dir: string, chain: string[]): string[] {
   const m = /^#\+SETUPFILE:[ \t]*(.*?)[ \t]*$/i.exec(text);
-  if (!m || m[1] === "") return [];
+  if (!m) return [];
   const name = m[1].replace(/^"(.*)"$/, "$1");
   if (/^[a-z][-a-z0-9+.]*:\/\//i.test(name)) return [];
   const file = e8.expandFileName(name, dir);
-  if (visited.has(file) || !e8.fileReadableP(file)) return [];
-  visited.add(file);
-  const modified = e8.fileAttributes(file)?.modified ?? 0;
-  let cached = setupFileCache.get(file);
-  if (cached?.modified !== modified) {
+  if (chain.includes(file)) return [];
+  const truename = e8.fileTruename(file);
+  const attributes = e8.fileAttributes(truename);
+  if (attributes?.type !== "file" || !e8.fileReadableP(truename)) {
+    e8.message(`Unable to read file \u201c${file}\u201d`);
+    return [];
+  }
+  let cached = setupFileCache.get(truename);
+  if (cached?.modified !== attributes.modified || cached.size !== attributes.size) {
     const buffer = e8.getBufferCreate(e8.generateNewBufferName(" *org setup file*"));
     try {
-      const lines = e8.withCurrentBuffer(buffer, () => {
-        e8.insertFileContents(file);
-        return e8.matchingLines("^#\\+", { caseFold: true }).map(([, , t]) => t);
+      const contents = e8.withCurrentBuffer(buffer, () => {
+        e8.insertFileContents(truename);
+        return e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
       });
-      cached = { modified, lines };
-      setupFileCache.set(file, cached);
+      cached = { modified: attributes.modified, size: attributes.size, lines: keywordTextsOf(contents) };
+      setupFileCache.set(truename, cached);
+    } catch {
+      e8.message(`Unable to read file \u201c${file}\u201d`);
+      return [];
     } finally {
       e8.call("kill-buffer", buffer.name ?? "");
     }
   }
   const here = e8.fileNameDirectory(file) ?? dir;
-  return cached.lines.flatMap((t) => [t, ...setupFileLinesOf(t, here, visited)]);
+  const inner = [...chain, file];
+  return cached.lines.flatMap((t) => [t, ...setupFileLinesOf(t, here, inner)]);
 }
 
 /** The buffer's TODO sequences: from #+TODO: lines, else org-todo-keywords. */
@@ -5271,30 +5312,16 @@ export function currentTagAlist(): TagEntry[] {
   return tagAddToAlist(tagTable(e8.variable("org-tag-persistent-alist") ?? null), base);
 }
 
-/** The values of the buffer's TAGS lines, indented too, with its setup files' in their places, as org-collect-keywords reads them. */
+/** The values of the buffer's TAGS lines, with its setup files' in their places, as org-collect-keywords reads them. */
 function tagsLinesNow(): string[] {
-  const lines: string[] = [];
-  e8.saveRestriction(() => {
-    e8.widen();
-    const base = e8.bufferBaseBuffer();
-    const file = base === undefined ? e8.bufferFileName() : e8.withCurrentBuffer(base, () => e8.bufferFileName());
-    const visited = new Set<string>(file === undefined ? [] : [file]);
-    for (const [line, , text] of e8.matchingLines("^[ \t]*#\\+\\(?:TAGS\\|SETUPFILE\\):", { caseFold: true })) {
-      if (elementAt(e8.lineStart(line))?.type !== "keyword") continue;
-      const m = /^[ \t]*#\+TAGS:(.*)$/i.exec(text);
-      if (m) lines.push(m[1].trim());
-      else
-        for (const t of setupFileLinesOf(text.trimStart(), e8.variable("default-directory") as string, visited)) {
-          const n = /^#\+TAGS:(.*)$/i.exec(t);
-          if (n) lines.push(n[1].trim());
-        }
-    }
+  return keywordLines().flatMap(([, , text]) => {
+    const m = /^#\+TAGS:(.*)$/i.exec(text);
+    return m ? [m[1].trim()] : [];
   });
-  return lines;
 }
 
-/** Reads the TAGS lines again, as org-mode does when it starts and C-c C-c on a keyword line by restarting it. */
-function storeTagsLines(): void {
+/** Reads the TAGS lines again, as org-mode does when it starts, C-c C-c on a keyword line by restarting it, and the agenda for its files. */
+export function storeTagsLines(): void {
   e8.setVariable("org--tags-lines", tagsLinesNow());
 }
 

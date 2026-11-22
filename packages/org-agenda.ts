@@ -4,6 +4,7 @@
 
 import {
   agendaFiles,
+  storeTagsLines,
   type DateTime,
   type Heading,
   PLANNING,
@@ -245,7 +246,14 @@ function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: bo
 /** The buffers of org-agenda-files, visited if need be. */
 function agendaBuffers(): string[] {
   // Relative names are in org-directory, and directories stand for their Org files, as org-agenda-files expands them.
-  return agendaFiles().map((file) => e8.findFileNoselect(file));
+  // Each file's TAGS lines read again, as org-agenda-prepare-buffers does with org-set-regexps-and-options.
+  return agendaFiles().map((file) => {
+    const buffer = e8.findFileNoselect(file);
+    e8.withCurrentBuffer(buffer, () => {
+      if (e8.derivedModeP("org-mode")) storeTagsLines();
+    });
+    return buffer;
+  });
 }
 
 /**
