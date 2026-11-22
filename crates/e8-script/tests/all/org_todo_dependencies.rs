@@ -73,15 +73,38 @@ fn keyword_lists_led_by_sequence_or_type() {
         (r#"[["type", "A", "B", "|", "Z"]]"#, "C-c C-t", "* Z task\n"),
         (r#"[["type", "A", "B", "|", "Z"]]"#, "C-c C-t C-c C-t", "* task\n"),
         (r#"[["sequence", "T", "|", "D"]]"#, "C-c C-t", "* D task\n"),
+        // priority reads as a type, as Org's interpretation is type-like for it.
+        (r#"[["priority", "A", "B", "|", "Z"]]"#, "C-c C-t", "* Z task\n"),
+        // A list of its own with no kind is keywords all (deliberate), as configs have it.
+        (r#"[["A", "B", "|", "Z"]]"#, "C-c C-t", "* B task\n"),
     ] {
         let mut ed = Editor::new();
         let s = Scripting::new(&mut ed).unwrap();
         s.eval_expression(&mut ed, &format!("e8.setDefault('org-todo-keywords', {lists})")).unwrap();
-        let first = if lists.contains("type") { "A" } else { "T" };
+        let first = if lists.contains("sequence") { "T" } else { "A" };
         ed.window_buffer_mut().set_text(&format!("* {first} task\n"));
         ed.call("org-mode", vec![]).unwrap();
         ed.window_buffer_mut().set_point(2);
         ed.press(keys).unwrap();
         assert_eq!(text(&ed), after, "{lists} {keys}");
+    }
+}
+
+/// A flat org-todo-keywords is keywords all, a leading "type" one of them,
+/// read as types when the old org-todo-interpretation says type.
+#[test]
+fn flat_keyword_lists() {
+    for (interpretation, list, before, after) in [
+        ("sequence", r#"["type", "A", "|", "Z"]"#, "* type task\n", "* A task\n"),
+        ("type", r#"["A", "B", "|", "Z"]"#, "* A task\n", "* Z task\n"),
+    ] {
+        let mut ed = Editor::new();
+        let s = Scripting::new(&mut ed).unwrap();
+        s.eval_expression(&mut ed, &format!("(e8.setDefault('org-todo-keywords', {list}), e8.setDefault('org-todo-interpretation', {interpretation:?}))")).unwrap();
+        ed.window_buffer_mut().set_text(before);
+        ed.call("org-mode", vec![]).unwrap();
+        ed.window_buffer_mut().set_point(2);
+        ed.press("C-c C-t").unwrap();
+        assert_eq!(text(&ed), after, "{interpretation} {list}");
     }
 }

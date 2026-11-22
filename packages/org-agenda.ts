@@ -576,9 +576,14 @@ function insertHabitGraphs(lines: { text: string; item?: AgendaItem }[]): void {
 }
 
 /** Puts lines into the agenda buffer and shows it, as org-agenda-prepare and org-agenda-finalize do. */
-function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: number): void {
-  markBlocked(lines);
+type AgendaLines = { text: string; item?: AgendaItem }[];
+
+function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), pointLine: number): void {
   e8.getBufferCreate(AGENDA);
+  // Lines that depend on the agenda window's width are made once it is placed, as org-agenda-prepare selects it first.
+  if (typeof given === "function") placeAgendaWindow();
+  const lines = typeof given === "function" ? given((e8.windowSize()?.width ?? 80) - 1) : given;
+  markBlocked(lines);
   e8.withCurrentBuffer(AGENDA, () => {
     e8.setReadOnly(false);
     eraseBuffer();
@@ -607,20 +612,25 @@ function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: num
       };
     }
   }
+  placeAgendaWindow();
   const setup = e8.variable("org-agenda-window-setup");
-  if (e8.windowBuffer() !== AGENDA) {
-    if (setup === "current-window") e8.call("switch-to-buffer", AGENDA);
-    else if (setup === "only-window") {
-      e8.call("delete-other-windows");
-      e8.call("switch-to-buffer", AGENDA);
-    } else if (setup === "other-window") e8.call("switch-to-buffer-other-window", AGENDA);
-    else {
-      // As org-agenda-window-setup's reorganize-frame: this window and the agenda's.
-      if (!e8.windowList().some((w) => e8.windowBuffer(w) === AGENDA)) e8.call("delete-other-windows");
-      e8.call("pop-to-buffer", AGENDA);
-    }
-  }
   if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(lines.length);
+}
+
+/** Shows the agenda's buffer as org-agenda-window-setup says, unless the selected window shows it. */
+function placeAgendaWindow(): void {
+  const setup = e8.variable("org-agenda-window-setup");
+  if (e8.windowBuffer() === AGENDA) return;
+  if (setup === "current-window") e8.call("switch-to-buffer", AGENDA);
+  else if (setup === "only-window") {
+    e8.call("delete-other-windows");
+    e8.call("switch-to-buffer", AGENDA);
+  } else if (setup === "other-window") e8.call("switch-to-buffer-other-window", AGENDA);
+  else {
+    // As org-agenda-window-setup's reorganize-frame: this window and the agenda's.
+    if (!e8.windowList().some((w) => e8.windowBuffer(w) === AGENDA)) e8.call("delete-other-windows");
+    e8.call("pop-to-buffer", AGENDA);
+  }
 }
 
 /** Whether org-blocker-hook has anything on it, as Org tests it before dimming. */
@@ -930,22 +940,23 @@ function todoList(): void {
   }
   // Newest first, as org-prepare-agenda-buffers pushes each keyword it has not seen.
   const sorted = [...keywords].reverse();
-  const lines: { text: string; item?: AgendaItem }[] = [{ text: "Global list of TODO items of type: ALL" }];
-  // The keywords wrapped before the window's last column, as org-todo-list inserts them.
-  const max = (e8.windowSize()?.width ?? 80) - 1;
-  let header = "Press \u2018N r\u2019 (e.g. \u20180 r\u2019) to search again: (0)[ALL]";
-  sorted.forEach((k, i) => {
-    const word = `(${i + 1})${k}`;
-    if (e8.stringWidth(header) + e8.stringWidth(word) + 1 > max) {
-      lines.push({ text: header });
-      header = " ".repeat(21);
-    }
-    header += ` ${word}`;
-  });
-  lines.push({ text: header });
-  for (const item of byUrgency(items)) lines.push({ text: item.text, item });
   agendaView = { kind: "todo" };
-  showAgenda(lines, 0);
+  // The keywords wrapped before the agenda window's last column, as org-todo-list inserts them there.
+  showAgenda((max) => {
+    const lines: AgendaLines = [{ text: "Global list of TODO items of type: ALL" }];
+    let header = "Press \u2018N r\u2019 (e.g. \u20180 r\u2019) to search again: (0)[ALL]";
+    sorted.forEach((k, i) => {
+      const word = `(${i + 1})${k}`;
+      if (e8.stringWidth(header) + e8.stringWidth(word) + 1 > max) {
+        lines.push({ text: header });
+        header = " ".repeat(21);
+      }
+      header += ` ${word}`;
+    });
+    lines.push({ text: header });
+    for (const item of byUrgency(items)) lines.push({ text: item.text, item });
+    return lines;
+  }, 0);
 }
 
 /**

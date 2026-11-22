@@ -14821,6 +14821,12 @@ declare global {
        */
       "org-time-stamp-rounding-minutes": Value;
       /**
+       * How a flat org-todo-keywords list is read: sequence, or type. Obsolete in Org.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-todo-interpretation": Value;
+      /**
        * Faces for TODO keywords, as [keyword, face] lists: a face's name, a colour, or a list of attributes such as [":foreground", "#b48ead", ":weight", "bold"].
        *
        * Defined in packages/org.ts.
@@ -14832,6 +14838,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-todo-keywords": Value;
+      /**
+       * The state a repeating entry goes back to when it is marked done: a keyword, t for the state it had, or nil for the first of its sequence. A REPEAT_TO_STATE property says otherwise.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-todo-repeat-to-state": Value;
       /**
        * Whether org-toggle-ordered-property also toggles a tag: t for ORDERED, or the tag to use.
        *

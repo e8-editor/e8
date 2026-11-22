@@ -289,6 +289,194 @@
         }
       ],
       "message": "Keyword-Set 1/2: TODO DONE"
+    },
+    {
+      "name": "type-repeats-to-itself",
+      "input": {
+        "text": "#+TYP_TODO: A B | Z\n* B task\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+        "point": 22,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: A B | Z\n* B task\nSCHEDULED: <2026-10-29 Thu +1d>\n:PROPERTIES:\n:LAST_REPEAT: [2026-10-28 Wed 12:00]\n:END:\n- State \"Z\"          from \"B\"          [2026-10-28 Wed 12:00]",
+      "visible": "#+TYP_TODO: A B | Z\n* B task\nSCHEDULED: <2026-10-29 Thu +1d>\n:PROPERTIES:\n- State \"Z\"          from \"B\"          [2026-10-28 Wed 12:00]",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-with-nothing-after-the-bar",
+      "input": {
+        "text": "#+TYP_TODO: A B |\n* A task\n",
+        "point": 20,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: A B |\n* B task\n",
+      "visible": "#+TYP_TODO: A B |\n* B task\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sequence-with-no-done-keyword",
+      "input": {
+        "text": "#+TODO: T N\n* T task\n",
+        "point": 14,
+        "keys": "C-c C-t C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TODO: T N\n* task\n",
+      "visible": "#+TODO: T N\n* task\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "repeat-to-state-property",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-28 Wed +1d>\n:PROPERTIES:\n:REPEAT_TO_STATE: NEXT\n:END:\n",
+        "point": 27,
+        "keys": "C-c C-t C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-30 Fri +1d>\n:PROPERTIES:\n:REPEAT_TO_STATE: NEXT\n:LAST_REPEAT: [2026-10-28 Wed 12:00]\n:END:\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]",
+      "visible": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-30 Fri +1d>\n:PROPERTIES:\n:REPEAT_TO_STATE: NEXT\n:LAST_REPEAT: [2026-10-28 Wed 12:00]\n:END:\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "repeat-to-state-option",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+        "point": 27,
+        "keys": "C-c C-t C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-todo-repeat-to-state": "NEXT"
+        }
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-30 Fri +1d>\n:PROPERTIES:\n:LAST_REPEAT: [2026-10-28 Wed 12:00]\n:END:\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]",
+      "visible": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-30 Fri +1d>\n:PROPERTIES:\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "repeat-to-state-option-t",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+        "point": 27,
+        "keys": "C-c C-t C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-todo-repeat-to-state": true
+        }
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-30 Fri +1d>\n:PROPERTIES:\n:LAST_REPEAT: [2026-10-28 Wed 12:00]\n:END:\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]",
+      "visible": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-30 Fri +1d>\n:PROPERTIES:\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]\n- State \"DONE\"       from \"NEXT\"       [2026-10-28 Wed 12:00]",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "todo-list-header-in-a-split-window",
+      "input": {
+        "text": "#+TODO: ALPHA BETA GAMMA DELTA | EPSILON ZETA\n#+TODO: ETA THETA IOTA | KAPPA LAMBDA\n* ALPHA a\n",
+        "point": 0,
+        "keys": "C-x 3",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-types-header.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)LAMBDA (2)KAPPA (3)IOTA\n                      (4)THETA (5)ETA (6)ZETA (7)EPSILON (8)DELTA (9)GAMMA\n                      (10)BETA (11)ALPHA\n  e8-types-header:ALPHA a\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)LAMBDA (2)KAPPA (3)IOTA\n                      (4)THETA (5)ETA (6)ZETA (7)EPSILON (8)DELTA (9)GAMMA\n                      (10)BETA (11)ALPHA\n  e8-types-header:ALPHA a\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 40,
+          "height": 12,
+          "selected": true
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 40,
+          "height": 12,
+          "selected": false
+        }
+      ]
     }
   ]
 }
