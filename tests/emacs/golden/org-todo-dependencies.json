@@ -1,0 +1,759 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "dep-children-block",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n** DONE other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* TODO Parent\n** TODO child\n** DONE other\n",
+      "visible": "* TODO Parent\n** TODO child\n** DONE other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "TODO state change from TODO to DONE blocked (by \"TODO child\")"
+    },
+    {
+      "name": "dep-children-off",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n** DONE other\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* DONE Parent\n** TODO child\n** DONE other\n",
+      "visible": "* DONE Parent\n** TODO child\n** DONE other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-children-done",
+      "input": {
+        "text": "* TODO Parent\n** DONE child\n** child no todo\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* DONE Parent\n** DONE child\n** child no todo\n",
+      "visible": "* DONE Parent\n** DONE child\n** child no todo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-grandchild-blocks",
+      "input": {
+        "text": "* TODO Parent\n** child\n*** TODO grand\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* TODO Parent\n** child\n*** TODO grand\n",
+      "visible": "* TODO Parent\n** child\n*** TODO grand\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "TODO state change from TODO to DONE blocked (by \"TODO grand\")"
+    },
+    {
+      "name": "dep-to-todo-allowed",
+      "input": {
+        "text": "* Parent\n** TODO child\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* TODO Parent\n** TODO child\n",
+      "visible": "* TODO Parent\n** TODO child\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-from-done-allowed",
+      "input": {
+        "text": "* DONE Parent\n** TODO child\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* Parent\n** TODO child\n",
+      "visible": "* Parent\n** TODO child\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-bypass",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n** DONE other\n",
+        "point": 0,
+        "keys": "C-u C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* DONE Parent\n** TODO child\n** DONE other\n",
+      "visible": "* DONE Parent\n** TODO child\n** DONE other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-noblocking",
+      "input": {
+        "text": "* TODO Parent\n:PROPERTIES:\n:NOBLOCKING: t\n:END:\n** TODO child\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* DONE Parent\n:PROPERTIES:\n:NOBLOCKING: t\n:END:\n** TODO child\n",
+      "visible": "* DONE Parent\n:PROPERTIES:\n:NOBLOCKING: t\n:END:\n** TODO child\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-ordered-blocks",
+      "input": {
+        "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n",
+        "point": 49,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n",
+      "visible": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "TODO state change from TODO to DONE blocked (by \"** TODO first\")"
+    },
+    {
+      "name": "dep-ordered-first-ok",
+      "input": {
+        "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n",
+        "point": 35,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** DONE first\n** TODO second\n",
+      "visible": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** DONE first\n** TODO second\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-ordered-nil",
+      "input": {
+        "text": "* P\n:PROPERTIES:\n:ORDERED: nil\n:END:\n** TODO first\n** TODO second\n",
+        "point": 49,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* P\n:PROPERTIES:\n:ORDERED: nil\n:END:\n** DONE first\n** TODO second\n",
+      "visible": "* P\n:PROPERTIES:\n:ORDERED: nil\n:END:\n** DONE first\n** TODO second\n",
+      "point": 49,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-ordered-ancestor",
+      "input": {
+        "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n*** TODO sub\n",
+        "point": 64,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n*** TODO sub\n",
+      "visible": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n*** TODO sub\n",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "TODO state change from TODO to DONE blocked (by \"TODO first\")"
+    },
+    {
+      "name": "dep-ordered-grandparent",
+      "input": {
+        "text": "* G\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO early\n** TODO P\n*** TODO sub\n",
+        "point": 59,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* G\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO early\n** TODO P\n*** TODO sub\n",
+      "visible": "* G\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO early\n** TODO P\n*** TODO sub\n",
+      "point": 59,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "TODO state change from TODO to DONE blocked (by \"TODO early\")"
+    },
+    {
+      "name": "dep-parent-not-todo",
+      "input": {
+        "text": "* G\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO early\n** P\n*** TODO sub\n",
+        "point": 54,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* G\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO early\n** P\n*** DONE sub\n",
+      "visible": "* G\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO early\n** P\n*** DONE sub\n",
+      "point": 54,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-checkbox-blocks",
+      "input": {
+        "text": "* TODO Task\n- [ ] one\n- [X] two\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true,
+        "globals": {
+          "org-enforce-todo-checkbox-dependencies": true
+        }
+      },
+      "text": "* TODO Task\n- [ ] one\n- [X] two\n",
+      "visible": "* TODO Task\n- [ ] one\n- [X] two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "TODO state change from TODO to DONE blocked (by contained checkboxes)"
+    },
+    {
+      "name": "dep-checkbox-all-checked",
+      "input": {
+        "text": "* TODO Task\n- [X] one\n- [X] two\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-checkbox-dependencies": true
+        }
+      },
+      "text": "* DONE Task\n- [X] one\n- [X] two\n",
+      "visible": "* DONE Task\n- [X] one\n- [X] two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-checkbox-partial",
+      "input": {
+        "text": "* TODO Task\n- [-] one\n  - [X] a\n  - [ ] b\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true,
+        "globals": {
+          "org-enforce-todo-checkbox-dependencies": true
+        }
+      },
+      "text": "* TODO Task\n- [-] one\n  - [X] a\n  - [ ] b\n",
+      "visible": "* TODO Task\n- [-] one\n  - [X] a\n  - [ ] b\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "TODO state change from TODO to DONE blocked (by contained checkboxes)"
+    },
+    {
+      "name": "dep-checkbox-child-heading",
+      "input": {
+        "text": "* TODO Task\n** sub\n- [ ] one\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-checkbox-dependencies": true
+        }
+      },
+      "text": "* DONE Task\n** sub\n- [ ] one\n",
+      "visible": "* DONE Task\n** sub\n- [ ] one\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-checkbox-in-block",
+      "input": {
+        "text": "* TODO Task\n#+begin_example\n- [ ] one\n#+end_example\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo"
+        ],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-checkbox-dependencies": true
+        }
+      },
+      "text": "* DONE Task\n#+begin_example\n- [ ] one\n#+end_example\n",
+      "visible": "* DONE Task\n#+begin_example\n- [ ] one\n#+end_example\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-sparse-blocked",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+        "point": 0,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "BLOCKED=\"t\""
+        ],
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "m* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+      "visible": "m* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"B\""
+    },
+    {
+      "name": "dep-sparse-not-blocked",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+        "point": 0,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "BLOCKED=\"\""
+        ],
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "m* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+      "visible": "m* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"B\""
+    },
+    {
+      "name": "dep-toggle-ordered",
+      "input": {
+        "text": "* P\n** a\n",
+        "point": 0,
+        "keys": "C-c C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true
+      },
+      "text": "* P\n:PROPERTIES:\n:ORDERED:  t\n:END:\n** a\n",
+      "visible": "* P\n:PROPERTIES:\n** a\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Subtasks must be completed in sequence"
+    },
+    {
+      "name": "dep-toggle-ordered-twice",
+      "input": {
+        "text": "* P\n** a\n",
+        "point": 0,
+        "keys": "C-c C-x o C-c C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true
+      },
+      "text": "* P\n** a\n",
+      "visible": "* P\n** a\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Subtasks can be completed in arbitrary order"
+    },
+    {
+      "name": "dep-toggle-ordered-tag",
+      "input": {
+        "text": "* P\n** a\n",
+        "point": 0,
+        "keys": "C-c C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-track-ordered-property-with-tag": true
+        }
+      },
+      "text": "* P                                                                 :ORDERED:\n:PROPERTIES:\n:ORDERED:  t\n:END:\n** a\n",
+      "visible": "* P                                                                 :ORDERED:\n:PROPERTIES:\n** a\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-toggle-ordered-tag-off",
+      "input": {
+        "text": "* P :ORDERED:\n:PROPERTIES:\n:ORDERED: t\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-track-ordered-property-with-tag": true
+        }
+      },
+      "text": "* P\n",
+      "visible": "* P\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-region-blocked",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* TODO Parent\n** DONE child\n** other\n* DONE Free\n",
+      "visible": "* TODO Parent\n** DONE child\n** other\n* DONE Free\n",
+      "point": 49,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-set-after-mode",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n",
+        "point": 0,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* DONE Parent\n** TODO child\n",
+      "visible": "* DONE Parent\n** TODO child\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dep-blocked-not-interactive",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n* x\n",
+        "point": 0,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-mark-done": true,
+          "org-archive-location": "::* Archive"
+        },
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "* TODO Parent\n** TODO child\n* x\n",
+      "visible": "* TODO Parent\n** TODO child\n* x\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No file associated to buffer"
+    }
+  ]
+}
