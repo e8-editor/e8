@@ -95,6 +95,8 @@ import {
   topGet,
   topLocalValues,
   setLineIndenter,
+  twoSpacesAfter,
+  bulletString,
 } from "org-list";
 import {
   charAt,
@@ -1731,7 +1733,8 @@ function storeLogNote(
     const item = inItem(lineAt(at));
     if (item !== undefined) e8.indentLineTo(listStruct(lineAt(item))[0]!.ind);
     else indentLine(lineAt(at));
-    edInsert(e8.point(), `- ${items[0]}`);
+    // The bullet as org-list-bullet-string makes it, as org-store-log-note inserts it.
+    edInsert(e8.point(), bulletString("-") + items[0]);
     // Each further line under the item's text, as org-list-item-body-column puts it.
     const body = listBodyColumn(e8.lineStart(lineAt()));
     for (const line of items.slice(1)) {
@@ -2550,7 +2553,8 @@ function fontifyLinksAcrossLines(start: number, end: number): void {
 function listBodyColumn(pos: number): number {
   const text = e8.lineText(lineAt(pos));
   const m = /^[ \t]*(\S+)/.exec(text);
-  return m ? e8.stringWidth(m[0].replace(/\t/g, "        ")) + 1 : 0;
+  // Past the bullet and a space, or two where org-list-two-spaces-after-bullet-regexp matches, as org-list-item-body-column.
+  return m ? e8.stringWidth(m[0].replace(/\t/g, "        ")) + (twoSpacesAfter(m[1]) ? 2 : 1) : 0;
 }
 
 // Filling
@@ -9125,9 +9129,9 @@ const ctrlCMinus = e8.defineCommand({
   run: () => {
     const line = lineAt();
     if (atTableP()) e8.callWithPrefix(e8.prefixArg(), "org-table-insert-hline");
-    else if (orgRegionActive()) e8.call("org-toggle-item");
+    else if (orgRegionActive()) e8.callWithPrefix(e8.prefixArg(), "org-toggle-item");
     else if (inItem(line) !== undefined) cycleListBullet();
-    else e8.call("org-toggle-item");
+    else e8.callWithPrefix(e8.prefixArg(), "org-toggle-item");
   },
 });
 
@@ -9201,8 +9205,10 @@ e8.defineCommand({
   name: "org-toggle-item",
   doc:
     "Turn the line, or the lines of the region, into list items; headings into items, their text into the " +
-    "items' text; or items back into plain lines.",
-  run: () => {
+    "items' text; or items back into plain lines.\n\n" +
+    "With a prefix argument, make only the first line of the region an item, the other lines its text.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
     const mark = e8.mark();
     const region = orgRegionActive() && mark !== undefined;
     let beg: number;
@@ -9237,6 +9243,9 @@ e8.defineCommand({
         const startInd = above === undefined ? 0 : above.level + 1;
         // Levels reduced with org-odd-levels-only, as org-reduced-level gives them.
         let refLevel = reducedLevel((parseHeading(lineAt()) as Heading).level);
+        // The bullet as org-list-bullet-string makes it, each level indented by its length.
+        const bul = bulletString("-");
+        const bulLen = charCount(bul);
         while (e8.point() < end.pos) {
           const line = lineAt();
           const h = parseHeading(line);
@@ -9252,8 +9261,8 @@ e8.defineCommand({
           // Org checks folds after each change, and the line is neither a
           // heading nor an item between these two.
           edDelete(ls, titleAt);
-          edInsert(ls, "- ");
-          indentLineTo(line, startInd + 2 * delta);
+          edInsert(ls, bul);
+          indentLineTo(line, startInd + bulLen * delta);
           if (h.todo !== undefined) {
             const struct = listStruct(line);
             const old = copyStruct(struct);
@@ -9267,17 +9276,35 @@ e8.defineCommand({
           }
           e8.gotoChar(e8.lineStart(line + 1));
           const limit = marker(Math.min(end.pos, sectionEnd));
-          shiftText(startInd + 2 * (delta + 1), limit);
+          shiftText(startInd + bulLen * (delta + 1), limit);
           dropMarker(limit);
         }
+      } else if (arg !== null && arg !== undefined) {
+        // The first line an item, the others its text, however little they were indented.
+        const bul = bulletString("-");
+        const refInd = textIndentation(e8.lineText(lineAt()));
+        e8.gotoChar(e8.point() + charCount(/^[ \t]*/.exec(e8.lineText(lineAt()))![0]));
+        edInsert(e8.point(), bul);
+        if (lineAt() + 1 < e8.lineCount()) {
+          e8.gotoChar(e8.lineStart(lineAt() + 1));
+          while (e8.point() < end.pos) {
+            const sectionEnd = headings().find((x) => x.start > e8.point())?.start ?? e8.bufferSize();
+            const limit = marker(Math.min(end.pos, sectionEnd));
+            shiftText(refInd + charCount(bul), limit);
+            dropMarker(limit);
+            if (lineAt() + 1 >= e8.lineCount()) break;
+            e8.gotoChar(e8.lineStart(lineAt() + 1));
+          }
+        }
       } else {
+        const bul = bulletString("-");
         while (e8.point() < end.pos) {
           const line = lineAt();
           const text = e8.lineText(line);
           const m = /^([ \t]*)(\S)/.exec(text);
           if (m && !isHeadingLine(text) && !itemLine(line)) {
             const ls = e8.lineStart(line);
-            replaceKeepingPoint(ls, ls + charCount(m[0]), `${m[1]}- ${m[2]}`);
+            replaceKeepingPoint(ls, ls + charCount(m[0]), `${m[1]}${bul}${m[2]}`);
           }
           if (line + 1 >= e8.lineCount()) break;
           e8.gotoChar(e8.lineStart(line + 1));

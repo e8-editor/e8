@@ -1,0 +1,317 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "fill-description-item",
+  "text": "- term :: aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+  "keys": "M-q",
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "fill-numbered-item",
+  "text": "10. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+  "keys": "M-q",
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "fill-item-two-spaces",
+  "text": "1. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+  "keys": "M-q",
+  "point": 3,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "fill-item-two-spaces-not-matching",
+  "text": "- aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+  "keys": "M-q",
+  "point": 3,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "fill-item-with-two-spaces-typed",
+  "text": "1.  aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+  "keys": "M-q",
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "fill-checkbox-item",
+  "text": "- [ ] aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+  "keys": "M-q",
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "new-item-two-spaces",
+  "text": "1. first\n",
+  "keys": "M-RET s e c o n d",
+  "point": 8,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "new-item-two-spaces-not-matching",
+  "text": "- first\n",
+  "keys": "M-RET s e c o n d",
+  "point": 7,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "indent-item-body-two-spaces",
+  "text": "1. first\nbody\n",
+  "keys": "TAB",
+  "point": 9,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "bullet-cycle-two-spaces",
+  "text": "- first\n- second\n",
+  "keys": "C-c -",
+  "point": 2,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "repair-two-spaces",
+  "text": "1. first\n2. second\n",
+  "keys": "C-c C-c",
+  "point": 2,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "note-two-spaces",
+  "text": "* a\n",
+  "keys": "C-c C-z o n e RET t w o C-c C-c",
+  "point": 2,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "-"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "repeat-log-two-spaces",
+  "text": "* TODO a\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+  "keys": "C-c C-t",
+  "point": 2,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "-"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "repeat-log-drawer-two-spaces",
+  "text": "* TODO a\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+  "keys": "C-c C-t",
+  "point": 2,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "-",
+   "org-log-into-drawer": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-line-two-spaces",
+  "text": "plain text\n",
+  "keys": "C-c -",
+  "point": 3,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "-"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-region-two-spaces",
+  "text": "one\ntwo\n",
+  "keys": "C-x h C-c -",
+  "point": 0,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "-"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-headings-two-spaces",
+  "text": "* H1\nbody\n** H2\n",
+  "keys": "C-x h C-c -",
+  "point": 0,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "-"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-headings-two-spaces-any",
+  "text": "* H1\nbody\n** H2\n",
+  "keys": "C-x h C-c -",
+  "point": 0,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "[-+*]"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-todo-headings-two-spaces",
+  "text": "* TODO H1\n** DONE H2\n",
+  "keys": "C-x h C-c -",
+  "point": 0,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "-"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-region-one-item",
+  "text": "one\ntwo\n",
+  "keys": "C-x h C-u C-c -",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-region-one-item-indented",
+  "text": "  one\nthree\n    four\n\nfive\n",
+  "keys": "C-x h C-u C-c -",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-region-one-item-two-spaces",
+  "text": "one\ntwo\n",
+  "keys": "C-x h C-u C-c -",
+  "point": 0,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": "-"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-region-one-item-heading",
+  "text": "one\ntwo\n* H\nthree\n",
+  "keys": "C-x h C-u C-c -",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "toggle-line-one-item",
+  "text": "  one\ntwo\n",
+  "keys": "C-u C-c -",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "empty-regexp-new-item",
+  "text": "1. first\n",
+  "keys": "M-RET x",
+  "point": 8,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": ""
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "empty-regexp-fill",
+  "text": "1. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+  "keys": "M-q",
+  "point": 3,
+  "vars": {
+   "org-list-two-spaces-after-bullet-regexp": ""
+  }
+ }
+]

@@ -12,7 +12,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { itemParts } from "org-list";
+import { itemParts, twoSpacesAfter } from "org-list";
 import { PerBuffer } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -43,8 +43,8 @@ let prefixes = computePrefixes();
 
 /** The column where an item's text starts, as org-list-item-body-column: one after its bullet. */
 function itemBodyColumn(text: string): number {
-  const m = /^[ \t]*\S+/.exec(text);
-  return m ? e8.stringWidth(m[0].replace(/\t/g, " ".repeat(Number(e8.variable("tab-width") ?? 8)))) + 1 : 0;
+  const m = /^[ \t]*(\S+)/.exec(text);
+  return m ? e8.stringWidth(m[0].replace(/\t/g, " ".repeat(Number(e8.variable("tab-width") ?? 8)))) + (twoSpacesAfter(m[1]) ? 2 : 1) : 0;
 }
 
 /** The wrap prefixes made so far, by kind, level and indentation, so each is made once. */

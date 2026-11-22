@@ -6903,9 +6903,13 @@ declare global {
       /**
        * Turn the line, or the lines of the region, into list items; headings into items, their text into the items' text; or items back into plain lines.
        *
+       * With a prefix argument, make only the first line of the region an item, the other lines its text.
+       *
+       * @param arg raw prefix argument
+       *
        * Defined in packages/org.ts.
        */
-      "org-toggle-item": [];
+      "org-toggle-item": [arg?: PrefixArg | boolean];
       /**
        * Narrow to the current subtree, or widen if the buffer is narrowed.
        *
@@ -14374,6 +14378,12 @@ declare global {
        * Keymap org-list-checkbox-radio-mode-map.
        */
       "org-list-checkbox-radio-mode-map": Value;
+      /**
+       * A regexp matching the bullets that take two spaces after them, rather than one, as "[0-9]" for numbered items. nil for none.
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-list-two-spaces-after-bullet-regexp": Value;
       /**
        * What marking a heading done records: false for nothing, "time" for a CLOSED: timestamp under it.
        *
