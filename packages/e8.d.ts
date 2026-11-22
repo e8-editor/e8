@@ -14375,6 +14375,12 @@ declare global {
        */
       "org-list-checkbox-radio-mode-map": Value;
       /**
+       * A regexp matching the bullets that take two spaces after them, rather than one, as "[0-9]" for numbered items. nil for none.
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-list-two-spaces-after-bullet-regexp": Value;
+      /**
        * What marking a heading done records: false for nothing, "time" for a CLOSED: timestamp under it.
        *
        * Defined in packages/org.ts.

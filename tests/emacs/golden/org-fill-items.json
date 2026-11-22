@@ -1,0 +1,269 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "fill-description-item",
+      "input": {
+        "text": "- term :: aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "- term :: aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n  ppp qqq rrr sss ttt uuu vvv\n",
+      "visible": "- term :: aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n  ppp qqq rrr sss ttt uuu vvv\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-numbered-item",
+      "input": {
+        "text": "10. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "10. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n    qqq rrr sss ttt uuu vvv\n",
+      "visible": "10. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n    qqq rrr sss ttt uuu vvv\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-item-two-spaces",
+      "input": {
+        "text": "1. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+        }
+      },
+      "text": "1. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n    rrr sss ttt uuu vvv\n",
+      "visible": "1. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n    rrr sss ttt uuu vvv\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-item-two-spaces-not-matching",
+      "input": {
+        "text": "- aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+        }
+      },
+      "text": "- aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n  rrr sss ttt uuu vvv\n",
+      "visible": "- aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n  rrr sss ttt uuu vvv\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-item-with-two-spaces-typed",
+      "input": {
+        "text": "1.  aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "1.  aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n   qqq rrr sss ttt uuu vvv\n",
+      "visible": "1.  aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n   qqq rrr sss ttt uuu vvv\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-checkbox-item",
+      "input": {
+        "text": "- [ ] aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "- [ ] aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n  qqq rrr sss ttt uuu vvv\n",
+      "visible": "- [ ] aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n  qqq rrr sss ttt uuu vvv\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "new-item-two-spaces",
+      "input": {
+        "text": "1. first\n",
+        "point": 8,
+        "keys": "M-RET s e c o n d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+        }
+      },
+      "text": "1.  first\n2.  second\n",
+      "visible": "1.  first\n2.  second\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "new-item-two-spaces-not-matching",
+      "input": {
+        "text": "- first\n",
+        "point": 7,
+        "keys": "M-RET s e c o n d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+        }
+      },
+      "text": "- first\n- second\n",
+      "visible": "- first\n- second\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indent-item-body-two-spaces",
+      "input": {
+        "text": "1. first\nbody\n",
+        "point": 9,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+        }
+      },
+      "text": "1. first\nbody\n",
+      "visible": "1. first\nbody\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "bullet-cycle-two-spaces",
+      "input": {
+        "text": "- first\n- second\n",
+        "point": 2,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+        }
+      },
+      "text": "+ first\n+ second\n",
+      "visible": "+ first\n+ second\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "repair-two-spaces",
+      "input": {
+        "text": "1. first\n2. second\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "[0-9]"
+        }
+      },
+      "text": "1.   first\n2.  second\n",
+      "visible": "1.   first\n2.  second\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

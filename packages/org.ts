@@ -95,6 +95,7 @@ import {
   topGet,
   topLocalValues,
   setLineIndenter,
+  twoSpacesAfter,
 } from "org-list";
 import {
   charAt,
@@ -2550,7 +2551,8 @@ function fontifyLinksAcrossLines(start: number, end: number): void {
 function listBodyColumn(pos: number): number {
   const text = e8.lineText(lineAt(pos));
   const m = /^[ \t]*(\S+)/.exec(text);
-  return m ? e8.stringWidth(m[0].replace(/\t/g, "        ")) + 1 : 0;
+  // Past the bullet and a space, or two where org-list-two-spaces-after-bullet-regexp matches, as org-list-item-body-column.
+  return m ? e8.stringWidth(m[0].replace(/\t/g, "        ")) + (twoSpacesAfter(m[1]) ? 2 : 1) : 0;
 }
 
 // Filling
