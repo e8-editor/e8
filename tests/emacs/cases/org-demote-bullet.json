@@ -170,5 +170,95 @@
     "-": "+"
    }
   }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-ends-past-list",
+  "text": "- a\n- b\n- c\n\nSome text here.\n",
+  "keys": "C-SPC C-n C-n C-n C-e M-<right>",
+  "point": 4,
+  "vars": {
+   "org-list-demote-modify-bullet": {
+    "+": "-",
+    "-": "+"
+   }
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-ends-past-list-tree",
+  "text": "- a\n- b\n- c\n\nSome text here.\n",
+  "keys": "C-SPC C-n C-n C-n C-e M-S-<right>",
+  "point": 4,
+  "vars": {
+   "org-list-demote-modify-bullet": {
+    "+": "-",
+    "-": "+"
+   }
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-outdent-past-list",
+  "text": "- a\n  - b\n  - c\n\nSome text here.\n",
+  "keys": "C-SPC C-n C-n C-n C-e M-<left>",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-outdent-past-list-tree",
+  "text": "- a\n  - b\n  - c\n\nSome text here.\n",
+  "keys": "C-SPC C-n C-n C-n C-e M-S-<left>",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-to-end",
+  "text": "+ a\n+ b\n+ c\n",
+  "keys": "C-SPC M-> M-<right>",
+  "point": 4,
+  "vars": {
+   "org-list-demote-modify-bullet": {
+    "+": "-"
+   }
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "not-a-bullet",
+  "text": "- a\n- b\n",
+  "keys": "M-<right>",
+  "point": 6,
+  "vars": {
+   "org-list-demote-modify-bullet": {
+    "-": "x"
+   }
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "empty-bullet",
+  "text": "- a\n- b\n",
+  "keys": "M-<right>",
+  "point": 6,
+  "vars": {
+   "org-list-demote-modify-bullet": {
+    "-": ""
+   }
+  }
  }
 ]

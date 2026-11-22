@@ -574,7 +574,9 @@ e8.defineVariable({
 /** The bullet a demoted item takes, as org-list-demote-modify-bullet says for the one it has, if it names one. */
 function demotedBullet(bullet: string): string | undefined {
   const pairs = e8.variable("org-list-demote-modify-bullet");
-  if (!Array.isArray(pairs)) return undefined;
+  if (pairs === null || pairs === undefined || pairs === false) return undefined;
+  // Not a list: an error, as assoc gives one.
+  if (!Array.isArray(pairs)) e8.signal("wrong-type-argument", `Wrong type argument: listp, ${typeof pairs === "string" ? JSON.stringify(pairs) : String(pairs)}`, ["listp", pairs]);
   // Its kind, as Org names numbered and lettered bullets.
   const kind = /[A-Z]\./.test(bullet)
     ? "A."
@@ -763,7 +765,11 @@ export function applyStruct(struct: Struct, old: Struct): void {
       edInsert(m.bulletAt + charCount(newBul), keep);
     }
     m = itemParts(line);
-    if (!m) return;
+    // A bullet that no longer makes an item, as one a user's option gives, is still indented, as Org's modify-item does.
+    if (!m) {
+      reindent();
+      return;
+    }
     if (m.checkbox === e.checkbox) {
       // The checkbox is right.
     } else if (m.checkbox !== undefined && e.checkbox !== undefined && m.boxAt !== undefined) {

@@ -4262,6 +4262,13 @@ function headingsInRegion(): Heading[] | undefined {
 }
 
 /** Whether the active region begins on a heading's line, as org-metaleft and org-metaright check. */
+/** Whether the active region starts on an item's line, as org-at-item-p there. */
+function regionStartsAtItem(): boolean {
+  if (!orgRegionActive()) return false;
+  const mark = e8.mark() ?? e8.point();
+  return itemLine(lineAt(Math.min(mark, e8.point())));
+}
+
 function regionStartsAtHeading(): boolean {
   if (!orgRegionActive()) return false;
   const mark = e8.mark() ?? e8.point();
@@ -8273,7 +8280,7 @@ const metaLeft = e8.defineCommand({
     else if (regionStartsAtHeading() || headingHere()) {
       if (hiddenBelow("headlines")) hiddenTreeError();
       e8.call("org-do-promote");
-    } else if (itemHere()) {
+    } else if (itemHere() || regionStartsAtItem()) {
       if (hiddenBelow("items")) hiddenTreeError();
       e8.call("org-outdent-item");
     }
@@ -8291,7 +8298,7 @@ const metaRight = e8.defineCommand({
     else if (regionStartsAtHeading() || headingHere()) {
       if (hiddenBelow("headlines")) hiddenTreeError();
       e8.call("org-do-demote");
-    } else if (itemHere()) {
+    } else if (itemHere() || regionStartsAtItem()) {
       if (hiddenBelow("items")) hiddenTreeError();
       e8.call("org-indent-item");
     }
@@ -8437,7 +8444,8 @@ const shiftMetaLeft = e8.defineCommand({
   run: () => {
     if (atTableP()) e8.call("org-table-delete-column");
     else if (headingHere()) e8.call("org-promote-subtree");
-    else if (itemHere()) e8.call("org-outdent-item-tree");
+    // The region's first line, with one, as Org looks at it.
+    else if (orgRegionActive() ? regionStartsAtItem() : itemHere()) e8.call("org-outdent-item-tree");
     else e8.userError("This command is active in special context like tables, headlines or items");
   },
 });
@@ -8448,7 +8456,7 @@ const shiftMetaRight = e8.defineCommand({
   run: () => {
     if (atTableP()) e8.call("org-table-insert-column");
     else if (headingHere()) e8.call("org-demote-subtree");
-    else if (itemHere()) e8.call("org-indent-item-tree");
+    else if (orgRegionActive() ? regionStartsAtItem() : itemHere()) e8.call("org-indent-item-tree");
     else e8.userError("This command is active in special context like tables, headlines or items");
   },
 });
