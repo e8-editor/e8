@@ -56,7 +56,8 @@ fn fill_region_in_org_fills_items_apart() {
     ed.window_buffer_mut().set_text("aaa bbb ccc ddd eee fff\n- ggg hhh iii jjj kkk lll\n- mmm\n\nnnn ooo ppp qqq rrr sss\n");
     ed.call("org-mode", vec![]).unwrap();
     eval(&s, &mut ed, "e8.setVariable('fill-column', 20)");
-    ed.call("fill-region", vec![e8_core::Arg::Int(0), e8_core::Arg::Int(81)]).unwrap();
+    eval(&s, &mut ed, "e8.setMark(0), e8.gotoChar(81)");
+    ed.call("fill-region", vec![]).unwrap();
     assert_eq!(
         ed.window_buffer().text(),
         "aaa bbb ccc ddd eee\nfff\n- ggg hhh iii jjj\n  kkk lll\n- mmm\n\nnnn ooo ppp qqq rrr\nsss\n"

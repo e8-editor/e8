@@ -2982,15 +2982,11 @@ declare global {
        */
       "fill-paragraph": [];
       /**
-       * Fill each paragraph in the region, from FROM to TO. With a prefix argument, justify as well.
-       *
-       * @param from region start
-       * @param to region end
-       * @param justify raw prefix argument
+       * Fill each paragraph in the region. With a prefix argument, justify as well.
        *
        * Defined in packages/fill.ts.
        */
-      "fill-region": [from: number, to: number, justify?: PrefixArg | boolean];
+      "fill-region": [];
       /**
        * Fill the region as one paragraph, joining its paragraphs. With a prefix argument, justify as well.
        *

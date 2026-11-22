@@ -661,15 +661,12 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "fill-region",
-  doc: "Fill each paragraph in the region, from FROM to TO. With a prefix argument, justify as well.",
-  params: [
-    { name: "from", kind: "region-beginning" },
-    { name: "to", kind: "region-end" },
-    { name: "justify", kind: "prefix" },
-  ],
-  run: (from: number, to: number, justify?: e8.PrefixArg) => {
+  doc: "Fill each paragraph in the region. With a prefix argument, justify as well.",
+  run: () => {
     barfIfReadOnly();
-    fillRegion(Math.min(from, to), Math.max(from, to), justify === null || justify === undefined ? undefined : "full");
+    const mark = e8.mark();
+    if (mark === undefined) e8.userError("The mark is not set now, so there is no region");
+    fillRegion(Math.min(e8.point(), mark), Math.max(e8.point(), mark), justifyArg());
   },
 });
 
