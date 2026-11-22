@@ -58,6 +58,14 @@ export interface Elem {
   applied?: number;
 }
 
+/**
+ * A clock's line, as org-element-clock-line-re: an inactive timestamp, or a
+ * range of two and its duration, or a duration alone, and nothing else,
+ * whatever the case of CLOCK, as Org matches it with case-fold-search.
+ */
+export const CLOCK_LINE =
+  /^[ \t]*CLOCK:(?:[ \t]+\[\d{4}-\d{2}-\d{2}(?: .*?)?\](?:--\[\d{4}-\d{2}-\d{2}(?: .*?)?\][ \t]+=>[ \t]+\d+:\d\d)?|[ \t]+=>[ \t]+\d+:\d\d)[ \t]*$/i;
+
 export const PLANNING = /^[ \t]*(?:SCHEDULED|DEADLINE|CLOSED):/;
 
 function elem(type: string, begin: number, end: number, parent: Elem, contentsBegin?: number): Elem {
@@ -148,7 +156,7 @@ export function startsElement(line: number, limit: number): boolean {
     /^\[fn:[-_\w]+\]/.test(text) ||
     /^%%\(/.test(text) ||
     /^[ \t]*\+(?:-+\+)+[ \t]*$/.test(text) ||
-    /^[ \t]*CLOCK:/.test(text) ||
+    CLOCK_LINE.test(text) ||
     (DRAWER_RE.test(text) && drawerEnd(line, limit) !== undefined) ||
     blockAt(line, limit) !== undefined
   );
@@ -252,7 +260,7 @@ function parseElements(
       }
     } else if (p === e8.lineStart(line) && /^[ \t]*-{5,}[ \t]*$/.test(text)) {
       e = elem("horizontal-rule", p, Math.min(next, to), parent);
-    } else if (p === e8.lineStart(line) && /^[ \t]*CLOCK:/.test(text)) {
+    } else if (p === e8.lineStart(line) && CLOCK_LINE.test(text)) {
       e = elem("clock", p, Math.min(next, to), parent);
     } else if (p === e8.lineStart(line) && /^%%\(/.test(text)) {
       e = elem("diary-sexp", p, Math.min(next, to), parent);

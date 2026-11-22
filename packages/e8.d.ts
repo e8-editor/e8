@@ -5663,6 +5663,22 @@ declare global {
        */
       "org-clock-report": [arg?: PrefixArg | boolean];
       /**
+       * Make the CLOCK timestamp point is on earlier by its part, and the line's other one with it.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-clock-timestamps-down": [n?: PrefixArg | boolean];
+      /**
+       * Make the CLOCK timestamp point is on later by its part, the year, month, day, hour or minute, and the line's other one with it.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-clock-timestamps-up": [n?: PrefixArg | boolean];
+      /**
        * Show all headings, hiding the text under them.
        *
        * Defined in packages/org.ts.
@@ -6519,6 +6535,14 @@ declare global {
        */
       "org-set-tags-command": [];
       /**
+       * C-S-<down> in Org: on a CLOCK line's timestamp, make it and the other one earlier together.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-shiftcontroldown": [n?: PrefixArg | boolean];
+      /**
        * C-S-<left> in Org: switch the heading to the previous set of TODO keywords.
        *
        * Defined in packages/org.ts.
@@ -6530,6 +6554,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-shiftcontrolright": [];
+      /**
+       * C-S-<up> in Org: on a CLOCK line's timestamp, make it and the other one later together, so the clock keeps its length.
+       *
+       * @param n raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-shiftcontrolup": [n?: PrefixArg | boolean];
       /**
        * S-<down> in Org: make a timestamp earlier, lower a heading's priority, or move to the next item.
        *

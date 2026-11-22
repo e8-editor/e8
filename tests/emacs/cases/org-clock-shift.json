@@ -1,0 +1,282 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-minute",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "down-minute",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<down>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-hour-second",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 61
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "down-day",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<down>",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-month",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 52
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-year",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 23
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-count",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-u 3 C-S-<up>",
+  "point": 37
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-count-minute",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "M-7 C-S-<up>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "odd-minutes",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:03]--[2026-10-28 Wed 11:07] =>  1:04\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "on-bracket",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 21
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "not-clock",
+  "text": "* T\nSCHEDULED: <2026-10-28 Wed>\n",
+  "keys": "C-S-<up>",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "running-clock",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "off-timestamp",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 16
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "shift-up-updates-duration",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "S-<up>",
+  "point": 61
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "shift-down-updates-duration",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "S-<down>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "ctrl-c-ctrl-c-duration",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-29 Thu 11:45] =>  9:99\n:END:\n",
+  "keys": "C-c C-c",
+  "point": 16
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "ctrl-c-ctrl-c-weekday",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Mon 10:00]--[2026-10-28 Wed 11:45]\n:END:\n",
+  "keys": "C-c C-c",
+  "point": 26
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "negative-duration",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "M-2 S-<up>",
+  "point": 37
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "active-timestamps",
+  "text": "* T\n:LOGBOOK:\nCLOCK: <2026-10-28 Wed 10:00>--<2026-10-28 Wed 11:30> =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 37
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "shift-up-plain-range",
+  "text": "* T\n<2026-10-28 Wed 10:00>--<2026-10-28 Wed 11:30>\n",
+  "keys": "S-<up>",
+  "point": 16
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "open-clock-then-closed",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "open-clock-then-closed-day",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<down>",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "open-clock-then-other-entry",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\n:END:\n* U\n<2026-11-02 Mon 08:15>\n",
+  "keys": "C-S-<up>",
+  "point": 37
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "lowercase-ctrl-c-ctrl-c",
+  "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  9:99\n:END:\n",
+  "keys": "C-c C-c",
+  "point": 16
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "lowercase-shift-up",
+  "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  9:99\n:END:\n",
+  "keys": "S-<up>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "lowercase-shift-control-up",
+  "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "lowercase-paragraph-motion",
+  "text": "* T\nSome text\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\nmore text\n\nend\n",
+  "keys": "M-}",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "one-digit-hour-error-point",
+  "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 9:00]--[2026-10-28 Wed 11:30] =>  2:30\n:END:\n",
+  "keys": "C-S-<up>",
+  "point": 40
+ }
+]

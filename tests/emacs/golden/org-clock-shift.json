@@ -1,0 +1,622 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "up-minute",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 40,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:35] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:35] =>  1:30\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "down-minute",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 40,
+        "keys": "C-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:55]--[2026-10-28 Wed 11:25] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:55]--[2026-10-28 Wed 11:25] =>  1:30\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "up-hour-second",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 61,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 11:00]--[2026-10-28 Wed 12:30] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 11:00]--[2026-10-28 Wed 12:30] =>  1:30\n:END:\n",
+      "point": 61,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "down-day",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 31,
+        "keys": "C-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 11:30] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-27 Tue 11:30] =>  1:30\n:END:\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "up-month",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 52,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-11-28 Sat 10:00]--[2026-11-28 Sat 11:30] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-11-28 Sat 10:00]--[2026-11-28 Sat 11:30] =>  1:30\n:END:\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "up-year",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 23,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2027-10-28 Thu 10:00]--[2027-10-28 Thu 11:30] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2027-10-28 Thu 10:00]--[2027-10-28 Thu 11:30] =>  1:30\n:END:\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "up-count",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 37,
+        "keys": "C-u 3 C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 13:00]--[2026-10-28 Wed 14:30] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 13:00]--[2026-10-28 Wed 14:30] =>  1:30\n:END:\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "up-count-minute",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 40,
+        "keys": "M-7 C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:07]--[2026-10-28 Wed 11:37] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:07]--[2026-10-28 Wed 11:37] =>  1:30\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "odd-minutes",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:03]--[2026-10-28 Wed 11:07] =>  1:04\n:END:\n",
+        "point": 40,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:10] =>  1:05\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:10] =>  1:05\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "on-bracket",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 21,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: <2026-10-28 Wed 10:00>--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: <2026-10-28 Wed 10:00>--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Wrong type argument: number-or-marker-p, nil"
+    },
+    {
+      "name": "not-clock",
+      "input": {
+        "text": "* T\nSCHEDULED: <2026-10-28 Wed>\n",
+        "point": 20,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\nSCHEDULED: <2026-10-28 Wed>\n",
+      "visible": "* T\nSCHEDULED: <2026-10-28 Wed>\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a clock log"
+    },
+    {
+      "name": "running-clock",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\n:END:\n",
+        "point": 40,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Wrong type argument: number-or-marker-p, nil"
+    },
+    {
+      "name": "off-timestamp",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 16,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a clock log"
+    },
+    {
+      "name": "shift-up-updates-duration",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 61,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 12:30] =>  2:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 12:30] =>  2:30\n:END:\n",
+      "point": 61,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shift-down-updates-duration",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 40,
+        "keys": "S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:55]--[2026-10-28 Wed 11:30] =>  1:35\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:55]--[2026-10-28 Wed 11:30] =>  1:35\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ctrl-c-ctrl-c-duration",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-29 Thu 11:45] =>  9:99\n:END:\n",
+        "point": 16,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-29 Thu 11:45] => 25:45\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-29 Thu 11:45] => 25:45\n:END:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ctrl-c-ctrl-c-weekday",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Mon 10:00]--[2026-10-28 Wed 11:45]\n:END:\n",
+        "point": 26,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:45] =>  1:45\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:45] =>  1:45\n:END:\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "negative-duration",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 37,
+        "keys": "M-2 S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]--[2026-10-28 Wed 11:30] => -0:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 12:00]--[2026-10-28 Wed 11:30] => -0:30\n:END:\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "active-timestamps",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: <2026-10-28 Wed 10:00>--<2026-10-28 Wed 11:30> =>  1:30\n:END:\n",
+        "point": 37,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: <2026-10-28 Wed 10:00>--<2026-10-28 Wed 11:30> =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: <2026-10-28 Wed 10:00>--<2026-10-28 Wed 11:30> =>  1:30\n:END:\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a clock log"
+    },
+    {
+      "name": "shift-up-plain-range",
+      "input": {
+        "text": "* T\n<2026-10-28 Wed 10:00>--<2026-10-28 Wed 11:30>\n",
+        "point": 16,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n<2026-10-29 Thu 10:00>--<2026-10-28 Wed 11:30>\n",
+      "visible": "* T\n<2026-10-29 Thu 10:00>--<2026-10-28 Wed 11:30>\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "open-clock-then-closed",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 40,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:05]\nCLOCK: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:30] =>  1:25\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:05]\nCLOCK: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:30] =>  1:25\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "open-clock-then-closed-day",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\nCLOCK: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 31,
+        "keys": "C-S-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-28 Wed 11:30] => 25:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-27 Tue 10:00]\nCLOCK: [2026-10-27 Tue 10:00]--[2026-10-28 Wed 11:30] => 25:30\n:END:\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "open-clock-then-other-entry",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 10:00]\n:END:\n* U\n<2026-11-02 Mon 08:15>\n",
+        "point": 37,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 11:00]\n:END:\n* U\n<2026-11-02 Mon 09:15>\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 11:00]\n:END:\n* U\n<2026-11-02 Mon 09:15>\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "lowercase-ctrl-c-ctrl-c",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  9:99\n:END:\n",
+        "point": 16,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "lowercase-shift-up",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  9:99\n:END:\n",
+        "point": 40,
+        "keys": "S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:30] =>  1:25\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:30] =>  1:25\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "lowercase-shift-control-up",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\n:END:\n",
+        "point": 40,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:35] =>  1:30\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nclock: [2026-10-28 Wed 10:05]--[2026-10-28 Wed 11:35] =>  1:30\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "lowercase-paragraph-motion",
+      "input": {
+        "text": "* T\nSome text\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\nmore text\n\nend\n",
+        "point": 4,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\nSome text\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\nmore text\n\nend\n",
+      "visible": "* T\nSome text\nclock: [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] =>  1:30\nmore text\n\nend\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "one-digit-hour-error-point",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 9:00]--[2026-10-28 Wed 11:30] =>  2:30\n:END:\n",
+        "point": 40,
+        "keys": "C-S-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:05]--[2026-10-28 Wed 11:30] =>  2:25\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 09:05]--[2026-10-28 Wed 11:30] =>  2:25\n:END:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not at a timestamp"
+    }
+  ]
+}
