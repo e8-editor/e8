@@ -167,11 +167,12 @@ interface AgendaItem {
   heading: number;
   cat: string;
   leader: string;
-  removeTimestamp: boolean;
   /** Its time of day as the line shows it, " 9:30......" or "10:00-11:30", and in minutes, for sorting. */
   time?: { field: string; minutes: number };
   /** The habit a scheduled line is, whose graph the line shows. */
   habit?: Habit;
+  /** The timestamp its time comes from, as Org's dotime, whose copy in the heading the line leaves out. */
+  dotime?: string;
   /** Markers at `pos` and `heading`, once the agenda shows the line, so they follow edits there. */
   marks?: { pos: e8.Marker; heading: e8.Marker };
   /** Whether its entry was blocked when the agenda was made, and the line is dimmed or hidden for it, as org-todo-blocked marks the line. */
@@ -250,10 +251,20 @@ function displayedTags(h: Heading): string {
   return `:${inherited.join(":")}:${h.tags.length === 0 ? ":" : `:${h.tags.join(":")}:`}`;
 }
 
-function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: boolean, time?: AgendaItem["time"], prefix = ""): string {
+function agendaLine(
+  h: Heading,
+  cat: string,
+  leader: string,
+  removeTimestamp: boolean,
+  time?: AgendaItem["time"],
+  prefix = "",
+  dotime?: string,
+): string {
   let text = prefix + e8.lineText(h.line).replace(/^\*+[ \t]+/, "");
   if (h.tagsAt !== undefined) text = text.slice(0, text.length - (e8.lineEnd(h.line) - h.tagsAt) - 0).replace(/[ \t]+$/, "");
-  if (removeTimestamp) text = text.replace(/<\d{4}-\d{2}-\d{2}[^>\n]*>/, "");
+  if (time !== undefined && dotime !== undefined) text = withoutPrefixTime(text, dotime);
+  // Every active timestamp, as org-ts-regexp is removed until none is left.
+  if (removeTimestamp) text = text.replace(/<\d{4}-\d{2}-\d{2}[^>\n]*>/g, "");
   const line = `  ${(cat === "" ? "" : `${cat}:`).padEnd(12)}${time === undefined ? "" : `${time.field.padEnd(11)} `}${leader === "" ? "" : `${leader} `}${text}`;
   const tags = displayedTags(h);
   if (tags === "") return line;
@@ -272,6 +283,29 @@ let archivesMode: null | "trees" | true = null;
 function agendaFilesIfMode(): string[] {
   const files = agendaFiles();
   return archivesMode === true ? addArchiveFiles(files) : files;
+}
+
+/** A timestamp with a time of day or a range of times, as org-stamp-time-of-day-regexp. */
+const STAMP_TIME = /<(\d{4}-\d{2}-\d{2} +[\p{L}\p{N}_]+ +)([012][0-9]:[0-5][0-9])(-([012][0-9]:[0-5][0-9]))?[^\n\r>]*?>(--?<\1([012][0-9]:[0-5][0-9])>)?/u;
+
+/**
+ * TEXT without the timestamp whose time the line shows before it, and the
+ * spaces after it, as org-agenda-format-item takes it out with
+ * org-agenda-remove-times-when-in-prefix: the first timed timestamp in
+ * DOTIME or else in the heading's other text, unless a ] follows it.
+ */
+function withoutPrefixTime(text: string, dotime: string): string {
+  const option = e8.variable("org-agenda-remove-times-when-in-prefix") ?? true;
+  if (!truthy(option)) return text;
+  const ts = dotime + text.replace(/[<[]\d{4}-\d{2}-\d{2}[^>\]\n]*[>\]]/g, "");
+  const m = STAMP_TIME.exec(ts);
+  if (m === null) return text;
+  const at = text.indexOf(m[0]);
+  if (at < 0 || (option === "beg" && at !== 0)) return text;
+  let end = at + m[0].length;
+  while (text[end] === " ") end++;
+  if (text[end] === "]") return text;
+  return text.slice(0, at) + text.slice(end);
 }
 
 /** The buffers of org-agenda-files, or of FILES, visited if need be. */
@@ -428,8 +462,10 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       const time = r.first === day && r.last === day && from && to
         ? { field: `${from.field.replace(gridDots(), "")}-${to.field.replace(gridDots(), "").trim()}`, minutes: from.minutes }
         : r.first === day ? from : r.last === day ? to : undefined;
-      const item = { cat, leader, removeTimestamp: false, buffer, pos: r.pos, heading: h.start, ...(time ? { time } : {}) };
-      blocks.push({ ...item, text: agendaLine(h, cat, leader, false, time), urgency: priority });
+      // The timestamps its times come from, as org-agenda-get-blocks gives them.
+      const dotime = r.first === day && r.last === day ? `${r.from}--${r.to}` : r.first === day ? r.from : r.last === day ? r.to : undefined;
+      const item = { cat, leader, buffer, pos: r.pos, heading: h.start, ...(time ? { time, dotime } : {}) };
+      blocks.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", dotime), urgency: priority });
     }
     if (plan.deadline !== undefined) {
       const diff = plan.deadline - day;
@@ -442,8 +478,9 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
       if (leader !== undefined) {
         // Its time shows on its date and its repeats, not in a warning.
         const time = (diff === 0 || repeatDay) && plan.deadlineText !== undefined ? timeOf(plan.deadlineText) : undefined;
-        const item = { cat, leader, removeTimestamp: false, buffer, pos: plan.deadlineAt ?? h.start, heading: h.start, ...(time ? { time } : {}) };
-        deadlines.push({ ...item, text: agendaLine(h, cat, leader, false, time), urgency: priority - (day === today ? diff : 0) });
+        const dotime = plan.deadlineText;
+        const item = { cat, leader, buffer, pos: plan.deadlineAt ?? h.start, heading: h.start, ...(time ? { time, dotime } : {}) };
+        deadlines.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", dotime), urgency: priority - (day === today ? diff : 0) });
       }
     }
     if (plan.scheduled !== undefined) {
@@ -463,17 +500,21 @@ function dayItems(scan: { cat: string; entries: Scanned[] }, day: number, today:
         // A habit has no leader, its graph saying when it is due, and is as urgent as org-habit-get-urgency says.
         const leader = habit !== undefined ? "" : past ? `Sched.${String(diff).padStart(2)}x: ` : "Scheduled: ";
         const time = !past && plan.scheduledText !== undefined ? timeOf(plan.scheduledText) : undefined;
-        const item = { cat, leader, removeTimestamp: false, buffer, pos: plan.scheduledAt ?? h.start, heading: h.start, ...(time ? { time } : {}) };
+        const dotime = plan.scheduledText;
+        const item = { cat, leader, buffer, pos: plan.scheduledAt ?? h.start, heading: h.start, ...(time ? { time, dotime } : {}) };
         const urgency = habit !== undefined ? habitUrgency(habit, today) : 99 + (past ? diff : 0) + priority;
-        scheduled.push({ ...item, text: agendaLine(h, cat, leader, false, time), urgency, ...(habit ? { habit } : {}) });
+        scheduled.push({ ...item, text: agendaLine(h, cat, leader, false, time, "", dotime), urgency, ...(habit ? { habit } : {}) });
       }
     }
-    // The first active timestamp in the heading and its entry on the day.
+    // The first active timestamp in the heading and its entry on the day,
+    // the heading's active timestamps left out, as org-agenda-get-timestamps
+    // gives org-ts-regexp to take out.
     const stamp = found.find((s) => occursOn(s.ts, day));
     if (stamp) {
       const time = timeOf(stamp.text);
-      const item = { cat, leader: "", removeTimestamp: stamp.inHeading, buffer, pos: stamp.pos, heading: h.start, ...(time ? { time } : {}) };
-      stamps.push({ ...item, text: agendaLine(h, cat, "", stamp.inHeading, time), urgency: priority });
+      const dotime = stamp.text;
+      const item = { cat, leader: "", buffer, pos: stamp.pos, heading: h.start, ...(time ? { time, dotime } : {}) };
+      stamps.push({ ...item, text: agendaLine(h, cat, "", true, time, "", dotime), urgency: priority });
     }
   }
   return [...deadlines, ...scheduled, ...blocks, ...stamps];
@@ -878,7 +919,7 @@ function todoList(): void {
         }
         if (!sublevels) below = h.level;
         const cat = cats[i];
-        const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
+        const item = { cat, leader: "", buffer, pos: h.start, heading: h.start };
         items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: 1 + priorityValue(h) });
       }
     }));
@@ -945,7 +986,7 @@ function tagsView(todoOnly: boolean, match?: string): void {
             if (skipped[i]) return;
             const cat = cats[i];
             const prefix = indented ? ".".repeat(h.level - 1) : "";
-            const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
+            const item = { cat, leader: "", buffer, pos: h.start, heading: h.start };
             // No urgency, as org-scan-tags gives its lines none: they keep the files' order.
             items.push({ ...item, text: agendaLine(h, cat, "", false, undefined, prefix), urgency: 0 });
           },
@@ -1114,7 +1155,7 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
             const wanted = minus.every((re) => !has(re)) && plus.every(has) && (!todoOnly || has(todoRegexp));
             if (wanted) {
               const cat = cats[i];
-              const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
+              const item = { cat, leader: "", buffer, pos: h.start, heading: h.start };
               items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: 1000 });
             }
             e8.gotoChar(Math.max(end - 1, lastSearchEnd));
@@ -1329,14 +1370,16 @@ function agendaDispatch(): string {
 function redrawEntry(item: AgendaItem): void {
   const heading = headingOf(item);
   e8.withCurrentBuffer(AGENDA, () => e8.letBind({ "inhibit-read-only": true }, () => {
-    const point = e8.point();
+    // Point kept on its line and column, as org-agenda-change-all-lines keeps it with save-excursion and org-move-to-column.
+    const pointLine = e8.lineOf(e8.point());
+    const column = e8.point() - e8.lineStart(pointLine);
     for (const [l, other] of agendaLines.entries()) {
       if (!other || other.buffer !== item.buffer || headingOf(other) !== heading) continue;
       const text = e8.withCurrentBuffer(item.buffer, () => widened(() => {
         const h = headings().find((x) => x.start === heading);
         // Without the tags view's dots, as org-agenda-change-all-lines writes the line from the heading alone.
         // With the heading's timestamp, as org-agenda-change-all-lines formats it without org-agenda-format-item's remove-re.
-        return h ? agendaLine(h, other.cat, other.leader, false, other.time) : other.text;
+        return h ? agendaLine(h, other.cat, other.leader, false, other.time, "", other.dotime) : other.text;
       }));
       other.text = text;
       e8.deleteRegion(e8.lineStart(l), e8.lineEnd(l));
@@ -1345,7 +1388,7 @@ function redrawEntry(item: AgendaItem): void {
       // Dimmed or hidden again from its mark, as org-agenda-change-all-lines finalizes the line.
       if (truthy(e8.variable("org-agenda-dim-blocked-tasks") ?? null) && blockerHookSet()) dimLine(l, other);
     }
-    e8.gotoChar(point);
+    e8.gotoChar(Math.min(e8.lineStart(pointLine) + column, e8.lineEnd(pointLine)));
   }));
 }
 

@@ -279,6 +279,529 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "timed-heading-stamp-first-drawn",
+      "input": {
+        "text": "* TODO B <2026-10-28 Wed 10:00> x\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00...... TODO B x\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00...... TODO B x\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "timed-heading-stamp-after-priority",
+      "input": {
+        "text": "* TODO B <2026-10-28 Wed 10:00>\n",
+        "point": 0,
+        "keys": "n ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A"
+        ],
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00...... TODO [#A] B \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00...... TODO [#A] B \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "timed-heading-stamp-after-done",
+      "input": {
+        "text": "* TODO B <2026-10-28 Wed 10:00> x\n",
+        "point": 0,
+        "keys": "n t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00...... DONE B x\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00...... DONE B x\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "timed-heading-range-after-priority",
+      "input": {
+        "text": "* TODO B <2026-10-28 Wed 10:00-11:00> rest\n",
+        "point": 0,
+        "keys": "n ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A"
+        ],
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00-11:00 TODO [#A] B rest\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00-11:00 TODO [#A] B rest\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "timed-heading-stamp-with-scheduled",
+      "input": {
+        "text": "* TODO B <2026-10-28 Wed 15:00> x\nSCHEDULED: <2026-10-28 Wed 09:00>\n",
+        "point": 0,
+        "keys": "n , n ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A",
+          "B"
+        ],
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines: 9:00...... Scheduled:  TODO [#B] B <2026-10-28 Wed 15:00> x\n  e8-agenda-lines:15:00...... TODO [#B] B x\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines: 9:00...... Scheduled:  TODO [#B] B <2026-10-28 Wed 15:00> x\n  e8-agenda-lines:15:00...... TODO [#B] B x\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 183,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 183,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "timed-range-in-heading-first-drawn",
+      "input": {
+        "text": "* B <2026-10-28 Wed 10:00>--<2026-10-28 Wed 12:00> x\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00-12:00 B x\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00-12:00 B x\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "timed-range-over-days-first-drawn",
+      "input": {
+        "text": "* B <2026-10-28 Wed 10:00>--<2026-10-29 Thu 12:00> x\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00...... (1/2):  B --<2026-10-29 Thu 12:00> x\nThursday   29 October 2026\n  e8-agenda-lines:12:00...... (2/2):  B <2026-10-28 Wed 10:00>--x\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:10:00...... (1/2):  B --<2026-10-29 Thu 12:00> x\nThursday   29 October 2026\n  e8-agenda-lines:12:00...... (2/2):  B <2026-10-28 Wed 10:00>--x\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "two-heading-stamps-first-drawn",
+      "input": {
+        "text": "* B <2026-10-28 Wed> and <2026-10-30 Fri> x\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:B  and  x\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-lines:B  and  x\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:B  and  x\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-lines:B  and  x\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "body-stamp-with-heading-stamp",
+      "input": {
+        "text": "* B <2026-10-30 Fri> x\n<2026-10-28 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:B  x\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-lines:B  x\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:B  x\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-lines:B  x\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "priority-keeps-point-on-a-later-line",
+      "input": {
+        "text": "* TODO B\nDEADLINE: <2026-10-30 Fri>\n* TODO Other <2026-10-30 Fri 09:00>\n",
+        "point": 0,
+        "keys": "n n n n n , ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A",
+          "C"
+        ],
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:In   2 d.:  TODO [#C] B\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-lines: 9:00...... TODO Other \n  e8-agenda-lines:Deadline:   TODO [#C] B\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:In   2 d.:  TODO [#C] B\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-lines: 9:00...... TODO Other \n  e8-agenda-lines:Deadline:   TODO [#C] B\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 242,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 242,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "priority-keeps-the-column",
+      "input": {
+        "text": "* TODO B\nDEADLINE: <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "n n n n C-f C-f C-f ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-lines.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A"
+        ],
+        "globals": {
+          "org-agenda-use-time-grid": false
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:In   2 d.:  TODO [#A] B\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-lines:Deadline:   TODO [#A] B\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-lines:In   2 d.:  TODO [#A] B\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-lines:Deadline:   TODO [#A] B\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
     }
   ]
 }
