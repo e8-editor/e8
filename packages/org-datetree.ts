@@ -10,7 +10,8 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { blankBeforeHeading, headings, subtreeRegion } from "org";
+import { blankBeforeHeading, headingIndex, headings, subtreeRegion, validLevel } from "org";
+import { entryGet } from "org-list";
 import { lineAt } from "org-macs";
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -84,11 +85,48 @@ function findCreate(re: RegExp, n: number, level: number, title: string): number
 }
 
 /** Narrows to the subtree of the heading at point, as org-narrow-to-subtree. */
+/** Narrows to the subtree at point, without the newline before the next heading, as org-narrow-to-subtree. */
 function narrowToSubtree(): void {
   const all = headings();
   const i = all.findIndex((h) => h.start === e8.point());
   const [start, end] = subtreeRegion(all, i);
-  e8.narrowToRegion(start, end);
+  e8.narrowToRegion(start, end === e8.pointMax() ? end : end - 1);
+}
+
+/** Where a date tree goes and at what level: its region, its year headings' level and how many stars a level is. */
+export interface DateTreeRoot {
+  start: number;
+  end: number;
+  base: number;
+  step: number;
+}
+
+/**
+ * Where a date tree goes, as org-datetree--find-create-group finds it: in
+ * the subtree of the heading starting at UNDER, a level below it, as with
+ * keep-restriction subtree-at-point; else, widened, under the first
+ * heading with a DATE_TREE property (WEEK_TREE by week), a level below it;
+ * else the whole buffer at the top level. A subtree's region leaves out
+ * the newline before the next heading, as org-narrow-to-subtree does.
+ */
+export function dateTreeRoot(grouping: "day" | "month" | "week", under?: number): DateTreeRoot {
+  const step = e8.variable("org-odd-levels-only") === true ? 2 : 1;
+  const all = headings();
+  let i = under === undefined ? -1 : all.findIndex((h) => h.start === under);
+  if (under === undefined) {
+    // The candidates by a search of the lines, then the first in order whose entry has the property, as org-find-property.
+    const prop = grouping === "week" ? "WEEK_TREE" : "DATE_TREE";
+    for (const [line] of e8.matchingLines(`^[ \t]*:${prop}:`, { caseFold: true, start: e8.pointMin(), end: e8.pointMax() })) {
+      const k = headingIndex(all, line);
+      if (k !== undefined && entryGet(all[k].line, prop, true) !== undefined) {
+        i = k;
+        break;
+      }
+    }
+  }
+  if (i < 0) return { start: e8.pointMin(), end: e8.pointMax(), base: 1, step };
+  const [start, end] = subtreeRegion(all, i);
+  return { start, end: end === e8.pointMax() ? end : end - 1, base: validLevel(all[i].level, 1), step };
 }
 
 /**

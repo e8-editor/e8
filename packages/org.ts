@@ -459,6 +459,17 @@ function todoSets(): TodoSet[] {
   }));
 }
 
+/**
+ * Runs `f` with this buffer's TODO states in whatever buffer it makes
+ * current, none of them logging, as org-archive-subtree binds
+ * org-todo-keywords-1 and its kin and org-todo-log-states to nil around
+ * marking an archived entry done.
+ */
+export function withTheseTodoStates<T>(): (f: () => T) => T {
+  const sets = todoSets().map((s) => [s.todo, s.done, s.keys.map(([k, c]) => [k, c ?? null]), []]);
+  return (f) => e8.letBind({ "org--todo-sets": sets as e8.Value }, f);
+}
+
 function storeTodoSets(): void {
   e8.setVariable("org--todo-sets", readTodoSets().map((s) => [s.todo, s.done, s.keys.map(([k, c]) => [k, c ?? null]), s.logs.map(([k, a, b]) => [k, a ?? null, b ?? null])]));
 }
@@ -9186,6 +9197,18 @@ function comparison(op: string, kind: "number" | "string" | "time"): (a: never, 
     "<": (a, b) => a < b, ">": (a, b) => a > b, "<=": (a, b) => a <= b, ">=": (a, b) => a >= b, "=": (a, b) => a === b, "<>": (a, b) => a !== b,
   };
   return ops[name] as never;
+}
+
+/**
+ * A level changed by CHANGE levels, odd with org-odd-levels-only, where a
+ * level is two stars, as org-get-valid-level gives it: an even level with
+ * no change becomes the next odd one.
+ */
+export function validLevel(level: number, change?: number): number {
+  if (e8.variable("org-odd-levels-only") !== true) return Math.max(1, level + (change ?? 0));
+  if (!change) return 1 + 2 * Math.floor(level / 2);
+  if (change > 0) return 1 + 2 * Math.floor((level - 1 + 2 * change) / 2);
+  return Math.max(1, 1 + 2 * Math.floor((level + 2 * change) / 2));
 }
 
 /** A heading's level counting only odd ones with org-odd-levels-only, as org-reduced-level. */
