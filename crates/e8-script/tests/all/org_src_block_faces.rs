@@ -26,7 +26,7 @@ fn face_at(ed: &Editor, needle: &str) -> String {
             other => format!("{other:?}"),
         }
     }
-    b.text_property(at, "face").map(|v| json(&v)).unwrap_or_default()
+    b.text_property(at, "face").map(json).unwrap_or_default()
 }
 
 /// A language's face goes after the mode's faces and before org-block,
