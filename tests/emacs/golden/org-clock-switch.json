@@ -1,0 +1,181 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "clock-in-switches-state-and-logs",
+      "input": {
+        "text": "#+TODO: TODO(t) NEXT(n!) | DONE(d!)\n* TODO Task\n",
+        "point": 0,
+        "keys": "C-n C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "globals": {
+          "org-clock-in-switch-to-state": "NEXT",
+          "org-log-into-drawer": true
+        }
+      },
+      "text": "#+TODO: TODO(t) NEXT(n!) | DONE(d!)\n* NEXT Task\n:LOGBOOK:\n- State \"NEXT\"       from \"TODO\"       [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "#+TODO: TODO(t) NEXT(n!) | DONE(d!)\n* NEXT Task\n:LOGBOOK:\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-in-switch-state-already",
+      "input": {
+        "text": "* NEXT Task\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "globals": {
+          "org-clock-in-switch-to-state": "next"
+        }
+      },
+      "text": "* NEXT Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n",
+      "visible": "* NEXT Task\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-out-asks-state",
+      "input": {
+        "text": "* TODO Task\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-u C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "DONE"
+        ]
+      },
+      "text": "* DONE Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "* DONE Task\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-out-switch-state",
+      "input": {
+        "text": "* TODO Task\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "globals": {
+          "org-clock-out-switch-to-state": "DONE"
+        }
+      },
+      "text": "* DONE Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "* DONE Task\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-in-last-empty-state",
+      "input": {
+        "text": "* TODO Task\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o C-u C-u C-u C-c C-x C-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          ""
+        ]
+      },
+      "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "* Task\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clock-in-last-no-clock",
+      "input": {
+        "text": "* TODO Task\n",
+        "point": 0,
+        "keys": "C-c C-x C-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* TODO Task\n",
+      "visible": "* TODO Task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No last clock"
+    },
+    {
+      "name": "clock-in-last-clocking-back",
+      "input": {
+        "text": "* TODO Task\n* Other\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o C-n C-c C-x C-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-clock-back.org",
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* TODO Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* Other\n",
+      "visible": "* TODO Task\n:LOGBOOK:\n* Other\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clocking back: Task (in *e8-oracle*)"
+    }
+  ]
+}

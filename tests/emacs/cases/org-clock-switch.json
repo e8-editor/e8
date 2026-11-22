@@ -1,0 +1,91 @@
+[
+  {
+    "name": "clock-in-switches-state-and-logs",
+    "text": "#+TODO: TODO(t) NEXT(n!) | DONE(d!)\n* TODO Task\n",
+    "keys": "C-n C-c C-x C-i",
+    "globals": {
+      "org-clock-in-switch-to-state": "NEXT",
+      "org-log-into-drawer": true
+    },
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-in-switch-state-already",
+    "text": "* NEXT Task\n",
+    "keys": "C-c C-x C-i",
+    "globals": {
+      "org-clock-in-switch-to-state": "next"
+    },
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-out-asks-state",
+    "text": "* TODO Task\n",
+    "keys": "C-c C-x C-i C-u C-c C-x C-o",
+    "answers": [
+      "DONE"
+    ],
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-out-switch-state",
+    "text": "* TODO Task\n",
+    "keys": "C-c C-x C-i C-c C-x C-o",
+    "globals": {
+      "org-clock-out-switch-to-state": "DONE"
+    },
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-in-last-empty-state",
+    "text": "* TODO Task\n",
+    "keys": "C-c C-x C-i C-c C-x C-o C-u C-u C-u C-c C-x C-x",
+    "answers": [
+      ""
+    ],
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-in-last-no-clock",
+    "text": "* TODO Task\n",
+    "keys": "C-c C-x C-x",
+    "message": true,
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "clock-in-last-clocking-back",
+    "text": "* TODO Task\n* Other\n",
+    "keys": "C-c C-x C-i C-c C-x C-o C-n C-c C-x C-x",
+    "message": true,
+    "visit": "e8-clock-back.org",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  }
+]

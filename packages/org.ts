@@ -9420,7 +9420,7 @@ function allTagsOf(all: Heading[]): string[][] {
 }
 
 /** Whether a property is inherited, as org-property-inherit-p. */
-function propertyInheritP(property: string): boolean {
+export function propertyInheritP(property: string): boolean {
   const use = e8.variable("org-use-property-inheritance");
   if (use === true) return true;
   if (!truthy(use)) return false;
