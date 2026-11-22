@@ -1,0 +1,158 @@
+[
+  {
+    "name": "cycle-children-archived-child",
+    "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+    "keys": "TAB",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-subtree-archived-child",
+    "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+    "keys": "TAB TAB",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-folded-again",
+    "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+    "keys": "TAB TAB TAB",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-archived-heading",
+    "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+    "keys": "TAB",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-archived-heading-twice",
+    "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+    "keys": "TAB TAB",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-force-archived",
+    "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+    "keys": "C-c C-<tab>",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-force-archived-twice",
+    "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+    "keys": "C-c C-<tab> C-c C-<tab>",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-open-archived-trees",
+    "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+    "keys": "TAB",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "vars": {
+      "org-cycle-open-archived-trees": true
+    }
+  },
+  {
+    "name": "global-contents-archived",
+    "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+    "keys": "S-<tab> S-<tab>",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "global-all-archived",
+    "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+    "keys": "S-<tab> S-<tab> S-<tab>",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "global-overview-archived",
+    "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+    "keys": "S-<tab>",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "content-level-archived",
+    "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+    "keys": "C-2 S-<tab>",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-archived-lowercase-tag",
+    "text": "#+STARTUP: overview\n* P\n** A :archive:\ntext\n** B\n",
+    "keys": "TAB TAB",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-archived-tag-variable",
+    "text": "#+STARTUP: overview\n* P\n** A :old:\ntext\n** B\n",
+    "keys": "TAB TAB",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true,
+    "vars": {
+      "org-archive-tag": "old"
+    }
+  },
+  {
+    "name": "cycle-unfolded-archived-child",
+    "text": "* P\n** A :ARCHIVE:\ntext\n** B\n",
+    "keys": "TAB TAB",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  }
+]

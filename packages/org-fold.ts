@@ -251,7 +251,8 @@ export function cycleHeading(all: Heading[], i: number, at = i): void {
     if (next && e8.invisibleAt(next.start)) showHeadingLine(next);
   };
   if (eos === eoh) {
-    e8.message("EMPTY ENTRY");
+    e8.runHooks("org-cycle-pre-hook", "empty");
+    e8.message("EMPTY ENTRY", { log: false });
     e8.setVariable("org-cycle-subtree-status", null);
     showFollowing();
     return;
@@ -263,6 +264,7 @@ export function cycleHeading(all: Heading[], i: number, at = i): void {
   const hiddenInOneLine = !shownBlank && (eol >= eos || /^\s*$/.test(e8.bufferText(eol, eos)));
   if (hiddenInOneLine && !hasChildren) skipped = true;
   if (hiddenInOneLine && hasChildren) {
+    e8.runHooks("org-cycle-pre-hook", "children");
     showEntry(all, at);
     showChildren(all, at);
     showHeadingLine(all[at]);
@@ -270,21 +272,23 @@ export function cycleHeading(all: Heading[], i: number, at = i): void {
       showHeadingLine(all[a]);
       showChildren(all, a);
     }
-    e8.message("CHILDREN");
+    e8.message("CHILDREN", { log: false });
     const next = findFrom(all, i + 1, (x) => x.start > eos);
     if (next && next.start < e8.bufferSize() && e8.invisibleAt(next.start)) showHeadingLine(next);
     e8.setVariable("org-cycle-subtree-status", "children");
-    showEmptyLines("children");
+    e8.runHooks("org-cycle-hook", "children");
   } else if (skipped || (again && status === "children")) {
+    e8.runHooks("org-cycle-pre-hook", "subtree");
     flag(eoh, eos, false);
-    e8.message(skipped ? "SUBTREE (NO CHILDREN)" : "SUBTREE");
+    e8.message(skipped ? "SUBTREE (NO CHILDREN)" : "SUBTREE", { log: false });
     e8.setVariable("org-cycle-subtree-status", "subtree");
-    showEmptyLines("subtree");
+    e8.runHooks("org-cycle-hook", "subtree");
   } else {
+    e8.runHooks("org-cycle-pre-hook", "folded");
     flag(eoh, eos, true);
-    e8.message("FOLDED");
+    e8.message("FOLDED", { log: false });
     e8.setVariable("org-cycle-subtree-status", "folded");
-    showEmptyLines("folded");
+    e8.runHooks("org-cycle-hook", "folded");
   }
 }
 
@@ -337,21 +341,24 @@ export function globalCycle(): void {
   const again = e8.lastCommand() === e8.thisCommand();
   const status = e8.variable("org-cycle-global-status");
   if (again && status === "overview") {
+    e8.runHooks("org-cycle-pre-hook", "contents");
     contents();
-    e8.message("CONTENTS...done");
+    e8.message("CONTENTS...done", { log: false });
     e8.setVariable("org-cycle-global-status", "contents");
-    showEmptyLines("contents");
+    e8.runHooks("org-cycle-hook", "contents");
   } else if (again && status === "contents") {
+    e8.runHooks("org-cycle-pre-hook", "all");
     flag(0, e8.bufferSize(), false);
     flag(0, e8.bufferSize(), false, "org-hide-block");
-    e8.message("SHOW ALL");
+    e8.message("SHOW ALL", { log: false });
     e8.setVariable("org-cycle-global-status", "all");
-    showEmptyLines("all");
+    e8.runHooks("org-cycle-hook", "all");
   } else {
+    e8.runHooks("org-cycle-pre-hook", "overview");
     overview();
-    e8.message("OVERVIEW");
+    e8.message("OVERVIEW", { log: false });
     e8.setVariable("org-cycle-global-status", "overview");
-    showEmptyLines("overview");
+    e8.runHooks("org-cycle-hook", "overview");
   }
 }
 

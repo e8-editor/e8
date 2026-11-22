@@ -1,0 +1,357 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "cycle-children-archived-child",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+      "visible": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\n** B",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cycle-subtree-archived-child",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+        "point": 20,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+      "visible": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\n** B\nbody\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cycle-folded-again",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+        "point": 20,
+        "keys": "TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+      "visible": "#+STARTUP: overview\n* P",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cycle-archived-heading",
+      "input": {
+        "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+      "visible": "#+STARTUP: overview\n* A :ARCHIVE:\n* B\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Subtree is archived and stays closed.  Use ‘C-c C-<tab>’ to cycle it anyway."
+    },
+    {
+      "name": "cycle-archived-heading-twice",
+      "input": {
+        "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+        "point": 20,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+      "visible": "#+STARTUP: overview\n* A :ARCHIVE:\n* B\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Subtree is archived and stays closed.  Use ‘C-c C-<tab>’ to cycle it anyway. [2 times]"
+    },
+    {
+      "name": "cycle-force-archived",
+      "input": {
+        "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+        "point": 20,
+        "keys": "C-c C-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+      "visible": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cycle-force-archived-twice",
+      "input": {
+        "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+        "point": 20,
+        "keys": "C-c C-<tab> C-c C-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+      "visible": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cycle-open-archived-trees",
+      "input": {
+        "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-cycle-open-archived-trees": true
+        }
+      },
+      "text": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+      "visible": "#+STARTUP: overview\n* A :ARCHIVE:\ntext\n** child\n* B\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "global-contents-archived",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+        "point": 20,
+        "keys": "S-<tab> S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+      "visible": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\n** B",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "global-all-archived",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+        "point": 20,
+        "keys": "S-<tab> S-<tab> S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+      "visible": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\n** B\nbody\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "global-overview-archived",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+        "point": 20,
+        "keys": "S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+      "visible": "#+STARTUP: overview\n* P",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "content-level-archived",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+        "point": 20,
+        "keys": "C-2 S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\nbody\n",
+      "visible": "#+STARTUP: overview\n* P\n** A :ARCHIVE:\n** B",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Content view to level: 2"
+    },
+    {
+      "name": "cycle-archived-lowercase-tag",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :archive:\ntext\n** B\n",
+        "point": 20,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :archive:\ntext\n** B\n",
+      "visible": "#+STARTUP: overview\n* P\n** A :archive:\ntext\n** B\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cycle-archived-tag-variable",
+      "input": {
+        "text": "#+STARTUP: overview\n* P\n** A :old:\ntext\n** B\n",
+        "point": 20,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-archive-tag": "old"
+        }
+      },
+      "text": "#+STARTUP: overview\n* P\n** A :old:\ntext\n** B\n",
+      "visible": "#+STARTUP: overview\n* P\n** A :old:\n** B\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "cycle-unfolded-archived-child",
+      "input": {
+        "text": "* P\n** A :ARCHIVE:\ntext\n** B\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* P\n** A :ARCHIVE:\ntext\n** B\n",
+      "visible": "* P\n** A :ARCHIVE:\n** B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    }
+  ]
+}
