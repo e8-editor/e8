@@ -263,6 +263,8 @@ pub fn send_key(key: &str, ctrl: bool, meta: bool) {
         KeyCode::Char(c) if (ctrl || meta) && c.is_ascii_uppercase() => Key { code: KeyCode::Char(c.to_ascii_lowercase()), ctrl, meta, shift: true },
         code => Key { code, ctrl, meta, shift: false },
     };
+    // ctrl+m and ctrl+i are RET and TAB, as Emacs reads them.
+    let key = key.canonical();
     KEYS.with_borrow_mut(|keys| keys.push(key));
     repaint();
 }

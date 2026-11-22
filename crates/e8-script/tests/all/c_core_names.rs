@@ -55,6 +55,11 @@ fn characters_strings_and_keys_as_emacs_has_them() {
         r("return [e8.keyDescription([24, 6]), e8.keyDescription([134217848]), e8.keyDescription([97], [3]), e8.singleKeyDescription(24), e8.singleKeyDescription(Symbol.for('f1')), e8.singleKeyDescription(Symbol.for('f1'), true)];"),
         r#"["C-x C-f","M-x","C-c a","C-x","<f1>","f1"]"#
     );
+    // As Emacs: ("C-c C-x RET" "C-c TAB" "C-M-i" "C-M-i" "RET" "M-RET").
+    assert_eq!(
+        r("return [e8.keyDescription('C-c C-x C-m'), e8.keyDescription('C-c C-i'), e8.keyDescription('M-TAB'), e8.keyDescription([134217737]), e8.singleKeyDescription(13), e8.keyDescription('C-M-m')];"),
+        r#"["C-c C-x RET","C-c TAB","C-M-i","C-M-i","RET","M-RET"]"#
+    );
     assert_eq!(r("return [e8.charEqual(97, 65), e8.letBind({ 'case-fold-search': null }, () => e8.charEqual(97, 65))];"), "[true,false]");
     assert_eq!(r("return [e8.ngettext('file', 'files', 1), e8.ngettext('file', 'files', 2)];"), r#"["file","files"]"#);
     assert_eq!(r(r#"return [e8.assocString("B", [["a", 1], ["b", 2]], true), e8.assocString("B", [["a", 1], ["b", 2]]) ?? null];"#), r#"[["b",2],null]"#);

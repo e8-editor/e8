@@ -1,0 +1,108 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "c-m-is-ret",
+      "input": {
+        "text": "onetwo",
+        "point": 3,
+        "keys": "C-m",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "one\ntwo",
+      "visible": "one\ntwo",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-i-is-tab",
+      "input": {
+        "text": "a\n",
+        "point": 2,
+        "keys": "C-i x",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "a\n\tx",
+      "visible": "a\n\tx",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-bracket-is-esc-a-prefix-for-meta",
+      "input": {
+        "text": "abc def",
+        "point": 7,
+        "keys": "C-[ < C-[ f",
+        "modes": [],
+        "call": [],
+        "platform": null
+      },
+      "text": "abc def",
+      "visible": "abc def",
+      "point": 3,
+      "mark": 7,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "c-m-m-is-m-ret",
+      "input": {
+        "text": "* one",
+        "point": 5,
+        "keys": "C-M-m t w o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* one\n* two",
+      "visible": "* one\n* two",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-c-c-x-tab-is-c-c-c-x-c-i",
+      "input": {
+        "text": "* Task\n",
+        "point": 0,
+        "keys": "C-c C-x TAB C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "* Task\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock stopped at [2026-11-21 Sat 12:00] after 0:00"
+    }
+  ]
+}

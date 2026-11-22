@@ -10,6 +10,7 @@ mod editing;
 mod faces;
 mod fonts;
 mod images;
+mod keys;
 mod margins_and_fringes;
 mod modeline;
 mod quit;

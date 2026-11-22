@@ -84,7 +84,9 @@ fn key_event(key: EguiKey, modifiers: Modifiers) -> Option<Key> {
             }
         }
     };
-    Some(Key { code, ctrl, meta, shift })
+    // ctrl+m, ctrl+i and ctrl+[ are RET, TAB and ESC, as Emacs's GUI
+    // makes Control on a letter the ASCII control character.
+    Some(Key { code, ctrl, meta, shift }.canonical())
 }
 
 fn special(key: EguiKey) -> Option<KeyCode> {
@@ -197,6 +199,21 @@ mod tests {
         assert_eq!(keys(&[press(EguiKey::Enter, Modifiers::NONE)], true), "RET");
         assert_eq!(keys(&[press(EguiKey::Backspace, ALT)], true), "M-DEL");
         assert_eq!(keys(&[press(EguiKey::F3, Modifiers::NONE)], true), "<f3>");
+    }
+
+    #[test]
+    fn control_on_m_i_and_bracket_is_ret_tab_and_esc() {
+        // As in Emacs's GUI, Control on a letter is its ASCII control
+        // character: ctrl+m is RET and ctrl+i is TAB, as the keys are.
+        assert_eq!(keys(&[press(EguiKey::M, CTRL)], true), "RET");
+        assert_eq!(keys(&[press(EguiKey::I, CTRL)], true), "TAB");
+        assert_eq!(keys(&[press(EguiKey::OpenBracket, CTRL)], true), "ESC");
+        let ctrl_alt = Modifiers { ctrl: true, alt: true, ..Default::default() };
+        assert_eq!(keys(&[press(EguiKey::M, ctrl_alt)], true), "M-RET");
+        assert_eq!(keys(&[press(EguiKey::I, ctrl_alt)], true), "C-M-i");
+        let ctrl_shift = Modifiers { ctrl: true, shift: true, ..Default::default() };
+        assert_eq!(keys(&[press(EguiKey::M, ctrl_shift)], true), "S-RET");
+        assert_eq!(keys(&[press(EguiKey::Tab, Modifiers::NONE)], true), "TAB");
     }
 
     #[test]

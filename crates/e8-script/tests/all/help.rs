@@ -64,6 +64,18 @@ fn a_function_that_is_not_a_command_and_an_undefined_key() {
 }
 
 #[test]
+fn c_m_and_c_i_are_described_as_ret_and_tab() {
+    // As Emacs: C-m is RET and C-M-i is ESC TAB, which it writes C-M-i.
+    let (mut ed, _s) = setup();
+    ed.press("C-h c C-m").unwrap();
+    assert_eq!(ed.echo(), Some("RET runs the command newline"));
+    ed.press("C-h c C-i").unwrap();
+    assert_eq!(ed.echo(), Some("TAB runs the command indent-for-tab-command"));
+    ed.press("C-h k M-TAB").unwrap();
+    assert!(help(&ed).starts_with("C-M-i runs the command completion-at-point."), "{}", help(&ed));
+}
+
+#[test]
 fn describe_key_briefly_and_where_is() {
     let (mut ed, _s) = setup();
     ed.press("C-h c C-x C-f").unwrap();
