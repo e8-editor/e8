@@ -714,7 +714,7 @@ let nowebDepth = 0;
 
 export function expandNowebReferences(block: Block): string {
   // A block that names itself, as Lisp's recursion runs out.
-  if (nowebDepth > 200) e8.signal("excessive-lisp-nesting", "Lisp nesting exceeds \u2018max-lisp-eval-depth\u2019");
+  if (nowebDepth > 40) e8.signal("excessive-lisp-nesting", "Lisp nesting exceeds \u2018max-lisp-eval-depth\u2019");
   nowebDepth++;
   try {
     return expandNowebReferences_(block);
