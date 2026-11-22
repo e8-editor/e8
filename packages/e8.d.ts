@@ -6903,9 +6903,13 @@ declare global {
       /**
        * Turn the line, or the lines of the region, into list items; headings into items, their text into the items' text; or items back into plain lines.
        *
+       * With a prefix argument, make only the first line of the region an item, the other lines its text.
+       *
+       * @param arg raw prefix argument
+       *
        * Defined in packages/org.ts.
        */
-      "org-toggle-item": [];
+      "org-toggle-item": [arg?: PrefixArg | boolean];
       /**
        * Narrow to the current subtree, or widen if the buffer is narrowed.
        *
