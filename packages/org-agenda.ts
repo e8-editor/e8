@@ -21,7 +21,11 @@ import {
   makeTagsMatcher,
   notDoneRegexp,
   reducedLevel,
+  type PriorityAction,
+  getPriority,
   scanTags,
+  setPriority,
+  showPriority,
   subtreeRegion,
   today,
 } from "org";
@@ -146,10 +150,9 @@ function occursOn(ts: { day: number; repeat?: [number, string] }, day: number): 
   return unit === "m" ? months % n === 0 : a.month === b.month && (b.year - a.year) % n === 0;
 }
 
-/** A heading's priority as org-get-priority gives it: 1000 for the default B, more for A. */
+/** A heading's priority as org-get-priority gives it, as Org's agenda ranks its lines by. */
 function priorityValue(h: Heading): number {
-  const p = h.priority ?? "B";
-  return 1000 * ("C".charCodeAt(0) - p.charCodeAt(0));
+  return getPriority(e8.lineText(h.line));
 }
 
 /**
@@ -1397,14 +1400,13 @@ function redrawEntry(item: AgendaItem): void {
  * the agenda's commands do with org-agenda-with-point-at, then writes the
  * entry's lines again, its heading changed.
  */
-function atEntry(command: e8.CommandName, interactive = true, args: e8.Value[] = []): void {
+function atEntry(command: e8.CommandName, interactive = true): void {
   const item = agendaItemHere();
   e8.withCurrentBuffer(item.buffer, () => {
     e8.saveExcursion(() => widened(() => {
       e8.gotoChar(headingOf(item));
       if (interactive) e8.callInteractively(command);
-      // As (funcall command args...), not checked against the command's own parameters.
-      else (e8.call as (name: string, ...rest: e8.Value[]) => void)(command, ...args);
+      else e8.call(command);
     }));
   });
   redrawEntry(item);
@@ -1417,16 +1419,39 @@ for (const [name, command, doc] of [
   e8.defineCommand({ name, doc, run: () => atEntry(command as e8.CommandName) });
 }
 
+/**
+ * Changes the priority of the entry the line at point shows, as
+ * org-agenda-priority: in the entry's buffer, as org-priority does there,
+ * or with C-u saying it, then writes the entry's lines again.
+ */
+function agendaPriority(action: PriorityAction | "show" | "invalid"): void {
+  if (!truthy(e8.variable("org-priority-enable-commands") ?? true)) e8.userError("Priority commands are disabled");
+  const item = agendaItemHere();
+  e8.withCurrentBuffer(item.buffer, () => {
+    e8.saveExcursion(() => widened(() => {
+      e8.gotoChar(headingOf(item));
+      if (action === "show") showPriority();
+      else if (action === "invalid") e8.userError("Invalid action");
+      else setPriority(action);
+    }));
+  });
+  redrawEntry(item);
+}
+
 e8.defineCommand({
   name: "org-agenda-priority",
-  doc: "Set the priority of the entry the agenda line at point shows, or remove it with SPC.",
-  run: () => {
-    agendaItemHere();
-    // Asked here, as org-priority asks in the entry's buffer: a command's own prompt would be answered after it has left there.
-    const answer = e8.readString("Priority A-C, SPC to remove: ");
-    atEntry("org-priority", false, [answer]);
+  doc: "Set the priority of the entry the agenda line at point shows, to the key typed, or remove it with SPC. With C-u, say its priority.",
+  params: [{ name: "force", kind: "prefix" }],
+  run: (force: e8.PrefixArg) => {
+    if (Array.isArray(force) && force[0] === 4) agendaPriority("show");
+    else if (typeof force === "number") agendaPriority(force);
+    else if (force === null || force === undefined) agendaPriority("set");
+    // C-u C-u or -, which org-priority takes as no action, after the agenda's checks.
+    else agendaPriority("invalid");
   },
 });
+e8.defineCommand({ name: "org-agenda-priority-up", doc: "Raise the priority of the entry the agenda line at point shows.", run: () => agendaPriority("up") });
+e8.defineCommand({ name: "org-agenda-priority-down", doc: "Lower the priority of the entry the agenda line at point shows.", run: () => agendaPriority("down") });
 e8.defineCommand({ name: "org-agenda-clock-out", doc: "Stop the running clock, from the agenda.", run: () => e8.call("org-clock-out") });
 e8.defineCommand({ name: "org-agenda-clock-cancel", doc: "Cancel the running clock, from the agenda.", run: () => e8.call("org-clock-cancel") });
 e8.defineCommand({ name: "org-agenda-clock-goto", doc: "Go to the entry with the running clock, from the agenda.", run: () => e8.call("org-clock-goto") });
@@ -1702,13 +1727,20 @@ e8.defineCommand({
   run: () => atEntry("org-toggle-archive-tag"),
 });
 
-// Org's keys of more than one key, as org-agenda.el binds them.
+// More of Org's keys, as org-agenda.el binds them.
 for (const [key, command] of [
   ["C-c C-x C-a", "org-agenda-archive-default"],
   ["C-c C-x a", "org-agenda-toggle-archive-tag"],
   ["C-c C-x A", "org-agenda-archive-to-archive-sibling"],
   ["C-c C-x C-s", "org-agenda-archive"],
   ["C-c $", "org-agenda-archive"],
+  ["C-c ,", "org-agenda-priority"],
+  ["+", "org-agenda-priority-up"],
+  ["-", "org-agenda-priority-down"],
+  ["S-<up>", "org-agenda-priority-up"],
+  ["S-<down>", "org-agenda-priority-down"],
+  ["C-c C-x <up>", "org-agenda-priority-up"],
+  ["C-c C-x <down>", "org-agenda-priority-down"],
 ] as const) e8.defineKey("org-agenda-mode-map", key, command);
 
 /** Toggles archives mode, as org-agenda-archives-mode: archived trees in and out, or with WITH-FILES the archive files too. */
