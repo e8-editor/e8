@@ -542,5 +542,199 @@
   "agenda_files": true,
   "windows": true,
   "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-ranks-numeric-priorities",
+  "text": "* TODO R\n* TODO [#5] Q\n* TODO [#1] P\n",
+  "keys": "",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-priority-highest": 1,
+   "org-priority-lowest": 5,
+   "org-priority-default": 3
+  },
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-ranks-by-the-default",
+  "text": "* TODO P\n* TODO [#B] Q\n",
+  "keys": "",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-priority-default": 67
+  },
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-ranks-a-cookie-in-the-title",
+  "text": "* TODO [#B] Q\n* TODO Foo [#A] P\n",
+  "keys": "",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-c-u-c-u-is-no-action",
+  "text": "* TODO P\n",
+  "keys": "n n C-u C-u ,",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-c-u-is-no-action",
+  "text": "* TODO B\n",
+  "keys": "C-u C-u C-c ,",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "minus-is-no-action",
+  "text": "* TODO B\n",
+  "keys": "M-- C-c ,",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "a-control-key-is-out-of-range",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "\u0001"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "sharp-s-is-not-a-capital",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "ß"
+  ],
+  "globals": {
+   "org-priority-lowest": 90
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "dotless-i-is-not-a-capital",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "ı"
+  ],
+  "globals": {
+   "org-priority-lowest": 90
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "a-large-number-is-out-of-range",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "2000000"
+  ],
+  "globals": {
+   "org-priority-highest": 1,
+   "org-priority-lowest": 20,
+   "org-priority-default": 3
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "show-on-stars-alone",
+  "text": "text\n*\n",
+  "keys": "C-u C-c ,",
+  "point": 5,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "show-with-no-such-function",
+  "text": "* TODO [#A] B\n",
+  "keys": "C-u C-c ,",
+  "point": 2,
+  "message": true,
+  "globals": {
+   "org-priority-get-priority-function": "'no-such-function-xyz"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "out-of-range-leaves-the-prompt-said",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "Z"
+  ],
+  "message": true
  }
 ]

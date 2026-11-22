@@ -22,6 +22,7 @@ import {
   notDoneRegexp,
   reducedLevel,
   type PriorityAction,
+  getPriority,
   scanTags,
   setPriority,
   showPriority,
@@ -149,10 +150,9 @@ function occursOn(ts: { day: number; repeat?: [number, string] }, day: number): 
   return unit === "m" ? months % n === 0 : a.month === b.month && (b.year - a.year) % n === 0;
 }
 
-/** A heading's priority as org-get-priority gives it: 1000 for the default B, more for A. */
+/** A heading's priority as org-get-priority gives it, as Org's agenda ranks its lines by. */
 function priorityValue(h: Heading): number {
-  const p = h.priority ?? "B";
-  return 1000 * ("C".charCodeAt(0) - p.charCodeAt(0));
+  return getPriority(e8.lineText(h.line));
 }
 
 /**
@@ -1424,13 +1424,14 @@ for (const [name, command, doc] of [
  * org-agenda-priority: in the entry's buffer, as org-priority does there,
  * or with C-u saying it, then writes the entry's lines again.
  */
-function agendaPriority(action: PriorityAction | "show"): void {
+function agendaPriority(action: PriorityAction | "show" | "invalid"): void {
   if (!truthy(e8.variable("org-priority-enable-commands") ?? true)) e8.userError("Priority commands are disabled");
   const item = agendaItemHere();
   e8.withCurrentBuffer(item.buffer, () => {
     e8.saveExcursion(() => widened(() => {
       e8.gotoChar(headingOf(item));
       if (action === "show") showPriority();
+      else if (action === "invalid") e8.userError("Invalid action");
       else setPriority(action);
     }));
   });
@@ -1441,7 +1442,13 @@ e8.defineCommand({
   name: "org-agenda-priority",
   doc: "Set the priority of the entry the agenda line at point shows, to the key typed, or remove it with SPC. With C-u, say its priority.",
   params: [{ name: "force", kind: "prefix" }],
-  run: (force: e8.PrefixArg) => agendaPriority(Array.isArray(force) && force[0] === 4 ? "show" : typeof force === "number" ? force : "set"),
+  run: (force: e8.PrefixArg) => {
+    if (Array.isArray(force) && force[0] === 4) agendaPriority("show");
+    else if (typeof force === "number") agendaPriority(force);
+    else if (force === null || force === undefined) agendaPriority("set");
+    // C-u C-u or -, which org-priority takes as no action, after the agenda's checks.
+    else agendaPriority("invalid");
+  },
 });
 e8.defineCommand({ name: "org-agenda-priority-up", doc: "Raise the priority of the entry the agenda line at point shows.", run: () => agendaPriority("up") });
 e8.defineCommand({ name: "org-agenda-priority-down", doc: "Lower the priority of the entry the agenda line at point shows.", run: () => agendaPriority("down") });

@@ -5117,21 +5117,36 @@ const PRIORITY_COOKIE = /^.*?(\[#([A-Za-z0-9]+)\] ?)/;
 /** A heading's priority as a number, as org-get-priority gives it: a thousand for each step below the lowest. */
 export function getPriority(s: string): number {
   const fn = e8.variable("org-priority-get-priority-function");
-  if (fn !== null && fn !== undefined && fn !== false) return Number(e8.funcall(fn as string | ((...args: e8.Value[]) => e8.Value), s));
+  // Only a function, as Org checks functionp, the cookie read otherwise.
+  if (typeof fn === "function" || (typeof fn === "string" && fn !== "" && e8.fboundp(fn))) {
+    return Number(e8.funcall(fn as string | ((...args: e8.Value[]) => e8.Value), s));
+  }
   const lowest = priorityOption("org-priority-lowest", "C");
   const m = PRIORITY_COOKIE.exec(s);
   return 1000 * (lowest - (m ? priorityToValue(m[2]) : priorityOption("org-priority-default", "B")));
 }
 
-/** A key read by read-char-exclusive, as the character it stands for. */
+/** A key read by read-char-exclusive, as the character it stands for: a control character for C-a and the like. */
 function keyChar(key: string): number {
   const named: Record<string, number> = { SPC: 32, RET: 13, TAB: 9, ESC: 27, DEL: 127 };
   if (named[key] !== undefined) return named[key];
+  const control = /^C-([a-z@[\\\]^_])$/.exec(key);
+  if (control) return control[1].toUpperCase().charCodeAt(0) & 31;
   return [...key].length === 1 ? key.codePointAt(0)! : -1;
 }
 
-/** As Emacs's upcase of a character. */
-const upcase = (c: number): number => String.fromCodePoint(c).toUpperCase().codePointAt(0) ?? c;
+/**
+ * As Emacs's upcase of a character: its one-character capital, ß as ẞ,
+ * and itself where Emacs has none, as dotless ı, or for what is no
+ * character.
+ */
+function upcase(c: number): number {
+  if (!Number.isInteger(c) || c < 0 || c > 0x10ffff) return c;
+  if (c === 0xdf) return 0x1e9e;
+  if (c === 0x131) return c;
+  const upper = [...String.fromCodePoint(c).toUpperCase()];
+  return upper.length === 1 ? upper[0].codePointAt(0)! : c;
+}
 
 /** The action org-priority takes: set, asking for it, up, down, remove, or a priority's character. */
 export type PriorityAction = "set" | "up" | "down" | "remove" | number;
@@ -5161,9 +5176,19 @@ export function setPriority(action: PriorityAction = "set"): void {
     if (typeof action === "number") next = action;
     else if (nump) {
       const prompt = `Priority ${highest}-${lowest}, SPC to remove: `;
-      const s = lowest > 9 ? e8.readString(prompt) : String.fromCodePoint(Math.max(keyChar(e8.readCharExclusive(prompt)), 0));
+      let s: string;
+      if (lowest > 9) s = e8.readString(prompt);
+      else {
+        // Said, then a key read, as Org's message and read-char-exclusive.
+        e8.message(prompt);
+        const c = keyChar(e8.readCharExclusive());
+        s = c < 0 ? "" : String.fromCodePoint(c);
+      }
       next = s === " " ? 32 : Number.parseInt(s, 10) || 0;
-    } else next = keyChar(e8.readCharExclusive(`Priority ${String.fromCodePoint(highest)}-${String.fromCodePoint(lowest)}, SPC to remove: `));
+    } else {
+      e8.message(`Priority ${String.fromCodePoint(highest)}-${String.fromCodePoint(lowest)}, SPC to remove: `);
+      next = keyChar(e8.readCharExclusive());
+    }
     if (upcase(highest) === highest && upcase(lowest) === lowest) next = upcase(next);
     if (next === 32) remove = true;
     else if (upcase(next) < highest || upcase(next) > lowest) {
@@ -5184,7 +5209,7 @@ export function setPriority(action: PriorityAction = "set"): void {
     remove = true;
   }
   // A character past 64, else a number, as Org writes it.
-  const news = next > 64 ? String.fromCodePoint(next) : String(next);
+  const news = next > 64 && next <= 0x10ffff ? String.fromCodePoint(next) : String(next);
   const p = marker(e8.point());
   try {
     if (cookie) {
@@ -5210,7 +5235,8 @@ export function setPriority(action: PriorityAction = "set"): void {
 /** Says the priority of the heading on point's line, as org-priority-show: -1000 off a heading. */
 export function showPriority(): number {
   const text = e8.lineText(lineAt());
-  const pri = /^\*+ /.test(text) ? getPriority(text) : -1000;
+  // On a heading, stars alone too, as org-heading-regexp matches it.
+  const pri = /^\*+(?:[ \t].*)?$/.test(text) ? getPriority(text) : -1000;
   e8.message(`Priority is ${pri}`);
   return pri;
 }
@@ -5235,8 +5261,10 @@ e8.defineCommand({
   params: [{ name: "action", kind: "prefix" }],
   run: (action: e8.PrefixArg) => {
     if (Array.isArray(action) && action[0] === 4) showPriority();
-    // A number from code or a numeric prefix, as Org takes an integer for the character.
-    else setPriority(typeof action === "number" ? action : "set");
+    // A number from code or a numeric prefix, as Org takes an integer for the character; C-u C-u or - is no action.
+    else if (typeof action === "number") setPriority(action);
+    else if (action === null || action === undefined) setPriority("set");
+    else e8.userError("Invalid action");
   },
 });
 
@@ -7311,8 +7339,9 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
             return m ? timestampSeconds(m[1]) : now;
           }
           case "p": {
+            // The cookie's first character, or the default as a number, as org-sort-entries has them.
             const m = /\[#([A-Z0-9]+)\]/.exec(e8.lineText(r.h.line));
-            return (m ? m[1] : String(e8.variable("org-priority-default") ?? "B")).codePointAt(0)!;
+            return m ? m[1].codePointAt(0)! : priorityOption("org-priority-default", "B");
           }
           case "r":
             return entryGet(r.h.line, property!) ?? "";
@@ -9557,7 +9586,8 @@ function specialProperty(ctx: MatchContext, name: string): string | undefined {
     case "PRIORITY": {
       // The first cookie on the line, of any case, as org-priority-regexp finds it from the heading's start.
       const m = /^.*?\[#([A-Z0-9]+)\]/i.exec(e8.lineText(h.line));
-      return m?.[1] ?? String(e8.variable("org-priority-default") ?? "B");
+      // The default as a character, as char-to-string makes it.
+      return m?.[1] ?? String.fromCodePoint(priorityOption("org-priority-default", "B"));
     }
     case "FILE":
       return e8.bufferFileName() ?? undefined;

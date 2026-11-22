@@ -1147,6 +1147,419 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "agenda-ranks-numeric-priorities",
+      "input": {
+        "text": "* TODO R\n* TODO [#5] Q\n* TODO [#1] P\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-priority.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-priority-highest": 1,
+          "org-priority-lowest": 5,
+          "org-priority-default": 3
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-priority:TODO [#1] P\n  e8-priority:TODO R\n  e8-priority:TODO [#5] Q\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-priority:TODO [#1] P\n  e8-priority:TODO R\n  e8-priority:TODO [#5] Q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "agenda-ranks-by-the-default",
+      "input": {
+        "text": "* TODO P\n* TODO [#B] Q\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-priority.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-priority-default": 67
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-priority:TODO [#B] Q\n  e8-priority:TODO P\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-priority:TODO [#B] Q\n  e8-priority:TODO P\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "agenda-ranks-a-cookie-in-the-title",
+      "input": {
+        "text": "* TODO [#B] Q\n* TODO Foo [#A] P\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-priority.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-priority:TODO Foo [#A] P\n  e8-priority:TODO [#B] Q\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-priority:TODO Foo [#A] P\n  e8-priority:TODO [#B] Q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "agenda-c-u-c-u-is-no-action",
+      "input": {
+        "text": "* TODO P\n",
+        "point": 0,
+        "keys": "n n C-u C-u ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-priority.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-priority:TODO P\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-priority:TODO P\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid action",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "c-u-c-u-is-no-action",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 2,
+        "keys": "C-u C-u C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* TODO B\n",
+      "visible": "* TODO B\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid action"
+    },
+    {
+      "name": "minus-is-no-action",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 2,
+        "keys": "M-- C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* TODO B\n",
+      "visible": "* TODO B\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid action"
+    },
+    {
+      "name": "a-control-key-is-out-of-range",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 2,
+        "keys": "C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "\u0001"
+        ]
+      },
+      "text": "* TODO B\n",
+      "visible": "* TODO B\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Priority must be between ‘A’ and ‘C’"
+    },
+    {
+      "name": "sharp-s-is-not-a-capital",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 2,
+        "keys": "C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "ß"
+        ],
+        "globals": {
+          "org-priority-lowest": 90
+        }
+      },
+      "text": "* TODO B\n",
+      "visible": "* TODO B\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Priority must be between ‘A’ and ‘Z’"
+    },
+    {
+      "name": "dotless-i-is-not-a-capital",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 2,
+        "keys": "C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "ı"
+        ],
+        "globals": {
+          "org-priority-lowest": 90
+        }
+      },
+      "text": "* TODO B\n",
+      "visible": "* TODO B\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Priority must be between ‘A’ and ‘Z’"
+    },
+    {
+      "name": "a-large-number-is-out-of-range",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 2,
+        "keys": "C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "2000000"
+        ],
+        "globals": {
+          "org-priority-highest": 1,
+          "org-priority-lowest": 20,
+          "org-priority-default": 3
+        }
+      },
+      "text": "* TODO B\n",
+      "visible": "* TODO B\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Priority must be between ‘1’ and ‘20’"
+    },
+    {
+      "name": "show-on-stars-alone",
+      "input": {
+        "text": "text\n*\n",
+        "point": 5,
+        "keys": "C-u C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "text\n*\n",
+      "visible": "text\n*\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Priority is 1000"
+    },
+    {
+      "name": "show-with-no-such-function",
+      "input": {
+        "text": "* TODO [#A] B\n",
+        "point": 2,
+        "keys": "C-u C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "globals": {
+          "org-priority-get-priority-function": "'no-such-function-xyz"
+        }
+      },
+      "text": "* TODO [#A] B\n",
+      "visible": "* TODO [#A] B\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Priority is 2000"
+    },
+    {
+      "name": "out-of-range-leaves-the-prompt-said",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 2,
+        "keys": "C-c ,",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "Z"
+        ],
+        "message": true
+      },
+      "text": "* TODO B\n",
+      "visible": "* TODO B\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Priority must be between ‘A’ and ‘C’",
+      "message": "Priority A-C, SPC to remove: "
     }
   ]
 }
