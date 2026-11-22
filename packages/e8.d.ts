@@ -14003,6 +14003,12 @@ declare global {
        */
       "org-fontify-done-headline": Value;
       /**
+       * Whether the text of quote and verse blocks is in the org-quote and org-verse faces; otherwise it is fontified as Org text.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-fontify-quote-and-verse-blocks": Value;
+      /**
        * Whether a block's #+begin and #+end lines take their faces to the line's end, newline and all, so a background with :extend reaches the window's edge.
        *
        * Defined in packages/org.ts.
@@ -14468,6 +14474,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-property-separators": Value;
+      /**
+       * The blocks whose text is not Org syntax, which is fontified as org-block, or natively.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-protecting-blocks": Value;
       /**
        * Dates answered to Org's date prompt, newest first.
        *

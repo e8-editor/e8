@@ -135,7 +135,8 @@ fn text_objects_get_their_faces() {
 
 #[test]
 fn editing_refontifies_what_follows() {
-    let (mut ed, _s) = org("one\ntwo\nthree\n");
+    let (mut ed, _s) = org("one\ntwo\nthree\n#+end_quote\n");
+    ed.set_variable("org-fontify-quote-and-verse-blocks", Value::Bool(true));
     ed.window_buffer_mut().set_point(0);
     ed.press("* SPC").unwrap();
     ed.redisplay();

@@ -73,6 +73,39 @@ fn org_block_lang_faces_without_native_fontification() {
     let (ed, _s) = org("#+begin_export html\n<p>x</p>\n#+end_export\n#+begin_src html\n<b>y</b>\n#+end_src\n#+begin_quote html\nz\n#+end_quote\n", setup);
     assert_eq!(face_at(&ed, "<p>"), r#"["org-block-html","org-block"]"#);
     assert_eq!(face_at(&ed, "<b>"), r#"["org-block-html","org-block"]"#);
-    // A quote block is no protecting block.
-    assert_eq!(face_at(&ed, "z\n"), r#""org-quote""#);
+    // A quote block is no protecting block: its text is Org text, as org-fontify-quote-and-verse-blocks is nil.
+    assert_eq!(face_at(&ed, "z\n"), "");
+}
+
+/// With org-fontify-quote-and-verse-blocks, a quote block's text is in
+/// org-quote, its emphasis fontified too; a block without its end has no
+/// faces, nor does one a heading cuts short past the heading, and only an
+/// #+end_ line of the block's own type ends it.
+#[test]
+fn quote_blocks_ends_and_headings_as_org_finds_them() {
+    let setup = r#"e8.setDefault("org-fontify-quote-and-verse-blocks", true);"#;
+    let (ed, _s) = org("#+begin_quote\nsome *bold*\n#+end_quote\n", setup);
+    assert_eq!(face_at(&ed, "some"), r#""org-quote""#);
+    assert!(face_at(&ed, "bold").contains("org-quote"), "{}", face_at(&ed, "bold"));
+    let (ed, _s) = org("#+begin_src nosuchlang\nx = 1\n", "");
+    assert_eq!(face_at(&ed, "x = 1"), "");
+    assert_eq!(face_at(&ed, "#+begin_src"), "");
+    let (ed, _s) = org("#+begin_src nosuchlang\nx = 1\n* Heading\n#+begin_example\nfoo\n#+end_example\n", "");
+    assert_eq!(face_at(&ed, "x = 1"), r#""org-block""#);
+    assert_eq!(face_at(&ed, "* Heading"), r#""org-level-1""#);
+    assert_eq!(face_at(&ed, "foo"), r#""org-block""#);
+    assert_eq!(face_at(&ed, "#+begin_example"), r#""org-block-begin-line""#);
+    let (ed, _s) = org("#+begin_src nosuchlang\nx = 1\n#+end_quote\ny\n#+end_src\n", "");
+    assert_eq!(face_at(&ed, "#+end_quote"), r#""org-block""#);
+    assert_eq!(face_at(&ed, "y\n"), r#""org-block""#);
+    assert_eq!(face_at(&ed, "#+end_src"), r#""org-block-end-line""#);
+}
+
+/// Without whole delimiter lines, the #+begin_ line's newline takes the
+/// block's faces, as Org fontifies the block from the end of that line.
+#[test]
+fn the_begin_lines_newline_takes_the_blocks_faces() {
+    let setup = r#"e8.setDefault("org-fontify-whole-block-delimiter-line", false); e8.setVariable("org-src-block-faces", [["nosuchlang", "bold"]]);"#;
+    let (ed, _s) = org("#+begin_src nosuchlang\nsome text\n#+end_src\n", setup);
+    assert_eq!(face_at(&ed, "\nsome"), r#"["bold","org-block"]"#);
 }
