@@ -13589,6 +13589,18 @@ declare global {
        */
       "org-clock-goto-may-find-recent-task": Value;
       /**
+       * The running clock's task as the mode line names it.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-heading": Value;
+      /**
+       * A function giving the text the mode line and C-2 C-c C-w name the clocked task by, called at its heading, or nil for its heading.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-heading-function": Value;
+      /**
        * How many recently clocked tasks C-u C-c C-x C-i offers.
        *
        * Defined in packages/org-clock.ts.
