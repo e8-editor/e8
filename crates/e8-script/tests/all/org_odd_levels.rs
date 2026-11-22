@@ -102,3 +102,14 @@ fn capture_outline_paths_find_odd_children() {
     let buffer = ed.buffers().iter().find(|b| b.name == "tasks.org").unwrap();
     assert_eq!(buffer.slice(0..buffer.len()), "* Projects\n*** E8\n***** TODO \n");
 }
+
+/// Imenu's tree counts reduced levels against org-imenu-depth, as
+/// org-imenu-get-tree does: three stars are level 2 with odd levels only.
+#[test]
+fn imenu_counts_odd_levels() {
+    let (mut ed, s, _dir) = odd("* A\n*** B\n***** C\n* D\n** E\n");
+    let tree = s.eval_expression(&mut ed, "JSON.stringify(e8.funcall('org-imenu-get-tree'))").unwrap();
+    assert!(tree.contains(r#"[\"A\",[[\"B\","#), "{tree}");
+    assert!(!tree.contains(r#"\"C\""#), "{tree}");
+    assert!(tree.contains(r#"[\"D\",[[\"E\","#), "{tree}");
+}

@@ -14415,7 +14415,7 @@ declare global {
        */
       "org-occur-highlights": Value;
       /**
-       * Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file. Archiving and date trees follow it; promoting, demoting and making headings do not yet.
+       * Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file.
        *
        * Defined in packages/org.ts.
        */

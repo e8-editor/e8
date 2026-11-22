@@ -74,11 +74,11 @@ function plistGet(variable: string, key: string): e8.Value | undefined {
   return undefined;
 }
 
-/** The stars of a level, 2N-1 with org-odd-levels-only. */
-const starsOfLevel = (n: number): number => (e8.variable("org-odd-levels-only") === true ? 2 * n - 1 : n);
-
-/** Which headings a target spec takes, as org-refile-get-targets turns it into a regexp. */
+/** Which headings a target spec takes, as org-refile-get-targets turns it into a regexp, in the buffer refiled from. */
 function specMatcher(kind: string, value: e8.Value): (h: Heading, text: string) => boolean {
+  // The stars of a level, 2N-1 with org-odd-levels-only as the buffer refiled from has it, as Org makes the regexp there.
+  const odd = e8.variable("org-odd-levels-only") === true;
+  const starsOfLevel = (n: number): number => (odd ? 2 * n - 1 : n);
   switch (kind) {
     // Levels as stars, two a level with org-odd-levels-only, as org-refile-get-targets counts them.
     case ":level":
@@ -154,14 +154,15 @@ export function refileTargets(defaultBuffer: string = e8.bufferName()): Target[]
   const caching = truthy(e8.variable("org-refile-use-cache"));
   e8.message("Getting targets...");
   const targets: Target[] = [];
+  const oddHere = e8.variable("org-odd-levels-only") === true;
   for (const [files, kind, value] of entries) {
     const matches = specMatcher(kind, value);
     for (const buffer of entryFiles(files, defaultBuffer)) {
       e8.withCurrentBuffer(buffer, () => {
         if (!e8.derivedModeP("org-mode")) e8.signal("error", `Major mode in refile target buffer "${buffer}" must be ‘org-mode’`);
         const file = e8.bufferFileName();
-        // By the file and the spec only, as org-refile-cache-get's identifiers.
-        const key = JSON.stringify([file ?? null, kind, value]);
+        // By the file and the spec, odd levels or not, as org-refile-cache-get's identifiers hold the spec's regexp.
+        const key = JSON.stringify([file ?? null, kind, value, oddHere]);
         const kept = cacheGet(key);
         if (kept) {
           targets.push(...kept);

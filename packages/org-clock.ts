@@ -34,6 +34,7 @@ import {
   isDone,
   keepMarkerThroughSort,
   keepMarkersThroughMoves,
+  levelFace,
   logDrawer,
   makeTagsMatcher,
   matchContexts,
@@ -459,7 +460,8 @@ function selectionLine(key: string, m: e8.Marker): string | e8.PropertizedString
       // Fontified as in Org: in its level's face, links as their descriptions
       // with org-link-descriptive, else written out in org-link.
       const descriptive = truthy(e8.variable("org-link-descriptive") ?? true);
-      const face = `org-level-${((h.level - 1) % 8) + 1}`;
+      // The level's face as org-get-level-face picks it, odd levels and all.
+      const face = levelFace(h.level);
       return e8.concat(`[${key}] ${categories(all)[i].padEnd(12)}  `, descriptive ? e8.propertize(linkDisplayFormat(task), { face }) : linksAsShown(task, face), "\n");
     }),
   );

@@ -188,7 +188,7 @@ const variables: [string, string, e8.Value][] = [
   ["org-M-RET-may-split-line", "Whether M-RET in the middle of a line splits it, the rest going to the new heading or item.", true],
   [
     "org-odd-levels-only",
-    "Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file. Archiving and date trees follow it; promoting, demoting and making headings do not yet.",
+    "Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file.",
     false,
   ],
   [
@@ -2187,7 +2187,7 @@ function alistGet(name: string, key: string): e8.Value | undefined {
  * reduced with org-odd-levels-only, in turn with org-cycle-level-faces, else
  * the last of org-n-level-faces for every level past it.
  */
-function levelFace(level: number): string {
+export function levelFace(level: number): string {
   const l = e8.variable("org-odd-levels-only") === true ? 1 + Math.floor(level / 2) : level;
   const n = Math.max(1, Math.min(8, Number(e8.variable("org-n-level-faces") ?? 8) || 8));
   return `org-level-${truthy(e8.variable("org-cycle-level-faces") ?? true) ? ((l - 1) % n) + 1 : Math.min(l, n)}`;
@@ -6571,14 +6571,16 @@ const orgImenuGetTree = e8.defun("org-imenu-get-tree", () => {
   let lastLevel = 0;
   for (const h of [...headings()].reverse()) {
     const headline = imenuTitle(h);
-    if (h.level > depth || !/\S/.test(headline)) continue;
-    if (h.level >= lastLevel) {
-      subs[h.level]!.unshift([headline, h.start]);
+    // Levels reduced with org-odd-levels-only, as org-imenu-get-tree counts them.
+    const level = reducedLevel(h.level);
+    if (level > depth || !/\S/.test(headline)) continue;
+    if (level >= lastLevel) {
+      subs[level]!.unshift([headline, h.start]);
     } else {
-      subs[h.level]!.unshift([headline, subs.slice(h.level + 1).flat()]);
-      for (let i = h.level + 1; i <= depth; i++) subs[i] = [];
+      subs[level]!.unshift([headline, subs.slice(level + 1).flat()]);
+      for (let i = level + 1; i <= depth; i++) subs[i] = [];
     }
-    lastLevel = h.level;
+    lastLevel = level;
   }
   return (subs[1] ?? []) as unknown as e8.Value;
 });
@@ -8777,13 +8779,20 @@ e8.defineCommand({
         }
       } else if (parseHeading(lineAt())) {
         deleteMetadata(lineAt());
-        let refLevel = (parseHeading(lineAt()) as Heading).level;
+        // Under the heading above with org-adapt-indentation, as org-toggle-item's start-ind: its stars and a space.
+        const above = truthy(e8.variable("org-adapt-indentation") ?? null)
+          ? [...headings()].reverse().find((x) => x.line < lineAt())
+          : undefined;
+        const startInd = above === undefined ? 0 : above.level + 1;
+        // Levels reduced with org-odd-levels-only, as org-reduced-level gives them.
+        let refLevel = reducedLevel((parseHeading(lineAt()) as Heading).level);
         while (e8.point() < end.pos) {
           const line = lineAt();
           const h = parseHeading(line);
           if (!h) break;
-          const delta = Math.max(0, h.level - refLevel);
-          if (h.level < refLevel) refLevel = h.level;
+          const level = reducedLevel(h.level);
+          const delta = Math.max(0, level - refLevel);
+          if (level < refLevel) refLevel = level;
           deleteMetadata(line);
           // The stars and TODO state go; the title stays.
           const fresh = parseHeading(line) as Heading;
@@ -8793,7 +8802,7 @@ e8.defineCommand({
           // heading nor an item between these two.
           edDelete(ls, titleAt);
           edInsert(ls, "- ");
-          indentLineTo(line, 2 * delta);
+          indentLineTo(line, startInd + 2 * delta);
           if (h.todo !== undefined) {
             const struct = listStruct(line);
             const old = copyStruct(struct);
@@ -8807,7 +8816,7 @@ e8.defineCommand({
           }
           e8.gotoChar(e8.lineStart(line + 1));
           const limit = marker(Math.min(end.pos, sectionEnd));
-          shiftText(2 * (delta + 1), limit);
+          shiftText(startInd + 2 * (delta + 1), limit);
           dropMarker(limit);
         }
       } else {
