@@ -80,6 +80,17 @@ fn buffers_windows_and_the_minibuffer_by_their_names() {
     assert_eq!(r("return e8.setFrameSelectedWindow(null, e8.selectedWindow()) === e8.selectedWindow();"), "true");
     assert_eq!(r("e8.setBuffer('other'); return [e8.funcall('save-current-buffer', () => { e8.setBuffer('*scratch*'); return e8.bufferName(); }), e8.bufferName()];"), r#"["*scratch*","other"]"#);
     assert!(!r("return e8.funcallInteractively(() => e8.calledInteractivelyP?.() ?? 'ran');").is_empty());
+    // A command named runs as if keys ran it, with the running prefix argument; the calls it makes do not.
+    assert_eq!(
+        r(r#"const seen = [];
+             e8.defineCommand({ name: "fi-inner", run: () => { seen.push(["inner", e8.calledInteractively()]); } });
+             e8.defineCommand({ name: "fi-outer", params: [{ name: "arg", kind: "prefix" }], run: (arg) => {
+               seen.push(["outer", e8.calledInteractively(), arg]); e8.call("fi-inner"); } });
+             e8.defineCommand({ name: "fi-start", run: () => e8.funcallInteractively("fi-outer") });
+             e8.callWithPrefix([4], "fi-start");
+             return seen;"#),
+        r#"[["outer",true,[4]],["inner",false]]"#
+    );
     assert_eq!(r("let n = 0; e8.funcall('map-keymap', () => { n++; }, e8.makeSparseKeymap('help-mode-map')); return n > 0;"), "true");
 }
 

@@ -4884,19 +4884,6 @@ function parentIndex(all: Heading[], i: number): number | undefined {
 /** Whether changes of state made in body only say they are blocked, as Org's org-todo called from code does. */
 let blockingFromCode = 0;
 
-/** Whether changes of state made in body count as org-todo called interactively, a blocked change an error. */
-let blockingInteractive = 0;
-
-/** Runs body as org-todo called interactively, as Org's agenda calls it with call-interactively. */
-export function todoInteractively<T>(body: () => T): T {
-  blockingInteractive++;
-  try {
-    return body();
-  } finally {
-    blockingInteractive--;
-  }
-}
-
 /** Runs body as a call of org-todo from code, a blocked change only said. */
 export function todoFromCode<T>(body: () => T): T {
   blockingFromCode++;
@@ -4995,17 +4982,6 @@ function hookBlocker(check: (change: e8.Value[]) => boolean | null, on: boolean)
   }
 }
 
-// Setting the options puts the checks on org-blocker-hook or takes them off at once, as their :set does
-// for setopt and Customize; a buffer's own value is read when Org mode starts there.
-for (const [name, check] of [
-  ["org-enforce-todo-dependencies", blockFromHierarchy],
-  ["org-enforce-todo-checkbox-dependencies", blockFromCheckboxes],
-] as const) {
-  e8.addVariableWatcher(name, (_symbol, newval, operation, where) => {
-    if (where === null || where === undefined || where === false) hookBlocker(check, e8.symbolName(operation) === "set" && truthy(newval));
-  });
-}
-
 /** Bypasses blocking for the change C-u C-u C-u C-c C-t makes, as org-todo sets org-blocker-hook to nil. */
 let blockingBypassed = false;
 
@@ -5028,7 +5004,7 @@ function todoChangeAllowed(h: Heading, change: e8.Value, before: string | undefi
   const reason = blockedByCheckboxes ? "contained checkboxes" : `"${blockEntryBlocking}"`;
   const message = `TODO state change from ${before ?? "nil"} to ${next ?? "nil"} blocked (by ${reason})`;
   // Only said from code, in a keyboard macro and in a loop over the region, which calls org-todo from code, so it goes on.
-  if ((e8.calledInteractively() || blockingInteractive > 0) && mapRegionStart === undefined && blockingFromCode === 0 && !e8.executingKbdMacro()) e8.userError(message);
+  if (e8.calledInteractively() && mapRegionStart === undefined && blockingFromCode === 0 && !e8.executingKbdMacro()) e8.userError(message);
   e8.message(message);
   return false;
 }

@@ -23,7 +23,6 @@ import {
   reducedLevel,
   type PriorityAction,
   getPriority,
-  todoInteractively,
   scanTags,
   setPriority,
   showPriority,
@@ -1517,11 +1516,8 @@ const agendaTodo = e8.defineCommand({
     const item = agendaItemHere();
     e8.withCurrentBuffer(item.buffer, () => widened(() => {
       e8.gotoChar(headingOf(item));
-      // With the agenda's prefix argument, as interactively as the agenda's command was, as Org's
-      // call-interactively: a blocked change is then an error.
-      const call = () => e8.callWithPrefix(e8.prefixArg(), "org-todo");
-      if (e8.calledInteractively()) todoInteractively(call);
-      else call();
+      // Interactively, with the agenda's prefix argument, as Org's call-interactively: a blocked change is then an error.
+      e8.funcallInteractively("org-todo");
     }));
     redrawEntry(item);
   },

@@ -29,16 +29,11 @@ fn a_typed_change_signals() {
     assert_eq!(text(&ed), "* TODO Parent\n** TODO child\n");
 }
 
-/// Setting the option puts its check on org-blocker-hook at once, and
-/// setting it off takes the check away, as the option's :set does for
-/// setopt, without Org mode starting again.
+/// The option read when Org mode starts decides, as org-mode puts the check on the hook then.
 #[test]
-fn setting_the_option_takes_effect_at_once() {
+fn the_option_counts_when_the_mode_starts() {
     let (mut ed, _s) = org("* TODO Parent\n** TODO child\n", false);
     ed.set_default("org-enforce-todo-dependencies", Value::Bool(true));
-    let _ = ed.press("C-c C-t");
-    assert_eq!(ed.take_error().map(|e| e.to_string()), Some("TODO state change from TODO to DONE blocked (by \"TODO child\")".into()));
-    ed.set_default("org-enforce-todo-dependencies", Value::Bool(false));
     ed.press("C-c C-t").unwrap();
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert_eq!(text(&ed), "* DONE Parent\n** TODO child\n");
