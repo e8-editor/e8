@@ -1,0 +1,281 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-quote-block-first-line",
+  "text": "* H\n#+begin_quote\n  q\n    r\n#+end_quote\n* G\n",
+  "keys": "TAB",
+  "point": 20,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-quote-block-second-line",
+  "text": "* H\n#+begin_quote\n  q\n    r\n#+end_quote\n* G\n",
+  "keys": "TAB",
+  "point": 26,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-on-quote-block-end-line",
+  "text": "* H\n#+begin_quote\n  q\n    r\n#+end_quote\n* G\n",
+  "keys": "TAB",
+  "point": 30,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-verse-block-first-line",
+  "text": "* H\n#+begin_verse\n  q\n    r\n#+end_verse\n* G\n",
+  "keys": "TAB",
+  "point": 20,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-verse-block-second-line",
+  "text": "* H\n#+begin_verse\n  q\n    r\n#+end_verse\n* G\n",
+  "keys": "TAB",
+  "point": 26,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-on-verse-block-end-line",
+  "text": "* H\n#+begin_verse\n  q\n    r\n#+end_verse\n* G\n",
+  "keys": "TAB",
+  "point": 30,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-center-block-first-line",
+  "text": "* H\n#+begin_center\n  q\n    r\n#+end_center\n* G\n",
+  "keys": "TAB",
+  "point": 21,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-center-block-second-line",
+  "text": "* H\n#+begin_center\n  q\n    r\n#+end_center\n* G\n",
+  "keys": "TAB",
+  "point": 27,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-on-center-block-end-line",
+  "text": "* H\n#+begin_center\n  q\n    r\n#+end_center\n* G\n",
+  "keys": "TAB",
+  "point": 31,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-example-block-first-line",
+  "text": "* H\n#+begin_example\n  q\n    r\n#+end_example\n* G\n",
+  "keys": "TAB",
+  "point": 22,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-example-block-second-line",
+  "text": "* H\n#+begin_example\n  q\n    r\n#+end_example\n* G\n",
+  "keys": "TAB",
+  "point": 28,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-on-example-block-end-line",
+  "text": "* H\n#+begin_example\n  q\n    r\n#+end_example\n* G\n",
+  "keys": "TAB",
+  "point": 32,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-export-block-first-line",
+  "text": "* H\n#+begin_export html\n  q\n    r\n#+end_export\n* G\n",
+  "keys": "TAB",
+  "point": 26,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-export-block-second-line",
+  "text": "* H\n#+begin_export html\n  q\n    r\n#+end_export\n* G\n",
+  "keys": "TAB",
+  "point": 32,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-on-export-block-end-line",
+  "text": "* H\n#+begin_export html\n  q\n    r\n#+end_export\n* G\n",
+  "keys": "TAB",
+  "point": 36,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-comment-block-first-line",
+  "text": "* H\n#+begin_comment\n  q\n    r\n#+end_comment\n* G\n",
+  "keys": "TAB",
+  "point": 22,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-comment-block-second-line",
+  "text": "* H\n#+begin_comment\n  q\n    r\n#+end_comment\n* G\n",
+  "keys": "TAB",
+  "point": 28,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-on-comment-block-end-line",
+  "text": "* H\n#+begin_comment\n  q\n    r\n#+end_comment\n* G\n",
+  "keys": "TAB",
+  "point": 32,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-foo-block-first-line",
+  "text": "* H\n#+begin_foo\n  q\n    r\n#+end_foo\n* G\n",
+  "keys": "TAB",
+  "point": 18,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-foo-block-second-line",
+  "text": "* H\n#+begin_foo\n  q\n    r\n#+end_foo\n* G\n",
+  "keys": "TAB",
+  "point": 24,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-on-foo-block-end-line",
+  "text": "* H\n#+begin_foo\n  q\n    r\n#+end_foo\n* G\n",
+  "keys": "TAB",
+  "point": 28,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-indented-quote-block",
+  "text": "* H\n  #+begin_quote\nq\n  #+end_quote\n",
+  "keys": "TAB",
+  "point": 20,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-quote-block-adapted",
+  "text": "* H\n#+begin_quote\nq\n#+end_quote\n",
+  "keys": "TAB",
+  "point": 18,
+  "vars": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-src-block-not-natively",
+  "text": "* H\n#+begin_src emacs-lisp\n  (a)\n#+end_src\n",
+  "keys": "TAB",
+  "point": 30,
+  "vars": {
+   "org-src-tab-acts-natively": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tab-in-quote-in-item",
+  "text": "- item\n  #+begin_quote\n  q\n  #+end_quote\n",
+  "keys": "TAB",
+  "point": 24,
+  "vars": {}
+ }
+]

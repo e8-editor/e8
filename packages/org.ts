@@ -19,7 +19,6 @@ import { AFFILIATED, type Elem, elementAt, endBeforeBlank, keepingParse, PLANNIN
 import {
   ancestors,
   BLOCK_BEGIN,
-  BLOCK_END,
   DBLOCK_BEGIN,
   checkInvisibleEditMaybe,
   contents,
@@ -2226,18 +2225,6 @@ function fontifyHeading(h: Heading, text: string): void {
   fontifyObjects(h.line, text, titleIndex, tagsIndex);
 }
 
-/** The block a line is inside, by looking back for its #+begin_ line. */
-function blockBefore(line: number): string | undefined {
-  for (let l = line - 1; l >= 0; l--) {
-    const text = e8.lineText(l);
-    if (BLOCK_END.test(text)) return undefined;
-    const begin = BLOCK_BEGIN.exec(text);
-    if (begin) return begin[1].toLowerCase();
-    if (isHeadingLine(text)) return undefined;
-  }
-  return undefined;
-}
-
 const KEYWORD = /^([ \t]*#\+(\w+):)(.*)$/;
 
 /**
@@ -2889,7 +2876,8 @@ export function indentLine(line: number): void {
   const text = e8.lineText(line);
   const ls = e8.lineStart(line);
   const block = elementAt(ls);
-  if (block?.type === "src-block" && line > lineAt(block.begin) && line < lineAt(endBeforeBlank(block))) {
+  // A source block's code, with org-src-tab-acts-natively; without it, its lines are indented as any other.
+  if (block?.type === "src-block" && truthy(e8.variable("org-src-tab-acts-natively")) && line > lineAt(block.begin) && line < lineAt(endBeforeBlank(block))) {
     // An empty line gets the block's content indentation, then Org hands
     // the line to the language's mode, with org-src-tab-acts-natively.
     if (!preservesIndentation(block) && text === "" && e8.point() === ls) {
@@ -2897,12 +2885,13 @@ export function indentLine(line: number): void {
       indentLineTo(line, ind);
       e8.gotoChar(e8.lineEnd(line));
     }
-    if (truthy(e8.variable("org-src-tab-acts-natively")) && e8.fboundp("org-babel-do-key-sequence-in-edit-buffer")) {
+    if (e8.fboundp("org-babel-do-key-sequence-in-edit-buffer")) {
       e8.funcall("org-babel-do-key-sequence-in-edit-buffer", "indent-for-tab-command");
     }
     return;
   }
-  if (isHeadingLine(text) || blockBefore(line) !== undefined) return;
+  // Headings are never indented; a block's lines are, as org-indent-line gives them the expected indentation.
+  if (isHeadingLine(text)) return;
   const el = elementAt(ls);
   // With headline-data, only the heading's data is indented, not what follows it, as org-indent-line.
   if (

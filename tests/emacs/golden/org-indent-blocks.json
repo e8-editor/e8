@@ -1,0 +1,562 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "tab-in-quote-block-first-line",
+      "input": {
+        "text": "* H\n#+begin_quote\n  q\n    r\n#+end_quote\n* G\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_quote\nq\n    r\n#+end_quote\n* G\n",
+      "visible": "* H\n#+begin_quote\nq\n    r\n#+end_quote\n* G\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-quote-block-second-line",
+      "input": {
+        "text": "* H\n#+begin_quote\n  q\n    r\n#+end_quote\n* G\n",
+        "point": 26,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_quote\n  q\n  r\n#+end_quote\n* G\n",
+      "visible": "* H\n#+begin_quote\n  q\n  r\n#+end_quote\n* G\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-on-quote-block-end-line",
+      "input": {
+        "text": "* H\n#+begin_quote\n  q\n    r\n#+end_quote\n* G\n",
+        "point": 30,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_quote\n  q\n    r\n#+end_quote\n* G\n",
+      "visible": "* H\n#+begin_quote\n* G\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-in-verse-block-first-line",
+      "input": {
+        "text": "* H\n#+begin_verse\n  q\n    r\n#+end_verse\n* G\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_verse\nq\n    r\n#+end_verse\n* G\n",
+      "visible": "* H\n#+begin_verse\nq\n    r\n#+end_verse\n* G\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-verse-block-second-line",
+      "input": {
+        "text": "* H\n#+begin_verse\n  q\n    r\n#+end_verse\n* G\n",
+        "point": 26,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_verse\n  q\n  r\n#+end_verse\n* G\n",
+      "visible": "* H\n#+begin_verse\n  q\n  r\n#+end_verse\n* G\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-on-verse-block-end-line",
+      "input": {
+        "text": "* H\n#+begin_verse\n  q\n    r\n#+end_verse\n* G\n",
+        "point": 30,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_verse\n  q\n    r\n#+end_verse\n* G\n",
+      "visible": "* H\n#+begin_verse\n* G\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-in-center-block-first-line",
+      "input": {
+        "text": "* H\n#+begin_center\n  q\n    r\n#+end_center\n* G\n",
+        "point": 21,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_center\nq\n    r\n#+end_center\n* G\n",
+      "visible": "* H\n#+begin_center\nq\n    r\n#+end_center\n* G\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-center-block-second-line",
+      "input": {
+        "text": "* H\n#+begin_center\n  q\n    r\n#+end_center\n* G\n",
+        "point": 27,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_center\n  q\n  r\n#+end_center\n* G\n",
+      "visible": "* H\n#+begin_center\n  q\n  r\n#+end_center\n* G\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-on-center-block-end-line",
+      "input": {
+        "text": "* H\n#+begin_center\n  q\n    r\n#+end_center\n* G\n",
+        "point": 31,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_center\n  q\n    r\n#+end_center\n* G\n",
+      "visible": "* H\n#+begin_center\n* G\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-in-example-block-first-line",
+      "input": {
+        "text": "* H\n#+begin_example\n  q\n    r\n#+end_example\n* G\n",
+        "point": 22,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_example\nq\n    r\n#+end_example\n* G\n",
+      "visible": "* H\n#+begin_example\nq\n    r\n#+end_example\n* G\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-example-block-second-line",
+      "input": {
+        "text": "* H\n#+begin_example\n  q\n    r\n#+end_example\n* G\n",
+        "point": 28,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_example\n  q\n  r\n#+end_example\n* G\n",
+      "visible": "* H\n#+begin_example\n  q\n  r\n#+end_example\n* G\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-on-example-block-end-line",
+      "input": {
+        "text": "* H\n#+begin_example\n  q\n    r\n#+end_example\n* G\n",
+        "point": 32,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_example\n  q\n    r\n#+end_example\n* G\n",
+      "visible": "* H\n#+begin_example\n* G\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-in-export-block-first-line",
+      "input": {
+        "text": "* H\n#+begin_export html\n  q\n    r\n#+end_export\n* G\n",
+        "point": 26,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_export html\nq\n    r\n#+end_export\n* G\n",
+      "visible": "* H\n#+begin_export html\nq\n    r\n#+end_export\n* G\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-export-block-second-line",
+      "input": {
+        "text": "* H\n#+begin_export html\n  q\n    r\n#+end_export\n* G\n",
+        "point": 32,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_export html\n  q\n  r\n#+end_export\n* G\n",
+      "visible": "* H\n#+begin_export html\n  q\n  r\n#+end_export\n* G\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-on-export-block-end-line",
+      "input": {
+        "text": "* H\n#+begin_export html\n  q\n    r\n#+end_export\n* G\n",
+        "point": 36,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_export html\n  q\n    r\n#+end_export\n* G\n",
+      "visible": "* H\n#+begin_export html\n* G\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-in-comment-block-first-line",
+      "input": {
+        "text": "* H\n#+begin_comment\n  q\n    r\n#+end_comment\n* G\n",
+        "point": 22,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_comment\nq\n    r\n#+end_comment\n* G\n",
+      "visible": "* H\n#+begin_comment\nq\n    r\n#+end_comment\n* G\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-comment-block-second-line",
+      "input": {
+        "text": "* H\n#+begin_comment\n  q\n    r\n#+end_comment\n* G\n",
+        "point": 28,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_comment\n  q\n  r\n#+end_comment\n* G\n",
+      "visible": "* H\n#+begin_comment\n  q\n  r\n#+end_comment\n* G\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-on-comment-block-end-line",
+      "input": {
+        "text": "* H\n#+begin_comment\n  q\n    r\n#+end_comment\n* G\n",
+        "point": 32,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_comment\n  q\n    r\n#+end_comment\n* G\n",
+      "visible": "* H\n#+begin_comment\n* G\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-in-foo-block-first-line",
+      "input": {
+        "text": "* H\n#+begin_foo\n  q\n    r\n#+end_foo\n* G\n",
+        "point": 18,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_foo\nq\n    r\n#+end_foo\n* G\n",
+      "visible": "* H\n#+begin_foo\nq\n    r\n#+end_foo\n* G\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-foo-block-second-line",
+      "input": {
+        "text": "* H\n#+begin_foo\n  q\n    r\n#+end_foo\n* G\n",
+        "point": 24,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_foo\n  q\n  r\n#+end_foo\n* G\n",
+      "visible": "* H\n#+begin_foo\n  q\n  r\n#+end_foo\n* G\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-on-foo-block-end-line",
+      "input": {
+        "text": "* H\n#+begin_foo\n  q\n    r\n#+end_foo\n* G\n",
+        "point": 28,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_foo\n  q\n    r\n#+end_foo\n* G\n",
+      "visible": "* H\n#+begin_foo\n* G\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-in-indented-quote-block",
+      "input": {
+        "text": "* H\n  #+begin_quote\nq\n  #+end_quote\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  #+begin_quote\n  q\n  #+end_quote\n",
+      "visible": "* H\n  #+begin_quote\n  q\n  #+end_quote\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-quote-block-adapted",
+      "input": {
+        "text": "* H\n#+begin_quote\nq\n#+end_quote\n",
+        "point": 18,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* H\n#+begin_quote\nq\n#+end_quote\n",
+      "visible": "* H\n#+begin_quote\nq\n#+end_quote\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tab-in-src-block-not-natively",
+      "input": {
+        "text": "* H\n#+begin_src emacs-lisp\n  (a)\n#+end_src\n",
+        "point": 30,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-src-tab-acts-natively": false
+        }
+      },
+      "text": "* H\n#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+      "visible": "* H\n#+begin_src emacs-lisp\n(a)\n#+end_src\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tab-in-quote-in-item",
+      "input": {
+        "text": "- item\n  #+begin_quote\n  q\n  #+end_quote\n",
+        "point": 24,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "- item\n  #+begin_quote\n  q\n  #+end_quote\n",
+      "visible": "- item\n  #+begin_quote\n  q\n  #+end_quote\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}
