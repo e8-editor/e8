@@ -479,6 +479,38 @@ fn a_prompt_in_a_command_deactivates_after_each_key() {
     assert_eq!(ed.echo(), Some("got bdefgh"));
 }
 
+/// The RET answering a prompt leaves the region of the buffer the command
+/// changed before asking for that command, as exit-minibuffer throws past
+/// the inner command loop: it stays active while the command goes on, and
+/// goes when the command is over.
+#[test]
+fn answering_a_prompt_leaves_the_region_to_the_command() {
+    let (mut ed, scripting) = setup();
+    eval(
+        &mut ed,
+        &scripting,
+        r#"e8.defineCommand({ name: "edit-then-ask", run: () => {
+          e8.insert("x");
+          e8.readString("Text: ");
+          e8.message(`active: ${e8.regionActive()}`);
+        } });"#,
+    );
+    ed.type_text("abc");
+    ed.press("C-a C-SPC C-e").unwrap();
+    let mut typed = false;
+    ed.set_input_source(move |ed| {
+        if typed || ed.prompt().is_none() {
+            return false;
+        }
+        typed = true;
+        ed.press("y RET").unwrap();
+        true
+    });
+    ed.call("edit-then-ask", vec![]).unwrap();
+    assert_eq!(ed.echo(), Some("active: true"));
+    assert!(!ed.window_buffer().is_mark_active());
+}
+
 #[test]
 fn columns_count_as_emacs_counts_them() {
     let (mut ed, scripting) = setup();

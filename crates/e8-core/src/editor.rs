@@ -1686,6 +1686,7 @@ impl Editor {
     fn invoke(&mut self, command: Rc<Command>, args: Vec<Arg>) -> Result<()> {
         self.this_command = Some(command.name.clone());
         self.this_command_set = false;
+        let depth = self.recursion_depth();
         self.running += 1;
         let result = self.run_command_body(&command, &args);
         self.running -= 1;
@@ -1694,7 +1695,12 @@ impl Editor {
         if let Some(name) = self.this_command.take() {
             self.last_command = Some(name);
         }
-        self.deactivate_changed_regions(result.is_ok(), true);
+        // One that left a prompt or recursive edit inside a running command,
+        // as RET does, leaves its changes for that command, as Emacs's
+        // exit-minibuffer throws out of the inner command loop before it
+        // looks at deactivate-mark.
+        let left = self.running > 0 && self.recursion_depth() < depth;
+        self.deactivate_changed_regions(result.is_ok(), !left);
         result
     }
 
@@ -1718,6 +1724,16 @@ impl Editor {
         let keep = matches!(self.variable("deactivate-mark"), Some(Value::Bool(false)));
         if self.running == 0 {
             self.set_default("deactivate-mark", Value::Null);
+        }
+        // A command a loop inside another ran, as a key at a prompt, looks
+        // only at its own buffer, as Emacs's deactivate-mark is local to the
+        // buffer it was set in: the outer command's changes are left for it.
+        if self.running > 0 {
+            let b = self.buffer_mut();
+            if b.take_changed() && succeeded && !keep {
+                b.deactivate_mark();
+            }
+            return;
         }
         for b in self.buffers.iter_mut() {
             if b.take_changed() && succeeded && !keep {
