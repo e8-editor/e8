@@ -307,5 +307,64 @@
   "vars": {
    "org-cycle-max-level": "'two"
   }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-global-at-bob",
+  "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2,
+   "org-cycle-global-at-bob": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-global-at-bob-twice",
+  "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+  "keys": "TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2,
+   "org-cycle-global-at-bob": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-s-tab-with-a-bad-limit",
+  "text": "* A\n** B\n",
+  "keys": "C-u S-<tab>",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": -1
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "convert-to-odd-keeps-point",
+  "text": "* A\n** B\n*** C\n",
+  "keys": "",
+  "point": 7,
+  "vars": {},
+  "call": [
+   "org-convert-to-odd-levels"
+  ],
+  "answers": [
+   "yes"
+  ]
  }
 ]

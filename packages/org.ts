@@ -3187,7 +3187,7 @@ function orgCycle(arg: e8.PrefixArg): void {
       return;
     }
     // At the buffer's start, not on a heading, cycle globally with org-cycle-global-at-bob, the window left alone.
-    if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && parseHeading(lineAt()) === undefined) {
+    if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && !((parseHeading(lineAt())?.level ?? Infinity) <= nstars)) {
       const hook = e8.variable("org-cycle-hook");
       const without = Array.isArray(hook) ? hook.filter((f) => f !== "org-cycle-optimize-window-after-visibility-change") : hook;
       e8.letBind({ "org-cycle-hook": without ?? null }, () => globalCycle());
@@ -3256,13 +3256,13 @@ e8.defineVariable({
  * org-odd-levels-only off: by stars(n) for a heading of n stars.
  */
 function convertLevels(by: number, steps: (stars: number) => number): void {
-  e8.saveExcursion(() => {
-    for (let line = 0; line < e8.lineCount(); line++) {
-      const h = parseHeading(line);
-      if (!h || h.level < 2) continue;
-      for (let k = steps(h.level); k > 0; k--) changeLevel(parseHeading(line)!, by, false);
-    }
-  });
+  // Within the narrowing, as Org's search from point-min goes; point kept as each change keeps it.
+  for (let line = lineAt(e8.pointMin()); line < e8.lineCount() && e8.lineStart(line) < e8.pointMax(); line++) {
+    if (e8.lineStart(line) < e8.pointMin()) continue;
+    const h = parseHeading(line);
+    if (!h || h.level < 2) continue;
+    for (let k = steps(h.level); k > 0; k--) changeLevel(parseHeading(line)!, by, false);
+  }
 }
 
 e8.defineCommand({
@@ -3279,7 +3279,8 @@ e8.defineCommand({
   run: () => {
     e8.gotoChar(e8.pointMin());
     // A heading of an even number of stars, as Org's ^\(\*\*\)+ finds it, point left after it.
-    for (let line = 0; line < e8.lineCount(); line++) {
+    for (let line = lineAt(e8.pointMin()); line < e8.lineCount() && e8.lineStart(line) < e8.pointMax(); line++) {
+      if (e8.lineStart(line) < e8.pointMin()) continue;
       const m = /^((?:\*\*)+) /.exec(e8.lineText(line));
       if (m) {
         e8.gotoChar(e8.lineStart(line) + m[0].length);
@@ -3405,8 +3406,11 @@ const shiftTab = e8.defineCommand({
       e8.runHooks("org-cycle-hook", "overview");
       return;
     }
-    // As org-cycle-global does: C-u means the startup visibility, else C-u TAB.
-    orgCycle(Array.isArray(prefix) ? [16] : [4]);
+    // As org-cycle-global does: C-u means the startup visibility, without org-cycle's checks, else C-u TAB.
+    if (Array.isArray(prefix)) {
+      startupVisibility();
+      e8.message("Startup visibility, plus VISIBILITY properties.", { log: false });
+    } else orgCycle([4]);
   },
 });
 

@@ -571,6 +571,112 @@
       "kill_ring": [],
       "modified": false,
       "error": "‘org-cycle-max-level’ must be a positive integer"
+    },
+    {
+      "name": "max-level-global-at-bob",
+      "input": {
+        "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2,
+          "org-cycle-global-at-bob": true
+        }
+      },
+      "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+      "visible": "*** C\n* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-global-at-bob-twice",
+      "input": {
+        "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2,
+          "org-cycle-global-at-bob": true
+        }
+      },
+      "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+      "visible": "*** C\n* A\n** B\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "c-u-s-tab-with-a-bad-limit",
+      "input": {
+        "text": "* A\n** B\n",
+        "point": 0,
+        "keys": "C-u S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-max-level": -1
+        }
+      },
+      "text": "* A\n** B\n",
+      "visible": "* A\n** B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "convert-to-odd-keeps-point",
+      "input": {
+        "text": "* A\n** B\n*** C\n",
+        "point": 7,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-convert-to-odd-levels"
+        ],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "yes"
+        ]
+      },
+      "text": "* A\n*** B\n***** C\n",
+      "visible": "* A\n*** B\n***** C\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
