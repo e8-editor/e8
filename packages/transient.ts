@@ -1178,7 +1178,7 @@ const transientSetLevel = e8.defineCommand({
       const key = e8.readKeySequence("Set level of (RET for this menu, or a suffix's key): ");
       const prefix = active.prefix;
       const entry = (getLevels()[prefix] ??= {});
-      if (key === "RET" || key === "C-m") {
+      if (key === "RET") {
         const n = Number(e8.readString(`Set level for ${prefix} (1-7): `, { initial: String(transientPrefixLevel(prefix)) }));
         if (n >= 1 && n <= 7) entry.level = n;
       } else {
