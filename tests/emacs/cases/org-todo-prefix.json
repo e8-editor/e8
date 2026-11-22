@@ -178,5 +178,121 @@
   "answers": [
    "t"
   ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "minus-one-in-a-region",
+  "text": "* TODO A\nSCHEDULED: <2026-10-28 Wed +1w>\n* TODO B\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+  "keys": "C-SPC M-> C-- C-c C-t",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-s-right-in-a-region",
+  "text": "#+TODO: TODO(t) | DONE(d)\n#+TODO: BUG(b) | FIXED(f)\n* TODO A\n* BUG B\n",
+  "keys": "C-SPC C-n C-e C-S-<right>",
+  "point": 52
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "seq-todo-sets-come-after-todo",
+  "text": "#+TODO: T | D\n#+SEQ_TODO: A | B\n#+TODO: U | V\n* T h\n",
+  "keys": "C-u C-u C-c C-t",
+  "point": 49,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "typ-todo-sets-come-first",
+  "text": "#+TODO: T | D\n#+TYP_TODO: X Y | Z\n* T h\n",
+  "keys": "C-u C-u C-c C-t",
+  "point": 36,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "next-set-remembers-the-last",
+  "text": "#+TODO: T | D\n#+TODO: B | F\n#+TODO: X | Y\n* F h\n",
+  "keys": "C-c C-t C-u C-u C-c C-t",
+  "point": 44,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "cycle-remembers-the-last-set",
+  "text": "#+TODO: T | D\n#+TODO: B | F\n#+TODO: X | Y\n* F h\n",
+  "keys": "C-c C-t C-c C-t",
+  "point": 44
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "zero-with-a-logging-repeat",
+  "text": "* TODO A\nSCHEDULED: <2026-10-28 Wed +1w>\n:PROPERTIES:\n:LOGGING: TODO(@) DONE(@)\n:END:\n",
+  "keys": "C-0 C-c C-t",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "repeater-in-the-heading",
+  "text": "* TODO Meet <2026-10-29 Thu +1d>\n",
+  "keys": "C-c C-t",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "minus-one-on-a-heading-repeater",
+  "text": "* TODO Meet <2026-10-29 Thu +1d>\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+  "keys": "C-- C-c C-t",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "zero-repeater-in-the-heading",
+  "text": "* TODO Meet <2026-10-29 Thu +0d>\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+  "keys": "C-c C-t",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "closed-kept-when-no-todo",
+  "text": "* DONE A\nCLOSED: [2026-10-27 Tue 10:00]\n",
+  "keys": "C-u C-c C-t C-c C-c",
+  "point": 2,
+  "vars": {
+   "org-closed-keep-when-no-todo": true
+  }
  }
 ]

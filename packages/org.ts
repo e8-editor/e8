@@ -531,12 +531,14 @@ function setupFileLinesOf(text: string, dir: string, chain: string[]): string[] 
 
 /** The buffer's TODO sequences: from #+TODO: lines, else org-todo-keywords. */
 function readTodoSets(): TodoSet[] {
-  const sets: TodoSet[] = [];
+  // TYP_TODO's sets first, then TODO's, then SEQ_TODO's, as org-set-regexps-and-options appends them.
+  const byKind: Record<string, TodoSet[]> = { TYP_TODO: [], TODO: [], SEQ_TODO: [] };
   for (const [, , text] of keywordLines()) {
-    const m = /^#\+(?:TODO|SEQ_TODO|TYP_TODO):(.*)$/i.exec(text);
-    const set = m ? todoSetFrom(m[1].trim().split(/\s+/)) : undefined;
-    if (set) sets.push(set);
+    const m = /^#\+(TODO|SEQ_TODO|TYP_TODO):(.*)$/i.exec(text);
+    const set = m ? todoSetFrom(m[2].trim().split(/\s+/)) : undefined;
+    if (m && set) byKind[m[1].toUpperCase()].push(set);
   }
+  const sets: TodoSet[] = [...byKind.TYP_TODO, ...byKind.TODO, ...byKind.SEQ_TODO];
   if (sets.length === 0) {
     const value = e8.variable("org-todo-keywords");
     const lists = Array.isArray(value) && value.every(Array.isArray) ? (value as e8.Value[][]) : [value as e8.Value[]];
@@ -5077,6 +5079,8 @@ interface TodoOptions {
   forceLog?: boolean;
   inhibitNote?: boolean;
   set?: 1 | -1;
+  /** Whether org-todo was given the state, as by a number, a set or S-<right>, rather than cycling or fast selection. */
+  chosen?: boolean;
 }
 
 function todo(direction: number, state?: string, across = false, options: TodoOptions = {}): void {
@@ -5091,13 +5095,33 @@ function todo(direction: number, state?: string, across = false, options: TodoOp
  * as org-todo's nextset and previousset take it, wrapping round; with no
  * state, from the first set.
  */
-function setHead(current: string | undefined, direction: 1 | -1): string | undefined {
+function setHead(current: string | undefined, direction: 1 | -1, line: number): string | undefined {
   const sets = todoSets();
   const heads = sets.map((set) => [...set.todo, ...set.done][0]);
-  const at = sets.findIndex((set) => current !== undefined && (set.todo.includes(current) || set.done.includes(current)));
-  // With no state, the first set's, or with previousset the last's, as member finds no head then.
+  const head = sequenceHead(current, line);
+  const at = head === undefined ? -1 : heads.indexOf(head);
+  // With no head found, the first set's, or with previousset the last's, as member finds none then.
   if (at < 0) return direction > 0 ? heads[0] : heads.at(-1);
   return heads[(at + direction + heads.length) % heads.length];
+}
+
+/**
+ * The first keyword of the set a state is in, as org-get-todo-sequence-head:
+ * for no state, the set the heading was last in, as org-todo leaves it in
+ * the line's org-todo-head property; for a word that is no state, the first
+ * keyword of all.
+ */
+function sequenceHead(kwd: string | undefined, line: number): string | undefined {
+  if (kwd === undefined) {
+    const [ls, le] = [e8.lineStart(line), e8.lineEnd(line)];
+    const here = e8.getTextProperty(ls, "org-todo-head");
+    if (typeof here === "string") return here;
+    const p = e8.nextSinglePropertyChange(ls, "org-todo-head", le);
+    const there = p !== undefined && p < le ? e8.getTextProperty(p, "org-todo-head") : undefined;
+    return typeof there === "string" ? there : undefined;
+  }
+  const set = todoSets().find((t) => t.todo.includes(kwd) || t.done.includes(kwd));
+  return set === undefined ? allKeywords()[0] : [...set.todo, ...set.done][0];
 }
 
 function todoLogged(direction: number, state?: string, across = false, options: TodoOptions = {}): void {
@@ -5105,12 +5129,21 @@ function todoLogged(direction: number, state?: string, across = false, options: 
   const h = all[i];
   const before = h.todo;
   const next =
-    options.set !== undefined ? setHead(before, options.set) : state === undefined ? nextState(before, direction, across) : state === "" ? undefined : state;
+    options.set !== undefined
+      ? setHead(before, options.set, h.line)
+      : state === undefined
+        ? // From no state, the set the heading was last in, as org-todo's head.
+          (before === undefined && direction > 0 && !across ? (sequenceHead(undefined, h.line) ?? nextState(before, direction, across)) : nextState(before, direction, across))
+        : state === "" ? undefined : state;
+  // The set's head the line remembers, as org-todo leaves org-todo-head: the old state's, or the new one's when it was given and is not done.
+  let head = sequenceHead(before, h.line);
   const change: e8.Value = [":type", "todo-state-change", ":from", before ?? null, ":to", next ?? null, ":position", h.start];
   if (!todoChangeAllowed(h, change, before, next)) return;
   replaceTodoKeyword(h, next);
   if (parseHeading(h.line)?.tagsAt !== undefined) alignTagsAway(h.line);
   if (next !== undefined && next === before) e8.message(`TODO state was already ${next}`);
+  if ((options.chosen || options.set !== undefined) && next !== undefined && !isDone(next)) head = sequenceHead(next, h.line);
+  e8.putTextProperty(e8.lineStart(h.line), e8.lineEnd(h.line), "org-todo-head", head ?? null);
   if (options.set !== undefined) {
     // As org-todo says which set it went to: its place among the sets, and its keywords.
     const sets = todoSets();
@@ -5126,7 +5159,8 @@ function todoLogged(direction: number, state?: string, across = false, options: 
   // As org-todo: CLOSED goes when the state does, or goes back to not done; it comes when done.
   if (logs) {
     const notDone = (k: string | undefined) => k !== undefined && !isDone(k);
-    if (next === undefined || (notDone(next) && !notDone(before))) setPlanning(h.line, "CLOSED", undefined);
+    // No state keeps CLOSED with org-closed-keep-when-no-todo.
+    if ((next === undefined && !truthy(e8.variable("org-closed-keep-when-no-todo") ?? null)) || (notDone(next) && !notDone(before))) setPlanning(h.line, "CLOSED", undefined);
     if (isDone(next) && !isDone(before) && logDone !== null && logDone !== false) setPlanning(h.line, "CLOSED", `[${formatTimestamp(today(true), true)}]`);
   }
   updateParentTodoStatistics(h.line);
@@ -5142,7 +5176,9 @@ function todoLogged(direction: number, state?: string, across = false, options: 
   // With a LOGGING property, the state the repeat goes back to logs as it
   // says, as org-auto-repeat-maybe's own org-todo reads LOGGING again.
   const back = repeat !== undefined && localLogStates !== undefined ? parseHeading(h.line)?.todo : undefined;
-  const backLog = back !== undefined ? logHow(back, next) : undefined;
+  // A note made a time with a prefix of 0, as the repeat's own org-todo sees org-inhibit-logging note too.
+  const backLogged = back !== undefined ? logHow(back, next) : undefined;
+  const backLog = options.inhibitNote && backLogged === "note" ? "time" : backLogged;
   if (backLog !== undefined) setup = { purpose: "state", how: backLog, state: back, previous: next };
   const logRepeat = e8.variable("org-log-repeat");
   if (repeat !== undefined && truthy(logRepeat)) {
@@ -5227,7 +5263,8 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
   const end = entryEnd(all, headingIndex(all, line) as number);
   const repeating = /<[0-9]{4}-[0-9][0-9]-[0-9][0-9] [^>\n]*?([.+]?\+([0-9]+)[hdwmy](?:\/[0-9]+[hdwmy])?)/;
   let found = false;
-  for (let l = line + 1; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+  // The entry's first repeater, its heading's included, as org-get-repeat looks from the heading.
+  for (let l = line; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
     const m = repeating.exec(e8.lineText(l));
     if (m) {
       found = Number(m[2]) !== 0;
@@ -5299,9 +5336,10 @@ const todoCommand = e8.defineCommand({
       options.set = 1;
       arg = null;
     }
-    // -1 cancels the repeater first, so the entry can be marked done; below -1 is no argument org-todo takes.
+    // -1 cancels the repeater first, so the entry can be marked done, each heading's as the region loop reaches it; below -1 is no argument org-todo takes.
+    let cancel = false;
     if (arg !== null && e8.prefixNumericValue(arg) === -1) {
-      cancelRepeater();
+      cancel = true;
       arg = null;
     }
     if (arg !== null && e8.prefixNumericValue(arg) < -1) e8.userError(`Prefix argument ${e8.prefixNumericValue(arg)} not supported`);
@@ -5320,10 +5358,11 @@ const todoCommand = e8.defineCommand({
     // A number picks that state; with fast-access keys, a key does, as org-use-fast-todo-selection says.
     const fast = e8.variable("org-use-fast-todo-selection");
     const change = () => {
-      if (options.set !== undefined) todo(1, undefined, false, options);
+      if (cancel) cancelRepeater();
+      if (options.set !== undefined) todo(1, undefined, false, { ...options, chosen: true });
       else if (typeof arg === "number" && arg > 0) {
         const kw = allKeywords()[arg - 1];
-        todo(1, kw ?? "", false, options);
+        todo(1, kw ?? "", false, { ...options, chosen: true });
       } else if (arg === null && fast !== null && fast !== false && todoSets().some((s) => s.keys.some(([, k]) => k !== undefined))) {
         const [all, i] = backToHeading();
         todo(1, fastTodoSelection(all[i].todo) ?? "", false, options);
@@ -5370,7 +5409,11 @@ for (const [name, set, doc, motion] of [
     run: () => {
       const shiftSelect = e8.variable("org-support-shift-select") ?? null;
       if (truthy(shiftSelect) && orgRegionActive()) e8.call(motion);
-      else if (shiftSelect !== "always" && headingHere()) todo(1, undefined, false, { set });
+      else if (shiftSelect !== "always" && headingHere()) {
+        // As org-todo with nextset or previousset, over the region's headings too.
+        const one = () => todo(1, undefined, false, { set, chosen: true });
+        if (!forEachHeadingInRegion(one, { hiddenPoint: true })) one();
+      }
       else if (truthy(shiftSelect)) e8.call(motion);
       else shiftSelectError();
     },
@@ -5470,7 +5513,7 @@ e8.defineCommand({
   name: "org-todo-set",
   doc: "Set the TODO state of the heading point is under, or remove it with an empty state.",
   params: [{ name: "state", prompt: "TODO state: " }],
-  run: (state) => todo(1, state),
+  run: (state) => todo(1, state, false, { chosen: true }),
 });
 
 e8.defineVariable({ name: "org-priority-enable-commands", doc: "Whether the priority commands work; when nil, they refuse, so a priority is never set by accident.", value: true });
@@ -6888,7 +6931,8 @@ function repeatEntry(h: Heading): boolean {
   const all = headings();
   const end = entryEnd(all, headingIndex(all, h.line) as number);
   let repeated = false;
-  for (let line = h.line + 1; line < e8.lineCount() && e8.lineStart(line) < end; line++) {
+  // Every repeating timestamp in the entry, its heading's too, as org-auto-repeat-maybe searches from the heading.
+  for (let line = h.line; line < e8.lineCount() && e8.lineStart(line) < end; line++) {
     if (repeatTimestampsOn(line)) repeated = true;
   }
   if (repeated) e8.message(`Entry repeats: ${e8.lineText(h.line + 1).trim()}`);
@@ -8578,7 +8622,7 @@ const shiftRight = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-up-day");
     // org-todo, which loops over the headings in an active region.
     else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(1, undefined, true), { hiddenPoint: true })) todo(1, undefined, true);
+      if (!forEachHeadingInRegion(() => todo(1, undefined, true, { chosen: true }), { hiddenPoint: true })) todo(1, undefined, true, { chosen: true });
     }
     else if (itemLine(lineAt())) cycleListBullet();
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
@@ -8595,7 +8639,7 @@ const shiftLeft = e8.defineCommand({
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-down-day");
     // org-todo, which loops over the headings in an active region.
     else if (headingHere()) {
-      if (!forEachHeadingInRegion(() => todo(-1, undefined, true), { hiddenPoint: true })) todo(-1, undefined, true);
+      if (!forEachHeadingInRegion(() => todo(-1, undefined, true, { chosen: true }), { hiddenPoint: true })) todo(-1, undefined, true, { chosen: true });
     }
     else if (itemLine(lineAt())) cycleListBullet("previous");
     else if (elementAt(e8.point())?.type === "node-property") nextAllowedValue();
