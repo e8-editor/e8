@@ -14913,11 +14913,11 @@ declare global {
        */
       "org-tags-match-list-sublevels": Value;
       /**
-       * Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second.
+       * Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second. A number alone is both. org-time-stamp-rounding-minutes is its old name.
        *
        * Defined in packages/org.ts.
        */
-      "org-time-stamp-rounding-minutes": Value;
+      "org-timestamp-rounding-minutes": Value;
       /**
        * How a flat org-todo-keywords list is read: sequence, or type. Obsolete in Org.
        *

@@ -1812,3 +1812,28 @@ fn archiving_to_the_sibling_twice_and_under_the_right_parent() {
     ed.press("C-c C-x A").unwrap();
     assert!(text(&ed).contains("* P2 [0/0]\n"), "{:?}", text(&ed));
 }
+
+/// S-<up> on a timestamp's minutes steps by org-timestamp-rounding-minutes's
+/// second number, set under its old name, org-time-stamp-rounding-minutes,
+/// as Org keeps that with defvaralias; a number alone is both, as Org
+/// normalizes it. The oracle's variables cannot hold a list of numbers.
+#[test]
+fn timestamp_rounding_minutes_under_either_name() {
+    let (mut ed, s) = org("* T\n<2026-10-28 Wed 10:00>\n");
+    s.eval_expression(&mut ed, "e8.setVariable('org-time-stamp-rounding-minutes', [0, 15])").unwrap();
+    let minute = find(&ed, "00>") + 1;
+    ed.window_buffer_mut().set_point(minute);
+    ed.press("S-<up>").unwrap();
+    assert_eq!(text(&ed), "* T\n<2026-10-28 Wed 10:15>\n");
+    assert_eq!(s.eval_expression(&mut ed, "JSON.stringify(e8.variable('org-timestamp-rounding-minutes'))").unwrap(), "\"[0,15]\"");
+    // The old name is documented as the new, as describe-variable shows an alias.
+    assert_eq!(
+        s.eval_expression(&mut ed, "e8.variableDocumentation('org-time-stamp-rounding-minutes') === e8.variableDocumentation('org-timestamp-rounding-minutes')").unwrap(),
+        "true"
+    );
+    s.eval_expression(&mut ed, "e8.setVariable('org-timestamp-rounding-minutes', 10)").unwrap();
+    ed.window_buffer_mut().set_point(minute);
+    ed.press("S-<up>").unwrap();
+    // 10:15 rounded down to a step of 10 first, as Org does, then a step on.
+    assert_eq!(text(&ed), "* T\n<2026-10-28 Wed 10:20>\n");
+}

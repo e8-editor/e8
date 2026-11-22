@@ -238,12 +238,23 @@ const variables: [string, string, e8.Value][] = [
   ["org-fontify-done-headline", "Whether the text of a done heading gets the face org-headline-done.", true],
   ["org-fontify-whole-block-delimiter-line", "Whether a block's #+begin and #+end lines take their faces to the line's end, newline and all, so a background with :extend reaches the window's edge.", true],
   [
-    "org-time-stamp-rounding-minutes",
-    "Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second.",
+    "org-timestamp-rounding-minutes",
+    "Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second. " +
+      "A number alone is both. org-time-stamp-rounding-minutes is its old name.",
     [0, 5],
   ],
 ];
 for (const [name, doc, value] of variables) e8.defineVariable({ name, doc, value });
+// Its name before Org 9.6, as org.el keeps it with defvaralias.
+e8.defvaralias("org-time-stamp-rounding-minutes", "org-timestamp-rounding-minutes");
+
+/** org-timestamp-rounding-minutes as a pair, a number alone standing for both, as Org normalizes it. */
+function roundingMinutes(): [number, number] {
+  const v = e8.variable("org-timestamp-rounding-minutes");
+  if (typeof v === "number") return [v, v];
+  const list = Array.isArray(v) ? v : [];
+  return [Number(list[0] ?? 0), Number(list[1] ?? 5)];
+}
 
 e8.defineHook(
   "org-cycle-tab-first-hook",
@@ -6649,7 +6660,7 @@ function changeTimestamp(n: number, what?: string, updown = true): void {
     hour: Number(parsed?.[4] ?? 0),
     minute: Number(parsed?.[5] ?? 0),
   };
-  let step = Math.max(Number((e8.variable("org-time-stamp-rounding-minutes") as number[] | null)?.[1] ?? 5), 1);
+  let step = Math.max(roundingMinutes()[1], 1);
   let increment = n;
   if (updown && field === "minute" && e8.prefixArg() === null) {
     increment = step * Math.sign(n);
@@ -6749,6 +6760,26 @@ function clockUpdateTimeMaybe(): boolean {
     e8.gotoChar(Math.min(keep.pos, origin));
     dropMarker(keep);
   }
+}
+
+/**
+ * Whether point is on the -- between a range's timestamps, in text where
+ * Org's parser finds timestamp objects: paragraphs, headings, items, verse
+ * and the keywords whose values Org parses, not inside a link.
+ */
+function onRangeDashes(line: number): boolean {
+  const p = e8.point();
+  const all = tsMatches(line);
+  const on = all.some((a, i) => i + 1 < all.length && e8.bufferText(a.end, all[i + 1].start) === "--" && a.end < p && p < all[i + 1].start);
+  if (!on) return false;
+  const type = elementAt(p)?.type;
+  const parsedKeyword = type === "keyword" && /^[ \t]*#\+(?:TITLE|DATE|AUTHOR|CAPTION):/i.test(e8.lineText(line));
+  if (!parsedKeyword && !["paragraph", "headline", "item", "verse-block"].includes(type ?? "")) return false;
+  // A link's description holds no timestamps.
+  const text = e8.lineText(line);
+  const col = p - e8.lineStart(line);
+  for (const m of allMatches(/\[\[[^\]]*\](?:\[[^\]]*\])?\]/g, text)) if (m.index! < col && col < m.index! + m[0].length) return false;
+  return true;
 }
 
 /** Whether point is on a CLOCK line, as org-at-clock-log-p: one that is a clock element. */
@@ -6891,9 +6922,13 @@ export function parseDate(input: string, withTime = false): DateTime {
     d.minute = time[1];
   } else if (withTime) {
     const now = today(true);
-    const step = Number((e8.variable("org-time-stamp-rounding-minutes") as number[] | null)?.[0] ?? 0) || 1;
+    const step = roundingMinutes()[0] || 1;
     d.hour = now.hour;
-    d.minute = Math.round((now.minute ?? 0) / step) * step;
+    // Halves to the even step, as Emacs's round of integers does.
+    const q = (now.minute ?? 0) / step;
+    const down = Math.floor(q);
+    const nearest = q - down === 0.5 ? (down % 2 === 0 ? down : down + 1) : Math.round(q);
+    d.minute = nearest * step;
     d = normalize(d);
   }
   return d;
@@ -9011,6 +9046,10 @@ const ctrlCCtrlC = e8.defineCommand({
       clockUpdateTimeMaybe();
       return;
     }
+    // On the two dashes of a range, which Org takes as one timestamp
+    // object where it parses objects, as org-timestamp-change then finds no
+    // part of one there.
+    if (onRangeDashes(line)) e8.userError("Not at a timestamp");
     if (timestampHere()) {
       changeTimestamp(0, "day");
       return;
