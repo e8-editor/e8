@@ -115,3 +115,4 @@ One record per decision, in the order they were made; a later one can change an 
 - [0111](0111-typescript-mode-and-literate-configuration.md) TypeScript mode and a literate configuration: typescript-ts-mode shipped, C-c C-c on TypeScript blocks, org-babel-load-file
 - [0112](0112-the-environment-programs-run-in.md) The environment programs run in: process-environment, exec-path, and the rest of what processes did not do
 - [0113](0113-files-reverting-and-notifications.md) Files, reverting and notifications as Emacs has them: autorevert.el, revert-buffer's arguments, inotify, and the file primitives' remains
+- [0114](0114-control-characters-as-emacs-reads-them.md) Control characters as Emacs reads them: C-m is RET, C-i is TAB and C-[ is ESC, in every front end and description

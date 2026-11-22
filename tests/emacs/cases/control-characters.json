@@ -1,0 +1,40 @@
+[
+  {
+    "name": "c-m-is-ret",
+    "text": "onetwo",
+    "keys": "C-m",
+    "point": 3
+  },
+  {
+    "name": "c-i-is-tab",
+    "text": "a\n",
+    "keys": "C-i x",
+    "point": 2
+  },
+  {
+    "name": "c-bracket-is-esc-a-prefix-for-meta",
+    "text": "abc def",
+    "keys": "C-[ < C-[ f",
+    "point": 7
+  },
+  {
+    "name": "c-m-m-is-m-ret",
+    "text": "* one",
+    "keys": "C-M-m t w o",
+    "point": 5,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "c-c-c-x-tab-is-c-c-c-x-c-i",
+    "text": "* Task\n",
+    "keys": "C-c C-x TAB C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  }
+]

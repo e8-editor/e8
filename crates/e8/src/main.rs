@@ -382,7 +382,9 @@ fn convert_key(event: KeyEvent) -> Option<Key> {
         TermKey::BackTab => (KeyCode::Tab, true),
         code => (special_key(code)?, shift),
     };
-    Some(Key { code, ctrl, meta, shift })
+    // A terminal that reports ctrl+m as a chord, as one speaking kitty's
+    // keyboard protocol may, sends RET all the same, as Emacs reads it.
+    Some(Key { code, ctrl, meta, shift }.canonical())
 }
 
 fn special_key(code: TermKey) -> Option<KeyCode> {
@@ -423,5 +425,11 @@ mod tests {
         assert_eq!(key(TermKey::Right, KeyModifiers::SHIFT), "S-<right>");
         assert_eq!(key(TermKey::Char('F'), KeyModifiers::CONTROL | KeyModifiers::SHIFT), "C-S-f");
         assert_eq!(key(TermKey::Char('F'), KeyModifiers::ALT), "M-S-f");
+        // As Emacs reads them, ctrl+m and ctrl+i are RET and TAB however
+        // the terminal reports them.
+        assert_eq!(key(TermKey::Char('m'), KeyModifiers::CONTROL), "RET");
+        assert_eq!(key(TermKey::Char('i'), KeyModifiers::CONTROL | KeyModifiers::ALT), "C-M-i");
+        assert_eq!(key(TermKey::Enter, KeyModifiers::NONE), "RET");
+        assert_eq!(key(TermKey::Tab, KeyModifiers::NONE), "TAB");
     }
 }

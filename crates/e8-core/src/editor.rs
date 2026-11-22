@@ -1823,6 +1823,8 @@ impl Editor {
     /// Handles one key press: runs the command it completes, waits for more
     /// keys after a prefix, or inserts it if it is a plain unbound character.
     pub fn handle_key(&mut self, key: Key) {
+        // A front end's ctrl+m is RET, as Emacs reads it (`Key::canonical`).
+        let key = key.canonical();
         // Whatever code left current, a key acts on the selected window's buffer.
         if self.running == 0 {
             self.current_from_selected_window();
