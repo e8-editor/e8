@@ -248,6 +248,17 @@ e8.defineHook(
   "Functions TAB in Org tries first, each until one gives true, which then is all TAB does. Emacs also calls it org-tab-first-hook.",
 );
 e8.defineHook(
+  "org-tab-after-check-for-cycling-hook",
+  "Functions TAB in Org tries after it has found no heading or item to cycle, each until one gives true.",
+);
+e8.defineVariable({
+  name: "org-cycle-emulate-tab",
+  doc:
+    "Where TAB in Org indents as TAB does elsewhere, rather than cycling the heading above: t everywhere but on headings, " +
+    "exc-hl-bol everywhere but at a heading's start, white only on blank lines, whitestart only before a line's first non-blank, nil nowhere.",
+  value: true,
+});
+e8.defineHook(
   "org-tab-before-tab-emulation-hook",
   "Functions TAB in Org tries where it would indent, not being on a heading, an item, a table or a block, each until one gives true.",
 );
@@ -3160,6 +3171,22 @@ const cycle = e8.defineCommand({
   run: () => orgCycle(e8.prefixArg()),
 });
 
+/** Where TAB is cycling the heading above from, where it does not emulate TAB, which Org does by calling itself. */
+let cyclingAboveFrom: number | undefined;
+
+/**
+ * Where org-back-to-heading goes, without invisible-ok: the heading on
+ * point's line or above it that shows, or the narrowing's start under a
+ * heading above the narrowing; signalling before the first heading.
+ */
+function backToShownHeadingPos(): number {
+  if (underHeadingAboveNarrowing()) return e8.pointMin();
+  const all = headings();
+  const i = visibleHeadingIndex(all, lineAt());
+  if (i === undefined) backToHeading(true);
+  return all[i!].start;
+}
+
 /** TAB in Org, as org-cycle does with prefix argument arg. */
 function orgCycle(arg: e8.PrefixArg): void {
   {
@@ -3184,6 +3211,19 @@ function orgCycle(arg: e8.PrefixArg): void {
     if (Array.isArray(arg) && arg[0] === 64) {
       for (const spec of FOLD_SPECS) flag(0, e8.bufferSize(), false, spec);
       e8.message("Entire buffer visible, including drawers", { log: false });
+      return;
+    }
+    // A number: the subtree that many levels up shown, or at that level, as org-cycle does with one.
+    if (typeof arg === "number") {
+      e8.saveExcursion(() => {
+        e8.gotoChar(backToShownHeadingPos());
+        const level = parseHeading(lineAt())?.level ?? 0;
+        e8.callWithPrefix(arg < 0 ? -arg : level - arg, "outline-up-heading");
+        // The subtree shown to the start of the next, newline and all, as org-fold-show-subtree.
+        const all = headings();
+        const i = headingIndex(all, lineAt());
+        if (i !== undefined) flag(e8.point(), nextSameOrHigher(all, i)?.start ?? e8.pointMax(), false);
+      });
       return;
     }
     // At the buffer's start, not on a heading, cycle globally with org-cycle-global-at-bob, the window left alone.
@@ -3215,8 +3255,13 @@ function orgCycle(arg: e8.PrefixArg): void {
       e8.call("org-table-next-field");
       return;
     }
+    // nil as null or false.
+    const emulate = e8.variable("org-cycle-emulate-tab") ?? null;
+    const bol = e8.point() === e8.lineStart(line);
+    // At a heading's start only, with exc-hl-bol.
+    const cycles = bol || emulate !== "exc-hl-bol";
     const here = headingHere();
-    if (here && here[0][here[1]].level <= nstars) {
+    if (here && here[0][here[1]].level <= nstars && cycles) {
       // On a hidden heading, the one cycled is the nearest that shows above,
       // as org-back-to-heading finds it.
       const [all, at] = here;
@@ -3225,12 +3270,43 @@ function orgCycle(arg: e8.PrefixArg): void {
       cycleHeading(all, i, at);
       return;
     }
-    if (itemLine(line)) {
+    if (itemLine(line) && cycles) {
       cycleItem(line);
       return;
     }
+    // In a buffer that cannot change, back to the heading, as Org goes.
+    if (e8.bufferReadOnly()) {
+      e8.gotoChar(backToShownHeadingPos());
+      return;
+    }
+    if (e8.runHookWithArgsUntilSuccess("org-tab-after-check-for-cycling-hook")) return;
     // From there TAB emulation, after what else wants TAB, as org-tempo's templates.
     if (e8.runHookWithArgsUntilSuccess("org-tab-before-tab-emulation-hook")) return;
+    // Where org-cycle-emulate-tab says TAB is TAB; elsewhere the heading above is cycled.
+    const lead = /^[ \t]*/.exec(e8.lineText(line))![0];
+    const leadEnd = e8.lineStart(line) + charCount(lead);
+    const headingAtBol = bol && here !== undefined && here[0][here[1]].line === line && here[0][here[1]].level <= nstars;
+    const emulates =
+      (emulate === "exc-hl-bol" && !headingAtBol) ||
+      emulate === true ||
+      (emulate === "white" && leadEnd === e8.lineEnd(line)) ||
+      (emulate === "whitestart" && leadEnd >= e8.point());
+    if (!emulates) {
+      // As Org's org-back-to-heading and org-cycle there, which Org repeats for ever when that cycles nothing.
+      e8.saveExcursion(() => {
+        const from = backToShownHeadingPos();
+        if (cyclingAboveFrom === from) e8.signal("excessive-lisp-nesting", "Lisp nesting exceeds \u2018max-lisp-eval-depth\u2019: 1601");
+        const outer = cyclingAboveFrom;
+        cyclingAboveFrom = from;
+        try {
+          e8.gotoChar(from);
+          orgCycle(null);
+        } finally {
+          cyclingAboveFrom = outer;
+        }
+      });
+      return;
+    }
     // TAB as indent-for-tab-command does: the region if it is active, then
     // the mark goes, as indent-region sets deactivate-mark.
     if (orgRegionActive()) {
