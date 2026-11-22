@@ -457,7 +457,7 @@ function forwardParagraph(n: number): number {
 }
 
 /** Fills each paragraph from `from` to `to`, as fill-region, and returns the last fill prefix. */
-function fillRegion(from: number, to: number, justify?: string): string | undefined {
+export function fillRegion(from: number, to: number, justify?: string): string | undefined {
   const start = marker(e8.point());
   const max = marker(Math.max(from, to), true);
   const beg = Math.min(from, to);
