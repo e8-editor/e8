@@ -563,7 +563,6 @@ export function sameStruct(a: Struct, b: Struct): boolean {
   return a.length === b.length && a.every((e, k) => sameItem(e, b[k]));
 }
 
-/** A bullet with one space after it, as org-list-bullet-string makes it. */
 e8.defineVariable({
   name: "org-list-two-spaces-after-bullet-regexp",
   doc: "A regexp matching the bullets that take two spaces after them, rather than one, as \"[0-9]\" for numbered items. nil for none.",
@@ -573,10 +572,11 @@ e8.defineVariable({
 /** Whether a bullet takes two spaces after it, as org-list-two-spaces-after-bullet-regexp says. */
 export function twoSpacesAfter(bullet: string): boolean {
   const regexp = e8.variable("org-list-two-spaces-after-bullet-regexp");
-  return typeof regexp === "string" && regexp !== "" && e8.stringMatch(regexp, bullet) !== undefined;
+  return typeof regexp === "string" && e8.stringMatch(regexp, bullet) !== undefined;
 }
 
-function bulletString(bullet: string): string {
+/** A bullet with one space after it, or two as org-list-two-spaces-after-bullet-regexp says, as org-list-bullet-string makes it. */
+export function bulletString(bullet: string): string {
   const m = /\S+([ \t]*)/.exec(bullet);
   if (!m) return bullet;
   const at = (m.index ?? 0) + m[0].length - m[1].length;

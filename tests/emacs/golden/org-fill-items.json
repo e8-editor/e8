@@ -264,6 +264,370 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "note-two-spaces",
+      "input": {
+        "text": "* a\n",
+        "point": 2,
+        "keys": "C-c C-z o n e RET t w o C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "-"
+        }
+      },
+      "text": "* a\n-  Note taken on [2026-10-28 Wed 12:00] \\\\\n   one\n   two",
+      "visible": "* a\n-  Note taken on [2026-10-28 Wed 12:00] \\\\\n   one\n   two",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "repeat-log-two-spaces",
+      "input": {
+        "text": "* TODO a\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+        "point": 2,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "-"
+        }
+      },
+      "text": "* TODO a\nSCHEDULED: <2026-10-29 Thu +1d>\n:PROPERTIES:\n:LAST_REPEAT: [2026-10-28 Wed 12:00]\n:END:\n-  State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00]",
+      "visible": "* TODO a\nSCHEDULED: <2026-10-29 Thu +1d>\n:PROPERTIES:\n-  State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00]",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "repeat-log-drawer-two-spaces",
+      "input": {
+        "text": "* TODO a\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+        "point": 2,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "-",
+          "org-log-into-drawer": true
+        }
+      },
+      "text": "* TODO a\nSCHEDULED: <2026-10-29 Thu +1d>\n:PROPERTIES:\n:LAST_REPEAT: [2026-10-28 Wed 12:00]\n:END:\n:LOGBOOK:\n-  State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00]\n:END:\n",
+      "visible": "* TODO a\nSCHEDULED: <2026-10-29 Thu +1d>\n:PROPERTIES:\n:LOGBOOK:\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-line-two-spaces",
+      "input": {
+        "text": "plain text\n",
+        "point": 3,
+        "keys": "C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "-"
+        }
+      },
+      "text": "-  plain text\n",
+      "visible": "-  plain text\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-region-two-spaces",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "-"
+        }
+      },
+      "text": "-  one\n-  two\n",
+      "visible": "-  one\n-  two\n",
+      "point": 0,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-headings-two-spaces",
+      "input": {
+        "text": "* H1\nbody\n** H2\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "-"
+        }
+      },
+      "text": "-  H1\n   body\n   -  H2\n",
+      "visible": "-  H1\n   body\n   -  H2\n",
+      "point": 0,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-headings-two-spaces-any",
+      "input": {
+        "text": "* H1\nbody\n** H2\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "[-+*]"
+        }
+      },
+      "text": "-  H1\n   body\n   -  H2\n",
+      "visible": "-  H1\n   body\n   -  H2\n",
+      "point": 0,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-todo-headings-two-spaces",
+      "input": {
+        "text": "* TODO H1\n** DONE H2\n",
+        "point": 0,
+        "keys": "C-x h C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "-"
+        }
+      },
+      "text": "-  [X] H1\n   -  [X] H2\n",
+      "visible": "-  [X] H1\n   -  [X] H2\n",
+      "point": 0,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-region-one-item",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x h C-u C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "- one\n  two\n",
+      "visible": "- one\n  two\n",
+      "point": 0,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-region-one-item-indented",
+      "input": {
+        "text": "  one\nthree\n    four\n\nfive\n",
+        "point": 0,
+        "keys": "C-x h C-u C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "  - one\n    three\n\tfour\n\n    five\n",
+      "visible": "  - one\n    three\n\tfour\n\n    five\n",
+      "point": 0,
+      "mark": 34,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-region-one-item-two-spaces",
+      "input": {
+        "text": "one\ntwo\n",
+        "point": 0,
+        "keys": "C-x h C-u C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": "-"
+        }
+      },
+      "text": "-  one\n   two\n",
+      "visible": "-  one\n   two\n",
+      "point": 0,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-region-one-item-heading",
+      "input": {
+        "text": "one\ntwo\n* H\nthree\n",
+        "point": 0,
+        "keys": "C-x h C-u C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "- one\n  two\n* H\n  three\n",
+      "visible": "- one\n  two\n* H\n  three\n",
+      "point": 0,
+      "mark": 24,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "toggle-line-one-item",
+      "input": {
+        "text": "  one\ntwo\n",
+        "point": 4,
+        "keys": "C-u C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "  - one\ntwo\n",
+      "visible": "  - one\ntwo\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "empty-regexp-new-item",
+      "input": {
+        "text": "1. first\n",
+        "point": 8,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": ""
+        }
+      },
+      "text": "1.  first\n2.  x\n",
+      "visible": "1.  first\n2.  x\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "empty-regexp-fill",
+      "input": {
+        "text": "1. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-list-two-spaces-after-bullet-regexp": ""
+        }
+      },
+      "text": "1. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n    rrr sss ttt uuu vvv\n",
+      "visible": "1. aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n    rrr sss ttt uuu vvv\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
