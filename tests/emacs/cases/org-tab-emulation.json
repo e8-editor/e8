@@ -481,5 +481,79 @@
   "keys": "C-x C-q TAB",
   "point": 8,
   "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-nil-hidden-heading-above",
+  "text": "* A\n** B\nbody b\n* C\n",
+  "keys": "S-<tab> TAB",
+  "point": 12,
+  "vars": {
+   "org-cycle-emulate-tab": false
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-white-hidden-heading-above",
+  "text": "* A\n** B\nbody b\n* C\n",
+  "keys": "S-<tab> TAB",
+  "point": 12,
+  "vars": {
+   "org-cycle-emulate-tab": "'white"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "read-only-hidden-heading",
+  "text": "* A\n** B\nbody b\n* C\n",
+  "keys": "C-x C-q S-<tab> TAB",
+  "point": 12,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-tab-shows-the-last-newline",
+  "text": "* A\n** B\nbody\n** B2\nx\n",
+  "keys": "S-<tab> S-<tab> C-1 TAB",
+  "point": 4,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-tab-trailing-blank-lines",
+  "text": "* A\n** B\nbody\n\n\n",
+  "keys": "S-<tab> C-1 TAB",
+  "point": 0,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "emulate-nil-runaway",
+  "text": "* A\n** B\nbody\n* D\n",
+  "keys": "TAB",
+  "point": 11,
+  "vars": {
+   "org-cycle-emulate-tab": false,
+   "org-cycle-max-level": 1
+  }
  }
 ]

@@ -937,6 +937,150 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "emulate-nil-hidden-heading-above",
+      "input": {
+        "text": "* A\n** B\nbody b\n* C\n",
+        "point": 12,
+        "keys": "S-<tab> TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-emulate-tab": false
+        }
+      },
+      "text": "* A\n** B\nbody b\n* C\n",
+      "visible": "* A\n** B\n* C\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "emulate-white-hidden-heading-above",
+      "input": {
+        "text": "* A\n** B\nbody b\n* C\n",
+        "point": 12,
+        "keys": "S-<tab> TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-emulate-tab": "'white"
+        }
+      },
+      "text": "* A\n** B\nbody b\n* C\n",
+      "visible": "* A\n** B\n* C\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "read-only-hidden-heading",
+      "input": {
+        "text": "* A\n** B\nbody b\n* C\n",
+        "point": 12,
+        "keys": "C-x C-q S-<tab> TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* A\n** B\nbody b\n* C\n",
+      "visible": "* A\n* C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "numeric-tab-shows-the-last-newline",
+      "input": {
+        "text": "* A\n** B\nbody\n** B2\nx\n",
+        "point": 4,
+        "keys": "S-<tab> S-<tab> C-1 TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* A\n** B\nbody\n** B2\nx\n",
+      "visible": "* A\n** B\nbody\n** B2\nx\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "numeric-tab-trailing-blank-lines",
+      "input": {
+        "text": "* A\n** B\nbody\n\n\n",
+        "point": 0,
+        "keys": "S-<tab> C-1 TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* A\n** B\nbody\n\n\n",
+      "visible": "* A",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Already at top level of the outline"
+    },
+    {
+      "name": "emulate-nil-runaway",
+      "input": {
+        "text": "* A\n** B\nbody\n* D\n",
+        "point": 11,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-emulate-tab": false,
+          "org-cycle-max-level": 1
+        }
+      },
+      "text": "* A\n** B\nbody\n* D\n",
+      "visible": "* A\n** B\nbody\n* D\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Lisp nesting exceeds ‘max-lisp-eval-depth’: 1601"
     }
   ]
 }

@@ -3171,8 +3171,21 @@ const cycle = e8.defineCommand({
   run: () => orgCycle(e8.prefixArg()),
 });
 
-/** Whether TAB is cycling the heading above where it does not emulate TAB, which Org does by calling itself. */
-let cyclingAbove = 0;
+/** Where TAB is cycling the heading above from, where it does not emulate TAB, which Org does by calling itself. */
+let cyclingAboveFrom: number | undefined;
+
+/**
+ * Where org-back-to-heading goes, without invisible-ok: the heading on
+ * point's line or above it that shows, or the narrowing's start under a
+ * heading above the narrowing; signalling before the first heading.
+ */
+function backToShownHeadingPos(): number {
+  if (underHeadingAboveNarrowing()) return e8.pointMin();
+  const all = headings();
+  const i = visibleHeadingIndex(all, lineAt());
+  if (i === undefined) backToHeading(true);
+  return all[i!].start;
+}
 
 /** TAB in Org, as org-cycle does with prefix argument arg. */
 function orgCycle(arg: e8.PrefixArg): void {
@@ -3203,10 +3216,13 @@ function orgCycle(arg: e8.PrefixArg): void {
     // A number: the subtree that many levels up shown, or at that level, as org-cycle does with one.
     if (typeof arg === "number") {
       e8.saveExcursion(() => {
-        const [all, i] = backToHeading(true);
-        e8.gotoChar(all[i].start);
-        e8.callWithPrefix(arg < 0 ? -arg : all[i].level - arg, "outline-up-heading");
-        e8.call("outline-show-subtree");
+        e8.gotoChar(backToShownHeadingPos());
+        const level = parseHeading(lineAt())?.level ?? 0;
+        e8.callWithPrefix(arg < 0 ? -arg : level - arg, "outline-up-heading");
+        // The subtree shown to the start of the next, newline and all, as org-fold-show-subtree.
+        const all = headings();
+        const i = headingIndex(all, lineAt());
+        if (i !== undefined) flag(e8.point(), nextSameOrHigher(all, i)?.start ?? e8.pointMax(), false);
       });
       return;
     }
@@ -3239,7 +3255,8 @@ function orgCycle(arg: e8.PrefixArg): void {
       e8.call("org-table-next-field");
       return;
     }
-    const emulate = e8.variable("org-cycle-emulate-tab") ?? true;
+    // nil as null or false.
+    const emulate = e8.variable("org-cycle-emulate-tab") ?? null;
     const bol = e8.point() === e8.lineStart(line);
     // At a heading's start only, with exc-hl-bol.
     const cycles = bol || emulate !== "exc-hl-bol";
@@ -3259,8 +3276,7 @@ function orgCycle(arg: e8.PrefixArg): void {
     }
     // In a buffer that cannot change, back to the heading, as Org goes.
     if (e8.bufferReadOnly()) {
-      const [all, i] = backToHeading(true);
-      e8.gotoChar(all[i].start);
+      e8.gotoChar(backToShownHeadingPos());
       return;
     }
     if (e8.runHookWithArgsUntilSuccess("org-tab-after-check-for-cycling-hook")) return;
@@ -3277,17 +3293,18 @@ function orgCycle(arg: e8.PrefixArg): void {
       (emulate === "whitestart" && leadEnd >= e8.point());
     if (!emulates) {
       // As Org's org-back-to-heading and org-cycle there, which Org repeats for ever when that cycles nothing.
-      if (cyclingAbove > 0) e8.signal("error", "Lisp nesting exceeds \u2018max-lisp-eval-depth\u2019");
-      cyclingAbove++;
-      try {
-        e8.saveExcursion(() => {
-          const [all, i] = backToHeading(true);
-          e8.gotoChar(all[i].start);
+      e8.saveExcursion(() => {
+        const from = backToShownHeadingPos();
+        if (cyclingAboveFrom === from) e8.signal("excessive-lisp-nesting", "Lisp nesting exceeds \u2018max-lisp-eval-depth\u2019: 1601");
+        const outer = cyclingAboveFrom;
+        cyclingAboveFrom = from;
+        try {
+          e8.gotoChar(from);
           orgCycle(null);
-        });
-      } finally {
-        cyclingAbove--;
-      }
+        } finally {
+          cyclingAboveFrom = outer;
+        }
+      });
       return;
     }
     // TAB as indent-for-tab-command does: the region if it is active, then
