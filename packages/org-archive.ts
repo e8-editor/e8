@@ -672,7 +672,7 @@ function archiveToSibling(): void {
     e8.gotoChar(e8.markerPosition(target)!);
     e8.deleteMarker(target);
     const pastedAt = e8.point();
-    pasteSubtree((h.level + 1) as e8.PrefixArg);
+    pasteSubtree(validLevel(h.level, 1) as e8.PrefixArg);
     const pasted = headings().find((x) => x.start >= pastedAt);
     if (pasted) entryPut(pasted.line, "ARCHIVE_TIME", formatTimestamp(today(true), true));
     // The sibling folded, as org-fold-subtree, its blank lines shown, and the counts above brought up to date.

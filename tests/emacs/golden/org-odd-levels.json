@@ -1,0 +1,843 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "demote-odd",
+      "input": {
+        "text": "* A\n*** B\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n***** B\n",
+      "visible": "* A\n***** B\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "promote-odd",
+      "input": {
+        "text": "* A\n*** B\n",
+        "point": 6,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "promote-level-one-odd",
+      "input": {
+        "text": "* A\n",
+        "point": 0,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot promote to level 0.  UNDO to recover if necessary"
+    },
+    {
+      "name": "demote-even-level-odd",
+      "input": {
+        "text": "* A\n** B\n",
+        "point": 4,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** B\n",
+      "visible": "* A\n*** B\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "promote-even-level-odd",
+      "input": {
+        "text": "* A\n** B\n",
+        "point": 4,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "demote-subtree-odd",
+      "input": {
+        "text": "* A\n*** B\n* C\n",
+        "point": 0,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "*** A\n***** B\n* C\n",
+      "visible": "*** A\n***** B\n* C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "promote-subtree-odd",
+      "input": {
+        "text": "*** A\n***** B\n* C\n",
+        "point": 0,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** B\n* C\n",
+      "visible": "* A\n*** B\n* C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "promote-subtree-at-top-odd",
+      "input": {
+        "text": "* A\n*** B\n",
+        "point": 0,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** B\n",
+      "visible": "* A\n*** B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot promote to level 0.  UNDO to recover if necessary"
+    },
+    {
+      "name": "demote-region-odd",
+      "input": {
+        "text": "* A\n* B\n* C\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-n M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "*** A\n*** B\n* C\n",
+      "visible": "*** A\n*** B\n* C\n",
+      "point": 12,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "startup-odd-demotes",
+      "input": {
+        "text": "#+STARTUP: odd\n* A\n*** B\n",
+        "point": 22,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+STARTUP: odd\n* A\n***** B\n",
+      "visible": "#+STARTUP: odd\n* A\n***** B\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cycle-level-odd",
+      "input": {
+        "text": "* A\n* ",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** ",
+      "visible": "* A\n*** ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cycle-level-twice-odd",
+      "input": {
+        "text": "* A\n* ",
+        "point": 6,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n* ",
+      "visible": "* A\n* ",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cycle-level-three-times-odd",
+      "input": {
+        "text": "* A\n* ",
+        "point": 6,
+        "keys": "TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** ",
+      "visible": "* A\n*** ",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cycle-level-from-deep-odd",
+      "input": {
+        "text": "* A\n*** B\n***** ",
+        "point": 16,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** B\n* ",
+      "visible": "* A\n*** B\n* ",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-to-headings-odd",
+      "input": {
+        "text": "* H\n- a\n  - b\n- c\n",
+        "point": 4,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* H\n*** a\n  - b\n- c\n",
+      "visible": "* H\n*** a\n  - b\n- c\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-to-headings-under-a-third-odd",
+      "input": {
+        "text": "* H\n*** I\n- a\n  - b\n",
+        "point": 10,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* H\n*** I\n***** a\n  - b\n",
+      "visible": "* H\n*** I\n***** a\n  - b\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-sibling-odd",
+      "input": {
+        "text": "* P\n*** A\n*** B\n",
+        "point": 4,
+        "keys": "C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* P\n*** B\n*** Archive                                                         :ARCHIVE:\n***** A\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:END:\n",
+      "visible": "* P\n*** B\n*** Archive                                                         :ARCHIVE:",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "*** A\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-heading-odd",
+      "input": {
+        "text": "* A\n*** B\n",
+        "point": 9,
+        "keys": "M-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** B\n*** \n",
+      "visible": "* A\n*** B\n*** \n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "demote-with-tags-odd",
+      "input": {
+        "text": "* A\n*** B                                                                  :t:\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n***** B                                                                   :t:\n",
+      "visible": "* A\n***** B                                                                   :t:\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headings-to-items-odd",
+      "input": {
+        "text": "* A\n*** B\n***** C\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "- A\n  - B\n    - C\n",
+      "visible": "- A\n  - B\n    - C\n",
+      "point": 18,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headings-to-items-adapted",
+      "input": {
+        "text": "* P\n** A\n*** B\n",
+        "point": 0,
+        "keys": "C-n C-SPC M-> C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* P\n  - A\n    - B\n",
+      "visible": "* P\n  - A\n    - B\n",
+      "point": 18,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headings-to-items-adapted-with-text",
+      "input": {
+        "text": "* P\n** A\ntext\n*** B\n",
+        "point": 0,
+        "keys": "C-n C-SPC M-> C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* P\n  - A\n    text\n    - B\n",
+      "visible": "* P\n  - A\n    text\n    - B\n",
+      "point": 27,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-indent-odd",
+      "input": {
+        "text": "* A\n- one\n- two\n",
+        "point": 4,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n  - one\n  - two\n",
+      "visible": "* A\n  - one\n  - two\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-outdent-odd",
+      "input": {
+        "text": "* A\n  - one\n  - two\n",
+        "point": 6,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n- one\n- two\n",
+      "visible": "* A\n- one\n- two\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "list-outdent-past-margin-odd",
+      "input": {
+        "text": "* A\n - one\n - two\n",
+        "point": 5,
+        "keys": "M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n - one\n - two\n",
+      "visible": "* A\n - one\n - two\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot outdent beyond margin"
+    },
+    {
+      "name": "children-on-mixed-levels-odd",
+      "input": {
+        "text": "* A\n** B\n*** C\n***** D\n* E\n",
+        "point": 0,
+        "keys": "S-<tab> TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n** B\n*** C\n***** D\n* E\n",
+      "visible": "* A\n** B\n*** C\n* E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tags-view-indented-odd",
+      "input": {
+        "text": "#+STARTUP: odd\n* A :t:\n*** B :t:\n***** C :t:\n** D :t:\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-odd.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "t"
+        ],
+        "globals": {
+          "org-tags-match-list-sublevels": "'indented"
+        }
+      },
+      "text": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-odd:     A                                                             :t:\n  e8-odd:     .B                                                            :t:\n  e8-odd:     ..C                                                           :t:\n  e8-odd:     .D                                                            :t:\n",
+      "visible": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-odd:     A                                                             :t:\n  e8-odd:     .B                                                            :t:\n  e8-odd:     ..C                                                           :t:\n  e8-odd:     .D                                                            :t:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "capture-olp-missing-odd",
+      "input": {
+        "text": "* T\n*** T1\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-odd-capture.org",
+        "today": "2026-10-28",
+        "capture_templates": [
+          [
+            "t",
+            "Task",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "T",
+              "Missing"
+            ],
+            "* X",
+            ":immediate-finish",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* T\n*** T1\n",
+      "visible": "* T\n*** T1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Heading not found on level 3: Missing"
+    },
+    {
+      "name": "capture-olp-not-unique-odd",
+      "input": {
+        "text": "* T\n** T1\n*** T1\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-odd-capture.org",
+        "today": "2026-10-28",
+        "capture_templates": [
+          [
+            "t",
+            "Task",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "T",
+              "T1"
+            ],
+            "* X",
+            ":immediate-finish",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "vars": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* T\n** T1\n*** T1\n",
+      "visible": "* T\n** T1\n*** T1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Heading not unique on level 3: T1"
+    },
+    {
+      "name": "capture-olp-top-level-only",
+      "input": {
+        "text": "** T\n*** T1\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-odd-capture.org",
+        "today": "2026-10-28",
+        "capture_templates": [
+          [
+            "t",
+            "Task",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "T",
+              "T1"
+            ],
+            "* X",
+            ":immediate-finish",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "** T\n*** T1\n",
+      "visible": "** T\n*** T1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Heading not found on level 1: T"
+    }
+  ]
+}

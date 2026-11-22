@@ -1057,7 +1057,9 @@ function indentItemGeneric(arg: number, noSubtree: boolean, struct: Struct): voi
     // As Org binds deactivate-mark to nil, a region stays active.
     e8.keepMarkActive(() => {
       if (special) {
-        const offset = arg < 0 ? -1 : 1;
+        // Two columns with org-odd-levels-only, as org-level-increment says.
+        const step = e8.variable("org-odd-levels-only") === true ? 2 : 1;
+        const offset = arg < 0 ? -step : step;
         const first = struct.find((e) => e.pos === beg) ?? struct[0];
         const old = copyStruct(struct);
         if (first.ind + offset < 0) throw new Error("Cannot outdent beyond margin");

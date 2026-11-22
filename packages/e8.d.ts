@@ -13877,6 +13877,12 @@ declare global {
        */
       "org-cycle-inline-images-display": Value;
       /**
+       * Whether headings deeper than org-n-level-faces take the level faces again from the first, rather than all the last.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-level-faces": Value;
+      /**
        * Whether TAB opens archived subtrees as it does others; nil keeps them closed, as org-cycle-hide-archived-subtrees does.
        *
        * Defined in packages/org.ts.
@@ -14385,6 +14391,12 @@ declare global {
        */
       "org-mode-map": Value;
       /**
+       * How many of the eight level faces headings use, from org-level-1.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-n-level-faces": Value;
+      /**
        * Whether the note being stored was cancelled, while org-finish-function runs.
        *
        * Defined in packages/org.ts.
@@ -14403,7 +14415,7 @@ declare global {
        */
       "org-occur-highlights": Value;
       /**
-       * Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file. Archiving and date trees follow it; promoting, demoting and making headings do not yet.
+       * Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file.
        *
        * Defined in packages/org.ts.
        */

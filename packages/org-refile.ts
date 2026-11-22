@@ -4,7 +4,7 @@
 // org-refile-use-outline-path, its outline path, a level at a time.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { addLogNote, alignTags, copySubtree, type Heading, headings, killIsSubtree, parseHeading, pasteSubtree, saveMarkersInRegion, subtreeRegion } from "org";
+import { addLogNote, alignTags, copySubtree, type Heading, headings, killIsSubtree, parseHeading, pasteSubtree, saveMarkersInRegion, subtreeRegion, validLevel } from "org";
 import { ancestors, showHeadingLine } from "org-fold";
 import { entryHeading } from "org-list";
 import { edDelete, lineAt, orgRegionActive } from "org-macs";
@@ -74,13 +74,17 @@ function plistGet(variable: string, key: string): e8.Value | undefined {
   return undefined;
 }
 
-/** Which headings a target spec takes, as org-refile-get-targets turns it into a regexp. */
+/** Which headings a target spec takes, as org-refile-get-targets turns it into a regexp, in the buffer refiled from. */
 function specMatcher(kind: string, value: e8.Value): (h: Heading, text: string) => boolean {
+  // The stars of a level, 2N-1 with org-odd-levels-only as the buffer refiled from has it, as Org makes the regexp there.
+  const odd = e8.variable("org-odd-levels-only") === true;
+  const starsOfLevel = (n: number): number => (odd ? 2 * n - 1 : n);
   switch (kind) {
+    // Levels as stars, two a level with org-odd-levels-only, as org-refile-get-targets counts them.
     case ":level":
-      return (h) => h.level === Number(value);
+      return (h) => h.level === starsOfLevel(Number(value));
     case ":maxlevel":
-      return (h) => h.level >= 1 && h.level <= Number(value);
+      return (h) => h.level >= 1 && h.level <= starsOfLevel(Number(value));
     case ":tag":
       return (h) => h.tags.includes(String(value));
     case ":todo":
@@ -150,14 +154,15 @@ export function refileTargets(defaultBuffer: string = e8.bufferName()): Target[]
   const caching = truthy(e8.variable("org-refile-use-cache"));
   e8.message("Getting targets...");
   const targets: Target[] = [];
+  const oddHere = e8.variable("org-odd-levels-only") === true;
   for (const [files, kind, value] of entries) {
     const matches = specMatcher(kind, value);
     for (const buffer of entryFiles(files, defaultBuffer)) {
       e8.withCurrentBuffer(buffer, () => {
         if (!e8.derivedModeP("org-mode")) e8.signal("error", `Major mode in refile target buffer "${buffer}" must be ‘org-mode’`);
         const file = e8.bufferFileName();
-        // By the file and the spec only, as org-refile-cache-get's identifiers.
-        const key = JSON.stringify([file ?? null, kind, value]);
+        // By the file and the spec, odd levels or not, as org-refile-cache-get's identifiers hold the spec's regexp.
+        const key = JSON.stringify([file ?? null, kind, value, oddHere]);
         const kept = cacheGet(key);
         if (kept) {
           targets.push(...kept);
@@ -300,7 +305,7 @@ function newChild(parent: Target, child: string): Target {
         } else if (e8.point() < e8.pointMax()) e8.gotoChar(e8.lineStart(Math.max(0, lineAt() - 1)));
         e8.gotoChar(Math.min(e8.lineEnd(lineAt()) + 1, e8.pointMax()));
         if (e8.point() > before) e8.gotoChar(before);
-        e8.insert(`\n${"*".repeat(pos >= 0 && level !== undefined ? level + 1 : 1)} ${child}\n`);
+        e8.insert(`\n${"*".repeat(pos >= 0 && level !== undefined ? validLevel(level, 1) : 1)} ${child}\n`);
         e8.gotoChar(e8.lineStart(lineAt() - 1));
         return { name: `${parent.name}/${child}`, file: parent.file, buffer: parent.buffer, start: e8.point() };
       }),
@@ -504,7 +509,7 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
         const there = headings();
         const ti = pos >= 0 ? there.findIndex((x) => x.start === pos) : -1;
         if (pos >= 0 && ti >= 0) {
-          level = Math.max(1, there[ti].level + 1);
+          level = validLevel(there[ti].level, 1);
           // First, before its first child; else after its subtree.
           e8.gotoChar(reversed ? (there[ti + 1]?.start ?? e8.pointMax()) : subtreeRegion(there, ti)[1]);
         } else {

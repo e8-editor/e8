@@ -536,21 +536,25 @@ const atOrgHeading = (): boolean => e8.derivedModeP("org-mode") && isHeadingLine
 function setTargetLocation(t: CaptureTemplate, prepend: boolean, env: TargetEnv = {}): Target {
   const target = (env.here ? ["here"] : Array.isArray(t[3]) ? t[3] : [t[3]]) as e8.Value[];
   const kind = typeof target[0] === "symbol" ? e8.symbolName(target[0]) : String(target[0]);
-  /** The heading with this title under the one at `under`, as org-find-olp looks for each. */
-  const child = (title: string, under: Heading | undefined): Heading | undefined => {
-    const all = headings();
-    const [start, end] = under === undefined ? [0, e8.bufferSize()] : subtreeRegion(all, all.findIndex((x) => x.start === under.start));
-    const level = under === undefined ? Math.min(...all.map((h) => h.level)) : under.level + 1;
-    return all.find((h) => h.start >= start && h.start < end && titleWithoutCookies(h.title) === title && (under === undefined ? true : h.level === level));
-  };
-  /** The heading an outline path names, as org-find-olp, which signals when one is missing. */
+  /**
+   * The heading an outline path names, as org-find-olp: each title the one
+   * heading at its level under the last, a top-level one first, one or,
+   * with org-odd-levels-only, two levels down after; signalling when there
+   * is none or more than one.
+   */
   const olp = (path: string[]): Heading | undefined => {
     let h: Heading | undefined;
-    path.forEach((title, n) => {
-      const found = child(title, h);
-      if (!found) e8.signal("error", `Heading not found on level ${n + 1}: ${title}`);
-      h = found;
-    });
+    let [lmin, lmax] = [1, 1];
+    for (const title of path) {
+      const all = headings();
+      const [start, end] = h === undefined ? [0, e8.bufferSize()] : subtreeRegion(all, all.findIndex((x) => x.start === h!.start));
+      const found = all.filter((x) => x.start >= start && x.start < end && x.level >= lmin && x.level <= lmax && titleWithoutCookies(x.title) === title);
+      if (found.length === 0) e8.signal("error", `Heading not found on level ${lmax}: ${title}`);
+      if (found.length > 1) e8.signal("error", `Heading not unique on level ${lmax}: ${title}`);
+      h = found[0];
+      lmin = h.level + 1;
+      lmax = lmin + (e8.variable("org-odd-levels-only") === true ? 1 : 0);
+    }
     return h;
   };
   newTargetBuffer = false;

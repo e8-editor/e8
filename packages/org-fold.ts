@@ -12,6 +12,7 @@ import {
   keywordLines,
   nextSameOrHigher,
   subtreeEnd,
+  validLevel,
 } from "org";
 import { elementAt } from "org-element";
 import { DRAWER_RE, ITEM_RE } from "org-list";
@@ -103,7 +104,8 @@ export function showChildren(all: Heading[], i: number): boolean {
     if (h.level > max) continue;
     if (h.level < min) {
       min = h.level;
-      max = Math.max(min, parent + 1);
+      // A level down, two with org-odd-levels-only, as org-get-valid-level gives it.
+      max = Math.max(min, validLevel(parent, 1));
     }
     showHeadingLine(h);
     any = true;

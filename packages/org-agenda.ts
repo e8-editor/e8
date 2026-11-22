@@ -988,7 +988,8 @@ function tagsView(todoOnly: boolean, match?: string): void {
             const i = headingIndex(all, h.line)!;
             if (skipped[i]) return;
             const cat = cats[i];
-            const prefix = indented ? ".".repeat(h.level - 1) : "";
+            // Dots for the level reduced with org-odd-levels-only, as org-scan-tags takes the element's.
+            const prefix = indented ? ".".repeat(reducedLevel(h.level) - 1) : "";
             const item = { cat, leader: "", buffer, pos: h.start, heading: h.start };
             // No urgency, as org-scan-tags gives its lines none: they keep the files' order.
             items.push({ ...item, text: agendaLine(h, cat, "", false, undefined, prefix), urgency: 0 });

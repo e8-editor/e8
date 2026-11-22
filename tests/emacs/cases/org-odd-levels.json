@@ -1,0 +1,468 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "demote-odd",
+  "text": "* A\n*** B\n",
+  "keys": "M-<right>",
+  "point": 6,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "promote-odd",
+  "text": "* A\n*** B\n",
+  "keys": "M-<left>",
+  "point": 6,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "promote-level-one-odd",
+  "text": "* A\n",
+  "keys": "M-<left>",
+  "point": 0,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "demote-even-level-odd",
+  "text": "* A\n** B\n",
+  "keys": "M-<right>",
+  "point": 4,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "promote-even-level-odd",
+  "text": "* A\n** B\n",
+  "keys": "M-<left>",
+  "point": 4,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "demote-subtree-odd",
+  "text": "* A\n*** B\n* C\n",
+  "keys": "M-S-<right>",
+  "point": 0,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "promote-subtree-odd",
+  "text": "*** A\n***** B\n* C\n",
+  "keys": "M-S-<left>",
+  "point": 0,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "promote-subtree-at-top-odd",
+  "text": "* A\n*** B\n",
+  "keys": "M-S-<left>",
+  "point": 0,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "demote-region-odd",
+  "text": "* A\n* B\n* C\n",
+  "keys": "C-SPC C-n C-n M-<right>",
+  "point": 0,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "startup-odd-demotes",
+  "text": "#+STARTUP: odd\n* A\n*** B\n",
+  "keys": "M-<right>",
+  "point": 22,
+  "vars": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "cycle-level-odd",
+  "text": "* A\n* ",
+  "keys": "TAB",
+  "point": 6,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "cycle-level-twice-odd",
+  "text": "* A\n* ",
+  "keys": "TAB TAB",
+  "point": 6,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "cycle-level-three-times-odd",
+  "text": "* A\n* ",
+  "keys": "TAB TAB TAB",
+  "point": 6,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "cycle-level-from-deep-odd",
+  "text": "* A\n*** B\n***** ",
+  "keys": "TAB",
+  "point": 16,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "list-to-headings-odd",
+  "text": "* H\n- a\n  - b\n- c\n",
+  "keys": "C-c *",
+  "point": 4,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "list-to-headings-under-a-third-odd",
+  "text": "* H\n*** I\n- a\n  - b\n",
+  "keys": "C-c *",
+  "point": 10,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "archive-sibling-odd",
+  "text": "* P\n*** A\n*** B\n",
+  "keys": "C-c C-x A",
+  "point": 4,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "insert-heading-odd",
+  "text": "* A\n*** B\n",
+  "keys": "M-RET",
+  "point": 9,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "demote-with-tags-odd",
+  "text": "* A\n*** B                                                                  :t:\n",
+  "keys": "M-<right>",
+  "point": 6,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "headings-to-items-odd",
+  "text": "* A\n*** B\n***** C\n",
+  "keys": "C-SPC M-> C-c -",
+  "point": 0,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "headings-to-items-adapted",
+  "text": "* P\n** A\n*** B\n",
+  "keys": "C-n C-SPC M-> C-c -",
+  "point": 0,
+  "vars": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "headings-to-items-adapted-with-text",
+  "text": "* P\n** A\ntext\n*** B\n",
+  "keys": "C-n C-SPC M-> C-c -",
+  "point": 0,
+  "vars": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "list-indent-odd",
+  "text": "* A\n- one\n- two\n",
+  "keys": "M-S-<right>",
+  "point": 4,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "list-outdent-odd",
+  "text": "* A\n  - one\n  - two\n",
+  "keys": "M-S-<left>",
+  "point": 6,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "list-outdent-past-margin-odd",
+  "text": "* A\n - one\n - two\n",
+  "keys": "M-S-<left>",
+  "point": 5,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "children-on-mixed-levels-odd",
+  "text": "* A\n** B\n*** C\n***** D\n* E\n",
+  "keys": "S-<tab> TAB",
+  "point": 0,
+  "vars": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tags-view-indented-odd",
+  "text": "#+STARTUP: odd\n* A :t:\n*** B :t:\n***** C :t:\n** D :t:\n",
+  "keys": "",
+  "point": 0,
+  "vars": {},
+  "call": [
+   "org-agenda"
+  ],
+  "answers": [
+   "m",
+   "t"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-odd.org",
+  "globals": {
+   "org-tags-match-list-sublevels": "'indented"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "capture-olp-missing-odd",
+  "text": "* T\n*** T1\n",
+  "keys": "",
+  "point": 0,
+  "call": [
+   "org-capture"
+  ],
+  "answers": [
+   "t"
+  ],
+  "visit": "e8-odd-capture.org",
+  "vars": {
+   "org-odd-levels-only": true
+  },
+  "capture_templates": [
+   [
+    "t",
+    "Task",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "T",
+     "Missing"
+    ],
+    "* X",
+    ":immediate-finish",
+    true
+   ]
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "capture-olp-not-unique-odd",
+  "text": "* T\n** T1\n*** T1\n",
+  "keys": "",
+  "point": 0,
+  "call": [
+   "org-capture"
+  ],
+  "answers": [
+   "t"
+  ],
+  "visit": "e8-odd-capture.org",
+  "vars": {
+   "org-odd-levels-only": true
+  },
+  "capture_templates": [
+   [
+    "t",
+    "Task",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "T",
+     "T1"
+    ],
+    "* X",
+    ":immediate-finish",
+    true
+   ]
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "capture-olp-top-level-only",
+  "text": "** T\n*** T1\n",
+  "keys": "",
+  "point": 0,
+  "call": [
+   "org-capture"
+  ],
+  "answers": [
+   "t"
+  ],
+  "visit": "e8-odd-capture.org",
+  "vars": {},
+  "capture_templates": [
+   [
+    "t",
+    "Task",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "T",
+     "T1"
+    ],
+    "* X",
+    ":immediate-finish",
+    true
+   ]
+  ]
+ }
+]

@@ -188,7 +188,7 @@ const variables: [string, string, e8.Value][] = [
   ["org-M-RET-may-split-line", "Whether M-RET in the middle of a line splits it, the rest going to the new heading or item.", true],
   [
     "org-odd-levels-only",
-    "Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file. Archiving and date trees follow it; promoting, demoting and making headings do not yet.",
+    "Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file.",
     false,
   ],
   [
@@ -304,6 +304,8 @@ for (const [name, doc, attributes] of faces) e8.defineFace({ name, doc, attribut
 for (let i = 1; i <= 8; i++) {
   e8.defineFace({ name: `org-level-${i}`, doc: `Level ${i} headings, and deeper levels in turn.`, attributes: { inherit: `outline-${i}` } });
 }
+e8.defineVariable({ name: "org-cycle-level-faces", doc: "Whether headings deeper than org-n-level-faces take the level faces again from the first, rather than all the last.", value: true });
+e8.defineVariable({ name: "org-n-level-faces", doc: "How many of the eight level faces headings use, from org-level-1.", value: 8 });
 
 // Text and positions. Positions count characters; JavaScript strings count
 // UTF-16 units, which differ for emoji.
@@ -2180,8 +2182,19 @@ function alistGet(name: string, key: string): e8.Value | undefined {
   return entry === undefined ? undefined : entry.length === 2 ? entry[1] : entry.slice(1);
 }
 
+/**
+ * A heading's level face, as org-get-level-face picks it: by its level
+ * reduced with org-odd-levels-only, in turn with org-cycle-level-faces, else
+ * the last of org-n-level-faces for every level past it.
+ */
+export function levelFace(level: number): string {
+  const l = e8.variable("org-odd-levels-only") === true ? 1 + Math.floor(level / 2) : level;
+  const n = Math.max(1, Math.min(8, Number(e8.variable("org-n-level-faces") ?? 8) || 8));
+  return `org-level-${truthy(e8.variable("org-cycle-level-faces") ?? true) ? ((l - 1) % n) + 1 : Math.min(l, n)}`;
+}
+
 function fontifyHeading(h: Heading, text: string): void {
-  e8.putTextProperty(h.start, h.end, "face", `org-level-${((h.level - 1) % 8) + 1}`);
+  e8.putTextProperty(h.start, h.end, "face", levelFace(h.level));
   // All but the last star, as org-get-level-face gives them org-hide.
   if (h.level > 1 && e8.variable("org-hide-leading-stars") === true) e8.putTextProperty(h.start, h.start + h.level - 1, "face", "org-hide");
   if (h.todo !== undefined && h.todoAt !== undefined) {
@@ -3181,12 +3194,15 @@ export function cycleLevel(): boolean {
       for (let i = 0; i < n; i++) e8.call("org-do-demote");
     });
   };
-  if (prev === 0) promote(cur - 1);
+  // Counted in steps of two stars with org-odd-levels-only, as org-level-increment says.
+  const inc = e8.variable("org-odd-levels-only") === true ? 2 : 1;
+  const steps = (n: number) => Math.floor(n / inc);
+  if (prev === 0) promote(steps(cur - 1));
   else if (prev === cur) demote(1);
-  else if (prev === 1) promote(cur - 1);
-  else if (cur === 1) demote(prev - 1);
+  else if (prev === 1) promote(steps(cur - 1));
+  else if (cur === 1) demote(steps(prev - 1));
   else if (cur < prev) promote(1);
-  else promote(1 + (cur - prev));
+  else promote(1 + steps(cur - prev));
   return true;
 }
 
@@ -3816,13 +3832,16 @@ e8.defineCommand({
  * and the space after them are replaced, so point inside them goes to the
  * line's start, as save-excursion leaves it.
  */
-function changeLevel(h: Heading, by: number): void {
-  if (h.level + by < 1) e8.userError("Cannot promote to level 0.  UNDO to recover if necessary");
+function changeLevel(h: Heading, by: number, oddLevels = true): void {
+  if (by < 0 && h.level === 1) e8.userError("Cannot promote to level 0.  UNDO to recover if necessary");
+  // Two stars a level with org-odd-levels-only, an even level made odd, as org-get-valid-level gives it;
+  // one star at a time without ODD-LEVELS, as org-paste-subtree binds org-odd-levels-only to nil.
+  const level = oddLevels ? validLevel(h.level, by) : Math.max(1, h.level + by);
   // Org checks folds after promoting, but not after demoting.
   const change = (): void => {
-    replaceKeepingPoint(h.start, h.start + h.level + 1, `${"*".repeat(h.level + by)} `);
+    replaceKeepingPoint(h.start, h.start + h.level + 1, `${"*".repeat(level)} `);
     if (h.tags.length > 0) alignTagsAway(h.line);
-    if (truthy(e8.variable("org-adapt-indentation"))) e8.saveExcursion(() => fixupIndentation(h.line, by));
+    if (truthy(e8.variable("org-adapt-indentation"))) e8.saveExcursion(() => fixupIndentation(h.line, level - h.level));
   };
   if (by > 0) withoutFoldChecks(change);
   else change();
@@ -3925,7 +3944,7 @@ function changeSubtreeLevel(by: number): void {
   const [all, i] = backToHeading();
   const end = subtreeRegion(all, i)[1];
   const inside = all.filter((h, k) => k >= i && h.start < end);
-  if (inside.some((h) => h.level + by < 1)) e8.userError("Cannot promote to level 0.  UNDO to recover if necessary");
+  if (by < 0 && inside.some((h) => h.level === 1)) e8.userError("Cannot promote to level 0.  UNDO to recover if necessary");
   for (const h of [...inside].reverse()) changeLevel(parseHeading(h.line) ?? h, by);
   fixPositionAfterPromote();
 }
@@ -4334,7 +4353,7 @@ export function pasteSubtree(level: e8.PrefixArg): void {
   const endMark = marker(end);
   while (shift !== 0) {
     for (const h of headings().filter((x) => x.start >= beg && x.start < endMark.pos).reverse()) {
-      changeLevel(h, shift > 0 ? 1 : -1);
+      changeLevel(h, shift > 0 ? 1 : -1, false);
     }
     shift += shift > 0 ? -1 : 1;
   }
@@ -6552,14 +6571,16 @@ const orgImenuGetTree = e8.defun("org-imenu-get-tree", () => {
   let lastLevel = 0;
   for (const h of [...headings()].reverse()) {
     const headline = imenuTitle(h);
-    if (h.level > depth || !/\S/.test(headline)) continue;
-    if (h.level >= lastLevel) {
-      subs[h.level]!.unshift([headline, h.start]);
+    // Levels reduced with org-odd-levels-only, as org-imenu-get-tree counts them.
+    const level = reducedLevel(h.level);
+    if (level > depth || !/\S/.test(headline)) continue;
+    if (level >= lastLevel) {
+      subs[level]!.unshift([headline, h.start]);
     } else {
-      subs[h.level]!.unshift([headline, subs.slice(h.level + 1).flat()]);
-      for (let i = h.level + 1; i <= depth; i++) subs[i] = [];
+      subs[level]!.unshift([headline, subs.slice(level + 1).flat()]);
+      for (let i = level + 1; i <= depth; i++) subs[i] = [];
     }
-    lastLevel = h.level;
+    lastLevel = level;
   }
   return (subs[1] ?? []) as unknown as e8.Value;
 });
@@ -8758,13 +8779,20 @@ e8.defineCommand({
         }
       } else if (parseHeading(lineAt())) {
         deleteMetadata(lineAt());
-        let refLevel = (parseHeading(lineAt()) as Heading).level;
+        // Under the heading above with org-adapt-indentation, as org-toggle-item's start-ind: its stars and a space.
+        const above = truthy(e8.variable("org-adapt-indentation") ?? null)
+          ? [...headings()].reverse().find((x) => x.line < lineAt())
+          : undefined;
+        const startInd = above === undefined ? 0 : above.level + 1;
+        // Levels reduced with org-odd-levels-only, as org-reduced-level gives them.
+        let refLevel = reducedLevel((parseHeading(lineAt()) as Heading).level);
         while (e8.point() < end.pos) {
           const line = lineAt();
           const h = parseHeading(line);
           if (!h) break;
-          const delta = Math.max(0, h.level - refLevel);
-          if (h.level < refLevel) refLevel = h.level;
+          const level = reducedLevel(h.level);
+          const delta = Math.max(0, level - refLevel);
+          if (level < refLevel) refLevel = level;
           deleteMetadata(line);
           // The stars and TODO state go; the title stays.
           const fresh = parseHeading(line) as Heading;
@@ -8774,7 +8802,7 @@ e8.defineCommand({
           // heading nor an item between these two.
           edDelete(ls, titleAt);
           edInsert(ls, "- ");
-          indentLineTo(line, 2 * delta);
+          indentLineTo(line, startInd + 2 * delta);
           if (h.todo !== undefined) {
             const struct = listStruct(line);
             const old = copyStruct(struct);
@@ -8788,7 +8816,7 @@ e8.defineCommand({
           }
           e8.gotoChar(e8.lineStart(line + 1));
           const limit = marker(Math.min(end.pos, sectionEnd));
-          shiftText(2 * (delta + 1), limit);
+          shiftText(startInd + 2 * (delta + 1), limit);
           dropMarker(limit);
         }
       } else {
@@ -8986,17 +9014,19 @@ function listToSubtree(pos: number, limit: number): number {
   }
   edDelete(pos, bottom);
   const all = headings();
-  // As org-current-level, from the whole buffer, so a heading above a narrowing counts.
+  // As org-current-level, from the whole buffer, so a heading above a narrowing counts, its level reduced as org-reduced-level does.
   const level = e8.saveRestriction(() => {
     e8.widen();
     const wide = headings();
     const above = headingIndex(wide, lineAt(pos));
-    return above === undefined ? 1 : wide[above].level + 1;
+    return above === undefined ? 1 : reducedLevel(wide[above].level) + 1;
   });
+  // Two stars a level with org-odd-levels-only, as org-list-to-subtree makes them.
+  const stars = (n: number) => (e8.variable("org-odd-levels-only") === true ? 2 * n - 1 : n);
   // org-blank-before-new-entry's "auto": a blank line before the heading above means one between these.
   const previous = [...all].reverse().find((h) => h.start < pos);
   const blank = previous !== undefined && previous.start > 0 && /^[ \t]*$/.test(e8.lineText(previous.line - 1));
-  const text = entries.map((e) => `${"*".repeat(level + e.depth - 1)} ${e.title}${e.body}`).join(blank ? "\n\n" : "\n");
+  const text = entries.map((e) => `${"*".repeat(stars(level + e.depth - 1))} ${e.title}${e.body}`).join(blank ? "\n\n" : "\n");
   edInsert(pos, `${text}\n`);
   return pos + charCount(text) + 1;
 }
