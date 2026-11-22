@@ -1139,7 +1139,7 @@
       "input": {
         "text": "#+STARTUP: odd\n* A\n*** B\n***** C\n",
         "point": 15,
-        "keys": "C-c / m",
+        "keys": "C-c /",
         "modes": [
           "org-mode"
         ],
@@ -1148,6 +1148,7 @@
         "visit": "e8-oracle-archive.org",
         "today": "2026-11-04",
         "answers": [
+          "m",
           "LEVEL=2"
         ],
         "vars": {
@@ -1160,14 +1161,14 @@
           ]
         }
       },
-      "text": "#+STARTUP: odd\nm* A\n*** B\n***** C\n",
-      "visible": "#+STARTUP: odd\nm* A\n*** B\n***** C\n",
-      "point": 16,
+      "text": "#+STARTUP: odd\n* A\n*** B\n***** C\n",
+      "visible": "#+STARTUP: odd\n* A\n*** B",
+      "point": 15,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
-      "modified": true,
-      "error": "No such sparse tree command \"L\""
+      "modified": false,
+      "error": null
     },
     {
       "name": "plain-tree-before",

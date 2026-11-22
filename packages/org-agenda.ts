@@ -952,7 +952,7 @@ const occurInAgendaFiles = e8.defineCommand({
     const truenames = files.map((f) => e8.fileTruename(f));
     const value = e8.variable("org-agenda-text-search-extra-files");
     let extra = Array.isArray(value) ? value : [];
-    if (extra[0] === "agenda-archives") {
+    if (extra[0] === "agenda-archives" || extra[0] === Symbol.for("agenda-archives")) {
       extra = extra.slice(1);
       files = addArchiveFiles(files);
     }
