@@ -352,6 +352,253 @@
       "modified": false,
       "error": null,
       "message": null
+    },
+    {
+      "name": "cycle-item-in-archived",
+      "input": {
+        "text": "* H :ARCHIVE:\n- item\n  - sub\n    text\n",
+        "point": 14,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H :ARCHIVE:\n- item\n  - sub\n    text\n",
+      "visible": "* H :ARCHIVE:\n- item\n  - sub\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Subtree is archived and stays closed.  Use ‘C-c C-<tab>’ to cycle it anyway."
+    },
+    {
+      "name": "cycle-item-folded",
+      "input": {
+        "text": "* H\n- item\n  - sub\n    text\n",
+        "point": 4,
+        "keys": "TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n- item\n  - sub\n    text\n",
+      "visible": "* H\n- item\n  - sub\n    text\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "startup-content-archived",
+      "input": {
+        "text": "#+STARTUP: content\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: content\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\n",
+      "visible": "#+STARTUP: content\n* P\n** A :ARCHIVE:\n** B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "startup-showall-archived",
+      "input": {
+        "text": "#+STARTUP: showall\n* P\n** A :ARCHIVE:\ntext\n** B\nbody\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: showall\n* P\n** A :ARCHIVE:\ntext\n** B\nbody\n",
+      "visible": "#+STARTUP: showall\n* P\n** A :ARCHIVE:\n** B\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "startup-showall-c-u-c-u-tab",
+      "input": {
+        "text": "#+STARTUP: showall\n* P\n** A :ARCHIVE:\ntext\n** B\nbody\n",
+        "point": 19,
+        "keys": "S-<tab> C-u C-u TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: showall\n* P\n** A :ARCHIVE:\ntext\n** B\nbody\n",
+      "visible": "#+STARTUP: showall\n* P\n** A :ARCHIVE:\n** B\nbody\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "startup-showeverything-archived",
+      "input": {
+        "text": "#+STARTUP: showeverything\n* P\n** A :ARCHIVE:\ntext\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+STARTUP: showeverything\n* P\n** A :ARCHIVE:\ntext\n",
+      "visible": "#+STARTUP: showeverything\n* P\n** A :ARCHIVE:\ntext\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "content-level-zero",
+      "input": {
+        "text": "* P\n** A\n*** a\n* B\n",
+        "point": 0,
+        "keys": "C-0 S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* P\n** A\n*** a\n* B\n",
+      "visible": "* P\n** A\n*** a\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "content-level-negative",
+      "input": {
+        "text": "* P\n** A\n*** a\n* B\n",
+        "point": 0,
+        "keys": "M-- 2 S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* P\n** A\n*** a\n* B\n",
+      "visible": "* P\n** A\n*** a\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "global-at-bob",
+      "input": {
+        "text": "intro\n* A\n** a\n* B\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-cycle-global-at-bob": true
+        }
+      },
+      "text": "intro\n* A\n** a\n* B\n",
+      "visible": "intro\n* A\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "global-at-bob-twice",
+      "input": {
+        "text": "intro\n* A\n** a\n* B\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "vars": {
+          "org-cycle-global-at-bob": true
+        }
+      },
+      "text": "intro\n* A\n** a\n* B\n",
+      "visible": "intro\n* A\n** a\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "global-at-bob-off",
+      "input": {
+        "text": "intro\n* A\n** a\n* B\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "intro\n* A\n** a\n* B\n",
+      "visible": "intro\n* A\n** a\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
     }
   ]
 }

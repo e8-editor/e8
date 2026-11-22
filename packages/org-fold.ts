@@ -163,7 +163,8 @@ function separatorLines(range: [number, number], k: number): [number, number][] 
  * `state` is the new state, and for "folded" and "children" the lines are
  * those of the subtree point is in.
  */
-export function showEmptyLines(state: string, narrowed?: [number, number]): void {
+export function showEmptyLines(state: string | true, narrowed?: [number, number]): void {
+  if (state === true) state = "t";
   const n = Number(e8.variable("org-cycle-separator-lines") ?? 2);
   let range: [number, number] | undefined;
   if (["overview", "contents", "t"].includes(state)) range = narrowed ?? [0, e8.bufferSize()];
@@ -692,11 +693,15 @@ export function startupVisibility(): void {
       if (/^(overview|fold|content|showall|nofold|showeverything|show[2-5]levels)$/.test(word)) how = word;
     }
   }
-  if (how === "showeverything") return;
   if (how === "overview" || how === "fold") overview();
   else if (how === "content") contents();
   else if (/^show[2-5]levels$/.test(how)) showLevels(Number(how[4]));
+  // Everything shown, as org-fold-show-all, for showall, nofold and showeverything.
+  else flag(e8.pointMin(), e8.pointMax(), false);
+  if (how === "showeverything") return;
   visibilityFromProperties();
+  // Archived subtrees closed again, as org-cycle-set-startup-visibility calls org-cycle-hide-archived-subtrees.
+  e8.funcall("org-cycle-hide-archived-subtrees", "all");
   hideAllDrawers();
   showEmptyLines("t");
 }

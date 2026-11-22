@@ -154,5 +154,115 @@
       "org-mode"
     ],
     "message": true
+  },
+  {
+    "name": "cycle-item-in-archived",
+    "text": "* H :ARCHIVE:\n- item\n  - sub\n    text\n",
+    "keys": "TAB TAB",
+    "point": 14,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "cycle-item-folded",
+    "text": "* H\n- item\n  - sub\n    text\n",
+    "keys": "TAB TAB TAB",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
+  },
+  {
+    "name": "startup-content-archived",
+    "text": "#+STARTUP: content\n* P\n** A :ARCHIVE:\ntext\n*** deep\n** B\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "startup-showall-archived",
+    "text": "#+STARTUP: showall\n* P\n** A :ARCHIVE:\ntext\n** B\nbody\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "startup-showall-c-u-c-u-tab",
+    "text": "#+STARTUP: showall\n* P\n** A :ARCHIVE:\ntext\n** B\nbody\n",
+    "keys": "S-<tab> C-u C-u TAB",
+    "point": 19,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "startup-showeverything-archived",
+    "text": "#+STARTUP: showeverything\n* P\n** A :ARCHIVE:\ntext\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "content-level-zero",
+    "text": "* P\n** A\n*** a\n* B\n",
+    "keys": "C-0 S-<tab>",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "content-level-negative",
+    "text": "* P\n** A\n*** a\n* B\n",
+    "keys": "M-- 2 S-<tab>",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "global-at-bob",
+    "text": "intro\n* A\n** a\n* B\n",
+    "keys": "TAB",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-cycle-global-at-bob": true
+    },
+    "message": true
+  },
+  {
+    "name": "global-at-bob-twice",
+    "text": "intro\n* A\n** a\n* B\n",
+    "keys": "TAB TAB",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "vars": {
+      "org-cycle-global-at-bob": true
+    },
+    "message": true
+  },
+  {
+    "name": "global-at-bob-off",
+    "text": "intro\n* A\n** a\n* B\n",
+    "keys": "TAB",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "message": true
   }
 ]

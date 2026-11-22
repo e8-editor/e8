@@ -13507,13 +13507,19 @@ declare global {
        */
       "org-confirm-babel-evaluate": Value;
       /**
+       * Whether TAB at the very start of the buffer, not on a heading, cycles the whole buffer as S-TAB does.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-global-at-bob": Value;
+      /**
        * What S-TAB last did: "overview", "contents" or "all".
        *
        * Defined in packages/org.ts.
        */
       "org-cycle-global-status": Value;
       /**
-       * Whether TAB shows the inline images of a subtree it opens, as org-cycle-display-inline-images does.
+       * Whether TAB shows the inline images of a subtree it opens, as org-cycle-display-inline-images does. E8 shows no inline images in Org buffers yet, so it does nothing.
        *
        * Defined in packages/org.ts.
        */

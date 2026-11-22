@@ -2958,6 +2958,13 @@ function orgCycle(arg: e8.PrefixArg): void {
       e8.message("Entire buffer visible, including drawers", { log: false });
       return;
     }
+    // At the buffer's start, not on a heading, cycle globally with org-cycle-global-at-bob, the window left alone.
+    if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && parseHeading(lineAt()) === undefined) {
+      const hook = e8.variable("org-cycle-hook");
+      const without = Array.isArray(hook) ? hook.filter((f) => f !== "org-cycle-optimize-window-after-visibility-change") : hook;
+      e8.letBind({ "org-cycle-hook": without ?? null }, () => globalCycle());
+      return;
+    }
     const line = lineAt();
     const text = e8.lineText(line);
     if ((DRAWER.test(text) && !/^[ \t]*:END:/i.test(text)) || BLOCK_BEGIN.test(text) || DBLOCK_BEGIN.test(text)) {
@@ -3026,6 +3033,7 @@ function cycleItem(line: number): void {
     if (next && next.start < e8.bufferSize() && e8.invisibleAt(next.start)) showHeadingLine(next);
   };
   if (eos === eoh) {
+    if (inSection) e8.runHooks("org-cycle-pre-hook", "empty");
     e8.message("EMPTY ENTRY", { log: false });
     e8.setVariable("org-cycle-subtree-status", null);
     showFollowing();
@@ -3034,17 +3042,21 @@ function cycleItem(line: number): void {
   const hiddenInOneLine = eol >= eos || /^\s*$/.test(e8.bufferText(eol, eos));
   const skipped = hiddenInOneLine && !hasChildren;
   if (hiddenInOneLine && hasChildren) {
+    if (inSection) e8.runHooks("org-cycle-pre-hook", "children");
     setItemVisibility(item, struct, "children");
     e8.message("CHILDREN", { log: false });
     showFollowing();
     e8.setVariable("org-cycle-subtree-status", "children");
     if (inSection) e8.runHooks("org-cycle-hook", "children");
   } else if (skipped || (again && status === "children")) {
+    if (inSection) e8.runHooks("org-cycle-pre-hook", "subtree");
     flag(eoh, eos, false);
     e8.message(skipped ? "SUBTREE (NO CHILDREN)" : "SUBTREE", { log: false });
     e8.setVariable("org-cycle-subtree-status", "subtree");
     if (inSection) e8.runHooks("org-cycle-hook", "subtree");
   } else {
+    // Even before the first heading, as Org runs it there.
+    e8.runHooks("org-cycle-pre-hook", "folded");
     flag(eoh, eos, true);
     e8.message("FOLDED", { log: false });
     e8.setVariable("org-cycle-subtree-status", "folded");
@@ -3107,7 +3119,9 @@ const shiftTab = e8.defineCommand({
     if (typeof prefix === "number") {
       e8.message(`Content view to level: ${prefix}`);
       // Twice as many stars with odd levels only, as org-shifttab counts them.
-      showLevels(e8.variable("org-odd-levels-only") === true ? 2 * prefix - 1 : prefix);
+      // A count not above zero shows every heading, as org-cycle-content.
+      const levels = e8.variable("org-odd-levels-only") === true ? 2 * prefix - 1 : prefix;
+      showLevels(levels > 0 ? levels : Infinity);
       showEmptyLines("t");
       e8.setVariable("org-cycle-global-status", "overview");
       e8.runHooks("org-cycle-hook", "overview");
@@ -8892,13 +8906,13 @@ e8.defineCommand({
 // The hooks around TAB's changes of what shows, as org-cycle.el has them.
 
 e8.defineHook("org-cycle-pre-hook", "Functions run before TAB or S-TAB changes what shows, with the state it is about to set: overview, contents, all, folded, children, subtree or empty.");
-e8.defvaralias("org-pre-cycle-hook", "org-cycle-pre-hook");
 e8.defineHook(
   "org-cycle-hook",
   "Functions run after TAB or S-TAB has changed what shows, with the state it set: overview, contents or all after a global change, folded, children or subtree after a local one.",
 );
+e8.defineVariable({ name: "org-cycle-global-at-bob", doc: "Whether TAB at the very start of the buffer, not on a heading, cycles the whole buffer as S-TAB does.", value: false });
 e8.defineVariable({ name: "org-cycle-open-archived-trees", doc: "Whether TAB opens archived subtrees as it does others; nil keeps them closed, as org-cycle-hide-archived-subtrees does.", value: false });
-e8.defineVariable({ name: "org-cycle-inline-images-display", doc: "Whether TAB shows the inline images of a subtree it opens, as org-cycle-display-inline-images does.", value: false });
+e8.defineVariable({ name: "org-cycle-inline-images-display", doc: "Whether TAB shows the inline images of a subtree it opens, as org-cycle-display-inline-images does. E8 shows no inline images in Org buffers yet, so it does nothing.", value: false });
 
 /** Where the window started when TAB last opened a subtree, so folding it again scrolls back, as org-cycle-scroll-position-to-restore. */
 let cycleScrollPosition: number | undefined;
@@ -8912,7 +8926,7 @@ e8.defun("org-cycle-hide-archived-subtrees", (state: string) => {
     const i = headingIndex(all, lineAt());
     hideArchivedSubtrees(e8.point(), i === undefined ? e8.pointMax() : subtreeRegion(all, i)[1]);
     const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
-    if (i !== undefined && all[i].tags.includes(tag)) e8.message("Subtree is archived and stays closed.  Use \u2018C-c C-<tab>\u2019 to cycle it anyway.");
+    if (i !== undefined && all[i].tags.includes(tag)) e8.message(`Subtree is archived and stays closed.  Use \u2018${"C-c C-<tab>"}\u2019 to cycle it anyway.`);
   }
 });
 
@@ -8958,7 +8972,8 @@ function hideArchivedSubtrees(beg: number, end: number): void {
   e8.saveRestriction(() => {
     e8.widen();
     const all = headings();
-    for (let i = headingIndex(all, lineAt(beg)) ?? 0; i < all.length && all[i].start < end; i++) {
+    // From the line point is on, not the heading it is under, as Org searches forward from its start.
+    for (let i = firstHeadingFrom(all, e8.lineStart(lineAt(beg))); i < all.length && all[i].start < end; i++) {
       if (!all[i].tags.includes(tag)) continue;
       foldSubtree(all[i].line);
       const next = nextSameOrHigher(all, i);
