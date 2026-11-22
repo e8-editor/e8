@@ -811,6 +811,16 @@ e8.defineCommand({
 e8.defineHook("org-clock-before-select-task-hook", "Functions called in *Clock Task Select* before a task is read.");
 e8.defun("org-clock-update-mode-line", () => updateModeLine());
 
+// The running clock's CLOCK line from FROM to TO given a new start: the clock counts from it, as org-clock-update-time-maybe sets org-clock-start-time.
+e8.defun("org-clock--restart-at", (from: number, to: number, seconds: number) => {
+  if (clock === undefined || e8.markerBuffer(clock.line) !== e8.bufferName()) return false;
+  const pos = e8.markerPosition(clock.line);
+  if (pos === undefined || !(pos > from && pos <= to)) return false;
+  clock.start = seconds * 1000;
+  updateModeLine();
+  return true;
+});
+
 e8.defineCommand({
   name: "org-clock-mark-default-task",
   doc: "Mark the entry point is in as the default task, which C-u C-c C-x C-i always offers as d.",

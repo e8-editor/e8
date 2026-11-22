@@ -6681,7 +6681,147 @@ function changeTimestamp(n: number, what?: string, updown = true): void {
     else if (category === "after") target = fresh.end;
   }
   e8.gotoChar(target);
+  // A CLOCK line's duration worked out again, as org-timestamp-change has it.
+  clockUpdateTimeMaybe();
 }
+
+/** Whether clockUpdateTimeMaybe is writing a CLOCK line's timestamps again, so their change does not call it back, as Org ignores it then. */
+let updatingClockLine = false;
+
+/**
+ * Writes the timestamps of the CLOCK line point is on again and works out
+ * its duration after them, as org-clock-update-time-maybe; on the running
+ * clock's line, the clock counts from its timestamp. True if the line is a
+ * closed clock, and so was updated.
+ */
+function clockUpdateTimeMaybe(): boolean {
+  if (updatingClockLine) return false;
+  const origin = e8.point();
+  const keep = marker(origin);
+  let updated = false;
+  try {
+    const line = lineAt();
+    const at = e8.lineStart(line) + charCount(/^[ \t]*/.exec(e8.lineText(line))![0]);
+    const re = /^[ \t]*CLOCK: *[[<]([^\]>]+)[\]>](?:-+[[<]([^\]>]+)[\]>]([ \t]*=>.*)?)?/;
+    const read = (): RegExpExecArray | null => (e8.lineText(line).slice(at - e8.lineStart(line)).startsWith("CLOCK:") ? re.exec(e8.bufferText(at, e8.lineEnd(line))) : null);
+    let m = read();
+    if (m === null) return false;
+    if (m[2] === undefined) {
+      // A running clock here counts from its start.
+      if (e8.fboundp("org-clock--restart-at")) updated = truthy(e8.funcall("org-clock--restart-at", at, e8.lineEnd(line), timestampSeconds(m[1])));
+      return updated;
+    }
+    // Each timestamp written again, without calling back here.
+    const startOf = (match: RegExpExecArray, group: 1 | 2): number => {
+      const text = match[0];
+      const first = text.indexOf(match[1]);
+      const index = group === 1 ? first : text.indexOf(match[2]!, first + match[1].length + 1);
+      return at + charCount(text.slice(0, index));
+    };
+    updatingClockLine = true;
+    try {
+      e8.gotoChar(startOf(m, 1));
+      changeTimestamp(0, "day");
+      m = read()!;
+      e8.gotoChar(startOf(m, 2));
+      changeTimestamp(0, "day");
+    } finally {
+      updatingClockLine = false;
+    }
+    m = read()!;
+    // The duration after them, worked out again.
+    if (m[3] !== undefined) {
+      const durationAt = at + charCount(m[0].slice(0, m[0].length - m[3].length));
+      e8.deleteRegion(durationAt, durationAt + charCount(m[3]));
+    }
+    e8.gotoChar(e8.lineEnd(line));
+    let s = timestampSeconds(m[2]!) - timestampSeconds(m[1]);
+    const neg = s < 0;
+    s = Math.abs(s);
+    const h = Math.floor(s / 3600);
+    const mins = Math.floor((s - h * 3600) / 60);
+    e8.insert(` => ${neg ? `-${h}` : String(h).padStart(2)}:${String(mins).padStart(2, "0")}`);
+    updated = true;
+    return true;
+  } finally {
+    // Back where it was, but never past the updated clock.
+    e8.gotoChar(Math.min(keep.pos, origin));
+    dropMarker(keep);
+  }
+}
+
+/** Whether point is on a CLOCK line, as org-at-clock-log-p: one that is a clock element. */
+function atClockLog(): boolean {
+  return /^[ \t]*CLOCK:/.test(e8.lineText(lineAt())) && elementAt(e8.point())?.type === "clock";
+}
+
+/**
+ * Changes the timestamp at point on a CLOCK line by n of its part, and the
+ * line's other timestamp by as much, so the clock keeps its length, as
+ * org-clock-timestamps-change does.
+ */
+function clockTimestampsChange(up: boolean, n: e8.PrefixArg): void {
+  const origin = e8.point();
+  const all = tsMatches(lineAt());
+  const at = all.find((t) => t.start <= origin && origin <= t.end);
+  if (at === undefined) return;
+  const category = timestampCategory(at, origin);
+  const [ts1, ts2] = all;
+  // As Org, which compares with the second's start, the line must have two.
+  if (ts2 === undefined) e8.signal("wrong-type-argument", "Wrong type argument: number-or-marker-p, nil", ["number-or-marker-p", null]);
+  const onSecond = ts2.start <= origin;
+  const steps = e8.prefixNumericValue(n);
+  changeTimestamp(up ? steps : -steps, undefined, true);
+  // How far the timestamp moved, in its part's units.
+  const changedAt = onSecond ? ts2.start : ts1.start;
+  const now = tsMatches(lineAt()).find((t) => t.start === changedAt);
+  const was = onSecond ? ts2.text : ts1.text;
+  const units: { [part: string]: number } = { minute: 60, hour: 3600, day: 24 * 3600, month: 24 * 3600 * 31, year: 24 * 3600 * 365.2 };
+  const unit = typeof category === "string" ? units[category] : undefined;
+  if (now === undefined || unit === undefined) e8.signal("wrong-type-argument", "Wrong type argument: number-or-marker-p, nil", ["number-or-marker-p", null]);
+  const diff = timestampSeconds(now.text) - timestampSeconds(was);
+  const back = e8.point();
+  const keep = marker(back);
+  e8.gotoChar(onSecond ? ts1.start : ts2.start);
+  changeTimestamp(Math.round(diff / unit), category as string, true);
+  // Back, as save-excursion keeps it, but never past the updated clock.
+  e8.gotoChar(keep.pos);
+  dropMarker(keep);
+  if (e8.point() >= back) e8.gotoChar(back);
+}
+
+for (const [name, up, doc] of [
+  ["org-clock-timestamps-up", true, "Make the CLOCK timestamp point is on later by its part, the year, month, day, hour or minute, and the line's other one with it."],
+  ["org-clock-timestamps-down", false, "Make the CLOCK timestamp point is on earlier by its part, and the line's other one with it."],
+] as [string, boolean, string][]) {
+  e8.defineCommand({
+    name,
+    doc,
+    params: [{ name: "n", kind: "prefix" }],
+    run: (n: e8.PrefixArg) => {
+      if (tsMatches(lineAt()).some((t) => t.start <= e8.point() && e8.point() <= t.end)) clockTimestampsChange(up, n);
+    },
+  });
+}
+
+const shiftControlUp = e8.defineCommand({
+  name: "org-shiftcontrolup",
+  doc: "C-S-<up> in Org: on a CLOCK line's timestamp, make it and the other one later together, so the clock keeps its length.",
+  params: [{ name: "n", kind: "prefix" }],
+  run: (n: e8.PrefixArg) => {
+    if (atClockLog() && timestampHere()) clockTimestampsChange(true, n);
+    else e8.userError("Not at a clock log");
+  },
+});
+const shiftControlDown = e8.defineCommand({
+  name: "org-shiftcontroldown",
+  doc: "C-S-<down> in Org: on a CLOCK line's timestamp, make it and the other one earlier together.",
+  params: [{ name: "n", kind: "prefix" }],
+  run: (n: e8.PrefixArg) => {
+    if (atClockLog() && timestampHere()) clockTimestampsChange(false, n);
+    else e8.userError("Not at a clock log");
+  },
+});
 
 for (const [name, n, what, doc] of [
   ["org-timestamp-up", 1, undefined, "Change the part of the timestamp point is on, the year, month, day, hour or minute, one step later."],
@@ -8854,6 +8994,11 @@ const ctrlCCtrlC = e8.defineCommand({
     }
     if (cookieHere() || cookieEndsTitleBeforePoint()) {
       e8.call("org-update-statistics-cookies");
+      return;
+    }
+    // A CLOCK line off its timestamps: its duration worked out again, as Org's clock context does.
+    if (atClockLog() && !timestampHere()) {
+      clockUpdateTimeMaybe();
       return;
     }
     if (timestampHere()) {
@@ -11306,6 +11451,8 @@ e8.defun("org--fill-forward-paragraph", (arg?: e8.Value) => {
   }
 });
 
+e8.bindKey("C-S-<up>", shiftControlUp, "org-mode-map");
+e8.bindKey("C-S-<down>", shiftControlDown, "org-mode-map");
 e8.remapCommand("org-mode-map", "self-insert-command", "org-self-insert-command");
 e8.remapCommand("org-mode-map", "delete-backward-char", "org-delete-backward-char");
 e8.remapCommand("org-mode-map", "delete-char", "org-delete-char");
