@@ -557,6 +557,411 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "empty-src-line-takes-content-indentation",
+      "input": {
+        "text": "* H\n  #+begin_src emacs-lisp\n\n  #+end_src\n",
+        "point": 29,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  #+begin_src emacs-lisp\n    \n  #+end_src\n",
+      "visible": "* H\n  #+begin_src emacs-lisp\n    \n  #+end_src\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "empty-src-line-content-indentation-zero",
+      "input": {
+        "text": "* H\n  #+begin_src emacs-lisp\n\n(q)\n  #+end_src\n",
+        "point": 29,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-edit-src-content-indentation": 0
+        }
+      },
+      "text": "* H\n  #+begin_src emacs-lisp\n  \n  (q)\n  #+end_src\n",
+      "visible": "* H\n  #+begin_src emacs-lisp\n  \n  (q)\n  #+end_src\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "blank-src-line-takes-content-indentation",
+      "input": {
+        "text": "* H\n  #+begin_src emacs-lisp\n  \n  #+end_src\n",
+        "point": 31,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  #+begin_src emacs-lisp\n    \n  #+end_src\n",
+      "visible": "* H\n  #+begin_src emacs-lisp\n    \n  #+end_src\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-in-src-block",
+      "input": {
+        "text": "* H\n  #+begin_src emacs-lisp\n  (q)\n  #+end_src\n",
+        "point": 28,
+        "keys": "RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  #+begin_src emacs-lisp\n    x\n    (q)\n  #+end_src\n",
+      "visible": "* H\n  #+begin_src emacs-lisp\n    x\n    (q)\n  #+end_src\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "text-src-block-indents-according-to-mode",
+      "input": {
+        "text": "* H\n#+begin_src text\n  foo bar\n  x\n#+end_src\n",
+        "point": 33,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_src text\n  foo bar\n  x\n#+end_src\n",
+      "visible": "* H\n#+begin_src text\n  foo bar\n  x\n#+end_src\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "text-src-block-point-at-end",
+      "input": {
+        "text": "* H\n#+begin_src text\n  foo bar\n    x\n#+end_src\n",
+        "point": 36,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_src text\n  foo bar\n  x\n#+end_src\n",
+      "visible": "* H\n#+begin_src text\n  foo bar\n  x\n#+end_src\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "headline-data-src-block",
+      "input": {
+        "text": "** H\n#+begin_src emacs-lisp\n(q)\n#+end_src\n",
+        "point": 28,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-adapt-indentation": "'headline-data"
+        }
+      },
+      "text": "** H\n#+begin_src emacs-lisp\n(q)\n#+end_src\n",
+      "visible": "** H\n#+begin_src emacs-lisp\n(q)\n#+end_src\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "named-quote-block",
+      "input": {
+        "text": "* H\n  para\n  #+name: foo\n#+begin_quote\nq\n#+end_quote\n",
+        "point": 39,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  para\n  #+name: foo\n#+begin_quote\n  q\n#+end_quote\n",
+      "visible": "* H\n  para\n  #+name: foo\n#+begin_quote\n  q\n#+end_quote\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "named-example-block",
+      "input": {
+        "text": "* H\n  para\n  #+name: foo\n#+begin_example\nq\n#+end_example\n",
+        "point": 41,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  para\n  #+name: foo\n#+begin_example\n  q\n#+end_example\n",
+      "visible": "* H\n  para\n  #+name: foo\n#+begin_example\n  q\n#+end_example\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "named-src-block-not-natively",
+      "input": {
+        "text": "* H\n  para\n  #+name: foo\n#+begin_src emacs-lisp\n(q)\n#+end_src\n",
+        "point": 48,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-src-tab-acts-natively": false
+        }
+      },
+      "text": "* H\n  para\n  #+name: foo\n#+begin_src emacs-lisp\n  (q)\n#+end_src\n",
+      "visible": "* H\n  para\n  #+name: foo\n#+begin_src emacs-lisp\n  (q)\n#+end_src\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "named-src-block-natively",
+      "input": {
+        "text": "* H\n  para\n  #+name: foo\n#+begin_src emacs-lisp\n\n#+end_src\n",
+        "point": 48,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  para\n  #+name: foo\n#+begin_src emacs-lisp\n    \n#+end_src\n",
+      "visible": "* H\n  para\n  #+name: foo\n#+begin_src emacs-lisp\n    \n#+end_src\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "latex-environment-line",
+      "input": {
+        "text": "* H\n  para\n\n\\begin{equation}\n   x = 1\n      y\n\\end{equation}\n",
+        "point": 32,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  para\n\n\\begin{equation}\n   x = 1\n      y\n\\end{equation}\n",
+      "visible": "* H\n  para\n\n\\begin{equation}\n   x = 1\n      y\n\\end{equation}\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-environment-begin-line",
+      "input": {
+        "text": "* H\n  para\n\n\\begin{equation}\n   x = 1\n\\end{equation}\n",
+        "point": 12,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  para\n\n\\begin{equation}\n   x = 1\n\\end{equation}\n",
+      "visible": "* H\n  para\n\n\\begin{equation}\n   x = 1\n\\end{equation}\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-environment-end-line",
+      "input": {
+        "text": "* H\n  para\n\n\\begin{equation}\n   x = 1\n\\end{equation}\n",
+        "point": 38,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n  para\n\n\\begin{equation}\n   x = 1\n\\end{equation}\n",
+      "visible": "* H\n  para\n\n\\begin{equation}\n   x = 1\n\\end{equation}\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "latex-environment-region",
+      "input": {
+        "text": "* H\n  para\n\n\\begin{equation}\n   x = 1\n      y\n\\end{equation}\n",
+        "point": 61,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\npara\n\n\\begin{equation}\n   x = 1\n      y\n\\end{equation}\n",
+      "visible": "* H\npara\n\n\\begin{equation}\n   x = 1\n      y\n\\end{equation}\n",
+      "point": 0,
+      "mark": 59,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "bar-line-in-example-block",
+      "input": {
+        "text": "* H\n#+begin_example\n  | a | b |\n      | c | d |\n#+end_example\n",
+        "point": 20,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_example\n| a | b |\n      | c | d |\n#+end_example\n",
+      "visible": "* H\n#+begin_example\n| a | b |\n      | c | d |\n#+end_example\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "bar-line-in-example-block-mid",
+      "input": {
+        "text": "* H\n#+begin_example\n  | a | b |\n      | c | d |\n#+end_example\n",
+        "point": 26,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_example\n| a | b |\n      | c | d |\n#+end_example\n",
+      "visible": "* H\n#+begin_example\n| a | b |\n      | c | d |\n#+end_example\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-at-end-of-quote-paragraph",
+      "input": {
+        "text": "* H\n#+begin_quote\n    aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu\n#+end_quote\n",
+        "point": 105,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* H\n#+begin_quote\n    aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n    qqq rrr sss ttt uuu\n#+end_quote\n",
+      "visible": "* H\n#+begin_quote\n    aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n    qqq rrr sss ttt uuu\n#+end_quote\n",
+      "point": 109,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

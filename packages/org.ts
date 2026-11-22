@@ -2736,7 +2736,8 @@ function orgFillParagraph(justify: string | undefined, region: boolean): void {
     }
   } else {
     e8.saveExcursion(() => {
-      if (e8.lookingAt("[ \t]*$")) e8.skipCharsForward(" \t\n");
+      // On a blank line, from the next element, as org-match-line tests the whole line.
+      if (/^[ \t]*$/.test(e8.lineText(lineAt()))) e8.skipCharsForward(" \t\n");
       orgFillElement(justify);
     });
   }
@@ -2826,6 +2827,16 @@ function expectedIndent(el: Elem | undefined, contentsp: boolean, line: number):
   });
 }
 
+/** Affiliated keywords, as org-element-affiliated-keywords and ATTR_ ones: they belong to the element after them. */
+const AFFILIATED_KEYWORD = /^[ \t]*#\+(?:caption|data|header|headers|label|name|plot|resname|result|results|source|srcname|tblname|attr_[-_\w]+)(?:\[[^\]\n]*\])?:/i;
+
+/** Where an element starting at BEGIN starts with its affiliated keywords, the lines of them right before it. */
+function affiliatedBegin(begin: number): number {
+  let line = lineAt(begin);
+  while (line > 0 && AFFILIATED_KEYWORD.test(e8.lineText(line - 1))) line--;
+  return e8.lineStart(line);
+}
+
 function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: number): number {
   const type = el?.type;
   const indentOf = (pos: number): number => textIndentation(e8.lineText(lineAt(pos)));
@@ -2834,7 +2845,8 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
     // One past the stars with org-adapt-indentation, else the margin.
     if (type === undefined || type === "headline") return adaptColumn(line);
     if (type === "item" || type === "plain-list") return listBodyColumn((el as Elem).begin);
-    return indentOf((el as Elem).begin);
+    // From its first affiliated keyword, as Org's element begins there.
+    return indentOf(affiliatedBegin((el as Elem).begin));
   }
   if (!el || type === "headline" || type === "org-data") return isBlank(e8.lineText(line)) ? expectedIndentWide(el, true, line) : 0;
   const bol = e8.lineStart(line);
@@ -2875,21 +2887,6 @@ function expectedIndentWide(el: Elem | undefined, contentsp: boolean, line: numb
 export function indentLine(line: number): void {
   const text = e8.lineText(line);
   const ls = e8.lineStart(line);
-  const block = elementAt(ls);
-  // A source block's code, with org-src-tab-acts-natively; without it, its lines are indented as any other.
-  if (block?.type === "src-block" && truthy(e8.variable("org-src-tab-acts-natively")) && line > lineAt(block.begin) && line < lineAt(endBeforeBlank(block))) {
-    // An empty line gets the block's content indentation, then Org hands
-    // the line to the language's mode, with org-src-tab-acts-natively.
-    if (!preservesIndentation(block) && text === "" && e8.point() === ls) {
-      const ind = textIndentation(e8.lineText(lineAt(block.begin))) + Number(e8.variable("org-edit-src-content-indentation") ?? 2);
-      indentLineTo(line, ind);
-      e8.gotoChar(e8.lineEnd(line));
-    }
-    if (e8.fboundp("org-babel-do-key-sequence-in-edit-buffer")) {
-      e8.funcall("org-babel-do-key-sequence-in-edit-buffer", "indent-for-tab-command");
-    }
-    return;
-  }
   // Headings are never indented; a block's lines are, as org-indent-line gives them the expected indentation.
   if (isHeadingLine(text)) return;
   const el = elementAt(ls);
@@ -2900,6 +2897,26 @@ export function indentLine(line: number): void {
     (el?.type === "headline" || (el !== undefined && el.begin > 0 && (isHeadingLine(e8.lineText(lineAt(el.begin - 1))) || atHeadlineData(el.begin - 1))))
   )
     return;
+  // A LaTeX environment's lines are left as they are, as Org leaves a latex-environment's.
+  if (el?.type === "paragraph" && latexEnvironment(el.begin, el.end)) return;
+  // A source block's code, with org-src-tab-acts-natively; without it, its lines are indented as any other.
+  if (el?.type === "src-block" && truthy(e8.variable("org-src-tab-acts-natively")) && line > lineAt(el.begin) && line < lineAt(endBeforeBlank(el))) {
+    // Indented in the language's mode, as indent-according-to-mode does
+    // there; then a line left empty takes the block's content indentation.
+    if (e8.fboundp("org-babel-do-key-sequence-in-edit-buffer")) {
+      try {
+        e8.funcall("org-babel-do-key-sequence-in-edit-buffer", "indent-according-to-mode");
+      } catch {
+        // As Org's ignore-errors, for a language with no proper mode.
+      }
+    }
+    if (!preservesIndentation(el) && e8.lineText(line) === "" && e8.point() === ls) {
+      const ind = textIndentation(e8.lineText(lineAt(affiliatedBegin(el.begin)))) + Number(e8.variable("org-edit-src-content-indentation") ?? 2);
+      indentLineTo(line, ind);
+      e8.gotoChar(e8.lineEnd(line));
+    }
+    return;
+  }
   if (el && (el.type === "plain-list" || el.type === "item") && el.begin === ls) return;
   const want = expectedIndent(el, false, line);
   const ws = /^[ \t]*/.exec(text)?.[0] ?? "";
@@ -3015,7 +3032,8 @@ function indentRegionElements(start: number, end: number): void {
     const type = el.type;
     const elementEnd = marker(el.end);
     const ind = expectedIndent(el, false, line);
-    if (type === "export-block" || (type === "example-block" && !preservesIndentation(el))) {
+    // A LaTeX environment, as Org's latex-environment, moves as a whole too.
+    if (type === "export-block" || (type === "example-block" && !preservesIndentation(el)) || (type === "paragraph" && latexEnvironment(el.begin, el.end))) {
       // Indented as a whole, keeping the lines' indentation relative to each other.
       const offset = ind - textIndentation(e8.lineText(lineAt(p)));
       if (offset !== 0) indentRigidly(el.begin, el.end, offset);
@@ -3149,6 +3167,12 @@ const cycle = e8.defineCommand({
   run: () => orgCycle(e8.prefixArg()),
 });
 
+/** Whether the element at pos is a table or in one, as org-element-lineage finds it. */
+function inTable(pos: number): boolean {
+  for (let el = elementAt(pos); el !== undefined; el = el.parent) if (el.type === "table" || el.type === "table-row") return true;
+  return false;
+}
+
 /** TAB in Org, as org-cycle does with prefix argument arg. */
 function orgCycle(arg: e8.PrefixArg): void {
   {
@@ -3199,7 +3223,8 @@ function orgCycle(arg: e8.PrefixArg): void {
       if (e8.point() > 0 && e8.invisibleAt(e8.point() - 1)) e8.gotoChar(e8.lineStart(opener));
       return;
     }
-    if (/^[ \t]*[|+]/.test(text) && /^[ \t]*\|/.test(text)) {
+    // A table's line, as the element there says: a | line in a block is text.
+    if (/^[ \t]*[|+]/.test(text) && /^[ \t]*\|/.test(text) && inTable(e8.lineStart(line))) {
       e8.call("org-table-justify-field-maybe");
       e8.call("org-table-next-field");
       return;
