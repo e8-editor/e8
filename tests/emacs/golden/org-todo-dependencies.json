@@ -744,13 +744,20 @@
         "message": true,
         "vars": {
           "org-archive-mark-done": true,
-          "org-archive-location": "::* Archive"
+          "org-archive-location": "::* Archive",
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
         },
         "globals": {
           "org-enforce-todo-dependencies": true
         }
       },
-      "text": "* x\n\n* Archive\n\n** TODO Parent\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:ARCHIVE_FILE: /var/folders/fs/by2wbyzn6890m25txn8tznqm0000gn/T/e8-oracle-archive.org\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_TODO: TODO\n:END:\n*** TODO child\n",
+      "text": "* x\n\n* Archive\n\n** TODO Parent\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** TODO child\n",
       "visible": "* x\n\n* Archive\n\n** TODO Parent\n:PROPERTIES:\n*** TODO child\n",
       "point": 0,
       "mark": null,

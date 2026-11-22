@@ -423,7 +423,14 @@
     },
     "vars": {
       "org-archive-mark-done": true,
-      "org-archive-location": "::* Archive"
+      "org-archive-location": "::* Archive",
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
     },
     "visit": "e8-oracle-archive.org",
     "message": true
