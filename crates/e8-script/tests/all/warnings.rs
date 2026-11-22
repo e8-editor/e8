@@ -46,3 +46,34 @@ fn levels_and_types_suppress() {
     s.eval_typescript(&mut ed, "t.ts", r#"e8.message(String(e8.funcall("warning-numeric-level", e8.intern(":error"))));"#.to_string()).unwrap();
     assert_eq!(ed.echo(), Some("3"));
 }
+
+/// An emergency rings the bell; a fill prefix fills the warning.
+#[test]
+fn emergencies_and_filling() {
+    let (mut ed, s) = editor();
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        r#"e8.funcall("display-warning", e8.intern("e"), "emerg", e8.intern(":emergency"));
+        e8.setVariable("warning-fill-prefix", "    ");
+        e8.setVariable("warning-fill-column", 30);
+        e8.funcall("display-warning", e8.intern("z"), "a long message that goes on and on past the column");"#
+            .to_string(),
+    )
+    .unwrap();
+    let w = warnings(&ed);
+    assert!(w.starts_with("\u{26d4} Emergency (e): emerg\n\u{26d4} Warning (z): a"), "{w}");
+    // Filled: continued on lines of its own, after the prefix.
+    assert!(w.lines().count() > 3 && w.lines().skip(2).all(|l| l.starts_with("    ")), "{w}");
+}
+
+/// An obsolete level name is warned of and taken as its new one.
+#[test]
+fn obsolete_levels() {
+    let (mut ed, s) = editor();
+    s.eval_typescript(&mut ed, "t.ts", r#"e8.funcall("display-warning", e8.intern("x"), "old", e8.intern("critical"));"#.to_string()).unwrap();
+    assert_eq!(
+        warnings(&ed),
+        "\u{26d4} Warning (emacs): Warning level \u{2018}critical\u{2019} is obsolete; use \u{2018}:emergency\u{2019} instead\n\u{26d4} Emergency (x): old\n"
+    );
+}

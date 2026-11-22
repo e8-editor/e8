@@ -35,6 +35,12 @@ natives! {
         Ok(format!("\"use strict\";void 0;{{{}\n}}", strip_types("evalTypescript", source)?))
     }
 
+    /// Whether an agent is acting rather than the user, so that effects
+    /// outside buffers, as running a program, wait for the user's approval.
+    pub fn agentActing(ed) -> bool {
+        Ok(ed.agent_acting())
+    }
+
     /// Join the running command's undo step to the one before, as Emacs's
     /// undo-auto-amalgamate does when self-insert-command runs, if the command
     /// before was this one and did the same. For commands that insert newlines

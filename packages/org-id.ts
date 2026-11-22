@@ -16,7 +16,6 @@ import { entryGet, entryPut, topGet } from "org-list";
 import { fileRelativeName, findBufferVisiting } from "files";
 import { linkPreciseTarget, linkStoreProps, searchInBuffer, showContext } from "ol";
 import { truthy } from "subr";
-import { warn } from "warnings";
 
 e8.defineVariable({
   name: "org-id-track-globally",
@@ -69,29 +68,47 @@ export function orgIdUuid(): string {
 }
 e8.defun("org-id-uuid", orgIdUuid);
 
-/** What org-id-uuid-program prints, trimmed, or nothing if it cannot run. */
+/**
+ * What org-id-uuid-program prints, trimmed, run by shell-file-name as
+ * shell-command-to-string runs it, or nothing if it cannot run; nor while
+ * an agent acts, which would have to ask to run it.
+ */
 function runUuidProgram(): string {
   const program = e8.variable("org-id-uuid-program");
-  if (typeof program !== "string" || program === "") return "";
+  if (typeof program !== "string" || program === "" || e8.agentActing()) return "";
+  const shell = e8.variable("shell-file-name");
+  const sw = e8.variable("shell-command-switch");
   try {
-    return e8.callProcess(["/bin/sh", "-c", program]).output.trim();
+    return e8.callProcess([typeof shell === "string" && shell !== "" ? shell : "/bin/sh", typeof sw === "string" && sw !== "" ? sw : "-c", program]).output.trim();
   } catch {
     return "";
   }
 }
 
 /**
- * The machine's fully qualified name, as message-make-fqdn: system-name if
- * it has a dot, else mail-host-address, else user-mail-address's domain.
+ * The machine's fully qualified name, as message-make-fqdn: the first of
+ * message-user-fqdn, system-name with a dot, mail-host-address and
+ * user-mail-address's domain that message-bogus-system-names does not
+ * reject, else system-name and ".mail-host-address-is-not-set".
  */
 function messageMakeFqdn(): string {
   const system = e8.systemName();
-  if (system.includes(".") && !system.endsWith(".")) return system;
+  const bogusRe = e8.variable("message-bogus-system-names");
+  const bogus = (name: string) => {
+    if (typeof bogusRe !== "string") return /^localhost\.|\.local$/i.test(name);
+    return e8.stringMatch(bogusRe, name, { caseFold: true }) !== undefined;
+  };
+  const fqdn = e8.variable("message-user-fqdn");
+  if (typeof fqdn === "string" && !bogus(fqdn)) return fqdn;
+  if (system.includes(".") && !bogus(system)) return system;
   const host = e8.variable("mail-host-address");
-  if (typeof host === "string" && host !== "") return host;
+  if (typeof host === "string" && !bogus(host)) return host;
+  // The address's domain, from "Name <user@host>" too.
   const mail = e8.variable("user-mail-address");
-  if (typeof mail === "string" && /@./.test(mail)) return mail.slice(mail.indexOf("@") + 1);
-  return "i-did-not-set--mail-host-address--so-tickle-me";
+  const address = typeof mail === "string" ? (/<([^>]*)>/.exec(mail)?.[1] ?? mail.trim()) : undefined;
+  const domain = address !== undefined ? /@(.*)$/.exec(address)?.[1] : undefined;
+  if (domain !== undefined && !bogus(domain)) return domain;
+  return `${system}.mail-host-address-is-not-set`;
 }
 
 /** The time in base 36, four digits for each of current-time's high and low seconds and microseconds, as org-id-time-to-b36. */
@@ -111,7 +128,8 @@ export function orgIdNew(prefix?: string): string {
   const own = e8.variable("org-id-prefix");
   let head = prefix === "none" ? "" : `${prefix ?? (typeof own === "string" ? own : "")}:`;
   if (head === ":") head = "";
-  const method = String(e8.variable("org-id-method"));
+  const m = e8.variable("org-id-method");
+  const method = typeof m === "symbol" ? e8.symbolName(m) : String(m);
   const domain = () => (truthy(e8.variable("org-id-include-domain")) ? `@${messageMakeFqdn()}` : "");
   let unique = "";
   if (method === "uuid" || method === "uuidgen") {
@@ -406,7 +424,8 @@ export function updateIdLocations(files: string[] = [], silent = false): void {
   if (alist.length > 0) writeLocations(alist);
   locations = alistToHash(alist);
   checksum = sum;
-  if (!silent && ndup > 0) warn("WARNING: %d duplicate IDs found, check *Messages* buffer", ndup);
+  // Through its name, so that advice on warn reaches it.
+  if (!silent && ndup > 0) e8.funcall("warn", "WARNING: %d duplicate IDs found, check *Messages* buffer", ndup);
   e8.message(`${all.length} files scanned, ${idFiles().length} files contains IDs, and ${locations.size} IDs found.`);
 }
 
@@ -519,11 +538,7 @@ export function orgIdStoreLink(): string | undefined {
   // The precise target first, before an ID's drawer moves things.
   const precise = truthy(e8.variable("org-link-context-for-files") ?? null) && truthy(e8.variable("org-id-link-use-context") ?? null) ? linkPreciseTarget() : undefined;
   // An inherited ID only with its context, as org-id--get-id-to-store-link takes one.
-  const inherit =
-    truthy(e8.variable("org-id-link-consider-parent-id") ?? null) &&
-    truthy(e8.variable("org-id-link-use-context") ?? null) &&
-    truthy(e8.variable("org-link-context-for-files") ?? null);
-  const inherited = inherit ? inheritedId() : undefined;
+  const inherited = considerParent() ? inheritedId() : undefined;
   let link = `id:${inherited?.id ?? orgIdGet(true)}`;
   const all = headings();
   const own = headingIndex(all, e8.lineOf(e8.point()));
@@ -571,6 +586,17 @@ function inheritedId(): { id: string; at: number } | undefined {
   return top !== undefined && /\S/.test(top) ? { id: top, at: e8.pointMin() } : undefined;
 }
 
+/** Whether to look up the heading above for an ID, as org-id--get-id-to-store-link does: with its context only. */
+const considerParent = (): boolean =>
+  truthy(e8.variable("org-id-link-consider-parent-id") ?? null) &&
+  truthy(e8.variable("org-id-link-use-context") ?? null) &&
+  truthy(e8.variable("org-link-context-for-files") ?? null);
+
+/** The ID a link would use, without making one, as org-id--get-id-to-store-link. */
+function idToStoreLink(): string | undefined {
+  return considerParent() ? inheritedId()?.id : orgIdGet(false);
+}
+
 /** Stores an ID link when org-id-link-to-org-use-id says to, as org-id-store-link-maybe. */
 function orgIdStoreLinkMaybe(interactive: boolean): string | undefined {
   if (baseFileName() === undefined || !e8.derivedModeP("org-mode")) return undefined;
@@ -581,7 +607,7 @@ function orgIdStoreLinkMaybe(interactive: boolean): string | undefined {
     (interactive &&
       (use === "create-if-interactive" ||
         (use === "create-if-interactive-and-no-custom-id" && (entryLine() !== undefined ? entryGet(entryLine() as number, "CUSTOM_ID") : topGet("CUSTOM_ID")) === undefined))) ||
-    (truthy(use ?? null) && orgIdGet(false) !== undefined);
+    (truthy(use ?? null) && idToStoreLink() !== undefined);
   return ok ? orgIdStoreLink() : undefined;
 }
 

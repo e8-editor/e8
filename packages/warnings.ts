@@ -2,6 +2,7 @@
 // *Warnings*, and shows the buffer, unless the warning's level or type
 // says not to; warn and lwarn format the message first.
 
+import { fillRegion } from "fill";
 import { readMultipleChoice } from "rmc";
 import { getBufferWindow } from "subr";
 
@@ -95,8 +96,8 @@ e8.defun("warning-suppress-p", (type: e8.Value, suppress: e8.Value) => warningSu
 /** Asks whether to stop logging or showing warnings of TYPE, as warnings-suppress, the warning's button. */
 function warningsSuppress(type: e8.Value): void {
   const name = Array.isArray(type) ? e8.prin1ToString(type) : nameOf(type);
-  const [key] = readMultipleChoice(`Suppress ‘${name}’ warnings? `, [
-    ["y", `yes, ignore ‘${name}’ warnings completely`],
+  const [key] = readMultipleChoice(`Suppress \`${name}' warnings? `, [
+    ["y", `yes, ignore \`${name}' warnings completely`],
     ["n", "no, just disable showing them"],
     ["q", "quit and do nothing"],
   ]);
@@ -167,13 +168,7 @@ export function displayWarning(type: e8.Value, message: string, level: e8.Value 
       const fillPrefix = e8.variable("warning-fill-prefix");
       if (typeof fillPrefix === "string" && !message.includes("\n") && !batch) {
         e8.letBind({ "fill-prefix": fillPrefix, "fill-column": e8.variable("warning-fill-column") ?? 78 }, () => {
-          // fill-region takes the region: from the warning's start to here.
-          const end = e8.point();
-          const mark = e8.mark();
-          e8.setMark(s);
-          e8.gotoChar(end);
-          e8.call("fill-region");
-          e8.setMark(mark ?? null);
+          fillRegion(s, e8.point());
           e8.gotoChar(e8.pointMax());
         });
       }
@@ -182,7 +177,11 @@ export function displayWarning(type: e8.Value, message: string, level: e8.Value 
   });
   // A level's function, such as :emergency's ding.
   const attention = levelInfo[2];
-  if (attention !== undefined && attention !== null && attention !== false) e8.funcall(nameOf(attention));
+  if (attention !== undefined && attention !== null && attention !== false) {
+    // ding is native here, as it is C in Emacs.
+    if (nameOf(attention) === "ding" && !e8.fboundp("ding")) e8.ding();
+    else e8.funcall(nameOf(attention));
+  }
   if (batch) {
     // Its text, without the last newline, as batch Emacs prints it.
     const text = e8.withCurrentBuffer(buffer, () => e8.bufferSubstringNoProperties(start, end));

@@ -198,8 +198,17 @@ fn the_domain_is_a_fully_qualified_name() {
     f.eval(r#"(e8.setVariable("org-id-method", "ts"), e8.setVariable("org-id-include-domain", true), e8.setVariable("mail-host-address", "example.org"), 1)"#);
     let id = f.eval(r#"e8.funcall("org-id-new", "none")"#);
     let host = f.eval("e8.systemName()").trim_matches('"').to_string();
-    let want = if host.contains('.') && !host.ends_with('.') { host } else { "example.org".into() };
+    // A name with a dot, not localhost. or .local, as message-bogus-system-names rejects them.
+    let good = host.contains('.') && !host.to_lowercase().ends_with(".local") && !host.to_lowercase().starts_with("localhost.");
+    let want = if good { host.clone() } else { "example.org".into() };
     assert!(id.ends_with(&format!("@{want}\"")), "{id}");
+    // message-user-fqdn comes first; with none of them, the system name and a note.
+    f.eval(r#"e8.setVariable("message-user-fqdn", "mine.example")"#);
+    assert!(f.eval(r#"e8.funcall("org-id-new", "none")"#).ends_with("@mine.example\""));
+    f.eval(r#"(e8.setVariable("message-user-fqdn", null), e8.setVariable("mail-host-address", null), 1)"#);
+    if !good {
+        assert!(f.eval(r#"e8.funcall("org-id-new", "none")"#).ends_with(&format!("@{host}.mail-host-address-is-not-set\"")));
+    }
 }
 
 /// The agenda files' archives are searched for IDs, and a directory among
@@ -238,4 +247,23 @@ fn links_by_an_inherited_id() {
     assert_eq!(f.eval(r#"JSON.stringify(e8.variable("org-stored-links")[0])"#), r#""[\"id:par::*Child\",\"Child\"]""#);
     // No ID was made for the child.
     assert!(!f.ed.window_buffer().slice(0..f.ed.window_buffer().len()).contains("** Child\n:PROPERTIES:"));
+}
+
+/// With use-existing, an inherited ID counts too.
+#[test]
+fn use_existing_takes_an_inherited_id() {
+    let mut f = Fixture::new();
+    let a = f.write("a.org", "* Parent\n:PROPERTIES:\n:ID: par\n:END:\n** Child\n");
+    f.visit(&a);
+    f.eval(r#"(e8.setVariable("org-id-link-to-org-use-id", e8.intern("use-existing")), e8.setVariable("org-id-link-consider-parent-id", true), 1)"#);
+    f.ed.press("M-> C-p M-x o r g - s t o r e - l i n k RET").unwrap();
+    assert_eq!(f.eval(r#"JSON.stringify(e8.variable("org-stored-links")[0])"#), r#""[\"id:par::*Child\",\"Child\"]""#);
+}
+
+/// The method may be a symbol, as customize sets it.
+#[test]
+fn the_method_as_a_symbol() {
+    let mut f = Fixture::new();
+    f.eval(r#"e8.setVariable("org-id-method", e8.intern("ts"))"#);
+    assert!(f.eval(r#"e8.funcall("org-id-new", "none")"#).starts_with("\"20"));
 }
