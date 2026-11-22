@@ -781,5 +781,100 @@
    "org-enforce-todo-dependencies": true,
    "org-agenda-dim-blocked-tasks": "'invisible"
   }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "search-view-does-not-hide-blocked",
+  "text": "* TODO Parent foo\n** TODO child foo\n",
+  "keys": "",
+  "call": [
+   "org-search-view"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "answers": [
+   "foo"
+  ],
+  "globals": {
+   "org-enforce-todo-dependencies": true,
+   "org-agenda-dim-blocked-tasks": "'invisible"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-skips-comment-lines-and-source-blocks",
+  "text": "* B\n# <2026-10-28 Wed>\n#+begin_src sh\n<2026-10-29 Thu>\n#+end_src\n* C <2026-10-28 Wed>\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "visit": "e8-agenda-archive.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-archived-by-the-tag-itself",
+  "text": "* A :old:\n<2026-10-28 Wed>\n* D :ARCHIVE:\n<2026-10-28 Wed>\n* C <2026-10-28 Wed>\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-archive-tag": "old"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archived-by-the-tag-itself",
+  "text": "* TODO A :old:\n* TODO D :ARCHIVE:\n* TODO C\n",
+  "keys": "",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-archive-tag": "old"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "archive-file-not-in-org-mode",
+  "text": "* TODO B\n",
+  "keys": "v",
+  "answers": [
+   "A"
+  ],
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "* TODO B\n",
+   "t.org_archive": "#+CATEGORY: arch\n* TODO Old\n"
+  },
+  "find": "t.org"
  }
 ]

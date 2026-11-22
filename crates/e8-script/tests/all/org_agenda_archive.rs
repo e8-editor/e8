@@ -115,3 +115,20 @@ fn archiving_from_the_agenda_saves_as_from_agenda_says() {
         }
     }
 }
+
+/// org-agenda-dim-blocked-tasks called in another buffer leaves it alone,
+/// as only the agenda's lines carry the marks it reads.
+#[test]
+fn dimming_outside_the_agenda_changes_nothing() {
+    let (mut ed, s, _dir) = agenda_file(
+        "* TODO Parent\n** TODO child\n* TODO Other\n* TODO Last\n",
+        &[("org-enforce-todo-dependencies", Value::Bool(true)), ("org-agenda-dim-blocked-tasks", Value::Str("invisible".into()))],
+    );
+    ed.call("org-todo-list", vec![]).unwrap();
+    ed.press("C-x o").unwrap();
+    assert_eq!(ed.window_buffer().name, "tasks.org");
+    ed.call("org-agenda-dim-blocked-tasks", vec![]).unwrap();
+    assert!(!ed.window_buffer().is_modified());
+    let overlays = s.eval_expression(&mut ed, "e8.overlaysIn(e8.pointMin(), e8.pointMax()).length").unwrap();
+    assert_eq!(overlays, "0");
+}

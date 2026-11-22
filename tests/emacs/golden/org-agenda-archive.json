@@ -1833,6 +1833,245 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "search-view-does-not-hide-blocked",
+      "input": {
+        "text": "* TODO Parent foo\n** TODO child foo\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-search-view"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "foo"
+        ],
+        "globals": {
+          "org-enforce-todo-dependencies": true,
+          "org-agenda-dim-blocked-tasks": "'invisible"
+        }
+      },
+      "text": "Search words: foo\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda-archive:TODO Parent foo\n  e8-agenda-archive:TODO child foo\n",
+      "visible": "Search words: foo\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  e8-agenda-archive:TODO Parent foo\n  e8-agenda-archive:TODO child foo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "week-agenda-skips-comment-lines-and-source-blocks",
+      "input": {
+        "text": "* B\n# <2026-10-28 Wed>\n#+begin_src sh\n<2026-10-29 Thu>\n#+end_src\n* C <2026-10-28 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-archive:C \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-archive:C \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "week-agenda-archived-by-the-tag-itself",
+      "input": {
+        "text": "* A :old:\n<2026-10-28 Wed>\n* D :ARCHIVE:\n<2026-10-28 Wed>\n* C <2026-10-28 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-archive-tag": "old"
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-archive:A                                                     :old:\n  e8-agenda-archive:C \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-archive:A                                                     :old:\n  e8-agenda-archive:C \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-list-archived-by-the-tag-itself",
+      "input": {
+        "text": "* TODO A :old:\n* TODO D :ARCHIVE:\n* TODO C\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-archive-tag": "old"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO A                                                :old:\n  e8-agenda-archive:TODO C\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO A                                                :old:\n  e8-agenda-archive:TODO C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "archive-file-not-in-org-mode",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A"
+        ],
+        "files": {
+          "t.org": "* TODO B\n",
+          "t.org_archive": "#+CATEGORY: arch\n* TODO Old\n"
+        },
+        "find": "t.org"
+      },
+      "text": "",
+      "visible": "",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Agenda file DIR/t.org_archive is not in Org mode",
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* TODO B\n",
+        "t.org_archive": "#+CATEGORY: arch\n* TODO Old\n"
+      }
     }
   ]
 }

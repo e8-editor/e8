@@ -368,6 +368,7 @@ const RANGE = /(<\d{4}-\d{2}-\d{2}[^>\n]*>)--(<\d{4}-\d{2}-\d{2}[^>\n]*>)/g;
 
 /** The current buffer's headings as the agenda reads them, and its category. */
 function scanBuffer(): { cat: string; entries: Scanned[] } {
+  notOrg();
   const all = headings();
   const cats = categories(all);
   // Archived and commented trees left out, as org-agenda-skip leaves them.
@@ -377,9 +378,17 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
     const stamps: Scanned["stamps"] = [];
     const ranges: Scanned["ranges"] = [];
     const end = entryEnd(all, i);
+    let inSrc = false;
     for (let l = h.line; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
       if (l === h.line + 1 && PLANNING.test(e8.lineText(l))) continue;
       const text = e8.lineText(l);
+      // Comment lines and the inside of source blocks left out, as org-agenda-skip leaves them.
+      if (inSrc) {
+        if (/^[ \t]*#\+end_src\b/i.test(text)) inSrc = false;
+        continue;
+      }
+      if (/^[ \t]*#\+begin_src\b/i.test(text)) inSrc = true;
+      if (/^[ \t]*#(?: |$)/.test(text)) continue;
       if (!text.includes("<")) continue;
       // A range's ends belong to the range, which shows on every day of it, as org-agenda-get-blocks has it.
       const inRange: [number, number][] = [];
@@ -582,7 +591,8 @@ function blockerHookSet(): boolean {
  */
 function markBlocked(lines: { item?: AgendaItem }[]): void {
   const option = e8.variable("org-agenda-dim-blocked-tasks") ?? null;
-  if (!truthy(option) || !blockerHookSet()) return;
+  // Not the search view's lines, which have no todo-state for Org to look at.
+  if (!truthy(option) || !blockerHookSet() || agendaView.kind === "search") return;
   for (const { item } of lines) {
     if (!item) continue;
     const blocked = e8.withCurrentBuffer(item.buffer, () => widened(() => {
@@ -820,6 +830,27 @@ e8.defun("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item", (end?: 
   return ignoreTodoForTimestamp(start, stop, i !== undefined && isDone(all[i].todo)) || null;
 });
 
+/**
+ * Signals unless the current buffer is in Org mode, as the agenda does of
+ * each of its files, the agenda left empty, as org-agenda-prepare erased it
+ * before the files were read.
+ */
+function notOrg(): void {
+  if (e8.variable("major-mode") === "org-mode" || e8.derivedModeP("org-mode")) return;
+  const file = e8.bufferFileName();
+  if (e8.getBuffer(AGENDA)) {
+    e8.withCurrentBuffer(AGENDA, () => e8.letBind({ "inhibit-read-only": true }, () => eraseBuffer()));
+    for (const old of agendaLines) {
+      if (old?.marks) {
+        e8.deleteMarker(old.marks.pos);
+        e8.deleteMarker(old.marks.heading);
+      }
+    }
+    agendaLines = [];
+  }
+  throw new Error(`Agenda file ${file} is not in Org mode`);
+}
+
 /** The TODO items that are not done, as org-todo-list shows them. */
 function todoList(): void {
   const buffers = agendaBuffers();
@@ -828,6 +859,7 @@ function todoList(): void {
   const sublevels = truthy(e8.variable("org-agenda-todo-list-sublevels") ?? null);
   for (const buffer of buffers) {
     e8.withCurrentBuffer(buffer, () => widened(() => {
+      notOrg();
       for (const k of allKeywords()) keywords.add(k);
       const all = headings();
       const cats = categories(all);
@@ -868,6 +900,7 @@ function todoList(): void {
  * subtree while org-agenda-skip-comment-trees is.
  */
 function skippedHeadings(all: Heading[]): boolean[] {
+  // A heading is archived by the ARCHIVE tag itself, as org-element's :archivedp has it; a file by org-archive-tag among its FILETAGS.
   const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
   const archived = truthy(e8.variable("org-agenda-skip-archived-trees") ?? null) && archivesMode === null;
   const comments = e8.variable("org-agenda-skip-comment-trees") !== false && e8.variable("org-agenda-skip-comment-trees") !== null;
@@ -881,7 +914,7 @@ function skippedHeadings(all: Heading[]): boolean[] {
     const skip =
       fileArchived ||
       (stack.length > 0 && stack[stack.length - 1].skip) ||
-      (archived && h.tags.includes(tag)) ||
+      (archived && h.tags.includes("ARCHIVE")) ||
       (comments && /^COMMENT(?:[ \t]|$)/.test(h.title));
     stack.push({ level: h.level, skip });
     return skip;
@@ -901,7 +934,7 @@ function tagsView(todoOnly: boolean, match?: string): void {
   for (const buffer of agendaBuffers()) {
     e8.withCurrentBuffer(buffer, () =>
       widened(() => {
-        if (e8.variable("major-mode") !== "org-mode" && !e8.derivedModeP("org-mode")) throw new Error(`Agenda file ${e8.bufferFileName()} is not in Org mode`);
+        notOrg();
         const all = headings();
         const cats = categories(all);
         const skipped = skippedHeadings(all);
@@ -1049,7 +1082,7 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
     e8.withCurrentBuffer(buffer, () =>
       widened(() =>
         e8.saveExcursion(() => {
-          if (e8.variable("major-mode") !== "org-mode" && !e8.derivedModeP("org-mode")) throw new Error(`Agenda file ${e8.bufferFileName()} is not in Org mode`);
+          notOrg();
           const all = headings();
           if (all.length === 0) return;
           const cats = categories(all);
@@ -1676,7 +1709,8 @@ e8.defineCommand({
     // As (called-interactively-p 'interactive), not from a keyboard macro.
     const interactive = e8.calledInteractively() && !e8.executingKbdMacro();
     if (interactive) e8.message("Dim or hide blocked tasks...");
-    agendaLines.forEach((item, l) => dimLine(l, item));
+    // Only the agenda's lines carry the marks it reads.
+    if (e8.bufferName() === AGENDA) agendaLines.forEach((item, l) => dimLine(l, item));
     if (interactive) e8.message("Dim or hide blocked tasks...done");
   },
 });
