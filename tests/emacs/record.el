@@ -341,7 +341,29 @@ answers come, and then from its answers, as save-some-buffers' do."
           (setq e8-oracle--error
                 (if (eq (car data) 'quit) "Quit" (error-message-string data))))))
 
+(defun e8-oracle--value (v)
+  "A case's JSON value V as Lisp: true and false t and nil, a string starting with ' a symbol, a list of strings with such symbols, an object an alist of strings."
+  (pcase v
+    (:json-false nil)
+    ('t t)
+    ;; A string starting with ' is a symbol, as 'headline-data.
+    ((and (pred stringp) v (guard (string-prefix-p "'" v))) (intern (substring v 1)))
+    ;; A list of strings, those starting with ' symbols, as ("'time" "'todo").
+    ((and (pred listp) v (guard (and v (cl-every #'stringp v))))
+     (mapcar (lambda (x) (if (string-prefix-p "'" x) (intern (substring x 1)) x)) v))
+    ;; An object is an alist of strings, as (("NAME" . "value")).
+    ((and `((,(pred symbolp) . ,_) . ,_) v)
+     (mapcar (lambda (c) (cons (symbol-name (car c)) (cdr c))) v))
+    (v v)))
+
 (defun e8-oracle--run (case)
+  "Type CASE's keys and return the buffer's state afterwards, as an alist,
+its `globals' bound for the case, before the modes start."
+  (let ((globals (alist-get 'globals case)))
+    (cl-progv (mapcar #'car globals) (mapcar (lambda (g) (e8-oracle--value (cdr g))) globals)
+      (e8-oracle--run-1 case))))
+
+(defun e8-oracle--run-1 (case)
   "Type CASE's keys and return the buffer's state afterwards, as an alist."
   (let ((text (alist-get 'text case))
         (keys (alist-get 'keys case))
@@ -458,19 +480,7 @@ answers come, and then from its answers, as save-some-buffers' do."
           (wrong-number-of-arguments (funcall mode))))
       ;; Variables for the case, buffer-local: true and false are t and nil.
       (dolist (var (alist-get 'vars case))
-        (set (make-local-variable (car var))
-             (pcase (cdr var)
-               (:json-false nil)
-               ('t t)
-               ;; A string starting with ' is a symbol, as 'headline-data.
-               ((and (pred stringp) v (guard (string-prefix-p "'" v))) (intern (substring v 1)))
-               ;; A list of strings, those starting with ' symbols, as ("'time" "'todo").
-               ((and (pred listp) v (guard (and v (cl-every #'stringp v))))
-                (mapcar (lambda (x) (if (string-prefix-p "'" x) (intern (substring x 1)) x)) v))
-               ;; An object is an alist of strings, as (("NAME" . "value")).
-               ((and `((,(pred symbolp) . ,_) . ,_) v)
-                (mapcar (lambda (c) (cons (symbol-name (car c)) (cdr c))) v))
-               (v v))))
+        (set (make-local-variable (car var)) (e8-oracle--value (cdr var))))
       ;; A completion function offering the case's strings for the word at point.
       (when-let* ((strings (alist-get 'capf case)))
         (add-hook 'completion-at-point-functions
@@ -628,6 +638,7 @@ The whole buffer, even if the case left it narrowed."
                   ,@(and (alist-get 'capf case) `((capf . ,(vconcat (alist-get 'capf case)))))
                   ,@(and (alist-get 'completions case) '((completions . t)))
                   ,@(and (alist-get 'vars case) `((vars . ,(alist-get 'vars case))))
+                  ,@(and (alist-get 'globals case) `((globals . ,(alist-get 'globals case))))
                   ,@(and (alist-get 'lockfiles case) '((lockfiles . t)))))
         ,@(if (derived-mode-p 'dired-mode)
               ;; Sizes and dates differ between runs: compare marks and names.

@@ -1,0 +1,427 @@
+[
+  {
+    "name": "dep-children-block",
+    "text": "* TODO Parent\n** TODO child\n** DONE other\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ],
+    "message": true
+  },
+  {
+    "name": "dep-children-off",
+    "text": "* TODO Parent\n** TODO child\n** DONE other\n",
+    "keys": "C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "dep-children-done",
+    "text": "* TODO Parent\n** DONE child\n** child no todo\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-grandchild-blocks",
+    "text": "* TODO Parent\n** child\n*** TODO grand\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ],
+    "message": true
+  },
+  {
+    "name": "dep-to-todo-allowed",
+    "text": "* Parent\n** TODO child\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-from-done-allowed",
+    "text": "* DONE Parent\n** TODO child\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-bypass",
+    "text": "* TODO Parent\n** TODO child\n** DONE other\n",
+    "keys": "C-u C-u C-u C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    }
+  },
+  {
+    "name": "dep-noblocking",
+    "text": "* TODO Parent\n:PROPERTIES:\n:NOBLOCKING: t\n:END:\n** TODO child\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-ordered-blocks",
+    "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n",
+    "keys": "",
+    "point": 49,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ],
+    "message": true
+  },
+  {
+    "name": "dep-ordered-first-ok",
+    "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n",
+    "keys": "",
+    "point": 35,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-ordered-nil",
+    "text": "* P\n:PROPERTIES:\n:ORDERED: nil\n:END:\n** TODO first\n** TODO second\n",
+    "keys": "",
+    "point": 49,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-ordered-ancestor",
+    "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n*** TODO sub\n",
+    "keys": "",
+    "point": 64,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ],
+    "message": true
+  },
+  {
+    "name": "dep-ordered-grandparent",
+    "text": "* G\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO early\n** TODO P\n*** TODO sub\n",
+    "keys": "",
+    "point": 59,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ],
+    "message": true
+  },
+  {
+    "name": "dep-parent-not-todo",
+    "text": "* G\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO early\n** P\n*** TODO sub\n",
+    "keys": "",
+    "point": 54,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-checkbox-blocks",
+    "text": "* TODO Task\n- [ ] one\n- [X] two\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-checkbox-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ],
+    "message": true
+  },
+  {
+    "name": "dep-checkbox-all-checked",
+    "text": "* TODO Task\n- [X] one\n- [X] two\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-checkbox-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-checkbox-partial",
+    "text": "* TODO Task\n- [-] one\n  - [X] a\n  - [ ] b\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-checkbox-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ],
+    "message": true
+  },
+  {
+    "name": "dep-checkbox-child-heading",
+    "text": "* TODO Task\n** sub\n- [ ] one\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-checkbox-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-checkbox-in-block",
+    "text": "* TODO Task\n#+begin_example\n- [ ] one\n#+end_example\n",
+    "keys": "",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-checkbox-dependencies": true
+    },
+    "call": [
+      "org-todo"
+    ]
+  },
+  {
+    "name": "dep-sparse-blocked",
+    "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+    "keys": "C-c / m",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "BLOCKED=\"t\""
+    ],
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    }
+  },
+  {
+    "name": "dep-sparse-not-blocked",
+    "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+    "keys": "C-c / m",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "BLOCKED=\"\""
+    ],
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    }
+  },
+  {
+    "name": "dep-toggle-ordered",
+    "text": "* P\n** a\n",
+    "keys": "C-c C-x o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "message": true
+  },
+  {
+    "name": "dep-toggle-ordered-twice",
+    "text": "* P\n** a\n",
+    "keys": "C-c C-x o C-c C-x o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "message": true
+  },
+  {
+    "name": "dep-toggle-ordered-tag",
+    "text": "* P\n** a\n",
+    "keys": "C-c C-x o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-track-ordered-property-with-tag": true
+    }
+  },
+  {
+    "name": "dep-toggle-ordered-tag-off",
+    "text": "* P :ORDERED:\n:PROPERTIES:\n:ORDERED: t\n:END:\n",
+    "keys": "C-c C-x o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-track-ordered-property-with-tag": true
+    }
+  },
+  {
+    "name": "dep-region-blocked",
+    "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+    "keys": "C-SPC M-> C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    }
+  },
+  {
+    "name": "dep-set-after-mode",
+    "text": "* TODO Parent\n** TODO child\n",
+    "keys": "C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-enforce-todo-dependencies": true
+    }
+  },
+  {
+    "name": "dep-blocked-not-interactive",
+    "text": "* TODO Parent\n** TODO child\n* x\n",
+    "keys": "C-c C-x C-s",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "globals": {
+      "org-enforce-todo-dependencies": true
+    },
+    "vars": {
+      "org-archive-mark-done": true,
+      "org-archive-location": "::* Archive"
+    }
+  }
+]

@@ -64,6 +64,11 @@ pub struct Case {
     /// numbers, strings, and true or false for t and nil.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub vars: BTreeMap<String, serde_json::Value>,
+    /// Variables' default values for the case, set before the modes start,
+    /// as a mode reads some only then, as Org reads
+    /// org-enforce-todo-dependencies; written as `vars` are.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub globals: BTreeMap<String, serde_json::Value>,
     /// Whether editing makes lock files, `create-lockfiles`, off otherwise.
     #[serde(default, skip_serializing_if = "is_false")]
     pub lockfiles: bool,
@@ -124,6 +129,8 @@ pub struct Input {
     pub message: bool,
     #[serde(default)]
     pub vars: BTreeMap<String, serde_json::Value>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub globals: BTreeMap<String, serde_json::Value>,
     #[serde(default)]
     pub lockfiles: bool,
     #[serde(default)]
@@ -153,6 +160,7 @@ impl Input {
             disk: case.disk.clone(),
             message: case.message,
             vars: case.vars.clone(),
+            globals: case.globals.clone(),
             lockfiles: case.lockfiles,
             capf: case.capf.clone(),
             completions: case.completions,
@@ -522,37 +530,16 @@ pub fn run(case: &Case) -> State {
     if let Some(day) = &case.today {
         ed.set_variable("e8--today", e8_core::Value::Str(day.clone()));
     }
+    // Default values before the modes start, as record.el binds them.
+    for (name, value) in &case.globals {
+        ed.set_default(name, case_value(case, name, value));
+    }
     for mode in &case.modes {
         ed.call_with_prefix(mode, Vec::new(), Some(PrefixArg::Number(1)))
             .unwrap_or_else(|e| panic!("{}: turning on {mode}: {e}", case.name));
     }
     for (name, value) in &case.vars {
-        let value = match value {
-            serde_json::Value::Bool(b) => e8_core::Value::Bool(*b),
-            serde_json::Value::Number(n) => e8_core::Value::Number(n.as_f64().expect("a number")),
-            // A string starting with ' is a symbol in Emacs, a string in E8, as 'headline-data.
-            serde_json::Value::String(s) => e8_core::Value::Str(s.strip_prefix('\'').unwrap_or(s).to_string()),
-            // A list of strings, a ' marking a symbol in Emacs, as ["'time", "'todo"].
-            serde_json::Value::Array(items) => e8_core::Value::List(
-                items
-                    .iter()
-                    .map(|v| {
-                        let v = v.as_str().unwrap_or_else(|| panic!("{}: {name}'s items must be strings", case.name));
-                        e8_core::Value::Str(v.strip_prefix('\'').unwrap_or(v).to_string())
-                    })
-                    .collect(),
-            ),
-            // An object is an alist of strings in Emacs, [name, value] lists in E8.
-            serde_json::Value::Object(o) => e8_core::Value::List(
-                o.iter()
-                    .map(|(k, v)| {
-                        let v = v.as_str().unwrap_or_else(|| panic!("{}: {name}'s values must be strings", case.name));
-                        e8_core::Value::List(vec![e8_core::Value::Str(k.clone()), e8_core::Value::Str(v.to_string())])
-                    })
-                    .collect(),
-            ),
-            _ => panic!("{}: {name} must be a number, string, boolean, list of strings or object of strings", case.name),
-        };
+        let value = case_value(case, name, value);
         ed.make_local_variable(name);
         ed.set_variable(name, value);
     }
@@ -724,4 +711,34 @@ fn is_false(b: &bool) -> bool {
 
 fn is_zero(n: &usize) -> bool {
     *n == 0
+}
+
+/// A case's variable value as E8's, as record.el reads it for Emacs.
+fn case_value(case: &Case, name: &str, value: &serde_json::Value) -> e8_core::Value {
+    match value {
+        serde_json::Value::Bool(b) => e8_core::Value::Bool(*b),
+        serde_json::Value::Number(n) => e8_core::Value::Number(n.as_f64().expect("a number")),
+        // A string starting with ' is a symbol in Emacs, a string in E8, as 'headline-data.
+        serde_json::Value::String(s) => e8_core::Value::Str(s.strip_prefix('\'').unwrap_or(s).to_string()),
+        // A list of strings, a ' marking a symbol in Emacs, as ["'time", "'todo"].
+        serde_json::Value::Array(items) => e8_core::Value::List(
+            items
+                .iter()
+                .map(|v| {
+                    let v = v.as_str().unwrap_or_else(|| panic!("{}: {name}'s items must be strings", case.name));
+                    e8_core::Value::Str(v.strip_prefix('\'').unwrap_or(v).to_string())
+                })
+                .collect(),
+        ),
+        // An object is an alist of strings in Emacs, [name, value] lists in E8.
+        serde_json::Value::Object(o) => e8_core::Value::List(
+            o.iter()
+                .map(|(k, v)| {
+                    let v = v.as_str().unwrap_or_else(|| panic!("{}: {name}'s values must be strings", case.name));
+                    e8_core::Value::List(vec![e8_core::Value::Str(k.clone()), e8_core::Value::Str(v.to_string())])
+                })
+                .collect(),
+        ),
+        _ => panic!("{}: {name} must be a number, string, boolean, list of strings or object of strings", case.name),
+    }
 }

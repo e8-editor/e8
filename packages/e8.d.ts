@@ -6730,6 +6730,12 @@ declare global {
        */
       "org-toggle-narrow-to-subtree": [];
       /**
+       * Toggle the ORDERED property of the current entry, which makes its children be done in order. With org-track-ordered-property-with-tag, toggle a tag too.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-toggle-ordered-property": [];
+      /**
        * Tick the checkbox of the item at point and untick the others of its list. With C-u, take its box away; with C-u C-u, make it [-].
        *
        * @param arg raw prefix argument
@@ -13561,6 +13567,18 @@ declare global {
        */
       "org-ellipsis": Value;
       /**
+       * Whether unchecked boxes in an entry block marking it done.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-enforce-todo-checkbox-dependencies": Value;
+      /**
+       * Whether TODO children block marking their parent done, and with an ORDERED property on the parent, earlier siblings not done block a sibling.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-enforce-todo-dependencies": Value;
+      /**
        * The hour before which a time counts as the day before, for clock ranges.
        *
        * Defined in packages/org-clock.ts.
@@ -13820,6 +13838,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-indirect-buffer-display": Value;
+      /**
+       * Whether nothing blocks a change of TODO state, whatever the dependencies.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-inhibit-blocking": Value;
       /**
        * Whether org-remove-occur-highlights leaves the highlights alone, for code making several sparse trees.
        *
@@ -14264,6 +14288,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-todo-keywords": Value;
+      /**
+       * Whether org-toggle-ordered-property also toggles a tag: t for ORDERED, or the tag to use.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-track-ordered-property-with-tag": Value;
       /**
        * Whether inserting a TODO heading logs it as a change to that state.
        *
@@ -18066,6 +18096,10 @@ declare global {
        */
       "org-babel-tangle-finished-hook": Value;
       /**
+       * Functions that may block a change of TODO state, each given a property list (:type todo-state-change :from :to :position); one returning nil blocks it.
+       */
+      "org-blocker-hook": Value;
+      /**
        * Run after the capture is finished and the windows are back as they were.
        */
       "org-capture-after-finalize-hook": Value;
@@ -18173,6 +18207,10 @@ declare global {
        * Functions TAB in Org tries where it would indent, not being on a heading, an item, a table or a block, each until one gives true.
        */
       "org-tab-before-tab-emulation-hook": Value;
+      /**
+       * Functions run after a TODO state changes, each given the property list org-blocker-hook gets.
+       */
+      "org-trigger-hook": Value;
       /**
        * Run after Outline-Minor mode is turned on or off.
        */

@@ -87,6 +87,7 @@ mod org_select;
 mod org_sort_tables_lists;
 mod org_region_loops;
 mod org_tags_region;
+mod org_todo_dependencies;
 mod org_sparse_tree;
 mod org_src;
 mod overlays;
