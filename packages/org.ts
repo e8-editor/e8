@@ -221,8 +221,8 @@ const variables: [string, string, e8.Value][] = [
     'What marking a heading done records: false for nothing, "time" for a CLOSED: timestamp under it.',
     false,
   ],
-  ["org-priority-highest", "The highest priority, a capital letter.", "A"],
-  ["org-priority-lowest", "The lowest priority, a capital letter.", "C"],
+  ["org-priority-highest", "The highest priority, a capital letter, or a number for numeric priorities.", "A"],
+  ["org-priority-lowest", "The lowest priority, a capital letter, or a number for numeric priorities.", "C"],
   ["org-priority-default", "The priority S-<up> and S-<down> start from, and that headings without one count as.", "B"],
   ["org-link-descriptive", "Whether links show only their description, hiding the brackets and target.", true],
   ["org-hide-emphasis-markers", "Whether the markers around emphasised text are hidden, the stars of *bold* and the tildes of ~code~, showing only its face.", false],
@@ -5084,76 +5084,167 @@ e8.defineCommand({
   run: (state) => todo(1, state),
 });
 
-/** Raises (1) or lowers (-1) a heading's priority, as org-priority does for up and down. */
-function priority(direction: number): void {
+e8.defineVariable({ name: "org-priority-enable-commands", doc: "Whether the priority commands work; when nil, they refuse, so a priority is never set by accident.", value: true });
+e8.defineVariable({
+  name: "org-priority-start-cycle-with-default",
+  doc: "Whether raising or lowering a heading with no priority starts at org-priority-default, rather than one above or below it.",
+  value: true,
+});
+e8.defineVariable({
+  name: "org-priority-get-priority-function",
+  doc: "A function of a heading's text giving its priority as a number, instead of its cookie and org-priority-lowest.",
+  value: null,
+});
+
+/**
+ * A priority option as a number, as Org's characters are: a letter's
+ * code, or a number as it is, as for numeric priorities.
+ */
+function priorityOption(name: string, fallback: string): number {
+  const v = e8.variable(name) ?? fallback;
+  return typeof v === "number" ? v : String(v || fallback).codePointAt(0)!;
+}
+
+/** A priority cookie's value, as org-priority-to-value: its number, else its first character's code. */
+function priorityToValue(s: string): number {
+  const m = /([0-9]+)/.exec(s);
+  return m ? Number(m[1]) : s.codePointAt(0)!;
+}
+
+/** A priority cookie in a heading, as org-priority-regexp matches it, case folded: the cookie with a space after it, and its value. */
+const PRIORITY_COOKIE = /^.*?(\[#([A-Za-z0-9]+)\] ?)/;
+
+/** A heading's priority as a number, as org-get-priority gives it: a thousand for each step below the lowest. */
+export function getPriority(s: string): number {
+  const fn = e8.variable("org-priority-get-priority-function");
+  if (fn !== null && fn !== undefined && fn !== false) return Number(e8.funcall(fn as string | ((...args: e8.Value[]) => e8.Value), s));
+  const lowest = priorityOption("org-priority-lowest", "C");
+  const m = PRIORITY_COOKIE.exec(s);
+  return 1000 * (lowest - (m ? priorityToValue(m[2]) : priorityOption("org-priority-default", "B")));
+}
+
+/** A key read by read-char-exclusive, as the character it stands for. */
+function keyChar(key: string): number {
+  const named: Record<string, number> = { SPC: 32, RET: 13, TAB: 9, ESC: 27, DEL: 127 };
+  if (named[key] !== undefined) return named[key];
+  return [...key].length === 1 ? key.codePointAt(0)! : -1;
+}
+
+/** As Emacs's upcase of a character. */
+const upcase = (c: number): number => String.fromCodePoint(c).toUpperCase().codePointAt(0) ?? c;
+
+/** The action org-priority takes: set, asking for it, up, down, remove, or a priority's character. */
+export type PriorityAction = "set" | "up" | "down" | "remove" | number;
+
+/**
+ * Changes the priority of the heading point is under, as org-priority:
+ * setting it to a character read, or ACTION's, SPC removing it, raising or
+ * lowering it, wrapping past the highest or lowest to none, and aligning
+ * the tags after.
+ */
+export function setPriority(action: PriorityAction = "set"): void {
+  if (!truthy(e8.variable("org-priority-enable-commands") ?? true)) e8.userError("Priority commands are disabled");
+  const highest = priorityOption("org-priority-highest", "A");
+  const lowest = priorityOption("org-priority-lowest", "C");
+  const fallback = priorityOption("org-priority-default", "B");
+  const nump = lowest < 65;
   const [all, i] = backToHeading();
   const h = all[i];
-  const highest = String(e8.variable("org-priority-highest") ?? "A").charCodeAt(0);
-  const lowest = String(e8.variable("org-priority-lowest") ?? "C").charCodeAt(0);
-  const fallback = String(e8.variable("org-priority-default") ?? "B").charCodeAt(0);
-  const text = e8.lineText(h.line);
-  const cookie = /^.*?(\[#([A-Z0-9]+)\] ?)/.exec(text);
-  const again = e8.lastCommand() === e8.thisCommand();
-  let next: number;
-  if (cookie) next = cookie[2].charCodeAt(0) - direction;
-  else next = again ? (direction > 0 ? lowest : highest) : fallback;
+  const cookie = PRIORITY_COOKIE.exec(e8.lineText(h.line));
+  const current = cookie ? priorityToValue(cookie[2]) : undefined;
   let remove = false;
-  if (next < highest || next > lowest) {
-    if (!cookie && !again) throw new Error("The default can not be set, see \u2018org-priority-default\u2019 why");
+  let next: number;
+  if (action === "remove") {
+    remove = true;
+    next = 32;
+  } else if (action === "set" || typeof action === "number") {
+    if (typeof action === "number") next = action;
+    else if (nump) {
+      const prompt = `Priority ${highest}-${lowest}, SPC to remove: `;
+      const s = lowest > 9 ? e8.readString(prompt) : String.fromCodePoint(Math.max(keyChar(e8.readCharExclusive(prompt)), 0));
+      next = s === " " ? 32 : Number.parseInt(s, 10) || 0;
+    } else next = keyChar(e8.readCharExclusive(`Priority ${String.fromCodePoint(highest)}-${String.fromCodePoint(lowest)}, SPC to remove: `));
+    if (upcase(highest) === highest && upcase(lowest) === lowest) next = upcase(next);
+    if (next === 32) remove = true;
+    else if (upcase(next) < highest || upcase(next) > lowest) {
+      const show = (c: number) => (nump ? String(c) : String.fromCodePoint(c));
+      e8.userError(`Priority must be between \u2018${show(highest)}\u2019 and \u2018${show(lowest)}\u2019`);
+    }
+  } else {
+    const again = e8.lastCommand() === e8.thisCommand();
+    const start = truthy(e8.variable("org-priority-start-cycle-with-default") ?? true);
+    next = action === "up"
+      ? current !== undefined ? current - 1 : again ? lowest : start ? fallback : fallback - 1
+      : current !== undefined ? current + 1 : again ? highest : start ? fallback : fallback + 1;
+  }
+  if (upcase(next) < highest || upcase(next) > lowest) {
+    if ((action === "up" || action === "down") && current === undefined && e8.lastCommand() !== e8.thisCommand()) {
+      e8.signal("error", "The default can not be set, see \u2018org-priority-default\u2019 why");
+    }
     remove = true;
   }
+  // A character past 64, else a number, as Org writes it.
+  const news = next > 64 ? String.fromCodePoint(next) : String(next);
   const p = marker(e8.point());
-  if (cookie) {
-    const start = h.start + charCount(cookie[0].slice(0, cookie[0].length - cookie[1].length));
-    if (remove) edDelete(start, start + charCount(cookie[1]));
-    else {
-      // replace-match on the letter alone: point after it stays after it.
-      edReplace(start + 2, start + 2 + charCount(cookie[2]), String.fromCharCode(next));
+  try {
+    if (cookie) {
+      const start = h.start + charCount(cookie[0].slice(0, cookie[0].length - cookie[1].length));
+      if (remove) edDelete(start, start + charCount(cookie[1]));
+      // replace-match on the value alone: point after it stays after it.
+      else edReplace(start + 2, start + 2 + charCount(cookie[2]), news);
+    } else if (remove) {
+      e8.userError("No priority cookie found in line");
+    } else if (h.todoAt !== undefined) {
+      edInsert(h.todoAt + charCount(h.todo ?? ""), ` [#${news}]`);
+    } else {
+      edInsert(h.titleAt, `[#${news}] `);
     }
-  } else if (remove) {
+    if (truthy(e8.variable("org-auto-align-tags") ?? true) && parseHeading(h.line)?.tagsAt !== undefined) alignTagsAway(h.line);
+  } finally {
+    e8.gotoChar(p.pos);
     dropMarker(p);
-    e8.userError("No priority cookie found in line");
-  } else if (h.todoAt !== undefined) {
-    edInsert(h.todoAt + charCount(h.todo ?? ""), ` [#${String.fromCharCode(next)}]`);
-  } else {
-    edInsert(h.titleAt, `[#${String.fromCharCode(next)}] `);
   }
-  e8.gotoChar(p.pos);
-  dropMarker(p);
-  if (parseHeading(h.line)?.tagsAt !== undefined) alignTagsAway(h.line);
-  e8.message(remove ? "Priority removed" : `Priority of current item set to ${String.fromCharCode(next)}`);
+  e8.message(remove ? "Priority removed" : `Priority of current item set to ${news}`);
+}
+
+/** Says the priority of the heading on point's line, as org-priority-show: -1000 off a heading. */
+export function showPriority(): number {
+  const text = e8.lineText(lineAt());
+  const pri = /^\*+ /.test(text) ? getPriority(text) : -1000;
+  e8.message(`Priority is ${pri}`);
+  return pri;
 }
 
 e8.defineCommand({
   name: "org-priority-up",
   doc: "Raise the priority of the heading point is under: none starts at the default, and above the highest is none.",
-  run: () => priority(1),
+  run: () => setPriority("up"),
 });
 
 e8.defineCommand({
   name: "org-priority-down",
   doc: "Lower the priority of the heading point is under: none starts at the default, and below the lowest is none.",
-  run: () => priority(-1),
+  run: () => setPriority("down"),
 });
 
 e8.defineCommand({
   name: "org-priority",
-  doc: "Set the priority of the heading point is under to a letter, or remove it with SPC or an empty answer.",
-  params: [{ name: "priority", prompt: "Priority A-C, SPC to remove: " }],
-  run: (answer) => {
-    const [all, i] = backToHeading();
-    const h = all[i];
-    const letter = answer.trim().toUpperCase();
-    if (h.priorityAt !== undefined) {
-      const end = h.priorityAt + 4;
-      replaceText(h.priorityAt, letter === "" ? (e8.bufferText(end, end + 1) === " " ? end + 1 : end) : end, letter === "" ? "" : `[#${letter}]`);
-    } else if (letter !== "") {
-      const at = h.todoAt !== undefined ? h.todoAt + charCount(h.todo ?? "") + 1 : h.start + h.level + 1;
-      replaceText(Math.min(at, h.end), Math.min(at, h.end), at > h.end ? ` [#${letter}]` : `[#${letter}] `);
-    }
-    if (letter === "") {
-      if (h.priorityAt !== undefined) e8.message("Priority removed");
-    } else e8.message(`Priority of current item set to ${letter}`);
+  doc:
+    "Set the priority of the heading point is under to the key typed, or remove it with SPC. With C-u, say its priority instead. " +
+    "From code, setPriority from org takes up, down, remove or a character.",
+  params: [{ name: "action", kind: "prefix" }],
+  run: (action: e8.PrefixArg) => {
+    if (Array.isArray(action) && action[0] === 4) showPriority();
+    // A number from code or a numeric prefix, as Org takes an integer for the character.
+    else setPriority(typeof action === "number" ? action : "set");
+  },
+});
+
+e8.defineCommand({
+  name: "org-priority-show",
+  doc: "Say the priority of the heading on point's line, as a number: a thousand for each step below org-priority-lowest.",
+  run: () => {
+    showPriority();
   },
 });
 
@@ -6787,7 +6878,7 @@ e8.defun("org-speed-insert-heading", () => {
   e8.gotoChar(e8.point() + 1);
   e8.callInteractively("org-insert-heading-respect-content");
 });
-e8.defun("org-speed-priority", (letter: e8.Value) => e8.call("org-priority", String(letter)));
+e8.defun("org-speed-priority", (letter: e8.Value) => setPriority(String(letter).codePointAt(0)!));
 
 /**
  * Runs the speed command for the key typed, at the start of a heading, as
@@ -8037,7 +8128,8 @@ const shiftUp = e8.defineCommand({
   doc: "S-<up> in Org: make a timestamp later, raise a heading's priority, or move to the previous item.",
   run: () => {
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-up");
-    else if (headingHere()) e8.call("org-priority-up");
+    // Only while the priority commands work, as org-shiftup checks org-priority-enable-commands.
+    else if (truthy(e8.variable("org-priority-enable-commands") ?? true) && headingHere()) e8.call("org-priority-up");
     else if (itemHere()) e8.call("org-previous-item");
     else if (clocktableTryShift("up")) return;
     else if (atTableP()) e8.call("org-table-move-cell-up");
@@ -8050,7 +8142,8 @@ const shiftDown = e8.defineCommand({
   doc: "S-<down> in Org: make a timestamp earlier, lower a heading's priority, or move to the next item.",
   run: () => {
     if (timestampHere()) e8.callWithPrefix(e8.prefixArg(), "org-timestamp-down");
-    else if (headingHere()) e8.call("org-priority-down");
+    // Only while the priority commands work, as org-shiftdown checks org-priority-enable-commands.
+    else if (truthy(e8.variable("org-priority-enable-commands") ?? true) && headingHere()) e8.call("org-priority-down");
     else if (itemHere()) e8.call("org-next-item");
     else if (clocktableTryShift("down")) return;
     else if (atTableP()) e8.call("org-table-move-cell-down");

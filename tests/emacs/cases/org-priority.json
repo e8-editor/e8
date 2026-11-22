@@ -1,0 +1,546 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "set-a-letter",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "A"
+  ],
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "set-lowercase-is-upcased",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "b"
+  ],
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "set-without-a-keyword",
+  "text": "* B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "C"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "replace-a-cookie",
+  "text": "* TODO [#C] B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "remove-with-space",
+  "text": "* TODO [#C] B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   " "
+  ],
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "remove-with-none-there",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   " "
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "out-of-range",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "Z"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "a-digit-out-of-range",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "1"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "show-with-c-u",
+  "text": "* TODO [#C] B\n",
+  "keys": "C-u C-c ,",
+  "point": 2,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "show-without-a-cookie",
+  "text": "* TODO B\n",
+  "keys": "C-u C-c ,",
+  "point": 2,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "show-off-a-heading",
+  "text": "* TODO [#A] B\ntext\n",
+  "keys": "C-u C-c ,",
+  "point": 16,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "commands-disabled",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "A"
+  ],
+  "vars": {
+   "org-priority-enable-commands": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-disabled",
+  "text": "* TODO B\n",
+  "keys": "S-<up>",
+  "point": 2,
+  "vars": {
+   "org-priority-enable-commands": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-from-none",
+  "text": "* B\n",
+  "keys": "S-<up>",
+  "point": 2,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-twice-from-none",
+  "text": "* B\n",
+  "keys": "S-<up> S-<up>",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-past-highest-then-wraps",
+  "text": "* [#A] B\n",
+  "keys": "S-<up> S-<up>",
+  "point": 2,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "down-past-lowest-then-wraps",
+  "text": "* [#C] B\n",
+  "keys": "S-<down> S-<down>",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "up-without-starting-at-default",
+  "text": "* B\n",
+  "keys": "S-<up>",
+  "point": 2,
+  "vars": {
+   "org-priority-start-cycle-with-default": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "down-without-starting-at-default",
+  "text": "* B\n",
+  "keys": "S-<down>",
+  "point": 2,
+  "vars": {
+   "org-priority-start-cycle-with-default": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "default-cannot-be-set",
+  "text": "* B\n",
+  "keys": "S-<up>",
+  "point": 2,
+  "vars": {
+   "org-priority-start-cycle-with-default": false
+  },
+  "globals": {
+   "org-priority-highest": 1,
+   "org-priority-lowest": 5,
+   "org-priority-default": 1
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "tags-realigned",
+  "text": "* TODO B                                                                    :t1:\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-set",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "2"
+  ],
+  "globals": {
+   "org-priority-highest": 1,
+   "org-priority-lowest": 5,
+   "org-priority-default": 3
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-up-from-none",
+  "text": "* TODO B\n",
+  "keys": "S-<up>",
+  "point": 2,
+  "globals": {
+   "org-priority-highest": 1,
+   "org-priority-lowest": 5,
+   "org-priority-default": 3
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-up-past-highest",
+  "text": "* TODO [#1] B\n",
+  "keys": "S-<up>",
+  "point": 2,
+  "globals": {
+   "org-priority-highest": 1,
+   "org-priority-lowest": 5,
+   "org-priority-default": 3
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-out-of-range",
+  "text": "* TODO B\n",
+  "keys": "C-c ,",
+  "point": 2,
+  "answers": [
+   "9"
+  ],
+  "globals": {
+   "org-priority-highest": 1,
+   "org-priority-lowest": 5,
+   "org-priority-default": 3
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "numeric-show",
+  "text": "* TODO [#2] B\n",
+  "keys": "C-u C-c ,",
+  "point": 2,
+  "globals": {
+   "org-priority-highest": 1,
+   "org-priority-lowest": 5,
+   "org-priority-default": 3
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "point-after-the-cookie-stays",
+  "text": "* TODO [#C] Bee\n",
+  "keys": "C-c ,",
+  "point": 13,
+  "answers": [
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "speed-key-1",
+  "text": "* TODO B\n",
+  "keys": "1",
+  "point": 0,
+  "vars": {
+   "org-use-speed-commands": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "speed-key-0",
+  "text": "* TODO [#A] B\n",
+  "keys": "0",
+  "point": 0,
+  "vars": {
+   "org-use-speed-commands": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-plus",
+  "text": "* TODO [#B] P\n* TODO Q\n",
+  "keys": "n n +",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-minus",
+  "text": "* TODO [#B] P\n* TODO Q\n",
+  "keys": "n n -",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-shift-up",
+  "text": "* TODO P\n",
+  "keys": "n n S-<up>",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-shift-down",
+  "text": "* TODO P\n",
+  "keys": "n n S-<down>",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-c-c-c-x-up",
+  "text": "* TODO [#C] P\n",
+  "keys": "n n C-c C-x <up>",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-c-u-shows",
+  "text": "* TODO [#C] P\n",
+  "keys": "n n C-u ,",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "message": true,
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-out-of-range",
+  "text": "* TODO P\n",
+  "keys": "n n ,",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   "Z"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-disabled",
+  "text": "* TODO P\n",
+  "keys": "n n ,",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "globals": {
+   "org-priority-enable-commands": false
+  },
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-c-c-comma",
+  "text": "* TODO P\n",
+  "keys": "n n C-c ,",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   "A"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-priority.org"
+ }
+]
