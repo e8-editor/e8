@@ -6,7 +6,8 @@
 // lines, the header-args properties of the headings above a block, and the
 // block's own #+begin_src line and #+header: lines, the nearest winning.
 
-import { type Block, blockAtPoint, collectBlocks, pairs } from "ob-core";
+import { type Block, blockAtPoint, collectBlocks, commentIn, commentLinks, expandNowebReferences, nowebP, nowebWrap, pairs } from "ob-core";
+import { headingIndex, headings } from "org";
 import { truthy } from "subr";
 
 e8.defineVariable({
@@ -53,6 +54,71 @@ function tangledFile(block: Block, orgFile: string): string | undefined {
   return e8.expandFileName(tangle, dir);
 }
 
+/** A block's name, or its heading's title and its place among the heading's blocks, as org-babel-tangle-single-block names it. */
+function sourceName(block: Block): string {
+  if (block.name !== undefined) return block.name;
+  const all = headings();
+  const i = headingIndex(all, block.line);
+  let counter = 0;
+  for (let l = i === undefined ? 0 : all[i].line + 1; l <= block.line; l++) {
+    if (/^[ \t]*#\+begin_src[ \t]/i.test(e8.lineText(l))) counter++;
+  }
+  return `${i === undefined ? "No heading" : all[i].title}:${counter}`;
+}
+
+/** The Org text before a block, from its heading or the block before, for :comments org, as org-babel-tangle-single-block takes it. */
+function orgCommentText(block: Block): string {
+  const all = headings();
+  const i = headingIndex(all, block.line);
+  // After the heading's stars, as (re-search-forward org-outline-regexp) leaves point.
+  const afterStars = i === undefined ? e8.pointMin() : all[i].start + all[i].level + 1;
+  let prevEnd = e8.pointMin();
+  for (let l = block.line - 1; l >= 0; l--) {
+    if (/^[ \t]*#\+end_src/i.test(e8.lineText(l))) {
+      prevEnd = e8.lineEnd(l);
+      break;
+    }
+  }
+  const text = e8.bufferSubstringNoProperties(Math.max(afterStars, prevEnd), e8.lineStart(block.line));
+  // As org-remove-indentation, org-babel-process-comment-text's default.
+  const lines = text.split("\n");
+  const indents = lines.filter((l) => /\S/.test(l)).map((l) => /^[ \t]*/.exec(l)![0].length);
+  const n = indents.length === 0 ? 0 : Math.min(...indents);
+  return lines.map((l) => l.slice(Math.min(n, /^[ \t]*/.exec(l)![0].length))).join("\n");
+}
+
+/**
+ * A block's tangled text, as org-babel-spec-to-string writes it: with
+ * :comments org or both, the Org text before it; with link, yes, noweb or
+ * both, a link to it before and its name after, each commented out in its
+ * language; its code, noweb references expanded as :noweb says.
+ */
+function specToString(block: Block): string {
+  const comments = block.params.get(":comments") ?? "";
+  const link = ["both", "link", "yes", "noweb"].includes(comments);
+  const insertComment = (text: string): string => {
+    if (comments === "" || comments === "no" || !/\S/.test(text)) return "";
+    if (truthy(e8.variable("org-babel-tangle-uncomment-comments") ?? null)) return text;
+    // Commented, then a newline at the end of the line point is on, as Org's end-of-line and newline leave it.
+    return `${commentIn(block.language, text, false)}\n`;
+  };
+  let body = block.body;
+  if (nowebP(block.params, ":tangle")) {
+    body = (block.params.get(":noweb") ?? "").split(/[ \t]+/).includes("strip-tangle") ? body.replace(new RegExp(nowebWrap(), "g"), "") : expandNowebReferences(block);
+  }
+  // Trimmed, as org-trim: leading blank lines only with org-src-preserve-indentation.
+  body = truthy(e8.variable("org-src-preserve-indentation") ?? null) || (block.params.get(":preserve-indentation") ?? "") !== ""
+    ? body.replace(/^([ \t]*\n)+/, "").replace(/[ \t\n\r]+$/, "")
+    : body.replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "");
+  let out = "";
+  if (comments === "both" || comments === "org") out += insertComment(orgCommentText(block));
+  const [beg, end] = link ? commentLinks(block, sourceName(block)) : ["", ""];
+  if (link) out += insertComment(beg);
+  out += `${body}\n`;
+  if (link) out += insertComment(end);
+  return out;
+}
+
 /** A file mode as :tangle-mode writes it, "o755" or 0o755, as org-babel-interpret-file-mode reads the common ones. */
 function fileMode(value: string): number | undefined {
   const m = /^(?:o|#o)?0?([0-7]{3})$/.exec(value.trim());
@@ -87,6 +153,7 @@ export function tangle(only?: (block: Block, file: string) => boolean, targetFil
     if (file === orgFile) e8.signal("error", "Not allowed to tangle into the same file as self");
     let text = "";
     let shebanged = false;
+    let first = true;
     let mode: number | undefined;
     let mkdirp = false;
     for (const block of fileBlocks) {
@@ -96,12 +163,13 @@ export function tangle(only?: (block: Block, file: string) => boolean, targetFil
       if (tangleMode !== undefined) mode = fileMode(tangleMode) ?? mode;
       const m = block.params.get(":mkdirp");
       if (m !== undefined && m !== "no") mkdirp = true;
-      if (block.params.get(":padline") !== "no" && text !== "") text += "\n";
+      if (block.params.get(":padline") !== "no" && !first) text += "\n";
+      first = false;
       if (shebang !== "" && !shebanged) {
         text += `${shebang}\n`;
         shebanged = true;
       }
-      text += `${block.body}\n`;
+      text += specToString(block);
       count++;
     }
     const dir = e8.fileNameDirectory(file);

@@ -1,0 +1,132 @@
+[
+  {
+    "name": "tangle-noweb-named",
+    "text": "",
+    "files": {
+      "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-noweb-no",
+    "text": "",
+    "files": {
+      "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-noweb-no-prefix",
+    "text": "",
+    "files": {
+      "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes :noweb-prefix no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-noweb-strip",
+    "text": "",
+    "files": {
+      "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb strip-tangle\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-noweb-refs",
+    "text": "",
+    "files": {
+      "a.org": "* Code\n#+begin_src emacs-lisp :noweb-ref parts\n(one)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts :noweb-sep \"\\n;; next\\n\"\n(two)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts\n(three)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(progn\n <<parts>>)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-noweb-heading",
+    "text": "",
+    "files": {
+      "a.org": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n<<notes>>\n#+end_src\n* Notes\n:PROPERTIES:\n:CUSTOM_ID: notes\n:END:\n(the notes)\n** Sub\n(more)\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-noweb-missing",
+    "text": "",
+    "files": {
+      "a.org": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(a <<nothing>> b)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-comments-link",
+    "text": "",
+    "files": {
+      "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments link\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments link\n(second)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-comments-org",
+    "text": "",
+    "files": {
+      "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments org\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments org\n(second)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-comments-both",
+    "text": "",
+    "files": {
+      "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments both\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments both\n(second)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-comments-yes",
+    "text": "",
+    "files": {
+      "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(second)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-comments-no",
+    "text": "",
+    "files": {
+      "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments no\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments no\n(second)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  },
+  {
+    "name": "tangle-comments-noweb",
+    "text": "",
+    "files": {
+      "a.org": "* Code\n#+name: inner\n#+begin_src emacs-lisp\n(inner)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes :comments noweb\n(outer\n <<inner>>)\n#+end_src\n"
+    },
+    "find": "a.org",
+    "keys": "C-c C-v t",
+    "message": true
+  }
+]

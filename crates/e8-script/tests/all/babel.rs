@@ -218,3 +218,29 @@ fn blocks_and_loaded_files_can_import_packages() {
     ed.call("org-babel-load-file", vec![Arg::Str(org_file.display().to_string())]).unwrap();
     assert_eq!(width(&ed), Some(e8_core::Value::Number(before + 2.0)));
 }
+
+/// With :noweb yes, C-c C-c runs the block with its references expanded:
+/// a named block's code, and with () its value.
+#[test]
+fn noweb_references_are_expanded_when_running() {
+    let (mut ed, _s) = org("* H\n#+name: two\n#+begin_src typescript\n1 + 1\n#+end_src\n\n#+begin_src typescript :noweb yes\n(<<two>>) * 10 + <<two()>>\n#+end_src\n");
+    let at = text(&ed).find("(<<two>>)").unwrap();
+    ed.window_buffer_mut().set_point(at);
+    ed.press("C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert!(text(&ed).ends_with("#+RESULTS:\n: 22\n"), "{}", text(&ed));
+}
+
+/// A reference that resolves to nothing is an error for the languages
+/// org-babel-noweb-error-langs names, else nothing.
+#[test]
+fn unresolved_references() {
+    let (mut ed, s) = org("* H\n#+begin_src typescript :noweb yes\n1 <<nothing>>\n#+end_src\n");
+    ed.window_buffer_mut().set_point(5);
+    ed.press("C-c C-c").unwrap();
+    assert!(text(&ed).contains("#+RESULTS:\n: 1\n"), "{}", text(&ed));
+    s.eval_typescript(&mut ed, "t.ts", r#"e8.setVariable("org-babel-noweb-error-langs", ["typescript"]);"#.to_string()).unwrap();
+    ed.window_buffer_mut().set_point(5);
+    ed.press("C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), Some("Cannot resolve <<nothing>> (see \u{2018}org-babel-noweb-error-langs\u{2019})".into()));
+}

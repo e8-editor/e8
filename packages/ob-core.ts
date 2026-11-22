@@ -7,9 +7,15 @@
 // buffer under #+RESULTS:. TypeScript's is E8's own, as Emacs Lisp's is
 // Emacs's in ob-emacs-lisp.el: it runs the block in the editor.
 
+import { fileRelativeName } from "files";
+import { storeLink } from "ol";
+import { entryGet } from "org-list";
 import { headings, keywordLines } from "org";
-import { dropMarker, marker } from "org-macs";
-import { truthy } from "subr";
+import { dropMarker, lineAt, marker } from "org-macs";
+import { commentRegion } from "newcomment";
+import { endOfMetaData } from "org-list";
+import { langMode } from "org-src";
+import { regexpQuote, truthy } from "subr";
 
 e8.defineVariable({
   name: "org-babel-default-header-args",
@@ -419,7 +425,9 @@ export function executeSrcBlock(block = blockAtPoint()): unknown {
   const at = block.name !== undefined ? `(${block.name})` : `at position ${e8.lineStart(block.line) + 1}`;
   e8.message(`Executing ${block.language.charAt(0).toUpperCase()}${block.language.slice(1).toLowerCase()} code block ${at}...`);
   const started = Date.now();
-  let result = e8.saveExcursion(() => e8.funcall(fn, block.body, [...block.params] as unknown as e8.Value)) as unknown;
+  // Its noweb references expanded, as :noweb allows when evaluating.
+  const body = nowebP(block.params, ":eval") ? expandNowebReferences(block) : block.body;
+  let result = e8.saveExcursion(() => e8.funcall(fn, body, [...block.params] as unknown as e8.Value)) as unknown;
   if ((rp.includes("table") || rp.includes("vector")) && !Array.isArray(result)) result = [[result]];
   if (rp.includes("silent")) {
     e8.message(e8.prin1ToString((Array.isArray(result) ? result : cell(result)) as e8.Value));
@@ -485,3 +493,214 @@ const executeTypescript = (body: string): unknown => {
 };
 e8.defun("org-babel-execute:typescript", executeTypescript);
 e8.defun("org-babel-execute:ts", executeTypescript);
+
+// --- Noweb references, as org-babel-expand-noweb-references ----------------
+
+e8.defineVariable({ name: "org-babel-noweb-wrap-start", doc: "What starts a noweb reference.", value: "<<" });
+e8.defineVariable({ name: "org-babel-noweb-wrap-end", doc: "What ends a noweb reference.", value: ">>" });
+e8.defineVariable({ name: "org-babel-noweb-error-langs", doc: "Languages for which a noweb reference that resolves to nothing is an error.", value: [] });
+e8.defineVariable({ name: "org-babel-noweb-error-all-langs", doc: "Whether a noweb reference that resolves to nothing is an error in every language.", value: false });
+e8.defineVariable({ name: "org-babel-tangle-uncomment-comments", doc: "Whether tangled comments are inserted as they are, not commented out with a newline after.", value: false });
+e8.defineVariable({ name: "org-babel-tangle-use-relative-file-links", doc: "Whether links in tangled comments name the Org file relative to the tangled one.", value: true });
+e8.defineVariable({
+  name: "org-babel-tangle-comment-format-beg",
+  doc: "The comment before a tangled block's code: %link, %source-name, %file and %start-line are filled in.",
+  value: "[[%link][%source-name]]",
+});
+e8.defineVariable({ name: "org-babel-tangle-comment-format-end", doc: "The comment after a tangled block's code, filled in as the one before it.", value: "%source-name ends here" });
+
+/** Whether PARAMS's :noweb asks for references to be expanded in CONTEXT, as org-babel-noweb-p. */
+export function nowebP(params: Params, context: ":tangle" | ":eval" | ":export"): boolean {
+  const allowed = {
+    ":tangle": ["yes", "tangle", "no-export", "strip-export", "strip-tangle"],
+    ":eval": ["yes", "no-export", "strip-export", "eval", "strip-tangle"],
+    ":export": ["yes", "strip-tangle"],
+  }[context];
+  return (params.get(":noweb") ?? "").split(/[ \t\n]+/).some((v) => allowed.includes(v));
+}
+
+/** A noweb reference, its name in group 1, as org-babel-noweb-wrap's regexp. */
+export function nowebWrap(): string {
+  const start = String(e8.variable("org-babel-noweb-wrap-start") ?? "<<");
+  const end = String(e8.variable("org-babel-noweb-wrap-end") ?? ">>");
+  const quote = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return `${quote(start)}([^ \\t\\n](?:.*?[^ \\t\\n])?)${quote(end)}`;
+}
+
+/** The buffer's source blocks not under a commented heading, as noweb expansion looks through them. */
+function nowebBlocks(): Block[] {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const all = headings();
+    const blocks: Block[] = [];
+    const defaults = defaultParams();
+    for (let line = 0; line < e8.lineCount(); line++) {
+      if (!BEGIN.test(e8.lineText(line))) continue;
+      let end = line + 1;
+      while (end < e8.lineCount() && !END.test(e8.lineText(end))) end++;
+      if (end >= e8.lineCount()) break;
+      const ancestors = ancestorsOf(all, line);
+      const commented = ancestors.some(({ line: l }) => /^\*+[ \t]+(?:\S+[ \t]+)?COMMENT\b/.test(e8.lineText(l)));
+      if (!commented) blocks.push(blockAt(line, end, ancestors, defaults));
+      line = end;
+    }
+    return blocks;
+  });
+}
+
+/** The body of the heading whose CUSTOM_ID or ID is ID, after its meta data, as org-babel-ref-headline-body gives it. */
+function headlineBody(id: string): string | undefined {
+  const body = () => {
+    const all = headings();
+    const i = all.findIndex((h) => entryGet(h.line, "CUSTOM_ID") === id);
+    return i;
+  };
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const all = headings();
+    let i = body();
+    if (i < 0) {
+      const found = e8.fboundp("org-id-find") ? e8.funcall("org-id-find", id) : null;
+      if (!Array.isArray(found) || typeof found[1] !== "number") return undefined;
+      const [file, pos] = found as [string, number];
+      const own = e8.bufferFileName();
+      if (own === undefined || e8.fileTruename(own) !== e8.fileTruename(e8.expandFileName(file))) {
+        return e8.withCurrentBuffer(e8.findFileNoselect(file), () => e8.saveRestriction(() => (e8.widen(), subtreeBody(lineAt(pos)))));
+      }
+      i = all.findIndex((h) => h.line === lineAt(pos));
+      if (i < 0) return undefined;
+    }
+    return subtreeBody(all[i].line);
+  });
+}
+
+/** A subtree's text after its heading's meta data, to its end. */
+function subtreeBody(line: number): string {
+  const all = headings();
+  const i = all.findIndex((h) => h.line === line);
+  const h = all[i];
+  let k = i + 1;
+  while (k < all.length && all[k].level > h.level) k++;
+  const end = k < all.length ? all[k].start : e8.pointMax();
+  return e8.bufferSubstringNoProperties(Math.min(endOfMetaData(h), end), end);
+}
+
+/** A template with %KEY filled in from DATA, the longest keys first, as org-fill-template. */
+export function fillTemplate(template: string, data: [string, string][]): string {
+  let out = template;
+  for (const [key, value] of [...data].sort((a, b) => b[0].length - a[0].length)) out = out.split(`%${key}`).join(value);
+  return out;
+}
+
+/** A link to the block, without brackets, as org-babel-tangle--unbracketed-link: relative to the tangled file with org-babel-tangle-use-relative-file-links. */
+export function unbracketedLink(block: Block): string | undefined {
+  if ((block.params.get(":comments") ?? "") === "no") return undefined;
+  const link = e8.saveExcursion(() => {
+    e8.gotoChar(e8.lineStart(block.line));
+    // Without the link types' store functions, as Org binds them to none.
+    return storeLink([16], false);
+  });
+  const bare = typeof link === "string" ? /^\[\[((?:[^\][\\]|\\.)+)\]/.exec(link)?.[1] : undefined;
+  if (bare === undefined) return undefined;
+  if (truthy(e8.variable("org-babel-tangle-use-relative-file-links") ?? true) && bare.startsWith("file:")) {
+    const tangle = block.params.get(":tangle") ?? "";
+    const dir = e8.fileNameDirectory(tangle) ?? undefined;
+    return `file:${fileRelativeName(bare.slice(5), dir)}`;
+  }
+  return bare;
+}
+
+/** The comments before and after a block's code, as org-babel-tangle-comment-links makes them. */
+export function commentLinks(block: Block, sourceName?: string): [string, string] {
+  const data: [string, string][] = [
+    ["start-line", String(block.line + 1)],
+    ["file", e8.bufferFileName() ?? ""],
+    ["link", unbracketedLink(block) ?? ""],
+    ["source-name", sourceName ?? block.name ?? ""],
+  ];
+  return [
+    fillTemplate(String(e8.variable("org-babel-tangle-comment-format-beg") ?? ""), data),
+    fillTemplate(String(e8.variable("org-babel-tangle-comment-format-end") ?? ""), data),
+  ];
+}
+
+/** TEXT commented out in LANGUAGE's mode and trimmed, as noweb's comments are; or as it is with org-babel-tangle-uncomment-comments. */
+export function commentIn(language: string, text: string, trim = true): string {
+  if (truthy(e8.variable("org-babel-tangle-uncomment-comments") ?? null)) return text;
+  const buffer = e8.bufferName(e8.getBufferCreate(e8.generateNewBufferName(" *org-babel comment*"))) as string;
+  try {
+    return e8.withCurrentBuffer(buffer, () => {
+      const mode = langMode(language);
+      if (e8.fboundp(mode) || e8.commandp(mode)) {
+        try {
+          e8.call(mode as e8.CommandName);
+        } catch {
+          // As ignore-errors around the mode.
+        }
+      }
+      e8.insert(text);
+      commentRegion(e8.pointMin(), e8.pointMax(), null);
+      const out = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
+      return trim ? out.replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "") : out;
+    });
+  } finally {
+    e8.call("kill-buffer", buffer);
+  }
+}
+
+/**
+ * The block's body with its noweb references replaced, as
+ * org-babel-expand-noweb-references: by the body of the heading whose
+ * CUSTOM_ID or ID it is, the block of that name, or every block whose
+ * :noweb-ref it is, joined by their :noweb-sep; with (), the named block's
+ * value. Text before a reference on its line goes before each line of
+ * what replaces it, unless :noweb-prefix no.
+ */
+export function expandNowebReferences(block: Block): string {
+  const comment = (block.params.get(":comments") ?? "") === "noweb";
+  const prefixParam = block.params.get(":noweb-prefix");
+  const noweb_prefix = prefixParam === undefined || (prefixParam !== "no" && prefixParam !== "nil");
+  const re = new RegExp(`(.*?)(${nowebWrap()})`, "g");
+  let blocks: Block[] | undefined;
+  const all = () => (blocks ??= nowebBlocks());
+  const expandBody = (b: Block): string => {
+    const body = nowebP(b.params, ":eval") ? expandNowebReferences(b) : b.body;
+    if (!comment) return body;
+    const [beg, end] = commentLinks(b);
+    return `${commentIn(block.language, beg)}\n${body}\n${commentIn(block.language, end)}\n`;
+  };
+  return block.body.replace(re, (_m, prefix: string, _ref: string, id: string) => {
+    let expansion: string;
+    const call = /^(.*?)\((.*)\)$/s.exec(id);
+    if (call) {
+      // The named block's value, run with its language's function.
+      const named = all().find((b) => b.name !== undefined && b.name.toLowerCase() === call[1].toLowerCase());
+      if (!named) e8.signal("error", `Reference \`${call[1]}' not found in this buffer`);
+      if (call[2].trim() !== "") e8.signal("error", "E8 does not pass arguments to noweb references yet");
+      // Its results put nowhere, as org-babel-ref-resolve runs it with :results none.
+      const value = executeSrcBlock({ ...named, params: new Map([...named.params, [":results", "none"]]) });
+      expansion = typeof value === "string" ? value : e8.prin1ToString((value ?? null) as e8.Value);
+    } else {
+      const head = headlineBody(id);
+      const named = head === undefined ? all().find((b) => b.name !== undefined && b.name.toLowerCase() === id.toLowerCase()) : undefined;
+      if (head !== undefined) expansion = head;
+      else if (named) expansion = expandBody(named);
+      else {
+        const refs = all().filter((b) => b.params.get(":noweb-ref") === id);
+        if (refs.length > 0) {
+          expansion = refs.map((b, k) => expandBody(b) + (k < refs.length - 1 ? (b.params.get(":noweb-sep") ?? "\n") : "")).join("");
+        } else {
+          const langs = e8.variable("org-babel-noweb-error-langs");
+          if (truthy(e8.variable("org-babel-noweb-error-all-langs") ?? null) || (Array.isArray(langs) && langs.includes(block.language))) {
+            const start = String(e8.variable("org-babel-noweb-wrap-start") ?? "<<");
+            const end = String(e8.variable("org-babel-noweb-wrap-end") ?? ">>");
+            e8.signal("error", `Cannot resolve ${start}${id}${end} (see \u2018org-babel-noweb-error-langs\u2019)`);
+          }
+          expansion = "";
+        }
+      }
+    }
+    // Each line of what replaces it after the text before it on its line.
+    return prefix + (noweb_prefix ? expansion.split(/[\n\r]/).join(`\n${prefix}`) : expansion);
+  });
+}

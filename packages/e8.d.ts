@@ -13479,11 +13479,59 @@ declare global {
        */
       "org-babel-no-eval-on-ctrl-c-ctrl-c": Value;
       /**
+       * Whether a noweb reference that resolves to nothing is an error in every language.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-noweb-error-all-langs": Value;
+      /**
+       * Languages for which a noweb reference that resolves to nothing is an error.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-noweb-error-langs": Value;
+      /**
+       * What ends a noweb reference.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-noweb-wrap-end": Value;
+      /**
+       * What starts a noweb reference.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-noweb-wrap-start": Value;
+      /**
+       * The comment before a tangled block's code: %link, %source-name, %file and %start-line are filled in.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-tangle-comment-format-beg": Value;
+      /**
+       * The comment after a tangled block's code, filled in as the one before it.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-tangle-comment-format-end": Value;
+      /**
        * The extension a language's code is tangled to with :tangle yes: pairs of a language and an extension, else the language's name.
        *
        * Defined in packages/ob-tangle.ts.
        */
       "org-babel-tangle-lang-exts": Value;
+      /**
+       * Whether tangled comments are inserted as they are, not commented out with a newline after.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-tangle-uncomment-comments": Value;
+      /**
+       * Whether links in tangled comments name the Org file relative to the tangled one.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-tangle-use-relative-file-links": Value;
       /**
        * Whether new headings and list items get a blank line before them: [["heading", v], ["plain-list-item", v]], each v true, nil or "auto" to do as the ones around do.
        *

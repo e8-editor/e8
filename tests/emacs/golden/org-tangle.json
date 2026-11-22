@@ -1,0 +1,383 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "tangle-noweb-named",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+      "visible": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+        "out.el": "(defun f ()\n  ;; say (message \"hi\")\n  ;; say (message \"there\"))\n"
+      },
+      "message": "Tangled 1 code block from a.org"
+    },
+    {
+      "name": "tangle-noweb-no",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+      "visible": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+        "out.el": "(defun f ()\n  ;; say <<greet>>)\n"
+      },
+      "message": "Tangled 1 code block from a.org"
+    },
+    {
+      "name": "tangle-noweb-no-prefix",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes :noweb-prefix no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes :noweb-prefix no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+      "visible": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes :noweb-prefix no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb yes :noweb-prefix no\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+        "out.el": "(defun f ()\n  ;; say (message \"hi\")\n(message \"there\"))\n"
+      },
+      "message": "Tangled 1 code block from a.org"
+    },
+    {
+      "name": "tangle-noweb-strip",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb strip-tangle\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb strip-tangle\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+      "visible": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb strip-tangle\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Code\n#+name: greet\n#+begin_src emacs-lisp\n(message \"hi\")\n(message \"there\")\n#+end_src\n\n#+begin_src emacs-lisp :tangle out.el :noweb strip-tangle\n(defun f ()\n  ;; say <<greet>>)\n#+end_src\n",
+        "out.el": "(defun f ()\n  ;; say )\n"
+      },
+      "message": "Tangled 1 code block from a.org"
+    },
+    {
+      "name": "tangle-noweb-refs",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Code\n#+begin_src emacs-lisp :noweb-ref parts\n(one)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts :noweb-sep \"\\n;; next\\n\"\n(two)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts\n(three)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(progn\n <<parts>>)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Code\n#+begin_src emacs-lisp :noweb-ref parts\n(one)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts :noweb-sep \"\\n;; next\\n\"\n(two)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts\n(three)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(progn\n <<parts>>)\n#+end_src\n",
+      "visible": "* Code\n#+begin_src emacs-lisp :noweb-ref parts\n(one)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts :noweb-sep \"\\n;; next\\n\"\n(two)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts\n(three)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(progn\n <<parts>>)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Code\n#+begin_src emacs-lisp :noweb-ref parts\n(one)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts :noweb-sep \"\\n;; next\\n\"\n(two)\n#+end_src\n#+begin_src emacs-lisp :noweb-ref parts\n(three)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(progn\n <<parts>>)\n#+end_src\n",
+        "out.el": "(progn\n (one)\n (two)\n ;; next\n (three))\n"
+      },
+      "message": "Tangled 1 code block from a.org"
+    },
+    {
+      "name": "tangle-noweb-heading",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n<<notes>>\n#+end_src\n* Notes\n:PROPERTIES:\n:CUSTOM_ID: notes\n:END:\n(the notes)\n** Sub\n(more)\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n<<notes>>\n#+end_src\n* Notes\n:PROPERTIES:\n:CUSTOM_ID: notes\n:END:\n(the notes)\n** Sub\n(more)\n",
+      "visible": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n<<notes>>\n#+end_src\n* Notes\n:PROPERTIES:\n:CUSTOM_ID: notes\n:END:\n(the notes)\n** Sub\n(more)\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n<<notes>>\n#+end_src\n* Notes\n:PROPERTIES:\n:CUSTOM_ID: notes\n:END:\n(the notes)\n** Sub\n(more)\n",
+        "out.el": "(the notes)\n** Sub\n(more)\n"
+      },
+      "message": "Tangled 1 code block from a.org"
+    },
+    {
+      "name": "tangle-noweb-missing",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(a <<nothing>> b)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(a <<nothing>> b)\n#+end_src\n",
+      "visible": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(a <<nothing>> b)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Code\n#+begin_src emacs-lisp :tangle out.el :noweb yes\n(a <<nothing>> b)\n#+end_src\n",
+        "out.el": "(a  b)\n"
+      },
+      "message": "Tangled 1 code block from a.org"
+    },
+    {
+      "name": "tangle-comments-link",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments link\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments link\n(second)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments link\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments link\n(second)\n#+end_src\n",
+      "visible": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments link\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments link\n(second)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments link\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments link\n(second)\n#+end_src\n",
+        "out.el": ";; [[file:a.org::*Heading one][Heading one:1]]\n(first)\n;; Heading one:1 ends here\n\n;; [[file:a.org::second][second]]\n(second)\n;; second ends here\n"
+      },
+      "message": "Tangled 2 code blocks from a.org"
+    },
+    {
+      "name": "tangle-comments-org",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments org\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments org\n(second)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments org\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments org\n(second)\n#+end_src\n",
+      "visible": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments org\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments org\n(second)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments org\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments org\n(second)\n#+end_src\n",
+        "out.el": ";; Heading one\n;; Some text\n;;   indented.\n\n(first)\n\n\n;; #+name: second\n\n(second)\n"
+      },
+      "message": "Tangled 2 code blocks from a.org"
+    },
+    {
+      "name": "tangle-comments-both",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments both\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments both\n(second)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments both\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments both\n(second)\n#+end_src\n",
+      "visible": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments both\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments both\n(second)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments both\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments both\n(second)\n#+end_src\n",
+        "out.el": ";; Heading one\n;; Some text\n;;   indented.\n\n;; [[file:a.org::*Heading one][Heading one:1]]\n(first)\n;; Heading one:1 ends here\n\n\n;; #+name: second\n\n;; [[file:a.org::second][second]]\n(second)\n;; second ends here\n"
+      },
+      "message": "Tangled 2 code blocks from a.org"
+    },
+    {
+      "name": "tangle-comments-yes",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(second)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(second)\n#+end_src\n",
+      "visible": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(second)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments yes\n(second)\n#+end_src\n",
+        "out.el": ";; [[file:a.org::*Heading one][Heading one:1]]\n(first)\n;; Heading one:1 ends here\n\n;; [[file:a.org::second][second]]\n(second)\n;; second ends here\n"
+      },
+      "message": "Tangled 2 code blocks from a.org"
+    },
+    {
+      "name": "tangle-comments-no",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments no\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments no\n(second)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments no\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments no\n(second)\n#+end_src\n",
+      "visible": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments no\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments no\n(second)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Heading one\nSome text\n  indented.\n#+begin_src emacs-lisp :tangle out.el :comments no\n(first)\n#+end_src\n#+name: second\n#+begin_src emacs-lisp :tangle out.el :comments no\n(second)\n#+end_src\n",
+        "out.el": "(first)\n\n(second)\n"
+      },
+      "message": "Tangled 2 code blocks from a.org"
+    },
+    {
+      "name": "tangle-comments-noweb",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-c C-v t",
+        "modes": [],
+        "call": [],
+        "platform": null,
+        "files": {
+          "a.org": "* Code\n#+name: inner\n#+begin_src emacs-lisp\n(inner)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes :comments noweb\n(outer\n <<inner>>)\n#+end_src\n"
+        },
+        "find": "a.org",
+        "message": true
+      },
+      "text": "* Code\n#+name: inner\n#+begin_src emacs-lisp\n(inner)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes :comments noweb\n(outer\n <<inner>>)\n#+end_src\n",
+      "visible": "* Code\n#+name: inner\n#+begin_src emacs-lisp\n(inner)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes :comments noweb\n(outer\n <<inner>>)\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "files": {
+        "a.org": "* Code\n#+name: inner\n#+begin_src emacs-lisp\n(inner)\n#+end_src\n#+begin_src emacs-lisp :tangle out.el :noweb yes :comments noweb\n(outer\n <<inner>>)\n#+end_src\n",
+        "out.el": ";; [[file:a.org::*Code][Code:2]]\n(outer\n ;; [[file:a.org::inner][inner]]\n (inner)\n ;; inner ends here\n )\n;; Code:2 ends here\n"
+      },
+      "message": "Tangled 1 code block from a.org"
+    }
+  ]
+}
