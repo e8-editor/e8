@@ -5335,9 +5335,9 @@ function bufferTags(): TagEntry[] {
 }
 
 /** The tags of every agenda file, each once, as org-global-tags-completion-table: their headings' and FILETAGS', and their tag lists'. */
-function globalTagsCompletionTable(): TagEntry[] {
+export function globalTagsCompletionTable(files: string[] = agendaFiles()): TagEntry[] {
   const seen = new Set<string>();
-  for (const file of agendaFiles()) {
+  for (const file of files) {
     e8.withCurrentBuffer(e8.findFileNoselect(file), () => {
       for (const [t] of [...bufferTags(), ...currentTagAlist()]) if (!isTagKeyword(t)) seen.add(t);
     });
@@ -6843,7 +6843,7 @@ e8.defineCommand({
  * NAME_ALL, inherited: each read as Lisp, so a string's quotes go and a
  * number is written as Lisp writes it; :ETC means others may be typed.
  */
-function allowedValues(h: Heading, property: string): { values: string[]; restricted: boolean } {
+export function allowedValues(h: Heading, property: string): { values: string[]; restricted: boolean } {
   const all = entryGetInherited(h, `${property}_ALL`, false);
   const values: string[] = [];
   let restricted = true;

@@ -3840,6 +3840,588 @@
       ],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "capture-store-link-keywords",
+      "input": {
+        "text": "* one\n:PROPERTIES:\n:ID: abc\n:END:\nbody\n* Inbox\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %:type %:link %:description %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "vars": {
+          "org-id-link-to-org-use-id": "'use-existing"
+        }
+      },
+      "text": "* one\n:PROPERTIES:\n:ID: abc\n:END:\nbody\n* Inbox\n** id id:abc one new\n",
+      "visible": "* one\n:PROPERTIES:\n:ID: abc\n:END:\nbody\n* Inbox\n** id id:abc one new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-property-allowed",
+      "input": {
+        "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n%^{Effort}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          "0:20"
+        ]
+      },
+      "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** new\n:PROPERTIES:\n:Effort:   0:20\n:END:\n* Other\n",
+      "visible": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** new\n:PROPERTIES:\n:Effort:   0:20\n:END:\n* Other\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-property-default",
+      "input": {
+        "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* Task %?\n%^{Color|red}p"
+          ]
+        ],
+        "answers": [
+          "t",
+          ""
+        ]
+      },
+      "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** Task new\n:PROPERTIES:\n:Color:\n:END:\n* Other\n",
+      "visible": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** Task new\n:PROPERTIES:\n:Color:\n:END:\n* Other\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-link-from-kill",
+      "input": {
+        "text": "https://x.org\n* Inbox\n",
+        "point": 0,
+        "keys": "C-SPC C-e M-w M-x C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* See %^L\n"
+          ]
+        ],
+        "answers": [
+          "org-capture",
+          "t",
+          "https://x.org"
+        ]
+      },
+      "text": "https://x.org\n* Inbox\n** See [[https://x.org]]\n",
+      "visible": "https://x.org\n* Inbox\n** See https://x.org\n",
+      "point": 13,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "https://x.org"
+      ],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-here",
+      "input": {
+        "text": "* one\nbody\n* two\n",
+        "point": 2,
+        "keys": "C-n C-0 M-x n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file",
+              "FILE"
+            ],
+            "* %?\n"
+          ]
+        ],
+        "answers": [
+          "org-capture",
+          "t"
+        ]
+      },
+      "text": "* one\nbo\n* new\ndy\n* two\n",
+      "visible": "* one\nbo\n* new\ndy\n* two\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-date-tree-asked",
+      "input": {
+        "text": "* one\n",
+        "point": 2,
+        "keys": "C-1 M-x n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-21",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* %?\n%T"
+          ]
+        ],
+        "answers": [
+          "org-capture",
+          "t",
+          "2026-11-19"
+        ]
+      },
+      "text": "* one\n* 2026\n** 2026-11 November\n*** 2026-11-19 Thursday\n**** new\n<2026-11-19 Thu 00:00>\n",
+      "visible": "* one\n* 2026\n** 2026-11 November\n*** 2026-11-19 Thursday\n**** new\n<2026-11-19 Thu 00:00>\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-time-prompt",
+      "input": {
+        "text": "* one\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-21",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* %?\n%U",
+            ":time-prompt",
+            true
+          ]
+        ],
+        "answers": [
+          "t",
+          "2026-11-19 10:30"
+        ]
+      },
+      "text": "* one\n* 2026\n** 2026-11 November\n*** 2026-11-19 Thursday\n**** new\n[2026-11-19 Thu 10:30]\n",
+      "visible": "* one\n* 2026\n** 2026-11 November\n*** 2026-11-19 Thursday\n**** new\n[2026-11-19 Thu 10:30]\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-time-prompt-today",
+      "input": {
+        "text": "* one\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-21",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* %?\n%U",
+            ":time-prompt",
+            true
+          ]
+        ],
+        "answers": [
+          "t",
+          "2026-11-21"
+        ]
+      },
+      "text": "* one\n* 2026\n** 2026-11 November\n*** 2026-11-21 Saturday\n**** new\n[2026-11-21 Sat 12:00]\n",
+      "visible": "* one\n* 2026\n** 2026-11 November\n*** 2026-11-21 Saturday\n**** new\n[2026-11-21 Sat 12:00]\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-goto-target",
+      "input": {
+        "text": "* one\nbody\n* Inbox\n** old\n",
+        "point": 2,
+        "keys": "C-u M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n"
+          ]
+        ],
+        "answers": [
+          "org-capture",
+          "t"
+        ]
+      },
+      "text": "* one\nbody\n* Inbox\n** old\n",
+      "visible": "* one\nbody\n* Inbox\n** old\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-refile",
+      "input": {
+        "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+        "point": 2,
+        "keys": "n e w C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture-refile.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n"
+          ]
+        ],
+        "answers": [
+          "t",
+          "Other"
+        ]
+      },
+      "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n** new\n",
+      "visible": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n** new\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "capture-refile-not-entry",
+      "input": {
+        "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+        "point": 2,
+        "keys": "n e w C-c C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "plain",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "%?"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "message": true
+      },
+      "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\nnew\n** old\n* Other\n",
+      "visible": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\nnew\n** old\n* Other\n",
+      "point": 64,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Refiling from a capture buffer makes only sense for ‘entry’-type templates",
+      "message": null
+    },
+    {
+      "name": "capture-hook",
+      "input": {
+        "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n",
+            ":hook",
+            "'newline"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** \nnew\n* Other\n",
+      "visible": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** \nnew\n* Other\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-before-finalize",
+      "input": {
+        "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n",
+            ":before-finalize",
+            "'org-toggle-comment"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** COMMENT new\n* Other\n",
+      "visible": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** COMMENT new\n* Other\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-clock-keep",
+      "input": {
+        "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+        "point": 2,
+        "keys": "n e w C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-21",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* %?\n",
+            ":clock-in",
+            true,
+            ":clock-keep",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** new\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* Other\n",
+      "visible": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n** new\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n* Other\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }

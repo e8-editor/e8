@@ -4,11 +4,12 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, formatTimestamp, type Heading, headingIndex, headings, isHeadingLine, parseDate, parseHeading, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
+import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, parseDate, parseHeading, plistGet, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
-import { storeLink } from "ol";
+import { insertLink, storeLink } from "ol";
+import { completingReadMultiple } from "crm";
 import { findBufferVisiting } from "files";
 import { type Elem, elementAt, endBeforeBlank } from "org-element";
 import { cycleListBullet, endOfMetaData, ITEM_RE } from "org-list";
@@ -63,6 +64,10 @@ interface Context {
   initial: string;
   /** The tags of the target file, to complete %^g. */
   tags: string[];
+  /** The capture's time, as :default-time: now, or the date a date tree asked for. */
+  time?: DateTime;
+  /** The target, where %^{PROP}p finds a property's allowed values. */
+  target?: Target;
   /** The file the capture was started from, for %f and %F. */
   file?: string;
   /** The running clock's entry, its title and a link to it, for %k and %K. */
@@ -129,6 +134,102 @@ function untabify(text: string): string {
     .join("\n");
 }
 
+e8.defineVariable({ name: "org-capture--prompt-history", doc: "The history of the %^{prompt} being answered.", value: [] });
+e8.defineVariable({ name: "org-capture--clipboards", doc: "The values %^C and %^L choose from.", value: [] });
+
+/** Each %^{prompt}'s earlier answers, as org-capture--prompt-history-table. */
+const promptHistory = new Map<string, string[]>();
+
+/** The window system's selection, primary, clipboard or secondary, as org-get-x-clipboard: none without one. */
+function selection(): string {
+  for (const which of ["PRIMARY", "CLIPBOARD", "SECONDARY"]) {
+    try {
+      const v = e8.nsGetSelection(which);
+      if (typeof v === "string" && v !== "") return v;
+    } catch {
+      // No window system, as in a terminal or batch.
+    }
+  }
+  return "";
+}
+
+/** A file's text, read in a buffer of its own. */
+function fileContents(name: string): string {
+  const temp = e8.bufferName(e8.getBufferCreate(e8.generateNewBufferName(" *org capture file*"))) as string;
+  try {
+    return e8.withCurrentBuffer(temp, () => (e8.insertFileContents(name), e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax())));
+  } finally {
+    e8.call("kill-buffer", temp);
+  }
+}
+
+/** Runs BODY in a temporary Org buffer holding TEXT, as the *Capture* buffer the template is filled in, and returns its text. */
+function inCaptureBuffer(text: string, body: () => void): string {
+  const temp = e8.bufferName(e8.getBufferCreate(e8.generateNewBufferName(" *Capture*"))) as string;
+  try {
+    return e8.withCurrentBuffer(temp, () => {
+      e8.insert(text);
+      e8.call("org-mode");
+      e8.gotoChar(e8.pointMin());
+      body();
+      return e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
+    });
+  } finally {
+    e8.call("kill-buffer", temp);
+  }
+}
+
+/** A link to VALUE as org-insert-link writes it, with no description, as %^L inserts it. */
+function linkText(value: string): string {
+  return inCaptureBuffer("", () => insertLink(0, value, undefined, false));
+}
+
+/**
+ * A property's value read as org-read-property-value reads it, from its
+ * allowed values where the target's entry, or the heading above where the
+ * entry goes, has them.
+ */
+function readPropertyValue(property: string, dflt: string | undefined, target: Target | undefined, before: string): string {
+  let allowed: { values: string[]; restricted: boolean } | undefined;
+  if (target) {
+    // The template's level: its first heading's, before where the escape is.
+    const level = (/^(\*+) /m.exec(before) ?? /^(\*+) /m.exec(before + "\n"))?.[1].length ?? 1;
+    allowed = e8.withCurrentBuffer(target.buffer, () =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        const all = headings();
+        let i = headingIndex(all, lineAt(target.pos));
+        if (!target.entryP) while (i !== undefined && all[i].level >= level) {
+          let k = i - 1;
+          while (k >= 0 && all[k].level >= all[i].level) k--;
+          i = k >= 0 ? k : undefined;
+        }
+        if (i === undefined) return undefined;
+        const found = allowedValues(all[i], property);
+        return found.values.length > 0 ? found : undefined;
+      }),
+    );
+  }
+  return e8.letBind({ "completion-ignore-case": true }, () =>
+    // The default as the input to start with, as org-read-property-value gives it.
+    e8.completingRead(`${property} value: `, allowed?.values ?? [], { requireMatch: allowed !== undefined && allowed.restricted, initial: dflt, default: allowed ? dflt : undefined }),
+  );
+}
+
+/** Sets the properties %^{PROP}p read where their marks are in TEXT, on the template's entry there, as org-set-property. */
+function setTemplateProperties(text: string, properties: [string, string][]): string {
+  return inCaptureBuffer(text, () => {
+    for (let n = 0; n < properties.length; n++) {
+      const mark = `\u0001${n}\u0001`;
+      const found = e8.search(mark, { from: e8.pointMin() });
+      if (!found) continue;
+      e8.deleteRegion(found.start, found.end);
+      e8.gotoChar(found.start);
+      e8.call("org-set-property", properties[n][0], properties[n][1]);
+    }
+  });
+}
+
 /**
  * A template's text with its escapes filled in, as org-capture-fill-template
  * does: first %<format>, %:keyword and the letters (%a, %A, %c, %f, %F, %i,
@@ -139,11 +240,11 @@ function untabify(text: string): string {
  * and where %? is the cursor goes. Also the lines %^g put tags on.
  */
 function fillTemplate(template: string, context: Context = { annotation: "", initial: "", tags: [] }): { text: string; cursor?: number; tagLines: number[] } {
-  const now = today(true);
+  const now = context.time ?? today(true);
   const day = { year: now.year, month: now.month, day: now.day };
   // The time now, or noon on a fixed day, as tests fix org-current-effective-time.
   const fixed = typeof e8.variable("e8--today") === "string" && e8.variable("e8--today") !== "";
-  const time = fixed ? e8.encodeTime([0, now.minute ?? 0, now.hour ?? 0, now.day, now.month, now.year]) : e8.currentTime();
+  const time = fixed || context.time !== undefined ? e8.encodeTime([0, now.minute ?? 0, now.hour ?? 0, now.day, now.month, now.year]) : e8.currentTime();
   const a = context.annotation === "[[]]" ? "" : context.annotation;
   let kill = "";
   try {
@@ -166,13 +267,29 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
     T: () => `<${formatTimestamp(now, true)}>`,
     u: () => `[${formatTimestamp(day, false)}]`,
     U: () => `[${formatTimestamp(now, true)}]`,
-    x: () => "",
+    x: () => selection(),
   };
-  let text = fillPass(template, /%(:[-A-Za-z]+|<([^>\n]+)>|[aAcfFikKlLntTuUx])/gi, (m, lineBefore) => {
+  // The link's properties, as org-capture puts them on org-store-link-plist for %:keyword.
+  const plist = (e8.variable("org-store-link-plist") ?? []) as e8.Value[];
+  // %[file] first: the file's contents, as org-capture-fill-template inserts them.
+  let text = fillPass(template, /%\[(.+)\]/g, (m) => {
+    const name = e8.expandFileName(m[1]);
+    try {
+      return fileContents(name);
+    } catch (err) {
+      return `%![could not insert ${name}: ${err instanceof Error ? err.message : String(err)}]`;
+    }
+  });
+  text = fillPass(text, /%(:[-A-Za-z]+|<([^>\n]+)>|[aAcfFikKlLntTuUx])/gi, (m, lineBefore) => {
     const value = m[1];
     if (value.startsWith("<")) return e8.formatTimeString(m[2], time);
     // As org-store-link-plist holds them for the capture.
-    if (value.startsWith(":")) return value === ":annotation" ? a : value === ":initial" ? context.initial : "";
+    if (value.startsWith(":")) {
+      if (value === ":annotation") return a;
+      if (value === ":initial") return context.initial;
+      const v = plistGet(plist, value);
+      return typeof v === "string" ? v : "";
+    }
     // Each line after the first starts as the line %i is on does.
     if (value === "i") return context.initial.replace(/\n/g, () => `\n${lineBefore}`);
     // %I and the other capitals no letter is, as Emacs's case-folding search finds them and fails.
@@ -182,24 +299,44 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
   });
   const strings: string[] = [];
   const tagLines: number[] = [];
+  const properties: [string, string][] = [];
   text = fillPass(text, /%\^(?:\{([^}]*)\})?([CgGLptTuU])?/gi, (m, lineBefore) => {
     const items = m[1] === undefined ? undefined : m[1].split("|");
     const prompt = items?.[0];
     const dflt = items?.[1];
     const key = m[2];
     if (key === "g" || key === "G") {
-      const answer = e8.completingRead(prompt !== undefined ? `${prompt}: ` : "Tags: ", context.tags, { history: "org-tags-history" });
-      const tags = answer.split(/[ \t]*:[ \t]*/).filter((t) => t !== "").join(":");
+      // %^G every agenda file's tags, %^g the target file's, as org-global-tags-completion-table.
+      const table = key === "G" ? globalTagsCompletionTable().map(([t]) => t) : context.tags;
+      const answers = e8.letBind({ "crm-separator": "[ \t]*:[ \t]*" }, () =>
+        completingReadMultiple(prompt !== undefined ? `${prompt}: ` : "Tags: ", table, { history: "org-tags-history" }),
+      );
+      const tags = answers.filter((t) => t !== "").join(":");
       if (tags === "") return "";
       const after = text.slice(m.index + m[0].length, m.index + m[0].length + 1);
       // A heading's tags are aligned, as org-capture-fill-template aligns them where it puts them.
       if (/^\*+ /.test(lineBefore)) tagLines.push(fillLine(text, m.index));
       return `${lineBefore.endsWith(":") ? "" : ":"}${tags}${after === ":" ? "" : ":"}`;
     }
-    if (key === "C") {
-      // The region and the latest kill, chosen from when there are both.
-      const clipboards = [context.initial, ...(kill !== "" ? [kill] : [])];
-      return clipboards.length === 1 ? clipboards[0] : e8.readString("Clipboard/kill value: ", { initial: clipboards[0], default: clipboards[0] });
+    if (key === "C" || key === "L") {
+      // The region, the selection and the latest kill, chosen from when there are more than one.
+      const x = selection();
+      const clipboards = [context.initial, ...(x !== "" ? [x] : []), ...(kill !== "" ? [kill] : [])];
+      const value =
+        clipboards.length === 1
+          ? clipboards[0]
+          : e8.letBind({ "org-capture--clipboards": clipboards }, () =>
+              e8.readString("Clipboard/kill value: ", { initial: clipboards[0], default: clipboards[0], history: "org-capture--clipboards" }),
+            );
+      // %^L as a link, as org-insert-link makes one from it.
+      return key === "C" ? value : linkText(value);
+    }
+    if (key === "p") {
+      // Read now, set on the template's entry once the pass is over, as org-set-property does there.
+      const property = prompt ?? "";
+      const value = readPropertyValue(property, dflt, context.target, text.slice(0, m.index));
+      properties.push([property, value]);
+      return `\u0001${properties.length - 1}\u0001`;
     }
     if (key === "t" || key === "T" || key === "u" || key === "U") {
       const upcase = key === "T" || key === "U";
@@ -208,16 +345,22 @@ function fillTemplate(template: string, context: Context = { annotation: "", ini
       const stamp = formatTimestamp(d, d.hour !== undefined);
       return key === "u" || key === "U" ? `[${stamp}]` : `<${stamp}>`;
     }
-    if (key === "L" || key === "p") e8.userError(`E8 does not fill %^${key} yet`);
     // Keys in other cases, as a case-folding search finds them, are none Org knows.
     if (key !== undefined) e8.signal("error", `Unknown template placeholder: "%^${key}"`);
     const label = prompt ?? "Enter string";
-    const answer = e8.completingRead(dflt !== undefined && dflt !== "" ? `${label} (default ${dflt}): ` : `${label}: `, items?.slice(2) ?? [], {
-      default: dflt,
+    // Each prompt's own history, as org-capture--prompt-history-table keeps them.
+    const answer = e8.letBind({ "org-capture--prompt-history": promptHistory.get(prompt ?? "") ?? [] }, () => {
+      const a = e8.completingRead(dflt !== undefined && dflt !== "" ? `${label} (default ${dflt}): ` : `${label}: `, items?.slice(2) ?? [], {
+        default: dflt,
+        history: "org-capture--prompt-history",
+      });
+      promptHistory.set(prompt ?? "", (e8.variable("org-capture--prompt-history") as string[]) ?? []);
+      return a;
     });
     strings.push(answer);
     return answer;
   });
+  if (properties.length > 0) text = setTemplateProperties(text, properties);
   text = fillPass(text, /%\\([1-9][0-9]*)/g, (m) => {
     const answer = strings[Number(m[1]) - 1];
     return answer ?? e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil");
@@ -278,6 +421,20 @@ let capturing:
   | undefined;
 
 
+/** What org-capture's prefix asks of the target: to capture here (C-0), or to ask a date tree's date (C-1); and the time a date asked for gives. */
+interface TargetEnv {
+  here?: boolean;
+  askDate?: boolean;
+  time?: DateTime;
+}
+
+/** Runs the functions an option such as :hook names, as org-capture--run-template-functions: one, or a list of them. */
+function runTemplateFunctions(t: CaptureTemplate, keyword: string): void {
+  const value = option(t, keyword);
+  if (value === undefined || value === null || value === false) return;
+  for (const f of Array.isArray(value) ? value : [value]) callTargetFunction(f);
+}
+
 /** Where a capture goes: its buffer and position, as org-capture-set-target-location finds them. */
 interface Target {
   buffer: string;
@@ -337,8 +494,8 @@ const atOrgHeading = (): boolean => e8.derivedModeP("org-mode") && isHeadingLine
  * a file, an ID, a file's heading, outline path, regexp, date tree or
  * function, a function, or the running clock's entry.
  */
-function setTargetLocation(t: CaptureTemplate, prepend: boolean): Target {
-  const target = (Array.isArray(t[3]) ? t[3] : [t[3]]) as e8.Value[];
+function setTargetLocation(t: CaptureTemplate, prepend: boolean, env: TargetEnv = {}): Target {
+  const target = (env.here ? ["here"] : Array.isArray(t[3]) ? t[3] : [t[3]]) as e8.Value[];
   const kind = typeof target[0] === "symbol" ? e8.symbolName(target[0]) : String(target[0]);
   /** The heading with this title under the one at `under`, as org-find-olp looks for each. */
   const child = (title: string, under: Heading | undefined): Heading | undefined => {
@@ -405,9 +562,23 @@ function setTargetLocation(t: CaptureTemplate, prepend: boolean): Target {
         const tree = option(t, ":tree-type");
         const treeName = typeof tree === "symbol" ? e8.symbolName(tree) : tree;
         const grouping = treeName === "week" ? "week" : treeName === "month" ? "month" : "day";
+        // The day: one asked for with :time-prompt or C-1, else today.
+        let day: DateTime = today();
+        if (truthy(option(t, ":time-prompt") ?? null) || env.askDate) {
+          const answer = e8.readString("Date for tree entry: ", { history: "org-read-date-history" });
+          const asked = parseDate(answer, /\d{1,2}:\d{2}/.test(answer));
+          day = { year: asked.year, month: asked.month, day: asked.day };
+          const now = today();
+          const isToday = asked.year === now.year && asked.month === now.month && asked.day === now.day;
+          // The capture's time: as given, or for another day without one, its start, as :default-time.
+          env.time =
+            asked.hour !== undefined || isToday
+              ? { ...asked, hour: asked.hour ?? today(true).hour, minute: asked.minute ?? today(true).minute }
+              : { ...day, hour: Number(e8.variable("org-extend-today-until") ?? 0), minute: 0 };
+        }
         // Under the outline path's heading, else a DATE_TREE (or WEEK_TREE) heading or the whole buffer, as Org's capture asks org-datetree.
         const root = dateTreeRoot(grouping, parent?.start);
-        return { pos: findDateCreate(today(), grouping, root.base, root.start, root.end, root.step), entryP: true };
+        return { pos: findDateCreate(day, grouping, root.base, root.start, root.end, root.step), entryP: true };
       });
     case "file+function":
       return inBuffer(targetBuffer(target[1]), () => {
@@ -795,7 +966,7 @@ function captureTemplateText(value: e8.Value | undefined, type: string): string 
  * Puts the entry a template makes into its target and shows it there,
  * narrowed, as org-capture-place-entry and org-capture-place-template do.
  */
-function captureWith(key: string): void {
+function captureWith(key: string, goto: e8.Value = null): void {
   const t = captureTemplates().find((x) => x[0] === key);
   if (!t) throw new Error(`No capture template referred to by "${key}" keys`);
   const [, , rawType, target] = t;
@@ -827,11 +998,14 @@ function captureWith(key: string): void {
       })
     : undefined;
   const prepend = truthy(option(t, ":prepend") ?? null);
-  const where = setTargetLocation(t, prepend);
+  const env: TargetEnv = { here: goto === 0, askDate: goto === 1 };
+  const where = setTargetLocation(t, prepend, env);
   const buffer = where.buffer;
   const modified = e8.withCurrentBuffer(buffer, () => e8.bufferModified());
-  const tags = e8.withCurrentBuffer(buffer, () => [...new Set(headings().flatMap((h) => h.tags))]);
-  const filled = fillTemplate(template, { annotation: link, initial, tags, file: originalFile, clock: clockContext });
+  // %^g's tags: the target file's, as org-global-tags-completion-table gives them for it; none without a file.
+  const targetFile = e8.withCurrentBuffer(buffer, () => e8.bufferFileName());
+  const tags = targetFile === undefined ? [] : globalTagsCompletionTable([targetFile]).map(([tag]) => tag);
+  const filled = fillTemplate(template, { annotation: link, initial, tags, file: originalFile, clock: clockContext, time: env.time, target: where });
   // The buffer's point kept, as Org places the template in an indirect buffer.
   const pointBefore = e8.withCurrentBuffer(buffer, () => e8.point());
   const placed = e8.conditionCase(
@@ -847,8 +1021,10 @@ function captureWith(key: string): void {
               : type === "table-line"
                 ? placeTableLine(t, where, filled, prepend)
                 : placeItem(t, where, filled, prepend);
+        runTemplateFunctions(t, ":hook");
         e8.callWithPrefix(1, "org-capture-mode");
-        return r;
+        // Where the hook left point.
+        return { ...r, cursor: e8.point() };
       }),
     {
       // Said with the template's key, as org-capture does.
@@ -902,7 +1078,7 @@ function captureWith(key: string): void {
   e8.setWindowBuffer(undefined, buffer);
   e8.gotoChar(placed.cursor);
   // Finished at once, as org-capture does with :immediate-finish.
-  if (truthy(option(t, ":immediate-finish") ?? null)) e8.call(captureFinalize);
+  if (truthy(option(t, ":immediate-finish") ?? null)) finalize(false);
 }
 
 /** Back to the windows and point from before the capture. */
@@ -932,34 +1108,76 @@ e8.defineCommand({
   doc:
     "Capture a note, asking for one of org-capture-templates by its key in *Org Select*: its entry goes into its " +
     "target file, shown narrowed to it. C-c C-c files it and C-c C-k takes it away.",
+  // Code names a template with org--capture-with, as Lisp passes org-capture KEYS.
   params: [{ name: "goto", kind: "prefix" }],
   run: (goto: e8.PrefixArg) => {
-    // With C-u C-u, to where the last capture went, as org-capture-goto-last-stored.
+    const keys = "";
+    // With C-u, to the template's target; with C-u C-u, to where the last capture went.
+    if (Array.isArray(goto) && goto[0] === 4) return gotoTarget(keys || undefined);
     if (Array.isArray(goto) && goto[0] === 16) return goLastStored();
-    // As org-capture-select-template, Org's one default template when there are none.
-    const chosen = orgMks(captureTemplates() as unknown as e8.Value[][], "Select a capture template\n=========================", "Template key: ", [
-      ["C", "Customize org-capture-templates"],
-      ["q", "Abort"],
-    ]);
+    const chosen = selectTemplate(keys || undefined);
     if (chosen === "q") e8.userError("Abort");
     if (chosen === "C") {
       e8.call("describe-variable", "org-capture-templates");
       return;
     }
-    captureWith(String((chosen as e8.Value[])[0]));
+    // C-0 captures here, C-1 asks a date tree's date.
+    captureWith(String((chosen as e8.Value[])[0]), goto);
   },
 });
 
-const captureFinalize = e8.defineCommand({
-  name: "org-capture-finalize",
-  doc: "Finish the capture: the entry stays in its file, which is saved, and the windows go back to how they were.",
-  run: () => {
+/** The template KEYS names, or one chosen in *Org Select*, or "C" or "q", as org-capture-select-template. */
+function selectTemplate(keys?: string): e8.Value[] | string {
+  if (keys !== undefined) {
+    const t = captureTemplates().find((x) => x[0] === keys);
+    if (!t) e8.userError(`No capture template referred to by "${keys}" keys`);
+    return t as unknown as e8.Value[];
+  }
+  // Org's one default template when there are none.
+  return orgMks(captureTemplates() as unknown as e8.Value[][], "Select a capture template\n=========================", "Template key: ", [
+    ["C", "Customize org-capture-templates"],
+    ["q", "Abort"],
+  ]) as e8.Value[] | string;
+}
+
+/** Goes to a template's target, capturing nothing, as org-capture-goto-target. */
+function gotoTarget(keys?: string): void {
+  const chosen = selectTemplate(keys);
+  if (typeof chosen === "string") e8.signal("error", "No capture template selected");
+  const t = chosen as unknown as CaptureTemplate;
+  const where = setTargetLocation(t, truthy(option(t, ":prepend") ?? null));
+  e8.call("pop-to-buffer-same-window", where.buffer);
+  e8.gotoChar(where.pos);
+}
+
+e8.defineCommand({
+  name: "org-capture-goto-target",
+  doc: "Go to where a capture template files its notes, asking for the template, capturing nothing.",
+  params: [{ name: "template-key", value: () => "" }],
+  run: (key: string) => gotoTarget(key || undefined),
+});
+
+/**
+ * Finishes the capture, as org-capture-finalize: the template's and the
+ * hooks' functions run, the capture's clock stops unless :clock-keep, the
+ * cookies are counted, its place remembered, the file saved, a buffer
+ * visited for it killed with :kill-buffer, and the windows put back; to
+ * the entry with :jump-to-captured or STAY.
+ */
+function finalize(stay: boolean, refiling = false): void {
+  {
     const buffer = capturing?.buffer;
     const state = capturing;
-    if (state) e8.withCurrentBuffer(state.buffer, () => e8.runHooks("org-capture-prepare-finalize-hook"));
-    // The capture's clock stops, and the one it stopped starts again with :clock-resume.
-    if (state?.clocked) {
-      clockOut(true);
+    if (state) {
+      e8.withCurrentBuffer(state.buffer, () => {
+        runTemplateFunctions(state.template, ":prepare-finalize");
+        e8.runHooks("org-capture-prepare-finalize-hook");
+      });
+    }
+    // The capture's clock stops, unless :clock-keep, and the one it stopped starts again with :clock-resume.
+    const keepClock = state !== undefined && truthy(option(state.template, ":clock-keep") ?? null) && runningEntry()?.buffer === state.buffer;
+    if (state?.clocked && !keepClock) {
+      e8.letBind({ "org-log-note-clock-out": null }, () => clockOut(true));
       const interrupted = state.interrupted;
       if (interrupted && state.resume && e8.bufferList().includes(interrupted.buffer)) {
         e8.withCurrentBuffer(interrupted.buffer, () => {
@@ -1020,7 +1238,13 @@ const captureFinalize = e8.defineCommand({
         ),
       );
       // Widened, as Org runs it.
-      e8.withCurrentBuffer(state.buffer, () => e8.saveRestriction(() => (e8.widen(), e8.runHooks("org-capture-before-finalize-hook"))));
+      e8.withCurrentBuffer(state.buffer, () =>
+        e8.saveRestriction(() => {
+          e8.widen();
+          runTemplateFunctions(state.template, ":before-finalize");
+          e8.runHooks("org-capture-before-finalize-hook");
+        }),
+      );
     }
     endCapture();
     if (buffer !== undefined && !(state && truthy(option(state.template, ":no-save") ?? null))) {
@@ -1028,16 +1252,84 @@ const captureFinalize = e8.defineCommand({
         if (e8.bufferFileName()) e8.call("save-buffer");
       });
     }
+    // A buffer visited for the capture goes with :kill-buffer, saved first, unless refiling, which kills it after.
+    if (state && state.newBuffer && !refiling && truthy(option(state.template, ":kill-buffer") ?? null) && e8.bufferLiveP(e8.getBuffer(state.buffer))) {
+      e8.withCurrentBuffer(state.buffer, () => {
+        if (e8.bufferFileName()) e8.call("save-buffer");
+      });
+      e8.call("kill-buffer", state.buffer);
+    }
+    if (state) runTemplateFunctions(state.template, ":after-finalize");
     e8.runHooks("org-capture-after-finalize-hook");
     // To the entry, as org-capture-goto-last-stored, with :jump-to-captured or C-u.
-    if (state && (truthy(option(state.template, ":jump-to-captured") ?? null) || e8.prefixArg() !== null)) goLastStored();
+    if (state && !refiling && (truthy(option(state.template, ":jump-to-captured") ?? null) || stay)) goLastStored();
     if (state) {
       e8.deleteMarker(state.entry);
       e8.deleteMarker(state.entryEnd);
       e8.deleteMarker(state.killStart);
       e8.deleteMarker(state.killEnd);
     }
+  }
+}
+
+const captureFinalize = e8.defineCommand({
+  name: "org-capture-finalize",
+  doc: "Finish the capture: the entry stays in its file, which is saved, and the windows go back to how they were. With C-u, go to the entry.",
+  params: [{ name: "stay", kind: "prefix" }],
+  run: (stay: e8.Value) => finalize(stay !== null && stay !== undefined),
+});
+
+e8.defineVariable({ name: "org-capture-is-refiling", doc: "Non-nil while the capture's entry is being refiled from it.", value: null });
+
+const captureRefile = e8.defineCommand({
+  name: "org-capture-refile",
+  doc: "Finish the capture and refile its entry, as org-refile does, with the prefix argument given to it; :refile-targets stands for org-refile-targets.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.Value) => {
+    const state = capturing;
+    if (!state) throw new Error("This does not seem to be a capture buffer for Org mode");
+    if (state.type !== "entry") e8.userError("Refiling from a capture buffer makes only sense for \u2018entry\u2019-type templates");
+    // The entry's heading, marked in its buffer, as finishing may change the text around it.
+    const base = state.buffer;
+    const pos = e8.withCurrentBuffer(base, () => {
+      const all = headings();
+      const i = headingIndex(all, lineAt());
+      return e8.makeMarker(i === undefined ? e8.point() : all[i].start);
+    });
+    const kill = state.newBuffer && truthy(option(state.template, ":kill-buffer") ?? null);
+    const jump = truthy(option(state.template, ":jump-to-captured") ?? null);
+    const targets = option(state.template, ":refile-targets");
+    const bindings: Record<string, e8.Value> = { "org-capture-is-refiling": true };
+    if (targets !== undefined && targets !== null) bindings["org-refile-targets"] = targets;
+    e8.letBind(bindings, () => {
+      finalize(false, true);
+      const config = e8.currentWindowConfiguration();
+      try {
+        e8.withCurrentBuffer(base, () => {
+          e8.saveExcursion(() => {
+            e8.gotoChar(e8.markerPosition(pos) ?? e8.point());
+            e8.callWithPrefix(arg as e8.PrefixArg, "org-refile");
+          });
+        });
+      } finally {
+        e8.setWindowConfiguration(config);
+        e8.deleteMarker(pos);
+      }
+    });
+    if (kill && e8.bufferLiveP(e8.getBuffer(base))) {
+      e8.withCurrentBuffer(base, () => {
+        if (e8.bufferFileName()) e8.call("save-buffer");
+      });
+      e8.call("kill-buffer", base);
+    }
+    if (jump) goLastStored();
   },
+});
+
+/** Moves where the last capture went to point, as org-refile does when it refiles from a capture. */
+e8.defun("org-capture--last-stored-here", () => {
+  if (lastStored) e8.deleteMarker(lastStored);
+  lastStored = e8.makeMarker(e8.point());
 });
 
 /** Where the last capture went, as org-capture-last-stored-marker. */
@@ -1093,7 +1385,10 @@ const captureKill = e8.defineCommand({
         });
       });
     }
-    e8.withCurrentBuffer(state.buffer, () => e8.runHooks("org-capture-prepare-finalize-hook"));
+    e8.withCurrentBuffer(state.buffer, () => {
+      runTemplateFunctions(state.template, ":prepare-finalize");
+      e8.runHooks("org-capture-prepare-finalize-hook");
+    });
     // From where the capture began inserting to its end marker, as Org kills
     // between :begin-marker and :end-marker, widened. Emacs kills in the
     // capture buffer, whose mark is its own.
@@ -1122,7 +1417,8 @@ const captureKill = e8.defineCommand({
       e8.withCurrentBuffer(state.buffer, () => e8.setBufferModified(false));
       e8.call("kill-buffer", state.buffer);
     }
-    // As org-capture-kill goes through org-capture-finalize, which runs it.
+    // As org-capture-kill goes through org-capture-finalize, which runs them.
+    runTemplateFunctions(state.template, ":after-finalize");
     e8.runHooks("org-capture-after-finalize-hook");
     e8.message("Capture aborted");
   },
@@ -1132,5 +1428,5 @@ e8.defineMinorMode({
   name: "org-capture-mode",
   lighter: " Cap",
   doc: "On in a buffer while a capture is under way in it: C-c C-c finishes the capture and C-c C-k aborts it.",
-  bindings: { "C-c C-c": captureFinalize, "C-c C-k": captureKill },
+  bindings: { "C-c C-c": captureFinalize, "C-c C-k": captureKill, "C-c C-w": captureRefile },
 });

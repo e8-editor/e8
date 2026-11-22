@@ -529,6 +529,18 @@ export function refile(arg: e8.PrefixArg | null, defaultBuffer?: string, rfloc?:
             e8.message(`Bookmark set error: (error ${JSON.stringify(err instanceof Error ? err.message : String(err))})`);
           }
         }
+        // Refiled from a capture, the last captured place is here too, as org-capture-is-refiling has Org mark it.
+        if (truthy(e8.variable("org-capture-is-refiling") ?? null)) {
+          const captured = plistGet("org-bookmark-names-plist", ":last-capture-marker");
+          if (typeof captured === "string") {
+            try {
+              bookmarkSet(captured);
+            } catch (err) {
+              e8.message(`Bookmark set error: (error ${JSON.stringify(err instanceof Error ? err.message : String(err))})`);
+            }
+          }
+          if (e8.fboundp("org-capture--last-stored-here")) e8.funcall("org-capture--last-stored-here");
+        }
         e8.deactivateMark();
         e8.runHooks("org-after-refile-insert-hook");
       }),

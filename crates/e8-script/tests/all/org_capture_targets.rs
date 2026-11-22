@@ -117,3 +117,86 @@ fn an_error_placing_names_the_template() {
     assert!(err.starts_with("Capture template \u{2018}t\u{2019}: Invalid table line specification"), "{err}");
     assert_eq!(ed.window_buffer().point(), 0);
 }
+
+/// C-c C-w in the capture finishes it and refiles its entry.
+#[test]
+fn refiling_from_the_capture() {
+    let (mut ed, s, dir) = editor("[]");
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "* Inbox\n* Other\n").unwrap();
+    s.eval_typescript(&mut ed, "t.ts", format!(r#"e8.setVariable("org-capture-templates", [["t", "T", "entry", ["file+headline", "{}", "Inbox"], "* %?\n"]]);"#, notes.display()))
+        .unwrap();
+    ed.press("M-x o r g - c a p t u r e RET t n e w C-c C-w O t h e r RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    let b = ed.buffers().iter().find(|b| b.name == "notes.org").unwrap();
+    assert_eq!(b.slice(0..b.len()), "* Inbox\n* Other\n** new\n");
+}
+
+
+/// %[file] puts a file's text in; one that cannot be read says so.
+#[test]
+fn a_file_s_text_in_the_template() {
+    let (mut ed, s, dir) = editor("[]");
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "* One\n").unwrap();
+    std::fs::write(dir.path().join("part.txt"), "from a file").unwrap();
+    let d = dir.path().display();
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        format!(r#"e8.setVariable("org-capture-templates", [["t", "T", "entry", ["file", "{d}/notes.org"], "* %[{d}/part.txt]\n%[{d}/none.txt]%?\n"]]);"#),
+    )
+    .unwrap();
+    ed.press("M-x o r g - c a p t u r e RET t C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    let text = std::fs::read_to_string(&notes).unwrap();
+    // Each on a line of its own: the regexp is greedy, as Org's is.
+    assert!(text.starts_with("* One\n* from a file\n%![could not insert "), "{text}");
+}
+
+/// Each %^{prompt} keeps its own history: M-p gives the last answer to it.
+#[test]
+fn each_prompt_has_its_history() {
+    let (mut ed, s, dir) = editor("[]");
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "").unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        format!(r#"e8.setVariable("org-capture-templates", [["t", "T", "entry", ["file", "{}"], "* %^{{Who}} %^{{What}}\n"]]);"#, notes.display()),
+    )
+    .unwrap();
+    ed.press("M-x o r g - c a p t u r e RET t a n n RET t e a RET C-c C-c").unwrap();
+    ed.press("M-x o r g - c a p t u r e RET t M-p RET M-p RET C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert_eq!(std::fs::read_to_string(&notes).unwrap(), "* ann tea\n* ann tea\n");
+}
+
+/// :kill-buffer kills a buffer visited for the capture, once saved, and the
+/// template's :prepare-finalize, :before-finalize and :after-finalize run.
+#[test]
+fn kill_buffer_and_finalize_functions() {
+    let (mut ed, s, dir) = editor("[]");
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "* One\n").unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        format!(
+            r#"globalThis.ran = [];
+            e8.defun("note-prepare", () => {{ globalThis.ran.push("prepare"); }});
+            e8.defun("note-before", () => {{ globalThis.ran.push("before"); }});
+            e8.defun("note-after", () => {{ globalThis.ran.push("after"); }});
+            e8.setVariable("org-capture-templates", [["t", "T", "entry", ["file", "{}"], "* new%?\n", ":kill-buffer", true,
+              ":prepare-finalize", e8.intern("note-prepare"), ":before-finalize", [e8.intern("note-before")], ":after-finalize", e8.intern("note-after")]]);"#,
+            notes.display()
+        ),
+    )
+    .unwrap();
+    ed.press("M-x o r g - c a p t u r e RET t C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert_eq!(std::fs::read_to_string(&notes).unwrap(), "* One\n* new\n");
+    assert!(!ed.buffers().iter().any(|b| b.name == "notes.org"));
+    s.eval_typescript(&mut ed, "t.ts", r#"e8.message(globalThis.ran.join(","));"#.to_string()).unwrap();
+    assert_eq!(ed.echo(), Some("prepare,before,after"));
+}

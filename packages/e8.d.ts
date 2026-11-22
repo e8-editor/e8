@@ -5418,17 +5418,27 @@ declare global {
        */
       "org-capture": [goto?: PrefixArg | boolean];
       /**
-       * Finish the capture: the entry stays in its file, which is saved, and the windows go back to how they were.
+       * Finish the capture: the entry stays in its file, which is saved, and the windows go back to how they were. With C-u, go to the entry.
+       *
+       * @param stay raw prefix argument
        *
        * Defined in packages/org-capture.ts.
        */
-      "org-capture-finalize": [];
+      "org-capture-finalize": [stay?: PrefixArg | boolean];
       /**
        * Go to the location where the last capture note was stored.
        *
        * Defined in packages/org-capture.ts.
        */
       "org-capture-goto-last-stored": [];
+      /**
+       * Go to where a capture template files its notes, asking for the template, capturing nothing.
+       *
+       * @param template-key text
+       *
+       * Defined in packages/org-capture.ts.
+       */
+      "org-capture-goto-target": [templateKey: string];
       /**
        * Abort the capture: the entry goes again, and the windows go back to how they were.
        *
@@ -5443,6 +5453,14 @@ declare global {
        * Defined in packages/org-capture.ts.
        */
       "org-capture-mode": [];
+      /**
+       * Finish the capture and refile its entry, as org-refile does, with the prefix argument given to it; :refile-targets stands for org-refile-targets.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org-capture.ts.
+       */
+      "org-capture-refile": [arg?: PrefixArg | boolean];
       /**
        * Make a sparse tree of the deadlines and scheduled dates on or after a date.
        *
@@ -13422,6 +13440,24 @@ declare global {
        * Defined in packages/org-refile.ts.
        */
       "org-bookmark-names-plist": Value;
+      /**
+       * The values %^C and %^L choose from.
+       *
+       * Defined in packages/org-capture.ts.
+       */
+      "org-capture--clipboards": Value;
+      /**
+       * The history of the %^{prompt} being answered.
+       *
+       * Defined in packages/org-capture.ts.
+       */
+      "org-capture--prompt-history": Value;
+      /**
+       * Non-nil while the capture's entry is being refiled from it.
+       *
+       * Defined in packages/org-capture.ts.
+       */
+      "org-capture-is-refiling": Value;
       /**
        * Whether Org-Capture mode is on in this buffer. Use the command org-capture-mode to change it.
        *
