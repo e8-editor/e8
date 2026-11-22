@@ -404,6 +404,9 @@ e8.defineMajorMode({
     e8.setVariable("comint-prompt-regexp", e8.variable("shell-prompt-pattern") ?? null);
     e8.makeLocalVariable("paragraph-start");
     e8.setVariable("paragraph-start", e8.variable("comint-prompt-regexp") ?? null);
+    // No line separates paragraphs, so each runs from one prompt to the next, as shell-mode sets it.
+    e8.makeLocalVariable("paragraph-separate");
+    e8.setVariable("paragraph-separate", "\\'");
     completionVars();
     textPropertyColours();
     reapplyAnsiColor();

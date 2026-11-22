@@ -24,7 +24,9 @@ const progFillReindentDefun = e8.defineCommand({
   run: (argument: e8.PrefixArg) => {
     e8.saveExcursion(() => {
       // In a string or a comment, or before one on the line, as syntax-ppss and \s< find them.
-      if (e8.syntaxPpss(e8.point()).start !== null || e8.reSearchForward("\\s-*\\s<", { bound: e8.lineEndPosition(), noerror: true }) !== undefined) {
+      // Parsed from the start of what is accessible, as syntax-ppss parses from point-min.
+      const state = e8.pointMin() > 0 ? e8.parsePartialSexp(e8.pointMin(), e8.point()) : e8.syntaxPpss(e8.point());
+      if (state.start !== null || e8.reSearchForward("\\s-*\\s<", { bound: e8.lineEndPosition(), noerror: true }) !== undefined) {
         e8.callWithPrefix(argument, "fill-paragraph");
         return;
       }

@@ -8,6 +8,7 @@
 // sentence-end-double-space says, and filling keeps them.
 
 import { commentNormalizeVars, commentSearchForward, commentStringStrip } from "newcomment";
+import { forwardParagraph as paragraphsForward } from "paragraphs";
 import { allMatches, escapeRegExp, forwardLine, regexpQuote, truthy } from "subr";
 
 e8.defineVariable({
@@ -63,6 +64,12 @@ e8.defineVariable({
   name: "normal-auto-fill-function",
   doc: "The command Auto Fill mode puts in auto-fill-function. Some major modes set it.",
   value: "do-auto-fill",
+});
+e8.defineVariable({
+  name: "fill-forward-paragraph-function",
+  doc: "The function filling moves over paragraphs with, given how many and returning how many it could not, as Org sets it.",
+  value: "forward-paragraph",
+  local: true,
 });
 e8.defineVariable({
   name: "fill-paragraph-handle-comment",
@@ -140,11 +147,10 @@ export function fillContextPrefix(from: number, to: number): string | undefined 
     e8.gotoChar(bolAt(e8.point()));
     let first = matchAdaptivePrefix();
     forwardLine(1);
+    const paragraphStart = e8.variable("paragraph-start");
     if (e8.point() < to) {
-      let second = matchAdaptivePrefix();
-      if (/^[ \t]*$/.test(e8.lineText(e8.lineOf(e8.point()))) && e8.point() === bolAt(e8.point())) {
-        second = undefined;
-      }
+      // None from a line that starts a paragraph.
+      const second = typeof paragraphStart === "string" && e8.lookingAt(paragraphStart) ? undefined : matchAdaptivePrefix();
       if (second === undefined) return undefined;
       first ??= "";
       // The second line's prefix if the first has its words in order, as
@@ -154,13 +160,16 @@ export function fillContextPrefix(from: number, to: number): string | undefined 
       return e8.stringMatch(re, first) !== undefined ? second : commonPrefix(first, second);
     }
     if (first === undefined) return undefined;
+    // The first line's prefix for every line if it looks like one, as a comment start does; else as many spaces.
     const firstLine = e8.variable("adaptive-fill-first-line-regexp");
+    const skip = e8.variable("comment-start-skip");
     const result =
-      typeof firstLine === "string" && e8.stringMatch(firstLine, first) !== undefined
+      (typeof firstLine === "string" && e8.stringMatch(firstLine, first) !== undefined) ||
+      (typeof skip === "string" && e8.stringMatch(skip, first) !== undefined)
         ? first
         : " ".repeat(e8.stringWidth(first));
-    // Not one that would start a paragraph.
-    return result.startsWith("\f") ? undefined : result;
+    // Not one that would start a paragraph with text after it.
+    return typeof paragraphStart === "string" && e8.stringMatch(paragraphStart, result + "a") === 0 ? undefined : result;
   });
 }
 
@@ -446,22 +455,14 @@ export function fillRegionAsParagraph(fromIn: number, toIn: number, justifyIn?: 
   }
 }
 
-/** Moves over paragraphs, as forward-paragraph, and says how many it could not. */
+/** Moves over paragraphs as fill-forward-paragraph-function says, forward-paragraph by default, and says how many it could not. */
 function forwardParagraph(n: number): number {
-  if (n > 0) {
-    // forward-paragraph finds none if only blank lines follow.
-    let p = bolAt(e8.point());
-    while (p < e8.bufferSize() && /^[ \t\f]*$/.test(e8.lineText(e8.lineOf(p)))) {
-      const next = e8.lineOf(p) + 1;
-      p = next < e8.lineCount() ? e8.lineStart(next) : e8.bufferSize();
-    }
-    if (p >= e8.bufferSize()) {
-      e8.gotoChar(e8.bufferSize());
-      return n;
-    }
+  const fn = e8.variable("fill-forward-paragraph-function");
+  if ((typeof fn === "string" && fn !== "forward-paragraph") || typeof fn === "function") {
+    const left = e8.funcall(fn as string, n);
+    return typeof left === "number" ? left : 0;
   }
-  e8.callWithPrefix(n, "forward-paragraph");
-  return 0;
+  return paragraphsForward(n);
 }
 
 /** Fills each paragraph from `from` to `to`, as fill-region, and returns the last fill prefix. */
@@ -484,23 +485,6 @@ export function fillRegion(from: number, to: number, justify?: string): string |
   e8.gotoChar(at(start));
   free(start, max);
   return prefix;
-}
-
-/** Runs `fn` with variables bound in this buffer, as let binds them, putting back what they were after. */
-function letLocal<T>(bindings: Record<string, e8.Value>, fn: () => T): T {
-  const saved = Object.keys(bindings).map((name) => [name, e8.isLocalVariable(name), e8.variable(name)] as const);
-  for (const [name] of saved) {
-    e8.makeLocalVariable(name);
-    e8.setVariable(name, bindings[name]);
-  }
-  try {
-    return fn();
-  } finally {
-    for (const [name, wasLocal, old] of saved) {
-      if (wasLocal) e8.setVariable(name, old ?? null);
-      else e8.killLocalVariable(name);
-    }
-  }
 }
 
 /**
@@ -585,10 +569,10 @@ function fillCommentParagraph(justify: string | undefined): boolean {
       e8.narrowToRegion(from, to);
       // Paragraphs within the comment, as text's paragraphs start and end.
       const afterLine = hasCode ? lineStartAfter(e8.point()) : undefined;
-      letLocal({ "paragraph-separate": paragraphOf("paragraph-separate"), "paragraph-start": paragraphOf("paragraph-start") }, () => {
-        e8.call("forward-paragraph");
+      e8.letBind({ "paragraph-separate": paragraphOf("paragraph-separate"), "paragraph-start": paragraphOf("paragraph-start") }, () => {
+        paragraphsForward(1);
         end = e8.point();
-        e8.call("backward-paragraph");
+        paragraphsForward(-1);
         if (e8.point() === afterLine) forwardLine(-1);
         beg = e8.point();
       });
@@ -609,7 +593,7 @@ function fillCommentParagraph(justify: string | undefined): boolean {
     return e8.reSearchForward(skip, { noerror: true }) === undefined ? undefined : e8.point();
   });
   // Point where it was, as fill-comment-paragraph fills inside its save-excursion.
-  saveExcursion(() => letLocal({ "fill-prefix": prefix }, () => fillRegionAsParagraph(Math.max(comstart!, beg), end, justify, squeezeAfter)));
+  saveExcursion(() => e8.letBind({ "fill-prefix": prefix }, () => fillRegionAsParagraph(Math.max(comstart!, beg), end, justify, squeezeAfter)));
   return true;
 }
 
@@ -655,7 +639,7 @@ e8.defineCommand({
         handleComment && typeof skip === "string"
           ? { "paragraph-start": `${typeof paragraphStart === "string" ? paragraphStart : "\f\\|[ \t]*$"}\\|[ \t]*\\(?:${skip}\\)` }
           : {};
-      letLocal(bindings, () =>
+      e8.letBind(bindings, () =>
         saveExcursion(() => {
           const here = marker(e8.point());
           e8.gotoChar(bolAt(e8.point()));
@@ -677,12 +661,15 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "fill-region",
-  doc: "Fill each paragraph in the region. With a prefix argument, justify as well.",
-  run: () => {
+  doc: "Fill each paragraph in the region, from FROM to TO. With a prefix argument, justify as well.",
+  params: [
+    { name: "from", kind: "region-beginning" },
+    { name: "to", kind: "region-end" },
+    { name: "justify", kind: "prefix" },
+  ],
+  run: (from: number, to: number, justify?: e8.PrefixArg) => {
     barfIfReadOnly();
-    const mark = e8.mark();
-    if (mark === undefined) e8.userError("The mark is not set now, so there is no region");
-    fillRegion(Math.min(e8.point(), mark), Math.max(e8.point(), mark), justifyArg());
+    fillRegion(Math.min(from, to), Math.max(from, to), justify === null || justify === undefined ? undefined : "full");
   },
 });
 

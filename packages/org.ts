@@ -30,6 +30,7 @@ import {
   FOLD_SPECS,
   foldChecksOff,
   folded,
+  foldRegionAt,
   foldsAfterChange,
   globalCycle,
   hideDrawersIn,
@@ -10905,6 +10906,7 @@ e8.defineMajorMode({
       ["fill-paragraph-function", "org-fill-paragraph"],
       ["paragraph-start", ORG_PARAGRAPH_START],
       ["paragraph-separate", ORG_PARAGRAPH_START],
+      ["fill-forward-paragraph-function", "org--fill-forward-paragraph"],
       ["fill-nobreak-predicate", ["org-fill-line-break-nobreak-p", "org-fill-n-macro-as-item-nobreak-p", "org-fill-paragraph-with-timestamp-nobreak-p"]],
     ] as const) {
       e8.makeLocalVariable(name);
@@ -10923,6 +10925,370 @@ e8.defineCommand({
   run: () => e8.callWithPrefix(e8.prefixArg(), "self-insert-command"),
 });
 e8.bindKey("|", "org-force-self-insert", "org-mode-map");
+
+// --- Paragraph motion, after org.el's org-forward-paragraph -----------------
+
+/** An element as Org's paragraph motion sees it, with its affiliated keywords, or a pseudo-paragraph of several. */
+interface ParagraphElem {
+  type: string;
+  begin: number;
+  end: number;
+  postAffiliated: number;
+  contentsBegin?: number;
+  contentsEnd?: number;
+  parent?: Elem;
+}
+
+/** Plain lists of one line per item count as one paragraph, as org--single-lines-list-is-paragraph; filling turns it off. */
+let singleLinesListIsParagraph = true;
+
+/** Types that take affiliated keywords, as Org's elements other than these do. */
+const NO_AFFILIATED = ["headline", "section", "item", "planning", "node-property", "table-row", "clock", "keyword", "diary-sexp", "property-drawer"];
+
+/** The element and where it starts with its affiliated keywords, as org-element-at-point gives them. */
+function elementWithAffiliated(pos: number): [Elem, number] | undefined {
+  let e = elementAt(pos);
+  if (e === undefined) return undefined;
+  // An affiliated keyword belongs to the element after it.
+  if (e.type === "keyword" && AFFILIATED.test(e8.lineText(lineAt(e.begin)))) {
+    let line = lineAt(e.begin);
+    while (line + 1 < e8.lineCount() && AFFILIATED.test(e8.lineText(line))) line++;
+    const next = AFFILIATED.test(e8.lineText(line)) ? undefined : elementAt(e8.lineStart(line));
+    if (next !== undefined && next.begin === e8.lineStart(line) && !NO_AFFILIATED.includes(next.type)) e = next;
+  }
+  return [e, NO_AFFILIATED.includes(e.type) ? e.begin : affiliatedBegin(e.begin)];
+}
+
+/** Where a headline's contents start and end, as Org's parser has them: the first line after its own that is not blank. */
+function headlineContents(e: Elem): [number | undefined, number | undefined] {
+  let p = lineStartOrEnd(lineAt(e.begin) + 1);
+  while (p < e.end && /[ \r\t\n]/.test(e8.bufferText(p, p + 1))) p++;
+  if (p >= e.end) return [undefined, undefined];
+  let q = e.end;
+  while (q > p && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+  return [e8.lineStart(lineAt(p)), Math.min(lineStartOrEnd(lineAt(q) + 1), e.end)];
+}
+
+/**
+ * The element at point as Org's paragraph motion takes it, as
+ * org--paragraph-at-point: a table row or property its table or drawer,
+ * keywords, clocks and diary sexps in a row one block, and a list of
+ * one-line items the whole list.
+ */
+function paragraphAtPoint(): ParagraphElem | undefined {
+  const found = elementWithAffiliated(e8.point());
+  if (found === undefined) return undefined;
+  const [e, begin] = found;
+  const pseudo = (b: number, end: number, parent?: Elem): ParagraphElem => ({ type: "pseudo-paragraph", begin: b, end, postAffiliated: b, parent });
+  if (e.type === "table" || e.type === "property-drawer") return pseudo(begin, e.end, e.parent);
+  if (e.type === "node-property" || e.type === "table-row") {
+    const p = e.parent!;
+    return pseudo(NO_AFFILIATED.includes(p.type) ? p.begin : affiliatedBegin(p.begin), p.end, p.parent);
+  }
+  if (e.type === "clock" || e.type === "diary-sexp" || e.type === "keyword") {
+    const re = e.type === "clock" ? /^[ \t]*CLOCK:/ : e.type === "diary-sexp" ? /^%%\(/ : /^[ \t]*#\+\S+?:/;
+    const looking = (line: number): boolean => line < e8.lineCount() && re.test(e8.lineText(line));
+    const lastLine = lineAt(endBeforeBlank(e));
+    let end: number;
+    if (lineStartOrEnd(lastLine + 1) < e.end) end = e.end;
+    else {
+      // The lines after it of the same kind, and the blank lines after them.
+      let line = lineAt(e.begin) + 1;
+      while (looking(line)) line++;
+      let p = lineStartOrEnd(line);
+      while (p < e8.bufferSize() && /[ \t\n]/.test(e8.bufferText(p, p + 1))) p++;
+      end = e8.lineStart(lineAt(p));
+    }
+    let line = lineAt(e.begin);
+    while (line > 0 && looking(line)) line--;
+    const b = looking(line) ? e8.lineStart(line) : lineStartOrEnd(line + 1);
+    return pseudo(b, end, e.parent);
+  }
+  // The whole list, if each of its items, nested ones too, is a line.
+  let list: Elem | undefined = e;
+  while (list !== undefined && list.type !== "plain-list") list = list.parent;
+  if (list !== undefined) {
+    while (list.parent !== undefined && (list.parent.type === "item" || list.parent.type === "plain-list")) list = list.parent;
+    let items = 0;
+    const count = (x: Elem): void => {
+      for (const c of x.children) {
+        if (c.type === "item") items++;
+        count(c);
+      }
+    };
+    count(list);
+    const lines = lineAt(list.begin) + items;
+    if (singleLinesListIsParagraph && list.contentsEnd !== undefined && lineStartOrEnd(lines) === list.contentsEnd) {
+      return pseudo(affiliatedBegin(list.begin), list.end, list.parent);
+    }
+  }
+  const [cb, ce] = e.type === "headline" ? headlineContents(e) : [e.contentsBegin, e.contentsEnd];
+  return { type: e.type, begin, end: e.end, postAffiliated: e.begin, contentsBegin: cb, contentsEnd: ce, parent: e.parent };
+}
+
+const LINE_BLOCKS = ["comment-block", "example-block", "export-block", "src-block", "verse-block"];
+
+/** Moves forward to the end of a paragraph or what stands for one, once, as org--forward-paragraph-once. */
+function forwardParagraphOnce(): void {
+  e8.saveRestriction(() => {
+    e8.widen();
+    e8.skipCharsForward(" \t\n");
+    if (e8.point() >= e8.pointMax()) return;
+    // Out of a fold point is in.
+    const fold = folded(e8.point()) ? foldRegionAt(e8.point()) : undefined;
+    if (fold !== undefined) {
+      e8.gotoChar(fold[1]);
+      forwardLine(1);
+      return;
+    }
+    const el = paragraphAtPoint();
+    if (el === undefined) return;
+    const postEol = e8.lineEnd(lineAt(el.postAffiliated));
+    if (el.type === "plain-list") {
+      e8.gotoChar(e8.point() + 1);
+      forwardParagraphOnce();
+    } else if (folded(postEol)) {
+      // A folded element, all of it.
+      e8.gotoChar(foldRegionAt(postEol)?.[1] ?? postEol);
+      forwardLine(1);
+    } else if (el.contentsBegin !== undefined && el.contentsBegin > e8.point() && el.type !== "paragraph") {
+      // Into a greater element.
+      e8.gotoChar(el.contentsBegin);
+      if (e8.point() !== e8.lineBeginningPosition()) forwardParagraphOnce();
+      else if (previousLineEmpty()) forwardLine(-1);
+    } else if (LINE_BLOCKS.includes(el.type)) {
+      // Between empty lines in a block.
+      const contentsStart = lineStartOrEnd(lineAt(el.postAffiliated) + 1);
+      if (e8.point() < contentsStart) e8.gotoChar(contentsStart);
+      else {
+        let q = el.end;
+        while (q > 0 && /[ \t\n]/.test(e8.bufferText(q - 1, q))) q--;
+        const contentsEnd = e8.lineStart(lineAt(q));
+        if (e8.point() >= contentsEnd) {
+          e8.gotoChar(q);
+          forwardLine(1);
+        } else if (e8.reSearchForward("^[ \t]*\n", { bound: contentsEnd, noerror: true }) !== undefined) forwardLine(-1);
+        else e8.gotoChar(contentsEnd);
+      }
+    } else {
+      // To the element's end.
+      let q = el.end;
+      while (q > 0 && /[ \t\n]/.test(e8.bufferText(q - 1, q))) q--;
+      e8.gotoChar(q);
+      forwardLine(1);
+    }
+  });
+}
+
+/** Moves back to the start of a paragraph or what stands for one, once, as org--backward-paragraph-once. */
+function backwardParagraphOnce(): void {
+  e8.saveRestriction(() => {
+    e8.widen();
+    if (e8.point() <= e8.pointMin()) return;
+    // Blank lines at the start of the buffer.
+    if (/^[ \t]*$/.test(e8.lineText(lineAt())) && /^[ \t\n]*$/.test(e8.bufferText(e8.pointMin(), e8.point()))) {
+      e8.gotoChar(e8.pointMin());
+      return;
+    }
+    // Out of a fold before point.
+    const fold = folded(e8.point() - 1) ? foldRegionAt(e8.point() - 1) : undefined;
+    if (fold !== undefined) {
+      e8.gotoChar(fold[0] - 1);
+      backwardParagraphOnce();
+      return;
+    }
+    const el = paragraphAtPoint();
+    if (el === undefined) return;
+    const prevLineEnd = (): number => {
+      const l = lineAt();
+      return l === 0 ? e8.pointMin() : e8.lineEnd(l - 1);
+    };
+    // To p, or the empty line above it if that shows.
+    const reach = (p: number): void => {
+      e8.gotoChar(p);
+      if (previousLineEmpty()) {
+        const end = prevLineEnd();
+        if (end === e8.pointMin() || !folded(end - 1)) forwardLine(-1);
+      }
+    };
+    const parent = el.parent;
+    if (el.begin === e8.point()) {
+      if (previousLineEmpty() && !folded(prevLineEnd() - 1)) forwardLine(-1);
+      else if (parent !== undefined && parent.type !== "section" && el.begin === (parent.type === "headline" ? headlineContents(parent)[0] : parent.contentsBegin)) {
+        reach(NO_AFFILIATED.includes(parent.type) ? parent.begin : affiliatedBegin(parent.begin));
+      } else {
+        e8.gotoChar(e8.point() - 1);
+        backwardParagraphOnce();
+      }
+    } else if (el.type === "paragraph" && el.begin !== e8.lineStart(lineAt(el.begin))) {
+      // A paragraph at the start of an item or a footnote definition.
+      reach(e8.lineStart(lineAt(el.begin)));
+    } else if (folded(e8.lineEnd(lineAt(el.postAffiliated)))) {
+      reach(el.begin);
+    } else if (el.contentsEnd !== undefined && el.contentsEnd <= e8.point() && el.type !== "paragraph") {
+      // Into a greater element from its end.
+      if (el.type === "footnote-definition" || el.type === "plain-list") {
+        e8.skipCharsBackward(" \t\n");
+        backwardParagraphOnce();
+      } else if (el.contentsEnd === e8.point()) {
+        e8.gotoChar(e8.point() - 1);
+        backwardParagraphOnce();
+      } else e8.gotoChar(el.contentsEnd);
+    } else if (LINE_BLOCKS.includes(el.type) && e8.point() > lineStartOrEnd(lineAt(el.postAffiliated) + 1)) {
+      // Between empty lines in a block.
+      const contentsStart = lineStartOrEnd(lineAt(el.postAffiliated) + 1);
+      let q = el.end;
+      while (q > 0 && /[ \t\n]/.test(e8.bufferText(q - 1, q))) q--;
+      const contentsEnd = e8.lineStart(lineAt(q));
+      if (e8.point() > contentsEnd) e8.gotoChar(contentsEnd);
+      else {
+        e8.skipCharsBackward(" \t\n", el.begin);
+        if (e8.reSearchBackward("^[ \t]*\n", { bound: contentsStart, noerror: true }) === undefined) e8.gotoChar(contentsStart);
+      }
+    } else reach(el.begin);
+  });
+}
+
+/** Moves over `arg` paragraphs or Org elements, back if negative, as org-forward-paragraph; returns how many it could not. */
+function orgForwardParagraph(arg: number): number {
+  if (arg < 0) return orgBackwardParagraph(-arg);
+  let n = arg;
+  while (n > 0 && e8.point() < e8.pointMax()) {
+    forwardParagraphOnce();
+    n--;
+  }
+  return n;
+}
+
+/** Moves back over `arg` paragraphs or Org elements, as org-backward-paragraph. */
+function orgBackwardParagraph(arg: number): number {
+  if (arg < 0) return orgForwardParagraph(-arg);
+  let n = arg;
+  while (n > 0 && e8.point() > e8.pointMin()) {
+    backwardParagraphOnce();
+    n--;
+  }
+  return n;
+}
+
+const orgForwardParagraphCommand = e8.defineCommand({
+  name: "org-forward-paragraph",
+  doc:
+    "Move forward over a paragraph or what stands for one in Org: an element such as a table or a list, a run of keywords or clocks, " +
+    "or the text between empty lines in a block. With a prefix argument, that many; back if negative.",
+  shiftSelect: true,
+  params: [{ name: "arg", kind: "count" }],
+  run: (arg: number) => {
+    orgForwardParagraph(arg);
+  },
+});
+const orgBackwardParagraphCommand = e8.defineCommand({
+  name: "org-backward-paragraph",
+  doc: "Move back over a paragraph or what stands for one in Org, as org-forward-paragraph moves forward. With a prefix argument, that many.",
+  shiftSelect: true,
+  params: [{ name: "arg", kind: "count" }],
+  run: (arg: number) => {
+    orgBackwardParagraph(arg);
+  },
+});
+e8.remapCommand("org-mode-map", "forward-paragraph", orgForwardParagraphCommand);
+e8.remapCommand("org-mode-map", "backward-paragraph", orgBackwardParagraphCommand);
+
+/** Where an element's contents end, as Org's parser has it: a section's are all of it, a headline's before its blank lines. */
+function contentsEndOf(e: Elem): number | undefined {
+  if (e.type === "section") return e.end;
+  if (e.type === "headline") return headlineContents(e)[1];
+  return e.contentsEnd;
+}
+
+/** Moves to the next element at the same level, as org-forward-element. */
+function orgForwardElement(): void {
+  if (e8.point() >= e8.pointMax()) e8.userError("Cannot move further down");
+  if (isHeadingLine(e8.lineText(lineAt()))) {
+    // Past the subtree to the next heading, which there must be.
+    const all = headings();
+    const i = all.findIndex((h) => h.line === lineAt());
+    const next = i < 0 ? undefined : nextSameOrHigher(all, i);
+    if (next === undefined) e8.userError("Cannot move further down");
+    e8.gotoChar(next!.start);
+    return;
+  }
+  const found = elementWithAffiliated(e8.point());
+  if (found === undefined) {
+    e8.message("No element at point");
+    return;
+  }
+  const [e] = found;
+  const parent = e.parent;
+  if (parent !== undefined && parent.type !== "org-data" && contentsEndOf(parent) === e.end) e8.gotoChar(parent.end);
+  else e8.gotoChar(e.end);
+}
+
+/** Moves to the previous element at the same level, or the start of this one, as org-backward-element. */
+function orgBackwardElement(): void {
+  if (e8.point() <= e8.pointMin()) e8.userError("Cannot move further up");
+  if (isHeadingLine(e8.lineText(lineAt()))) {
+    // The heading before at this level, or the parent heading.
+    const origin = e8.point();
+    forwardHeadingSameLevel(-1);
+    if (e8.point() === origin) {
+      const all = headings();
+      const i = all.findIndex((h) => h.line === lineAt());
+      const parent = i < 0 ? undefined : [...all.slice(0, i)].reverse().find((h) => h.level < all[i].level);
+      if (parent === undefined) {
+        e8.gotoChar(origin);
+        e8.userError("Cannot move further up");
+      }
+      e8.gotoChar(parent!.start);
+    }
+    return;
+  }
+  const found = elementWithAffiliated(e8.point());
+  if (found === undefined) {
+    e8.message("No element at point");
+    return;
+  }
+  const [, beg] = found;
+  if (e8.point() !== beg) {
+    e8.gotoChar(beg);
+    return;
+  }
+  e8.skipCharsBackward(" \r\t\n");
+  if (e8.point() <= e8.pointMin()) return;
+  // The start of the element before, or of what holds it that ends before this one.
+  const prevFound = elementWithAffiliated(e8.point());
+  if (prevFound === undefined) return;
+  let [prev, prevBegin] = prevFound;
+  e8.gotoChar(prevBegin);
+  for (let p = prev.parent; p !== undefined && p.type !== "org-data" && p.end <= beg; p = p.parent) {
+    prev = p;
+    prevBegin = NO_AFFILIATED.includes(p.type) ? p.begin : affiliatedBegin(p.begin);
+    e8.gotoChar(prevBegin);
+  }
+}
+
+const orgForwardElementCommand = e8.defineCommand({
+  name: "org-forward-element",
+  doc: "Move forward to the next element at the same level, or past the subtree from a heading.",
+  run: () => orgForwardElement(),
+});
+const orgBackwardElementCommand = e8.defineCommand({
+  name: "org-backward-element",
+  doc: "Move back to the start of this element, or the one before at the same level; from a heading, the heading before at its level or its parent.",
+  run: () => orgBackwardElement(),
+});
+e8.bindKey("M-}", orgForwardElementCommand, "org-mode-map");
+e8.bindKey("M-{", orgBackwardElementCommand, "org-mode-map");
+
+// Filling's paragraphs, with lists of one-line items not one, as org-setup-filling sets fill-forward-paragraph-function.
+e8.defun("org--fill-forward-paragraph", (arg?: e8.Value) => {
+  singleLinesListIsParagraph = false;
+  try {
+    return orgForwardParagraph(typeof arg === "number" ? arg : 1);
+  } finally {
+    singleLinesListIsParagraph = true;
+  }
+});
 
 e8.remapCommand("org-mode-map", "self-insert-command", "org-self-insert-command");
 e8.remapCommand("org-mode-map", "delete-backward-char", "org-delete-backward-char");

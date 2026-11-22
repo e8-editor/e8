@@ -98,6 +98,11 @@ export function commentSearchForward(from: number, limit: number): number | unde
       if (start < from) continue;
       return skipStarter(start, commentStartAt(start) ?? len);
     }
+    // One the parse takes as a comment, as a syntax-table property may say it is not.
+    if (hasCommentSyntax()) {
+      const after = e8.syntaxPpss(Math.min(p + len, e8.pointMax()));
+      if (after.inComment === null || after.start !== p) continue;
+    }
     return skipStarter(p, len);
   }
   return undefined;

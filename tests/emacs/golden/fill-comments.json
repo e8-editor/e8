@@ -680,6 +680,338 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "sh-dollar-hash-is-code",
+      "input": {
+        "text": "if [ $# -eq 0 ]; then echo aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq; fi\n",
+        "point": 19,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "if [ $# -eq 0 ]; then echo aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq; fi\n",
+      "visible": "if [ $# -eq 0 ]; then echo aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq; fi\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sh-hash-inside-word",
+      "input": {
+        "text": "echo a#b ccc ddd aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www\n",
+        "point": 10,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "echo a#b ccc ddd aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www\n",
+      "visible": "echo a#b ccc ddd aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sh-brace-hash-then-comment",
+      "input": {
+        "text": "echo ${#x} # aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 16,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 25
+        }
+      },
+      "text": "echo ${#x} # aaa bbb ccc\n\t   # ddd eee fff\n\t   # ggg hhh\n",
+      "visible": "echo ${#x} # aaa bbb ccc\n\t   # ddd eee fff\n\t   # ggg hhh\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sh-escaped-hash-then-comment",
+      "input": {
+        "text": "echo a\\#b # aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 16,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 25
+        }
+      },
+      "text": "echo a\\#b # aaa bbb ccc\n\t  # ddd eee fff\n\t  # ggg hhh\n",
+      "visible": "echo a\\#b # aaa bbb ccc\n\t  # ddd eee fff\n\t  # ggg hhh\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-blank-comment-line-prefix",
+      "input": {
+        "text": "# aaa bbb\n#\n# ccc ddd eee fff ggg\n",
+        "point": 15,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb\n#\n# ccc ddd eee fff\n# ggg\n",
+      "visible": "# aaa bbb\n#\n# ccc ddd eee fff\n# ggg\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-blank-comment-line-prefix-bol",
+      "input": {
+        "text": "# aaa bbb\n#\n# ccc ddd eee fff ggg\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb\n#\n# ccc ddd eee fff\n# ggg\n",
+      "visible": "# aaa bbb\n#\n# ccc ddd eee fff\n# ggg\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "el-blank-comment-line-prefix",
+      "input": {
+        "text": ";; aaa bbb\n;;\n;; ccc ddd eee fff ggg\n",
+        "point": 17,
+        "keys": "M-q",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": ";; aaa bbb\n;;\n;; ccc ddd eee fff\n;; ggg\n",
+      "visible": ";; aaa bbb\n;;\n;; ccc ddd eee fff\n;; ggg\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "text-comment-auto-fill",
+      "input": {
+        "text": "# aaa",
+        "point": 5,
+        "keys": "SPC b b b SPC c c c SPC d d d SPC e e e SPC f f f SPC g g g SPC",
+        "modes": [
+          "text-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "comment-start": "# ",
+          "comment-start-skip": "#+ *",
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb ccc ddd\n# eee fff ggg ",
+      "visible": "# aaa bbb ccc ddd\n# eee fff ggg ",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-narrowed-mid-comment",
+      "input": {
+        "text": "# aaa bbb\n# ccc ddd eee fff ggg\n# hhh\n",
+        "point": 15,
+        "keys": "C-SPC C-n C-x n n M-< C-f C-f C-f C-f C-f M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb\n# ccc ddd eee fff ggg\n# hhh\n",
+      "visible": "# aaa bbb\n# ccc ddd eee fff ggg\n# hhh\n",
+      "point": 20,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "py-narrowed-mid-comment-start",
+      "input": {
+        "text": "# aaa bbb\n# ccc ddd eee fff ggg\n# hhh\n",
+        "point": 15,
+        "keys": "C-SPC C-n C-x n n M-< M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb\n# ccc ddd eee fff ggg\n# hhh\n",
+      "visible": "# aaa bbb\n# ccc ddd eee fff ggg\n# hhh\n",
+      "point": 15,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "text-fill-on-separators-only",
+      "input": {
+        "text": "aaa bbb ccc\n---\n---\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "paragraph-start": "\f\\|[ \t]*$\\|---",
+          "paragraph-separate": "[ \t\f]*$\\|---",
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc\n---\n---\n",
+      "visible": "aaa bbb ccc\n---\n---\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "el-reindent-deactivates-mark",
+      "input": {
+        "text": "(defun f ()\n  1)\n",
+        "point": 0,
+        "keys": "C-x h M-q",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(defun f ()\n  1)\n",
+      "visible": "(defun f ()\n  1)\n",
+      "point": 0,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "el-reindent-fill-prefix",
+      "input": {
+        "text": "(defun f ()\n  1)\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-prefix": ">> "
+        }
+      },
+      "text": ">> (defun f ()\n>>   1)\n",
+      "visible": ">> (defun f ()\n>>   1)\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "text-fill-prefix-indent-region",
+      "input": {
+        "text": "aaa\n\nbbb\n>> ccc\n",
+        "point": 0,
+        "keys": "C-x h C-M-\\",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-prefix": ">> "
+        }
+      },
+      "text": ">> aaa\n\n>> bbb\n>> ccc\n",
+      "visible": ">> aaa\n\n>> bbb\n>> ccc\n",
+      "point": 0,
+      "mark": 22,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

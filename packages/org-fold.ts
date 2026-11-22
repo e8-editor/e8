@@ -75,6 +75,16 @@ export function folded(pos: number, spec?: string): boolean {
   });
 }
 
+/** Where the heading, drawer or block fold hiding pos starts and ends, as org-fold-get-region-at-point. */
+export function foldRegionAt(pos: number): [number, number] | undefined {
+  for (const id of e8.overlaysAt(pos)) {
+    if (!FOLD_SPECS.includes(String(e8.overlayGet(id, "invisible")))) continue;
+    const [start, end] = [e8.overlayStart(id), e8.overlayEnd(id)];
+    if (start !== undefined && end !== undefined) return [start, end];
+  }
+  return undefined;
+}
+
 /** Shows a heading's own line, as org-fold-heading does. */
 export function showHeadingLine(h: Heading): void {
   flag(Math.max(0, h.start - 1), h.end, false);

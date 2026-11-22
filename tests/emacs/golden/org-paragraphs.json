@@ -1,0 +1,510 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "list-forward",
+      "input": {
+        "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+        "point": 7,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "visible": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "list-backward",
+      "input": {
+        "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+        "point": 15,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "visible": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "list-forward-twice",
+      "input": {
+        "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+        "point": 0,
+        "keys": "M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "visible": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "list-backward-all",
+      "input": {
+        "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+        "point": 22,
+        "keys": "M-{ M-{ M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "visible": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "table-forward-twice",
+      "input": {
+        "text": "aaa\n| a |\n| b |\nbbb\n",
+        "point": 0,
+        "keys": "M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n| a |\n| b |\nbbb\n",
+      "visible": "aaa\n| a |\n| b |\nbbb\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "table-backward",
+      "input": {
+        "text": "aaa\n| a |\n| b |\nbbb\n",
+        "point": 18,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n| a |\n| b |\nbbb\n",
+      "visible": "aaa\n| a |\n| b |\nbbb\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "long-items-forward",
+      "input": {
+        "text": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+        "point": 0,
+        "keys": "M-} M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+      "visible": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further down"
+    },
+    {
+      "name": "long-items-backward",
+      "input": {
+        "text": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+        "point": 28,
+        "keys": "M-{ M-{ M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+      "visible": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further up"
+    },
+    {
+      "name": "headings-forward",
+      "input": {
+        "text": "* A\ntext one\n\ntext two\n* B\nmore\n",
+        "point": 0,
+        "keys": "M-} M-} M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\ntext one\n\ntext two\n* B\nmore\n",
+      "visible": "* A\ntext one\n\ntext two\n* B\nmore\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further down"
+    },
+    {
+      "name": "headings-backward",
+      "input": {
+        "text": "* A\ntext one\n\ntext two\n* B\nmore\n",
+        "point": 34,
+        "keys": "M-{ M-{ M-{ M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\ntext one\n\ntext two\n* B\nmore\n",
+      "visible": "* A\ntext one\n\ntext two\n* B\nmore\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further up"
+    },
+    {
+      "name": "src-block-forward",
+      "input": {
+        "text": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+        "point": 0,
+        "keys": "M-} M-} M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+      "visible": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further down"
+    },
+    {
+      "name": "src-block-backward",
+      "input": {
+        "text": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+        "point": 45,
+        "keys": "M-{ M-{ M-{ M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+      "visible": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further up"
+    },
+    {
+      "name": "keywords-forward",
+      "input": {
+        "text": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+      "visible": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "keywords-backward",
+      "input": {
+        "text": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+        "point": 28,
+        "keys": "M-{ M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+      "visible": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "drawer-forward",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\ntext\n",
+        "point": 0,
+        "keys": "M-} M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\ntext\n",
+      "visible": "* H\n:PROPERTIES:\n:A: 1\n:END:\ntext\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further down"
+    },
+    {
+      "name": "affiliated-forward",
+      "input": {
+        "text": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+        "point": 0,
+        "keys": "M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+      "visible": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "affiliated-backward",
+      "input": {
+        "text": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+        "point": 27,
+        "keys": "M-{ M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+      "visible": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "quote-block-forward",
+      "input": {
+        "text": "#+begin_quote\none\n\ntwo\n#+end_quote\n",
+        "point": 0,
+        "keys": "M-} M-} M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_quote\none\n\ntwo\n#+end_quote\n",
+      "visible": "#+begin_quote\none\n\ntwo\n#+end_quote\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further down"
+    },
+    {
+      "name": "nested-list-forward",
+      "input": {
+        "text": "- a\n  - b\n  - c\n- d\n\ntext\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n  - b\n  - c\n- d\n\ntext\n",
+      "visible": "- a\n  - b\n  - c\n- d\n\ntext\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "folded-heading-forward",
+      "input": {
+        "text": "* A\nbody\n* B\nmore\n",
+        "point": 0,
+        "keys": "S-TAB M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\nbody\n* B\nmore\n",
+      "visible": "* A\n* B",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "count-forward",
+      "input": {
+        "text": "one\n\ntwo\n\nthree\n",
+        "point": 0,
+        "keys": "M-3 M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "one\n\ntwo\n\nthree\n",
+      "visible": "one\n\ntwo\n\nthree\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "negative-count",
+      "input": {
+        "text": "one\n\ntwo\n\nthree\n",
+        "point": 16,
+        "keys": "M-- M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "one\n\ntwo\n\nthree\n",
+      "visible": "one\n\ntwo\n\nthree\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot move further down"
+    },
+    {
+      "name": "c-down",
+      "input": {
+        "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+        "point": 7,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "visible": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "mark-paragraph-list",
+      "input": {
+        "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+        "point": 9,
+        "keys": "M-h",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "visible": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+      "point": 9,
+      "mark": 13,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

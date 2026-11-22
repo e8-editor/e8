@@ -1,0 +1,218 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "list-forward",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-}",
+  "point": 7
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "list-backward",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-{",
+  "point": 15
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "list-forward-twice",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "list-backward-all",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-{ M-{ M-{",
+  "point": 22
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "table-forward-twice",
+  "text": "aaa\n| a |\n| b |\nbbb\n",
+  "keys": "M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "table-backward",
+  "text": "aaa\n| a |\n| b |\nbbb\n",
+  "keys": "M-{",
+  "point": 18
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "long-items-forward",
+  "text": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+  "keys": "M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "long-items-backward",
+  "text": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+  "keys": "M-{ M-{ M-{",
+  "point": 28
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "headings-forward",
+  "text": "* A\ntext one\n\ntext two\n* B\nmore\n",
+  "keys": "M-} M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "headings-backward",
+  "text": "* A\ntext one\n\ntext two\n* B\nmore\n",
+  "keys": "M-{ M-{ M-{ M-{",
+  "point": 34
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "src-block-forward",
+  "text": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+  "keys": "M-} M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "src-block-backward",
+  "text": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+  "keys": "M-{ M-{ M-{ M-{",
+  "point": 45
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "keywords-forward",
+  "text": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+  "keys": "M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "keywords-backward",
+  "text": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+  "keys": "M-{ M-{",
+  "point": 28
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "drawer-forward",
+  "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\ntext\n",
+  "keys": "M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "affiliated-forward",
+  "text": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+  "keys": "M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "affiliated-backward",
+  "text": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+  "keys": "M-{ M-{",
+  "point": 27
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "quote-block-forward",
+  "text": "#+begin_quote\none\n\ntwo\n#+end_quote\n",
+  "keys": "M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "nested-list-forward",
+  "text": "- a\n  - b\n  - c\n- d\n\ntext\n",
+  "keys": "M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "folded-heading-forward",
+  "text": "* A\nbody\n* B\nmore\n",
+  "keys": "S-TAB M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "count-forward",
+  "text": "one\n\ntwo\n\nthree\n",
+  "keys": "M-3 M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "negative-count",
+  "text": "one\n\ntwo\n\nthree\n",
+  "keys": "M-- M-}",
+  "point": 16
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "c-down",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "C-<down>",
+  "point": 7
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "mark-paragraph-list",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-h",
+  "point": 9
+ }
+]

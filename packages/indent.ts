@@ -3,7 +3,7 @@
 // The default, indent-relative, is for tabbing rather than indenting, so
 // indent-according-to-mode indents such lines as the line before them.
 
-import { numberValue as num } from "subr";
+import { forwardLine, numberValue as num, regexpQuote } from "subr";
 
 e8.defineVariable({
   name: "indent-line-function",
@@ -183,6 +183,23 @@ e8.defineCommand({
  * as Emacs's indent-region does without a column.
  */
 export function indentRegionBetween(start: number, end: number): void {
+  // Reindenting may change nothing, so the mark goes by hand, as indent-region sets deactivate-mark.
+  e8.deactivateMark();
+  const fillPrefix = e8.variable("fill-prefix");
+  if (typeof fillPrefix === "string") {
+    // The fill prefix on each line without it that is not empty.
+    e8.saveExcursion(() => {
+      const endMarker = e8.makeMarker(end);
+      e8.gotoChar(start);
+      while (e8.point() < e8.markerPosition(endMarker)!) {
+        const eolp = e8.point() === e8.lineEndPosition();
+        if (!e8.lookingAt(regexpQuote(fillPrefix)) && !(e8.point() === e8.lineBeginningPosition() && eolp)) e8.insert(fillPrefix);
+        if (forwardLine(1) !== 0) break;
+      }
+      e8.deleteMarker(endMarker);
+    });
+    return;
+  }
   if (typeof regionFunction() === "string" || typeof regionFunction() === "function") {
     const pt = e8.makeMarker();
     e8.saveRestriction(() => {

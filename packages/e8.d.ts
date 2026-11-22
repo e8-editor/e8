@@ -2982,11 +2982,15 @@ declare global {
        */
       "fill-paragraph": [];
       /**
-       * Fill each paragraph in the region. With a prefix argument, justify as well.
+       * Fill each paragraph in the region, from FROM to TO. With a prefix argument, justify as well.
+       *
+       * @param from region start
+       * @param to region end
+       * @param justify raw prefix argument
        *
        * Defined in packages/fill.ts.
        */
-      "fill-region": [];
+      "fill-region": [from: number, to: number, justify?: PrefixArg | boolean];
       /**
        * Fill the region as one paragraph, joining its paragraphs. With a prefix argument, justify as well.
        *
@@ -5478,6 +5482,12 @@ declare global {
        */
       "org-babel-tangle-file": [file: string];
       /**
+       * Move back to the start of this element, or the one before at the same level; from a heading, the heading before at its level or its parent.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-backward-element": [];
+      /**
        * Move to the previous heading at the same level, under the same parent.
        *
        * @param arg prefix count
@@ -5485,6 +5495,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-backward-heading-same-level": [arg?: number];
+      /**
+       * Move back over a paragraph or what stands for one in Org, as org-forward-paragraph moves forward. With a prefix argument, that many.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-backward-paragraph": [arg?: number];
       /**
        * Set the repeater of the entry's first timestamp to 0, so marking it done does not repeat it.
        *
@@ -5901,6 +5919,12 @@ declare global {
        */
       "org-force-self-insert": [];
       /**
+       * Move forward to the next element at the same level, or past the subtree from a heading.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-forward-element": [];
+      /**
        * Move to the next heading at the same level, under the same parent.
        *
        * @param arg prefix count
@@ -5908,6 +5932,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-forward-heading-same-level": [arg?: number];
+      /**
+       * Move forward over a paragraph or what stands for one in Org: an element such as a table or a list, a run of keywords or clocks, or the text between empty lines in a block. With a prefix argument, that many; back if negative.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-forward-paragraph": [arg?: number];
       /**
        * Cycle the whole buffer: top headings only, then all headings, then everything.
        *
@@ -11552,6 +11584,12 @@ declare global {
        * Defined in packages/fill.ts.
        */
       "fill-column": Value;
+      /**
+       * The function filling moves over paragraphs with, given how many and returning how many it could not, as Org sets it.
+       *
+       * Defined in packages/fill.ts.
+       */
+      "fill-forward-paragraph-function": Value;
       /**
        * Functions called, with point where a line would break, to say it must not break there; any true stops it, as Org's keep a timestamp whole.
        *

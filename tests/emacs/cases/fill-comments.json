@@ -317,5 +317,169 @@
    "comment-start": "# ",
    "fill-column": 40
   }
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-dollar-hash-is-code",
+  "text": "if [ $# -eq 0 ]; then echo aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq; fi\n",
+  "keys": "M-q",
+  "point": 19
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-hash-inside-word",
+  "text": "echo a#b ccc ddd aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www\n",
+  "keys": "M-q",
+  "point": 10
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-brace-hash-then-comment",
+  "text": "echo ${#x} # aaa bbb ccc ddd eee fff ggg hhh\n",
+  "keys": "M-q",
+  "point": 16,
+  "vars": {
+   "fill-column": 25
+  }
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-escaped-hash-then-comment",
+  "text": "echo a\\#b # aaa bbb ccc ddd eee fff ggg hhh\n",
+  "keys": "M-q",
+  "point": 16,
+  "vars": {
+   "fill-column": 25
+  }
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-blank-comment-line-prefix",
+  "text": "# aaa bbb\n#\n# ccc ddd eee fff ggg\n",
+  "keys": "M-q",
+  "point": 15,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-blank-comment-line-prefix-bol",
+  "text": "# aaa bbb\n#\n# ccc ddd eee fff ggg\n",
+  "keys": "M-q",
+  "point": 12,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "emacs-lisp-mode"
+  ],
+  "name": "el-blank-comment-line-prefix",
+  "text": ";; aaa bbb\n;;\n;; ccc ddd eee fff ggg\n",
+  "keys": "M-q",
+  "point": 17,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "text-mode",
+   "auto-fill-mode"
+  ],
+  "name": "text-comment-auto-fill",
+  "text": "# aaa",
+  "keys": "SPC b b b SPC c c c SPC d d d SPC e e e SPC f f f SPC g g g SPC",
+  "point": 5,
+  "vars": {
+   "comment-start": "# ",
+   "comment-start-skip": "#+ *",
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-narrowed-mid-comment",
+  "text": "# aaa bbb\n# ccc ddd eee fff ggg\n# hhh\n",
+  "keys": "C-SPC C-n C-x n n M-< C-f C-f C-f C-f C-f M-q",
+  "point": 15,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-narrowed-mid-comment-start",
+  "text": "# aaa bbb\n# ccc ddd eee fff ggg\n# hhh\n",
+  "keys": "C-SPC C-n C-x n n M-< M-q",
+  "point": 15,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "text-fill-on-separators-only",
+  "text": "aaa bbb ccc\n---\n---\n",
+  "keys": "M-q",
+  "point": 12,
+  "vars": {
+   "paragraph-start": "\f\\|[ \t]*$\\|---",
+   "paragraph-separate": "[ \t\f]*$\\|---",
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "emacs-lisp-mode"
+  ],
+  "name": "el-reindent-deactivates-mark",
+  "text": "(defun f ()\n  1)\n",
+  "keys": "C-x h M-q",
+  "point": 0
+ },
+ {
+  "modes": [
+   "emacs-lisp-mode"
+  ],
+  "name": "el-reindent-fill-prefix",
+  "text": "(defun f ()\n  1)\n",
+  "keys": "M-q",
+  "point": 12,
+  "vars": {
+   "fill-prefix": ">> "
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "text-fill-prefix-indent-region",
+  "text": "aaa\n\nbbb\n>> ccc\n",
+  "keys": "C-x h C-M-\\",
+  "point": 0,
+  "vars": {
+   "fill-prefix": ">> "
+  }
  }
 ]

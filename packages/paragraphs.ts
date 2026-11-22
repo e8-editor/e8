@@ -37,7 +37,7 @@ function unanchored(name: string): string {
  * paragraph-separate matches it too; with a fill prefix, lines without it
  * start one. Returns how many it could not move over.
  */
-function forwardParagraph(argIn: number): number {
+export function forwardParagraph(argIn: number): number {
   let arg = argIn;
   const fp = e8.variable("fill-prefix");
   const fillPrefixRegexp =

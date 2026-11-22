@@ -45,3 +45,20 @@ fn comment_start_skip_is_made_from_comment_start() {
     let skip: String = serde_json::from_str(&eval(&s, &mut ed, "e8.variable('comment-start-skip')")).unwrap();
     assert_eq!(skip, "\\(\\(^\\|[^\\\n]\\)\\(\\\\\\\\\\)*\\)\\(?:\\s<+\\|--+\\)[ \t]*");
 }
+
+/// fill-region in Org fills each element on its own, a list of one-line
+/// items too, as org-setup-filling's fill-forward-paragraph-function has
+/// it: what Emacs 30.2 gives, which the oracle cannot call with numbers.
+#[test]
+fn fill_region_in_org_fills_items_apart() {
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    ed.window_buffer_mut().set_text("aaa bbb ccc ddd eee fff\n- ggg hhh iii jjj kkk lll\n- mmm\n\nnnn ooo ppp qqq rrr sss\n");
+    ed.call("org-mode", vec![]).unwrap();
+    eval(&s, &mut ed, "e8.setVariable('fill-column', 20)");
+    ed.call("fill-region", vec![e8_core::Arg::Int(0), e8_core::Arg::Int(81)]).unwrap();
+    assert_eq!(
+        ed.window_buffer().text(),
+        "aaa bbb ccc ddd eee\nfff\n- ggg hhh iii jjj\n  kkk lll\n- mmm\n\nnnn ooo ppp qqq rrr\nsss\n"
+    );
+}
