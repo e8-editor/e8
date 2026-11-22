@@ -92,3 +92,18 @@ fn a_timer_list_with_a_counter() {
     sort(&mut ed, 1, &["t"]);
     assert_eq!(text(&ed), "1. 0:01:05 :: first\n3. [@3] 100:00:00 :: last\n");
 }
+
+/// Sorting entries already in order rewrites them, as sort-subr does, but
+/// leaves a buffer with no changes unmodified, as
+/// with-buffer-unmodified-if-unchanged; an order that changes modifies it.
+#[test]
+fn entries_in_order_leave_the_buffer_unmodified() {
+    let (mut ed, _s) = org("* P\n** A\n** B\n");
+    ed.window_buffer_mut().set_modified(false);
+    sort(&mut ed, 0, &["a"]);
+    assert_eq!(text(&ed), "* P\n** A\n** B\n");
+    assert!(!ed.window_buffer().is_modified());
+    sort(&mut ed, 0, &["A"]);
+    assert_eq!(text(&ed), "* P\n** B\n** A\n");
+    assert!(ed.window_buffer().is_modified());
+}

@@ -13423,6 +13423,12 @@ declare global {
        */
       "org-clock-file-total-minutes": Value;
       /**
+       * Whether org-clock-goto goes to the task clocked last when no clock runs.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-goto-may-find-recent-task": Value;
+      /**
        * How many recently clocked tasks C-u C-c C-x C-i offers.
        *
        * Defined in packages/org-clock.ts.
@@ -18091,6 +18097,10 @@ declare global {
        * Functions called when a clock is cancelled.
        */
       "org-clock-cancel-hook": Value;
+      /**
+       * Functions called after org-clock-goto has gone to the clocked entry.
+       */
+      "org-clock-goto-hook": Value;
       /**
        * Functions called when a clock starts.
        */
