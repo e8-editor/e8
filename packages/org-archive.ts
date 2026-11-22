@@ -280,7 +280,7 @@ export function archiveSubtree(): void {
       e8.gotoChar(e8.pointMin());
       const reversed = truthy(e8.variable("org-archive-reversed-order"));
       if (heading !== undefined && !(datetree && !datetreeSub)) {
-        const re = new RegExp(`^${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([ \\t]+:([\\p{L}\\p{N}_@#%]+:)+)?[ \\t]*$`, "mui");
+        const re = new RegExp(`^${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([ \\t]+:([\\p{L}\\p{M}\\p{Nd}\\p{Nl}_@#%]+:)+)?[ \\t]*$`, "mui");
         const text = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
         const m = re.exec(text);
         if (m) e8.gotoChar(e8.pointMin() + [...text.slice(0, m.index + m[0].length)].length);

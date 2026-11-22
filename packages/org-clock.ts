@@ -317,7 +317,7 @@ function selectionLine(key: string, m: e8.Marker): string | undefined {
       const i = headingIndex(all, lineAt(e8.markerPosition(m) ?? 0));
       if (i === undefined) return undefined;
       const h = all[i];
-      const task = e8.lineText(h.line).slice(h.level + 1).replace(/[ \t]+:[\p{L}\p{N}_@#%:]+:[ \t]*$/u, "").replace(/[ \t]+$/, "");
+      const task = e8.lineText(h.line).slice(h.level + 1).replace(/[ \t]+:[\p{L}\p{M}\p{Nd}\p{Nl}_@#%:]+:[ \t]*$/u, "").replace(/[ \t]+$/, "");
       return `[${key}] ${categories(all)[i].padEnd(12)}  ${task}\n`;
     }),
   );
@@ -502,7 +502,7 @@ export function clockOut(failQuietly = false): void {
           // The heading the clock's line is under, as org-clock-out asks org-get-heading there.
           const all = headings();
           const headingLine = all[headingIndex(all, lineAt(e8.markerPosition(running.line) ?? 0)) ?? 0]?.line ?? 0;
-          const task = e8.lineText(headingLine).replace(/^\*+[ \t]+/, "").replace(/[ \t]+:[\p{L}\p{N}_@#%:]+:[ \t]*$/u, "");
+          const task = e8.lineText(headingLine).replace(/^\*+[ \t]+/, "").replace(/[ \t]+:[\p{L}\p{M}\p{Nd}\p{Nl}_@#%:]+:[ \t]*$/u, "");
           addLogNote(headingLine, "clock-out", undefined, undefined, { extra: `# Task: ${task}\n\n`, at: e8.lineEnd(line) });
         }
       });
