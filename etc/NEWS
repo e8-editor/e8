@@ -141,6 +141,14 @@ or of every block with that ':noweb-ref'.  'C-c C-c' expands them too.
 'C-c M-f' and 'C-c M-b' move between blocks.  'C-c C-x e' offers an
 entry's allowed efforts, and 'C-c C-x E' steps to the next.
 
+** 'C-c ,' sets a priority as Org does, with one key.
+'SPC' removes the cookie, and a key outside 'org-priority-highest' to
+'org-priority-lowest' is refused; with a lowest below 65 priorities
+are numbers.  'C-u C-c ,' shows the priority.  In the agenda '+', '-',
+'S-<up>' and 'S-<down>' raise and lower it.  Called from code,
+'org-priority' now takes a character's code, as Org's does, not a
+letter as a string.
+
 ** Agenda lines leave out the timestamp whose time they show.
 ',' sets a priority from the agenda again, and point keeps its place
 when a line is written again.
