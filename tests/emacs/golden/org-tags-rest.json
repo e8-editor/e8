@@ -1,0 +1,539 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "setupfile-todo",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+          "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "visible": "#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+        "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "setupfile-tags",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "a",
+          "\r"
+        ],
+        "files": {
+          "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+          "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: setup.org\n* OPEN Task                                                           :alpha:\n",
+      "visible": "#+SETUPFILE: setup.org\n* OPEN Task                                                           :alpha:\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+        "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "setupfile-quoted",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+          "t.org": "#+SETUPFILE: \"setup.org\"\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: \"setup.org\"\n* CLOSED Task\n",
+      "visible": "#+SETUPFILE: \"setup.org\"\n* CLOSED Task\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+        "t.org": "#+SETUPFILE: \"setup.org\"\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "setupfile-nested",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "inner.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+          "setup.org": "#+SETUPFILE: inner.org\n",
+          "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "visible": "#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "inner.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+        "setup.org": "#+SETUPFILE: inner.org\n",
+        "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "setupfile-missing",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "t.org": "#+SETUPFILE: nowhere.org\n* TODO Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: nowhere.org\n* DONE Task\n",
+      "visible": "#+SETUPFILE: nowhere.org\n* DONE Task\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "t.org": "#+SETUPFILE: nowhere.org\n* TODO Task\n"
+      }
+    },
+    {
+      "name": "setupfile-own-first",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "setup.org": "#+TODO: A | B\n",
+          "t.org": "#+TODO: OPEN | CLOSED\n#+SETUPFILE: setup.org\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+TODO: OPEN | CLOSED\n#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "visible": "#+TODO: OPEN | CLOSED\n#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "#+TODO: A | B\n",
+        "t.org": "#+TODO: OPEN | CLOSED\n#+SETUPFILE: setup.org\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "tag-alnum-superscript",
+      "input": {
+        "text": "* H\n",
+        "point": 0,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "x²y"
+        ]
+      },
+      "text": "* H                                                                     :x:y:\n",
+      "visible": "* H                                                                     :x:y:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tag-alnum-combining",
+      "input": {
+        "text": "* H\n",
+        "point": 0,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "ét"
+        ]
+      },
+      "text": "* H                                                                      :ét:\n",
+      "visible": "* H                                                                      :ét:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tag-alnum-roman",
+      "input": {
+        "text": "* H\n",
+        "point": 0,
+        "keys": "C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "xⅫ"
+        ]
+      },
+      "text": "* H                                                                      :xⅫ:\n",
+      "visible": "* H                                                                      :xⅫ:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-read-at-start",
+      "input": {
+        "text": "#+TAGS: alpha(a)\n* H\n",
+        "point": 0,
+        "keys": "M-< C-k # + T A G S : SPC b e t a ( b ) C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: beta(b)\n* H\n",
+      "visible": "#+TAGS: beta(b)\n* H\n",
+      "point": 19,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "#+TAGS: alpha(a)"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tags-refreshed-by-c-c",
+      "input": {
+        "text": "#+TAGS: alpha(a)\n* H\n",
+        "point": 0,
+        "keys": "M-< C-k # + T A G S : SPC b e t a ( b ) C-c C-c C-n C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "b",
+          "\r"
+        ]
+      },
+      "text": "#+TAGS: beta(b)\n* H                                                                    :beta:\n",
+      "visible": "#+TAGS: beta(b)\n* H                                                                    :beta:\n",
+      "point": 19,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "#+TAGS: alpha(a)"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "setupfile-directory",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "sub/x.org": "",
+          "t.org": "#+SETUPFILE: sub/\n* TODO Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: sub/\n* DONE Task\n",
+      "visible": "#+SETUPFILE: sub/\n* DONE Task\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "sub/": "",
+        "sub/x.org": "",
+        "t.org": "#+SETUPFILE: sub/\n* TODO Task\n"
+      }
+    },
+    {
+      "name": "setupfile-indented",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+          "t.org": "  #+SETUPFILE: setup.org\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "  #+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "visible": "  #+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+        "t.org": "  #+SETUPFILE: setup.org\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "setupfile-in-example",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-> C-p C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+          "t.org": "#+begin_example\n#+SETUPFILE: setup.org\n#+end_example\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+begin_example\n#+SETUPFILE: setup.org\n#+end_example\n* TODO OPEN Task\n",
+      "visible": "#+begin_example\n#+SETUPFILE: setup.org\n#+end_example\n* TODO OPEN Task\n",
+      "point": 53,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+        "t.org": "#+begin_example\n#+SETUPFILE: setup.org\n#+end_example\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "setupfile-keyword-in-block",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "setup.org": "#+begin_example\n#+TODO: OPEN | CLOSED\n#+end_example\n",
+          "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: setup.org\n* TODO OPEN Task\n",
+      "visible": "#+SETUPFILE: setup.org\n* TODO OPEN Task\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "#+begin_example\n#+TODO: OPEN | CLOSED\n#+end_example\n",
+        "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "setupfile-keyword-indented",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "setup.org": "  #+TODO: OPEN | CLOSED\n",
+          "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "visible": "#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "  #+TODO: OPEN | CLOSED\n",
+        "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "setupfile-twice",
+      "input": {
+        "text": "",
+        "point": 0,
+        "keys": "M-> C-p C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "files": {
+          "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+          "t.org": "#+SETUPFILE: setup.org\n#+SETUPFILE: setup.org\n* OPEN Task\n"
+        },
+        "find": "t.org"
+      },
+      "text": "#+SETUPFILE: setup.org\n#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "visible": "#+SETUPFILE: setup.org\n#+SETUPFILE: setup.org\n* CLOSED Task\n",
+      "point": 46,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "files": {
+        "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+        "t.org": "#+SETUPFILE: setup.org\n#+SETUPFILE: setup.org\n* OPEN Task\n"
+      }
+    },
+    {
+      "name": "todo-keyword-indented",
+      "input": {
+        "text": "  #+TODO: OPEN | CLOSED\n* OPEN Task\n",
+        "point": 0,
+        "keys": "C-n C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "  #+TODO: OPEN | CLOSED\n* CLOSED Task\n",
+      "visible": "  #+TODO: OPEN | CLOSED\n* CLOSED Task\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "todo-keyword-in-example",
+      "input": {
+        "text": "#+begin_example\n#+TODO: OPEN | CLOSED\n#+end_example\n* OPEN Task\n",
+        "point": 0,
+        "keys": "M-> C-p C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_example\n#+TODO: OPEN | CLOSED\n#+end_example\n* TODO OPEN Task\n",
+      "visible": "#+begin_example\n#+TODO: OPEN | CLOSED\n#+end_example\n* TODO OPEN Task\n",
+      "point": 52,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}
