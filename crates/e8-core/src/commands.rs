@@ -1726,6 +1726,35 @@ fn minibuffer(ed: &mut Editor) {
             if !must_match || typed_nothing || value.is_empty() || ed.is_completion_match(&value) {
                 return ed.finish_prompt(value);
             }
+            // Several answers: each in turn, one with only one completion
+            // completed to it, as crm-complete-and-exit goes through them,
+            // stopping with point at the end of one that is no answer.
+            if let Some(separator) = ed.prompt.as_ref().and_then(|p| p.separator.clone()) {
+                let mut input = ed.minibuffer_input();
+                let mut k = 0;
+                loop {
+                    let ranges = ed.separated_ranges(&separator, &input);
+                    let Some(&(a, b)) = ranges.get(k) else { break };
+                    let chars: Vec<char> = input.chars().collect();
+                    let element: String = chars[a..b].iter().collect();
+                    let prompt = ed.prompt.as_ref().expect("a prompt is open");
+                    if !element.is_empty() && !ed.element_matches(prompt, &element) {
+                        match ed.element_completions(prompt, &element).as_slice() {
+                            [only] => {
+                                input = chars[..a].iter().collect::<String>() + only + &chars[b..].iter().collect::<String>();
+                                let end = a + only.chars().count();
+                                ed.replace_minibuffer_input(&input, end);
+                            }
+                            none => {
+                                ed.replace_minibuffer_input(&input, b);
+                                return err(if none.is_empty() { "[No match]" } else { "[Incomplete]" });
+                            }
+                        }
+                    }
+                    k += 1;
+                }
+                return ed.finish_prompt(input);
+            }
             match ed.prompt_completions(&value).as_slice() {
                 [only] => ed.finish_prompt(only.clone()),
                 [] => err("[No match]"),

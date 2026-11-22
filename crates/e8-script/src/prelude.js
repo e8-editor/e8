@@ -1017,6 +1017,7 @@
         initial: options.initial,
         default: options.default,
         history: options.history,
+        separator: options.separator,
       }),
     readFileName: (prompt, options = {}) =>
       native.read("file", String(prompt), {

@@ -30,6 +30,7 @@ mod comint;
 mod commands;
 mod compile;
 mod completion_in_region;
+mod crm;
 mod compression;
 mod dabbrev;
 mod describe_odds;

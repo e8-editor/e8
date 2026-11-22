@@ -31,6 +31,8 @@ pub(crate) struct Prompt {
     /// A function of the input that gives `collection` afresh after each
     /// command, as Emacs's completion-table-dynamic makes a table.
     pub(crate) collection_fn: Option<variables::Function>,
+    /// The Emacs regexp separating several answers, as crm-separator, if it reads several.
+    pub(crate) separator: Option<String>,
     /// The collection's completion category, as Emacs's metadata names it.
     pub(crate) category: Option<String>,
     /// Whether the answer must be one of the completions.
