@@ -1,0 +1,110 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "todo-list-priority",
+  "text": "* TODO Parent\n** TODO child\n* TODO Other\n",
+  "keys": "n n ,",
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   "A"
+  ],
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "todo-list-priority-removed",
+  "text": "* TODO [#B] Parent\n* TODO Other\n",
+  "keys": "n n ,",
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   " "
+  ],
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "todo-list-priority-twice-on-one-entry",
+  "text": "* TODO A\n** TODO B\n",
+  "keys": "n n , n ,",
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   "A",
+   "C"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "week-agenda-done-keeps-the-heading-timestamp",
+  "text": "* TODO B <2026-10-28 Wed>\n",
+  "keys": "n t",
+  "call": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "week-agenda-tags-keep-the-heading-timestamp",
+  "text": "* TODO B <2026-10-28 Wed> after\n",
+  "keys": "n :",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "week-agenda-priority-keeps-the-heading-timestamp",
+  "text": "* TODO B <2026-10-28 Wed>\n",
+  "keys": "n ,",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "A"
+  ]
+ }
+]

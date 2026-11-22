@@ -1335,7 +1335,8 @@ function redrawEntry(item: AgendaItem): void {
       const text = e8.withCurrentBuffer(item.buffer, () => widened(() => {
         const h = headings().find((x) => x.start === heading);
         // Without the tags view's dots, as org-agenda-change-all-lines writes the line from the heading alone.
-        return h ? agendaLine(h, other.cat, other.leader, other.removeTimestamp, other.time) : other.text;
+        // With the heading's timestamp, as org-agenda-change-all-lines formats it without org-agenda-format-item's remove-re.
+        return h ? agendaLine(h, other.cat, other.leader, false, other.time) : other.text;
       }));
       other.text = text;
       e8.deleteRegion(e8.lineStart(l), e8.lineEnd(l));
@@ -1353,13 +1354,14 @@ function redrawEntry(item: AgendaItem): void {
  * the agenda's commands do with org-agenda-with-point-at, then writes the
  * entry's lines again, its heading changed.
  */
-function atEntry(command: e8.CommandName, interactive = true): void {
+function atEntry(command: e8.CommandName, interactive = true, args: e8.Value[] = []): void {
   const item = agendaItemHere();
   e8.withCurrentBuffer(item.buffer, () => {
     e8.saveExcursion(() => widened(() => {
       e8.gotoChar(headingOf(item));
       if (interactive) e8.callInteractively(command);
-      else e8.call(command);
+      // As (funcall command args...), not checked against the command's own parameters.
+      else (e8.call as (name: string, ...rest: e8.Value[]) => void)(command, ...args);
     }));
   });
   redrawEntry(item);
@@ -1368,10 +1370,20 @@ function atEntry(command: e8.CommandName, interactive = true): void {
 for (const [name, command, doc] of [
   ["org-agenda-clock-in", "org-clock-in", "Start a clock on the entry the agenda line at point shows."],
   ["org-agenda-set-tags", "org-set-tags-command", "Set the tags of the entry the agenda line at point shows."],
-  ["org-agenda-priority", "org-priority", "Set the priority of the entry the agenda line at point shows."],
 ] as const) {
   e8.defineCommand({ name, doc, run: () => atEntry(command as e8.CommandName) });
 }
+
+e8.defineCommand({
+  name: "org-agenda-priority",
+  doc: "Set the priority of the entry the agenda line at point shows, or remove it with SPC.",
+  run: () => {
+    agendaItemHere();
+    // Asked here, as org-priority asks in the entry's buffer: a command's own prompt would be answered after it has left there.
+    const answer = e8.readString("Priority A-C, SPC to remove: ");
+    atEntry("org-priority", false, [answer]);
+  },
+});
 e8.defineCommand({ name: "org-agenda-clock-out", doc: "Stop the running clock, from the agenda.", run: () => e8.call("org-clock-out") });
 e8.defineCommand({ name: "org-agenda-clock-cancel", doc: "Cancel the running clock, from the agenda.", run: () => e8.call("org-clock-cancel") });
 e8.defineCommand({ name: "org-agenda-clock-goto", doc: "Go to the entry with the running clock, from the agenda.", run: () => e8.call("org-clock-goto") });
