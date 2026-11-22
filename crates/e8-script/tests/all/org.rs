@@ -1826,6 +1826,11 @@ fn timestamp_rounding_minutes_under_either_name() {
     ed.press("S-<up>").unwrap();
     assert_eq!(text(&ed), "* T\n<2026-10-28 Wed 10:15>\n");
     assert_eq!(s.eval_expression(&mut ed, "JSON.stringify(e8.variable('org-timestamp-rounding-minutes'))").unwrap(), "\"[0,15]\"");
+    // The old name is documented as the new, as describe-variable shows an alias.
+    assert_eq!(
+        s.eval_expression(&mut ed, "e8.variableDocumentation('org-time-stamp-rounding-minutes') === e8.variableDocumentation('org-timestamp-rounding-minutes')").unwrap(),
+        "true"
+    );
     s.eval_expression(&mut ed, "e8.setVariable('org-timestamp-rounding-minutes', 10)").unwrap();
     ed.window_buffer_mut().set_point(minute);
     ed.press("S-<up>").unwrap();

@@ -6762,6 +6762,26 @@ function clockUpdateTimeMaybe(): boolean {
   }
 }
 
+/**
+ * Whether point is on the -- between a range's timestamps, in text where
+ * Org's parser finds timestamp objects: paragraphs, headings, items, verse
+ * and the keywords whose values Org parses, not inside a link.
+ */
+function onRangeDashes(line: number): boolean {
+  const p = e8.point();
+  const all = tsMatches(line);
+  const on = all.some((a, i) => i + 1 < all.length && e8.bufferText(a.end, all[i + 1].start) === "--" && a.end < p && p < all[i + 1].start);
+  if (!on) return false;
+  const type = elementAt(p)?.type;
+  const parsedKeyword = type === "keyword" && /^[ \t]*#\+(?:TITLE|DATE|AUTHOR|CAPTION):/i.test(e8.lineText(line));
+  if (!parsedKeyword && !["paragraph", "headline", "item", "verse-block"].includes(type ?? "")) return false;
+  // A link's description holds no timestamps.
+  const text = e8.lineText(line);
+  const col = p - e8.lineStart(line);
+  for (const m of allMatches(/\[\[[^\]]*\](?:\[[^\]]*\])?\]/g, text)) if (m.index! < col && col < m.index! + m[0].length) return false;
+  return true;
+}
+
 /** Whether point is on a CLOCK line, as org-at-clock-log-p: one that is a clock element. */
 function atClockLog(): boolean {
   // Case aside, as Org's regexps match with case-fold-search.
@@ -6904,7 +6924,11 @@ export function parseDate(input: string, withTime = false): DateTime {
     const now = today(true);
     const step = roundingMinutes()[0] || 1;
     d.hour = now.hour;
-    d.minute = Math.round((now.minute ?? 0) / step) * step;
+    // Halves to the even step, as Emacs's round of integers does.
+    const q = (now.minute ?? 0) / step;
+    const down = Math.floor(q);
+    const nearest = q - down === 0.5 ? (down % 2 === 0 ? down : down + 1) : Math.round(q);
+    d.minute = nearest * step;
     d = normalize(d);
   }
   return d;
@@ -9022,11 +9046,10 @@ const ctrlCCtrlC = e8.defineCommand({
       clockUpdateTimeMaybe();
       return;
     }
-    // On the dashes of a range, which Org takes as one timestamp, as org-timestamp-change finds no part of one there.
-    const all = tsMatches(line);
-    if (all.some((a, i) => i + 1 < all.length && /^-{1,3}$/.test(e8.bufferText(a.end, all[i + 1].start)) && a.end < e8.point() && e8.point() < all[i + 1].start)) {
-      e8.userError("Not at a timestamp");
-    }
+    // On the two dashes of a range, which Org takes as one timestamp
+    // object where it parses objects, as org-timestamp-change then finds no
+    // part of one there.
+    if (onRangeDashes(line)) e8.userError("Not at a timestamp");
     if (timestampHere()) {
       changeTimestamp(0, "day");
       return;

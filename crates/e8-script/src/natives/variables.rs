@@ -26,18 +26,19 @@ natives! {
 
     #[ts = "(name: VariableName | (string & {})): string | undefined"]
     pub fn variableDocumentation(ed, name: String) -> Option<String> {
-        Ok(ed.variable_definition(&name).map(|v| v.doc.clone()))
+        // An alias's is its base variable's, as defvaralias gives it.
+        Ok(ed.variable_definition(&name).or_else(|| ed.variable_definition(&ed.base_variable(&name))).map(|v| v.doc.clone()))
     }
 
     /// The file that defined a variable, if a script did.
     #[ts = "(name: VariableName | (string & {})): string | undefined"]
     pub fn variableSource(ed, name: String) -> Option<String> {
-        Ok(ed.variable_definition(&name).and_then(|v| v.source.clone()))
+        Ok(ed.variable_definition(&name).or_else(|| ed.variable_definition(&ed.base_variable(&name))).and_then(|v| v.source.clone()))
     }
 
     /// Whether a variable is a hook. A hook's value is the names of its functions.
     pub fn isHook(ed, name: String) -> bool {
-        Ok(ed.variable_definition(&name).is_some_and(|v| v.hook))
+        Ok(ed.variable_definition(&name).or_else(|| ed.variable_definition(&ed.base_variable(&name))).is_some_and(|v| v.hook))
     }
 
     /// Remove all of the current buffer's own values, hooks and keymap, as a new major mode does first.
