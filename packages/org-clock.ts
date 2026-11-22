@@ -421,8 +421,10 @@ function clockInHere(selected?: number): void {
   let h = all[i];
   notified = false;
   if (clock) {
+    // The same place and the same title, as Org compares org-clock-hd-marker and org-clock-current-task.
     const pos = e8.markerPosition(clock.heading);
-    if (e8.markerBuffer(clock.heading) === e8.bufferName() && pos === (selected ?? h.start)) {
+    const sameTitle = e8.variable("org-clock-current-task") === h.title.replace(/^COMMENT[ \t]+/, "");
+    if (e8.markerBuffer(clock.heading) === e8.bufferName() && pos === (selected ?? h.start) && sameTitle) {
       e8.message(`Clock continues in "${clock.title}"`);
       return;
     }
@@ -497,7 +499,9 @@ export function clockOut(failQuietly = false): void {
           removeEmptyDrawer(line);
         } else if (truthy(e8.variable("org-log-note-clock-out"))) {
           // A note after the clock, as org-clock-out sets one up, the task named above it.
-          const headingLine = lineAt(e8.markerPosition(running.heading) ?? 0);
+          // The heading the clock's line is under, as org-clock-out asks org-get-heading there.
+          const all = headings();
+          const headingLine = all[headingIndex(all, lineAt(e8.markerPosition(running.line) ?? 0)) ?? 0]?.line ?? 0;
           const task = e8.lineText(headingLine).replace(/^\*+[ \t]+/, "").replace(/[ \t]+:[\p{L}\p{N}_@#%:]+:[ \t]*$/u, "");
           addLogNote(headingLine, "clock-out", undefined, undefined, { extra: `# Task: ${task}\n\n`, at: e8.lineEnd(line) });
         }
@@ -620,25 +624,17 @@ e8.defineCommand({
   doc: "Go to the entry with the running clock, or the last one clocked. With C-u, to a task picked from those clocked lately.",
   params: [{ name: "select", kind: "prefix" }],
   run: (select: e8.PrefixArg) => {
+    // A task picked, the clock's line, or the task clocked last, as org-clock-goto takes the one picked, org-clock-marker or the history's first.
+    let target: e8.Marker | undefined;
+    let recent = false;
     if (select !== null && select !== undefined) {
-      const task = selectTask("Select task to go to: ");
-      if (task === undefined) e8.userError("No task selected");
-      e8.call("switch-to-buffer", e8.markerBuffer(task!) as string);
-      const pos = e8.markerPosition(task!) ?? 0;
-      if (pos < e8.pointMin() || pos > e8.pointMax()) e8.widen();
-      e8.gotoChar(pos);
-      const all = headings();
-      const i = headingIndex(all, lineAt());
-      if (i !== undefined) {
-        showEntry(all, i);
-        e8.gotoChar(all[i].start);
-      }
-      return;
+      target = selectTask("Select task to go to: ");
+      if (target === undefined) e8.userError("No task selected");
+    } else if (clock) target = clock.line;
+    else if (truthy(e8.variable("org-clock-goto-may-find-recent-task"))) {
+      target = history[0];
+      recent = true;
     }
-    // The clock's line, or the task clocked last, as org-clock-goto takes org-clock-marker or the history's first.
-    const recent = clock === undefined;
-    const mayFindRecent = truthy(e8.variable("org-clock-goto-may-find-recent-task") ?? true);
-    const target = clock?.line ?? (mayFindRecent ? history[0] : undefined);
     const buffer = target === undefined ? undefined : e8.markerBuffer(target);
     if (target === undefined || buffer === undefined) e8.userError("No active or recent clock task");
     e8.call("switch-to-buffer", buffer);
@@ -680,13 +676,22 @@ e8.defineCommand({
 });
 
 // Marking the clocked entry done stops its clock, as org-clock-out-if-current does.
+// The clock's line must be in this entry, after point and before the next heading, as Org looks for org-clock-marker.
 e8.addHook("org-after-todo-state-change-hook", () => {
-  if (!clock || e8.variable("org-clock-out-when-done") !== true) return;
+  const when = e8.variable("org-clock-out-when-done");
+  if (!clock || !truthy(when ?? null)) return;
   const all = headings();
   const i = headingIndex(all, lineAt());
-  if (i === undefined || e8.markerBuffer(clock.heading) !== e8.bufferName() || e8.markerPosition(clock.heading) !== all[i].start) return;
+  if (i === undefined) return;
+  const state = all[i].todo;
+  if (!(when === true ? isDone(state) : Array.isArray(when) && state !== undefined && when.includes(state))) return;
+  const base = (b: string | undefined) => (b === undefined ? undefined : (e8.bufferBaseBuffer(b)?.name ?? b));
+  if (base(e8.markerBuffer(clock.line) as string | undefined) !== base(e8.bufferName())) return;
+  const pos = e8.markerPosition(clock.line) ?? -1;
+  const entryEnd = e8.saveRestriction(() => (e8.widen(), headings().find((x) => x.start > all[i].start)?.start ?? e8.pointMax()));
+  if (!(e8.point() < pos && entryEnd > pos)) return;
   // With no note for the clock, as org-clock-out-if-current binds org-log-note-clock-out.
-  if (isDone(all[i].todo)) e8.letBind({ "org-log-note-clock-out": false }, () => clockOut(true));
+  e8.letBind({ "org-log-note-clock-out": false }, () => clockOut(true));
 });
 
 // Before exiting, a running clock is offered to be stopped and its file saved, as org-clock-kill-emacs-query.

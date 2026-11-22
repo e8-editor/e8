@@ -68,8 +68,8 @@
   },
   {
     "name": "sort-clock-top-level",
-    "text": "* C\n* B\n* A\n",
-    "keys": "C-c C-n C-c C-x C-i C-c ^ C-c C-x C-o",
+    "text": "x\n* C\n* B\n* A\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
     "point": 0,
     "modes": [
       "org-mode"
@@ -117,6 +117,495 @@
     "today": "2026-11-21",
     "answers": [
       "k"
+    ]
+  },
+  {
+    "name": "lv-unchanged",
+    "text": "* P\n** A\n** B\n# Local Variables:\n# foo: 1\n# End:\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "lv-unchanged-elsewhere",
+    "text": "* P\n** A\n** B\n* Q\n# Local Variables:\n# foo: 1\n# End:\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "no-lv-unchanged",
+    "text": "* P\n** A\n** B\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "block-fold-unchanged",
+    "text": "* P\n** A\n#+begin_src\nx\n#+end_src\n** B\n",
+    "keys": "TAB M-< C-c ^",
+    "point": 9,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "block-fold-changed",
+    "text": "* P\n** B\n#+begin_src\nx\n#+end_src\n** A\n",
+    "keys": "TAB M-< C-c ^",
+    "point": 9,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "region-folded-unchanged",
+    "text": "* A\n** a1\n* B\n** b1\n",
+    "keys": "C-u TAB C-SPC M-> C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "region-folded-changed",
+    "text": "* B\n** b1\n* A\n** a1\n",
+    "keys": "C-u TAB C-SPC M-> C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "goto-folded",
+    "text": "* P\n** A\n** B\n",
+    "keys": "C-c C-n C-c C-x C-i C-u TAB M-< C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": []
+  },
+  {
+    "name": "goto-recent-folded",
+    "text": "* P\n** A\n** B\n",
+    "keys": "C-c C-n C-c C-x C-i C-c C-x C-o C-u TAB M-< C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [],
+    "message": true
+  },
+  {
+    "name": "goto-select-folded",
+    "text": "* P\n** A\n** B\n",
+    "keys": "C-c C-n C-c C-x C-i C-c C-x C-o C-u TAB M-< C-u C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "lv-regex-corrupt",
+    "text": "x\n* Z\n* Local Variables: x\n* End: y\n* A\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "undo-sort",
+    "text": "* P\n** B\n** A\n",
+    "keys": "C-c ^ C-/",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "undo-unchanged-sort",
+    "text": "* P\n** A\n** B\n",
+    "keys": "C-c ^ C-/",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "astral-clock",
+    "text": "* P\n** 😀 C\n** 😀 B\ntext\n** A\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "clock-in-parent",
+    "text": "* P\n** B\n** A\n",
+    "keys": "C-c C-x C-i C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "lv-clock",
+    "text": "* P\n** B\n** A\n# Local Variables:\n# End:\n",
+    "keys": "C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "top-level-clock",
+    "text": "x\n* C\n* B\n* A\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "goto-after-sort-recent",
+    "text": "* P\n** C\n** B\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i C-c C-x C-o M-< C-c ^ M-> C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "region-folded-unchanged2",
+    "text": "* A\n** a1\n* B\n** b1\n",
+    "keys": "TAB C-c C-f TAB M-< C-SPC M-> C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "region-folded-changed2",
+    "text": "* B\n** b1\n* A\n** a1\n",
+    "keys": "TAB C-c C-f TAB M-< C-SPC M-> C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "children-folded-grandchild",
+    "text": "* P\n** A\n*** a1\n** B\n",
+    "keys": "C-c C-n TAB M-< C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "done-after-sort",
+    "text": "* P\n** C\n** TODO B\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ M-< C-n C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "parent-done-after-sort",
+    "text": "* TODO P\n** C\n** B\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ M-< C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "clock-in-parent-after-sort",
+    "text": "* P\n** C\n** B\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ M-< C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "clock-in-same-after-sort",
+    "text": "* P\n** C\n** B\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ M-< C-n C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "undo-sort-clock",
+    "text": "* P\n** C\n** B\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ C-/ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "undo-sort-goto-recent",
+    "text": "* P\n** C\n** B\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i C-c C-x C-o M-< C-c ^ C-/ M-> C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "goto-recent-disabled",
+    "text": "* P\n** A\n",
+    "keys": "C-c C-n C-c C-x C-i C-c C-x C-o M-< C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [],
+    "message": true,
+    "vars": {
+      "org-clock-goto-may-find-recent-task": false
+    }
+  },
+  {
+    "name": "indirect-clock-sort-in-indirect",
+    "text": "* P\n** C\n** B\n",
+    "keys": "C-c C-x b C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "indirect-clock-sort-in-base",
+    "text": "* P\n** C\n** B\n",
+    "keys": "C-c C-x b C-c C-n C-c C-n C-c C-x C-i C-x o M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "base-clock-sort-in-indirect",
+    "text": "* P\n** C\n** B\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c C-x b C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "lv-lowercase",
+    "text": "* P\n** B\n** A\n# local variables:\n# foo: 1\n# end:\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "lv-trailing-text",
+    "text": "* P\n** B\n** A\n# Local Variables:\n# End:\ntrailing\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "lv-no-hash",
+    "text": "* P\n** B\n** A\n;; Local Variables:\n;; End:\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "lv-heading-end",
+    "text": "* P\n** B\nLocal Variables: is a heading word\n** A\nThe End: here\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "lv-blank-after",
+    "text": "* P\n** B\n** A\n# Local Variables:\n# End:\n\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "lv-blank-after-top",
+    "text": "x\n* B\n* A\n# Local Variables:\n# End:\n\n",
+    "keys": "C-c ^",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
     ]
   }
 ]
