@@ -610,6 +610,12 @@ const API: &str = r##"
     category?: string;
     /** Complete one of the kinds commands' parameters take instead of `collection`, such as "buffer". */
     kind?: string;
+    /**
+     * An Emacs regexp separating several answers, as crm-separator does for
+     * completing-read-multiple: completion works on the answer at point,
+     * and with requireMatch each must be one of the completions.
+     */
+    separator?: string;
   }
   /** Read one of `collection` in the minibuffer, with completion, as Emacs's completing-read. */
   function completingRead(prompt: string, collection: CompletionTable, options?: CompletingReadOptions): string;

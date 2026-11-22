@@ -159,6 +159,7 @@ const PACKAGES: &[(&str, &str)] = &[
     ("packages/mouse.ts", include_str!("../../../packages/mouse.ts")),
     ("packages/isearch.ts", include_str!("../../../packages/isearch.ts")),
     ("packages/minibuffer.ts", include_str!("../../../packages/minibuffer.ts")),
+    ("packages/crm.ts", include_str!("../../../packages/crm.ts")),
     ("packages/icomplete.ts", include_str!("../../../packages/icomplete.ts")),
     ("packages/recentf.ts", include_str!("../../../packages/recentf.ts")),
     ("packages/savehist.ts", include_str!("../../../packages/savehist.ts")),

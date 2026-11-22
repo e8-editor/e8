@@ -1066,6 +1066,7 @@ natives! {
         reading.default = options.string("default");
         reading.history = options.string("history");
         reading.dir = options.string("dir");
+        reading.separator = options.string("separator");
         waiting(|| ed.read_from_minibuffer(reading))
     }
 

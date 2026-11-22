@@ -118,6 +118,7 @@ import { defineGuide } from "help-guide";
 import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand, refileReverseCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
+import { completingReadMultiple } from "crm";
 import { allMatches, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
 import { isearchNoUpperCaseP } from "isearch";
 export { PLANNING } from "org-element";
@@ -5242,6 +5243,17 @@ function bufferTags(): TagEntry[] {
   return [...seen].reverse().map((t): TagEntry => [t, undefined]);
 }
 
+/** The tags of every agenda file, each once, as org-global-tags-completion-table: their headings' and FILETAGS', and their tag lists'. */
+function globalTagsCompletionTable(): TagEntry[] {
+  const seen = new Set<string>();
+  for (const file of agendaFiles()) {
+    e8.withCurrentBuffer(e8.findFileNoselect(file), () => {
+      for (const [t] of [...bufferTags(), ...currentTagAlist()]) if (!isTagKeyword(t)) seen.add(t);
+    });
+  }
+  return [...seen].map((t): TagEntry => [t, undefined]);
+}
+
 /** The tags FILETAGS lines give the whole file. */
 function fileTags(): string[] {
   const out: string[] = [];
@@ -5610,8 +5622,11 @@ function setTagsHere(fast: e8.Value | undefined): void {
   const i = headingIndex(all, lineAt());
   if (i === undefined) e8.userError("Setting file tags is not supported yet");
   const h = all[i!];
-  const localTable = currentTagAlist();
-  const table = localTable.length > 0 ? localTable : bufferTags();
+  const localTable0 = currentTagAlist();
+  const localTable = localTable0.length > 0 ? localTable0 : bufferTags();
+  // The agenda files' tags after this buffer's, with org-complete-tags-always-offer-all-agenda-tags, as Org adds them.
+  const agenda = truthy(e8.variable("org-complete-tags-always-offer-all-agenda-tags")) ? globalTagsCompletionTable() : [];
+  const table = [...localTable, ...agenda.filter(([t]) => !localTable.some(([u]) => u === t))];
   // As org-get-tags: with inheritance, the file's and the headings' above, then the heading's own,
   // each tag once where it comes last; those of the heading are its current ones.
   let current = h.tags;
@@ -5631,12 +5646,11 @@ function setTagsHere(fast: e8.Value | undefined): void {
       return fastTagSelection(current, inherited, table, todo);
     });
   } else {
-    const answer = e8.completingRead(
-      "Tags: ",
-      table.map(([t]) => t).filter((t) => !isTagKeyword(t)),
-      { initial: makeTagString(current), history: "org-tags-history" },
+    // Each tag completed after a colon, as Org's completing-read-multiple with crm-separator bound so.
+    const answer = e8.letBind({ "crm-separator": "[ \t]*:[ \t]*" }, () =>
+      completingReadMultiple("Tags: ", table.map(([t]) => t).filter((t) => !isTagKeyword(t)), { initial: makeTagString(current), history: "org-tags-history" }),
     );
-    tags = answer.split(/[ \t]*:[ \t]*/).filter((t) => t !== "").join(":");
+    tags = answer.join(":");
   }
   // Characters a tag cannot have part tags, as org-set-tags-command's.
   const cleaned = (tags ?? "").replace(/[^\p{L}\p{N}_@#%]+/gu, ":");

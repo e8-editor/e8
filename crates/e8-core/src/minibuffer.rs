@@ -43,6 +43,10 @@ pub struct Reading {
     /// called as the prompt opens and after each command, as Emacs's
     /// completion-table-dynamic makes a table from one.
     pub collection_fn: Option<crate::variables::Function>,
+    /// An Emacs regexp separating the answers of a prompt that reads several,
+    /// as `crm-separator` does for `completing-read-multiple`: completion
+    /// works on the one at point, and each must match when one must.
+    pub separator: Option<String>,
 }
 
 impl Reading {
@@ -58,6 +62,7 @@ impl Reading {
             default: None,
             history: None,
             dir: None,
+            separator: None,
         }
     }
 }
@@ -109,6 +114,7 @@ impl Prompt {
             default: None,
             initial: String::new(),
             collection_fn: None,
+            separator: None,
             answer: None,
             sorted: None,
             serial: 0,
@@ -310,6 +316,7 @@ impl Editor {
         prompt.require_match |= reading.require_match;
         prompt.collection = reading.collection.or_else(|| reading.collection_fn.as_ref().map(|_| Vec::new()));
         prompt.collection_fn = reading.collection_fn;
+        prompt.separator = reading.separator;
         prompt.category = reading.category;
         prompt.default = reading.default;
         let answer = crate::editor::AnswerSlot::default();
@@ -406,6 +413,20 @@ impl Editor {
     /// what follows it, such as the rest of a file name after the next
     /// slash; and the names the part could complete to.
     fn completion_table(&self, prompt: &Prompt, input: &str, point: usize) -> Field {
+        // With a separator, the answer at point, between the separators
+        // around it, as crm--current-element finds it.
+        if let (Some(separator), Some(collection)) = (prompt.separator.as_ref(), prompt.collection.as_ref()) {
+            let (start, end) = self.separated_element(separator, input, point);
+            let byte = |n: usize| input.char_indices().nth(n).map_or(input.len(), |(i, _)| i);
+            let (start, at, end) = (byte(start), byte(point.max(start).min(end)), byte(end));
+            return Field {
+                base: input[..start].to_string(),
+                before: input[start..at].to_string(),
+                after: input[at..end].to_string(),
+                suffix: input[end..].to_string(),
+                names: collection.clone(),
+            };
+        }
         let at = input.char_indices().nth(point).map_or(input.len(), |(i, _)| i);
         let (before, after) = input.split_at(at);
         let names = match (prompt.collection.as_ref(), prompt.kind) {
@@ -436,6 +457,50 @@ impl Editor {
             (None, _) => Vec::new(),
         };
         Field { base: String::new(), before: before.to_string(), after: after.to_string(), suffix: String::new(), names }
+    }
+
+    /// Where the answer at char `point` starts and ends among several
+    /// separated by the Emacs regexp `separator`: after the last separator
+    /// ending at or before point, and before the first starting at or after
+    /// it, as crm--current-element searches back and forward.
+    fn separated_element(&self, separator: &str, input: &str, point: usize) -> (usize, usize) {
+        let (mut start, mut end) = (0, input.chars().count());
+        let mut from = 0;
+        while let Ok(Some(m)) = self.string_match(separator, input, from, false) {
+            if m.end <= point {
+                start = m.end;
+            } else if m.start >= point {
+                end = m.start;
+                break;
+            }
+            // An empty match moves on a character, as a search would.
+            from = if m.end > m.start { m.end } else { m.end + 1 };
+            if from > input.chars().count() {
+                break;
+            }
+        }
+        (start, end)
+    }
+
+    /// The answers in `input`, split by the Emacs regexp `separator`, as split-string does.
+    fn separated_elements(&self, separator: &str, input: &str) -> Vec<String> {
+        let chars: Vec<char> = input.chars().collect();
+        let mut parts = Vec::new();
+        let (mut last, mut from) = (0, 0);
+        while let Ok(Some(m)) = self.string_match(separator, input, from, false) {
+            if m.end == m.start {
+                from = m.end + 1;
+                if from > chars.len() {
+                    break;
+                }
+                continue;
+            }
+            parts.push(chars[last..m.start].iter().collect());
+            last = m.end;
+            from = m.end;
+        }
+        parts.push(chars[last..].iter().collect());
+        parts
     }
 
     /// What the open prompt's input completes against with point at
@@ -519,6 +584,13 @@ impl Editor {
         let Some(prompt) = &self.prompt else { return false };
         if prompt.kind == ParamKind::File && prompt.collection.is_none() {
             return fs::path_exists(expand_file_name(input));
+        }
+        // Each answer of several, as crm-complete-and-exit checks them.
+        if let (Some(separator), Some(collection)) = (prompt.separator.as_ref(), prompt.collection.as_ref()) {
+            let fold = self.completion_ignore_case();
+            return self.separated_elements(separator, input).iter().filter(|e| !e.is_empty()).all(|e| {
+                collection.iter().any(|n| if fold { n.to_lowercase() == e.to_lowercase() } else { n == e })
+            });
         }
         let field = self.completion_table(prompt, input, input.chars().count());
         let fold = self.completion_ignore_case();
