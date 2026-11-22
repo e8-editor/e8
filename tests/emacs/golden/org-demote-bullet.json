@@ -1,0 +1,496 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "numbered-to-dash",
+      "input": {
+        "text": "1. a\n2. b\n",
+        "point": 8,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "1.": "-"
+          }
+        }
+      },
+      "text": "1. a\n   - b\n",
+      "visible": "1. a\n   - b\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "plus-to-dash",
+      "input": {
+        "text": "+ Movies\n+ Silence\n+ Vinny\n",
+        "point": 12,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "+": "-",
+            "-": "+"
+          }
+        }
+      },
+      "text": "+ Movies\n  - Silence\n+ Vinny\n",
+      "visible": "+ Movies\n  - Silence\n+ Vinny\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "subtree-demote",
+      "input": {
+        "text": "- a\n- b\n  - c\n- d\n",
+        "point": 6,
+        "keys": "M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "-": "+",
+            "+": "*"
+          }
+        }
+      },
+      "text": "- a\n  + b\n    + c\n- d\n",
+      "visible": "- a\n  + b\n    + c\n- d\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-demote",
+      "input": {
+        "text": "- a\n- b\n- c\n- d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "-": "+"
+          }
+        }
+      },
+      "text": "- a\n  + b\n  + c\n- d\n",
+      "visible": "- a\n  + b\n  + c\n- d\n",
+      "point": 16,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "no-match-keeps",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "+": "*"
+          }
+        }
+      },
+      "text": "- a\n  - b\n",
+      "visible": "- a\n  - b\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "paren-numbers",
+      "input": {
+        "text": "1) a\n2) b\n3) c\n",
+        "point": 8,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "1)": "+"
+          }
+        }
+      },
+      "text": "1) a\n   + b\n2) c\n",
+      "visible": "1) a\n   + b\n2) c\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "to-numbered",
+      "input": {
+        "text": "- a\n- b\n- c\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "-": "1."
+          }
+        }
+      },
+      "text": "- a\n  1. b\n- c\n",
+      "visible": "- a\n  1. b\n- c\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "two-spaces",
+      "input": {
+        "text": "1. a\n2. b\n",
+        "point": 8,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "1.": "-"
+          },
+          "org-list-two-spaces-after-bullet-regexp": "-"
+        }
+      },
+      "text": "1. a\n   -  b\n",
+      "visible": "1. a\n   -  b\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "first-item-error",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 2,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "-": "+"
+          }
+        }
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "At first item: use S-M-<left/right> to move the whole list"
+    },
+    {
+      "name": "tab-empty-item",
+      "input": {
+        "text": "- a\n- \n",
+        "point": 6,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "-": "+"
+          }
+        }
+      },
+      "text": "- a\n  + \n",
+      "visible": "- a\n  + \n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "star-bullet",
+      "input": {
+        "text": "- a\n  * b\n  * c\n",
+        "point": 14,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "*": "-"
+          }
+        }
+      },
+      "text": "- a\n  * b\n    - c\n",
+      "visible": "- a\n  * b\n    - c\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "outdent-keeps",
+      "input": {
+        "text": "- a\n  + b\n",
+        "point": 8,
+        "keys": "M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "+": "*",
+            "-": "+"
+          }
+        }
+      },
+      "text": "- a\n- b\n",
+      "visible": "- a\n- b\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-ends-past-list",
+      "input": {
+        "text": "- a\n- b\n- c\n\nSome text here.\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-n C-e M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "+": "-",
+            "-": "+"
+          }
+        }
+      },
+      "text": "- a\n  + b\n  + c\n\nSome text here.\n",
+      "visible": "- a\n  + b\n  + c\n\nSome text here.\n",
+      "point": 32,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-ends-past-list-tree",
+      "input": {
+        "text": "- a\n- b\n- c\n\nSome text here.\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-n C-e M-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "+": "-",
+            "-": "+"
+          }
+        }
+      },
+      "text": "- a\n  + b\n  + c\n\nSome text here.\n",
+      "visible": "- a\n  + b\n  + c\n\nSome text here.\n",
+      "point": 32,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-outdent-past-list",
+      "input": {
+        "text": "- a\n  - b\n  - c\n\nSome text here.\n",
+        "point": 8,
+        "keys": "C-SPC C-n C-n C-n C-e M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n  - b\n- c\n\nSome text here.\n",
+      "visible": "- a\n  - b\n- c\n\nSome text here.\n",
+      "point": 30,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-outdent-past-list-tree",
+      "input": {
+        "text": "- a\n  - b\n  - c\n\nSome text here.\n",
+        "point": 8,
+        "keys": "C-SPC C-n C-n C-n C-e M-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n  - b\n- c\n\nSome text here.\n",
+      "visible": "- a\n  - b\n- c\n\nSome text here.\n",
+      "point": 30,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-to-end",
+      "input": {
+        "text": "+ a\n+ b\n+ c\n",
+        "point": 4,
+        "keys": "C-SPC M-> M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "+": "-"
+          }
+        }
+      },
+      "text": "+ a\n  - b\n  - c\n",
+      "visible": "+ a\n  - b\n  - c\n",
+      "point": 16,
+      "mark": 8,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "not-a-bullet",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "-": "x"
+          }
+        }
+      },
+      "text": "- a\n  1 b\n",
+      "visible": "- a\n  1 b\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "empty-bullet",
+      "input": {
+        "text": "- a\n- b\n",
+        "point": 6,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "org-list-demote-modify-bullet": {
+            "-": ""
+          }
+        }
+      },
+      "text": "- a\n  b\n",
+      "visible": "- a\n  b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

@@ -14429,6 +14429,12 @@ declare global {
        */
       "org-list-checkbox-radio-mode-map": Value;
       /**
+       * The bullet an item takes when it is demoted, by the bullet it has: a list of pairs, as [["+", "-"], ["-", "+"]]. Numbered bullets are named "1." and "1)", letters "A.", "a)" and so on.
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-list-demote-modify-bullet": Value;
+      /**
        * A regexp matching the bullets that take two spaces after them, rather than one, as "[0-9]" for numbered items. nil for none.
        *
        * Defined in packages/org-list.ts.

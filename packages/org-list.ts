@@ -564,6 +564,40 @@ export function sameStruct(a: Struct, b: Struct): boolean {
 }
 
 e8.defineVariable({
+  name: "org-list-demote-modify-bullet",
+  doc:
+    "The bullet an item takes when it is demoted, by the bullet it has: a list of pairs, as " +
+    "[[\"+\", \"-\"], [\"-\", \"+\"]]. Numbered bullets are named \"1.\" and \"1)\", letters \"A.\", \"a)\" and so on.",
+  value: [],
+});
+
+/** The bullet a demoted item takes, as org-list-demote-modify-bullet says for the one it has, if it names one. */
+function demotedBullet(bullet: string): string | undefined {
+  const pairs = e8.variable("org-list-demote-modify-bullet");
+  if (pairs === null || pairs === undefined || pairs === false) return undefined;
+  // Not a list: an error, as assoc gives one.
+  if (!Array.isArray(pairs)) e8.signal("wrong-type-argument", `Wrong type argument: listp, ${typeof pairs === "string" ? JSON.stringify(pairs) : String(pairs)}`, ["listp", pairs]);
+  // Its kind, as Org names numbered and lettered bullets.
+  const kind = /[A-Z]\./.test(bullet)
+    ? "A."
+    : /[A-Z]\)/.test(bullet)
+      ? "A)"
+      : /[a-z]\./.test(bullet)
+        ? "a."
+        : /[a-z]\)/.test(bullet)
+          ? "a)"
+          : /[0-9]\./.test(bullet)
+            ? "1."
+            : /[0-9]\)/.test(bullet)
+              ? "1)"
+              : bullet.trim();
+  for (const pair of pairs) {
+    if (Array.isArray(pair) && pair[0] === kind && typeof pair[1] === "string") return pair[1];
+  }
+  return undefined;
+}
+
+e8.defineVariable({
   name: "org-list-two-spaces-after-bullet-regexp",
   doc: "A regexp matching the bullets that take two spaces after them, rather than one, as \"[0-9]\" for numbered items. nil for none.",
   value: null,
@@ -731,7 +765,11 @@ export function applyStruct(struct: Struct, old: Struct): void {
       edInsert(m.bulletAt + charCount(newBul), keep);
     }
     m = itemParts(line);
-    if (!m) return;
+    // A bullet that no longer makes an item, as one a user's option gives, is still indented, as Org's modify-item does.
+    if (!m) {
+      reindent();
+      return;
+    }
     if (m.checkbox === e.checkbox) {
       // The checkbox is right.
     } else if (m.checkbox !== undefined && e.checkbox !== undefined && m.boxAt !== undefined) {
@@ -1023,6 +1061,9 @@ function structIndent(start: number, end: number, struct: Struct, parents: Alist
     else if (item >= end) out.set(item, parent !== undefined && acc.has(parent) ? acc.get(parent) : parent);
     else {
       const prev = prevItem(item, prevs);
+      // Its bullet changed first, as org-list-demote-modify-bullet says.
+      const demoted = demotedBullet(getItem(struct, item).bullet);
+      if (demoted !== undefined) getItem(struct, item).bullet = bulletString(demoted);
       if (prev === undefined && (parent === undefined || parent < start)) e8.userError("Cannot indent the first item of a list");
       let now: number | undefined;
       if (prev === undefined) now = parent;
@@ -1032,7 +1073,6 @@ function structIndent(start: number, end: number, struct: Struct, parents: Alist
       out.set(item, now);
     }
   }
-  void struct;
   return out;
 }
 
