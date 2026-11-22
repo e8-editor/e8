@@ -7,6 +7,7 @@
 // block's own #+begin_src line and #+header: lines, the nearest winning.
 
 import { type Block, blockAtPoint, collectBlocks, commentIn, commentLinks, expandNowebReferences, nowebP, nowebWrap, pairs } from "ob-core";
+import { fileRelativeName } from "files";
 import { headingIndex, headings } from "org";
 import { truthy } from "subr";
 
@@ -54,8 +55,16 @@ function tangledFile(block: Block, orgFile: string): string | undefined {
   return e8.expandFileName(tangle, dir);
 }
 
+/** Text without the indentation its lines share, as org-remove-indentation. */
+function removeIndentation(text: string): string {
+  const lines = text.split("\n");
+  const indents = lines.filter((l) => /\S/.test(l)).map((l) => /^[ \t]*/.exec(l)![0].length);
+  const n = indents.length === 0 ? 0 : Math.min(...indents);
+  return n === 0 ? text : lines.map((l) => l.slice(Math.min(n, /^[ \t]*/.exec(l)![0].length))).join("\n");
+}
+
 /** A block's name, or its heading's title and its place among the heading's blocks, as org-babel-tangle-single-block names it. */
-function sourceName(block: Block): string {
+function sourceName(block: Block, single = false): string {
   if (block.name !== undefined) return block.name;
   const all = headings();
   const i = headingIndex(all, block.line);
@@ -63,7 +72,8 @@ function sourceName(block: Block): string {
   for (let l = i === undefined ? 0 : all[i].line + 1; l <= block.line; l++) {
     if (/^[ \t]*#\+begin_src[ \t]/i.test(e8.lineText(l))) counter++;
   }
-  return `${i === undefined ? "No heading" : all[i].title}:${counter}`;
+  // A block tangled on its own is the first, as org-babel-tangle passes its counter.
+  return `${i === undefined ? "No heading" : all[i].title}:${single ? 1 : counter}`;
 }
 
 /** The Org text before a block, from its heading or the block before, for :comments org, as org-babel-tangle-single-block takes it. */
@@ -72,15 +82,24 @@ function orgCommentText(block: Block): string {
   const i = headingIndex(all, block.line);
   // After the heading's stars, as (re-search-forward org-outline-regexp) leaves point.
   const afterStars = i === undefined ? e8.pointMin() : all[i].start + all[i].level + 1;
+  // The end of the last block before it that has a language, as Org's src block regexp needs one.
   let prevEnd = e8.pointMin();
   for (let l = block.line - 1; l >= 0; l--) {
-    if (/^[ \t]*#\+end_src/i.test(e8.lineText(l))) {
-      prevEnd = e8.lineEnd(l);
+    if (!/^[ \t]*#\+begin_src[ \t]+\S/i.test(e8.lineText(l))) continue;
+    let end = l + 1;
+    while (end < block.line && !/^[ \t]*#\+end_src/i.test(e8.lineText(end))) end++;
+    if (end < block.line) {
+      prevEnd = e8.lineEnd(end);
       break;
     }
   }
   const text = e8.bufferSubstringNoProperties(Math.max(afterStars, prevEnd), e8.lineStart(block.line));
-  // As org-remove-indentation, org-babel-process-comment-text's default.
+  // As org-babel-process-comment-text says: org-remove-indentation by default.
+  const process = e8.variable("org-babel-process-comment-text");
+  const name = typeof process === "symbol" ? e8.symbolName(process) : process;
+  if (typeof process === "function" || (typeof name === "string" && name !== "org-remove-indentation" && e8.fboundp(name))) {
+    return String(e8.funcall(typeof process === "function" ? process : (name as string), text) ?? "");
+  }
   const lines = text.split("\n");
   const indents = lines.filter((l) => /\S/.test(l)).map((l) => /^[ \t]*/.exec(l)![0].length);
   const n = indents.length === 0 ? 0 : Math.min(...indents);
@@ -93,7 +112,7 @@ function orgCommentText(block: Block): string {
  * both, a link to it before and its name after, each commented out in its
  * language; its code, noweb references expanded as :noweb says.
  */
-function specToString(block: Block): string {
+function specToString(block: Block, single = false): string {
   const comments = block.params.get(":comments") ?? "";
   const link = ["both", "link", "yes", "noweb"].includes(comments);
   const insertComment = (text: string): string => {
@@ -104,15 +123,21 @@ function specToString(block: Block): string {
   };
   let body = block.body;
   if (nowebP(block.params, ":tangle")) {
-    body = (block.params.get(":noweb") ?? "").split(/[ \t]+/).includes("strip-tangle") ? body.replace(new RegExp(nowebWrap(), "g"), "") : expandNowebReferences(block);
+    // strip-tangle when it is the whole value, as Org compares it.
+    body = (block.params.get(":noweb") ?? "") === "strip-tangle" ? body.replace(new RegExp(nowebWrap(), "g"), "") : expandNowebReferences(block);
   }
-  // Trimmed, as org-trim: leading blank lines only with org-src-preserve-indentation.
-  body = truthy(e8.variable("org-src-preserve-indentation") ?? null) || (block.params.get(":preserve-indentation") ?? "") !== ""
+  // Trimmed, as org-trim: with its indentation kept, as -i or
+  // org-src-preserve-indentation says, leading blank lines only; else
+  // without the indentation its lines share.
+  body = block.preserveIndent
     ? body.replace(/^([ \t]*\n)+/, "").replace(/[ \t\n\r]+$/, "")
-    : body.replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "");
+    : removeIndentation(body).replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "");
   let out = "";
   if (comments === "both" || comments === "org") out += insertComment(orgCommentText(block));
-  const [beg, end] = link ? commentLinks(block, sourceName(block)) : ["", ""];
+  // Its start line after the #+begin_src line's, and the Org file relative, as org-babel-tangle-single-block gives them.
+  const orgFile = e8.bufferFileName() ?? "";
+  const file = truthy(e8.variable("org-babel-tangle-use-relative-file-links") ?? true) ? fileRelativeName(orgFile) : orgFile;
+  const [beg, end] = link ? commentLinks(block, { sourceName: sourceName(block, single), startLine: block.line + 2, file }) : ["", ""];
   if (link) out += insertComment(beg);
   out += `${body}\n`;
   if (link) out += insertComment(end);
@@ -132,14 +157,12 @@ function fileMode(value: string): number | undefined {
  * if it changed. With `targetFile`, blocks that name no file go there, as
  * org-babel-tangle's TARGET-FILE. The files written.
  */
-export function tangle(only?: (block: Block, file: string) => boolean, targetFile?: string): string[] {
+export function tangle(only?: (block: Block, file: string) => boolean, targetFile?: string, single = false): string[] {
   e8.runHooks("org-babel-pre-tangle-hook");
   const orgFile = e8.bufferFileName();
   if (!orgFile) e8.userError("Buffer is not visiting a file");
-  const blocks = e8.saveRestriction(() => {
-    e8.widen();
-    return collectBlocks(targetFile);
-  });
+  // The blocks the narrowing shows, as org-babel-map-src-blocks goes through them.
+  const blocks = collectBlocks(targetFile);
   const byFile = new Map<string, Block[]>();
   for (const block of blocks) {
     const file = tangledFile(block, orgFile);
@@ -169,7 +192,7 @@ export function tangle(only?: (block: Block, file: string) => boolean, targetFil
         text += `${shebang}\n`;
         shebanged = true;
       }
-      text += specToString(block);
+      text += specToString(block, single);
       count++;
     }
     const dir = e8.fileNameDirectory(file);
@@ -211,7 +234,7 @@ const tangleCommand = e8.defineCommand({
       });
       const targetFile = target && tangledFile(target, orgFile);
       if (prefix === 16 && targetFile === undefined) e8.userError("Point is not in a source code block");
-      tangle((block, file) => (prefix === 4 ? block.line === head : file === targetFile));
+      tangle((block, file) => (prefix === 4 ? block.line === head : file === targetFile), undefined, prefix === 4);
     } else tangle();
   },
 });
