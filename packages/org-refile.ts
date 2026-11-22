@@ -252,7 +252,8 @@ export function olpathTable(table: string[]): (input: string) => string[] {
 
 /** Whether a target's heading is still the one it was, as org-refile-check-position. */
 function checkPosition(t: Target): void {
-  if (typeof t.start === "number" && t.file === undefined && t.buffer === undefined) e8.userError("Please indicate a target file in the refile path");
+  // A target in a buffer with no file, unless cached as a marker, as Org's needs one.
+  if (typeof t.start === "number" && t.file === undefined) e8.userError("Please indicate a target file in the refile path");
   if (t.title === undefined) return;
   const ok = e8.withCurrentBuffer(typeof t.start === "number" ? t.buffer : (e8.markerBuffer(t.start) ?? t.buffer), () =>
     e8.saveRestriction(() => {

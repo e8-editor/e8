@@ -1630,6 +1630,47 @@ fn refile_goes_back_to_the_last_refile_and_files_to_the_clock() {
     assert_eq!(ed.echo().map(str::to_string), Some(format!("Refile to \"Clocked\" in file {file}: done")));
 }
 
+/// C-2 C-c C-w names the clocked entry by org-clock-heading, which
+/// org-clock-heading-function gives.
+#[test]
+fn refile_to_the_clock_names_it_by_the_clock_heading() {
+    let dir = tempfile::tempdir_in(env!("CARGO_TARGET_TMPDIR")).unwrap();
+    std::fs::write(dir.path().join("main.org"), "* B
+* COMMENT Clocked [[x][link]]
+").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    s.eval_expression(&mut ed, r#"(e8.setVariable("e8--today", "2026-11-04"), 1)"#).unwrap();
+    ed.call("find-file", vec![Arg::Str(dir.path().join("main.org").display().to_string())]).unwrap();
+    ed.press("C-n C-c C-x C-i M-< C-2 C-c C-w").unwrap();
+    let file = dir.path().join("main.org").display().to_string();
+    // Without COMMENT, its link as the description, as org-clock--mode-line-heading has it.
+    assert_eq!(ed.echo().map(str::to_string), Some(format!("Refile to \"Clocked link\" in file {file}: done")));
+    std::fs::write(dir.path().join("other.org"), "* B\n* Clocked\n").unwrap();
+    let mut ed = Editor::new();
+    let s = Scripting::new(&mut ed).unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        r#"e8.setVariable("e8--today", "2026-11-04"); e8.defun("my-heading", () => "Custom name"); e8.setVariable("org-clock-heading-function", e8.intern("my-heading"));"#.to_string(),
+    )
+    .unwrap();
+    ed.call("find-file", vec![Arg::Str(dir.path().join("other.org").display().to_string())]).unwrap();
+    let file = dir.path().join("other.org").display().to_string();
+    ed.press("C-n C-c C-x C-i M-< C-2 C-c C-w").unwrap();
+    assert_eq!(ed.echo().map(str::to_string), Some(format!("Refile to \"Custom name\" in file {file}: done")));
+}
+
+/// A buffer with no file has no target to refile to, as Org asks for a file.
+#[test]
+fn refile_needs_a_file() {
+    let (mut ed, _s) = org("* A
+* B
+");
+    ed.press("C-c C-w B RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), Some("Please indicate a target file in the refile path".into()));
+}
+
 /// Outline paths complete a level at a time, and kept targets are checked:
 /// a heading renamed since is refused until C-0 C-c C-w clears them.
 #[test]
