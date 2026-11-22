@@ -442,17 +442,32 @@ function clockInHere(selected?: number): void {
   historyPush(e8.bufferName(), h.start);
   const title = linkDescriptions(h.title);
   const { minutes: before, extra } = clockedBefore(all, i);
-  const start = now();
-  const stamp = `[${formatTimestamp(start, true)}]`;
+  // With org-clock-in-resume, the entry's CLOCK line not closed goes on, from when it started, as org-clock-in resumes it.
+  const resume = e8.variable("org-clock-in-resume");
+  const open = truthy(resume ?? null) ? unclosedClockLine(h) : undefined;
+  if (open === undefined && resume === "auto-restart") {
+    e8.message("Cannot restart clock because task does not contain unfinished clock");
+    e8.ding();
+    return;
+  }
+  const start = open?.start ?? now();
+  const stamp = open?.stamp ?? `[${formatTimestamp(start, true)}]`;
   e8.saveExcursion(() => {
     e8.saveRestriction(() => {
       e8.widen();
-      const at = findPosition(headings(), headingIndex(headings(), h.line) as number);
-      e8.gotoChar(at);
-      e8.insert(`CLOCK: ${stamp}\n`);
+      let at: number;
+      if (open !== undefined) {
+        e8.message(`Matched ${open.stamp.slice(1, -1)}`);
+        at = e8.lineStart(open.line);
+      } else {
+        at = findPosition(headings(), headingIndex(headings(), h.line) as number);
+        e8.gotoChar(at);
+        e8.insert(`CLOCK: ${stamp}\n`);
+      }
       clock = { line: e8.makeMarker(at), heading: e8.makeMarker(h.start), title, start: millis(start), before };
     });
   });
+  hasBeenUsed = true;
   e8.setVariable("org-clock-current-task", h.title.replace(/^COMMENT[ \t]+/, ""));
   e8.setVariable("org-clock-effort", entryGet(h.line, String(e8.variable("org-effort-property") ?? "Effort")) ?? null);
   if (last) e8.deleteMarker(last);
@@ -461,6 +476,24 @@ function clockInHere(selected?: number): void {
   timer = e8.runWithTimer(60, 60, updateModeLine);
   e8.message(`Clock starts at ${stamp} - ${extra}`);
   e8.runHooks("org-clock-in-hook");
+}
+
+/**
+ * The entry's first CLOCK line not closed, as org-clock-find-position finds
+ * it with FIND-UNCLOSED: its line, its timestamp and when it started.
+ */
+function unclosedClockLine(h: Heading): { line: number; stamp: string; start: DateTime } | undefined {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const all = headings();
+    const i = headingIndex(all, h.line) as number;
+    const end = all[i + 1]?.line ?? e8.lineCount();
+    for (let l = h.line + 1; l < end; l++) {
+      const m = /^[ \t]*CLOCK: \[((\d{4})-(\d{2})-(\d{2}) *\S+\.? +([012]\d):([0-5]\d))\][ \t]*$/.exec(e8.lineText(l));
+      if (m) return { line: l, stamp: `[${m[1]}]`, start: { year: +m[2], month: +m[3], day: +m[4], hour: +m[5], minute: +m[6] } };
+    }
+    return undefined;
+  });
 }
 
 /** Stops the running clock, writing its end and duration, as org-clock-out. */
@@ -692,6 +725,119 @@ e8.addHook("org-after-todo-state-change-hook", () => {
   if (!(e8.point() < pos && entryEnd > pos)) return;
   // With no note for the clock, as org-clock-out-if-current binds org-log-note-clock-out.
   e8.letBind({ "org-log-note-clock-out": false }, () => clockOut(true));
+});
+
+// Keeping the clock and its history from one session to the next, as
+// org-clock-save and org-clock-load do, in the file Emacs writes, so
+// either reads the other's.
+
+defvar(
+  "org-clock-persist",
+  null,
+  'Whether the running clock is saved when E8 exits and resumed when it starts again: t for the clock and the history of clocked tasks, "clock" for the clock, "history" for the history. org-clock-persistence-insinuate sets up the saving and loading.',
+);
+defvar("org-clock-persist-file", e8.expandFileName(`${String(e8.variable("user-emacs-directory") ?? "~/.emacs.d/")}org-clock-save.el`), "The file the clock and its history are saved to.");
+defvar("org-clock-persist-query-save", false, "Whether to ask before saving the running clock on exit.");
+defvar("org-clock-persist-query-resume", true, "Whether to ask before resuming a saved clock.");
+defvar("org-clock-in-resume", false, "Whether clocking into an entry with a CLOCK line not closed goes on with it, from when it started.");
+
+/** Whether a clock has run this session, as org-clock-has-been-used, and whether the saved data has been read, as org-clock-loaded. */
+let hasBeenUsed = false;
+let loaded = false;
+
+/** A file name as Lisp writes it in a string, as format's %S does. */
+const lispString = (s: string): string => `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+
+/** A file and a position from Lisp's ("FILE" . POS), the position 1-based as Emacs's, given 0-based. */
+const lispPlace = (text: string): [string, number] | undefined => {
+  const m = /^\("((?:[^"\\]|\\.)*)" \. (\d+)\)$/.exec(text.trim());
+  return m ? [m[1].replace(/\\(.)/g, "$1"), Math.max(0, Number(m[2]) - 1)] : undefined;
+};
+
+/** The base buffer's file of the buffer a marker is in, if it visits one, as org-base-buffer and buffer-file-name. */
+function markerFile(m: e8.Marker | undefined): string | undefined {
+  const buffer = m === undefined ? undefined : e8.markerBuffer(m);
+  if (buffer === undefined) return undefined;
+  const base = e8.bufferBaseBuffer(buffer)?.name ?? buffer;
+  return e8.withCurrentBuffer(base, () => e8.bufferFileName());
+}
+
+/** Saves the clock and its history to org-clock-persist-file, as org-clock-save does: what org-clock-persist says. */
+function clockSave(): void {
+  const persist = e8.variable("org-clock-persist");
+  const file = String(e8.variable("org-clock-persist-file") ?? "");
+  if (!truthy(persist ?? null) || file === "" || !(loaded || hasBeenUsed || !e8.fileExists(file))) return;
+  const lines = [`;; ${e8.fileNameNondirectory(file)} - ${e8.systemName()} at ${formatTimestamp(now(), true).replace(/^/, "<")}>`];
+  const clockFile = clock ? markerFile(clock.line) : undefined;
+  if ((persist === true || persist === "clock") && clock && clockFile !== undefined) {
+    const save = !truthy(e8.variable("org-clock-persist-query-save")) || e8.yOrNP(`Save current clock (${clock.title})?`);
+    if (save) lines.push(`(setq org-clock-stored-resume-clock '(${lispString(clockFile)} . ${(e8.markerPosition(clock.line) ?? 0) + 1}))`);
+  }
+  // Stored oldest first, to make reading simpler, as Org writes them.
+  if ((persist === true || persist === "history") && history.length > 0) {
+    const places = [...history].reverse().flatMap((m) => {
+      const f = markerFile(m);
+      return f === undefined ? [] : [`(${lispString(f)} . ${(e8.markerPosition(m) ?? 0) + 1})`];
+    });
+    lines.push(`(setq org-clock-stored-history '(${places.join(" ")}))`);
+  }
+  e8.writeRegion(`${lines.join("\n")}\n`, null, e8.expandFileName(file), { quiet: true });
+}
+
+/**
+ * Reads what org-clock-save wrote, as org-clock-load does: the history,
+ * each task in a file that still exists, and the running clock, resumed
+ * in its entry after asking, with org-clock-persist-query-resume.
+ */
+function clockLoad(): void {
+  if (!truthy(e8.variable("org-clock-persist") ?? null) || loaded) return;
+  const file = e8.expandFileName(String(e8.variable("org-clock-persist-file") ?? ""));
+  if (!e8.fileReadableP(file)) {
+    e8.message(`Not restoring clock data; ${lispString(file)} not found`);
+    return;
+  }
+  e8.message("Restoring clock data");
+  loaded = true;
+  const text = e8.withCurrentBuffer(e8.getBufferCreate(" *org clock save*"), () => {
+    eraseBuffer();
+    e8.insertFileContents(file);
+    const contents = e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax());
+    e8.call("kill-buffer", " *org clock save*");
+    return contents;
+  });
+  const stored = /\(setq org-clock-stored-history '\(((?:\("(?:[^"\\]|\\.)*" \. \d+\) ?)*)\)\)/.exec(text);
+  for (const entry of stored ? (stored[1].match(/\("(?:[^"\\]|\\.)*" \. \d+\)/g) ?? []) : []) {
+    const place = lispPlace(entry);
+    if (place === undefined || !e8.fileExists(place[0])) continue;
+    const buffer = e8.findFileNoselect(place[0]);
+    e8.withCurrentBuffer(buffer, () => {
+      const all = headings();
+      const i = headingIndex(all, lineAt(Math.min(place[1], e8.bufferSize())));
+      if (i !== undefined) historyPush(buffer, all[i].start);
+    });
+  }
+  const resume = /\(setq org-clock-stored-resume-clock '(\("(?:[^"\\]|\\.)*" \. \d+\))\)/.exec(text);
+  const place = resume ? lispPlace(resume[1]) : undefined;
+  if (place === undefined || !e8.fileExists(place[0])) return;
+  e8.withCurrentBuffer(e8.findFileNoselect(place[0]), () => {
+    e8.saveExcursion(() => {
+      e8.gotoChar(Math.min(place[1], e8.bufferSize()));
+      const all = headings();
+      const i = headingIndex(all, lineAt());
+      if (i === undefined) return;
+      const heading = all[i].title;
+      if (truthy(e8.variable("org-clock-persist-query-resume")) && !e8.yOrNP(`Resume clock (${heading})?`)) return;
+      e8.letBind({ "org-clock-in-resume": "auto-restart" }, () => clockInHere());
+    });
+  });
+}
+
+e8.defun("org-clock-save", () => clockSave());
+e8.defun("org-clock-load", () => clockLoad());
+// As Org's: the saved clock read as Org mode first starts, and saved as E8 exits.
+e8.defun("org-clock-persistence-insinuate", () => {
+  e8.addHook("org-mode-hook", clockLoad);
+  e8.addHook("kill-emacs-hook", clockSave);
 });
 
 // Before exiting, a running clock is offered to be stopped and its file saved, as org-clock-kill-emacs-query.

@@ -1,0 +1,69 @@
+[
+  {
+    "name": "resume-open-clock",
+    "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+    "keys": "C-c C-x C-i C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "vars": {
+      "org-clock-in-resume": true
+    },
+    "message": true
+  },
+  {
+    "name": "resume-off-new-clock",
+    "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+    "keys": "C-c C-x C-i C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "message": true
+  },
+  {
+    "name": "resume-no-open-clock",
+    "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\n",
+    "keys": "C-c C-x C-i C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "vars": {
+      "org-clock-in-resume": true
+    },
+    "message": true
+  },
+  {
+    "name": "resume-without-drawer",
+    "text": "* Task\nCLOCK: [2026-11-21 Sat 11:30]\n",
+    "keys": "C-c C-x C-i C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "vars": {
+      "org-clock-in-resume": true
+    },
+    "message": true
+  },
+  {
+    "name": "resume-message",
+    "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+    "keys": "C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "vars": {
+      "org-clock-in-resume": true
+    },
+    "message": true
+  }
+]

@@ -1,0 +1,138 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "resume-open-clock",
+      "input": {
+        "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true,
+        "vars": {
+          "org-clock-in-resume": true
+        }
+      },
+      "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]--[2026-11-21 Sat 12:00] =>  3:00\n:END:\n",
+      "visible": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]--[2026-11-21 Sat 12:00] =>  3:00\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock stopped at [2026-11-21 Sat 12:00] after 3:00"
+    },
+    {
+      "name": "resume-off-new-clock",
+      "input": {
+        "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true
+      },
+      "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+      "visible": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock stopped at [2026-11-21 Sat 12:00] after 0:00"
+    },
+    {
+      "name": "resume-no-open-clock",
+      "input": {
+        "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true,
+        "vars": {
+          "org-clock-in-resume": true
+        }
+      },
+      "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\n",
+      "visible": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock stopped at [2026-11-21 Sat 12:00] after 0:00"
+    },
+    {
+      "name": "resume-without-drawer",
+      "input": {
+        "text": "* Task\nCLOCK: [2026-11-21 Sat 11:30]\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true,
+        "vars": {
+          "org-clock-in-resume": true
+        }
+      },
+      "text": "* Task\nCLOCK: [2026-11-21 Sat 11:30]--[2026-11-21 Sat 12:00] =>  0:30\n",
+      "visible": "* Task\nCLOCK: [2026-11-21 Sat 11:30]--[2026-11-21 Sat 12:00] =>  0:30\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock stopped at [2026-11-21 Sat 12:00] after 0:30"
+    },
+    {
+      "name": "resume-message",
+      "input": {
+        "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "message": true,
+        "vars": {
+          "org-clock-in-resume": true
+        }
+      },
+      "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+      "visible": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 09:00]\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Clock starts at [2026-11-21 Sat 09:00] - showing entire task time."
+    }
+  ]
+}
