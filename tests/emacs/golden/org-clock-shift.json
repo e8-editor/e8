@@ -617,6 +617,138 @@
       "kill_ring": [],
       "modified": true,
       "error": "Not at a timestamp"
+    },
+    {
+      "name": "range-dashes-ctrl-c-ctrl-c",
+      "input": {
+        "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+        "point": 31,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+      "visible": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a timestamp"
+    },
+    {
+      "name": "range-second-dash",
+      "input": {
+        "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+        "point": 32,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+      "visible": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "range-after-first",
+      "input": {
+        "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+        "point": 30,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+      "visible": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "range-active-dashes",
+      "input": {
+        "text": "* T\n<2026-10-28 Wed>--<2026-10-29 Thu>\n",
+        "point": 20,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n<2026-10-28 Wed>--<2026-10-29 Thu>\n",
+      "visible": "* T\n<2026-10-28 Wed>--<2026-10-29 Thu>\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "range-one-dash",
+      "input": {
+        "text": "* T\n<2026-10-28 Wed>-<2026-10-29 Thu>\n",
+        "point": 20,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n<2026-10-28 Wed>-<2026-10-29 Thu>\n",
+      "visible": "* T\n<2026-10-28 Wed>-<2026-10-29 Thu>\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "timestamps-apart",
+      "input": {
+        "text": "* T\n<2026-10-28 Wed> -- <2026-10-29 Thu>\n",
+        "point": 21,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* T\n<2026-10-28 Wed> -- <2026-10-29 Thu>\n",
+      "visible": "* T\n<2026-10-28 Wed> -- <2026-10-29 Thu>\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here"
     }
   ]
 }

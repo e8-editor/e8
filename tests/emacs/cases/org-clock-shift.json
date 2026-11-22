@@ -278,5 +278,65 @@
   "text": "* T\n:LOGBOOK:\nCLOCK: [2026-10-28 Wed 9:00]--[2026-10-28 Wed 11:30] =>  2:30\n:END:\n",
   "keys": "C-S-<up>",
   "point": 40
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "range-dashes-ctrl-c-ctrl-c",
+  "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+  "keys": "C-c C-c",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "range-second-dash",
+  "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+  "keys": "C-c C-c",
+  "point": 32
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "range-after-first",
+  "text": "* T\nSee [2026-10-28 Wed 10:00]--[2026-10-28 Wed 11:30] here\n",
+  "keys": "C-c C-c",
+  "point": 30
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "range-active-dashes",
+  "text": "* T\n<2026-10-28 Wed>--<2026-10-29 Thu>\n",
+  "keys": "C-c C-c",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "range-one-dash",
+  "text": "* T\n<2026-10-28 Wed>-<2026-10-29 Thu>\n",
+  "keys": "C-c C-c",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "timestamps-apart",
+  "text": "* T\n<2026-10-28 Wed> -- <2026-10-29 Thu>\n",
+  "keys": "C-c C-c",
+  "point": 21
  }
 ]

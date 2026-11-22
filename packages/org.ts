@@ -238,12 +238,23 @@ const variables: [string, string, e8.Value][] = [
   ["org-fontify-done-headline", "Whether the text of a done heading gets the face org-headline-done.", true],
   ["org-fontify-whole-block-delimiter-line", "Whether a block's #+begin and #+end lines take their faces to the line's end, newline and all, so a background with :extend reaches the window's edge.", true],
   [
-    "org-time-stamp-rounding-minutes",
-    "Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second.",
+    "org-timestamp-rounding-minutes",
+    "Minutes are rounded to the first of these when a time is inserted, and S-<up> and S-<down> change them by the second. " +
+      "A number alone is both. org-time-stamp-rounding-minutes is its old name.",
     [0, 5],
   ],
 ];
 for (const [name, doc, value] of variables) e8.defineVariable({ name, doc, value });
+// Its name before Org 9.6, as org.el keeps it with defvaralias.
+e8.defvaralias("org-time-stamp-rounding-minutes", "org-timestamp-rounding-minutes");
+
+/** org-timestamp-rounding-minutes as a pair, a number alone standing for both, as Org normalizes it. */
+function roundingMinutes(): [number, number] {
+  const v = e8.variable("org-timestamp-rounding-minutes");
+  if (typeof v === "number") return [v, v];
+  const list = Array.isArray(v) ? v : [];
+  return [Number(list[0] ?? 0), Number(list[1] ?? 5)];
+}
 
 e8.defineHook(
   "org-cycle-tab-first-hook",
@@ -6649,7 +6660,7 @@ function changeTimestamp(n: number, what?: string, updown = true): void {
     hour: Number(parsed?.[4] ?? 0),
     minute: Number(parsed?.[5] ?? 0),
   };
-  let step = Math.max(Number((e8.variable("org-time-stamp-rounding-minutes") as number[] | null)?.[1] ?? 5), 1);
+  let step = Math.max(roundingMinutes()[1], 1);
   let increment = n;
   if (updown && field === "minute" && e8.prefixArg() === null) {
     increment = step * Math.sign(n);
@@ -6891,7 +6902,7 @@ export function parseDate(input: string, withTime = false): DateTime {
     d.minute = time[1];
   } else if (withTime) {
     const now = today(true);
-    const step = Number((e8.variable("org-time-stamp-rounding-minutes") as number[] | null)?.[0] ?? 0) || 1;
+    const step = roundingMinutes()[0] || 1;
     d.hour = now.hour;
     d.minute = Math.round((now.minute ?? 0) / step) * step;
     d = normalize(d);
@@ -9010,6 +9021,11 @@ const ctrlCCtrlC = e8.defineCommand({
     if (atClockLog() && !timestampHere()) {
       clockUpdateTimeMaybe();
       return;
+    }
+    // On the dashes of a range, which Org takes as one timestamp, as org-timestamp-change finds no part of one there.
+    const all = tsMatches(line);
+    if (all.some((a, i) => i + 1 < all.length && /^-{1,3}$/.test(e8.bufferText(a.end, all[i + 1].start)) && a.end < e8.point() && e8.point() < all[i + 1].start)) {
+      e8.userError("Not at a timestamp");
     }
     if (timestampHere()) {
       changeTimestamp(0, "day");
