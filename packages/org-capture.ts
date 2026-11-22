@@ -8,6 +8,7 @@ import { alignTags, formatTimestamp, type Heading, headings, parseDate, parseHea
 import { clockIn, clockOut, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
+import { storeLink } from "ol";
 import { endOfMetaData } from "org-list";
 import { lineAt, orgMks, titleWithoutCookies } from "org-macs";
 import { charCount, truthy } from "subr";
@@ -65,17 +66,14 @@ interface Context {
   clock?: { title: string; link: string };
 }
 
-/** A link to point's place, as org-store-link makes one for %a: the heading in an Org file, else the line. */
+/** A link to point's place for %a, as org-capture takes it from org-store-link, or nothing where there is none. */
 function annotation(): string {
-  const file = e8.bufferFileName();
-  if (file === undefined) return "";
-  const path = e8.abbreviateFileName(file);
-  if (e8.derivedModeP("org-mode")) {
-    const h = headings().filter((x) => x.start <= e8.point()).at(-1);
-    return h ? `[[file:${path}::*${h.title}][${h.title}]]` : `[[file:${path}]]`;
+  try {
+    const link = storeLink(null, false);
+    return typeof link === "string" ? link : "";
+  } catch {
+    return "";
   }
-  const line = e8.lineText(lineAt()).trim();
-  return line === "" ? `[[file:${path}]]` : `[[file:${path}::${line}]]`;
 }
 
 /**

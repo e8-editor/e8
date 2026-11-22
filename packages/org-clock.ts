@@ -45,6 +45,7 @@ import {
   updateDblock,
 } from "org";
 import { findBufferVisiting } from "files";
+import { linkMakeString } from "ol";
 import { elementAt } from "org-element";
 import { showEntry, showSetVisibility, toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData, entryGet, entryPut } from "org-list";
@@ -1337,13 +1338,6 @@ function shortenString(s: string, max: number): string {
 
 /** Org's bracket link, its target in group 1 and description in 2, as org-link-bracket-re. */
 const LINK_BRACKET = /\[\[((?:[^\][\\]|\\(?:\\\\)*[\][]|\\+[^\][])+)\](?:\[([\s\S]+?)\])?\]/g;
-
-/** A link as Org writes one, its target's brackets escaped, as org-link-make-string. */
-function linkMakeString(link: string, description: string): string {
-  const desc = /\S/.test(description) ? description.trim().replace(/\]$/, "]​").replace(/(\])(\])/g, "$1​$2") : undefined;
-  const escaped = link.replace(/(\\*)([\][]|$)/g, (_m, bs: string, c: string) => `${bs}${bs}${c === "" ? "" : "\\"}${c}`);
-  return `[[${escaped}]${desc === undefined ? "" : `[${desc}]`}]`;
-}
 
 /** A heading's title without TODO keyword, priority, COMMENT or tags, as org-get-heading t t t t. */
 function bareHeadline(h: Heading): string {

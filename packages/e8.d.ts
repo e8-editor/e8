@@ -5861,6 +5861,12 @@ declare global {
        */
       "org-id-goto": [id: string];
       /**
+       * Store a link to the entry at point by its ID, giving it one if it has none.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-store-link": [];
+      /**
        * Scan relevant files for IDs. Store the relation between files and corresponding IDs. This will scan all agenda files, org-id-extra-files, all open Org files, and all files currently mentioned in org-id-locations.
        *
        * Defined in packages/org-id.ts.
@@ -5919,6 +5925,14 @@ declare global {
        */
       "org-indent-mode": [];
       /**
+       * Insert all the stored links, each on its own line after "- ", removing them from org-stored-links; with C-u keeping them, with a number the newest that many.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-insert-all-links": [arg?: PrefixArg | boolean];
+      /**
        * Insert a drawer at point, asking for its name, with point inside it.
        *
        * With a prefix argument, insert the entry's property drawer instead.
@@ -5945,14 +5959,23 @@ declare global {
        */
       "org-insert-item": [];
       /**
-       * Insert a link as [[link][description]], or [[link]] without a description; on a link, replace it.
+       * Insert the link stored last, and a newline; with a count, the newest that many.
        *
-       * @param link text
-       * @param description text
+       * @param arg prefix count
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/ol.ts.
        */
-      "org-insert-link": [link: string, description: string];
+      "org-insert-last-stored-link": [arg?: number];
+      /**
+       * Insert a link, offering the links org-store-link stored, the newest when the input is left empty, and asking for a description; on a link, edit it. C-u completes a file's name, C-u C-u writing it absolute, and C-u C-u C-u keeps the stored link, as org-link-keep-stored-after-insertion turned round.
+       *
+       * @param link-location text
+       * @param description text
+       * @param complete-file raw prefix argument
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-insert-link": [linkLocation: string, description: string, completeFile?: PrefixArg | boolean];
       /**
        * Insert a block, #+begin_TYPE and #+end_TYPE, around the region if it is active. Asks for its type in *Org Select* by the key org-structure-template-alist gives it, keys with a first letter in common in a submenu under it; TAB, RET or SPC types the name.
        *
@@ -6457,6 +6480,14 @@ declare global {
        * Defined in packages/org-src.ts.
        */
       "org-src-mode": [];
+      /**
+       * Store a link to point's place, for org-insert-link (C-c C-l) to insert: in an Org file to the heading, a target or a named element, in another file to the line, in Dired to the file, in the agenda to the entry. C-u turns org-link-context-for-files round, C-u C-u leaves out the link types' own ways of storing, and C-u C-u C-u stores a link to each line of the region.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-store-link": [arg?: PrefixArg | boolean];
       /**
        * Align the table at point: every column as wide as its widest field, numbers to the right.
        *
@@ -13832,6 +13863,18 @@ declare global {
        */
       "org-id-include-domain": Value;
       /**
+       * Whether org-store-link links an Org entry by its ID: t, making one if need be; "create-if-interactive", making one only for org-store-link itself, not capture; "create-if-interactive-and-no-custom-id", the same unless it has a CUSTOM_ID; "use-existing", only an ID it has; nil, never.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-link-to-org-use-id": Value;
+      /**
+       * Whether an ID link org-store-link makes adds a search for where point is, as a file link does with org-link-context-for-files.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-link-use-context": Value;
+      /**
        * The file for remembering in which file an ID was defined, or nil for .org-id-locations in user-emacs-directory.
        *
        * Defined in packages/org-id.ts.
@@ -13938,17 +13981,47 @@ declare global {
        */
       "org-inhibit-startup": Value;
       /**
+       * History for inserted links.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-link--history": Value;
+      /**
+       * Minibuffer history for links inserted with org-insert-link.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-link--insert-history": Value;
+      /**
+       * Whether a file link org-store-link makes searches for where point is: the heading, a name, the active region or the line. A number takes that many lines of the region. C-u before org-store-link turns it round.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-link-context-for-files": Value;
+      /**
        * Whether links show only their description, hiding the brackets and target.
        *
        * Defined in packages/org.ts.
        */
       "org-link-descriptive": Value;
       /**
-       * Links answered to org-insert-link, newest first.
+       * How org-insert-link writes a file's name: "adaptive", relative to the current directory below it and abbreviated elsewhere; "relative"; "absolute", abbreviated; "noabbrev"; or a function of the name.
        *
-       * Defined in packages/org.ts.
+       * Defined in packages/ol.ts.
        */
-      "org-link-history": Value;
+      "org-link-file-path-type": Value;
+      /**
+       * Whether a stored link stays among org-stored-links once org-insert-link has inserted it.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-link-keep-stored-after-insertion": Value;
+      /**
+       * A function of the link and the description so far giving the description org-insert-link offers, or nil.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-link-make-description-function": Value;
       /**
        * Whether Org-List-Checkbox-Radio mode is on in this buffer. Use the command org-list-checkbox-radio-mode to change it.
        *
@@ -14255,6 +14328,18 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-startup-truncated": Value;
+      /**
+       * The properties of the link stored last, as a link type's store function gave them with org-link-store-props.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-store-link-plist": Value;
+      /**
+       * The links org-store-link has stored, newest first, each a list of the link and its description, or nil for none.
+       *
+       * Defined in packages/ol.ts.
+       */
+      "org-stored-links": Value;
       /**
        * The kinds of block C-c C-, offers, each a key and a block type: ["s", "src"] makes #+begin_src and #+end_src. A type in capital letters is inserted in capitals. With org-tempo required, <s and TAB at the start of a line inserts it too.
        *
@@ -18224,6 +18309,10 @@ declare global {
        * Functions called when a clock stops.
        */
       "org-clock-out-hook": Value;
+      /**
+       * Functions making a search string to point's place, for org-store-link's file link to this file: the first that gives one is used, and may set :description with org-link-store-props.
+       */
+      "org-create-file-search-functions": Value;
       /**
        * Functions C-c C-c tries first, until one returns true, which ends it, as running a source block does.
        */
