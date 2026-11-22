@@ -4726,6 +4726,23 @@ export function entryBlocked(h: Heading): boolean {
   });
 }
 
+/**
+ * Whether the entry at heading H is blocked, as org-entry-blocked-p, and if
+ * so whether by checkboxes, as org-blocked-by-checkboxes says after it:
+ * Org's agenda asks this with org-blocked-by-checkboxes bound, so the
+ * value it had is kept.
+ */
+export function entryBlockedBy(h: Heading): "blocked" | "checkboxes" | undefined {
+  const saved = blockedByCheckboxes;
+  blockedByCheckboxes = false;
+  try {
+    if (!entryBlocked(h)) return undefined;
+    return blockedByCheckboxes ? "checkboxes" : "blocked";
+  } finally {
+    blockedByCheckboxes = saved;
+  }
+}
+
 e8.defineCommand({
   name: "org-toggle-ordered-property",
   doc: "Toggle the ORDERED property of the current entry, which makes its children be done in order. With org-track-ordered-property-with-tag, toggle a tag too.",

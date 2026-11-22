@@ -1,0 +1,1838 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "todo-list-archive-takes-out-the-subtree",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n $",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO A\n** TODO A1\n",
+        "* TODO A\n** TODO A1\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      },
+      "message": "Subtree archived under heading: * Archive"
+    },
+    {
+      "name": "todo-list-archive-then-the-file",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n $ q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO B\n\n* Archive\n\n** TODO A\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: t\n:END:\n*** TODO A1\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO B\n\n* Archive\n\n** TODO A\n:PROPERTIES:\n*** TODO A1\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO A\n** TODO A1\n",
+        "* TODO A\n** TODO A1\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      }
+    },
+    {
+      "name": "todo-list-archive-c-c-dollar",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n n C-c $ q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n\n* Archive\n\n** TODO A1\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: t\n:ARCHIVE_OLPATH: A\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO A\n* TODO B\n\n* Archive\n\n** TODO A1\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** TODO A1\n",
+        "** TODO A1\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      }
+    },
+    {
+      "name": "todo-list-archive-child",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n n C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO A\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO A\n  t:          TODO B\n",
+      "point": 127,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** TODO A1\n",
+        "** TODO A1\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 127,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      }
+    },
+    {
+      "name": "todo-list-archive-confirmed",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y"
+        ],
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org"
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO A\n** TODO A1\n",
+        "* TODO A\n** TODO A1\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      }
+    },
+    {
+      "name": "todo-list-archive-refused",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "n"
+        ],
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org"
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO A\n  t:          TODO A1\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO A\n  t:          TODO A1\n  t:          TODO B\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Abort",
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      }
+    },
+    {
+      "name": "todo-list-archive-default",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n n n C-c C-x C-a q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* Archive\n\n** TODO B\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: t\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* Archive\n\n** TODO B\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO B\n\n",
+        "* TODO B\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      }
+    },
+    {
+      "name": "todo-list-archive-to-sibling",
+      "input": {
+        "text": "* P\n** TODO A\n** TODO B\n",
+        "point": 0,
+        "keys": "n n C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "* P\n** TODO A\n** TODO B\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** TODO A\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* P\n** TODO A\n** TODO B\n"
+      }
+    },
+    {
+      "name": "todo-list-archive-to-sibling-then-the-file",
+      "input": {
+        "text": "* P\n** TODO A\n** TODO B\n",
+        "point": 0,
+        "keys": "n n C-c C-x A q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "* P\n** TODO A\n** TODO B\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "* P\n** TODO B\n** Archive                                                          :ARCHIVE:\n*** TODO A\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-10-28 Wed 12:00\n:END:\n",
+      "visible": "* P\n** TODO B\n** Archive                                                          :ARCHIVE:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** TODO A\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* P\n** TODO A\n** TODO B\n"
+      }
+    },
+    {
+      "name": "todo-list-toggle-archive-tag",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "n n C-c C-x a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org",
+        "message": true,
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO A                                                  :ARCHIVE:\n  t:          TODO A1\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO A                                                  :ARCHIVE:\n  t:          TODO A1\n  t:          TODO B\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      },
+      "message": "Subtree archived"
+    },
+    {
+      "name": "todo-list-archive-on-a-header-line",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+        "point": 0,
+        "keys": "$",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO A\n  t:          TODO A1\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO A\n  t:          TODO A1\n  t:          TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Command not allowed in this line",
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+      }
+    },
+    {
+      "name": "week-agenda-archive",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n",
+        "point": 0,
+        "keys": "n $",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  t:          Meeting \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  t:          Meeting \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 104,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n",
+        "* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 104,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n"
+      }
+    },
+    {
+      "name": "week-agenda-archive-second",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n",
+        "point": 0,
+        "keys": "n n $ q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "files": {
+          "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n"
+        },
+        "find": "t.org",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Archive\n\n** Meeting <2026-10-28 Wed>\n:PROPERTIES:\n:ARCHIVE_CATEGORY: t\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Archive\n\n** Meeting <2026-10-28 Wed>\n:PROPERTIES:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Meeting <2026-10-28 Wed>\n\n",
+        "* Meeting <2026-10-28 Wed>\n"
+      ],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n"
+      }
+    },
+    {
+      "name": "todo-list-archives-mode-trees",
+      "input": {
+        "text": "* TODO A :ARCHIVE:\n* TODO B\n* COMMENT C\n** TODO C1\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO A                                            :ARCHIVE:\n  e8-agenda-archive:TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO A                                            :ARCHIVE:\n  e8-agenda-archive:TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Trees with :ARCHIVE: tag are included"
+    },
+    {
+      "name": "todo-list-archives-mode-off-again",
+      "input": {
+        "text": "* TODO A :ARCHIVE:\n* TODO B\n",
+        "point": 0,
+        "keys": "v v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "a",
+          "a"
+        ],
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "No archives are included"
+    },
+    {
+      "name": "week-agenda-skips-archived-and-comment-trees",
+      "input": {
+        "text": "* TODO A :ARCHIVE:\nSCHEDULED: <2026-10-28 Wed>\n* COMMENT C\n** Meeting <2026-10-29 Thu>\n* B <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-archive:B \nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-archive:B \nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "week-agenda-archives-mode-trees",
+      "input": {
+        "text": "* TODO A :ARCHIVE:\nSCHEDULED: <2026-10-28 Wed>\n* COMMENT C\n** Meeting <2026-10-29 Thu>\n* B <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-archive:Scheduled:  TODO A                                :ARCHIVE:\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-archive:B \nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-archive:Scheduled:  TODO A                                :ARCHIVE:\nThursday   29 October 2026\nFriday     30 October 2026\n  e8-agenda-archive:B \nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "week-agenda-archived-file",
+      "input": {
+        "text": "#+FILETAGS: :ARCHIVE:\n* B <2026-10-30 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-view-archives-mode",
+      "input": {
+        "text": "* Old :t:ARCHIVE:\n** Under :t:\n* Shown :t:\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "t",
+          "a"
+        ]
+      },
+      "text": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda-archive:Old                                             :t:ARCHIVE:\n  e8-agenda-archive:Under                                          :ARCHIVE::t:\n  e8-agenda-archive:Shown                                                   :t:\n",
+      "visible": "Headlines with TAGS match: t\nPress ‘C-u r’ to search again\n  e8-agenda-archive:Old                                             :t:ARCHIVE:\n  e8-agenda-archive:Under                                          :ARCHIVE::t:\n  e8-agenda-archive:Shown                                                   :t:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "view-dispatch-quit",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Abort"
+    },
+    {
+      "name": "view-dispatch-invalid",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "z"
+        ]
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid key: 122",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "start-with-archives-mode",
+      "input": {
+        "text": "* TODO A :ARCHIVE:\n* TODO B\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-start-with-archives-mode": "'trees"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO A                                            :ARCHIVE:\n  e8-agenda-archive:TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO A                                            :ARCHIVE:\n  e8-agenda-archive:TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-list-archive-files",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A"
+        ],
+        "files": {
+          "t.org": "* TODO B\n",
+          "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+        },
+        "find": "t.org",
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n  t:          TODO Old\n  t:          TODO Old2                                               :ARCHIVE:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n  t:          TODO Old\n  t:          TODO Old2                                               :ARCHIVE:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* TODO B\n",
+        "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+      },
+      "message": "Trees with :ARCHIVE: tag and all active archive files are included"
+    },
+    {
+      "name": "todo-list-archive-files-off",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "v v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A",
+          "A"
+        ],
+        "files": {
+          "t.org": "* TODO B\n",
+          "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+        },
+        "find": "t.org",
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* TODO B\n",
+        "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+      },
+      "message": "No archives are included"
+    },
+    {
+      "name": "todo-list-trees-then-files",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "v v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "a",
+          "A"
+        ],
+        "files": {
+          "t.org": "* TODO B\n",
+          "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+        },
+        "find": "t.org",
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n  t:          TODO Old\n  t:          TODO Old2                                               :ARCHIVE:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n  t:          TODO Old\n  t:          TODO Old2                                               :ARCHIVE:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* TODO B\n",
+        "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+      },
+      "message": "Trees with :ARCHIVE: tag and all active archive files are included"
+    },
+    {
+      "name": "todo-list-files-then-trees",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "v v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A",
+          "a"
+        ],
+        "files": {
+          "t.org": "* TODO B\n",
+          "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+        },
+        "find": "t.org",
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  t:          TODO B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* TODO B\n",
+        "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+      },
+      "message": "No archives are included"
+    },
+    {
+      "name": "week-agenda-archive-files",
+      "input": {
+        "text": "* B <2026-10-28 Wed>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "A"
+        ],
+        "files": {
+          "t.org": "* B <2026-10-28 Wed>\n",
+          "t.org_archive": "#    -*- mode: org -*-\n\n* Old <2026-10-29 Thu>\n"
+        },
+        "find": "t.org"
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  t:          B \nThursday   29 October 2026\n  t:          Old \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  t:          B \nThursday   29 October 2026\n  t:          Old \nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* B <2026-10-28 Wed>\n",
+        "t.org_archive": "#    -*- mode: org -*-\n\n* Old <2026-10-29 Thu>\n"
+      }
+    },
+    {
+      "name": "search-view-agenda-archives",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-search-view"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "Old"
+        ],
+        "files": {
+          "t.org": "* TODO B\n",
+          "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+        },
+        "find": "t.org",
+        "globals": {
+          "org-agenda-text-search-extra-files": [
+            "'agenda-archives"
+          ]
+        }
+      },
+      "text": "Search words: Old\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  t:          TODO Old\n",
+      "visible": "Search words: Old\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n  t:          TODO Old\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* TODO B\n",
+        "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+      }
+    },
+    {
+      "name": "search-view-without-agenda-archives",
+      "input": {
+        "text": "* TODO B\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-search-view"
+        ],
+        "platform": null,
+        "windows": true,
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "Old"
+        ],
+        "files": {
+          "t.org": "* TODO B\n",
+          "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+        },
+        "find": "t.org"
+      },
+      "text": "Search words: Old\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n",
+      "visible": "Search words: Old\nPress ‘[’, ‘]’ to add/sub word, ‘{’, ‘}’ to add/sub regexp, ‘C-u r’ for a fresh search\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "t.org",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "files": {
+        "t.org": "* TODO B\n",
+        "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+      }
+    },
+    {
+      "name": "dim-blocked-todo-list",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n* TODO Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO Parent\n  e8-agenda-archive:TODO child\n  e8-agenda-archive:TODO Other\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO Parent\n  e8-agenda-archive:TODO child\n  e8-agenda-archive:TODO Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "hide-blocked-todo-list",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n* TODO Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true,
+          "org-agenda-dim-blocked-tasks": "'invisible"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO Parent\n  e8-agenda-archive:TODO child\n  e8-agenda-archive:TODO Other\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO child\n  e8-agenda-archive:TODO Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "hide-blocked-not-by-checkboxes",
+      "input": {
+        "text": "* TODO Box\n- [ ] x\n* TODO Parent\n** TODO child\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-enforce-todo-checkbox-dependencies": true,
+          "org-enforce-todo-dependencies": true,
+          "org-agenda-dim-blocked-tasks": "'invisible"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO Box\n  e8-agenda-archive:TODO Parent\n  e8-agenda-archive:TODO child\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO Box\n  e8-agenda-archive:TODO child\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "hide-blocked-week-agenda",
+      "input": {
+        "text": "* TODO Parent\nSCHEDULED: <2026-10-28 Wed>\n** TODO child\n* Meeting <2026-10-28 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true,
+          "org-agenda-dim-blocked-tasks": "'invisible"
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-archive:Scheduled:  TODO Parent\n  e8-agenda-archive:Meeting \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda-archive:Meeting \nThursday   29 October 2026\nFriday     30 October 2026\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "hide-blocked-ordered",
+      "input": {
+        "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true,
+          "org-agenda-dim-blocked-tasks": "'invisible"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO first\n  e8-agenda-archive:TODO second\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO first\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "hide-blocked-then-redim",
+      "input": {
+        "text": "* TODO Parent\n** TODO child\n* TODO Other\n",
+        "point": 0,
+        "keys": "#",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-archive.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-enforce-todo-dependencies": true,
+          "org-agenda-dim-blocked-tasks": "'invisible"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO Parent\n  e8-agenda-archive:TODO child\n  e8-agenda-archive:TODO Other\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-archive:TODO child\n  e8-agenda-archive:TODO Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,7 @@ import {
   at,
   categories,
   category,
+  entryBlockedBy,
   entryEnd,
   headingIndex,
   headings,
@@ -21,10 +22,11 @@ import {
   notDoneRegexp,
   reducedLevel,
   scanTags,
+  subtreeRegion,
   today,
 } from "org";
 import { setAgendaEntryHere, storeLink } from "ol";
-import { addArchiveFiles } from "org-archive";
+import { addArchiveFiles, archivingFromAgenda } from "org-archive";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
 import { multiOccur } from "replace";
@@ -55,6 +57,19 @@ e8.defineVariable({
   doc: "Whether the agenda leaves out entries in subtrees whose heading starts with COMMENT.",
   value: true,
 });
+e8.defineVariable({
+  name: "org-agenda-dim-blocked-tasks",
+  doc:
+    "Whether the agenda dims the TODO entries that org-blocker-hook blocks from being done, as the TODO dependencies do. " +
+    "invisible hides them instead, but for those blocked only by checkboxes, which are dimmed.",
+  value: true,
+});
+e8.defineVariable({
+  name: "org-agenda-start-with-archives-mode",
+  doc: "Whether a new agenda shows archived trees: nil, trees for the trees tagged ARCHIVE, or t for the agenda files' archive files too.",
+  value: null,
+});
+e8.defineFace({ name: "org-agenda-dimmed-todo-face", doc: "Blocked tasks in the agenda.", attributes: { foreground: "#7f7f7f" } });
 e8.defineVariable({
   name: "org-deadline-warning-days",
   doc: "How many days ahead today's agenda warns of a deadline, unless its timestamp says, as -3d does; 0 or less applies whatever it says.",
@@ -159,6 +174,8 @@ interface AgendaItem {
   habit?: Habit;
   /** Markers at `pos` and `heading`, once the agenda shows the line, so they follow edits there. */
   marks?: { pos: e8.Marker; heading: e8.Marker };
+  /** Whether its entry was blocked when the agenda was made, and the line is dimmed or hidden for it, as org-todo-blocked marks the line. */
+  blocked?: "dim" | "hide";
 }
 
 /** Where the line's entry is now: its marker's place, as Org's org-marker follows edits. */
@@ -244,11 +261,24 @@ function agendaLine(h: Heading, cat: string, leader: string, removeTimestamp: bo
   return line + " ".repeat(Math.max(1, width - charCount(line) - charCount(tags))) + tags;
 }
 
-/** The buffers of org-agenda-files, visited if need be. */
-function agendaBuffers(): string[] {
+/**
+ * Whether the agenda shows archived trees, as org-agenda-archives-mode:
+ * null for neither, trees for the trees tagged ARCHIVE, true for those and
+ * the agenda files' archive files.
+ */
+let archivesMode: null | "trees" | true = null;
+
+/** The files the agenda reads: org-agenda-files, and their archive files in archives mode t, as (org-agenda-files nil 'ifmode). */
+function agendaFilesIfMode(): string[] {
+  const files = agendaFiles();
+  return archivesMode === true ? addArchiveFiles(files) : files;
+}
+
+/** The buffers of org-agenda-files, or of FILES, visited if need be. */
+function agendaBuffers(files = agendaFilesIfMode()): string[] {
   // Relative names are in org-directory, and directories stand for their Org files, as org-agenda-files expands them.
   // Each file's TAGS lines read again, as org-agenda-prepare-buffers does with org-set-regexps-and-options.
-  return agendaFiles().map((file) => {
+  return files.map((file) => {
     const buffer = e8.findFileNoselect(file);
     e8.withCurrentBuffer(buffer, () => {
       if (e8.derivedModeP("org-mode")) storeTagsLines();
@@ -340,6 +370,8 @@ const RANGE = /(<\d{4}-\d{2}-\d{2}[^>\n]*>)--(<\d{4}-\d{2}-\d{2}[^>\n]*>)/g;
 function scanBuffer(): { cat: string; entries: Scanned[] } {
   const all = headings();
   const cats = categories(all);
+  // Archived and commented trees left out, as org-agenda-skip leaves them.
+  const skipped = skippedHeadings(all);
   const stamp = /<\d{4}-\d{2}-\d{2}[^>\n]*>/g;
   const entries = all.map((h, i): Scanned => {
     const stamps: Scanned["stamps"] = [];
@@ -368,7 +400,7 @@ function scanBuffer(): { cat: string; entries: Scanned[] } {
     const habit = plan.scheduled !== undefined ? parseHabit(h) : undefined;
     return { h, done: isDone(h.todo), plan, priority: priorityValue(h), stamps, ranges, cat: cats[i], ...(habit ? { habit } : {}) };
   });
-  return { cat: category(), entries };
+  return { cat: category(), entries: entries.filter((_, i) => !skipped[i]) };
 }
 
 /** The items for a day from the current buffer, scanned once, as org-agenda-get-day-entries collects them. */
@@ -491,6 +523,7 @@ function insertHabitGraphs(lines: { text: string; item?: AgendaItem }[]): void {
 
 /** Puts lines into the agenda buffer and shows it, as org-agenda-prepare and org-agenda-finalize do. */
 function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: number): void {
+  markBlocked(lines);
   e8.getBufferCreate(AGENDA);
   e8.withCurrentBuffer(AGENDA, () => {
     e8.setReadOnly(false);
@@ -498,6 +531,8 @@ function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: num
     e8.insert(lines.map((l) => l.text).join("\n") + "\n");
     insertHabitGraphs(lines);
     if (e8.variable("major-mode") !== "org-agenda-mode") e8.call("org-agenda-mode");
+    setModeName();
+    lines.forEach((l, line) => dimLine(line, l.item));
     e8.setReadOnly(true);
     e8.gotoChar(e8.lineStart(pointLine));
   });
@@ -532,6 +567,61 @@ function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: num
     }
   }
   if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(lines.length);
+}
+
+/** Whether org-blocker-hook has anything on it, as Org tests it before dimming. */
+function blockerHookSet(): boolean {
+  const hook = e8.variable("org-blocker-hook");
+  return Array.isArray(hook) ? hook.length > 0 : truthy(hook ?? null);
+}
+
+/**
+ * Marks the lines whose entries are blocked, as org-agenda--mark-blocked-entry
+ * does while org-agenda-dim-blocked-tasks is on and org-blocker-hook is set:
+ * those with a TODO state that org-entry-blocked-p says are blocked.
+ */
+function markBlocked(lines: { item?: AgendaItem }[]): void {
+  const option = e8.variable("org-agenda-dim-blocked-tasks") ?? null;
+  if (!truthy(option) || !blockerHookSet()) return;
+  for (const { item } of lines) {
+    if (!item) continue;
+    const blocked = e8.withCurrentBuffer(item.buffer, () => widened(() => {
+      const h = headings().find((x) => x.start === item.heading);
+      return h === undefined || h.todo === undefined ? undefined : entryBlockedBy(h);
+    }));
+    // Hidden only when not blocked by checkboxes, which the agenda does not show.
+    if (blocked) item.blocked = blocked === "blocked" && option === "invisible" ? "hide" : "dim";
+  }
+}
+
+/**
+ * Dims line L of the agenda if its entry is blocked, or hides it, as
+ * org-agenda-dim-blocked-tasks does from the lines' marks: an overlay in
+ * org-agenda-dimmed-todo-face, and with org-agenda-dim-blocked-tasks
+ * invisible, the line and the newline before it made invisible, as
+ * org-agenda-filter-hide-line does, unless checkboxes block it.
+ */
+function dimLine(l: number, item: AgendaItem | undefined): void {
+  const start = e8.lineStart(l);
+  const end = e8.lineEnd(l);
+  for (const o of e8.overlaysIn(start, end)) {
+    if (e8.overlayGet(o, "face") === "org-agenda-dimmed-todo-face") e8.deleteOverlay(o);
+  }
+  if (!item?.blocked) return;
+  e8.makeOverlay(start, end, { face: "org-agenda-dimmed-todo-face", priority: 50 });
+  if (item.blocked === "hide") {
+    e8.letBind({ "inhibit-read-only": true }, () => {
+      e8.putTextProperty(Math.max(e8.pointMin(), start - 1), end, "invisible", "org-filtered");
+      e8.putTextProperty(Math.max(e8.pointMin(), start - 1), end, "org-filter-type", "todo-blocked");
+    });
+  }
+}
+
+/** The agenda's mode name, saying whether archives are shown, as org-agenda-set-mode-name writes it. */
+function setModeName(): void {
+  const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  e8.makeLocalVariable("mode-name");
+  e8.setVariable("mode-name", `Org-Agenda${archivesMode === true ? " Archives" : archivesMode === "trees" ? ` :${tag}:` : ""}`);
 }
 
 /**
@@ -779,7 +869,7 @@ function todoList(): void {
  */
 function skippedHeadings(all: Heading[]): boolean[] {
   const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
-  const archived = e8.variable("org-agenda-skip-archived-trees") !== false && e8.variable("org-agenda-skip-archived-trees") !== null;
+  const archived = truthy(e8.variable("org-agenda-skip-archived-trees") ?? null) && archivesMode === null;
   const comments = e8.variable("org-agenda-skip-comment-trees") !== false && e8.variable("org-agenda-skip-comment-trees") !== null;
   const fileArchived = archived && keywordLines().some(([, , text]) => {
     const m = /^#\+FILETAGS:(.*)$/i.exec(text);
@@ -945,8 +1035,11 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
     if (headlinesOnly) regexp = `^\\*+ .*?${regexp}`;
   }
   const extra = e8.variable("org-agenda-text-search-extra-files");
-  const files = (Array.isArray(extra) ? extra : []).filter((f): f is string => typeof f === "string");
-  const buffers = agendaBuffers();
+  const extras = Array.isArray(extra) ? extra : [];
+  // Led by agenda-archives, the agenda files' archive files too, as org-search-view adds them.
+  const withArchives = extras[0] === "agenda-archives" || extras[0] === Symbol.for("agenda-archives");
+  const files = (withArchives ? extras.slice(1) : extras).filter((f): f is string => typeof f === "string");
+  const buffers = agendaBuffers(withArchives ? addArchiveFiles(agendaFilesIfMode()) : agendaFilesIfMode());
   for (const file of files) {
     const buffer = e8.findFileNoselect(e8.expandFileName(file));
     if (!buffers.includes(buffer)) buffers.push(buffer);
@@ -1018,16 +1111,28 @@ function redoAgenda(): void {
   e8.gotoChar(e8.lineStart(Math.min(line, e8.lineCount() - 1)));
 }
 
+/** A new agenda's archives mode, org-agenda-start-with-archives-mode, as org-agenda-mode sets it for each new agenda but not when it is made again. */
+function freshAgenda(): void {
+  const start = e8.variable("org-agenda-start-with-archives-mode") ?? null;
+  archivesMode = start === true ? true : truthy(start) ? "trees" : null;
+}
+
 const agendaList = e8.defineCommand({
   name: "org-agenda-list",
   doc: "Show the week's agenda: what is scheduled, due and timestamped each day, from org-agenda-files.",
-  run: () => weekAgenda(weekStart(dayNumber(today_()))),
+  run: () => {
+    freshAgenda();
+    weekAgenda(weekStart(dayNumber(today_())));
+  },
 });
 
 const todoListCommand = e8.defineCommand({
   name: "org-todo-list",
   doc: "Show the TODO items that are not done in org-agenda-files, most urgent first.",
-  run: () => todoList(),
+  run: () => {
+    freshAgenda();
+    todoList();
+  },
 });
 
 const tagsViewCommand = e8.defineCommand({
@@ -1036,7 +1141,10 @@ const tagsViewCommand = e8.defineCommand({
     "Show the headings in org-agenda-files a match picks: tags, properties and TODO states, as C-c \\ in Org reads it. " +
     "With a prefix argument, only those with a TODO state not done.",
   params: [{ name: "todoOnly", kind: "prefix" }],
-  run: (todoOnly) => tagsView(todoOnly !== null && todoOnly !== undefined),
+  run: (todoOnly) => {
+    freshAgenda();
+    tagsView(todoOnly !== null && todoOnly !== undefined);
+  },
 });
 
 const searchViewCommand = e8.defineCommand({
@@ -1046,7 +1154,10 @@ const searchViewCommand = e8.defineCommand({
     "not wanted, \"quoted\" for spaces. Starting with * looks in headings only, ! at TODO entries only, : for whole words. " +
     "With a prefix argument, only TODO entries not done.",
   params: [{ name: "todoOnly", kind: "prefix" }],
-  run: (todoOnly) => searchView(todoOnly !== null && todoOnly !== undefined),
+  run: (todoOnly) => {
+    freshAgenda();
+    searchView(todoOnly !== null && todoOnly !== undefined);
+  },
 });
 
 /**
@@ -1128,6 +1239,7 @@ e8.defineCommand({
     "M for those with a TODO state not done, s for the entries a search picks, S for those with a TODO state not done.",
   run: () => {
     const key = agendaDispatch();
+    freshAgenda();
     if (key === "a") weekAgenda(weekStart(dayNumber(today_())));
     else if (key === "t") todoList();
     // With the prefix argument org-agenda had, as call-interactively hands on current-prefix-arg.
@@ -1196,6 +1308,8 @@ function redrawEntry(item: AgendaItem): void {
       e8.deleteRegion(e8.lineStart(l), e8.lineEnd(l));
       e8.gotoChar(e8.lineStart(l));
       e8.insert(text);
+      // Dimmed or hidden again from its mark, as org-agenda-change-all-lines finalizes the line.
+      if (truthy(e8.variable("org-agenda-dim-blocked-tasks") ?? null) && blockerHookSet()) dimLine(l, other);
     }
     e8.gotoChar(point);
   }));
@@ -1361,6 +1475,8 @@ e8.defineMajorMode({
     if (truthy(e8.variable("org-startup-truncated"))) e8.setVariable("truncate-lines", true);
     e8.makeLocalVariable("line-move-visual");
     e8.setVariable("line-move-visual", null);
+    // Lines hidden as filtered, blocked tasks among them, as org-agenda-mode adds org-filtered.
+    e8.addToInvisibilitySpec("org-filtered");
   },
   bindings: {
     n: agendaNext,
@@ -1382,6 +1498,10 @@ e8.defineMajorMode({
     ":": "org-agenda-set-tags",
     ",": "org-agenda-priority",
     w: "org-agenda-refile",
+    $: "org-agenda-archive",
+    a: "org-agenda-archive-default-with-confirmation",
+    v: "org-agenda-view-mode-dispatch",
+    "#": "org-agenda-dim-blocked-tasks",
     ...Object.fromEntries(queryCommands),
   },
 });
@@ -1411,5 +1531,152 @@ e8.defineCommand({
       }));
     });
     e8.call("org-agenda-redo");
+  },
+});
+
+// Archiving from the agenda, as org-agenda.el's org-agenda-archive-with
+// and its commands.
+
+/**
+ * Takes out of the agenda the lines whose entries are in BUFFER between
+ * BEG and END, as org-remove-subtree-entries-from-agenda: by where each
+ * line points, as its org-marker, from the last line up, the first left.
+ */
+function removeSubtreeEntries(buffer: string, beg: number, end: number): void {
+  e8.withCurrentBuffer(AGENDA, () => e8.letBind({ "inhibit-read-only": true }, () => {
+    for (let l = agendaLines.length - 1; l > 0; l--) {
+      const item = agendaLines[l];
+      if (!item || item.buffer !== buffer) continue;
+      const p = posOf(item);
+      if (p < beg || p >= end) continue;
+      e8.deleteRegion(e8.lineStart(l), Math.min(e8.lineEnd(l) + 1, e8.pointMax()));
+      if (item.marks) {
+        e8.deleteMarker(item.marks.pos);
+        e8.deleteMarker(item.marks.heading);
+      }
+      agendaLines.splice(l, 1);
+    }
+  }));
+}
+
+/**
+ * Archives the entry the line at point shows with COMMAND, as
+ * org-agenda-archive-with: asking first with CONFIRM, its subtree's lines
+ * taken out of the agenda, which is not made again, and the command run at
+ * its heading as archiving from the agenda.
+ */
+function archiveWith(command: e8.CommandName, confirm: boolean): void {
+  if (e8.variable("major-mode") !== "org-agenda-mode") e8.userError("Not in agenda");
+  const item = agendaItemHere();
+  const pos = posOf(item);
+  e8.withCurrentBuffer(item.buffer, () => {
+    if (!e8.derivedModeP("org-mode")) e8.signal("error", "Archiving works only in Org files");
+    if (confirm && !e8.yOrNP("Archive this subtree or entry? ")) e8.signal("error", "Abort");
+    e8.saveWindowExcursion(() => {
+      e8.gotoChar(pos);
+      // The subtree at the line's place, widened, as org-back-to-heading and org-end-of-subtree find it.
+      const heading = widened(() => {
+        const all = headings();
+        let i = -1;
+        for (let k = 0; k < all.length && all[k].start <= pos; k++) i = k;
+        if (i < 0) e8.signal("error", `Before first headline at position ${pos + 1} in buffer ${item.buffer}`);
+        const [beg, end] = subtreeRegion(all, i);
+        removeSubtreeEntries(item.buffer, beg, end);
+        return all[i].start;
+      });
+      e8.gotoChar(heading);
+      archivingFromAgenda(() => e8.call(command));
+    });
+  });
+}
+
+for (const [name, command, confirm, doc] of [
+  ["org-agenda-archive-default", undefined, false, "Archive the entry or subtree of the agenda line at point, with org-archive-default-command."],
+  [
+    "org-agenda-archive-default-with-confirmation",
+    undefined,
+    true,
+    "Archive the entry or subtree of the agenda line at point, with org-archive-default-command, asking first.",
+  ],
+  ["org-agenda-archive", "org-archive-subtree", false, "Archive the subtree of the agenda line at point, with org-archive-subtree."],
+  ["org-agenda-archive-to-archive-sibling", "org-archive-to-archive-sibling", false, "Move the entry of the agenda line at point to its archive sibling."],
+] as const) {
+  e8.defineCommand({
+    name,
+    doc,
+    run: () => archiveWith((command ?? String(e8.variable("org-archive-default-command") ?? "org-archive-subtree")) as e8.CommandName, confirm),
+  });
+}
+
+e8.defineCommand({
+  name: "org-agenda-toggle-archive-tag",
+  doc: "Toggle the ARCHIVE tag of the entry the agenda line at point shows.",
+  run: () => atEntry("org-toggle-archive-tag"),
+});
+
+// Org's keys of more than one key, as org-agenda.el binds them.
+for (const [key, command] of [
+  ["C-c C-x C-a", "org-agenda-archive-default"],
+  ["C-c C-x a", "org-agenda-toggle-archive-tag"],
+  ["C-c C-x A", "org-agenda-archive-to-archive-sibling"],
+  ["C-c C-x C-s", "org-agenda-archive"],
+  ["C-c $", "org-agenda-archive"],
+] as const) e8.defineKey("org-agenda-mode-map", key, command);
+
+/** Toggles archives mode, as org-agenda-archives-mode: archived trees in and out, or with WITH-FILES the archive files too. */
+function toggleArchivesMode(withFiles: boolean): void {
+  archivesMode = withFiles && archivesMode === true ? null : withFiles ? true : archivesMode !== null ? null : "trees";
+  setModeName();
+  redoAgenda();
+  const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  e8.message(
+    archivesMode === null
+      ? "No archives are included"
+      : archivesMode === "trees"
+        ? `Trees with :${tag}: tag are included`
+        : `Trees with :${tag}: tag and all active archive files are included`,
+  );
+}
+
+e8.defineCommand({
+  name: "org-agenda-archives-mode",
+  doc:
+    "Toggle whether the agenda shows the trees tagged ARCHIVE. With a prefix argument, toggle whether it shows them " +
+    "and the agenda files' archive files too.",
+  params: [{ name: "withFiles", kind: "prefix" }],
+  run: (withFiles) => toggleArchivesMode(withFiles !== null && withFiles !== undefined),
+});
+
+/** The view modes org-agenda-view-mode-dispatch offers that E8 does not have yet. */
+const VIEW_MODES_NOT_YET = " dwtmylLcFfRrEeGD![";
+
+e8.defineCommand({
+  name: "org-agenda-view-mode-dispatch",
+  doc: "Change how the agenda shows its entries, by a key: a to toggle archived trees, A to toggle archive files too, q to abort.",
+  run: () => {
+    const key = e8.readCharExclusive(
+      "View: [d]ay  [w]eek  for[t]night  [m]onth  [y]ear  [SPC]reset  [q]uit/abort\n" +
+        "       time[G]rid   [[]inactive  [f]ollow      [l]og    [L]og-all   [c]lockcheck\n" +
+        "       [a]rch-trees [A]rch-files clock[R]eport include[D]iary       [E]ntryText",
+    );
+    const char = key === "SPC" ? " " : key;
+    if (char === "a") toggleArchivesMode(e8.prefixArg() !== null && e8.prefixArg() !== undefined);
+    else if (char === "A") toggleArchivesMode(true);
+    else if (char === "q") e8.message("Abort");
+    else if ([...char].length === 1 && VIEW_MODES_NOT_YET.includes(char)) e8.userError(`E8 does not have that view mode yet: ${char}`);
+    // As a number, as Org's %s formats the character read.
+    else e8.userError(`Invalid key: ${[...char].length === 1 ? char.codePointAt(0) : key}`);
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-dim-blocked-tasks",
+  doc: "Dim the agenda's blocked TODO entries again, or hide them, as the agenda marked them when it was made.",
+  run: () => {
+    // As (called-interactively-p 'interactive), not from a keyboard macro.
+    const interactive = e8.calledInteractively() && !e8.executingKbdMacro();
+    if (interactive) e8.message("Dim or hide blocked tasks...");
+    agendaLines.forEach((item, l) => dimLine(l, item));
+    if (interactive) e8.message("Dim or hide blocked tasks...done");
   },
 });
