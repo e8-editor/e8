@@ -50,6 +50,12 @@ What is left, about 0.5 ms a paragraph: each element's indentation asks for the 
 
 Classes, categories, scripts and case past ASCII are binary searches in sorted runs (`chartab_data.rs`). Two-level tables indexed by code point, as Emacs's char-tables are, would make each lookup a pair of array reads. Worth doing when a profile shows the searches; none has yet.
 
+## Matching short strings with a mode's syntax table
+
+**Now.** Each `string-match` builds a 128-entry table of character classes by walking the buffer's syntax table and its parents, before it matches. On short strings that is nearly all the cost: a sparse tree for a tag regexp, `C-c / m {tag12\>}`, over 20,000 headings took 9.5 s in a debug build against 0.7 s for `+tag12`, its 40,000 `stringMatch` calls 7.5 s of it, about 3.5 times slower under Org mode's table than under the standard one (measured in the review of the tags syntax table, with a script timing `e8.stringMatch` on each heading's tags).
+
+**What would help.** Keeping the class table with the syntax table, built once and rebuilt only when an entry in it or a parent changes, so a match on a short string costs only the match.
+
 ## Moving through rows in the GUI
 
 With the GUI's metrics, rows built for moving point (`C-n` over continued lines, keeping point in sight) work out their faces, as their wrapping depends on the fonts, where with cells they need none. That is most of what `C-n` costs over the terminal: 0.75 ms a key against 0.42 in a 50,000-line Org file, and 0.98 ms in `variable-pitch-mode` (`gui_layout` in the bench, [performance.md](performance.md)). A buffer whose rows have all been on the grid could skip the faces until a face with another height or a proportional family is in effect, or rows' measured widths could be kept per line between keys until the text or faces there change, as Emacs's glyph matrices are.

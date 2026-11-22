@@ -1,0 +1,355 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "tag-word-end",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{foo\\>}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** B :foo:\n** C :x@foo:\n** E :bar_foo:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-word-start",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{\\<foo}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** A :foo_bar:\n** B :foo:\n** D :foobar:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-symbol",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{\\_<foo\\_>}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** B :foo:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-word",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{\\bbar\\b}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-plain",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{foo}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** A :foo_bar:\n** B :foo:\n** C :x@foo:\n** D :foobar:\n** E :bar_foo:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-negated",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "-{foo\\>}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** A :foo_bar:\n** D :foobar:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-w-plus",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{^\\w+$}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** A :foo_bar:\n** B :foo:\n** C :x@foo:\n** D :foobar:\n** E :bar_foo:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-syntax-symbol",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{\\s_}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-not-word",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "{\\W}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-plus",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "+{foo\\>}+{\\<foo}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** B :foo:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-prop-regexp",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "ITEM={\\<A}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** A :foo_bar:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-group",
+      "input": {
+        "text": "#+TAGS: [ grp : foo ]\n* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "grp"
+        ]
+      },
+      "text": "#+TAGS: [ grp : foo ]\n* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "#+TAGS: [ grp : foo ]\n* Top\n** B :foo:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-group-minus",
+      "input": {
+        "text": "#+TAGS: [ grp : foo ]\n* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c /",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "m",
+          "-grp"
+        ]
+      },
+      "text": "#+TAGS: [ grp : foo ]\n* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "#+TAGS: [ grp : foo ]\n* Top\n** A :foo_bar:\n** C :x@foo:\n** D :foobar:\n** E :bar_foo:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-backslash",
+      "input": {
+        "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+        "point": 0,
+        "keys": "C-c \\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "{foo\\>}"
+        ]
+      },
+      "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+      "visible": "* Top\n** B :foo:\n** C :x@foo:\n** E :bar_foo:",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    }
+  ]
+}

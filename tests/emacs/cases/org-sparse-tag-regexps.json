@@ -1,0 +1,183 @@
+[
+  {
+    "name": "tag-word-end",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "{foo\\>}"
+    ]
+  },
+  {
+    "name": "tag-word-start",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "{\\<foo}"
+    ]
+  },
+  {
+    "name": "tag-symbol",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "{\\_<foo\\_>}"
+    ]
+  },
+  {
+    "name": "tag-word",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "{\\bbar\\b}"
+    ]
+  },
+  {
+    "name": "tag-plain",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "{foo}"
+    ]
+  },
+  {
+    "name": "tag-negated",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "-{foo\\>}"
+    ]
+  },
+  {
+    "name": "tag-w-plus",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "{^\\w+$}"
+    ]
+  },
+  {
+    "name": "tag-syntax-symbol",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "{\\s_}"
+    ]
+  },
+  {
+    "name": "tag-not-word",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "{\\W}"
+    ]
+  },
+  {
+    "name": "tag-plus",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "+{foo\\>}+{\\<foo}"
+    ]
+  },
+  {
+    "name": "tag-prop-regexp",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "ITEM={\\<A}"
+    ]
+  },
+  {
+    "name": "tag-group",
+    "text": "#+TAGS: [ grp : foo ]\n* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "grp"
+    ]
+  },
+  {
+    "name": "tag-group-minus",
+    "text": "#+TAGS: [ grp : foo ]\n* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c /",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "m",
+      "-grp"
+    ]
+  },
+  {
+    "name": "tag-backslash",
+    "text": "* Top\n** A :foo_bar:\nbody a\n** B :foo:\nbody b\n** C :x@foo:\nbody c\n** D :foobar:\nbody d\n** E :bar_foo:\nbody e\n",
+    "keys": "C-c \\",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "{foo\\>}"
+    ]
+  }
+]
