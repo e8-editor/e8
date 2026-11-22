@@ -4043,6 +4043,14 @@ export function keepMarkersThroughMoves(keep: () => (e8.Marker | undefined)[]): 
   markerKeepers.push(keep);
 }
 
+/** Markers sorting entries puts back in their entry, as org-sort-entries puts back org-clock-marker. */
+const sortKeepers: (() => e8.Marker | undefined)[] = [];
+
+/** Registers a marker sorting entries keeps in its entry, where the others in the sorted text go to its start, as sort-subr leaves them. */
+export function keepMarkerThroughSort(keep: () => e8.Marker | undefined): void {
+  sortKeepers.push(keep);
+}
+
 /** The markers saved from the last subtree cut, each with how far into it it was, as org-markers-to-move. */
 let markersToMove: [e8.Marker, number][] = [];
 
@@ -6686,6 +6694,44 @@ function bufferPropertyKeys(): string[] {
  * the top-level entries, as org-sort-entries: by SORTING-TYPE, a
  * character of a, n, p, r, o, t, s, d, c, k or f, a capital reversing it.
  */
+/**
+ * Takes out a Local Variables list near the widened buffer's end, as
+ * org-preserve-local-variables does: from the last line within 3000
+ * characters of the end starting "# Local Variables:", in any case, to
+ * the end, unrecorded in the undo list. Returns the text taken.
+ */
+function takeLocalVariables(): e8.PropertizedString | undefined {
+  return e8.saveRestriction(() => {
+    e8.widen();
+    const max = e8.pointMax();
+    const from = Math.max(max - 3000, e8.pointMin());
+    const text = e8.bufferSubstringNoProperties(from, max);
+    const re = /^[ \t]*# +Local Variables:/gim;
+    let found: number | undefined;
+    for (let m = re.exec(text); m; m = re.exec(text)) {
+      // A match at the slice's start counts only where a line starts, as ^ needs.
+      if (m.index > 0 || from === e8.lineStart(lineAt(from))) found = m.index;
+    }
+    if (found === undefined) return undefined;
+    const at = from + charCount(text.slice(0, found));
+    const taken = e8.bufferSubstring(at, max);
+    e8.letBind({ "buffer-undo-list": true }, () => e8.deleteRegion(at, max));
+    return taken;
+  });
+}
+
+/** Puts back what takeLocalVariables took, at the widened buffer's end after a newline, as org-preserve-local-variables does. */
+function putBackLocalVariables(text: e8.PropertizedString): void {
+  e8.saveRestriction(() => {
+    e8.widen();
+    e8.saveExcursion(() => {
+      e8.gotoChar(e8.pointMax());
+      if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+      e8.letBind({ "buffer-undo-list": true }, () => e8.insert(text));
+    });
+  });
+}
+
 function sortEntries(withCase: boolean, sortingType?: string): void {
   let start: number;
   let end: number;
@@ -6760,109 +6806,139 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
       e8.gotoChar(e8.pointMax());
       if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
     });
-    // A Local Variables list at the buffer's end stays there, as org-preserve-local-variables keeps it.
-    const atBufferEnd = e8.saveRestriction(() => (e8.widen(), e8.pointMax())) === e8.pointMax();
-    const lv = atBufferEnd ? /^[^\n]*Local Variables:[^\n]*\n(?:[^\n]*\n)*?[^\n]*End:[^\n]*\n?$/m.exec(e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax())) : null;
-    const sortEnd = lv ? e8.pointMax() - charCount(lv[0]) : e8.pointMax();
-    const all = headings();
-    const level = stars.length;
-    const starsRe = new RegExp(`^${stars.replace(/\*/g, "\\*")} +`);
-    // The records, as sort-subr finds them: from one of the first's level to
-    // the next of that level, or the end when a higher heading comes first,
-    // as outline-forward-same-level fails.
-    const records: { h: Heading; start: number; end: number }[] = [];
-    let pos = beg;
-    while (pos < sortEnd) {
-      const h = all.find((x) => x.start === pos);
-      if (!h) break;
-      let recEnd = sortEnd;
-      for (const x of all) {
-        if (x.start <= pos || x.start >= sortEnd) continue;
-        if (x.level < level) break;
-        if (x.level === level) {
-          recEnd = x.start;
-          break;
+    // A Local Variables list near the buffer's end is taken out while the entries are sorted and put back
+    // after, unrecorded in the undo list, as org-preserve-local-variables does around sort-subr.
+    const localVariables = takeLocalVariables();
+    try {
+      const sortEnd = e8.pointMax();
+      const all = headings();
+      const level = stars.length;
+      const starsRe = new RegExp(`^${stars.replace(/\*/g, "\\*")} +`);
+      // The records, as sort-subr finds them: from one of the first's level to
+      // the next of that level, or the end when a higher heading comes first,
+      // as outline-forward-same-level fails.
+      const records: { h: Heading; start: number; end: number }[] = [];
+      let pos = beg;
+      while (pos < sortEnd) {
+        const h = all.find((x) => x.start === pos);
+        if (!h) break;
+        let recEnd = sortEnd;
+        for (const x of all) {
+          if (x.start <= pos || x.start >= sortEnd) continue;
+          if (x.level < level) break;
+          if (x.level === level) {
+            recEnd = x.start;
+            break;
+          }
         }
+        records.push({ h, start: pos, end: recEnd });
+        const next = all.find((x) => x.start >= recEnd && x.start < sortEnd && starsRe.test(e8.lineText(x.line)) && x.level === level);
+        if (!next || recEnd >= sortEnd) break;
+        pos = next.start;
       }
-      records.push({ h, start: pos, end: recEnd });
-      const next = all.find((x) => x.start >= recEnd && x.start < sortEnd && starsRe.test(e8.lineText(x.line)) && x.level === level);
-      if (!next || recEnd >= sortEnd) break;
-      pos = next.start;
-    }
-    const now = e8.currentTime();
-    const caseFn = (s: string) => (withCase ? s : s.toLowerCase());
-    const keyOf = (r: (typeof records)[number]): string | number => {
-      const text = e8.bufferSubstringNoProperties(r.start, r.end);
-      // The entry's own text, to its next heading, as org's searches bound by outline-next-heading.
-      const next = all.find((x) => x.start > r.start);
-      const entryText = e8.bufferSubstringNoProperties(r.start, next && next.start < r.end ? next.start : r.end);
-      const title = sortRemoveInvisible(r.h.title.replace(/^COMMENT[ \t]+/, ""));
-      switch (dcst) {
-        case "n":
-          return stringToNumber(title);
-        case "a":
-          return caseFn(title);
-        case "k":
-          return clockMinutes(text);
-        case "t": {
-          const m = /<\d{4}-\d{2}-\d{2}[^>\n]*>/.exec(entryText) ?? /[[<]\d{4}-\d{2}-\d{2}[^\]>\n]*[\]>]/.exec(entryText);
-          return m ? timestampSeconds(m[0]) : now;
+      const now = e8.currentTime();
+      const caseFn = (s: string) => (withCase ? s : s.toLowerCase());
+      const keyOf = (r: (typeof records)[number]): string | number => {
+        const text = e8.bufferSubstringNoProperties(r.start, r.end);
+        // The entry's own text, to its next heading, as org's searches bound by outline-next-heading.
+        const next = all.find((x) => x.start > r.start);
+        const entryText = e8.bufferSubstringNoProperties(r.start, next && next.start < r.end ? next.start : r.end);
+        const title = sortRemoveInvisible(r.h.title.replace(/^COMMENT[ \t]+/, ""));
+        switch (dcst) {
+          case "n":
+            return stringToNumber(title);
+          case "a":
+            return caseFn(title);
+          case "k":
+            return clockMinutes(text);
+          case "t": {
+            const m = /<\d{4}-\d{2}-\d{2}[^>\n]*>/.exec(entryText) ?? /[[<]\d{4}-\d{2}-\d{2}[^\]>\n]*[\]>]/.exec(entryText);
+            return m ? timestampSeconds(m[0]) : now;
+          }
+          case "c": {
+            // An inactive timestamp alone, as org-ts-regexp1: a date, its day and a time, no range or repeater.
+            const m = /^[ \t]*\[(\d{4}-\d{2}-\d{2}(?: +[^\]\s\d+>-]+)?(?: +\d{1,2}:\d{2})?)\]/m.exec(entryText);
+            return m ? timestampSeconds(m[1]) : now;
+          }
+          case "s": {
+            const m = /SCHEDULED: *<([^>]+)>/.exec(entryText);
+            return m ? timestampSeconds(m[1]) : now;
+          }
+          case "d": {
+            const m = /DEADLINE: *<([^>]+)>/.exec(entryText);
+            return m ? timestampSeconds(m[1]) : now;
+          }
+          case "p": {
+            const m = /\[#([A-Z0-9]+)\]/.exec(e8.lineText(r.h.line));
+            return (m ? m[1] : String(e8.variable("org-priority-default") ?? "B")).codePointAt(0)!;
+          }
+          case "r":
+            return entryGet(r.h.line, property!) ?? "";
+          case "o": {
+            const kws = allKeywords();
+            const m = r.h.todo;
+            const tail = m === undefined ? 0 : kws.length - kws.indexOf(m);
+            return m !== undefined && isDone(m) ? 99 + tail : 99 - tail;
+          }
+          case "f": {
+            const v = e8.saveExcursion(() => (e8.gotoChar(r.start), e8.funcall(getkey!)));
+            return typeof v === "string" ? caseFn(v) : (v as number);
+          }
+          default:
+            return e8.signal("error", `Invalid sorting type \`${type}'`);
         }
-        case "c": {
-          // An inactive timestamp alone, as org-ts-regexp1: a date, its day and a time, no range or repeater.
-          const m = /^[ \t]*\[(\d{4}-\d{2}-\d{2}(?: +[^\]\s\d+>-]+)?(?: +\d{1,2}:\d{2})?)\]/m.exec(entryText);
-          return m ? timestampSeconds(m[1]) : now;
+      };
+      const keyed = records.map((r, i) => ({ i, key: keyOf(r), text: e8.bufferSubstring(r.start, r.end) }));
+      // As sort-subr: reversed, the records are taken last first, sorted, and turned round again.
+      const reverse = dcst !== type;
+      const numeric = typeof keyed[0]?.key === "number";
+      const less = (a: string | number, b: string | number): boolean => {
+        if (dcst === "a") return e8.stringCollateLessp(String(a), String(b));
+        if (dcst === "f" && compare) return truthy(e8.funcall(compare, a, b) ?? null);
+        // The first key's kind picks the comparison, as sort-subr's does.
+        return numeric ? Number(a) < Number(b) : String(a) < String(b);
+      };
+      let list = reverse ? [...keyed].reverse() : keyed;
+      list = sortByPredicate(list, (x, y) => less(x.key, y.key));
+      if (reverse) list.reverse();
+      if (records.length > 0) {
+        // As sort-reorder-buffer: all but the last character of what is sorted
+        // deleted, the sorted text put before that one, and it deleted, so the
+        // markers in the text go to its start, and those at its end stay there.
+        const min = e8.pointMin();
+        const old = e8.bufferSubstringNoProperties(min, sortEnd);
+        const sorted = e8.concat(e8.bufferSubstring(min, records[0].start), ...list.map((k) => k.text), e8.bufferSubstring(records[records.length - 1].end, sortEnd));
+        // The kept markers, as Org marks the character before the clock's with a text property to find it again.
+        const kept: [e8.Marker, number, number][] = [];
+        for (const keep of sortKeepers) {
+          const m = keep();
+          const pos = m === undefined || e8.markerBuffer(m) !== e8.bufferName() ? undefined : e8.markerPosition(m);
+          if (m === undefined || pos === undefined || pos <= min || pos > sortEnd) continue;
+          const r = records.findIndex((x) => x.start <= pos - 1 && pos - 1 < x.end);
+          kept.push([m, r, r < 0 ? pos : pos - records[r].start]);
         }
-        case "s": {
-          const m = /SCHEDULED: *<([^>]+)>/.exec(entryText);
-          return m ? timestampSeconds(m[1]) : now;
+        const wasModified = e8.bufferModifiedP();
+        e8.saveExcursion(() => {
+          e8.deleteRegion(min, sortEnd - 1);
+          e8.gotoChar(min);
+          e8.insert(sorted);
+          const last = min + charCount(sorted.string);
+          e8.deleteRegion(last, last + 1);
+        });
+        // Each kept marker at the same place in its record, now where the record went.
+        const starts = new Map<number, number>();
+        // The text before the first record is as long as it was, as is the whole.
+        let at = records[0].start;
+        for (const k of list) {
+          starts.set(k.i, at);
+          at += charCount(k.text.string);
         }
-        case "d": {
-          const m = /DEADLINE: *<([^>]+)>/.exec(entryText);
-          return m ? timestampSeconds(m[1]) : now;
-        }
-        case "p": {
-          const m = /\[#([A-Z0-9]+)\]/.exec(e8.lineText(r.h.line));
-          return (m ? m[1] : String(e8.variable("org-priority-default") ?? "B")).codePointAt(0)!;
-        }
-        case "r":
-          return entryGet(r.h.line, property!) ?? "";
-        case "o": {
-          const kws = allKeywords();
-          const m = r.h.todo;
-          const tail = m === undefined ? 0 : kws.length - kws.indexOf(m);
-          return m !== undefined && isDone(m) ? 99 + tail : 99 - tail;
-        }
-        case "f": {
-          const v = e8.saveExcursion(() => (e8.gotoChar(r.start), e8.funcall(getkey!)));
-          return typeof v === "string" ? caseFn(v) : (v as number);
-        }
-        default:
-          return e8.signal("error", `Invalid sorting type \`${type}'`);
+        for (const [m, r, offset] of kept) e8.setMarker(m, r < 0 ? offset : starts.get(r)! + offset, e8.bufferName());
+        // Unchanged text leaves the buffer unmodified if it was, as with-buffer-unmodified-if-unchanged.
+        if (!wasModified && sorted.string === old) e8.restoreBufferModifiedP(false);
       }
-    };
-    const keyed = records.map((r, i) => ({ i, key: keyOf(r), text: e8.bufferSubstring(r.start, r.end) }));
-    // As sort-subr: reversed, the records are taken last first, sorted, and turned round again.
-    const reverse = dcst !== type;
-    const numeric = typeof keyed[0]?.key === "number";
-    const less = (a: string | number, b: string | number): boolean => {
-      if (dcst === "a") return e8.stringCollateLessp(String(a), String(b));
-      if (dcst === "f" && compare) return truthy(e8.funcall(compare, a, b) ?? null);
-      // The first key's kind picks the comparison, as sort-subr's does.
-      return numeric ? Number(a) < Number(b) : String(a) < String(b);
-    };
-    let list = reverse ? [...keyed].reverse() : keyed;
-    list = sortByPredicate(list, (x, y) => less(x.key, y.key));
-    if (reverse) list.reverse();
-    // Unchanged order leaves the buffer as it was, as with-buffer-unmodified-if-unchanged.
-    if (records.length > 0 && list.some((k, i) => k.i !== i)) {
-      const from = records[0].start;
-      const to = records[records.length - 1].end;
-      e8.saveExcursion(() => {
-        e8.deleteRegion(from, to);
-        e8.gotoChar(from);
-        for (const k of list) e8.insert(k.text);
-      });
+    } finally {
+      if (localVariables !== undefined) putBackLocalVariables(localVariables);
     }
   });
   // The drawers folded again, as org-cycle-hide-drawers 'all, and point at the start, as Org leaves it.
