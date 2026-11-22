@@ -132,3 +132,21 @@ fn dimming_outside_the_agenda_changes_nothing() {
     let overlays = s.eval_expression(&mut ed, "e8.overlaysIn(e8.pointMin(), e8.pointMax()).length").unwrap();
     assert_eq!(overlays, "0");
 }
+
+/// t in the agenda on a blocked entry is an error, as Org's
+/// org-agenda-todo calls org-todo interactively, and C-u t, forcing a note, too; the
+/// entry's line stays as it was.
+#[test]
+fn t_in_the_agenda_on_a_blocked_entry_signals() {
+    for keys in ["n n t", "n n C-u t"] {
+        let (mut ed, _s, _dir) = agenda_file("* TODO Parent\n** TODO child\n", &[("org-enforce-todo-dependencies", Value::Bool(true))]);
+        ed.call("org-todo-list", vec![]).unwrap();
+        let _ = ed.press(keys);
+        assert_eq!(
+            ed.take_error().map(|e| e.to_string()),
+            Some("TODO state change from TODO to DONE blocked (by \"TODO child\")".to_string()),
+            "{keys}"
+        );
+        assert!(agenda(&ed).contains("TODO Parent"), "{}", agenda(&ed));
+    }
+}
