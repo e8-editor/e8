@@ -13408,6 +13408,12 @@ declare global {
        */
       "org-capture-templates": Value;
       /**
+       * Whether exiting with a clock running asks to stop it and save its file. In Org it takes effect only through customize, which adds org-clock-kill-emacs-query to kill-emacs-query-functions or removes it; here it is read when E8 exits.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-ask-before-exiting": Value;
+      /**
        * The properties a new clock table's #+BEGIN: line starts with.
        *
        * Defined in packages/org-clock.ts.
@@ -13510,7 +13516,7 @@ declare global {
        */
       "org-clock-persist": Value;
       /**
-       * The file the clock and its history are saved to.
+       * The file the clock and its history are saved to; unset, org-clock-save.el in user-emacs-directory.
        *
        * Defined in packages/org-clock.ts.
        */
