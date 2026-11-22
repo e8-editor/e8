@@ -41,6 +41,7 @@ import {
   showEntry,
   showHeadingLine,
   showLevels,
+  showSetVisibility,
   showContext as foldShowContext,
   startupVisibility,
   toggleDrawerOrBlock,
@@ -3164,6 +3165,12 @@ function orgCycle(arg: e8.PrefixArg): void {
   {
     if (e8.runHookWithArgsUntilSuccess("org-cycle-tab-first-hook")) return;
     if (cycleLevel() || cycleItemIndentation()) return;
+    // Headings deeper than org-cycle-max-level are text to TAB, 2N-1 stars with odd levels only.
+    const maxLevel = e8.variable("org-cycle-max-level") ?? null;
+    if (truthy(maxLevel) && !(typeof maxLevel === "number" && Number.isInteger(maxLevel) && maxLevel >= 1)) {
+      e8.userError("\u2018org-cycle-max-level\u2019 must be a positive integer");
+    }
+    const nstars = typeof maxLevel === "number" ? (e8.variable("org-odd-levels-only") === true ? 2 * maxLevel - 1 : maxLevel) : Infinity;
     if (Array.isArray(arg) && arg[0] === 4) {
       globalCycle();
       return;
@@ -3180,7 +3187,9 @@ function orgCycle(arg: e8.PrefixArg): void {
       return;
     }
     // At the buffer's start, not on a heading, cycle globally with org-cycle-global-at-bob, the window left alone.
-    if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && parseHeading(lineAt()) === undefined) {
+    // Not on a heading TAB cycles, one past the limit being text.
+    const atBob = parseHeading(lineAt());
+    if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && (atBob === undefined || atBob.level > nstars)) {
       const hook = e8.variable("org-cycle-hook");
       const without = Array.isArray(hook) ? hook.filter((f) => f !== "org-cycle-optimize-window-after-visibility-change") : hook;
       e8.letBind({ "org-cycle-hook": without ?? null }, () => globalCycle());
@@ -3207,7 +3216,7 @@ function orgCycle(arg: e8.PrefixArg): void {
       return;
     }
     const here = headingHere();
-    if (here) {
+    if (here && here[0][here[1]].level <= nstars) {
       // On a hidden heading, the one cycled is the nearest that shows above,
       // as org-back-to-heading finds it.
       const [all, at] = here;
@@ -3236,6 +3245,54 @@ function orgCycle(arg: e8.PrefixArg): void {
     indentLine(line);
   }
 }
+
+e8.defineVariable({
+  name: "org-cycle-max-level",
+  doc: "The deepest level TAB cycles as a heading; deeper headings are text to it. With odd levels only, N means 2N-1 stars. nil for every level.",
+  value: null,
+});
+
+/**
+ * Changes every heading's level, a star at a time, as
+ * org-convert-to-odd-levels and org-convert-to-oddeven-levels do with
+ * org-odd-levels-only off: by stars(n) for a heading of n stars.
+ */
+function convertLevels(by: number, steps: (stars: number) => number): void {
+  // Within the narrowing, as Org's search from point-min goes; point kept as each change keeps it.
+  for (let line = lineAt(e8.pointMin()); line < e8.lineCount() && e8.lineStart(line) < e8.pointMax(); line++) {
+    if (e8.lineStart(line) < e8.pointMin()) continue;
+    const h = parseHeading(line);
+    if (!h || h.level < 2) continue;
+    for (let k = steps(h.level); k > 0; k--) changeLevel(parseHeading(line)!, by, false);
+  }
+}
+
+e8.defineCommand({
+  name: "org-convert-to-odd-levels",
+  doc: "Make a file's headings use odd levels only: level 2 becomes 3, level 3 becomes 5 and so on, asking first.",
+  run: () => {
+    if (e8.yesOrNoP("Are you sure you want to globally change levels to odd? ")) convertLevels(1, (n) => n - 1);
+  },
+});
+
+e8.defineCommand({
+  name: "org-convert-to-oddeven-levels",
+  doc: "Make a file with odd levels only use every level: level 3 becomes 2, level 5 becomes 3 and so on, asking first. A file with an even level cannot be converted.",
+  run: () => {
+    e8.gotoChar(e8.pointMin());
+    // A heading of an even number of stars, as Org's ^\(\*\*\)+ finds it, point left after it.
+    for (let line = lineAt(e8.pointMin()); line < e8.lineCount() && e8.lineStart(line) < e8.pointMax(); line++) {
+      if (e8.lineStart(line) < e8.pointMin()) continue;
+      const m = /^((?:\*\*)+) /.exec(e8.lineText(line));
+      if (m) {
+        e8.gotoChar(e8.lineStart(line) + m[0].length);
+        showSetVisibility("canonical");
+        e8.signal("error", "Not all levels are odd in this file.  Conversion not possible");
+      }
+    }
+    if (e8.yesOrNoP("Are you sure you want to globally change levels to odd-even? ")) convertLevels(-1, (n) => Math.floor((n - 1) / 2));
+  },
+});
 
 /** Cycles an item's visibility, as org-cycle-internal-local does for items. */
 function cycleItem(line: number): void {
@@ -3351,8 +3408,11 @@ const shiftTab = e8.defineCommand({
       e8.runHooks("org-cycle-hook", "overview");
       return;
     }
-    // As org-cycle-global does: C-u means the startup visibility, else C-u TAB.
-    orgCycle(Array.isArray(prefix) ? [16] : [4]);
+    // As org-cycle-global does: C-u means the startup visibility, without org-cycle's checks, else C-u TAB.
+    if (Array.isArray(prefix)) {
+      startupVisibility();
+      e8.message("Startup visibility, plus VISIBILITY properties.", { log: false });
+    } else orgCycle([4]);
   },
 });
 

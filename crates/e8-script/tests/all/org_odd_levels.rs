@@ -113,3 +113,37 @@ fn imenu_counts_odd_levels() {
     assert!(!tree.contains(r#"\"C\""#), "{tree}");
     assert!(tree.contains(r#"[\"D\",[[\"E\","#), "{tree}");
 }
+
+/// The convert commands keep within a narrowing, as Org's search from
+/// point-min does, the even-level check too (results from Emacs 30.2).
+#[test]
+fn converting_levels_keeps_within_the_narrowing() {
+    for (text, from, to, command, after) in [
+        ("* A\n** B\n* C\n** D\n** E\n", 9, 23, "org-convert-to-odd-levels", "* A\n** B\n* C\n*** D\n*** E\n"),
+        ("* A\n** B\n* C\n** D\n", 0, 9, "org-convert-to-odd-levels", "* A\n*** B\n* C\n** D\n"),
+        ("* A\n** B\n* C\n*** D\n", 9, 19, "org-convert-to-oddeven-levels", "* A\n** B\n* C\n** D\n"),
+    ] {
+        let mut ed = Editor::new();
+        let s = Scripting::new(&mut ed).unwrap();
+        ed.window_buffer_mut().set_text(text);
+        ed.call("org-mode", vec![]).unwrap();
+        s.eval_expression(&mut ed, &format!("e8.narrowToRegion({from}, {to})")).unwrap();
+        // Every question answered yes.
+        ed.set_input_source(|ed| {
+            if ed.prompt().is_none() {
+                return false;
+            }
+            ed.type_text("yes");
+            ed.handle_key(e8_core::Key::parse("RET").unwrap());
+            true
+        });
+        ed.call(command, vec![]).unwrap_or_else(|e| panic!("{command}: {e}"));
+        ed.call("widen", vec![]).unwrap();
+        assert_eq!(text_of(&ed), after, "{command} on {text:?}");
+    }
+}
+
+fn text_of(ed: &Editor) -> String {
+    let b = ed.window_buffer();
+    b.slice(0..b.len())
+}

@@ -1,0 +1,370 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-tab-once",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-tab-twice",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-tab-three-times",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "TAB TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-tab-on-b",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "S-<tab> TAB C-n TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-tab-on-b-twice",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "S-<tab> TAB C-n TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-tab-on-deep-heading",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "TAB",
+  "point": 19,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-overview",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "S-<tab>",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-contents",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "S-<tab> S-<tab>",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-all",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "S-<tab> S-<tab> S-<tab>",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-zero",
+  "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 0
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-odd",
+  "text": "* A\n*** B\nbody\n***** C\ntext\n* D\n",
+  "keys": "S-<tab> S-<tab>",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2,
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-odd-tab",
+  "text": "* A\n*** B\nbody\n***** C\ntext\n* D\n",
+  "keys": "TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2,
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "convert-to-odd",
+  "text": "* A\n** B\n*** C\n* D\n** E\n",
+  "keys": "",
+  "point": 0,
+  "vars": {},
+  "call": [
+   "org-convert-to-odd-levels"
+  ],
+  "answers": [
+   "yes"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "convert-to-oddeven",
+  "text": "* A\n*** B\n***** C\n* D\n*** E\n",
+  "keys": "",
+  "point": 0,
+  "vars": {},
+  "call": [
+   "org-convert-to-oddeven-levels"
+  ],
+  "answers": [
+   "yes"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "convert-to-oddeven-refused",
+  "text": "* A\n** B\n",
+  "keys": "",
+  "point": 0,
+  "vars": {},
+  "call": [
+   "org-convert-to-oddeven-levels"
+  ],
+  "answers": [
+   "yes"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "convert-to-odd-declined",
+  "text": "* A\n** B\n",
+  "keys": "",
+  "point": 0,
+  "vars": {},
+  "call": [
+   "org-convert-to-odd-levels"
+  ],
+  "answers": [
+   "no"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-only-deep-children",
+  "text": "* A\n*** C\ntext\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-only-deep-children-twice",
+  "text": "* A\n*** C\ntext\n* D\n",
+  "keys": "TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-only-deep-children-thrice",
+  "text": "* A\n*** C\ntext\n* D\n",
+  "keys": "TAB TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-one-heading-children",
+  "text": "* A\n** B\n* D\n",
+  "keys": "TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 1
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-tab-on-deep-heading-folded",
+  "text": "* A\n** B\n*** C\ntext c\n* D\n",
+  "keys": "S-<tab> S-<tab> C-n C-n TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-not-an-integer",
+  "text": "* A\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": "'two"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-global-at-bob",
+  "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+  "keys": "TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2,
+   "org-cycle-global-at-bob": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "max-level-global-at-bob-twice",
+  "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+  "keys": "TAB TAB",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": 2,
+   "org-cycle-global-at-bob": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-s-tab-with-a-bad-limit",
+  "text": "* A\n** B\n",
+  "keys": "C-u S-<tab>",
+  "point": 0,
+  "vars": {
+   "org-cycle-max-level": -1
+  },
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "convert-to-odd-keeps-point",
+  "text": "* A\n** B\n*** C\n",
+  "keys": "",
+  "point": 7,
+  "vars": {},
+  "call": [
+   "org-convert-to-odd-levels"
+  ],
+  "answers": [
+   "yes"
+  ]
+ }
+]

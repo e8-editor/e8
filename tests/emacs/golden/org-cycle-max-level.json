@@ -1,0 +1,682 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "max-level-tab-once",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-tab-twice",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-tab-three-times",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-tab-on-b",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "S-<tab> TAB C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n** B\nbody b\n*** C\n* D\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-tab-on-b-twice",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "S-<tab> TAB C-n TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-tab-on-deep-heading",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 19,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-overview",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-contents",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "S-<tab> S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n** B\n*** C\n**** C1\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-all",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "S-<tab> S-<tab> S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-zero",
+      "input": {
+        "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 0
+        }
+      },
+      "text": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "visible": "* A\n** B\nbody b\n*** C\ntext c\n**** C1\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘org-cycle-max-level’ must be a positive integer"
+    },
+    {
+      "name": "max-level-odd",
+      "input": {
+        "text": "* A\n*** B\nbody\n***** C\ntext\n* D\n",
+        "point": 0,
+        "keys": "S-<tab> S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2,
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** B\nbody\n***** C\ntext\n* D\n",
+      "visible": "* A\n*** B\n***** C\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-odd-tab",
+      "input": {
+        "text": "* A\n*** B\nbody\n***** C\ntext\n* D\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2,
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* A\n*** B\nbody\n***** C\ntext\n* D\n",
+      "visible": "* A\n*** B\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "convert-to-odd",
+      "input": {
+        "text": "* A\n** B\n*** C\n* D\n** E\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-convert-to-odd-levels"
+        ],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "yes"
+        ]
+      },
+      "text": "* A\n*** B\n***** C\n* D\n*** E\n",
+      "visible": "* A\n*** B\n***** C\n* D\n*** E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "convert-to-oddeven",
+      "input": {
+        "text": "* A\n*** B\n***** C\n* D\n*** E\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-convert-to-oddeven-levels"
+        ],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "yes"
+        ]
+      },
+      "text": "* A\n** B\n*** C\n* D\n** E\n",
+      "visible": "* A\n** B\n*** C\n* D\n** E\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "convert-to-oddeven-refused",
+      "input": {
+        "text": "* A\n** B\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-convert-to-oddeven-levels"
+        ],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "yes"
+        ]
+      },
+      "text": "* A\n** B\n",
+      "visible": "* A\n** B\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not all levels are odd in this file.  Conversion not possible"
+    },
+    {
+      "name": "convert-to-odd-declined",
+      "input": {
+        "text": "* A\n** B\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-convert-to-odd-levels"
+        ],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "no"
+        ]
+      },
+      "text": "* A\n** B\n",
+      "visible": "* A\n** B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-only-deep-children",
+      "input": {
+        "text": "* A\n*** C\ntext\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n*** C\ntext\n* D\n",
+      "visible": "* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "max-level-only-deep-children-twice",
+      "input": {
+        "text": "* A\n*** C\ntext\n* D\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n*** C\ntext\n* D\n",
+      "visible": "* A\n*** C\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "max-level-only-deep-children-thrice",
+      "input": {
+        "text": "* A\n*** C\ntext\n* D\n",
+        "point": 0,
+        "keys": "TAB TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n*** C\ntext\n* D\n",
+      "visible": "* A\n*** C\ntext\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "max-level-one-heading-children",
+      "input": {
+        "text": "* A\n** B\n* D\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-max-level": 1
+        }
+      },
+      "text": "* A\n** B\n* D\n",
+      "visible": "* A\n** B\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "max-level-tab-on-deep-heading-folded",
+      "input": {
+        "text": "* A\n** B\n*** C\ntext c\n* D\n",
+        "point": 0,
+        "keys": "S-<tab> S-<tab> C-n C-n TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-max-level": 2
+        }
+      },
+      "text": "* A\n** B\n*** C\ntext c\n* D\n",
+      "visible": "* A\n** B\n*** C\n* D\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "max-level-not-an-integer",
+      "input": {
+        "text": "* A\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": "'two"
+        }
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘org-cycle-max-level’ must be a positive integer"
+    },
+    {
+      "name": "max-level-global-at-bob",
+      "input": {
+        "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+        "point": 0,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2,
+          "org-cycle-global-at-bob": true
+        }
+      },
+      "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+      "visible": "*** C\n* A\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "max-level-global-at-bob-twice",
+      "input": {
+        "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+        "point": 0,
+        "keys": "TAB TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-cycle-max-level": 2,
+          "org-cycle-global-at-bob": true
+        }
+      },
+      "text": "*** C\ntext c\n* A\n** B\nbody\n* D\n",
+      "visible": "*** C\n* A\n** B\n* D\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "c-u-s-tab-with-a-bad-limit",
+      "input": {
+        "text": "* A\n** B\n",
+        "point": 0,
+        "keys": "C-u S-<tab>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true,
+        "vars": {
+          "org-cycle-max-level": -1
+        }
+      },
+      "text": "* A\n** B\n",
+      "visible": "* A\n** B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "convert-to-odd-keeps-point",
+      "input": {
+        "text": "* A\n** B\n*** C\n",
+        "point": 7,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-convert-to-odd-levels"
+        ],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "yes"
+        ]
+      },
+      "text": "* A\n*** B\n***** C\n",
+      "visible": "* A\n*** B\n***** C\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}
