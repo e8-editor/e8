@@ -6192,6 +6192,12 @@ declare global {
        */
       "org-occur-in-agenda-files": [regexp: string];
       /**
+       * Make a link to here, as org-store-link does, and list its places in the agenda files and org-agenda-text-search-extra-files, as org-occur-in-agenda-files.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-occur-link-in-agenda-files": [];
+      /**
        * Follow the link point is on: [[*Heading]], [[#custom-id]], [[target]] and [[Heading]] within the buffer, and file links such as [[file:notes.org::*Heading]] in another buffer.
        *
        * Defined in packages/org.ts.
@@ -13327,6 +13333,12 @@ declare global {
        */
       "org-agenda-skip-comment-trees": Value;
       /**
+       * Whether tags-todo views and TODO-only tag matches leave out entries as the TODO list's ignore options say.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-tags-todo-honor-ignore-options": Value;
+      /**
        * Files the search view searches besides org-agenda-files.
        *
        * Defined in packages/org-agenda.ts.
@@ -13338,6 +13350,42 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-time-grid": Value;
+      /**
+       * Whether the TODO list leaves out entries with a deadline: t for those due soon, as the agenda warns of them, all, far for those not due soon, future, past, or a number of days.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-deadlines": Value;
+      /**
+       * Whether the TODO list leaves out scheduled entries: t for all, future, past, or a number of days.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-scheduled": Value;
+      /**
+       * Whether future and past compare timestamps by the second rather than the day.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-time-comparison-use-seconds": Value;
+      /**
+       * Whether the TODO list leaves out entries with an active timestamp that is not a planning one: t for any, future, past, or a number of days (from today, before it when negative).
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-timestamp": Value;
+      /**
+       * Whether the TODO list leaves out entries with an active timestamp, a planning one or not.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-with-date": Value;
+      /**
+       * Whether the TODO list shows TODO entries below another, or only the first of each subtree.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-list-sublevels": Value;
       /**
        * Whether today's agenda draws a time grid among the entries with times, as org-agenda-time-grid says.
        *

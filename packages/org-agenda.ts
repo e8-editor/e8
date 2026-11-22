@@ -23,7 +23,7 @@ import {
   scanTags,
   today,
 } from "org";
-import { setAgendaEntryHere } from "ol";
+import { setAgendaEntryHere, storeLink } from "ol";
 import { addArchiveFiles } from "org-archive";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
@@ -614,18 +614,147 @@ function weekStart(day: number): number {
   return day - ((new Date(day * 86400000).getUTCDay() + 6) % 7);
 }
 
+// Leaving TODO entries out of the TODO list for their timestamps, as
+// org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item does.
+
+for (const [name, doc] of [
+  ["org-agenda-todo-ignore-with-date", "Whether the TODO list leaves out entries with an active timestamp, a planning one or not."],
+  [
+    "org-agenda-todo-ignore-timestamp",
+    "Whether the TODO list leaves out entries with an active timestamp that is not a planning one: t for any, future, past, or a number of days (from today, before it when negative).",
+  ],
+  ["org-agenda-todo-ignore-scheduled", "Whether the TODO list leaves out scheduled entries: t for all, future, past, or a number of days."],
+  [
+    "org-agenda-todo-ignore-deadlines",
+    "Whether the TODO list leaves out entries with a deadline: t for those due soon, as the agenda warns of them, all, far for those not due soon, future, past, or a number of days.",
+  ],
+  ["org-agenda-todo-ignore-time-comparison-use-seconds", "Whether future and past compare timestamps by the second rather than the day."],
+  ["org-agenda-tags-todo-honor-ignore-options", "Whether tags-todo views and TODO-only tag matches leave out entries as the TODO list's ignore options say."],
+] as const) {
+  e8.defineVariable({ name, doc, value: null });
+}
+e8.defineVariable({
+  name: "org-agenda-todo-list-sublevels",
+  doc: "Whether the TODO list shows TODO entries below another, or only the first of each subtree.",
+  value: true,
+});
+
+/** An option's value, a symbol read as its name. */
+const optionValue = (name: string): e8.Value => {
+  const v = e8.variable(name) ?? null;
+  return typeof v === "symbol" ? e8.symbolName(v) : v;
+};
+
+/** Days, or seconds with org-agenda-todo-ignore-time-comparison-use-seconds, from now to a timestamp, as org-timestamp-to-now. */
+function timestampToNow(ts: string): number {
+  const m = /(\d{4})-(\d{2})-(\d{2})(?:[^\d]*?(\d{1,2}):(\d{2}))?/.exec(ts);
+  if (!m) return 0;
+  const now = today(true);
+  if (truthy(e8.variable("org-agenda-todo-ignore-time-comparison-use-seconds") ?? null)) {
+    const t = Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4] ?? 0), Number(m[5] ?? 0));
+    const n = Date.UTC(now.year, now.month - 1, now.day, now.hour ?? 0, now.minute ?? 0);
+    return (t - n) / 1000;
+  }
+  return (Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])) - Date.UTC(now.year, now.month - 1, now.day)) / 86400000;
+}
+
+/** Whether a timestamp is N days or more away, or for a negative N that many days or more ago, as org-agenda-todo-custom-ignore-p. */
+function customIgnore(ts: string, n: number): boolean {
+  const days = timestampToNow(ts);
+  return n >= 0 ? days >= n : days <= n;
+}
+
+/** Whether an option's future, past, number or other value says to ignore the timestamp. */
+function ignoredBy(option: e8.Value, ts: string): boolean {
+  if (option === "future") return timestampToNow(ts) > 0;
+  if (option === "past") return timestampToNow(ts) <= 0;
+  if (typeof option === "number") return customIgnore(ts, option);
+  return true;
+}
+
+/**
+ * Whether the TODO entry at START is left out of the TODO list for its
+ * timestamps, up to END, as org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item.
+ */
+export function ignoreTodoForTimestamp(start: number, end: number, done: boolean): boolean {
+  const withDate = optionValue("org-agenda-todo-ignore-with-date");
+  const scheduled = optionValue("org-agenda-todo-ignore-scheduled");
+  const deadlines = optionValue("org-agenda-todo-ignore-deadlines");
+  const stamps = optionValue("org-agenda-todo-ignore-timestamp");
+  if (!truthy(withDate) && !truthy(scheduled) && !truthy(deadlines) && !truthy(stamps)) return false;
+  const text = e8.bufferSubstringNoProperties(start, end);
+  // Each search goes on from where the one before left point, as Org's
+  // re-search-forward calls do one after another in one save-excursion.
+  let at = 0;
+  const search = (re: RegExp): RegExpExecArray | null => {
+    const g = new RegExp(re.source, "g");
+    g.lastIndex = at;
+    const m = g.exec(text);
+    if (m) at = m.index + m[0].length;
+    return m;
+  };
+  const anyStamp = /<([0-9]{4}-[0-9]{2}-[0-9]{2}(?: .*?)?)>/;
+  if (truthy(withDate) && search(anyStamp)) return true;
+  if (truthy(scheduled)) {
+    const m = search(/\bSCHEDULED: *<([^>]+)>/);
+    if (m && ignoredBy(scheduled, m[1])) return true;
+  }
+  if (truthy(deadlines)) {
+    const m = search(/\bDEADLINE: *<([^>]+)>/);
+    if (m) {
+      // Due soon, as org-deadline-close-p: within its warning days, and not done.
+      const close = () => timestampToNow(m[1]) <= wdays(m[1], false) && !done;
+      if (deadlines === "all") return true;
+      if (deadlines === "far") {
+        if (!close()) return true;
+      } else if (deadlines === "future" || deadlines === "past" || typeof deadlines === "number") {
+        if (ignoredBy(deadlines, m[1])) return true;
+      } else if (close()) return true;
+    }
+  }
+  if (truthy(stamps)) {
+    // From point, without planning timestamps: the first other one.
+    const other = anyStamp.exec(text.slice(at).replace(/\bSCHEDULED: *<[^>]+>|\bDEADLINE: *<[^>]+>/g, ""));
+    if (other && ignoredBy(stamps, other[1])) return true;
+  }
+  return false;
+}
+
+// For org-scan-tags, which org.ts has, with org-agenda-tags-todo-honor-ignore-options.
+e8.defun("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item", (end?: number | null) => {
+  const all = headings();
+  const i = headingIndex(all, e8.lineOf(e8.point()));
+  // From point, as Org searches.
+  const start = e8.point();
+  const stop = typeof end === "number" ? end : (all[(i ?? -1) + 1]?.start ?? e8.pointMax());
+  return ignoreTodoForTimestamp(start, stop, i !== undefined && isDone(all[i].todo)) || null;
+});
+
 /** The TODO items that are not done, as org-todo-list shows them. */
 function todoList(): void {
   const buffers = agendaBuffers();
   const items: AgendaItem[] = [];
   const keywords = new Set<string>();
+  const sublevels = truthy(e8.variable("org-agenda-todo-list-sublevels") ?? null);
   for (const buffer of buffers) {
     e8.withCurrentBuffer(buffer, () => widened(() => {
       for (const k of allKeywords()) keywords.add(k);
       const all = headings();
       const cats = categories(all);
+      const skipped = skippedHeadings(all);
+      // Below a TODO entry, without org-agenda-todo-list-sublevels: the level its subtree is at.
+      let below: number | undefined;
       for (const [i, h] of all.entries()) {
+        if (below !== undefined && h.level > below) continue;
+        below = undefined;
+        if (skipped[i]) continue;
         if (h.todo === undefined || isDone(h.todo)) continue;
+        const end = all[i + 1]?.start ?? e8.pointMax();
+        if (ignoreTodoForTimestamp(h.start, end, false)) {
+          if (!sublevels) below = h.level;
+          continue;
+        }
+        if (!sublevels) below = h.level;
         const cat = cats[i];
         const item = { cat, leader: "", removeTimestamp: false, buffer, pos: h.start, heading: h.start };
         items.push({ ...item, text: agendaLine(h, cat, "", false), urgency: 1 + priorityValue(h) });
@@ -978,6 +1107,17 @@ const occurInAgendaFiles = e8.defineCommand({
       return buffer;
     });
     multiOccur(buffers, regexp);
+  },
+});
+
+e8.defineCommand({
+  name: "org-occur-link-in-agenda-files",
+  doc: "Make a link to here, as org-store-link does, and list its places in the agenda files and org-agenda-text-search-extra-files, as org-occur-in-agenda-files.",
+  run: () => {
+    // As Org's condition-case: the error's message stands for the link.
+    const link = e8.conditionCase(() => storeLink(null, false), { error: () => "Unable to create a link to here" });
+    if (typeof link !== "string") e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil");
+    e8.call(occurInAgendaFiles, regexpQuote(link as string));
   },
 });
 
