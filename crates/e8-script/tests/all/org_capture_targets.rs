@@ -68,3 +68,52 @@ fn a_file_a_function_names() {
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert_eq!(std::fs::read_to_string(&notes).unwrap(), "* One\n* new\n");
 }
+
+/// A template can be a file's contents or what a function gives, as
+/// org-capture-get-template reads them; a missing one says so.
+#[test]
+fn templates_from_a_file_and_a_function() {
+    let (mut ed, s, dir) = editor("[]");
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "* One\n").unwrap();
+    std::fs::write(dir.path().join("tpl.txt"), "* From file %?\n").unwrap();
+    let d = dir.path().display();
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        format!(
+            r#"e8.defun("my-template", () => "* From function %?\n");
+            e8.setVariable("org-capture-templates", [
+              ["f", "File", "entry", ["file", "{d}/notes.org"], ["file", "{d}/tpl.txt"]],
+              ["g", "Fn", "entry", ["file", "{d}/notes.org"], ["function", e8.intern("my-template")]],
+              ["m", "Missing", "entry", ["file", "{d}/notes.org"], ["file", "{d}/none.txt"]]]);"#
+        ),
+    )
+    .unwrap();
+    ed.press("M-x o r g - c a p t u r e RET f C-c C-c").unwrap();
+    ed.press("M-x o r g - c a p t u r e RET g C-c C-c").unwrap();
+    ed.press("M-x o r g - c a p t u r e RET m C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    let text = std::fs::read_to_string(&notes).unwrap();
+    assert!(text.contains("* From file \n* From function \n* Template file "), "{text}");
+}
+
+/// An error placing the template is said with the template's key, and the
+/// target's point is left where it was.
+#[test]
+fn an_error_placing_names_the_template() {
+    let (mut ed, s, dir) = editor("[]");
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "* One\n| a |\n|---|\n| 1 |\n").unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        format!(r#"e8.setVariable("org-capture-templates", [["t", "T", "table-line", ["file", "{}"], "| %? |", ":table-line-pos", "III+1"]]);"#, notes.display()),
+    )
+    .unwrap();
+    ed.call("find-file", vec![e8_core::Arg::Str(notes.to_str().unwrap().into())]).unwrap();
+    ed.press("M-x o r g - c a p t u r e RET t").unwrap();
+    let err = ed.take_error().map(|e| e.to_string()).unwrap_or_default();
+    assert!(err.starts_with("Capture template \u{2018}t\u{2019}: Invalid table line specification"), "{err}");
+    assert_eq!(ed.window_buffer().point(), 0);
+}

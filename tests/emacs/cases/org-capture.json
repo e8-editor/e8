@@ -1511,5 +1511,1280 @@
     "call": [
       "org-capture"
     ]
+  },
+  {
+    "name": "capture-item-append-el1-abort",
+    "text": "* one\n* Inbox\n- a\n- b\n\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":empty-lines",
+        1
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-append-el1",
+    "text": "* one\n* Inbox\n- a\n- b\n\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":empty-lines",
+        1
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-prepend-el1",
+    "text": "* one\n* Inbox\n- a\n- b\n\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":empty-lines",
+        1,
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-prepend-el1-abort",
+    "text": "* one\n* Inbox\n- a\n- b\n\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":empty-lines",
+        1,
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-newlist-el1-abort",
+    "text": "* one\n* Inbox\ntext\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":empty-lines",
+        1
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-newlist-el1",
+    "text": "* one\n* Inbox\ntext\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":empty-lines",
+        1
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-prepend-ordered-mismatch",
+    "text": "* Inbox\n1. a\n2. b\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-prepend-unordered-mismatch",
+    "text": "* Inbox\n- a\n- b\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "1. %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-append-ordered-mismatch",
+    "text": "* Inbox\n1. a\n2. b\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-star-template",
+    "text": "* Inbox\n- a\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-nobullet-indented",
+    "text": "* Inbox\n  - a\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "%?first\nsecond"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-named-list-prepend",
+    "text": "* Inbox\n#+NAME: l\n- a\n- b\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-checkitem-cookie",
+    "text": "* Shop [0/1]\n- [ ] milk\n",
+    "point": 2,
+    "keys": "e g g s C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "checkitem",
+        [
+          "file+headline",
+          "FILE",
+          "Shop"
+        ],
+        ""
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-pos-I-5",
+    "text": "* one\n* Inbox\n| a |\n|---|\n| 1 |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |",
+        ":table-line-pos",
+        "I-5"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-pos-I+1",
+    "text": "* one\n* Inbox\n| a |\n|---|\n| 1 |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |",
+        ":table-line-pos",
+        "I+1"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-pos-I+9",
+    "text": "* one\n* Inbox\n| a |\n|---|\n| 1 |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |",
+        ":table-line-pos",
+        "I+9"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-pos-II+1",
+    "text": "* one\n* Inbox\n| a |\n|---|\n| 1 |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |",
+        ":table-line-pos",
+        "II+1"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-pos-I-1-hline-first",
+    "text": "* Inbox\n|---|\n| a |\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |",
+        ":table-line-pos",
+        "I-1"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-tblfm-append",
+    "text": "* Inbox\n| a |\n|---|\n| 1 |\n#+TBLFM: @1$1=a\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-new-abort",
+    "text": "* one\n* Inbox\ntext\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-nohline-prepend",
+    "text": "* Inbox\n| a |\n| b |\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-entry-el1-abort",
+    "text": "* one\n* Inbox\n** old\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?",
+        ":empty-lines",
+        1
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-plain-el1-abort",
+    "text": "* one\n* Inbox\nbody\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "%?",
+        ":empty-lines",
+        1
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-entry-regexp-nonheading-prepend",
+    "text": "intro\n* one\nmarker\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+regexp",
+          "FILE",
+          "marker"
+        ],
+        "* %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-regexp",
+    "text": "* one\nmarker\n- a\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+regexp",
+          "FILE",
+          "marker"
+        ],
+        "- %?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-regexp-prepend",
+    "text": "* one\nmarker\n- a\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+regexp",
+          "FILE",
+          "marker"
+        ],
+        "- %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-regexp",
+    "text": "* one\nmarker\n| a |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+regexp",
+          "FILE",
+          "marker"
+        ],
+        "| %? |"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-no-final-newline",
+    "text": "* Inbox\n- a",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-no-final-newline-abort",
+    "text": "* Inbox\n- a",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-blank-interior",
+    "text": "* Inbox\n- a\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "  - x\n     \n    y%?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-no-final-newline-abort",
+    "text": "* Inbox\n| a |",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-nested-first",
+    "text": "* Inbox\ntext\n- a\n  - b\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-in-file-target-prepend-before-heading",
+    "text": "intro\n* one\n- a\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file",
+          "FILE"
+        ],
+        "- %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-pos-I+0",
+    "text": "* one\n* Inbox\n| a |\n|---|\n| 1 |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |",
+        ":table-line-pos",
+        "I+0"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-plain-regexp-entry",
+    "text": "* one\n* marker\nbody\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file+regexp",
+          "FILE",
+          "marker"
+        ],
+        "%?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-entry-regexp-heading-prepend",
+    "text": "* one\n** marker\n*** kid\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+regexp",
+          "FILE",
+          "marker"
+        ],
+        "* %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-checkitem-empty-template-new-list",
+    "text": "* Shop [/]\nbody\n",
+    "point": 2,
+    "keys": "e g g s C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "checkitem",
+        [
+          "file+headline",
+          "FILE",
+          "Shop"
+        ],
+        ""
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-el2-prepend-list-after-blank",
+    "text": "* Inbox\n\n- a\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":prepend",
+        true,
+        ":empty-lines",
+        2
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-line-el-abort-prepend",
+    "text": "* one\n* Inbox\n| a |\n|---|\n| 1 |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-item-prepend-no-list-props",
+    "text": "* Inbox\n:PROPERTIES:\n:X: 1\n:END:\ntext\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "- %?",
+        ":prepend",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-two-lines",
+    "text": "* one\n* Inbox\n| a |\n|---|\n| 1 |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |\n| z |"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-table-two-lines-abort",
+    "text": "* one\n* Inbox\n| a |\n|---|\n| 1 |\n* two\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "| %? |\n| z |"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
   }
 ]
