@@ -1516,7 +1516,8 @@ const agendaTodo = e8.defineCommand({
     const item = agendaItemHere();
     e8.withCurrentBuffer(item.buffer, () => widened(() => {
       e8.gotoChar(headingOf(item));
-      e8.callWithPrefix(e8.prefixArg(), "org-todo");
+      // Interactively, with the agenda's prefix argument, as Org's call-interactively: a blocked change is then an error.
+      e8.funcallInteractively("org-todo");
     }));
     redrawEntry(item);
   },

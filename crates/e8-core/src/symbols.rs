@@ -257,7 +257,7 @@ impl Editor {
     /// A command's arguments from values, as funcall and advice pass them:
     /// a buffer by its name, and counts and prefix arguments left out
     /// taken from the prefix argument, as an &optional one is nil.
-    fn args_from_values(&self, command: &Command, values: &[Value]) -> Result<Vec<Arg>> {
+    pub(crate) fn args_from_values(&self, command: &Command, values: &[Value]) -> Result<Vec<Arg>> {
         let mut args = Vec::new();
         for (p, v) in command.params.iter().zip(values) {
             let v = match v {

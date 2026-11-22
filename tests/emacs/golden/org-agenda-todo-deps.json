@@ -1,0 +1,92 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "agenda-t-cycles-forward",
+      "input": {
+        "text": "* TODO A\n",
+        "point": 0,
+        "keys": "n n t t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-deps-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-deps-agenda:A\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-deps-agenda:A\n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 106,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "agenda-t-with-number",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n* TODO A\n",
+        "point": 0,
+        "keys": "n n C-2 t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-deps-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)NEXT (3)TODO\n  e8-deps-agenda:NEXT A\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)NEXT (3)TODO\n  e8-deps-agenda:NEXT A\n",
+      "point": 114,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 114,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    }
+  ]
+}

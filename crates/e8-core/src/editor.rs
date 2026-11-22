@@ -308,6 +308,10 @@ pub struct Editor {
     /// Whether the running command was started by keys or M-x rather than
     /// called from code (Emacs's `called-interactively-p`).
     interactive: bool,
+    /// Whether the next command called from code runs as if called
+    /// interactively, as `funcall-interactively` makes it; only that call,
+    /// not those it makes.
+    call_interactively_next: bool,
     /// The prefix argument for the next command, as prefix commands leave it
     /// (Emacs's `prefix-arg`).
     pub(crate) prefix_arg: Option<PrefixArg>,
@@ -603,6 +607,7 @@ impl Editor {
             treesit_notifying: false,
             next_hook_id: 0,
             interactive: false,
+            call_interactively_next: false,
             prefix_arg: None,
             current_prefix_arg: None,
             record_next_command: false,
@@ -741,7 +746,8 @@ impl Editor {
             self.buffer_mut().undo_boundary();
         }
         let saved = std::mem::replace(&mut self.current_prefix_arg, prefix);
-        let interactive = std::mem::replace(&mut self.interactive, false);
+        let called_interactively = std::mem::take(&mut self.call_interactively_next);
+        let interactive = std::mem::replace(&mut self.interactive, called_interactively);
         // Unlike a command that keys run, a call from code does not become
         // this-command or last-command, as calling a function from Lisp does
         // not, unless it sets this-command itself, as kill-region does.
@@ -782,6 +788,19 @@ impl Editor {
     /// Calls a function as keys would, so `called-interactively-p` is true
     /// in it, as `funcall-interactively`.
     pub fn funcall_interactively(&mut self, function: &Value, args: &[Value]) -> crate::error::Result<Value> {
+        // A command runs as if keys ran it, with the running command's prefix
+        // argument, as current-prefix-arg stays bound in Emacs; only that
+        // call is interactive, not the calls it makes.
+        if let Value::Str(name) | Value::Symbol(name) = function
+            && let Some(command) = self.command(name)
+        {
+            let args = self.args_from_values(&command, args)?;
+            let prefix = self.current_prefix_arg;
+            self.call_interactively_next = true;
+            let result = self.call_with_prefix(&name.clone(), args, prefix);
+            self.call_interactively_next = false;
+            return result.map(|()| Value::Null);
+        }
         let was = std::mem::replace(&mut self.interactive, true);
         let result = self.funcall(function, args);
         self.interactive = was;

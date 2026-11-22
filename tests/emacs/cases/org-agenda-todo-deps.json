@@ -1,0 +1,34 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-deps-agenda.org",
+  "name": "agenda-t-cycles-forward",
+  "text": "* TODO A\n",
+  "keys": "n n t t",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-deps-agenda.org",
+  "name": "agenda-t-with-number",
+  "text": "#+TODO: TODO NEXT | DONE\n* TODO A\n",
+  "keys": "n n C-2 t",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ]
+ }
+]

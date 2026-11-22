@@ -132,3 +132,53 @@ fn dimming_outside_the_agenda_changes_nothing() {
     let overlays = s.eval_expression(&mut ed, "e8.overlaysIn(e8.pointMin(), e8.pointMax()).length").unwrap();
     assert_eq!(overlays, "0");
 }
+
+/// t in the agenda on a blocked entry is an error, as Org's
+/// org-agenda-todo calls org-todo interactively, and C-u t too; the
+/// entry's line stays as it was.
+#[test]
+fn t_in_the_agenda_on_a_blocked_entry_signals() {
+    for keys in ["n n t", "n n C-u t"] {
+        let (mut ed, _s, _dir) = agenda_file("* TODO Parent\n** TODO child\n", &[("org-enforce-todo-dependencies", Value::Bool(true))]);
+        ed.call("org-todo-list", vec![]).unwrap();
+        let _ = ed.press(keys);
+        assert_eq!(
+            ed.take_error().map(|e| e.to_string()),
+            Some("TODO state change from TODO to DONE blocked (by \"TODO child\")".to_string()),
+            "{keys}"
+        );
+        assert!(agenda(&ed).contains("TODO Parent"), "{}", agenda(&ed));
+    }
+}
+
+/// org-agenda-todo signals from code too, as Org's calls org-todo with
+/// call-interactively however it was called itself; and a function on
+/// org-after-todo-state-change-hook that changes another heading from code
+/// only says that one is blocked, as only org-todo's own call is interactive.
+#[test]
+fn only_the_agendas_own_change_is_interactive() {
+    let (mut ed, s, _dir) = agenda_file("* TODO Parent\n** TODO child\n", &[("org-enforce-todo-dependencies", Value::Bool(true))]);
+    ed.call("org-todo-list", vec![]).unwrap();
+    ed.press("n n").unwrap();
+    assert!(ed.call("org-agenda-todo", vec![]).is_err());
+    let (mut ed, s2, _dir2) = agenda_file(
+        "* TODO Project\n- [ ] box\n** TODO Task\n",
+        &[("org-enforce-todo-checkbox-dependencies", Value::Bool(true))],
+    );
+    s2.eval_typescript(
+        &mut ed,
+        "hook.ts",
+        r#"e8.addHook("org-after-todo-state-change-hook", () => {
+             if (e8.lineText(e8.lineOf(e8.point())).startsWith("** DONE Task")) {
+               e8.saveExcursion(() => { e8.gotoChar(0); e8.call("org-todo-set", "DONE"); });
+             }
+           });"#
+            .to_string(),
+    )
+    .unwrap();
+    ed.call("org-todo-list", vec![]).unwrap();
+    ed.press("n n n t").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert!(agenda(&ed).contains("DONE Task"), "{}", agenda(&ed));
+    let _ = s;
+}
