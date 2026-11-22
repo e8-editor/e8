@@ -5182,6 +5182,38 @@ declare global {
        */
       "org-agenda": [];
       /**
+       * Archive the subtree of the agenda line at point, with org-archive-subtree.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archive": [];
+      /**
+       * Archive the entry or subtree of the agenda line at point, with org-archive-default-command.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archive-default": [];
+      /**
+       * Archive the entry or subtree of the agenda line at point, with org-archive-default-command, asking first.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archive-default-with-confirmation": [];
+      /**
+       * Move the entry of the agenda line at point to its archive sibling.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archive-to-archive-sibling": [];
+      /**
+       * Toggle whether the agenda shows the trees tagged ARCHIVE. With a prefix argument, toggle whether it shows them and the agenda files' archive files too.
+       *
+       * @param withFiles raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archives-mode": [withFiles?: PrefixArg | boolean];
+      /**
        * Cancel the running clock, from the agenda.
        *
        * Defined in packages/org-agenda.ts.
@@ -5205,6 +5237,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-clock-out": [];
+      /**
+       * Dim the agenda's blocked TODO entries again, or hide them, as the agenda marked them when it was made.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-dim-blocked-tasks": [];
       /**
        * Show the week before in the agenda.
        *
@@ -5321,6 +5359,18 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-todo": [];
+      /**
+       * Toggle the ARCHIVE tag of the entry the agenda line at point shows.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-toggle-archive-tag": [];
+      /**
+       * Change how the agenda shows its entries, by a key: a to toggle archived trees, A to toggle archive files too, q to abort.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-view-mode-dispatch": [];
       /**
        * Put the tags of the heading point is under at org-tags-column; with a prefix argument, every heading's.
        *
@@ -13277,6 +13327,12 @@ declare global {
        */
       "org-agenda-current-time-string": Value;
       /**
+       * Whether the agenda dims the TODO entries that org-blocker-hook blocks from being done, as the TODO dependencies do. invisible hides them instead, but for those blocked only by checkboxes, which are dimmed.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-dim-blocked-tasks": Value;
+      /**
        * The files the agenda collects entries from, as a list of file names.
        *
        * Defined in packages/org-agenda.ts.
@@ -13334,6 +13390,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-skip-comment-trees": Value;
+      /**
+       * Whether a new agenda shows archived trees: nil, trees for the trees tagged ARCHIVE, or t for the agenda files' archive files too.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-start-with-archives-mode": Value;
       /**
        * Whether tags-todo views and TODO-only tag matches leave out entries as the TODO list's ignore options say.
        *
@@ -17267,6 +17329,12 @@ declare global {
        * Defined in packages/compile.ts.
        */
       "next-error": FaceAttributes;
+      /**
+       * Blocked tasks in the agenda.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-dimmed-todo-face": FaceAttributes;
       /**
        * The text in blocks, such as #+begin_src.
        *
