@@ -5316,7 +5316,7 @@ declare global {
        */
       "org-agenda-previous-line": [];
       /**
-       * Set the priority of the entry the agenda line at point shows.
+       * Set the priority of the entry the agenda line at point shows, or remove it with SPC.
        *
        * Defined in packages/org-agenda.ts.
        */
