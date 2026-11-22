@@ -1,0 +1,880 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-takes-out-the-subtree",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "n n $",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "message": true,
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-then-the-file",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "n n $ q",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-c-c-dollar",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "n n n C-c $ q",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-child",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "n n n C-c C-x C-s",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-confirmed",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "n n a",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "answers": [
+   "y"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-refused",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "n n a",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "answers": [
+   "n"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-default",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "n n n n C-c C-x C-a q",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-to-sibling",
+  "text": "* P\n** TODO A\n** TODO B\n",
+  "keys": "n n C-c C-x A",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "* P\n** TODO A\n** TODO B\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-to-sibling-then-the-file",
+  "text": "* P\n** TODO A\n** TODO B\n",
+  "keys": "n n C-c C-x A q",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "* P\n** TODO A\n** TODO B\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-toggle-archive-tag",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "n n C-c C-x a",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "message": true,
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-on-a-header-line",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n",
+  "keys": "$",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\n** TODO A1\n* TODO B\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-archive",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n",
+  "keys": "n $",
+  "call": [
+   "org-agenda-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-archive-second",
+  "text": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n",
+  "keys": "n n $ q",
+  "call": [
+   "org-agenda-list"
+  ],
+  "files": {
+   "t.org": "#+ARCHIVE: ::* Archive\n* TODO A\nSCHEDULED: <2026-10-28 Wed>\n** Sub <2026-10-29 Thu>\n* Meeting <2026-10-28 Wed>\n"
+  },
+  "find": "t.org",
+  "vars": {
+   "org-archive-save-context-info": [
+    "'todo",
+    "'category",
+    "'olpath",
+    "'itags",
+    "'ltags"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archives-mode-trees",
+  "text": "* TODO A :ARCHIVE:\n* TODO B\n* COMMENT C\n** TODO C1\n",
+  "keys": "v",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "message": true,
+  "answers": [
+   "a"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archives-mode-off-again",
+  "text": "* TODO A :ARCHIVE:\n* TODO B\n",
+  "keys": "v v",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "message": true,
+  "answers": [
+   "a",
+   "a"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-skips-archived-and-comment-trees",
+  "text": "* TODO A :ARCHIVE:\nSCHEDULED: <2026-10-28 Wed>\n* COMMENT C\n** Meeting <2026-10-29 Thu>\n* B <2026-10-30 Fri>\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "visit": "e8-agenda-archive.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-archives-mode-trees",
+  "text": "* TODO A :ARCHIVE:\nSCHEDULED: <2026-10-28 Wed>\n* COMMENT C\n** Meeting <2026-10-29 Thu>\n* B <2026-10-30 Fri>\n",
+  "keys": "v",
+  "call": [
+   "org-agenda-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "answers": [
+   "a"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-archived-file",
+  "text": "#+FILETAGS: :ARCHIVE:\n* B <2026-10-30 Fri>\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "visit": "e8-agenda-archive.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "tags-view-archives-mode",
+  "text": "* Old :t:ARCHIVE:\n** Under :t:\n* Shown :t:\n",
+  "keys": "v",
+  "call": [
+   "org-agenda"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "answers": [
+   "m",
+   "t",
+   "a"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "view-dispatch-quit",
+  "text": "* TODO B\n",
+  "keys": "v",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "message": true,
+  "answers": [
+   "q"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "view-dispatch-invalid",
+  "text": "* TODO B\n",
+  "keys": "v",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "answers": [
+   "z"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "start-with-archives-mode",
+  "text": "* TODO A :ARCHIVE:\n* TODO B\n",
+  "keys": "",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-agenda-start-with-archives-mode": "'trees"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-files",
+  "text": "* TODO B\n",
+  "keys": "v",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+  },
+  "find": "t.org",
+  "message": true,
+  "answers": [
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archive-files-off",
+  "text": "* TODO B\n",
+  "keys": "v v",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+  },
+  "find": "t.org",
+  "message": true,
+  "answers": [
+   "A",
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-trees-then-files",
+  "text": "* TODO B\n",
+  "keys": "v v",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+  },
+  "find": "t.org",
+  "message": true,
+  "answers": [
+   "a",
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-files-then-trees",
+  "text": "* TODO B\n",
+  "keys": "v v",
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+  },
+  "find": "t.org",
+  "message": true,
+  "answers": [
+   "A",
+   "a"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-archive-files",
+  "text": "* B <2026-10-28 Wed>\n",
+  "keys": "v",
+  "call": [
+   "org-agenda-list"
+  ],
+  "files": {
+   "t.org": "* B <2026-10-28 Wed>\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* Old <2026-10-29 Thu>\n"
+  },
+  "find": "t.org",
+  "answers": [
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "search-view-agenda-archives",
+  "text": "* TODO B\n",
+  "keys": "",
+  "call": [
+   "org-search-view"
+  ],
+  "files": {
+   "t.org": "* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+  },
+  "find": "t.org",
+  "answers": [
+   "Old"
+  ],
+  "globals": {
+   "org-agenda-text-search-extra-files": [
+    "'agenda-archives"
+   ]
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "search-view-without-agenda-archives",
+  "text": "* TODO B\n",
+  "keys": "",
+  "call": [
+   "org-search-view"
+  ],
+  "files": {
+   "t.org": "* TODO B\n",
+   "t.org_archive": "#    -*- mode: org -*-\n\n* TODO Old\n* TODO Old2 :ARCHIVE:\n"
+  },
+  "find": "t.org",
+  "answers": [
+   "Old"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "dim-blocked-todo-list",
+  "text": "* TODO Parent\n** TODO child\n* TODO Other\n",
+  "keys": "",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-enforce-todo-dependencies": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "hide-blocked-todo-list",
+  "text": "* TODO Parent\n** TODO child\n* TODO Other\n",
+  "keys": "",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-enforce-todo-dependencies": true,
+   "org-agenda-dim-blocked-tasks": "'invisible"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "hide-blocked-not-by-checkboxes",
+  "text": "* TODO Box\n- [ ] x\n* TODO Parent\n** TODO child\n",
+  "keys": "",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-enforce-todo-checkbox-dependencies": true,
+   "org-enforce-todo-dependencies": true,
+   "org-agenda-dim-blocked-tasks": "'invisible"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "hide-blocked-week-agenda",
+  "text": "* TODO Parent\nSCHEDULED: <2026-10-28 Wed>\n** TODO child\n* Meeting <2026-10-28 Wed>\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-enforce-todo-dependencies": true,
+   "org-agenda-dim-blocked-tasks": "'invisible"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "hide-blocked-ordered",
+  "text": "* P\n:PROPERTIES:\n:ORDERED: t\n:END:\n** TODO first\n** TODO second\n",
+  "keys": "",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-enforce-todo-dependencies": true,
+   "org-agenda-dim-blocked-tasks": "'invisible"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "hide-blocked-then-redim",
+  "text": "* TODO Parent\n** TODO child\n* TODO Other\n",
+  "keys": "#",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-enforce-todo-dependencies": true,
+   "org-agenda-dim-blocked-tasks": "'invisible"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "search-view-does-not-hide-blocked",
+  "text": "* TODO Parent foo\n** TODO child foo\n",
+  "keys": "",
+  "call": [
+   "org-search-view"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "answers": [
+   "foo"
+  ],
+  "globals": {
+   "org-enforce-todo-dependencies": true,
+   "org-agenda-dim-blocked-tasks": "'invisible"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-skips-comment-lines-and-source-blocks",
+  "text": "* B\n# <2026-10-28 Wed>\n#+begin_src sh\n<2026-10-29 Thu>\n#+end_src\n* C <2026-10-28 Wed>\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "visit": "e8-agenda-archive.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "week-agenda-archived-by-the-tag-itself",
+  "text": "* A :old:\n<2026-10-28 Wed>\n* D :ARCHIVE:\n<2026-10-28 Wed>\n* C <2026-10-28 Wed>\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-archive-tag": "old"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "todo-list-archived-by-the-tag-itself",
+  "text": "* TODO A :old:\n* TODO D :ARCHIVE:\n* TODO C\n",
+  "keys": "",
+  "call": [
+   "org-todo-list"
+  ],
+  "visit": "e8-agenda-archive.org",
+  "globals": {
+   "org-archive-tag": "old"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "name": "archive-file-not-in-org-mode",
+  "text": "* TODO B\n",
+  "keys": "v",
+  "answers": [
+   "A"
+  ],
+  "call": [
+   "org-todo-list"
+  ],
+  "files": {
+   "t.org": "* TODO B\n",
+   "t.org_archive": "#+CATEGORY: arch\n* TODO Old\n"
+  },
+  "find": "t.org"
+ }
+]

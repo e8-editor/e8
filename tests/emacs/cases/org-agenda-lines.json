@@ -1,0 +1,325 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "todo-list-priority",
+  "text": "* TODO Parent\n** TODO child\n* TODO Other\n",
+  "keys": "n n ,",
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   "A"
+  ],
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "todo-list-priority-removed",
+  "text": "* TODO [#B] Parent\n* TODO Other\n",
+  "keys": "n n ,",
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   " "
+  ],
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "todo-list-priority-twice-on-one-entry",
+  "text": "* TODO A\n** TODO B\n",
+  "keys": "n n , n ,",
+  "call": [
+   "org-todo-list"
+  ],
+  "answers": [
+   "A",
+   "C"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "week-agenda-done-keeps-the-heading-timestamp",
+  "text": "* TODO B <2026-10-28 Wed>\n",
+  "keys": "n t",
+  "call": [
+   "org-agenda-list"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "week-agenda-tags-keep-the-heading-timestamp",
+  "text": "* TODO B <2026-10-28 Wed> after\n",
+  "keys": "n :",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "x"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "week-agenda-priority-keeps-the-heading-timestamp",
+  "text": "* TODO B <2026-10-28 Wed>\n",
+  "keys": "n ,",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "A"
+  ]
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "timed-heading-stamp-first-drawn",
+  "text": "* TODO B <2026-10-28 Wed 10:00> x\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "timed-heading-stamp-after-priority",
+  "text": "* TODO B <2026-10-28 Wed 10:00>\n",
+  "keys": "n ,",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "A"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "timed-heading-stamp-after-done",
+  "text": "* TODO B <2026-10-28 Wed 10:00> x\n",
+  "keys": "n t",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "timed-heading-range-after-priority",
+  "text": "* TODO B <2026-10-28 Wed 10:00-11:00> rest\n",
+  "keys": "n ,",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "A"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "timed-heading-stamp-with-scheduled",
+  "text": "* TODO B <2026-10-28 Wed 15:00> x\nSCHEDULED: <2026-10-28 Wed 09:00>\n",
+  "keys": "n , n ,",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "A",
+   "B"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "timed-range-in-heading-first-drawn",
+  "text": "* B <2026-10-28 Wed 10:00>--<2026-10-28 Wed 12:00> x\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "timed-range-over-days-first-drawn",
+  "text": "* B <2026-10-28 Wed 10:00>--<2026-10-29 Thu 12:00> x\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "two-heading-stamps-first-drawn",
+  "text": "* B <2026-10-28 Wed> and <2026-10-30 Fri> x\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "body-stamp-with-heading-stamp",
+  "text": "* B <2026-10-30 Fri> x\n<2026-10-28 Wed>\n",
+  "keys": "",
+  "call": [
+   "org-agenda-list"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "priority-keeps-point-on-a-later-line",
+  "text": "* TODO B\nDEADLINE: <2026-10-30 Fri>\n* TODO Other <2026-10-30 Fri 09:00>\n",
+  "keys": "n n n n n , ,",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "A",
+   "C"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-agenda-lines.org",
+  "name": "priority-keeps-the-column",
+  "text": "* TODO B\nDEADLINE: <2026-10-30 Fri>\n",
+  "keys": "n n n n C-f C-f C-f ,",
+  "call": [
+   "org-agenda-list"
+  ],
+  "answers": [
+   "A"
+  ],
+  "globals": {
+   "org-agenda-use-time-grid": false
+  }
+ }
+]

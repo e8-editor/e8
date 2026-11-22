@@ -4726,6 +4726,23 @@ export function entryBlocked(h: Heading): boolean {
   });
 }
 
+/**
+ * Whether the entry at heading H is blocked, as org-entry-blocked-p, and if
+ * so whether by checkboxes, as org-blocked-by-checkboxes says after it:
+ * Org's agenda asks this with org-blocked-by-checkboxes bound, so the
+ * value it had is kept.
+ */
+export function entryBlockedBy(h: Heading): "blocked" | "checkboxes" | undefined {
+  const saved = blockedByCheckboxes;
+  blockedByCheckboxes = false;
+  try {
+    if (!entryBlocked(h)) return undefined;
+    return blockedByCheckboxes ? "checkboxes" : "blocked";
+  } finally {
+    blockedByCheckboxes = saved;
+  }
+}
+
 e8.defineCommand({
   name: "org-toggle-ordered-property",
   doc: "Toggle the ORDERED property of the current entry, which makes its children be done in order. With org-track-ordered-property-with-tag, toggle a tag too.",
@@ -7129,8 +7146,7 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
   let getkey: string | undefined;
   let compare: string | undefined;
   if (dcst === "f") {
-    getkey = e8.completingRead("Function for extracting keys: ", []);
-    compare = e8.completingRead("Function for comparing keys (empty for default `sort-subr' predicate): ", []);
+    [getkey, compare] = readSortFunctions();
   }
   if (dcst === "r") property = e8.completingRead("Property: ", bufferPropertyKeys(), { requireMatch: true });
   e8.message("Sorting entries...");
@@ -7356,11 +7372,25 @@ function sortRecords(records: SortRecord[], reverse: boolean, less?: (a: string 
   return true;
 }
 
-/** Reads a key-extracting and a comparing function for sorting by f, as org-read-function asks for them. */
+/** A function's name, completed from those defined, as org-read-function reads it; empty is none with ALLOW-EMPTY. */
+function orgReadFunction(prompt: string, allowEmpty = false): string | undefined {
+  const names: string[] = [];
+  e8.mapatoms((name) => {
+    if (e8.fboundp(name)) names.push(name);
+  });
+  const answer = e8.completingRead(prompt, names, { requireMatch: true });
+  if (answer === "") {
+    if (allowEmpty) return undefined;
+    e8.userError("Empty input is not valid");
+  }
+  return answer;
+}
+
+/** Reads a key-extracting and a comparing function for sorting by f, as Org's sorting commands ask for them. */
 function readSortFunctions(): [string, string | undefined] {
-  const getkey = e8.completingRead("Function for extracting keys: ", []);
-  const compare = e8.completingRead("Function for comparing keys (empty for default ‘sort-subr’ predicate): ", []);
-  return [getkey, compare === "" ? undefined : compare];
+  const getkey = orgReadFunction("Function for extracting keys: ") as string;
+  const compare = orgReadFunction("Function for comparing keys (empty for default `sort-subr' predicate): ", true);
+  return [getkey, compare];
 }
 
 /** The text of field N of a table line, as org-table-get-field reads it, or "". */
@@ -9407,7 +9437,7 @@ function allTagsOf(all: Heading[]): string[][] {
 }
 
 /** Whether a property is inherited, as org-property-inherit-p. */
-function propertyInheritP(property: string): boolean {
+export function propertyInheritP(property: string): boolean {
   const use = e8.variable("org-use-property-inheritance");
   if (use === true) return true;
   if (!truthy(use)) return false;
@@ -9862,6 +9892,11 @@ export function scanTags<T>(action: "sparse-tree" | ((h: Heading) => T), matcher
       const ctx: MatchContext = { todo: h.todo, tags: tags[i], level: h.level, h, category: () => (cats ??= e8.saveRestriction(() => (e8.widen(), categories(all))))[at] };
       if (todoOnly && (h.todo === undefined || !keywords.includes(h.todo))) continue;
       if (matcher !== true && !matcher.test(ctx)) continue;
+      // A TODO-only match leaves out entries the TODO list would, with org-agenda-tags-todo-honor-ignore-options.
+      if (todoOnly && truthy(e8.variable("org-agenda-tags-todo-honor-ignore-options") ?? null) && e8.fboundp("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item")) {
+        const ignored = e8.saveExcursion(() => (e8.gotoChar(h.start), e8.funcall("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item")));
+        if (truthy(ignored ?? null)) continue;
+      }
       e8.gotoChar(h.start);
       if (action === "sparse-tree") {
         if (truthy(e8.variable("org-highlight-sparse-tree-matches"))) highlightNewMatch(h.start, h.start + h.level);

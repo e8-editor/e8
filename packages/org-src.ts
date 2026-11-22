@@ -59,7 +59,7 @@ function blockAt(): { begin: number; end: number; kind: string; lang?: string; i
 }
 
 /** The major mode for a language, as org-src-get-lang-mode: its entry in org-src-lang-modes, or itself, with -mode. */
-function langMode(lang: string): string {
+export function langMode(lang: string): string {
   const alist = e8.variable("org-src-lang-modes");
   const entry = Array.isArray(alist) ? (alist.find((e) => Array.isArray(e) && e[0] === lang) as e8.Value[] | undefined) : undefined;
   return `${entry ? String(entry[1]) : lang}-mode`;

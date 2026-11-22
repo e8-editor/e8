@@ -159,6 +159,12 @@ while the case's keys are queued would read those instead."
   (let ((d (calendar-gregorian-from-absolute e8-oracle--today)))
     (encode-time (list 0 0 12 (nth 1 d) (nth 0 d) (nth 2 d) nil -1 nil))))
 
+(defun e8-oracle--timestamp-to-now (timestamp-string &optional seconds)
+  "org-timestamp-to-now from noon on the case's fixed day, as E8's tests count."
+  (let ((fdiff (if seconds #'float-time #'time-to-days)))
+    (- (funcall fdiff (org-time-string-to-time timestamp-string))
+       (funcall fdiff (e8-oracle--now)))))
+
 (defun e8-oracle--range-now (args)
   "Org's special ranges counted from noon on the case's fixed day, as E8's tests count them."
   (if (nth 1 args) args (append (list (car args) (e8-oracle--now)) (nthcdr 2 args))))
@@ -464,6 +470,7 @@ its `globals' bound for the case, before the modes start."
       (advice-remove 'org-clock-get-clocked-time #'e8-oracle--clocked-time)
       (advice-remove 'org-archive-to-archive-sibling #'e8-oracle--archive-now)
       (advice-remove 'org-archive-subtree #'e8-oracle--archive-now)
+      (advice-remove 'org-timestamp-to-now #'e8-oracle--timestamp-to-now)
       (when-let* ((day (alist-get 'today case)))
         (setq e8-oracle--today
               (calendar-absolute-from-gregorian
@@ -472,6 +479,9 @@ its `globals' bound for the case, before the modes start."
         (advice-add 'org-today :override #'e8-oracle--today)
         (advice-add 'org-current-effective-time :override #'e8-oracle--now)
         (advice-add 'org-current-time :override #'e8-oracle--now)
+        ;; With timestamp_now, org-timestamp-to-now counts from it too, as the agenda's ignore options do.
+        (when (eq (alist-get 'timestamp_now case) t)
+          (advice-add 'org-timestamp-to-now :override #'e8-oracle--timestamp-to-now))
         (require 'org-clock)
         (advice-add 'org-clock-special-range :filter-args #'e8-oracle--range-now)
         (advice-add 'org-clocktable-write-default :around #'e8-oracle--caption-now)

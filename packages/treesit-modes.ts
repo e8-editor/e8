@@ -1158,6 +1158,12 @@ for (const mode of modes) {
       `Files matching ${mode.pattern} use it; see auto-mode-alist.`,
     syntax: mode.syntax,
     setup: () => {
+      // Comments as the mode writes them, grammar or not, as sh-mode and the rest set them.
+      if (mode.comment !== undefined) {
+        e8.setVariable("comment-start", mode.comment.start);
+        e8.setVariable("comment-end", "");
+        e8.setVariable("comment-start-skip", mode.comment.skip);
+      }
       // As treesit-ready-p: without the grammar, the mode is prog-mode with a warning.
       if (!e8.treesitLanguageAvailableP(mode.language)) {
         // Not from a buffer of E8's own, such as the one Org fontifies a block in.
@@ -1165,11 +1171,6 @@ for (const mode of modes) {
         return;
       }
       e8.treesitSetPrimaryLanguage(mode.language);
-      if (mode.comment !== undefined) {
-        e8.setVariable("comment-start", mode.comment.start);
-        e8.setVariable("comment-end", "");
-        e8.setVariable("comment-start-skip", mode.comment.skip);
-      }
       e8.setVariable("parse-sexp-ignore-comments", true);
       if (mode.tabs === false) e8.setVariable("indent-tabs-mode", false);
       // Python reindents the line it leaves only by hand, as electric-indent-inhibit says.

@@ -119,6 +119,19 @@ function allArchiveFiles(): string[] {
   return files.filter((f) => e8.fileExistsP(f));
 }
 
+/** Whether the archiving under way was started from the agenda, as Org binds org-archive-from-agenda. */
+let fromAgenda = 0;
+
+/** Runs F as archiving from the agenda, for org-archive-subtree-save-file-p's from-agenda. */
+export function archivingFromAgenda<T>(f: () => T): T {
+  fromAgenda++;
+  try {
+    return f();
+  } finally {
+    fromAgenda--;
+  }
+}
+
 /** FILES with each one's archive files after it, those that exist, as org-add-archive-files. */
 export function addArchiveFiles(files: string[]): string[] {
   const out: string[] = [];
@@ -339,7 +352,7 @@ export function archiveSubtree(): void {
       }
       if (buffer !== thisBuffer) {
         const save = e8.variable("org-archive-subtree-save-file-p");
-        if (save === true || save === "from-org") e8.call("save-buffer");
+        if (save === true || save === (fromAgenda > 0 ? "from-agenda" : "from-org")) e8.call("save-buffer");
       }
       e8.widen();
     });

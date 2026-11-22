@@ -5182,6 +5182,38 @@ declare global {
        */
       "org-agenda": [];
       /**
+       * Archive the subtree of the agenda line at point, with org-archive-subtree.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archive": [];
+      /**
+       * Archive the entry or subtree of the agenda line at point, with org-archive-default-command.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archive-default": [];
+      /**
+       * Archive the entry or subtree of the agenda line at point, with org-archive-default-command, asking first.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archive-default-with-confirmation": [];
+      /**
+       * Move the entry of the agenda line at point to its archive sibling.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archive-to-archive-sibling": [];
+      /**
+       * Toggle whether the agenda shows the trees tagged ARCHIVE. With a prefix argument, toggle whether it shows them and the agenda files' archive files too.
+       *
+       * @param withFiles raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-archives-mode": [withFiles?: PrefixArg | boolean];
+      /**
        * Cancel the running clock, from the agenda.
        *
        * Defined in packages/org-agenda.ts.
@@ -5205,6 +5237,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-clock-out": [];
+      /**
+       * Dim the agenda's blocked TODO entries again, or hide them, as the agenda marked them when it was made.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-dim-blocked-tasks": [];
       /**
        * Show the week before in the agenda.
        *
@@ -5278,7 +5316,7 @@ declare global {
        */
       "org-agenda-previous-line": [];
       /**
-       * Set the priority of the entry the agenda line at point shows.
+       * Set the priority of the entry the agenda line at point shows, or remove it with SPC.
        *
        * Defined in packages/org-agenda.ts.
        */
@@ -5321,6 +5359,18 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-todo": [];
+      /**
+       * Toggle the ARCHIVE tag of the entry the agenda line at point shows.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-toggle-archive-tag": [];
+      /**
+       * Change how the agenda shows its entries, by a key: a to toggle archived trees, A to toggle archive files too, q to abort.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-view-mode-dispatch": [];
       /**
        * Put the tags of the heading point is under at org-tags-column; with a prefix argument, every heading's.
        *
@@ -5525,7 +5575,7 @@ declare global {
        */
       "org-clock-in": [select?: PrefixArg | boolean];
       /**
-       * Start a clock again on the entry clocked last. With C-u, on a task picked from those clocked lately.
+       * Start a clock again on the entry clocked last. With C-u, on a task picked from those clocked lately; with C-u C-u, from when the clock was last stopped; with C-u C-u C-u, asking for a TODO state to switch it to.
        *
        * @param arg raw prefix argument
        *
@@ -5545,11 +5595,13 @@ declare global {
        */
       "org-clock-modify-effort-estimate": [];
       /**
-       * Stop the running clock, writing when it stopped and how long it ran.
+       * Stop the running clock, writing when it stopped and how long it ran. With C-u, switch the task to a state asked for.
+       *
+       * @param switch-to-state raw prefix argument
        *
        * Defined in packages/org-clock.ts.
        */
-      "org-clock-out": [];
+      "org-clock-out": [switchToState?: PrefixArg | boolean];
       /**
        * Take away the times org-clock-display shows after the headings.
        *
@@ -6191,6 +6243,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-occur-in-agenda-files": [regexp: string];
+      /**
+       * Make a link to here, as org-store-link does, and list its places in the agenda files and org-agenda-text-search-extra-files, as org-occur-in-agenda-files.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-occur-link-in-agenda-files": [];
       /**
        * Follow the link point is on: [[*Heading]], [[#custom-id]], [[target]] and [[Heading]] within the buffer, and file links such as [[file:notes.org::*Heading]] in another buffer.
        *
@@ -13269,6 +13327,12 @@ declare global {
        */
       "org-agenda-current-time-string": Value;
       /**
+       * Whether the agenda dims the TODO entries that org-blocker-hook blocks from being done, as the TODO dependencies do. invisible hides them instead, but for those blocked only by checkboxes, which are dimmed.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-dim-blocked-tasks": Value;
+      /**
        * The files the agenda collects entries from, as a list of file names.
        *
        * Defined in packages/org-agenda.ts.
@@ -13327,6 +13391,18 @@ declare global {
        */
       "org-agenda-skip-comment-trees": Value;
       /**
+       * Whether a new agenda shows archived trees: nil, trees for the trees tagged ARCHIVE, or t for the agenda files' archive files too.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-start-with-archives-mode": Value;
+      /**
+       * Whether tags-todo views and TODO-only tag matches leave out entries as the TODO list's ignore options say.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-tags-todo-honor-ignore-options": Value;
+      /**
        * Files the search view searches besides org-agenda-files.
        *
        * Defined in packages/org-agenda.ts.
@@ -13338,6 +13414,42 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-time-grid": Value;
+      /**
+       * Whether the TODO list leaves out entries with a deadline: t for those due soon, as the agenda warns of them, all, far for those not due soon, future, past, or a number of days.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-deadlines": Value;
+      /**
+       * Whether the TODO list leaves out scheduled entries: t for all, future, past, or a number of days.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-scheduled": Value;
+      /**
+       * Whether future and past compare timestamps by the second rather than the day.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-time-comparison-use-seconds": Value;
+      /**
+       * Whether the TODO list leaves out entries with an active timestamp that is not a planning one: t for any, future, past, or a number of days (from today, before it when negative).
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-timestamp": Value;
+      /**
+       * Whether the TODO list leaves out entries with an active timestamp, a planning one or not.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-ignore-with-date": Value;
+      /**
+       * Whether the TODO list shows TODO entries below another, or only the first of each subtree.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-list-sublevels": Value;
       /**
        * Whether today's agenda draws a time grid among the entries with times, as org-agenda-time-grid says.
        *
@@ -13429,11 +13541,59 @@ declare global {
        */
       "org-babel-no-eval-on-ctrl-c-ctrl-c": Value;
       /**
+       * Whether a noweb reference that resolves to nothing is an error in every language.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-noweb-error-all-langs": Value;
+      /**
+       * Languages for which a noweb reference that resolves to nothing is an error.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-noweb-error-langs": Value;
+      /**
+       * What ends a noweb reference.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-noweb-wrap-end": Value;
+      /**
+       * What starts a noweb reference.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-noweb-wrap-start": Value;
+      /**
+       * The comment before a tangled block's code: %link, %source-name, %file and %start-line are filled in.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-tangle-comment-format-beg": Value;
+      /**
+       * The comment after a tangled block's code, filled in as the one before it.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-tangle-comment-format-end": Value;
+      /**
        * The extension a language's code is tangled to with :tangle yes: pairs of a language and an extension, else the language's name.
        *
        * Defined in packages/ob-tangle.ts.
        */
       "org-babel-tangle-lang-exts": Value;
+      /**
+       * Whether tangled comments are inserted as they are, not commented out with a newline after.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-tangle-uncomment-comments": Value;
+      /**
+       * Whether links in tangled comments name the Org file relative to the tangled one.
+       *
+       * Defined in packages/ob-core.ts.
+       */
+      "org-babel-tangle-use-relative-file-links": Value;
       /**
        * Whether new headings and list items get a blank line before them: [["heading", v], ["plain-list-item", v]], each v true, nil or "auto" to do as the ones around do.
        *
@@ -13505,6 +13665,12 @@ declare global {
        */
       "org-clock-clocktable-language-setup": Value;
       /**
+       * Whether clocking in starts from when the clock was last stopped, rather than now.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-continuously": Value;
+      /**
        * The running clock's entry's title, without TODO keyword, priority, COMMENT or tags.
        *
        * Defined in packages/org-clock.ts.
@@ -13541,6 +13707,18 @@ declare global {
        */
       "org-clock-goto-may-find-recent-task": Value;
       /**
+       * The running clock's task as the mode line names it.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-heading": Value;
+      /**
+       * A function giving the text the mode line and C-2 C-c C-w name the clocked task by, called at its heading, or nil for its heading.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-heading-function": Value;
+      /**
        * How many recently clocked tasks C-u C-c C-x C-i offers.
        *
        * Defined in packages/org-clock.ts.
@@ -13552,6 +13730,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-in-resume": Value;
+      /**
+       * A TODO state to switch a task to when clocking it in, or a function of its state giving one.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-in-switch-to-state": Value;
       /**
        * Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.
        *
@@ -13570,6 +13754,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-out-remove-zero-time-clocks": Value;
+      /**
+       * A TODO state to switch a task to when its clock stops, or a function of its state giving one.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-out-switch-to-state": Value;
       /**
        * Whether marking the clocked entry done stops the clock.
        *
@@ -13612,6 +13802,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-report-include-clocking-task": Value;
+      /**
+       * What sounds when the clock runs past the entry's effort: t for the bell twice, a sound file's name, or nil for nothing.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-sound": Value;
       /**
        * How long the clock in the mode line may be, cut there; 0 for no limit.
        *
@@ -14301,7 +14497,7 @@ declare global {
        */
       "org-scheduled-delay-days": Value;
       /**
-       * A function given each Org notification, as a clock running past its effort; nil shows it in the echo area.
+       * A function given each Org notification, as a clock running past its effort, or a program run with it; nil shows it on the desktop where E8 can, else in the echo area.
        *
        * Defined in packages/org-clock.ts.
        */
@@ -17133,6 +17329,12 @@ declare global {
        * Defined in packages/compile.ts.
        */
       "next-error": FaceAttributes;
+      /**
+       * Blocked tasks in the agenda.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-dimmed-todo-face": FaceAttributes;
       /**
        * The text in blocks, such as #+begin_src.
        *

@@ -505,7 +505,8 @@ pub fn run(case: &Case) -> State {
     let _ = ed.bury_buffer_internal("*Messages*");
     let _ = ed.bury_buffer_internal("*scratch*");
     if case.agenda_files {
-        let file = file.as_ref().expect("agenda_files needs visit");
+        // The visited file, or the one found, as record.el takes buffer-file-name.
+        let file = file.as_ref().or(found.as_ref()).expect("agenda_files needs visit or find");
         ed.set_variable("org-agenda-files", e8_core::Value::List(vec![e8_core::Value::Str(file.display().to_string())]));
     }
     if !case.capture_templates.is_empty() {
