@@ -683,24 +683,38 @@ export function ignoreTodoForTimestamp(start: number, end: number, done: boolean
   const stamps = optionValue("org-agenda-todo-ignore-timestamp");
   if (!truthy(withDate) && !truthy(scheduled) && !truthy(deadlines) && !truthy(stamps)) return false;
   const text = e8.bufferSubstringNoProperties(start, end);
+  // Each search goes on from where the one before left point, as Org's
+  // re-search-forward calls do one after another in one save-excursion.
+  let at = 0;
+  const search = (re: RegExp): RegExpExecArray | null => {
+    const g = new RegExp(re.source, "g");
+    g.lastIndex = at;
+    const m = g.exec(text);
+    if (m) at = m.index + m[0].length;
+    return m;
+  };
   const anyStamp = /<([0-9]{4}-[0-9]{2}-[0-9]{2}(?: .*?)?)>/;
-  if (truthy(withDate) && anyStamp.test(text)) return true;
-  const sched = /\bSCHEDULED: *<([^>]+)>/.exec(text);
-  if (truthy(scheduled) && sched && ignoredBy(scheduled, sched[1])) return true;
-  const dl = /\bDEADLINE: *<([^>]+)>/.exec(text);
-  if (truthy(deadlines) && dl) {
-    // Due soon, as org-deadline-close-p: within its warning days, and not done.
-    const close = () => timestampToNow(dl[1]) < wdays(dl[1], false) && !done;
-    if (deadlines === "all") return true;
-    if (deadlines === "far") {
-      if (!close()) return true;
-    } else if (deadlines === "future" || deadlines === "past" || typeof deadlines === "number") {
-      if (ignoredBy(deadlines, dl[1])) return true;
-    } else if (close()) return true;
+  if (truthy(withDate) && search(anyStamp)) return true;
+  if (truthy(scheduled)) {
+    const m = search(/\bSCHEDULED: *<([^>]+)>/);
+    if (m && ignoredBy(scheduled, m[1])) return true;
+  }
+  if (truthy(deadlines)) {
+    const m = search(/\bDEADLINE: *<([^>]+)>/);
+    if (m) {
+      // Due soon, as org-deadline-close-p: within its warning days, and not done.
+      const close = () => timestampToNow(m[1]) <= wdays(m[1], false) && !done;
+      if (deadlines === "all") return true;
+      if (deadlines === "far") {
+        if (!close()) return true;
+      } else if (deadlines === "future" || deadlines === "past" || typeof deadlines === "number") {
+        if (ignoredBy(deadlines, m[1])) return true;
+      } else if (close()) return true;
+    }
   }
   if (truthy(stamps)) {
-    // The first timestamp that is no planning one.
-    const other = anyStamp.exec(text.replace(/\bSCHEDULED: *<[^>]+>|\bDEADLINE: *<[^>]+>/g, ""));
+    // From point, without planning timestamps: the first other one.
+    const other = anyStamp.exec(text.slice(at).replace(/\bSCHEDULED: *<[^>]+>|\bDEADLINE: *<[^>]+>/g, ""));
     if (other && ignoredBy(stamps, other[1])) return true;
   }
   return false;
@@ -710,7 +724,8 @@ export function ignoreTodoForTimestamp(start: number, end: number, done: boolean
 e8.defun("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item", (end?: number | null) => {
   const all = headings();
   const i = headingIndex(all, e8.lineOf(e8.point()));
-  const start = i === undefined ? e8.point() : all[i].start;
+  // From point, as Org searches.
+  const start = e8.point();
   const stop = typeof end === "number" ? end : (all[(i ?? -1) + 1]?.start ?? e8.pointMax());
   return ignoreTodoForTimestamp(start, stop, i !== undefined && isDone(all[i].todo)) || null;
 });
@@ -1099,11 +1114,10 @@ e8.defineCommand({
   name: "org-occur-link-in-agenda-files",
   doc: "Make a link to here, as org-store-link does, and list its places in the agenda files and org-agenda-text-search-extra-files, as org-occur-in-agenda-files.",
   run: () => {
-    const link = e8.conditionCase(
-      () => storeLink(null, false),
-      { error: () => e8.signal("error", "Unable to create a link to here") as never },
-    );
-    e8.call(occurInAgendaFiles, regexpQuote(typeof link === "string" ? link : ""));
+    // As Org's condition-case: the error's message stands for the link.
+    const link = e8.conditionCase(() => storeLink(null, false), { error: () => "Unable to create a link to here" });
+    if (typeof link !== "string") e8.signal("wrong-type-argument", "Wrong type argument: stringp, nil");
+    e8.call(occurInAgendaFiles, regexpQuote(link as string));
   },
 });
 

@@ -120,3 +120,12 @@ fn sort_functions_must_be_functions() {
     let b = ed.window_buffer();
     assert_eq!(b.slice(0..b.len()), "| a |\n| bb |\n| ccc |\n");
 }
+
+/// An empty key function is refused, as org-read-function says.
+#[test]
+fn an_empty_key_function_is_refused() {
+    let (mut ed, _s) = org("| bb |\n| a |\n");
+    ed.window_buffer_mut().set_point(2);
+    ed.press("C-c ^ f RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), Some("Empty input is not valid".into()));
+}

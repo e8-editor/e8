@@ -7362,7 +7362,11 @@ function orgReadFunction(prompt: string, allowEmpty = false): string | undefined
     if (e8.fboundp(name)) names.push(name);
   });
   const answer = e8.completingRead(prompt, names, { requireMatch: true });
-  return allowEmpty && answer === "" ? undefined : answer;
+  if (answer === "") {
+    if (allowEmpty) return undefined;
+    e8.userError("Empty input is not valid");
+  }
+  return answer;
 }
 
 /** Reads a key-extracting and a comparing function for sorting by f, as Org's sorting commands ask for them. */

@@ -1428,5 +1428,122 @@
       "LEVEL=1"
     ],
     "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-edges.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "timestamp_now": true,
+    "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+    "name": "todo-ignore-deadline-edges",
+    "globals": {
+      "org-agenda-todo-ignore-deadlines": true
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-edges.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "timestamp_now": true,
+    "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+    "name": "todo-ignore-deadline-edges-far",
+    "globals": {
+      "org-agenda-todo-ignore-deadlines": "'far"
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-edges.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "timestamp_now": true,
+    "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+    "name": "todo-ignore-order-scheduled-deadlines",
+    "globals": {
+      "org-agenda-todo-ignore-scheduled": "'future",
+      "org-agenda-todo-ignore-deadlines": true
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-edges.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "timestamp_now": true,
+    "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+    "name": "todo-ignore-order-scheduled-timestamp",
+    "globals": {
+      "org-agenda-todo-ignore-scheduled": "'future",
+      "org-agenda-todo-ignore-timestamp": "'future"
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-edges.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "timestamp_now": true,
+    "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+    "name": "todo-ignore-seconds",
+    "globals": {
+      "org-agenda-todo-ignore-scheduled": "'future",
+      "org-agenda-todo-ignore-time-comparison-use-seconds": true
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-edges.org",
+    "today": "2026-10-28",
+    "windows": true,
+    "keys": "C-u C-c \\",
+    "timestamp_now": true,
+    "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+    "name": "sparse-tree-honor-ignore",
+    "answers": [
+      "LEVEL=1"
+    ],
+    "globals": {
+      "org-agenda-tags-todo-honor-ignore-options": true,
+      "org-agenda-todo-ignore-deadlines": true
+    }
   }
 ]

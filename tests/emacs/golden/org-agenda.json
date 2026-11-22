@@ -3578,6 +3578,279 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "todo-ignore-deadline-edges",
+      "input": {
+        "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-edges.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-deadlines": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Beyond\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO Noon today\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Beyond\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO Noon today\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-deadline-edges-far",
+      "input": {
+        "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-edges.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-deadlines": "'far"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Edge deadline\n  e8-agenda-edges:TODO Cookie deadline\n  e8-agenda-edges:TODO Both\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO Noon today\n  e8-agenda-edges:TODO :work: Tagged\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Edge deadline\n  e8-agenda-edges:TODO Cookie deadline\n  e8-agenda-edges:TODO Both\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO Noon today\n  e8-agenda-edges:TODO :work: Tagged\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-order-scheduled-deadlines",
+      "input": {
+        "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-edges.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-scheduled": "'future",
+          "org-agenda-todo-ignore-deadlines": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Beyond\n  e8-agenda-edges:TODO Both\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO Noon today\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Beyond\n  e8-agenda-edges:TODO Both\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO Noon today\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-order-scheduled-timestamp",
+      "input": {
+        "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-edges.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-scheduled": "'future",
+          "org-agenda-todo-ignore-timestamp": "'future"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Edge deadline\n  e8-agenda-edges:TODO Cookie deadline\n  e8-agenda-edges:TODO Beyond\n  e8-agenda-edges:TODO Both\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO Noon today\n  e8-agenda-edges:TODO :work: Tagged\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Edge deadline\n  e8-agenda-edges:TODO Cookie deadline\n  e8-agenda-edges:TODO Beyond\n  e8-agenda-edges:TODO Both\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO Noon today\n  e8-agenda-edges:TODO :work: Tagged\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-seconds",
+      "input": {
+        "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-edges.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-scheduled": "'future",
+          "org-agenda-todo-ignore-time-comparison-use-seconds": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Edge deadline\n  e8-agenda-edges:TODO Cookie deadline\n  e8-agenda-edges:TODO Beyond\n  e8-agenda-edges:TODO Both\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO :work: Tagged\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-edges:TODO Edge deadline\n  e8-agenda-edges:TODO Cookie deadline\n  e8-agenda-edges:TODO Beyond\n  e8-agenda-edges:TODO Both\n  e8-agenda-edges:TODO Meet <2026-11-02 Mon>\n  e8-agenda-edges:TODO :work: Tagged\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "sparse-tree-honor-ignore",
+      "input": {
+        "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+        "point": 0,
+        "keys": "C-u C-c \\",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-edges.org",
+        "today": "2026-10-28",
+        "answers": [
+          "LEVEL=1"
+        ],
+        "globals": {
+          "org-agenda-tags-todo-honor-ignore-options": true,
+          "org-agenda-todo-ignore-deadlines": true
+        }
+      },
+      "text": "* TODO Edge deadline\nDEADLINE: <2026-11-11 Wed>\n* TODO Cookie deadline\nDEADLINE: <2026-10-31 Sat -3d>\n* TODO Beyond\nDEADLINE: <2026-11-12 Thu>\n* TODO Both\nDEADLINE: <2026-10-30 Fri> SCHEDULED: <2026-10-20 Tue>\n* TODO Meet <2026-11-02 Mon>\nSCHEDULED: <2026-10-20 Tue>\n* TODO Noon today\nSCHEDULED: <2026-10-28 Wed 13:00>\n* TODO :work: Tagged\nDEADLINE: <2026-11-11 Wed>\n",
+      "visible": "* TODO Edge deadline\n* TODO Cookie deadline\n* TODO Beyond\n* TODO Both\n* TODO Meet <2026-11-02 Mon>\n* TODO Noon today\n* TODO :work: Tagged",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ]
     }
   ]
 }
