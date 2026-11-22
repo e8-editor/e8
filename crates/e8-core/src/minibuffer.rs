@@ -288,7 +288,12 @@ impl Editor {
     /// completes against now, if it has one.
     pub fn refresh_dynamic_collection(&mut self) {
         let Some(f) = self.prompt.as_ref().and_then(|p| p.collection_fn.clone()) else { return };
-        let input = self.minibuffer_input();
+        let mut input = self.minibuffer_input();
+        // With a separator, the answer at point, as crm--collection-fn gives the table what follows the last one.
+        if let Some(separator) = self.prompt.as_ref().and_then(|p| p.separator.clone()) {
+            let (start, end) = self.separated_element(&separator, &input, self.minibuffer_input_point());
+            input = input.chars().skip(start).take(end - start).collect();
+        }
         match f.call(self, &[Value::Str(input)]) {
             Ok(Value::List(items)) => {
                 let names: Vec<String> = items.iter().filter_map(|v| v.as_str().map(str::to_string)).collect();
@@ -414,19 +419,26 @@ impl Editor {
     /// slash; and the names the part could complete to.
     fn completion_table(&self, prompt: &Prompt, input: &str, point: usize) -> Field {
         // With a separator, the answer at point, between the separators
-        // around it, as crm--current-element finds it.
-        if let (Some(separator), Some(collection)) = (prompt.separator.as_ref(), prompt.collection.as_ref()) {
+        // around it, as crm--current-element finds it, completed as a whole
+        // input would be, the rest kept before and after it.
+        if let Some(separator) = prompt.separator.as_ref() {
             let (start, end) = self.separated_element(separator, input, point);
-            let byte = |n: usize| input.char_indices().nth(n).map_or(input.len(), |(i, _)| i);
-            let (start, at, end) = (byte(start), byte(point.max(start).min(end)), byte(end));
+            let chars: Vec<char> = input.chars().collect();
+            let element: String = chars[start..end].iter().collect();
+            let inner = self.completion_table_plain(prompt, &element, point.clamp(start, end) - start);
             return Field {
-                base: input[..start].to_string(),
-                before: input[start..at].to_string(),
-                after: input[at..end].to_string(),
-                suffix: input[end..].to_string(),
-                names: collection.clone(),
+                base: chars[..start].iter().collect::<String>() + &inner.base,
+                before: inner.before,
+                after: inner.after,
+                suffix: inner.suffix + &chars[end..].iter().collect::<String>(),
+                names: inner.names,
             };
         }
+        self.completion_table_plain(prompt, input, point)
+    }
+
+    /// What one input completes against, with no separator, split as completion boundaries split it.
+    fn completion_table_plain(&self, prompt: &Prompt, input: &str, point: usize) -> Field {
         let at = input.char_indices().nth(point).map_or(input.len(), |(i, _)| i);
         let (before, after) = input.split_at(at);
         let names = match (prompt.collection.as_ref(), prompt.kind) {
@@ -464,43 +476,56 @@ impl Editor {
     /// ending at or before point, and before the first starting at or after
     /// it, as crm--current-element searches back and forward.
     fn separated_element(&self, separator: &str, input: &str, point: usize) -> (usize, usize) {
-        let (mut start, mut end) = (0, input.chars().count());
+        let len = input.chars().count();
+        let point = point.min(len);
+        let mut start = 0;
         let mut from = 0;
         while let Ok(Some(m)) = self.string_match(separator, input, from, false) {
-            if m.end <= point {
-                start = m.end;
-            } else if m.start >= point {
-                end = m.start;
+            if m.end > point {
                 break;
+            }
+            if m.end > m.start {
+                start = m.end;
             }
             // An empty match moves on a character, as a search would.
             from = if m.end > m.start { m.end } else { m.end + 1 };
-            if from > input.chars().count() {
+            if from > len {
                 break;
             }
         }
+        // The first separator from point on, as re-search-forward from it finds one.
+        let end = match self.string_match(separator, input, point, false) {
+            Ok(Some(m)) if m.end > m.start => m.start.max(start),
+            _ => len,
+        };
         (start, end)
+    }
+
+    /// The answers' char ranges in `input`, split by `separator`.
+    pub(crate) fn separated_ranges(&self, separator: &str, input: &str) -> Vec<(usize, usize)> {
+        let len = input.chars().count();
+        let mut ranges = Vec::new();
+        let (mut last, mut from) = (0, 0);
+        while let Ok(Some(m)) = self.string_match(separator, input, from, false) {
+            if m.end == m.start {
+                from = m.end + 1;
+                if from > len {
+                    break;
+                }
+                continue;
+            }
+            ranges.push((last, m.start));
+            last = m.end;
+            from = m.end;
+        }
+        ranges.push((last, len));
+        ranges
     }
 
     /// The answers in `input`, split by the Emacs regexp `separator`, as split-string does.
     fn separated_elements(&self, separator: &str, input: &str) -> Vec<String> {
         let chars: Vec<char> = input.chars().collect();
-        let mut parts = Vec::new();
-        let (mut last, mut from) = (0, 0);
-        while let Ok(Some(m)) = self.string_match(separator, input, from, false) {
-            if m.end == m.start {
-                from = m.end + 1;
-                if from > chars.len() {
-                    break;
-                }
-                continue;
-            }
-            parts.push(chars[last..m.start].iter().collect());
-            last = m.end;
-            from = m.end;
-        }
-        parts.push(chars[last..].iter().collect());
-        parts
+        self.separated_ranges(separator, input).into_iter().map(|(a, b)| chars[a..b].iter().collect()).collect()
     }
 
     /// What the open prompt's input completes against with point at
@@ -580,17 +605,34 @@ impl Editor {
 
     /// Whether `input` is itself a valid answer to the open prompt, as
     /// Emacs's `test-completion`.
+    /// Whether one answer is one of the prompt's completions, as a whole input would be checked.
+    pub(crate) fn element_matches(&self, prompt: &Prompt, input: &str) -> bool {
+        if prompt.kind == ParamKind::File && prompt.collection.is_none() {
+            return fs::path_exists(expand_file_name(input));
+        }
+        let field = self.completion_table_plain(prompt, input, input.chars().count());
+        let fold = self.completion_ignore_case();
+        field.names.iter().any(|n| if fold { n.to_lowercase() == field.before.to_lowercase() } else { *n == field.before })
+    }
+
+    /// The completions of one answer, as a whole input's, sorted and each once.
+    pub(crate) fn element_completions(&self, prompt: &Prompt, input: &str) -> Vec<String> {
+        let field = self.completion_table_plain(prompt, input, input.chars().count());
+        let fold = self.completion_ignore_case();
+        let (_, mut found) = completion::all_completions(&self.completion_styles(), &field.before, &field.after, &field.names, fold);
+        found.sort();
+        found.dedup();
+        found.into_iter().map(|c| format!("{}{c}", field.base)).collect()
+    }
+
     pub(crate) fn is_completion_match(&self, input: &str) -> bool {
         let Some(prompt) = &self.prompt else { return false };
         if prompt.kind == ParamKind::File && prompt.collection.is_none() {
             return fs::path_exists(expand_file_name(input));
         }
         // Each answer of several, as crm-complete-and-exit checks them.
-        if let (Some(separator), Some(collection)) = (prompt.separator.as_ref(), prompt.collection.as_ref()) {
-            let fold = self.completion_ignore_case();
-            return self.separated_elements(separator, input).iter().filter(|e| !e.is_empty()).all(|e| {
-                collection.iter().any(|n| if fold { n.to_lowercase() == e.to_lowercase() } else { n == e })
-            });
+        if let Some(separator) = prompt.separator.as_ref() {
+            return self.separated_elements(separator, input).iter().filter(|e| !e.is_empty()).all(|e| self.element_matches(prompt, e));
         }
         let field = self.completion_table(prompt, input, input.chars().count());
         let fold = self.completion_ignore_case();

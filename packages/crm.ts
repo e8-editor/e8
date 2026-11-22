@@ -50,11 +50,12 @@ export function completingReadMultiple(prompt: string, table: e8.CompletionTable
 }
 
 // For code that calls it by name, as Lisp calls completing-read-multiple.
-e8.defun("completing-read-multiple", (prompt: string, table: string[], _predicate?: e8.Value, requireMatch?: e8.Value, initial?: string, history?: string, def?: string) =>
+// PREDICATE is not taken, as E8's prompts filter no names; DEF may be a list, its first the default, and INITIAL a cons, its string the input.
+e8.defun("completing-read-multiple", (prompt: string, table: string[], _predicate?: e8.Value, requireMatch?: e8.Value, initial?: e8.Value, history?: string, def?: e8.Value) =>
   completingReadMultiple(prompt, table, {
     requireMatch: requireMatch !== null && requireMatch !== undefined && requireMatch !== false,
-    initial: initial ?? undefined,
+    initial: typeof initial === "string" ? initial : Array.isArray(initial) && typeof initial[0] === "string" ? initial[0] : undefined,
     history: history ?? undefined,
-    default: def ?? undefined,
+    default: typeof def === "string" ? def : Array.isArray(def) && typeof def[0] === "string" ? def[0] : undefined,
   }),
 );
