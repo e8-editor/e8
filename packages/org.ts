@@ -3187,7 +3187,9 @@ function orgCycle(arg: e8.PrefixArg): void {
       return;
     }
     // At the buffer's start, not on a heading, cycle globally with org-cycle-global-at-bob, the window left alone.
-    if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && !((parseHeading(lineAt())?.level ?? Infinity) <= nstars)) {
+    // Not on a heading TAB cycles, one past the limit being text.
+    const atBob = parseHeading(lineAt());
+    if (truthy(e8.variable("org-cycle-global-at-bob")) && e8.point() === e8.pointMin() && (atBob === undefined || atBob.level > nstars)) {
       const hook = e8.variable("org-cycle-hook");
       const without = Array.isArray(hook) ? hook.filter((f) => f !== "org-cycle-optimize-window-after-visibility-change") : hook;
       e8.letBind({ "org-cycle-hook": without ?? null }, () => globalCycle());
