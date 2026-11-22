@@ -5335,9 +5335,9 @@ function bufferTags(): TagEntry[] {
 }
 
 /** The tags of every agenda file, each once, as org-global-tags-completion-table: their headings' and FILETAGS', and their tag lists'. */
-function globalTagsCompletionTable(): TagEntry[] {
+export function globalTagsCompletionTable(files: string[] = agendaFiles()): TagEntry[] {
   const seen = new Set<string>();
-  for (const file of agendaFiles()) {
+  for (const file of files) {
     e8.withCurrentBuffer(e8.findFileNoselect(file), () => {
       for (const [t] of [...bufferTags(), ...currentTagAlist()]) if (!isTagKeyword(t)) seen.add(t);
     });
@@ -6084,8 +6084,14 @@ export function parseDate(input: string, withTime = false): DateTime {
   let text = input.trim().toLowerCase();
   const base = today();
   let time: [number, number] | undefined;
-  const clock = /(?:^|\s)(\d{1,2}):(\d{2})(?:\s|$)/.exec(text);
-  if (clock) {
+  // 10am or 3:30pm, as org-read-date reads them.
+  const ampm = /(?:^|\s)(\d{1,2})(?::(\d{2}))?(am|pm)(?:\s|$)/.exec(text);
+  // A time, or a range of times, its start taken.
+  const clock = ampm ? null : /(?:^|\s)(\d{1,2}):(\d{2})(?:-\d{1,2}:\d{2})?(?:\s|$)/.exec(text);
+  if (ampm) {
+    time = [(Number(ampm[1]) % 12) + (ampm[3] === "pm" ? 12 : 0), Number(ampm[2] ?? 0)];
+    text = text.replace(ampm[0], " ").trim();
+  } else if (clock) {
     time = [Number(clock[1]), Number(clock[2])];
     text = text.replace(clock[0], " ").trim();
   }
@@ -6843,7 +6849,7 @@ e8.defineCommand({
  * NAME_ALL, inherited: each read as Lisp, so a string's quotes go and a
  * number is written as Lisp writes it; :ETC means others may be typed.
  */
-function allowedValues(h: Heading, property: string): { values: string[]; restricted: boolean } {
+export function allowedValues(h: Heading, property: string): { values: string[]; restricted: boolean } {
   const all = entryGetInherited(h, `${property}_ALL`, false);
   const values: string[] = [];
   let restricted = true;
@@ -10134,6 +10140,8 @@ function sparseTree(arg: e8.PrefixArg, type?: string | null): void {
 }
 
 /** Every value a property has in the buffer, as org-property-values. */
+e8.defun("org--property-values", (key: string) => propertyValues(key));
+
 function propertyValues(key: string): string[] {
   return e8.saveRestriction(() => {
     e8.widen();
