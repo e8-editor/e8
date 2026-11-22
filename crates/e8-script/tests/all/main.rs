@@ -79,6 +79,7 @@ mod org_archive;
 mod org_archive_details;
 mod org_clock_mode_line;
 mod org_clock_persist;
+mod org_clock_rest;
 mod org_clocktable;
 mod org_capture_targets;
 mod org_cycle_hook;

@@ -5525,7 +5525,7 @@ declare global {
        */
       "org-clock-in": [select?: PrefixArg | boolean];
       /**
-       * Start a clock again on the entry clocked last. With C-u, on a task picked from those clocked lately.
+       * Start a clock again on the entry clocked last. With C-u, on a task picked from those clocked lately; with C-u C-u, from when the clock was last stopped; with C-u C-u C-u, asking for a TODO state to switch it to.
        *
        * @param arg raw prefix argument
        *
@@ -13553,6 +13553,12 @@ declare global {
        */
       "org-clock-clocktable-language-setup": Value;
       /**
+       * Whether clocking in starts from when the clock was last stopped, rather than now.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-continuously": Value;
+      /**
        * The running clock's entry's title, without TODO keyword, priority, COMMENT or tags.
        *
        * Defined in packages/org-clock.ts.
@@ -13613,6 +13619,12 @@ declare global {
        */
       "org-clock-in-resume": Value;
       /**
+       * A TODO state to switch a task to when clocking it in, or a function of its state giving one.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-in-switch-to-state": Value;
+      /**
        * Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.
        *
        * Defined in packages/org-clock.ts.
@@ -13672,6 +13684,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-report-include-clocking-task": Value;
+      /**
+       * What sounds when the clock runs past the entry's effort: t for the bell twice, a sound file's name, or nil for nothing.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-sound": Value;
       /**
        * How long the clock in the mode line may be, cut there; 0 for no limit.
        *
@@ -14361,7 +14379,7 @@ declare global {
        */
       "org-scheduled-delay-days": Value;
       /**
-       * A function given each Org notification, as a clock running past its effort; nil shows it in the echo area.
+       * A function given each Org notification, as a clock running past its effort, or a program run with it; nil shows it on the desktop where E8 can, else in the echo area.
        *
        * Defined in packages/org-clock.ts.
        */

@@ -16,6 +16,7 @@
 import {
   addLogNote,
   agendaFiles,
+  allKeywords,
   combinePlists,
   createDblock,
   type DateTime,
@@ -39,6 +40,7 @@ import {
   matcherTime,
   parseDate,
   plistGet,
+  propertyInheritP,
   reducedLevel,
   tableSortLines,
   today,
@@ -51,7 +53,7 @@ import { showEntry, showSetVisibility, toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData, entryGet, entryPut } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
 import { setRunningClock } from "org-refile";
-import { charCount, eraseBuffer, forwardLine, truthy } from "subr";
+import { allMatches, charCount, eraseBuffer, executableFind, forwardLine, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("org-clock-into-drawer", true, "Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.");
@@ -72,7 +74,14 @@ defvar("org-clock-effort", null, "The running clock's entry's effort, shown in t
 defvar("org-clock-task-overrun-text", null, "Text put before the clock in the mode line once it runs past the effort; nil shows the time in org-mode-line-clock-overrun instead.");
 defvar("org-clock-string-limit", 0, "How long the clock in the mode line may be, cut there; 0 for no limit.");
 defvar("org-clock-goto-may-find-recent-task", true, "Whether org-clock-goto goes to the task clocked last when no clock runs.");
-defvar("org-show-notification-handler", null, "A function given each Org notification, as a clock running past its effort; nil shows it in the echo area.");
+defvar(
+  "org-show-notification-handler",
+  null,
+  "A function given each Org notification, as a clock running past its effort, or a program run with it; nil shows it on the desktop where E8 can, else in the echo area.",
+);
+defvar("org-clock-sound", null, "What sounds when the clock runs past the entry's effort: t for the bell twice, a sound file's name, or nil for nothing.");
+defvar("org-clock-in-switch-to-state", null, "A TODO state to switch a task to when clocking it in, or a function of its state giving one.");
+defvar("org-clock-continuously", false, "Whether clocking in starts from when the clock was last stopped, rather than now.");
 
 /** The running clock: its CLOCK: line, its heading's title, and when it started. */
 interface Clock {
@@ -95,6 +104,8 @@ let defaultTask: e8.Marker | undefined;
 let interruptedTask: e8.Marker | undefined;
 /** Whether the clock running past its effort has been told already, as org-clock-notification-was-shown. */
 let notified = false;
+/** When the clock was last stopped, as org-clock-out-time. */
+let outTime: DateTime | undefined;
 
 // The clock's markers follow its entry when moved, cut and pasted or refiled, as org-clock-save-markers-for-cut-and-paste.
 keepMarkersThroughMoves(() => [clock?.line, clock?.heading, last, defaultTask, interruptedTask, ...history]);
@@ -141,7 +152,8 @@ function clockedBefore(all: Heading[], i: number): { minutes: number; extra: str
   // org-clock-mode-line-total says, auto meaning since LAST_REPEAT if there is one.
   const h = all[i];
   const own = entryGet(h.line, "CLOCK_MODELINE_TOTAL");
-  const inherited = e8.variable("org-use-property-inheritance") === true ? entryGetInherited(h, "CLOCK_MODELINE_TOTAL", false) : own;
+  // Inherited if org-use-property-inheritance names it, as org-entry-get with 'selective.
+  const inherited = propertyInheritP("CLOCK_MODELINE_TOTAL") ? entryGetInherited(h, "CLOCK_MODELINE_TOTAL", false) : own;
   const setting = e8.variable("org-clock-mode-line-total");
   const cmt = inherited ?? (typeof setting === "symbol" ? e8.symbolName(setting) : String(setting ?? "auto"));
   const lr = entryGet(h.line, "LAST_REPEAT");
@@ -247,6 +259,54 @@ function clockedTime(): number {
   return clock ? Math.max(0, Math.floor((millis(now()) - clock.start) / 60000)) + clock.before : 0;
 }
 
+/** Shows a notification and plays the sound, as org-notify. */
+export function orgNotify(text: string, sound: e8.Value = null): void {
+  showNotification(text);
+  if (truthy(sound)) playSound(sound);
+}
+e8.defun("org-notify", (text: string, sound?: e8.Value) => orgNotify(String(text), sound ?? null));
+
+/**
+ * Shows a notification, as org-show-notification: through
+ * org-show-notification-handler, a function or a program run with it; else
+ * on the desktop, by AppleScript in the macOS app or notify-send; else in
+ * the echo area.
+ */
+function showNotification(text: string): void {
+  const handler = e8.variable("org-show-notification-handler");
+  const name = typeof handler === "symbol" ? e8.symbolName(handler) : undefined;
+  if (typeof handler === "function") e8.funcall(handler, text);
+  else if (name !== undefined && e8.fboundp(name)) e8.funcall(name, text);
+  else if (typeof handler === "string") e8.makeProcess({ name: "emacs-timer-notification", command: [handler, text] });
+  else if (canApplescript()) e8.nsDoApplescript(`display notification "${text.replace(/"/g, "#")}" with title "Org mode notification"`);
+  else if (executableFind("notify-send") !== undefined) e8.makeProcess({ name: "emacs-timer-notification", command: ["notify-send", text] });
+  else e8.message(text);
+}
+
+/** Whether AppleScript can show a notification: the macOS app, as Emacs's NS build has ns-do-applescript. */
+function canApplescript(): boolean {
+  return e8.variable("window-system") === "ns" || (typeof e8.variable("window-system") === "symbol" && e8.symbolName(e8.variable("window-system") as symbol) === "ns");
+}
+
+/** Plays org-clock-sound, or SOUND: t rings the bell twice; a file plays with aplay, else the bell, as org-clock-play-sound. */
+function playSound(sound: e8.Value): void {
+  if (sound === true) {
+    e8.ding();
+    e8.ding();
+    return;
+  }
+  if (typeof sound !== "string") return;
+  const file = e8.expandFileName(sound);
+  if (!e8.fileExists(file)) return;
+  if (executableFind("aplay") !== undefined) e8.makeProcess({ name: "org-clock-play-notification", command: ["aplay", file] });
+  else if (e8.fboundp("play-sound-file")) e8.funcall("play-sound-file", file);
+  else if (executableFind("afplay") !== undefined) e8.makeProcess({ name: "org-clock-play-notification", command: ["afplay", file] });
+  else {
+    e8.ding();
+    e8.ding();
+  }
+}
+
 /** Says once that the clock has run past the entry's effort, as org-clock-notify-once-if-expired; returns whether it has. */
 function notifyOnceIfExpired(): boolean {
   if (!clock) return false;
@@ -256,12 +316,7 @@ function notifyOnceIfExpired(): boolean {
   if (!overrun) notified = false;
   else if (!notified) {
     notified = true;
-    const text = `Task ‘${clock.title}’ should be finished by now. (${String(effort)})`;
-    const handler = e8.variable("org-show-notification-handler");
-    if (typeof handler === "function") e8.funcall(handler, text);
-    else if (typeof handler === "symbol" && e8.fboundp(e8.symbolName(handler))) e8.funcall(e8.symbolName(handler), text);
-    else if (typeof handler === "string" && e8.fboundp(handler)) e8.funcall(handler, text);
-    else e8.message(text);
+    orgNotify(`Task \u2018${clock.title}\u2019 should be finished by now. (${String(effort)})`, e8.variable("org-clock-sound") ?? null);
   }
   return overrun;
 }
@@ -384,7 +439,7 @@ function historyPush(buffer: string, pos: number): void {
 }
 
 /** A task's line in *Clock Task Select*: its key, category and heading without tags, as org-clock-insert-selection-line. */
-function selectionLine(key: string, m: e8.Marker): string | undefined {
+function selectionLine(key: string, m: e8.Marker): string | e8.PropertizedString | undefined {
   const buffer = e8.markerBuffer(m);
   if (buffer === undefined) return undefined;
   return e8.withCurrentBuffer(buffer, () =>
@@ -395,9 +450,27 @@ function selectionLine(key: string, m: e8.Marker): string | undefined {
       if (i === undefined) return undefined;
       const h = all[i];
       const task = e8.lineText(h.line).slice(h.level + 1).replace(/[ \t]+:[\p{L}\p{M}\p{Nd}\p{Nl}_@#%:]+:[ \t]*$/u, "").replace(/[ \t]+$/, "");
-      return `[${key}] ${categories(all)[i].padEnd(12)}  ${task}\n`;
+      // Fontified as in Org: a link's markup there but invisible, its description showing.
+      return e8.concat(`[${key}] ${categories(all)[i].padEnd(12)}  `, linksAsShown(task), "\n");
     }),
   );
+}
+
+/** TEXT with its bracket links shown as Org shows them: the markup invisible, the description (or target) in org-link. */
+function linksAsShown(text: string): string | e8.PropertizedString {
+  const parts: (string | e8.PropertizedString)[] = [];
+  let last = 0;
+  for (const m of allMatches(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, text)) {
+    const at = m.index ?? 0;
+    parts.push(text.slice(last, at));
+    const shown = m[2] ?? m[1];
+    const before = m[2] !== undefined ? `[[${m[1]}][` : "[[";
+    parts.push(e8.propertize(before, { invisible: true }), e8.propertize(shown, { face: "org-link" }), e8.propertize("]]", { invisible: true }));
+    last = at + m[0].length;
+  }
+  if (parts.length === 0) return text;
+  parts.push(text.slice(last));
+  return e8.concat(...parts);
 }
 
 /**
@@ -463,8 +536,13 @@ function markDefaultTask(): void {
  * org-clock-in: with C-u on a task picked from those clocked lately, and
  * with C-u C-u on the entry at point, marking it the default task.
  */
-export function clockIn(select?: e8.PrefixArg): void {
+export function clockIn(select?: e8.PrefixArg, startTime?: DateTime): void {
   const raw = Array.isArray(select) ? select[0] : undefined;
+  // C-u C-u C-u: from when the clock was last stopped, as with org-clock-continuously.
+  if (raw === 64) {
+    e8.letBind({ "org-clock-continuously": true }, () => clockIn(null, outTime));
+    return;
+  }
   let selected: e8.Marker | undefined;
   if (raw === 4) {
     const task = selectTask("Clock-in on task: ");
@@ -480,11 +558,11 @@ export function clockIn(select?: e8.PrefixArg): void {
         e8.saveRestriction(() => {
           e8.widen();
           e8.gotoChar(pos);
-          clockInHere(pos);
+          clockInHere(pos, startTime);
         }),
       ),
     );
-  } else clockInHere();
+  } else clockInHere(undefined, startTime);
 }
 
 /**
@@ -493,7 +571,7 @@ export function clockIn(select?: e8.PrefixArg): void {
  * SELECTED, is the running entry's heading, as Org compares it: the
  * running task picked as c is its clock line, so it is clocked again.
  */
-function clockInHere(selected?: number): void {
+function clockInHere(selected?: number, startTime?: DateTime): void {
   let [all, i] = headingHere();
   let h = all[i];
   notified = false;
@@ -517,6 +595,22 @@ function clockInHere(selected?: number): void {
     interruptedTask = undefined;
   }
   historyPush(e8.bufferName(), h.start);
+  // A state to switch the task to, or a function of its state giving one, as org-clock-in-switch-to-state.
+  const sw = e8.variable("org-clock-in-switch-to-state");
+  const swName = typeof sw === "symbol" ? e8.symbolName(sw) : undefined;
+  let newState: e8.Value = null;
+  if (typeof sw === "function" || (swName !== undefined && e8.fboundp(swName))) newState = e8.funcall(typeof sw === "function" ? sw : (swName as string), h.todo ?? null) as e8.Value;
+  else if (typeof sw === "string" && sw !== "" && h.todo !== sw) newState = sw;
+  if (typeof newState === "string" && newState !== "") {
+    const line = h.line;
+    e8.saveExcursion(() => {
+      e8.gotoChar(h.start);
+      e8.call("org-todo-set", newState as string);
+    });
+    all = headings();
+    i = headingIndex(all, line) as number;
+    h = all[i];
+  }
   const title = clockModeLineHeading(h);
   const { minutes: before, extra } = clockedBefore(all, i);
   // With org-clock-in-resume, the entry's CLOCK line not closed goes on, from when it started, as org-clock-in resumes it.
@@ -536,7 +630,9 @@ function clockInHere(selected?: number): void {
     e8.ding();
     return;
   }
-  const start = open?.start ?? now();
+  // From the last clock-out with org-clock-continuously, else when given, else now, as org-clock-in starts it.
+  const continuing = truthy(e8.variable("org-clock-continuously") ?? null) ? outTime : undefined;
+  const start = open?.start ?? continuing ?? startTime ?? now();
   const stamp = open?.stamp ?? `[${formatTimestamp(start, true)}]`;
   e8.saveExcursion(() => {
     e8.saveRestriction(() => {
@@ -598,6 +694,7 @@ export function clockOut(failQuietly = false): void {
     e8.signal("error", "Clock start time is gone");
   }
   const end = now();
+  outTime = end;
   const te = `[${formatTimestamp(end, true)}]`;
   let removed = false;
   let minutes = 0;
@@ -775,23 +872,34 @@ e8.defineCommand({
 
 e8.defineCommand({
   name: "org-clock-in-last",
-  doc: "Start a clock again on the entry clocked last. With C-u, on a task picked from those clocked lately.",
+  doc:
+    "Start a clock again on the entry clocked last. With C-u, on a task picked from those clocked lately; with C-u C-u, from when " +
+    "the clock was last stopped; with C-u C-u C-u, asking for a TODO state to switch it to.",
   params: [{ name: "arg", kind: "prefix" }],
   run: (arg: e8.PrefixArg) => {
     if (Array.isArray(arg) && arg[0] === 4) return clockIn(arg);
-    if (clock) {
-      e8.message(`Already clocking in on "${clock.title}"`);
+    const n = Array.isArray(arg) ? arg[0] : undefined;
+    // From the last clock-out with C-u C-u or org-clock-continuously, as org-clock-in-last.
+    const start = truthy(e8.variable("org-clock-continuously") ?? null) || n === 16 ? (outTime ?? now()) : now();
+    const head = history[0];
+    const buffer = head === undefined ? undefined : e8.markerBuffer(head);
+    if (head === undefined || buffer === undefined) {
+      e8.message("No last clock");
       return;
     }
-    const buffer = last === undefined ? undefined : e8.markerBuffer(last);
-    if (last === undefined || buffer === undefined) e8.userError("No last clock");
-    e8.withCurrentBuffer(buffer, () => {
-      e8.saveExcursion(() => {
-        e8.gotoChar(e8.markerPosition(last!) ?? 0);
-        clockIn();
-      });
-    });
-    e8.message(`Clocking back: ${String(e8.variable("org-clock-current-task"))} (in ${buffer})`);
+    const already = e8.variable("org-clock-current-task");
+    // C-u C-u C-u, not clocking: a TODO state to switch to, from the task's file's keywords.
+    let state = e8.variable("org-clock-in-switch-to-state") ?? null;
+    if (!truthy(already ?? null) && n === 64) state = e8.completingRead("Switch to state: ", e8.withCurrentBuffer(buffer, () => allKeywords()));
+    e8.letBind({ "org-clock-in-switch-to-state": state }, () =>
+      e8.withCurrentBuffer(buffer, () => {
+        e8.saveExcursion(() => {
+          e8.gotoChar(e8.markerPosition(head) ?? 0);
+          clockIn(null, start);
+        });
+      }),
+    );
+    if (!truthy(already ?? null)) e8.message(`Clocking back: ${String(e8.variable("org-clock-current-task"))} (in ${e8.markerBuffer(clock?.line as e8.Marker) ?? buffer})`);
   },
 });
 
