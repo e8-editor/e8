@@ -9462,6 +9462,25 @@ function tagsExpandGroup(group: string[], groups: [string, string[]][], expanded
   return expanded;
 }
 
+/** Org mode's syntax table with @ and _ word characters, as org-mode-tags-syntax-table, made when first needed. */
+let tagsSyntaxTable: string | undefined;
+
+/** Runs body with org-mode-tags-syntax-table, so \\< and \\> in a tag regexp take @ and _ as word characters, as Org matches them. */
+function withTagsSyntaxTable<T>(body: () => T): T {
+  if (tagsSyntaxTable === undefined) {
+    tagsSyntaxTable = e8.copySyntaxTable("org-mode-syntax-table");
+    e8.modifySyntaxEntry("@", "w", tagsSyntaxTable);
+    e8.modifySyntaxEntry("_", "w", tagsSyntaxTable);
+  }
+  const previous = e8.syntaxTable();
+  e8.setSyntaxTable(tagsSyntaxTable);
+  try {
+    return body();
+  } finally {
+    e8.setSyntaxTable(previous);
+  }
+}
+
 /** Characters a tag is made of, as org-mode-tags-syntax-table's word characters. */
 const TAG_CHAR = /[\p{L}\p{N}_@]/u;
 
@@ -9677,7 +9696,7 @@ export function makeTagsMatcher(match?: string, todoOnly = false): TagsMatcher {
         let test: (ctx: MatchContext) => boolean;
         if (tag.startsWith("{")) {
           const re = tag.slice(1, -1);
-          test = (ctx) => ctx.tags.some((t) => e8.stringMatch(re, t, { caseFold: true }) !== undefined);
+          test = (ctx) => withTagsSyntaxTable(() => ctx.tags.some((t) => e8.stringMatch(re, t, { caseFold: true }) !== undefined));
         } else if (m[3] !== undefined) test = propertyTest(m[3], m[4], m[5] !== undefined, m[6]);
         else test = (ctx) => ctx.tags.includes(tag);
         ands.push(minus ? (ctx) => !test(ctx) : test);

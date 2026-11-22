@@ -1,0 +1,74 @@
+[
+  {
+    "name": "tag-regexp-word-end",
+    "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+    "keys": "C-c / m",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "{foo\\>}"
+    ]
+  },
+  {
+    "name": "tag-regexp-word-start",
+    "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+    "keys": "C-c / m",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "{\\<foo}"
+    ]
+  },
+  {
+    "name": "tag-regexp-symbol",
+    "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+    "keys": "C-c / m",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "{\\_<foo\\_>}"
+    ]
+  },
+  {
+    "name": "tag-regexp-word",
+    "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+    "keys": "C-c / m",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "{\\bbar\\b}"
+    ]
+  },
+  {
+    "name": "tag-regexp-plain",
+    "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+    "keys": "C-c / m",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "{foo}"
+    ]
+  },
+  {
+    "name": "tag-regexp-negated",
+    "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+    "keys": "C-c / m",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "-{foo\\>}"
+    ]
+  }
+]

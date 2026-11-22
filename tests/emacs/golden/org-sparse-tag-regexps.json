@@ -1,0 +1,150 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "tag-regexp-word-end",
+      "input": {
+        "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+        "point": 0,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "{foo\\>}"
+        ]
+      },
+      "text": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "visible": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"{\""
+    },
+    {
+      "name": "tag-regexp-word-start",
+      "input": {
+        "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+        "point": 0,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "{\\<foo}"
+        ]
+      },
+      "text": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "visible": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"{\""
+    },
+    {
+      "name": "tag-regexp-symbol",
+      "input": {
+        "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+        "point": 0,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "{\\_<foo\\_>}"
+        ]
+      },
+      "text": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "visible": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"{\""
+    },
+    {
+      "name": "tag-regexp-word",
+      "input": {
+        "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+        "point": 0,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "{\\bbar\\b}"
+        ]
+      },
+      "text": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "visible": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"{\""
+    },
+    {
+      "name": "tag-regexp-plain",
+      "input": {
+        "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+        "point": 0,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "{foo}"
+        ]
+      },
+      "text": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "visible": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"{\""
+    },
+    {
+      "name": "tag-regexp-negated",
+      "input": {
+        "text": "* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+        "point": 0,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "-{foo\\>}"
+        ]
+      },
+      "text": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "visible": "m* A :foo_bar:\n* B :foo:\n* C :x@foo:\n* D :foobar:\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"-\""
+    }
+  ]
+}

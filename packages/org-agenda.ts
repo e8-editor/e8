@@ -22,8 +22,10 @@ import {
   scanTags,
   today,
 } from "org";
+import { addArchiveFiles } from "org-archive";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
+import { multiOccur } from "replace";
 import { allMatches, charCount, eraseBuffer, regexpQuote, truthy } from "subr";
 
 e8.defineVariable({
@@ -939,6 +941,37 @@ const queryCommands = ([["add", "[", "a word"], ["subtract", "]", "a word not wa
     ] as const,
 );
 
+const occurInAgendaFiles = e8.defineCommand({
+  name: "org-occur-in-agenda-files",
+  doc:
+    "List the lines matching a regexp in every agenda file, and in org-agenda-text-search-extra-files, with the agenda files' archives " +
+    "when that list starts with agenda-archives, in *Occur*, as multi-occur does, each file widened.",
+  params: [{ name: "regexp", prompt: "Org-files matching: " }],
+  run: (regexp: string) => {
+    let files = agendaFiles();
+    const truenames = files.map((f) => e8.fileTruename(f));
+    const value = e8.variable("org-agenda-text-search-extra-files");
+    let extra = Array.isArray(value) ? value : [];
+    if (extra[0] === "agenda-archives") {
+      extra = extra.slice(1);
+      files = addArchiveFiles(files);
+    }
+    for (const f of extra) {
+      if (typeof f !== "string") continue;
+      const truename = e8.fileTruename(f);
+      if (truenames.includes(truename)) continue;
+      if (!files.includes(f)) files = [...files, f];
+      truenames.push(truename);
+    }
+    const buffers = files.map((f) => {
+      const buffer = e8.getFileBuffer(f) ?? e8.findFileNoselect(f);
+      e8.withCurrentBuffer(buffer, () => e8.widen());
+      return buffer;
+    });
+    multiOccur(buffers, regexp);
+  },
+});
+
 e8.defineCommand({
   name: "org-agenda",
   doc:
@@ -953,6 +986,7 @@ e8.defineCommand({
     else if (key === "M") e8.callWithPrefix(e8.prefixArg() ?? [4], tagsViewCommand);
     else if (key === "s") e8.callWithPrefix(e8.prefixArg(), searchViewCommand);
     else if (key === "S") e8.callWithPrefix(e8.prefixArg() ?? [4], searchViewCommand);
+    else if (key === "/") e8.callInteractively(occurInAgendaFiles);
     else e8.userError(`E8 does not have that agenda view yet: ${key}`);
   },
 });
