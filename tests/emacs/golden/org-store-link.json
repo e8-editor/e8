@@ -1,0 +1,857 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "store-heading-message",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link"
+        ],
+        "message": true
+      },
+      "text": "* One\n* Two\nbody\n* Three\n",
+      "visible": "* One\n* Two\nbody\n* Three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Stored: Two"
+    },
+    {
+      "name": "store-and-insert-heading",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "* One\n* Two\nbody\n* Three\n[[*Two]]",
+      "visible": "* One\n* Two\nbody\n* Three\n*Two",
+      "point": 33,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-twice-message",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "org-store-link"
+        ],
+        "message": true
+      },
+      "text": "* One\n* Two\nbody\n* Three\n",
+      "visible": "* One\n* Two\nbody\n* Three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "This link has already been stored"
+    },
+    {
+      "name": "store-moved-to-front",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x M-< M-x C-n M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "org-store-link",
+          "org-store-link"
+        ],
+        "message": true
+      },
+      "text": "* One\n* Two\nbody\n* Three\n",
+      "visible": "* One\n* Two\nbody\n* Three\n",
+      "point": 6,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Link moved to front: Two"
+    },
+    {
+      "name": "store-from-body",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 13,
+        "keys": "M-x M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "* One\n* Two\nbody\n* Three\n[[*Two]]",
+      "visible": "* One\n* Two\nbody\n* Three\n*Two",
+      "point": 33,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-custom-id",
+      "input": {
+        "text": "* One\n* Two\n:PROPERTIES:\n:CUSTOM_ID: second\n:END:\n",
+        "point": 6,
+        "keys": "M-x M-< C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "[[#second]]* One\n* Two\n:PROPERTIES:\n:CUSTOM_ID: second\n:END:\n",
+      "visible": "#second* One\n* Two\n:PROPERTIES:\n:CUSTOM_ID: second\n:END:\n",
+      "point": 11,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-named-element-row",
+      "input": {
+        "text": "* One\n#+NAME: tbl\n| a |\n",
+        "point": 20,
+        "keys": "M-x M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "* One\n#+NAME: tbl\n| a |\n[[*One]]",
+      "visible": "* One\n#+NAME: tbl\n| a |\n*One",
+      "point": 32,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-named-element-from-keyword",
+      "input": {
+        "text": "* One\n#+NAME: tbl\n| a |\n",
+        "point": 8,
+        "keys": "M-x M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "* One\n#+NAME: tbl\n| a |\n[[tbl]]",
+      "visible": "* One\n#+NAME: tbl\n| a |\ntbl",
+      "point": 31,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-target",
+      "input": {
+        "text": "* One\nsee <<here>> now\n",
+        "point": 12,
+        "keys": "M-x M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "* One\nsee <<here>> now\n[[here]]",
+      "visible": "* One\nsee <<here>> now\nhere",
+      "point": 31,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-before-first-heading",
+      "input": {
+        "text": "Some   intro text\n* One\n",
+        "point": 2,
+        "keys": "M-x M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "Some   intro text\n* One\n[[Some intro text]]",
+      "visible": "Some   intro text\n* One\nSome intro text",
+      "point": 43,
+      "mark": 2,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-region",
+      "input": {
+        "text": "* One\nalpha beta gamma\n",
+        "point": 6,
+        "keys": "C-SPC M-f M-f M-x C-SPC C-SPC M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "* One\nalpha beta gamma\n[[alpha beta]]",
+      "visible": "* One\nalpha beta gamma\nalpha beta",
+      "point": 37,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-heading-cookies-comment",
+      "input": {
+        "text": "* One\n* COMMENT Two   [1/2] :tag:\n",
+        "point": 8,
+        "keys": "M-x M-< C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "[[*Two]]* One\n* COMMENT Two   [1/2] :tag:\n",
+      "visible": "*Two* One\n* COMMENT Two   [1/2] :tag:\n",
+      "point": 8,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-heading-with-link",
+      "input": {
+        "text": "* One\n* See [[https://x.org][X]] now\n",
+        "point": 8,
+        "keys": "M-x M-< C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "[[*See \\[\\[https://x.org\\]\\[X\\]\\] now]]* One\n* See [[https://x.org][X]] now\n",
+      "visible": "*See \\[\\[https://x.org\\]\\[X\\]\\] now* One\n* See X now\n",
+      "point": 39,
+      "mark": 47,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-last-stored",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x M-> C-c M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link"
+        ]
+      },
+      "text": "* One\n* Two\nbody\n* Three\n[[*Two][Two]]\n",
+      "visible": "* One\n* Two\nbody\n* Three\nTwo\n",
+      "point": 39,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-all-links",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x M-> M-x C-c C-M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "org-store-link"
+        ]
+      },
+      "text": "* One\n* Two\nbody\n* Three\n- [[*Three][Three]]\n- [[*Two][Two]]\n",
+      "visible": "* One\n* Two\nbody\n* Three\n- Three\n- Two\n",
+      "point": 61,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-all-links-keep",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x M-> C-u C-c C-M-l C-c M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link"
+        ]
+      },
+      "text": "* One\n* Two\nbody\n* Three\n- [[*Two][Two]]\n[[*Two][Two]]\n",
+      "visible": "* One\n* Two\nbody\n* Three\n- Two\nTwo\n",
+      "point": 55,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-removes-stored",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x M-> C-c C-l C-c M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ],
+        "message": true
+      },
+      "text": "* One\n* Two\nbody\n* Three\n[[*Two]]",
+      "visible": "* One\n* Two\nbody\n* Three\n*Two",
+      "point": 33,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "No link to insert"
+    },
+    {
+      "name": "insert-keeps-stored",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x M-> C-c C-l C-c M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ],
+        "vars": {
+          "org-link-keep-stored-after-insertion": true
+        }
+      },
+      "text": "* One\n* Two\nbody\n* Three\n[[*Two]][[*Two][Two]]\n",
+      "visible": "* One\n* Two\nbody\n* Three\n*TwoTwo\n",
+      "point": 47,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-choose-by-description",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "M-x C-n C-n M-x M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "org-store-link",
+          "Two",
+          ""
+        ]
+      },
+      "text": "* One\n* Two\nbody\n* Three\n[[*Two]]",
+      "visible": "* One\n* Two\nbody\n* Three\n*Two",
+      "point": 33,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-id-existing",
+      "input": {
+        "text": "* One\n* Two\n:PROPERTIES:\n:ID: abc-123\n:END:\n",
+        "point": 6,
+        "keys": "M-x M-< C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ],
+        "vars": {
+          "org-id-link-to-org-use-id": "'use-existing"
+        }
+      },
+      "text": "[[id:abc-123]]* One\n* Two\n:PROPERTIES:\n:ID: abc-123\n:END:\n",
+      "visible": "id:abc-123* One\n* Two\n:PROPERTIES:\n:ID: abc-123\n:END:\n",
+      "point": 14,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-id-none-existing",
+      "input": {
+        "text": "* One\n* Two\n",
+        "point": 6,
+        "keys": "M-x M-< C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ],
+        "vars": {
+          "org-id-link-to-org-use-id": "'use-existing"
+        }
+      },
+      "text": "[[*Two]]* One\n* Two\n",
+      "visible": "*Two* One\n* Two\n",
+      "point": 8,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-skip-functions",
+      "input": {
+        "text": "* One\n* Two\n:PROPERTIES:\n:ID: abc-123\n:END:\n",
+        "point": 6,
+        "keys": "C-u C-u M-x M-< C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ],
+        "vars": {
+          "org-id-link-to-org-use-id": "'use-existing"
+        }
+      },
+      "text": "[[*Two]]* One\n* Two\n:PROPERTIES:\n:ID: abc-123\n:END:\n",
+      "visible": "*Two* One\n* Two\n:PROPERTIES:\n:ID: abc-123\n:END:\n",
+      "point": 8,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "no-link-to-insert",
+      "input": {
+        "text": "* One\n* Two\nbody\n* Three\n",
+        "point": 6,
+        "keys": "C-c M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "message": true
+      },
+      "text": "* One\n* Two\nbody\n* Three\n",
+      "visible": "* One\n* Two\nbody\n* Three\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "No link to insert"
+    },
+    {
+      "name": "store-empty-region",
+      "input": {
+        "text": "* One\nbody\n",
+        "point": 3,
+        "keys": "C-SPC M-x M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "* O[[*One]]",
+      "visible": "* O*One",
+      "point": 11,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-context-number",
+      "input": {
+        "text": "* One\nl1\n\nl2\nl3\n",
+        "point": 6,
+        "keys": "C-SPC M-> M-x C-SPC C-SPC M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ],
+        "vars": {
+          "org-link-context-for-files": 2
+        }
+      },
+      "text": "* One\nl1\n\nl2\nl3\n[[l1]]",
+      "visible": "* One\nl1\n\nl2\nl3\nl1",
+      "point": 22,
+      "mark": 16,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-comment-only-heading",
+      "input": {
+        "text": "* One\n* COMMENT\n",
+        "point": 6,
+        "keys": "M-x M-< C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "[[*COMMENT]]* One\n* COMMENT\n",
+      "visible": "*COMMENT* One\n* COMMENT\n",
+      "point": 12,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-angle-id-link",
+      "input": {
+        "text": "* One\n",
+        "point": 6,
+        "keys": "M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "<id:abc>",
+          ""
+        ]
+      },
+      "text": "* One\n[[id:abc]]",
+      "visible": "* One\nid:abc",
+      "point": 16,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "store-id-region-context",
+      "input": {
+        "text": "* One\n:PROPERTIES:\n:ID: abc\n:END:\nalpha beta\n",
+        "point": 34,
+        "keys": "C-SPC M-f M-x C-SPC C-SPC M-> C-c C-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ],
+        "vars": {
+          "org-id-link-to-org-use-id": "'use-existing"
+        }
+      },
+      "text": "* One\n:PROPERTIES:\n:ID: abc\n:END:\nalpha beta\n[[id:abc::alpha]]",
+      "visible": "* One\n:PROPERTIES:\n:ID: abc\n:END:\nalpha beta\nid:abc::alpha",
+      "point": 62,
+      "mark": 39,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-all-links-count",
+      "input": {
+        "text": "* One\n* Two\n* Three\n",
+        "point": 0,
+        "keys": "M-x C-n M-x C-n M-x M-> M-2 C-c C-M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "org-store-link",
+          "org-store-link"
+        ]
+      },
+      "text": "* One\n* Two\n* Three\n- [[*Three][Three]]\n- [[*Two][Two]]\n",
+      "visible": "* One\n* Two\n* Three\n- Three\n- Two\n",
+      "point": 56,
+      "mark": 12,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-last-stored-count",
+      "input": {
+        "text": "* One\n* Two\n",
+        "point": 0,
+        "keys": "M-x C-n M-x M-> C-u C-c M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "org-store-link"
+        ]
+      },
+      "text": "* One\n* Two\n[[*Two][Two]]\n[[*One][One]]\n",
+      "visible": "* One\n* Two\nTwo\nOne\n",
+      "point": 40,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "insert-keep-with-prefix",
+      "input": {
+        "text": "* One\n* Two\n",
+        "point": 6,
+        "keys": "M-x M-> C-u C-u C-u C-c C-l C-c M-l",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "links.org",
+        "answers": [
+          "org-store-link",
+          "",
+          ""
+        ]
+      },
+      "text": "* One\n* Two\n[[*Two]][[*Two][Two]]\n",
+      "visible": "* One\n* Two\n*TwoTwo\n",
+      "point": 34,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

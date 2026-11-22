@@ -23,6 +23,7 @@ import {
   scanTags,
   today,
 } from "org";
+import { setAgendaEntryHere } from "ol";
 import { addArchiveFiles } from "org-archive";
 import { type Habit, buildGraph, habitUrgency, parseHabit } from "org-habit";
 import { getLocation, gotoLastStored, refile } from "org-refile";
@@ -1087,6 +1088,12 @@ for (const [name, command, doc] of [
 e8.defineCommand({ name: "org-agenda-clock-out", doc: "Stop the running clock, from the agenda.", run: () => e8.call("org-clock-out") });
 e8.defineCommand({ name: "org-agenda-clock-cancel", doc: "Cancel the running clock, from the agenda.", run: () => e8.call("org-clock-cancel") });
 e8.defineCommand({ name: "org-agenda-clock-goto", doc: "Go to the entry with the running clock, from the agenda.", run: () => e8.call("org-clock-goto") });
+
+// org-store-link in the agenda links the line's entry, by its heading as org-hd-marker.
+setAgendaEntryHere(() => {
+  const item = agendaLines[e8.lineOf(e8.point())];
+  return item && { buffer: item.buffer, pos: headingOf(item) };
+});
 
 /** The entry the agenda line at point shows, or Org's error if it shows none. */
 function agendaItemHere(): AgendaItem {

@@ -1299,20 +1299,15 @@ fn today_s_agenda_has_a_time_grid() {
 fn insert_link_edits_the_link_at_point_and_takes_the_region() {
     let (mut ed, _s) = org("see [[https://a.org][Alpha]] here\n");
     ed.window_buffer_mut().set_point(8);
-    ed.press("C-c C-l").unwrap();
-    assert_eq!(ed.minibuffer_input(), "https://a.org");
-    ed.press("C-a C-k").unwrap();
-    ed.type_text("https://b.org\n");
-    assert_eq!(ed.minibuffer_input(), "Alpha");
-    ed.type_text("\n");
-    assert_eq!(text(&ed), "see [[https://b.org][Alpha]] here\n");
+    // The link's target to edit, then its description, left as it is.
+    ed.press("C-c C-l C-e M-DEL b . o r g RET RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert_eq!(text(&ed), "see [[https://a.b.org][Alpha]] here\n");
 
     let (mut ed, _s) = org("see Org manual here\n");
     ed.window_buffer_mut().set_point(4);
-    ed.press("C-SPC M-f M-f C-c C-l").unwrap();
-    ed.type_text("https://orgmode.org\n");
-    assert_eq!(ed.minibuffer_input(), "Org manual");
-    ed.type_text("\n");
+    ed.press("C-SPC M-f M-f C-c C-l h t t p s : / / o r g m o d e . o r g RET RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert_eq!(text(&ed), "see [[https://orgmode.org][Org manual]] here\n");
 }
 

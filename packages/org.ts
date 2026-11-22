@@ -6446,15 +6446,28 @@ e8.addHook("imenu-after-jump-hook", () => {
   if (e8.derivedModeP("org-mode")) showAncestors(e8.point());
 });
 
-/** What a link type does, as org-link-set-parameters keeps it: following it. */
+/**
+ * What a link type does, as org-link-set-parameters keeps it: following
+ * it; storing a link to point's place, as :store, returning whether it
+ * did after org-link-store-props; completing one, as :complete; and the
+ * description to offer, as :insert-description.
+ */
 export interface LinkParameters {
-  follow: (path: string) => void;
+  follow?: (path: string) => void;
+  store?: { name: string; run: (interactive: boolean) => unknown };
+  complete?: () => string;
+  insertDescription?: string | ((link: string, description: string | undefined) => string | undefined);
 }
 const linkTypes = new Map<string, LinkParameters>();
 
-/** Says how links of TYPE are followed, as org-link-set-parameters: id: links, as org-id.ts does, or a package's own. */
+/** Sets what links of TYPE do, as org-link-set-parameters: id: links, as org-id.ts does, or a package's own; other parameters are kept. */
 export function linkSetParameters(type: string, parameters: LinkParameters): void {
-  linkTypes.set(type, parameters);
+  linkTypes.set(type, { ...linkTypes.get(type), ...parameters });
+}
+
+/** The link types and their parameters, newest first, as org-link-parameters lists them. */
+export function linkTypeEntries(): [string, LinkParameters][] {
+  return [...linkTypes.entries()].reverse();
 }
 
 // Org's mark ring, as org-mark-ring and org-mark-ring-last-goto: the places
@@ -6521,7 +6534,7 @@ function openLink(link: Link): void {
   const path = link.path;
   const type = /^([a-z][a-z0-9+.-]*):(.*)$/is.exec(path);
   const handler = type ? linkTypes.get(type[1].toLowerCase()) : undefined;
-  if (type && handler) {
+  if (type && handler?.follow) {
     handler.follow(type[2]);
     return;
   }
@@ -6611,42 +6624,6 @@ function linksIn(from: number, to: number): { links: string[]; last: number } {
   return { links: out, last };
 }
 
-/** The active region's text, if there is a region, as org-insert-link takes it for a description. */
-function regionText(): string | undefined {
-  const mark = e8.mark();
-  if (!e8.regionActive() || mark === undefined || mark === e8.point()) return undefined;
-  return e8.bufferSubstringNoProperties(Math.min(mark, e8.point()), Math.max(mark, e8.point()));
-}
-
-const insertLink = e8.defineCommand({
-  name: "org-insert-link",
-  doc: "Insert a link as [[link][description]], or [[link]] without a description; on a link, replace it.",
-  // As org-insert-link: on a link, its target and description to edit; with
-  // the region active, its text as the description, which the link replaces.
-  params: [
-    { name: "link", prompt: "Link: ", history: "org-link-history", initial: () => linkHere()?.path ?? "" },
-    { name: "description", prompt: "Description: ", initial: () => regionText() ?? linkHere()?.description ?? "" },
-  ],
-  run: (target, description) => {
-    if (target.trim() === "") throw new Error("No link given");
-    const escaped = target.trim().replace(/([[\]])/g, "\\$1");
-    const text = description.trim() === "" ? `[[${escaped}]]` : `[[${escaped}][${description.trim()}]]`;
-    const link = linkHere();
-    const mark = e8.mark();
-    if (link) {
-      e8.deleteRegion(link.start, link.end);
-      e8.gotoChar(link.start);
-    } else if (regionText() !== undefined && mark !== undefined) {
-      const start = Math.min(mark, e8.point());
-      e8.deleteRegion(start, Math.max(mark, e8.point()));
-      e8.gotoChar(start);
-      e8.deactivateMark();
-    }
-    e8.insert(text);
-  },
-});
-
-e8.defineVariable({ name: "org-link-history", doc: "Links answered to org-insert-link, newest first.", value: [] });
 
 const mouseFollow = e8.defineCommand({
   name: "org-mouse-follow-link",
@@ -9063,7 +9040,9 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-x n s": narrowToSubtree,
   "C-x n e": narrowToElement,
   "C-x n b": narrowToBlock,
-  "C-c C-l": insertLink,
+  "C-c C-l": "org-insert-link",
+  "C-c M-l": "org-insert-last-stored-link",
+  "C-c C-M-l": "org-insert-all-links",
   "C-c C-o": openAtPoint,
   "C-c .": timestamp,
   "C-c !": inactiveTimestamp,

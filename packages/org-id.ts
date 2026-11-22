@@ -14,7 +14,7 @@ import { headings, headingIndex, linkSetParameters, markRingPush } from "org";
 import { elementAt } from "org-element";
 import { entryGet, entryPut, topGet } from "org-list";
 import { fileRelativeName, findBufferVisiting } from "files";
-import { showContext } from "ol";
+import { linkPreciseTarget, linkStoreProps, searchInBuffer, showContext } from "ol";
 import { truthy } from "subr";
 
 e8.defineVariable({
@@ -459,12 +459,93 @@ e8.defineCommand({
   run: (id: string) => orgIdGoto(id),
 });
 
-// Org's mark ring remembers where point was, as org-id-open pushes it.
+e8.defineVariable({
+  name: "org-id-link-to-org-use-id",
+  doc: 'Whether org-store-link links an Org entry by its ID: t, making one if need be; "create-if-interactive", making one only for org-store-link itself, not capture; "create-if-interactive-and-no-custom-id", the same unless it has a CUSTOM_ID; "use-existing", only an ID it has; nil, never.',
+  value: null,
+});
+e8.defineVariable({
+  name: "org-id-link-use-context",
+  doc: "Whether an ID link org-store-link makes adds a search for where point is, as a file link does with org-link-context-for-files.",
+  value: true,
+});
+
+/**
+ * Stores a link to the entry at point by its ID, made if need be, as
+ * org-id-store-link: described by its heading, or before the first one
+ * the #+TITLE: or the file's name; with a search for where point is when
+ * that is below the heading.
+ */
+export function orgIdStoreLink(): string | undefined {
+  if (baseFileName() === undefined || !e8.derivedModeP("org-mode")) return undefined;
+  // The precise target first, before an ID's drawer moves things.
+  const precise = truthy(e8.variable("org-link-context-for-files") ?? null) && truthy(e8.variable("org-id-link-use-context") ?? null) ? linkPreciseTarget() : undefined;
+  let link = `id:${orgIdGet(true)}`;
+  const all = headings();
+  const i = headingIndex(all, e8.lineOf(e8.point()));
+  const location = i === undefined ? e8.pointMin() : all[i].start;
+  let desc: string;
+  if (i === undefined) {
+    const title = /^[ \t]*#\+TITLE:[ \t]*(.*?)[ \t]*$/im.exec(e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()));
+    desc = title ? title[1] : e8.fileNameNondirectory(baseFileName() as string);
+  } else desc = all[i].title || e8.lineText(all[i].line);
+  if (precise && precise[2] > location) {
+    link = `${link}::${precise[0]}`;
+    desc = precise[1] as string;
+  }
+  linkStoreProps([e8.intern(":link"), link, e8.intern(":description"), desc, e8.intern(":type"), "id"]);
+  return link;
+}
+
+e8.defineCommand({
+  name: "org-id-store-link",
+  doc: "Store a link to the entry at point by its ID, giving it one if it has none.",
+  run: () => {
+    orgIdStoreLink();
+  },
+});
+
+/** Stores an ID link when org-id-link-to-org-use-id says to, as org-id-store-link-maybe. */
+function orgIdStoreLinkMaybe(interactive: boolean): string | undefined {
+  if (baseFileName() === undefined || !e8.derivedModeP("org-mode")) return undefined;
+  const v = e8.variable("org-id-link-to-org-use-id");
+  const use = typeof v === "symbol" ? e8.symbolName(v) : v;
+  const ok =
+    use === true ||
+    (interactive &&
+      (use === "create-if-interactive" ||
+        (use === "create-if-interactive-and-no-custom-id" && (entryLine() !== undefined ? entryGet(entryLine() as number, "CUSTOM_ID") : topGet("CUSTOM_ID")) === undefined))) ||
+    (truthy(use ?? null) && orgIdGet(false) !== undefined);
+  return ok ? orgIdStoreLink() : undefined;
+}
+
+// Org's mark ring remembers where point was, as org-id-open pushes it, and
+// a search after :: is followed there.
 linkSetParameters("id", {
   follow: (path) => {
     markRingPush();
-    orgIdGoto(path.replace(/::.*$/, ""));
+    let option: string | undefined = /::(.*)$/.exec(path)?.[1];
+    let id = option === undefined ? path : path.slice(0, path.length - option.length - 2);
+    // An ID with :: in it, as IDs once could have, is tried whole.
+    if (option !== undefined && !orgIdFind(id) && orgIdFind(path)) [id, option] = [path, undefined];
+    orgIdGoto(id);
+    if (option !== undefined) {
+      // In the entry's subtree, as org-id-open narrows to it.
+      const line = entryLine();
+      const all = headings();
+      const i = line === undefined ? undefined : headingIndex(all, line);
+      let [from, to] = [0, Infinity];
+      if (i !== undefined) {
+        from = all[i].start;
+        const next = all.slice(i + 1).find((h) => h.level <= all[i].level);
+        to = next ? next.start : Infinity;
+      }
+      const pos = searchInBuffer(option, from, to);
+      e8.gotoChar(pos);
+      showContext(pos);
+    }
   },
+  store: { name: "org-id-store-link-maybe", run: (interactive) => orgIdStoreLinkMaybe(interactive) },
 });
 
 // Saved when E8 exits, as org-id.el adds org-id-locations-save to kill-emacs-hook unless in batch.
