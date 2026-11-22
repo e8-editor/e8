@@ -1374,7 +1374,8 @@ fn killing(ed: &mut Editor) {
         let text = ed.buffer().substring(region);
         // As copy-region-as-kill does, a copy right after a kill joins it.
         ed.kill(text, backward);
-        ed.buffer_mut().deactivate_mark();
+        // As copy-region-as-kill sets deactivate-mark: when the command loop's command is over.
+        ed.buffer_mut().set_changed(true);
         Ok(())
     });
     def(
@@ -1513,8 +1514,10 @@ fn kill_range(ed: &mut Editor, range: std::ops::Range<usize>, backward: bool) ->
         Err(e) => return Err(e),
     }
     ed.kill(killed, backward);
-    // As kill-region sets deactivate-mark, even when nothing was killed.
-    ed.buffer_mut().deactivate_mark();
+    // As kill-region sets deactivate-mark, even when nothing was killed: the
+    // region goes when the command loop's command is over, not while the
+    // command that killed goes on, as after an edit.
+    ed.buffer_mut().set_changed(true);
     // As in Emacs, so the next kill or copy joins this one even when a
     // command such as org-cut-subtree called it.
     ed.set_this_command("kill-region");

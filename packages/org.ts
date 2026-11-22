@@ -4639,6 +4639,9 @@ const todoCommand = e8.defineCommand({
  */
 let mapRegionStart: Marker | undefined;
 
+/** Where a command's loop over the active region goes, as org-map-entries's scopes region, region-start-level and nil. */
+export type RegionScope = "region" | "region-start-level" | "buffer";
+
 /**
  * Runs body at each visible heading in the active region, as org-map-entries
  * does for commands when org-loop-over-headlines-in-active-region is on.
@@ -4652,32 +4655,44 @@ let mapRegionStart: Marker | undefined;
  * buffer goes there. A body that returns a position has the next heading
  * looked for from there, as one that sets org-map-continue-from, as
  * org-archive-subtree does before it removes its subtree.
+ *
+ * Any value of the option but nil loops, a string too, as the commands
+ * give org-map-entries no matcher. With start-level, only the headings at
+ * the level of the region's first are visited, as org-map-entries's
+ * region-start-level scope; scope gives the scope a command asks for
+ * instead, as org-archive-to-archive-sibling's "buffer", the whole
+ * accessible buffer, where its region scope is lost.
  */
 export function forEachHeadingInRegion(
   body: () => number | void,
-  { hiddenPoint = false, hidden = false, narrow = false } = {},
+  { hiddenPoint = false, hidden = false, narrow = false, scope = undefined as ((loop: e8.Value | undefined) => RegionScope) | undefined } = {},
 ): boolean {
   const mark = e8.mark();
-  if (!orgRegionActive() || mark === undefined || e8.variable("org-loop-over-headlines-in-active-region") !== true) return false;
-  const [rb, re] = [Math.min(mark, e8.point()), Math.max(mark, e8.point())];
+  const option = e8.variable("org-loop-over-headlines-in-active-region");
+  if (!orgRegionActive() || mark === undefined || !truthy(option)) return false;
+  const how = scope ? scope(option) : option === "start-level" ? "region-start-level" : "region";
+  const [rb, re] = how === "buffer" ? [e8.pointMin(), e8.pointMax()] : [Math.min(mark, e8.point()), Math.max(mark, e8.point())];
   if (hiddenPoint && e8.invisibleAt(e8.point())) {
     // org-todo gives org-map-entries (when (org-invisible-p) (org-end-of-subtree
     // nil t)) to skip with, which runs once, there and then: point goes to the
-    // end of the hidden subtree, and that position skips every heading.
+    // end of the hidden subtree, and that position skips every heading. A
+    // scan of the whole buffer starts from its beginning all the same.
     const all = headings();
     const i = headingIndex(all, lineAt());
     e8.gotoChar(i === undefined ? e8.bufferSize() : subtreeRegion(all, i)[1]);
-    return true;
+    if (how !== "buffer") return true;
   }
   const outer = mapRegionStart;
-  mapRegionStart = marker(rb);
+  mapRegionStart = how === "buffer" ? undefined : marker(rb);
   const atHeadingStart = re === e8.lineStart(lineAt(re)) && parseHeading(lineAt(re)) !== undefined;
-  const end = marker(atHeadingStart ? re : (headings().find((h) => h.start > re)?.start ?? e8.pointMax()));
+  const end = marker(how === "buffer" || atHeadingStart ? re : (headings().find((h) => h.start > re)?.start ?? e8.pointMax()));
+  // The level of the first heading from the region's start, as org-map-entries reads it before it narrows.
+  const level = how === "region-start-level" ? headings().find((h) => h.start >= e8.lineStart(lineAt(rb)))?.level : undefined;
   const origin = marker(e8.point());
   const loop = () => {
     let at = marker(rb);
     for (;;) {
-      const h = headings().find((x) => x.start >= at.pos && x.start < end.pos);
+      const h = headings().find((x) => x.start >= at.pos && x.start < end.pos && (level === undefined || x.level === level));
       if (!h) break;
       dropMarker(at);
       at = marker(h.end);
@@ -4691,7 +4706,7 @@ export function forEachHeadingInRegion(
     dropMarker(at);
   };
   try {
-    if (narrow)
+    if (narrow && how !== "buffer")
       e8.saveRestriction(() => {
         e8.narrowToRegion(rb, end.pos);
         loop();
@@ -4701,7 +4716,7 @@ export function forEachHeadingInRegion(
     e8.gotoChar(origin.pos);
     dropMarker(origin);
     dropMarker(end);
-    dropMarker(mapRegionStart);
+    if (mapRegionStart) dropMarker(mapRegionStart);
     mapRegionStart = outer;
   }
   return true;
@@ -5859,7 +5874,13 @@ function dayCount(d: DateTime): number {
   return Math.floor(Date.UTC(d.year, d.month - 1, d.day) / 86400000);
 }
 
-function plan(keyword: string, input: string): void {
+/** Plans the heading point is under, its edits not unfolding what they touch, as org--deadline-or-schedule ignores them. */
+function plan(keyword: string, input: string | (() => string)): void {
+  withoutFoldChecks(() => planHere(keyword, typeof input === "string" ? () => input : input));
+}
+
+/** Plans the heading point is under, reading the date from `input` only once it is needed, as org--deadline-or-schedule reads it. */
+function planHere(keyword: string, input: () => string): void {
   const [all, i] = backToHeading();
   const deadline = keyword === "DEADLINE";
   const log = e8.variable(deadline ? "org-log-redeadline" : "org-log-reschedule");
@@ -5875,7 +5896,7 @@ function plan(keyword: string, input: string): void {
       const m = new RegExp(`\\b${keyword}: *<([^>]+)>`).exec(e8.lineText(l));
       if (!m) continue;
       const d = /^(\d{4})-(\d{2})-(\d{2})/.exec(m[1]);
-      const days = d ? Math.abs(dayCount(parseDate(input)) - dayCount({ year: +d[1], month: +d[2], day: +d[3] })) : 0;
+      const days = d ? Math.abs(dayCount(parseDate(input())) - dayCount({ year: +d[1], month: +d[2], day: +d[3] })) : 0;
       const start = e8.lineStart(l) + m.index;
       replaceText(start, start + m[0].length, `${keyword}: <${m[1].replace(/ -[0-9]+[hdwmy]/, "")} -${days}d>`);
       return;
@@ -5892,7 +5913,7 @@ function plan(keyword: string, input: string): void {
     e8.message(deadline ? "Entry no longer has a deadline." : "Entry is no longer scheduled.");
     return;
   }
-  const date = parseDate(input);
+  const date = parseDate(input());
   // The old date's repeater and warning stay, as org--deadline-or-schedule keeps them.
   const inserted = `<${formatTimestamp(date)}>`;
   const ts = withRepeater(inserted, old);
@@ -5902,34 +5923,69 @@ function plan(keyword: string, input: string): void {
   e8.message(`${deadline ? "Deadline on" : "Scheduled to"} ${ts}`);
 }
 
+/**
+ * Plans every heading of an active region, as org-schedule and org-deadline
+ * give org-map-entries org--deadline-or-schedule, which reads a date for
+ * each: the first heading takes the date the command read, the others ask
+ * again when they need one, unless code gave the date, as TIME is used for
+ * each. Hidden headings are left, as their skip function goes past a
+ * hidden subtree.
+ */
+function planEach(keyword: string, input: string): void {
+  const asks = e8.calledInteractively();
+  let date: string | undefined = input;
+  const once = () => {
+    plan(keyword, date ?? (() => readPlanDate(keyword)));
+    if (asks) date = undefined;
+  };
+  if (!forEachHeadingInRegion(once)) plan(keyword, input);
+}
+
+/** The date org--deadline-or-schedule reads for another heading: the date to warn or delay from with C-u C-u. */
+function readPlanDate(keyword: string): string {
+  const prompt = doublePrefix() ? (keyword === "DEADLINE" ? "Warn starting from: " : "Delay until: ") : "Date: ";
+  return e8.readString(prompt, { history: "org-read-date-history" });
+}
+
+/**
+ * Whether an active region the planning commands loop over has no heading
+ * they would visit, so they ask for no date, as Org asks in each heading.
+ */
+function planLoopsOverNothing(): boolean {
+  let any = false;
+  return forEachHeadingInRegion(() => {
+    any = true;
+  }) && !any;
+}
+
 const schedule = e8.defineCommand({
   name: "org-schedule",
-  doc: "Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date.",
+  doc: "Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date. With the region active, every heading in it, asking for each (org-loop-over-headlines-in-active-region).",
   params: [
     {
       name: "date",
       // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
       prompt: () => (doublePrefix() ? "Delay until: " : "Date: "),
       history: "org-read-date-history",
-      value: () => (Array.isArray(e8.prefixArg()) && !doublePrefix() ? "" : undefined),
+      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : undefined),
     },
   ],
-  run: (input) => plan("SCHEDULED", input),
+  run: (input) => planEach("SCHEDULED", input),
 });
 
 const deadline = e8.defineCommand({
   name: "org-deadline",
-  doc: "Give the heading point is under a deadline, read as org-timestamp reads it. With C-u, remove it.",
+  doc: "Give the heading point is under a deadline, read as org-timestamp reads it. With C-u, remove it. With the region active, every heading in it, asking for each (org-loop-over-headlines-in-active-region).",
   params: [
     {
       name: "date",
       // C-u C-u asks for the date to warn or delay from, C-u for none, as org--deadline-or-schedule.
       prompt: () => (doublePrefix() ? "Warn starting from: " : "Date: "),
       history: "org-read-date-history",
-      value: () => (Array.isArray(e8.prefixArg()) && !doublePrefix() ? "" : undefined),
+      value: () => ((Array.isArray(e8.prefixArg()) && !doublePrefix()) || planLoopsOverNothing() ? "" : undefined),
     },
   ],
-  run: (input) => plan("DEADLINE", input),
+  run: (input) => planEach("DEADLINE", input),
 });
 
 /**

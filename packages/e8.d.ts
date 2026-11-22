@@ -5354,7 +5354,7 @@ declare global {
        */
       "org-archive-subtree-default-with-confirmation": [];
       /**
-       * Archive the current heading by moving it under the archive sibling, a sibling headed org-archive-sibling-heading with the ARCHIVE tag, made at the end of the parent's subtree if there is none.
+       * Archive the current heading by moving it under the archive sibling, a sibling headed org-archive-sibling-heading with the ARCHIVE tag, made at the end of the parent's subtree if there is none. With the region active, archive every heading in the buffer, as Org does, or with org-loop-over-headlines-in-active-region start-level every heading in the region.
        *
        * Defined in packages/org-archive.ts.
        */
@@ -5629,7 +5629,7 @@ declare global {
        */
       "org-dblock-update": [arg?: PrefixArg | boolean];
       /**
-       * Give the heading point is under a deadline, read as org-timestamp reads it. With C-u, remove it.
+       * Give the heading point is under a deadline, read as org-timestamp reads it. With C-u, remove it. With the region active, every heading in it, asking for each (org-loop-over-headlines-in-active-region).
        *
        * @param date text
        *
@@ -6273,7 +6273,7 @@ declare global {
        */
       "org-return-and-maybe-indent": [];
       /**
-       * Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date.
+       * Schedule the heading point is under for a date read as org-timestamp reads it. With C-u, unschedule it, asking for no date. With the region active, every heading in it, asking for each (org-loop-over-headlines-in-active-region).
        *
        * @param date text
        *

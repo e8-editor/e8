@@ -418,6 +418,67 @@ fn edits_can_leave_the_region_active() {
     assert!(!ed.window_buffer().is_mark_active());
 }
 
+/// A command that kills or edits through other commands keeps the region
+/// active while it goes on, and after it if it fails, as Emacs reads
+/// deactivate-mark only when the command loop's command returns.
+#[test]
+fn the_region_goes_when_the_outer_command_is_over() {
+    let (mut ed, scripting) = setup();
+    eval(
+        &mut ed,
+        &scripting,
+        r#"
+        e8.defineCommand({ name: "kill-then-look", run: () => {
+          e8.call("kill-line");
+          e8.call("newline");
+          e8.message(`active: ${e8.regionActive()}`);
+        } });
+        e8.defineCommand({ name: "kill-then-fail", run: () => {
+          e8.call("kill-line");
+          e8.userError("No");
+        } });
+        "#,
+    );
+    ed.type_text("one\ntwo\nthree");
+    ed.press("M-< C-SPC C-n").unwrap();
+    ed.call("kill-then-look", vec![]).unwrap();
+    assert_eq!(ed.echo(), Some("active: true"));
+    assert!(!ed.window_buffer().is_mark_active());
+    ed.press("C-SPC C-n").unwrap();
+    assert!(ed.call("kill-then-fail", vec![]).is_err());
+    assert!(ed.window_buffer().is_mark_active());
+    // Killing on its own deactivates it, though nothing changed.
+    ed.press("M-> C-SPC").unwrap();
+    ed.call("kill-line", vec![]).unwrap_err();
+    ed.call("kill-region", vec![]).unwrap();
+    assert!(!ed.window_buffer().is_mark_active());
+}
+
+/// The keys typed at a prompt in the middle of a command are commands of
+/// their own, each deactivating the region as it ends, as in Emacs's
+/// command loop under read-from-minibuffer.
+#[test]
+fn a_prompt_in_a_command_deactivates_after_each_key() {
+    let (mut ed, scripting) = setup();
+    eval(
+        &mut ed,
+        &scripting,
+        r#"e8.defineCommand({ name: "ask", run: () => e8.message(`got ${e8.readString("Text: ")}`) });"#,
+    );
+    let mut typed = false;
+    ed.set_input_source(move |ed| {
+        if typed || ed.prompt().is_none() {
+            return false;
+        }
+        typed = true;
+        ed.type_text("abcdefgh");
+        ed.press("C-a C-SPC C-f C-w C-f C-f DEL RET").unwrap();
+        true
+    });
+    ed.call("ask", vec![]).unwrap();
+    assert_eq!(ed.echo(), Some("got bdefgh"));
+}
+
 #[test]
 fn columns_count_as_emacs_counts_them() {
     let (mut ed, scripting) = setup();

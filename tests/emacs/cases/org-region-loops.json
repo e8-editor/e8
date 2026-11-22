@@ -1,0 +1,353 @@
+[
+  {
+    "name": "region-todo-start-level",
+    "text": "* one\n** two\n* three\n** four\n* five\n",
+    "keys": "C-SPC M-> C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-todo-start-level-from-text",
+    "text": "* top\ntext\n** a\n*** a1\n** b\n* c\n",
+    "keys": "C-SPC M-> C-c C-t",
+    "point": 8,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-todo-start-level-deeper-first",
+    "text": "* top\n** a\n* b\n** c\n",
+    "keys": "C-SPC M-> C-c C-t",
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-todo-string",
+    "text": "* TODO one\n* two\n* DONE three\n",
+    "keys": "C-SPC M-> C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "TODO=\"TODO\""
+    }
+  },
+  {
+    "name": "region-tags-start-level",
+    "text": "* one\n** two\n* three\n** four\n* five\n",
+    "keys": "C-SPC M-> C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    },
+    "answers": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  {
+    "name": "region-schedule",
+    "text": "* one\n** two\n* three\n",
+    "keys": "C-SPC M-> C-c C-s",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06",
+      "2026-11-07",
+      "2026-11-08"
+    ],
+    "message": true
+  },
+  {
+    "name": "region-schedule-start-level",
+    "text": "* one\n** two\n* three\n",
+    "keys": "C-SPC M-> C-c C-s",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06",
+      "2026-11-08"
+    ],
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-deadline",
+    "text": "* one\n** two\n* three\n",
+    "keys": "C-SPC M-> C-c C-d",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06",
+      "2026-11-07",
+      "2026-11-08"
+    ],
+    "message": true
+  },
+  {
+    "name": "region-deadline-remove",
+    "text": "* one\nDEADLINE: <2026-11-06 Fri>\n* two\n* three\nDEADLINE: <2026-11-07 Sat>\n",
+    "keys": "C-SPC M-> C-u C-c C-d",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "message": true
+  },
+  {
+    "name": "region-schedule-folded",
+    "text": "* one\n** hidden\nbody\n* two\n",
+    "keys": "TAB C-SPC M-> C-c C-s",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06",
+      "2026-11-07"
+    ]
+  },
+  {
+    "name": "schedule-folded-heading",
+    "text": "* one\n** hidden\nbody\n* two\n",
+    "keys": "TAB C-c C-s",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ]
+  },
+  {
+    "name": "region-schedule-no-headings",
+    "text": "* h\ntext\nmore\n",
+    "keys": "C-SPC C-n C-c C-s",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ]
+  },
+  {
+    "name": "region-schedule-double-prefix",
+    "text": "* one\nSCHEDULED: <2026-11-06 Fri>\n* two\n",
+    "keys": "C-SPC M-> C-u C-u C-c C-s",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-04",
+      "2026-11-05"
+    ]
+  },
+  {
+    "name": "region-schedule-off",
+    "text": "* one\n** two\n* three\n",
+    "keys": "C-SPC M-> C-c C-s",
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "answers": [
+      "2026-11-06"
+    ],
+    "vars": {
+      "org-loop-over-headlines-in-active-region": false
+    }
+  },
+  {
+    "name": "region-archive-start-level",
+    "text": "#+ARCHIVE: ::* Archive\n* one\n** two\n* three\n** four\n* five\n",
+    "keys": "C-SPC M-> C-c C-x C-s",
+    "point": 23,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ],
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-archive-string",
+    "text": "#+ARCHIVE: ::* Archive\n* one\n** two\n* three\n** four\n* five\n",
+    "keys": "C-SPC M-> C-c C-x C-s",
+    "point": 23,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "visit": "e8-oracle-archive.org",
+    "vars": {
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ],
+      "org-loop-over-headlines-in-active-region": "TODO=\"TODO\""
+    }
+  },
+  {
+    "name": "region-sibling",
+    "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+    "keys": "C-SPC C-n C-n C-c C-x A",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "region-sibling-start-level",
+    "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+    "keys": "C-SPC C-n C-n C-c C-x A",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-sibling-all",
+    "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+    "keys": "C-SPC M-> C-c C-x A",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "region-sibling-narrowed",
+    "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+    "keys": "C-x n s C-SPC C-n C-c C-x A",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04"
+  },
+  {
+    "name": "region-sibling-skips-archive",
+    "text": "* p\n** a\n** Archive :ARCHIVE:\n*** old\n** b\n",
+    "keys": "C-SPC M-> C-c C-x A",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-sibling-bare-archive",
+    "text": "* p\n** a\n** Archive :ARCHIVE:\n** b\n",
+    "keys": "C-SPC M-> C-c C-x A",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-sibling-lowercase-tag",
+    "text": "* p\n** a\n** Archive :archive:\n*** old\n** b\n",
+    "keys": "C-SPC M-> C-c C-x A",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    }
+  },
+  {
+    "name": "region-sibling-off",
+    "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+    "keys": "C-SPC C-n C-n C-c C-x A",
+    "point": 4,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": false
+    }
+  },
+  {
+    "name": "region-toggle-archive-tag-start-level",
+    "text": "* one\n** two\n* three\n** four\n* five\n",
+    "keys": "C-SPC M-> C-c C-x a",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-04",
+    "vars": {
+      "org-loop-over-headlines-in-active-region": "'start-level"
+    },
+    "message": true
+  }
+]

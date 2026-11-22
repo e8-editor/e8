@@ -1,0 +1,697 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "region-todo-start-level",
+      "input": {
+        "text": "* one\n** two\n* three\n** four\n* five\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* TODO one\n** two\n* TODO three\n** four\n* TODO five\n",
+      "visible": "* TODO one\n** two\n* TODO three\n** four\n* TODO five\n",
+      "point": 51,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-todo-start-level-from-text",
+      "input": {
+        "text": "* top\ntext\n** a\n*** a1\n** b\n* c\n",
+        "point": 8,
+        "keys": "C-SPC M-> C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* top\ntext\n** TODO a\n*** a1\n** TODO b\n* c\n",
+      "visible": "* top\ntext\n** TODO a\n*** a1\n** TODO b\n* c\n",
+      "point": 42,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-todo-start-level-deeper-first",
+      "input": {
+        "text": "* top\n** a\n* b\n** c\n",
+        "point": 6,
+        "keys": "C-SPC M-> C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* top\n** TODO a\n* b\n** TODO c\n",
+      "visible": "* top\n** TODO a\n* b\n** TODO c\n",
+      "point": 30,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-todo-string",
+      "input": {
+        "text": "* TODO one\n* two\n* DONE three\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "TODO=\"TODO\""
+        }
+      },
+      "text": "* DONE one\n* TODO two\n* three\n",
+      "visible": "* DONE one\n* TODO two\n* three\n",
+      "point": 30,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-tags-start-level",
+      "input": {
+        "text": "* one\n** two\n* three\n** four\n* five\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c C-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "a",
+          "b",
+          "c"
+        ],
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* one                                                                     :a:\n** two\n* three                                                                   :b:\n** four\n* five                                                                    :c:\n",
+      "visible": "* one                                                                     :a:\n** two\n* three                                                                   :b:\n** four\n* five                                                                    :c:\n",
+      "point": 249,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-schedule",
+      "input": {
+        "text": "* one\n** two\n* three\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06",
+          "2026-11-07",
+          "2026-11-08"
+        ],
+        "message": true
+      },
+      "text": "* one\nSCHEDULED: <2026-11-06 Fri>\n** two\nSCHEDULED: <2026-11-07 Sat>\n* three\nSCHEDULED: <2026-11-08 Sun>\n",
+      "visible": "* one\nSCHEDULED: <2026-11-06 Fri>\n** two\nSCHEDULED: <2026-11-07 Sat>\n* three\nSCHEDULED: <2026-11-08 Sun>\n",
+      "point": 105,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Scheduled to <2026-11-08 Sun>"
+    },
+    {
+      "name": "region-schedule-start-level",
+      "input": {
+        "text": "* one\n** two\n* three\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06",
+          "2026-11-08"
+        ],
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* one\nSCHEDULED: <2026-11-06 Fri>\n** two\n* three\nSCHEDULED: <2026-11-08 Sun>\n",
+      "visible": "* one\nSCHEDULED: <2026-11-06 Fri>\n** two\n* three\nSCHEDULED: <2026-11-08 Sun>\n",
+      "point": 77,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-deadline",
+      "input": {
+        "text": "* one\n** two\n* three\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06",
+          "2026-11-07",
+          "2026-11-08"
+        ],
+        "message": true
+      },
+      "text": "* one\nDEADLINE: <2026-11-06 Fri>\n** two\nDEADLINE: <2026-11-07 Sat>\n* three\nDEADLINE: <2026-11-08 Sun>\n",
+      "visible": "* one\nDEADLINE: <2026-11-06 Fri>\n** two\nDEADLINE: <2026-11-07 Sat>\n* three\nDEADLINE: <2026-11-08 Sun>\n",
+      "point": 102,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Deadline on <2026-11-08 Sun>"
+    },
+    {
+      "name": "region-deadline-remove",
+      "input": {
+        "text": "* one\nDEADLINE: <2026-11-06 Fri>\n* two\n* three\nDEADLINE: <2026-11-07 Sat>\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-c C-d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true
+      },
+      "text": "* one\n* two\n* three\n",
+      "visible": "* one\n* two\n* three\n",
+      "point": 20,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Entry no longer has a deadline."
+    },
+    {
+      "name": "region-schedule-folded",
+      "input": {
+        "text": "* one\n** hidden\nbody\n* two\n",
+        "point": 0,
+        "keys": "TAB C-SPC M-> C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06",
+          "2026-11-07"
+        ]
+      },
+      "text": "* one\nSCHEDULED: <2026-11-06 Fri>\n** hidden\nbody\n* two\nSCHEDULED: <2026-11-07 Sat>\n",
+      "visible": "* one\nSCHEDULED: <2026-11-06 Fri>\n* two\nSCHEDULED: <2026-11-07 Sat>\n",
+      "point": 83,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "schedule-folded-heading",
+      "input": {
+        "text": "* one\n** hidden\nbody\n* two\n",
+        "point": 0,
+        "keys": "TAB C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ]
+      },
+      "text": "* one\nSCHEDULED: <2026-11-06 Fri>\n** hidden\nbody\n* two\n",
+      "visible": "* one\nSCHEDULED: <2026-11-06 Fri>\n* two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-schedule-no-headings",
+      "input": {
+        "text": "* h\ntext\nmore\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ]
+      },
+      "text": "* h\ntext\nmore\n",
+      "visible": "* h\ntext\nmore\n",
+      "point": 9,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "region-schedule-double-prefix",
+      "input": {
+        "text": "* one\nSCHEDULED: <2026-11-06 Fri>\n* two\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-u C-u C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-04",
+          "2026-11-05"
+        ]
+      },
+      "text": "* one\nSCHEDULED: <2026-11-06 Fri -2d>\n* two\n",
+      "visible": "* one\nSCHEDULED: <2026-11-06 Fri -2d>\n* two\n",
+      "point": 44,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No scheduled information to update"
+    },
+    {
+      "name": "region-schedule-off",
+      "input": {
+        "text": "* one\n** two\n* three\n",
+        "point": 20,
+        "keys": "C-SPC M-> C-c C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "answers": [
+          "2026-11-06"
+        ],
+        "vars": {
+          "org-loop-over-headlines-in-active-region": false
+        }
+      },
+      "text": "* one\n** two\n* three\nSCHEDULED: <2026-11-06 Fri>\n",
+      "visible": "* one\n** two\n* three\nSCHEDULED: <2026-11-06 Fri>\n",
+      "point": 49,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-archive-start-level",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* one\n** two\n* three\n** four\n* five\n",
+        "point": 23,
+        "keys": "C-SPC M-> C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ],
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** one\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** two\n\n** three\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** four\n\n** five\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** one\n:PROPERTIES:\n*** two\n\n** three\n:PROPERTIES:\n*** four\n\n** five\n:PROPERTIES:\n\n",
+      "point": 23,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [
+        "* five\n\n",
+        "* five\n\n",
+        "* three\n** four\n",
+        "* three\n** four\n",
+        "* one\n** two\n",
+        "* one\n** two\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-archive-string",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* one\n** two\n* three\n** four\n* five\n",
+        "point": 23,
+        "keys": "C-SPC M-> C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ],
+          "org-loop-over-headlines-in-active-region": "TODO=\"TODO\""
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** one\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** two\n\n** three\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** four\n\n** five\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** one\n:PROPERTIES:\n*** two\n\n** three\n:PROPERTIES:\n*** four\n\n** five\n:PROPERTIES:\n\n",
+      "point": 23,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [
+        "* five\n\n",
+        "* five\n\n",
+        "* three\n** four\n",
+        "* three\n** four\n",
+        "* one\n** two\n",
+        "* one\n** two\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-sibling",
+      "input": {
+        "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* Archive                                                           :ARCHIVE:\n** p\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n*** a\n*** b\n*** c\n** q\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n*** d\n",
+      "visible": "* Archive                                                           :ARCHIVE:\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "* q\n** d\n",
+        "* p\n** a\n** b\n** c\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-sibling-start-level",
+      "input": {
+        "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* p\n** c\n** Archive                                                          :ARCHIVE:\n*** a\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n*** b\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n* q\n** d\n",
+      "visible": "* p\n** c\n** Archive                                                          :ARCHIVE:\n* q\n** d\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [
+        "** b\n",
+        "** a\n"
+      ],
+      "modified": true,
+      "error": "End of buffer"
+    },
+    {
+      "name": "region-sibling-all",
+      "input": {
+        "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* Archive                                                           :ARCHIVE:\n** p\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n*** a\n*** b\n*** c\n** q\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n*** d\n",
+      "visible": "* Archive                                                           :ARCHIVE:\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [
+        "* q\n** d\n",
+        "* p\n** a\n** b\n** c\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-sibling-narrowed",
+      "input": {
+        "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+        "point": 4,
+        "keys": "C-x n s C-SPC C-n C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04"
+      },
+      "text": "* p\n** b\n** c\n** Archive                                                          :ARCHIVE:\n*** a\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n* q\n** d\n",
+      "visible": "* p\n** b\n** c\n** Archive                                                          :ARCHIVE:\n* q\n** d\n",
+      "point": 4,
+      "mark": 4,
+      "mark_active": true,
+      "kill_ring": [
+        "** a\n"
+      ],
+      "modified": true,
+      "error": "End of buffer"
+    },
+    {
+      "name": "region-sibling-skips-archive",
+      "input": {
+        "text": "* p\n** a\n** Archive :ARCHIVE:\n*** old\n** b\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* p\n** Archive :ARCHIVE:\n*** old\n*** a\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n*** b\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n",
+      "visible": "* p\n** Archive :ARCHIVE:\n*** old\n*** a\n*** b\n:PROPERTIES:\n",
+      "point": 94,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "** b\n",
+        "** a\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-sibling-bare-archive",
+      "input": {
+        "text": "* p\n** a\n** Archive :ARCHIVE:\n** b\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* p\n** Archive :ARCHIVE:\n*** a\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n*** b\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n",
+      "visible": "* p\n** Archive :ARCHIVE:\n*** a\n*** b\n:PROPERTIES:\n",
+      "point": 86,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "** b\n",
+        "** a\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-sibling-lowercase-tag",
+      "input": {
+        "text": "* p\n** a\n** Archive :archive:\n*** old\n** b\n",
+        "point": 4,
+        "keys": "C-SPC M-> C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* p\n** Archive :archive:\n*** old\n*** a\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n*** b\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n",
+      "visible": "* p\n** Archive :archive:\n*** old\n*** a\n*** b\n:PROPERTIES:\n",
+      "point": 94,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "** b\n",
+        "** a\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-sibling-off",
+      "input": {
+        "text": "* p\n** a\n** b\n** c\n* q\n** d\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-c C-x A",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "vars": {
+          "org-loop-over-headlines-in-active-region": false
+        }
+      },
+      "text": "* p\n** a\n** b\n** Archive                                                          :ARCHIVE:\n*** c\n:PROPERTIES:\n:ARCHIVE_TIME: 2026-11-04 Wed 12:00\n:END:\n* q\n** d\n",
+      "visible": "* p\n** a\n** b\n** Archive                                                          :ARCHIVE:\n* q\n** d\n",
+      "point": 14,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "** c\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-toggle-archive-tag-start-level",
+      "input": {
+        "text": "* one\n** two\n* three\n** four\n* five\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-c C-x a",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-04",
+        "message": true,
+        "vars": {
+          "org-loop-over-headlines-in-active-region": "'start-level"
+        }
+      },
+      "text": "* one                                                               :ARCHIVE:\n** two\n* three                                                             :ARCHIVE:\n** four\n* five                                                              :ARCHIVE:\n",
+      "visible": "* one                                                               :ARCHIVE:\n* three                                                             :ARCHIVE:\n* five                                                              :ARCHIVE:",
+      "point": 249,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Subtree archived [3 times]"
+    }
+  ]
+}

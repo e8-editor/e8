@@ -750,7 +750,7 @@ impl Editor {
         let result = self.run_command_body(&command, &args);
         self.running -= 1;
         let result = result.and(self.run_after_change_functions());
-        self.deactivate_changed_regions(result.is_ok());
+        self.deactivate_changed_regions(result.is_ok(), false);
         // A call that answered the command waiting for its arguments, as
         // vertico's RET calls exit-minibuffer for M-x, ran that command to
         // its end, and it stays the last command: in Emacs exit-minibuffer
@@ -1694,16 +1694,23 @@ impl Editor {
         if let Some(name) = self.this_command.take() {
             self.last_command = Some(name);
         }
-        self.deactivate_changed_regions(result.is_ok());
+        self.deactivate_changed_regions(result.is_ok(), true);
         result
     }
 
     /// Editing deactivates the region, as in Emacs's transient-mark-mode,
     /// unless the command failed: Emacs's command loop skips deactivating
     /// then, and the next command starts afresh. A command called from code
-    /// that fails leaves its changes for the command around it.
-    fn deactivate_changed_regions(&mut self, succeeded: bool) {
-        if !succeeded && self.running > 0 {
+    /// within another (`from_loop` false) leaves its changes for the command
+    /// around it, as Emacs reads deactivate-mark only when a command loop's
+    /// command returns: the region stays active while that command goes on,
+    /// and after it if it fails. A command a command loop runs, at any depth,
+    /// as a keyboard macro's keys or a prompt's in the middle of a command,
+    /// deactivates as it ends, as each of Emacs's command loops does, and one
+    /// that fails leaves the region as it is, as a command run once its
+    /// prompt is answered does inside the RET that answered it.
+    fn deactivate_changed_regions(&mut self, succeeded: bool, from_loop: bool) {
+        if self.running > 0 && !from_loop {
             return;
         }
         // A command that set deactivate-mark to nil after its changes keeps
