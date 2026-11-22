@@ -171,6 +171,13 @@ while the case's keys are queued would read those instead."
       (when (looking-at "#\\+CAPTION: [^[\n]*\\(\\[[^]\n]*\\]\\)")
         (replace-match (format-time-string "[%Y-%m-%d %a %H:%M]" (e8-oracle--now)) t t nil 1)))))
 
+(defun e8-oracle--sibling-now (archive &rest args)
+  "org-archive-to-archive-sibling's ARCHIVE_TIME stamped at noon on the case's fixed day, as it reads the clock itself."
+  (let ((format-time (symbol-function 'format-time-string)))
+    (cl-letf (((symbol-function 'format-time-string)
+               (lambda (format &optional time zone) (funcall format-time format (or time (e8-oracle--now)) zone))))
+      (apply archive args))))
+
 (defvar org-clock-start-time)
 (defvar org-clock-total-time)
 (defvar org-clock-marker)
@@ -424,6 +431,7 @@ answers come, and then from its answers, as save-some-buffers' do."
       (advice-remove 'org-clock-special-range #'e8-oracle--range-now)
       (advice-remove 'org-clocktable-write-default #'e8-oracle--caption-now)
       (advice-remove 'org-clock-get-clocked-time #'e8-oracle--clocked-time)
+      (advice-remove 'org-archive-to-archive-sibling #'e8-oracle--sibling-now)
       (when-let* ((day (alist-get 'today case)))
         (setq e8-oracle--today
               (calendar-absolute-from-gregorian
@@ -435,7 +443,9 @@ answers come, and then from its answers, as save-some-buffers' do."
         (require 'org-clock)
         (advice-add 'org-clock-special-range :filter-args #'e8-oracle--range-now)
         (advice-add 'org-clocktable-write-default :around #'e8-oracle--caption-now)
-        (advice-add 'org-clock-get-clocked-time :override #'e8-oracle--clocked-time))
+        (advice-add 'org-clock-get-clocked-time :override #'e8-oracle--clocked-time)
+        (require 'org-archive)
+        (advice-add 'org-archive-to-archive-sibling :around #'e8-oracle--sibling-now))
       (unless (alist-get 'find case)
         (buffer-enable-undo)
         (set-buffer-modified-p nil))

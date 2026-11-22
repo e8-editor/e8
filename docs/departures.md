@@ -33,3 +33,9 @@ Two rules for when one is taken up. A departure leaves files as Emacs and Org wo
 **Org.** `C-c ^` rewrites the whole sorted text, as `sort-subr` does, so every marker in it goes to its start: the parent heading's when sorting an entry's children. `org-sort-entries` puts back only `org-clock-marker`, the running clock's line. The last clocked task, the clock history, the default and interrupted tasks and the clock's heading marker all go to the parent, so `C-c C-x C-x` after a sort clocks in the parent, and `C-u C-c C-x C-i` offers it. E8 does the same.
 
 **Idea.** Carry every kept marker through a sort, as `org-save-markers-in-region` carries them through a move: each record's markers moved with the record. Nobody relies on clocking into the parent, so the default.
+
+## Org's loops over the active region
+
+**Org.** `org-loop-over-headlines-in-active-region` says a string is a tags match picking the region's headings a command acts on, but each command binds the option to nil before passing it to `org-map-entries` as the match, so a string loops over every heading as t does. `org-archive-to-archive-sibling` gives `org-map-entries` its scope as `(when start-level 'region-start-level 'region)`, so with the default t it archives every heading in the buffer, or what is narrowed to, not those in the region, and with `start-level` every heading in the region. And archiving the last heading of the region the loop narrowed to leaves point at the narrowing's end, where `org-fold-reveal` steps past it and signals `end-of-buffer`. E8 does all three as Org does.
+
+**Idea.** Read a string as the match it is documented to be, give the archive sibling the region and region-start-level scopes the other commands have, and reveal without stepping past a narrowing. These are bugs nobody relies on, so the default.
