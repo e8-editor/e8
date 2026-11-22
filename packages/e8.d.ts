@@ -5603,6 +5603,12 @@ declare global {
        */
       "org-cycle": [];
       /**
+       * Cycle the subtree at point even if it is archived.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-force-archived": [];
+      /**
        * Indent an empty item, then outdent it a level at a time, then put it back, as repeated TAB does.
        *
        * Defined in packages/org-element.ts.
@@ -13507,11 +13513,29 @@ declare global {
        */
       "org-confirm-babel-evaluate": Value;
       /**
+       * Whether TAB at the very start of the buffer, not on a heading, cycles the whole buffer as S-TAB does.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-global-at-bob": Value;
+      /**
        * What S-TAB last did: "overview", "contents" or "all".
        *
        * Defined in packages/org.ts.
        */
       "org-cycle-global-status": Value;
+      /**
+       * Whether TAB shows the inline images of a subtree it opens, as org-cycle-display-inline-images does. E8 shows no inline images in Org buffers yet, so it does nothing.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-inline-images-display": Value;
+      /**
+       * Whether TAB opens archived subtrees as it does others; nil keeps them closed, as org-cycle-hide-archived-subtrees does.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-open-archived-trees": Value;
       /**
        * How many empty lines before a heading keep one of them showing when the subtree above it is folded.
        *
@@ -18147,6 +18171,14 @@ declare global {
        * Functions C-c C-c tries first, until one returns true, which ends it, as running a source block does.
        */
       "org-ctrl-c-ctrl-c-hook": Value;
+      /**
+       * Functions run after TAB or S-TAB has changed what shows, with the state it set: overview, contents or all after a global change, folded, children or subtree after a local one.
+       */
+      "org-cycle-hook": Value;
+      /**
+       * Functions run before TAB or S-TAB changes what shows, with the state it is about to set: overview, contents, all, folded, children, subtree or empty.
+       */
+      "org-cycle-pre-hook": Value;
       /**
        * Functions TAB in Org tries first, each until one gives true, which then is all TAB does. Emacs also calls it org-tab-first-hook.
        */
