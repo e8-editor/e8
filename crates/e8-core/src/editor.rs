@@ -750,7 +750,7 @@ impl Editor {
         let result = self.run_command_body(&command, &args);
         self.running -= 1;
         let result = result.and(self.run_after_change_functions());
-        self.deactivate_changed_regions(result.is_ok(), false);
+        self.deactivate_changed_regions(result.is_ok());
         // A call that answered the command waiting for its arguments, as
         // vertico's RET calls exit-minibuffer for M-x, ran that command to
         // its end, and it stays the last command: in Emacs exit-minibuffer
@@ -1686,7 +1686,6 @@ impl Editor {
     fn invoke(&mut self, command: Rc<Command>, args: Vec<Arg>) -> Result<()> {
         self.this_command = Some(command.name.clone());
         self.this_command_set = false;
-        let depth = self.recursion_depth();
         self.running += 1;
         let result = self.run_command_body(&command, &args);
         self.running -= 1;
@@ -1695,28 +1694,16 @@ impl Editor {
         if let Some(name) = self.this_command.take() {
             self.last_command = Some(name);
         }
-        // One that left a prompt or recursive edit inside a running command,
-        // as RET does, leaves its changes for that command, as Emacs's
-        // exit-minibuffer throws out of the inner command loop before it
-        // looks at deactivate-mark.
-        let left = self.running > 0 && self.recursion_depth() < depth;
-        self.deactivate_changed_regions(result.is_ok(), !left);
+        self.deactivate_changed_regions(result.is_ok());
         result
     }
 
     /// Editing deactivates the region, as in Emacs's transient-mark-mode,
     /// unless the command failed: Emacs's command loop skips deactivating
     /// then, and the next command starts afresh. A command called from code
-    /// within another (`from_loop` false) leaves its changes for the command
-    /// around it, as Emacs reads deactivate-mark only when a command loop's
-    /// command returns: the region stays active while that command goes on,
-    /// and after it if it fails. A command a command loop runs, at any depth,
-    /// as a keyboard macro's keys or a prompt's in the middle of a command,
-    /// deactivates as it ends, as each of Emacs's command loops does, and one
-    /// that fails leaves the region as it is, as a command run once its
-    /// prompt is answered does inside the RET that answered it.
-    fn deactivate_changed_regions(&mut self, succeeded: bool, from_loop: bool) {
-        if self.running > 0 && !from_loop {
+    /// that fails leaves its changes for the command around it.
+    fn deactivate_changed_regions(&mut self, succeeded: bool) {
+        if !succeeded && self.running > 0 {
             return;
         }
         // A command that set deactivate-mark to nil after its changes keeps
@@ -1724,16 +1711,6 @@ impl Editor {
         let keep = matches!(self.variable("deactivate-mark"), Some(Value::Bool(false)));
         if self.running == 0 {
             self.set_default("deactivate-mark", Value::Null);
-        }
-        // A command a loop inside another ran, as a key at a prompt, looks
-        // only at its own buffer, as Emacs's deactivate-mark is local to the
-        // buffer it was set in: the outer command's changes are left for it.
-        if self.running > 0 {
-            let b = self.buffer_mut();
-            if b.take_changed() && succeeded && !keep {
-                b.deactivate_mark();
-            }
-            return;
         }
         for b in self.buffers.iter_mut() {
             if b.take_changed() && succeeded && !keep {
