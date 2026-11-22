@@ -3207,5 +3207,1494 @@
       "org-capture"
     ],
     "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-here-table-bol",
+    "text": "a\nb\n| x |\n",
+    "point": 2,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-table-bol.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file",
+          "FILE"
+        ],
+        "| %? |"
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-here-table-mid",
+    "text": "a\nbc\n| x |\n",
+    "point": 3,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-table-mid.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file",
+          "FILE"
+        ],
+        "| %? |"
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-here-table-in-table",
+    "text": "a\n| x |\n| y |\n",
+    "point": 2,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-table-in-table.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file",
+          "FILE"
+        ],
+        "| %? |"
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-here-item-mid",
+    "text": "a\nbc\n- x\n",
+    "point": 3,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-item-mid.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file",
+          "FILE"
+        ],
+        "- %?"
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-here-plain-mid",
+    "text": "a\nbc\nd\n",
+    "point": 3,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-plain-mid.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file",
+          "FILE"
+        ],
+        "%?"
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-here-entry-mid",
+    "text": "* one\nbody\n* two\n",
+    "point": 8,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-entry-mid.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* %?\n"
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-here-item-in-list",
+    "text": "* one\n- x\n- y\n",
+    "point": 8,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-item-in-list.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "item",
+        [
+          "file",
+          "FILE"
+        ],
+        "- %?"
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-time-prompt-extend",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "2026-11-19 02:00"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-time-prompt-extend.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n%U %<%H:%M>",
+        ":time-prompt",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ],
+    "today": "2026-11-21",
+    "globals": {
+      "org-extend-today-until": 4
+    }
+  },
+  {
+    "name": "capture-review-time-prompt-other-day-extend",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "2026-11-19"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-time-prompt-other-day-extend.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n%U %<%H:%M>",
+        ":time-prompt",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ],
+    "today": "2026-11-21",
+    "globals": {
+      "org-extend-today-until": 4
+    }
+  },
+  {
+    "name": "capture-review-property-then-tags",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "1:00",
+      "x"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-then-tags.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* A %?\n%^{Effort}p\n** B %^g\n"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-file-missing",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-file-missing.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* %[/nonexistent-e8-dir/zz.txt]%?\n"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-link-empty",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-link-empty.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* See %^L %?\n"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-after-finalize-abort",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "n e w C-c C-k",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-after-finalize-abort.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":after-finalize",
+        "'newline",
+        ":prepare-finalize",
+        "'newline",
+        ":before-finalize",
+        "'newline"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-finalize-fns",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-finalize-fns.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":after-finalize",
+        "'newline",
+        ":prepare-finalize",
+        "'newline",
+        ":before-finalize",
+        "'newline"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-clock-keep-resume",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "C-c C-x C-i M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-clock-keep-resume.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":clock-in",
+        true,
+        ":clock-keep",
+        true,
+        ":clock-resume",
+        true
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-clock-keep-resume-abort",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "C-c C-x C-i M-x n e w C-c C-k",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-clock-keep-resume-abort.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":clock-in",
+        true,
+        ":clock-keep",
+        true,
+        ":clock-resume",
+        true
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-clock-resume-abort",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "C-c C-x C-i M-x n e w C-c C-k",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-clock-resume-abort.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":clock-in",
+        true,
+        ":clock-resume",
+        true
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-refile-jump",
+    "text": "* one\nbody\n* Inbox\n** old\n* Other\n",
+    "point": 2,
+    "keys": "n e w C-c C-w",
+    "answers": [
+      "t",
+      "Other"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-refile.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":jump-to-captured",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-property-default-not-allowed",
+    "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      ""
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-default-not-allowed.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* Task %?\n%^{Effort|0:30}p"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-property-global-allowed",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      ""
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-global-allowed.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* Task %?\n%^{Color|red}p"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ],
+    "globals": {
+      "org-global-properties": {
+        "Color_ALL": "blue green"
+      }
+    }
+  },
+  {
+    "name": "capture-review-property-file-keyword-allowed",
+    "text": "#+PROPERTY: Color_ALL blue green\n* one\n",
+    "point": 40,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      ""
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-file-keyword-allowed.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* Task %?\n%^{Color|red}p"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-property-on-heading-line-cursor",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "1:00"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-on-heading-line-cursor.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* A %^{Effort}p\n%?"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-hook-moves-point",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-hook-moves-point.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* x %?y\n",
+        ":hook",
+        "'end-of-line"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-here-date-tree",
+    "text": "* one\nbody\n",
+    "point": 6,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-date-tree.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n"
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-tags-G",
+    "text": "* one :a:\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "a:b"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-tags-G.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* x %^G%?\n"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-prepare-clock-out-finish",
+    "text": "* Inbox\n* one\nbody\n",
+    "point": 10,
+    "keys": "C-c C-x C-i M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-prepare-clock-out-finish.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":clock-in",
+        true,
+        ":clock-resume",
+        true,
+        ":prepare-finalize",
+        "'org-clock-out"
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-prepare-clock-out-abort",
+    "text": "* Inbox\n* one\nbody\n",
+    "point": 10,
+    "keys": "C-c C-x C-i M-x n e w C-c C-k",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-prepare-clock-out-abort.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":clock-in",
+        true,
+        ":clock-resume",
+        true,
+        ":prepare-finalize",
+        "'org-clock-out"
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-clock-keep-user-clocks-elsewhere",
+    "text": "* Inbox\n* one\nbody\n",
+    "point": 10,
+    "keys": "C-c C-x C-i M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-clock-keep-user-clocks-elsewhere.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":clock-in",
+        true,
+        ":clock-keep",
+        true,
+        ":prepare-finalize",
+        "'org-clock-out"
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-hook-then-immediate",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-hook-then-immediate.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* x\n",
+        ":hook",
+        "'newline",
+        ":immediate-finish",
+        true,
+        ":after-finalize",
+        "'newline"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-property-two",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "1:00",
+      "red",
+      "z"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-two.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* A %^{Effort}p%^{Color}p%?\n%^{Note}\n"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-property-cursor-before",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "1:00"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-cursor-before.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* A\n%?\n%^{Effort}p"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-property-subheading",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "1:00"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-subheading.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* A\n** B %?\n%^{Effort}p"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-time-prompt-today-extend",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "2026-11-21"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-time-prompt-today-extend.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n%<%Y-%m-%d %H:%M>",
+        ":time-prompt",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ],
+    "today": "2026-11-21",
+    "globals": {
+      "org-extend-today-until": 4
+    }
+  },
+  {
+    "name": "capture-review-c1-not-datetree",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "C-1 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-c1-not-datetree.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* %?\n%<%Y-%m-%d>"
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-time-prompt-week",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "2026-11-19 10:30"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-time-prompt-week.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n%<%Y-%m-%d %H:%M> %t",
+        ":time-prompt",
+        true,
+        ":tree-type",
+        "'week"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-time-prompt-range",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "2026-11-19 10:30-11:00"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-time-prompt-range.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n%<%Y-%m-%d %H:%M>",
+        ":time-prompt",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-keyword-missing",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-keyword-missing.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file",
+          "FILE"
+        ],
+        "* %:nothing x %:link %?\n"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-clock-resume-finish-adjacent",
+    "text": "* Inbox\n* one\nbody\n",
+    "point": 10,
+    "keys": "C-c C-x C-i M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-clock-resume-finish-adjacent.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n",
+        ":clock-in",
+        true,
+        ":clock-resume",
+        true
+      ]
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-hook-error",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-hook-error.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* x %?\n",
+        ":hook",
+        "'e8-no-such-function"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-stay",
+    "text": "* one\nbody\n* Inbox\n",
+    "point": 2,
+    "keys": "n e w C-u C-c C-c",
+    "answers": [
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-stay.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-property-allowed-default-member",
+    "text": "* one\nbody\n* Inbox\n:PROPERTIES:\n:Effort_ALL: 0:10 0:20\n:END:\n** old\n* Other\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      ""
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-allowed-default-member.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* Task %?\n%^{Effort|0:20}p"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-property-trim",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "  x y  "
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-property-trim.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "one"
+        ],
+        "* Task %?\n%^{Color}p"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-here-table-unnarrowed",
+    "text": "a\nb\n",
+    "point": 2,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-table-unnarrowed.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "table-line",
+        [
+          "file",
+          "FILE"
+        ],
+        "| %? |",
+        ":unnarrowed",
+        true
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-time-prompt-hook-default-time",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "C-1 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t",
+      "2026-11-19 02:00"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-time-prompt-hook-default-time.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n%<%Y-%m-%d %H:%M>"
+      ]
+    ],
+    "today": "2026-11-21",
+    "globals": {
+      "org-extend-today-until": 4
+    }
+  },
+  {
+    "name": "capture-review-refile-then-last-stored",
+    "text": "* one\nbody\n* Inbox\n** old\n* Other\n* Tail\n",
+    "point": 2,
+    "keys": "n e w C-c C-w M-< C-u C-u M-x",
+    "answers": [
+      "t",
+      "Other",
+      "org-capture"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-refile.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+headline",
+          "FILE",
+          "Inbox"
+        ],
+        "* %?\n"
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ]
+  },
+  {
+    "name": "capture-review-time-prompt-am",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "2026-11-19 10am"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-time-prompt-am.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n%<%Y-%m-%d %H:%M>",
+        ":time-prompt",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-time-prompt-time-only",
+    "text": "* one\n",
+    "point": 2,
+    "keys": "n e w C-c C-c",
+    "answers": [
+      "t",
+      "9:15"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-time-prompt-time-only.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "entry",
+        [
+          "file+olp+datetree",
+          "FILE"
+        ],
+        "* %?\n%<%Y-%m-%d %H:%M>",
+        ":time-prompt",
+        true
+      ]
+    ],
+    "call": [
+      "org-capture"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "capture-review-here-plain-heading",
+    "text": "* one\n* two\n",
+    "point": 3,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-plain-heading.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "plain",
+        [
+          "file",
+          "FILE"
+        ],
+        "x %?"
+      ]
+    ]
+  },
+  {
+    "name": "capture-review-here-checkitem-in-list",
+    "text": "* one\n- x\n- y\n",
+    "point": 10,
+    "keys": "C-0 M-x n e w C-c C-c",
+    "answers": [
+      "org-capture",
+      "t"
+    ],
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-capture-here-checkitem-in-list.org",
+    "capture_templates": [
+      [
+        "t",
+        "T",
+        "checkitem",
+        [
+          "file",
+          "FILE"
+        ],
+        "- [ ] %?"
+      ]
+    ]
   }
 ]

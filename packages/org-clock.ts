@@ -317,6 +317,13 @@ export function runningEntry(): { buffer: string; start: number } | undefined {
   return buffer === undefined || start === undefined ? undefined : { buffer, start };
 }
 
+/** Where the running clock's CLOCK line is, as org-clock-marker, to tell this clock from another. */
+export function runningClockLine(): { buffer: string; pos: number } | undefined {
+  const buffer = clock && e8.markerBuffer(clock.line);
+  const pos = clock && e8.markerPosition(clock.line);
+  return buffer === undefined || pos === undefined ? undefined : { buffer, pos };
+}
+
 /** A heading's text with each link as its description, or its target if it has none, as the links show. */
 function linkDescriptions(text: string): string {
   return text.replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_, l: string, d?: string) => d ?? l);
