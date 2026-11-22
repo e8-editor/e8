@@ -84,8 +84,8 @@ fn a_notification_program() {
     panic!("the program was not run: {:?}", std::fs::read_to_string(&out));
 }
 
-/// *Clock Task Select* shows a task's links as Org fontifies them: the
-/// markup there but invisible.
+/// *Clock Task Select* shows a task's links as Org fontifies them: as
+/// their descriptions with org-link-descriptive, else written out.
 #[test]
 fn task_links_as_shown() {
     let (mut ed, s, _dir) = org("* See [[https://x.org][the site]] now\n");
@@ -94,7 +94,7 @@ fn task_links_as_shown() {
         "t.ts",
         r#"e8.addHook("org-clock-before-select-task-hook", () => {
           const at = e8.search("[[https", { from: e8.pointMin() });
-          globalThis.seen = [e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()), at && e8.getTextProperty(at.start, "invisible")];
+          globalThis.seen = [e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()), at ? e8.getTextProperty(at.start, "face") : null];
         });"#
             .to_string(),
     )
@@ -102,5 +102,10 @@ fn task_links_as_shown() {
     ed.press("C-c C-x C-i C-c C-x C-o C-u C-c C-x C-i q").unwrap();
     s.eval_typescript(&mut ed, "t.ts", r#"e8.message(JSON.stringify(globalThis.seen));"#.to_string()).unwrap();
     let echo = ed.echo().unwrap_or_default().to_string();
-    assert!(echo.contains("See [[https://x.org][the site]] now") && echo.ends_with("true]"), "{echo}");
+    assert!(echo.contains("  See the site now\\n") && echo.ends_with("null]"), "{echo}");
+    ed.set_variable("org-link-descriptive", Value::Bool(false));
+    ed.press("C-u C-c C-x C-i q").unwrap();
+    s.eval_typescript(&mut ed, "t.ts", r#"e8.message(JSON.stringify(globalThis.seen));"#.to_string()).unwrap();
+    let echo = ed.echo().unwrap_or_default().to_string();
+    assert!(echo.contains("See [[https://x.org][the site]] now") && echo.contains("org-link"), "{echo}");
 }

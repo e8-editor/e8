@@ -5545,11 +5545,13 @@ declare global {
        */
       "org-clock-modify-effort-estimate": [];
       /**
-       * Stop the running clock, writing when it stopped and how long it ran.
+       * Stop the running clock, writing when it stopped and how long it ran. With C-u, switch the task to a state asked for.
+       *
+       * @param switch-to-state raw prefix argument
        *
        * Defined in packages/org-clock.ts.
        */
-      "org-clock-out": [];
+      "org-clock-out": [switchToState?: PrefixArg | boolean];
       /**
        * Take away the times org-clock-display shows after the headings.
        *
@@ -13642,6 +13644,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-out-remove-zero-time-clocks": Value;
+      /**
+       * A TODO state to switch a task to when its clock stops, or a function of its state giving one.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-out-switch-to-state": Value;
       /**
        * Whether marking the clocked entry done stops the clock.
        *
