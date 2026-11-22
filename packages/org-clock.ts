@@ -324,6 +324,37 @@ export function runningClockLine(): { buffer: string; pos: number } | undefined 
   return buffer === undefined || pos === undefined ? undefined : { buffer, pos };
 }
 
+e8.defineVariable({ name: "org-clock-heading", doc: "The running clock's task as the mode line names it.", value: "" });
+e8.defineVariable({
+  name: "org-clock-heading-function",
+  doc: "A function giving the text the mode line and C-2 C-c C-w name the clocked task by, called at its heading, or nil for its heading.",
+  value: null,
+});
+
+/**
+ * The clocked task's name, as org-clock--mode-line-heading: what
+ * org-clock-heading-function gives, else the heading without its state,
+ * priority, COMMENT or tags, its links as their descriptions.
+ */
+function clockModeLineHeading(h: Heading): string {
+  const fn = e8.variable("org-clock-heading-function");
+  const name = typeof fn === "symbol" ? e8.symbolName(fn) : undefined;
+  let title: string;
+  // Only a function, as functionp checks: a name not defined yet gives the heading.
+  if (typeof fn === "function" || (name !== undefined && e8.fboundp(name))) {
+    const v = e8.saveExcursion(() =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        e8.gotoChar(h.start);
+        return e8.funcall(typeof fn === "function" ? fn : (name as string));
+      }),
+    );
+    title = typeof v === "string" ? v : String(v ?? "");
+  } else title = linkDescriptions(h.title.replace(/^COMMENT[ \t]+/, ""));
+  e8.setVariable("org-clock-heading", title);
+  return title;
+}
+
 /** A heading's text with each link as its description, or its target if it has none, as the links show. */
 function linkDescriptions(text: string): string {
   return text.replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_, l: string, d?: string) => d ?? l);
@@ -486,7 +517,7 @@ function clockInHere(selected?: number): void {
     interruptedTask = undefined;
   }
   historyPush(e8.bufferName(), h.start);
-  const title = linkDescriptions(h.title);
+  const title = clockModeLineHeading(h);
   const { minutes: before, extra } = clockedBefore(all, i);
   // With org-clock-in-resume, the entry's CLOCK line not closed goes on, from when it started, as org-clock-in resumes it.
   const resume = e8.variable("org-clock-in-resume");
@@ -1239,12 +1270,34 @@ for (const [keys, command] of [
   e8.defineKey("org-mode-map", keys, command);
 }
 
-// C-2 C-c C-w refiles to the running clock's entry, as org-refile reads org-clock-hd-marker.
+/**
+ * Names the running clock's task again from its heading, and shows it in
+ * the mode line, as org-clock-update-mode-line with REFRESH: as a kept
+ * capture's clock does once its heading is written.
+ */
+export function refreshClockHeading(): void {
+  if (!clock) return;
+  const buffer = e8.markerBuffer(clock.heading);
+  const pos = e8.markerPosition(clock.heading);
+  if (buffer === undefined || pos === undefined) return;
+  const title = e8.withCurrentBuffer(buffer, () =>
+    e8.saveRestriction(() => {
+      e8.widen();
+      const all = headings();
+      const i = headingIndex(all, lineAt(pos));
+      return i === undefined ? "???" : clockModeLineHeading(all[i]);
+    }),
+  );
+  clock.title = title;
+  e8.setVariable("org-clock-heading", title);
+  updateModeLine();
+}
+
+// For C-2 C-c C-w: the running clock's entry, named by org-clock-heading.
 setRunningClock(() => {
   const entry = runningEntry();
-  if (!entry) return undefined;
-  const title = e8.withCurrentBuffer(entry.buffer, () => headings().find((h) => h.start === entry.start)?.title ?? "");
-  return { ...entry, title };
+  if (!entry || !clock) return undefined;
+  return { ...entry, title: clock.title };
 });
 
 // Clock tables, as org-clock.el writes them: the dynamic block

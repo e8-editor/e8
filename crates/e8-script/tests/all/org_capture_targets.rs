@@ -200,3 +200,31 @@ fn kill_buffer_and_finalize_functions() {
     s.eval_typescript(&mut ed, "t.ts", r#"e8.message(globalThis.ran.join(","));"#.to_string()).unwrap();
     assert_eq!(ed.echo(), Some("prepare,before,after"));
 }
+
+/// A capture's kept clock is named again from the heading written, as
+/// org-clock-update-mode-line refreshes it, so C-2 C-c C-w names it; %k is
+/// org-clock-heading.
+#[test]
+fn a_kept_clock_is_named_by_its_heading() {
+    let (mut ed, s, dir) = editor("[]");
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "* Inbox\n* COMMENT Old [[x][link]]\n").unwrap();
+    s.eval_typescript(
+        &mut ed,
+        "t.ts",
+        format!(
+            r#"e8.setVariable("org-capture-templates", [["t", "T", "entry", ["file+headline", "{}", "Inbox"], "* %?\n", ":clock-in", true, ":clock-keep", true], ["k", "K", "plain", ["file+headline", "{}", "Inbox"], "was %k%?"]]);"#,
+            notes.display(),
+            notes.display()
+        ),
+    )
+    .unwrap();
+    ed.call("find-file", vec![e8_core::Arg::Str(notes.to_str().unwrap().into())]).unwrap();
+    // %k on a COMMENT heading with a link: without COMMENT, the link as its description.
+    ed.press("C-n C-c C-x C-i M-x o r g - c a p t u r e RET k C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert!(std::fs::read_to_string(&notes).unwrap().contains("was Old link\n"), "{}", std::fs::read_to_string(&notes).unwrap());
+    ed.press("M-x o r g - c a p t u r e RET t T y p e d SPC n a m e C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert_eq!(s.eval_expression(&mut ed, r#"e8.variable("org-clock-heading")"#).unwrap(), "\"Typed name\"");
+}

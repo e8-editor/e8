@@ -5,7 +5,7 @@
 
 import { bookmarkSet, jumpTo } from "bookmark";
 import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, parseDate, parseHeading, plistGet, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
-import { clockIn, clockOut, runningClockLine, runningEntry } from "org-clock";
+import { clockIn, clockOut, refreshClockHeading, runningClockLine, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
 import { insertLink, storeLink } from "ol";
@@ -1034,9 +1034,10 @@ function captureWith(key: string, goto: e8.Value = null): void {
     ? e8.withCurrentBuffer(running.buffer, () => {
         const h = headings().find((x) => x.start === running.start);
         const path = e8.bufferFileName();
-        // Links as their descriptions, as org-clock-heading shows them.
-        const title = (h?.title ?? "").replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_m, l: string, d?: string) => d ?? l);
-        return { title, link: path === undefined ? "" : `[[file:${e8.abbreviateFileName(path)}::*${title}][${title}]]` };
+        // %k is org-clock-heading; %K's link names the heading, its links as their descriptions.
+        const heading = (h?.title ?? "").replace(/\[\[([^\]]*)\](?:\[([^\]]*)\])?\]/g, (_m, l: string, d?: string) => d ?? l);
+        const title = String(e8.variable("org-clock-heading") ?? heading);
+        return { title, link: path === undefined ? "" : `[[file:${e8.abbreviateFileName(path)}::*${heading}][${heading}]]` };
       })
     : undefined;
   const prepend = truthy(option(t, ":prepend") ?? null);
@@ -1229,6 +1230,8 @@ function finishClock(state: NonNullable<typeof capturing>): void {
   const started = state.started;
   const now = runningClockLine();
   const same = started !== undefined && now !== undefined && e8.markerBuffer(started) === now.buffer && e8.markerPosition(started) === now.pos;
+  // Kept, its name read again from the heading now written, as org-clock-update-mode-line with REFRESH.
+  if (state.clocked && same && truthy(option(state.template, ":clock-keep") ?? null)) refreshClockHeading();
   if (state.clocked && same && !truthy(option(state.template, ":clock-keep") ?? null)) {
     e8.letBind({ "org-log-note-clock-out": null }, () => clockOut(true));
     const interrupted = state.interrupted;
