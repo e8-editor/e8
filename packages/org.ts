@@ -5068,26 +5068,63 @@ e8.defineCommand({
  * the keyword, then the tags, CLOSED, the parent's statistics and a
  * repeat, then point just after the keyword if it was near it.
  */
-function todo(direction: number, state?: string, across = false): void {
-  const [all0, i0] = backToHeading();
-  const logging = entryGetInherited(all0[i0], "LOGGING");
-  if (logging !== undefined) withLocalLogging(logging, () => todoLogged(direction, state, across));
-  else todoLogged(direction, state, across);
+/**
+ * How org-todo's prefix arguments change a change of state: a note forced
+ * (C-u), a note made a time (0), and the next or previous set of keywords
+ * (C-u C-u, nextset and previousset), which logs nothing unless forced.
+ */
+interface TodoOptions {
+  forceLog?: boolean;
+  inhibitNote?: boolean;
+  set?: 1 | -1;
 }
 
-function todoLogged(direction: number, state?: string, across = false): void {
+function todo(direction: number, state?: string, across = false, options: TodoOptions = {}): void {
+  const [all0, i0] = backToHeading();
+  const logging = entryGetInherited(all0[i0], "LOGGING");
+  if (logging !== undefined) withLocalLogging(logging, () => todoLogged(direction, state, across, options));
+  else todoLogged(direction, state, across, options);
+}
+
+/**
+ * The first keyword of the set after (or before) the one the state is in,
+ * as org-todo's nextset and previousset take it, wrapping round; with no
+ * state, from the first set.
+ */
+function setHead(current: string | undefined, direction: 1 | -1): string | undefined {
+  const sets = todoSets();
+  const heads = sets.map((set) => [...set.todo, ...set.done][0]);
+  const at = sets.findIndex((set) => current !== undefined && (set.todo.includes(current) || set.done.includes(current)));
+  // With no state, the first set's, or with previousset the last's, as member finds no head then.
+  if (at < 0) return direction > 0 ? heads[0] : heads.at(-1);
+  return heads[(at + direction + heads.length) % heads.length];
+}
+
+function todoLogged(direction: number, state?: string, across = false, options: TodoOptions = {}): void {
   const [all, i] = backToHeading();
   const h = all[i];
   const before = h.todo;
-  const next = state === undefined ? nextState(before, direction, across) : state === "" ? undefined : state;
+  const next =
+    options.set !== undefined ? setHead(before, options.set) : state === undefined ? nextState(before, direction, across) : state === "" ? undefined : state;
   const change: e8.Value = [":type", "todo-state-change", ":from", before ?? null, ":to", next ?? null, ":position", h.start];
   if (!todoChangeAllowed(h, change, before, next)) return;
   replaceTodoKeyword(h, next);
   if (parseHeading(h.line)?.tagsAt !== undefined) alignTagsAway(h.line);
+  if (next !== undefined && next === before) e8.message(`TODO state was already ${next}`);
+  if (options.set !== undefined) {
+    // As org-todo says which set it went to: its place among the sets, and its keywords.
+    const sets = todoSets();
+    const k = sets.findIndex((set) => next !== undefined && [...set.todo, ...set.done][0] === next);
+    if (k >= 0) e8.message(`Keyword-Set ${k + 1}/${sets.length}: ${[...sets[k].todo, ...sets[k].done].join(" ")}`);
+  }
   const logDone = e8.variable("org-log-done");
-  const dolog = logHow(next, before);
+  // Logged as the states and org-log-done say, but not for a new set of keywords, unless C-u forces a note.
+  const logs = ((logStates().length > 0 || truthy(logDone ?? null)) && options.set === undefined) || options.forceLog === true;
+  let dolog = !logs ? undefined : options.forceLog ? "note" : logHow(next, before);
+  // With a prefix of 0, a note is only a time, as org-inhibit-logging note says.
+  if (options.inhibitNote && dolog === "note") dolog = "time";
   // As org-todo: CLOSED goes when the state does, or goes back to not done; it comes when done.
-  if (logStates().length > 0 || (logDone !== null && logDone !== false && logDone !== undefined)) {
+  if (logs) {
     const notDone = (k: string | undefined) => k !== undefined && !isDone(k);
     if (next === undefined || (notDone(next) && !notDone(before))) setPlanning(h.line, "CLOSED", undefined);
     if (isDone(next) && !isDone(before) && logDone !== null && logDone !== false) setPlanning(h.line, "CLOSED", `[${formatTimestamp(today(true), true)}]`);
@@ -5097,7 +5134,7 @@ function todoLogged(direction: number, state?: string, across = false): void {
   // when org-log-done asks for one and the state logs nothing, else the
   // state as its ! or @ says.
   let setup: { purpose: string; how: string; state?: string; previous?: string } | undefined;
-  if (dolog === undefined && isDone(next) && !isDone(before) && logDone === "note") setup = { purpose: "done", how: "note", state: next, previous: before };
+  if (logs && dolog === undefined && isDone(next) && !isDone(before) && logDone === "note") setup = { purpose: "done", how: "note", state: next, previous: before };
   if (next !== undefined && dolog !== undefined) setup = { purpose: "state", how: dolog, state: next, previous: before };
   // A repeat, as org-auto-repeat-maybe: a note already set up is taken as
   // a note if org-log-repeat is note, else the repeat is logged as its state.
@@ -5256,19 +5293,41 @@ const todoCommand = e8.defineCommand({
     "every heading in it changes (org-loop-over-headlines-in-active-region).",
   run: () => {
     let arg = e8.prefixArg();
+    const options: TodoOptions = {};
+    // C-u C-u goes to the next set of keywords.
+    if (Array.isArray(arg) && arg[0] === 16) {
+      options.set = 1;
+      arg = null;
+    }
+    // -1 cancels the repeater first, so the entry can be marked done; below -1 is no argument org-todo takes.
+    if (arg !== null && e8.prefixNumericValue(arg) === -1) {
+      cancelRepeater();
+      arg = null;
+    }
+    if (arg !== null && e8.prefixNumericValue(arg) < -1) e8.userError(`Prefix argument ${e8.prefixNumericValue(arg)} not supported`);
     // C-u C-u C-u changes it whatever blocks it, as org-todo does with (64).
     const bypass = Array.isArray(arg) && arg[0] === 64;
     if (bypass) arg = null;
+    // C-u forces a note, and 0 makes a note a time; neither picks a state.
+    if (Array.isArray(arg) && arg[0] === 4) {
+      options.forceLog = true;
+      arg = null;
+    }
+    if (arg === 0) {
+      options.inhibitNote = true;
+      arg = null;
+    }
     // A number picks that state; with fast-access keys, a key does, as org-use-fast-todo-selection says.
     const fast = e8.variable("org-use-fast-todo-selection");
     const change = () => {
-      if (typeof arg === "number" && arg > 0) {
+      if (options.set !== undefined) todo(1, undefined, false, options);
+      else if (typeof arg === "number" && arg > 0) {
         const kw = allKeywords()[arg - 1];
-        todo(1, kw ?? "");
+        todo(1, kw ?? "", false, options);
       } else if (arg === null && fast !== null && fast !== false && todoSets().some((s) => s.keys.some(([, k]) => k !== undefined))) {
         const [all, i] = backToHeading();
-        todo(1, fastTodoSelection(all[i].todo) ?? "");
-      } else todo(1);
+        todo(1, fastTodoSelection(all[i].todo) ?? "", false, options);
+      } else todo(1, undefined, false, options);
     };
     const outer = blockingBypassed;
     blockingBypassed = bypass;
@@ -5279,6 +5338,44 @@ const todoCommand = e8.defineCommand({
     }
   },
 });
+
+/**
+ * Sets the repeater of the entry's first timestamp to 0, as
+ * org-cancel-repeater does: the first SCHEDULED, DEADLINE or active
+ * timestamp in the entry, and the last repeater from the heading to its end.
+ */
+function cancelRepeater(): void {
+  e8.saveExcursion(() => {
+    const [all, i] = backToHeading();
+    const start = all[i].start;
+    e8.gotoChar(start);
+    const end = all[i + 1]?.start ?? e8.pointMax();
+    const ts = "\\(\\<SCHEDULED: *<\\([^>]+\\)>\\)\\|\\(\\<DEADLINE: *<\\([^>]+\\)>\\)\\|\\(<\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} ?[^\r\n>]*?\\)>\\)";
+    if (e8.reSearchForward(ts, { bound: end, noerror: true }) === undefined) return;
+    if (e8.reSearchBackward("[ \t]+\\(?:[.+]\\)?\\+\\([0-9]+\\)[hdwmy]", { bound: start, noerror: true }) === undefined) return;
+    const [b, e] = [e8.matchBeginning(1)!, e8.matchEnd(1)!];
+    edReplace(b, e, "0");
+  });
+}
+
+e8.defineCommand({ name: "org-cancel-repeater", doc: "Set the repeater of the entry's first timestamp to 0, so marking it done does not repeat it.", run: () => cancelRepeater() });
+
+for (const [name, set, doc, motion] of [
+  ["org-shiftcontrolright", 1, "C-S-<right> in Org: switch the heading to the next set of TODO keywords.", "forward-word"],
+  ["org-shiftcontrolleft", -1, "C-S-<left> in Org: switch the heading to the previous set of TODO keywords.", "backward-word"],
+] as const) {
+  e8.defineCommand({
+    name,
+    doc,
+    run: () => {
+      const shiftSelect = e8.variable("org-support-shift-select") ?? null;
+      if (truthy(shiftSelect) && orgRegionActive()) e8.call(motion);
+      else if (shiftSelect !== "always" && headingHere()) todo(1, undefined, false, { set });
+      else if (truthy(shiftSelect)) e8.call(motion);
+      else shiftSelectError();
+    },
+  });
+}
 
 /**
  * Where org-map-entries has narrowed to the region it loops over, if it is
@@ -9470,6 +9567,8 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "S-<down>": shiftDown,
   "S-<left>": shiftLeft,
   "S-<right>": shiftRight,
+  "C-S-<right>": "org-shiftcontrolright",
+  "C-S-<left>": "org-shiftcontrolleft",
   "C-c C-t": todoCommand,
   "C-c C-z": "org-add-note",
   "C-c C-k": "org-kill-note-or-show-branches",

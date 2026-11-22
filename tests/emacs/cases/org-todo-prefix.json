@@ -1,0 +1,182 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-forces-a-note",
+  "text": "* TODO A\n",
+  "keys": "C-u C-c C-t",
+  "point": 2,
+  "answers": []
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-forces-a-note-then-finish",
+  "text": "* TODO A\n",
+  "keys": "C-u C-c C-t h e l l o C-c C-c",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-c-u-next-set",
+  "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+  "keys": "C-u C-u C-c C-t",
+  "point": 47,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-c-u-next-set-wraps",
+  "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+  "keys": "C-u C-u C-c C-t",
+  "point": 47,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-c-u-from-no-state",
+  "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* A\n",
+  "keys": "C-u C-u C-c C-t",
+  "point": 47,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-c-u-one-set",
+  "text": "* TODO A\n",
+  "keys": "C-u C-u C-c C-t",
+  "point": 2,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-s-right-next-set",
+  "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+  "keys": "C-S-<right>",
+  "point": 47,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-s-left-previous-set",
+  "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+  "keys": "C-S-<left>",
+  "point": 47,
+  "message": true
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-s-right-off-a-heading",
+  "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\ntext\n",
+  "keys": "C-S-<right>",
+  "point": 57
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "zero-inhibits-the-note",
+  "text": "#+TODO: TODO(t@) | DONE(d@)\n* TODO A\n",
+  "keys": "C-0 C-c C-t",
+  "point": 29,
+  "vars": {
+   "org-use-fast-todo-selection": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "minus-one-cancels-the-repeater",
+  "text": "* TODO A\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+  "keys": "C-- C-c C-t",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "minus-one-cancels-a-deadline-repeater",
+  "text": "* TODO A\nDEADLINE: <2026-10-28 Wed .+2d>\n",
+  "keys": "M-- C-c C-t",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "minus-two-is-not-supported",
+  "text": "* TODO A\n",
+  "keys": "C-u - 2 C-c C-t",
+  "point": 2
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-c-u-log-done-time",
+  "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+  "keys": "C-u C-u C-c C-t",
+  "point": 47,
+  "vars": {
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "c-u-with-log-done-time",
+  "text": "* TODO A\n",
+  "keys": "C-u C-c C-t",
+  "point": 2,
+  "vars": {
+   "org-log-done": "'time"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "state-was-already",
+  "text": "#+TODO: TODO(t) | DONE(d)\n* TODO A\n",
+  "keys": "C-c C-t",
+  "point": 28,
+  "message": true,
+  "answers": [
+   "t"
+  ]
+ }
+]
