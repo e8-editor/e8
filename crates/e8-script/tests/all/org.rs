@@ -1837,3 +1837,36 @@ fn timestamp_rounding_minutes_under_either_name() {
     // 10:15 rounded down to a step of 10 first, as Org does, then a step on.
     assert_eq!(text(&ed), "* T\n<2026-10-28 Wed 10:20>\n");
 }
+
+/// org-insert-subheading and org-insert-todo-subheading, which no key runs
+/// and the oracle cannot call, as their argument is required: what Emacs
+/// 30.2's Org 9.7 gives for each, text and point.
+#[test]
+fn subheadings_as_org_inserts_them() {
+    let cases: &[(&str, &str, usize, &str, bool, &str, usize)] = &[
+        ("end", "* A\n", 3, "org-insert-subheading", false, "* A\n** \n", 7),
+        ("start of a heading", "* A\n* B\n", 0, "org-insert-subheading", false, "* A\n** \n* B\n", 7),
+        ("in a body", "* A\nbody\n* B\n", 6, "org-insert-subheading", false, "* A\nbo\n** dy\n* B\n", 10),
+        ("deeper", "** A\n", 4, "org-insert-subheading", false, "** A\n*** \n", 9),
+        ("after an item", "- a\n", 3, "org-insert-subheading", false, "- a\n** \n", 7),
+        ("start of an item", "- a\n- b\n", 0, "org-insert-subheading", false, "-\n**  a\n- b\n", 5),
+        ("C-u", "* A\nbody\n* B\n", 6, "org-insert-subheading", true, "* A\nbody\n** \n* B\n", 12),
+        ("empty", "", 0, "org-insert-subheading", false, "** ", 3),
+        ("text", "text\n", 4, "org-insert-subheading", false, "text\n** \n", 8),
+        ("TODO", "* TODO A\n", 8, "org-insert-todo-subheading", false, "* TODO A\n** TODO \n", 17),
+        ("TODO under a plain heading", "* A\n", 3, "org-insert-todo-subheading", false, "* A\n** TODO \n", 12),
+        ("checkbox item", "- [ ] a\n", 7, "org-insert-todo-subheading", false, "- [ ] a\n  - [ ] \n", 16),
+    ];
+    let mut failures = Vec::new();
+    for (name, start, point, command, cu, want, want_point) in cases {
+        let (mut ed, _s) = org(start);
+        ed.window_buffer_mut().set_point(*point);
+        let prefix = if *cu { Some(e8_core::PrefixArg::Universal(4)) } else { None };
+        let result = ed.call_with_prefix(command, vec![], prefix);
+        let got = (text(&ed), ed.window_buffer().point());
+        if result.is_err() || got != (want.to_string(), *want_point) {
+            failures.push(format!("{name}: {result:?} {got:?}, Emacs {:?}", (want, want_point)));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}

@@ -6141,6 +6141,14 @@ declare global {
        */
       "org-insert-structure-template": [];
       /**
+       * Insert a heading one level below the one point is under, or an item one level below, as org-insert-heading and a demotion. At the start of a heading, the new one still goes below it. The prefix argument is org-insert-heading's.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-insert-subheading": [arg?: PrefixArg | boolean];
+      /**
        * Insert a heading with the first TODO state, as M-RET does; in a list, an item with a checkbox.
        *
        * Defined in packages/org.ts.
@@ -6152,6 +6160,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-insert-todo-heading-respect-content": [];
+      /**
+       * Insert a heading with the first TODO state one level below, or an item with a checkbox one level below, as org-insert-todo-heading and a demotion.
+       *
+       * @param arg raw prefix argument
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-insert-todo-subheading": [arg?: PrefixArg | boolean];
       /**
        * Abort storing current note, or show just branches.
        *
