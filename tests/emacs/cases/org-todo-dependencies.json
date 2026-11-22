@@ -303,14 +303,15 @@
   },
   {
     "name": "dep-sparse-blocked",
-    "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
-    "keys": "C-c / m",
+    "text": "* Top\n** TODO Parent\n*** TODO child\n** TODO Free\nbody\n",
+    "keys": "C-c /",
     "point": 0,
     "modes": [
       "org-mode"
     ],
     "today": "2026-11-04",
     "answers": [
+      "m",
       "BLOCKED=\"t\""
     ],
     "globals": {
@@ -319,14 +320,15 @@
   },
   {
     "name": "dep-sparse-not-blocked",
-    "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
-    "keys": "C-c / m",
+    "text": "* Top\n** TODO Parent\n*** TODO child\n** TODO Free\nbody\n",
+    "keys": "C-c /",
     "point": 0,
     "modes": [
       "org-mode"
     ],
     "today": "2026-11-04",
     "answers": [
+      "m",
       "BLOCKED=\"\""
     ],
     "globals": {
@@ -421,7 +423,16 @@
     },
     "vars": {
       "org-archive-mark-done": true,
-      "org-archive-location": "::* Archive"
-    }
+      "org-archive-location": "::* Archive",
+      "org-archive-save-context-info": [
+        "'todo",
+        "'category",
+        "'olpath",
+        "'itags",
+        "'ltags"
+      ]
+    },
+    "visit": "e8-oracle-archive.org",
+    "message": true
   }
 ]

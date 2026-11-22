@@ -6143,6 +6143,14 @@ declare global {
        */
       "org-occur": [regexp: string, keep?: PrefixArg | boolean];
       /**
+       * List the lines matching a regexp in every agenda file, and in org-agenda-text-search-extra-files, with the agenda files' archives when that list starts with agenda-archives, in *Occur*, as multi-occur does, each file widened.
+       *
+       * @param regexp text
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-occur-in-agenda-files": [regexp: string];
+      /**
        * Follow the link point is on: [[*Heading]], [[#custom-id]], [[target]] and [[Heading]] within the buffer, and file links such as [[file:notes.org::*Heading]] in another buffer.
        *
        * Defined in packages/org.ts.

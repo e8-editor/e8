@@ -525,9 +525,9 @@
     {
       "name": "dep-sparse-blocked",
       "input": {
-        "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+        "text": "* Top\n** TODO Parent\n*** TODO child\n** TODO Free\nbody\n",
         "point": 0,
-        "keys": "C-c / m",
+        "keys": "C-c /",
         "modes": [
           "org-mode"
         ],
@@ -535,27 +535,28 @@
         "platform": null,
         "today": "2026-11-04",
         "answers": [
+          "m",
           "BLOCKED=\"t\""
         ],
         "globals": {
           "org-enforce-todo-dependencies": true
         }
       },
-      "text": "m* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
-      "visible": "m* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
-      "point": 1,
+      "text": "* Top\n** TODO Parent\n*** TODO child\n** TODO Free\nbody\n",
+      "visible": "* Top\n** TODO Parent",
+      "point": 0,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
-      "modified": true,
-      "error": "No such sparse tree command \"B\""
+      "modified": false,
+      "error": null
     },
     {
       "name": "dep-sparse-not-blocked",
       "input": {
-        "text": "* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
+        "text": "* Top\n** TODO Parent\n*** TODO child\n** TODO Free\nbody\n",
         "point": 0,
-        "keys": "C-c / m",
+        "keys": "C-c /",
         "modes": [
           "org-mode"
         ],
@@ -563,20 +564,21 @@
         "platform": null,
         "today": "2026-11-04",
         "answers": [
+          "m",
           "BLOCKED=\"\""
         ],
         "globals": {
           "org-enforce-todo-dependencies": true
         }
       },
-      "text": "m* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
-      "visible": "m* TODO Parent\n** TODO child\n** DONE other\n* TODO Free\n",
-      "point": 1,
+      "text": "* Top\n** TODO Parent\n*** TODO child\n** TODO Free\nbody\n",
+      "visible": "* Top\n** TODO Parent\n*** TODO child\n** TODO Free",
+      "point": 0,
       "mark": null,
       "mark_active": false,
       "kill_ring": [],
-      "modified": true,
-      "error": "No such sparse tree command \"B\""
+      "modified": false,
+      "error": null
     },
     {
       "name": "dep-toggle-ordered",
@@ -737,23 +739,36 @@
         ],
         "call": [],
         "platform": null,
+        "visit": "e8-oracle-archive.org",
         "today": "2026-11-04",
+        "message": true,
         "vars": {
           "org-archive-mark-done": true,
-          "org-archive-location": "::* Archive"
+          "org-archive-location": "::* Archive",
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
         },
         "globals": {
           "org-enforce-todo-dependencies": true
         }
       },
-      "text": "* TODO Parent\n** TODO child\n* x\n",
-      "visible": "* TODO Parent\n** TODO child\n* x\n",
+      "text": "* x\n\n* Archive\n\n** TODO Parent\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n*** TODO child\n",
+      "visible": "* x\n\n* Archive\n\n** TODO Parent\n:PROPERTIES:\n*** TODO child\n",
       "point": 0,
       "mark": null,
       "mark_active": false,
-      "kill_ring": [],
-      "modified": false,
-      "error": "No file associated to buffer"
+      "kill_ring": [
+        "* TODO Parent\n** TODO child\n",
+        "* TODO Parent\n** TODO child\n"
+      ],
+      "modified": true,
+      "error": null,
+      "message": "Subtree archived under heading: * Archive"
     }
   ]
 }

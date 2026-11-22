@@ -8202,17 +8202,20 @@ export function combinePlists(...plists: (e8.Value | undefined)[]): e8.Value[] {
 
 /**
  * The agenda files, as (org-agenda-files t) lists them: each name
- * expanded in org-directory, a directory standing for its Org files.
+ * expanded in org-directory, a directory standing for its Org files, and
+ * each file once.
  */
 export function agendaFiles(): string[] {
   const files = e8.variable("org-agenda-files");
   if (!Array.isArray(files)) return [];
   const dir = e8.variable("org-directory");
   const base = typeof dir === "string" ? e8.expandFileName(dir) : undefined;
-  return (files as e8.Value[]).flatMap((f) => {
+  const all = (files as e8.Value[]).flatMap((f) => {
     const file = e8.expandFileName(String(f), base);
     return e8.fileDirectoryP(file) ? e8.directoryFiles(file, { full: true, match: "\\`[^.].*\\.org\\'" }) : [file];
   });
+  // Each once, the first kept, as org-agenda-files's delete-dups.
+  return [...new Set(all)];
 }
 
 /** Goes to the first dynamic block named NAME and returns where it starts, as org-find-dblock; stays put if there is none. */
@@ -9476,6 +9479,27 @@ function tagsExpandGroup(group: string[], groups: [string, string[]][], expanded
   return expanded;
 }
 
+/** Org mode's syntax table with @ and _ word characters, as org-mode-tags-syntax-table, made when first needed. */
+let tagsSyntaxTable: string | undefined;
+
+/** Runs body with org-mode-tags-syntax-table, so \\< and \\> in a tag regexp take @ and _ as word characters, as Org matches them. */
+function withTagsSyntaxTable<T>(body: () => T): T {
+  if (tagsSyntaxTable === undefined) {
+    // A child of Org mode's, so a change to that one shows through, as make-syntax-table makes it.
+    tagsSyntaxTable = "org-mode-tags-syntax-table";
+    e8.makeSyntaxTable(tagsSyntaxTable, "org-mode-syntax-table");
+    e8.modifySyntaxEntry("@", "w", tagsSyntaxTable);
+    e8.modifySyntaxEntry("_", "w", tagsSyntaxTable);
+  }
+  const previous = e8.syntaxTable();
+  e8.setSyntaxTable(tagsSyntaxTable);
+  try {
+    return body();
+  } finally {
+    e8.setSyntaxTable(previous);
+  }
+}
+
 /** Characters a tag is made of, as org-mode-tags-syntax-table's word characters. */
 const TAG_CHAR = /[\p{L}\p{N}_@]/u;
 
@@ -9691,7 +9715,7 @@ export function makeTagsMatcher(match?: string, todoOnly = false): TagsMatcher {
         let test: (ctx: MatchContext) => boolean;
         if (tag.startsWith("{")) {
           const re = tag.slice(1, -1);
-          test = (ctx) => ctx.tags.some((t) => e8.stringMatch(re, t, { caseFold: true }) !== undefined);
+          test = (ctx) => withTagsSyntaxTable(() => ctx.tags.some((t) => e8.stringMatch(re, t, { caseFold: true }) !== undefined));
         } else if (m[3] !== undefined) test = propertyTest(m[3], m[4], m[5] !== undefined, m[6]);
         else test = (ctx) => ctx.tags.includes(tag);
         ands.push(minus ? (ctx) => !test(ctx) : test);

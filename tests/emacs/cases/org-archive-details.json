@@ -665,7 +665,7 @@
   {
     "name": "odd-match-level",
     "text": "#+STARTUP: odd\n* A\n*** B\n***** C\n",
-    "keys": "C-c / m",
+    "keys": "C-c /",
     "point": 15,
     "modes": [
       "org-mode"
@@ -682,6 +682,7 @@
       ]
     },
     "answers": [
+      "m",
       "LEVEL=2"
     ]
   },
