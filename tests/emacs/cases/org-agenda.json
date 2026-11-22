@@ -162,7 +162,8 @@
     "call": [
       "org-todo-list"
     ],
-    "keys": "n n n t"
+    "keys": "n n n t",
+    "timestamp_now": true
   },
   {
     "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* DONE Old thing\nSCHEDULED: <2026-10-26 Mon>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n* TODO [#A] Plain todo\n",
@@ -235,7 +236,8 @@
     "call": [
       "org-todo-list"
     ],
-    "keys": "n n n t t n t RET"
+    "keys": "n n n t t n t RET",
+    "timestamp_now": true
   },
   {
     "modes": [
@@ -340,7 +342,8 @@
     ],
     "keys": "",
     "name": "todo-list-category-inheritance",
-    "text": "#+CATEGORY: file\n* P\n:PROPERTIES:\n:CATEGORY: par\n:END:\n** TODO C1\n:PROPERTIES:\n:CATEGORY: nil\n:END:\n** TODO C2\n** TODO C3\n:PROPERTIES:\n:CATEGORY+: x\n:END:\n** TODO C4\n:PROPERTIES:\n:CATEGORY:\n:END:\n* TODO Q\n"
+    "text": "#+CATEGORY: file\n* P\n:PROPERTIES:\n:CATEGORY: par\n:END:\n** TODO C1\n:PROPERTIES:\n:CATEGORY: nil\n:END:\n** TODO C2\n** TODO C3\n:PROPERTIES:\n:CATEGORY+: x\n:END:\n** TODO C4\n:PROPERTIES:\n:CATEGORY:\n:END:\n* TODO Q\n",
+    "timestamp_now": true
   },
   {
     "modes": [
@@ -355,7 +358,8 @@
     ],
     "keys": "",
     "name": "todo-list-category-top-drawer",
-    "text": ":PROPERTIES:\n:CATEGORY: top\n:CATEGORY+: more\n:END:\n* TODO A\n* B\n** TODO C\n:PROPERTIES:\n:CATEGORY+: deep\n:END:\n"
+    "text": ":PROPERTIES:\n:CATEGORY: top\n:CATEGORY+: more\n:END:\n* TODO A\n* B\n** TODO C\n:PROPERTIES:\n:CATEGORY+: deep\n:END:\n",
+    "timestamp_now": true
   },
   {
     "modes": [
@@ -370,7 +374,8 @@
     ],
     "keys": "",
     "name": "todo-list-category-file-name",
-    "text": "* TODO A\n:PROPERTIES:\n:CATEGORY+: plus\n:END:\n* TODO B\n"
+    "text": "* TODO A\n:PROPERTIES:\n:CATEGORY+: plus\n:END:\n* TODO B\n",
+    "timestamp_now": true
   },
   {
     "text": "#+FILETAGS: :proj:\n#+TODO: TODO WAIT | DONE\n* TODO Write report :work:\n** Sub task\n* DONE Old thing :work:\n* [#A] Urgent :home:\n* WAIT Other\n:PROPERTIES:\n:Effort: 1:00\n:END:\n* TODO [#C] Low :work:\n",
@@ -1138,5 +1143,290 @@
       "!task",
       "child"
     ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-list-skips-archived-and-comments",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-with-date",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-with-date": true
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-scheduled-all",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-scheduled": true
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-scheduled-future",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-scheduled": "'future"
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-scheduled-past",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-scheduled": "'past"
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-scheduled-days",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-scheduled": 7
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-deadlines-near",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-deadlines": true
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-deadlines-far",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-deadlines": "'far"
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-deadlines-all",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-deadlines": "'all"
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-timestamp-past",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-timestamp": "'past"
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-timestamp-future",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-timestamp": "'future"
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-ignore-timestamp-negative",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-ignore-timestamp": -7
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-list-no-sublevels",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-list-sublevels": false
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "",
+    "name": "todo-list-ignore-no-sublevels",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-todo-list-sublevels": false,
+      "org-agenda-todo-ignore-scheduled": "'past"
+    },
+    "timestamp_now": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda-ignore.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "keys": "C-u M-x",
+    "name": "tags-todo-honor-ignore",
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+    "globals": {
+      "org-agenda-tags-todo-honor-ignore-options": true,
+      "org-agenda-todo-ignore-deadlines": "'all"
+    },
+    "answers": [
+      "org-tags-view",
+      "LEVEL=1"
+    ],
+    "timestamp_now": true
   }
 ]

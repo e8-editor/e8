@@ -9871,6 +9871,11 @@ export function scanTags<T>(action: "sparse-tree" | ((h: Heading) => T), matcher
       const ctx: MatchContext = { todo: h.todo, tags: tags[i], level: h.level, h, category: () => (cats ??= e8.saveRestriction(() => (e8.widen(), categories(all))))[at] };
       if (todoOnly && (h.todo === undefined || !keywords.includes(h.todo))) continue;
       if (matcher !== true && !matcher.test(ctx)) continue;
+      // A TODO-only match leaves out entries the TODO list would, with org-agenda-tags-todo-honor-ignore-options.
+      if (todoOnly && truthy(e8.variable("org-agenda-tags-todo-honor-ignore-options") ?? null) && e8.fboundp("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item")) {
+        const ignored = e8.saveExcursion(() => (e8.gotoChar(h.start), e8.funcall("org-agenda-check-for-timestamp-as-reason-to-ignore-todo-item")));
+        if (truthy(ignored ?? null)) continue;
+      }
       e8.gotoChar(h.start);
       if (action === "sparse-tree") {
         if (truthy(e8.variable("org-highlight-sparse-tree-matches"))) highlightNewMatch(h.start, h.start + h.level);

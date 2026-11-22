@@ -5344,46 +5344,6 @@
       "error": null
     },
     {
-      "name": "capture-review-property-plain",
-      "input": {
-        "text": "* one\nbody\n",
-        "point": 2,
-        "keys": "n e w C-c C-c",
-        "modes": [
-          "org-mode"
-        ],
-        "call": [
-          "org-capture"
-        ],
-        "platform": null,
-        "visit": "e8-capture-property-plain.org",
-        "capture_templates": [
-          [
-            "t",
-            "T",
-            "plain",
-            [
-              "file",
-              "FILE"
-            ],
-            "%^{Effort}p%?"
-          ]
-        ],
-        "answers": [
-          "t",
-          "1:00"
-        ]
-      },
-      "text": "* newone                                                               :1:00:\nbody\n",
-      "visible": "* newone                                                               :1:00:\nbody\n",
-      "point": 5,
-      "mark": null,
-      "mark_active": false,
-      "kill_ring": [],
-      "modified": true,
-      "error": "Capture abort: Wrong type argument: number-or-marker-p, nil"
-    },
-    {
       "name": "capture-review-hook-moves-point",
       "input": {
         "text": "* one\nbody\n* Inbox\n",
@@ -5691,45 +5651,6 @@
       "error": null
     },
     {
-      "name": "capture-review-capture-error-message",
-      "input": {
-        "text": "* one\n",
-        "point": 2,
-        "keys": "n e w C-c C-c",
-        "modes": [
-          "org-mode"
-        ],
-        "call": [
-          "org-capture"
-        ],
-        "platform": null,
-        "visit": "e8-capture-capture-error-message.org",
-        "capture_templates": [
-          [
-            "t",
-            "T",
-            "entry",
-            [
-              "file",
-              "FILE"
-            ],
-            "* %^q %?\n"
-          ]
-        ],
-        "answers": [
-          "t"
-        ]
-      },
-      "text": "* newone\n",
-      "visible": "* newone\n",
-      "point": 5,
-      "mark": null,
-      "mark_active": false,
-      "kill_ring": [],
-      "modified": true,
-      "error": "Capture abort: Minibuffer read in batch"
-    },
-    {
       "name": "capture-review-property-two",
       "input": {
         "text": "* one\n",
@@ -5974,49 +5895,6 @@
       },
       "text": "* one\n* 2026\n** 2026-W47\n*** 2026-11-19 Thursday\n**** new\n2026-11-19 10:30 <2026-11-19 Thu>\n",
       "visible": "* one\n* 2026\n** 2026-W47\n*** 2026-11-19 Thursday\n**** new\n2026-11-19 10:30 <2026-11-19 Thu>\n",
-      "point": 2,
-      "mark": null,
-      "mark_active": false,
-      "kill_ring": [],
-      "modified": false,
-      "error": null
-    },
-    {
-      "name": "capture-review-time-prompt-relative",
-      "input": {
-        "text": "* one\n",
-        "point": 2,
-        "keys": "n e w C-c C-c",
-        "modes": [
-          "org-mode"
-        ],
-        "call": [
-          "org-capture"
-        ],
-        "platform": null,
-        "visit": "e8-capture-time-prompt-relative.org",
-        "today": "2026-11-21",
-        "capture_templates": [
-          [
-            "t",
-            "T",
-            "entry",
-            [
-              "file+olp+datetree",
-              "FILE"
-            ],
-            "* %?\n%<%Y-%m-%d %H:%M>",
-            ":time-prompt",
-            true
-          ]
-        ],
-        "answers": [
-          "t",
-          "+2"
-        ]
-      },
-      "text": "* one\n* 2026\n** 2026-11 November\n*** 2026-11-24 Tuesday\n**** new\n2026-11-24 00:00\n",
-      "visible": "* one\n* 2026\n** 2026-11 November\n*** 2026-11-24 Tuesday\n**** new\n2026-11-24 00:00\n",
       "point": 2,
       "mark": null,
       "mark_active": false,

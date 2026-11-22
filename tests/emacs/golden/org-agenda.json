@@ -2887,6 +2887,697 @@
           "selected": true
         }
       ]
+    },
+    {
+      "name": "todo-list-skips-archived-and-comments",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-with-date",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-with-date": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-scheduled-all",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-scheduled": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-scheduled-future",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-scheduled": "'future"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-scheduled-past",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-scheduled": "'past"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-scheduled-days",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-scheduled": 7
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-deadlines-near",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-deadlines": true
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-deadlines-far",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-deadlines": "'far"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-deadlines-all",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-deadlines": "'all"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-timestamp-past",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-timestamp": "'past"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-timestamp-future",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-timestamp": "'future"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-ignore-timestamp-negative",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-ignore-timestamp": -7
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO Child task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-list-no-sublevels",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-list-sublevels": false
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "todo-list-ignore-no-sublevels",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "globals": {
+          "org-agenda-todo-list-sublevels": false,
+          "org-agenda-todo-ignore-scheduled": "'past"
+        }
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda-ignore:TODO [#A] Plain todo\n  e8-agenda-ignore:TODO Call Ann                                         :work:\n  e8-agenda-ignore:TODO Far deadline\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
+    },
+    {
+      "name": "tags-todo-honor-ignore",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* TODO Far deadline\nDEADLINE: <2026-12-30 Wed>\n* TODO Later\nSCHEDULED: <2026-11-20 Fri>\n* TODO Meet <2026-11-02 Mon>\n* TODO Earlier <2026-10-01 Thu>\n* TODO Late task\nSCHEDULED: <2026-10-20 Tue>\n** TODO Child task\n* TODO [#A] Plain todo\n:ARCHIVE:\n* TODO Archived :ARCHIVE:\n* COMMENT TODO Commented\n",
+        "point": 0,
+        "keys": "C-u M-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda-ignore.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "org-tags-view",
+          "LEVEL=1"
+        ],
+        "globals": {
+          "org-agenda-tags-todo-honor-ignore-options": true,
+          "org-agenda-todo-ignore-deadlines": "'all"
+        }
+      },
+      "text": "Headlines with TAGS match: LEVEL=1\nPress ‘C-u r’ to search again\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO [#A] Plain todo\n",
+      "visible": "Headlines with TAGS match: LEVEL=1\nPress ‘C-u r’ to search again\n  e8-agenda-ignore:TODO Write report\n  e8-agenda-ignore:TODO Later\n  e8-agenda-ignore:TODO Meet <2026-11-02 Mon>\n  e8-agenda-ignore:TODO Earlier <2026-10-01 Thu>\n  e8-agenda-ignore:TODO Late task\n  e8-agenda-ignore:TODO [#A] Plain todo\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ]
     }
   ]
 }
