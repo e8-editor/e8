@@ -1,0 +1,122 @@
+[
+  {
+    "name": "sort-clocked-out",
+    "text": "* P\n** C\n** B\ntext\n** A\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "sort-clock-goto",
+    "text": "* P\n** C\n** B\ntext\n** A\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ M-> C-c C-x C-j",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-clock-in-last",
+    "text": "* P\n** C\n** B\ntext\n** A\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i C-c C-x C-o M-< C-c ^ M-> C-c C-x C-x C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ],
+    "message": true
+  },
+  {
+    "name": "sort-clock-unchanged",
+    "text": "* P\n** A\n** B\n",
+    "keys": "C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-clock-reversed",
+    "text": "* P\n** C\n** B\ntext\n** A\n",
+    "keys": "C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "A"
+    ]
+  },
+  {
+    "name": "sort-clock-top-level",
+    "text": "* C\n* B\n* A\n",
+    "keys": "C-c C-n C-c C-x C-i C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-clock-region",
+    "text": "* C\n* B\n* A\n",
+    "keys": "C-c C-n C-c C-x C-i M-< C-SPC M-> C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a"
+    ]
+  },
+  {
+    "name": "sort-clock-select",
+    "text": "* P\n** C\n** B\ntext\n** A\n",
+    "keys": "C-c C-n C-c C-n C-c C-x C-i C-c C-x C-o M-< C-c ^ C-u C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "a",
+      "1"
+    ]
+  },
+  {
+    "name": "sort-clock-by-clocking",
+    "text": "* P\n** C\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\n** B\n** A\n",
+    "keys": "M-> C-p C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "answers": [
+      "k"
+    ]
+  }
+]

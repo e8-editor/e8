@@ -1,0 +1,236 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "sort-clocked-out",
+      "input": {
+        "text": "* P\n** C\n** B\ntext\n** A\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* P\n** A\n** B\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n** C\n",
+      "visible": "* P\n** A\n** B\n:LOGBOOK:\ntext\n** C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock stopped at [2026-11-21 Sat 12:00] after 0:00"
+    },
+    {
+      "name": "sort-clock-goto",
+      "input": {
+        "text": "* P\n** C\n** B\ntext\n** A\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-n C-c C-x C-i M-< C-c ^ M-> C-c C-x C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** A\n** B\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\ntext\n** C\n",
+      "visible": "* P\n** A\n** B\n:LOGBOOK:\ntext\n** C\n",
+      "point": 9,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-clock-in-last",
+      "input": {
+        "text": "* P\n** C\n** B\ntext\n** A\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-n C-c C-x C-i C-c C-x C-o M-< C-c ^ M-> C-c C-x C-x C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ],
+        "message": true
+      },
+      "text": "* P\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n** A\n** B\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n** C\n",
+      "visible": "* P\n:LOGBOOK:\n** A\n** B\n:LOGBOOK:\ntext\n** C\n",
+      "point": 182,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Clock stopped at [2026-11-21 Sat 12:00] after 0:00"
+    },
+    {
+      "name": "sort-clock-unchanged",
+      "input": {
+        "text": "* P\n** A\n** B\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* P\n** A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n** B\n",
+      "visible": "* P\n** A\n:LOGBOOK:\n** B\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-clock-reversed",
+      "input": {
+        "text": "* P\n** C\n** B\ntext\n** A\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "A"
+        ]
+      },
+      "text": "* P\n** C\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n** B\ntext\n** A\n",
+      "visible": "* P\n** C\n:LOGBOOK:\n** B\ntext\n** A\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-clock-top-level",
+      "input": {
+        "text": "* C\n* B\n* A\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-x C-i C-c ^ C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* C\n* B\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* A\n",
+      "visible": "* C\n* B\n:LOGBOOK:\n* A\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Nothing to sort"
+    },
+    {
+      "name": "sort-clock-region",
+      "input": {
+        "text": "* C\n* B\n* A\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-x C-i M-< C-SPC M-> C-c ^ C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a"
+        ]
+      },
+      "text": "* A\n* B\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n* C\n",
+      "visible": "* A\n* B\n:LOGBOOK:\n* C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-clock-select",
+      "input": {
+        "text": "* P\n** C\n** B\ntext\n** A\n",
+        "point": 0,
+        "keys": "C-c C-n C-c C-n C-c C-x C-i C-c C-x C-o M-< C-c ^ C-u C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "a",
+          "1"
+        ]
+      },
+      "text": "* P\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]\n:END:\n** A\n** B\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\ntext\n** C\n",
+      "visible": "* P\n:LOGBOOK:\n** A\n** B\n:LOGBOOK:\ntext\n** C\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sort-clock-by-clocking",
+      "input": {
+        "text": "* P\n** C\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\n** B\n** A\n",
+        "point": 0,
+        "keys": "M-> C-p C-c C-x C-i M-< C-c ^ C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "answers": [
+          "k"
+        ]
+      },
+      "text": "* P\n** B\n** A\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n** C\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\n",
+      "visible": "* P\n** B\n** A\n:LOGBOOK:\n** C\n:LOGBOOK:\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

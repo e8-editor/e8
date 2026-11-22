@@ -27,3 +27,9 @@ Two rules for when one is taken up. A departure leaves files as Emacs and Org wo
 **Idea.** Reset the list whenever a subtree is copied or yanked, and save the agenda's markers from the files they point into, so they follow their entries as the clock's do.
 
 **Needs.** Only the change in `org.ts` and a keeper in `org-agenda.ts` registered with `keepMarkersThroughMoves`.
+
+## Org's clock after sorting entries
+
+**Org.** `C-c ^` rewrites the whole sorted text, as `sort-subr` does, so every marker in it goes to its start: the parent heading's when sorting an entry's children. `org-sort-entries` puts back only `org-clock-marker`, the running clock's line. The last clocked task, the clock history, the default and interrupted tasks and the clock's heading marker all go to the parent, so `C-c C-x C-x` after a sort clocks in the parent, and `C-u C-c C-x C-i` offers it. E8 does the same.
+
+**Idea.** Carry every kept marker through a sort, as `org-save-markers-in-region` carries them through a move: each record's markers moved with the record. Nobody relies on clocking into the parent, so the default.

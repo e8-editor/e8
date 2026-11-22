@@ -4043,6 +4043,14 @@ export function keepMarkersThroughMoves(keep: () => (e8.Marker | undefined)[]): 
   markerKeepers.push(keep);
 }
 
+/** Markers sorting entries puts back in their entry, as org-sort-entries puts back org-clock-marker. */
+const sortKeepers: (() => e8.Marker | undefined)[] = [];
+
+/** Registers a marker sorting entries keeps in its entry, where the others in the sorted text go to its start, as sort-subr leaves them. */
+export function keepMarkerThroughSort(keep: () => e8.Marker | undefined): void {
+  sortKeepers.push(keep);
+}
+
 /** The markers saved from the last subtree cut, each with how far into it it was, as org-markers-to-move. */
 let markersToMove: [e8.Marker, number][] = [];
 
@@ -6798,15 +6806,41 @@ function sortEntries(withCase: boolean, sortingType?: string): void {
     let list = reverse ? [...keyed].reverse() : keyed;
     list = sortByPredicate(list, (x, y) => less(x.key, y.key));
     if (reverse) list.reverse();
-    // Unchanged order leaves the buffer as it was, as with-buffer-unmodified-if-unchanged.
-    if (records.length > 0 && list.some((k, i) => k.i !== i)) {
-      const from = records[0].start;
-      const to = records[records.length - 1].end;
+    if (records.length > 0) {
+      // As sort-reorder-buffer: all but the last character of what is sorted
+      // deleted, the sorted text put before that one, and it deleted, so the
+      // markers in the text go to its start, and those at its end stay there.
+      const min = e8.pointMin();
+      const old = e8.bufferSubstringNoProperties(min, sortEnd);
+      const sorted = e8.concat(e8.bufferSubstring(min, records[0].start), ...list.map((k) => k.text), e8.bufferSubstring(records[records.length - 1].end, sortEnd));
+      // The kept markers, as Org marks the character before the clock's with a text property to find it again.
+      const kept: [e8.Marker, number, number][] = [];
+      for (const keep of sortKeepers) {
+        const m = keep();
+        const pos = m === undefined || e8.markerBuffer(m) !== e8.bufferName() ? undefined : e8.markerPosition(m);
+        if (m === undefined || pos === undefined || pos <= min || pos > sortEnd) continue;
+        const r = records.findIndex((x) => x.start <= pos - 1 && pos - 1 < x.end);
+        kept.push([m, r, r < 0 ? pos : pos - records[r].start]);
+      }
+      const wasModified = e8.bufferModifiedP();
       e8.saveExcursion(() => {
-        e8.deleteRegion(from, to);
-        e8.gotoChar(from);
-        for (const k of list) e8.insert(k.text);
+        e8.deleteRegion(min, sortEnd - 1);
+        e8.gotoChar(min);
+        e8.insert(sorted);
+        const last = min + charCount(sorted.string);
+        e8.deleteRegion(last, last + 1);
       });
+      // Each kept marker at the same place in its record, now where the record went.
+      const starts = new Map<number, number>();
+      // The text before the first record is as long as it was, as is the whole.
+      let at = records[0].start;
+      for (const k of list) {
+        starts.set(k.i, at);
+        at += charCount(k.text.string);
+      }
+      for (const [m, r, offset] of kept) e8.setMarker(m, r < 0 ? offset : starts.get(r)! + offset, e8.bufferName());
+      // Unchanged text leaves the buffer unmodified if it was, as with-buffer-unmodified-if-unchanged.
+      if (!wasModified && sorted.string === old) e8.restoreBufferModifiedP(false);
     }
   });
   // The drawers folded again, as org-cycle-hide-drawers 'all, and point at the start, as Org leaves it.

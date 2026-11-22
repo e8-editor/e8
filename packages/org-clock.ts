@@ -31,6 +31,7 @@ import {
   headingIndex,
   headings,
   isDone,
+  keepMarkerThroughSort,
   keepMarkersThroughMoves,
   logDrawer,
   makeTagsMatcher,
@@ -44,7 +45,7 @@ import {
   updateDblock,
 } from "org";
 import { elementAt } from "org-element";
-import { showEntry, toggleDrawerOrBlock } from "org-fold";
+import { showEntry, showSetVisibility, toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData, entryGet, entryPut } from "org-list";
 import { lineAt, lineStartOrEnd } from "org-macs";
 import { setRunningClock } from "org-refile";
@@ -59,6 +60,7 @@ defvar("org-mode-line-string", "", "What the mode line shows of the running cloc
 e8.defineHook("org-clock-in-hook", "Functions called when a clock starts.");
 e8.defineHook("org-clock-out-hook", "Functions called when a clock stops.");
 e8.defineHook("org-clock-cancel-hook", "Functions called when a clock is cancelled.");
+e8.defineHook("org-clock-goto-hook", "Functions called after org-clock-goto has gone to the clocked entry.");
 e8.defineFace({ name: "org-mode-line-clock", doc: "The running clock in the mode line.", attributes: { inherit: "mode-line" } });
 e8.defineFace({ name: "org-mode-line-clock-overrun", doc: "The running clock in the mode line once it has run past the entry's effort.", attributes: { inherit: "mode-line", background: "red" } });
 defvar("org-clock-mode-line-total", "auto", 'Which clocked time the mode line shows: "all", "today", "repeat" since LAST_REPEAT, "current" for this clock only, or "auto", since LAST_REPEAT if the entry has one, else all. An entry\'s CLOCK_MODELINE_TOTAL overrides it.');
@@ -67,6 +69,7 @@ defvar("org-clock-current-task", null, "The running clock's entry's title, witho
 defvar("org-clock-effort", null, "The running clock's entry's effort, shown in the mode line after the time clocked.");
 defvar("org-clock-task-overrun-text", null, "Text put before the clock in the mode line once it runs past the effort; nil shows the time in org-mode-line-clock-overrun instead.");
 defvar("org-clock-string-limit", 0, "How long the clock in the mode line may be, cut there; 0 for no limit.");
+defvar("org-clock-goto-may-find-recent-task", true, "Whether org-clock-goto goes to the task clocked last when no clock runs.");
 defvar("org-show-notification-handler", null, "A function given each Org notification, as a clock running past its effort; nil shows it in the echo area.");
 
 /** The running clock: its CLOCK: line, its heading's title, and when it started. */
@@ -93,6 +96,8 @@ let notified = false;
 
 // The clock's markers follow its entry when moved, cut and pasted or refiled, as org-clock-save-markers-for-cut-and-paste.
 keepMarkersThroughMoves(() => [clock?.line, clock?.heading, last, defaultTask, interruptedTask, ...history]);
+// The clock's line stays in its entry when entries are sorted, as org-sort-entries puts org-clock-marker back; the rest go to the sorted text's start.
+keepMarkerThroughSort(() => clock?.line);
 let timer: number | undefined;
 
 /** Now, or the day tests fix at noon, as an Org time. */
@@ -630,12 +635,25 @@ e8.defineCommand({
       }
       return;
     }
-    const target = clock?.heading ?? last;
+    // The clock's line, or the task clocked last, as org-clock-goto takes org-clock-marker or the history's first.
+    const recent = clock === undefined;
+    const mayFindRecent = truthy(e8.variable("org-clock-goto-may-find-recent-task") ?? true);
+    const target = clock?.line ?? (mayFindRecent ? history[0] : undefined);
     const buffer = target === undefined ? undefined : e8.markerBuffer(target);
     if (target === undefined || buffer === undefined) e8.userError("No active or recent clock task");
     e8.call("switch-to-buffer", buffer);
-    e8.gotoChar(e8.markerPosition(target) ?? 0);
-    e8.message(clock ? "Clock is running" : "No running clock, this is the most recently clocked task");
+    const pos = e8.markerPosition(target) ?? 0;
+    if (pos < e8.pointMin() || pos > e8.pointMax()) e8.widen();
+    e8.gotoChar(pos);
+    const all = headings();
+    const i = headingIndex(all, lineAt());
+    if (i !== undefined) {
+      showEntry(all, i);
+      e8.gotoChar(all[i].start);
+    }
+    showSetVisibility("lineage");
+    if (recent) e8.message("No running clock, this is the most recently clocked task");
+    e8.runHooks("org-clock-goto-hook");
   },
 });
 
