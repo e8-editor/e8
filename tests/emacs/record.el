@@ -433,7 +433,11 @@ its `globals' bound for the case, before the modes start."
             (mapcar (lambda (tpl)
                       (list (nth 0 tpl) (nth 1 tpl) (intern (nth 2 tpl))
                             (cons (intern (car (nth 3 tpl)))
-                                  (mapcar (lambda (x) (if (equal x "FILE") buffer-file-name x))
+                                  ;; 'name for a function's symbol, as file+function's.
+                                  (mapcar (lambda (x)
+                                            (cond ((equal x "FILE") buffer-file-name)
+                                                  ((and (stringp x) (string-prefix-p "'" x)) (intern (substring x 1)))
+                                                  (t x)))
                                           (cdr (nth 3 tpl))))
                             (nth 4 tpl)))
                     (alist-get 'capture_templates case)))

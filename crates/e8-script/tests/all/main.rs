@@ -80,6 +80,7 @@ mod org_archive_details;
 mod org_clock_mode_line;
 mod org_clock_persist;
 mod org_clocktable;
+mod org_capture_targets;
 mod org_cycle_hook;
 mod org_clock_display;
 mod org_goto;

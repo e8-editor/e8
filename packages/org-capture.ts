@@ -4,21 +4,24 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, formatTimestamp, type Heading, headings, parseDate, parseHeading, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
+import { alignTags, formatTimestamp, type Heading, headingIndex, headings, isHeadingLine, parseDate, parseHeading, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
 import { storeLink } from "ol";
-import { endOfMetaData } from "org-list";
-import { lineAt, orgMks, titleWithoutCookies } from "org-macs";
-import { charCount, truthy } from "subr";
+import { findBufferVisiting } from "files";
+import { type Elem, elementAt, endBeforeBlank } from "org-element";
+import { cycleListBullet, endOfMetaData, ITEM_RE } from "org-list";
+import { lineAt, lineStartOrEnd, orgMks, titleWithoutCookies } from "org-macs";
+import { charCount, forwardLine, truthy } from "subr";
 
 e8.defineVariable({
   name: "org-capture-templates",
   doc:
-    "The capture templates: lists of a key, a description, the type (entry or plain), a target such as " +
-    '["file", NAME], ["file+headline", NAME, HEADING], ["file+olp", NAME, HEADING, SUBHEADING...] or ' +
-    '["file+olp+datetree", NAME, HEADING...], the template text, and options such as ":tree-type", "week".',
+    "The capture templates: lists of a key, a description, the type (entry, item, checkitem, table-line or plain), a target such as " +
+    '["file", NAME], ["id", ID], ["file+headline", NAME, HEADING], ["file+olp", NAME, HEADING, SUBHEADING...], ' +
+    '["file+regexp", NAME, REGEXP], ["file+olp+datetree", NAME, HEADING...], ["file+function", NAME, FUNCTION], ' +
+    '["function", FUNCTION] or ["clock"], the template text, and options such as ":tree-type", "week".',
   value: [],
 });
 for (const [name, doc] of [
@@ -259,13 +262,534 @@ let capturing:
     interrupted?: { buffer: string; marker: e8.Marker };
     resume?: boolean;
     template: CaptureTemplate;
+    /** The template's type: entry, plain, item, checkitem or table-line. */
+    type: string;
     wconf: e8.WindowConfiguration;
     /** Where the captured entry ends, as Org's :end-marker. */
     entryEnd: e8.Marker;
     /** Where the captured entry starts, to go to with :jump-to-captured and remember as the last stored. */
     entry: e8.Marker;
+    /** What C-c C-k kills, as Org's :begin-marker and :end-marker. */
+    killStart: e8.Marker;
+    killEnd: e8.Marker;
+    /** Whether the target's buffer was visited for the capture, as :new-buffer. */
+    newBuffer: boolean;
   }
   | undefined;
+
+
+/** Where a capture goes: its buffer and position, as org-capture-set-target-location finds them. */
+interface Target {
+  buffer: string;
+  pos: number;
+  /** A position to insert at, as :exact-position. */
+  exact?: number;
+  /** Whether to insert right there, as :insert-here. */
+  insertHere?: boolean;
+  /** Whether pos is the heading of an entry to file under, as :target-entry-p. */
+  entryP: boolean;
+  /** Whether the buffer was visited for the capture, as :new-buffer. */
+  newBuffer?: boolean;
+}
+
+/**
+ * A target's file: the default notes file for an empty name, a name in
+ * org-directory, what a function gives, or a variable's value, as
+ * org-capture-expand-file.
+ */
+function expandFile(file: e8.Value | undefined): string {
+  const dir = e8.variable("org-directory");
+  let location: e8.Value = null;
+  if (file === "" || file === undefined) location = e8.variable("org-default-notes-file") ?? null;
+  else if (typeof file === "string") location = e8.expandFileName(file, typeof dir === "string" ? e8.expandFileName(dir) : undefined);
+  else if (typeof file === "function") location = e8.funcall(file) as e8.Value;
+  else if (typeof file === "symbol") {
+    const name = e8.symbolName(file);
+    location = e8.fboundp(name) ? (e8.funcall(name) as e8.Value) : (e8.variable(name) ?? null);
+  }
+  if (typeof location !== "string" || !/\S/.test(location)) e8.signal("error", `Invalid file location: ${JSON.stringify(location)}`);
+  return location as string;
+}
+
+/** Whether the last target buffer had to be visited, as :new-buffer. */
+let newTargetBuffer = false;
+
+/** The buffer visiting a target's file, visited if need be, as org-capture-target-buffer. */
+function targetBuffer(file: e8.Value | undefined): string {
+  const name = expandFile(file);
+  const visiting = findBufferVisiting(name);
+  if (visiting !== undefined) return visiting;
+  newTargetBuffer = true;
+  return e8.findFileNoselect(name);
+}
+
+/** Calls a function a target names: a function, or its name as a string or symbol. */
+function callTargetFunction(f: e8.Value): void {
+  if (typeof f === "function") e8.funcall(f);
+  else e8.funcall(typeof f === "symbol" ? e8.symbolName(f) : String(f));
+}
+
+/** Whether point is on a heading in an Org buffer, as (and (derived-mode-p 'org-mode) (org-at-heading-p)). */
+const atOrgHeading = (): boolean => e8.derivedModeP("org-mode") && isHeadingLine(e8.lineText(lineAt()));
+
+/**
+ * Finds a template's target, as org-capture-set-target-location: here,
+ * a file, an ID, a file's heading, outline path, regexp, date tree or
+ * function, a function, or the running clock's entry.
+ */
+function setTargetLocation(t: CaptureTemplate, prepend: boolean): Target {
+  const target = (Array.isArray(t[3]) ? t[3] : [t[3]]) as e8.Value[];
+  const kind = typeof target[0] === "symbol" ? e8.symbolName(target[0]) : String(target[0]);
+  /** The heading with this title under the one at `under`, as org-find-olp looks for each. */
+  const child = (title: string, under: Heading | undefined): Heading | undefined => {
+    const all = headings();
+    const [start, end] = under === undefined ? [0, e8.bufferSize()] : subtreeRegion(all, all.findIndex((x) => x.start === under.start));
+    const level = under === undefined ? Math.min(...all.map((h) => h.level)) : under.level + 1;
+    return all.find((h) => h.start >= start && h.start < end && titleWithoutCookies(h.title) === title && (under === undefined ? true : h.level === level));
+  };
+  /** The heading an outline path names, as org-find-olp, which signals when one is missing. */
+  const olp = (path: string[]): Heading | undefined => {
+    let h: Heading | undefined;
+    path.forEach((title, n) => {
+      const found = child(title, h);
+      if (!found) e8.signal("error", `Heading not found on level ${n + 1}: ${title}`);
+      h = found;
+    });
+    return h;
+  };
+  newTargetBuffer = false;
+  const inBuffer = (buffer: string, find: () => Omit<Target, "buffer">): Target =>
+    e8.withCurrentBuffer(buffer, () => e8.saveExcursion(() => e8.saveRestriction(() => (e8.widen(), { buffer, ...find(), newBuffer: newTargetBuffer }))));
+  switch (kind) {
+    case "here":
+      return { buffer: e8.bufferName(e8.currentBuffer()) as string, pos: e8.point(), exact: e8.point(), insertHere: true, entryP: true };
+    case "file":
+      return inBuffer(targetBuffer(target[1]), () => ({ pos: e8.point(), entryP: false }));
+    case "id": {
+      const id = typeof target[1] === "symbol" ? e8.symbolName(target[1]) : String(target[1]);
+      const found = e8.funcall("org-id-find", id);
+      if (!Array.isArray(found) || typeof found[0] !== "string") e8.signal("error", `Cannot find target ID "${id}"`);
+      const [file, pos] = found as [string, number];
+      return inBuffer(targetBuffer(file), () => ({ pos, entryP: true }));
+    }
+    case "file+headline":
+      return inBuffer(targetBuffer(target[1]), () => {
+        const name = String(target[2] ?? "");
+        // Its statistics cookies are no part of the name it is found by.
+        let h = headings().find((x) => titleWithoutCookies(x.title) === name);
+        if (!h) {
+          e8.gotoChar(e8.pointMax());
+          if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+          e8.insert(`* ${name}\n`);
+          h = headings().find((x) => x.title === name) as Heading;
+        }
+        return { pos: h.start, entryP: true };
+      });
+    case "file+olp":
+      if (target.length < 3) e8.signal("error", `Invalid capture target specification: ${JSON.stringify(t[3])}`);
+      return inBuffer(targetBuffer(target[1]), () => {
+        const h = olp(target.slice(2).map(String));
+        return { pos: h?.start ?? e8.pointMax(), entryP: true };
+      });
+    case "file+regexp":
+      return inBuffer(targetBuffer(target[1]), () => {
+        e8.gotoChar(e8.pointMin());
+        if (e8.reSearchForward(String(target[2]), { noerror: true }) === undefined) e8.signal("error", `No match for target regexp in file ${String(target[1])}`);
+        const at = prepend ? (e8.matchBeginning(0) as number) : (e8.matchEnd(0) as number);
+        e8.gotoChar(at);
+        return { pos: at, exact: at, entryP: atOrgHeading() };
+      });
+    case "file+olp+datetree":
+      return inBuffer(targetBuffer(target[1]), () => {
+        const parent = olp(target.slice(2).map(String));
+        const tree = option(t, ":tree-type");
+        const treeName = typeof tree === "symbol" ? e8.symbolName(tree) : tree;
+        const grouping = treeName === "week" ? "week" : treeName === "month" ? "month" : "day";
+        // Under the outline path's heading, else a DATE_TREE (or WEEK_TREE) heading or the whole buffer, as Org's capture asks org-datetree.
+        const root = dateTreeRoot(grouping, parent?.start);
+        return { pos: findDateCreate(today(), grouping, root.base, root.start, root.end, root.step), entryP: true };
+      });
+    case "file+function":
+      return inBuffer(targetBuffer(target[1]), () => {
+        callTargetFunction(target[2]);
+        return { pos: e8.point(), exact: e8.point(), entryP: atOrgHeading() };
+      });
+    case "function": {
+      // In the buffer it leaves current, where it leaves point.
+      const [buffer, pos, entryP] = e8.saveExcursion(() => {
+        callTargetFunction(target[1]);
+        return [e8.bufferName(e8.currentBuffer()) as string, e8.point(), atOrgHeading()] as const;
+      });
+      return { buffer, pos, exact: pos, entryP };
+    }
+    case "clock": {
+      const running = runningEntry();
+      if (!running) e8.userError("No running clock that could be used as capture target");
+      return { buffer: running!.buffer, pos: running!.start, entryP: true };
+    }
+    default:
+      return e8.signal("error", `Invalid capture target specification: ${JSON.stringify(t[3])}`) as never;
+  }
+}
+
+/** Where the entry at point ends: its next heading, or the end, as org-entry-end-position. */
+function entryEndPosition(): number {
+  const next = headings().find((h) => h.start > e8.point());
+  return next ? next.start : e8.pointMax();
+}
+
+/** The blank lines before point go, and N come instead, as org-capture-empty-lines-before. */
+function emptyLinesBefore(n: number): void {
+  const here = e8.point();
+  let back = here;
+  while (back > e8.pointMin() && /[ \t\n\r]/.test(e8.bufferText(back - 1, back))) back--;
+  if (back < here) back = e8.lineEnd(lineAt(back)) < here ? e8.lineEnd(lineAt(back)) + 1 : here;
+  if (back < here) e8.deleteRegion(back, here);
+  e8.gotoChar(back);
+  e8.insert("\n".repeat(n));
+}
+
+/** The blank lines after point go, and N come, point staying, as org-capture-empty-lines-after does after a line. */
+function emptyLinesAfter(n: number): void {
+  while (e8.point() < e8.pointMax() && /^[ \t]*$/.test(e8.lineText(lineAt())) && e8.lineEnd(lineAt()) < e8.pointMax()) {
+    e8.deleteRegion(e8.point(), e8.lineEnd(lineAt()) + 1);
+  }
+  e8.saveExcursion(() => e8.insert("\n".repeat(n)));
+}
+
+/** A filled template: its text, where %? put the cursor, and the lines %^g gave tags. */
+type Filled = ReturnType<typeof fillTemplate>;
+
+/** What a placed capture spans and where the cursor goes. */
+interface Placed {
+  beg: number;
+  end: number;
+  level: number;
+  cursor: number;
+  /** What C-c C-k kills: from where the capture began inserting, as Org's :begin-marker, to its :end-marker. */
+  killStart: e8.Marker;
+  killEnd: number;
+}
+
+/** Narrows to the capture unless :unnarrowed, as org-capture-narrow. */
+function captureNarrow(t: CaptureTemplate, beg: number, end: number): void {
+  if (!truthy(option(t, ":unnarrowed") ?? null)) e8.narrowToRegion(beg, end);
+}
+
+/** Places the template as a new entry, as org-capture-place-entry. */
+function placeEntry(t: CaptureTemplate, where: Target, filled: Filled, prepend: boolean): Placed {
+  if (where.exact !== undefined) e8.gotoChar(where.exact);
+  let level = 1;
+  const all = headings();
+  const i = headingIndex(all, lineAt());
+  const atHeading = i !== undefined && all[i].line === lineAt();
+  if (where.insertHere) level = validLevel(i !== undefined ? all[i].level : 1, 0);
+  else if (where.entryP) {
+    // A level below, odd with org-odd-levels-only, as org-get-valid-level gives it.
+    level = validLevel(atHeading ? all[i!].level : 1, 1);
+    // First, before its first child, as outline-next-heading; else after its subtree.
+    e8.gotoChar(prepend ? (all[(i ?? -1) + 1]?.start ?? e8.pointMax()) : i === undefined ? e8.pointMax() : subtreeRegion(all, i)[1]);
+  } else if (prepend) {
+    e8.gotoChar(e8.pointMin());
+    if (!atOrgHeading()) e8.gotoChar(all.find((h) => h.start > e8.point())?.start ?? e8.pointMax());
+  } else e8.gotoChar(e8.pointMax());
+  const origin = e8.makeMarker(e8.point());
+  if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+  emptyLinesBefore(emptyLines(t, ":empty-lines-before"));
+  // The template as a subtree at the target's level, as org-paste-subtree puts it.
+  const first = /^(\*+) /m.exec(filled.text)?.[1].length ?? level;
+  const shift = level - first;
+  let cursor = filled.cursor;
+  let offset = 0;
+  const leveled = filled.text
+    .split("\n")
+    .map((line) => {
+      const m = /^(\*+) /.exec(line);
+      let out = line;
+      if (m && shift !== 0) {
+        out = "*".repeat(Math.max(1, m[1].length + shift)) + line.slice(m[1].length);
+        if (cursor !== undefined && cursor > offset) cursor += out.length - line.length;
+      }
+      offset += line.length + 1;
+      return out;
+    })
+    .join("\n");
+  const beg = e8.point();
+  e8.insert(leveled);
+  const end = e8.point();
+  // Tags aligned where the entry was demoted or %^g put them, as Org aligns them; others left as written.
+  for (let l = lineAt(beg); l < lineAt(end); l++) {
+    const h = parseHeading(l);
+    if (h && h.tagsAt !== undefined && (shift !== 0 || filled.tagLines.includes(l - lineAt(beg)))) alignTags(l);
+  }
+  e8.message(`Clipboard pasted as level ${level} subtree`);
+  // Blank lines after it go too, and the template's come, as org-capture-empty-lines-after.
+  {
+    const after = e8.point();
+    let q = after;
+    while (q < e8.pointMax() && /^[ \t]*$/.test(e8.lineText(lineAt(q))) && e8.lineEnd(lineAt(q)) < e8.pointMax()) q = e8.lineEnd(lineAt(q)) + 1;
+    if (q > after) e8.deleteRegion(after, q);
+    e8.saveExcursion(() => e8.insert("\n".repeat(emptyLines(t, ":empty-lines-after"))));
+  }
+  const endPos = e8.point();
+  // Org kills to the next heading, the blank lines after it too.
+  const killEnd = headings().find((h) => h.start >= endPos)?.start ?? e8.pointMax();
+  // With its last newline at the end of the buffer, else without, as org-capture-narrow is given.
+  captureNarrow(t, beg, endPos === e8.bufferSize() ? endPos : endPos - 1);
+  e8.gotoChar(cursor === undefined ? beg : beg + cursor);
+  return { beg, end: endPos, level, cursor: e8.point(), killStart: origin, killEnd };
+}
+
+/** Places the template as plain text, as org-capture-place-plain-text: into the entry's text, or at the file's start or end. */
+function placePlain(t: CaptureTemplate, where: Target, filled: Filled, prepend: boolean): Placed {
+  if (where.exact !== undefined) e8.gotoChar(where.exact);
+  else if (where.entryP) {
+    const all = headings();
+    const i = headingIndex(all, lineAt());
+    if (prepend && i !== undefined) e8.gotoChar(endOfMetaData(all[i], true));
+    else e8.gotoChar(all.find((h) => h.start > e8.point())?.start ?? e8.pointMax());
+  } else e8.gotoChar(prepend ? e8.pointMin() : e8.pointMax());
+  const origin = e8.makeMarker(e8.point());
+  if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+  emptyLinesBefore(emptyLines(t, ":empty-lines-before"));
+  const beg = e8.point();
+  e8.insert(filled.text);
+  if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+  const end = Math.max(beg, e8.point() - 1);
+  {
+    const after = e8.point();
+    let q = after;
+    while (q < e8.pointMax() && /^[ \t]*$/.test(e8.lineText(lineAt(q))) && e8.lineEnd(lineAt(q)) < e8.pointMax()) q = e8.lineEnd(lineAt(q)) + 1;
+    if (q > after) e8.deleteRegion(after, q);
+    e8.saveExcursion(() => e8.insert("\n".repeat(emptyLines(t, ":empty-lines-after"))));
+  }
+  const endPos = e8.point();
+  captureNarrow(t, beg, end);
+  e8.gotoChar(filled.cursor === undefined ? beg : beg + filled.cursor);
+  return { beg, end: endPos, level: 0, cursor: e8.point(), killStart: origin, killEnd: endPos };
+}
+
+/** Text with its common indentation taken away, as org-remove-indentation. */
+function removeIndentation(text: string): string {
+  const lines = text.split("\n");
+  const widths = lines.filter((l) => /\S/.test(l)).map((l) => /^[ \t]*/.exec(l)![0].replace(/\t/g, "        ").length);
+  const n = widths.length === 0 ? 0 : Math.min(...widths);
+  if (n === 0) return text;
+  return lines
+    .map((l) => {
+      let col = 0;
+      let i = 0;
+      while (i < l.length && col < n && (l[i] === " " || l[i] === "\t")) {
+        col = l[i] === "\t" ? (Math.floor(col / 8) + 1) * 8 : col + 1;
+        i++;
+      }
+      return " ".repeat(Math.max(0, col - n)) + l.slice(i);
+    })
+    .join("\n");
+}
+
+/** A filled template with %? taken out, its place kept in the text as a marker character for placing. */
+const CURSOR = "\u0000";
+
+/** The filled text with the cursor's place marked, to transform with the text. */
+const withCursor = (filled: Filled): string =>
+  filled.cursor === undefined ? filled.text : [...filled.text].slice(0, filled.cursor).join("") + CURSOR + [...filled.text].slice(filled.cursor).join("");
+
+/** Takes the cursor's mark out of what was inserted between BEG and END, and returns where it was. */
+function takeCursor(beg: number, end: number): number | undefined {
+  const text = e8.bufferText(beg, end);
+  const at = text.indexOf(CURSOR);
+  if (at < 0) return undefined;
+  const pos = beg + charCount(text.slice(0, at));
+  e8.deleteRegion(pos, pos + 1);
+  return pos;
+}
+
+/** Places the template as a plain list item, as org-capture-place-item: in the first list there, else a new one. */
+function placeItem(t: CaptureTemplate, where: Target, filled: Filled, prepend: boolean): Placed {
+  let template = removeIndentation(withCursor(filled));
+  // With a bullet, a dash and the lines under it if it has none.
+  // As org-item-re: a star only indented, so "* x" is no item.
+  if (!ITEM_RE.test(template)) template = `- ${template.split("\n").join("\n  ")}`;
+  let beg: number;
+  let end: number;
+  if (where.exact !== undefined) {
+    e8.gotoChar(where.exact);
+    beg = e8.lineStart(lineAt());
+    end = where.insertHere ? beg : entryEndPosition();
+  } else if (where.entryP) {
+    beg = lineStartOrEnd(lineAt() + 1);
+    end = entryEndPosition();
+  } else [beg, end] = [e8.pointMin(), e8.pointMax()];
+  // The first plain list there.
+  let list: Elem | undefined;
+  for (let l = lineAt(beg); l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+    if (!ITEM_RE.test(e8.lineText(l))) continue;
+    for (let e = elementAt(e8.lineStart(l)); e; e = e.parent) {
+      if (e.type === "plain-list") {
+        list = e;
+        break;
+      }
+    }
+    if (list) break;
+  }
+  if (list) e8.gotoChar(prepend ? list.begin : lineStartOrEnd(lineAt(endBeforeBlank(list)) + 1));
+  else if (where.insertHere) e8.gotoChar(beg);
+  else if (!prepend) e8.gotoChar(end);
+  else {
+    const all = headings();
+    const i = headingIndex(all, lineAt());
+    e8.gotoChar(i === undefined ? beg : Math.max(endOfMetaData(all[i]), beg));
+  }
+  const origin = e8.makeMarker(e8.point());
+  if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+  // In a list, at most one blank line between items, and none before a prepended one.
+  const between = Math.min(1, emptyLines(t, ":empty-lines-before"));
+  if (!(list && prepend)) emptyLinesBefore(list ? between : emptyLines(t, ":empty-lines-before"));
+  const start = e8.lineStart(lineAt());
+  const body = template.replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "");
+  e8.insert(`${body}\n`);
+  const endMarker = e8.makeMarker(e8.point());
+  let cursor: number | undefined;
+  try {
+    if (list) {
+      const ordered = /^[ \t]*\d+[.)]/.test(e8.lineText(lineAt(list.begin === start ? (e8.markerPosition(endMarker) as number) : list.begin)));
+      // The list's indentation; a prepended item takes the list's, where Org's takes its own.
+      const indent = /^[ \t]*/.exec(e8.lineText(lineAt(list.begin === start ? (e8.markerPosition(endMarker) as number) : list.begin)))![0].length;
+      e8.saveExcursion(() => {
+        e8.gotoChar(start);
+        while (e8.point() < (e8.markerPosition(endMarker) as number)) {
+          if (indent > 0) e8.insert(" ".repeat(indent));
+          if (forwardLine(1) !== 0) break;
+        }
+        e8.gotoChar(start);
+        // A prepended item of the other type takes the list's, as Org cycles its bullet.
+        if (prepend && ordered !== /^[A-Za-z0-9][.)]/.test(body)) cycleListBullet(ordered ? "1." : "-");
+        e8.call("org-list-repair");
+      });
+    }
+    if (!(list && !prepend)) emptyLinesAfter(list ? Math.min(1, emptyLines(t, ":empty-lines-after")) : emptyLines(t, ":empty-lines-after"));
+  } finally {
+    cursor = takeCursor(start, e8.markerPosition(endMarker) as number);
+  }
+  const stop = e8.markerPosition(endMarker) as number;
+  e8.deleteMarker(endMarker);
+  captureNarrow(t, start, stop - 1);
+  e8.gotoChar(cursor ?? start);
+  return { beg: start, end: stop, level: 0, cursor: e8.point(), killStart: origin, killEnd: stop };
+}
+
+/** Places the template as a table line, as org-capture-place-table-line: in the first table there, else a new one. */
+function placeTableLine(t: CaptureTemplate, where: Target, filled: Filled, prepend: boolean): Placed {
+  const trimmed = withCursor(filled).replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "");
+  // A line not starting with a bar, as org-table-border-regexp finds, is a bad template.
+  const text = /^[ \t]*[^| \t\n]/m.test(trimmed) ? `| ${CURSOR}Bad template |\n` : `${trimmed}\n`;
+  let beg: number;
+  let end: number;
+  if (where.exact !== undefined) {
+    e8.gotoChar(where.exact);
+    beg = e8.lineStart(lineAt());
+    end = where.insertHere ? beg : entryEndPosition();
+  } else if (!where.entryP) [beg, end] = [e8.pointMin(), e8.pointMax()];
+  else {
+    beg = lineStartOrEnd(lineAt() + 1);
+    end = entryEndPosition();
+  }
+  let table: Elem | undefined;
+  for (let l = lineAt(beg); l < e8.lineCount() && e8.lineStart(l) < end && !table; l++) {
+    if (!/^[ \t]*\|[^-]/.test(e8.lineText(l))) continue;
+    for (let e = elementAt(e8.lineStart(l)); e; e = e.parent) {
+      if (e.type === "table") {
+        table = e;
+        break;
+      }
+    }
+  }
+  let tableStart: number;
+  let tableEnd: number;
+  if (table) {
+    tableStart = table.begin;
+    tableEnd = lineStartOrEnd(lineAt(endBeforeBlank(table)) + 1);
+  } else {
+    // None: a new one, with an empty header.
+    e8.gotoChar(end);
+    if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+    tableStart = e8.point();
+    e8.insert("|   |\n|---|\n");
+    tableEnd = e8.point();
+  }
+  const rows = (): number[] => {
+    const out: number[] = [];
+    for (let l = lineAt(tableStart); e8.lineStart(l) < tableEnd && l < e8.lineCount(); l++) out.push(l);
+    return out;
+  };
+  const pos = option(t, ":table-line-pos");
+  const spec = typeof pos === "string" ? /(I+)([-+][0-9]+)/.exec(pos) : null;
+  if (where.insertHere) e8.gotoChar(where.exact ?? e8.point());
+  else if (spec) {
+    // After the line delta lines from the Nth rule, as org-table-hlines numbers them.
+    const lines = rows();
+    const hlines = lines.filter((l) => /^[ \t]*\|-/.test(e8.lineText(l)));
+    const hline = hlines[spec[1].length - 1];
+    if (hline === undefined) e8.signal("error", `Invalid table line specification ${JSON.stringify(pos)}`);
+    const delta = Number(spec[2]);
+    const line = hline - lineAt(tableStart);
+    // forward-line stops at the table's first line, then one more down.
+    const target = lineAt(tableStart) + Math.max(0, line + delta + (delta < 0 ? 0 : -1)) + 1;
+    e8.gotoChar(target >= lineAt(tableEnd) ? tableEnd : e8.lineStart(target));
+  } else if (prepend) {
+    // Before the first data line after the first rule.
+    const lines = rows();
+    const rule = lines.findIndex((l) => /^[ \t]*\|-/.test(e8.lineText(l)));
+    if (rule < 0) e8.gotoChar(tableStart);
+    else {
+      const data = lines.slice(rule + 1).find((l) => /^[ \t]*\|[^-]/.test(e8.lineText(l)));
+      e8.gotoChar(data !== undefined ? e8.lineStart(data) : tableEnd);
+    }
+  } else e8.gotoChar(tableEnd);
+  const origin = e8.makeMarker(e8.point());
+  if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+  const start = e8.point();
+  e8.insert(text);
+  let stop = e8.point();
+  const cursor = takeCursor(start, stop);
+  if (cursor !== undefined) stop--;
+  captureNarrow(t, start, stop - 1);
+  e8.gotoChar(cursor ?? start);
+  return { beg: start, end: stop, level: 0, cursor: e8.point(), killStart: origin, killEnd: stop };
+}
+
+/**
+ * A template's text, as org-capture-set-plist and org-capture-get-template
+ * give it: the type's default for an empty one, a file's contents for
+ * ["file", NAME], what a function gives for ["function", F].
+ */
+function captureTemplateText(value: e8.Value | undefined, type: string): string {
+  const isEmpty = value === undefined || value === null || (typeof value === "string" && !/\S/.test(value));
+  if (isEmpty) return ({ item: "- %?", checkitem: "- [ ] %?", "table-line": "| %? |", entry: "* %?\n  %a" } as Record<string, string>)[type] ?? "";
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) {
+    const kind = typeof value[0] === "symbol" ? e8.symbolName(value[0]) : value[0];
+    if (kind === "file") {
+      const dir = e8.variable("org-directory");
+      const name = e8.expandFileName(String(value[1]), typeof dir === "string" ? e8.expandFileName(dir) : undefined);
+      if (!e8.fileExists(name)) return `* Template file ${String(value[1])} not found`;
+      const temp = e8.bufferName(e8.getBufferCreate(e8.generateNewBufferName(" *org capture template*"))) as string;
+      try {
+        return e8.withCurrentBuffer(temp, () => (e8.insertFileContents(name), e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax())));
+      } finally {
+        e8.call("kill-buffer", temp);
+      }
+    }
+    if (kind === "function") {
+      const f = value[1];
+      const name = typeof f === "symbol" ? e8.symbolName(f) : f;
+      if (typeof f === "function" || (typeof name === "string" && e8.fboundp(name))) return String(e8.funcall(typeof f === "function" ? f : (name as string)) ?? "");
+      return `* Template function ${String(name)} not found`;
+    }
+  }
+  return "";
+}
 
 /**
  * Puts the entry a template makes into its target and shows it there,
@@ -274,14 +798,12 @@ let capturing:
 function captureWith(key: string): void {
   const t = captureTemplates().find((x) => x[0] === key);
   if (!t) throw new Error(`No capture template referred to by "${key}" keys`);
-  const [, , type, target, template] = t;
-  if (type !== "entry" && type !== "plain") throw new Error(`E8 captures only entries and plain text, not ${type}`);
+  const [, , rawType, target] = t;
+  // An empty template is Org's default for the type, as org-capture-set-plist gives it.
+  const type = rawType === undefined || rawType === null || rawType === "" ? "entry" : String(typeof rawType === "symbol" ? e8.symbolName(rawType) : rawType);
+  if (!["entry", "plain", "item", "checkitem", "table-line"].includes(type)) e8.signal("error", `Invalid capture type: ${type}`);
+  const template = captureTemplateText(t[4], type);
   if (capturing) throw new Error("A capture is already under way: C-c C-c or C-c C-k finishes it");
-  // A relative name is in org-directory, as org-capture-expand-file expands it.
-  const dir = e8.variable("org-directory");
-  const file = target[1] === "" || target[1] === undefined
-    ? String(e8.variable("org-default-notes-file") ?? "~/.notes")
-    : e8.expandFileName(target[1], typeof dir === "string" ? e8.expandFileName(dir) : undefined);
   const from = e8.windowBuffer() ?? "";
   // The windows as they are, to put back when the capture ends, as :return-to-wconf.
   const wconf = e8.currentWindowConfiguration();
@@ -304,132 +826,39 @@ function captureWith(key: string): void {
         return { title, link: path === undefined ? "" : `[[file:${e8.abbreviateFileName(path)}::*${title}][${title}]]` };
       })
     : undefined;
-  const buffer = e8.findFileNoselect(file);
+  const prepend = truthy(option(t, ":prepend") ?? null);
+  const where = setTargetLocation(t, prepend);
+  const buffer = where.buffer;
   const modified = e8.withCurrentBuffer(buffer, () => e8.bufferModified());
   const tags = e8.withCurrentBuffer(buffer, () => [...new Set(headings().flatMap((h) => h.tags))]);
   const filled = fillTemplate(template, { annotation: link, initial, tags, file: originalFile, clock: clockContext });
-  const prepend = truthy(option(t, ":prepend") ?? null);
-  const placed = e8.withCurrentBuffer(buffer, () => {
-    e8.widen();
-    let level = 1;
-    /** The heading with this title under the one at `under`, as org-find-olp looks for each. */
-    const child = (title: string, under: Heading | undefined): Heading | undefined => {
-      const all = headings();
-      const [start, end] = under === undefined ? [0, e8.bufferSize()] : subtreeRegion(all, all.findIndex((x) => x.start === under.start));
-      const level = under === undefined ? Math.min(...all.map((h) => h.level)) : under.level + 1;
-      return all.find((h) => h.start >= start && h.start < end && titleWithoutCookies(h.title) === title && (under === undefined ? true : h.level === level));
-    };
-    /** The heading an outline path names, as org-find-olp, which signals when one is missing. */
-    const olp = (path: string[]): Heading | undefined => {
-      let h: Heading | undefined;
-      path.forEach((title, n) => {
-        const found = child(title, h);
-        if (!found) e8.signal("error", `Heading not found on level ${n + 1}: ${title}`);
-        h = found;
-      });
-      return h;
-    };
-    /** Files the entry under a heading, after its subtree. */
-    // A plain capture goes into the heading's own text, at its end, or after its meta data with :prepend.
-    const under = (h: Heading) => {
-      const all = headings();
-      const i = all.findIndex((x) => x.start === h.start);
-      // A level below, odd with org-odd-levels-only, as org-get-valid-level gives it.
-      level = validLevel(h.level, 1);
-      if (type === "plain") e8.gotoChar(prepend ? endOfMetaData(h, true) : (all[i + 1]?.start ?? e8.pointMax()));
-      // First, before its first child, as outline-next-heading; else after its subtree.
-      else e8.gotoChar(prepend ? (all[i + 1]?.start ?? e8.pointMax()) : subtreeRegion(all, i)[1]);
-    };
-    if (target[0] === "file+headline") {
-      const name = target[2] ?? "";
-      // Its statistics cookies are no part of the name it is found by.
-      let h = headings().find((x) => titleWithoutCookies(x.title) === name);
-      if (!h) {
-        e8.gotoChar(e8.bufferSize());
-        if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
-        e8.insert(`* ${name}\n`);
-        h = headings().find((x) => x.title === name) as Heading;
-      }
-      under(h);
-    } else if (target[0] === "file+olp") {
-      const h = olp(target.slice(2));
-      if (h) under(h);
-      else e8.gotoChar(e8.bufferSize());
-    } else if (target[0] === "file+olp+datetree") {
-      const parent = olp(target.slice(2));
-      const tree = option(t, ":tree-type");
-      const grouping = tree === "week" ? "week" : tree === "month" ? "month" : "day";
-      // Under the outline path's heading, else a DATE_TREE (or WEEK_TREE) heading or the whole buffer, widened, as Org's capture asks org-datetree.
-      const at = e8.saveRestriction(() => {
-        if (parent === undefined) e8.widen();
-        const root = dateTreeRoot(grouping, parent?.start);
-        return findDateCreate(today(), grouping, root.base, root.start, root.end, root.step);
-      });
-      under(headings().find((h) => h.start === at) as Heading);
-    } else if (target[0] === "file") {
-      // At the start with :prepend, before the first heading for an entry, as org-capture-place-entry.
-      if (!prepend) e8.gotoChar(e8.bufferSize());
-      else if (type === "plain") e8.gotoChar(e8.pointMin());
-      else e8.gotoChar(headings().find((h) => h.start >= e8.pointMin())?.start ?? e8.pointMax());
-    } else {
-      throw new Error(`E8 does not capture to ${target[0]} targets`);
-    }
-    if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
-    // The blank lines where it goes go, and as many as the template says
-    // come instead, as org-capture-empty-lines-before has it.
+  // The buffer's point kept, as Org places the template in an indirect buffer.
+  const pointBefore = e8.withCurrentBuffer(buffer, () => e8.point());
+  const placed = e8.conditionCase(
+    () =>
+      e8.withCurrentBuffer(buffer, () => {
+        e8.widen();
+        e8.gotoChar(where.pos);
+        const r =
+          type === "entry"
+            ? placeEntry(t, where, filled, prepend)
+            : type === "plain"
+              ? placePlain(t, where, filled, prepend)
+              : type === "table-line"
+                ? placeTableLine(t, where, filled, prepend)
+                : placeItem(t, where, filled, prepend);
+        e8.callWithPrefix(1, "org-capture-mode");
+        return r;
+      }),
     {
-      const here = e8.point();
-      let back = here;
-      while (back > e8.pointMin() && /[ \t\n\r]/.test(e8.bufferText(back - 1, back))) back--;
-      if (back < here) back = e8.lineEnd(lineAt(back)) < here ? e8.lineEnd(lineAt(back)) + 1 : here;
-      if (back < here) e8.deleteRegion(back, here);
-      e8.gotoChar(back);
-      e8.insert("\n".repeat(emptyLines(t, ":empty-lines-before")));
-    }
-    // The template as a subtree at the target's level, as org-paste-subtree puts it; plain text as it is.
-    const first = /^(\*+) /m.exec(filled.text)?.[1].length ?? level;
-    const shift = type === "plain" ? 0 : level - first;
-    const lines = filled.text.split("\n");
-    let cursor = filled.cursor;
-    let offset = 0;
-    const leveled = lines
-      .map((line) => {
-        const m = /^(\*+) /.exec(line);
-        let out = line;
-        if (m && shift !== 0) {
-          out = "*".repeat(Math.max(1, m[1].length + shift)) + line.slice(m[1].length);
-          if (cursor !== undefined && cursor > offset) cursor += out.length - line.length;
-        }
-        offset += line.length + 1;
-        return out;
-      })
-      .join("\n");
-    const beg = e8.point();
-    e8.insert(leveled);
-    const end = e8.point();
-    // Tags aligned where the entry was demoted or %^g put them, as Org aligns them; others left as written.
-    for (let l = lineAt(beg); l < lineAt(end); l++) {
-      const h = parseHeading(l);
-      if (h && h.tagsAt !== undefined && (shift !== 0 || filled.tagLines.includes(l - lineAt(beg)))) alignTags(l);
-    }
-    if (type !== "plain") e8.message(`Clipboard pasted as level ${level} subtree`);
-    // Blank lines after it go too, and the template's come, as org-capture-empty-lines-after.
-    {
-      const after = e8.point();
-      let q = after;
-      while (q < e8.pointMax() && /^[ \t]*$/.test(e8.lineText(lineAt(q))) && e8.lineEnd(lineAt(q)) < e8.pointMax()) q = e8.lineEnd(lineAt(q)) + 1;
-      if (q > after) e8.deleteRegion(after, q);
-      e8.saveExcursion(() => e8.insert("\n".repeat(emptyLines(t, ":empty-lines-after"))));
-    }
-    const endPos = e8.point();
-    // Narrowed to it, unless :unnarrowed, as org-capture-narrow.
-    // Plain text without its last newline, an entry with it at the end of the buffer.
-    const narrowEnd = type === "plain" ? Math.max(beg, endPos - 1) : endPos === e8.bufferSize() ? endPos : endPos - 1;
-    if (!truthy(option(t, ":unnarrowed") ?? null)) e8.narrowToRegion(beg, narrowEnd);
-    e8.gotoChar(cursor === undefined ? beg : beg + cursor);
-    e8.callWithPrefix(1, "org-capture-mode");
-    return { beg, end: endPos, level, cursor: e8.point() };
-  });
+      // Said with the template's key, as org-capture does.
+      error: (err) => {
+        e8.withCurrentBuffer(buffer, () => e8.gotoChar(Math.min(pointBefore, e8.pointMax())));
+        e8.setWindowConfiguration(wconf);
+        return e8.signal("error", `Capture template \u2018${key}\u2019: ${e8.errorMessageString(err)}`);
+      },
+    },
+  );
   capturing = {
     buffer,
     from,
@@ -437,9 +866,13 @@ function captureWith(key: string): void {
     level: placed.level,
     modified,
     template: t,
+    type,
     wconf,
     entry: e8.withCurrentBuffer(buffer, () => e8.makeMarker(placed.beg)),
     entryEnd: e8.withCurrentBuffer(buffer, () => e8.makeMarker(placed.end, { advances: true })),
+    killStart: placed.killStart,
+    killEnd: e8.withCurrentBuffer(buffer, () => e8.makeMarker(placed.killEnd, { advances: true })),
+    newBuffer: where.newBuffer === true,
   };
   // :clock-in starts a clock on the entry, stopping one running, as org-capture does.
   const clockOption = option(t, ":clock-in");
@@ -557,6 +990,15 @@ const captureFinalize = e8.defineCommand({
         ),
       );
     }
+    // A table line's table aligned, if point is still in it, as org-capture-finalize does.
+    if (state?.type === "table-line") {
+      e8.withCurrentBuffer(state.buffer, () =>
+        e8.saveRestriction(() => {
+          e8.widen();
+          if (/^[ \t]*\|/.test(e8.lineText(lineAt()))) e8.call("org-table-align");
+        }),
+      );
+    }
     // Where it went, as org-capture-last-stored-marker and the bookmark, as
     // org-capture-store-last-position, widened so the bookmark keeps the text around it.
     if (state) {
@@ -592,6 +1034,8 @@ const captureFinalize = e8.defineCommand({
     if (state) {
       e8.deleteMarker(state.entry);
       e8.deleteMarker(state.entryEnd);
+      e8.deleteMarker(state.killStart);
+      e8.deleteMarker(state.killEnd);
     }
   },
 });
@@ -650,26 +1094,34 @@ const captureKill = e8.defineCommand({
       });
     }
     e8.withCurrentBuffer(state.buffer, () => e8.runHooks("org-capture-prepare-finalize-hook"));
-    // The entry as it is now: what the narrowing shows, and the newline after
-    // it, or where it went when not narrowed, as Org's begin and end markers.
+    // From where the capture began inserting to its end marker, as Org kills
+    // between :begin-marker and :end-marker, widened. Emacs kills in the
+    // capture buffer, whose mark is its own.
     e8.withCurrentBuffer(state.buffer, () => {
-      const narrowed = e8.pointMin() > 0 || e8.pointMax() < e8.bufferSize();
-      const [start, end] = narrowed
-        ? [e8.pointMin(), e8.pointMax()]
-        : [e8.markerPosition(state.entry) ?? e8.pointMin(), Math.max(0, (e8.markerPosition(state.entryEnd) ?? e8.pointMax()) - 1)];
       e8.widen();
-      // Killed, as org-capture-kill does, so it can be yanked back. Emacs
-      // kills in the capture buffer, whose mark is its own.
+      const [start, end] = [e8.markerPosition(state.killStart) ?? e8.pointMin(), e8.markerPosition(state.killEnd) ?? e8.pointMax()];
       const mark = e8.mark();
       e8.setMark(start);
-      e8.gotoChar(end < e8.bufferSize() ? end + 1 : end);
+      e8.gotoChar(end);
       e8.call("kill-region");
       e8.setMark(mark ?? null);
-      if (!state.modified) e8.setBufferModified(false);
     });
+    e8.deleteMarker(state.killStart);
+    e8.deleteMarker(state.killEnd);
     e8.deleteMarker(state.entry);
     e8.deleteMarker(state.entryEnd);
+    // Saved, as org-capture-finalize saves when aborting too, unless :no-save.
+    if (!truthy(option(state.template, ":no-save") ?? null)) {
+      e8.withCurrentBuffer(state.buffer, () => {
+        if (e8.bufferFileName()) e8.call("save-buffer");
+      });
+    }
     endCapture();
+    // A buffer visited for the capture goes again.
+    if (state.newBuffer && e8.bufferLiveP(e8.getBuffer(state.buffer))) {
+      e8.withCurrentBuffer(state.buffer, () => e8.setBufferModified(false));
+      e8.call("kill-buffer", state.buffer);
+    }
     // As org-capture-kill goes through org-capture-finalize, which runs it.
     e8.runHooks("org-capture-after-finalize-hook");
     e8.message("Capture aborted");
