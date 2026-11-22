@@ -44,6 +44,7 @@ import {
   today,
   updateDblock,
 } from "org";
+import { findBufferVisiting } from "files";
 import { elementAt } from "org-element";
 import { showEntry, showSetVisibility, toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData, entryGet, entryPut } from "org-list";
@@ -180,27 +181,64 @@ function findPosition(all: Heading[], i: number): number {
   const h = all[i];
   const end = all[i + 1]?.start ?? e8.bufferSize();
   const drawer = drawerName(h);
+  const into = e8.variable("org-clock-into-drawer");
+  // A number: a drawer once there would be that many clocks.
+  const threshold = typeof into === "number" ? into : undefined;
+  const reversed = truthy(e8.variable("org-log-states-order-reversed") ?? null);
   if (drawer !== undefined) {
     const opener = new RegExp(`^[ \\t]*:${drawer.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}:[ \\t]*$`, "i");
     for (let l = h.line + 1; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
-      if (opener.test(e8.lineText(l))) return lineStartOrEnd(l + 1);
+      if (!opener.test(e8.lineText(l))) continue;
+      // Newest first at its top, or oldest first at its end.
+      if (!reversed) {
+        for (let k = l + 1; k < e8.lineCount() && e8.lineStart(k) < end; k++) {
+          if (/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(k))) return e8.lineStart(k);
+        }
+      }
+      return lineStartOrEnd(l + 1);
     }
   }
-  // Without a drawer, before the entry's first CLOCK: line, if it has one.
+  // The entry's CLOCK lines, those Org's parser sees as clocks.
+  const clocks: number[] = [];
   for (let l = h.line + 1; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
-    if (drawer === undefined && CLOCK_LINE.test(e8.lineText(l))) return e8.lineStart(l);
+    if (/^[ \t]*CLOCK:/.test(e8.lineText(l)) && elementAt(e8.lineStart(l))?.type === "clock") clocks.push(l);
   }
-  let at = endOfMetaData(h);
-  if (at !== e8.lineStart(lineAt(at))) {
+  if (clocks.length === 0) {
+    let at = endOfMetaData(h);
+    if (at !== e8.lineStart(lineAt(at))) {
+      e8.gotoChar(at);
+      e8.insert("\n");
+      at = e8.point();
+    }
+    if (drawer === undefined || (threshold !== undefined && threshold >= 2)) return at;
     e8.gotoChar(at);
-    e8.insert("\n");
-    at = e8.point();
+    e8.insert(`:${drawer}:\n:END:\n`);
+    toggleDrawerOrBlock(lineAt(at), true);
+    return e8.lineStart(lineAt(at) + 1);
   }
-  if (drawer === undefined) return at;
-  e8.gotoChar(at);
-  e8.insert(`:${drawer}:\n:END:\n`);
-  toggleDrawerOrBlock(lineAt(at), true);
-  return e8.lineStart(lineAt(at) + 1);
+  if (drawer !== undefined && (threshold === undefined || clocks.length + 1 >= threshold)) {
+    // As Org: the entry's clocks gathered into a new drawer after its metadata.
+    const meta = endOfMetaData(h);
+    const texts: string[] = [];
+    for (let k = clocks.length - 1; k >= 0; k--) {
+      const lineEnd = lineStartOrEnd(clocks[k] + 1);
+      let from = e8.lineStart(clocks[k]);
+      while (from > meta && /[ \r\t\n]/.test(e8.bufferText(from - 1, from))) from--;
+      from = from === meta ? meta : lineStartOrEnd(lineAt(from) + 1);
+      // Last first, as Org gathers them.
+      texts.push(e8.lineText(clocks[k]).trim());
+      e8.deleteRegion(Math.min(from, e8.lineStart(clocks[k])), lineEnd);
+    }
+    e8.gotoChar(meta);
+    e8.insert(`:${drawer}:\n${texts.join("\n")}\n:END:\n`);
+    // Not folded, as Emacs shows it after clocking in.
+    const opener = lineAt(meta);
+    // Org puts the opener in with insert-before-markers inside
+    // save-excursion, which carries point past it, then goes a line on: so
+    // newest first still comes after the first clock.
+    return e8.lineStart(reversed ? opener + 2 : opener + texts.length);
+  }
+  return e8.lineStart(reversed ? clocks[0] : clocks[clocks.length - 1]);
 }
 
 /** The minutes clocked on the running clock's entry, this clock's and before, as org-clock-get-clocked-time. */
@@ -445,7 +483,16 @@ function clockInHere(selected?: number): void {
   // With org-clock-in-resume, the entry's CLOCK line not closed goes on, from when it started, as org-clock-in resumes it.
   const resume = e8.variable("org-clock-in-resume");
   const open = truthy(resume ?? null) ? unclosedClockLine(h) : undefined;
-  if (open === undefined && resume === "auto-restart") {
+  if (open === undefined && (resume === "auto-restart" || (typeof resume === "symbol" && e8.symbolName(resume) === "auto-restart"))) {
+    // As Org: the task is named and its clock's place found, a drawer made
+    // if one is due, before giving up.
+    e8.setVariable("org-clock-current-task", h.title.replace(/^COMMENT[ \t]+/, ""));
+    e8.saveExcursion(() =>
+      e8.saveRestriction(() => {
+        e8.widen();
+        findPosition(headings(), headingIndex(headings(), h.line) as number);
+      }),
+    );
     e8.message("Cannot restart clock because task does not contain unfinished clock");
     e8.ding();
     return;
@@ -489,8 +536,9 @@ function unclosedClockLine(h: Heading): { line: number; stamp: string; start: Da
     const i = headingIndex(all, h.line) as number;
     const end = all[i + 1]?.line ?? e8.lineCount();
     for (let l = h.line + 1; l < end; l++) {
-      const m = /^[ \t]*CLOCK: \[((\d{4})-(\d{2})-(\d{2}) *\S+\.? +([012]\d):([0-5]\d))\][ \t]*$/.exec(e8.lineText(l));
-      if (m) return { line: l, stamp: `[${m[1]}]`, start: { year: +m[2], month: +m[3], day: +m[4], hour: +m[5], minute: +m[6] } };
+      const m = /^[ \t]*CLOCK: \[((\d{4})-(\d{2})-(\d{2}) *[\p{L}\p{N}]+ +([012]\d):([0-5]\d))\][ \t]*$/u.exec(e8.lineText(l));
+      // Only a clock Org's parser sees as one: not one in a block.
+      if (m && elementAt(e8.lineStart(l))?.type === "clock") return { line: l, stamp: `[${m[1]}]`, start: { year: +m[2], month: +m[3], day: +m[4], hour: +m[5], minute: +m[6] } };
     }
     return undefined;
   });
@@ -736,10 +784,27 @@ defvar(
   null,
   'Whether the running clock is saved when E8 exits and resumed when it starts again: t for the clock and the history of clocked tasks, "clock" for the clock, "history" for the history. org-clock-persistence-insinuate sets up the saving and loading.',
 );
-defvar("org-clock-persist-file", e8.expandFileName(`${String(e8.variable("user-emacs-directory") ?? "~/.emacs.d/")}org-clock-save.el`), "The file the clock and its history are saved to.");
+defvar("org-clock-persist-file", null, "The file the clock and its history are saved to; unset, org-clock-save.el in user-emacs-directory.");
 defvar("org-clock-persist-query-save", false, "Whether to ask before saving the running clock on exit.");
 defvar("org-clock-persist-query-resume", true, "Whether to ask before resuming a saved clock.");
 defvar("org-clock-in-resume", false, "Whether clocking into an entry with a CLOCK line not closed goes on with it, from when it started.");
+
+/**
+ * org-clock-persist-file, or org-clock-save.el in user-emacs-directory,
+ * found when it is used, as packages load before init.ts sets the directory.
+ */
+function persistFile(): string {
+  const file = e8.variable("org-clock-persist-file");
+  if (typeof file === "string" && file !== "") return e8.expandFileName(file);
+  const dir = e8.variable("user-emacs-directory");
+  return e8.expandFileName("org-clock-save.el", typeof dir === "string" && dir !== "" ? dir : "~/.emacs.d/");
+}
+
+/** org-clock-persist's value, a symbol read as its name. */
+function persistValue(name: string): e8.Value {
+  const v = e8.variable(name) ?? null;
+  return typeof v === "symbol" ? e8.symbolName(v) : v;
+}
 
 /** Whether a clock has run this session, as org-clock-has-been-used, and whether the saved data has been read, as org-clock-loaded. */
 let hasBeenUsed = false;
@@ -762,16 +827,29 @@ function markerFile(m: e8.Marker | undefined): string | undefined {
   return e8.withCurrentBuffer(base, () => e8.bufferFileName());
 }
 
+/** The buffer visiting a file, found by its true name too, as find-file-noselect finds it, or visiting it. */
+const visit = (file: string): string => findBufferVisiting(file) ?? e8.findFileNoselect(file);
+
+/** Where Org's org-clock-marker would be: after the timestamp on the clock's CLOCK line. */
+function clockMarkerPosition(line: e8.Marker): number {
+  const at = e8.markerPosition(line) ?? 0;
+  return e8.withCurrentBuffer(e8.markerBuffer(line) as string, () => {
+    const text = e8.lineText(lineAt(at));
+    const close = text.indexOf("]");
+    return close < 0 ? at : e8.lineStart(lineAt(at)) + charCount(text.slice(0, close + 1));
+  });
+}
+
 /** Saves the clock and its history to org-clock-persist-file, as org-clock-save does: what org-clock-persist says. */
 function clockSave(): void {
-  const persist = e8.variable("org-clock-persist");
-  const file = String(e8.variable("org-clock-persist-file") ?? "");
-  if (!truthy(persist ?? null) || file === "" || !(loaded || hasBeenUsed || !e8.fileExists(file))) return;
+  const persist = persistValue("org-clock-persist");
+  const file = persistFile();
+  if (!truthy(persist) || !(loaded || hasBeenUsed || !e8.fileExists(file))) return;
   const lines = [`;; ${e8.fileNameNondirectory(file)} - ${e8.systemName()} at ${formatTimestamp(now(), true).replace(/^/, "<")}>`];
   const clockFile = clock ? markerFile(clock.line) : undefined;
   if ((persist === true || persist === "clock") && clock && clockFile !== undefined) {
     const save = !truthy(e8.variable("org-clock-persist-query-save")) || e8.yOrNP(`Save current clock (${clock.title})?`);
-    if (save) lines.push(`(setq org-clock-stored-resume-clock '(${lispString(clockFile)} . ${(e8.markerPosition(clock.line) ?? 0) + 1}))`);
+    if (save) lines.push(`(setq org-clock-stored-resume-clock '(${lispString(clockFile)} . ${clockMarkerPosition(clock.line) + 1}))`);
   }
   // Stored oldest first, to make reading simpler, as Org writes them.
   if ((persist === true || persist === "history") && history.length > 0) {
@@ -781,7 +859,7 @@ function clockSave(): void {
     });
     lines.push(`(setq org-clock-stored-history '(${places.join(" ")}))`);
   }
-  e8.writeRegion(`${lines.join("\n")}\n`, null, e8.expandFileName(file), { quiet: true });
+  e8.writeRegion(`${lines.join("\n")}\n`, null, file, { quiet: true });
 }
 
 /**
@@ -790,14 +868,13 @@ function clockSave(): void {
  * in its entry after asking, with org-clock-persist-query-resume.
  */
 function clockLoad(): void {
-  if (!truthy(e8.variable("org-clock-persist") ?? null) || loaded) return;
-  const file = e8.expandFileName(String(e8.variable("org-clock-persist-file") ?? ""));
+  if (!truthy(persistValue("org-clock-persist")) || loaded) return;
+  const file = persistFile();
   if (!e8.fileReadableP(file)) {
-    e8.message(`Not restoring clock data; ${lispString(file)} not found`);
+    e8.message(`Not restoring clock data; ${lispString(String(e8.variable("org-clock-persist-file") ?? file))} not found`);
     return;
   }
   e8.message("Restoring clock data");
-  loaded = true;
   const text = e8.withCurrentBuffer(e8.getBufferCreate(" *org clock save*"), () => {
     eraseBuffer();
     e8.insertFileContents(file);
@@ -805,11 +882,13 @@ function clockLoad(): void {
     e8.call("kill-buffer", " *org clock save*");
     return contents;
   });
-  const stored = /\(setq org-clock-stored-history '\(((?:\("(?:[^"\\]|\\.)*" \. \d+\) ?)*)\)\)/.exec(text);
+  loaded = true;
+  // Org leaves a space where an entry's buffer had gone, so any spaces between.
+  const stored = /\(setq org-clock-stored-history '\(((?:\s*\("(?:[^"\\]|\\.)*" \. \d+\))*)\s*\)\)/.exec(text);
   for (const entry of stored ? (stored[1].match(/\("(?:[^"\\]|\\.)*" \. \d+\)/g) ?? []) : []) {
     const place = lispPlace(entry);
     if (place === undefined || !e8.fileExists(place[0])) continue;
-    const buffer = e8.findFileNoselect(place[0]);
+    const buffer = visit(place[0]);
     e8.withCurrentBuffer(buffer, () => {
       const all = headings();
       const i = headingIndex(all, lineAt(Math.min(place[1], e8.bufferSize())));
@@ -819,13 +898,14 @@ function clockLoad(): void {
   const resume = /\(setq org-clock-stored-resume-clock '(\("(?:[^"\\]|\\.)*" \. \d+\))\)/.exec(text);
   const place = resume ? lispPlace(resume[1]) : undefined;
   if (place === undefined || !e8.fileExists(place[0])) return;
-  e8.withCurrentBuffer(e8.findFileNoselect(place[0]), () => {
+  e8.withCurrentBuffer(visit(place[0]), () => {
     e8.saveExcursion(() => {
       e8.gotoChar(Math.min(place[1], e8.bufferSize()));
       const all = headings();
       const i = headingIndex(all, lineAt());
       if (i === undefined) return;
-      const heading = all[i].title;
+      // As org-get-heading t t: with the priority, without the state and tags.
+      const heading = all[i].priority === undefined ? all[i].title : `[#${all[i].priority}] ${all[i].title}`;
       if (truthy(e8.variable("org-clock-persist-query-resume")) && !e8.yOrNP(`Resume clock (${heading})?`)) return;
       e8.letBind({ "org-clock-in-resume": "auto-restart" }, () => clockInHere());
     });
@@ -840,15 +920,22 @@ e8.defun("org-clock-persistence-insinuate", () => {
   e8.addHook("kill-emacs-hook", clockSave);
 });
 
+defvar(
+  "org-clock-ask-before-exiting",
+  true,
+  "Whether exiting with a clock running asks to stop it and save its file. In Org it takes effect only through customize, which adds org-clock-kill-emacs-query to kill-emacs-query-functions or removes it; here it is read when E8 exits.",
+);
 // Before exiting, a running clock is offered to be stopped and its file saved, as org-clock-kill-emacs-query.
-e8.addHook("kill-emacs-query-functions", () => {
+function killEmacsQuery(): boolean {
   const buffer = clock && e8.markerBuffer(clock.line);
-  if (buffer !== undefined && e8.yesOrNoP("Clock out and save? ")) {
+  if (buffer !== undefined && truthy(e8.variable("org-clock-ask-before-exiting") ?? null) && e8.yesOrNoP("Clock out and save? ")) {
     clockOut();
     e8.withCurrentBuffer(buffer, () => e8.call("save-buffer"));
   }
   return true;
-});
+}
+e8.defun("org-clock-kill-emacs-query", killEmacsQuery);
+e8.addHook("kill-emacs-query-functions", killEmacsQuery);
 
 // Summing clocked time and showing it on the headings, as org-clock-sum and org-clock-display do.
 

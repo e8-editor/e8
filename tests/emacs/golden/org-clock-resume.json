@@ -133,6 +133,153 @@
       "modified": false,
       "error": null,
       "message": "Clock starts at [2026-11-21 Sat 09:00] - showing entire task time."
+    },
+    {
+      "name": "resume-not-in-example-block",
+      "input": {
+        "text": "* Task\n#+begin_example\nCLOCK: [2026-11-21 Sat 09:00]\n#+end_example\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "vars": {
+          "org-clock-in-resume": true
+        }
+      },
+      "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n#+begin_example\nCLOCK: [2026-11-21 Sat 09:00]\n#+end_example\n",
+      "visible": "* Task\n:LOGBOOK:\n#+begin_example\nCLOCK: [2026-11-21 Sat 09:00]\n#+end_example\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "resume-not-day-with-period",
+      "input": {
+        "text": "* Task\nCLOCK: [2026-11-21 Sat. 09:00]\n",
+        "point": 0,
+        "keys": "C-c C-x C-i C-c C-x C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "vars": {
+          "org-clock-in-resume": true
+        }
+      },
+      "text": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat. 09:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "visible": "* Task\n:LOGBOOK:\nCLOCK: [2026-11-21 Sat. 09:00]\nCLOCK: [2026-11-21 Sat 12:00]--[2026-11-21 Sat 12:00] =>  0:00\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "wrap-clocks-into-drawer",
+      "input": {
+        "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21"
+      },
+      "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\n:LOGBOOK:\nCLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\nText\n",
+      "visible": "* Task\nSCHEDULED: <2026-11-21 Sat>\n:LOGBOOK:\nCLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\nText\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "wrap-clocks-oldest-first",
+      "input": {
+        "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "vars": {
+          "org-log-states-order-reversed": false
+        }
+      },
+      "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\n:LOGBOOK:\nCLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\nText\n",
+      "visible": "* Task\nSCHEDULED: <2026-11-21 Sat>\n:LOGBOOK:\nCLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\nText\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "wrap-clocks-at-threshold",
+      "input": {
+        "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "vars": {
+          "org-clock-into-drawer": 3
+        }
+      },
+      "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\n:LOGBOOK:\nCLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\nText\n",
+      "visible": "* Task\nSCHEDULED: <2026-11-21 Sat>\n:LOGBOOK:\nCLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n:END:\nText\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "no-wrap-below-threshold",
+      "input": {
+        "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+        "point": 0,
+        "keys": "C-c C-x C-i",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-11-21",
+        "vars": {
+          "org-clock-into-drawer": 4
+        }
+      },
+      "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+      "visible": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-21 Sat 12:00]\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

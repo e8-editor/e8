@@ -65,5 +65,80 @@
       "org-clock-in-resume": true
     },
     "message": true
+  },
+  {
+    "name": "resume-not-in-example-block",
+    "text": "* Task\n#+begin_example\nCLOCK: [2026-11-21 Sat 09:00]\n#+end_example\n",
+    "keys": "C-c C-x C-i C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "vars": {
+      "org-clock-in-resume": true
+    }
+  },
+  {
+    "name": "resume-not-day-with-period",
+    "text": "* Task\nCLOCK: [2026-11-21 Sat. 09:00]\n",
+    "keys": "C-c C-x C-i C-c C-x C-o",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21",
+    "vars": {
+      "org-clock-in-resume": true
+    }
+  },
+  {
+    "name": "wrap-clocks-into-drawer",
+    "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+    "keys": "C-c C-x C-i",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "wrap-clocks-oldest-first",
+    "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+    "keys": "C-c C-x C-i",
+    "vars": {
+      "org-log-states-order-reversed": false
+    },
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "wrap-clocks-at-threshold",
+    "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+    "keys": "C-c C-x C-i",
+    "vars": {
+      "org-clock-into-drawer": 3
+    },
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
+  },
+  {
+    "name": "no-wrap-below-threshold",
+    "text": "* Task\nSCHEDULED: <2026-11-21 Sat>\nCLOCK: [2026-11-20 Fri 09:00]--[2026-11-20 Fri 10:00] =>  1:00\n\n  CLOCK: [2026-11-19 Thu 09:00]--[2026-11-19 Thu 10:00] =>  1:00\nText\n",
+    "keys": "C-c C-x C-i",
+    "vars": {
+      "org-clock-into-drawer": 4
+    },
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "today": "2026-11-21"
   }
 ]
