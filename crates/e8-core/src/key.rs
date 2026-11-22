@@ -135,8 +135,34 @@ impl Key {
         Key::new(KeyCode::Char(c))
     }
 
+    /// The same key with Control, which makes `m`, `i` and `[` the ASCII
+    /// control characters RET, TAB and ESC, as [`Key::canonical`] says.
     pub fn ctrl(mut self) -> Key {
         self.ctrl = true;
+        self.canonical()
+    }
+
+    /// The key as Emacs reads it: Control on `m`, `i` or `[`, of either
+    /// case, is the ASCII control character RET, TAB or ESC, so `C-m` is
+    /// RET, `C-M-i` is `M-TAB` and `C-S-m` is `S-RET`. A terminal sends
+    /// those keys as those bytes, and Emacs's `kbd` reads both spellings
+    /// as the same event, so a binding written either way is found
+    /// whichever was typed. The Return and Tab keys are RET and TAB
+    /// already (`<return>` and `<tab>`), so a GUI's ctrl+m and the Return
+    /// key are one key, as a terminal's are.
+    pub fn canonical(mut self) -> Key {
+        if self.ctrl
+            && let KeyCode::Char(c) = self.code
+        {
+            let code = match c.to_ascii_lowercase() {
+                'm' => KeyCode::Enter,
+                'i' => KeyCode::Tab,
+                '[' => KeyCode::Esc,
+                _ => return self,
+            };
+            self.code = code;
+            self.ctrl = false;
+        }
         self
     }
 
@@ -221,7 +247,7 @@ impl Key {
                 KeyCode::Char(c)
             }
         };
-        Some(Key { code, ctrl, meta, shift })
+        Some(Key { code, ctrl, meta, shift }.canonical())
     }
 
     /// Parses a space separated key sequence such as `C-x C-f`.
@@ -233,6 +259,11 @@ impl Key {
 
 impl fmt::Display for Key {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Emacs writes Meta and TAB as C-M-i, as push_key_description does,
+        // and reads it back as the same key.
+        if self.code == KeyCode::Tab && self.meta && !self.ctrl {
+            return f.write_str(if self.shift { "C-M-S-i" } else { "C-M-i" });
+        }
         if self.ctrl {
             f.write_str("C-")?;
         }
@@ -299,6 +330,23 @@ mod tests {
         assert_eq!(Key::parse("<backtab>"), Key::parse("S-TAB"));
         assert_eq!(Key::parse("M-"), None);
         assert_eq!(Key::parse("ab"), None);
+    }
+
+    #[test]
+    fn control_on_m_i_and_bracket_is_ret_tab_and_esc() {
+        // As Emacs's kbd reads them: (kbd "C-m") is "\r", RET.
+        for (a, b) in [("C-m", "RET"), ("C-i", "TAB"), ("C-[", "ESC"), ("C-M", "RET"), ("C-I", "TAB"), ("C-M-m", "M-RET"), ("M-C-m", "M-RET"), ("C-M-i", "M-TAB"), ("C-S-m", "S-RET"), ("C-S-i", "S-TAB"), ("C-M-[", "M-ESC"), ("C-<return>", "C-RET")] {
+            assert_eq!(Key::parse(a), Key::parse(b), "{a} is {b}");
+        }
+        assert_eq!(Key::char('m').ctrl(), Key::new(KeyCode::Enter));
+        assert_eq!(Key::char('i').meta().ctrl(), Key::new(KeyCode::Tab).meta());
+        // Other control characters keep their names.
+        assert_eq!(Key::parse("C-j").unwrap().to_string(), "C-j");
+        // As key-description writes them.
+        for (s, shown) in [("C-m", "RET"), ("C-i", "TAB"), ("C-[", "ESC"), ("C-M-m", "M-RET"), ("M-TAB", "C-M-i"), ("C-M-i", "C-M-i"), ("C-S-m", "S-RET"), ("C-M-[", "M-ESC"), ("C-M-S-i", "C-M-S-i"), ("C-M-TAB", "C-M-TAB")] {
+            assert_eq!(Key::parse(s).unwrap().to_string(), shown, "{s}");
+        }
+        assert_eq!(format_keys(&Key::parse_seq("C-c C-x C-m").unwrap()), "C-c C-x RET");
     }
 
     #[test]

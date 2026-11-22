@@ -287,9 +287,6 @@ function metaKey(key: string): boolean {
   return mods.includes("M") && (NAMED_CHARS[base] !== undefined || [...base].length === 1);
 }
 
-/** A key as key-description writes it: ESC TAB, which E8 calls M-TAB, is C-M-i. */
-const shownKey = (key: string): string => (key === "M-TAB" ? "C-M-i" : key);
-
 /** The keys a keymap binds, its own first and then its parents' it does not shadow, as Emacs reads a keymap's list. */
 function keymapEvents(map: e8.Keymap): [string, Definition][] {
   const seen = new Set<string>();
@@ -393,7 +390,7 @@ function describeMap(map: e8.Keymap, prefix: string, translation: boolean, shado
 
 /** One block's lines, its keys in Emacs's order, a run of characters bound alike as one line, prefix keys left out. */
 function describeBlock(events: [string, Definition][], prefix: string, translation: boolean): string {
-  const full = (key: string) => (prefix === "" ? shownKey(key) : `${prefix} ${shownKey(key)}`);
+  const full = (key: string) => (prefix === "" ? key : `${prefix} ${key}`);
   const sorted = events.map(([key, definition]) => ({ key, definition, order: eventOrder(key) }));
   sorted.sort((a, b) => eventCompare(a.key, b.key));
   const rows: [string, string][] = [];
