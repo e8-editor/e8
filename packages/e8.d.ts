@@ -5637,6 +5637,18 @@ declare global {
        */
       "org-content": [];
       /**
+       * Make a file's headings use odd levels only: level 2 becomes 3, level 3 becomes 5 and so on, asking first.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-convert-to-odd-levels": [];
+      /**
+       * Make a file with odd levels only use every level: level 3 becomes 2, level 5 becomes 3 and so on, asking first. A file with an even level cannot be converted.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-convert-to-oddeven-levels": [];
+      /**
        * Copy the subtree point is in, or in a table, the field at point or the fields in the region.
        *
        * Defined in packages/org.ts.
@@ -13882,6 +13894,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-cycle-level-faces": Value;
+      /**
+       * The deepest level TAB cycles as a heading; deeper headings are text to it. With odd levels only, N means 2N-1 stars. nil for every level.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-max-level": Value;
       /**
        * Whether TAB opens archived subtrees as it does others; nil keeps them closed, as org-cycle-hide-archived-subtrees does.
        *
