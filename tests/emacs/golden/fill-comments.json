@@ -1,0 +1,685 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "py-comment-lines",
+      "input": {
+        "text": "x = 1\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\ny = 2\n",
+        "point": 10,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "x = 1\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss ttt uuu vvv www xxx yyy zzz\ny = 2\n",
+      "visible": "x = 1\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss ttt uuu vvv www xxx yyy zzz\ny = 2\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-indented",
+      "input": {
+        "text": "def f():\n    # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n    # yyy zzz\n    return 1\n",
+        "point": 16,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "def f():\n    # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n    # qqq rrr sss ttt uuu vvv www xxx yyy zzz\n    return 1\n",
+      "visible": "def f():\n    # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp\n    # qqq rrr sss ttt uuu vvv www xxx yyy zzz\n    return 1\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-after-code",
+      "input": {
+        "text": "x = 1  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\ny = 2\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "x = 1  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n       # ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\ny = 2\n",
+      "visible": "x = 1  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n       # ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\ny = 2\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-after-code-next-lines",
+      "input": {
+        "text": "x = 1  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n       # yyy zzz\ny = 2\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "x = 1  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n       # ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\ny = 2\n",
+      "visible": "x = 1  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n       # ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\ny = 2\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-paragraphs",
+      "input": {
+        "text": "# aaa bbb\n# ccc\n#\n# ddd eee\n# fff\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb ccc\n#\n# ddd eee\n# fff\n",
+      "visible": "# aaa bbb ccc\n#\n# ddd eee\n# fff\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-first-line",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss ttt uuu vvv www xxx yyy zzz\n",
+      "visible": "# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss ttt uuu vvv www xxx yyy zzz\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-second-paragraph",
+      "input": {
+        "text": "# aaa bbb\n# ccc\n#\n# ddd eee\n# fff\n",
+        "point": 25,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb\n# ccc\n#\n# ddd eee fff\n",
+      "visible": "# aaa bbb\n# ccc\n#\n# ddd eee fff\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-double-hash",
+      "input": {
+        "text": "## aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\n",
+        "point": 4,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "## aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n## rrr sss ttt uuu vvv www xxx\n# yyy zzz\n",
+      "visible": "## aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n## rrr sss ttt uuu vvv www xxx\n# yyy zzz\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-justify",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\n",
+        "point": 3,
+        "keys": "C-u M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# aaa bbb ccc ddd eee fff ggg hhh  iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss ttt uuu vvv www xxx yyy zzz\n",
+      "visible": "# aaa bbb ccc ddd eee fff ggg hhh  iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss ttt uuu vvv www xxx yyy zzz\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "py-comment-narrow-column",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff\n# ggg\nx = 1\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 12
+        }
+      },
+      "text": "# aaa bbb\n# ccc ddd\n# eee fff\n# ggg\nx = 1\n",
+      "visible": "# aaa bbb\n# ccc ddd\n# eee fff\n# ggg\nx = 1\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sh-comment-lines",
+      "input": {
+        "text": "echo hi\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\necho bye\n",
+        "point": 12,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "echo hi\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss ttt uuu vvv www xxx yyy zzz\necho bye\n",
+      "visible": "echo hi\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss ttt uuu vvv www xxx yyy zzz\necho bye\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sh-comment-after-code",
+      "input": {
+        "text": "echo hi  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\n",
+        "point": 13,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "echo hi  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n\t # ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\n",
+      "visible": "echo hi  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n\t # ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sh-code-stops-at-comment",
+      "input": {
+        "text": "echo a\necho b\n# c d\necho e\n",
+        "point": 1,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "echo a\necho b\n# c d\necho e\n",
+      "visible": "echo a\necho b\n# c d\necho e\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sh-comment-indented-tabs",
+      "input": {
+        "text": "if true; then\n\t# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n\t# yyy zzz\nfi\n",
+        "point": 17,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "indent-tabs-mode": true
+        }
+      },
+      "text": "if true; then\n\t# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n\t# ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\nfi\n",
+      "visible": "if true; then\n\t# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n\t# ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\nfi\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sh-blank-comment-line-separates",
+      "input": {
+        "text": "# aaa\n#\n# bbb\n# ccc\n",
+        "point": 15,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-column": 30
+        }
+      },
+      "text": "# aaa\n#\n# bbb ccc\n",
+      "visible": "# aaa\n#\n# bbb ccc\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "org-src-python-comment",
+      "input": {
+        "text": "#+begin_src python\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\nx = 1\n#+end_src\n",
+        "point": 22,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src python\n  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n  # rrr sss ttt uuu vvv www xxx yyy zzz\n  x = 1\n#+end_src\n",
+      "visible": "#+begin_src python\n  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq\n  # rrr sss ttt uuu vvv www xxx yyy zzz\n  x = 1\n#+end_src\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "para-custom-start",
+      "input": {
+        "text": "* a\nb\n* c\nd\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "paragraph-start": "\f\\|[ \t]*$\\|\\*"
+        }
+      },
+      "text": "* a\nb\n* c\nd\n",
+      "visible": "* a\nb\n* c\nd\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "para-custom-start-back",
+      "input": {
+        "text": "* a\nb\n* c\nd\n",
+        "point": 13,
+        "keys": "M-{",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "paragraph-start": "\f\\|[ \t]*$\\|\\*"
+        }
+      },
+      "text": "* a\nb\n* c\nd\n",
+      "visible": "* a\nb\n* c\nd\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "para-custom-separate",
+      "input": {
+        "text": "a\nb\n---\nc\nd\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "paragraph-start": "\f\\|[ \t]*$\\|---$",
+          "paragraph-separate": "[ \t\f]*$\\|---$"
+        }
+      },
+      "text": "a\nb\n---\nc\nd\n",
+      "visible": "a\nb\n---\nc\nd\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "para-custom-separate-back",
+      "input": {
+        "text": "a\nb\n---\nc\nd\n",
+        "point": 12,
+        "keys": "M-{",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "paragraph-start": "\f\\|[ \t]*$\\|---$",
+          "paragraph-separate": "[ \t\f]*$\\|---$"
+        }
+      },
+      "text": "a\nb\n---\nc\nd\n",
+      "visible": "a\nb\n---\nc\nd\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "para-anchored-start",
+      "input": {
+        "text": "a\n.b\nc\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "paragraph-start": "^\\."
+        }
+      },
+      "text": "a\n.b\nc\n",
+      "visible": "a\n.b\nc\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "para-fill-prefix",
+      "input": {
+        "text": "> a\n> b\nc\n> d\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-prefix": "> "
+        }
+      },
+      "text": "> a\n> b\nc\n> d\n",
+      "visible": "> a\n> b\nc\n> d\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "para-fill-prefix-back",
+      "input": {
+        "text": "> a\n> b\nc\n> d\n> e\n",
+        "point": 17,
+        "keys": "M-{",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-prefix": "> "
+        }
+      },
+      "text": "> a\n> b\nc\n> d\n> e\n",
+      "visible": "> a\n> b\nc\n> d\n> e\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "para-fill-prefix-ignored",
+      "input": {
+        "text": "> a\n> b\nc\n> d\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-prefix": "> ",
+          "paragraph-ignore-fill-prefix": true
+        }
+      },
+      "text": "> a\n> b\nc\n> d\n",
+      "visible": "> a\n> b\nc\n> d\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "para-fill-prefix-blank-prefix-line",
+      "input": {
+        "text": "> a\n>\n> b\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "fill-prefix": "> "
+        }
+      },
+      "text": "> a\n>\n> b\n",
+      "visible": "> a\n>\n> b\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "prog-mq-reindents-elisp",
+      "input": {
+        "text": "(defun f ()\n1\n(g))\n",
+        "point": 13,
+        "keys": "M-q",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "(defun f ()\n  1\n  (g))\n",
+      "visible": "(defun f ()\n  1\n  (g))\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prog-mq-reindents-js",
+      "input": {
+        "text": "function f() {\nreturn 1;\n}\n",
+        "point": 16,
+        "keys": "M-q",
+        "modes": [
+          "js-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "function f() {\n    return 1;\n}\n",
+      "visible": "function f() {\n    return 1;\n}\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prog-mq-before-comment",
+      "input": {
+        "text": "echo hi  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss\n",
+        "point": 1,
+        "keys": "M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "echo hi  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n\t # ppp qqq rrr sss\n",
+      "visible": "echo hi  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo\n\t # ppp qqq rrr sss\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "prog-mq-justify-comment",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss\n",
+        "point": 3,
+        "keys": "C-u M-q",
+        "modes": [
+          "sh-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "# aaa bbb ccc ddd eee fff ggg hhh  iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss\n",
+      "visible": "# aaa bbb ccc ddd eee fff ggg hhh  iii jjj kkk lll mmm nnn ooo ppp qqq\n# rrr sss\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "fill-paragraph-comment-text-mode",
+      "input": {
+        "text": "# aaa bbb\n# ccc\n",
+        "point": 3,
+        "keys": "M-q",
+        "modes": [
+          "text-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "comment-start": "# ",
+          "fill-column": 40
+        }
+      },
+      "text": "# aaa bbb ccc\n",
+      "visible": "# aaa bbb ccc\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

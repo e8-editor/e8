@@ -7,6 +7,7 @@
 // fill-column. Two spaces after a period end a sentence, as
 // sentence-end-double-space says, and filling keeps them.
 
+import { commentNormalizeVars, commentSearchForward, commentStringStrip } from "newcomment";
 import { allMatches, escapeRegExp, forwardLine, regexpQuote, truthy } from "subr";
 
 e8.defineVariable({
@@ -62,6 +63,12 @@ e8.defineVariable({
   name: "normal-auto-fill-function",
   doc: "The command Auto Fill mode puts in auto-fill-function. Some major modes set it.",
   value: "do-auto-fill",
+});
+e8.defineVariable({
+  name: "fill-paragraph-handle-comment",
+  doc: "Whether M-q fills a comment as a comment, with its comment starts, and keeps code and comments apart.",
+  value: true,
+  local: true,
 });
 e8.defineVariable({
   name: "fill-paragraph-function",
@@ -231,7 +238,7 @@ function canonicallySpaceRegion(beg: number, endMarker: e8.Marker): void {
 }
 
 /** Joins a paragraph's lines into one, as fill-delete-newlines: two spaces after a sentence ending a line. */
-function fillDeleteNewlines(from: number, to: e8.Marker, justify: string | undefined): void {
+function fillDeleteNewlines(from: number, to: e8.Marker, justify: string | undefined, squeezeAfter?: number): void {
   // A sentence that ends a line gets a second space.
   const end = new RegExp(`[.?!\u2026\u203d][\\]"'\u201d\u2019)}\u00bb\u203a]*$`, "u");
   for (let line = e8.lineOf(at(to)) - 1; line >= e8.lineOf(from); line--) {
@@ -247,7 +254,7 @@ function fillDeleteNewlines(from: number, to: e8.Marker, justify: string | undef
   // Newlines become spaces, in place.
   e8.substCharInRegion(from, at(to), "\n", " ");
   void justify;
-  canonicallySpaceRegion(squeezeFrom, to);
+  canonicallySpaceRegion(squeezeAfter ?? squeezeFrom, to);
   // No whitespace at the end.
   e8.gotoChar(at(to));
   const n = skipBackward(" \t");
@@ -373,9 +380,10 @@ function justifyCurrentLine(how: string | undefined, eop: boolean, prefix: strin
 /**
  * Fills the text from `from` to `to` as one paragraph, as
  * fill-region-as-paragraph, leaving point at the start of the line after
- * it. Returns the fill prefix it used.
+ * it. Returns the fill prefix it used. Spaces are made canonical only after
+ * `squeezeAfter`, when it is given, as code before a comment keeps its own.
  */
-export function fillRegionAsParagraph(fromIn: number, toIn: number, justifyIn?: string): string | undefined {
+export function fillRegionAsParagraph(fromIn: number, toIn: number, justifyIn?: string, squeezeAfter?: number): string | undefined {
   let justify = justifyIn;
   e8.gotoChar(Math.min(fromIn, toIn));
   const toPos = Math.max(fromIn, toIn);
@@ -404,7 +412,7 @@ export function fillRegionAsParagraph(fromIn: number, toIn: number, justifyIn?: 
     }
     if (justify === undefined) return prefix;
     const start = fillDeletePrefix(from, to, prefix);
-    fillDeleteNewlines(start, to, justify);
+    fillDeleteNewlines(start, to, justify, squeezeAfter);
     e8.gotoChar(start);
     while (e8.point() < at(to)) {
       const linebeg = e8.point();
@@ -478,6 +486,139 @@ export function fillRegion(from: number, to: number, justify?: string): string |
   return prefix;
 }
 
+/** Runs `fn` with variables bound in this buffer, as let binds them, putting back what they were after. */
+function letLocal<T>(bindings: Record<string, e8.Value>, fn: () => T): T {
+  const saved = Object.keys(bindings).map((name) => [name, e8.isLocalVariable(name), e8.variable(name)] as const);
+  for (const [name] of saved) {
+    e8.makeLocalVariable(name);
+    e8.setVariable(name, bindings[name]);
+  }
+  try {
+    return fn();
+  } finally {
+    for (const [name, wasLocal, old] of saved) {
+      if (wasLocal) e8.setVariable(name, old ?? null);
+      else e8.killLocalVariable(name);
+    }
+  }
+}
+
+/**
+ * Fills the comment on point's line, as fill-comment-paragraph: its lines
+ * and the comment lines around it with the same comment start, a paragraph
+ * of them, each line starting with the comment's start again. A comment
+ * after code fills with the code's line. Returns false when the line has no
+ * comment, for M-q to fill it as text.
+ */
+function fillCommentParagraph(justify: string | undefined): boolean {
+  commentNormalizeVars();
+  const skip = e8.variable("comment-start-skip");
+  if (typeof skip !== "string") return false;
+  // What comment is on the line: where it starts, where its text does, and whether code is before it.
+  let comstart: number | undefined;
+  let comin = 0;
+  let hasCode = false;
+  saveExcursion(() => {
+    const bol = bolAt(e8.point());
+    comstart = commentSearchForward(bol, eolAt(bol));
+    if (comstart === undefined) return;
+    // Past the comment start as comment-start-skip matches it, from the comment back to the line's start.
+    comin = e8.point();
+    for (let p = comstart; p >= bol; p--) {
+      const end = lookingAt(skip, p);
+      if (end !== undefined) {
+        comin = Math.min(end, eolAt(bol));
+        break;
+      }
+    }
+    e8.gotoChar(comstart);
+    skipBackward(" \t");
+    hasCode = !bolp();
+  });
+  if (comstart === undefined || e8.stringMatch(skip, e8.bufferText(comstart, comin)) === undefined) return false;
+  const commark = commentStringStrip(e8.bufferText(comstart, comin), false, true);
+  // Lines with this very comment start, where comment-start-skip lets one be followed by words; else any comment start.
+  const commentRe =
+    commark !== "" && e8.stringMatch(skip, `\0${commark}a`) !== undefined
+      ? `[ \t]*${regexpQuote(commark)}[^${commark.slice(-1)}]`
+      : `[ \t]*\\(?:${skip}\\)`;
+  const reAt = (p: number): boolean => e8.lookingAt(commentRe, p);
+  // The prefix each line takes: the comment start, under the comment after code, else with the line's indentation.
+  const commentFillPrefix = saveExcursion(() => {
+    e8.gotoChar(comstart!);
+    if (!hasCode) return e8.bufferText(bolAt(comstart!), comin);
+    const col = e8.currentColumn();
+    const tabWidth = Number(e8.variable("tab-width") ?? 8);
+    const indent = truthy(e8.variable("indent-tabs-mode"))
+      ? "\t".repeat(Math.floor(col / tabWidth)) + " ".repeat(col % tabWidth)
+      : " ".repeat(col);
+    return indent + e8.bufferText(comstart!, comin);
+  });
+  const paragraphOf = (name: "paragraph-start" | "paragraph-separate"): string => {
+    const value = e8.variable(name);
+    const dflt = e8.defaultValue(name);
+    return `${typeof value === "string" ? value : ""}\\|[ \t]*\\(?:${skip}\\)\\(?:${typeof dflt === "string" ? dflt : ""}\\)`;
+  };
+  let beg = 0;
+  let end = 0;
+  saveExcursion(() => {
+    e8.saveRestriction(() => {
+      e8.gotoChar(bolAt(e8.point()));
+      let from: number;
+      if (hasCode) from = bolAt(e8.point());
+      else {
+        from = saveExcursion(() => {
+          while (forwardLine(-1) === 0 && reAt(e8.point()));
+          // It may have gone too far: forward again, unless its line is one of the comment's.
+          const found = commentSearchForward(e8.point(), eolAt(e8.point()));
+          e8.gotoChar(found ?? e8.point());
+          const again = reAt(e8.point());
+          comstart = e8.point();
+          return again ? bolAt(e8.point()) : lineStartAfter(e8.point());
+        });
+      }
+      const to = saveExcursion(() => {
+        do forwardLine(1);
+        while (!eobp() && reAt(e8.point()));
+        return e8.point();
+      });
+      e8.narrowToRegion(from, to);
+      // Paragraphs within the comment, as text's paragraphs start and end.
+      const afterLine = hasCode ? lineStartAfter(e8.point()) : undefined;
+      letLocal({ "paragraph-separate": paragraphOf("paragraph-separate"), "paragraph-start": paragraphOf("paragraph-start") }, () => {
+        e8.call("forward-paragraph");
+        end = e8.point();
+        e8.call("backward-paragraph");
+        if (e8.point() === afterLine) forwardLine(-1);
+        beg = e8.point();
+      });
+    });
+  });
+  // The prefix: the user's, or the paragraph's own if it is a comment start, else the comment's.
+  const fp = e8.variable("fill-prefix");
+  let prefix: string;
+  if (typeof fp === "string") prefix = fp;
+  else {
+    const context = truthy(e8.variable("adaptive-fill-mode")) ? fillContextPrefix(beg, end) : undefined;
+    prefix = context !== undefined && e8.stringMatch(skip, context) !== undefined ? context : commentFillPrefix;
+  }
+  // Code before the comment keeps its spaces.
+  const squeezeAfter = saveExcursion(() => {
+    e8.gotoChar(beg);
+    if (e8.lookingAt(prefix)) return undefined;
+    return e8.reSearchForward(skip, { noerror: true }) === undefined ? undefined : e8.point();
+  });
+  // Point where it was, as fill-comment-paragraph fills inside its save-excursion.
+  saveExcursion(() => letLocal({ "fill-prefix": prefix }, () => fillRegionAsParagraph(Math.max(comstart!, beg), end, justify, squeezeAfter)));
+  return true;
+}
+
+/** The start of the line after the one `p` is on, or the buffer's end. */
+function lineStartAfter(p: number): number {
+  const line = e8.lineOf(p) + 1;
+  return line < e8.lineCount() ? e8.lineStart(line) : e8.pointMax();
+}
+
 const justifyArg = (): string | undefined => (e8.prefixArg() !== null ? "full" : undefined);
 
 e8.defineCommand({
@@ -501,18 +642,33 @@ e8.defineCommand({
         e8.callWithPrefix(e8.prefixArg(), fn as e8.CommandName);
         return;
       }
-      saveExcursion(() => {
-        const here = marker(e8.point());
-        e8.gotoChar(bolAt(e8.point()));
-        if (forwardParagraph(1) === 0) {
-          const end = e8.point();
-          forwardParagraph(-1);
-          const beg = e8.point();
-          e8.gotoChar(at(here));
-          fillRegionAsParagraph(beg, end, justify);
-        }
-        free(here);
-      });
+      // A comment as a comment, in modes whose comments end with the line.
+      const handleComment = truthy(e8.variable("fill-paragraph-handle-comment"));
+      const cs = e8.variable("comment-start");
+      if (handleComment && typeof cs === "string" && cs !== "" && e8.variable("comment-end") === "") {
+        if (fillCommentParagraph(justify)) return;
+      }
+      // Else as text, a comment's lines a paragraph apart from the code's.
+      const skip = e8.variable("comment-start-skip");
+      const paragraphStart = e8.variable("paragraph-start");
+      const bindings: Record<string, e8.Value> =
+        handleComment && typeof skip === "string"
+          ? { "paragraph-start": `${typeof paragraphStart === "string" ? paragraphStart : "\f\\|[ \t]*$"}\\|[ \t]*\\(?:${skip}\\)` }
+          : {};
+      letLocal(bindings, () =>
+        saveExcursion(() => {
+          const here = marker(e8.point());
+          e8.gotoChar(bolAt(e8.point()));
+          if (forwardParagraph(1) === 0) {
+            const end = e8.point();
+            forwardParagraph(-1);
+            const beg = e8.point();
+            e8.gotoChar(at(here));
+            fillRegionAsParagraph(beg, end, justify);
+          }
+          free(here);
+        }),
+      );
     } finally {
       if (unmodified && e8.bufferText(0, e8.bufferSize()) === before) e8.setBufferModified(false);
     }

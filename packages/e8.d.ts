@@ -7243,6 +7243,16 @@ declare global {
        */
       "previous-line": [n?: number];
       /**
+       * Fill the paragraph of the comment or string point is in, or that starts later on its line; else indent the function point is in or before.
+       *
+       * A prefix argument justifies the paragraph, as fill-paragraph's does.
+       *
+       * @param argument raw prefix argument
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "prog-fill-reindent-defun": [argument?: PrefixArg | boolean];
+      /**
        * The major mode programming language modes are built on.
        *
        * Put what you want in every programming mode on prog-mode-hook, which runs before each mode's own hook.
@@ -11555,6 +11565,12 @@ declare global {
        */
       "fill-paragraph-function": Value;
       /**
+       * Whether M-q fills a comment as a comment, with its comment starts, and keeps code and comments apart.
+       *
+       * Defined in packages/fill.ts.
+       */
+      "fill-paragraph-handle-comment": Value;
+      /**
        * Text filling puts at the start of each line, or nil to work it out from the paragraph when adaptive-fill-mode is on. C-x . sets it.
        *
        * Defined in packages/fill.ts.
@@ -14979,6 +14995,24 @@ declare global {
        * Defined in packages/page.ts.
        */
       "page-delimiter": Value;
+      /**
+       * Whether the paragraph commands leave fill-prefix out of finding paragraphs, as where blank lines alone separate them.
+       *
+       * Defined in packages/paragraphs.ts.
+       */
+      "paragraph-ignore-fill-prefix": Value;
+      /**
+       * A regexp for the start of a line that separates paragraphs, matched at the left margin.
+       *
+       * Defined in packages/paragraphs.ts.
+       */
+      "paragraph-separate": Value;
+      /**
+       * A regexp for the start of a line that starts or separates paragraphs, matched at the left margin; paragraph-separate says which separate them.
+       *
+       * Defined in packages/paragraphs.ts.
+       */
+      "paragraph-start": Value;
       /**
        * Whether M-( puts a space before and after the parens it inserts, where a word or other parens are next to them.
        *

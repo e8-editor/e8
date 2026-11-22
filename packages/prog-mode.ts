@@ -3,6 +3,7 @@
 import { defineGuide } from "help-guide";
 import { composeRegion } from "composite";
 import { defineGlobalizedMinorMode } from "subr";
+import { indentRegionBetween } from "indent";
 
 e8.defineMajorMode({
   name: "prog-mode",
@@ -13,6 +14,28 @@ e8.defineMajorMode({
   // As prog-mode.el: source files end in a newline.
   setup: () => e8.setVariable("require-final-newline", e8.variable("mode-require-final-newline") ?? true),
 });
+
+const progFillReindentDefun = e8.defineCommand({
+  name: "prog-fill-reindent-defun",
+  doc:
+    "Fill the paragraph of the comment or string point is in, or that starts later on its line; else indent the function point is in or before.\n\n" +
+    "A prefix argument justifies the paragraph, as fill-paragraph's does.",
+  params: [{ name: "argument", kind: "prefix" }],
+  run: (argument: e8.PrefixArg) => {
+    e8.saveExcursion(() => {
+      // In a string or a comment, or before one on the line, as syntax-ppss and \s< find them.
+      if (e8.syntaxPpss(e8.point()).start !== null || e8.reSearchForward("\\s-*\\s<", { bound: e8.lineEndPosition(), noerror: true }) !== undefined) {
+        e8.callWithPrefix(argument, "fill-paragraph");
+        return;
+      }
+      e8.call("beginning-of-defun");
+      const start = e8.point();
+      e8.call("end-of-defun");
+      indentRegionBetween(start, e8.point());
+    });
+  },
+});
+e8.bindKey("M-q", progFillReindentDefun, "prog-mode-map");
 
 // What C-h h shows in a programming mode, which takes it as its own unless it gives one (ADR 0068).
 defineGuide("prog-mode", {

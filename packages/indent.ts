@@ -169,28 +169,37 @@ e8.defineCommand({
     if (arg !== null) {
       const column = e8.prefixNumericValue(arg);
       for (let line = first; line <= last; line++) indentRigidly(line, line, column - currentIndentation(line));
-    } else if (typeof regionFunction() === "string" || typeof regionFunction() === "function") {
-      // The mode's own, given the region as Emacs gives it, with the
-      // buffer widened, as Emacs's indent-region calls it.
-      const mark = e8.mark() as number;
-      const pt = e8.makeMarker();
-      const [start, end] = [Math.min(mark, e8.point()), Math.max(mark, e8.point())];
-      e8.saveRestriction(() => {
-        e8.widen();
-        e8.funcall(regionFunction() as string, start, end);
-      });
-      e8.gotoChar(e8.markerPosition(pt)!);
-      e8.deleteMarker(pt);
     } else {
-      // Line by line, also widened.
-      e8.saveRestriction(() => {
-        e8.widen();
-        indentRegion(first, last);
-      });
+      const mark = e8.mark() as number;
+      indentRegionBetween(Math.min(mark, e8.point()), Math.max(mark, e8.point()));
     }
     e8.deactivateMark();
   },
 });
+
+/**
+ * Indents each non-empty line from `start` to `end` as the major mode says,
+ * by its indent-region-function or line by line, with the buffer widened,
+ * as Emacs's indent-region does without a column.
+ */
+export function indentRegionBetween(start: number, end: number): void {
+  if (typeof regionFunction() === "string" || typeof regionFunction() === "function") {
+    const pt = e8.makeMarker();
+    e8.saveRestriction(() => {
+      e8.widen();
+      e8.funcall(regionFunction() as string, start, end);
+    });
+    e8.gotoChar(e8.markerPosition(pt)!);
+    e8.deleteMarker(pt);
+    return;
+  }
+  let last = e8.lineOf(end);
+  if (end === e8.lineStart(last) && last > e8.lineOf(start)) last--;
+  e8.saveRestriction(() => {
+    e8.widen();
+    indentRegion(e8.lineOf(start), last);
+  });
+}
 
 /** One step of indent-rigidly's keys: a column, or to the tab stop before or after the least indentation. */
 function rigidStep(n: number | "left-tab" | "right-tab"): void {

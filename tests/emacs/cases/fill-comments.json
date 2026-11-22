@@ -1,0 +1,321 @@
+[
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-lines",
+  "text": "x = 1\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\ny = 2\n",
+  "keys": "M-q",
+  "point": 10
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-indented",
+  "text": "def f():\n    # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n    # yyy zzz\n    return 1\n",
+  "keys": "M-q",
+  "point": 16
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-after-code",
+  "text": "x = 1  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\ny = 2\n",
+  "keys": "M-q",
+  "point": 12
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-after-code-next-lines",
+  "text": "x = 1  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n       # yyy zzz\ny = 2\n",
+  "keys": "M-q",
+  "point": 12
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-paragraphs",
+  "text": "# aaa bbb\n# ccc\n#\n# ddd eee\n# fff\n",
+  "keys": "M-q",
+  "point": 3,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-first-line",
+  "text": "# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\n",
+  "keys": "M-q",
+  "point": 3
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-second-paragraph",
+  "text": "# aaa bbb\n# ccc\n#\n# ddd eee\n# fff\n",
+  "keys": "M-q",
+  "point": 25,
+  "vars": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-double-hash",
+  "text": "## aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\n",
+  "keys": "M-q",
+  "point": 4
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-justify",
+  "text": "# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\n",
+  "keys": "C-u M-q",
+  "point": 3
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "py-comment-narrow-column",
+  "text": "# aaa bbb ccc ddd eee fff\n# ggg\nx = 1\n",
+  "keys": "M-q",
+  "point": 3,
+  "vars": {
+   "fill-column": 12
+  }
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-comment-lines",
+  "text": "echo hi\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\necho bye\n",
+  "keys": "M-q",
+  "point": 12
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-comment-after-code",
+  "text": "echo hi  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx yyy zzz\n",
+  "keys": "M-q",
+  "point": 13
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-code-stops-at-comment",
+  "text": "echo a\necho b\n# c d\necho e\n",
+  "keys": "M-q",
+  "point": 1
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-comment-indented-tabs",
+  "text": "if true; then\n\t# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n\t# yyy zzz\nfi\n",
+  "keys": "M-q",
+  "point": 17,
+  "vars": {
+   "indent-tabs-mode": true
+  }
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "sh-blank-comment-line-separates",
+  "text": "# aaa\n#\n# bbb\n# ccc\n",
+  "keys": "M-q",
+  "point": 15,
+  "vars": {
+   "fill-column": 30
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "org-src-python-comment",
+  "text": "#+begin_src python\n# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss ttt uuu vvv www xxx\n# yyy zzz\nx = 1\n#+end_src\n",
+  "keys": "M-q",
+  "point": 22
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-custom-start",
+  "text": "* a\nb\n* c\nd\n",
+  "keys": "M-}",
+  "point": 0,
+  "vars": {
+   "paragraph-start": "\f\\|[ \t]*$\\|\\*"
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-custom-start-back",
+  "text": "* a\nb\n* c\nd\n",
+  "keys": "M-{",
+  "point": 13,
+  "vars": {
+   "paragraph-start": "\f\\|[ \t]*$\\|\\*"
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-custom-separate",
+  "text": "a\nb\n---\nc\nd\n",
+  "keys": "M-}",
+  "point": 0,
+  "vars": {
+   "paragraph-start": "\f\\|[ \t]*$\\|---$",
+   "paragraph-separate": "[ \t\f]*$\\|---$"
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-custom-separate-back",
+  "text": "a\nb\n---\nc\nd\n",
+  "keys": "M-{",
+  "point": 12,
+  "vars": {
+   "paragraph-start": "\f\\|[ \t]*$\\|---$",
+   "paragraph-separate": "[ \t\f]*$\\|---$"
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-anchored-start",
+  "text": "a\n.b\nc\n",
+  "keys": "M-}",
+  "point": 0,
+  "vars": {
+   "paragraph-start": "^\\."
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-fill-prefix",
+  "text": "> a\n> b\nc\n> d\n",
+  "keys": "M-}",
+  "point": 0,
+  "vars": {
+   "fill-prefix": "> "
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-fill-prefix-back",
+  "text": "> a\n> b\nc\n> d\n> e\n",
+  "keys": "M-{",
+  "point": 17,
+  "vars": {
+   "fill-prefix": "> "
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-fill-prefix-ignored",
+  "text": "> a\n> b\nc\n> d\n",
+  "keys": "M-}",
+  "point": 0,
+  "vars": {
+   "fill-prefix": "> ",
+   "paragraph-ignore-fill-prefix": true
+  }
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "para-fill-prefix-blank-prefix-line",
+  "text": "> a\n>\n> b\n",
+  "keys": "M-}",
+  "point": 0,
+  "vars": {
+   "fill-prefix": "> "
+  }
+ },
+ {
+  "modes": [
+   "emacs-lisp-mode"
+  ],
+  "name": "prog-mq-reindents-elisp",
+  "text": "(defun f ()\n1\n(g))\n",
+  "keys": "M-q",
+  "point": 13
+ },
+ {
+  "modes": [
+   "js-mode"
+  ],
+  "name": "prog-mq-reindents-js",
+  "text": "function f() {\nreturn 1;\n}\n",
+  "keys": "M-q",
+  "point": 16
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "prog-mq-before-comment",
+  "text": "echo hi  # aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss\n",
+  "keys": "M-q",
+  "point": 1
+ },
+ {
+  "modes": [
+   "sh-mode"
+  ],
+  "name": "prog-mq-justify-comment",
+  "text": "# aaa bbb ccc ddd eee fff ggg hhh iii jjj kkk lll mmm nnn ooo ppp qqq rrr sss\n",
+  "keys": "C-u M-q",
+  "point": 3
+ },
+ {
+  "modes": [
+   "text-mode"
+  ],
+  "name": "fill-paragraph-comment-text-mode",
+  "text": "# aaa bbb\n# ccc\n",
+  "keys": "M-q",
+  "point": 3,
+  "vars": {
+   "comment-start": "# ",
+   "fill-column": 40
+  }
+ }
+]

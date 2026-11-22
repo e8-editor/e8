@@ -5,7 +5,7 @@
 // comments go to. Each major mode says what its comments look like with
 // comment-start and comment-end, and its syntax table finds them.
 
-import { escapeRegExp, forwardLine, numberValue as num, truthy } from "subr";
+import { escapeRegExp, forwardLine, numberValue as num, regexpQuote, truthy } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string, local = false) => e8.defineVariable({ name, value, doc, local });
 defvar("comment-start", null, "What starts a comment in this mode, with the space after it: \"// \" or \"# \". nil if the mode has no comments.", true);
@@ -86,7 +86,7 @@ function hasCommentSyntax(): boolean {
  * string, as comment-search-forward: returns where it starts, leaving
  * point after its starter and the space after.
  */
-function commentSearchForward(from: number, limit: number): number | undefined {
+export function commentSearchForward(from: number, limit: number): number | undefined {
   for (let p = from; p < limit; p++) {
     const len = commentStartAt(p);
     if (len === undefined) continue;
@@ -101,6 +101,28 @@ function commentSearchForward(from: number, limit: number): number | undefined {
     return skipStarter(p, len);
   }
   return undefined;
+}
+
+/** A string without the whitespace before it, after it or both, as comment-string-strip. */
+export function commentStringStrip(s: string, before: boolean, after: boolean): string {
+  let r = s;
+  if (before) r = r.replace(/^\s*/, "");
+  if (after) r = r.replace(/\s*\n?$/, "");
+  return r;
+}
+
+/**
+ * Makes comment-start-skip from comment-start when the mode gave none, or
+ * one comment-start no longer matches, as comment-normalize-vars does.
+ */
+export function commentNormalizeVars(): void {
+  const cs = str("comment-start");
+  if (cs === undefined) return;
+  const skip = str("comment-start-skip");
+  if (skip !== undefined && e8.stringMatch(skip, cs) !== undefined) return;
+  // Without comment syntax, not after a backslash that escapes it.
+  const unescaped = hasCommentSyntax() ? "" : "\\(\\(^\\|[^\\\n]\\)\\(\\\\\\\\\\)*\\)";
+  e8.setVariable("comment-start-skip", unescaped + "\\(?:\\s<+\\|" + regexpQuote(commentStringStrip(cs, true, true)) + "+\\)[ \t]*");
 }
 
 /** Puts point after a comment's starter, its repeats and the space after, as matching comment-start-skip leaves it. */
