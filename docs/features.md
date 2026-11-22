@@ -25,6 +25,7 @@ What works today, in a terminal (`e8`) or a window (`e8-gui`). Where it differs 
 - Comments (`M-;`, `C-x C-;`, `C-x ;`, `M-j`).
 - Indentation (TAB as the mode says, `C-M-\` through `indent-region-function` where the mode has one, as Org mode's `org-indent-region`, `C-x TAB`, RET and closing braces reindenting in code modes).
 - The message log (`C-h e` shows `*Messages*`).
+- Warnings (`display-warning`, `warn`, `lwarn`): logged in `*Warnings*` and shown, as `warning-minimum-level`, `warning-minimum-log-level`, `warning-suppress-types` and `warning-suppress-log-types` say, the ⛔ button asking to suppress a type.
 - The active region with shift selection (transient-mark-mode and shift-select-mode, both on).
 - Prefix arguments (`C-u`, `M-<digit>`, `C--`).
 - Mouse wheel and trackpad scrolling of the window under the pointer.

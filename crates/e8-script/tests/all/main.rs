@@ -144,6 +144,7 @@ mod treesit;
 mod undo_list;
 mod user_system;
 mod view;
+mod warnings;
 mod which_key;
 mod windows;
 mod xwidgets;
