@@ -21,6 +21,11 @@ defvar("org-src-lang-modes", [
 defvar("org-src-window-setup", "reorganize-frame", "Where C-c ' shows a block's text: reorganize-frame, current-window, other-window, split-window-below or split-window-right.");
 defvar("org-src-tab-acts-natively", true, "Whether TAB in a source block indents its line as the language's mode would.");
 defvar("org-src-fontify-natively", true, "Whether a source block's text has the faces its language's mode gives it.");
+defvar(
+  "org-src-block-faces",
+  [],
+  'Faces for source blocks\' text by language, as ["language", face] lists: a face\'s name, or an anonymous face, a list of attributes such as [":background", "#EEE2FF"]. "" is for blocks with no language.',
+);
 defvar("org-edit-src-persistent-message", true, "Whether the block's buffer says in its header line how to finish.");
 
 /** What a block's buffer edits: where in which buffer, and how its text goes back. */

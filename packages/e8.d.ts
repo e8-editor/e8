@@ -14577,6 +14577,12 @@ declare global {
        */
       "org-speed-commands": Value;
       /**
+       * Faces for source blocks' text by language, as ["language", face] lists: a face's name, or an anonymous face, a list of attributes such as [":background", "#EEE2FF"]. "" is for blocks with no language.
+       *
+       * Defined in packages/org-src.ts.
+       */
+      "org-src-block-faces": Value;
+      /**
        * Whether a source block's text has the faces its language's mode gives it.
        *
        * Defined in packages/org-src.ts.

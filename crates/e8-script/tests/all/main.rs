@@ -77,6 +77,7 @@ mod mouse_positions;
 mod org;
 mod org_agenda_archive;
 mod org_archive;
+mod org_src_block_faces;
 mod org_odd_levels;
 mod org_archive_details;
 mod org_clock_mode_line;

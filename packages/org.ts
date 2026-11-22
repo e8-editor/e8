@@ -2238,20 +2238,60 @@ function blockBefore(line: number): string | undefined {
 const KEYWORD = /^([ \t]*#\+(\w+):)(.*)$/;
 
 /**
- * Fontifies the source block that starts on `beginLine` as its language's
- * mode would, with org-src-fontify-natively, then gives its text the
- * org-block face too, newlines and all, as Emacs does. The line it ends on, if it could.
+ * The face org-src-block-faces gives a language's blocks, its name matched
+ * ignoring case, "" for blocks with none: a face's name if there is such a
+ * face, or an anonymous face, a list of attributes.
+ */
+function srcBlockFace(lang: string): e8.Value | undefined {
+  const alist = e8.variable("org-src-block-faces");
+  if (!Array.isArray(alist)) return undefined;
+  const entry = alist.find((e) => Array.isArray(e) && typeof e[0] === "string" && e[0].toLowerCase() === lang.toLowerCase()) as e8.Value[] | undefined;
+  const face = entry?.[1];
+  if (typeof face === "string") return e8.facep(face) ? face : undefined;
+  return Array.isArray(face) && face.length > 0 ? face : undefined;
+}
+
+/** The language a block's #+begin_ line names, its first word after the block's type, "" for none, as Org's fontification reads it. */
+function blockLang(beginLine: number): string {
+  return /^[ \t]*#\+begin_\S+[ \t]*(\S*)/i.exec(e8.lineText(beginLine))?.[1] ?? "";
+}
+
+/**
+ * Fontifies the source or example block that starts on `beginLine` as its
+ * language's mode would, with org-src-fontify-natively, as
+ * org-src-font-lock-fontify-block does, then gives its text the face
+ * org-src-block-faces gives its language and org-block, newlines and all,
+ * whether its language has a mode or not. The line it ends on.
  */
 function fontifySrcNatively(beginLine: number): number | undefined {
-  if (!truthy(e8.variable("org-src-fontify-natively")) || !e8.fboundp("org-src-font-lock-fontify-block")) return undefined;
-  const lang = /^[ \t]*#\+begin_src[ \t]+(\S+)/i.exec(e8.lineText(beginLine))?.[1];
-  if (lang === undefined) return undefined;
+  if (!truthy(e8.variable("org-src-fontify-natively"))) return undefined;
+  if (!/^[ \t]*#\+begin_(?:src|example)(?:[ \t]|$)/i.test(e8.lineText(beginLine))) return undefined;
+  const lang = blockLang(beginLine);
   let endLine = beginLine + 1;
   while (endLine < e8.lineCount() && !BLOCK_END.test(e8.lineText(endLine))) endLine++;
   if (endLine >= e8.lineCount()) return undefined;
-  if (!truthy(e8.funcall("org-src-font-lock-fontify-block", lang, e8.lineStart(beginLine + 1), e8.lineStart(endLine)))) return undefined;
-  if (endLine > beginLine + 1) e8.addFaceTextProperty(e8.lineStart(beginLine + 1), e8.lineStart(endLine), "org-block", { append: true });
+  const [start, end] = [e8.lineStart(beginLine + 1), e8.lineStart(endLine)];
+  if (lang !== "" && e8.fboundp("org-src-font-lock-fontify-block")) e8.funcall("org-src-font-lock-fontify-block", lang, start, end);
+  if (endLine > beginLine + 1) {
+    const src = srcBlockFace(lang);
+    if (src !== undefined) e8.addFaceTextProperty(start, end, src as string, { append: true });
+    e8.addFaceTextProperty(start, end, "org-block", { append: true });
+  }
   return endLine;
+}
+
+/** The blocks whose text Org leaves alone, as org-protecting-blocks. */
+const PROTECTING_BLOCKS = ["src", "example", "export"];
+
+/**
+ * The face org-block-LANG, when there is one, which a protecting block's
+ * text inherits before org-block when it is not fontified natively, as
+ * Org's fontification of blocks gives it.
+ */
+function protectedLangFace(block: string, lang: string): string | undefined {
+  if (!PROTECTING_BLOCKS.includes(block)) return undefined;
+  const name = `org-block-${lang}`;
+  return e8.facep(name) ? name : undefined;
 }
 
 /** Where a block's #+begin or #+end line's face ends: after its newline, as org-fontify-whole-block-delimiter-line says. */
@@ -2269,11 +2309,16 @@ function fontify(start: number, end: number): void {
   const keywords = allKeywords();
   let block = blockBefore(first);
   let firstLine = first;
-  if (block === "src") {
-    // In a source block: fontify all of it, from its #+begin_src line.
+  // The face of the language of the block the lines are in, org-block-LANG, when Org gives it one.
+  let langFace: string | undefined;
+  if (block !== undefined) {
     let begin = first - 1;
     while (begin >= 0 && !BLOCK_BEGIN.test(e8.lineText(begin))) begin--;
-    if (begin >= 0) firstLine = fontifySrcNatively(begin) ?? first;
+    if (begin >= 0) {
+      langFace = protectedLangFace(block, blockLang(begin));
+      // In a source or example block: fontify all of it, from its #+begin_ line.
+      if (block === "src" || block === "example") firstLine = fontifySrcNatively(begin) ?? first;
+    }
   }
   for (let line = firstLine; line < e8.lineCount() && e8.lineStart(line) < Math.max(end, from + 1); line++) {
     const text = e8.lineText(line);
@@ -2287,6 +2332,7 @@ function fontify(start: number, end: number): void {
         block = undefined;
       } else {
         face(ls, Math.min(le + 1, e8.pointMax()), block === "quote" ? "org-quote" : block === "verse" ? "org-verse" : "org-block");
+        if (langFace !== undefined) face(ls, Math.min(le + 1, e8.pointMax()), langFace);
       }
       continue;
     }
@@ -2294,7 +2340,8 @@ function fontify(start: number, end: number): void {
     if (begin) {
       face(ls, delimiterEnd(le), "org-block-begin-line");
       block = begin[1].toLowerCase();
-      if (block === "src") {
+      langFace = protectedLangFace(block, blockLang(line));
+      if (block === "src" || block === "example") {
         const endLine = fontifySrcNatively(line);
         if (endLine !== undefined) line = endLine - 1;
       }
