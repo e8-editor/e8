@@ -149,7 +149,7 @@ fn an_entry_by_its_id() {
     let (mut ed, _s) = editor();
     let dir = tempfile::tempdir().unwrap();
     ed.set_variable("org-id-locations-file", Value::Str(dir.path().join("ids").to_str().unwrap().into()));
-    std::fs::write(dir.path().join("a.org"), "* One\n* Two\n").unwrap();
+    std::fs::write(dir.path().join("a.org"), "* One\n* Two\n** Child\n").unwrap();
     std::fs::write(dir.path().join("b.org"), "").unwrap();
     ed.set_variable("org-id-link-to-org-use-id", Value::Bool(true));
     visit(&mut ed, &dir.path().join("a.org"));
@@ -160,14 +160,15 @@ fn an_entry_by_its_id() {
     store_and_insert_in(&mut ed, &dir.path().join("b.org"));
     let b = text(&ed);
     assert!(b.starts_with("[[id:") && b.ends_with("][Two]]"), "{b}");
-    // An id: link with a search after :: goes to it in the file.
+    // An id: link with a search after :: goes to it in the entry.
     let id = b.trim_start_matches("[[id:").split(']').next().unwrap().to_string();
     ed.press("C-a C-k").unwrap();
-    ed.call("org-insert-link", vec![Arg::Str(format!("id:{id}::*One")), Arg::Str("x".into())]).unwrap();
+    ed.call("org-insert-link", vec![Arg::Str(format!("id:{id}::*Child")), Arg::Str("x".into())]).unwrap();
     ed.press("C-a C-c C-o").unwrap();
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert_eq!(ed.window_buffer().name, "a.org");
-    assert_eq!(ed.window_buffer().point(), 0);
+    let b = ed.window_buffer();
+    assert_eq!(b.slice(b.point()..b.len()), "** Child\n");
 }
 
 /// C-u C-c C-l completes a file's name, written relative to the directory.
@@ -199,4 +200,72 @@ fn each_line_of_a_region() {
     let path = dir.path().join("t.txt");
     let p = path.to_str().unwrap();
     assert_eq!(stored, format!(r#"[["file:{p}::two",null],["file:{p}::one",null]]"#));
+}
+
+/// C-u turns org-link-context-for-files round: a link to the file alone.
+#[test]
+fn prefix_turns_the_context_round() {
+    let (mut ed, _s) = editor();
+    let dir = tempfile::tempdir().unwrap();
+    std::fs::write(dir.path().join("a.org"), "* One\n").unwrap();
+    std::fs::write(dir.path().join("b.org"), "").unwrap();
+    visit(&mut ed, &dir.path().join("a.org"));
+    ed.press("C-u M-x o r g - s t o r e - l i n k RET").unwrap();
+    store_and_insert_in(&mut ed, &dir.path().join("b.org"));
+    assert_eq!(text(&ed), "[[file:a.org]]");
+}
+
+/// Editing a link at point keeps backslashes that escape nothing, and an
+/// empty region does not stand in for the stored link's description.
+#[test]
+fn editing_and_empty_regions() {
+    let (mut ed, _s) = editor();
+    let dir = tempfile::tempdir().unwrap();
+    std::fs::write(dir.path().join("a.org"), "* One\n[[a\\\\b][old]]\n").unwrap();
+    visit(&mut ed, &dir.path().join("a.org"));
+    ed.press("C-n C-f C-f C-f C-c C-l RET RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert_eq!(text(&ed), "* One\n[[a\\\\b][old]]\n");
+
+    ed.press("M-< M-x o r g - s t o r e - l i n k RET M-> C-SPC C-c C-l RET RET").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert!(text(&ed).ends_with("[[*One][One]]"), "{}", text(&ed));
+}
+
+/// An id: link's search is looked for in the entry's subtree, as
+/// org-id-open narrows to it, not elsewhere in the file.
+#[test]
+fn an_id_search_stays_in_the_subtree() {
+    let (mut ed, _s) = editor();
+    let dir = tempfile::tempdir().unwrap();
+    ed.set_variable("org-id-locations-file", Value::Str(dir.path().join("ids").to_str().unwrap().into()));
+    let a = dir.path().join("a.org");
+    std::fs::write(&a, "* A\n** Sub\n* B\n:PROPERTIES:\n:ID: b1\n:END:\n** Sub\n").unwrap();
+    std::fs::write(dir.path().join("b.org"), "").unwrap();
+    visit(&mut ed, &a);
+    ed.call("org-id-update-id-locations", vec![]).unwrap();
+    visit(&mut ed, &dir.path().join("b.org"));
+    ed.call("org-insert-link", vec![Arg::Str("id:b1::*Sub".into()), Arg::Str("x".into())]).unwrap();
+    ed.press("C-a C-c C-o").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    assert_eq!(ed.window_buffer().name, "a.org");
+    let b = ed.window_buffer();
+    assert_eq!(b.slice(b.point()..b.len()), "** Sub\n");
+}
+
+/// create-if-interactive gives the entry an ID for org-store-link typed,
+/// but not called from code, as capture's %a calls it.
+#[test]
+fn ids_made_only_when_asked() {
+    let (mut ed, s) = editor();
+    let dir = tempfile::tempdir().unwrap();
+    ed.set_variable("org-id-locations-file", Value::Str(dir.path().join("ids").to_str().unwrap().into()));
+    std::fs::write(dir.path().join("a.org"), "* One\n").unwrap();
+    visit(&mut ed, &dir.path().join("a.org"));
+    s.eval_typescript(&mut ed, "t.ts", r#"e8.setVariable("org-id-link-to-org-use-id", e8.intern("create-if-interactive"));"#.to_string()).unwrap();
+    // From code, as capture asks for %a: not interactively.
+    s.eval_typescript(&mut ed, "t.ts", r#"e8.call("org-store-link", null);"#.to_string()).unwrap();
+    assert!(!text(&ed).contains(":ID:"), "{}", text(&ed));
+    store(&mut ed);
+    assert!(text(&ed).contains(":ID:"), "{}", text(&ed));
 }

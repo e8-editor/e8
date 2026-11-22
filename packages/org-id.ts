@@ -491,7 +491,7 @@ export function orgIdStoreLink(): string | undefined {
   } else desc = all[i].title || e8.lineText(all[i].line);
   if (precise && precise[2] > location) {
     link = `${link}::${precise[0]}`;
-    desc = precise[1] ?? desc;
+    desc = precise[1] as string;
   }
   linkStoreProps([e8.intern(":link"), link, e8.intern(":description"), desc, e8.intern(":type"), "id"]);
   return link;
@@ -512,7 +512,9 @@ function orgIdStoreLinkMaybe(interactive: boolean): string | undefined {
   const use = typeof v === "symbol" ? e8.symbolName(v) : v;
   const ok =
     use === true ||
-    (interactive && (use === "create-if-interactive" || (use === "create-if-interactive-and-no-custom-id" && entryLine() !== undefined && entryGet(entryLine() as number, "CUSTOM_ID") === undefined))) ||
+    (interactive &&
+      (use === "create-if-interactive" ||
+        (use === "create-if-interactive-and-no-custom-id" && (entryLine() !== undefined ? entryGet(entryLine() as number, "CUSTOM_ID") : topGet("CUSTOM_ID")) === undefined))) ||
     (truthy(use ?? null) && orgIdGet(false) !== undefined);
   return ok ? orgIdStoreLink() : undefined;
 }
@@ -522,10 +524,23 @@ function orgIdStoreLinkMaybe(interactive: boolean): string | undefined {
 linkSetParameters("id", {
   follow: (path) => {
     markRingPush();
-    const option = /::(.*)$/.exec(path);
-    orgIdGoto(option ? path.slice(0, option.index) : path);
-    if (option) {
-      const pos = searchInBuffer(option[1]);
+    let option: string | undefined = /::(.*)$/.exec(path)?.[1];
+    let id = option === undefined ? path : path.slice(0, path.length - option.length - 2);
+    // An ID with :: in it, as IDs once could have, is tried whole.
+    if (option !== undefined && !orgIdFind(id) && orgIdFind(path)) [id, option] = [path, undefined];
+    orgIdGoto(id);
+    if (option !== undefined) {
+      // In the entry's subtree, as org-id-open narrows to it.
+      const line = entryLine();
+      const all = headings();
+      const i = line === undefined ? undefined : headingIndex(all, line);
+      let [from, to] = [0, Infinity];
+      if (i !== undefined) {
+        from = all[i].start;
+        const next = all.slice(i + 1).find((h) => h.level <= all[i].level);
+        to = next ? next.start : Infinity;
+      }
+      const pos = searchInBuffer(option, from, to);
       e8.gotoChar(pos);
       showContext(pos);
     }

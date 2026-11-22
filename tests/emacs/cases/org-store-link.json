@@ -348,5 +348,129 @@
     "text": "* One\n* Two\nbody\n* Three\n",
     "keys": "C-c M-l",
     "message": true
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-empty-region",
+    "text": "* One\nbody\n",
+    "point": 3,
+    "keys": "C-SPC M-x M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-context-number",
+    "text": "* One\nl1\n\nl2\nl3\n",
+    "point": 6,
+    "keys": "C-SPC M-> M-x C-SPC C-SPC M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ],
+    "vars": {
+      "org-link-context-for-files": 2
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-comment-only-heading",
+    "text": "* One\n* COMMENT\n",
+    "point": 6,
+    "keys": "M-x M-< C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-angle-id-link",
+    "text": "* One\n",
+    "point": 6,
+    "keys": "M-> C-c C-l",
+    "answers": [
+      "<id:abc>",
+      ""
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-id-region-context",
+    "text": "* One\n:PROPERTIES:\n:ID: abc\n:END:\nalpha beta\n",
+    "point": 34,
+    "keys": "C-SPC M-f M-x C-SPC C-SPC M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ],
+    "vars": {
+      "org-id-link-to-org-use-id": "'use-existing"
+    }
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-all-links-count",
+    "text": "* One\n* Two\n* Three\n",
+    "point": 0,
+    "keys": "M-x C-n M-x C-n M-x M-> M-2 C-c C-M-l",
+    "answers": [
+      "org-store-link",
+      "org-store-link",
+      "org-store-link"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-last-stored-count",
+    "text": "* One\n* Two\n",
+    "point": 0,
+    "keys": "M-x C-n M-x M-> C-u C-c M-l",
+    "answers": [
+      "org-store-link",
+      "org-store-link"
+    ]
+  },
+  {
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-keep-with-prefix",
+    "text": "* One\n* Two\n",
+    "point": 6,
+    "keys": "M-x M-> C-u C-u C-u C-c C-l C-c M-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
   }
 ]

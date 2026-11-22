@@ -45,7 +45,7 @@ import {
   updateDblock,
 } from "org";
 import { findBufferVisiting } from "files";
-import { linkMakeString } from "ol";
+import { linkHeadingSearchString, linkMakeString } from "ol";
 import { elementAt } from "org-element";
 import { showEntry, showSetVisibility, toggleDrawerOrBlock } from "org-fold";
 import { endOfMetaData, entryGet, entryPut } from "org-list";
@@ -1388,7 +1388,7 @@ function clockTableData(file: string | null, params: e8.Value[]): TableData {
     const headline = bareHeadline(h);
     let hdl = headline;
     if (link) {
-      const search = `*${headline.replace(/\[[0-9]*(?:%|\/[0-9]*)\]/g, " ").replace(/[ \t]+/g, " ").trim()}`;
+      const search = linkHeadingSearchString(headline);
       const description = headline.replace(/\[[0-9]*(?:%|\/[0-9]*)\]/g, "").replace(LINK_BRACKET, (_m, target: string, desc?: string) => desc ?? target).trim();
       hdl = linkMakeString(fileName === undefined ? search : `file:${fileName}::${search}`, description);
     }

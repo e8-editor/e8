@@ -68,12 +68,14 @@ interface Context {
 
 /** A link to point's place for %a, as org-capture takes it from org-store-link, or nothing where there is none. */
 function annotation(): string {
-  try {
-    const link = storeLink(null, false);
-    return typeof link === "string" ? link : "";
-  } catch {
-    return "";
-  }
+  // As ignore-errors: errors give none, but C-g still quits.
+  return e8.conditionCase(
+    () => {
+      const link = storeLink(null, false);
+      return typeof link === "string" ? link : "";
+    },
+    { error: () => "" },
+  );
 }
 
 /**

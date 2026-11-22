@@ -20,6 +20,11 @@ export interface Link {
   kind: "bracket" | "angle" | "plain";
 }
 
+/** A bracket link's target with its escapes taken out, as org-link-unescape: backslashes halved before a bracket or the end. */
+export function linkUnescape(link: string): string {
+  return link.replace(/(\\+)(?=[\][]|$)/g, (bs: string) => "\\".repeat(Math.floor(bs.length / 2)));
+}
+
 /** The link point is on: a bracket link, an angle link or a plain one. */
 export function linkHere(): Link | undefined {
   const line = lineAt();
@@ -28,7 +33,7 @@ export function linkHere(): Link | undefined {
   for (const m of allMatches(LINK, text)) {
     const start = at(line, text, m.index ?? 0);
     const end = at(line, text, (m.index ?? 0) + m[0].length);
-    if (start <= p && p < end) return { start, end, path: m[1].replace(/\\([[\]\\])/g, "$1"), description: m[2], kind: "bracket" };
+    if (start <= p && p < end) return { start, end, path: linkUnescape(m[1]), description: m[2], kind: "bracket" };
   }
   for (const re of [ANGLE_LINK, PLAIN_LINK]) {
     for (const m of allMatches(re, text)) {
@@ -45,36 +50,44 @@ function bareTitle(h: Heading): string {
   return h.title.replace(new RegExp(COOKIE.source, "g"), "").replace(/\s+/g, " ").trim();
 }
 
-function searchHeading(title: string): Heading | undefined {
+function searchHeading(title: string, from = 0, to = Infinity): Heading | undefined {
   // Case does not matter, as org-link-search compares the words upcased.
   const want = title.replace(/\s+/g, " ").trim().toUpperCase();
-  return headings().find((h) => bareTitle(h).toUpperCase() === want);
+  return headings().find((h) => h.start >= from && h.start < to && bareTitle(h).toUpperCase() === want);
 }
 
-/** Follows a link within the buffer: *Heading, #custom-id, a <<target>> or a heading's title. */
-export function searchInBuffer(path: string): number {
+/**
+ * Follows a link within the buffer: *Heading, #custom-id, a <<target>> or
+ * a heading's title; between FROM and TO, as org-id-open narrows to the
+ * entry's subtree.
+ */
+export function searchInBuffer(path: string, from = 0, to = Infinity): number {
+  const find = (text: string, options: { regexp?: boolean; caseFold?: boolean } = {}) => {
+    const found = e8.search(text, { from, ...options });
+    return found && found.start < to ? found : undefined;
+  };
   if (path.startsWith("*")) {
-    const h = searchHeading(path.slice(1));
+    const h = searchHeading(path.slice(1), from, to);
     if (!h) throw new Error(`No match for fuzzy expression: ${path}`);
     return h.start;
   }
   if (path.startsWith("#")) {
     const id = path.slice(1);
-    const found = e8.search(`^[ \\t]*:CUSTOM_ID:[ \\t]+${regexpQuote(id)}[ \\t]*$`, { from: 0, regexp: true });
+    const found = find(`^[ \\t]*:CUSTOM_ID:[ \\t]+${regexpQuote(id)}[ \\t]*$`, { regexp: true });
     if (!found) throw new Error(`No match for custom ID: ${id}`);
     const all = headings();
     const i = headingIndex(all, lineAt(found.start));
     return i === undefined ? found.start : all[i].start;
   }
   if (/^\d+$/.test(path)) return e8.lineStart(Math.min(Number(path) - 1, e8.lineCount() - 1));
-  const target = e8.search(`<<${path}>>`, { from: 0 });
+  const target = find(`<<${path}>>`);
   if (target) return target.start;
   // Headings only in Org buffers; elsewhere, as in a program a link of
   // %a's names, the words anywhere, as org-link-search's free text search.
-  const h = e8.derivedModeP("org-mode") ? searchHeading(path) : undefined;
+  const h = e8.derivedModeP("org-mode") ? searchHeading(path, from, to) : undefined;
   if (h) return h.start;
   const words = path.trim().split(/\s+/).map(regexpQuote).join("[ \t\r\n]+");
-  const text = !e8.derivedModeP("org-mode") && words !== "" ? e8.search(words, { from: 0, regexp: true, caseFold: true }) : undefined;
+  const text = !e8.derivedModeP("org-mode") && words !== "" ? find(words, { regexp: true, caseFold: true }) : undefined;
   if (text) return text.start;
   throw new Error(`No match for fuzzy expression: ${path}`);
 }
@@ -189,21 +202,30 @@ function normalizeString(text: string, context = false): string {
   return s;
 }
 
+/** Whether the region is active and not empty, as org-region-active-p (use-region-p). */
+function regionUsable(): boolean {
+  const mark = e8.mark();
+  return e8.regionActive() && mark !== undefined && mark !== e8.point();
+}
+
 /** The active region's text, if any, to org-link-context-for-files's number of lines, as org-link--context-from-region. */
 function contextFromRegion(): string | undefined {
-  const mark = e8.mark();
-  if (!e8.regionActive() || mark === undefined) return undefined;
+  const mark = e8.mark() as number;
+  if (!regionUsable()) return undefined;
   let context = e8.bufferSubstringNoProperties(Math.min(mark, e8.point()), Math.max(mark, e8.point()));
   const n = e8.variable("org-link-context-for-files");
   if (typeof n === "number" && Number.isInteger(n) && n > 0) {
-    // As org-split-string: lines, leaving out empty ones.
-    context = context.split(/\n/).filter((l) => l !== "").slice(0, n).join("\n");
+    // As org-split-string: lines, without empty ones at either end.
+    const lines = context.split("\n");
+    while (lines.length > 0 && lines[0] === "") lines.shift();
+    while (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
+    context = lines.slice(0, n).join("\n");
   }
   return context;
 }
 
 /** A heading's title as org-get-heading t t t t gives it: without state, priority, COMMENT or tags. */
-const bareHeading = (h: Heading): string => h.title.replace(/^COMMENT(?:[ \t]+|$)/, "");
+const bareHeading = (h: Heading): string => h.title.replace(/^COMMENT[ \t]+/, "");
 
 /** The search string for a heading, *Title, as org-link-heading-search-string. */
 export function linkHeadingSearchString(title: string): string {
@@ -346,7 +368,7 @@ export function setAgendaEntryHere(f: () => { buffer: string; pos: number } | un
  * of its lines.
  */
 export function storeLink(arg: e8.Value | undefined, interactive: boolean): e8.Value {
-  if (isPrefix(arg, 3) && e8.regionActive()) {
+  if (isPrefix(arg, 3) && regionUsable()) {
     const mark = e8.mark() as number;
     const end = Math.max(mark, e8.point());
     e8.saveExcursion(() => {
@@ -406,14 +428,16 @@ export function storeLink(arg: e8.Value | undefined, interactive: boolean): e8.V
         desc = typeof d === "string" ? d : null;
       } else if (baseFileName() !== undefined && e8.derivedModeP("org-mode")) {
         // A <<target>> at point, else the heading, as Org does.
-        const text = e8.lineText(lineAt());
-        const col = e8.point() - e8.lineStart(lineAt());
-        const chars = [...text];
-        const target = allMatches(/(?:^|[^<])<<([^<>\n]+)>>(?:[^>]|$)/g, text).find((m) => {
+        // As org-in-regexp: a character before and after, a newline counting.
+        const line = lineAt();
+        const before = e8.lineStart(line) > e8.pointMin() ? "\n" : "";
+        const text = before + e8.lineText(line) + (e8.lineEnd(line) < e8.pointMax() ? "\n" : "");
+        const col = e8.point() - e8.lineStart(line) + before.length;
+        const target = allMatches(/[^<]<<([^<>\n]+)>>[^>]/g, text).find((m) => {
           const from = [...text.slice(0, m.index ?? 0)].length;
           return from <= col && col <= from + [...m[0]].length;
         });
-        if (target && chars.length >= 0) link = `file:${e8.abbreviateFileName(baseFileName() as string)}::${target[1]}`;
+        if (target) link = `file:${e8.abbreviateFileName(baseFileName() as string)}::${target[1]}`;
         else [link, desc] = fileLinkToHere();
       } else if (baseFileName() !== undefined) [link, desc] = fileLinkToHere();
       else if (interactive) e8.userError("No method for storing a link from this buffer");
@@ -534,7 +558,7 @@ function readLink(): string {
  */
 export function insertLink(completeFile: e8.Value | undefined, linkLocation?: string, description?: string, interactive = false): void {
   const mark = e8.mark();
-  const regionActive = e8.regionActive() && mark !== undefined;
+  const regionActive = regionUsable() && mark !== undefined;
   const region = regionActive ? e8.bufferSubstringNoProperties(Math.min(mark, e8.point()), Math.max(mark, e8.point())) : undefined;
   let remove: [number, number] | undefined = regionActive ? [Math.min(mark, e8.point()), Math.max(mark, e8.point())] : undefined;
   let desc: string | undefined = region;
@@ -560,7 +584,9 @@ export function insertLink(completeFile: e8.Value | undefined, linkLocation?: st
   }
   const original = link;
   // A plain link, not a timestamp, without angle brackets.
-  if (/^<?(?:https?|ftp|mailto|file|news|doi):/.test(link) && !/^<\d{4}-\d{2}-\d{2}/.test(link)) link = link.replace(/^<(.*)>$/, "$1");
+  // As org-link-plain-re finds it: a known type and a colon anywhere.
+  const plain = new RegExp(`(?:^|[^\\p{L}\\p{N}_])(?:${linkPrefixes().map(regexpQuote).join("|")}):[^\\][ \\t\\n()<>]`, "u");
+  if (plain.test(link) && !/<\d{4}-\d{2}-\d{2}|\[\d{4}-\d{2}-\d{2}/.test(link)) link = link.replace(/^<(.*)>$/s, "$1");
   const file = baseFileName();
   const same = /^file:(.+?)::/.exec(link);
   if (file !== undefined && same && e8.fileTruename(file) === e8.fileTruename(e8.expandFileName(same[1]))) {
