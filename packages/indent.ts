@@ -3,7 +3,7 @@
 // The default, indent-relative, is for tabbing rather than indenting, so
 // indent-according-to-mode indents such lines as the line before them.
 
-import { numberValue as num } from "subr";
+import { forwardLine, numberValue as num, regexpQuote } from "subr";
 
 e8.defineVariable({
   name: "indent-line-function",
@@ -169,28 +169,54 @@ e8.defineCommand({
     if (arg !== null) {
       const column = e8.prefixNumericValue(arg);
       for (let line = first; line <= last; line++) indentRigidly(line, line, column - currentIndentation(line));
-    } else if (typeof regionFunction() === "string" || typeof regionFunction() === "function") {
-      // The mode's own, given the region as Emacs gives it, with the
-      // buffer widened, as Emacs's indent-region calls it.
-      const mark = e8.mark() as number;
-      const pt = e8.makeMarker();
-      const [start, end] = [Math.min(mark, e8.point()), Math.max(mark, e8.point())];
-      e8.saveRestriction(() => {
-        e8.widen();
-        e8.funcall(regionFunction() as string, start, end);
-      });
-      e8.gotoChar(e8.markerPosition(pt)!);
-      e8.deleteMarker(pt);
     } else {
-      // Line by line, also widened.
-      e8.saveRestriction(() => {
-        e8.widen();
-        indentRegion(first, last);
-      });
+      const mark = e8.mark() as number;
+      indentRegionBetween(Math.min(mark, e8.point()), Math.max(mark, e8.point()));
     }
     e8.deactivateMark();
   },
 });
+
+/**
+ * Indents each non-empty line from `start` to `end` as the major mode says,
+ * by its indent-region-function or line by line, with the buffer widened,
+ * as Emacs's indent-region does without a column.
+ */
+export function indentRegionBetween(start: number, end: number): void {
+  // Reindenting may change nothing, so the mark goes by hand, as indent-region sets deactivate-mark.
+  e8.deactivateMark();
+  const fillPrefix = e8.variable("fill-prefix");
+  if (typeof fillPrefix === "string") {
+    // The fill prefix on each line without it that is not empty.
+    e8.saveExcursion(() => {
+      const endMarker = e8.makeMarker(end);
+      e8.gotoChar(start);
+      while (e8.point() < e8.markerPosition(endMarker)!) {
+        const eolp = e8.point() === e8.lineEndPosition();
+        if (!e8.lookingAt(regexpQuote(fillPrefix)) && !(e8.point() === e8.lineBeginningPosition() && eolp)) e8.insert(fillPrefix);
+        if (forwardLine(1) !== 0) break;
+      }
+      e8.deleteMarker(endMarker);
+    });
+    return;
+  }
+  if (typeof regionFunction() === "string" || typeof regionFunction() === "function") {
+    const pt = e8.makeMarker();
+    e8.saveRestriction(() => {
+      e8.widen();
+      e8.funcall(regionFunction() as string, start, end);
+    });
+    e8.gotoChar(e8.markerPosition(pt)!);
+    e8.deleteMarker(pt);
+    return;
+  }
+  let last = e8.lineOf(end);
+  if (end === e8.lineStart(last) && last > e8.lineOf(start)) last--;
+  e8.saveRestriction(() => {
+    e8.widen();
+    indentRegion(e8.lineOf(start), last);
+  });
+}
 
 /** One step of indent-rigidly's keys: a column, or to the tab stop before or after the least indentation. */
 function rigidStep(n: number | "left-tab" | "right-tab"): void {

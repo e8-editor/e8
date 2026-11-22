@@ -170,11 +170,15 @@ function parseElements(
     const text = e8.bufferText(p, e8.lineEnd(line));
     const next = lineStartOrEnd(line + 1);
     let e: Elem;
-    if (afterHeadline && previous === undefined && PLANNING.test(text)) {
+    // Planning right after the heading, as Org's parser wants the line before to be the heading's.
+    const afterHeading = line > 0 && e8.lineText(line - 1).startsWith("*");
+    if (afterHeadline && previous === undefined && afterHeading && PLANNING.test(text)) {
       e = elem("planning", p, Math.min(next, to), parent);
     } else if (
       (afterHeadline || (firstSection && p === 0)) &&
-      (previous === undefined || previous === "planning") &&
+      // Right after the heading, or the planning line with no blank line between, as Org's parser has it.
+      ((previous === undefined && (afterHeading || !afterHeadline)) ||
+        (previous === "planning" && line > 0 && !isBlank(e8.lineText(line - 1)))) &&
       /^[ \t]*:PROPERTIES:[ \t]*$/i.test(text) &&
       drawerEnd(line, to) !== undefined &&
       // As org-property-drawer-re has it, every line inside is a property.
@@ -190,8 +194,11 @@ function parseElements(
       // Anchored at the line's start, as Org's is: an item's text that starts with a bar is no table.
       let last = line;
       while (last + 1 < e8.lineCount() && lineStartOrEnd(last + 1) < to && /^[ \t]*\|/.test(e8.lineText(last + 1))) last++;
-      e = elem("table", p, Math.min(lineStartOrEnd(last + 1), to), parent, p);
-      e.contentsEnd = e.end;
+      // Its formula lines belong to it, after its rows, as Org's table parser takes them.
+      let formulas = last;
+      while (formulas + 1 < e8.lineCount() && lineStartOrEnd(formulas + 1) < to && /^[ \t]*#\+TBLFM:/i.test(e8.lineText(formulas + 1))) formulas++;
+      e = elem("table", p, Math.min(lineStartOrEnd(formulas + 1), to), parent, p);
+      e.contentsEnd = Math.min(lineStartOrEnd(last + 1), to);
       for (let l = line; l <= last; l++) elem("table-row", e8.lineStart(l), Math.min(lineStartOrEnd(l + 1), to), e);
     } else if (p === e8.lineStart(line) && itemLine(line)) {
       const [struct, prevs, parents] = list ?? (() => {

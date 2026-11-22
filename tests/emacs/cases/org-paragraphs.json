@@ -1,0 +1,371 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "list-forward",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-}",
+  "point": 7
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "list-backward",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-{",
+  "point": 15
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "list-forward-twice",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "list-backward-all",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-{ M-{ M-{",
+  "point": 22
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "table-forward-twice",
+  "text": "aaa\n| a |\n| b |\nbbb\n",
+  "keys": "M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "table-backward",
+  "text": "aaa\n| a |\n| b |\nbbb\n",
+  "keys": "M-{",
+  "point": 18
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "long-items-forward",
+  "text": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+  "keys": "M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "long-items-backward",
+  "text": "- aaa\n  bbb\n- ccc\n  ddd\n\nzzz\n",
+  "keys": "M-{ M-{ M-{",
+  "point": 28
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "headings-forward",
+  "text": "* A\ntext one\n\ntext two\n* B\nmore\n",
+  "keys": "M-} M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "headings-backward",
+  "text": "* A\ntext one\n\ntext two\n* B\nmore\n",
+  "keys": "M-{ M-{ M-{ M-{",
+  "point": 34
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "src-block-forward",
+  "text": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+  "keys": "M-} M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "src-block-backward",
+  "text": "#+begin_src sh\necho a\n\necho b\n#+end_src\nafter\n",
+  "keys": "M-{ M-{ M-{ M-{",
+  "point": 45
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "keywords-forward",
+  "text": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+  "keys": "M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "keywords-backward",
+  "text": "#+TITLE: a\n#+AUTHOR: b\n\ntext\n",
+  "keys": "M-{ M-{",
+  "point": 28
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "drawer-forward",
+  "text": "* H\n:PROPERTIES:\n:A: 1\n:END:\ntext\n",
+  "keys": "M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "affiliated-forward",
+  "text": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+  "keys": "M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "affiliated-backward",
+  "text": "aaa\n\n#+NAME: t\n| a |\n\nbbb\n",
+  "keys": "M-{ M-{",
+  "point": 27
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "quote-block-forward",
+  "text": "#+begin_quote\none\n\ntwo\n#+end_quote\n",
+  "keys": "M-} M-} M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "nested-list-forward",
+  "text": "- a\n  - b\n  - c\n- d\n\ntext\n",
+  "keys": "M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "folded-heading-forward",
+  "text": "* A\nbody\n* B\nmore\n",
+  "keys": "S-TAB M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "count-forward",
+  "text": "one\n\ntwo\n\nthree\n",
+  "keys": "M-3 M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "negative-count",
+  "text": "one\n\ntwo\n\nthree\n",
+  "keys": "M-- M-}",
+  "point": 16
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "c-down",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "C-<down>",
+  "point": 7
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "mark-paragraph-list",
+  "text": "aaa\n\n- a\n- b\n- c\n\nbbb\n",
+  "keys": "M-h",
+  "point": 9
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "item-first-paragraph-back",
+  "text": "- a\n- b\nnot item\n\nnext\n",
+  "keys": "M-{",
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "description-item-back",
+  "text": "Before\n\n- term :: definition\n- other :: def two\n\nEnd\n",
+  "keys": "M-{",
+  "point": 28
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "checkbox-item-back",
+  "text": "- [ ] task one\n- [X] task two\n  more\n- [@3] counter\n",
+  "keys": "M-{",
+  "point": 14
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "tblfm-down",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+  "keys": "C-<down>",
+  "point": 23
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "tblfm-element-forward",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+  "keys": "M-}",
+  "point": 23
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "tblfm-up",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+  "keys": "C-<up>",
+  "point": 80
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "tblfm-element-back",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+  "keys": "M-{",
+  "point": 80
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "tblfm-down-twice",
+  "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+  "keys": "M-2 C-<down>",
+  "point": 45
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "planning-after-blank-down",
+  "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+  "keys": "C-<down>",
+  "point": 32
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "planning-after-blank-down-2",
+  "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+  "keys": "C-<down>",
+  "point": 45
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "planning-after-blank-up",
+  "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+  "keys": "C-<up>",
+  "point": 48
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "last-heading-at-end",
+  "text": "* A\n* B",
+  "keys": "M-}",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "last-heading-child-at-end",
+  "text": "* A\n** B",
+  "keys": "M-}",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "only-heading",
+  "text": "* H",
+  "keys": "M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "narrowed-subtree-forward",
+  "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+  "keys": "C-x n s M-}",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "hidden-heading-forward",
+  "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+  "keys": "S-TAB M-}",
+  "point": 13
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "hidden-heading-forward-2",
+  "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+  "keys": "S-TAB M-}",
+  "point": 31
+ }
+]

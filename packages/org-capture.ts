@@ -923,7 +923,8 @@ function placeTableLine(t: CaptureTemplate, where: Target, filled: Filled, prepe
   let tableEnd: number;
   if (table) {
     tableStart = table.begin;
-    tableEnd = lineStartOrEnd(lineAt(endBeforeBlank(table)) + 1);
+    // After its rows, before any #+TBLFM: lines, as org-table-end takes it.
+    tableEnd = table.contentsEnd ?? lineStartOrEnd(lineAt(endBeforeBlank(table)) + 1);
   } else {
     // None: a new one, with an empty header.
     e8.gotoChar(end);

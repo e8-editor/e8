@@ -5478,6 +5478,12 @@ declare global {
        */
       "org-babel-tangle-file": [file: string];
       /**
+       * Move back to the start of this element, or the one before at the same level; from a heading, the heading before at its level or its parent.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-backward-element": [];
+      /**
        * Move to the previous heading at the same level, under the same parent.
        *
        * @param arg prefix count
@@ -5485,6 +5491,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-backward-heading-same-level": [arg?: number];
+      /**
+       * Move back over a paragraph or what stands for one in Org, as org-forward-paragraph moves forward. With a prefix argument, that many.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-backward-paragraph": [arg?: number];
       /**
        * Set the repeater of the entry's first timestamp to 0, so marking it done does not repeat it.
        *
@@ -5901,6 +5915,12 @@ declare global {
        */
       "org-force-self-insert": [];
       /**
+       * Move forward to the next element at the same level, or past the subtree from a heading.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-forward-element": [];
+      /**
        * Move to the next heading at the same level, under the same parent.
        *
        * @param arg prefix count
@@ -5908,6 +5928,14 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-forward-heading-same-level": [arg?: number];
+      /**
+       * Move forward over a paragraph or what stands for one in Org: an element such as a table or a list, a run of keywords or clocks, or the text between empty lines in a block. With a prefix argument, that many; back if negative.
+       *
+       * @param arg prefix count
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-forward-paragraph": [arg?: number];
       /**
        * Cycle the whole buffer: top headings only, then all headings, then everything.
        *
@@ -7242,6 +7270,16 @@ declare global {
        * @param n prefix count
        */
       "previous-line": [n?: number];
+      /**
+       * Fill the paragraph of the comment or string point is in, or that starts later on its line; else indent the function point is in or before.
+       *
+       * A prefix argument justifies the paragraph, as fill-paragraph's does.
+       *
+       * @param argument raw prefix argument
+       *
+       * Defined in packages/prog-mode.ts.
+       */
+      "prog-fill-reindent-defun": [argument?: PrefixArg | boolean];
       /**
        * The major mode programming language modes are built on.
        *
@@ -11543,6 +11581,12 @@ declare global {
        */
       "fill-column": Value;
       /**
+       * The function filling moves over paragraphs with, given how many and returning how many it could not, as Org sets it.
+       *
+       * Defined in packages/fill.ts.
+       */
+      "fill-forward-paragraph-function": Value;
+      /**
        * Functions called, with point where a line would break, to say it must not break there; any true stops it, as Org's keep a timestamp whole.
        *
        * Defined in packages/fill.ts.
@@ -11554,6 +11598,12 @@ declare global {
        * Defined in packages/fill.ts.
        */
       "fill-paragraph-function": Value;
+      /**
+       * Whether M-q fills a comment as a comment, with its comment starts, and keeps code and comments apart.
+       *
+       * Defined in packages/fill.ts.
+       */
+      "fill-paragraph-handle-comment": Value;
       /**
        * Text filling puts at the start of each line, or nil to work it out from the paragraph when adaptive-fill-mode is on. C-x . sets it.
        *
@@ -14979,6 +15029,24 @@ declare global {
        * Defined in packages/page.ts.
        */
       "page-delimiter": Value;
+      /**
+       * Whether the paragraph commands leave fill-prefix out of finding paragraphs, as where blank lines alone separate them.
+       *
+       * Defined in packages/paragraphs.ts.
+       */
+      "paragraph-ignore-fill-prefix": Value;
+      /**
+       * A regexp for the start of a line that separates paragraphs, matched at the left margin.
+       *
+       * Defined in packages/paragraphs.ts.
+       */
+      "paragraph-separate": Value;
+      /**
+       * A regexp for the start of a line that starts or separates paragraphs, matched at the left margin; paragraph-separate says which separate them.
+       *
+       * Defined in packages/paragraphs.ts.
+       */
+      "paragraph-start": Value;
       /**
        * Whether M-( puts a space before and after the parens it inserts, where a word or other parens are next to them.
        *

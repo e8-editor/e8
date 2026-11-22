@@ -1,75 +1,131 @@
-// Moving by paragraphs, after Emacs's paragraphs.el, with its defaults: a
-// paragraph ends at a blank line, and a line starting with a form feed
-// starts one. M-} moves to the end of this paragraph or the next, and M-{
-// to the start; Shift selects as they move.
+// Moving by paragraphs, after Emacs's paragraphs.el: lines that
+// paragraph-start matches start or separate paragraphs, those that
+// paragraph-separate matches too separate them, by default blank lines,
+// and with a fill prefix a line without it starts one. M-} moves to the
+// end of this paragraph or the next, and M-{ to the start; Shift selects
+// as they move.
 
 import { transposeSubr } from "simple";
-import { forwardLine } from "subr";
+import { forwardLine, regexpQuote, truthy } from "subr";
 
-const blank = (line: number): boolean => /^[ \t\f]*$/.test(e8.lineText(line));
-/** A line where a paragraph starts or one is separated, as paragraph-start matches it. */
-const starter = (line: number): boolean => /^[ \t]*(\f|$)/.test(e8.lineText(line));
+for (const [name, value, doc] of [
+  [
+    "paragraph-start",
+    "\f\\|[ \t]*$",
+    "A regexp for the start of a line that starts or separates paragraphs, matched at the left margin; paragraph-separate says which separate them.",
+  ],
+  ["paragraph-separate", "[ \t\f]*$", "A regexp for the start of a line that separates paragraphs, matched at the left margin."],
+  ["paragraph-ignore-fill-prefix", false, "Whether the paragraph commands leave fill-prefix out of finding paragraphs, as where blank lines alone separate them."],
+] as const) {
+  e8.defineVariable({ name, value, doc });
+}
 
-const bol = (): number => e8.lineStart(e8.lineOf(e8.point()));
-const eob = (): boolean => e8.point() >= e8.pointMax();
-/** Moves over `arg` paragraphs, back if negative, as forward-paragraph. */
-function forwardParagraph(arg: number): void {
-  while (arg < 0 && e8.point() > e8.pointMin()) {
-    const p = e8.point();
-    const line = e8.lineOf(p);
-    const atSeparator = /^[ \t\f]*$/.test(e8.bufferText(p, e8.lineEnd(line)));
-    // Just after an empty line, go to it.
-    const afterEmpty = p > e8.pointMin() && e8.bufferText(p - 1, p) === "\n" && (p - 1 === e8.pointMin() || e8.bufferText(p - 2, p - 1) === "\n");
-    if (!atSeparator && afterEmpty) {
-      e8.gotoChar(p - 1);
+const bobp = (): boolean => e8.point() <= e8.pointMin();
+const bolp = (): boolean => e8.point() === e8.lineBeginningPosition();
+/** To the left margin of point's line, as move-to-left-margin with no margin: its start. */
+const toLeftMargin = (): void => e8.gotoChar(e8.lineBeginningPosition());
+/** A regexp variable without a ^ at its start, as forward-paragraph takes it. */
+function unanchored(name: string): string {
+  const v = e8.variable(name);
+  const s = typeof v === "string" ? v : "";
+  return s.startsWith("^") ? s.slice(1) : s;
+}
+
+/**
+ * Moves over `arg` paragraphs, back if negative, as forward-paragraph: a
+ * line paragraph-start matches starts one, or separates them if
+ * paragraph-separate matches it too; with a fill prefix, lines without it
+ * start one. Returns how many it could not move over.
+ */
+export function forwardParagraph(argIn: number): number {
+  let arg = argIn;
+  const fp = e8.variable("fill-prefix");
+  const fillPrefixRegexp =
+    typeof fp === "string" && fp !== "" && !truthy(e8.variable("paragraph-ignore-fill-prefix")) ? regexpQuote(fp) : undefined;
+  const parstart = unanchored("paragraph-start");
+  let parsep = unanchored("paragraph-separate");
+  if (fillPrefixRegexp !== undefined) parsep = `${parsep}\\|${fillPrefixRegexp}[ \t]*$`;
+  const spParstart = `^[ \t]*\\(?:${parstart}\\|${parsep}\\)`;
+  const at = (re: string): boolean => e8.lookingAt(re);
+  // Kept from one paragraph to the next, as forward-paragraph's found-start is.
+  let found = false;
+  while (arg < 0 && !bobp()) {
+    let start: number;
+    if (!at(parsep) && e8.reSearchBackward("^\n", { bound: Math.max(e8.point() - 1, e8.pointMin()), noerror: true }) !== undefined && at(parsep)) {
       arg++;
       continue;
     }
-    // Back over separating lines.
-    e8.gotoChar(e8.lineStart(e8.lineOf(p - 1)));
-    while (e8.point() > e8.pointMin() && blank(e8.lineOf(e8.point()))) forwardLine(-1);
-    if (e8.point() === e8.pointMin()) break;
+    start = e8.point();
+    // Back over lines that separate paragraphs.
+    e8.gotoChar(e8.point() - 1);
+    e8.gotoChar(e8.lineBeginningPosition());
+    while (!bobp() && (toLeftMargin(), at(parsep))) forwardLine(-1);
+    if (bobp()) continue;
     arg++;
-    // Back to a line that starts or separates paragraphs.
-    let found: number | undefined;
-    for (let l = e8.lineOf(e8.point()); l >= 0; l--) {
-      if (starter(l) && e8.lineStart(l) < e8.lineEnd(e8.lineOf(e8.point()))) {
-        found = l;
-        break;
+    // To the end of the line before, then back to a line that starts or separates paragraphs.
+    e8.gotoChar(e8.lineEndPosition());
+    let real: boolean;
+    if (fillPrefixRegexp !== undefined) {
+      // A fill prefix overrides paragraph-start.
+      while ((e8.gotoChar(e8.lineBeginningPosition()), !bobp()) && (toLeftMargin(), !at(parsep)) && at(fillPrefixRegexp)) forwardLine(-1);
+      toLeftMargin();
+      real = !bobp();
+    } else {
+      for (;;) {
+        if (e8.reSearchBackward(spParstart, { noerror: true }) === undefined) {
+          e8.gotoChar(e8.pointMin());
+          break;
+        }
+        found = true;
+        start = e8.point();
+        toLeftMargin();
+        // A real one: a separator, or a start.
+        if (at(parsep) || at(parstart)) break;
+        found = false;
+        e8.gotoChar(start);
       }
+      real = found;
     }
-    if (found === undefined) {
-      e8.gotoChar(e8.pointMin());
-      continue;
-    }
-    e8.gotoChar(e8.lineStart(found));
-    while (!eob() && blank(e8.lineOf(e8.point()))) forwardLine(1);
-    // To the end of the line before the paragraph, or past it if it is not empty.
-    const before = e8.lineOf(e8.point()) - 1;
-    if (before < 0) {
-      e8.gotoChar(e8.pointMin());
-      continue;
-    }
-    e8.gotoChar(e8.lineEnd(before));
-    if (e8.currentColumn() > 0) e8.gotoChar(e8.point() + 1);
+    if (real) {
+      // Forward over separators; it cannot reach where it started.
+      while (!(e8.point() >= e8.pointMax()) && (toLeftMargin(), at(parsep))) forwardLine(1);
+      // Back to the line before the paragraph if it is only margin.
+      // As (end-of-line 0): the end of the line before, or the start on the first line.
+      const bolHere = e8.lineBeginningPosition();
+      e8.gotoChar(bolHere <= e8.pointMin() ? e8.pointMin() : bolHere - 1);
+      if (e8.currentColumn() > 0) e8.gotoChar(e8.point() + 1);
+      else {
+        e8.skipCharsBackward(" \t");
+        if (!bolp()) forwardLine(1);
+      }
+    } else e8.gotoChar(e8.pointMin());
   }
-  while (arg > 0 && !eob()) {
-    e8.gotoChar(bol());
-    while (!eob() && blank(e8.lineOf(e8.point()))) {
-      forwardLine(1);
-      if (!eob()) e8.gotoChar(bol());
-    }
-    if (!eob()) arg--;
+  while (arg > 0 && !(e8.point() >= e8.pointMax())) {
+    // Forward over separator lines...
+    while (!(e8.point() >= e8.pointMax()) && (toLeftMargin(), !(e8.point() >= e8.pointMax())) && at(parsep)) forwardLine(1);
+    if (!(e8.point() >= e8.pointMax())) arg--;
+    // ... and one more line.
     forwardLine(1);
-    let found: number | undefined;
-    for (let l = e8.lineOf(e8.point()); l < e8.lineCount(); l++) {
-      if (e8.lineStart(l) >= e8.point() && e8.lineStart(l) < e8.pointMax() && starter(l)) {
-        found = l;
-        break;
+    if (fillPrefixRegexp !== undefined) {
+      while (!(e8.point() >= e8.pointMax()) && (toLeftMargin(), !(e8.point() >= e8.pointMax())) && !at(parsep) && at(fillPrefixRegexp)) forwardLine(1);
+    } else {
+      let start = e8.point();
+      for (;;) {
+        if (e8.reSearchForward(spParstart, { noerror: true }) === undefined) {
+          e8.gotoChar(e8.pointMax());
+          break;
+        }
+        start = e8.matchBeginning(0)!;
+        e8.gotoChar(start);
+        if (e8.point() >= e8.pointMax()) break;
+        toLeftMargin();
+        if (at(parsep) || at(parstart)) break;
+        e8.gotoChar(e8.point() + 1);
       }
+      if (e8.point() < e8.pointMax()) e8.gotoChar(start);
     }
-    e8.gotoChar(found === undefined || e8.lineStart(found) > e8.pointMax() ? e8.pointMax() : e8.lineStart(found));
   }
+  return arg;
 }
 
 e8.defineCommand({
@@ -77,7 +133,9 @@ e8.defineCommand({
   doc: "Move to the end of this paragraph, or the next if between them. With a prefix argument, that many; back if negative.",
   shiftSelect: true,
   params: [{ name: "arg", kind: "count" }],
-  run: (arg: number) => forwardParagraph(arg),
+  run: (arg: number) => {
+    forwardParagraph(arg);
+  },
 });
 
 e8.defineCommand({
@@ -85,7 +143,9 @@ e8.defineCommand({
   doc: "Move to the start of this paragraph, or the one before if between them. With a prefix argument, that many.",
   shiftSelect: true,
   params: [{ name: "arg", kind: "count" }],
-  run: (arg: number) => forwardParagraph(-arg),
+  run: (arg: number) => {
+    forwardParagraph(-arg);
+  },
 });
 
 e8.bindKey("M-}", "forward-paragraph");

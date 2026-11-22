@@ -1139,6 +1139,22 @@ function rustSyntaxPropertize(start: number, end: number): void {
   }
 }
 
+/** A # that does not start a word, as in $# or a#b: unquoted and after a word character or ${. */
+const SH_NOT_COMMENT = /(?:[^|&;<>(`\\"' \t\n]|\$\{)(#+)/g;
+
+/**
+ * Makes a # that does not start a word a symbol character, as
+ * sh-syntax-propertize-function does, so only one at a word's start
+ * starts a comment.
+ */
+function shSyntaxPropertize(start: number, end: number): void {
+  const text = e8.bufferText(start, end);
+  for (const m of allMatches(SH_NOT_COMMENT, text)) {
+    const at = start + charCount(text.slice(0, m.index + m[0].length - m[1]!.length));
+    e8.withSilentModifications(() => e8.putTextProperty(at, at + charCount(m[1]!), "syntax-table", "_"));
+  }
+}
+
 // As typescript-ts-base-mode, which typescript-ts-mode and tsx-ts-mode are built on.
 e8.defineMajorMode({
   name: "typescript-ts-base-mode",
@@ -1165,6 +1181,11 @@ for (const mode of modes) {
         e8.setVariable("comment-start-skip", mode.comment.skip);
       }
       // As treesit-ready-p: without the grammar, the mode is prog-mode with a warning.
+      // Shell's # starts a comment only at a word's start, grammar or not, as sh-mode's syntax-propertize-function says.
+      if (mode.language === "bash") {
+        e8.setVariable("syntax-propertize-function", shSyntaxPropertize);
+        e8.setVariable("parse-sexp-lookup-properties", true);
+      }
       if (!e8.treesitLanguageAvailableP(mode.language)) {
         // Not from a buffer of E8's own, such as the one Org fontifies a block in.
         if (!e8.bufferName().startsWith(" ")) e8.message(`Cannot activate tree-sitter, because language grammar for ${mode.language} is unavailable`);
