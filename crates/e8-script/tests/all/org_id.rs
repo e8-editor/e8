@@ -66,9 +66,9 @@ fn ids_are_found_from_the_locations_file_and_by_scanning_again() {
     f.write("c.org", "* C\n");
     f.eval(&format!(r#"e8.setVariable("org-agenda-files", [{a:?}])"#));
     f.ed.call("org-id-goto", vec![e8_core::Arg::Str("id-c".into())]).unwrap();
-    // The files scanned are their true names, as file-truename gives them.
+    // The file, by its true name: looking for its archives, as org-add-archive-files does, visited it by the agenda's name.
     let true_a = f.eval(&format!("e8.fileTruename({a:?})"));
-    assert_eq!(f.eval("e8.bufferFileName()"), true_a);
+    assert_eq!(f.eval("e8.fileTruename(e8.bufferFileName())"), true_a);
     assert_eq!(f.eval("e8.point()"), "6");
     assert!(f.locations().contains("\"id-c\""), "{}", f.locations());
     assert!(f.locations().contains("a.org"), "{}", f.locations());
@@ -165,4 +165,77 @@ fn a_files_own_id_goes_after_its_first_comments_and_an_empty_scan_says_nothing()
     g.ed.clear_message();
     assert_eq!(g.eval(r#"JSON.stringify(e8.funcall("org-id-find", "nope") ?? null)"#), r#""null""#);
     assert_ne!(g.ed.echo(), Some("0 files scanned, 0 files contains IDs, and 0 IDs found."));
+}
+
+/// Duplicate IDs are said in *Warnings*, as Org warns of them.
+#[test]
+fn duplicate_ids_are_warned_of() {
+    let mut f = Fixture::new();
+    let a = f.write("a.org", "* A\n:PROPERTIES:\n:ID: one\n:END:\n");
+    let b = f.write("b.org", "* B\n:PROPERTIES:\n:ID: one\n:END:\n");
+    f.eval(&format!(r#"e8.setVariable("org-id-extra-files", [{a:?}, {b:?}])"#));
+    f.ed.call("org-id-update-id-locations", vec![]).unwrap();
+    let w = f.ed.buffers().iter().find(|b| b.name == "*Warnings*").expect("*Warnings* is made");
+    assert_eq!(w.slice(0..w.len()), "\u{26d4} Warning (emacs): WARNING: 1 duplicate IDs found, check *Messages* buffer\n");
+}
+
+/// org-id-uuid-program makes UUIDs, as uuidgen's capitals; one that gives
+/// none has E8 make its own.
+#[test]
+fn uuids_from_the_program() {
+    let mut f = Fixture::new();
+    f.eval(r#"e8.setVariable("org-id-uuid-program", "echo 01234567-89AB-CDEF-0123-456789ABCDEF")"#);
+    assert_eq!(f.eval(r#"e8.funcall("org-id-new", "none")"#), "\"01234567-89AB-CDEF-0123-456789ABCDEF\"");
+    f.eval(r#"e8.setVariable("org-id-uuid-program", "echo nonsense")"#);
+    let id = f.eval(r#"e8.funcall("org-id-new", "none")"#);
+    assert!(regex_like(&id, 36), "{id}");
+}
+
+/// With org-id-include-domain, the machine's fully qualified name, as message-make-fqdn finds it.
+#[test]
+fn the_domain_is_a_fully_qualified_name() {
+    let mut f = Fixture::new();
+    f.eval(r#"(e8.setVariable("org-id-method", "ts"), e8.setVariable("org-id-include-domain", true), e8.setVariable("mail-host-address", "example.org"), 1)"#);
+    let id = f.eval(r#"e8.funcall("org-id-new", "none")"#);
+    let host = f.eval("e8.systemName()").trim_matches('"').to_string();
+    let want = if host.contains('.') && !host.ends_with('.') { host } else { "example.org".into() };
+    assert!(id.ends_with(&format!("@{want}\"")), "{id}");
+}
+
+/// The agenda files' archives are searched for IDs, and a directory among
+/// the agenda files gives its Org files.
+#[test]
+fn archives_and_directories_are_searched() {
+    let mut f = Fixture::new();
+    std::fs::create_dir(f.path("notes")).unwrap();
+    f.write("notes/n.org", "* N\n:PROPERTIES:\n:ID: in-dir\n:END:\n");
+    let a = f.write("a.org", "* A\n");
+    f.write("a.org_archive", "* Old\n:PROPERTIES:\n:ID: archived\n:END:\n");
+    let dir = f.path("notes");
+    f.eval(&format!(r#"e8.setVariable("org-agenda-files", [{a:?}, {dir:?}])"#));
+    f.ed.call("org-id-update-id-locations", vec![]).unwrap();
+    let locations = f.locations();
+    assert!(locations.contains("\"archived\"") && locations.contains("\"in-dir\""), "{locations}");
+    // Without org-id-search-archives, in a fresh session, the archive is not searched.
+    let mut g = Fixture::new();
+    let a = g.write("a.org", "* A\n");
+    g.write("a.org_archive", "* Old\n:PROPERTIES:\n:ID: archived\n:END:\n");
+    g.eval(&format!(r#"(e8.setVariable("org-agenda-files", [{a:?}]), e8.setVariable("org-id-search-archives", false), 1)"#));
+    g.ed.call("org-id-update-id-locations", vec![]).unwrap();
+    assert!(!g.locations().contains("\"archived\""), "{}", g.locations());
+}
+
+/// With org-id-link-consider-parent-id, a link from an entry with no ID of
+/// its own uses the heading above's, with a search for the entry.
+#[test]
+fn links_by_an_inherited_id() {
+    let mut f = Fixture::new();
+    let a = f.write("a.org", "* Parent\n:PROPERTIES:\n:ID: par\n:END:\n** Child\n");
+    f.visit(&a);
+    f.eval(r#"(e8.setVariable("org-id-link-to-org-use-id", true), e8.setVariable("org-id-link-consider-parent-id", true), 1)"#);
+    f.ed.press("M-> C-p M-x o r g - s t o r e - l i n k RET").unwrap();
+    assert_eq!(f.ed.take_error().map(|e| e.to_string()), None);
+    assert_eq!(f.eval(r#"JSON.stringify(e8.variable("org-stored-links")[0])"#), r#""[\"id:par::*Child\",\"Child\"]""#);
+    // No ID was made for the child.
+    assert!(!f.ed.window_buffer().slice(0..f.ed.window_buffer().len()).contains("** Child\n:PROPERTIES:"));
 }

@@ -8811,6 +8811,12 @@ declare global {
        */
       "visual-line-mode": [];
       /**
+       * Ask whether to stop logging or showing warnings of the type of the warning at point.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warnings-suppress-at-point": [];
+      /**
        * Take back the edits to the file names and go back to Dired.
        *
        * Defined in packages/wdired.ts.
@@ -13899,6 +13905,12 @@ declare global {
        */
       "org-id-include-domain": Value;
       /**
+       * Whether a link org-store-link makes may use an ID inherited from a heading above, with a search for where point is, when org-id-link-use-context and org-link-context-for-files are on.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-link-consider-parent-id": Value;
+      /**
        * Whether org-store-link links an Org entry by its ID: t, making one if need be; "create-if-interactive", making one only for org-store-link itself, not capture; "create-if-interactive-and-no-custom-id", the same unless it has a CUSTOM_ID; "use-existing", only an ID it has; nil, never.
        *
        * Defined in packages/org-id.ts.
@@ -13941,6 +13953,12 @@ declare global {
        */
       "org-id-prefix": Value;
       /**
+       * Whether the archives of the agenda files are searched for IDs too.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-search-archives": Value;
+      /**
        * Whether IDs are tracked through files, so that links work globally, in org-id-locations, saved in org-id-locations-file when E8 exits.
        *
        * Defined in packages/org-id.ts.
@@ -13952,6 +13970,12 @@ declare global {
        * Defined in packages/org-id.ts.
        */
       "org-id-ts-format": Value;
+      /**
+       * The program that makes a UUID for org-id-method uuid, as uuidgen; its own UUID is made if it gives none.
+       *
+       * Defined in packages/org-id.ts.
+       */
+      "org-id-uuid-program": Value;
       /**
        * How deep in the outline M-x imenu lists headings.
        *
@@ -15961,6 +15985,70 @@ declare global {
        * Defined in packages/bindings.ts.
        */
       "visual-order-cursor-movement": Value;
+      /**
+       * Whether *Warnings* is shown at the bottom of the frame, scrolled to its last warning.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-display-at-bottom": Value;
+      /**
+       * The fill column warnings are filled to, with warning-fill-prefix.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-fill-column": Value;
+      /**
+       * The fill prefix to fill each warning with, or nil not to fill it.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-fill-prefix": Value;
+      /**
+       * The severity levels of display-warning, most severe first: each a list of the level, the text before the message, with %s where the type goes, and a function to get the user's attention, or none.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-levels": Value;
+      /**
+       * The least severe level of warning shown in a window: :emergency, :error, :warning or :debug.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-minimum-level": Value;
+      /**
+       * The least severe level of warning logged in *Warnings*: :emergency, :error, :warning or :debug.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-minimum-log-level": Value;
+      /**
+       * A function of the level and its entry in warning-levels, called in *Warnings* where the warning starts, which may insert text and gives the entry to use.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-prefix-function": Value;
+      /**
+       * Warning types not logged at all: each a list of a type's symbols, or of its first ones, to leave out its subtypes too.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-suppress-log-types": Value;
+      /**
+       * Warning types logged but not shown in a window: each a list of a type's symbols, or of its first ones.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-suppress-types": Value;
+      /**
+       * How the warning's type is written in its level's text.
+       *
+       * Defined in packages/warnings.ts.
+       */
+      "warning-type-format": Value;
+      /**
+       * Keymap warnings-suppress-button-map.
+       */
+      "warnings-suppress-button-map": Value;
       /**
        * Whether the permission bits can be edited too: t lets each bit be typed, r, w, x or -, or toggled with SPC; advanced lets them be edited as any text. C-c C-c then sets the files' modes.
        *

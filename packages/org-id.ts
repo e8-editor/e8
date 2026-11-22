@@ -10,12 +10,13 @@
 // org-roam, which knows every ID of its directory, advises org-id-find to
 // answer first, as org-roam-id.el does.
 
-import { headings, headingIndex, linkSetParameters, markRingPush } from "org";
+import { agendaFiles as orgAgendaFiles, headings, headingIndex, linkSetParameters, markRingPush } from "org";
 import { elementAt } from "org-element";
 import { entryGet, entryPut, topGet } from "org-list";
 import { fileRelativeName, findBufferVisiting } from "files";
 import { linkPreciseTarget, linkStoreProps, searchInBuffer, showContext } from "ol";
 import { truthy } from "subr";
+import { warn } from "warnings";
 
 e8.defineVariable({
   name: "org-id-track-globally",
@@ -48,6 +49,13 @@ e8.defineVariable({
 e8.defineVariable({ name: "org-id-prefix", doc: "The prefix of new IDs, before a colon, or nil for none.", value: null });
 e8.defineVariable({ name: "org-id-ts-format", doc: "How org-id-method ts writes the time, as format-time-string.", value: "%Y%m%dT%H%M%S.%6N" });
 e8.defineVariable({ name: "org-id-include-domain", doc: "Whether IDs made by the org and ts methods end in @ and the machine's name.", value: false });
+e8.defineVariable({ name: "org-id-uuid-program", doc: "The program that makes a UUID for org-id-method uuid, as uuidgen; its own UUID is made if it gives none.", value: "uuidgen" });
+e8.defineVariable({ name: "org-id-search-archives", doc: "Whether the archives of the agenda files are searched for IDs too.", value: true });
+e8.defineVariable({
+  name: "org-id-link-consider-parent-id",
+  doc: "Whether a link org-store-link makes may use an ID inherited from a heading above, with a search for where point is, when org-id-link-use-context and org-link-context-for-files are on.",
+  value: false,
+});
 e8.defineVariable({
   name: "org-id-overriding-file-name",
   doc: "The file name org-id-get records a new ID under instead of the buffer's, for contents in a temporary buffer.",
@@ -60,6 +68,31 @@ export function orgIdUuid(): string {
   return `${hex(8)}-${hex(4)}-4${hex(3)}-${(8 + Math.floor(Math.random() * 4)).toString(16)}${hex(3)}-${hex(12)}`;
 }
 e8.defun("org-id-uuid", orgIdUuid);
+
+/** What org-id-uuid-program prints, trimmed, or nothing if it cannot run. */
+function runUuidProgram(): string {
+  const program = e8.variable("org-id-uuid-program");
+  if (typeof program !== "string" || program === "") return "";
+  try {
+    return e8.callProcess(["/bin/sh", "-c", program]).output.trim();
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * The machine's fully qualified name, as message-make-fqdn: system-name if
+ * it has a dot, else mail-host-address, else user-mail-address's domain.
+ */
+function messageMakeFqdn(): string {
+  const system = e8.systemName();
+  if (system.includes(".") && !system.endsWith(".")) return system;
+  const host = e8.variable("mail-host-address");
+  if (typeof host === "string" && host !== "") return host;
+  const mail = e8.variable("user-mail-address");
+  if (typeof mail === "string" && /@./.test(mail)) return mail.slice(mail.indexOf("@") + 1);
+  return "i-did-not-set--mail-host-address--so-tickle-me";
+}
 
 /** The time in base 36, four digits for each of current-time's high and low seconds and microseconds, as org-id-time-to-b36. */
 function timeToB36(): string {
@@ -79,9 +112,13 @@ export function orgIdNew(prefix?: string): string {
   let head = prefix === "none" ? "" : `${prefix ?? (typeof own === "string" ? own : "")}:`;
   if (head === ":") head = "";
   const method = String(e8.variable("org-id-method"));
-  const domain = () => (truthy(e8.variable("org-id-include-domain")) ? `@${e8.systemName()}` : "");
+  const domain = () => (truthy(e8.variable("org-id-include-domain")) ? `@${messageMakeFqdn()}` : "");
   let unique = "";
-  if (method === "uuid" || method === "uuidgen") unique = orgIdUuid();
+  if (method === "uuid" || method === "uuidgen") {
+    // From org-id-uuid-program, as shell-command-to-string runs it, else made here.
+    unique = runUuidProgram();
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(unique)) unique = orgIdUuid();
+  }
   else if (method === "org") unique = [...timeToB36()].reverse().join("") + domain();
   else if (method === "ts") unique = e8.formatTimeString(String(e8.variable("org-id-ts-format"))) + domain();
   else e8.signal("error", "Invalid ‘org-id-method’");
@@ -278,14 +315,15 @@ export function addLocation(id: string, file: string | undefined): void {
 }
 e8.defun("org-id-add-location", (id: string, file: string) => addLocation(id, file));
 
-/** The agenda files, expanded in org-directory, as org-agenda-files gives them. */
+/**
+ * The agenda files, a directory's Org files among them, and with
+ * org-id-search-archives their archives, as (org-agenda-files t org-id-search-archives).
+ */
 function agendaFiles(): string[] {
-  const files = e8.variable("org-agenda-files");
-  if (!Array.isArray(files)) return [];
-  const dir = e8.variable("org-directory");
-  return files
-    .filter((f): f is string => typeof f === "string")
-    .map((f) => e8.expandFileName(f, typeof dir === "string" ? e8.expandFileName(dir) : undefined));
+  const files = orgAgendaFiles();
+  if (!truthy(e8.variable("org-id-search-archives") ?? null) || !e8.fboundp("org-add-archive-files")) return files;
+  const all = e8.funcall("org-add-archive-files", files);
+  return Array.isArray(all) ? all.filter((f): f is string => typeof f === "string") : files;
 }
 
 /** org-id-extra-files: a list of files, or a variable's name whose value is one. */
@@ -368,7 +406,7 @@ export function updateIdLocations(files: string[] = [], silent = false): void {
   if (alist.length > 0) writeLocations(alist);
   locations = alistToHash(alist);
   checksum = sum;
-  if (!silent && ndup > 0) e8.message(`WARNING: ${ndup} duplicate IDs found, check *Messages* buffer`);
+  if (!silent && ndup > 0) warn("WARNING: %d duplicate IDs found, check *Messages* buffer", ndup);
   e8.message(`${all.length} files scanned, ${idFiles().length} files contains IDs, and ${locations.size} IDs found.`);
 }
 
@@ -480,10 +518,18 @@ export function orgIdStoreLink(): string | undefined {
   if (baseFileName() === undefined || !e8.derivedModeP("org-mode")) return undefined;
   // The precise target first, before an ID's drawer moves things.
   const precise = truthy(e8.variable("org-link-context-for-files") ?? null) && truthy(e8.variable("org-id-link-use-context") ?? null) ? linkPreciseTarget() : undefined;
-  let link = `id:${orgIdGet(true)}`;
+  // An inherited ID only with its context, as org-id--get-id-to-store-link takes one.
+  const inherit =
+    truthy(e8.variable("org-id-link-consider-parent-id") ?? null) &&
+    truthy(e8.variable("org-id-link-use-context") ?? null) &&
+    truthy(e8.variable("org-link-context-for-files") ?? null);
+  const inherited = inherit ? inheritedId() : undefined;
+  let link = `id:${inherited?.id ?? orgIdGet(true)}`;
   const all = headings();
-  const i = headingIndex(all, e8.lineOf(e8.point()));
-  const location = i === undefined ? e8.pointMin() : all[i].start;
+  const own = headingIndex(all, e8.lineOf(e8.point()));
+  // Described by the heading the ID is on.
+  const i = inherited ? headingIndex(all, e8.lineOf(inherited.at)) : own;
+  const location = inherited ? inherited.at : i === undefined ? e8.pointMin() : all[i].start;
   let desc: string;
   if (i === undefined) {
     const title = /^[ \t]*#\+TITLE:[ \t]*(.*?)[ \t]*$/im.exec(e8.bufferSubstringNoProperties(e8.pointMin(), e8.pointMax()));
@@ -504,6 +550,26 @@ e8.defineCommand({
     orgIdStoreLink();
   },
 });
+
+/**
+ * The ID the entry at point has or inherits from a heading above, or the
+ * file's, and where it is, as org-entry-get with inheritance and
+ * org-entry-property-inherited-from; none if the entry has none of its own
+ * and none above it does.
+ */
+function inheritedId(): { id: string; at: number } | undefined {
+  const all = headings();
+  let i = headingIndex(all, e8.lineOf(e8.point()));
+  while (i !== undefined) {
+    const id = entryGet(all[i].line, "ID");
+    if (id !== undefined && /\S/.test(id)) return { id, at: all[i].start };
+    let k = i - 1;
+    while (k >= 0 && all[k].level >= all[i].level) k--;
+    i = k >= 0 ? k : undefined;
+  }
+  const top = topGet("ID");
+  return top !== undefined && /\S/.test(top) ? { id: top, at: e8.pointMin() } : undefined;
+}
 
 /** Stores an ID link when org-id-link-to-org-use-id says to, as org-id-store-link-maybe. */
 function orgIdStoreLinkMaybe(interactive: boolean): string | undefined {
