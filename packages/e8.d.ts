@@ -5474,6 +5474,12 @@ declare global {
        */
       "org-backward-heading-same-level": [arg?: number];
       /**
+       * Set the repeater of the entry's first timestamp to 0, so marking it done does not repeat it.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cancel-repeater": [];
+      /**
        * Capture a note, asking for one of org-capture-templates by its key in *Org Select*: its entry goes into its target file, shown narrowed to it. C-c C-c files it and C-c C-k takes it away.
        *
        * @param goto raw prefix argument
@@ -6472,6 +6478,18 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-set-tags-command": [];
+      /**
+       * C-S-<left> in Org: switch the heading to the previous set of TODO keywords.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-shiftcontrolleft": [];
+      /**
+       * C-S-<right> in Org: switch the heading to the next set of TODO keywords.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-shiftcontrolright": [];
       /**
        * S-<down> in Org: make a timestamp earlier, lower a heading's priority, or move to the next item.
        *

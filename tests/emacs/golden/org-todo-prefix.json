@@ -1,0 +1,635 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "c-u-forces-a-note",
+      "input": {
+        "text": "* TODO A\n",
+        "point": 2,
+        "keys": "C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "# Insert note for state change from \"TODO\" to \"DONE\".\n# Finish with C-c C-c, or cancel with C-c C-k.\n\n",
+      "visible": "# Insert note for state change from \"TODO\" to \"DONE\".\n# Finish with C-c C-c, or cancel with C-c C-k.\n\n",
+      "point": 102,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-u-forces-a-note-then-finish",
+      "input": {
+        "text": "* TODO A\n",
+        "point": 2,
+        "keys": "C-u C-c C-t h e l l o C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* DONE A\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00] \\\\\n  hello",
+      "visible": "* DONE A\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00] \\\\\n  hello",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-u-c-u-next-set",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+        "point": 47,
+        "keys": "C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+      "visible": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 2/2: BUG FIXED"
+    },
+    {
+      "name": "c-u-c-u-next-set-wraps",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+        "point": 47,
+        "keys": "C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+      "visible": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 1/2: TODO NEXT DONE"
+    },
+    {
+      "name": "c-u-c-u-from-no-state",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* A\n",
+        "point": 47,
+        "keys": "C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+      "visible": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 1/2: TODO NEXT DONE"
+    },
+    {
+      "name": "c-u-c-u-one-set",
+      "input": {
+        "text": "* TODO A\n",
+        "point": 2,
+        "keys": "C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "* TODO A\n",
+      "visible": "* TODO A\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 1/1: TODO DONE"
+    },
+    {
+      "name": "c-s-right-next-set",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+        "point": 47,
+        "keys": "C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+      "visible": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 2/2: BUG FIXED"
+    },
+    {
+      "name": "c-s-left-previous-set",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+        "point": 47,
+        "keys": "C-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+      "visible": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 2/2: BUG FIXED"
+    },
+    {
+      "name": "c-s-right-off-a-heading",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\ntext\n",
+        "point": 57,
+        "keys": "C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\ntext\n",
+      "visible": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\ntext\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "To use shift-selection with Org mode, customize ‘org-support-shift-select’"
+    },
+    {
+      "name": "zero-inhibits-the-note",
+      "input": {
+        "text": "#+TODO: TODO(t@) | DONE(d@)\n* TODO A\n",
+        "point": 29,
+        "keys": "C-0 C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-use-fast-todo-selection": false
+        }
+      },
+      "text": "#+TODO: TODO(t@) | DONE(d@)\n* DONE A\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00]",
+      "visible": "#+TODO: TODO(t@) | DONE(d@)\n* DONE A\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00]",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "minus-one-cancels-the-repeater",
+      "input": {
+        "text": "* TODO A\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 2,
+        "keys": "C-- C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* DONE A\nSCHEDULED: <2026-10-28 Wed +0w>\n",
+      "visible": "* DONE A\nSCHEDULED: <2026-10-28 Wed +0w>\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "minus-one-cancels-a-deadline-repeater",
+      "input": {
+        "text": "* TODO A\nDEADLINE: <2026-10-28 Wed .+2d>\n",
+        "point": 2,
+        "keys": "M-- C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* DONE A\nDEADLINE: <2026-10-28 Wed .+0d>\n",
+      "visible": "* DONE A\nDEADLINE: <2026-10-28 Wed .+0d>\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "minus-two-is-not-supported",
+      "input": {
+        "text": "* TODO A\n",
+        "point": 2,
+        "keys": "C-u - 2 C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* TODO A\n",
+      "visible": "* TODO A\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Prefix argument -2 not supported"
+    },
+    {
+      "name": "c-u-c-u-log-done-time",
+      "input": {
+        "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+        "point": 47,
+        "keys": "C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-log-done": "'time"
+        }
+      },
+      "text": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+      "visible": "#+TODO: TODO NEXT | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+      "point": 51,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-u-with-log-done-time",
+      "input": {
+        "text": "* TODO A\n",
+        "point": 2,
+        "keys": "C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-log-done": "'time"
+        }
+      },
+      "text": "# Insert note for state change from \"TODO\" to \"DONE\".\n# Finish with C-c C-c, or cancel with C-c C-k.\n\n",
+      "visible": "# Insert note for state change from \"TODO\" to \"DONE\".\n# Finish with C-c C-c, or cancel with C-c C-k.\n\n",
+      "point": 102,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "state-was-already",
+      "input": {
+        "text": "#+TODO: TODO(t) | DONE(d)\n* TODO A\n",
+        "point": 28,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "answers": [
+          "t"
+        ],
+        "message": true
+      },
+      "text": "#+TODO: TODO(t) | DONE(d)\n* TODO A\n",
+      "visible": "#+TODO: TODO(t) | DONE(d)\n* TODO A\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "TODO state was already TODO"
+    },
+    {
+      "name": "minus-one-in-a-region",
+      "input": {
+        "text": "* TODO A\nSCHEDULED: <2026-10-28 Wed +1w>\n* TODO B\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 0,
+        "keys": "C-SPC M-> C-- C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* DONE A\nSCHEDULED: <2026-10-28 Wed +0w>\n* DONE B\nSCHEDULED: <2026-10-28 Wed +0w>\n",
+      "visible": "* DONE A\nSCHEDULED: <2026-10-28 Wed +0w>\n* DONE B\nSCHEDULED: <2026-10-28 Wed +0w>\n",
+      "point": 82,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-s-right-in-a-region",
+      "input": {
+        "text": "#+TODO: TODO(t) | DONE(d)\n#+TODO: BUG(b) | FIXED(f)\n* TODO A\n* BUG B\n",
+        "point": 52,
+        "keys": "C-SPC C-n C-e C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TODO: TODO(t) | DONE(d)\n#+TODO: BUG(b) | FIXED(f)\n* BUG A\n* TODO B\n",
+      "visible": "#+TODO: TODO(t) | DONE(d)\n#+TODO: BUG(b) | FIXED(f)\n* BUG A\n* TODO B\n",
+      "point": 68,
+      "mark": 52,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "seq-todo-sets-come-after-todo",
+      "input": {
+        "text": "#+TODO: T | D\n#+SEQ_TODO: A | B\n#+TODO: U | V\n* T h\n",
+        "point": 49,
+        "keys": "C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "#+TODO: T | D\n#+SEQ_TODO: A | B\n#+TODO: U | V\n* U h\n",
+      "visible": "#+TODO: T | D\n#+SEQ_TODO: A | B\n#+TODO: U | V\n* U h\n",
+      "point": 50,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 2/3: U V"
+    },
+    {
+      "name": "typ-todo-sets-come-first",
+      "input": {
+        "text": "#+TODO: T | D\n#+TYP_TODO: X Y | Z\n* T h\n",
+        "point": 36,
+        "keys": "C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "#+TODO: T | D\n#+TYP_TODO: X Y | Z\n* X h\n",
+      "visible": "#+TODO: T | D\n#+TYP_TODO: X Y | Z\n* X h\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 1/2: X Y Z"
+    },
+    {
+      "name": "next-set-remembers-the-last",
+      "input": {
+        "text": "#+TODO: T | D\n#+TODO: B | F\n#+TODO: X | Y\n* F h\n",
+        "point": 44,
+        "keys": "C-c C-t C-u C-u C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "message": true
+      },
+      "text": "#+TODO: T | D\n#+TODO: B | F\n#+TODO: X | Y\n* X h\n",
+      "visible": "#+TODO: T | D\n#+TODO: B | F\n#+TODO: X | Y\n* X h\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Keyword-Set 3/3: X Y"
+    },
+    {
+      "name": "cycle-remembers-the-last-set",
+      "input": {
+        "text": "#+TODO: T | D\n#+TODO: B | F\n#+TODO: X | Y\n* F h\n",
+        "point": 44,
+        "keys": "C-c C-t C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TODO: T | D\n#+TODO: B | F\n#+TODO: X | Y\n* B h\n",
+      "visible": "#+TODO: T | D\n#+TODO: B | F\n#+TODO: X | Y\n* B h\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zero-with-a-logging-repeat",
+      "input": {
+        "text": "* TODO A\nSCHEDULED: <2026-10-28 Wed +1w>\n:PROPERTIES:\n:LOGGING: TODO(@) DONE(@)\n:END:\n",
+        "point": 2,
+        "keys": "C-0 C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* TODO A\nSCHEDULED: <2026-11-04 Wed +1w>\n:PROPERTIES:\n:LOGGING: TODO(@) DONE(@)\n:END:\n- State \"TODO\"       from \"DONE\"       [2026-10-28 Wed 12:00]",
+      "visible": "* TODO A\nSCHEDULED: <2026-11-04 Wed +1w>\n:PROPERTIES:\n:LOGGING: TODO(@) DONE(@)\n:END:\n- State \"TODO\"       from \"DONE\"       [2026-10-28 Wed 12:00]",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "repeater-in-the-heading",
+      "input": {
+        "text": "* TODO Meet <2026-10-29 Thu +1d>\n",
+        "point": 2,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* TODO Meet <2026-10-30 Fri +1d>\n:PROPERTIES:\n:LAST_REPEAT: [2026-10-28 Wed 12:00]\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00]",
+      "visible": "* TODO Meet <2026-10-30 Fri +1d>\n:PROPERTIES:\n- State \"DONE\"       from \"TODO\"       [2026-10-28 Wed 12:00]",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "minus-one-on-a-heading-repeater",
+      "input": {
+        "text": "* TODO Meet <2026-10-29 Thu +1d>\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 2,
+        "keys": "C-- C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* DONE Meet <2026-10-29 Thu +0d>\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* DONE Meet <2026-10-29 Thu +0d>\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "zero-repeater-in-the-heading",
+      "input": {
+        "text": "* TODO Meet <2026-10-29 Thu +0d>\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+        "point": 2,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "* DONE Meet <2026-10-29 Thu +0d>\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "visible": "* DONE Meet <2026-10-29 Thu +0d>\nSCHEDULED: <2026-10-28 Wed +1w>\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "closed-kept-when-no-todo",
+      "input": {
+        "text": "* DONE A\nCLOSED: [2026-10-27 Tue 10:00]\n",
+        "point": 2,
+        "keys": "C-u C-c C-t C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28",
+        "vars": {
+          "org-closed-keep-when-no-todo": true
+        }
+      },
+      "text": "* A\nCLOSED: [2026-10-27 Tue 10:00]\n",
+      "visible": "* A\nCLOSED: [2026-10-27 Tue 10:00]\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Minibuffer read in batch"
+    }
+  ]
+}
