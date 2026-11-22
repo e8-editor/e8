@@ -63,3 +63,25 @@ fn hooks_of_ones_own() {
     ed.call("test-seen", vec![]).unwrap();
     assert_eq!(ed.echo(), Some(r#"[":type","todo-state-change",":from","TODO",":to","DONE",":position",0]"#));
 }
+
+/// org-todo-keywords as Org writes it, each list led by sequence or type:
+/// the word is no keyword, and a type goes to the done keyword, or with
+/// C-c C-t again to the next type.
+#[test]
+fn keyword_lists_led_by_sequence_or_type() {
+    for (lists, keys, after) in [
+        (r#"[["type", "A", "B", "|", "Z"]]"#, "C-c C-t", "* Z task\n"),
+        (r#"[["type", "A", "B", "|", "Z"]]"#, "C-c C-t C-c C-t", "* task\n"),
+        (r#"[["sequence", "T", "|", "D"]]"#, "C-c C-t", "* D task\n"),
+    ] {
+        let mut ed = Editor::new();
+        let s = Scripting::new(&mut ed).unwrap();
+        s.eval_expression(&mut ed, &format!("e8.setDefault('org-todo-keywords', {lists})")).unwrap();
+        let first = if lists.contains("type") { "A" } else { "T" };
+        ed.window_buffer_mut().set_text(&format!("* {first} task\n"));
+        ed.call("org-mode", vec![]).unwrap();
+        ed.window_buffer_mut().set_point(2);
+        ed.press(keys).unwrap();
+        assert_eq!(text(&ed), after, "{lists} {keys}");
+    }
+}

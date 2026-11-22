@@ -5374,6 +5374,18 @@ declare global {
        */
       "org-agenda-todo": [];
       /**
+       * Switch the entry the agenda line at point shows to the next set of TODO keywords.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-nextset": [];
+      /**
+       * Switch the entry the agenda line at point shows to the previous set of TODO keywords.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-todo-previousset": [];
+      /**
        * Toggle the ARCHIVE tag of the entry the agenda line at point shows.
        *
        * Defined in packages/org-agenda.ts.

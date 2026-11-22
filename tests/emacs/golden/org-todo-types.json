@@ -1,0 +1,294 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "type-goes-to-done",
+      "input": {
+        "text": "#+TYP_TODO: ALICE BOB | DONE\n* ALICE task\n",
+        "point": 31,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: ALICE BOB | DONE\n* DONE task\n",
+      "visible": "#+TYP_TODO: ALICE BOB | DONE\n* DONE task\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-again-goes-to-the-next-type",
+      "input": {
+        "text": "#+TYP_TODO: ALICE BOB | DONE\n* ALICE task\n",
+        "point": 31,
+        "keys": "C-c C-t C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: ALICE BOB | DONE\n* task\n",
+      "visible": "#+TYP_TODO: ALICE BOB | DONE\n* task\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-from-none",
+      "input": {
+        "text": "#+TYP_TODO: ALICE BOB | DONE\n* task\n",
+        "point": 31,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: ALICE BOB | DONE\n* ALICE task\n",
+      "visible": "#+TYP_TODO: ALICE BOB | DONE\n* ALICE task\n",
+      "point": 37,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-from-none-twice",
+      "input": {
+        "text": "#+TYP_TODO: ALICE BOB | DONE\n* task\n",
+        "point": 31,
+        "keys": "C-c C-t C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: ALICE BOB | DONE\n* BOB task\n",
+      "visible": "#+TYP_TODO: ALICE BOB | DONE\n* BOB task\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-from-done-to-none",
+      "input": {
+        "text": "#+TYP_TODO: ALICE BOB | DONE\n* DONE task\n",
+        "point": 31,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: ALICE BOB | DONE\n* task\n",
+      "visible": "#+TYP_TODO: ALICE BOB | DONE\n* task\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-from-the-last-type",
+      "input": {
+        "text": "#+TYP_TODO: ALICE BOB | DONE\n* BOB task\n",
+        "point": 31,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: ALICE BOB | DONE\n* DONE task\n",
+      "visible": "#+TYP_TODO: ALICE BOB | DONE\n* DONE task\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-two-done-words",
+      "input": {
+        "text": "#+TYP_TODO: A B | X Y\n* A task\n",
+        "point": 24,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: A B | X Y\n* X task\n",
+      "visible": "#+TYP_TODO: A B | X Y\n* X task\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-from-first-done-of-two",
+      "input": {
+        "text": "#+TYP_TODO: A B | X Y\n* X task\n",
+        "point": 24,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TYP_TODO: A B | X Y\n* X task\n",
+      "visible": "#+TYP_TODO: A B | X Y\n* X task\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "type-and-sequence-together",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TYP_TODO: A B | Z\n* A task\n",
+        "point": 43,
+        "keys": "C-c C-t",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "today": "2026-10-28"
+      },
+      "text": "#+TODO: TODO | DONE\n#+TYP_TODO: A B | Z\n* Z task\n",
+      "visible": "#+TODO: TODO | DONE\n#+TYP_TODO: A B | Z\n* Z task\n",
+      "point": 44,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "agenda-c-s-right",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+        "point": 0,
+        "keys": "M-> C-p C-S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-type.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)FIXED (2)BUG (3)DONE\n                      (4)TODO\n  e8-type:    BUG A\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)FIXED (2)BUG (3)DONE\n                      (4)TODO\n  e8-type:    BUG A\n",
+      "point": 144,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 144,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Keyword-Set 2/2: BUG FIXED"
+    },
+    {
+      "name": "agenda-c-s-left",
+      "input": {
+        "text": "#+TODO: TODO | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+        "point": 0,
+        "keys": "M-> C-p C-S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-type.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)FIXED (2)BUG (3)DONE\n                      (4)TODO\n  e8-type:    TODO A\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)FIXED (2)BUG (3)DONE\n                      (4)TODO\n  e8-type:    TODO A\n",
+      "point": 144,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 144,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Keyword-Set 1/2: TODO DONE"
+    }
+  ]
+}

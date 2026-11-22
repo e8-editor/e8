@@ -23,6 +23,7 @@ import {
   reducedLevel,
   type PriorityAction,
   getPriority,
+  todoToSet,
   scanTags,
   setPriority,
   showPriority,
@@ -927,11 +928,21 @@ function todoList(): void {
       }
     }));
   }
-  const sorted = [...keywords].sort();
-  const lines: { text: string; item?: AgendaItem }[] = [
-    { text: "Global list of TODO items of type: ALL" },
-    { text: `Press \u2018N r\u2019 (e.g. \u20180 r\u2019) to search again: (0)[ALL] ${sorted.map((k, i) => `(${i + 1})${k}`).join(" ")}` },
-  ];
+  // Newest first, as org-prepare-agenda-buffers pushes each keyword it has not seen.
+  const sorted = [...keywords].reverse();
+  const lines: { text: string; item?: AgendaItem }[] = [{ text: "Global list of TODO items of type: ALL" }];
+  // The keywords wrapped before the window's last column, as org-todo-list inserts them.
+  const max = (e8.windowSize()?.width ?? 80) - 1;
+  let header = "Press \u2018N r\u2019 (e.g. \u20180 r\u2019) to search again: (0)[ALL]";
+  sorted.forEach((k, i) => {
+    const word = `(${i + 1})${k}`;
+    if (e8.stringWidth(header) + e8.stringWidth(word) + 1 > max) {
+      lines.push({ text: header });
+      header = " ".repeat(21);
+    }
+    header += ` ${word}`;
+  });
+  lines.push({ text: header });
   for (const item of byUrgency(items)) lines.push({ text: item.text, item });
   agendaView = { kind: "todo" };
   showAgenda(lines, 0);
@@ -1451,6 +1462,24 @@ e8.defineCommand({
     else agendaPriority("invalid");
   },
 });
+for (const [name, direction, doc] of [
+  ["org-agenda-todo-nextset", 1, "Switch the entry the agenda line at point shows to the next set of TODO keywords."],
+  ["org-agenda-todo-previousset", -1, "Switch the entry the agenda line at point shows to the previous set of TODO keywords."],
+] as const) {
+  e8.defineCommand({
+    name,
+    doc,
+    run: () => {
+      // As org-agenda-todo with nextset or previousset: in the entry's buffer, the line written again.
+      const item = agendaItemHere();
+      e8.withCurrentBuffer(item.buffer, () => widened(() => {
+        e8.gotoChar(headingOf(item));
+        todoToSet(direction);
+      }));
+      redrawEntry(item);
+    },
+  });
+}
 e8.defineCommand({ name: "org-agenda-priority-up", doc: "Raise the priority of the entry the agenda line at point shows.", run: () => agendaPriority("up") });
 e8.defineCommand({ name: "org-agenda-priority-down", doc: "Lower the priority of the entry the agenda line at point shows.", run: () => agendaPriority("down") });
 e8.defineCommand({ name: "org-agenda-clock-out", doc: "Stop the running clock, from the agenda.", run: () => e8.call("org-clock-out") });
@@ -1737,6 +1766,8 @@ for (const [key, command] of [
   ["C-c C-x C-s", "org-agenda-archive"],
   ["C-c $", "org-agenda-archive"],
   ["C-c ,", "org-agenda-priority"],
+  ["C-S-<right>", "org-agenda-todo-nextset"],
+  ["C-S-<left>", "org-agenda-todo-previousset"],
   ["+", "org-agenda-priority-up"],
   ["-", "org-agenda-priority-down"],
   ["S-<up>", "org-agenda-priority-up"],
