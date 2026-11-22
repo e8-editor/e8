@@ -255,6 +255,7 @@ for (const [name, doc] of [
   ["org-cycle-subtree-status", "What TAB last did to a heading: \"folded\", \"children\" or \"subtree\"."],
   ["org-cycle-global-status", "What S-TAB last did: \"overview\", \"contents\" or \"all\"."],
   ["org--todo-sets", "The buffer's TODO state sequences: each a list of the states not done and the states done."],
+  ["org--tags-lines", "The buffer's TAGS lines' values, as Org mode read them when it started."],
 ]) {
   e8.defineVariable({ name, doc, value: null, local: true });
 }
@@ -426,8 +427,50 @@ function todoSetFrom(words: string[]): TodoSet | undefined {
 export function keywordLines(): [number, number, string][] {
   return e8.saveRestriction(() => {
     e8.widen();
-    return e8.matchingLines("^#\\+", { caseFold: true });
+    const own = e8.matchingLines("^#\\+", { caseFold: true });
+    // A #+SETUPFILE: line's file's keywords in its place, as org-collect-keywords follows them; their lines are -1.
+    if (!own.some(([, , text]) => /^#\+SETUPFILE:/i.test(text))) return own;
+    const base = e8.bufferBaseBuffer();
+    const file = base === undefined ? e8.bufferFileName() : e8.withCurrentBuffer(base, () => e8.bufferFileName());
+    const visited = new Set<string>(file === undefined ? [] : [file]);
+    return own.flatMap((entry) => [entry, ...setupFileLinesOf(entry[2], e8.variable("default-directory") as string, visited).map((t): [number, number, string] => [-1, -1, t])]);
   });
+}
+
+/** Each setup file's "#+" lines, by its name, with when it was read, so a file read once is not read again until it changes. */
+const setupFileCache = new Map<string, { modified: number; lines: string[] }>();
+
+/**
+ * The keyword lines a #+SETUPFILE: line brings in, as org--collect-keywords-1
+ * reads them: the file named, relative to DIR, unquoted, its own setup
+ * files followed in their places, each file once; a URL is left out, as E8
+ * fetches none for it, and so is a file that cannot be read.
+ */
+function setupFileLinesOf(text: string, dir: string, visited: Set<string>): string[] {
+  const m = /^#\+SETUPFILE:[ \t]*(.*?)[ \t]*$/i.exec(text);
+  if (!m || m[1] === "") return [];
+  const name = m[1].replace(/^"(.*)"$/, "$1");
+  if (/^[a-z][-a-z0-9+.]*:\/\//i.test(name)) return [];
+  const file = e8.expandFileName(name, dir);
+  if (visited.has(file) || !e8.fileReadableP(file)) return [];
+  visited.add(file);
+  const modified = e8.fileAttributes(file)?.modified ?? 0;
+  let cached = setupFileCache.get(file);
+  if (cached?.modified !== modified) {
+    const buffer = e8.getBufferCreate(e8.generateNewBufferName(" *org setup file*"));
+    try {
+      const lines = e8.withCurrentBuffer(buffer, () => {
+        e8.insertFileContents(file);
+        return e8.matchingLines("^#\\+", { caseFold: true }).map(([, , t]) => t);
+      });
+      cached = { modified, lines };
+      setupFileCache.set(file, cached);
+    } finally {
+      e8.call("kill-buffer", buffer.name ?? "");
+    }
+  }
+  const here = e8.fileNameDirectory(file) ?? dir;
+  return cached.lines.flatMap((t) => [t, ...setupFileLinesOf(t, here, visited)]);
 }
 
 /** The buffer's TODO sequences: from #+TODO: lines, else org-todo-keywords. */
@@ -718,7 +761,7 @@ export interface Heading {
   tagsAt?: number;
 }
 
-const TAGS = /[ \t](:[\p{L}\p{N}_@#%:]+:)[ \t]*$/u;
+const TAGS = /[ \t](:[\p{L}\p{M}\p{Nd}\p{Nl}_@#%:]+:)[ \t]*$/u;
 
 /**
  * A heading line, if `line` is one. `text` is the line's text and `sorted`
@@ -4377,7 +4420,7 @@ e8.defineCommand({
   doc: "Align the tags of the heading point is on, if point is before them, as typing on a heading does.",
   run: () => {
     const line = lineAt();
-    const m = /^\*+ (?:.*[ \t])?(:[\p{L}\p{N}_@#%:]+:)[ \t]*$/u.exec(e8.lineText(line));
+    const m = /^\*+ (?:.*[ \t])?(:[\p{L}\p{M}\p{Nd}\p{Nl}_@#%:]+:)[ \t]*$/u.exec(e8.lineText(line));
     if (m && e8.point() < e8.lineStart(line) + charCount(e8.lineText(line).slice(0, m[0].length - m[1].length - (/[ \t]*$/.exec(m[0])?.[0].length ?? 0)))) {
       alignTags(line);
     }
@@ -5059,7 +5102,7 @@ e8.defineCommand({
 /** Puts a heading's tags at org-tags-column, or a space after the title if it is too long. */
 export function alignTags(line: number): void {
   const text = e8.lineText(line);
-  const m = /^\*+ (?:.*[ \t])?(:[\p{L}\p{N}_@#%:]+:)[ \t]*$/u.exec(text);
+  const m = /^\*+ (?:.*[ \t])?(:[\p{L}\p{M}\p{Nd}\p{Nl}_@#%:]+:)[ \t]*$/u.exec(text);
   if (!m) return;
   const ls = e8.lineStart(line);
   const tagsIndex = m[0].length - m[1].length - (/[ \t]*$/.exec(m[0])?.[0].length ?? 0);
@@ -5193,7 +5236,7 @@ export function tagStringToAlist(s: string): TagEntry[] {
         groupFlag = false;
       } else if (token === ":") out.push([":grouptags", undefined]);
       else {
-        const m = /^([\p{L}\p{N}_@#%]+|\{.+?\})(?:\((.)\))?$/u.exec(token);
+        const m = /^([\p{L}\p{M}\p{Nd}\p{Nl}_@#%]+|\{.+?\})(?:\((.)\))?$/u.exec(token);
         // Tags in groups whether or not they came before, as one may be in several.
         if (m && (groupFlag || !out.some(([t]) => t === m[1]))) out.push([m[1], m[2]]);
       }
@@ -5221,17 +5264,38 @@ function tagAddToAlist(alist1: TagEntry[], alist2: TagEntry[]): TagEntry[] {
  * tags, then the TAGS lines' or else org-tag-alist's.
  */
 export function currentTagAlist(): TagEntry[] {
+  // As Org read them when Org mode started, or C-c C-c on a keyword line last refreshed them.
+  const cached = e8.variable("org--tags-lines");
+  const lines = Array.isArray(cached) ? cached.map(String) : tagsLinesNow();
+  const base = lines.length > 0 ? tagStringToAlist(lines.join("\n")) : tagTable(e8.variable("org-tag-alist") ?? null);
+  return tagAddToAlist(tagTable(e8.variable("org-tag-persistent-alist") ?? null), base);
+}
+
+/** The values of the buffer's TAGS lines, indented too, with its setup files' in their places, as org-collect-keywords reads them. */
+function tagsLinesNow(): string[] {
   const lines: string[] = [];
   e8.saveRestriction(() => {
     e8.widen();
-    // Indented too, as org-collect-keywords reads keywords.
-    for (const [line, , text] of e8.matchingLines("^[ \t]*#\\+TAGS:", { caseFold: true })) {
+    const base = e8.bufferBaseBuffer();
+    const file = base === undefined ? e8.bufferFileName() : e8.withCurrentBuffer(base, () => e8.bufferFileName());
+    const visited = new Set<string>(file === undefined ? [] : [file]);
+    for (const [line, , text] of e8.matchingLines("^[ \t]*#\\+\\(?:TAGS\\|SETUPFILE\\):", { caseFold: true })) {
+      if (elementAt(e8.lineStart(line))?.type !== "keyword") continue;
       const m = /^[ \t]*#\+TAGS:(.*)$/i.exec(text);
-      if (m && elementAt(e8.lineStart(line))?.type === "keyword") lines.push(m[1].trim());
+      if (m) lines.push(m[1].trim());
+      else
+        for (const t of setupFileLinesOf(text.trimStart(), e8.variable("default-directory") as string, visited)) {
+          const n = /^#\+TAGS:(.*)$/i.exec(t);
+          if (n) lines.push(n[1].trim());
+        }
     }
   });
-  const base = lines.length > 0 ? tagStringToAlist(lines.join("\n")) : tagTable(e8.variable("org-tag-alist") ?? null);
-  return tagAddToAlist(tagTable(e8.variable("org-tag-persistent-alist") ?? null), base);
+  return lines;
+}
+
+/** Reads the TAGS lines again, as org-mode does when it starts and C-c C-c on a keyword line by restarting it. */
+function storeTagsLines(): void {
+  e8.setVariable("org--tags-lines", tagsLinesNow());
 }
 
 /** The tags of the file and of every heading, for completion, as org-get-buffer-tags. */
@@ -5337,7 +5401,7 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
   // The tags being chosen show on the heading, as org-tags-overlay.
   const line = lineAt();
   const lineText = e8.lineText(line);
-  const tagged = /^\*+ (?:.*[ \t])?(:[\p{L}\p{N}_@#%:]+:)[ \t]*$/u.exec(lineText);
+  const tagged = /^\*+ (?:.*[ \t])?(:[\p{L}\p{M}\p{Nd}\p{Nl}_@#%:]+:)[ \t]*$/u.exec(lineText);
   let ovStart: number, ovEnd: number, ovPrefix: string;
   if (tagged) {
     ovStart = e8.lineStart(line) + charCount(lineText.slice(0, lineText.lastIndexOf(tagged[1])));
@@ -5543,7 +5607,7 @@ function fastTagSelection(currentTags: string[], inheritedTags: string[], tagTab
             showOverlay();
             const from = e8.point();
             for (const [l, , text] of e8.matchingLines("\\[.\\] [[:alnum:]_@#%]+")) {
-              for (const m of allMatches(/\[.\] ([\p{L}\p{N}_@#%]+)/gu, text)) {
+              for (const m of allMatches(/\[.\] ([\p{L}\p{M}\p{Nd}\p{Nl}_@#%]+)/gu, text)) {
                 const start = e8.lineStart(l) + charCount(text.slice(0, (m.index ?? 0) + 4));
                 if (start < from) continue;
                 const t = m[1];
@@ -5632,7 +5696,8 @@ function setTagsHere(fast: e8.Value | undefined): void {
   let current = h.tags;
   let inherited: string[] = [];
   if (truthy(e8.variable("org-use-tag-inheritance"))) {
-    const itags = [...fileTags(), ...ancestors(all, i!).reverse().flatMap((a) => all[a].tags)];
+    // Those inheritance gives, org-tags-exclude-from-inheritance left out, as org-get-tags's org-remove-uninherited-tags.
+    const itags = removeUninheritedTags([...fileTags(), ...ancestors(all, i!).reverse().flatMap((a) => all[a].tags)]);
     const tagged = [...itags.map((t) => [t, true] as const), ...current.map((t) => [t, false] as const)];
     const kept = tagged.filter(([t], j) => !tagged.slice(j + 1).some(([u]) => u === t));
     inherited = kept.filter(([, inh]) => inh).map(([t]) => t);
@@ -5653,7 +5718,7 @@ function setTagsHere(fast: e8.Value | undefined): void {
     tags = answer.join(":");
   }
   // Characters a tag cannot have part tags, as org-set-tags-command's.
-  const cleaned = (tags ?? "").replace(/[^\p{L}\p{N}_@#%]+/gu, ":");
+  const cleaned = (tags ?? "").replace(/[^\p{L}\p{M}\p{Nd}\p{Nl}_@#%]+/gu, ":");
   e8.saveExcursion(() => {
     e8.gotoChar(h.start);
     setTags(cleaned.split(":").filter((t) => t !== ""));
@@ -8135,6 +8200,7 @@ const ctrlCCtrlC = e8.defineCommand({
     }
     if (/^[ \t]*#\+\S*:/.test(text)) {
       storeTodoSets();
+      storeTagsLines();
       e8.call("font-lock-flush");
       e8.message("Local setup has been refreshed");
       return;
@@ -9559,7 +9625,7 @@ function splitString(s: string, separator: RegExp): string[] {
 
 /** A term of a match: a sign, then a regexp in braces, a property comparison, or a tag. */
 const MATCH_TERM =
-  /^&?([-+:])?(\{[^}]+\}|((?:[\p{L}\p{N}_]+|\\\S)+)([<=>]=?|[!/]=|<>)(\*)?(\{[^}]+\}|"[^"]*"|-?[.0-9]+(?:[eE][-+]?[0-9]+)?)|[\p{L}\p{N}_@#%]+)/u;
+  /^&?([-+:])?(\{[^}]+\}|((?:[\p{L}\p{M}\p{Nd}\p{Nl}_]+|\\\S)+)([<=>]=?|[!/]=|<>)(\*)?(\{[^}]+\}|"[^"]*"|-?[.0-9]+(?:[eE][-+]?[0-9]+)?)|[\p{L}\p{M}\p{Nd}\p{Nl}_@#%]+)/u;
 
 /** A string's leading number, as string-to-number reads it, else 0. */
 function leadingNumber(s: string): number {
@@ -10115,6 +10181,7 @@ e8.defineMajorMode({
     e8.addToInvisibilitySpec("org-link");
     e8.addToInvisibilitySpec("org-emphasis");
     storeTodoSets();
+    storeTagsLines();
     if (e8.variable("org-startup-truncated") === true) e8.setVariable("truncate-lines", true);
     // A folded heading ends in org-ellipsis, through the buffer's display table, as org-mode sets it up.
     const ellipsis = e8.variable("org-ellipsis");

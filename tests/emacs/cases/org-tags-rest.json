@@ -1,0 +1,152 @@
+[
+  {
+    "name": "setupfile-todo",
+    "text": "",
+    "keys": "C-n C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "files": {
+      "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+      "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+    },
+    "find": "t.org"
+  },
+  {
+    "name": "setupfile-tags",
+    "text": "",
+    "keys": "C-n C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "a",
+      "\r"
+    ],
+    "files": {
+      "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+      "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+    },
+    "find": "t.org"
+  },
+  {
+    "name": "setupfile-quoted",
+    "text": "",
+    "keys": "C-n C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "files": {
+      "setup.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+      "t.org": "#+SETUPFILE: \"setup.org\"\n* OPEN Task\n"
+    },
+    "find": "t.org"
+  },
+  {
+    "name": "setupfile-nested",
+    "text": "",
+    "keys": "C-n C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "files": {
+      "inner.org": "#+TODO: OPEN | CLOSED\n#+TAGS: alpha(a) beta(b)\n",
+      "setup.org": "#+SETUPFILE: inner.org\n",
+      "t.org": "#+SETUPFILE: setup.org\n* OPEN Task\n"
+    },
+    "find": "t.org"
+  },
+  {
+    "name": "setupfile-missing",
+    "text": "",
+    "keys": "C-n C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "files": {
+      "t.org": "#+SETUPFILE: nowhere.org\n* TODO Task\n"
+    },
+    "find": "t.org"
+  },
+  {
+    "name": "setupfile-own-first",
+    "text": "",
+    "keys": "C-n C-n C-c C-t",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "files": {
+      "setup.org": "#+TODO: A | B\n",
+      "t.org": "#+TODO: OPEN | CLOSED\n#+SETUPFILE: setup.org\n* OPEN Task\n"
+    },
+    "find": "t.org"
+  },
+  {
+    "name": "tag-alnum-superscript",
+    "text": "* H\n",
+    "keys": "C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "x²y"
+    ]
+  },
+  {
+    "name": "tag-alnum-combining",
+    "text": "* H\n",
+    "keys": "C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "ét"
+    ]
+  },
+  {
+    "name": "tag-alnum-roman",
+    "text": "* H\n",
+    "keys": "C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "xⅫ"
+    ]
+  },
+  {
+    "name": "tags-read-at-start",
+    "text": "#+TAGS: alpha(a)\n* H\n",
+    "keys": "M-< C-k # + T A G S : SPC b e t a ( b ) C-n C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "b",
+      "\r"
+    ]
+  },
+  {
+    "name": "tags-refreshed-by-c-c",
+    "text": "#+TAGS: alpha(a)\n* H\n",
+    "keys": "M-< C-k # + T A G S : SPC b e t a ( b ) C-c C-c C-n C-c C-q",
+    "point": 0,
+    "modes": [
+      "org-mode"
+    ],
+    "answers": [
+      "b",
+      "\r"
+    ]
+  }
+]

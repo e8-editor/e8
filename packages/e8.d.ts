@@ -13184,6 +13184,12 @@ declare global {
        */
       "open-paren-in-column-0-is-defun-start": Value;
       /**
+       * The buffer's TAGS lines' values, as Org mode read them when it started.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org--tags-lines": Value;
+      /**
        * The buffer's TODO state sequences: each a list of the states not done and the states done.
        *
        * Defined in packages/org.ts.
