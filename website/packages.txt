@@ -8,4 +8,5 @@ e8-editor/e8-consult
 e8-editor/e8-vundo
 e8-editor/e8-casual
 e8-editor/e8-persistent-scratch
+e8-editor/e8-markdown-mode
 e8-editor/e8-themes
