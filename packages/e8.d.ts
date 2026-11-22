@@ -13857,6 +13857,12 @@ declare global {
        */
       "org-cycle-inline-images-display": Value;
       /**
+       * Whether headings deeper than org-n-level-faces take the level faces again from the first, rather than all the last.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-cycle-level-faces": Value;
+      /**
        * Whether TAB opens archived subtrees as it does others; nil keeps them closed, as org-cycle-hide-archived-subtrees does.
        *
        * Defined in packages/org.ts.
@@ -14364,6 +14370,12 @@ declare global {
        * Keymap org-mode-map.
        */
       "org-mode-map": Value;
+      /**
+       * How many of the eight level faces headings use, from org-level-1.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-n-level-faces": Value;
       /**
        * Whether the note being stored was cancelled, while org-finish-function runs.
        *

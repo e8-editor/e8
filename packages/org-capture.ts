@@ -541,7 +541,9 @@ function setTargetLocation(t: CaptureTemplate, prepend: boolean, env: TargetEnv 
     const all = headings();
     const [start, end] = under === undefined ? [0, e8.bufferSize()] : subtreeRegion(all, all.findIndex((x) => x.start === under.start));
     const level = under === undefined ? Math.min(...all.map((h) => h.level)) : under.level + 1;
-    return all.find((h) => h.start >= start && h.start < end && titleWithoutCookies(h.title) === title && (under === undefined ? true : h.level === level));
+    // A child one level down, or two with org-odd-levels-only, as org-find-olp's lmin and lmax.
+    const deepest = level + (e8.variable("org-odd-levels-only") === true ? 1 : 0);
+    return all.find((h) => h.start >= start && h.start < end && titleWithoutCookies(h.title) === title && (under === undefined ? true : h.level >= level && h.level <= deepest));
   };
   /** The heading an outline path names, as org-find-olp, which signals when one is missing. */
   const olp = (path: string[]): Heading | undefined => {
