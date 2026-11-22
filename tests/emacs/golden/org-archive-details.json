@@ -1,0 +1,1344 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "archive-datetree-under-date-tree",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** Old\n* TODO Task\nbody\n",
+        "point": 73,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** Old\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** TODO Task\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\nbody\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** Old\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** TODO Task\n:PROPERTIES:\nbody\n\n",
+      "point": 225,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO Task\nbody\n",
+        "* TODO Task\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-datetree-under-date-tree-empty",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Notes\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n* Task\n",
+        "point": 74,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Notes\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Notes\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n\n",
+      "point": 196,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-datetree-sub-under-date-tree",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/*\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n* Task\n",
+        "point": 67,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/*\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n****\n***** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::datetree/*\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n****\n***** Task\n:PROPERTIES:\n\n",
+      "point": 195,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-datetree-narrowed",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Other\n* Task\n",
+        "point": 31,
+        "keys": "C-x n s C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Other\n* 2026\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Other\n* 2026\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-olpath-comment",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* COMMENT Parent\n** Task\n",
+        "point": 40,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* COMMENT Parent\n* Archive\n\n** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: Parent\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* COMMENT Parent\n* Archive\n\n** Task\n:PROPERTIES:\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** Task\n\n",
+        "** Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-olpath-comments",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* COMMENT Parent\n** COMMENT Mid\n*** Task\n",
+        "point": 55,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* COMMENT Parent\n** COMMENT Mid\n* Archive\n\n** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: Parent/Mid\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* COMMENT Parent\n** COMMENT Mid\n* Archive\n\n** Task\n:PROPERTIES:\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "*** Task\n\n",
+        "*** Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-odd-levels",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n#+STARTUP: odd\n* A\n*** B\n* C\n",
+        "point": 38,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n#+STARTUP: odd\n* C\n\n* Archive\n\n*** A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n***** B\n",
+      "visible": "#+ARCHIVE: ::* Archive\n#+STARTUP: odd\n* C\n\n* Archive\n\n*** A\n:PROPERTIES:\n***** B\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n*** B\n",
+        "* A\n*** B\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-odd-levels-top",
+      "input": {
+        "text": "#+ARCHIVE: ::\n#+STARTUP: odd\n* C\n*** A\n",
+        "point": 33,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::\n#+STARTUP: odd\n* C\n* A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: C\n:END:\n",
+      "visible": "#+ARCHIVE: ::\n#+STARTUP: odd\n* C\n* A\n:PROPERTIES:\n",
+      "point": 33,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "*** A\n\n",
+        "*** A\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-odd-levels-datetree",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* A\n",
+        "point": 38,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* 2026\n*** 2026-11 November\n***** 2026-11-04 Wednesday\n******* A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n",
+      "visible": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* 2026\n*** 2026-11 November\n***** 2026-11-04 Wednesday\n******* A\n:PROPERTIES:\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n",
+        "* A\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "archive-odd-levels-var",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* A\n*** B\n",
+        "point": 23,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ],
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n*** A\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n***** B\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n*** A\n:PROPERTIES:\n***** B\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* A\n*** B\n\n",
+        "* A\n*** B\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "odd-even-heading",
+      "input": {
+        "text": "#+ARCHIVE: ::** Archive\n#+STARTUP: odd\n* A\n*** B\n* C\n** Archive\n",
+        "point": 43,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::** Archive\n#+STARTUP: odd\n* A\n* C\n** Archive\n\n*** B\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: A\n:END:\n",
+      "visible": "#+ARCHIVE: ::** Archive\n#+STARTUP: odd\n* A\n* C\n** Archive\n\n*** B\n:PROPERTIES:\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "*** B\n",
+        "*** B\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-month-before-next-year",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-01 January\n** 2027\n*** 2027-01 January\n* Task\n",
+        "point": 122,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-01 January\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n** 2027\n*** 2027-01 January\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-01 January\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n\n** 2027\n*** 2027-01 January\n",
+      "point": 236,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-month-before-next-year-plain",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-01 January\n* 2027\n** 2027-01 January\n* Task\n",
+        "point": 75,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-01 January\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n* 2027\n** 2027-01 January\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-01 January\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n\n* 2027\n** 2027-01 January\n",
+      "point": 187,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-end-blank",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** Old\n\n\n* Other\n* Task\n",
+        "point": 83,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** Old\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n* Other\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** Old\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n\n* Other\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-level2",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Top\n** Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n* Task\n",
+        "point": 73,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Top\n** Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n*** 2026\n**** 2026-11 November\n***** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Top\n** Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n*** 2026\n**** 2026-11 November\n***** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n\n",
+      "point": 198,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-odd",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n* Task\n",
+        "point": 81,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n*** 2026\n***** 2026-11 November\n******* 2026-11-04 Wednesday\n******* Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n*** 2026\n***** 2026-11 November\n******* 2026-11-04 Wednesday\n******* Task\n:PROPERTIES:\n\n",
+      "point": 212,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-odd-level2",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* Top\n** Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n* Task\n",
+        "point": 88,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* Top\n** Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n*** 2026\n***** 2026-11 November\n******* 2026-11-04 Wednesday\n******* Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n#+STARTUP: odd\n* Top\n** Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n*** 2026\n***** 2026-11 November\n******* 2026-11-04 Wednesday\n******* Task\n:PROPERTIES:\n\n",
+      "point": 219,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-odd-sub",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/* Sub\n#+STARTUP: odd\n* Task\n",
+        "point": 43,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/* Sub\n#+STARTUP: odd\n* 2026\n*** 2026-11 November\n***** 2026-11-04 Wednesday\n******* Sub\n********* Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n",
+      "visible": "#+ARCHIVE: ::datetree/* Sub\n#+STARTUP: odd\n* 2026\n*** 2026-11 November\n***** 2026-11-04 Wednesday\n******* Sub\n********* Task\n:PROPERTIES:\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-lowercase-prop",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:date_tree: t\n:END:\n* Task\n",
+        "point": 66,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:date_tree: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:date_tree: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n\n",
+      "point": 188,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "mark-done-own-state",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n#+TODO: TODO | DONE CANCELLED\n* CANCELLED Task\n* Archive\n",
+        "point": 53,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ],
+          "org-archive-mark-done": true
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n#+TODO: TODO | DONE CANCELLED\n* Archive\n\n** CANCELLED Task\n:PROPERTIES:\n:ARCHIVE_TODO: CANCELLED\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n#+TODO: TODO | DONE CANCELLED\n* Archive\n\n** CANCELLED Task\n:PROPERTIES:\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* CANCELLED Task\n",
+        "* CANCELLED Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "mark-done-named",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n#+TODO: TODO | DONE CANCELLED\n* TODO Task\n* Archive\n",
+        "point": 53,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ],
+          "org-archive-mark-done": "CANCELLED"
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n#+TODO: TODO | DONE CANCELLED\n* Archive\n\n** CANCELLED Task\n:PROPERTIES:\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n#+TODO: TODO | DONE CANCELLED\n* Archive\n\n** CANCELLED Task\n:PROPERTIES:\n",
+      "point": 53,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO Task\n",
+        "* TODO Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "odd-toggle-heading",
+      "input": {
+        "text": "#+STARTUP: odd\n* A\ntext\n",
+        "point": 19,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+STARTUP: odd\n* A\n*** text\n",
+      "visible": "#+STARTUP: odd\n* A\n*** text\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "mark-done-repeater",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO Task\nSCHEDULED: <2026-11-01 Sun +1w>\n* Archive\n",
+        "point": 23,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ],
+          "org-archive-mark-done": true
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* Archive\n\n** TODO Task\nSCHEDULED: <2026-11-08 Sun +1w>\n:PROPERTIES:\n:LAST_REPEAT: [2026-11-04 Wed 12:00]\n:ARCHIVE_TODO: TODO\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]",
+      "visible": "#+ARCHIVE: ::* Archive\n* Archive\n\n** TODO Task\nSCHEDULED: <2026-11-08 Sun +1w>\n:PROPERTIES:\n- State \"DONE\"       from \"TODO\"       [2026-11-04 Wed 12:00]",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* TODO Task\nSCHEDULED: <2026-11-01 Sun +1w>\n",
+        "* TODO Task\nSCHEDULED: <2026-11-01 Sun +1w>\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "olpath-comment-keyword",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* TODO COMMENT Parent\n** Task\n",
+        "point": 45,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* TODO COMMENT Parent\n* Archive\n\n** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: Parent\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* TODO COMMENT Parent\n* Archive\n\n** Task\n:PROPERTIES:\n",
+      "point": 45,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** Task\n\n",
+        "** Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "olpath-commentx",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n* COMMENTARY Parent\n** Task\n",
+        "point": 43,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n* COMMENTARY Parent\n* Archive\n\n** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: COMMENTARY Parent\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n* COMMENTARY Parent\n* Archive\n\n** Task\n:PROPERTIES:\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** Task\n\n",
+        "** Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "capture-date-tree-prop",
+      "input": {
+        "text": "* x\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n* y\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* entry"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* x\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n***** entry\n* y\n",
+      "visible": "* x\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n***** entry\n* y\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "capture-odd-tree",
+      "input": {
+        "text": "#+STARTUP: odd\n* x\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* entry"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "#+STARTUP: odd\n* x\n* 2026\n*** 2026-11 November\n***** 2026-11-04 Wednesday\n******* entry\n",
+      "visible": "#+STARTUP: odd\n* x\n* 2026\n*** 2026-11 November\n***** 2026-11-04 Wednesday\n******* entry\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "dt-prop-in-archived",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Other\n* Task\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n",
+        "point": 31,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Other\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Other\n",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:DATE_TREE: t\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n",
+        "* Task\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-prop-empty-value",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE:\n:END:\n* Task\n",
+        "point": 64,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE:\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE:\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n\n",
+      "point": 186,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-closed-day",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2025\n* DONE Task\nCLOSED: [2025-03-02 Sun 10:00]\n",
+        "point": 74,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2025\n*** 2025-03 March\n**** 2025-03-02 Sunday\n**** DONE Task\nCLOSED: [2025-03-02 Sun 10:00]\n:PROPERTIES:\n:ARCHIVE_TODO: DONE\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2025\n*** 2025-03 March\n**** 2025-03-02 Sunday\n**** DONE Task\nCLOSED: [2025-03-02 Sun 10:00]\n:PROPERTIES:\n\n",
+      "point": 238,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* DONE Task\nCLOSED: [2025-03-02 Sun 10:00]\n",
+        "* DONE Task\nCLOSED: [2025-03-02 Sun 10:00]\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "odd-reversed",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n#+STARTUP: odd\n* A\n*** B\n* Archive\n*** X\n",
+        "point": 42,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ],
+          "org-archive-reversed-order": true
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n#+STARTUP: odd\n* A\n* Archive\n\n*** B\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: A\n:END:\n*** X\n",
+      "visible": "#+ARCHIVE: ::* Archive\n#+STARTUP: odd\n* A\n* Archive\n\n*** B\n:PROPERTIES:\n*** X\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "*** B\n",
+        "*** B\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "oddeven-overrides",
+      "input": {
+        "text": "#+ARCHIVE: ::* Archive\n#+STARTUP: oddeven\n* A\n*** B\n",
+        "point": 46,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::* Archive\n#+STARTUP: oddeven\n* A\n* Archive\n\n** B\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:ARCHIVE_OLPATH: A\n:END:\n",
+      "visible": "#+ARCHIVE: ::* Archive\n#+STARTUP: oddeven\n* A\n* Archive\n\n** B\n:PROPERTIES:\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "*** B\n\n",
+        "*** B\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "odd-match-level",
+      "input": {
+        "text": "#+STARTUP: odd\n* A\n*** B\n***** C\n",
+        "point": 15,
+        "keys": "C-c / m",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "answers": [
+          "LEVEL=2"
+        ],
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+STARTUP: odd\nm* A\n*** B\n***** C\n",
+      "visible": "#+STARTUP: odd\nm* A\n*** B\n***** C\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "No such sparse tree command \"L\""
+    },
+    {
+      "name": "plain-tree-before",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-01 January\n*** 2026-01-05 Monday\n**** Old entry\n* Task\nbody\n",
+        "point": 86,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-01 January\n*** 2026-01-05 Monday\n**** Old entry\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\nbody\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-01 January\n*** 2026-01-05 Monday\n**** Old entry\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\nbody\n\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\nbody\n",
+        "* Task\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "plain-tree-before-day",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-11 November\n*** 2026-11-01 Sunday\n**** Old entry\n* Task\nbody\n",
+        "point": 87,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-11 November\n*** 2026-11-01 Sunday\n**** Old entry\n*** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\nbody\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* 2026\n** 2026-11 November\n*** 2026-11-01 Sunday\n**** Old entry\n*** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\nbody\n\n",
+      "point": 184,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\nbody\n",
+        "* Task\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dtprop-tree-before",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-01 January\n**** 2026-01-05 Monday\n***** Old entry\n* Task\nbody\n",
+        "point": 133,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-01 January\n**** 2026-01-05 Monday\n***** Old entry\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\nbody\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-01 January\n**** 2026-01-05 Monday\n***** Old entry\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\nbody\n\n",
+      "point": 252,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\nbody\n",
+        "* Task\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dtprop-tree-before-day",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-01 Sunday\n***** Old entry\n* Task\nbody\n",
+        "point": 134,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo",
+            "'category",
+            "'olpath",
+            "'itags",
+            "'ltags"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-01 Sunday\n***** Old entry\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\n:ARCHIVE_CATEGORY: e8-oracle-archive\n:END:\nbody\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: t\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-01 Sunday\n***** Old entry\n**** 2026-11-04 Wednesday\n**** Task\n:PROPERTIES:\nbody\n\n",
+      "point": 232,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\nbody\n",
+        "* Task\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dt-prop-nil",
+      "input": {
+        "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: nil\n:END:\n* Task\n",
+        "point": 68,
+        "keys": "C-c C-x C-s",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "visit": "e8-oracle-archive.org",
+        "today": "2026-11-04",
+        "vars": {
+          "org-archive-save-context-info": [
+            "'todo"
+          ]
+        }
+      },
+      "text": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: nil\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n\n",
+      "visible": "#+ARCHIVE: ::datetree/\n* Journal\n:PROPERTIES:\n:DATE_TREE: nil\n:END:\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n**** Task\n\n",
+      "point": 134,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "* Task\n",
+        "* Task\n"
+      ],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

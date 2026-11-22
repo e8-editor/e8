@@ -4,9 +4,9 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, formatTimestamp, type Heading, headings, parseDate, parseHeading, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics } from "org";
+import { alignTags, formatTimestamp, type Heading, headings, parseDate, parseHeading, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, runningEntry } from "org-clock";
-import { findDateCreate } from "org-datetree";
+import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
 import { endOfMetaData } from "org-list";
 import { lineAt, orgMks, titleWithoutCookies } from "org-macs";
@@ -334,7 +334,8 @@ function captureWith(key: string): void {
     const under = (h: Heading) => {
       const all = headings();
       const i = all.findIndex((x) => x.start === h.start);
-      level = h.level + 1;
+      // A level below, odd with org-odd-levels-only, as org-get-valid-level gives it.
+      level = validLevel(h.level, 1);
       if (type === "plain") e8.gotoChar(prepend ? endOfMetaData(h, true) : (all[i + 1]?.start ?? e8.pointMax()));
       // First, before its first child, as outline-next-heading; else after its subtree.
       else e8.gotoChar(prepend ? (all[i + 1]?.start ?? e8.pointMax()) : subtreeRegion(all, i)[1]);
@@ -356,11 +357,14 @@ function captureWith(key: string): void {
       else e8.gotoChar(e8.bufferSize());
     } else if (target[0] === "file+olp+datetree") {
       const parent = olp(target.slice(2));
-      const all = headings();
-      const [start, end] = parent === undefined ? [0, e8.bufferSize()] : subtreeRegion(all, all.findIndex((x) => x.start === parent.start));
-      const grouping = option(t, ":tree-type");
-      const now = today();
-      const at = findDateCreate(now, grouping === "week" ? "week" : grouping === "month" ? "month" : "day", parent === undefined ? 1 : parent.level + 1, start, end);
+      const tree = option(t, ":tree-type");
+      const grouping = tree === "week" ? "week" : tree === "month" ? "month" : "day";
+      // Under the outline path's heading, else a DATE_TREE (or WEEK_TREE) heading or the whole buffer, widened, as Org's capture asks org-datetree.
+      const at = e8.saveRestriction(() => {
+        if (parent === undefined) e8.widen();
+        const root = dateTreeRoot(grouping, parent?.start);
+        return findDateCreate(today(), grouping, root.base, root.start, root.end, root.step);
+      });
       under(headings().find((h) => h.start === at) as Heading);
     } else if (target[0] === "file") {
       // At the start with :prepend, before the first heading for an entry, as org-capture-place-entry.

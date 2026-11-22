@@ -186,6 +186,11 @@ const variables: [string, string, e8.Value][] = [
   ],
   ["org-M-RET-may-split-line", "Whether M-RET in the middle of a line splits it, the rest going to the new heading or item.", true],
   [
+    "org-odd-levels-only",
+    "Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file. Archiving and date trees follow it; promoting, demoting and making headings do not yet.",
+    false,
+  ],
+  [
     "org-loop-over-headlines-in-active-region",
     "Whether commands such as C-c C-t act on every heading in the active region.",
     true,
@@ -454,6 +459,17 @@ function todoSets(): TodoSet[] {
   }));
 }
 
+/**
+ * Runs `f` with this buffer's TODO states in whatever buffer it makes
+ * current, none of them logging, as org-archive-subtree binds
+ * org-todo-keywords-1 and its kin and org-todo-log-states to nil around
+ * marking an archived entry done.
+ */
+export function withTheseTodoStates<T>(): (f: () => T) => T {
+  const sets = todoSets().map((s) => [s.todo, s.done, s.keys.map(([k, c]) => [k, c ?? null]), []]);
+  return (f) => e8.letBind({ "org--todo-sets": sets as e8.Value }, f);
+}
+
 function storeTodoSets(): void {
   e8.setVariable("org--todo-sets", readTodoSets().map((s) => [s.todo, s.done, s.keys.map(([k, c]) => [k, c ?? null]), s.logs.map(([k, a, b]) => [k, a ?? null, b ?? null])]));
 }
@@ -497,7 +513,7 @@ function withLocalLogging<T>(value: string, f: () => T): T {
   }
 }
 
-/** The #+STARTUP: words about logging and the variables they set, as org-startup-options has them. */
+/** The #+STARTUP: words about logging and levels and the variables they set, as org-startup-options has them. */
 const STARTUP_LOG_OPTIONS: Record<string, [string, e8.Value]> = {
   logdone: ["org-log-done", "time"],
   lognotedone: ["org-log-done", "note"],
@@ -521,6 +537,8 @@ const STARTUP_LOG_OPTIONS: Record<string, [string, e8.Value]> = {
   logrefile: ["org-log-refile", "time"],
   lognoterefile: ["org-log-refile", "note"],
   nologrefile: ["org-log-refile", false],
+  odd: ["org-odd-levels-only", true],
+  oddeven: ["org-odd-levels-only", false],
 };
 
 function logHow(state: string | undefined, previous: string | undefined): string | undefined {
@@ -9255,6 +9273,18 @@ function comparison(op: string, kind: "number" | "string" | "time"): (a: never, 
     "<": (a, b) => a < b, ">": (a, b) => a > b, "<=": (a, b) => a <= b, ">=": (a, b) => a >= b, "=": (a, b) => a === b, "<>": (a, b) => a !== b,
   };
   return ops[name] as never;
+}
+
+/**
+ * A level changed by CHANGE levels, odd with org-odd-levels-only, where a
+ * level is two stars, as org-get-valid-level gives it: an even level with
+ * no change becomes the next odd one.
+ */
+export function validLevel(level: number, change?: number): number {
+  if (e8.variable("org-odd-levels-only") !== true) return Math.max(1, level + (change ?? 0));
+  if (!change) return 1 + 2 * Math.floor(level / 2);
+  if (change > 0) return 1 + 2 * Math.floor((level - 1 + 2 * change) / 2);
+  return Math.max(1, 1 + 2 * Math.floor((level + 2 * change) / 2));
 }
 
 /** A heading's level counting only odd ones with org-odd-levels-only, as org-reduced-level. */

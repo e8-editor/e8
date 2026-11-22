@@ -13949,6 +13949,12 @@ declare global {
        */
       "org-occur-highlights": Value;
       /**
+       * Whether headings use only odd levels, 1, 3, 5 and on, two stars more for each level down. #+STARTUP: odd or oddeven says for a file. Archiving and date trees follow it; promoting, demoting and making headings do not yet.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-odd-levels-only": Value;
+      /**
        * Whether outline paths complete a level at a time, as file names do, rather than whole.
        *
        * Defined in packages/org-refile.ts.
