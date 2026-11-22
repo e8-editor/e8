@@ -1,0 +1,352 @@
+[
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-heading-message",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x",
+    "message": true,
+    "answers": [
+      "org-store-link"
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-and-insert-heading",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-twice-message",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-x",
+    "message": true,
+    "answers": [
+      "org-store-link",
+      "org-store-link"
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-moved-to-front",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-< M-x C-n M-x",
+    "message": true,
+    "answers": [
+      "org-store-link",
+      "org-store-link",
+      "org-store-link"
+    ]
+  },
+  {
+    "point": 13,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-from-body",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-custom-id",
+    "text": "* One\n* Two\n:PROPERTIES:\n:CUSTOM_ID: second\n:END:\n",
+    "keys": "M-x M-< C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 20,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-named-element-row",
+    "text": "* One\n#+NAME: tbl\n| a |\n",
+    "keys": "M-x M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 8,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-named-element-from-keyword",
+    "text": "* One\n#+NAME: tbl\n| a |\n",
+    "keys": "M-x M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 12,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-target",
+    "text": "* One\nsee <<here>> now\n",
+    "keys": "M-x M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 2,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-before-first-heading",
+    "text": "Some   intro text\n* One\n",
+    "keys": "M-x M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-region",
+    "text": "* One\nalpha beta gamma\n",
+    "keys": "C-SPC M-f M-f M-x C-SPC C-SPC M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 8,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-heading-cookies-comment",
+    "text": "* One\n* COMMENT Two   [1/2] :tag:\n",
+    "keys": "M-x M-< C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 8,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-heading-with-link",
+    "text": "* One\n* See [[https://x.org][X]] now\n",
+    "keys": "M-x M-< C-c C-l",
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-last-stored",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-> C-c M-l",
+    "answers": [
+      "org-store-link"
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-all-links",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-> M-x C-c C-M-l",
+    "answers": [
+      "org-store-link",
+      "org-store-link"
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-all-links-keep",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-> C-u C-c C-M-l C-c M-l",
+    "answers": [
+      "org-store-link"
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-removes-stored",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-> C-c C-l C-c M-l",
+    "message": true,
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-keeps-stored",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x M-> C-c C-l C-c M-l",
+    "vars": {
+      "org-link-keep-stored-after-insertion": true
+    },
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "insert-choose-by-description",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "M-x C-n C-n M-x M-> C-c C-l",
+    "answers": [
+      "org-store-link",
+      "org-store-link",
+      "Two",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-id-existing",
+    "text": "* One\n* Two\n:PROPERTIES:\n:ID: abc-123\n:END:\n",
+    "keys": "M-x M-< C-c C-l",
+    "vars": {
+      "org-id-link-to-org-use-id": "'use-existing"
+    },
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-id-none-existing",
+    "text": "* One\n* Two\n",
+    "keys": "M-x M-< C-c C-l",
+    "vars": {
+      "org-id-link-to-org-use-id": "'use-existing"
+    },
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "store-skip-functions",
+    "text": "* One\n* Two\n:PROPERTIES:\n:ID: abc-123\n:END:\n",
+    "keys": "C-u C-u M-x M-< C-c C-l",
+    "vars": {
+      "org-id-link-to-org-use-id": "'use-existing"
+    },
+    "answers": [
+      "org-store-link",
+      "",
+      ""
+    ]
+  },
+  {
+    "point": 6,
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "links.org",
+    "name": "no-link-to-insert",
+    "text": "* One\n* Two\nbody\n* Three\n",
+    "keys": "C-c M-l",
+    "message": true
+  }
+]

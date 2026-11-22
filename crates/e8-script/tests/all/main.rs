@@ -89,6 +89,7 @@ mod org_occur_agenda_files;
 mod org_search_view;
 mod org_select;
 mod org_sort_tables_lists;
+mod org_store_link;
 mod org_region_loops;
 mod org_tags_inherited;
 mod org_tags_region;

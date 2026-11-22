@@ -215,8 +215,15 @@ function elementName(pos: number): { name: string; begin: number } | undefined {
   // On the element's affiliated keywords, the element after them.
   let line = lineAt(pos);
   while (line + 1 < e8.lineCount() && AFFILIATED.test(e8.lineText(line))) line++;
-  const e = elementAt(line === lineAt(pos) ? pos : e8.lineStart(line));
+  let e = elementAt(line === lineAt(pos) ? pos : e8.lineStart(line));
   if (!e || e.type === "headline") return undefined;
+  // A table's row or a list's item, which has no name; from the keywords
+  // before them, the table or list they start.
+  if (e.type === "table-row" || e.type === "item") {
+    if (line === lineAt(pos)) return undefined;
+    while (e && (e.type === "table-row" || e.type === "item")) e = e.parent;
+    if (!e) return undefined;
+  }
   let name: string | undefined;
   let begin = e.begin;
   for (let l = lineAt(e.begin) - 1; l >= 0 && AFFILIATED.test(e8.lineText(l)); l--) {

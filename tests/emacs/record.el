@@ -182,6 +182,8 @@ while the case's keys are queued would read those instead."
 (defvar org-clock-total-time)
 (defvar org-clock-marker)
 (defvar org-clock-history)
+(defvar org-stored-links)
+(defvar org-link--insert-history)
 (defvar org-clock-default-task)
 (defvar org-clock-interrupted-task)
 (defvar org-clock-mode-line-timer)
@@ -388,6 +390,9 @@ its `globals' bound for the case, before the modes start."
       (setq org-markers-to-move nil)
       (set-marker org-clock-default-task nil)
       (set-marker org-clock-interrupted-task nil))
+    ;; Org's stored links start afresh too.
+    (when (featurep 'ol)
+      (setq org-stored-links nil org-link--insert-history nil))
     ;; A fresh set of buffers, as E8 starts each case with: only the
     ;; ones Emacs needs, whose names start with a space, and its own.
     (dolist (b (buffer-list))
