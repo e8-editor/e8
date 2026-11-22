@@ -10956,7 +10956,9 @@ function elementWithAffiliated(pos: number): [Elem, number] | undefined {
     const next = AFFILIATED.test(e8.lineText(line)) ? undefined : elementAt(e8.lineStart(line));
     if (next !== undefined && next.begin === e8.lineStart(line) && !NO_AFFILIATED.includes(next.type)) e = next;
   }
-  return [e, NO_AFFILIATED.includes(e.type) ? e.begin : affiliatedBegin(e.begin)];
+  // One that starts inside its line, as an item's first paragraph after its bullet, has none.
+  const atBol = e.begin === e8.lineStart(lineAt(e.begin));
+  return [e, NO_AFFILIATED.includes(e.type) || !atBol ? e.begin : affiliatedBegin(e.begin)];
 }
 
 /** Where a headline's contents start and end, as Org's parser has them: the first line after its own that is not blank. */
@@ -11205,12 +11207,18 @@ function contentsEndOf(e: Elem): number | undefined {
 function orgForwardElement(): void {
   if (e8.point() >= e8.pointMax()) e8.userError("Cannot move further down");
   if (isHeadingLine(e8.lineText(lineAt()))) {
-    // Past the subtree to the next heading, which there must be.
+    // Past the subtree of the heading that shows, as org-end-of-subtree
+    // goes back to a visible one, to the next heading, or the end if that
+    // is on a heading's line.
+    const origin = e8.point();
     const all = headings();
-    const i = all.findIndex((h) => h.line === lineAt());
-    const next = i < 0 ? undefined : nextSameOrHigher(all, i);
-    if (next === undefined) e8.userError("Cannot move further down");
-    e8.gotoChar(next!.start);
+    const i = visibleHeadingIndex(all, lineAt());
+    const next = i === undefined ? undefined : nextSameOrHigher(all, i);
+    e8.gotoChar(next === undefined ? e8.pointMax() : Math.min(next.start, e8.pointMax()));
+    if (!isHeadingLine(e8.lineText(lineAt()))) {
+      e8.gotoChar(origin);
+      e8.userError("Cannot move further down");
+    }
     return;
   }
   const found = elementWithAffiliated(e8.point());

@@ -505,6 +505,363 @@
       "kill_ring": [],
       "modified": false,
       "error": null
+    },
+    {
+      "name": "item-first-paragraph-back",
+      "input": {
+        "text": "- a\n- b\nnot item\n\nnext\n",
+        "point": 3,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n- b\nnot item\n\nnext\n",
+      "visible": "- a\n- b\nnot item\n\nnext\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "description-item-back",
+      "input": {
+        "text": "Before\n\n- term :: definition\n- other :: def two\n\nEnd\n",
+        "point": 28,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Before\n\n- term :: definition\n- other :: def two\n\nEnd\n",
+      "visible": "Before\n\n- term :: definition\n- other :: def two\n\nEnd\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "checkbox-item-back",
+      "input": {
+        "text": "- [ ] task one\n- [X] task two\n  more\n- [@3] counter\n",
+        "point": 14,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- [ ] task one\n- [X] task two\n  more\n- [@3] counter\n",
+      "visible": "- [ ] task one\n- [X] task two\n  more\n- [@3] counter\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tblfm-down",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+        "point": 23,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "visible": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "point": 80,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tblfm-element-forward",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+        "point": 23,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "visible": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "point": 81,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tblfm-up",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+        "point": 80,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "visible": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tblfm-element-back",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+        "point": 80,
+        "keys": "M-{",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "visible": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tblfm-down-twice",
+      "input": {
+        "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+        "point": 45,
+        "keys": "M-2 C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "visible": "Para one.\n\n#+NAME: tbl\n| a | b |\n|---+---|\n| 1 | 2 |\n| 3 | 4 |\n#+TBLFM: $2=$1*2\n\nPara two.\n",
+      "point": 91,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "planning-after-blank-down",
+      "input": {
+        "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+        "point": 32,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+      "visible": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "planning-after-blank-down-2",
+      "input": {
+        "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+        "point": 45,
+        "keys": "C-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+      "visible": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+      "point": 52,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "planning-after-blank-up",
+      "input": {
+        "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+        "point": 48,
+        "keys": "C-<up>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+      "visible": "* H\n\nSCHEDULED: <2026-11-20 Fri>\n:PROPERTIES:\n:A: 1\n:END:\n",
+      "point": 46,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "last-heading-at-end",
+      "input": {
+        "text": "* A\n* B",
+        "point": 4,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n* B",
+      "visible": "* A\n* B",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "last-heading-child-at-end",
+      "input": {
+        "text": "* A\n** B",
+        "point": 4,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n** B",
+      "visible": "* A\n** B",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "only-heading",
+      "input": {
+        "text": "* H",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* H",
+      "visible": "* H",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "narrowed-subtree-forward",
+      "input": {
+        "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+        "point": 0,
+        "keys": "C-x n s M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+      "visible": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "hidden-heading-forward",
+      "input": {
+        "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+        "point": 13,
+        "keys": "S-TAB M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+      "visible": "* One\n* Two\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "hidden-heading-forward-2",
+      "input": {
+        "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+        "point": 31,
+        "keys": "S-TAB M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* One\ntext 1\n** One.a\ntext 1a\n\n*** One.a.i\ndeep\n** One.b\n* Two\n\n\ntext 2\n** Two.a\n",
+      "visible": "* One\n* Two\n",
+      "point": 57,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }
