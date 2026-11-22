@@ -8,6 +8,158 @@ A package that is a repository of its own keeps its news in a NEWS file
 of the same form, which 'C-h P' shows under its description.
 
 
+* Changes in E8 0.5.20
+
+** 'C-m', 'C-i' and 'C-[' are 'RET', 'TAB' and 'ESC', as Emacs reads them.
+A binding written either way runs from either key, in the terminal
+and the GUI, so keys written as Emacs packages write them, such as
+Org's 'C-c C-x C-i', can be typed.  'C-h c' then ctrl+m says RET, and
+Meta-TAB is written 'C-M-i'.
+
+** Org capture works as Org's does, to every target and of every type.
+Entries, items, check items, table lines and plain text go to 'id',
+'clock', 'file+regexp' and function targets too.  'C-u', 'C-0', 'C-1'
+and 'C-c C-w' work, as do ':prepend', ':immediate-finish',
+':clock-keep', ':time-prompt' and Org's escapes, '%^g' and '%^{PROP}p'
+among them.
+
+** Org archives subtrees.
+'C-c C-x C-s' ('C-c $') moves a subtree to its archive location, under
+a heading or in a date tree; 'C-c C-x A' files it under an Archive
+sibling and 'C-c C-x a' toggles the ARCHIVE tag.  'C-u' and 'C-u C-u'
+archive every finished or old tree, and an active region each heading.
+
+** The agenda archives, shows archived trees and dims blocked tasks.
+'$', 'a', 'C-c C-x A' and 'C-c C-x a' archive from the agenda.  'v a'
+and 'v A' show archived trees and the archive files.  Tasks blocked by
+their dependencies are dimmed, or hidden, and the week agenda leaves out
+archived and COMMENT trees.
+
+** Org has clock tables and dynamic blocks.
+'C-c C-c' on a '#+BEGIN: clocktable' block, or 'M-x org-clock-report',
+writes the table, with Org's scopes, time ranges, steps and options.
+'S-<left>' and 'S-<right>' on its first line move its time range.
+'C-c C-x x' inserts a dynamic block.
+
+** Sparse trees, and matching by tags, properties and TODO states.
+'C-c /' shows the matches of a regexp, a TODO state, a match, a
+property or a date, and 'C-c \' those of a tags match, highlighted
+until 'C-c C-c'; 'M-g n' and 'M-g p' move between them.  '/' in the
+agenda's dispatcher searches the agenda files with 'multi-occur'.
+
+** The agenda has its tags and search views.
+'m' and 'M' in 'org-agenda' list the headings a tags match picks,
+and 's' and 'S' search the agenda files for a phrase or for words and
+regexps.  The TODO list reads the TODO ignore options, such as
+'org-agenda-todo-ignore-scheduled'.
+
+** Org's TODO dependencies.
+With 'org-enforce-todo-dependencies', an entry cannot be marked done
+while a child, or an earlier sibling under an ORDERED parent, is still
+to do; checkboxes can block it too.  'C-c C-x o' toggles ORDERED, and
+'BLOCKED' works in matches.
+
+** 'C-c C-x C-d' shows each subtree's clocked time.
+The file's total goes in the echo area.  'C-u' sums today's time and
+'C-u C-u' asks for a range.
+
+** Org's clock is kept from one session to the next.
+With 'org-clock-persistence-insinuate', the running clock and the clock
+history are saved when E8 exits, in the form Emacs writes.  Clocking in
+on an entry with an open CLOCK line continues it.
+
+** Clocking in offers recent tasks and shows the effort in the mode line.
+'C-u C-c C-x C-i' picks from *Clock Task Select*.  The mode line shows
+'[0:15/1:00]' and marks an overrun, and 'C-c C-x C-x' clocks in on the
+last task.  The clock can start from the last clock-out, switch states,
+and notify with a sound.
+
+** The running clock follows its entry when it moves.
+Moving a subtree with 'M-<up>' and 'M-<down>', cutting and pasting it,
+refiling, archiving or sorting no longer loses the clock, which used to
+fail with "Clock start time is gone".
+
+** 'C-c ^' sorts entries, table lines and list items.
+Entries by name, number, priority, property, TODO order or time;
+tables by the column point is in; and lists by their items' first lines
+or checkboxes.  A capital letter reverses the order.
+
+** Radio buttons and ORDERED checkboxes in Org lists.
+'C-c C-x C-r' ticks the item at point and unticks the rest of its list,
+as do 'C-c C-c' and 'C-c C-x C-b' in a ':radio t' list.  Under an
+ORDERED entry a box can be ticked only after the ones before it.
+
+** 'C-c C-q' sets tags as Org does.
+With keys in the tag table it shows Org's fast tag selection menu, with
+groups; without them it completes each tag after a colon.  An active
+region sets the tags of each heading in it.
+
+** '#+SETUPFILE:' is read, and keyword lines are found as Org finds them.
+Another file's TODO states, tags, '#+STARTUP:' and other keywords come
+in.  An indented '#+TODO:' line counts, and one in an example block no
+longer does.
+
+** 'org-store-link' and 'C-c C-l' store and insert links as Org does.
+Links are stored to headings, targets, other files, Dired and the
+agenda; 'C-c C-l' offers the stored ones, and 'C-c M-l' inserts the
+last.  ID links are stored as 'org-id-link-to-org-use-id' says.
+
+** Org IDs are kept in 'org-id-locations-file', as Emacs keeps them.
+Following an ID looks there first, in the form Emacs writes it.  New IDs
+follow 'org-id-method' and 'org-id-prefix', and duplicate IDs are
+warned of.
+
+** Refiling works over a region and to new parent headings.
+'org-reverse-note-order', 'org-refile-allow-creating-parent-nodes' and
+'org-outline-path-complete-in-steps' are read.  'C-u C-u C-c C-w' goes
+to the last refiled place, 'C-2' refiles to the clocked entry and 'C-3'
+copies; 'org-agenda-refile' works from the agenda.
+
+** Org's commands over a region reach every heading in it.
+'C-c C-t', 'C-c C-q', 'C-c C-s', 'C-c C-d' and the archive commands
+follow 'org-loop-over-headlines-in-active-region', 'start-level'
+included.
+
+** 'C-c C-j' ('org-goto') jumps to a heading, and isearch opens folds.
+'org-goto' shows the outline to move about or search in.  'C-c %' and
+'C-c &' use Org's mark ring.  Isearch opens folded text while a match
+is in it, as 'search-invisible' 'open' does.
+
+** Archived subtrees stay closed, and 'org-cycle-hook' runs.
+TAB and S-TAB run Org's cycle hooks.  'C-c C-<tab>' opens an archived
+subtree anyway, and '#+STARTUP: showall' now shows everything.
+
+** Org properties from 'org-global-properties', and 'NAME+' values.
+A 'NAME+' line adds to a property's value, and inheritance follows
+Org's, through '#+PROPERTY:' lines and 'org-global-properties'.
+
+** Tangling expands noweb references and writes ':comments'.
+A reference is replaced by the body of the heading or block it names,
+or of every block with that ':noweb-ref'.  'C-c C-c' expands them too.
+
+** Org's block motion and effort values.
+'C-c M-f' and 'C-c M-b' move between blocks.  'C-c C-x e' offers an
+entry's allowed efforts, and 'C-c C-x E' steps to the next.
+
+** Agenda lines leave out the timestamp whose time they show.
+',' sets a priority from the agenda again, and point keeps its place
+when a line is written again.
+
+** 'completing-read-multiple' and warnings as Emacs has them.
+'completing-read-multiple' completes each answer between separators,
+and 'display-warning', 'warn' and 'lwarn' write to *Warnings*.
+
+** Transient menus take more of transient's keys.
+'?' shows help and 'q' comes back from it, 'C-z' and 'M-x
+transient-resume' suspend and resume, and 'C-M-p' and 'C-M-n' go
+through earlier values.  '<up>' and '<down>' move between suffixes,
+which 'M-RET' or a click runs.
+
+** The markdown-mode port is listed among the ports.
+'e8-markdown-mode' gives '.md' files a mode, in a repository of its
+own.
+
+
 * Changes in E8 0.5.19
 
 ** Org can ask for a note when a state changes, in *Org Note*.
