@@ -6702,8 +6702,9 @@ function clockUpdateTimeMaybe(): boolean {
   try {
     const line = lineAt();
     const at = e8.lineStart(line) + charCount(/^[ \t]*/.exec(e8.lineText(line))![0]);
-    const re = /^[ \t]*CLOCK: *[[<]([^\]>]+)[\]>](?:-+[[<]([^\]>]+)[\]>]([ \t]*=>.*)?)?/;
-    const read = (): RegExpExecArray | null => (e8.lineText(line).slice(at - e8.lineStart(line)).startsWith("CLOCK:") ? re.exec(e8.bufferText(at, e8.lineEnd(line))) : null);
+    // Case aside, as Org looks at org-clock-string with case-fold-search.
+    const re = /^[ \t]*CLOCK: *[[<]([^\]>]+)[\]>](?:-+[[<]([^\]>]+)[\]>]([ \t]*=>.*)?)?/i;
+    const read = (): RegExpExecArray | null => (/^CLOCK:/i.test(e8.lineText(line).slice(at - e8.lineStart(line))) ? re.exec(e8.bufferText(at, e8.lineEnd(line))) : null);
     let m = read();
     if (m === null) return false;
     if (m[2] === undefined) {
@@ -6752,7 +6753,8 @@ function clockUpdateTimeMaybe(): boolean {
 
 /** Whether point is on a CLOCK line, as org-at-clock-log-p: one that is a clock element. */
 function atClockLog(): boolean {
-  return /^[ \t]*CLOCK:/.test(e8.lineText(lineAt())) && elementAt(e8.point())?.type === "clock";
+  // Case aside, as Org's regexps match with case-fold-search.
+  return /^[ \t]*CLOCK:/i.test(e8.lineText(lineAt())) && elementAt(e8.point())?.type === "clock";
 }
 
 /**
@@ -6766,15 +6768,19 @@ function clockTimestampsChange(up: boolean, n: e8.PrefixArg): void {
   const at = all.find((t) => t.start <= origin && origin <= t.end);
   if (at === undefined) return;
   const category = timestampCategory(at, origin);
-  const [ts1, ts2] = all;
-  // As Org, which compares with the second's start, the line must have two.
+  // The line's first timestamp, and the next one after it, on this line or
+  // any below, as Org's re-search-forward finds them.
+  const ts1 = all[0];
+  let ts2: TsMatch | undefined = all[1];
+  for (let l = lineAt() + 1; ts2 === undefined && l < e8.lineCount() && e8.lineStart(l) < e8.pointMax(); l++) ts2 = tsMatches(l)[0];
+  // As Org, which compares with the second's start, there must be one.
   if (ts2 === undefined) e8.signal("wrong-type-argument", "Wrong type argument: number-or-marker-p, nil", ["number-or-marker-p", null]);
   const onSecond = ts2.start <= origin;
   const steps = e8.prefixNumericValue(n);
   changeTimestamp(up ? steps : -steps, undefined, true);
   // How far the timestamp moved, in its part's units.
   const changedAt = onSecond ? ts2.start : ts1.start;
-  const now = tsMatches(lineAt()).find((t) => t.start === changedAt);
+  const now = tsMatches(lineAt(changedAt)).find((t) => t.start === changedAt);
   const was = onSecond ? ts2.text : ts1.text;
   const units: { [part: string]: number } = { minute: 60, hour: 3600, day: 24 * 3600, month: 24 * 3600 * 31, year: 24 * 3600 * 365.2 };
   const unit = typeof category === "string" ? units[category] : undefined;
@@ -6782,11 +6788,15 @@ function clockTimestampsChange(up: boolean, n: e8.PrefixArg): void {
   const diff = timestampSeconds(now.text) - timestampSeconds(was);
   const back = e8.point();
   const keep = marker(back);
-  e8.gotoChar(onSecond ? ts1.start : ts2.start);
-  changeTimestamp(Math.round(diff / unit), category as string, true);
-  // Back, as save-excursion keeps it, but never past the updated clock.
-  e8.gotoChar(keep.pos);
-  dropMarker(keep);
+  try {
+    e8.gotoChar(onSecond ? ts1.start : ts2.start);
+    changeTimestamp(Math.round(diff / unit), category as string, true);
+  } finally {
+    // Back, as save-excursion keeps it, even when the change fails.
+    e8.gotoChar(keep.pos);
+    dropMarker(keep);
+  }
+  // But never past the updated clock.
   if (e8.point() >= back) e8.gotoChar(back);
 }
 
