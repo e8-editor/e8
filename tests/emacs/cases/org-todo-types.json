@@ -1,0 +1,208 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-goes-to-done",
+  "text": "#+TYP_TODO: ALICE BOB | DONE\n* ALICE task\n",
+  "keys": "C-c C-t",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-again-goes-to-the-next-type",
+  "text": "#+TYP_TODO: ALICE BOB | DONE\n* ALICE task\n",
+  "keys": "C-c C-t C-c C-t",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-from-none",
+  "text": "#+TYP_TODO: ALICE BOB | DONE\n* task\n",
+  "keys": "C-c C-t",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-from-none-twice",
+  "text": "#+TYP_TODO: ALICE BOB | DONE\n* task\n",
+  "keys": "C-c C-t C-c C-t",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-from-done-to-none",
+  "text": "#+TYP_TODO: ALICE BOB | DONE\n* DONE task\n",
+  "keys": "C-c C-t",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-from-the-last-type",
+  "text": "#+TYP_TODO: ALICE BOB | DONE\n* BOB task\n",
+  "keys": "C-c C-t",
+  "point": 31
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-two-done-words",
+  "text": "#+TYP_TODO: A B | X Y\n* A task\n",
+  "keys": "C-c C-t",
+  "point": 24
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-from-first-done-of-two",
+  "text": "#+TYP_TODO: A B | X Y\n* X task\n",
+  "keys": "C-c C-t",
+  "point": 24
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-and-sequence-together",
+  "text": "#+TODO: TODO | DONE\n#+TYP_TODO: A B | Z\n* A task\n",
+  "keys": "C-c C-t",
+  "point": 43
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-c-s-right",
+  "text": "#+TODO: TODO | DONE\n#+TODO: BUG | FIXED\n* TODO A\n",
+  "keys": "M-> C-p C-S-<right>",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "message": true,
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-type.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "agenda-c-s-left",
+  "text": "#+TODO: TODO | DONE\n#+TODO: BUG | FIXED\n* BUG A\n",
+  "keys": "M-> C-p C-S-<left>",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "message": true,
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-type.org"
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-repeats-to-itself",
+  "text": "#+TYP_TODO: A B | Z\n* B task\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+  "keys": "C-c C-t",
+  "point": 22
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "type-with-nothing-after-the-bar",
+  "text": "#+TYP_TODO: A B |\n* A task\n",
+  "keys": "C-c C-t",
+  "point": 20
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "sequence-with-no-done-keyword",
+  "text": "#+TODO: T N\n* T task\n",
+  "keys": "C-c C-t C-c C-t",
+  "point": 14
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "repeat-to-state-property",
+  "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-28 Wed +1d>\n:PROPERTIES:\n:REPEAT_TO_STATE: NEXT\n:END:\n",
+  "keys": "C-c C-t C-c C-t",
+  "point": 27
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "repeat-to-state-option",
+  "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+  "keys": "C-c C-t C-c C-t",
+  "point": 27,
+  "vars": {
+   "org-todo-repeat-to-state": "NEXT"
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "repeat-to-state-option-t",
+  "text": "#+TODO: TODO NEXT | DONE\n* NEXT task\nSCHEDULED: <2026-10-28 Wed +1d>\n",
+  "keys": "C-c C-t C-c C-t",
+  "point": 27,
+  "vars": {
+   "org-todo-repeat-to-state": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "today": "2026-10-28",
+  "name": "todo-list-header-in-a-split-window",
+  "text": "#+TODO: ALPHA BETA GAMMA DELTA | EPSILON ZETA\n#+TODO: ETA THETA IOTA | KAPPA LAMBDA\n* ALPHA a\n",
+  "keys": "C-x 3",
+  "point": 0,
+  "call": [
+   "org-todo-list"
+  ],
+  "agenda_files": true,
+  "windows": true,
+  "visit": "e8-types-header.org"
+ }
+]

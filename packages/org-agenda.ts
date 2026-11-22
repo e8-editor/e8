@@ -23,6 +23,7 @@ import {
   reducedLevel,
   type PriorityAction,
   getPriority,
+  todoToSet,
   scanTags,
   setPriority,
   showPriority,
@@ -575,9 +576,14 @@ function insertHabitGraphs(lines: { text: string; item?: AgendaItem }[]): void {
 }
 
 /** Puts lines into the agenda buffer and shows it, as org-agenda-prepare and org-agenda-finalize do. */
-function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: number): void {
-  markBlocked(lines);
+type AgendaLines = { text: string; item?: AgendaItem }[];
+
+function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), pointLine: number): void {
   e8.getBufferCreate(AGENDA);
+  // Lines that depend on the agenda window's width are made once it is placed, as org-agenda-prepare selects it first.
+  if (typeof given === "function") placeAgendaWindow();
+  const lines = typeof given === "function" ? given((e8.windowSize()?.width ?? 80) - 1) : given;
+  markBlocked(lines);
   e8.withCurrentBuffer(AGENDA, () => {
     e8.setReadOnly(false);
     eraseBuffer();
@@ -606,20 +612,25 @@ function showAgenda(lines: { text: string; item?: AgendaItem }[], pointLine: num
       };
     }
   }
+  placeAgendaWindow();
   const setup = e8.variable("org-agenda-window-setup");
-  if (e8.windowBuffer() !== AGENDA) {
-    if (setup === "current-window") e8.call("switch-to-buffer", AGENDA);
-    else if (setup === "only-window") {
-      e8.call("delete-other-windows");
-      e8.call("switch-to-buffer", AGENDA);
-    } else if (setup === "other-window") e8.call("switch-to-buffer-other-window", AGENDA);
-    else {
-      // As org-agenda-window-setup's reorganize-frame: this window and the agenda's.
-      if (!e8.windowList().some((w) => e8.windowBuffer(w) === AGENDA)) e8.call("delete-other-windows");
-      e8.call("pop-to-buffer", AGENDA);
-    }
-  }
   if (setup === undefined || setup === null || setup === "reorganize-frame") fitAgendaWindow(lines.length);
+}
+
+/** Shows the agenda's buffer as org-agenda-window-setup says, unless the selected window shows it. */
+function placeAgendaWindow(): void {
+  const setup = e8.variable("org-agenda-window-setup");
+  if (e8.windowBuffer() === AGENDA) return;
+  if (setup === "current-window") e8.call("switch-to-buffer", AGENDA);
+  else if (setup === "only-window") {
+    e8.call("delete-other-windows");
+    e8.call("switch-to-buffer", AGENDA);
+  } else if (setup === "other-window") e8.call("switch-to-buffer-other-window", AGENDA);
+  else {
+    // As org-agenda-window-setup's reorganize-frame: this window and the agenda's.
+    if (!e8.windowList().some((w) => e8.windowBuffer(w) === AGENDA)) e8.call("delete-other-windows");
+    e8.call("pop-to-buffer", AGENDA);
+  }
 }
 
 /** Whether org-blocker-hook has anything on it, as Org tests it before dimming. */
@@ -927,14 +938,25 @@ function todoList(): void {
       }
     }));
   }
-  const sorted = [...keywords].sort();
-  const lines: { text: string; item?: AgendaItem }[] = [
-    { text: "Global list of TODO items of type: ALL" },
-    { text: `Press \u2018N r\u2019 (e.g. \u20180 r\u2019) to search again: (0)[ALL] ${sorted.map((k, i) => `(${i + 1})${k}`).join(" ")}` },
-  ];
-  for (const item of byUrgency(items)) lines.push({ text: item.text, item });
+  // Newest first, as org-prepare-agenda-buffers pushes each keyword it has not seen.
+  const sorted = [...keywords].reverse();
   agendaView = { kind: "todo" };
-  showAgenda(lines, 0);
+  // The keywords wrapped before the agenda window's last column, as org-todo-list inserts them there.
+  showAgenda((max) => {
+    const lines: AgendaLines = [{ text: "Global list of TODO items of type: ALL" }];
+    let header = "Press \u2018N r\u2019 (e.g. \u20180 r\u2019) to search again: (0)[ALL]";
+    sorted.forEach((k, i) => {
+      const word = `(${i + 1})${k}`;
+      if (e8.stringWidth(header) + e8.stringWidth(word) + 1 > max) {
+        lines.push({ text: header });
+        header = " ".repeat(21);
+      }
+      header += ` ${word}`;
+    });
+    lines.push({ text: header });
+    for (const item of byUrgency(items)) lines.push({ text: item.text, item });
+    return lines;
+  }, 0);
 }
 
 /**
@@ -1451,6 +1473,24 @@ e8.defineCommand({
     else agendaPriority("invalid");
   },
 });
+for (const [name, direction, doc] of [
+  ["org-agenda-todo-nextset", 1, "Switch the entry the agenda line at point shows to the next set of TODO keywords."],
+  ["org-agenda-todo-previousset", -1, "Switch the entry the agenda line at point shows to the previous set of TODO keywords."],
+] as const) {
+  e8.defineCommand({
+    name,
+    doc,
+    run: () => {
+      // As org-agenda-todo with nextset or previousset: in the entry's buffer, the line written again.
+      const item = agendaItemHere();
+      e8.withCurrentBuffer(item.buffer, () => widened(() => {
+        e8.gotoChar(headingOf(item));
+        todoToSet(direction);
+      }));
+      redrawEntry(item);
+    },
+  });
+}
 e8.defineCommand({ name: "org-agenda-priority-up", doc: "Raise the priority of the entry the agenda line at point shows.", run: () => agendaPriority("up") });
 e8.defineCommand({ name: "org-agenda-priority-down", doc: "Lower the priority of the entry the agenda line at point shows.", run: () => agendaPriority("down") });
 e8.defineCommand({ name: "org-agenda-clock-out", doc: "Stop the running clock, from the agenda.", run: () => e8.call("org-clock-out") });
@@ -1737,6 +1777,8 @@ for (const [key, command] of [
   ["C-c C-x C-s", "org-agenda-archive"],
   ["C-c $", "org-agenda-archive"],
   ["C-c ,", "org-agenda-priority"],
+  ["C-S-<right>", "org-agenda-todo-nextset"],
+  ["C-S-<left>", "org-agenda-todo-previousset"],
   ["+", "org-agenda-priority-up"],
   ["-", "org-agenda-priority-down"],
   ["S-<up>", "org-agenda-priority-up"],

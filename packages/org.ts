@@ -317,6 +317,12 @@ for (let i = 1; i <= 8; i++) {
 }
 e8.defineVariable({ name: "org-fontify-quote-and-verse-blocks", doc: "Whether the text of quote and verse blocks is in the org-quote and org-verse faces; otherwise it is fontified as Org text.", value: false });
 e8.defineVariable({ name: "org-protecting-blocks", doc: "The blocks whose text is not Org syntax, which is fontified as org-block, or natively.", value: ["src", "example", "export"] });
+e8.defineVariable({
+  name: "org-todo-repeat-to-state",
+  doc: "The state a repeating entry goes back to when it is marked done: a keyword, t for the state it had, or nil for the first of its sequence. A REPEAT_TO_STATE property says otherwise.",
+  value: null,
+});
+e8.defineVariable({ name: "org-todo-interpretation", doc: "How a flat org-todo-keywords list is read: sequence, or type. Obsolete in Org.", value: "sequence" });
 e8.defineVariable({ name: "org-cycle-level-faces", doc: "Whether headings deeper than org-n-level-faces take the level faces again from the first, rather than all the last.", value: true });
 e8.defineVariable({ name: "org-n-level-faces", doc: "How many of the eight level faces headings use, from org-level-1.", value: 8 });
 
@@ -398,6 +404,8 @@ interface TodoSet {
   keys: [string, string | undefined][];
   /** How entering and leaving a state is logged, as (t!) and (w@/!) say: "time" or "note". */
   logs: [string, string | undefined, string | undefined][];
+  /** Whether its keywords are types, as #+TYP_TODO: or a (type ...) list gives them, rather than a sequence. */
+  type?: boolean;
 }
 
 /**
@@ -536,16 +544,28 @@ function readTodoSets(): TodoSet[] {
   for (const [, , text] of keywordLines()) {
     const m = /^#\+(TODO|SEQ_TODO|TYP_TODO):(.*)$/i.exec(text);
     const set = m ? todoSetFrom(m[2].trim().split(/\s+/)) : undefined;
-    if (m && set) byKind[m[1].toUpperCase()].push(set);
+    if (m && set) byKind[m[1].toUpperCase()].push(m[1].toUpperCase() === "TYP_TODO" ? { ...set, type: true } : set);
   }
-  const sets: TodoSet[] = [...byKind.TYP_TODO, ...byKind.TODO, ...byKind.SEQ_TODO];
+  let sets: TodoSet[] = [...byKind.TYP_TODO, ...byKind.TODO, ...byKind.SEQ_TODO];
   if (sets.length === 0) {
     const value = e8.variable("org-todo-keywords");
     const lists = Array.isArray(value) && value.every(Array.isArray) ? (value as e8.Value[][]) : [value as e8.Value[]];
+    const nested = Array.isArray(value) && value.every(Array.isArray);
     for (const list of lists) {
-      const set = Array.isArray(list) ? todoSetFrom(list.map(String)) : undefined;
-      if (set) sets.push(set);
+      const words = Array.isArray(list) ? list.map((w) => (typeof w === "symbol" ? e8.symbolName(w) : String(w))) : [];
+      // (sequence ...), (type ...) and (priority ...), as Org writes them, the first word saying which; a
+      // list of its own without one is keywords all (deliberate). A flat list is all keywords, typed or
+      // not as the old org-todo-interpretation says.
+      const kind = nested && ["sequence", "type", "priority"].includes(words[0]) ? words.shift() : nested ? undefined : String(e8.variable("org-todo-interpretation") ?? "sequence");
+      const set = todoSetFrom(words);
+      if (set) sets.push(kind === "type" || kind === "priority" ? { ...set, type: true } : set);
     }
+  }
+  // With no done keyword in any set, the last keyword is the done one, as org-set-regexps-and-options makes it.
+  if (sets.length > 0 && sets.every((set) => set.done.length === 0)) {
+    const last = sets.at(-1)!;
+    const word = last.todo.at(-1);
+    if (word !== undefined) sets = [...sets.slice(0, -1), { ...last, todo: last.todo.slice(0, -1), done: [word] }];
   }
   return sets;
 }
@@ -553,11 +573,12 @@ function readTodoSets(): TodoSet[] {
 function todoSets(): TodoSet[] {
   const value = e8.variable("org--todo-sets");
   if (!Array.isArray(value)) return readTodoSets();
-  return (value as unknown as [string[], string[], [string, string | null][], [string, string | null, string | null][]][]).map(([todo, done, keys, logs]) => ({
+  return (value as unknown as [string[], string[], [string, string | null][], [string, string | null, string | null][], boolean?][]).map(([todo, done, keys, logs, type]) => ({
     todo,
     done,
     keys: (keys ?? []).map(([k, c]) => [k, c ?? undefined] as [string, string | undefined]),
     logs: (logs ?? []).map(([k, a, b]) => [k, a ?? undefined, b ?? undefined] as [string, string | undefined, string | undefined]),
+    ...(type === true ? { type: true } : {}),
   }));
 }
 
@@ -568,12 +589,12 @@ function todoSets(): TodoSet[] {
  * marking an archived entry done.
  */
 export function withTheseTodoStates<T>(): (f: () => T) => T {
-  const sets = todoSets().map((s) => [s.todo, s.done, s.keys.map(([k, c]) => [k, c ?? null]), []]);
+  const sets = todoSets().map((s) => [s.todo, s.done, s.keys.map(([k, c]) => [k, c ?? null]), [], s.type === true]);
   return (f) => e8.letBind({ "org--todo-sets": sets as e8.Value }, f);
 }
 
 function storeTodoSets(): void {
-  e8.setVariable("org--todo-sets", readTodoSets().map((s) => [s.todo, s.done, s.keys.map(([k, c]) => [k, c ?? null]), s.logs.map(([k, a, b]) => [k, a ?? null, b ?? null])]));
+  e8.setVariable("org--todo-sets", readTodoSets().map((s) => [s.todo, s.done, s.keys.map(([k, c]) => [k, c ?? null]), s.logs.map(([k, a, b]) => [k, a ?? null, b ?? null]), s.type === true]));
 }
 
 /** How a change from one state to another is logged, as org-todo works out dolog: "time", "note" or nothing. */
@@ -4851,6 +4872,13 @@ function nextState(current: string | undefined, direction: number, across = fals
   const set = sets.find((s) => s.todo.includes(current) || s.done.includes(current)) ?? sets[0];
   const states = [...set.todo, ...set.done];
   const k = states.indexOf(current) + direction;
+  // A type goes to the set's first done keyword, or with TAB pressed again
+  // to the next type, as org-todo's type interpretation; the last done
+  // keyword goes to none.
+  if (set.type && direction > 0 && current !== set.done.at(-1) && k < states.length) {
+    if (e8.lastCommand() === e8.thisCommand()) return states[k];
+    return set.done[0] ?? allKeywords().find((w) => isDone(w));
+  }
   return k >= 0 && k < states.length ? states[k] : undefined;
 }
 
@@ -5272,9 +5300,13 @@ function autoRepeat(line: number, last: string | undefined, done: string): [stri
     }
   }
   if (!found) return undefined;
-  // Back to the first state of its sequence, or to none.
+  // Back to REPEAT_TO_STATE's state or org-todo-repeat-to-state's, if a keyword; else a type back to
+  // itself; else the first state of its sequence, or none, as org-auto-repeat-maybe.
   const set = todoSets().find((t) => last !== undefined && (t.todo.includes(last) || t.done.includes(last)));
-  const to = set ? set.todo[0] ?? set.done[0] : undefined;
+  const option = e8.variable("org-todo-repeat-to-state") ?? null;
+  const property = propertyInheritP("REPEAT_TO_STATE") ? entryGetInherited(h, "REPEAT_TO_STATE") : entryGet(line, "REPEAT_TO_STATE");
+  const wanted = property ?? (typeof option === "string" ? option : truthy(option) ? last : undefined);
+  const to = wanted !== undefined && allKeywords().includes(wanted) ? wanted : set?.type ? last : set ? set.todo[0] ?? set.done[0] : undefined;
   const p = marker(e8.point());
   e8.gotoChar(h.start);
   replaceTodoKeyword(parseHeading(line) as Heading, to);
@@ -5395,6 +5427,11 @@ function cancelRepeater(): void {
     const [b, e] = [e8.matchBeginning(1)!, e8.matchEnd(1)!];
     edReplace(b, e, "0");
   });
+}
+
+/** Switches the heading point is under to the next (1) or previous (-1) set of keywords, as org-todo with nextset or previousset. */
+export function todoToSet(direction: 1 | -1): void {
+  todo(1, undefined, false, { set: direction, chosen: true });
 }
 
 e8.defineCommand({ name: "org-cancel-repeater", doc: "Set the repeater of the entry's first timestamp to 0, so marking it done does not repeat it.", run: () => cancelRepeater() });
