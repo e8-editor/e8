@@ -13408,6 +13408,12 @@ declare global {
        */
       "org-capture-templates": Value;
       /**
+       * Whether exiting with a clock running asks to stop it and save its file. In Org it takes effect only through customize, which adds org-clock-kill-emacs-query to kill-emacs-query-functions or removes it; here it is read when E8 exits.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-ask-before-exiting": Value;
+      /**
        * The properties a new clock table's #+BEGIN: line starts with.
        *
        * Defined in packages/org-clock.ts.
@@ -13468,6 +13474,12 @@ declare global {
        */
       "org-clock-history-length": Value;
       /**
+       * Whether clocking into an entry with a CLOCK line not closed goes on with it, from when it started.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-in-resume": Value;
+      /**
        * Whether CLOCK: lines go into a drawer: t for LOGBOOK, or org-log-into-drawer's drawer if that names one, or the drawer's name.
        *
        * Defined in packages/org-clock.ts.
@@ -13497,6 +13509,30 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clock-overlays": Value;
+      /**
+       * Whether the running clock is saved when E8 exits and resumed when it starts again: t for the clock and the history of clocked tasks, "clock" for the clock, "history" for the history. org-clock-persistence-insinuate sets up the saving and loading.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-persist": Value;
+      /**
+       * The file the clock and its history are saved to; unset, org-clock-save.el in user-emacs-directory.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-persist-file": Value;
+      /**
+       * Whether to ask before resuming a saved clock.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-persist-query-resume": Value;
+      /**
+       * Whether to ask before saving the running clock on exit.
+       *
+       * Defined in packages/org-clock.ts.
+       */
+      "org-clock-persist-query-save": Value;
       /**
        * Whether the running clock's time counts in a clock sum over a range.
        *
