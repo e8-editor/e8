@@ -20,6 +20,8 @@ import {
   keywordLines,
   makeTagsMatcher,
   notDoneRegexp,
+  parseDate,
+  readDate,
   reducedLevel,
   type PriorityAction,
   getPriority,
@@ -116,6 +118,13 @@ e8.defineVariable({
   name: "org-agenda-start-on-weekday",
   doc: "The day of the week an agenda of 7 or 14 days starts on, 0 for Sunday and 1 for Monday, or nil to start on the day itself.",
   value: 1,
+});
+e8.defineVariable({
+  name: "org-agenda-start-day",
+  doc:
+    "The day the agenda starts on, as a date org-read-date reads, such as \"2026-11-01\" or \"+2d\", or nil for today. " +
+    "An agenda of 7 or 14 days still starts on org-agenda-start-on-weekday before it.",
+  value: null,
 });
 e8.defineVariable({
   name: "org-agenda-show-all-dates",
@@ -836,6 +845,9 @@ function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span,
     arg = null;
   }
   if (typeof spanArg === "number" && !(spanArg > 0)) e8.userError(`Agenda creation impossible for this span(=${spanArg} days)`);
+  // org-agenda-start-day, read as a date when the agenda is made, and kept as the day it read for making it again.
+  const startVar = e8.variable("org-agenda-start-day");
+  if (startDay === undefined && typeof startVar === "string") startDay = dayNumber(parseDate(startVar));
   const span = ndaysToSpan(spanArg ?? spanOf(e8.variable("org-agenda-span")));
   const today = dayNumber(today_());
   const sd = startDay ?? today;
@@ -1883,6 +1895,32 @@ const agendaToday = e8.defineCommand({
   },
 });
 
+/**
+ * Shows the agenda from a date, for as many days as its span has from
+ * there, as org-agenda-goto-date does: in the same buffer, with a prefix
+ * argument as org-agenda-list takes one, and goes to the date's line, or
+ * the last line if the agenda leaves it out.
+ */
+e8.defineCommand({
+  name: "org-agenda-goto-date",
+  doc: "Show the agenda from a date read as org-read-date reads it, for its span's days, and go to the date.",
+  params: [{ name: "date", value: () => readDate() }],
+  run: (date: string) => {
+    const view = checkAgendaType();
+    const day = dayNumber(parseDate(date));
+    const arg = e8.prefixArg() ?? view.arg;
+    bufferTmpName = e8.bufferName();
+    try {
+      redoFrom(arg, day, spanToNdays(view.span, day));
+    } finally {
+      bufferTmpName = undefined;
+    }
+    let line = 0;
+    while (agendaLineDays[line]?.day !== day && line + 1 < e8.lineCount() - 1) line++;
+    e8.gotoChar(e8.lineStart(line));
+  },
+});
+
 e8.defineCommand({
   name: "org-agenda-reset-view",
   doc: "Show the agenda for org-agenda-span's days.",
@@ -1975,6 +2013,7 @@ e8.defineMajorMode({
     f: agendaLaterCommand,
     b: agendaEarlier,
     d: dayView,
+    j: "org-agenda-goto-date",
     w: weekView,
     y: yearView,
     ".": agendaToday,

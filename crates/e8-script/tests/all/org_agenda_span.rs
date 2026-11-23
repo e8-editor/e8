@@ -114,3 +114,61 @@ fn the_dispatchers_a_hands_on_the_prefix_argument() {
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert!(agenda(&ed).starts_with("2 days-agenda (W44):\nWednesday  28 October 2026\n"), "{}", agenda(&ed));
 }
+
+/// org-agenda-start-day is read as org-read-date reads it, relative to
+/// today, and kept as the day it read: f goes on from it and . back to today.
+#[test]
+fn start_day_is_read_relative_to_today() {
+    let (mut ed, _s, _dir) = agenda_file(TASKS, &[("org-agenda-start-day", Value::Str("+2d".into())), ("org-agenda-span", Value::Str("day".into()))]);
+    ed.call("org-agenda-list", vec![]).unwrap();
+    assert_eq!(agenda(&ed), "Day-agenda (W44):\nFriday     30 October 2026\n");
+    ed.press("f").unwrap();
+    assert_eq!(agenda(&ed), "Day-agenda (W44):\nSaturday   31 October 2026\n");
+    ed.press(".").unwrap();
+    assert!(agenda(&ed).starts_with("Day-agenda (W44):\nWednesday  28 October 2026\n"), "{}", agenda(&ed));
+}
+
+/// j reads its date as org-read-date does, relative to today and preferring
+/// the future, and shows the span from it, with point on the date.
+#[test]
+fn goto_date_reads_relative_dates() {
+    let (mut ed, _s, _dir) = agenda_file(TASKS, &[]);
+    ed.call("org-agenda-list", vec![]).unwrap();
+    ed.call("org-agenda-goto-date", vec![e8_core::Arg::Str("+9d".into())]).unwrap();
+    assert!(agenda(&ed).starts_with("Week-agenda (W45):\nMonday      2 November 2026 W45\n"), "{}", agenda(&ed));
+    let text = agenda(&ed);
+    let at = text.find("Friday      6 November").unwrap();
+    assert_eq!(ed.buffer().point(), text[..at].chars().count());
+    // A day of the month before today's is next month's.
+    ed.call("org-agenda-goto-date", vec![e8_core::Arg::Str("5".into())]).unwrap();
+    assert!(agenda(&ed).starts_with("Week-agenda (W45):\n"), "{}", agenda(&ed));
+}
+
+/// The date line point is on after j.
+fn goto(ed: &mut Editor, date: &str) -> String {
+    ed.call("org-agenda-goto-date", vec![e8_core::Arg::Str(date.into())]).unwrap();
+    let text = agenda(ed);
+    let p = ed.buffer().point();
+    let at: String = text.chars().skip(p).collect();
+    at.lines().next().unwrap_or("").to_string()
+}
+
+/// Day names are read as org-read-date-get-relative reads them: the next
+/// such day, a week on if it is today's, the last one with -, and a count
+/// of weeks; only whole names or their first three letters, and what is not
+/// a date is today. Today is Wednesday 28 October.
+#[test]
+fn goto_date_reads_day_names_as_org_does() {
+    let (mut ed, _s, _dir) = agenda_file(TASKS, &[("org-agenda-span", Value::Str("day".into()))]);
+    ed.call("org-agenda-list", vec![]).unwrap();
+    assert_eq!(goto(&mut ed, "fri"), "Friday     30 October 2026");
+    assert_eq!(goto(&mut ed, "wed"), "Wednesday   4 November 2026");
+    assert_eq!(goto(&mut ed, "wednesday"), "Wednesday   4 November 2026");
+    assert_eq!(goto(&mut ed, "-wed"), "Wednesday  21 October 2026");
+    assert_eq!(goto(&mut ed, "-fri"), "Friday     23 October 2026");
+    assert_eq!(goto(&mut ed, "2fri"), "Friday      6 November 2026");
+    assert_eq!(goto(&mut ed, "-"), "Tuesday    27 October 2026");
+    assert_eq!(goto(&mut ed, "++3"), "Saturday   31 October 2026");
+    assert_eq!(goto(&mut ed, "we"), "Wednesday  28 October 2026");
+    assert_eq!(goto(&mut ed, "xyz"), "Wednesday  28 October 2026");
+}

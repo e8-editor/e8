@@ -5274,6 +5274,14 @@ declare global {
        */
       "org-agenda-goto": [];
       /**
+       * Show the agenda from a date read as org-read-date reads it, for its span's days, and go to the date.
+       *
+       * @param date text
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-goto-date": [date: string];
+      /**
        * Go to today in the agenda, showing the days around it if they are not shown.
        *
        * Defined in packages/org-agenda.ts.
@@ -13680,6 +13688,12 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-span": Value;
+      /**
+       * The day the agenda starts on, as a date org-read-date reads, such as "2026-11-01" or "+2d", or nil for today. An agenda of 7 or 14 days still starts on org-agenda-start-on-weekday before it.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-start-day": Value;
       /**
        * The day of the week an agenda of 7 or 14 days starts on, 0 for Sunday and 1 for Monday, or nil to start on the day itself.
        *
