@@ -4954,13 +4954,19 @@ e8.defineCommand({
 e8.defineCommand({
   name: "org-cut-special",
   doc: "Cut the subtree point is in, or in a table, blank the field at point or the fields in the region.",
-  run: () => e8.callWithPrefix(e8.prefixArg(), atTableP() ? "org-table-cut-region" : "org-cut-subtree"),
+  // Interactively, with the prefix on, as call-interactively passes it.
+  run: () => {
+    e8.funcallInteractively(atTableP() ? "org-table-cut-region" : "org-cut-subtree");
+  },
 });
 
 e8.defineCommand({
   name: "org-copy-special",
   doc: "Copy the subtree point is in, or in a table, the field at point or the fields in the region.",
-  run: () => e8.callWithPrefix(e8.prefixArg(), atTableP() ? "org-table-copy-region" : "org-copy-subtree"),
+  // Interactively, with the prefix on, as call-interactively passes it.
+  run: () => {
+    e8.funcallInteractively(atTableP() ? "org-table-copy-region" : "org-copy-subtree");
+  },
 });
 
 // Commands: TODO states, priorities and tags
