@@ -593,6 +593,17 @@ e8.defineCommand({
     barf();
     const st = e8.syntaxPpss();
     const cs = str("comment-start");
+    // A fill prefix is the new line's start, as comment-indent-new-line takes it: outside a comment,
+    // without adaptive-fill-mode, or in a comment when it starts one, as comment-valid-prefix-p says.
+    const prefix = e8.variable("fill-prefix");
+    const skip = str("comment-start-skip");
+    if (
+      typeof prefix === "string" &&
+      (st.inComment === null || !truthy(e8.variable("adaptive-fill-mode") ?? null) || (skip !== undefined && e8.stringMatch(`\\\`\\(?:${skip}\\)`, prefix.trimStart()) !== undefined)) &&
+      breakWithFillPrefix()
+    ) {
+      return;
+    }
     if (st.inComment === null || cs === undefined) {
       e8.call("default-indent-new-line" as e8.CommandName);
       return;
@@ -637,6 +648,8 @@ e8.defineCommand({
       e8.call("comment-indent-new-line");
       return;
     }
+    // A fill prefix is the new line's start, as default-indent-new-line puts it.
+    if (breakWithFillPrefix()) return;
     e8.insertAndInherit("\n");
     let a = e8.point() - 1;
     while (a > e8.pointMin() && " \t".includes(charAt(a - 1))) a--;
@@ -644,6 +657,31 @@ e8.defineCommand({
     e8.call("indent-according-to-mode");
   },
 });
+
+/**
+ * Breaks the line with fill-prefix starting the new one, the whitespace
+ * either side gone, as default-indent-new-line and comment-indent-new-line
+ * do when fill-prefix is set; true if it is.
+ */
+function breakWithFillPrefix(): boolean {
+  const prefix = e8.variable("fill-prefix");
+  if (typeof prefix !== "string") return false;
+  e8.insertAndInherit("\n");
+  const deleteSpace = (): void => {
+    let a = e8.point();
+    let b = a;
+    while (a > e8.pointMin() && " \t".includes(charAt(a - 1))) a--;
+    while (b < e8.pointMax() && " \t".includes(charAt(b))) b++;
+    if (b > a) e8.deleteRegion(a, b);
+  };
+  e8.saveExcursion(() => {
+    e8.gotoChar(e8.point() - 1);
+    deleteSpace();
+  });
+  deleteSpace();
+  e8.insertBeforeMarkers(prefix);
+  return true;
+}
 
 /**
  * Calls comment-line-break-function if the mode set one of its own and has

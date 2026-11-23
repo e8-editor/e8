@@ -145,5 +145,57 @@
   "globals": {
    "fill-column": 20
   }
+ },
+ {
+  "name": "af-mj-long-cmt",
+  "text": "# aaa bbb ccc ddd eee fff ggg hhh\n",
+  "point": 26,
+  "keys": "M-j",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "af-mj-long-para",
+  "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+  "point": 24,
+  "keys": "M-j",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "af-mj-long-item",
+  "text": "- aaa bbb ccc ddd eee fff ggg hhh\n",
+  "point": 26,
+  "keys": "M-j",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "af2-cmj-long-cmt",
+  "text": "# aaa bbb ccc ddd eee fff ggg\n",
+  "point": 26,
+  "keys": "C-M-j",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "globals": {
+   "fill-column": 20
+  }
  }
 ]

@@ -11809,8 +11809,9 @@ e8.defun("org-adaptive-fill-function", () => adaptiveFillPrefix() ?? null);
 // Breaks the line, the new one starting as org-adaptive-fill-function says, as org-comment-line-break-function does.
 e8.defun("org-comment-line-break-function", (soft?: e8.Value) => {
   const prefix = adaptiveFillPrefix();
+  // A hard newline as (newline 1) makes it: with an argument, so Auto Fill does not run.
   if (truthy(soft ?? null)) e8.insertAndInherit("\n");
-  else e8.call("newline");
+  else e8.callWithPrefix(1, "newline");
   const deleteSpace = (): void => {
     let a = e8.point();
     let b = a;
