@@ -1,0 +1,1071 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "clone-once",
+      "input": {
+        "text": "* A\ntext\n* B\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* A\ntext\n* A\ntext\n* B\n",
+      "visible": "* A\ntext\n* A\ntext\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-three",
+      "input": {
+        "text": "* A\ntext\n* B\n",
+        "point": 5,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3"
+        ]
+      },
+      "text": "* A\ntext\n* A\ntext\n* A\ntext\n* A\ntext\n* B\n",
+      "visible": "* A\ntext\n* A\ntext\n* A\ntext\n* A\ntext\n* B\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-zero",
+      "input": {
+        "text": "* A\ntext\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0"
+        ]
+      },
+      "text": "* A\ntext\n",
+      "visible": "* A\ntext\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "clone-negative",
+      "input": {
+        "text": "* A\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "-1"
+        ]
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid number of replications -1"
+    },
+    {
+      "name": "clone-before-first-heading",
+      "input": {
+        "text": "intro\n* A\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "intro\n* A\n",
+      "visible": "intro\n* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No subtree to clone"
+    },
+    {
+      "name": "clone-a-child",
+      "input": {
+        "text": "* A\n** B\nb\n** C\n",
+        "point": 6,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* A\n** B\nb\n** B\nb\n** C\n",
+      "visible": "* A\n** B\nb\n** B\nb\n** C\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-with-children",
+      "input": {
+        "text": "* A\n** B\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2"
+        ]
+      },
+      "text": "* A\n** B\n* A\n** B\n* A\n** B\n* C\n",
+      "visible": "* A\n** B\n* A\n** B\n* A\n** B\n* C\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-no-final-newline",
+      "input": {
+        "text": "* A\ntext",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* A\ntext\n* A\ntext\n",
+      "visible": "* A\ntext\n* A\ntext\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-week",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          "+1w"
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-30 Mon>\n* Meet <2026-12-07 Mon>\n",
+      "visible": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-30 Mon>\n* Meet <2026-12-07 Mon>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-days",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "3",
+          "+2d"
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-25 Wed>\n* Meet <2026-11-27 Fri>\n* Meet <2026-11-29 Sun>\n",
+      "visible": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-25 Wed>\n* Meet <2026-11-27 Fri>\n* Meet <2026-11-29 Sun>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-back",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          "-1d"
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-22 Sun>\n* Meet <2026-11-21 Sat>\n",
+      "visible": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-22 Sun>\n* Meet <2026-11-21 Sat>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-months",
+      "input": {
+        "text": "* Meet <2026-01-31 Sat>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          "+1m"
+        ]
+      },
+      "text": "* Meet <2026-01-31 Sat>\n* Meet <2026-03-03 Tue>\n* Meet <2026-03-31 Tue>\n",
+      "visible": "* Meet <2026-01-31 Sat>\n* Meet <2026-03-03 Tue>\n* Meet <2026-03-31 Tue>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-years",
+      "input": {
+        "text": "* Meet <2028-02-29 Tue>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          "+1y"
+        ]
+      },
+      "text": "* Meet <2028-02-29 Tue>\n* Meet <2029-03-01 Thu>\n",
+      "visible": "* Meet <2028-02-29 Tue>\n* Meet <2029-03-01 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-hours",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon 10:00>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          "+3h"
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon 10:00>\n* Meet <2026-11-23 Mon 13:00>\n* Meet <2026-11-23 Mon 16:00>\n",
+      "visible": "* Meet <2026-11-23 Mon 10:00>\n* Meet <2026-11-23 Mon 13:00>\n* Meet <2026-11-23 Mon 16:00>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-hours-no-time",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          "+3h"
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n",
+      "visible": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-empty",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          ""
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n",
+      "visible": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-invalid",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          "next week"
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon>\n",
+      "visible": "* Meet <2026-11-23 Mon>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Invalid shift specification next week"
+    },
+    {
+      "name": "clone-shift-spaces",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          "  +1d  "
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-24 Tue>\n",
+      "visible": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-24 Tue>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-inactive-and-range",
+      "input": {
+        "text": "* Meet [2026-11-23 Mon]\n<2026-11-23 Mon>--<2026-11-25 Wed>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          "+1d"
+        ]
+      },
+      "text": "* Meet [2026-11-23 Mon]\n<2026-11-23 Mon>--<2026-11-25 Wed>\n* Meet [2026-11-24 Tue]\n<2026-11-24 Tue>--<2026-11-26 Thu>\n",
+      "visible": "* Meet [2026-11-23 Mon]\n<2026-11-23 Mon>--<2026-11-25 Wed>\n* Meet [2026-11-24 Tue]\n<2026-11-24 Tue>--<2026-11-26 Thu>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-shift-planning",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon> DEADLINE: <2026-11-27 Fri>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          "+1w"
+        ]
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon> DEADLINE: <2026-11-27 Fri>\n* TODO Task\nSCHEDULED: <2026-11-30 Mon> DEADLINE: <2026-12-04 Fri>\n* TODO Task\nSCHEDULED: <2026-12-07 Mon> DEADLINE: <2026-12-11 Fri>\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-23 Mon> DEADLINE: <2026-11-27 Fri>\n* TODO Task\nSCHEDULED: <2026-11-30 Mon> DEADLINE: <2026-12-04 Fri>\n* TODO Task\nSCHEDULED: <2026-12-07 Mon> DEADLINE: <2026-12-11 Fri>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-repeater",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n* Next\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          "+1w"
+        ]
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon>\n* TODO Task\nSCHEDULED: <2026-11-30 Mon>\n* TODO Task\nSCHEDULED: <2026-12-07 Mon>\n* TODO Task\nSCHEDULED: <2026-12-14 Mon +1w>\n* Next\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-23 Mon>\n* TODO Task\nSCHEDULED: <2026-11-30 Mon>\n* TODO Task\nSCHEDULED: <2026-12-07 Mon>\n* TODO Task\nSCHEDULED: <2026-12-14 Mon +1w>\n* Next\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-repeater-zero",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon .+1d>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "0",
+          "+1d"
+        ]
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon>\n* TODO Task\nSCHEDULED: <2026-11-24 Tue .+1d>\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-23 Mon>\n* TODO Task\nSCHEDULED: <2026-11-24 Tue .+1d>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-repeater-with-warning",
+      "input": {
+        "text": "* TODO Task\nDEADLINE: <2026-11-23 Mon ++1w -2d>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          "+1w"
+        ]
+      },
+      "text": "* TODO Task\nDEADLINE: <2026-11-23 Mon -2d>\n* TODO Task\nDEADLINE: <2026-11-30 Mon -2d>\n* TODO Task\nDEADLINE: <2026-12-07 Mon ++1w -2d>\n",
+      "visible": "* TODO Task\nDEADLINE: <2026-11-23 Mon -2d>\n* TODO Task\nDEADLINE: <2026-11-30 Mon -2d>\n* TODO Task\nDEADLINE: <2026-12-07 Mon ++1w -2d>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-repeater-without-shift",
+      "input": {
+        "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2",
+          ""
+        ]
+      },
+      "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n",
+      "visible": "* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-universal",
+      "input": {
+        "text": "* Meet <2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-u C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2"
+        ]
+      },
+      "text": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n",
+      "visible": "* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n* Meet <2026-11-23 Mon>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-clock-lines",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\nbody\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          ""
+        ]
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\nbody\n* T\nbody\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\nbody\n* T\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-clock-lines-and-notes",
+      "input": {
+        "text": "* T\n:LOGBOOK:\n- Note taken\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          ""
+        ]
+      },
+      "text": "* T\n:LOGBOOK:\n- Note taken\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n* T\n:LOGBOOK:\n- Note taken\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\n- Note taken\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n* T\n:LOGBOOK:\n- Note taken\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-clock-repeater",
+      "input": {
+        "text": "* T\nSCHEDULED: <2026-11-23 Mon +1d>\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          "+1d"
+        ]
+      },
+      "text": "* T\nSCHEDULED: <2026-11-23 Mon>\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n* T\nSCHEDULED: <2026-11-24 Tue>\n* T\nSCHEDULED: <2026-11-25 Wed +1d>\n",
+      "visible": "* T\nSCHEDULED: <2026-11-23 Mon>\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n* T\nSCHEDULED: <2026-11-24 Tue>\n* T\nSCHEDULED: <2026-11-25 Wed +1d>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-delete-id",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:ID: abc-123\n:END:\ntext\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "2"
+        ],
+        "globals": {
+          "org-clone-delete-id": true
+        }
+      },
+      "text": "* A\n:PROPERTIES:\n:ID: abc-123\n:END:\ntext\n* A\ntext\n* A\ntext\n",
+      "visible": "* A\n:PROPERTIES:\n:ID: abc-123\n:END:\ntext\n* A\ntext\n* A\ntext\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-delete-id-keeps-others",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:ID: abc-123\n:OTHER: x\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ],
+        "globals": {
+          "org-clone-delete-id": true
+        }
+      },
+      "text": "* A\n:PROPERTIES:\n:ID: abc-123\n:OTHER: x\n:END:\n* A\n:PROPERTIES:\n:OTHER: x\n:END:\n",
+      "visible": "* A\n:PROPERTIES:\n:ID: abc-123\n:OTHER: x\n:END:\n* A\n:PROPERTIES:\n:OTHER: x\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-empty-property-drawer",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* A\n:PROPERTIES:\n:END:\n* A\n",
+      "visible": "* A\n:PROPERTIES:\n:END:\n* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-tty-key-undo",
+      "input": {
+        "text": "* A\n",
+        "point": 0,
+        "keys": "C-c C-x c C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "clone-valueless-property",
+      "input": {
+        "text": "* T\n:PROPERTIES:\n:A:\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* T\n:PROPERTIES:\n:A:\n:END:\n* T\n:PROPERTIES:\n:A:\n:END:\n",
+      "visible": "* T\n:PROPERTIES:\n:A:\n:END:\n* T\n:PROPERTIES:\n:A:\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-delete-id-valueless-property",
+      "input": {
+        "text": "* T\n:PROPERTIES:\n:ID: x\n:CATEGORY:\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ],
+        "globals": {
+          "org-clone-delete-id": true
+        }
+      },
+      "text": "* T\n:PROPERTIES:\n:ID: x\n:CATEGORY:\n:END:\n* T\n:PROPERTIES:\n:CATEGORY:\n:END:\n",
+      "visible": "* T\n:PROPERTIES:\n:ID: x\n:CATEGORY:\n:END:\n* T\n:PROPERTIES:\n:CATEGORY:\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-drawer-lines-in-a-block",
+      "input": {
+        "text": "* T\n#+begin_src text\n:FOO:\n:END:\n#+end_src\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* T\n#+begin_src text\n:FOO:\n:END:\n#+end_src\n* T\n#+begin_src text\n:FOO:\n:END:\n#+end_src\n",
+      "visible": "* T\n#+begin_src text\n:FOO:\n:END:\n#+end_src\n* T\n#+begin_src text\n:FOO:\n:END:\n#+end_src\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-drawer-lines-in-an-example",
+      "input": {
+        "text": "* T\n#+begin_example\n:FOO:\n:END:\n#+end_example\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* T\n#+begin_example\n:FOO:\n:END:\n#+end_example\n* T\n#+begin_example\n:FOO:\n:END:\n#+end_example\n",
+      "visible": "* T\n#+begin_example\n:FOO:\n:END:\n#+end_example\n* T\n#+begin_example\n:FOO:\n:END:\n#+end_example\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-nested-looking-drawers",
+      "input": {
+        "text": "* T\n:OUTER:\n:INNER:\n:END:\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* T\n:OUTER:\n:INNER:\n:END:\n:END:\n* T\n:OUTER:\n:INNER:\n:END:\n:END:\n",
+      "visible": "* T\n:OUTER:\n:INNER:\n:END:\n:END:\n* T\n:OUTER:\n:INNER:\n:END:\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-empty-drawer-with-a-name",
+      "input": {
+        "text": "* T\n#+name: d\n:FOO:\n:END:\nx\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ]
+      },
+      "text": "* T\n#+name: d\n:FOO:\n:END:\nx\n* T\nx\n",
+      "visible": "* T\n#+name: d\n:FOO:\n:END:\nx\n* T\nx\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-lowercase-clock",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nclock: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          ""
+        ]
+      },
+      "text": "* T\n:LOGBOOK:\nclock: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n* T\n",
+      "visible": "* T\n:LOGBOOK:\nclock: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n* T\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-uppercase-repeater",
+      "input": {
+        "text": "* T\n<2026-11-23 Mon +1W>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          "+1d"
+        ]
+      },
+      "text": "* T\n<2026-11-23 Mon>\n* T\n<2026-11-24 Tue>\n* T\n<2026-11-25 Wed +1W>\n",
+      "visible": "* T\n<2026-11-23 Mon>\n* T\n<2026-11-24 Tue>\n* T\n<2026-11-25 Wed +1W>\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-uppercase-shift",
+      "input": {
+        "text": "* T\n<2026-11-23 Mon>\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          "+1W"
+        ]
+      },
+      "text": "* T\n<2026-11-23 Mon>\n",
+      "visible": "* T\n<2026-11-23 Mon>\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Unsupported time unit"
+    },
+    {
+      "name": "clone-drawer-with-blank-line",
+      "input": {
+        "text": "* T\n:LOGBOOK:\n\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          ""
+        ]
+      },
+      "text": "* T\n:LOGBOOK:\n\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n* T\n:LOGBOOK:\n\n:END:\n",
+      "visible": "* T\n:LOGBOOK:\n\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n* T\n:LOGBOOK:\n\n:END:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "clone-empty-drawer-before-text",
+      "input": {
+        "text": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n\nbody\n",
+        "point": 0,
+        "keys": "C-c C-x c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1",
+          ""
+        ]
+      },
+      "text": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n\nbody\n* T\n\nbody\n",
+      "visible": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n\nbody\n* T\n\nbody\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

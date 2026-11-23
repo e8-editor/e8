@@ -1,0 +1,551 @@
+[
+  {
+    "name": "clone-once",
+    "text": "* A\ntext\n* B\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-three",
+    "text": "* A\ntext\n* B\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 5,
+    "keys": "C-c C-x c",
+    "answers": [
+      "3"
+    ]
+  },
+  {
+    "name": "clone-zero",
+    "text": "* A\ntext\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "0"
+    ]
+  },
+  {
+    "name": "clone-negative",
+    "text": "* A\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "-1"
+    ]
+  },
+  {
+    "name": "clone-before-first-heading",
+    "text": "intro\n* A\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-a-child",
+    "text": "* A\n** B\nb\n** C\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 6,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-with-children",
+    "text": "* A\n** B\n* C\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2"
+    ]
+  },
+  {
+    "name": "clone-no-final-newline",
+    "text": "* A\ntext",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-shift-week",
+    "text": "* Meet <2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      "+1w"
+    ]
+  },
+  {
+    "name": "clone-shift-days",
+    "text": "* Meet <2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "3",
+      "+2d"
+    ]
+  },
+  {
+    "name": "clone-shift-back",
+    "text": "* Meet <2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      "-1d"
+    ]
+  },
+  {
+    "name": "clone-shift-months",
+    "text": "* Meet <2026-01-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      "+1m"
+    ]
+  },
+  {
+    "name": "clone-shift-years",
+    "text": "* Meet <2028-02-29 Tue>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+1y"
+    ]
+  },
+  {
+    "name": "clone-shift-hours",
+    "text": "* Meet <2026-11-23 Mon 10:00>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      "+3h"
+    ]
+  },
+  {
+    "name": "clone-shift-hours-no-time",
+    "text": "* Meet <2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+3h"
+    ]
+  },
+  {
+    "name": "clone-shift-empty",
+    "text": "* Meet <2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      ""
+    ]
+  },
+  {
+    "name": "clone-shift-invalid",
+    "text": "* Meet <2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      "next week"
+    ]
+  },
+  {
+    "name": "clone-shift-spaces",
+    "text": "* Meet <2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "  +1d  "
+    ]
+  },
+  {
+    "name": "clone-shift-inactive-and-range",
+    "text": "* Meet [2026-11-23 Mon]\n<2026-11-23 Mon>--<2026-11-25 Wed>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+1d"
+    ]
+  },
+  {
+    "name": "clone-shift-planning",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon> DEADLINE: <2026-11-27 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      "+1w"
+    ]
+  },
+  {
+    "name": "clone-repeater",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n* Next\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      "+1w"
+    ]
+  },
+  {
+    "name": "clone-repeater-zero",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon .+1d>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "0",
+      "+1d"
+    ]
+  },
+  {
+    "name": "clone-repeater-with-warning",
+    "text": "* TODO Task\nDEADLINE: <2026-11-23 Mon ++1w -2d>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+1w"
+    ]
+  },
+  {
+    "name": "clone-repeater-without-shift",
+    "text": "* TODO Task\nSCHEDULED: <2026-11-23 Mon +1w>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2",
+      ""
+    ]
+  },
+  {
+    "name": "clone-universal",
+    "text": "* Meet <2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-u C-c C-x c",
+    "answers": [
+      "2"
+    ]
+  },
+  {
+    "name": "clone-clock-lines",
+    "text": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\nbody\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      ""
+    ]
+  },
+  {
+    "name": "clone-clock-lines-and-notes",
+    "text": "* T\n:LOGBOOK:\n- Note taken\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      ""
+    ]
+  },
+  {
+    "name": "clone-clock-repeater",
+    "text": "* T\nSCHEDULED: <2026-11-23 Mon +1d>\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+1d"
+    ]
+  },
+  {
+    "name": "clone-delete-id",
+    "text": "* A\n:PROPERTIES:\n:ID: abc-123\n:END:\ntext\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "2"
+    ],
+    "globals": {
+      "org-clone-delete-id": true
+    }
+  },
+  {
+    "name": "clone-delete-id-keeps-others",
+    "text": "* A\n:PROPERTIES:\n:ID: abc-123\n:OTHER: x\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ],
+    "globals": {
+      "org-clone-delete-id": true
+    }
+  },
+  {
+    "name": "clone-empty-property-drawer",
+    "text": "* A\n:PROPERTIES:\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-tty-key-undo",
+    "text": "* A\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c C-/",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-valueless-property",
+    "text": "* T\n:PROPERTIES:\n:A:\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-delete-id-valueless-property",
+    "text": "* T\n:PROPERTIES:\n:ID: x\n:CATEGORY:\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ],
+    "globals": {
+      "org-clone-delete-id": true
+    }
+  },
+  {
+    "name": "clone-drawer-lines-in-a-block",
+    "text": "* T\n#+begin_src text\n:FOO:\n:END:\n#+end_src\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-drawer-lines-in-an-example",
+    "text": "* T\n#+begin_example\n:FOO:\n:END:\n#+end_example\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-nested-looking-drawers",
+    "text": "* T\n:OUTER:\n:INNER:\n:END:\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-empty-drawer-with-a-name",
+    "text": "* T\n#+name: d\n:FOO:\n:END:\nx\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-lowercase-clock",
+    "text": "* T\n:LOGBOOK:\nclock: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      ""
+    ]
+  },
+  {
+    "name": "clone-uppercase-repeater",
+    "text": "* T\n<2026-11-23 Mon +1W>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+1d"
+    ]
+  },
+  {
+    "name": "clone-uppercase-shift",
+    "text": "* T\n<2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+1W"
+    ]
+  },
+  {
+    "name": "clone-drawer-with-blank-line",
+    "text": "* T\n:LOGBOOK:\n\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      ""
+    ]
+  },
+  {
+    "name": "clone-empty-drawer-before-text",
+    "text": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n\nbody\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      ""
+    ]
+  }
+]

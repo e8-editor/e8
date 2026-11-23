@@ -5739,6 +5739,15 @@ declare global {
        */
       "org-clock-timestamps-up": [n?: PrefixArg | boolean];
       /**
+       * Clone the subtree at point N times, the clones its siblings after it. If it has a timestamp, ask for a shift per clone, as +1w; the clones' timestamps then move on clone by clone. Clones lose their clocking, and get new IDs. A subtree with a repeater is cloned once more, unshifted, its clones without repeaters, and the original goes last, past them. With C-u, ask for no shift.
+       *
+       * @param n number
+       * @param shift text
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-clone-subtree-with-time-shift": [n: number, shift: string];
+      /**
        * M-; in Org: on a heading, make it a comment or take that away, as org-toggle-comment; elsewhere as comment-dwim.
        *
        * Defined in packages/org.ts.
@@ -14156,6 +14165,12 @@ declare global {
        * Defined in packages/org-clock.ts.
        */
       "org-clocktable-defaults": Value;
+      /**
+       * Whether clones of a subtree lose its ID property, rather than each having a new one.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-clone-delete-id": Value;
       /**
        * Whether C-c C-c asks before running a source block: true asks, false runs it, and a function of the block's language and code decides.
        *

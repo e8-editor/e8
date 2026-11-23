@@ -1758,30 +1758,37 @@ e8.defineCommand({
   run: (property) => {
     const h = entryHeading();
     if (!h) throw new Error("Before first headline at position 1 in buffer " + e8.bufferName());
-    let line = h.line + 1;
-    if (line < e8.lineCount() && PLANNING.test(e8.lineText(line))) line++;
-    const close = propertyDrawerEnd(line);
-    if (close === undefined) {
-      e8.message("No property to delete in this entry");
-      return;
-    }
-    const p = marker(e8.point());
-    // The property and its accumulated form, PROPERTY+, as org-entry-delete removes them.
-    const re = new RegExp(`^[ \\t]*:${escapeRegExp(property)}\\+?:`, "i");
-    let end = close;
-    for (let l = line + 1; l < end; ) {
-      if (re.test(e8.lineText(l))) {
-        edDelete(e8.lineStart(l), e8.lineStart(l + 1));
-        end--;
-      } else l++;
-    }
-    // An emptied drawer goes altogether.
-    if (end === line + 1) edDelete(e8.lineStart(line), lineStartOrEnd(line + 2));
-    e8.gotoChar(p.pos);
-    dropMarker(p);
-    e8.message(`Property "${property}" deleted`);
+    if (entryDelete(h, property) === undefined) e8.message("No property to delete in this entry");
+    else e8.message(`Property "${property}" deleted`);
   },
 });
+
+/**
+ * Deletes a property from a heading's property drawer, with its
+ * accumulated form, PROPERTY+, and the drawer if that leaves it empty, as
+ * org-entry-delete does; undefined when the entry has no property drawer,
+ * else whether a property went.
+ */
+export function entryDelete(h: Heading, property: string): boolean | undefined {
+  let line = h.line + 1;
+  if (line < e8.lineCount() && PLANNING.test(e8.lineText(line))) line++;
+  const close = propertyDrawerEnd(line);
+  if (close === undefined) return undefined;
+  const p = marker(e8.point());
+  const re = new RegExp(`^[ \\t]*:${escapeRegExp(property)}\\+?:`, "i");
+  let end = close;
+  for (let l = line + 1; l < end; ) {
+    if (re.test(e8.lineText(l))) {
+      edDelete(e8.lineStart(l), e8.lineStart(l + 1));
+      end--;
+    } else l++;
+  }
+  // An emptied drawer goes altogether.
+  if (end === line + 1) edDelete(e8.lineStart(line), lineStartOrEnd(line + 2));
+  e8.gotoChar(p.pos);
+  dropMarker(p);
+  return end !== close;
+}
 
 e8.defineCommand({
   name: "org--insert-named-drawer",
