@@ -486,6 +486,160 @@ function getField(n?: number, replace?: string): string {
   return val;
 }
 
+e8.defineVariable({
+  name: "org-table-copy-increment",
+  doc:
+    "Whether org-table-copy-down increments a number, a number before or after text, or a timestamp's day as it copies it: " +
+    "t by the difference from the field above, a number by that much, nil not at all.",
+  value: true,
+});
+
+/** A number as Lisp reads it, and whether it is a float, for incrementing a field. */
+type LispNumber = { value: number; float: boolean };
+
+function lispNumber(text: string): LispNumber {
+  return { value: Number(text.endsWith(".") ? text.slice(0, -1) : text), float: /\.\d|[eE]/.test(text) };
+}
+
+/** A number as number-to-string writes it: a float with a point, as 3.0. */
+function numberString(n: LispNumber): string {
+  if (!n.float) return String(n.value);
+  if (Number.isInteger(n.value) && Math.abs(n.value) < 1e16) return `${n.value}.0`;
+  return String(n.value).replace(/e([+-])(\d)$/, "e$10$2");
+}
+
+/** Runs `f` in a buffer of its own, killed afterwards, as with-temp-buffer. */
+function withTempBuffer<T>(f: () => T): T {
+  const name = e8.generateNewBufferName(" *temp*");
+  e8.getBufferCreate(name);
+  try {
+    return e8.withCurrentBuffer(name, f);
+  } finally {
+    e8.call("kill-buffer", name);
+  }
+}
+
+/**
+ * The field after FIELD, as org-table--increment-field makes it: a number,
+ * a number before or after text, or a timestamp, moved on by its
+ * difference from PREVIOUS when that is of the same kind, else by
+ * org-table-copy-increment's number or 1; anything else as it is.
+ */
+function incrementField(field: string, previous: string | undefined): string {
+  const option = e8.variable("org-table-copy-increment");
+  const step: LispNumber = typeof option === "number" ? { value: option, float: !Number.isInteger(option) } : { value: 1, float: false };
+  type Kind = { type: "number" | "prefix" | "suffix" | "timestamp"; n: LispNumber; text: string; rest: string };
+  const analyze = (f: string | undefined): Kind | undefined => {
+    if (f === undefined || !/\S/.test(f)) return undefined;
+    let m: RegExpExecArray | null;
+    if (/^[+-]?(?:\d+\.?|\d*\.\d+)(?:[eE][+-]?\d+)?$/.test(f)) return { type: "number", n: lispNumber(f), text: f, rest: "" };
+    if ((m = /^\d+/.exec(f))) return { type: "prefix", n: lispNumber(m[0]), text: f, rest: f.slice(m[0].length) };
+    if ((m = /\d+$/.exec(f))) return { type: "suffix", n: lispNumber(m[0]), text: f, rest: f.slice(0, m.index) };
+    if (/[[<]\d{4}-\d{2}-\d{2}(?: +[^\]+0-9>\r\n -]+)?(?: +\d{1,2}:\d{2})?[^\]>\n]*[\]>]/.test(f)) {
+      return { type: "timestamp", n: { value: 0, float: false }, text: f, rest: "" };
+    }
+    return undefined;
+  };
+  const next = (n1: LispNumber, n2?: LispNumber): string =>
+    numberString(
+      n2 ? { value: n1.value + (n1.value - n2.value), float: n1.float || n2.float } : { value: n1.value + step.value, float: n1.float || step.float },
+    );
+  const days = (ts: string) => {
+    const m = /(\d{4})-(\d{2})-(\d{2})/.exec(ts)!;
+    return Math.floor(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])) / 86400000);
+  };
+  // As org-timestamp-up-day moves it at the start of a buffer holding the field.
+  const shift = (t1: string, t2?: string) =>
+    withTempBuffer(() => {
+      e8.insert(t1);
+      e8.gotoChar(e8.pointMin());
+      e8.callWithPrefix(t2 === undefined ? step.value : days(t1) - days(t2), "org-timestamp-up-day");
+      return e8.bufferText(e8.pointMin(), e8.pointMax());
+    });
+  const a = analyze(field);
+  const b = analyze(previous);
+  if (!a) return field;
+  const same = b !== undefined && b.type === a.type;
+  if (a.type === "number") return next(a.n, same ? b!.n : undefined);
+  if (a.type === "prefix") return next(a.n, same && b!.rest === a.rest ? b!.n : undefined) + a.rest;
+  if (a.type === "suffix") return a.rest + next(a.n, same && b!.rest === a.rest ? b!.n : undefined);
+  return shift(a.text, same ? b!.text : undefined);
+}
+
+/**
+ * Copies the field at point to the row below and moves there, or fills an
+ * empty field from the nearest field above with something in it, the Nth
+ * with N, as org-table-copy-down does, moving it on by
+ * org-table-copy-increment unless N is 0.
+ */
+function copyDown(n: number): void {
+  checkInsideDataField();
+  const beg = tableBegin();
+  const column = currentColumn();
+  const fieldAt = (line: number): string => {
+    const p = e8.point();
+    e8.gotoChar(e8.lineStart(line));
+    const f = getField(column);
+    e8.gotoChar(p);
+    return f;
+  };
+  const here = getFieldHere();
+  const initial = /\S/.test(here) ? here.trim() : undefined;
+  let field = initial;
+  // The line the field above the one copied is read from.
+  let from = lineAt();
+  if (field === undefined) {
+    let count = n;
+    for (let l = lineAt() - 1; l >= 0 && e8.lineStart(l) >= beg; l--) {
+      if (!DATALINE.test(e8.lineText(l))) continue;
+      const f = fieldAt(l);
+      if (!/\S/.test(f)) continue;
+      if (count > 1) {
+        count--;
+        continue;
+      }
+      field = f.trim();
+      from = l;
+      break;
+    }
+    if (field === undefined) e8.userError("No non-empty field found");
+  }
+  let next: string | undefined;
+  const option = e8.variable("org-table-copy-increment");
+  if (option !== null && option !== undefined && option !== false && n !== 0) {
+    let above: string | undefined;
+    // Read whatever that line holds, a rule's dashes included, as org-table-get-field reads it.
+    if (typeof option !== "number" && e8.lineStart(from) !== beg) {
+      const f = fieldAt(from - 1);
+      above = /\S/.test(f) ? f.trim() : undefined;
+    }
+    next = incrementField(field!, above);
+  }
+  if (initial !== undefined) {
+    e8.call("org-table-next-row");
+    blankField();
+  }
+  e8.insert(next ?? field!);
+  align();
+}
+
+/** The text of the field point is in, point kept. */
+function getFieldHere(): string {
+  const p = e8.point();
+  const f = getField();
+  e8.gotoChar(p);
+  return f;
+}
+
+e8.defineCommand({
+  name: "org-table-copy-down",
+  doc:
+    "Copy the field at point to the row below and move there, or fill an empty field from the nearest field above with something in it, " +
+    "the Nth with a prefix argument; numbers and timestamps go up as org-table-copy-increment says, unless the argument is 0.",
+  params: [{ name: "n", kind: "count" }],
+  run: (n: number) => copyDown(n),
+});
+
 /**
  * What org-table-maybe-eval-formula does before moving on from a field,
  * as E8 has no formulas: it reads the field, which leaves point near

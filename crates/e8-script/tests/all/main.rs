@@ -90,6 +90,7 @@ mod org_clocktable;
 mod org_capture_targets;
 mod org_cycle_hook;
 mod org_clock_display;
+mod org_extra_keys;
 mod org_goto;
 mod org_id;
 mod org_list_alphabetical;

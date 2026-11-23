@@ -11769,6 +11769,46 @@ const orgBackwardElementCommand = e8.defineCommand({
 });
 e8.bindKey("M-}", orgForwardElementCommand, "org-mode-map");
 e8.bindKey("M-{", orgBackwardElementCommand, "org-mode-map");
+e8.bindKey("S-RET", "org-table-copy-down", "org-mode-map");
+
+// Keys for terminals, which cannot send some of the keys above, as Org binds
+// them without a graphical display or with org-use-extra-keys. ESC RET and
+// ESC with an arrow, which Org binds too, are already M-RET and M-<arrow>;
+// and C-c C-x c and C-c C-x d, which Org binds again after them, to cloning
+// a subtree and inserting a drawer.
+e8.defineVariable({
+  name: "org-use-extra-keys",
+  doc:
+    "Whether Org binds its keys for terminals, as C-c C-x l for M-<left> and C-c <up> for S-<up>, which it does on a terminal anyway. " +
+    "Org reads it only when it loads; E8 binds them when it is set too, as init.ts runs after Org has loaded.",
+  value: null,
+});
+const EXTRA_KEYS: [string, e8.CommandName][] = [
+  ["C-c C-x m", "org-meta-return"],
+  ["C-c C-x M", "org-insert-todo-heading"],
+  ["C-c C-x s", "org-insert-structure-template"],
+  ["C-c C-x RET", "org-meta-return"],
+  ["C-c C-x l", "org-metaleft"],
+  ["C-c C-x r", "org-metaright"],
+  ["C-c C-x u", "org-metaup"],
+  ["C-c C-x L", "org-shiftmetaleft"],
+  ["C-c C-x R", "org-shiftmetaright"],
+  ["C-c C-x U", "org-shiftmetaup"],
+  ["C-c C-x D", "org-shiftmetadown"],
+  ["C-c <up>", "org-shiftup"],
+  ["C-c <down>", "org-shiftdown"],
+  ["C-c <left>", "org-shiftleft"],
+  ["C-c <right>", "org-shiftright"],
+  ["C-c C-x <right>", "org-shiftcontrolright"],
+  ["C-c C-x <left>", "org-shiftcontrolleft"],
+];
+function bindExtraKeys(): void {
+  for (const [key, command] of EXTRA_KEYS) e8.bindKey(key, command, "org-mode-map");
+}
+if (truthy(e8.variable("org-use-extra-keys") ?? null) || !e8.displayGraphicP()) bindExtraKeys();
+e8.addVariableWatcher("org-use-extra-keys", (_symbol, value) => {
+  if (truthy(value ?? null)) bindExtraKeys();
+});
 
 // Filling's paragraphs, with lists of one-line items not one, as org-setup-filling sets fill-forward-paragraph-function.
 e8.defun("org--fill-forward-paragraph", (arg?: e8.Value) => {
