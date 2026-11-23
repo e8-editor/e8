@@ -56,16 +56,35 @@ e8.defineVariable({
   value: null,
 });
 
+// The setting's global value, kept by a watcher rather than read for each
+// line tested, as the item tests run over whole buffers.
+let lettered = truthy(e8.variable("org-list-allow-alphabetical") ?? null);
+// A global change only, as Org reads the global value; makunbound's value is nil.
+e8.addVariableWatcher("org-list-allow-alphabetical", (_symbol, value, _operation, where) => {
+  if (where === null || where === undefined) lettered = truthy(value ?? null);
+});
+
 /** Whether lettered bullets are allowed, as org-list-allow-alphabetical says. */
 export function alphabetical(): boolean {
-  return truthy(e8.variable("org-list-allow-alphabetical") ?? null);
+  return lettered;
 }
 
 const ITEM_NUMBERED = /^(?:[ \t]*(?:[-+]|\d+[.)])|[ \t]+\*)(?:[ \t]+|$)/;
 const ITEM_LETTERED = /^(?:[ \t]*(?:[-+]|(?:\d+|[A-Za-z])[.)])|[ \t]+\*)(?:[ \t]+|$)/;
 
 /** Matches the start of an item, as org-item-beginning-re: a lettered one too with org-list-allow-alphabetical. */
-export const ITEM_RE = { test: (text: string): boolean => (alphabetical() ? ITEM_LETTERED : ITEM_NUMBERED).test(text) };
+export const ITEM_RE = { test: (text: string): boolean => (lettered ? ITEM_LETTERED : ITEM_NUMBERED).test(text) };
+
+/** An item's indentation, bullet and the spaces after it, numbered bullets only or lettered ones too. */
+export const ITEM_GROUPS = {
+  numbered: /^([ \t]*)([-+*]|\d+[.)])([ \t]+|$)/,
+  lettered: /^([ \t]*)([-+*]|(?:\d+|[A-Za-z])[.)])([ \t]+|$)/,
+};
+
+/** A line that looks like an item ends a paragraph, as org-element-paragraph-separate has it: lettered too with the setting. */
+export function separatesParagraph(text: string): boolean {
+  return (lettered ? /^[ \t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]|$)/ : /^[ \t]*(?:[-+*]|[0-9]+[.)])(?:[ \t]|$)/).test(text);
+}
 export const DRAWER_RE = /^[ \t]*:((?:\w|[-_])+):[ \t]*$/;
 const LIST_FORBIDDEN_BLOCKS = ["example", "verse", "src", "export"];
 

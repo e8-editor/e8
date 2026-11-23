@@ -12,7 +12,7 @@ import { insertLink, storeLink } from "ol";
 import { completingReadMultiple } from "crm";
 import { findBufferVisiting } from "files";
 import { type Elem, elementAt, endBeforeBlank } from "org-element";
-import { cycleListBullet, endOfMetaData, ITEM_RE } from "org-list";
+import { alphabetical, cycleListBullet, endOfMetaData, ITEM_RE } from "org-list";
 import { lineAt, lineStartOrEnd, orgMks, titleWithoutCookies } from "org-macs";
 import { charCount, forwardLine, getBufferWindow, truthy } from "subr";
 
@@ -868,7 +868,8 @@ function placeItem(t: CaptureTemplate, where: Target, filled: Filled, prepend: b
   let cursor: number | undefined;
   try {
     if (list) {
-      const ordered = /^[ \t]*\d+[.)]/.test(e8.lineText(lineAt(list.begin === start ? (e8.markerPosition(endMarker) as number) : list.begin)));
+      // Ordered by a number, or a letter with org-list-allow-alphabetical, as the plain list's type says.
+      const ordered = (alphabetical() ? /^[ \t]*(?:\d+|[A-Za-z])[.)]/ : /^[ \t]*\d+[.)]/).test(e8.lineText(lineAt(list.begin === start ? (e8.markerPosition(endMarker) as number) : list.begin)));
       // The list's indentation; a prepended item takes the list's, where Org's takes its own.
       const indent = /^[ \t]*/.exec(e8.lineText(lineAt(list.begin === start ? (e8.markerPosition(endMarker) as number) : list.begin)))![0].length;
       e8.saveExcursion(() => {

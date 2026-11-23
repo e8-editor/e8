@@ -368,8 +368,12 @@ answers come, and then from its answers, as save-some-buffers' do."
   "Type CASE's keys and return the buffer's state afterwards, as an alist,
 its `globals' bound for the case, before the modes start."
   (let ((globals (alist-get 'globals case)))
-    (cl-progv (mapcar #'car globals) (mapcar (lambda (g) (e8-oracle--value (cdr g))) globals)
-      (e8-oracle--run-1 case))))
+    (prog1 (cl-progv (mapcar #'car globals) (mapcar (lambda (g) (e8-oracle--value (cdr g))) globals)
+             (e8-oracle--run-1 case))
+      ;; A case that brought Org's parser up to date with its globals, as
+      ;; org-list-allow-alphabetical, leaves it as the defaults have it.
+      (when (equal (car (alist-get 'call case)) "org-element-update-syntax")
+        (org-element-update-syntax)))))
 
 (defun e8-oracle--run-1 (case)
   "Type CASE's keys and return the buffer's state afterwards, as an alist."

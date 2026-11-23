@@ -21,8 +21,8 @@ import {
   DRAWER_RE,
   getItem,
   indentItemCommand,
-  alphabetical,
   ITEM_RE,
+  separatesParagraph,
   itemEndBeforeBlank,
   itemLine,
   itemParts,
@@ -152,7 +152,7 @@ export function startsElement(line: number, limit: number): boolean {
     COMMENT_LINE.test(text) ||
     // As org-element-paragraph-separate has them: lines that look like an
     // item, rules, footnote definitions, diary sexps, table.el tables and clocks.
-    (alphabetical() ? /^[ \t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]|$)/ : /^[ \t]*(?:[-+*]|[0-9]+[.)])(?:[ \t]|$)/).test(text) ||
+    separatesParagraph(text) ||
     /^[ \t]*-{5,}[ \t]*$/.test(text) ||
     /^\[fn:[-_\w]+\]/.test(text) ||
     /^%%\(/.test(text) ||

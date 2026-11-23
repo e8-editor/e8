@@ -12,7 +12,7 @@
 // Free Software Foundation, either version 3 of the License, or (at your
 // option) any later version.
 
-import { itemParts, twoSpacesAfter } from "org-list";
+import { itemLine, twoSpacesAfter } from "org-list";
 import { PerBuffer } from "subr";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
@@ -111,7 +111,8 @@ export function addProperties(beg: number, end: number, deadline?: number): numb
         if (m) {
           level = m[1].length;
           setLineProperties(l, level, 0, true);
-        } else if (itemParts(l) !== undefined) {
+        // An item where org-at-item-p sees one: by the bullets the setting allows, in a list's context.
+        } else if (itemLine(l)) {
           setLineProperties(l, level, itemBodyColumn(text), false);
         } else {
           setLineProperties(l, level, indentationOf(text), false);
