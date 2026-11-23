@@ -1,0 +1,178 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "region-ends-at-stars-space",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-SPC C-f C-f M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 2,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "region-ends-in-stars",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-SPC C-f M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 2,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "region-ends-after-space",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-SPC C-f C-f C-f M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "** A\n* B\n",
+      "visible": "** A\n* B\n",
+      "point": 4,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-promote-at-space",
+      "input": {
+        "text": "** A\n* B\n",
+        "point": 0,
+        "keys": "C-SPC C-f C-f C-f M-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "** A\n* B\n",
+      "visible": "** A\n* B\n",
+      "point": 3,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "region-second-at-space",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-SPC C-n C-f C-f M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "** A\n** B\n",
+      "visible": "** A\n** B\n",
+      "point": 8,
+      "mark": 0,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-backward",
+      "input": {
+        "text": "* A\n* B\n",
+        "point": 0,
+        "keys": "C-f C-f C-SPC C-a M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n* B\n",
+      "visible": "* A\n* B\n",
+      "point": 0,
+      "mark": 2,
+      "mark_active": true,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "paste-cu-before-first",
+      "input": {
+        "text": "** X\nx body\n*** Y\ntext\n* A\n",
+        "point": 0,
+        "keys": "C-c C-x C-w C-f C-f C-u C-c C-x C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n* X\nx body\n** Y\ntext\n",
+      "visible": "* A\n* X\nx body\n** Y\ntext\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** X\nx body\n*** Y\ntext\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "paste-cu-narrowed-body",
+      "input": {
+        "text": "** X\nx\n* A\n** B\nbody\nmore\n",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-p C-p C-SPC M-> C-x n n M-< C-u C-c C-x C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n** B\nbody\nmore\n** X\nx\n",
+      "visible": "* A\n** B\nbody\nmore\n** X\nx\n",
+      "point": 19,
+      "mark": 9,
+      "mark_active": false,
+      "kill_ring": [
+        "** X\nx\n"
+      ],
+      "modified": true,
+      "error": null
+    }
+  ]
+}
