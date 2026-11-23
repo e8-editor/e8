@@ -173,6 +173,52 @@
       ],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "ind-l2-above",
+      "input": {
+        "text": "** K\nk\n** A\n***\nfoo\n",
+        "point": 0,
+        "keys": "C-c C-x C-w C-n C-SPC M-> C-x n n M-< C-e C-c C-x C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "** A\nfoo\n** K\nk\n",
+      "visible": "** A\nfoo\n** K\nk\n",
+      "point": 9,
+      "mark": 5,
+      "mark_active": false,
+      "kill_ring": [
+        "** K\nk\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ind-l3-kill",
+      "input": {
+        "text": "*** K\nk\n** A\n**\nfoo\n",
+        "point": 0,
+        "keys": "C-c C-x C-w C-n C-SPC M-> C-x n n M-< C-e C-c C-x C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "** A\nfoo\n** K\nk\n",
+      "visible": "** A\nfoo\n** K\nk\n",
+      "point": 9,
+      "mark": 5,
+      "mark_active": false,
+      "kill_ring": [
+        "*** K\nk\n"
+      ],
+      "modified": true,
+      "error": null
     }
   ]
 }

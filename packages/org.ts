@@ -4755,7 +4755,11 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
   if ((level === null || c4 || c16) && /^\*+[ \t]*$/.test(text) && e8.bufferText(e8.point(), e8.point() + 1) !== "*") {
     // As org-outline-level: the stars' own level when they make a heading,
     // with a space after them, else the heading above's, or 0 before the first.
-    indicator = [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+    // In the whole buffer, as org-back-to-heading finds a heading outside a narrowing.
+    indicator = e8.saveRestriction(() => {
+      e8.widen();
+      return [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+    });
     force = indicator;
   } else if (c4) {
     // As org-outline-level: the heading point is under, hidden or not, or 0 before the first.

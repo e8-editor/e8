@@ -70,5 +70,23 @@
   "text": "** X\nx\n* A\n** B\nbody\nmore\n",
   "keys": "C-c C-x C-w M-> C-p C-p C-SPC M-> C-x n n M-< C-u C-c C-x C-y",
   "point": 0
+ },
+ {
+  "name": "ind-l2-above",
+  "text": "** K\nk\n** A\n***\nfoo\n",
+  "point": 0,
+  "keys": "C-c C-x C-w C-n C-SPC M-> C-x n n M-< C-e C-c C-x C-y",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "ind-l3-kill",
+  "text": "*** K\nk\n** A\n**\nfoo\n",
+  "point": 0,
+  "keys": "C-c C-x C-w C-n C-SPC M-> C-x n n M-< C-e C-c C-x C-y",
+  "modes": [
+   "org-mode"
+  ]
  }
 ]
