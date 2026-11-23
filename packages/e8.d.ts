@@ -10473,6 +10473,12 @@ declare global {
        */
       "comment-insert-comment-function": Value;
       /**
+       * The function M-j and Auto Fill break a line with, given whether the newline is soft, as Org sets its own.
+       *
+       * Defined in packages/newcomment.ts.
+       */
+      "comment-line-break-function": Value;
+      /**
        * What goes between a comment's start and its text.
        *
        * Defined in packages/newcomment.ts.

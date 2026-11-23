@@ -1,0 +1,433 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "comment",
+      "input": {
+        "text": "* A\n# note\n",
+        "point": 8,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# no\n# te\n",
+      "visible": "* A\n# no\n# te\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indented-comment",
+      "input": {
+        "text": "* A\n  # note\n",
+        "point": 10,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n  # no\n  # te\n",
+      "visible": "* A\n  # no\n  # te\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "item",
+      "input": {
+        "text": "- aaa bbb\n",
+        "point": 6,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- aaa\n  bbb\n",
+      "visible": "- aaa\n  bbb\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "nested-item",
+      "input": {
+        "text": "- a\n  - bbb ccc\n",
+        "point": 12,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n  - bbb\n    ccc\n",
+      "visible": "- a\n  - bbb\n    ccc\n",
+      "point": 16,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "quote-prefix",
+      "input": {
+        "text": "* A\n> aaa bbb\n",
+        "point": 10,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n> aaa\n  bbb\n",
+      "visible": "* A\n> aaa\n  bbb\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "paragraph",
+      "input": {
+        "text": "* A\nsome text here\n",
+        "point": 9,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\nsome\ntext here\n",
+      "visible": "* A\nsome\ntext here\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indented-paragraph",
+      "input": {
+        "text": "* A\n  some text\n",
+        "point": 11,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n  some\n  text\n",
+      "visible": "* A\n  some\n  text\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "heading",
+      "input": {
+        "text": "* Heading here\n",
+        "point": 9,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* Heading\nhere\n",
+      "visible": "* Heading\nhere\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "blank-spaces",
+      "input": {
+        "text": "* A\n   \n",
+        "point": 6,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n\n\n",
+      "visible": "* A\n\n\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "logbook",
+      "input": {
+        "text": "* A\n:LOGBOOK:\n- note one\n:END:\n",
+        "point": 23,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n:LOGBOOK:\n- note on\n  e\n:END:\n",
+      "visible": "* A\n:LOGBOOK:\n- note on\n  e\n:END:\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "src-body",
+      "input": {
+        "text": "#+begin_src python\nx = 1  # c\n#+end_src\n",
+        "point": 29,
+        "keys": "M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src python\nx = 1  # c\n\n#+end_src\n",
+      "visible": "#+begin_src python\nx = 1  # c\n\n#+end_src\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "c-m-j",
+      "input": {
+        "text": "* A\n# note\n",
+        "point": 8,
+        "keys": "C-M-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# no\n# te\n",
+      "visible": "* A\n# no\n# te\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-comment",
+      "input": {
+        "text": "* A\n# aaa bbb ccc ddd eee",
+        "point": 27,
+        "keys": "SPC f f f SPC g g g",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* A\n# aaa bbb ccc ddd\n# eee fff ggg",
+      "visible": "* A\n# aaa bbb ccc ddd\n# eee fff ggg",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-item",
+      "input": {
+        "text": "- aaa bbb ccc ddd eee",
+        "point": 21,
+        "keys": "SPC f f f SPC g g g",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "- aaa bbb ccc ddd\n  eee fff ggg",
+      "visible": "- aaa bbb ccc ddd\n  eee fff ggg",
+      "point": 31,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-paragraph",
+      "input": {
+        "text": "* A\nsome aaa bbb ccc ddd",
+        "point": 24,
+        "keys": "SPC f f f SPC g g g",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* A\nsome aaa bbb ccc ddd\nfff ggg",
+      "visible": "* A\nsome aaa bbb ccc ddd\nfff ggg",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "af-mj-long-cmt",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 26,
+        "keys": "M-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb ccc ddd eee fff\n# ggg hhh\n",
+      "visible": "# aaa bbb ccc ddd eee fff\n# ggg hhh\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "af-mj-long-para",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "M-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff\nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee fff\nggg hhh\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "af-mj-long-item",
+      "input": {
+        "text": "- aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 26,
+        "keys": "M-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "- aaa bbb ccc ddd eee fff\n  ggg hhh\n",
+      "visible": "- aaa bbb ccc ddd eee fff\n  ggg hhh\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "af2-cmj-long-cmt",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff ggg\n",
+        "point": 26,
+        "keys": "C-M-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb ccc ddd eee fff\n# ggg\n",
+      "visible": "# aaa bbb ccc ddd eee fff\n# ggg\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

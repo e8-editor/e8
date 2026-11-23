@@ -107,8 +107,10 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
   - `comment-region` from the middle of a line starts the comment at the line's indentation, where Emacs's starts it at the region's start.
   - With `comment-empty-lines`, blank lines get the comment start without its padding.
   - A comment at the margin after an indented one is lined up differently than Emacs lines it up.
+  - `M-j` does not expand an abbrev before point, as Emacs's `(newline 1)` does through `self-insert-command`.
+  - JavaScript has no `c-indent-new-comment-line`, which js-mode sets as its `comment-line-break-function`: `M-j` in a `/* */` comment continues it with `/*` rather than ` *`, indents code after it as the line was rather than as the mode says, and takes `fill-prefix` in a `//` comment.
+- **Auto Fill** (not yet): `RET` in Org does not fill the line it breaks when that is past `fill-column`, as Emacs's does with Auto Fill on, and a line Auto Fill breaks is not justified when `default-justification` is `full`.
 - **Org comments** (not yet):
-  - `M-j` does not continue a comment, an item's text or a block's language, as Org's `org-comment-line-break-function` does.
   - `M-q` with a region over a drawer's paragraph or a comment block fills nothing, where Org fills it.
   - `M-;` on a block's `#+end_src` line puts the comment at the margin, where Org's edit buffer indents the blank line first. In a block whose language E8 has no mode for, `M-;` does nothing, where Org says "Not in a sub-editing buffer".
   - Undoing a comment made in a source block leaves point where it was, not where Org's write-back puts it.

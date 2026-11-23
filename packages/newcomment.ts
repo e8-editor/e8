@@ -13,6 +13,7 @@ defvar("comment-end", "", "What ends a comment, with the space before it: \" */\
 defvar("comment-start-skip", null, "A regexp matching a comment's start and the space after it.", true);
 defvar("comment-use-syntax", "undecided", "Whether the syntax table finds comments; nil to find them by comment-start-skip, as Org's are; undecided to tell from the syntax table.", true);
 defvar("comment-insert-comment-function", null, "A function M-; calls to put a comment on a line with none, in place of its own, as Org's starts one above the line.", true);
+defvar("comment-line-break-function", "comment-indent-new-line", "The function M-j and Auto Fill break a line with, given whether the newline is soft, as Org sets its own.", true);
 defvar("comment-region-function", "comment-region-default", "The function comment-region calls with the region and the prefix argument.", true);
 defvar("uncomment-region-function", "uncomment-region-default", "The function uncomment-region calls with the region and the prefix argument.", true);
 defvar("comment-column", 32, "The column comments at the end of a line go to. C-x ; sets it.", true);
@@ -592,6 +593,17 @@ e8.defineCommand({
     barf();
     const st = e8.syntaxPpss();
     const cs = str("comment-start");
+    // A fill prefix is the new line's start, as comment-indent-new-line takes it: outside a comment,
+    // without adaptive-fill-mode, or in a comment when it starts one, as comment-valid-prefix-p says.
+    const prefix = e8.variable("fill-prefix");
+    const skip = str("comment-start-skip");
+    if (
+      typeof prefix === "string" &&
+      (st.inComment === null || !truthy(e8.variable("adaptive-fill-mode") ?? null) || (skip !== undefined && e8.stringMatch(`\\\`\\(?:${skip}\\)`, prefix.trimStart()) !== undefined)) &&
+      breakWithFillPrefix()
+    ) {
+      return;
+    }
     if (st.inComment === null || cs === undefined) {
       e8.call("default-indent-new-line" as e8.CommandName);
       return;
@@ -630,10 +642,14 @@ e8.defineCommand({
   name: "default-indent-new-line",
   doc: "Break the line and indent the new one, continuing a comment point is in, as comment-indent-new-line does.",
   run: () => {
+    // A mode's own line breaker, as default-indent-new-line calls comment-line-break-function.
+    if (otherLineBreak(false)) return;
     if (e8.syntaxPpss().inComment !== null && str("comment-start") !== undefined) {
       e8.call("comment-indent-new-line");
       return;
     }
+    // A fill prefix is the new line's start, as default-indent-new-line puts it.
+    if (breakWithFillPrefix()) return;
     e8.insertAndInherit("\n");
     let a = e8.point() - 1;
     while (a > e8.pointMin() && " \t".includes(charAt(a - 1))) a--;
@@ -641,6 +657,42 @@ e8.defineCommand({
     e8.call("indent-according-to-mode");
   },
 });
+
+/**
+ * Breaks the line with fill-prefix starting the new one, the whitespace
+ * either side gone, as default-indent-new-line and comment-indent-new-line
+ * do when fill-prefix is set; true if it is.
+ */
+function breakWithFillPrefix(): boolean {
+  const prefix = e8.variable("fill-prefix");
+  if (typeof prefix !== "string") return false;
+  e8.insertAndInherit("\n");
+  const deleteSpace = (): void => {
+    let a = e8.point();
+    let b = a;
+    while (a > e8.pointMin() && " \t".includes(charAt(a - 1))) a--;
+    while (b < e8.pointMax() && " \t".includes(charAt(b))) b++;
+    if (b > a) e8.deleteRegion(a, b);
+  };
+  e8.saveExcursion(() => {
+    e8.gotoChar(e8.point() - 1);
+    deleteSpace();
+  });
+  deleteSpace();
+  e8.insertBeforeMarkers(prefix);
+  return true;
+}
+
+/**
+ * Calls comment-line-break-function if the mode set one of its own and has
+ * comment syntax, as default-indent-new-line does; true if it did.
+ */
+export function otherLineBreak(soft: boolean): boolean {
+  const fn = e8.variable("comment-line-break-function");
+  if (str("comment-start") === undefined || !truthy(fn ?? null) || fn === "comment-indent-new-line") return false;
+  e8.funcall(fn as string, soft);
+  return true;
+}
 
 e8.bindKey("M-;", "comment-dwim");
 e8.bindKey("C-x C-;", "comment-line");

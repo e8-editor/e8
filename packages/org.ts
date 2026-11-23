@@ -11275,6 +11275,7 @@ e8.defineMajorMode({
       ["comment-region-function", "org-comment-or-uncomment-region"],
       ["uncomment-region-function", "org-comment-or-uncomment-region"],
       ["adaptive-fill-function", "org-adaptive-fill-function"],
+      ["comment-line-break-function", "org-comment-line-break-function"],
       ["fill-forward-paragraph-function", "org--fill-forward-paragraph"],
       ["fill-nobreak-predicate", ["org-fill-line-break-nobreak-p", "org-fill-n-macro-as-item-nobreak-p", "org-fill-paragraph-with-timestamp-nobreak-p"]],
     ] as const) {
@@ -11804,6 +11805,27 @@ const orgCommentDwim = e8.defineCommand({
 });
 e8.remapCommand("org-mode-map", "comment-dwim", orgCommentDwim);
 e8.defun("org-adaptive-fill-function", () => adaptiveFillPrefix() ?? null);
+
+// Breaks the line, the new one starting as org-adaptive-fill-function says, as org-comment-line-break-function does.
+e8.defun("org-comment-line-break-function", (soft?: e8.Value) => {
+  const prefix = adaptiveFillPrefix();
+  // A hard newline as (newline 1) makes it: with an argument, so Auto Fill does not run.
+  if (truthy(soft ?? null)) e8.insertAndInherit("\n");
+  else e8.callWithPrefix(1, "newline");
+  const deleteSpace = (): void => {
+    let a = e8.point();
+    let b = a;
+    while (a > e8.pointMin() && /[ \t]/.test(e8.bufferText(a - 1, a))) a--;
+    while (b < e8.pointMax() && /[ \t]/.test(e8.bufferText(b, b + 1))) b++;
+    if (b > a) e8.deleteRegion(a, b);
+  };
+  e8.saveExcursion(() => {
+    e8.gotoChar(e8.point() - 1);
+    deleteSpace();
+  });
+  deleteSpace();
+  if (prefix !== undefined) e8.insertBeforeMarkers(prefix);
+});
 
 e8.remapCommand("org-mode-map", "self-insert-command", "org-self-insert-command");
 e8.remapCommand("org-mode-map", "delete-backward-char", "org-delete-backward-char");
