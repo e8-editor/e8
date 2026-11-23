@@ -4,7 +4,7 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, parseDate, parseHeading, plistGet, shiftHeadings, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
+import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, killIsSubtree, parseDate, parseHeading, plistGet, shiftHeadings, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, refreshClockHeading, runningClockLine, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
@@ -711,35 +711,32 @@ function placeEntry(t: CaptureTemplate, where: Target, filled: Filled, prepend: 
   if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
   emptyLinesBefore(emptyLines(t, ":empty-lines-before"));
   // The template as a subtree at the target's level, as org-paste-subtree
-  // puts it: inserted as it is, then shifted a level at a time, each
-  // heading demoted or promoted with its hooks.
-  const first = /^(\*+) /m.exec(filled.text)?.[1].length ?? level;
+  // puts it: inserted as it is, %? still in it, then shifted a level at a
+  // time, each heading demoted or promoted with its hooks.
+  const text = filled.cursor === undefined ? filled.text : [...filled.text].slice(0, filled.cursor).join("") + "%?" + [...filled.text].slice(filled.cursor).join("");
+  if (!killIsSubtree(text)) e8.signal("error", "Template is not a valid Org entry or tree");
+  const first = /^(\*+) /m.exec(text)?.[1].length ?? level;
   const shift = level - first;
   const beg = e8.point();
-  e8.insert(filled.text);
-  const endMark = e8.makeMarker(e8.point());
-  // The cursor kept by its line, past the stars on a heading's, where %?
-  // stays in Org's text until the stars have changed.
-  const cursorAt = filled.cursor === undefined ? undefined : beg + filled.cursor;
-  const cursorHeading = cursorAt === undefined ? undefined : parseHeading(lineAt(cursorAt));
-  const cursorBase = cursorAt === undefined ? 0 : cursorHeading !== undefined && cursorAt >= cursorHeading.start + cursorHeading.level ? cursorHeading.start + cursorHeading.level : e8.lineStart(lineAt(cursorAt));
-  const cursorLine = cursorAt === undefined ? undefined : e8.makeMarker(e8.lineStart(lineAt(cursorAt)));
+  e8.insert(text);
+  // Advancing, so lines a hook adds after the last heading are the entry's.
+  const endMark = e8.makeMarker(e8.point(), { advances: true });
   if (shift !== 0) shiftHeadings(beg, e8.point(), shift);
+  // Tags aligned where %^g put them, as Org aligns them as it fills the template.
+  for (let l = lineAt(beg); l < lineAt(e8.markerPosition(endMark)!); l++) {
+    const h = parseHeading(l);
+    if (h && h.tagsAt !== undefined && filled.tagLines.includes(l - lineAt(beg))) alignTags(l);
+  }
+  // The cursor where %? is, taken out, as org-capture--position-cursor finds it.
+  let cursor: number | undefined;
+  const found = e8.bufferText(beg, e8.markerPosition(endMark)!).indexOf("%?");
+  if (found >= 0) {
+    const at = beg + [...e8.bufferText(beg, e8.markerPosition(endMark)!).slice(0, found)].length;
+    e8.deleteRegion(at, at + 2);
+    cursor = at - beg;
+  }
   e8.gotoChar(e8.markerPosition(endMark)!);
   e8.deleteMarker(endMark);
-  const end = e8.point();
-  let cursor: number | undefined;
-  if (cursorAt !== undefined && cursorLine !== undefined) {
-    const ls = e8.markerPosition(cursorLine)!;
-    const now = cursorHeading !== undefined && cursorBase !== e8.lineStart(cursorHeading.line) ? parseHeading(lineAt(ls)) : undefined;
-    cursor = (now !== undefined ? now.start + now.level : ls) + (cursorAt - cursorBase) - beg;
-    e8.deleteMarker(cursorLine);
-  }
-  // Tags aligned where the entry was demoted or %^g put them, as Org aligns them; others left as written.
-  for (let l = lineAt(beg); l < lineAt(end); l++) {
-    const h = parseHeading(l);
-    if (h && h.tagsAt !== undefined && (shift !== 0 || filled.tagLines.includes(l - lineAt(beg)))) alignTags(l);
-  }
   e8.message(`Clipboard pasted as level ${level} subtree`);
   // Blank lines after it go too, and the template's come, as org-capture-empty-lines-after.
   {

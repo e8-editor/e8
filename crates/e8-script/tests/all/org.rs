@@ -1947,6 +1947,16 @@ fn level_changes_with_hooks_that_add_lines() {
         ("a subtree", "* A\n** B\nbody\n*** C\n** D\n", 4, None, "org-demote-subtree", adder, "* A\n*** B\n@demote\nbody\n**** C\n@demote\n** D\n", &["demote:8:*** B", "demote:28:**** C"]),
         ("a subtree promoted", "* A\n** B\nbody\n*** C\n** D\n", 4, None, "org-promote-subtree", adder, "* A\n* B\n@promote\nbody\n** C\n@promote\n** D\n", &["promote:6:* B", "promote:25:** C"]),
         ("a region", "* A\n** B\nbody\n*** C\n** D\n", 22, Some(4), "org-do-demote", adder, "* A\n*** B\n@demote\nbody\n**** C\n@demote\n*** D\n@demote\n", &["demote:8:*** B", "demote:28:**** C", "demote:42:*** D"]),
+        (
+            "a line put before a region's first heading",
+            "* A\n** B\nb1\nb2\n*** C\nc1\n**** D\n*** E\n** F\n",
+            42,
+            Some(4),
+            "org-do-demote",
+            "(globalThis.seen = [], globalThis.once = false, e8.addHook('org-after-demote-entry-hook', () => { globalThis.seen.push(`demote:${e8.point()}:${e8.lineText(e8.lineOf(e8.point()))}`); if (!globalThis.once) { globalThis.once = true; e8.saveExcursion(() => { e8.gotoChar(e8.lineStart(e8.lineOf(e8.point()))); e8.insert('@demote\\n'); }); } }))",
+            "* A\n@demote\n*** B\nb1\nb2\n**** C\nc1\n***** D\n**** E\n*** F\n",
+            &["demote:8:*** B", "demote:29:**** C", "demote:40:***** D", "demote:47:**** E", "demote:53:*** F"],
+        ),
         ("C-u paste at the end", "* A\n** B\n", 9, None, "org-paste-subtree", "(globalThis.seen = [], e8.killNew('** X\\nx body\\n*** Y\\n'))", "* A\n** B\n** X\nx body\n*** Y\n", &[]),
         ("C-u paste in a body", "* A\n** B\nbody\n", 11, None, "org-paste-subtree", "(globalThis.seen = [], e8.killNew('** X\\nx body\\n*** Y\\n'))", "* A\n** B\nbody\n** X\nx body\n*** Y\n", &[]),
     ];

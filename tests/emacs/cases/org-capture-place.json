@@ -1,0 +1,1328 @@
+[
+ {
+  "name": "two-heads",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* A\n* B %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "sub-shift2",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* TODO task\n** sub %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "tag-pct",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* TODO %? :tag:\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "adapt-body",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* TODO task\nmore %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "adapt-empty",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* TODO task\n%?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "adapt-drawer",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* TODO task\n:PROPERTIES:\n:A: 1\n:END:\nbody %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "two-heads-prepend",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* A\n* B %?\n",
+    ":prepend",
+    true
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "shallower",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file",
+     "FILE"
+    ],
+    "*** A\n**** B %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "second-tags",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* TODO a :t:\n** b %? :u:\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "datetree",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp+datetree",
+     "FILE"
+    ],
+    "* TODO a\n** sub %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "today": "2026-11-04"
+ },
+ {
+  "name": "datetree-inbox",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp+datetree",
+     "FILE",
+     "Inbox"
+    ],
+    "* e %? :t:\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "today": "2026-11-04"
+ },
+ {
+  "name": "datetree-week",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp+datetree",
+     "FILE"
+    ],
+    "* e\n** f %?\n",
+    ":tree-type",
+    "'week"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "today": "2026-11-04"
+ },
+ {
+  "name": "odd",
+  "text": "* Inbox\n*** Old\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* A\n** B %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "noalign",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* TODO t :tag:\n%?"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-auto-align-tags": false
+  }
+ },
+ {
+  "name": "noalign-pct",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* TODO t %? :tag:\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-auto-align-tags": false
+  }
+ },
+ {
+  "name": "three-levels",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* a\nx\n** b\n*** c %?\ny\n** d\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "adapt-deep-body",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* a\n  x %?\n** b\n   y\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "pct-before-stars",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "%?* task\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "pct-in-stars",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "Q C-c C-c",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "*%?* task\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "two-heads-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* A\n* B %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "sub-shift2-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* TODO task\n** sub %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "tag-pct-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* TODO %? :tag:\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "adapt-body-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* TODO task\nmore %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "adapt-empty-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* TODO task\n%?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "adapt-drawer-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* TODO task\n:PROPERTIES:\n:A: 1\n:END:\nbody %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "two-heads-prepend-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* A\n* B %?\n",
+    ":prepend",
+    true
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "shallower-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file",
+     "FILE"
+    ],
+    "*** A\n**** B %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "second-tags-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* TODO a :t:\n** b %? :u:\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "datetree-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp+datetree",
+     "FILE"
+    ],
+    "* TODO a\n** sub %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "today": "2026-11-04"
+ },
+ {
+  "name": "datetree-inbox-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp+datetree",
+     "FILE",
+     "Inbox"
+    ],
+    "* e %? :t:\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "today": "2026-11-04"
+ },
+ {
+  "name": "datetree-week-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp+datetree",
+     "FILE"
+    ],
+    "* e\n** f %?\n",
+    ":tree-type",
+    "'week"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "today": "2026-11-04"
+ },
+ {
+  "name": "odd-open",
+  "text": "* Inbox\n*** Old\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* A\n** B %?\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-odd-levels-only": true
+  }
+ },
+ {
+  "name": "noalign-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "* TODO t :tag:\n%?"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-auto-align-tags": false
+  }
+ },
+ {
+  "name": "noalign-pct-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* TODO t %? :tag:\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-auto-align-tags": false
+  }
+ },
+ {
+  "name": "three-levels-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* a\nx\n** b\n*** c %?\ny\n** d\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "adapt-deep-body-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+olp",
+     "FILE",
+     "Inbox",
+     "Old"
+    ],
+    "* a\n  x %?\n** b\n   y\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ],
+  "globals": {
+   "org-adapt-indentation": true
+  }
+ },
+ {
+  "name": "pct-before-stars-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "%?* task\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "pct-in-stars-open",
+  "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+  "point": 0,
+  "keys": "",
+  "answers": [
+   "t"
+  ],
+  "modes": [
+   "org-mode"
+  ],
+  "visit": "e8-capture.org",
+  "capture_templates": [
+   [
+    "t",
+    "T",
+    "entry",
+    [
+     "file+headline",
+     "FILE",
+     "Inbox"
+    ],
+    "*%?* task\n"
+   ]
+  ],
+  "call": [
+   "org-capture"
+  ]
+ },
+ {
+  "name": "hline-cu",
+  "text": "| a | b |\n|---+---|\n| c | d |\n",
+  "point": 15,
+  "keys": "C-u C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "hline",
+  "text": "| a | b |\n|---+---|\n| c | d |\n",
+  "point": 15,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "last-before-tblfm",
+  "text": "| a | b |\n| c | d |\n#+TBLFM: $2=1\n",
+  "point": 12,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "last-cu",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 16,
+  "keys": "C-u C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "indented",
+  "text": "  | a | b |\n  | c | d |\n",
+  "point": 4,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "indented-cu",
+  "text": "  | a | b |\n  | c | d |\n",
+  "point": 8,
+  "keys": "C-u C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "bol-cu",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 0,
+  "keys": "C-u C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "eol",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 9,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "eol-cu",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 9,
+  "keys": "C-u C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "twice",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 2,
+  "keys": "C-c RET C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "no-final-newline",
+  "text": "| a | b |",
+  "point": 2,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "in-item",
+  "text": "- x\n  | a | b |\n  | c | d |\n",
+  "point": 8,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "numeric-prefix",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 6,
+  "keys": "C-u 2 C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "item",
+  "text": "* A\n- item\n",
+  "point": 9,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "before-rule-cu",
+  "text": "| a | b |\n|---+---|\n| c | d |\n",
+  "point": 6,
+  "keys": "C-u C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "wide-unaligned",
+  "text": "| aaaa | b |\n| c | dddddd |\n",
+  "point": 3,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "cell-text-typed",
+  "text": "| a | b |\n| c | d |\n",
+  "point": 2,
+  "keys": "C-c RET x y TAB",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "table-el",
+  "text": "+---+---+\n| a | b |\n+---+---+\n",
+  "point": 12,
+  "keys": "C-c RET",
+  "modes": [
+   "org-mode"
+  ]
+ }
+]

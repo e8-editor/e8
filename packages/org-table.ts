@@ -972,10 +972,13 @@ e8.defineCommand({
   },
 });
 
-/** The column of the table point is in, as org-table-current-column: how many bars are before it on its line. */
+/** The column of the table point is in, as org-table-current-column: the bars before it on its line, and on a rule the plusses too. */
 function tableCurrentColumn(): number {
   const before = e8.bufferText(e8.lineStart(lineAt()), e8.point());
-  return (before.match(/\|/g) ?? []).length;
+  const first = before.indexOf("|");
+  if (first < 0) return 0;
+  const rest = before.slice(first + 1);
+  return 1 + (rest.match(atHline() ? /[+|]/g : /\|/g) ?? []).length;
 }
 
 e8.defineCommand({

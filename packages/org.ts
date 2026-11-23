@@ -2030,7 +2030,7 @@ function writeCookies(line: number, done: number, total: number): void {
     edInsert(start, value);
     edDelete(start + charCount(value), start + charCount(value) + charCount(m[0]));
     // org-fix-tags-on-the-fly, with org-auto-align-tags on.
-    if (parseHeading(line)?.tagsAt !== undefined) alignTagsAway(line);
+    if (truthy(e8.variable("org-auto-align-tags") ?? true) && parseHeading(line)?.tagsAt !== undefined) alignTagsAway(line);
   }
   e8.gotoChar(pt.pos);
   dropMarker(pt);
@@ -4193,7 +4193,7 @@ function changeLevel(h: Heading, by: number, oddLevels = true): void {
   // Org checks folds after promoting, but not after demoting.
   const change = (): void => {
     replaceKeepingPoint(h.start, h.start + h.level + 1, `${"*".repeat(level)} `);
-    if (h.tags.length > 0) alignTagsAway(h.line);
+    if (h.tags.length > 0 && truthy(e8.variable("org-auto-align-tags") ?? true)) alignTagsAway(h.line);
     if (truthy(e8.variable("org-adapt-indentation"))) e8.saveExcursion(() => fixupIndentation(h.line, level - h.level));
   };
   if (by > 0) withoutFoldChecks(change);
@@ -4311,8 +4311,10 @@ function fixPositionAfterPromote(): void {
  * line after fn ran, as org-map-tree and org-map-region go with
  * outline-next-heading: lines a hook adds on the way are passed over.
  */
-function mapHeadingsFrom(first: number, more: (h: Heading) => boolean, fn: (h: Heading) => void): void {
-  const at = marker(first);
+function mapHeadingsFrom(first: number, more: (h: Heading) => boolean, fn: (h: Heading) => void, firstAfterStars = false): void {
+  // After the first one's stars when org-map-region's search found it there, so a line a hook puts before it is passed over.
+  const firstHeading = parseHeading(lineAt(first));
+  const at = marker(firstAfterStars && firstHeading !== undefined ? firstHeading.start + firstHeading.level + 1 : first);
   try {
     for (;;) {
       const h = parseHeading(lineAt(at.pos));
@@ -4344,7 +4346,7 @@ export function shiftHeadings(beg: number, end: number, shift: number): void {
   try {
     for (let left = shift; left !== 0; left += left > 0 ? -1 : 1) {
       const first = headings().find((x) => x.start >= beg && x.start < endMark.pos);
-      if (first !== undefined) mapHeadingsFrom(first.start, (h) => h.start < endMark.pos, (h) => changeLevel(h, left > 0 ? 1 : -1, false));
+      if (first !== undefined) mapHeadingsFrom(first.start, (h) => h.start < endMark.pos, (h) => changeLevel(h, left > 0 ? 1 : -1, false), true);
     }
   } finally {
     dropMarker(endMark);
@@ -4362,22 +4364,22 @@ function changeSubtreeLevel(by: number): void {
   fixPositionAfterPromote();
 }
 
-/**
- * With the region active, the headings org-map-region goes through: those
- * starting in it, from its beginning on, which may be none.
- */
 /** Calls fn on each heading of the active region, top down, found afresh after each, as org-map-region goes. */
 function mapRegionHeadings(region: Heading[], fn: (h: Heading) => void): void {
   if (region.length === 0) return;
   const mark = e8.mark() ?? e8.point();
   const end = marker(Math.max(mark, e8.point()));
   try {
-    mapHeadingsFrom(region[0].start, (h) => h.start < end.pos, fn);
+    mapHeadingsFrom(region[0].start, (h) => h.start < end.pos, fn, true);
   } finally {
     dropMarker(end);
   }
 }
 
+/**
+ * With the region active, the headings org-map-region goes through: those
+ * starting in it, from its beginning on, which may be none.
+ */
 function headingsInRegion(): Heading[] | undefined {
   if (!orgRegionActive()) return undefined;
   const mark = e8.mark() ?? e8.point();
@@ -4385,7 +4387,6 @@ function headingsInRegion(): Heading[] | undefined {
   return headings().filter((h) => h.start >= from && h.start < to);
 }
 
-/** Whether the active region begins on a heading's line, as org-metaleft and org-metaright check. */
 /** Whether the active region starts on an item's line, as org-at-item-p there. */
 function regionStartsAtItem(): boolean {
   if (!orgRegionActive()) return false;
@@ -4393,6 +4394,7 @@ function regionStartsAtItem(): boolean {
   return itemLine(lineAt(Math.min(mark, e8.point())));
 }
 
+/** Whether the active region begins on a heading's line, as org-metaleft and org-metaright check. */
 function regionStartsAtHeading(): boolean {
   if (!orgRegionActive()) return false;
   const mark = e8.mark() ?? e8.point();
@@ -7565,7 +7567,8 @@ const mouseFollow = e8.defineCommand({
 const BLANKING_COMMANDS = ["org-cycle", "org-return", "org-shifttab", "org-ctrl-c-ctrl-c"];
 
 function fixTagsOnTheFly(): void {
-  e8.call("org-fix-tags-on-the-fly");
+  // As Org's typing and deleting commands do, only with org-auto-align-tags on.
+  if (truthy(e8.variable("org-auto-align-tags") ?? true)) e8.call("org-fix-tags-on-the-fly");
 }
 
 /** Deletes n characters forward, or back if n is negative, as delete-char does from Lisp: without killing them. */
@@ -11611,11 +11614,19 @@ e8.defun("org--fill-forward-paragraph", (arg?: e8.Value) => {
 
 e8.bindKey("C-S-<up>", shiftControlUp, "org-mode-map");
 e8.bindKey("C-S-<down>", shiftControlDown, "org-mode-map");
+/** Whether point's table is a table.el one, as Org's parser tells: the first of its lines starts with +- or +=. */
+function tableElHere(): boolean {
+  let l = lineAt();
+  while (l > 0 && /^[ \t]*[|+]/.test(e8.lineText(l - 1))) l--;
+  return /^[ \t]*\+[-+=]/.test(e8.lineText(l));
+}
+
 const ctrlCRet = e8.defineCommand({
   name: "org-ctrl-c-ret",
   doc: "C-c RET in Org: in a table, insert a rule below the row and move past it; else insert a heading, as org-insert-heading does.",
   run: () => {
-    if (atTableP()) e8.callWithPrefix(e8.prefixArg(), "org-table-hline-and-move" as e8.CommandName);
+    // Org's tables only, as org-at-table-p, not table.el's.
+    if (atTable() && !tableElHere()) e8.callWithPrefix(e8.prefixArg(), "org-table-hline-and-move" as e8.CommandName);
     else e8.callWithPrefix(e8.prefixArg(), "org-insert-heading");
   },
 });
