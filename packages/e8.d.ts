@@ -6012,6 +6012,60 @@ declare global {
        */
       "org-fold-check-before-invisible-edit-maybe": [];
       /**
+       * Do the right thing for footnotes: on a reference, go to its definition, offering to make one; on a definition, go to its reference; elsewhere make a new footnote. With a prefix argument, or where none can go, offer to sort, renumber, normalize or delete them.
+       *
+       * @param special raw prefix argument
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-action": [special?: PrefixArg | boolean];
+      /**
+       * Delete the footnote at point, or a label's: every reference to it and every definition of it.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-delete": [];
+      /**
+       * Go to the definition of a footnote, by its label.
+       *
+       * @param label text
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-goto-definition": [label: string];
+      /**
+       * Go to the reference of a footnote, by its label, nearest before point, or else after it.
+       *
+       * @param label text
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-goto-previous-reference": [label: string];
+      /**
+       * Insert a new footnote reference at point, and its definition, labelled as org-footnote-auto-label says.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-new": [];
+      /**
+       * Make every footnote a numbered one, inline and anonymous ones given definitions of their own.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-normalize": [];
+      /**
+       * Number the numbered footnotes in the order they are referenced.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-renumber-fn:N": [];
+      /**
+       * Put footnote definitions in the order of their references, in the footnote section or at the end of their sections.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-sort": [];
+      /**
        * Insert the character typed, as self-insert-command does, without the table handling of org-self-insert-command.
        *
        * Defined in packages/org.ts.
@@ -14345,6 +14399,36 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-fontify-whole-block-delimiter-line": Value;
+      /**
+       * Whether footnotes are renumbered and sorted after one is made or deleted: t for both, renumber or sort for one, nil for neither.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-auto-adjust": Value;
+      /**
+       * How a new footnote gets its label: t the first number not in use, nil asking, confirm asking with that number offered, anonymous none, random a random one.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-auto-label": Value;
+      /**
+       * Whether a new footnote is defined where it is referenced, as [fn:label:definition], rather than in a definition of its own.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-define-inline": Value;
+      /**
+       * Whether normalizing fills the paragraphs it took inline definitions out of.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-fill-after-inline-note-extraction": Value;
+      /**
+       * The heading new footnote definitions go under, made at the end of the buffer if missing, or nil to put each at the end of its own section.
+       *
+       * Defined in packages/org-footnote.ts.
+       */
+      "org-footnote-section": Value;
       /**
        * Properties every entry inherits, as [name, value] lists, after those a file gives in #+PROPERTY: lines. A property drawer's value comes before these.
        *

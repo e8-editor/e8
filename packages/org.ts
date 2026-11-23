@@ -684,6 +684,20 @@ const STARTUP_LOG_OPTIONS: Record<string, [string, e8.Value]> = {
   oddeven: ["org-odd-levels-only", false],
 };
 
+/** The #+STARTUP: words about footnotes and the variables they set, as org-startup-options has them. */
+const STARTUP_FOOTNOTE_OPTIONS: Record<string, [string, e8.Value]> = {
+  fninline: ["org-footnote-define-inline", true],
+  nofninline: ["org-footnote-define-inline", null],
+  fnlocal: ["org-footnote-section", null],
+  fnauto: ["org-footnote-auto-label", true],
+  fnprompt: ["org-footnote-auto-label", null],
+  fnconfirm: ["org-footnote-auto-label", "confirm"],
+  fnplain: ["org-footnote-auto-label", "plain"],
+  fnadjust: ["org-footnote-auto-adjust", true],
+  nofnadjust: ["org-footnote-auto-adjust", null],
+  fnanon: ["org-footnote-auto-label", "anonymous"],
+};
+
 function logHow(state: string | undefined, previous: string | undefined): string | undefined {
   const logs = logStates();
   return (state === undefined ? undefined : logs.find(([k]) => k === state)?.[1]) ?? (previous === undefined ? undefined : logs.find(([k]) => k === previous)?.[2]);
@@ -7642,6 +7656,12 @@ function openAtPoint_(): void {
     openLink(link);
     return;
   }
+  // On a footnote reference, or a definition's label, its footnote, as Org's footnote context.
+  const footnote = e8.funcall("org-footnote--open-context");
+  if (footnote === "reference" || footnote === "definition") {
+    e8.call("org-footnote-action");
+    return;
+  }
   // On a timestamp, the agenda for its day, as org-follow-timestamp-link
   // opens it. A planning or clock line has nothing else to follow; a clock's
   // timestamp takes in the spaces after it. Elsewhere the spaces after a
@@ -7661,6 +7681,8 @@ function openAtPoint_(): void {
     }
     if (afterTimestamp(p0)) e8.userError("No link found");
   }
+  // Elsewhere in a footnote definition there is nothing to follow, as Org's context there is the definition.
+  if (footnote === "text") e8.userError("No link found");
   const all = headings();
   const i = headingIndex(all, lineAt());
   if (i === undefined) e8.userError("No link found");
@@ -8131,6 +8153,25 @@ function takeLocalVariables(): e8.PropertizedString | undefined {
     e8.letBind({ "buffer-undo-list": true }, () => e8.deleteRegion(at, max));
     return taken;
   });
+}
+
+/**
+ * Runs `f` with a Local Variables list near the buffer's end set aside, put
+ * back at the end afterwards, the buffer left unmodified if `f` changed
+ * nothing, as org-preserve-local-variables does.
+ */
+export function preserveLocalVariables<T>(f: () => T): T {
+  const taken = takeLocalVariables();
+  const tick = e8.bufferModifiedTick();
+  try {
+    return f();
+  } finally {
+    if (taken !== undefined) {
+      const modified = tick < e8.bufferModifiedTick();
+      putBackLocalVariables(taken);
+      if (!modified) e8.restoreBufferModifiedP(false);
+    }
+  }
 }
 
 /** Puts back what takeLocalVariables took, at the widened buffer's end after a newline, as org-preserve-local-variables does. */
@@ -9255,6 +9296,13 @@ const ctrlCCtrlC = e8.defineCommand({
     const line = lineAt();
     const text = e8.lineText(line);
     if (/^[ \t]*$/.test(text)) nothingUseful();
+    // On a footnote reference or a definition's label, as Org's context is the footnote there.
+    const footnote = e8.funcall("org-footnote--context");
+    if (footnote !== undefined && footnote !== null) {
+      if (typeof footnote === "number") e8.gotoChar(footnote);
+      e8.callInteractively("org-footnote-action");
+      return;
+    }
     if (elementAt(e8.point())?.type === "table") {
       // At the table's start, Org recalculates every row and does not align.
       e8.call("org-table-recalculate");
@@ -10355,6 +10403,7 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c C-x M-w": "org-copy-special",
   "C-c C-x C-y": "org-paste-special",
   "C-c C-x c": "org-clone-subtree-with-time-shift",
+  "C-c C-x f": "org-footnote-action",
   "<mouse-1>": mouseFollow,
 };
 
@@ -11513,7 +11562,7 @@ e8.defineMajorMode({
       const m = /^#\+STARTUP:(.*)$/i.exec(text);
       for (const word of m ? m[1].trim().split(/\s+/) : []) {
         // Any case, as org-set-regexps-and-options's assoc-string.
-        const option = STARTUP_LOG_OPTIONS[word.toLowerCase()];
+        const option = STARTUP_LOG_OPTIONS[word.toLowerCase()] ?? STARTUP_FOOTNOTE_OPTIONS[word.toLowerCase()];
         if (option === undefined) continue;
         e8.makeLocalVariable(option[0]);
         e8.setVariable(option[0], option[1]);

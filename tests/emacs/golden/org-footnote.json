@@ -1,0 +1,4437 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "fn-new",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSome text[fn:1].\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H\nSome text[fn:1].\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 41,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-new-and-type",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 14,
+        "keys": "C-c C-x f x y z",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSome text.[fn:1]\n\n* Footnotes\n\n[fn:1]xyz \n",
+      "visible": "* H\nSome text.[fn:1]\n\n* Footnotes\n\n[fn:1]xyz \n",
+      "point": 44,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-new-second",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 18,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.[fn:2]\n\n* Footnotes\n[fn:2] \n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.[fn:2]\n\n* Footnotes\n[fn:2] \n\n[fn:1] First.\n",
+      "point": 44,
+      "mark": 24,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-goto-definition",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 9,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 39,
+      "mark": 9,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-goto-definition-c-c-c-c",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 9,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 39,
+      "mark": 9,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-goto-definition-c-c-c-o",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 9,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 39,
+      "mark": 9,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-back-to-reference",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 35,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 7,
+      "mark": 35,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "fn-back-to-reference-c-c-c-c",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 35,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 7,
+      "mark": 33,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "fn-in-definition-text-new",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 42,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n[fn:2] \n\n[fn:1] Fi[fn:2]rst.\n",
+      "visible": "* H\nOne[fn:1] two.\n\n* Footnotes\n[fn:2] \n\n[fn:1] Fi[fn:2]rst.\n",
+      "point": 38,
+      "mark": 56,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-on-spaces-after-reference",
+      "input": {
+        "text": "* H\nOne[fn:1]   two.\n",
+        "point": 14,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] [fn:2]  two.\n\n* Footnotes\n\n[fn:2] \n",
+      "visible": "* H\nOne[fn:1] [fn:2]  two.\n\n* Footnotes\n\n[fn:2] \n",
+      "point": 47,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-no-definition-create",
+      "input": {
+        "text": "* H\nText[fn:9] here.\n",
+        "point": 10,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "yes"
+        ],
+        "message": true
+      },
+      "text": "* H\nText[fn:9] here.\n\n* Footnotes\n\n[fn:9] \n",
+      "visible": "* H\nText[fn:9] here.\n\n* Footnotes\n\n[fn:9] \n",
+      "point": 41,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-no-definition-refuse",
+      "input": {
+        "text": "* H\nText[fn:9] here.\n",
+        "point": 10,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "no"
+        ],
+        "message": true
+      },
+      "text": "* H\nText[fn:9] here.\n",
+      "visible": "* H\nText[fn:9] here.\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-anonymous-goto",
+      "input": {
+        "text": "* H\nText[fn::an anonymous note] here.\n",
+        "point": 10,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn::an anonymous note] here.\n",
+      "visible": "* H\nText[fn::an anonymous note] here.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-inline-goto",
+      "input": {
+        "text": "* H\nText[fn:x:inline [with] brackets] here and[fn:x].\n",
+        "point": 48,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn:x:inline [with] brackets] here and[fn:x].\n",
+      "visible": "* H\nText[fn:x:inline [with] brackets] here and[fn:x].\n",
+      "point": 14,
+      "mark": 48,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-sort",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+        "point": 2,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] One.\n\n[fn:3] Unused.\n",
+      "visible": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] One.\n\n[fn:3] Unused.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-renumber",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+        "point": 2,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2] c[fn:1].\n\n* Footnotes\n\n[fn:2] One.\n\n[fn:1] Two.\n\n[fn:3] Unused.\n",
+      "visible": "* H\nA[fn:1] b[fn:2] c[fn:1].\n\n* Footnotes\n\n[fn:2] One.\n\n[fn:1] Two.\n\n[fn:3] Unused.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-renumber-and-sort",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+        "point": 2,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "S"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2] c[fn:1].\n\n* Footnotes\n\n[fn:1] Two.\n\n[fn:2] One.\n\n[fn:3] Unused.\n",
+      "visible": "* H\nA[fn:1] b[fn:2] c[fn:1].\n\n* Footnotes\n\n[fn:1] Two.\n\n[fn:2] One.\n\n[fn:3] Unused.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-normalize",
+      "input": {
+        "text": "* H\nA[fn:foo] b[fn::anon] c[fn:bar:inline def] d[fn:foo].\n\n* Footnotes\n\n[fn:foo] Foo.\n\n[fn:zed] Zed.\n",
+        "point": 2,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2] c[fn:3] d[fn:1].\n\n* Footnotes\n\n[fn:1] Foo.\n\n[fn:2] anon\n\n[fn:3] inline def\n\n[fn:4] Zed.\n",
+      "visible": "* H\nA[fn:1] b[fn:2] c[fn:3] d[fn:1].\n\n* Footnotes\n\n[fn:1] Foo.\n\n[fn:2] anon\n\n[fn:3] inline def\n\n[fn:4] Zed.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-delete-at-reference",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+        "point": 7,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA b[fn:1] c.\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:3] Unused.\n",
+      "visible": "* H\nA b[fn:1] c.\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:3] Unused.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 definition(s) of and 2 reference(s) of footnote 2 removed"
+    },
+    {
+      "name": "fn-delete-at-definition",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+        "point": 51,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:2] b c[fn:2].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+      "visible": "* H\nA[fn:2] b c[fn:2].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 definition(s) of and 1 reference(s) of footnote 1 removed"
+    },
+    {
+      "name": "fn-delete-anonymous",
+      "input": {
+        "text": "* H\nText[fn::an anonymous note] here.\n",
+        "point": 10,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nText here.\n",
+      "visible": "* H\nText here.\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Anonymous footnote removed"
+    },
+    {
+      "name": "fn-menu-bad-key",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+        "point": 2,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+      "visible": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-at-line-start-menu",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 4,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nSome text.\n",
+      "visible": "* H\nSome text.\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-local",
+      "input": {
+        "text": "* One\nText.\n* Two\nMore.\n",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-section": false
+        }
+      },
+      "text": "* One\nText.[fn:1]\n\n[fn:1] \n* Two\nMore.\n",
+      "visible": "* One\nText.[fn:1]\n\n[fn:1] \n* Two\nMore.\n",
+      "point": 25,
+      "mark": 17,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-local-last-section",
+      "input": {
+        "text": "* One\nText.\n* Two\nMore.\n",
+        "point": 23,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-section": false
+        }
+      },
+      "text": "* One\nText.\n* Two\nMore.[fn:1]\n\n[fn:1] \n",
+      "visible": "* One\nText.\n* Two\nMore.[fn:1]\n\n[fn:1] \n",
+      "point": 37,
+      "mark": 29,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-define-inline",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-define-inline": true
+        }
+      },
+      "text": "* H\nSome text[fn:1:].\n",
+      "visible": "* H\nSome text[fn:1:].\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-prompt-label",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "note"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-auto-label": false
+        }
+      },
+      "text": "* H\nSome text[fn:note].\n\n* Footnotes\n\n[fn:note] \n",
+      "visible": "* H\nSome text[fn:note].\n\n* Footnotes\n\n[fn:note] \n",
+      "point": 47,
+      "mark": 22,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-prompt-label-empty",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ""
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-auto-label": false
+        }
+      },
+      "text": "* H\nSome text[fn::].\n",
+      "visible": "* H\nSome text[fn::].\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-prompt-existing-label",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 18,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "1"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-auto-label": false
+        }
+      },
+      "text": "* H\nOne[fn:1] two.[fn:1]\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.[fn:1]\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New reference to existing note"
+    },
+    {
+      "name": "fn-anonymous-label",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-auto-label": "'anonymous"
+        }
+      },
+      "text": "* H\nSome text[fn::].\n",
+      "visible": "* H\nSome text[fn::].\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "fn-new-into-existing-section",
+      "input": {
+        "text": "* H\nText.\n\n* Footnotes\n:PROPERTIES:\n:X: y\n:END:\n\n[fn:7] Old.\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn:1].\n\n* Footnotes\n:PROPERTIES:\n:X: y\n:END:\n[fn:1] \n\n[fn:7] Old.\n",
+      "visible": "* H\nText[fn:1].\n\n* Footnotes\n:PROPERTIES:\n:X: y\n:END:\n[fn:1] \n\n[fn:7] Old.\n",
+      "point": 60,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-startup-adjust",
+      "input": {
+        "text": "#+STARTUP: fnadjust\n* H\nA[fn:2] b.\n\n* Footnotes\n\n[fn:2] Two.\n",
+        "point": 33,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-mode"
+        ],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: fnadjust\n* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n\n[fn:1] Two.\n\n[fn:2] \n",
+      "visible": "#+STARTUP: fnadjust\n* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n\n[fn:1] Two.\n\n[fn:2] \n",
+      "point": 75,
+      "mark": 39,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-local-variables-kept-last",
+      "input": {
+        "text": "* H\nText.\n\n# Local Variables:\n# fill-column: 70\n# End:\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn:1].\n\n* Footnotes\n\n[fn:1] \n# Local Variables:\n# fill-column: 70\n# End:\n",
+      "visible": "* H\nText[fn:1].\n\n* Footnotes\n\n[fn:1] \n# Local Variables:\n# fill-column: 70\n# End:\n",
+      "point": 36,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-in-src-block-menu",
+      "input": {
+        "text": "* H\nText.\n#+begin_src emacs-lisp\n(x)\n#+end_src\n",
+        "point": 34,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nText.\n#+begin_src emacs-lisp\n(x)\n#+end_src\n",
+      "visible": "* H\nText.\n#+begin_src emacs-lisp\n(x)\n#+end_src\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-in-heading-title",
+      "input": {
+        "text": "* Heading :tag:\n",
+        "point": 9,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Heading[fn:1] :tag:\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* Heading[fn:1] :tag:\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 42,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-in-heading-tags-menu",
+      "input": {
+        "text": "* Heading :tag:\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* Heading :tag:\n",
+      "visible": "* Heading :tag:\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-nested-sort",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] Has a nested[fn:2] one.\n\n\n[fn:2] Nested.\nNot part of it? yes it is\n",
+        "point": 2,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] Has a nested[fn:2] one.\n\n[fn:2] Nested.\nNot part of it? yes it is\n",
+      "visible": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] Has a nested[fn:2] one.\n\n[fn:2] Nested.\nNot part of it? yes it is\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-definition-ends-at-two-blank-lines",
+      "input": {
+        "text": "* H\nA[fn:1] b[fn:2].\n\n[fn:2] Two.\n\n\nAfter.\n\n[fn:1] One.\n",
+        "point": 2,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2].\n\n\nAfter.\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n",
+      "visible": "* H\nA[fn:1] b[fn:2].\n\n\nAfter.\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-goto-definition-command",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-footnote-goto-definition",
+          "1"
+        ],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 39,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-goto-previous-reference-command",
+      "input": {
+        "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+        "point": 46,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-footnote-goto-previous-reference",
+          "1"
+        ],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 7,
+      "mark": 46,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "fn-in-code-is-no-reference",
+      "input": {
+        "text": "* H\nSee ~[fn:1]~ here.\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nSee [fn:1]~[fn:1]~ here.\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H\nSee [fn:1]~[fn:1]~ here.\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 49,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-in-link-is-no-reference",
+      "input": {
+        "text": "* H\nSee [[https://x.org][see [fn:1] d]] here.\n",
+        "point": 28,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nSee [[https://x.org][see [fn:1] d]] here.\n",
+      "visible": "* H\nSee see [fn:1] d here.\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "fn-in-table",
+      "input": {
+        "text": "| a[fn:1] |\n\n[fn:1] Def.\n",
+        "point": 4,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a[fn:1] |\n\n[fn:1] Def.\n",
+      "visible": "| a[fn:1] |\n\n[fn:1] Def.\n",
+      "point": 19,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "fn-in-item",
+      "input": {
+        "text": "- an item[fn:1]\n\n[fn:1] Def.\n",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- an item[fn:1]\n\n[fn:1] Def.\n",
+      "visible": "- an item[fn:1]\n\n[fn:1] Def.\n",
+      "point": 23,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-bold-in-anon",
+      "input": {
+        "text": "* H\nText[fn::an *bold* note] here.\n",
+        "point": 19,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn::an *bo[fn:1]ld* note] here.\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H\nText[fn::an *bo[fn:1]ld* note] here.\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 61,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-bold-in-anon-cc",
+      "input": {
+        "text": "* H\nText[fn::an *bold* note] here.\n",
+        "point": 19,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn::an *bo[fn:1]ld* note] here.\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H\nText[fn::an *bo[fn:1]ld* note] here.\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 61,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-bold-in-anon-co",
+      "input": {
+        "text": "* H\nText[fn::an *bold* note] here.\n",
+        "point": 19,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn::an *bo[fn:1]ld* note] here.\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H\nText[fn::an *bo[fn:1]ld* note] here.\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 61,
+      "mark": 25,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-link-in-anon",
+      "input": {
+        "text": "* H\nText[fn::see [[https://x.org][xy]] z] here.\n",
+        "point": 35,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nText[fn::see [[https://x.org][xy]] z] here.\n",
+      "visible": "* H\nText[fn::see xy z] here.\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-ref-in-inline",
+      "input": {
+        "text": "* H\nA[fn:a:outer [fn:b] text] b.\n\n[fn:b] Bee.\n",
+        "point": 20,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:a:outer [fn:b] text] b.\n\n[fn:b] Bee.\n",
+      "visible": "* H\nA[fn:a:outer [fn:b] text] b.\n\n[fn:b] Bee.\n",
+      "point": 40,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-inline-multiline-goto",
+      "input": {
+        "text": "* H\nText[fn:x:spans\ntwo lines] here[fn:x].\n",
+        "point": 38,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn:x:spans\ntwo lines] here[fn:x].\n",
+      "visible": "* H\nText[fn:x:spans\ntwo lines] here[fn:x].\n",
+      "point": 14,
+      "mark": 38,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-inline-multiline-on-2nd-line",
+      "input": {
+        "text": "* H\nText[fn::spans\ntwo lines] here.\n",
+        "point": 22,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn::spans\ntwo lines] here.\n",
+      "visible": "* H\nText[fn::spans\ntwo lines] here.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-inline-in-item-multiline",
+      "input": {
+        "text": "- item[fn::spans\n  two] end\n",
+        "point": 9,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item[fn::spans\n  two] end\n",
+      "visible": "- item[fn::spans\n  two] end\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-inline-in-item-2nd-line",
+      "input": {
+        "text": "- item\n  more[fn::x] end\n",
+        "point": 16,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- item\n  more[fn::x] end\n",
+      "visible": "- item\n  more[fn::x] end\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-unbalanced-inline",
+      "input": {
+        "text": "* H\nText[fn::a [b note here.\n",
+        "point": 20,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn::a [b no[fn:1]te here.\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H\nText[fn::a [b no[fn:1]te here.\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 55,
+      "mark": 26,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-ref-at-eob",
+      "input": {
+        "text": "* H\nA[fn:1]",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "no"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1]",
+      "visible": "* H\nA[fn:1]",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-caption",
+      "input": {
+        "text": "#+CAPTION: A table[fn:1]\n| a |\n\n[fn:1] Def.\n",
+        "point": 21,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "#+CAPTION: A table[fn:1]\n| a |\n\n[fn:1] Def.\n",
+      "visible": "#+CAPTION: A table[fn:1]\n| a |\n\n[fn:1] Def.\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-title-keyword",
+      "input": {
+        "text": "#+TITLE: Doc[fn:1]\n\n[fn:1] Def.\n",
+        "point": 15,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "#+TITLE: Doc[fn:1]\n\n[fn:1] Def.\n",
+      "visible": "#+TITLE: Doc[fn:1]\n\n[fn:1] Def.\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-name-keyword-new",
+      "input": {
+        "text": "#+NAME: foo\nPara.\n",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "#+NAME: foo\nPara.\n",
+      "visible": "#+NAME: foo\nPara.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-src-blank-line",
+      "input": {
+        "text": "* H\n#+begin_src emacs-lisp\n  \n#+end_src\n",
+        "point": 29,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\n#+begin_src emacs-lisp\n  \n#+end_src\n",
+      "visible": "* H\n#+begin_src emacs-lisp\n  \n#+end_src\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-table-eol",
+      "input": {
+        "text": "| a |\n",
+        "point": 5,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "| a |\n",
+      "visible": "| a |\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-table-before-bar",
+      "input": {
+        "text": "| a |\n",
+        "point": 4,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a [fn:1]|\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "| a [fn:1]|\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 32,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-table-rule",
+      "input": {
+        "text": "| a |\n|---|\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "| a |\n|---|\n",
+      "visible": "| a |\n|---|\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-heading-link",
+      "input": {
+        "text": "* See [[https://x.org][link]] here\n",
+        "point": 25,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* See [[https://x.org][link]] here\n",
+      "visible": "* See link here\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-heading-todo-word",
+      "input": {
+        "text": "* TODO [#A] Title\n",
+        "point": 4,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* TODO [#A] Title\n",
+      "visible": "* TODO [#A] Title\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-heading-todo-title",
+      "input": {
+        "text": "* TODO [#A] Title\n",
+        "point": 14,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* TODO [#A] Ti[fn:1]tle\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* TODO [#A] Ti[fn:1]tle\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 44,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-heading-comment-word",
+      "input": {
+        "text": "* COMMENT Title\n",
+        "point": 5,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* COM[fn:1]MENT Title\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* COM[fn:1]MENT Title\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 42,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-heading-ref-goto",
+      "input": {
+        "text": "* Title[fn:1] :tag:\n\n[fn:1] Def.\n",
+        "point": 10,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* Title[fn:1] :tag:\n\n[fn:1] Def.\n",
+      "visible": "* Title[fn:1] :tag:\n\n[fn:1] Def.\n",
+      "point": 27,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-comment-line",
+      "input": {
+        "text": "* H\n# a comment\n",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\n# a comment\n",
+      "visible": "* H\n# a comment\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-comment-ref",
+      "input": {
+        "text": "* H\n# see [fn:1]\n\n[fn:1] D.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\n# see [fn:1]\n\n[fn:1] D.\n",
+      "visible": "* H\n# see [fn:1]\n\n[fn:1] D.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-verbatim-ref",
+      "input": {
+        "text": "* H\nSee =[fn:1]= here.\n\n[fn:1] D.\n",
+        "point": 12,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nSee =[fn:1]= here.\n\n[fn:1] D.\n",
+      "visible": "* H\nSee =[fn:1]= here.\n\n[fn:1] D.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-quote-ref",
+      "input": {
+        "text": "* H\n#+begin_quote\nQ[fn:1] text.\n#+end_quote\n\n[fn:1] D.\n",
+        "point": 22,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n#+begin_quote\nQ[fn:1] text.\n#+end_quote\n\n[fn:1] D.\n",
+      "visible": "* H\n#+begin_quote\nQ[fn:1] text.\n#+end_quote\n\n[fn:1] D.\n",
+      "point": 51,
+      "mark": 22,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-def-in-quote",
+      "input": {
+        "text": "* H\nA[fn:1].\n#+begin_quote\n[fn:1] In quote.\n#+end_quote\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n#+begin_quote\n[fn:1] In quote.\n#+end_quote\n",
+      "visible": "* H\nA[fn:1].\n#+begin_quote\n[fn:1] In quote.\n#+end_quote\n",
+      "point": 33,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-drawer-ref",
+      "input": {
+        "text": "* H\n:MYDRAWER:\nIn drawer[fn:1].\n:END:\n\n[fn:1] D.\n",
+        "point": 27,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n:MYDRAWER:\nIn drawer[fn:1].\n:END:\n\n[fn:1] D.\n",
+      "visible": "* H\n:MYDRAWER:\nIn drawer[fn:1].\n:END:\n\n[fn:1] D.\n",
+      "point": 45,
+      "mark": 27,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-def-in-drawer",
+      "input": {
+        "text": "* H\nA[fn:1].\n:MYDRAWER:\n[fn:1] In drawer.\n:END:\nAfter.\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n:MYDRAWER:\n[fn:1] In drawer.\n:END:\nAfter.\n",
+      "visible": "* H\nA[fn:1].\n:MYDRAWER:\n[fn:1] In drawer.\n:END:\nAfter.\n",
+      "point": 30,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-property-ref",
+      "input": {
+        "text": "* H\n:PROPERTIES:\n:X: a[fn:1]\n:END:\n",
+        "point": 25,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\n:PROPERTIES:\n:X: a[fn:1]\n:END:\n",
+      "visible": "* H\n:PROPERTIES:\n:X: a[fn:1]\n:END:\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-example-ref",
+      "input": {
+        "text": "#+begin_example\nx[fn:1]\n#+end_example\n",
+        "point": 20,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "#+begin_example\nx[fn:1]\n#+end_example\n",
+      "visible": "#+begin_example\nx[fn:1]\n#+end_example\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-item-tag",
+      "input": {
+        "text": "- tag[fn:1] :: desc\n\n[fn:1] D.\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "- tag[fn:1] :: desc\n\n[fn:1] D.\n",
+      "visible": "- tag[fn:1] :: desc\n\n[fn:1] D.\n",
+      "point": 27,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-item-checkbox",
+      "input": {
+        "text": "- [ ] item\n",
+        "point": 3,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "- [ ] item\n",
+      "visible": "- [ ] item\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command q",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-verse-ref",
+      "input": {
+        "text": "#+begin_verse\nV[fn:1] line\n#+end_verse\n\n[fn:1] D.\n",
+        "point": 18,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+begin_verse\nV[fn:1] line\n#+end_verse\n\n[fn:1] D.\n",
+      "visible": "#+begin_verse\nV[fn:1] line\n#+end_verse\n\n[fn:1] D.\n",
+      "point": 46,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-anon-at-bol",
+      "input": {
+        "text": "* H\n[fn::anon] text.\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n[fn::anon] text.\n",
+      "visible": "* H\n[fn::anon] text.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-def-affiliated-keyword-action",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+        "point": 22,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+      "visible": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+      "point": 5,
+      "mark": 22,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-def-affiliated-delete",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+        "point": 8,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA.\n\n#+NAME: n\n",
+      "visible": "* H\nA.\n\n#+NAME: n\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 definition(s) of and 1 reference(s) of footnote 1 removed"
+    },
+    {
+      "name": "rv-def-one-blank-sort",
+      "input": {
+        "text": "* H\nA[fn:1] b[fn:2].\n\n[fn:2] Two.\n\nStill two.\n\n[fn:1] One.\n",
+        "point": 20,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\nStill two.\n",
+      "visible": "* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\nStill two.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-def-eob-no-newline-sort",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:1] One.\n\n[fn:2] Two.",
+        "point": 20,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:2] b[fn:1].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] One.\n",
+      "visible": "* H\nA[fn:2] b[fn:1].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] One.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-def-eob-no-newline-delete",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:1] One.\n\n[fn:2] Two.",
+        "point": 8,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA b[fn:1].\n\n[fn:1] One.\n",
+      "visible": "* H\nA b[fn:1].\n\n[fn:1] One.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 definition(s) of and 1 reference(s) of footnote 2 removed"
+    },
+    {
+      "name": "rv-def-with-list-table-sort",
+      "input": {
+        "text": "* H\nA[fn:1] b[fn:2].\n\n[fn:2] Two:\n- x\n- y\n\n| t |\n[fn:1] One.\n",
+        "point": 20,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two:\n- x\n- y\n\n| t |\n",
+      "visible": "* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two:\n- x\n- y\n\n| t |\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-several-defs-delete",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] First.\n\n[fn:1] Second.\n",
+        "point": 8,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA.\n",
+      "visible": "* H\nA.\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "2 definition(s) of and 1 reference(s) of footnote 1 removed"
+    },
+    {
+      "name": "rv-several-defs-goto",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] First.\n\n[fn:1] Second.\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] First.\n\n[fn:1] Second.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] First.\n\n[fn:1] Second.\n",
+      "point": 20,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-several-defs-sort",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] First.\n\n[fn:1] Second.\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] Second.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] Second.\n\n* Footnotes\n\n[fn:1] First.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-def-empty-contents-back",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1]\n",
+        "point": 18,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1]\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1]\n",
+      "point": 5,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-def-contents-next-line-back",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1]\nOn the next line.\n",
+        "point": 18,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1]\nOn the next line.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1]\nOn the next line.\n",
+      "point": 5,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-def-spaces-after-label-co",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1]   Text.\n",
+        "point": 20,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1]   Text.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1]   Text.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "message": null
+    },
+    {
+      "name": "rv-def-spaces-after-label-cc",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1]   Text.\n",
+        "point": 20,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1]   Text.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1]   Text.\n",
+      "point": 5,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-def-blank-after-delete",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\n* Next\n",
+        "point": 26,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA.\n\n* Next\n",
+      "visible": "* H\nA.\n\n* Next\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 definition(s) of and 1 reference(s) of footnote 1 removed"
+    },
+    {
+      "name": "rv-def-in-src-not-def",
+      "input": {
+        "text": "* H\nA[fn:1].\n#+begin_src emacs-lisp\n[fn:1] x\n#+end_src\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "no"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n#+begin_src emacs-lisp\n[fn:1] x\n#+end_src\n",
+      "visible": "* H\nA[fn:1].\n#+begin_src emacs-lisp\n[fn:1] x\n#+end_src\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-normalize-nested",
+      "input": {
+        "text": "* H\nA[fn:x] b.\n\n* Footnotes\n\n[fn:x] X has [fn:y] nested.\n\n[fn:y] Y def.\n",
+        "point": 14,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b.\n\n* Footnotes\n\n[fn:1] X has [fn:2] nested.\n\n[fn:2] Y def.\n",
+      "visible": "* H\nA[fn:1] b.\n\n* Footnotes\n\n[fn:1] X has [fn:2] nested.\n\n[fn:2] Y def.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-normalize-inline-in-def",
+      "input": {
+        "text": "* H\nA[fn:x].\n\n[fn:x] X with [fn::inline] inside.\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] X with [fn:2] inside.\n\n[fn:2] inline\n",
+      "visible": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] X with [fn:2] inside.\n\n[fn:2] inline\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-normalize-section-nil",
+      "input": {
+        "text": "* One\nA[fn:x] b[fn::anon].\n* Two\nC[fn:y].\n\n[fn:x] X.\n[fn:y] Y.\n",
+        "point": 26,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-section": false
+        }
+      },
+      "text": "* One\nA[fn:1] b[fn:2].\n\n[fn:1] X.\n\n[fn:2] anon\n* Two\nC[fn:3].\n\n[fn:3] Y.\n",
+      "visible": "* One\nA[fn:1] b[fn:2].\n\n[fn:1] X.\n\n[fn:2] anon\n* Two\nC[fn:3].\n\n[fn:3] Y.\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-normalize-fill",
+      "input": {
+        "text": "* H\nA long paragraph with an inline[fn::that is a fairly long note to remove] and more words after it to fill nicely.\n",
+        "point": 117,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-fill-after-inline-note-extraction": true
+        }
+      },
+      "text": "* H\nA long paragraph with an inline[fn:1] and more words after it to fill\nnicely.\n\n* Footnotes\n\n[fn:1] that is a fairly long note to remove\n",
+      "visible": "* H\nA long paragraph with an inline[fn:1] and more words after it to fill\nnicely.\n\n* Footnotes\n\n[fn:1] that is a fairly long note to remove\n",
+      "point": 81,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-normalize-nested-inline",
+      "input": {
+        "text": "* H\nA[fn:a:outer [fn:b] text] c.\n\n[fn:b] Bee.\n",
+        "point": 32,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] c.\n\n* Footnotes\n\n[fn:1] outer [fn:b] text\n\n[fn:2] Bee.\n",
+      "visible": "* H\nA[fn:1] c.\n\n* Footnotes\n\n[fn:1] outer [fn:b] text\n\n[fn:2] Bee.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-normalize-unreferenced",
+      "input": {
+        "text": "* H\nA[fn:b].\n\n[fn:a] Unused.\n\n[fn:b] Bee.\n\n[fn:3] Three.\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] Bee.\n\n[fn:2] Three.\n\n[fn:3] Unused.\n",
+      "visible": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] Bee.\n\n[fn:2] Three.\n\n[fn:3] Unused.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-sort-section-nil",
+      "input": {
+        "text": "* One\nA[fn:2] b[fn:1].\n* Two\nC[fn:3].\n* Footnotes\n\n[fn:1] One.\n[fn:2] Two.\n[fn:3] Three.\n",
+        "point": 22,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-section": false
+        }
+      },
+      "text": "* One\nA[fn:2] b[fn:1].\n\n[fn:2] Two.\n\n[fn:1] One.\n* Two\nC[fn:3].\n\n[fn:3] Three.\n* Footnotes\n",
+      "visible": "* One\nA[fn:2] b[fn:1].\n\n[fn:2] Two.\n\n[fn:1] One.\n* Two\nC[fn:3].\n\n[fn:3] Three.\n* Footnotes\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-sort-section-nil-heading-ref",
+      "input": {
+        "text": "* One[fn:1]\nText.\n* Two\nx\n\n[fn:1] One.\n",
+        "point": 17,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-section": false
+        }
+      },
+      "text": "* One[fn:1]\nText.\n\n[fn:1] One.\n* Two\nx\n",
+      "visible": "* One[fn:1]\nText.\n\n[fn:1] One.\n* Two\nx\n",
+      "point": 17,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-renumber-mixed",
+      "input": {
+        "text": "* H\nA[fn:x] b[fn:3] c[fn:1] d[fn:3].\n\n[fn:1] One.\n[fn:3] Three.\n[fn:x] Ex.\n[fn:7] Seven.\n[fn:1] Dup.\n",
+        "point": 36,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:x] b[fn:1] c[fn:2] d[fn:1].\n\n[fn:2] One.\n[fn:1] Three.\n[fn:x] Ex.\n[fn:3] Seven.\n[fn:2] Dup.\n",
+      "visible": "* H\nA[fn:x] b[fn:1] c[fn:2] d[fn:1].\n\n[fn:2] One.\n[fn:1] Three.\n[fn:x] Ex.\n[fn:3] Seven.\n[fn:2] Dup.\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-sort-unreferenced-order",
+      "input": {
+        "text": "* H\nA[fn:b].\n\n* Footnotes\n\n[fn:z] Zed.\n\n[fn:b] Bee.\n\n[fn:a] Ay.\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:b].\n\n* Footnotes\n\n[fn:b] Bee.\n\n[fn:a] Ay.\n\n[fn:z] Zed.\n",
+      "visible": "* H\nA[fn:b].\n\n* Footnotes\n\n[fn:b] Bee.\n\n[fn:a] Ay.\n\n[fn:z] Zed.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-sort-missing-def",
+      "input": {
+        "text": "* H\nA[fn:b] c[fn:q].\n\n* Footnotes\n\n[fn:b] Bee.\n",
+        "point": 20,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:b] c[fn:q].\n\n* Footnotes\n\n[fn:b] Bee.\n\n[fn:q] DEFINITION NOT FOUND.\n",
+      "visible": "* H\nA[fn:b] c[fn:q].\n\n* Footnotes\n\n[fn:b] Bee.\n\n[fn:q] DEFINITION NOT FOUND.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-sort-inline-left",
+      "input": {
+        "text": "* H\nA[fn:b] c[fn:i:inline].\n\n* Footnotes\n\n[fn:b] Bee.\n",
+        "point": 27,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:b] c[fn:i:inline].\n\n* Footnotes\n\n[fn:b] Bee.\n",
+      "visible": "* H\nA[fn:b] c[fn:i:inline].\n\n* Footnotes\n\n[fn:b] Bee.\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-menu-ret",
+      "input": {
+        "text": "* H\nA[fn:1].\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "\r"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n",
+      "visible": "* H\nA[fn:1].\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command \r",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-menu-space",
+      "input": {
+        "text": "* H\nA[fn:1].\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          " "
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n",
+      "visible": "* H\nA[fn:1].\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No such footnote command  ",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-auto-sort-new",
+      "input": {
+        "text": "* H\nA[fn:2] b.\n\n* Footnotes\n\n[fn:2] Two.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-auto-adjust": "'sort"
+        }
+      },
+      "text": "* H\nA[fn:2] b[fn:1].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] \n",
+      "visible": "* H\nA[fn:2] b[fn:1].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] \n",
+      "point": 55,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-auto-renumber-new",
+      "input": {
+        "text": "* H\nA[fn:2] b.\n\n* Footnotes\n\n[fn:2] Two.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-auto-adjust": "'renumber"
+        }
+      },
+      "text": "* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n[fn:2] \n\n[fn:1] Two.\n",
+      "visible": "* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n[fn:2] \n\n[fn:1] Two.\n",
+      "point": 40,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-auto-t-new-before",
+      "input": {
+        "text": "* H\nA b[fn:1].\n\n* Footnotes\n\n[fn:1] One.\n",
+        "point": 5,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-auto-adjust": true
+        }
+      },
+      "text": "* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n\n[fn:1] \n\n[fn:2] One.\n",
+      "visible": "* H\nA[fn:1] b[fn:2].\n\n* Footnotes\n\n[fn:1] \n\n[fn:2] One.\n",
+      "point": 42,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-auto-t-delete",
+      "input": {
+        "text": "* H\nA[fn:1] b[fn:2] c[fn:3].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Three.\n",
+        "point": 16,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-auto-adjust": true
+        }
+      },
+      "text": "* H\nA[fn:1] b c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Three.\n",
+      "visible": "* H\nA[fn:1] b c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Three.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 definition(s) of and 1 reference(s) of footnote 2 removed"
+    },
+    {
+      "name": "rv-auto-t-inline",
+      "input": {
+        "text": "* H\nA[fn:2] b.\n\n* Footnotes\n\n[fn:2] Two.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-auto-adjust": true,
+          "org-footnote-define-inline": true
+        }
+      },
+      "text": "* H\nA[fn:1] b[fn:2:].\n\n* Footnotes\n\n[fn:1] Two.\n",
+      "visible": "* H\nA[fn:1] b[fn:2:].\n\n* Footnotes\n\n[fn:1] Two.\n",
+      "point": 19,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-label-fn-prefix",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "fn:5"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-auto-label": false
+        }
+      },
+      "text": "* H\nSome text[fn:5].\n\n* Footnotes\n\n[fn:5] \n",
+      "visible": "* H\nSome text[fn:5].\n\n* Footnotes\n\n[fn:5] \n",
+      "point": 41,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-label-spaces",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "  "
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-auto-label": false
+        }
+      },
+      "text": "* H\nSome text[fn::].\n",
+      "visible": "* H\nSome text[fn::].\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-label-plain",
+      "input": {
+        "text": "* H\nSome text.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "abc"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-auto-label": "'plain"
+        }
+      },
+      "text": "* H\nSome text[fn:abc].\n\n* Footnotes\n\n[fn:abc] \n",
+      "visible": "* H\nSome text[fn:abc].\n\n* Footnotes\n\n[fn:abc] \n",
+      "point": 45,
+      "mark": 21,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-label-existing-def-only",
+      "input": {
+        "text": "* H\nSome text.\n\n[fn:zz] Orphan.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "zz"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-auto-label": false
+        }
+      },
+      "text": "* H\nSome text[fn:zz].\n\n[fn:zz] Orphan.\n",
+      "visible": "* H\nSome text[fn:zz].\n\n[fn:zz] Orphan.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "New reference to existing note"
+    },
+    {
+      "name": "rv-unique-label-skips-defs",
+      "input": {
+        "text": "* H\nSome text.\n\n[fn:1] Orphan.\n[fn:2] Other.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nSome text[fn:3].\n\n[fn:1] Orphan.\n[fn:2] Other.\n\n* Footnotes\n\n[fn:3] \n",
+      "visible": "* H\nSome text[fn:3].\n\n[fn:1] Orphan.\n[fn:2] Other.\n\n* Footnotes\n\n[fn:3] \n",
+      "point": 71,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-section-case",
+      "input": {
+        "text": "* H\nA[fn:1] b.\n\n* FOOTNOTES\n\n[fn:1] One.\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2].\n\n* FOOTNOTES\n[fn:2] \n\n[fn:1] One.\n",
+      "visible": "* H\nA[fn:1] b[fn:2].\n\n* FOOTNOTES\n[fn:2] \n\n[fn:1] One.\n",
+      "point": 40,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-section-case-sort",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n* FOOTNOTES\n\n[fn:1] One.\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] One.\n",
+      "visible": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] One.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-sections-several-sort",
+      "input": {
+        "text": "* H\nA[fn:1] b[fn:2].\n* Footnotes\n[fn:1] One.\n* Mid\ntext\n* Footnotes\n[fn:2] Two.\n",
+        "point": 20,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2].\n* Mid\ntext\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n",
+      "visible": "* H\nA[fn:1] b[fn:2].\n* Mid\ntext\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-section-subheading-sort",
+      "input": {
+        "text": "* H\nA[fn:1].\n* Footnotes\n[fn:1] One.\n** Sub\nsub text\n* After\nx\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n* After\nx\n\n* Footnotes\n\n[fn:1] One.\n",
+      "visible": "* H\nA[fn:1].\n* After\nx\n\n* Footnotes\n\n[fn:1] One.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-section-intro-new",
+      "input": {
+        "text": "* H\nA b.\n\n* Footnotes\nSome intro.\n\n[fn:1] One.\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA b[fn:2].\n\n* Footnotes\n\n[fn:2] \nSome intro.\n\n[fn:1] One.\n",
+      "visible": "* H\nA b[fn:2].\n\n* Footnotes\n\n[fn:2] \nSome intro.\n\n[fn:1] One.\n",
+      "point": 35,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-section-level2-sort",
+      "input": {
+        "text": "* H\nA[fn:1].\n** Footnotes\n[fn:1] One.\n* Next\nn\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n* Next\nn\n\n* Footnotes\n\n[fn:1] One.\n",
+      "visible": "* H\nA[fn:1].\n* Next\nn\n\n* Footnotes\n\n[fn:1] One.\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-section-level2-new",
+      "input": {
+        "text": "* H\nA b.\n** Footnotes\n[fn:1] One.\n* Next\nn\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA b[fn:2].\n** Footnotes\n\n[fn:2] \n[fn:1] One.\n* Next\nn\n",
+      "visible": "* H\nA b[fn:2].\n** Footnotes\n\n[fn:2] \n[fn:1] One.\n* Next\nn\n",
+      "point": 35,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-section-tagged-new",
+      "input": {
+        "text": "* H\nA b.\n\n* Footnotes :noexport:\n\n[fn:1] One.\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA b[fn:2].\n\n* Footnotes :noexport:\n\n[fn:1] One.\n\n* Footnotes\n\n[fn:2] \n",
+      "visible": "* H\nA b[fn:2].\n\n* Footnotes :noexport:\n\n[fn:1] One.\n\n* Footnotes\n\n[fn:2] \n",
+      "point": 72,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-no-final-newline-new",
+      "input": {
+        "text": "* H\nText.",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn:1].\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H\nText[fn:1].\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 36,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-no-heading-new",
+      "input": {
+        "text": "Just text.\n",
+        "point": 9,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Just text[fn:1].\n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "Just text[fn:1].\n\n* Footnotes\n\n[fn:1] \n",
+      "point": 37,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-local-vars-new",
+      "input": {
+        "text": "* H\nA[fn:1] b.\n\n[fn:1] One.\n\n# Local Variables:\n# x: 1\n# End:\n",
+        "point": 13,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:2].\n\n[fn:1] One.\n\n* Footnotes\n\n[fn:2] \n# Local Variables:\n# x: 1\n# End:\n",
+      "visible": "* H\nA[fn:1] b[fn:2].\n\n[fn:1] One.\n\n* Footnotes\n\n[fn:2] \n# Local Variables:\n# x: 1\n# End:\n",
+      "point": 54,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-local-vars-sort",
+      "input": {
+        "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:1] One.\n\n[fn:2] Two.\n\n# Local Variables:\n# x: 1\n# End:\n",
+        "point": 20,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:2] b[fn:1].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] One.\n# Local Variables:\n# x: 1\n# End:\n",
+      "visible": "* H\nA[fn:2] b[fn:1].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] One.\n# Local Variables:\n# x: 1\n# End:\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-local-vars-section-nil",
+      "input": {
+        "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n# End:\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-section": false
+        }
+      },
+      "text": "* H\nA b[fn:1].\n\n[fn:1] \n\n# Local Variables:\n# x: 1\n# End:\n",
+      "visible": "* H\nA b[fn:1].\n\n[fn:1] \n\n# Local Variables:\n# x: 1\n# End:\n",
+      "point": 22,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-narrow-goto-outside",
+      "input": {
+        "text": "* A\nText[fn:1].\n* B\nmore\n\n* Footnotes\n\n[fn:1] One.\n",
+        "point": 11,
+        "keys": "C-x n s C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nText[fn:1].\n* B\nmore\n\n* Footnotes\n\n[fn:1] One.\n",
+      "visible": "* A\nText[fn:1].\n* B\nmore\n\n* Footnotes\n\n[fn:1] One.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Definition is outside narrowed part of buffer",
+      "message": null
+    },
+    {
+      "name": "rv-narrow-back-outside",
+      "input": {
+        "text": "* A\nText[fn:1].\n* B\nmore\n\n* Footnotes\n\n[fn:1] One.\n",
+        "point": 43,
+        "keys": "C-x n s C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* A\nText[fn:1].\n* B\nmore\n\n* Footnotes\n\n[fn:1] One.\n",
+      "visible": "* A\nText[fn:1].\n* B\nmore\n\n* Footnotes\n\n[fn:1] One.\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Reference is outside narrowed part of buffer",
+      "message": null
+    },
+    {
+      "name": "rv-narrow-sort",
+      "input": {
+        "text": "* A\nText[fn:2] t[fn:1].\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n",
+        "point": 23,
+        "keys": "C-x n s C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true
+      },
+      "text": "* A\nText[fn:2] t[fn:1].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] One.\n",
+      "visible": "* A\nText[fn:2] t[fn:1].\n\n* Footnotes\n\n[fn:2] Two.\n\n[fn:1] One.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-after-ref-punct",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] D.\n",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] D.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] D.\n",
+      "point": 20,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-after-ref-eol",
+      "input": {
+        "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+      "visible": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+      "point": 22,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-after-ref-eol-cc",
+      "input": {
+        "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+        "point": 11,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+      "visible": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+      "point": 22,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-after-ref-eol-co",
+      "input": {
+        "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+        "point": 11,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+      "visible": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+      "point": 22,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-after-ref-heading-eol",
+      "input": {
+        "text": "* T[fn:1]\n\n[fn:1] D.\n",
+        "point": 9,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* T[fn:1]\n\n[fn:1] D.\n",
+      "visible": "* T[fn:1]\n\n[fn:1] D.\n",
+      "point": 17,
+      "mark": 9,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-after-anon-punct",
+      "input": {
+        "text": "* H\nA[fn::note].\n",
+        "point": 15,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn::note].\n",
+      "visible": "* H\nA[fn::note].\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-after-ref-no-def",
+      "input": {
+        "text": "* H\nA[fn:1].\n",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "no"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n",
+      "visible": "* H\nA[fn:1].\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-after-ref-delete",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] D.\n",
+        "point": 11,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] D.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] D.\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Don’t know which footnote to remove",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-after-ref-before-ref",
+      "input": {
+        "text": "* H\nA[fn:1][fn:2].\n\n[fn:1] D.\n\n[fn:2] E.\n",
+        "point": 11,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1][fn:2].\n\n[fn:1] D.\n\n[fn:2] E.\n",
+      "visible": "* H\nA[fn:1][fn:2].\n\n[fn:1] D.\n\n[fn:2] E.\n",
+      "point": 37,
+      "mark": 11,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-anon-contents",
+      "input": {
+        "text": "* H\nText[fn::an anon note] here.\n",
+        "point": 18,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn::an anon note] here.\n",
+      "visible": "* H\nText[fn::an anon note] here.\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-inline-labelled-contents",
+      "input": {
+        "text": "* H\nText[fn:x:inline text] here.\n",
+        "point": 23,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nText[fn:x:inline text] here.\n",
+      "visible": "* H\nText[fn:x:inline text] here.\n",
+      "point": 14,
+      "mark": 23,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-def-text-cc",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+        "point": 23,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "‘C-c C-c’ can do nothing useful here",
+      "message": null
+    },
+    {
+      "name": "rv-def-text-co",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+        "point": 23,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "message": null
+    },
+    {
+      "name": "rv-def-label-next-line-co",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1]\nText.\n",
+        "point": 18,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1]\nText.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1]\nText.\n",
+      "point": 5,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-example-trailing-spaces-eob",
+      "input": {
+        "text": "* H\n#+begin_example\nx\n#+end_example  ",
+        "point": 36,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\n#+begin_example\nx\n#+end_example  ",
+      "visible": "* H\n#+begin_example\nx\n#+end_example  ",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot insert a footnote here",
+      "message": null
+    },
+    {
+      "name": "rv-comment-trailing-spaces-eob",
+      "input": {
+        "text": "* H\n# comment  ",
+        "point": 14,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\n# comment  ",
+      "visible": "* H\n# comment  ",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Cannot insert a footnote here",
+      "message": null
+    },
+    {
+      "name": "rv-heading-trailing-spaces-eob",
+      "input": {
+        "text": "* H  ",
+        "point": 4,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H [fn:1] \n\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H [fn:1] \n\n* Footnotes\n\n[fn:1] \n",
+      "point": 32,
+      "mark": 10,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-sort-section-nil-nested",
+      "input": {
+        "text": "* One\nA[fn:1].\n* Two\nB.\n\n[fn:1] One has [fn:2].\n\n[fn:2] Two.\n",
+        "point": 14,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "s"
+        ],
+        "message": true,
+        "globals": {
+          "org-footnote-section": false
+        }
+      },
+      "text": "* One\nA[fn:1].\n\n[fn:1] One has [fn:2].\n\n[fn:2] Two.\n* Two\nB.\n",
+      "visible": "* One\nA[fn:1].\n\n[fn:1] One has [fn:2].\n\n[fn:2] Two.\n* Two\nB.\n",
+      "point": 14,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-renumber-nested",
+      "input": {
+        "text": "* H\nA[fn:5] b[fn:3].\n\n[fn:5] Five has [fn:9].\n\n[fn:3] Three.\n\n[fn:9] Nine.\n",
+        "point": 20,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "r"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:3].\n\n[fn:1] Five has [fn:2].\n\n[fn:3] Three.\n\n[fn:2] Nine.\n",
+      "visible": "* H\nA[fn:1] b[fn:3].\n\n[fn:1] Five has [fn:2].\n\n[fn:3] Three.\n\n[fn:2] Nine.\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-normalize-same-inline-label",
+      "input": {
+        "text": "* H\nA[fn:x:def] b[fn:x].\n",
+        "point": 24,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1] b[fn:1].\n\n* Footnotes\n\n[fn:1] def\n",
+      "visible": "* H\nA[fn:1] b[fn:1].\n\n* Footnotes\n\n[fn:1] def\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-delete-inline-and-ref",
+      "input": {
+        "text": "* H\nA[fn:x:inline] b[fn:x].\n",
+        "point": 23,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA b.\n",
+      "visible": "* H\nA b.\n",
+      "point": 7,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "0 definition(s) of and 2 reference(s) of footnote x removed"
+    },
+    {
+      "name": "rv-section-last-no-newline-new",
+      "input": {
+        "text": "* H\nA b.\n* Footnotes",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA b[fn:1].\n* Footnotes\n\n[fn:1] \n",
+      "visible": "* H\nA b[fn:1].\n* Footnotes\n\n[fn:1] \n",
+      "point": 34,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-section-empty-before-next-new",
+      "input": {
+        "text": "* H\nA b.\n* Footnotes\n* Next\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA b[fn:1].\n* Footnotes\n\n[fn:1] \n* Next\n",
+      "visible": "* H\nA b[fn:1].\n* Footnotes\n\n[fn:1] \n* Next\n",
+      "point": 34,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-local-vars-no-end-new",
+      "input": {
+        "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA b[fn:1].\n\n* Footnotes\n\n[fn:1] \n# Local Variables:\n# x: 1\n",
+      "visible": "* H\nA b[fn:1].\n\n* Footnotes\n\n[fn:1] \n# Local Variables:\n# x: 1\n",
+      "point": 35,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-local-vars-text-after-new",
+      "input": {
+        "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n# End:\nTrailing text.\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA b[fn:1].\n\n* Footnotes\n\n[fn:1] \n# Local Variables:\n# x: 1\n# End:\nTrailing text.\n",
+      "visible": "* H\nA b[fn:1].\n\n* Footnotes\n\n[fn:1] \n# Local Variables:\n# x: 1\n# End:\nTrailing text.\n",
+      "point": 35,
+      "mark": 13,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-local-vars-error-unmodified",
+      "input": {
+        "text": "* H\nText.\n\n# Local Variables:\n# x: 1\n# End:\n",
+        "point": 6,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nText.\n\n# Local Variables:\n# x: 1\n# End:\n",
+      "visible": "* H\nText.\n\n# Local Variables:\n# x: 1\n# End:\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Don’t know which footnote to remove",
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-local-vars-new-undo",
+      "input": {
+        "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n# End:\n",
+        "point": 7,
+        "keys": "C-c C-x f C-/",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n# End:\n",
+      "visible": "* H\nA b.\n\n# Local Variables:\n# x: 1\n# End:\n",
+      "point": 7,
+      "mark": 7,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Undo"
+    },
+    {
+      "name": "rv-startup-fnlocal",
+      "input": {
+        "text": "#+STARTUP: fnlocal\n* One\nA b.\n* Two\nx\n",
+        "point": 28,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: fnlocal\n* One\nA b[fn:1].\n\n[fn:1] \n* Two\nx\n",
+      "visible": "#+STARTUP: fnlocal\n* One\nA b[fn:1].\n\n[fn:1] \n* Two\nx\n",
+      "point": 43,
+      "mark": 34,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-startup-fninline",
+      "input": {
+        "text": "#+STARTUP: fninline\n* One\nA b.\n",
+        "point": 29,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: fninline\n* One\nA b[fn:1:].\n",
+      "visible": "#+STARTUP: fninline\n* One\nA b[fn:1:].\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-startup-fnanon",
+      "input": {
+        "text": "#+STARTUP: fnanon\n* One\nA b.\n",
+        "point": 27,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "#+STARTUP: fnanon\n* One\nA b[fn::].\n",
+      "visible": "#+STARTUP: fnanon\n* One\nA b[fn::].\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-startup-fnprompt",
+      "input": {
+        "text": "#+STARTUP: fnprompt\n* One\nA b.\n",
+        "point": 29,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "lab"
+        ],
+        "message": true
+      },
+      "text": "#+STARTUP: fnprompt\n* One\nA b[fn:lab].\n\n* Footnotes\n\n[fn:lab] \n",
+      "visible": "#+STARTUP: fnprompt\n* One\nA b[fn:lab].\n\n* Footnotes\n\n[fn:lab] \n",
+      "point": 61,
+      "mark": 37,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-new-in-def-after-label",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+        "point": 20,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+      "point": 5,
+      "mark": 20,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-new-in-def-after-label-nospace",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1]Text.\n",
+        "point": 20,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1][fn:2]Text.\n\n* Footnotes\n\n[fn:2] \n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1][fn:2]Text.\n\n* Footnotes\n\n[fn:2] \n",
+      "point": 52,
+      "mark": 26,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-delete-nested-ref-in-def",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] One has [fn:2].\n\n[fn:2] Two.\n",
+        "point": 32,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] One has .\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] One has .\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "1 definition(s) of and 1 reference(s) of footnote 2 removed"
+    },
+    {
+      "name": "rv-def-label-goto-prev-before",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nB[fn:1].\n",
+        "point": 18,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nB[fn:1].\n",
+      "visible": "* H\nA[fn:1].\n\n[fn:1] One.\n\nB[fn:1].\n",
+      "point": 5,
+      "mark": 18,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-def-label-goto-prev-after-only",
+      "input": {
+        "text": "* H\n[fn:1] One.\n\nB[fn:1] c.\n",
+        "point": 8,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\n[fn:1] One.\n\nB[fn:1] c.\n",
+      "visible": "* H\n[fn:1] One.\n\nB[fn:1] c.\n",
+      "point": 18,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-heading-spaces-before-tags-cc",
+      "input": {
+        "text": "* Title[fn:1]   :tag:\n\n[fn:1] D.\n",
+        "point": 15,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          ":tag:x:"
+        ],
+        "message": true
+      },
+      "text": "* Title[fn:1]  [fn:2] :tag:\n\n[fn:1] D.\n\n* Footnotes\n\n[fn:2] \n",
+      "visible": "* Title[fn:1]  [fn:2] :tag:\n\n[fn:1] D.\n\n* Footnotes\n\n[fn:2] \n",
+      "point": 59,
+      "mark": 21,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Edit definition and go back with ‘C-c &’ or, if unique, with ‘C-c C-c’."
+    },
+    {
+      "name": "rv-def-name-keyword-cc",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+        "point": 22,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+      "visible": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+      "point": 5,
+      "mark": 24,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-def-name-keyword-co",
+      "input": {
+        "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+        "point": 22,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+      "visible": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+      "point": 5,
+      "mark": 22,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": "Position saved to mark ring, go back with ‘C-c &’."
+    },
+    {
+      "name": "rv-normalize-unref-label-in-text",
+      "input": {
+        "text": "* H\nA[fn:b].\n\n[fn:a] Unused\n[fn:b] Bee.\n",
+        "point": 12,
+        "keys": "C-u C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "answers": [
+          "n"
+        ],
+        "message": true
+      },
+      "text": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] Bee.\n\n[fn:2] Unused\n",
+      "visible": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] Bee.\n\n[fn:2] Unused\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": "Footnotes: [s]ort | [r]enumber fn:N | [S]=r+s | [n]ormalize | [d]elete"
+    },
+    {
+      "name": "rv-inline-ref-in-table",
+      "input": {
+        "text": "| a[fn::x] | b |\n",
+        "point": 6,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "| a[fn::x] | b |\n",
+      "visible": "| a[fn::x] | b |\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-ts-in-anon-co",
+      "input": {
+        "text": "* H\nA[fn::see <2026-11-23 Mon>] b.\n",
+        "point": 24,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true
+      },
+      "text": "Day-agenda (W48):\nMonday     23 November 2026 W48\n",
+      "visible": "Day-agenda (W48):\nMonday     23 November 2026 W48\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    },
+    {
+      "name": "rv-auto-sort-label-missing",
+      "input": {
+        "text": "* H\nA b.\n",
+        "point": 7,
+        "keys": "C-c C-x f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "message": true,
+        "globals": {
+          "org-footnote-auto-adjust": "'sort",
+          "org-footnote-define-inline": true
+        }
+      },
+      "text": "* H\nA b[fn:1:].\n\n* Footnotes\n",
+      "visible": "* H\nA b[fn:1:].\n\n* Footnotes\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "message": null
+    }
+  ]
+}
