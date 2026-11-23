@@ -1897,3 +1897,40 @@ fn blank_before_new_entry_as_org_reads_it() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+
+/// org-insert-heading-hook, org-after-demote-entry-hook and
+/// org-after-promote-entry-hook run where Org runs them, seeing point and
+/// the line as Emacs 30.2's Org 9.7 does, a subtree's headings top down.
+/// Hooks hold functions, which the oracle's variables cannot.
+#[test]
+fn heading_hooks_run_as_org_runs_them() {
+    let cases: &[(&str, &str, usize, &str, &str, &[&str])] = &[
+        ("M-RET", "* A\n", 3, "org-meta-return", "* A\n* \n", &["insert:6:* "]),
+        ("a TODO heading", "* TODO A\n", 8, "org-insert-todo-heading", "* TODO A\n* TODO \n", &["insert:11:* "]),
+        ("after the subtree", "* A\nbody\n* B\n", 5, "org-insert-heading-respect-content", "* A\nbody\n* \n* B\n", &["insert:11:* "]),
+        ("an item", "- a\n", 3, "org-meta-return", "- a\n- \n", &[]),
+        ("demote", "* A\n* B\n", 4, "org-do-demote", "* A\n** B\n", &["demote:7:** B"]),
+        ("promote", "* A\n** B\n", 4, "org-do-promote", "* A\n* B\n", &["promote:6:* B"]),
+        ("demote a subtree", "* A\n* B\n** C\n*** D\n", 4, "org-demote-subtree", "* A\n** B\n*** C\n**** D\n", &["demote:7:** B", "demote:13:*** C", "demote:20:**** D"]),
+        ("promote a subtree", "* A\n** B\n*** C\n", 4, "org-promote-subtree", "* A\n* B\n** C\n", &["promote:6:* B", "promote:11:** C"]),
+        ("a subheading", "* A\n", 3, "org-insert-subheading", "* A\n** \n", &["insert:6:* ", "demote:7:** "]),
+    ];
+    let mut failures = Vec::new();
+    for (name, start, point, command, want, want_seen) in cases {
+        let (mut ed, s) = org(start);
+        s.eval_expression(
+            &mut ed,
+            "(globalThis.seen = [], ['insert', 'demote', 'promote'].forEach((tag) => e8.addHook({ insert: 'org-insert-heading-hook', demote: 'org-after-demote-entry-hook', promote: 'org-after-promote-entry-hook' }[tag], () => { globalThis.seen.push(`${tag}:${e8.point()}:${e8.lineText(e8.lineOf(e8.point()))}`); })))",
+        )
+        .unwrap();
+        ed.window_buffer_mut().set_point(*point);
+        let result = ed.call(command, vec![]);
+        let seen: Vec<String> = serde_json::from_str(&s.eval_expression(&mut ed, "JSON.stringify(globalThis.seen)").unwrap().trim_matches('"').replace("\\\"", "\"")).unwrap_or_default();
+        let got = (text(&ed), seen.clone());
+        let want_seen: Vec<String> = want_seen.iter().map(|s| s.to_string()).collect();
+        if result.is_err() || got != (want.to_string(), want_seen.clone()) {
+            failures.push(format!("{name}: {result:?} {got:?}, Emacs {:?}", (want, want_seen)));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}

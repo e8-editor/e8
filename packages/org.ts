@@ -256,6 +256,9 @@ function roundingMinutes(): [number, number] {
   return [Number(list[0] ?? 0), Number(list[1] ?? 5)];
 }
 
+e8.defineHook("org-insert-heading-hook", "Functions run after a new heading is inserted, with point after its stars, as M-RET and C-RET insert one.");
+e8.defineHook("org-after-demote-entry-hook", "Functions run after a heading is demoted, with point at its start; for a subtree, once for each heading.");
+e8.defineHook("org-after-promote-entry-hook", "Functions run after a heading is promoted, with point at its start; for a subtree, once for each heading.");
 e8.defineHook(
   "org-cycle-tab-first-hook",
   "Functions TAB in Org tries first, each until one gives true, which then is all TAB does. Emacs also calls it org-tab-first-hook.",
@@ -3936,7 +3939,13 @@ function insertPieces(...pieces: string[]): void {
  * stars. `arg` is the raw prefix argument: C-u inserts after the subtree,
  * C-u C-u after the parent's.
  */
+/** Inserts a heading as org-insert-heading does, then runs org-insert-heading-hook. */
 function insertHeading(arg: e8.PrefixArg, invisibleOk = false): void {
+  insertHeadingOnly(arg, invisibleOk);
+  e8.runHooks("org-insert-heading-hook");
+}
+
+function insertHeadingOnly(arg: e8.PrefixArg, invisibleOk = false): void {
   const parentEnd = Array.isArray(arg) && arg[0] === 16;
   const blank = blankBeforeHeading(parentEnd);
   const all = headings();
@@ -4189,6 +4198,15 @@ function changeLevel(h: Heading, by: number, oddLevels = true): void {
   };
   if (by > 0) withoutFoldChecks(change);
   else change();
+  // At the heading, in the whole buffer, as org-promote and org-demote run them.
+  e8.saveExcursion(() =>
+    e8.saveRestriction(() => {
+      e8.widen();
+      // After the new stars and their space, where replacing them leaves point.
+      e8.gotoChar(e8.lineStart(h.line) + level + 1);
+      e8.runHooks(by > 0 ? "org-after-demote-entry-hook" : "org-after-promote-entry-hook");
+    }),
+  );
 }
 
 /**
@@ -4289,7 +4307,8 @@ function changeSubtreeLevel(by: number): void {
   const end = subtreeRegion(all, i)[1];
   const inside = all.filter((h, k) => k >= i && h.start < end);
   if (by < 0 && inside.some((h) => h.level === 1)) e8.userError("Cannot promote to level 0.  UNDO to recover if necessary");
-  for (const h of [...inside].reverse()) changeLevel(parseHeading(h.line) ?? h, by);
+  // Top down, as org-map-tree goes, each read again at its line, which a change of stars keeps.
+  for (const h of inside) changeLevel(parseHeading(h.line) ?? h, by);
   fixPositionAfterPromote();
 }
 
@@ -4703,8 +4722,9 @@ export function pasteSubtree(level: e8.PrefixArg): void {
   if (e8.invisibleAt(beg) && visible) showHeadingLine(parseHeading(lineAt(beg)) as Heading);
   const endMark = marker(end);
   while (shift !== 0) {
-    for (const h of headings().filter((x) => x.start >= beg && x.start < endMark.pos).reverse()) {
-      changeLevel(h, shift > 0 ? 1 : -1, false);
+    // Top down, as org-map-region goes, each read again at its line.
+    for (const h of headings().filter((x) => x.start >= beg && x.start < endMark.pos)) {
+      changeLevel(parseHeading(h.line) ?? h, shift > 0 ? 1 : -1, false);
     }
     shift += shift > 0 ? -1 : 1;
   }

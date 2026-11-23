@@ -18814,9 +18814,17 @@ declare global {
        */
       "occur-mode-hook": Value;
       /**
+       * Functions run after a heading is demoted, with point at its start; for a subtree, once for each heading.
+       */
+      "org-after-demote-entry-hook": Value;
+      /**
        * Hook triggered after a note is stored.
        */
       "org-after-note-stored-hook": Value;
+      /**
+       * Functions run after a heading is promoted, with point at its start; for a subtree, once for each heading.
+       */
+      "org-after-promote-entry-hook": Value;
       /**
        * Functions called where org-refile has put the subtree, before it goes from where it was.
        */
@@ -18937,6 +18945,10 @@ declare global {
        * Functions called with the buffer once org-indent-mode has indented all of it.
        */
       "org-indent-post-buffer-init-functions": Value;
+      /**
+       * Functions run after a new heading is inserted, with point after its stars, as M-RET and C-RET insert one.
+       */
+      "org-insert-heading-hook": Value;
       /**
        * Run after Org-List-Checkbox-Radio mode is turned on or off.
        */
