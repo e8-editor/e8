@@ -924,6 +924,214 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "noaf-noelec-para-mid-ret",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "electric-indent-mode": false
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff \nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee fff \nggg hhh\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "noaf-noelec-para-mid-cj",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "electric-indent-mode": false
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff\nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee fff\nggg hhh\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "noaf-noelec-item-mid-ret",
+      "input": {
+        "text": "- aaa bbb ccc ddd eee fff ggg\n",
+        "point": 22,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "electric-indent-mode": false
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "- aaa bbb ccc ddd eee \nfff ggg\n",
+      "visible": "- aaa bbb ccc ddd eee \nfff ggg\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "noaf-noelec-item-mid-cj",
+      "input": {
+        "text": "- aaa bbb ccc ddd eee fff ggg\n",
+        "point": 22,
+        "keys": "C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "electric-indent-mode": false
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "- aaa bbb ccc ddd eee\n  fff ggg\n",
+      "visible": "- aaa bbb ccc ddd eee\n  fff ggg\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "noaf-noelec-logbook-cj",
+      "input": {
+        "text": "* A\n:LOGBOOK:\n- note aaa bbb ccc ddd eee fff\n:END:\n",
+        "point": 44,
+        "keys": "C-j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "electric-indent-mode": false
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* A\n:LOGBOOK:\n- note aaa bbb ccc ddd eee fff\n  \n:END:\n",
+      "visible": "* A\n:LOGBOOK:\n- note aaa bbb ccc ddd eee fff\n  \n:END:\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "noaf-neg-ret",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg\n",
+        "point": 27,
+        "keys": "M-- RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff ggg\n",
+      "visible": "aaa bbb ccc ddd eee fff ggg\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Repetition argument has to be non-negative"
+    },
+    {
+      "name": "noaf-zero-ret",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg\n",
+        "point": 27,
+        "keys": "C-u 0 RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff ggg\n",
+      "visible": "aaa bbb ccc ddd eee fff ggg\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "af-zero-ret",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg\n",
+        "point": 27,
+        "keys": "C-u 0 RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff ggg\n",
+      "visible": "aaa bbb ccc ddd eee fff ggg\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
     }
   ]
 }
