@@ -864,3 +864,24 @@ e8.defun("read-char-from-minibuffer", (prompt: string, chars?: e8.Value, history
   // No history unless one is given, as Emacs's (or history t).
   return readCharFromMinibuffer(prompt, typeof history === "string" ? history : "t", list);
 });
+
+e8.defineVariable({ name: "inhibit-auto-fill", doc: "Whether to do as if Auto Fill mode were off.", value: false });
+e8.defineVariable({
+  name: "comment-auto-fill-only-comments",
+  doc: "Whether Auto Fill fills only comments, in a mode with comment syntax.",
+  value: false,
+  local: true,
+});
+
+/**
+ * Whether Auto Fill may fill here, as internal-auto-fill decides: not with
+ * inhibit-auto-fill, nor outside a comment when
+ * comment-auto-fill-only-comments is on in a mode with comments.
+ */
+export function autoFillAllowed(): boolean {
+  if (truthy(e8.variable("inhibit-auto-fill") ?? null)) return false;
+  if (truthy(e8.variable("comment-auto-fill-only-comments") ?? null) && typeof e8.variable("comment-start") === "string") {
+    return e8.syntaxPpss(e8.point()).inComment !== null;
+  }
+  return true;
+}

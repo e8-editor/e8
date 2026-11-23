@@ -122,7 +122,7 @@ import { withHelpWindow } from "help";
 import { refileCommand, refileCopyCommand, refileReverseCommand } from "org-refile";
 import { atTable, beforeOnLine, blankField, markAligned, needsAlign, restOfLine } from "org-table";
 import { completingReadMultiple } from "crm";
-import { allMatches, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
+import { allMatches, autoFillAllowed, charCount, eraseBuffer, escapeRegExp, forwardLine, getBufferWindow, truthy } from "subr";
 import { isearchNoUpperCaseP } from "isearch";
 export { PLANNING } from "org-element";
 
@@ -3622,18 +3622,31 @@ e8.defineCommand({
  * so electric-indent-mode indents the new line, and from code for C-j, so it does not.
  */
 function orgReturnWith(electric: boolean): void {
+  // C-j's org-return-and-maybe-indent takes no argument: one newline, and Auto Fill.
+  const prefixless = !electric;
+  // No Auto Fill on a property's line, as org-return binds auto-fill-function to nil there.
+  const onProperty = elementAt(e8.point())?.type === "node-property";
   // Org's newline self-inserts, so the newlines take on the text properties
   // around them, and runs of them undo together.
   const newline = (n: number): void => {
     e8.undoAutoAmalgamate();
-    if (electric) electricNewline(n);
-    else e8.insertAndInherit("\n".repeat(n));
+    e8.insertAndInherit("\n".repeat(n));
+    // As self-insert does a newline: Auto Fill fills the line the newline
+    // ends, before electric indentation, unless there is a prefix argument,
+    // as newline then binds auto-fill-function to nil.
+    const fill = e8.variable("auto-fill-function");
+    if (typeof fill === "string" && (prefixless || e8.prefixArg() === null) && !onProperty) {
+      e8.gotoChar(e8.point() - 1);
+      if (autoFillAllowed()) e8.call(fill as e8.CommandName);
+      if (e8.point() < e8.bufferSize()) e8.gotoChar(e8.point() + 1);
+    }
+    if (electric) electricIndentNewline();
   };
   checkInvisibleEditMaybe();
   const line = lineAt();
   const p = e8.point();
   const [ls, le] = [e8.lineStart(line), e8.lineEnd(line)];
-  const n = Math.max(1, e8.prefixNumericValue());
+  const n = prefixless ? 1 : Math.max(1, e8.prefixNumericValue());
   if (atTableP()) {
     // Before the first column or after the last, a table is split.
     if (/^[ \t]*$/.test(e8.bufferText(p, le)) || /^[ \t]*$/.test(e8.bufferText(ls, p))) e8.insert("\n");
@@ -3693,8 +3706,8 @@ function orgReturnWith(electric: boolean): void {
  * Inserts newlines and indents the new line, as newline does with
  * electric-indent-mode: spaces left at the end of the line before go.
  */
-function electricNewline(n: number): void {
-  e8.insertAndInherit("\n".repeat(n));
+/** After a newline, the whitespace before it gone and the new line indented, as electric-indent-mode does. */
+function electricIndentNewline(): void {
   const before = e8.point() - 1;
   const text = e8.bufferText(e8.lineStart(lineAt(before)), before);
   const spaces = text.length - text.replace(/[ \t]+$/, "").length;

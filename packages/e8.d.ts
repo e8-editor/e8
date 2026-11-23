@@ -10443,6 +10443,12 @@ declare global {
        */
       "comment-add": Value;
       /**
+       * Whether Auto Fill fills only comments, in a mode with comment syntax.
+       *
+       * Defined in packages/subr.ts.
+       */
+      "comment-auto-fill-only-comments": Value;
+      /**
        * The column comments at the end of a line go to. C-x ; sets it.
        *
        * Defined in packages/newcomment.ts.
@@ -12459,6 +12465,12 @@ declare global {
        * Whether keys typed in this buffer are left out of recent-keys, as a password prompt's are.
        */
       "inhibit--record-char": Value;
+      /**
+       * Whether to do as if Auto Fill mode were off.
+       *
+       * Defined in packages/subr.ts.
+       */
+      "inhibit-auto-fill": Value;
       /**
        * Whether characters such as parentheses are shown as they are in right-to-left text, rather than as their mirror images.
        */

@@ -1,4 +1,4 @@
-import { allMatches, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine, readCharFromMinibuffer, truthy } from "subr";
+import { allMatches, autoFillAllowed, charCount, defineGlobalizedMinorMode, eraseBuffer, forwardLine, readCharFromMinibuffer, truthy } from "subr";
 // Basic editing commands that Emacs writes in Lisp, after its simple.el.
 // E8 loads this file at startup, before init.ts.
 
@@ -614,7 +614,7 @@ e8.defineCommand({
     const fill = e8.variable("auto-fill-function");
     if (typeof fill === "string" && e8.prefixArg() === null) {
       e8.gotoChar(e8.point() - 1);
-      e8.call(fill as e8.CommandName);
+      if (autoFillAllowed()) e8.call(fill as e8.CommandName);
       if (e8.point() < e8.bufferSize()) e8.gotoChar(e8.point() + 1);
     }
     // As electric-indent-post-self-insert-function, which runs late in

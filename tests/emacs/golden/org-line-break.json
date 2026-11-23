@@ -428,6 +428,502 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "af-ret-long-para",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee\nfff\nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee\nfff\nggg hhh\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-long-comment",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff ggg\n",
+        "point": 26,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb ccc ddd\n# eee fff\nggg\n",
+      "visible": "# aaa bbb ccc ddd\n# eee fff\nggg\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-long-item",
+      "input": {
+        "text": "- aaa bbb ccc ddd eee fff ggg\n",
+        "point": 26,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "- aaa bbb ccc ddd\n  eee fff\n  ggg\n",
+      "visible": "- aaa bbb ccc ddd\n  eee fff\n  ggg\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cj-long-para",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "C-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee\nfff \nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee\nfff \nggg hhh\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-prefix-no-fill",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "C-u 1 RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff\nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee fff\nggg hhh\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-short-line",
+      "input": {
+        "text": "aaa bbb\n",
+        "point": 4,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa\nbbb\n",
+      "visible": "aaa\nbbb\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-long-heading",
+      "input": {
+        "text": "* aaa bbb ccc ddd eee fff ggg\n",
+        "point": 26,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* aaa bbb ccc ddd eee fff\nggg\n",
+      "visible": "* aaa bbb ccc ddd eee fff\nggg\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-property",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n:END:\n",
+        "point": 46,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n\n:END:\n",
+      "visible": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n\n:END:\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cj-property",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n:END:\n",
+        "point": 46,
+        "keys": "C-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n\n:END:\n",
+      "visible": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n\n:END:\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-property-mid",
+      "input": {
+        "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n:END:\n",
+        "point": 42,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee\nfff\n:END:\n",
+      "visible": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee\nfff\n:END:\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-inhibit",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg\n",
+        "point": 27,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "inhibit-auto-fill": true
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff ggg\n\n",
+      "visible": "aaa bbb ccc ddd eee fff ggg\n\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-only-comments",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg\n",
+        "point": 27,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "comment-auto-fill-only-comments": true
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff ggg\n\n",
+      "visible": "aaa bbb ccc ddd eee fff ggg\n\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-only-comments-org-comment",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff\n",
+        "point": 25,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "comment-auto-fill-only-comments": true
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb ccc ddd eee fff\n\n",
+      "visible": "# aaa bbb ccc ddd eee fff\n\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cu-cj",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg\n",
+        "point": 27,
+        "keys": "C-u C-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee\nfff ggg\n\n",
+      "visible": "aaa bbb ccc ddd eee\nfff ggg\n\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "m3-cj",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg\n",
+        "point": 27,
+        "keys": "M-3 C-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee\nfff ggg\n\n",
+      "visible": "aaa bbb ccc ddd eee\nfff ggg\n\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "spc-inhibit-text",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff",
+        "point": 23,
+        "keys": "SPC g g g",
+        "modes": [
+          "text-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "inhibit-auto-fill": true
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff ggg",
+      "visible": "aaa bbb ccc ddd eee fff ggg",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "spc-only-comments-text",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff",
+        "point": 23,
+        "keys": "SPC g g g",
+        "modes": [
+          "text-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "comment-auto-fill-only-comments": true
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee\nfff ggg",
+      "visible": "aaa bbb ccc ddd eee\nfff ggg",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "spc-only-comments-python",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee",
+        "point": 21,
+        "keys": "SPC g g g",
+        "modes": [
+          "python-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "comment-auto-fill-only-comments": true
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb ccc ddd\n# eee ggg",
+      "visible": "# aaa bbb ccc ddd\n# eee ggg",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "spc-only-comments-python-code",
+      "input": {
+        "text": "xx = aaa + bbb + ccc + ddd",
+        "point": 26,
+        "keys": "SPC g g g",
+        "modes": [
+          "python-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "vars": {
+          "comment-auto-fill-only-comments": true
+        },
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "xx = aaa + bbb + ccc + ddd ggg",
+      "visible": "xx = aaa + bbb + ccc + ddd ggg",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }
