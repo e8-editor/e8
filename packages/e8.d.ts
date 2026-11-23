@@ -5742,10 +5742,11 @@ declare global {
        * Clone the subtree at point N times, the clones its siblings after it. If it has a timestamp, ask for a shift per clone, as +1w; the clones' timestamps then move on clone by clone. Clones lose their clocking, and get new IDs. A subtree with a repeater is cloned once more, unshifted, its clones without repeaters, and the original goes last, past them. With C-u, ask for no shift.
        *
        * @param n number
+       * @param shift text
        *
        * Defined in packages/org.ts.
        */
-      "org-clone-subtree-with-time-shift": [n: number];
+      "org-clone-subtree-with-time-shift": [n: number, shift: string];
       /**
        * M-; in Org: on a heading, make it a comment or take that away, as org-toggle-comment; elsewhere as comment-dwim.
        *

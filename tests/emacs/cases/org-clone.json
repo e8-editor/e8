@@ -407,5 +407,145 @@
     "answers": [
       "1"
     ]
+  },
+  {
+    "name": "clone-valueless-property",
+    "text": "* T\n:PROPERTIES:\n:A:\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-delete-id-valueless-property",
+    "text": "* T\n:PROPERTIES:\n:ID: x\n:CATEGORY:\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ],
+    "globals": {
+      "org-clone-delete-id": true
+    }
+  },
+  {
+    "name": "clone-drawer-lines-in-a-block",
+    "text": "* T\n#+begin_src text\n:FOO:\n:END:\n#+end_src\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-drawer-lines-in-an-example",
+    "text": "* T\n#+begin_example\n:FOO:\n:END:\n#+end_example\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-nested-looking-drawers",
+    "text": "* T\n:OUTER:\n:INNER:\n:END:\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-empty-drawer-with-a-name",
+    "text": "* T\n#+name: d\n:FOO:\n:END:\nx\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "clone-lowercase-clock",
+    "text": "* T\n:LOGBOOK:\nclock: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      ""
+    ]
+  },
+  {
+    "name": "clone-uppercase-repeater",
+    "text": "* T\n<2026-11-23 Mon +1W>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+1d"
+    ]
+  },
+  {
+    "name": "clone-uppercase-shift",
+    "text": "* T\n<2026-11-23 Mon>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      "+1W"
+    ]
+  },
+  {
+    "name": "clone-drawer-with-blank-line",
+    "text": "* T\n:LOGBOOK:\n\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      ""
+    ]
+  },
+  {
+    "name": "clone-empty-drawer-before-text",
+    "text": "* T\n:LOGBOOK:\nCLOCK: [2026-11-20 Fri 10:00]--[2026-11-20 Fri 11:00] =>  1:00\n:END:\n\nbody\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x c",
+    "answers": [
+      "1",
+      ""
+    ]
   }
 ]
