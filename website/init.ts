@@ -66,6 +66,10 @@ e8.defineKey("dired-mode-map", "?", "casual-dired-tmenu" as e8.CommandName);
 e8.usePackage("e8-editor/e8-themes");
 e8.bindKey("C-c t", "e8-themes-select" as e8.CommandName);
 
+// Markdown, styled as it shows: try C-x C-f notes.md RET. TAB on a heading
+// folds it, M-RET starts a list item, C-c C-x C-m hides the markup.
+e8.usePackage("e8-editor/e8-markdown-mode");
+
 // *scratch* is kept from one visit to the next.
 e8.usePackage("e8-editor/e8-persistent-scratch");
 e8.funcall("persistent-scratch-setup-default");
