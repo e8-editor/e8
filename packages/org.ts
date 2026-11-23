@@ -4734,7 +4734,11 @@ function levelHere(): number {
  * point, as org-paste-subtree does: before the heading point is at the
  * start of, or else before the next visible heading.
  */
-export function pasteSubtree(level: e8.PrefixArg): void {
+/**
+ * With forYank, as org-yank calls it: point at the pasted text's end, and
+ * no folding, which org-yank decides.
+ */
+export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
   const txt = e8.currentKill();
   if (!killIsSubtree(txt)) throw new Error("The kill is not a (set of) tree(s).  Use \u2018C-y\u2019 to yank anyway");
   const visible = !e8.invisibleAt(e8.point());
@@ -4787,9 +4791,16 @@ export function pasteSubtree(level: e8.PrefixArg): void {
   }
   beg = e8.point();
   if (e8.invisibleAt(beg) && visible) showHeadingLine(parseHeading(lineAt(beg)) as Heading);
+  const endMark = marker(end);
   shiftHeadings(beg, end, shift);
+  const newEnd = endMark.pos;
+  dropMarker(endMark);
   e8.gotoChar(beg);
   e8.message(`Clipboard pasted as level ${fresh} subtree`);
+  if (forYank) {
+    e8.gotoChar(newEnd);
+    return;
+  }
   // A tree folded when it was killed or copied comes back folded.
   if (e8.variable("org-subtree-clip") === e8.currentKill() && e8.variable("org-subtree-clip-folded") === true) {
     foldSubtree(lineAt());
@@ -4814,6 +4825,11 @@ e8.defineVariable({
 e8.defineVariable({
   name: "org-subtree-clip-folded",
   doc: "Whether the subtree in org-subtree-clip was folded when it was cut or copied.",
+  value: false,
+});
+e8.defineVariable({
+  name: "org-yank-adjusted-subtrees",
+  doc: "Whether C-y pastes a subtree at the level around point, as org-paste-subtree does, rather than as it is.",
   value: false,
 });
 e8.defineVariable({
@@ -4844,12 +4860,21 @@ function orgYank(arg: e8.PrefixArg): void {
   const subtreep =
     killIsSubtree(kill) &&
     (p === ls || (/^[ \t]*$/.test(e8.bufferText(p, e8.lineEnd(lineAt()))) && /^\*+$/.test(e8.bufferText(ls, p))));
-  if (!subtreep || e8.variable("org-yank-folded-subtrees") !== true) {
+  const adjusted = truthy(e8.variable("org-yank-adjusted-subtrees") ?? null);
+  if (!subtreep || !truthy(e8.variable("org-yank-folded-subtrees") ?? null)) {
+    if (subtreep && adjusted) {
+      // At the level around point, as org-paste-subtree pastes it, the mark at the line's start.
+      const lineBeg = e8.lineStart(lineAt());
+      pasteSubtree(null, true);
+      e8.pushMark(lineBeg);
+      return;
+    }
     e8.call("yank");
     return;
   }
   const beg = p;
-  e8.call("yank");
+  if (adjusted) pasteSubtree(null, true);
+  else e8.call("yank");
   const end = e8.point();
   e8.gotoChar(beg);
   const swallows = (): boolean => {

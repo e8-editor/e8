@@ -1,0 +1,217 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "adjusted-to-top",
+      "input": {
+        "text": "** X\nx body\n*** Y\n* A\n",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true
+        }
+      },
+      "text": "* A\n* X\nx body\n** Y\n",
+      "visible": "* A\n* X\n",
+      "point": 20,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "** X\nx body\n*** Y\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adjusted-unfolded",
+      "input": {
+        "text": "** X\nx body\n*** Y\n* A\n",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true,
+          "org-yank-folded-subtrees": false
+        }
+      },
+      "text": "* A\n* X\nx body\n** Y\n",
+      "visible": "* A\n* X\nx body\n** Y\n",
+      "point": 20,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "** X\nx body\n*** Y\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adjusted-deeper",
+      "input": {
+        "text": "* X\n** Y\n* A\n** B\n*** C\n",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true
+        }
+      },
+      "text": "* A\n** B\n*** C\n*** X\n**** Y\n",
+      "visible": "* A\n** B\n*** C\n*** X\n",
+      "point": 28,
+      "mark": 15,
+      "mark_active": false,
+      "kill_ring": [
+        "* X\n** Y\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adjusted-mid-line",
+      "input": {
+        "text": "** X\nx body\n*** Y\n* A\n",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-p C-e C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true
+        }
+      },
+      "text": "* A** X\nx body\n*** Y\n\n",
+      "visible": "* A** X\nx body\n*** Y\n\n",
+      "point": 21,
+      "mark": 3,
+      "mark_active": false,
+      "kill_ring": [
+        "** X\nx body\n*** Y\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adjusted-stars-line",
+      "input": {
+        "text": "* X\nbody\n* A\n** \n",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-p C-e C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true
+        }
+      },
+      "text": "* A\n** * X\nbody\n\n",
+      "visible": "* A\n** * X\nbody\n\n",
+      "point": 16,
+      "mark": 7,
+      "mark_active": false,
+      "kill_ring": [
+        "* X\nbody\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adjusted-off",
+      "input": {
+        "text": "** X\nx body\n*** Y\n* A\n",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": false
+        }
+      },
+      "text": "* A\n** X\nx body\n*** Y\n",
+      "visible": "* A\n** X\n",
+      "point": 22,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "** X\nx body\n*** Y\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adjusted-mark",
+      "input": {
+        "text": "** X\nx body\n*** Y\n* A\n",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-y C-x C-x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true,
+          "org-yank-folded-subtrees": false
+        }
+      },
+      "text": "* A\n* X\nx body\n** Y\n",
+      "visible": "* A\n* X\nx body\n** Y\n",
+      "point": 4,
+      "mark": 20,
+      "mark_active": true,
+      "kill_ring": [
+        "** X\nx body\n*** Y\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adjusted-before-heading",
+      "input": {
+        "text": "* A\n** B\n* X\n",
+        "point": 0,
+        "keys": "M-> C-p C-c C-x C-w M-< C-n C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true,
+          "org-yank-folded-subtrees": false
+        }
+      },
+      "text": "* A\n** X\n** B\n",
+      "visible": "* A\n** X\n** B\n",
+      "point": 9,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "* X\n"
+      ],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

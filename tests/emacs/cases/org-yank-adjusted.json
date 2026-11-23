@@ -1,0 +1,101 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "adjusted-to-top",
+  "text": "** X\nx body\n*** Y\n* A\n",
+  "keys": "C-c C-x C-w M-> C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "adjusted-unfolded",
+  "text": "** X\nx body\n*** Y\n* A\n",
+  "keys": "C-c C-x C-w M-> C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true,
+   "org-yank-folded-subtrees": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "adjusted-deeper",
+  "text": "* X\n** Y\n* A\n** B\n*** C\n",
+  "keys": "C-c C-x C-w M-> C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "adjusted-mid-line",
+  "text": "** X\nx body\n*** Y\n* A\n",
+  "keys": "C-c C-x C-w M-> C-p C-e C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "adjusted-stars-line",
+  "text": "* X\nbody\n* A\n** \n",
+  "keys": "C-c C-x C-w M-> C-p C-e C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "adjusted-off",
+  "text": "** X\nx body\n*** Y\n* A\n",
+  "keys": "C-c C-x C-w M-> C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "adjusted-mark",
+  "text": "** X\nx body\n*** Y\n* A\n",
+  "keys": "C-c C-x C-w M-> C-y C-x C-x",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true,
+   "org-yank-folded-subtrees": false
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "adjusted-before-heading",
+  "text": "* A\n** B\n* X\n",
+  "keys": "M-> C-p C-c C-x C-w M-< C-n C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true,
+   "org-yank-folded-subtrees": false
+  }
+ }
+]

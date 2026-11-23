@@ -15015,6 +15015,12 @@ declare global {
        */
       "org-use-tag-inheritance": Value;
       /**
+       * Whether C-y pastes a subtree at the level around point, as org-paste-subtree does, rather than as it is.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-yank-adjusted-subtrees": Value;
+      /**
        * Whether C-y folds the subtrees it yanks, unless folding would hide text after them.
        *
        * Defined in packages/org.ts.
