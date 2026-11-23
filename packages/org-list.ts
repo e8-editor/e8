@@ -921,10 +921,11 @@ function swapItemsChecked(begA: number, begB: number, struct: Struct): Struct {
 
 /** How many blank lines go between items when one is inserted, as org-list-separating-blank-lines-number guesses. */
 function separatingBlankLines(pos: number, item: number, struct: Struct, prevs: Alist): number {
-  // As org-blank-before-new-entry's plain-list-item says: nil for none, a number for that many, auto to follow the list.
+  // As org-blank-before-new-entry's plain-list-item says: nil for none,
+  // t for one, anything else as auto, to follow the list.
   const setting = blankBeforeNewEntry("plain-list-item");
   if (setting === null || setting === false) return 0;
-  if (typeof setting === "number") return setting;
+  if (setting === true) return 1;
   const countBlanks = (at: number): number => {
     const bol = e8.lineStart(lineAt(at));
     let q = bol;
@@ -948,11 +949,11 @@ function separatingBlankLines(pos: number, item: number, struct: Struct, prevs: 
   return 0;
 }
 
-/** What org-blank-before-new-entry says for headings or list items: "auto" unless it says otherwise. */
+/** What org-blank-before-new-entry says for headings or list items, nil where it says nothing, as assq finds it. */
 export function blankBeforeNewEntry(kind: "heading" | "plain-list-item"): e8.Value {
   const alist = e8.variable("org-blank-before-new-entry");
   const entry = Array.isArray(alist) ? (alist.find((e) => Array.isArray(e) && e[0] === kind) as e8.Value[] | undefined) : undefined;
-  return entry === undefined ? "auto" : (entry[1] ?? null);
+  return entry?.[1] ?? null;
 }
 
 /**

@@ -297,7 +297,7 @@ function newChild(parent: Target, child: string): Target {
         // org-blank-before-new-entry's heading entry is on; else to the line before's start.
         const before = e8.point();
         const blank = e8.variable("org-blank-before-new-entry");
-        const heading = Array.isArray(blank) ? (blank.find((e) => Array.isArray(e) && e[0] === "heading") as e8.Value[] | undefined)?.[1] : "auto";
+        const heading = Array.isArray(blank) ? (blank.find((e) => Array.isArray(e) && e[0] === "heading") as e8.Value[] | undefined)?.[1] : null;
         if (truthy(heading ?? null)) {
           let at = before;
           while (at > e8.pointMin() && /[ \t\n\r]/.test(e8.bufferSubstringNoProperties(at - 1, at))) at--;

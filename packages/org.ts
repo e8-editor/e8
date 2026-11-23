@@ -4123,6 +4123,38 @@ const todoHeading = e8.defineCommand({
   run: () => insertTodoHeading(e8.prefixArg(), false),
 });
 
+/** A new heading or item, then demoted, as org-insert-subheading and org-insert-todo-subheading end. */
+function demoteInserted(): void {
+  if (isHeadingLine(e8.lineText(lineAt()))) e8.call("org-do-demote");
+  else if (itemLine(lineAt())) e8.call("org-indent-item");
+}
+
+e8.defineCommand({
+  name: "org-insert-subheading",
+  doc:
+    "Insert a heading one level below the one point is under, or an item one level below, as org-insert-heading and a demotion. " +
+    "At the start of a heading, the new one still goes below it. The prefix argument is org-insert-heading's.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    const p = e8.point();
+    if (p === e8.lineBeginningPosition() && p < e8.pointMax() && p !== e8.lineEndPosition()) e8.gotoChar(p + 1);
+    insertHeading(arg);
+    demoteInserted();
+  },
+});
+
+e8.defineCommand({
+  name: "org-insert-todo-subheading",
+  doc:
+    "Insert a heading one level below with the TODO state of the heading above, or the first state if that one is done, or an item with a checkbox one level below, " +
+    "as org-insert-todo-heading and a demotion.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg: e8.PrefixArg) => {
+    insertTodoHeading(arg, false);
+    demoteInserted();
+  },
+});
+
 const todoHeadingRespectContent = e8.defineCommand({
   name: "org-insert-todo-heading-respect-content",
   doc: "Insert a heading with the first TODO state after the subtree point is in.",
