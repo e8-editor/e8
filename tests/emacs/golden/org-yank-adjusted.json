@@ -212,6 +212,182 @@
       ],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "folded-from-body",
+      "input": {
+        "text": "*** X\nx\n* A\nbody\n* B\n",
+        "point": 0,
+        "keys": "C-c C-x C-w C-n C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true
+        }
+      },
+      "text": "* A\nbody\n* X\nx\n* B\n",
+      "visible": "* A\nbody\n* X\nx\n* B\n",
+      "point": 15,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "*** X\nx\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "blank-lines-first",
+      "input": {
+        "text": "* A\n\n\n** B\nb\n* C\n",
+        "point": 4,
+        "keys": "C-SPC C-n C-n C-n C-n C-w C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-folded-subtrees": true
+        }
+      },
+      "text": "* A\n\n\n** B\nb\n* C\n",
+      "visible": "* A\n\n\n** B\nb\n* C\n",
+      "point": 13,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "\n\n** B\nb\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "stars-no-space",
+      "input": {
+        "text": "*** X\nx\n* A\n**\n* B\n",
+        "point": 0,
+        "keys": "C-c C-x C-w C-n C-e C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true
+        }
+      },
+      "text": "* A\n* X\nx\n* B\n",
+      "visible": "* A\n* X\nx\n* B\n",
+      "point": 10,
+      "mark": 6,
+      "mark_active": false,
+      "kill_ring": [
+        "*** X\nx\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "stars-no-space-at-end",
+      "input": {
+        "text": "*** X\nx\n* A\n****",
+        "point": 0,
+        "keys": "C-c C-x C-w M-> C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true
+        }
+      },
+      "text": "* A\n* X\nx\n",
+      "visible": "* A\n* X\nx\n",
+      "point": 10,
+      "mark": 8,
+      "mark_active": false,
+      "kill_ring": [
+        "*** X\nx\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "narrowed-fold",
+      "input": {
+        "text": "** X\nx\n* A\nbody\nmore\n* C\n",
+        "point": 0,
+        "keys": "C-c C-x C-w C-n C-SPC C-n C-n C-x n n C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "org-yank-adjusted-subtrees": true
+        }
+      },
+      "text": "* A\nbody\nmore\n* X\nx\n* C\n",
+      "visible": "* A\nbody\nmore\n* X* C\n",
+      "point": 20,
+      "mark": 14,
+      "mark_active": false,
+      "kill_ring": [
+        "** X\nx\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cut-two-subtrees",
+      "input": {
+        "text": "* A\n** B\nb\n** C\nc\n* D\nd\n",
+        "point": 4,
+        "keys": "C-u 2 C-c C-x C-w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n* D\nd\n",
+      "visible": "* A\n* D\nd\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "** B\nb\n** C\nc\n"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-two-subtrees",
+      "input": {
+        "text": "* A\n** B\nb\n** C\nc\n* D\nd\n",
+        "point": 4,
+        "keys": "C-u 2 C-c C-x M-w C-y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n** B\nb\n** C\nc\n** B\nb\n** C\nc\n* D\nd\n",
+      "visible": "* A\n** B\n** C\n** B\nb\n** C\nc\n* D\nd\n",
+      "point": 18,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [
+        "** B\nb\n** C\nc\n"
+      ],
+      "modified": true,
+      "error": null
     }
   ]
 }

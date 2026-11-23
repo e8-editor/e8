@@ -4732,11 +4732,9 @@ function levelHere(): number {
 /**
  * Pastes the last kill as a subtree at the level of the headings around
  * point, as org-paste-subtree does: before the heading point is at the
- * start of, or else before the next visible heading.
- */
-/**
- * With forYank, as org-yank calls it: point at the pasted text's end, and
- * no folding, which org-yank decides.
+ * start of, or else before the next visible heading. With forYank, as
+ * org-yank calls it, point goes to the pasted text's end and nothing is
+ * folded, which org-yank decides.
  */
 export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
   const txt = e8.currentKill();
@@ -4751,7 +4749,9 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
   let indicator: number | undefined;
   let force: number | undefined;
   if ((level === null || c4 || c16) && /^\*+[ \t]*$/.test(text) && e8.bufferText(e8.point(), e8.point() + 1) !== "*") {
-    indicator = (/^\*+/.exec(text) as RegExpExecArray)[0].length;
+    // As org-outline-level: the stars' own level when they make a heading,
+    // with a space after them, else the heading above's, or 0 before the first.
+    indicator = [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
     force = indicator;
   } else if (c4) {
     // As org-outline-level: the heading point is under, hidden or not, or 0 before the first.
@@ -4813,7 +4813,8 @@ function foldSubtree(line: number): void {
   const i = headingIndex(all, line);
   if (i === undefined) return;
   const next = subtreeRegion(all, i)[1];
-  const end = next >= e8.bufferSize() ? e8.bufferSize() : next - 1;
+  // To the end of what is accessible, as org-end-of-subtree stops there.
+  const end = next >= e8.pointMax() ? e8.pointMax() : next - 1;
   if (end > all[i].end) flag(all[i].end, end, true);
 }
 
@@ -4882,19 +4883,18 @@ function orgYank(arg: e8.PrefixArg): void {
     while (q < end && !parseHeading(lineAt(q))) q = lineStartOrEnd(lineAt(q) + 1);
     const level = parseHeading(lineAt(Math.min(q, end)))?.level ?? 0;
     let r = end;
-    while (r < e8.bufferSize() && /[ \t\r\n\v\f]/.test(e8.bufferText(r, r + 1))) r++;
-    if (r >= e8.bufferSize()) return false;
+    // To the end of what is accessible, as eobp is.
+    while (r < e8.pointMax() && /[ \t\r\n\v\f]/.test(e8.bufferText(r, r + 1))) r++;
+    if (r >= e8.pointMax()) return false;
     const h = r === e8.lineStart(lineAt(r)) ? parseHeading(lineAt(r)) : undefined;
     return !(h && h.level <= level);
   };
   if (beg === e8.lineStart(lineAt(beg))) {
     if (swallows()) e8.message("Inserted text not folded because that would swallow text");
     else {
-      let q = beg;
-      if (!parseHeading(lineAt(q))) {
-        while (q < end && !parseHeading(lineAt(q))) q = lineStartOrEnd(lineAt(q) + 1);
-        q = Math.min(q, end);
-      }
+      // Only from a heading at the start, as Org's re-search-forward to a
+      // later one leaves point after its stars, where its loop stops.
+      let q = parseHeading(lineAt(beg)) ? beg : end;
       while (q < end && q === e8.lineStart(lineAt(q)) && parseHeading(lineAt(q))) {
         e8.gotoChar(q);
         foldSubtree(lineAt(q));
@@ -4954,13 +4954,13 @@ e8.defineCommand({
 e8.defineCommand({
   name: "org-cut-special",
   doc: "Cut the subtree point is in, or in a table, blank the field at point or the fields in the region.",
-  run: () => e8.callInteractively(atTableP() ? "org-table-cut-region" : "org-cut-subtree"),
+  run: () => e8.callWithPrefix(e8.prefixArg(), atTableP() ? "org-table-cut-region" : "org-cut-subtree"),
 });
 
 e8.defineCommand({
   name: "org-copy-special",
   doc: "Copy the subtree point is in, or in a table, the field at point or the fields in the region.",
-  run: () => e8.callInteractively(atTableP() ? "org-table-copy-region" : "org-copy-subtree"),
+  run: () => e8.callWithPrefix(e8.prefixArg(), atTableP() ? "org-table-copy-region" : "org-copy-subtree"),
 });
 
 // Commands: TODO states, priorities and tags

@@ -97,5 +97,85 @@
    "org-yank-adjusted-subtrees": true,
    "org-yank-folded-subtrees": false
   }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "folded-from-body",
+  "text": "*** X\nx\n* A\nbody\n* B\n",
+  "keys": "C-c C-x C-w C-n C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "blank-lines-first",
+  "text": "* A\n\n\n** B\nb\n* C\n",
+  "keys": "C-SPC C-n C-n C-n C-n C-w C-y",
+  "point": 4,
+  "globals": {
+   "org-yank-folded-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "stars-no-space",
+  "text": "*** X\nx\n* A\n**\n* B\n",
+  "keys": "C-c C-x C-w C-n C-e C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "stars-no-space-at-end",
+  "text": "*** X\nx\n* A\n****",
+  "keys": "C-c C-x C-w M-> C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "narrowed-fold",
+  "text": "** X\nx\n* A\nbody\nmore\n* C\n",
+  "keys": "C-c C-x C-w C-n C-SPC C-n C-n C-x n n C-y",
+  "point": 0,
+  "globals": {
+   "org-yank-adjusted-subtrees": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "cut-two-subtrees",
+  "text": "* A\n** B\nb\n** C\nc\n* D\nd\n",
+  "keys": "C-u 2 C-c C-x C-w",
+  "point": 4,
+  "globals": {}
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "copy-two-subtrees",
+  "text": "* A\n** B\nb\n** C\nc\n* D\nd\n",
+  "keys": "C-u 2 C-c C-x M-w C-y",
+  "point": 4,
+  "globals": {}
  }
 ]
