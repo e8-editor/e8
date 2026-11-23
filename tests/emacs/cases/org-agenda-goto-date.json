@@ -353,5 +353,63 @@
       "org-agenda-start-day": "2026-10-20",
       "org-agenda-span": 10
     }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "goto-date-with-its-day-name",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "j",
+    "answers": [
+      "2026-11-05 Thu"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "goto-date-with-a-time",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "j",
+    "answers": [
+      "2026-11-05 10:00"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "start-day-with-its-day-name",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-start-day": "2026-11-05 Thu",
+      "org-agenda-span": "'day"
+    }
   }
 ]

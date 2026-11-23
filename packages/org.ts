@@ -7095,6 +7095,43 @@ for (const [name, n, what, doc] of [
  * days from today, or +2w, +1m, +1y; 2026-11-03, 11-03 or 3 for the next such
  * date; a weekday such as fri for the next one; and a time such as 10:30.
  */
+/** A day's index in the week from its name, whole or its first three letters, as parse-time-weekdays has them, or -1. */
+function weekdayIndex(name: string): number {
+  return DAY_NAMES.findIndex((day) => name === day || name === day.slice(0, 3));
+}
+
+/**
+ * The day a relative date such as +3, -2w, ++1m, fri, -fri or +2fri says,
+ * from today, as org-read-date-get-relative reads it: a sign or a day's name
+ * is needed; a day's name is the next such day after today, a week on if it
+ * is today's, or with - the last one before it.
+ */
+function relativeDate(m: RegExpExecArray): DateTime | undefined {
+  const [, sign, count, what = "d"] = m;
+  const wd1 = weekdayIndex(what);
+  if (!/^[dwmy]$/.test(what) && wd1 < 0) return undefined;
+  if (sign === "" && wd1 < 0) return undefined;
+  const base = today();
+  const back = sign.endsWith("-");
+  const n = count === undefined ? 1 : Number(count);
+  if (wd1 >= 0) {
+    let delta = (7 + wd1 - weekday(base)) % 7;
+    if (delta === 0) delta = 7;
+    if (back) {
+      delta -= 7;
+      if (delta === 0) delta = -7;
+    }
+    if (n > 1) delta += (n - 1) * (back ? -7 : 7);
+    return normalize({ ...base, day: base.day + delta });
+  }
+  const shift = back ? -n : n;
+  return normalize({
+    year: base.year + (what === "y" ? shift : 0),
+    month: base.month + (what === "m" ? shift : 0),
+    day: base.day + (what === "d" ? shift : what === "w" ? 7 * shift : 0),
+  });
+}
+
 export function parseDate(input: string, withTime = false): DateTime {
   let text = input.trim().toLowerCase();
   const base = today();
@@ -7113,15 +7150,10 @@ export function parseDate(input: string, withTime = false): DateTime {
   let d: DateTime;
   let m: RegExpExecArray | null;
   if (text === "" || text === ".") d = base;
-  else if ((m = /^([+-])(\d+)([dwmy]?)$/.exec(text))) {
-    const n = Number(m[2]) * (m[1] === "-" ? -1 : 1);
-    const unit = m[3] || "d";
-    d = normalize({
-      year: base.year + (unit === "y" ? n : 0),
-      month: base.month + (unit === "m" ? n : 0),
-      day: base.day + (unit === "d" ? n : unit === "w" ? 7 * n : 0),
-    });
-  } else if ((m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(text))) {
+  else if ((m = /^([+-]{0,2})(\d+)?([dwmy]|[a-z]+)?$/.exec(text)) && relativeDate(m) !== undefined) {
+    d = relativeDate(m)!;
+  } else if ((m = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:\s.*)?$/.exec(text))) {
+    // What follows the date, as its day's name, is left out, as parse-time-string leaves it.
     d = { year: Number(m[1]), month: Number(m[2]), day: Number(m[3]) };
   } else if ((m = /^(\d{1,2})-(\d{1,2})$/.exec(text))) {
     d = { year: base.year, month: Number(m[1]), day: Number(m[2]) };
@@ -7130,9 +7162,8 @@ export function parseDate(input: string, withTime = false): DateTime {
     d = { year: base.year, month: base.month, day: Number(m[1]) };
     if (d.day < base.day) d = normalize({ ...d, month: d.month + 1 });
   } else {
-    const k = DAY_NAMES.findIndex((name) => text.length >= 2 && name.startsWith(text));
-    if (k < 0) throw new Error(`Cannot read a date from "${input}"`);
-    d = normalize({ ...base, day: base.day + ((k - weekday(base) + 7) % 7) });
+    // What cannot be read is the default day, today, as org-read-date-analyze fills in what parse-time-string did not find.
+    d = base;
   }
   if (time) {
     d.hour = time[0];

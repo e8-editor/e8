@@ -143,3 +143,32 @@ fn goto_date_reads_relative_dates() {
     ed.call("org-agenda-goto-date", vec![e8_core::Arg::Str("5".into())]).unwrap();
     assert!(agenda(&ed).starts_with("Week-agenda (W45):\n"), "{}", agenda(&ed));
 }
+
+/// The date line point is on after j.
+fn goto(ed: &mut Editor, date: &str) -> String {
+    ed.call("org-agenda-goto-date", vec![e8_core::Arg::Str(date.into())]).unwrap();
+    let text = agenda(ed);
+    let p = ed.buffer().point();
+    let at: String = text.chars().skip(p).collect();
+    at.lines().next().unwrap_or("").to_string()
+}
+
+/// Day names are read as org-read-date-get-relative reads them: the next
+/// such day, a week on if it is today's, the last one with -, and a count
+/// of weeks; only whole names or their first three letters, and what is not
+/// a date is today. Today is Wednesday 28 October.
+#[test]
+fn goto_date_reads_day_names_as_org_does() {
+    let (mut ed, _s, _dir) = agenda_file(TASKS, &[("org-agenda-span", Value::Str("day".into()))]);
+    ed.call("org-agenda-list", vec![]).unwrap();
+    assert_eq!(goto(&mut ed, "fri"), "Friday     30 October 2026");
+    assert_eq!(goto(&mut ed, "wed"), "Wednesday   4 November 2026");
+    assert_eq!(goto(&mut ed, "wednesday"), "Wednesday   4 November 2026");
+    assert_eq!(goto(&mut ed, "-wed"), "Wednesday  21 October 2026");
+    assert_eq!(goto(&mut ed, "-fri"), "Friday     23 October 2026");
+    assert_eq!(goto(&mut ed, "2fri"), "Friday      6 November 2026");
+    assert_eq!(goto(&mut ed, "-"), "Tuesday    27 October 2026");
+    assert_eq!(goto(&mut ed, "++3"), "Saturday   31 October 2026");
+    assert_eq!(goto(&mut ed, "we"), "Wednesday  28 October 2026");
+    assert_eq!(goto(&mut ed, "xyz"), "Wednesday  28 October 2026");
+}
