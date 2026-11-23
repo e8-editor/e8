@@ -1060,6 +1060,363 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "copy-down-range-end",
+      "input": {
+        "text": "| <2026-11-23 Mon>--<2026-11-25 Wed> |\n|                                    |\n",
+        "point": 75,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| <2026-11-23 Mon>--<2026-11-25 Wed> |\n| <2026-11-23 Mon>--<2026-11-26 Thu> |\n",
+      "visible": "| <2026-11-23 Mon>--<2026-11-25 Wed> |\n| <2026-11-23 Mon>--<2026-11-26 Thu> |\n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-two-timestamps",
+      "input": {
+        "text": "| <2026-11-23 Mon> <2026-11-24 Tue> |\n|                                   |\n",
+        "point": 73,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| <2026-11-23 Mon> <2026-11-24 Tue> |\n| <2026-11-23 Mon> <2026-11-25 Wed> |\n",
+      "visible": "| <2026-11-23 Mon> <2026-11-24 Tue> |\n| <2026-11-23 Mon> <2026-11-25 Wed> |\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-text-then-timestamp",
+      "input": {
+        "text": "| x <2026-11-23 Mon> |\n|                    |\n",
+        "point": 43,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| x <2026-11-23 Mon> |\n| x <2026-11-24 Tue> |\n",
+      "visible": "| x <2026-11-23 Mon> |\n| x <2026-11-24 Tue> |\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-timestamp-then-text",
+      "input": {
+        "text": "| <2026-11-23 Mon> x |\n|                    |\n",
+        "point": 43,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| <2026-11-23 Mon> x |\n|                    |\n",
+      "visible": "| <2026-11-23 Mon> x |\n|                    |\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not at a timestamp"
+    },
+    {
+      "name": "copy-down-long-bracket-text",
+      "input": {
+        "text": "| <2026-11-23 a very long description here> |\n|                                           |\n",
+        "point": 89,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| <2026-11-23 a very long description here> |\n| <2026-11-23 a very long description here> |\n",
+      "visible": "| <2026-11-23 a very long description here> |\n| <2026-11-23 a very long description here> |\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-big-exponent",
+      "input": {
+        "text": "| 1e20 |\n|      |\n",
+        "point": 15,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|  1e20 |\n| 1e+20 |\n",
+      "visible": "|  1e20 |\n| 1e+20 |\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-exponent-step",
+      "input": {
+        "text": "| 0 |\n| 1e15 |\n|      |\n",
+        "point": 21,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|     0 |\n|  1e15 |\n| 2e+15 |\n",
+      "visible": "|     0 |\n|  1e15 |\n| 2e+15 |\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-small-float-step",
+      "input": {
+        "text": "| 2e-5 |\n| 3e-5 |\n|      |\n",
+        "point": 24,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|                   2e-5 |\n|                   3e-5 |\n| 3.9999999999999996e-05 |\n",
+      "visible": "|                   2e-5 |\n|                   3e-5 |\n| 3.9999999999999996e-05 |\n",
+      "point": 56,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-infinity",
+      "input": {
+        "text": "| 1e400 |\n|       |\n",
+        "point": 17,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|    1e400 |\n| 1.0e+INF |\n",
+      "visible": "|    1e400 |\n| 1.0e+INF |\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-negative-zero",
+      "input": {
+        "text": "| 0.0 |\n| -0.0 |\n|      |\n",
+        "point": 23,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|  0.0 |\n| -0.0 |\n| -0.0 |\n",
+      "visible": "|  0.0 |\n| -0.0 |\n| -0.0 |\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-bignum",
+      "input": {
+        "text": "| 12345678901234567890 |\n|                      |\n",
+        "point": 47,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 12345678901234567890 |\n| 12345678901234567891 |\n",
+      "visible": "| 12345678901234567890 |\n| 12345678901234567891 |\n",
+      "point": 27,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-bignum-suffix",
+      "input": {
+        "text": "| 12345678901234567890x |\n|                       |\n",
+        "point": 49,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 12345678901234567890x |\n| 12345678901234567891x |\n",
+      "visible": "| 12345678901234567890x |\n| 12345678901234567891x |\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-past-2-53",
+      "input": {
+        "text": "| 9007199254740993 |\n|                  |\n",
+        "point": 39,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 9007199254740993 |\n| 9007199254740994 |\n",
+      "visible": "| 9007199254740993 |\n| 9007199254740994 |\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-bare-exponent",
+      "input": {
+        "text": "| 1e |\n|    |\n",
+        "point": 11,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 1e |\n|  2 |\n",
+      "visible": "| 1e |\n|  2 |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-point-five",
+      "input": {
+        "text": "| .5 |\n|    |\n",
+        "point": 11,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "|  .5 |\n| 1.5 |\n",
+      "visible": "|  .5 |\n| 1.5 |\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-nbsp",
+      "input": {
+        "text": "| 5  |\n|    |\n",
+        "point": 11,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| 5  |\n| 6  |\n",
+      "visible": "| 5  |\n| 6  |\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "copy-down-short-row-below",
+      "input": {
+        "text": "| a | 1 |\n| b |\n| c | 3 |\n",
+        "point": 6,
+        "keys": "S-RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | 1 |\n| b |\n| c | 3 |\n",
+      "visible": "| a | 1 |\n| b |\n| c | 3 |\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Not in table data field"
     }
   ]
 }

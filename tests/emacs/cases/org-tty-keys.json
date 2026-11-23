@@ -457,5 +457,158 @@
     ],
     "point": 5,
     "keys": "ESC RET x"
+  },
+  {
+    "name": "copy-down-range-end",
+    "text": "| <2026-11-23 Mon>--<2026-11-25 Wed> |\n|                                    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 75,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-two-timestamps",
+    "text": "| <2026-11-23 Mon> <2026-11-24 Tue> |\n|                                   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 73,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-text-then-timestamp",
+    "text": "| x <2026-11-23 Mon> |\n|                    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 43,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-timestamp-then-text",
+    "text": "| <2026-11-23 Mon> x |\n|                    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 43,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-long-bracket-text",
+    "text": "| <2026-11-23 a very long description here> |\n|                                           |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 89,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-big-exponent",
+    "text": "| 1e20 |\n|      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 15,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-exponent-step",
+    "text": "| 0 |\n| 1e15 |\n|      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 21,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-small-float-step",
+    "text": "| 2e-5 |\n| 3e-5 |\n|      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 24,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-infinity",
+    "text": "| 1e400 |\n|       |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 17,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-negative-zero",
+    "text": "| 0.0 |\n| -0.0 |\n|      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 23,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-bignum",
+    "text": "| 12345678901234567890 |\n|                      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 47,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-bignum-suffix",
+    "text": "| 12345678901234567890x |\n|                       |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 49,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-past-2-53",
+    "text": "| 9007199254740993 |\n|                  |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 39,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-bare-exponent",
+    "text": "| 1e |\n|    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-point-five",
+    "text": "| .5 |\n|    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-nbsp",
+    "text": "| 5  |\n|    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-short-row-below",
+    "text": "| a | 1 |\n| b |\n| c | 3 |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 6,
+    "keys": "S-RET"
   }
 ]

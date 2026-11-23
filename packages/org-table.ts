@@ -431,22 +431,25 @@ e8.defineCommand({
 e8.defineCommand({
   name: "org-table-next-row",
   doc: "Move to the same field in the next row, adding a row before a rule or at the end. The table is aligned first if it changed.",
-  run: () => {
-    maybeEvalFormula();
-    alignIfNeeded();
-    const col = currentColumn();
-    forwardLine(1);
-    if (!atBol()) edInsert(e8.point(), "\n");
-    if (!atTable() || atHline()) {
-      forwardLine(-1);
-      insertRow(true);
-    }
-    gotoColumn(col);
-    const before = beforeOnLine();
-    e8.gotoChar(e8.lineStart(lineAt()) + charCount(before.slice(0, before.lastIndexOf("|") + 1)));
-    if (charAt(e8.point()) === " ") e8.gotoChar(e8.point() + 1);
-  },
+  run: () => nextRow(true),
 });
+
+/** Moves to the same field of the next row, adding one before a rule or at the end, as org-table-next-row does; aligning first if ALIGN and the table changed. */
+function nextRow(alignFirst: boolean): void {
+  maybeEvalFormula();
+  if (alignFirst) alignIfNeeded();
+  const col = currentColumn();
+  forwardLine(1);
+  if (!atBol()) edInsert(e8.point(), "\n");
+  if (!atTable() || atHline()) {
+    forwardLine(-1);
+    insertRow(true);
+  }
+  gotoColumn(col);
+  const before = beforeOnLine();
+  e8.gotoChar(e8.lineStart(lineAt()) + charCount(before.slice(0, before.lastIndexOf("|") + 1)));
+  if (charAt(e8.point()) === " ") e8.gotoChar(e8.point() + 1);
+}
 
 /** Blanks the field at point, keeping its width, and moves to its start, as org-table-blank-field does. */
 export function blankField(): void {
@@ -494,18 +497,47 @@ e8.defineVariable({
   value: true,
 });
 
-/** A number as Lisp reads it, and whether it is a float, for incrementing a field. */
-type LispNumber = { value: number; float: boolean };
+/** A number as string-to-number reads it: an integer exactly, as a bignum, or a float. */
+type LispNumber = { int: bigint; float?: undefined } | { float: number; int?: undefined };
 
 function lispNumber(text: string): LispNumber {
-  return { value: Number(text.endsWith(".") ? text.slice(0, -1) : text), float: /\.\d|[eE]/.test(text) };
+  // A float has digits after its point, or an exponent with digits.
+  if (/\.\d|[eE][+-]?\d/.test(text)) return { float: Number(/^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/.exec(text)![0]) };
+  return { int: BigInt(/^[+-]?\d+/.exec(text)![0]) };
 }
 
-/** A number as number-to-string writes it: a float with a point, as 3.0. */
+/** Writes a float as %g does with PREC significant digits. */
+function formatG(x: number, prec: number): string {
+  const [mantissa, exp] = x.toExponential(prec - 1).split("e");
+  const e = Number(exp);
+  const strip = (t: string) => (t.includes(".") ? t.replace(/0+$/, "").replace(/\.$/, "") : t);
+  if (e < -4 || e >= prec) return `${strip(mantissa)}e${e < 0 ? "-" : "+"}${String(Math.abs(e)).padStart(2, "0")}`;
+  return strip(x.toFixed(Math.max(0, prec - 1 - e)));
+}
+
+/**
+ * A number as number-to-string writes it: an integer as it is, a float in
+ * the fewest digits from 15 that read back the same, as dtoastr finds them,
+ * with a point, as 3.0, or in exponent form, as 1e+20.
+ */
 function numberString(n: LispNumber): string {
-  if (!n.float) return String(n.value);
-  if (Number.isInteger(n.value) && Math.abs(n.value) < 1e16) return `${n.value}.0`;
-  return String(n.value).replace(/e([+-])(\d)$/, "e$10$2");
+  if (n.int !== undefined) return String(n.int);
+  const x = n.float;
+  if (Number.isNaN(x)) return "0.0e+NaN";
+  if (!Number.isFinite(x)) return x > 0 ? "1.0e+INF" : "-1.0e+INF";
+  let text = Object.is(x, -0) ? "-0" : formatG(x, 15);
+  for (let prec = 16; prec <= 17 && Number(text) !== x; prec++) text = formatG(x, prec);
+  return /[.e]/.test(text) ? text : `${text}.0`;
+}
+
+/** Whether a string has more than whitespace, as org-string-nw-p, which counts only spaces, tabs and line ends. */
+function nonWhite(s: string | undefined): s is string {
+  return s !== undefined && /[^ \t\r\n]/.test(s);
+}
+
+/** A string without the spaces, tabs and line ends around it, as org-trim. */
+function orgTrim(s: string): string {
+  return s.replace(/^[ \t\r\n]+|[ \t\r\n]+$/g, "");
 }
 
 /** Runs `f` in a buffer of its own, killed afterwards, as with-temp-buffer. */
@@ -527,33 +559,38 @@ function withTempBuffer<T>(f: () => T): T {
  */
 function incrementField(field: string, previous: string | undefined): string {
   const option = e8.variable("org-table-copy-increment");
-  const step: LispNumber = typeof option === "number" ? { value: option, float: !Number.isInteger(option) } : { value: 1, float: false };
+  const step: LispNumber = typeof option === "number" ? (Number.isInteger(option) ? { int: BigInt(option) } : { float: option }) : { int: 1n };
   type Kind = { type: "number" | "prefix" | "suffix" | "timestamp"; n: LispNumber; text: string; rest: string };
   const analyze = (f: string | undefined): Kind | undefined => {
-    if (f === undefined || !/\S/.test(f)) return undefined;
+    if (!nonWhite(f)) return undefined;
     let m: RegExpExecArray | null;
-    if (/^[+-]?(?:\d+\.?|\d*\.\d+)(?:[eE][+-]?\d+)?$/.test(f)) return { type: "number", n: lispNumber(f), text: f, rest: "" };
+    // Lisp's syntax for numbers: an exponent's digits may be left out.
+    if (/^[+-]?(?:\d+\.?|\d*\.\d+)(?:[eE](?:[+-]?\d+)?)?$/.test(f)) return { type: "number", n: lispNumber(f), text: f, rest: "" };
     if ((m = /^\d+/.exec(f))) return { type: "prefix", n: lispNumber(m[0]), text: f, rest: f.slice(m[0].length) };
     if ((m = /\d+$/.exec(f))) return { type: "suffix", n: lispNumber(m[0]), text: f, rest: f.slice(0, m.index) };
-    if (/[[<]\d{4}-\d{2}-\d{2}(?: +[^\]+0-9>\r\n -]+)?(?: +\d{1,2}:\d{2})?[^\]>\n]*[\]>]/.test(f)) {
-      return { type: "timestamp", n: { value: 0, float: false }, text: f, rest: "" };
+    // org-ts-regexp3, anywhere in the field.
+    if (/[[<]\d{4}-\d{2}-\d{2}(?: *[^\]+0-9>\r\n -]+)?(?: +\d{1,2}:\d{2})?[^\]>\r\n]{0,16}[\]>]/.test(f)) {
+      return { type: "timestamp", n: step, text: f, rest: "" };
     }
     return undefined;
   };
-  const next = (n1: LispNumber, n2?: LispNumber): string =>
-    numberString(
-      n2 ? { value: n1.value + (n1.value - n2.value), float: n1.float || n2.float } : { value: n1.value + step.value, float: n1.float || step.float },
-    );
+  const asFloat = (n: LispNumber) => (n.int !== undefined ? Number(n.int) : n.float);
+  // n1 + (n1 - n2), or n1 + the step, as integers while all are, as Lisp's arithmetic.
+  const next = (n1: LispNumber, n2?: LispNumber): string => {
+    const other = n2 ?? step;
+    if (n1.int !== undefined && other.int !== undefined) return numberString({ int: n2 ? n1.int + (n1.int - other.int) : n1.int + other.int });
+    return numberString({ float: n2 ? asFloat(n1) + (asFloat(n1) - asFloat(other)) : asFloat(n1) + asFloat(other) });
+  };
   const days = (ts: string) => {
     const m = /(\d{4})-(\d{2})-(\d{2})/.exec(ts)!;
     return Math.floor(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])) / 86400000);
   };
-  // As org-timestamp-up-day moves it at the start of a buffer holding the field.
+  // As org-timestamp-up-day moves it in a buffer holding the field, point
+  // left at its end by the insertion: the last timestamp, or a range's end.
   const shift = (t1: string, t2?: string) =>
     withTempBuffer(() => {
       e8.insert(t1);
-      e8.gotoChar(e8.pointMin());
-      e8.callWithPrefix(t2 === undefined ? step.value : days(t1) - days(t2), "org-timestamp-up-day");
+      e8.callWithPrefix(t2 === undefined ? Number(asFloat(step)) : days(t1) - days(t2), "org-timestamp-up-day");
       return e8.bufferText(e8.pointMin(), e8.pointMax());
     });
   const a = analyze(field);
@@ -584,7 +621,7 @@ function copyDown(n: number): void {
     return f;
   };
   const here = getFieldHere();
-  const initial = /\S/.test(here) ? here.trim() : undefined;
+  const initial = nonWhite(here) ? orgTrim(here) : undefined;
   let field = initial;
   // The line the field above the one copied is read from.
   let from = lineAt();
@@ -593,12 +630,12 @@ function copyDown(n: number): void {
     for (let l = lineAt() - 1; l >= 0 && e8.lineStart(l) >= beg; l--) {
       if (!DATALINE.test(e8.lineText(l))) continue;
       const f = fieldAt(l);
-      if (!/\S/.test(f)) continue;
+      if (!nonWhite(f)) continue;
       if (count > 1) {
         count--;
         continue;
       }
-      field = f.trim();
+      field = orgTrim(f);
       from = l;
       break;
     }
@@ -611,12 +648,13 @@ function copyDown(n: number): void {
     // Read whatever that line holds, a rule's dashes included, as org-table-get-field reads it.
     if (typeof option !== "number" && e8.lineStart(from) !== beg) {
       const f = fieldAt(from - 1);
-      above = /\S/.test(f) ? f.trim() : undefined;
+      above = nonWhite(f) ? orgTrim(f) : undefined;
     }
     next = incrementField(field!, above);
   }
   if (initial !== undefined) {
-    e8.call("org-table-next-row");
+    // Not aligned first, as org-table-may-need-update is nil around it.
+    nextRow(false);
     blankField();
   }
   e8.insert(next ?? field!);

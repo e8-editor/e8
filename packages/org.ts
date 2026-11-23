@@ -11774,8 +11774,9 @@ e8.bindKey("S-RET", "org-table-copy-down", "org-mode-map");
 // Keys for terminals, which cannot send some of the keys above, as Org binds
 // them without a graphical display or with org-use-extra-keys. ESC RET and
 // ESC with an arrow, which Org binds too, are already M-RET and M-<arrow>;
-// and C-c C-x c and C-c C-x d, which Org binds again after them, to cloning
-// a subtree and inserting a drawer.
+// and C-c C-x c and C-c C-x d are left out, as Org binds them again after
+// these, to org-clone-subtree-with-time-shift, which E8 does not have yet,
+// and to inserting a drawer.
 e8.defineVariable({
   name: "org-use-extra-keys",
   doc:
