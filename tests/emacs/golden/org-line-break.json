@@ -428,6 +428,181 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "af-ret-long-para",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee\nfff\nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee\nfff\nggg hhh\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-long-comment",
+      "input": {
+        "text": "# aaa bbb ccc ddd eee fff ggg\n",
+        "point": 26,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "# aaa bbb ccc ddd\n# eee fff\nggg\n",
+      "visible": "# aaa bbb ccc ddd\n# eee fff\nggg\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-long-item",
+      "input": {
+        "text": "- aaa bbb ccc ddd eee fff ggg\n",
+        "point": 26,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "- aaa bbb ccc ddd\n  eee fff\n  ggg\n",
+      "visible": "- aaa bbb ccc ddd\n  eee fff\n  ggg\n",
+      "point": 30,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cj-long-para",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "C-j",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee\nfff \nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee\nfff \nggg hhh\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-prefix-no-fill",
+      "input": {
+        "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+        "point": 24,
+        "keys": "C-u 1 RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa bbb ccc ddd eee fff\nggg hhh\n",
+      "visible": "aaa bbb ccc ddd eee fff\nggg hhh\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-short-line",
+      "input": {
+        "text": "aaa bbb\n",
+        "point": 4,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "aaa\nbbb\n",
+      "visible": "aaa\nbbb\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "ret-long-heading",
+      "input": {
+        "text": "* aaa bbb ccc ddd eee fff ggg\n",
+        "point": 26,
+        "keys": "RET",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* aaa bbb ccc ddd eee fff\nggg\n",
+      "visible": "* aaa bbb ccc ddd eee fff\nggg\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

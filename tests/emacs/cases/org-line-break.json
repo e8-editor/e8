@@ -197,5 +197,96 @@
   "globals": {
    "fill-column": 20
   }
+ },
+ {
+  "name": "af-ret-long-para",
+  "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+  "point": 24,
+  "keys": "RET",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-long-comment",
+  "text": "# aaa bbb ccc ddd eee fff ggg\n",
+  "keys": "RET",
+  "point": 26,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-long-item",
+  "text": "- aaa bbb ccc ddd eee fff ggg\n",
+  "keys": "RET",
+  "point": 26,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "cj-long-para",
+  "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+  "keys": "C-j",
+  "point": 24,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-prefix-no-fill",
+  "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+  "keys": "C-u 1 RET",
+  "point": 24,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-short-line",
+  "text": "aaa bbb\n",
+  "keys": "RET",
+  "point": 4,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-long-heading",
+  "text": "* aaa bbb ccc ddd eee fff ggg\n",
+  "keys": "RET",
+  "point": 26,
+  "globals": {
+   "fill-column": 20
+  }
  }
 ]

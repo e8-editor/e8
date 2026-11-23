@@ -3626,8 +3626,17 @@ function orgReturnWith(electric: boolean): void {
   // around them, and runs of them undo together.
   const newline = (n: number): void => {
     e8.undoAutoAmalgamate();
-    if (electric) electricNewline(n);
-    else e8.insertAndInherit("\n".repeat(n));
+    e8.insertAndInherit("\n".repeat(n));
+    // As self-insert does a newline: Auto Fill fills the line the newline
+    // ends, before electric indentation, unless there is a prefix argument,
+    // as newline then binds auto-fill-function to nil.
+    const fill = e8.variable("auto-fill-function");
+    if (typeof fill === "string" && e8.prefixArg() === null) {
+      e8.gotoChar(e8.point() - 1);
+      e8.call(fill as e8.CommandName);
+      if (e8.point() < e8.bufferSize()) e8.gotoChar(e8.point() + 1);
+    }
+    if (electric) electricIndentNewline();
   };
   checkInvisibleEditMaybe();
   const line = lineAt();
@@ -3693,8 +3702,8 @@ function orgReturnWith(electric: boolean): void {
  * Inserts newlines and indents the new line, as newline does with
  * electric-indent-mode: spaces left at the end of the line before go.
  */
-function electricNewline(n: number): void {
-  e8.insertAndInherit("\n".repeat(n));
+/** After a newline, the whitespace before it gone and the new line indented, as electric-indent-mode does. */
+function electricIndentNewline(): void {
   const before = e8.point() - 1;
   const text = e8.bufferText(e8.lineStart(lineAt(before)), before);
   const spaces = text.length - text.replace(/[ \t]+$/, "").length;
