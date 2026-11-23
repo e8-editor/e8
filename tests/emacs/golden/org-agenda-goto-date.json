@@ -1,0 +1,883 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "goto-date",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-05"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "visible": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "point": 127,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 127,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-in-day-view",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "d j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-03"
+        ],
+        "message": true
+      },
+      "text": "Day-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "visible": "Day-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-in-month-view",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m",
+          "2026-11-05"
+        ],
+        "message": true
+      },
+      "text": "30 days-agenda (W45-W49):\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\nTuesday     1 December 2026\nWednesday   2 December 2026\nThursday    3 December 2026\nFriday      4 December 2026\n",
+      "visible": "30 days-agenda (W45-W49):\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\nTuesday     1 December 2026\nWednesday   2 December 2026\nThursday    3 December 2026\nFriday      4 December 2026\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 26,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-then-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "j f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-20"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W48):\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\n",
+      "visible": "Week-agenda (W48):\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\n",
+      "point": 135,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 135,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-then-redo",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "j r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-20"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 135,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 135,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-then-today",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "j .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-12-24"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 77,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 11,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 77,
+          "width": 80,
+          "height": 13,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-with-a-count",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 3 j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-03"
+        ],
+        "message": true
+      },
+      "text": "3 days-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\n",
+      "visible": "3 days-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\n",
+      "point": 21,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 21,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-in-a-todo-list",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-03"
+        ],
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n  e8-agenda:  TODO Call Ann                                              :work:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n  e8-agenda:  TODO Call Ann                                              :work:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not allowed in ’todo’-type agenda buffer or component",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "goto-date-without-all-dates",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-04"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-show-all-dates": false
+        }
+      },
+      "text": "Week-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "visible": "Week-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 47,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-ten-days",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-04"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-span": 10
+        }
+      },
+      "text": "10 days-agenda (W45-W46):\nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\n",
+      "visible": "10 days-agenda (W45-W46):\nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 26,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "goto-date-after-following-a-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 134,
+        "keys": "C-c C-o j",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "2026-11-20"
+        ],
+        "message": true
+      },
+      "text": "Day-agenda (W47):\nFriday     20 November 2026\n  e8-agenda:  Party \n",
+      "visible": "Day-agenda (W47):\nFriday     20 November 2026\n  e8-agenda:  Party \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 134,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-11-03)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "start-day-a-date-in-a-week",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-day": "2026-11-20"
+        }
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 135,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 135,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "start-day-then-redo",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-day": "2026-11-20",
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W47):\nFriday     20 November 2026\n  e8-agenda:  Party \n",
+      "visible": "Day-agenda (W47):\nFriday     20 November 2026\n  e8-agenda:  Party \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "start-day-day-view",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "d"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-start-day": "2026-11-20"
+        }
+      },
+      "text": "Day-agenda (W47):\nFriday     20 November 2026\n  e8-agenda:  Party \n",
+      "visible": "Day-agenda (W47):\nFriday     20 November 2026\n  e8-agenda:  Party \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to day view"
+    },
+    {
+      "name": "start-day-a-date-for-a-day",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-day": "2026-11-03",
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "visible": "Day-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "start-day-a-date-then-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-day": "2026-11-03",
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W45):\nWednesday   4 November 2026\n",
+      "visible": "Day-agenda (W45):\nWednesday   4 November 2026\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "start-day-a-date-then-today",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": ".",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-day": "2026-11-03",
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "start-day-a-date-ten-days",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-day": "2026-10-20",
+          "org-agenda-span": 10
+        }
+      },
+      "text": "10 days-agenda (W43-W44):\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "visible": "10 days-agenda (W43-W44):\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\nMonday     26 October 2026 W44\nTuesday    27 October 2026\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "point": 246,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 246,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": null
+    }
+  ]
+}

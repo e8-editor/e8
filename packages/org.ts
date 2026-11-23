@@ -11136,7 +11136,7 @@ function dateMatchCounts(type: string | null): boolean {
 }
 
 /** A date read as org-read-date reads one, as YYYY-MM-DD with any time after it. */
-function readDate(prompt?: string): string {
+export function readDate(prompt?: string): string {
   const t = today();
   const def = `${t.year}-${String(t.month).padStart(2, "0")}-${String(t.day).padStart(2, "0")}`;
   const input = e8.readString(`${prompt ?? "Date+time"} [${def}]: `, { history: "org-read-date-history" });
