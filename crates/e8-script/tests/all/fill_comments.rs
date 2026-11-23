@@ -63,3 +63,31 @@ fn fill_region_in_org_fills_items_apart() {
         "aaa bbb ccc ddd eee\nfff\n- ggg hhh iii jjj\n  kkk lll\n- mmm\n\nnnn ooo ppp qqq rrr\nsss\n"
     );
 }
+
+/// fill-region in Org takes each line's prefix from org-adaptive-fill-function,
+/// as adaptive-fill-function, and its comment and keyword lines continue as
+/// Emacs 30.2's do, a comment start that would start a paragraph left off.
+#[test]
+fn fill_region_in_org_takes_its_adaptive_prefix() {
+    let cases = [
+        ("# aaa bbb ccc ddd eee fff ggg hhh\n", "# aaa bbb ccc ddd\neee fff ggg hhh\n"),
+        ("#+TITLE: aaa bbb ccc ddd eee fff ggg hhh\ntext\n", "#+TITLE: aaa bbb ccc\n#ddd eee fff ggg hhh\ntext\n"),
+        ("- aaa bbb ccc ddd eee fff ggg hhh\n", "- aaa bbb ccc ddd\n  eee fff ggg hhh\n"),
+        ("Some aaa bbb ccc ddd eee fff ggg hhh\n", "Some aaa bbb ccc ddd\neee fff ggg hhh\n"),
+    ];
+    let mut failures = Vec::new();
+    for (start, want) in cases {
+        let mut ed = Editor::new();
+        let s = Scripting::new(&mut ed).unwrap();
+        ed.window_buffer_mut().set_text(start);
+        ed.call("org-mode", vec![]).unwrap();
+        eval(&s, &mut ed, "e8.setVariable('fill-column', 20)");
+        eval(&s, &mut ed, &format!("e8.setMark(0), e8.gotoChar({})", start.chars().count()));
+        ed.call("fill-region", vec![]).unwrap();
+        let got = ed.window_buffer().text();
+        if got != want {
+            failures.push(format!("{start:?}: {got:?}, Emacs {want:?}"));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}

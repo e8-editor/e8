@@ -5679,6 +5679,12 @@ declare global {
        */
       "org-clock-timestamps-up": [n?: PrefixArg | boolean];
       /**
+       * M-; in Org: on a heading, make it a comment or take that away, as org-toggle-comment; elsewhere as comment-dwim.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-comment-dwim": [];
+      /**
        * Show all headings, hiding the text under them.
        *
        * Defined in packages/org.ts.
@@ -9761,6 +9767,12 @@ declare global {
        */
       "adaptive-fill-first-line-regexp": Value;
       /**
+       * A function giving the fill prefix of the line at point, or nil to try adaptive-fill-regexp, as Org gives one.
+       *
+       * Defined in packages/fill.ts.
+       */
+      "adaptive-fill-function": Value;
+      /**
        * Whether filling takes a paragraph's fill prefix from its text, as its second line starts, or its first if it has one line.
        *
        * Defined in packages/fill.ts.
@@ -10455,11 +10467,23 @@ declare global {
        */
       "comment-inline-offset": Value;
       /**
+       * A function M-; calls to put a comment on a line with none, in place of its own, as Org's starts one above the line.
+       *
+       * Defined in packages/newcomment.ts.
+       */
+      "comment-insert-comment-function": Value;
+      /**
        * What goes between a comment's start and its text.
        *
        * Defined in packages/newcomment.ts.
        */
       "comment-padding": Value;
+      /**
+       * The function comment-region calls with the region and the prefix argument.
+       *
+       * Defined in packages/newcomment.ts.
+       */
+      "comment-region-function": Value;
       /**
        * What starts a comment in this mode, with the space after it: "// " or "# ". nil if the mode has no comments.
        *
@@ -10472,6 +10496,12 @@ declare global {
        * Defined in packages/newcomment.ts.
        */
       "comment-start-skip": Value;
+      /**
+       * Whether the syntax table finds comments; nil to find them by comment-start-skip, as Org's are; undecided to tell from the syntax table.
+       *
+       * Defined in packages/newcomment.ts.
+       */
+      "comment-use-syntax": Value;
       /**
        * Whether starting a compilation kills one still running without asking.
        *
@@ -16385,6 +16415,12 @@ declare global {
        * Keymap typescript-ts-mode-map.
        */
       "typescript-ts-mode-map": Value;
+      /**
+       * The function uncomment-region calls with the region and the prefix argument.
+       *
+       * Defined in packages/newcomment.ts.
+       */
+      "uncomment-region-function": Value;
       /**
        * Whether a question a command asks with the mouse, or from a menu, is asked in a dialog box rather than the echo area.
        */

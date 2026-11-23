@@ -1,0 +1,565 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "dwim-blank-line",
+      "input": {
+        "text": "* A\n\nbody\n",
+        "point": 4,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# \nbody\n",
+      "visible": "* A\n# \nbody\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dwim-text-line",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 6,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# \nbody\n",
+      "visible": "* A\n# \nbody\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dwim-indented-text",
+      "input": {
+        "text": "* A\n  body\n",
+        "point": 8,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# \n  body\n",
+      "visible": "* A\n# \n  body\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dwim-on-comment",
+      "input": {
+        "text": "* A\n# note\n",
+        "point": 8,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# note\n",
+      "visible": "* A\n# note\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "dwim-heading",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 1,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* COMMENT A\nbody\n",
+      "visible": "* COMMENT A\nbody\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dwim-comment-heading",
+      "input": {
+        "text": "* COMMENT A\nbody\n",
+        "point": 1,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\nbody\n",
+      "visible": "* A\nbody\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-comment",
+      "input": {
+        "text": "* A\none\n  two\n\nthree\n",
+        "point": 4,
+        "keys": "C-SPC M-> M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# one\n#   two\n\n# three\n",
+      "visible": "* A\n# one\n#   two\n\n# three\n",
+      "point": 27,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-uncomment",
+      "input": {
+        "text": "* A\n# one\n#  two\n\n# three\n",
+        "point": 4,
+        "keys": "C-SPC M-> M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\none\n two\n\nthree\n",
+      "visible": "* A\none\n two\n\nthree\n",
+      "point": 20,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-mixed",
+      "input": {
+        "text": "* A\n# one\ntwo\n",
+        "point": 4,
+        "keys": "C-SPC M-> M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# # one\n# two\n",
+      "visible": "* A\n# # one\n# two\n",
+      "point": 18,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-empty-lines",
+      "input": {
+        "text": "* A\none\n\ntwo\n",
+        "point": 4,
+        "keys": "C-SPC M-> M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "comment-empty-lines": true
+        }
+      },
+      "text": "* A\n# one\n# \n# two\n",
+      "visible": "* A\n# one\n# \n# two\n",
+      "point": 19,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-line",
+      "input": {
+        "text": "* A\none\ntwo\n",
+        "point": 4,
+        "keys": "C-x C-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# one\ntwo\n",
+      "visible": "* A\n# one\ntwo\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "comment-line-uncomment",
+      "input": {
+        "text": "* A\n# one\ntwo\n",
+        "point": 4,
+        "keys": "C-x C-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\none\ntwo\n",
+      "visible": "* A\none\ntwo\n",
+      "point": 8,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "src-dwim",
+      "input": {
+        "text": "#+begin_src python\nx = 1\n#+end_src\n",
+        "point": 22,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src python\n  x = 1                           # \n#+end_src\n",
+      "visible": "#+begin_src python\n  x = 1                           # \n#+end_src\n",
+      "point": 55,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "src-region",
+      "input": {
+        "text": "#+begin_src python\nx = 1\ny = 2\n#+end_src\n",
+        "point": 19,
+        "keys": "C-SPC C-n C-e M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "#+begin_src python\n  # x = 1\n  # y = 2\n#+end_src\n",
+      "visible": "#+begin_src python\n  # x = 1\n  # y = 2\n#+end_src\n",
+      "point": 38,
+      "mark": 19,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "hash-in-text",
+      "input": {
+        "text": "* A\nsee # this\n",
+        "point": 8,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n# \nsee # this\n",
+      "visible": "* A\n# \nsee # this\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dwim-c-u-kill",
+      "input": {
+        "text": "* A\n# note\n",
+        "point": 6,
+        "keys": "C-u M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n",
+      "visible": "* A\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "\n# note"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "auto-fill-comment",
+      "input": {
+        "text": "* A\n# aaa bbb ccc ddd eee fff",
+        "point": 30,
+        "keys": "SPC g g g SPC h h h",
+        "modes": [
+          "org-mode",
+          "auto-fill-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "globals": {
+          "fill-column": 20
+        }
+      },
+      "text": "* A\n# aaa bbb ccc ddd\n# eee fff ggg hhh",
+      "visible": "* A\n# aaa bbb ccc ddd\n# eee fff ggg hhh",
+      "point": 39,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dwim-indented-comment",
+      "input": {
+        "text": "* A\n  # note\n",
+        "point": 8,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n\t\t\t\t  # note\n",
+      "visible": "* A\n\t\t\t\t  # note\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dwim-twice-in-item",
+      "input": {
+        "text": "- a\n\n- b\n",
+        "point": 0,
+        "keys": "C-n M-; M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n\t\t\t\t  # \n- b\n",
+      "visible": "- a\n\t\t\t\t  # \n- b\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "kill-indented-comment",
+      "input": {
+        "text": "* A\n  # note\n",
+        "point": 4,
+        "keys": "C-u M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A# note\n",
+      "visible": "* A# note\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "\n  "
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "kill-tab-comment",
+      "input": {
+        "text": "* A\n\t# note\n",
+        "point": 4,
+        "keys": "C-u M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A# note\n",
+      "visible": "* A# note\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "\n\t"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-tab",
+      "input": {
+        "text": "* A\n\tone\n  two\n",
+        "point": 4,
+        "keys": "C-SPC C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n  # \tone\n  # two\n",
+      "visible": "* A\n  # \tone\n  # two\n",
+      "point": 20,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "read-only",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 4,
+        "keys": "C-x C-q M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\nbody\n",
+      "visible": "* A\nbody\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>"
+    },
+    {
+      "name": "elisp-c-u-blank",
+      "input": {
+        "text": ";; x\n\n",
+        "point": 0,
+        "keys": "C-n C-u M-;",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ";; x\n;;;; \n",
+      "visible": ";; x\n;;;; \n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "js-comment-after-code",
+      "input": {
+        "text": "x = 1; // c\n",
+        "point": 0,
+        "keys": "M-;",
+        "modes": [
+          "js-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "x = 1;\t\t\t\t// c\n",
+      "visible": "x = 1;\t\t\t\t// c\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "python-doubled",
+      "input": {
+        "text": "x = 1  ## c\n",
+        "point": 0,
+        "keys": "M-;",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "x = 1 ## c\n",
+      "visible": "x = 1 ## c\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,243 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-blank-line",
+  "text": "* A\n\nbody\n",
+  "keys": "M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-text-line",
+  "text": "* A\nbody\n",
+  "keys": "M-;",
+  "point": 6
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-indented-text",
+  "text": "* A\n  body\n",
+  "keys": "M-;",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-on-comment",
+  "text": "* A\n# note\n",
+  "keys": "M-;",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-heading",
+  "text": "* A\nbody\n",
+  "keys": "M-;",
+  "point": 1
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-comment-heading",
+  "text": "* COMMENT A\nbody\n",
+  "keys": "M-;",
+  "point": 1
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-comment",
+  "text": "* A\none\n  two\n\nthree\n",
+  "keys": "C-SPC M-> M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-uncomment",
+  "text": "* A\n# one\n#  two\n\n# three\n",
+  "keys": "C-SPC M-> M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-mixed",
+  "text": "* A\n# one\ntwo\n",
+  "keys": "C-SPC M-> M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-empty-lines",
+  "text": "* A\none\n\ntwo\n",
+  "keys": "C-SPC M-> M-;",
+  "point": 4,
+  "globals": {
+   "comment-empty-lines": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "comment-line",
+  "text": "* A\none\ntwo\n",
+  "keys": "C-x C-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "comment-line-uncomment",
+  "text": "* A\n# one\ntwo\n",
+  "keys": "C-x C-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "src-dwim",
+  "text": "#+begin_src python\nx = 1\n#+end_src\n",
+  "keys": "M-;",
+  "point": 22
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "src-region",
+  "text": "#+begin_src python\nx = 1\ny = 2\n#+end_src\n",
+  "keys": "C-SPC C-n C-e M-;",
+  "point": 19
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "hash-in-text",
+  "text": "* A\nsee # this\n",
+  "keys": "M-;",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-c-u-kill",
+  "text": "* A\n# note\n",
+  "keys": "C-u M-;",
+  "point": 6
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "auto-fill-comment",
+  "text": "* A\n# aaa bbb ccc ddd eee fff",
+  "keys": "SPC g g g SPC h h h",
+  "point": 30,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-indented-comment",
+  "text": "* A\n  # note\n",
+  "keys": "M-;",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-twice-in-item",
+  "text": "- a\n\n- b\n",
+  "keys": "C-n M-; M-;",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "kill-indented-comment",
+  "text": "* A\n  # note\n",
+  "keys": "C-u M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "kill-tab-comment",
+  "text": "* A\n\t# note\n",
+  "keys": "C-u M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-tab",
+  "text": "* A\n\tone\n  two\n",
+  "keys": "C-SPC C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "read-only",
+  "text": "* A\nbody\n",
+  "keys": "C-x C-q M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "emacs-lisp-mode"
+  ],
+  "name": "elisp-c-u-blank",
+  "text": ";; x\n\n",
+  "keys": "C-n C-u M-;",
+  "point": 0
+ },
+ {
+  "modes": [
+   "js-mode"
+  ],
+  "name": "js-comment-after-code",
+  "text": "x = 1; // c\n",
+  "keys": "M-;",
+  "point": 0
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "python-doubled",
+  "text": "x = 1  ## c\n",
+  "keys": "M-;",
+  "point": 0
+ }
+]

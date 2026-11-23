@@ -34,6 +34,12 @@ e8.defineVariable({
   value: "[-\u2013!|#%;>*\u00b7\u2022\u2023\u2043\u25e6 \t]*",
 });
 e8.defineVariable({
+  name: "adaptive-fill-function",
+  doc: "A function giving the fill prefix of the line at point, or nil to try adaptive-fill-regexp, as Org gives one.",
+  value: null,
+  local: true,
+});
+e8.defineVariable({
   name: "adaptive-fill-first-line-regexp",
   doc: "What the prefix of a paragraph's only line must look like for the lines filling makes to take it too; otherwise they take as many spaces.",
   value: "\\`[ \t]*\\'",
@@ -123,11 +129,20 @@ function currentJustification(): string | undefined {
 
 /** The adaptive prefix at point, as fill-match-adaptive-prefix: none if as long as the fill column. */
 function matchAdaptivePrefix(): string | undefined {
-  const re = e8.variable("adaptive-fill-regexp");
-  if (typeof re !== "string") return undefined;
-  const end = lookingAt(re, e8.point());
-  if (end === undefined) return undefined;
-  const str = e8.bufferText(e8.point(), end);
+  // The mode's function first, as Org's, then the regexp.
+  const fn = e8.variable("adaptive-fill-function");
+  let str: string | undefined;
+  if (truthy(fn ?? null)) {
+    const got = e8.saveExcursion(() => e8.funcall(fn as string));
+    if (typeof got === "string") str = got;
+  }
+  if (str === undefined) {
+    const re = e8.variable("adaptive-fill-regexp");
+    if (typeof re !== "string") return undefined;
+    const end = lookingAt(re, e8.point());
+    if (end === undefined) return undefined;
+    str = e8.bufferText(e8.point(), end);
+  }
   return str.length >= fillColumn() ? undefined : str;
 }
 
