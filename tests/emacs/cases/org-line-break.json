@@ -288,5 +288,182 @@
   "globals": {
    "fill-column": 20
   }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-property",
+  "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n:END:\n",
+  "keys": "RET",
+  "point": 46,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "cj-property",
+  "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n:END:\n",
+  "keys": "C-j",
+  "point": 46,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-property-mid",
+  "text": "* A\n:PROPERTIES:\n:FOO: aaa bbb ccc ddd eee fff\n:END:\n",
+  "keys": "RET",
+  "point": 42,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-inhibit",
+  "text": "aaa bbb ccc ddd eee fff ggg\n",
+  "keys": "RET",
+  "point": 27,
+  "globals": {
+   "fill-column": 20
+  },
+  "vars": {
+   "inhibit-auto-fill": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-only-comments",
+  "text": "aaa bbb ccc ddd eee fff ggg\n",
+  "keys": "RET",
+  "point": 27,
+  "globals": {
+   "fill-column": 20
+  },
+  "vars": {
+   "comment-auto-fill-only-comments": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "ret-only-comments-org-comment",
+  "text": "# aaa bbb ccc ddd eee fff\n",
+  "keys": "RET",
+  "point": 25,
+  "globals": {
+   "fill-column": 20
+  },
+  "vars": {
+   "comment-auto-fill-only-comments": true
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "cu-cj",
+  "text": "aaa bbb ccc ddd eee fff ggg\n",
+  "keys": "C-u C-j",
+  "point": 27,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "m3-cj",
+  "text": "aaa bbb ccc ddd eee fff ggg\n",
+  "keys": "M-3 C-j",
+  "point": 27,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "text-mode",
+   "auto-fill-mode"
+  ],
+  "name": "spc-inhibit-text",
+  "text": "aaa bbb ccc ddd eee fff",
+  "keys": "SPC g g g",
+  "point": 23,
+  "globals": {
+   "fill-column": 20
+  },
+  "vars": {
+   "inhibit-auto-fill": true
+  }
+ },
+ {
+  "modes": [
+   "text-mode",
+   "auto-fill-mode"
+  ],
+  "name": "spc-only-comments-text",
+  "text": "aaa bbb ccc ddd eee fff",
+  "keys": "SPC g g g",
+  "point": 23,
+  "globals": {
+   "fill-column": 20
+  },
+  "vars": {
+   "comment-auto-fill-only-comments": true
+  }
+ },
+ {
+  "modes": [
+   "python-mode",
+   "auto-fill-mode"
+  ],
+  "name": "spc-only-comments-python",
+  "text": "# aaa bbb ccc ddd eee",
+  "keys": "SPC g g g",
+  "point": 21,
+  "globals": {
+   "fill-column": 20
+  },
+  "vars": {
+   "comment-auto-fill-only-comments": true
+  }
+ },
+ {
+  "modes": [
+   "python-mode",
+   "auto-fill-mode"
+  ],
+  "name": "spc-only-comments-python-code",
+  "text": "xx = aaa + bbb + ccc + ddd",
+  "keys": "SPC g g g",
+  "point": 26,
+  "globals": {
+   "fill-column": 20
+  },
+  "vars": {
+   "comment-auto-fill-only-comments": true
+  }
  }
 ]

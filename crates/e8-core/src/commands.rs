@@ -998,6 +998,25 @@ fn scroll_step(ed: &Editor) -> usize {
     ed.viewport_height().saturating_sub(2).max(1)
 }
 
+/// Whether Auto Fill may fill here, as Emacs's internal-auto-fill decides:
+/// not with `inhibit-auto-fill`, nor outside a comment when
+/// `comment-auto-fill-only-comments` is on in a mode with comments.
+pub fn auto_fill_allowed(ed: &mut Editor) -> bool {
+    if ed.variable("inhibit-auto-fill").is_some_and(|v| v.is_true()) {
+        return false;
+    }
+    let only_comments = ed.variable("comment-auto-fill-only-comments").is_some_and(|v| v.is_true())
+        && matches!(ed.variable("comment-start"), Some(Value::Str(_)));
+    if only_comments {
+        let p = ed.buffer().point();
+        if ed.syntax_propertize(p).is_err() {
+            return true;
+        }
+        return ed.scanner().ppss(p).in_comment.is_some();
+    }
+    true
+}
+
 /// What Emacs's self-insert does after inserting a character: a space or
 /// newline runs `auto-fill-function`, on the line it ends for a newline,
 /// then `post-self-insert-hook` runs.
@@ -1012,7 +1031,9 @@ fn after_self_insert(ed: &mut Editor, c: char, fill: bool) -> Result<()> {
             ed.buffer_mut().set_point(p - 1);
         }
         let tick = ed.buffer().modified_tick();
-        ed.call(&function, Vec::new())?;
+        if auto_fill_allowed(ed) {
+            ed.call(&function, Vec::new())?;
+        }
         // As Emacs's self-insert-command, a character that filled the line
         // ends the run of typing that undo takes as one step.
         if ed.buffer().modified_tick() != tick {
