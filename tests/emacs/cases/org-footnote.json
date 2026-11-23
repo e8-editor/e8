@@ -530,5 +530,1593 @@
     "point": 11,
     "keys": "C-c C-x f",
     "message": true
+  },
+  {
+    "name": "rv-bold-in-anon",
+    "text": "* H\nText[fn::an *bold* note] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 19,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-bold-in-anon-cc",
+    "text": "* H\nText[fn::an *bold* note] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 19,
+    "keys": "C-c C-c",
+    "message": true
+  },
+  {
+    "name": "rv-bold-in-anon-co",
+    "text": "* H\nText[fn::an *bold* note] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 19,
+    "keys": "C-c C-o",
+    "message": true
+  },
+  {
+    "name": "rv-link-in-anon",
+    "text": "* H\nText[fn::see [[https://x.org][xy]] z] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 35,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-ref-in-inline",
+    "text": "* H\nA[fn:a:outer [fn:b] text] b.\n\n[fn:b] Bee.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-inline-multiline-goto",
+    "text": "* H\nText[fn:x:spans\ntwo lines] here[fn:x].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 38,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-inline-multiline-on-2nd-line",
+    "text": "* H\nText[fn::spans\ntwo lines] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 22,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-inline-in-item-multiline",
+    "text": "- item[fn::spans\n  two] end\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-inline-in-item-2nd-line",
+    "text": "- item\n  more[fn::x] end\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 16,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-unbalanced-inline",
+    "text": "* H\nText[fn::a [b note here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-ref-at-eob",
+    "text": "* H\nA[fn:1]",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "no"
+    ]
+  },
+  {
+    "name": "rv-caption",
+    "text": "#+CAPTION: A table[fn:1]\n| a |\n\n[fn:1] Def.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 21,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-title-keyword",
+    "text": "#+TITLE: Doc[fn:1]\n\n[fn:1] Def.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 15,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-name-keyword-new",
+    "text": "#+NAME: foo\nPara.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-src-blank-line",
+    "text": "* H\n#+begin_src emacs-lisp\n  \n#+end_src\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 29,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-table-eol",
+    "text": "| a |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 5,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-table-before-bar",
+    "text": "| a |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-table-rule",
+    "text": "| a |\n|---|\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-heading-link",
+    "text": "* See [[https://x.org][link]] here\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 25,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-heading-todo-word",
+    "text": "* TODO [#A] Title\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-heading-todo-title",
+    "text": "* TODO [#A] Title\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-heading-comment-word",
+    "text": "* COMMENT Title\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 5,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-heading-ref-goto",
+    "text": "* Title[fn:1] :tag:\n\n[fn:1] Def.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-comment-line",
+    "text": "* H\n# a comment\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-comment-ref",
+    "text": "* H\n# see [fn:1]\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-verbatim-ref",
+    "text": "* H\nSee =[fn:1]= here.\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-quote-ref",
+    "text": "* H\n#+begin_quote\nQ[fn:1] text.\n#+end_quote\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 22,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-def-in-quote",
+    "text": "* H\nA[fn:1].\n#+begin_quote\n[fn:1] In quote.\n#+end_quote\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-drawer-ref",
+    "text": "* H\n:MYDRAWER:\nIn drawer[fn:1].\n:END:\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 27,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-def-in-drawer",
+    "text": "* H\nA[fn:1].\n:MYDRAWER:\n[fn:1] In drawer.\n:END:\nAfter.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-property-ref",
+    "text": "* H\n:PROPERTIES:\n:X: a[fn:1]\n:END:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 25,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-example-ref",
+    "text": "#+begin_example\nx[fn:1]\n#+end_example\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-item-tag",
+    "text": "- tag[fn:1] :: desc\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-item-checkbox",
+    "text": "- [ ] item\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 3,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-verse-ref",
+    "text": "#+begin_verse\nV[fn:1] line\n#+end_verse\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-anon-at-bol",
+    "text": "* H\n[fn::anon] text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-def-affiliated-keyword-action",
+    "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 22,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-def-affiliated-delete",
+    "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "rv-def-one-blank-sort",
+    "text": "* H\nA[fn:1] b[fn:2].\n\n[fn:2] Two.\n\nStill two.\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-def-eob-no-newline-sort",
+    "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:1] One.\n\n[fn:2] Two.",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-def-eob-no-newline-delete",
+    "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:1] One.\n\n[fn:2] Two.",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "rv-def-with-list-table-sort",
+    "text": "* H\nA[fn:1] b[fn:2].\n\n[fn:2] Two:\n- x\n- y\n\n| t |\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-several-defs-delete",
+    "text": "* H\nA[fn:1].\n\n[fn:1] First.\n\n[fn:1] Second.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "rv-several-defs-goto",
+    "text": "* H\nA[fn:1].\n\n[fn:1] First.\n\n[fn:1] Second.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-several-defs-sort",
+    "text": "* H\nA[fn:1].\n\n[fn:1] First.\n\n[fn:1] Second.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-def-empty-contents-back",
+    "text": "* H\nA[fn:1].\n\n[fn:1]\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-def-contents-next-line-back",
+    "text": "* H\nA[fn:1].\n\n[fn:1]\nOn the next line.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-def-spaces-after-label-co",
+    "text": "* H\nA[fn:1].\n\n[fn:1]   Text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-c C-o",
+    "message": true
+  },
+  {
+    "name": "rv-def-spaces-after-label-cc",
+    "text": "* H\nA[fn:1].\n\n[fn:1]   Text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-c C-c",
+    "message": true
+  },
+  {
+    "name": "rv-def-blank-after-delete",
+    "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\n* Next\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 26,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "rv-def-in-src-not-def",
+    "text": "* H\nA[fn:1].\n#+begin_src emacs-lisp\n[fn:1] x\n#+end_src\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "no"
+    ]
+  },
+  {
+    "name": "rv-normalize-nested",
+    "text": "* H\nA[fn:x] b.\n\n* Footnotes\n\n[fn:x] X has [fn:y] nested.\n\n[fn:y] Y def.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "rv-normalize-inline-in-def",
+    "text": "* H\nA[fn:x].\n\n[fn:x] X with [fn::inline] inside.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "rv-normalize-section-nil",
+    "text": "* One\nA[fn:x] b[fn::anon].\n* Two\nC[fn:y].\n\n[fn:x] X.\n[fn:y] Y.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 26,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ],
+    "globals": {
+      "org-footnote-section": false
+    }
+  },
+  {
+    "name": "rv-normalize-fill",
+    "text": "* H\nA long paragraph with an inline[fn::that is a fairly long note to remove] and more words after it to fill nicely.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 117,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ],
+    "globals": {
+      "org-footnote-fill-after-inline-note-extraction": true
+    }
+  },
+  {
+    "name": "rv-normalize-nested-inline",
+    "text": "* H\nA[fn:a:outer [fn:b] text] c.\n\n[fn:b] Bee.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 32,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "rv-normalize-unreferenced",
+    "text": "* H\nA[fn:b].\n\n[fn:a] Unused.\n\n[fn:b] Bee.\n\n[fn:3] Three.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "rv-sort-section-nil",
+    "text": "* One\nA[fn:2] b[fn:1].\n* Two\nC[fn:3].\n* Footnotes\n\n[fn:1] One.\n[fn:2] Two.\n[fn:3] Three.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 22,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ],
+    "globals": {
+      "org-footnote-section": false
+    }
+  },
+  {
+    "name": "rv-sort-section-nil-heading-ref",
+    "text": "* One[fn:1]\nText.\n* Two\nx\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 17,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ],
+    "globals": {
+      "org-footnote-section": false
+    }
+  },
+  {
+    "name": "rv-renumber-mixed",
+    "text": "* H\nA[fn:x] b[fn:3] c[fn:1] d[fn:3].\n\n[fn:1] One.\n[fn:3] Three.\n[fn:x] Ex.\n[fn:7] Seven.\n[fn:1] Dup.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 36,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "r"
+    ]
+  },
+  {
+    "name": "rv-sort-unreferenced-order",
+    "text": "* H\nA[fn:b].\n\n* Footnotes\n\n[fn:z] Zed.\n\n[fn:b] Bee.\n\n[fn:a] Ay.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-sort-missing-def",
+    "text": "* H\nA[fn:b] c[fn:q].\n\n* Footnotes\n\n[fn:b] Bee.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-sort-inline-left",
+    "text": "* H\nA[fn:b] c[fn:i:inline].\n\n* Footnotes\n\n[fn:b] Bee.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 27,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-menu-ret",
+    "text": "* H\nA[fn:1].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "\r"
+    ]
+  },
+  {
+    "name": "rv-menu-space",
+    "text": "* H\nA[fn:1].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      " "
+    ]
+  },
+  {
+    "name": "rv-auto-sort-new",
+    "text": "* H\nA[fn:2] b.\n\n* Footnotes\n\n[fn:2] Two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-adjust": "'sort"
+    }
+  },
+  {
+    "name": "rv-auto-renumber-new",
+    "text": "* H\nA[fn:2] b.\n\n* Footnotes\n\n[fn:2] Two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-adjust": "'renumber"
+    }
+  },
+  {
+    "name": "rv-auto-t-new-before",
+    "text": "* H\nA b[fn:1].\n\n* Footnotes\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 5,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-adjust": true
+    }
+  },
+  {
+    "name": "rv-auto-t-delete",
+    "text": "* H\nA[fn:1] b[fn:2] c[fn:3].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Three.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 16,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ],
+    "globals": {
+      "org-footnote-auto-adjust": true
+    }
+  },
+  {
+    "name": "rv-auto-t-inline",
+    "text": "* H\nA[fn:2] b.\n\n* Footnotes\n\n[fn:2] Two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-adjust": true,
+      "org-footnote-define-inline": true
+    }
+  },
+  {
+    "name": "rv-label-fn-prefix",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "fn:5"
+    ],
+    "globals": {
+      "org-footnote-auto-label": false
+    }
+  },
+  {
+    "name": "rv-label-spaces",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "  "
+    ],
+    "globals": {
+      "org-footnote-auto-label": false
+    }
+  },
+  {
+    "name": "rv-label-plain",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "abc"
+    ],
+    "globals": {
+      "org-footnote-auto-label": "'plain"
+    }
+  },
+  {
+    "name": "rv-label-existing-def-only",
+    "text": "* H\nSome text.\n\n[fn:zz] Orphan.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "zz"
+    ],
+    "globals": {
+      "org-footnote-auto-label": false
+    }
+  },
+  {
+    "name": "rv-unique-label-skips-defs",
+    "text": "* H\nSome text.\n\n[fn:1] Orphan.\n[fn:2] Other.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-section-case",
+    "text": "* H\nA[fn:1] b.\n\n* FOOTNOTES\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-section-case-sort",
+    "text": "* H\nA[fn:1].\n\n* FOOTNOTES\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-sections-several-sort",
+    "text": "* H\nA[fn:1] b[fn:2].\n* Footnotes\n[fn:1] One.\n* Mid\ntext\n* Footnotes\n[fn:2] Two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-section-subheading-sort",
+    "text": "* H\nA[fn:1].\n* Footnotes\n[fn:1] One.\n** Sub\nsub text\n* After\nx\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-section-intro-new",
+    "text": "* H\nA b.\n\n* Footnotes\nSome intro.\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-section-level2-sort",
+    "text": "* H\nA[fn:1].\n** Footnotes\n[fn:1] One.\n* Next\nn\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-section-level2-new",
+    "text": "* H\nA b.\n** Footnotes\n[fn:1] One.\n* Next\nn\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-section-tagged-new",
+    "text": "* H\nA b.\n\n* Footnotes :noexport:\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-no-final-newline-new",
+    "text": "* H\nText.",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-no-heading-new",
+    "text": "Just text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-local-vars-new",
+    "text": "* H\nA[fn:1] b.\n\n[fn:1] One.\n\n# Local Variables:\n# x: 1\n# End:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-local-vars-sort",
+    "text": "* H\nA[fn:2] b[fn:1].\n\n[fn:1] One.\n\n[fn:2] Two.\n\n# Local Variables:\n# x: 1\n# End:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-local-vars-section-nil",
+    "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n# End:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-section": false
+    }
+  },
+  {
+    "name": "rv-narrow-goto-outside",
+    "text": "* A\nText[fn:1].\n* B\nmore\n\n* Footnotes\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-x n s C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-narrow-back-outside",
+    "text": "* A\nText[fn:1].\n* B\nmore\n\n* Footnotes\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 43,
+    "keys": "C-x n s C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-narrow-sort",
+    "text": "* A\nText[fn:2] t[fn:1].\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 23,
+    "keys": "C-x n s C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "rv-after-ref-punct",
+    "text": "* H\nA[fn:1].\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-after-ref-eol",
+    "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-after-ref-eol-cc",
+    "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-c",
+    "message": true
+  },
+  {
+    "name": "rv-after-ref-eol-co",
+    "text": "* H\nA[fn:1]\nB.\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-o",
+    "message": true
+  },
+  {
+    "name": "rv-after-ref-heading-eol",
+    "text": "* T[fn:1]\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-after-anon-punct",
+    "text": "* H\nA[fn::note].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 15,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-after-ref-no-def",
+    "text": "* H\nA[fn:1].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "no"
+    ]
+  },
+  {
+    "name": "rv-after-ref-delete",
+    "text": "* H\nA[fn:1].\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "rv-after-ref-before-ref",
+    "text": "* H\nA[fn:1][fn:2].\n\n[fn:1] D.\n\n[fn:2] E.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-anon-contents",
+    "text": "* H\nText[fn::an anon note] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-inline-labelled-contents",
+    "text": "* H\nText[fn:x:inline text] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 23,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-def-text-cc",
+    "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 23,
+    "keys": "C-c C-c",
+    "message": true
+  },
+  {
+    "name": "rv-def-text-co",
+    "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 23,
+    "keys": "C-c C-o",
+    "message": true
+  },
+  {
+    "name": "rv-def-label-next-line-co",
+    "text": "* H\nA[fn:1].\n\n[fn:1]\nText.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "C-c C-o",
+    "message": true
+  },
+  {
+    "name": "rv-example-trailing-spaces-eob",
+    "text": "* H\n#+begin_example\nx\n#+end_example  ",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 36,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-comment-trailing-spaces-eob",
+    "text": "* H\n# comment  ",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-heading-trailing-spaces-eob",
+    "text": "* H  ",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-sort-section-nil-nested",
+    "text": "* One\nA[fn:1].\n* Two\nB.\n\n[fn:1] One has [fn:2].\n\n[fn:2] Two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ],
+    "globals": {
+      "org-footnote-section": false
+    }
+  },
+  {
+    "name": "rv-renumber-nested",
+    "text": "* H\nA[fn:5] b[fn:3].\n\n[fn:5] Five has [fn:9].\n\n[fn:3] Three.\n\n[fn:9] Nine.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "r"
+    ]
+  },
+  {
+    "name": "rv-normalize-same-inline-label",
+    "text": "* H\nA[fn:x:def] b[fn:x].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 24,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "rv-delete-inline-and-ref",
+    "text": "* H\nA[fn:x:inline] b[fn:x].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 23,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "rv-section-last-no-newline-new",
+    "text": "* H\nA b.\n* Footnotes",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-section-empty-before-next-new",
+    "text": "* H\nA b.\n* Footnotes\n* Next\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-local-vars-no-end-new",
+    "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-local-vars-text-after-new",
+    "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n# End:\nTrailing text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-local-vars-error-unmodified",
+    "text": "* H\nText.\n\n# Local Variables:\n# x: 1\n# End:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 6,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "rv-local-vars-new-undo",
+    "text": "* H\nA b.\n\n# Local Variables:\n# x: 1\n# End:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f C-/",
+    "message": true
+  },
+  {
+    "name": "rv-startup-fnlocal",
+    "text": "#+STARTUP: fnlocal\n* One\nA b.\n* Two\nx\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 28,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-startup-fninline",
+    "text": "#+STARTUP: fninline\n* One\nA b.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 29,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-startup-fnanon",
+    "text": "#+STARTUP: fnanon\n* One\nA b.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 27,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-startup-fnprompt",
+    "text": "#+STARTUP: fnprompt\n* One\nA b.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 29,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "lab"
+    ]
+  },
+  {
+    "name": "rv-new-in-def-after-label",
+    "text": "* H\nA[fn:1].\n\n[fn:1] Text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-new-in-def-after-label-nospace",
+    "text": "* H\nA[fn:1].\n\n[fn:1]Text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "rv-delete-nested-ref-in-def",
+    "text": "* H\nA[fn:1].\n\n[fn:1] One has [fn:2].\n\n[fn:2] Two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 32,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "rv-def-label-goto-prev-before",
+    "text": "* H\nA[fn:1].\n\n[fn:1] One.\n\nB[fn:1].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-def-label-goto-prev-after-only",
+    "text": "* H\n[fn:1] One.\n\nB[fn:1] c.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-heading-spaces-before-tags-cc",
+    "text": "* Title[fn:1]   :tag:\n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 15,
+    "keys": "C-c C-c",
+    "message": true,
+    "answers": [
+      ":tag:x:"
+    ]
+  },
+  {
+    "name": "rv-def-name-keyword-cc",
+    "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 22,
+    "keys": "C-c C-c",
+    "message": true
+  },
+  {
+    "name": "rv-def-name-keyword-co",
+    "text": "* H\nA[fn:1].\n\n#+NAME: n\n[fn:1] D.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 22,
+    "keys": "C-c C-o",
+    "message": true
+  },
+  {
+    "name": "rv-normalize-unref-label-in-text",
+    "text": "* H\nA[fn:b].\n\n[fn:a] Unused\n[fn:b] Bee.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "rv-inline-ref-in-table",
+    "text": "| a[fn::x] | b |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 6,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "rv-ts-in-anon-co",
+    "text": "* H\nA[fn::see <2026-11-23 Mon>] b.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 24,
+    "keys": "C-c C-o",
+    "message": true
+  },
+  {
+    "name": "rv-auto-sort-label-missing",
+    "text": "* H\nA b.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-adjust": "'sort",
+      "org-footnote-define-inline": true
+    }
   }
 ]

@@ -7657,7 +7657,8 @@ function openAtPoint_(): void {
     return;
   }
   // On a footnote reference, or a definition's label, its footnote, as Org's footnote context.
-  if (truthy(e8.funcall("org-footnote--context") ?? null)) {
+  const footnote = e8.funcall("org-footnote--open-context");
+  if (footnote === "reference" || footnote === "definition") {
     e8.call("org-footnote-action");
     return;
   }
@@ -7680,6 +7681,8 @@ function openAtPoint_(): void {
     }
     if (afterTimestamp(p0)) e8.userError("No link found");
   }
+  // Elsewhere in a footnote definition there is nothing to follow, as Org's context there is the definition.
+  if (footnote === "text") e8.userError("No link found");
   const all = headings();
   const i = headingIndex(all, lineAt());
   if (i === undefined) e8.userError("No link found");
@@ -8150,6 +8153,25 @@ function takeLocalVariables(): e8.PropertizedString | undefined {
     e8.letBind({ "buffer-undo-list": true }, () => e8.deleteRegion(at, max));
     return taken;
   });
+}
+
+/**
+ * Runs `f` with a Local Variables list near the buffer's end set aside, put
+ * back at the end afterwards, the buffer left unmodified if `f` changed
+ * nothing, as org-preserve-local-variables does.
+ */
+export function preserveLocalVariables<T>(f: () => T): T {
+  const taken = takeLocalVariables();
+  const tick = e8.bufferModifiedTick();
+  try {
+    return f();
+  } finally {
+    if (taken !== undefined) {
+      const modified = tick < e8.bufferModifiedTick();
+      putBackLocalVariables(taken);
+      if (!modified) e8.restoreBufferModifiedP(false);
+    }
+  }
 }
 
 /** Puts back what takeLocalVariables took, at the widened buffer's end after a newline, as org-preserve-local-variables does. */

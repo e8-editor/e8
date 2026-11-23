@@ -7,7 +7,7 @@
 // heading, the next definition or two blank lines, and an inline
 // definition to the bracket closing its own.
 
-import { headings, isHeadingLine, markRingPush, parseHeading } from "org";
+import { headings, isHeadingLine, markRingPush, parseHeading, preserveLocalVariables } from "org";
 import { AFFILIATED, elementAt } from "org-element";
 import { showContext } from "org-fold";
 import { endOfMetaData } from "org-list";
@@ -79,6 +79,42 @@ function textFrom(from: number, to: number): { text: string; pos: (i: number) =>
   return { text, pos: (i: number) => from + charCount(text.slice(0, i)) };
 }
 
+/** Whether a position is inside a link, or inside code or verbatim text, on its line, where no reference can be. */
+function inLinkOrCode(line: number, pos: number): boolean {
+  const text = e8.lineText(line);
+  const at = pos - e8.lineStart(line);
+  const inside = (start: number, stop: number) => at > charCount(text.slice(0, start)) && at < charCount(text.slice(0, stop));
+  for (const m of allMatches(/\[\[(?:[^[\]]|\\.)+\](?:\[[^\n]*?\])?\]/g, text)) {
+    if (inside(m.index ?? 0, (m.index ?? 0) + m[0].length)) return true;
+  }
+  for (const m of allMatches(/(^|[\s({'"-])([=~])(\S|\S.*?\S)\2(?=[\s.,;:!?'")}\[-]|$)/g, text)) {
+    if (inside((m.index ?? 0) + m[1].length, (m.index ?? 0) + m[0].length)) return true;
+  }
+  return false;
+}
+
+/**
+ * The kind of object of its own a position is in inside an inline
+ * definition, emphasis, a link or a timestamp, where Org's context is that
+ * object rather than the footnote.
+ */
+function innerObject(line: number, pos: number): "markup" | "link" | "timestamp" | undefined {
+  const text = e8.lineText(line);
+  const at = pos - e8.lineStart(line);
+  const within = (start: number, stop: number) => at >= charCount(text.slice(0, start)) && at < charCount(text.slice(0, stop));
+  const res: ["markup" | "link" | "timestamp", RegExp][] = [
+    ["link", /()\[\[(?:[^[\]]|\\.)+\](?:\[[^\n]*?\])?\]/g],
+    ["timestamp", /()[[<]\d{4}-\d{2}-\d{2}[^\]>\n]*[\]>]/g],
+    ["markup", /(^|[\s({'"-])([*/_+=~])(\S|\S.*?\S)\2(?=[\s.,;:!?'")}\[\]-]|$)/g],
+  ];
+  for (const [kind, re] of res) {
+    for (const m of allMatches(re, text)) {
+      if (within((m.index ?? 0) + m[1].length, (m.index ?? 0) + m[0].length)) return kind;
+    }
+  }
+  return undefined;
+}
+
 /** Where a heading's title ends, before its tags, for objects on its line. */
 function titleBounds(line: number): [number, number] | undefined {
   const h = parseHeading(line);
@@ -106,19 +142,12 @@ function objectsLimit(pos: number): number | undefined {
     if (!e) return undefined;
     // An item's bullet and checkbox hold no objects.
     if (e.type === "item" && pos - e8.lineStart(line) < charCount(/^[ \t]*\S+(?:[ \t]+\[[ X-]\])?[ \t]*/.exec(text)?.[0] ?? "")) return undefined;
-    if (e.type === "table" && (/^[ \t]*\|-/.test(text) || pos <= e8.lineStart(line) + charCount(text.slice(0, text.indexOf("|"))))) return undefined;
+    // In a cell: after the row's first bar and before its last.
+    const before = text.slice(0, Math.max(0, pos - e8.lineStart(line)));
+    if (e.type === "table" && (/^[ \t]*\|-/.test(text) || !before.includes("|") || !text.slice(before.length).includes("|"))) return undefined;
     limit = e.type === "item" || e.type === "table" ? e8.lineEnd(line) : (e.contentsEnd ?? e.end);
   }
-  // Not in a link, nor in code or verbatim text.
-  const at = pos - e8.lineStart(line);
-  const inside = (start: number, stop: number) => at > charCount(text.slice(0, start)) && at < charCount(text.slice(0, stop));
-  for (const m of allMatches(/\[\[(?:[^[\]]|\\.)+\](?:\[[^\n]*?\])?\]/g, text)) {
-    if (inside(m.index ?? 0, (m.index ?? 0) + m[0].length)) return undefined;
-  }
-  for (const m of allMatches(/(^|[\s({'"-])([=~])(\S|\S.*?\S)\2(?=[\s.,;:!?'")}\[-]|$)/g, text)) {
-    if (inside((m.index ?? 0) + m[1].length, (m.index ?? 0) + m[0].length)) return undefined;
-  }
-  return limit;
+  return inLinkOrCode(line, pos) ? undefined : limit;
 }
 
 /**
@@ -161,7 +190,7 @@ function referenceStartingAt(s: number): Reference | undefined {
  * The innermost reference whose object holds a position, its spaces after
  * it included, as org-element-context finds one.
  */
-function referenceObjectAt(p: number): Reference | undefined {
+function referenceObjectAt(p: number, through: ("markup" | "link" | "timestamp")[] = []): Reference | undefined {
   const line = lineAt(p);
   const head = isHeadingLine(e8.lineText(line));
   let e = head ? undefined : elementAt(p);
@@ -170,7 +199,15 @@ function referenceObjectAt(p: number): Reference | undefined {
   const { text, pos } = textFrom(from, Math.min(e8.pointMax(), p + 4));
   for (let i = text.lastIndexOf("[fn:"); i >= 0; i = i === 0 ? -1 : text.lastIndexOf("[fn:", i - 1)) {
     const r = referenceStartingAt(pos(i));
-    if (r && r.begin <= p && p < r.objectEnd) return r;
+    // Just after one with no space after it counts too, as org-element-context finds the object ending there.
+    if (!r || r.begin > p || p > r.objectEnd || (p === r.objectEnd && r.objectEnd !== r.end)) continue;
+    // Not on an object of its own in an inline definition, unless the
+    // caller looks up through it, as C-c C-c's and C-c C-o's lineages do.
+    if (r.inline && p >= r.inline.begin && p < r.inline.end) {
+      const inner = innerObject(lineAt(p), p);
+      if (inner !== undefined && !through.includes(inner)) return undefined;
+    }
+    return r;
   }
   return undefined;
 }
@@ -188,14 +225,14 @@ function sectionEnd(line: number): number {
 }
 
 /** The definition whose [fn:label] line is LINE, as org-element-footnote-definition-parser reads it, if one starts there. */
-function definitionStartingAt(line: number): Definition | undefined {
+function definitionStartingAt(line: number, sectionLimit?: number): Definition | undefined {
   const text = e8.lineText(line);
   const m = DEFINITION.exec(text);
   if (!m) return undefined;
   // Not inside a block or the like, where the line is the block's text.
   const e = elementAt(e8.lineStart(line));
   if (e && e.type !== "paragraph") return undefined;
-  let limit = sectionEnd(line);
+  let limit = sectionLimit ?? sectionEnd(line);
   for (let parent = e?.parent; parent; parent = parent.parent) {
     if (parent.contentsEnd !== undefined && parent.type !== "section" && parent.type !== "org-data") limit = Math.min(limit, parent.contentsEnd);
   }
@@ -245,6 +282,13 @@ function afterBlankBack(p: number): number {
 
 /** The definition a position is in, as the footnote-definition element around it. */
 export function definitionAt(p = e8.point()): Definition | undefined {
+  // On affiliated keywords, the definition they belong to below.
+  let below = lineAt(p);
+  while (below < e8.lineCount() - 1 && AFFILIATED.test(e8.lineText(below))) below++;
+  if (below !== lineAt(p) && DEFINITION.test(e8.lineText(below))) {
+    const d = definitionStartingAt(below);
+    if (d && p >= d.begin) return d;
+  }
   for (let l = lineAt(p); l >= 0; l--) {
     const text = e8.lineText(l);
     if (DEFINITION.test(text)) {
@@ -259,7 +303,8 @@ export function definitionAt(p = e8.point()): Definition | undefined {
 /** Whether point is on a definition's label, where Org's context is the definition itself rather than its text. */
 export function definitionLabelAt(p = e8.point()): Definition | undefined {
   const d = definitionAt(p);
-  return d && p >= d.postAffiliated && p < (d.contentsBegin ?? d.end) ? d : undefined;
+  // Its affiliated keywords too, as Org's context there is the definition.
+  return d && p >= d.begin && p < (d.contentsBegin ?? d.end) ? d : undefined;
 }
 
 /** A label without fn:, or undefined for nothing but spaces, as org-footnote-normalize-label. */
@@ -274,22 +319,63 @@ function wide<T>(f: () => T): T {
   return e8.saveExcursion(() => e8.saveRestriction(() => (e8.widen(), f())));
 }
 
-/** Each place [fn: is, from a position, for searching through the buffer. */
+/** Each place [fn: is, from a position, for searching through the buffer, positions counted on from the last, not from the start each time. */
 function fnStarts(from = e8.pointMin(), to = e8.pointMax()): number[] {
-  const { text, pos } = textFrom(from, to);
+  const text = e8.bufferText(from, to);
   const out: number[] = [];
-  for (let i = text.indexOf("[fn:"); i >= 0; i = text.indexOf("[fn:", i + 1)) out.push(pos(i));
+  let [index, position] = [0, from];
+  for (let i = text.indexOf("[fn:"); i >= 0; i = text.indexOf("[fn:", i + 1)) {
+    position += charCount(text.slice(index, i));
+    index = i;
+    out.push(position);
+  }
   return out;
+}
+
+/**
+ * Every definition in the buffer, in order, read in one pass: where each
+ * section ends is worked out once, not for each definition.
+ */
+function allDefinitions(): Definition[] {
+  const count = e8.lineCount();
+  const nextHeading: number[] = new Array(count + 1);
+  nextHeading[count] = e8.pointMax();
+  for (let l = count - 1; l >= 0; l--) nextHeading[l] = l + 1 < count && isHeadingLine(e8.lineText(l + 1)) ? e8.lineStart(l + 1) : nextHeading[l + 1];
+  const out: Definition[] = [];
+  for (let l = 0; l < count; l++) {
+    if (!e8.lineText(l).startsWith("[fn:")) continue;
+    const d = definitionStartingAt(l, nextHeading[l]);
+    if (d) out.push(d);
+  }
+  return out;
+}
+
+/** The definition among DEFS, in order, that holds a position, found by halving. */
+function definitionHolding(defs: Definition[], p: number): Definition | undefined {
+  let [lo, hi] = [0, defs.length - 1];
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (defs[mid].begin > p) hi = mid - 1;
+    else if (defs[mid].end <= p) lo = mid + 1;
+    else return defs[mid];
+  }
+  return undefined;
 }
 
 /** The labels of every reference and definition in the buffer, as org-footnote-all-labels lists them. */
 function allLabels(): string[] {
   return wide(() => {
     const all: string[] = [];
+    const seen = new Set<string>();
+    // The definitions read in one pass, by where their labels start.
+    const definitions = new Map(allDefinitions().map((d) => [d.postAffiliated, d.label]));
     for (const s of fnStarts()) {
       const line = lineAt(s);
-      const label = s === e8.lineStart(line) && DEFINITION.test(e8.lineText(line)) ? definitionStartingAt(line)?.label : referenceStartingAt(s)?.label;
-      if (label !== undefined && !all.includes(label)) all.unshift(label);
+      const label = s === e8.lineStart(line) && DEFINITION.test(e8.lineText(line)) ? definitions.get(s) : referenceStartingAt(s)?.label;
+      if (label !== undefined && !seen.has(label)) {
+        seen.add(label);
+        all.unshift(label);
+      }
     }
     return all;
   });
@@ -374,38 +460,6 @@ function gotoPreviousReference(label: string): void {
   showContext("link-search");
 }
 
-/**
- * Runs `f` with a Local Variables block at the buffer's end set aside and
- * put back after, so what `f` adds at the end goes before it, as
- * org-preserve-local-variables.
- */
-function preservingLocalVariables<T>(f: () => T): T {
-  const kept = e8.saveRestriction(() => {
-    e8.widen();
-    const text = e8.bufferText(e8.pointMin(), e8.pointMax());
-    const m = /(?:^|\n)([ \t]*# +Local Variables:[ \t]*\n(?:.*\n)*?[ \t]*# +End:[ \t]*\n?)[ \t\n]*$/i.exec(text);
-    if (!m) return undefined;
-    const start = e8.pointMin() + charCount(text.slice(0, (m.index ?? 0) + m[0].indexOf(m[1])));
-    const block = e8.bufferText(start, e8.pointMax());
-    e8.deleteRegion(start, e8.pointMax());
-    return block;
-  });
-  try {
-    return f();
-  } finally {
-    if (kept !== undefined) {
-      e8.saveExcursion(() =>
-        e8.saveRestriction(() => {
-          e8.widen();
-          e8.gotoChar(e8.pointMax());
-          if (e8.point() > e8.pointMin() && e8.bufferText(e8.point() - 1, e8.point()) !== "\n") e8.insert("\n");
-          e8.insert(kept);
-        }),
-      );
-    }
-  }
-}
-
 /** Moves back over blank lines to the first of them and says how many there were, as org-back-over-empty-lines. */
 function backOverEmptyLines(): number {
   const p = e8.point();
@@ -472,7 +526,7 @@ function gotoLocalInsertionPoint(): void {
 function createDefinition(label: string): number {
   const l = normalizeLabel(label) ?? "";
   return e8.letBind({ "electric-indent-mode": null }, () =>
-    preservingLocalVariables(() =>
+    preserveLocalVariables(() =>
       wide(() => {
         const section = e8.variable("org-footnote-section");
         if (typeof section !== "string") gotoLocalInsertionPoint();
@@ -512,9 +566,13 @@ function allowReference(p = e8.point()): boolean {
     if (/^\*+ END[ \t]*$/i.test(text)) return false;
     const t = titleBounds(line);
     const h = parseHeading(line);
-    return t !== undefined && h !== undefined && h.title !== "" && p >= t[0] && (h.tagsAt === undefined || p < h.tagsAt);
+    return t !== undefined && h !== undefined && h.title !== "" && p >= t[0] && (h.tagsAt === undefined || p < h.tagsAt) && !inLinkOrCode(line, p);
   }
-  if (/^[ \t]*$/.test(text)) return true;
+  if (/^[ \t]*$/.test(text)) {
+    // Blank lines at the top, or after an element, but not inside one, as a block's.
+    const e = elementAt(p);
+    return !e || e.type === "paragraph" || p >= afterBlankBack(e.end);
+  }
   const def = definitionLabelAt(p);
   if (def) return /^\s/.test(e8.bufferText(p, Math.min(e8.pointMax(), p + 1)));
   return objectsLimit(p) !== undefined;
@@ -528,6 +586,8 @@ function autoAdjustMaybe(): void {
     const label = definitionAt()?.label;
     sort();
     if (label !== undefined) {
+      // From the buffer's start, where point stays if the label is not found again.
+      e8.gotoChar(e8.pointMin());
       const re = new RegExp(`^\\[fn:${escapeRegExp(label)}\\]`, "u");
       for (let l = 0; l < e8.lineCount(); l++) {
         const m = re.exec(e8.lineText(l));
@@ -621,7 +681,7 @@ function deleteDefinitions(label: string): number {
 
 /** Deletes the footnote at point, or LABEL's: its references and definitions, as org-footnote-delete. */
 function deleteFootnote(label?: string): void {
-  preservingLocalVariables(() => {
+  preserveLocalVariables(() => {
     let l = label;
     if (l === undefined) {
       const r = referenceAt();
@@ -634,7 +694,7 @@ function deleteFootnote(label?: string): void {
         l = r.label;
       } else {
         const d = definitionAt();
-        if (!d) e8.signal("error", "Don't know which footnote to remove");
+        if (!d) e8.signal("error", "Don\u2019t know which footnote to remove");
         l = d!.label;
       }
     }
@@ -662,12 +722,13 @@ function collectReferences(anonymous = false): Collected[] {
   return wide(() => {
     const references: Collected[] = [];
     const nested = new Map<string, string[]>();
+    const defs = allDefinitions();
     for (const s of fnStarts()) {
       const line = lineAt(s);
       if (s === e8.lineStart(line) && DEFINITION.test(e8.lineText(line))) continue;
       const r = referenceStartingAt(s);
       if (!r || (r.label === undefined && !anonymous)) continue;
-      const d = definitionAt(r.begin);
+      const d = definitionHolding(defs, r.begin);
       const size = r.inline ? r.inline.end - r.inline.begin : undefined;
       references.unshift({ label: r.label, marker: e8.makeMarker(r.begin), topLevel: !d, size });
       if (d) {
@@ -677,10 +738,13 @@ function collectReferences(anonymous = false): Collected[] {
       }
     }
     const ordered: Collected[] = [];
+    // The first in Org's list for each label, its last in the buffer, as assoc finds it.
+    const byLabel = new Map<string | undefined, Collected>();
+    for (const r of references) if (!byLabel.has(r.label)) byLabel.set(r.label, r);
     const add = (ref: Collected | undefined, allowNested: boolean): void => {
       if (!ref || !(allowNested || ref.topLevel)) return;
       ordered.push(ref);
-      for (const l of [...(nested.get(ref.label as string) ?? [])].reverse()) add(references.find((x) => x.label === l), true);
+      for (const l of [...(nested.get(ref.label as string) ?? [])].reverse()) add(byLabel.get(l), true);
     };
     for (const r of [...references].reverse()) add(r, false);
     return ordered;
@@ -691,22 +755,21 @@ function collectReferences(anonymous = false): Collected[] {
 function collectDefinitions(del = false): [string, string][] {
   return wide(() => {
     const definitions: [string, string][] = [];
-    const seen: string[] = [];
-    for (let l = 0; l < e8.lineCount(); l++) {
-      if (!DEFINITION.test(e8.lineText(l))) continue;
-      const d = definitionStartingAt(l);
-      if (!d || seen.includes(d.label)) continue;
-      seen.push(d.label);
-      e8.gotoChar(d.begin);
-      while (e8.point() > e8.pointMin() && /[ \r\t\n]/.test(e8.bufferText(e8.point() - 1, e8.point()))) e8.gotoChar(e8.point() - 1);
-      const beg = e8.point() === e8.pointMin() ? e8.point() : lineStartOrEnd(lineAt() + 1);
+    const regions: [number, number][] = [];
+    const seen = new Set<string>();
+    for (const d of allDefinitions()) {
+      if (seen.has(d.label)) continue;
+      seen.add(d.label);
+      // From after the blank space before it to the end of its last line.
+      let q = d.begin;
+      while (q > e8.pointMin() && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+      const beg = q === e8.pointMin() ? q : lineStartOrEnd(lineAt(q) + 1);
       const end = afterBlankBack(d.end);
       definitions.unshift([d.label, e8.bufferText(beg, end).replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "")]);
-      if (del) {
-        e8.deleteRegion(beg, end);
-        l = lineAt(beg) - 1;
-      }
+      regions.push([beg, end]);
     }
+    // From the last, so the others stay where they are.
+    if (del) for (const [beg, end] of regions.reverse()) e8.deleteRegion(beg, Math.max(beg, end));
     return definitions;
   });
 }
@@ -765,24 +828,26 @@ function renumber(): void {
 function sort(): void {
   const references = collectReferences();
   try {
-    preservingLocalVariables(() => {
+    preserveLocalVariables(() => {
       const definitions = collectDefinitions(true);
       wide(() => {
         clearFootnoteSection();
-        const inserted: string[] = [];
+        const inserted = new Set<string>();
+        const texts = new Map<string, string>();
+        for (const [l, t] of definitions) if (!texts.has(l)) texts.set(l, t);
         const section = e8.variable("org-footnote-section");
         for (const cell of references) {
           const label = cell.label!;
-          if (inserted.includes(label) || cell.size !== undefined) continue;
-          inserted.push(label);
+          if (inserted.has(label) || cell.size !== undefined) continue;
+          inserted.add(label);
           if (typeof section !== "string" && cell.topLevel) {
             e8.gotoChar(e8.markerPosition(cell.marker) as number);
             gotoLocalInsertionPoint();
           }
-          e8.insert(`\n${definitions.find(([l]) => l === label)?.[1] ?? `[fn:${label}] DEFINITION NOT FOUND.`}\n`);
+          e8.insert(`\n${texts.get(label) ?? `[fn:${label}] DEFINITION NOT FOUND.`}\n`);
         }
         // In the order Org's list has them, the last found first.
-        for (const [label, definition] of definitions) if (!inserted.includes(label)) e8.insert(`\n${definition}\n`);
+        for (const [label, definition] of definitions) if (!inserted.has(label)) e8.insert(`\n${definition}\n`);
       });
     });
   } finally {
@@ -794,7 +859,7 @@ function sort(): void {
 function normalize(): void {
   const references = collectReferences(true);
   try {
-    preservingLocalVariables(() => {
+    preserveLocalVariables(() => {
       let n = 0;
       const translations = new Map<string, string>();
       const extracted: [string | number, string][] = [];
@@ -842,7 +907,9 @@ function normalize(): void {
         }
         for (const [label, definition] of definitions) {
           if (inserted.includes(label)) continue;
-          e8.insert(`\n${definition.replace(DEFINITION, `[fn:${++n}]`)}\n`);
+          // Each line's label, as ^ matches at every line's start in replace-regexp-in-string.
+          const fresh = `[fn:${++n}]`;
+          e8.insert(`\n${definition.replace(new RegExp(`^\\[fn:(${LABEL})\\]`, "gmu"), () => fresh)}\n`);
         }
       });
     });
@@ -863,7 +930,11 @@ function footnoteMenu(): void {
     sort();
   } else if (key === "n") normalize();
   else if (key === "d") deleteFootnote();
-  else e8.signal("error", `No such footnote command ${key === "SPC" ? " " : key}`);
+  else {
+    // The character itself, as %c writes it.
+    const named: Record<string, string> = { SPC: " ", RET: "\r", TAB: "\t", ESC: "\u001b", DEL: "\u007f" };
+    e8.signal("error", `No such footnote command ${named[key] ?? key}`);
+  }
 }
 
 /**
@@ -877,6 +948,13 @@ function action(special: boolean): void {
   if (special) return footnoteMenu();
   const r = referenceObjectAt(p);
   if (r && p > r.end) return newFootnote();
+  // On spaces after an element's last text, as at the buffer's end with no newline.
+  const e = r ? undefined : elementAt(p);
+  if (e && !definitionLabelAt(p)) {
+    let end = Math.min(e.end, e8.pointMax());
+    while (end > e.begin && /[ \t]/.test(e8.bufferText(end - 1, end))) end--;
+    if (p > end) return newFootnote();
+  }
   if (r) {
     if (r.label === undefined) {
       e8.gotoChar(r.inline!.begin);
@@ -970,9 +1048,28 @@ e8.defun("org-footnote-at-definition-p", () => {
   const contents = d.contentsBegin === undefined ? "" : e8.bufferText(d.contentsBegin, d.contentsEnd!).replace(/^[ \t\n\r]+|[ \t\n\r]+$/g, "");
   return [d.label, d.postAffiliated, afterBlankBack(d.end), contents];
 });
+/**
+ * What C-c C-o follows here, as org-open-at-point: "reference", or
+ * "definition" on a label, the spaces after it included unless the text
+ * follows on its line, or "text" elsewhere in a definition, where Org says
+ * there is no link.
+ */
+e8.defun("org-footnote--open-context", () => {
+  const p = e8.point();
+  // Up through emphasis to the footnote, as Org's lineage of supported types goes; a link or a timestamp is followed itself.
+  if (referenceObjectAt(p, ["markup"])) return "reference";
+  const d = definitionAt(p);
+  if (!d) return undefined;
+  let q = p;
+  while (/[ \t]/.test(e8.bufferText(q, Math.min(e8.pointMax(), q + 1)))) q++;
+  const onLabel = d.contentsBegin !== undefined ? q < d.contentsBegin : d.postAffiliated === e8.lineStart(lineAt(q));
+  return onLabel ? "definition" : "text";
+});
+
 /** Whether point is where Org's context is a footnote: on a reference or its spaces, or on a definition's label; and where that definition's label starts. */
 e8.defun("org-footnote--context", () => {
-  if (referenceObjectAt(e8.point())) return "reference";
+  // Up through emphasis and links to the footnote, as C-c C-c's lineage goes; a timestamp is changed itself.
+  if (referenceObjectAt(e8.point(), ["markup", "link"])) return "reference";
   const d = definitionLabelAt();
   return d ? d.postAffiliated : undefined;
 });
