@@ -1,0 +1,153 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "table-middle",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n",
+        "point": 13,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n| c | d |\n|---+---|\n| e | f |\n",
+      "visible": "| a | b |\n| c | d |\n|---+---|\n| e | f |\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-last",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n",
+        "point": 25,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n| c | d |\n| e | f |\n|---+---|\n|   |   |\n",
+      "visible": "| a | b |\n| c | d |\n| e | f |\n|---+---|\n|   |   |\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-same-column",
+      "input": {
+        "text": "| a | b |\n| c | d |\n| e | f |\n",
+        "point": 17,
+        "keys": "C-u C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n| c | d |\n|---+---|\n| e | f |\n",
+      "visible": "| a | b |\n| c | d |\n|---+---|\n| e | f |\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-before-rule",
+      "input": {
+        "text": "| a | b |\n|---+---|\n| c | d |\n",
+        "point": 3,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n|   |   |\n|---+---|\n| c | d |\n",
+      "visible": "| a | b |\n|---+---|\n|   |   |\n|---+---|\n| c | d |\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "heading",
+      "input": {
+        "text": "* A\n",
+        "point": 3,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n* \n",
+      "visible": "* A\n* \n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "body",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 6,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\nbo\n* dy\n",
+      "visible": "* A\nbo\n* dy\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "heading-cu",
+      "input": {
+        "text": "* A\nbody\n* B\n",
+        "point": 5,
+        "keys": "C-u C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\nbody\n* \n* B\n",
+      "visible": "* A\nbody\n* \n* B\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

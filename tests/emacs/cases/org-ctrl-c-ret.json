@@ -1,0 +1,65 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "table-middle",
+  "text": "| a | b |\n| c | d |\n| e | f |\n",
+  "keys": "C-c RET",
+  "point": 13
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "table-last",
+  "text": "| a | b |\n| c | d |\n| e | f |\n",
+  "keys": "C-c RET",
+  "point": 25
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "table-same-column",
+  "text": "| a | b |\n| c | d |\n| e | f |\n",
+  "keys": "C-u C-c RET",
+  "point": 17
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "table-before-rule",
+  "text": "| a | b |\n|---+---|\n| c | d |\n",
+  "keys": "C-c RET",
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "heading",
+  "text": "* A\n",
+  "keys": "C-c RET",
+  "point": 3
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "body",
+  "text": "* A\nbody\n",
+  "keys": "C-c RET",
+  "point": 6
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "heading-cu",
+  "text": "* A\nbody\n* B\n",
+  "keys": "C-u C-c RET",
+  "point": 5
+ }
+]

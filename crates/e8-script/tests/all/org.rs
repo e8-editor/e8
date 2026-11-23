@@ -1934,3 +1934,38 @@ fn heading_hooks_run_as_org_runs_them() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+
+/// Hooks that add lines as headings change level, as users' hooks add
+/// drawers and IDs: each next heading is found afresh, as org-map-tree and
+/// org-map-region find it, and the text and hook calls are Emacs 30.2's.
+/// And C-u C-c C-x C-y away from a heading takes the level of the heading
+/// above, as org-outline-level does.
+#[test]
+fn level_changes_with_hooks_that_add_lines() {
+    let adder = "(globalThis.seen = [], ['demote', 'promote'].forEach((tag) => e8.addHook(`org-after-${tag}-entry-hook`, () => { globalThis.seen.push(`${tag}:${e8.point()}:${e8.lineText(e8.lineOf(e8.point()))}`); e8.saveExcursion(() => { const l = e8.lineOf(e8.point()); e8.gotoChar(l + 1 < e8.lineCount() ? e8.lineStart(l + 1) : e8.pointMax()); e8.insert(`@${tag}\\n`); }); })))";
+    let cases: &[(&str, &str, usize, Option<usize>, &str, &str, &str, &[&str])] = &[
+        ("a subtree", "* A\n** B\nbody\n*** C\n** D\n", 4, None, "org-demote-subtree", adder, "* A\n*** B\n@demote\nbody\n**** C\n@demote\n** D\n", &["demote:8:*** B", "demote:28:**** C"]),
+        ("a subtree promoted", "* A\n** B\nbody\n*** C\n** D\n", 4, None, "org-promote-subtree", adder, "* A\n* B\n@promote\nbody\n** C\n@promote\n** D\n", &["promote:6:* B", "promote:25:** C"]),
+        ("a region", "* A\n** B\nbody\n*** C\n** D\n", 22, Some(4), "org-do-demote", adder, "* A\n*** B\n@demote\nbody\n**** C\n@demote\n*** D\n@demote\n", &["demote:8:*** B", "demote:28:**** C", "demote:42:*** D"]),
+        ("C-u paste at the end", "* A\n** B\n", 9, None, "org-paste-subtree", "(globalThis.seen = [], e8.killNew('** X\\nx body\\n*** Y\\n'))", "* A\n** B\n** X\nx body\n*** Y\n", &[]),
+        ("C-u paste in a body", "* A\n** B\nbody\n", 11, None, "org-paste-subtree", "(globalThis.seen = [], e8.killNew('** X\\nx body\\n*** Y\\n'))", "* A\n** B\nbody\n** X\nx body\n*** Y\n", &[]),
+    ];
+    let mut failures = Vec::new();
+    for (name, start, point, mark, command, setup, want, want_seen) in cases {
+        let (mut ed, s) = org(start);
+        s.eval_expression(&mut ed, setup).unwrap();
+        if let Some(m) = mark {
+            s.eval_expression(&mut ed, &format!("e8.pushMark({m}, {{ activate: true }})")).unwrap();
+        }
+        ed.window_buffer_mut().set_point(*point);
+        let prefix = if command.ends_with("paste-subtree") { Some(e8_core::PrefixArg::Universal(4)) } else { None };
+        let result = ed.call_with_prefix(command, vec![], prefix);
+        let seen: Vec<String> = serde_json::from_str(&serde_json::from_str::<String>(&s.eval_expression(&mut ed, "JSON.stringify(globalThis.seen)").unwrap()).unwrap()).unwrap();
+        let want_seen: Vec<String> = want_seen.iter().map(|s| s.to_string()).collect();
+        let got = (text(&ed), seen);
+        if result.is_err() || got != (want.to_string(), want_seen.clone()) {
+            failures.push(format!("{name}: {result:?} {got:?}, Emacs {:?}", (want, want_seen)));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}

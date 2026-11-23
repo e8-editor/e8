@@ -4,7 +4,7 @@
 // E8 narrows the target buffer itself.
 
 import { bookmarkSet, jumpTo } from "bookmark";
-import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, parseDate, parseHeading, plistGet, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
+import { alignTags, allowedValues, type DateTime, formatTimestamp, globalTagsCompletionTable, type Heading, headingIndex, headings, isHeadingLine, parseDate, parseHeading, plistGet, shiftHeadings, subtreeRegion, today, updateCheckboxCount, updateParentTodoStatistics, validLevel } from "org";
 import { clockIn, clockOut, refreshClockHeading, runningClockLine, runningEntry } from "org-clock";
 import { dateTreeRoot, findDateCreate } from "org-datetree";
 import { ancestors, flag, showHeadingLine } from "org-fold";
@@ -710,27 +710,31 @@ function placeEntry(t: CaptureTemplate, where: Target, filled: Filled, prepend: 
   const origin = e8.makeMarker(e8.point());
   if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
   emptyLinesBefore(emptyLines(t, ":empty-lines-before"));
-  // The template as a subtree at the target's level, as org-paste-subtree puts it.
+  // The template as a subtree at the target's level, as org-paste-subtree
+  // puts it: inserted as it is, then shifted a level at a time, each
+  // heading demoted or promoted with its hooks.
   const first = /^(\*+) /m.exec(filled.text)?.[1].length ?? level;
   const shift = level - first;
-  let cursor = filled.cursor;
-  let offset = 0;
-  const leveled = filled.text
-    .split("\n")
-    .map((line) => {
-      const m = /^(\*+) /.exec(line);
-      let out = line;
-      if (m && shift !== 0) {
-        out = "*".repeat(Math.max(1, m[1].length + shift)) + line.slice(m[1].length);
-        if (cursor !== undefined && cursor > offset) cursor += out.length - line.length;
-      }
-      offset += line.length + 1;
-      return out;
-    })
-    .join("\n");
   const beg = e8.point();
-  e8.insert(leveled);
+  e8.insert(filled.text);
+  const endMark = e8.makeMarker(e8.point());
+  // The cursor kept by its line, past the stars on a heading's, where %?
+  // stays in Org's text until the stars have changed.
+  const cursorAt = filled.cursor === undefined ? undefined : beg + filled.cursor;
+  const cursorHeading = cursorAt === undefined ? undefined : parseHeading(lineAt(cursorAt));
+  const cursorBase = cursorAt === undefined ? 0 : cursorHeading !== undefined && cursorAt >= cursorHeading.start + cursorHeading.level ? cursorHeading.start + cursorHeading.level : e8.lineStart(lineAt(cursorAt));
+  const cursorLine = cursorAt === undefined ? undefined : e8.makeMarker(e8.lineStart(lineAt(cursorAt)));
+  if (shift !== 0) shiftHeadings(beg, e8.point(), shift);
+  e8.gotoChar(e8.markerPosition(endMark)!);
+  e8.deleteMarker(endMark);
   const end = e8.point();
+  let cursor: number | undefined;
+  if (cursorAt !== undefined && cursorLine !== undefined) {
+    const ls = e8.markerPosition(cursorLine)!;
+    const now = cursorHeading !== undefined && cursorBase !== e8.lineStart(cursorHeading.line) ? parseHeading(lineAt(ls)) : undefined;
+    cursor = (now !== undefined ? now.start + now.level : ls) + (cursorAt - cursorBase) - beg;
+    e8.deleteMarker(cursorLine);
+  }
   // Tags aligned where the entry was demoted or %^g put them, as Org aligns them; others left as written.
   for (let l = lineAt(beg); l < lineAt(end); l++) {
     const h = parseHeading(l);

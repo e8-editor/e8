@@ -256,7 +256,7 @@ function roundingMinutes(): [number, number] {
   return [Number(list[0] ?? 0), Number(list[1] ?? 5)];
 }
 
-e8.defineHook("org-insert-heading-hook", "Functions run after a new heading is inserted, with point after its stars, as M-RET and C-RET insert one.");
+e8.defineHook("org-insert-heading-hook", "Functions run after a new heading is inserted, with point where its title goes, after any text the heading took from a split line, as M-RET and C-RET insert one.");
 e8.defineHook("org-after-demote-entry-hook", "Functions run after a heading is demoted, with point at its start; for a subtree, once for each heading.");
 e8.defineHook("org-after-promote-entry-hook", "Functions run after a heading is promoted, with point at its start; for a subtree, once for each heading.");
 e8.defineHook(
@@ -4198,13 +4198,16 @@ function changeLevel(h: Heading, by: number, oddLevels = true): void {
   };
   if (by > 0) withoutFoldChecks(change);
   else change();
-  // At the heading, in the whole buffer, as org-promote and org-demote run them.
+  // At the heading, in the whole buffer, as org-promote and org-demote run them; nothing to do with none on it.
+  const hook = by > 0 ? "org-after-demote-entry-hook" : "org-after-promote-entry-hook";
+  const fns = e8.variable(hook);
+  if (!(Array.isArray(fns) ? fns.length > 0 : truthy(fns ?? null))) return;
   e8.saveExcursion(() =>
     e8.saveRestriction(() => {
       e8.widen();
       // After the new stars and their space, where replacing them leaves point.
       e8.gotoChar(e8.lineStart(h.line) + level + 1);
-      e8.runHooks(by > 0 ? "org-after-demote-entry-hook" : "org-after-promote-entry-hook");
+      e8.runHooks(hook);
     }),
   );
 }
@@ -4302,13 +4305,60 @@ function fixPositionAfterPromote(): void {
   else if (e8.bufferText(p, p + 1) === " ") e8.gotoChar(p + 1);
 }
 
+/**
+ * Calls fn on the heading starting at `first`, then on each heading after
+ * it while `more` says so, found by looking forward from the last one's
+ * line after fn ran, as org-map-tree and org-map-region go with
+ * outline-next-heading: lines a hook adds on the way are passed over.
+ */
+function mapHeadingsFrom(first: number, more: (h: Heading) => boolean, fn: (h: Heading) => void): void {
+  const at = marker(first);
+  try {
+    for (;;) {
+      const h = parseHeading(lineAt(at.pos));
+      if (!h) return;
+      fn(h);
+      let next: Heading | undefined;
+      for (let l = lineAt(at.pos) + 1; l < e8.lineCount() && e8.lineStart(l) < e8.pointMax(); l++) {
+        if (isHeadingLine(e8.lineText(l))) {
+          next = parseHeading(l);
+          break;
+        }
+      }
+      if (next === undefined || !more(next)) return;
+      at.pos = next.start;
+    }
+  } finally {
+    dropMarker(at);
+  }
+}
+
+/**
+ * Shifts the headings from beg to end by `shift` levels, a level at a time
+ * and top down each time, as org-paste-subtree does with org-demote or
+ * org-promote, a star a level whatever org-odd-levels-only says; their
+ * hooks run for each heading at each level.
+ */
+export function shiftHeadings(beg: number, end: number, shift: number): void {
+  const endMark = marker(end);
+  try {
+    for (let left = shift; left !== 0; left += left > 0 ? -1 : 1) {
+      const first = headings().find((x) => x.start >= beg && x.start < endMark.pos);
+      if (first !== undefined) mapHeadingsFrom(first.start, (h) => h.start < endMark.pos, (h) => changeLevel(h, left > 0 ? 1 : -1, false));
+    }
+  } finally {
+    dropMarker(endMark);
+  }
+}
+
 function changeSubtreeLevel(by: number): void {
   const [all, i] = backToHeading();
   const end = subtreeRegion(all, i)[1];
   const inside = all.filter((h, k) => k >= i && h.start < end);
   if (by < 0 && inside.some((h) => h.level === 1)) e8.userError("Cannot promote to level 0.  UNDO to recover if necessary");
-  // Top down, as org-map-tree goes, each read again at its line, which a change of stars keeps.
-  for (const h of inside) changeLevel(parseHeading(h.line) ?? h, by);
+  // Top down, as org-map-tree goes: the headings below the first deeper than it was.
+  const top = all[i].level;
+  mapHeadingsFrom(all[i].start, (h) => h.level > top, (h) => changeLevel(h, by));
   fixPositionAfterPromote();
 }
 
@@ -4316,6 +4366,18 @@ function changeSubtreeLevel(by: number): void {
  * With the region active, the headings org-map-region goes through: those
  * starting in it, from its beginning on, which may be none.
  */
+/** Calls fn on each heading of the active region, top down, found afresh after each, as org-map-region goes. */
+function mapRegionHeadings(region: Heading[], fn: (h: Heading) => void): void {
+  if (region.length === 0) return;
+  const mark = e8.mark() ?? e8.point();
+  const end = marker(Math.max(mark, e8.point()));
+  try {
+    mapHeadingsFrom(region[0].start, (h) => h.start < end.pos, fn);
+  } finally {
+    dropMarker(end);
+  }
+}
+
 function headingsInRegion(): Heading[] | undefined {
   if (!orgRegionActive()) return undefined;
   const mark = e8.mark() ?? e8.point();
@@ -4345,7 +4407,7 @@ e8.defineCommand({
     if (region) {
       e8.keepMarkActive(() => {
         // Forward, as org-map-region goes, so an error stops before the rest.
-        for (const h of region) changeLevel(parseHeading(h.line) ?? h, -1);
+        mapRegionHeadings(region, (h) => changeLevel(h, -1));
       });
     } else {
       const [all, i] = backToHeading();
@@ -4363,7 +4425,7 @@ e8.defineCommand({
     if (region) {
       e8.keepMarkActive(() => {
         // Forward, as org-map-region goes, so an error stops before the rest.
-        for (const h of region) changeLevel(parseHeading(h.line) ?? h, 1);
+        mapRegionHeadings(region, (h) => changeLevel(h, 1));
       });
     } else {
       const [all, i] = backToHeading();
@@ -4685,7 +4747,10 @@ export function pasteSubtree(level: e8.PrefixArg): void {
   if ((level === null || c4 || c16) && /^\*+[ \t]*$/.test(text) && e8.bufferText(e8.point(), e8.point() + 1) !== "*") {
     indicator = (/^\*+/.exec(text) as RegExpExecArray)[0].length;
     force = indicator;
-  } else if (c4) force = levelHere();
+  } else if (c4) {
+    // As org-outline-level: the heading point is under, hidden or not, or 0 before the first.
+    force = [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+  }
   else if (typeof level === "number") force = level;
   else if (!c16 && atBol && /^\*+ /.test(text)) force = levelHere();
   const all = headings();
@@ -4720,15 +4785,7 @@ export function pasteSubtree(level: e8.PrefixArg): void {
   }
   beg = e8.point();
   if (e8.invisibleAt(beg) && visible) showHeadingLine(parseHeading(lineAt(beg)) as Heading);
-  const endMark = marker(end);
-  while (shift !== 0) {
-    // Top down, as org-map-region goes, each read again at its line.
-    for (const h of headings().filter((x) => x.start >= beg && x.start < endMark.pos)) {
-      changeLevel(parseHeading(h.line) ?? h, shift > 0 ? 1 : -1, false);
-    }
-    shift += shift > 0 ? -1 : 1;
-  }
-  dropMarker(endMark);
+  shiftHeadings(beg, end, shift);
   e8.gotoChar(beg);
   e8.message(`Clipboard pasted as level ${fresh} subtree`);
   // A tree folded when it was killed or copied comes back folded.
@@ -11554,6 +11611,15 @@ e8.defun("org--fill-forward-paragraph", (arg?: e8.Value) => {
 
 e8.bindKey("C-S-<up>", shiftControlUp, "org-mode-map");
 e8.bindKey("C-S-<down>", shiftControlDown, "org-mode-map");
+const ctrlCRet = e8.defineCommand({
+  name: "org-ctrl-c-ret",
+  doc: "C-c RET in Org: in a table, insert a rule below the row and move past it; else insert a heading, as org-insert-heading does.",
+  run: () => {
+    if (atTableP()) e8.callWithPrefix(e8.prefixArg(), "org-table-hline-and-move" as e8.CommandName);
+    else e8.callWithPrefix(e8.prefixArg(), "org-insert-heading");
+  },
+});
+e8.bindKey("C-c RET", ctrlCRet, "org-mode-map");
 e8.remapCommand("org-mode-map", "self-insert-command", "org-self-insert-command");
 e8.remapCommand("org-mode-map", "delete-backward-char", "org-delete-backward-char");
 e8.remapCommand("org-mode-map", "delete-char", "org-delete-char");

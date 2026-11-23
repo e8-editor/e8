@@ -971,3 +971,28 @@ e8.defineCommand({
     gotoColumn(1);
   },
 });
+
+/** The column of the table point is in, as org-table-current-column: how many bars are before it on its line. */
+function tableCurrentColumn(): number {
+  const before = e8.bufferText(e8.lineStart(lineAt()), e8.point());
+  return (before.match(/\|/g) ?? []).length;
+}
+
+e8.defineCommand({
+  name: "org-table-hline-and-move",
+  doc: "Insert a rule below the table's row and move to the row after it, or to a new one. With a prefix argument, to the same column.",
+  params: [{ name: "sameColumn", kind: "prefix" }],
+  run: (sameColumn: e8.PrefixArg) => {
+    const col = tableCurrentColumn();
+    e8.call("org-table-maybe-eval-formula");
+    e8.call("org-table-insert-hline");
+    // To the end of the rule's line, then into the row after it, or a new row if a rule follows.
+    const line = lineAt() + 1;
+    e8.gotoChar(line < e8.lineCount() ? e8.lineEnd(line) : e8.pointMax());
+    if (/^\n[ \t]*\|-/.test(e8.bufferText(e8.point(), Math.min(e8.pointMax(), e8.point() + 200)))) {
+      e8.insert("\n|");
+      e8.call("org-table-align");
+    } else e8.call("org-table-next-field");
+    if (sameColumn !== null && sameColumn !== undefined) gotoColumn(col);
+  },
+});

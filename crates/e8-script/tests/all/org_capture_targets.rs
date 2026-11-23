@@ -228,3 +228,27 @@ fn a_kept_clock_is_named_by_its_heading() {
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
     assert_eq!(s.eval_expression(&mut ed, r#"e8.variable("org-clock-heading")"#).unwrap(), "\"Typed name\"");
 }
+
+/// An entry captured at another level is demoted or promoted a heading at
+/// a time, as org-paste-subtree does it, so the hooks run for each, as in
+/// Emacs 30.2's Org 9.7.
+#[test]
+fn captured_entries_run_the_level_hooks() {
+    let (mut ed, s, dir) = editor(
+        r#"[["t", "T", "entry", ["file+headline", "DIR/notes.org", "Tasks"], "* TODO task\n** sub"], ["u", "U", "entry", ["file+headline", "DIR/notes.org", "Tasks"], "*** deep\n**** deeper"]]"#,
+    );
+    let notes = dir.path().join("notes.org");
+    std::fs::write(&notes, "* One\n* Tasks\n* Later\n").unwrap();
+    s.eval_expression(
+        &mut ed,
+        "(globalThis.seen = [], ['demote', 'promote'].forEach((tag) => e8.addHook(`org-after-${tag}-entry-hook`, () => { globalThis.seen.push(`${tag}:${e8.lineText(e8.lineOf(e8.point()))}`); })))",
+    )
+    .unwrap();
+    ed.press("M-x o r g - c a p t u r e RET t C-c C-c").unwrap();
+    ed.press("M-x o r g - c a p t u r e RET u C-c C-c").unwrap();
+    assert_eq!(ed.take_error().map(|e| e.to_string()), None);
+    let seen = s.eval_expression(&mut ed, "globalThis.seen.join('|')").unwrap();
+    assert_eq!(seen.trim_matches('"'), "demote:** TODO task|demote:*** sub|promote:** deep|promote:*** deeper");
+    let text = std::fs::read_to_string(&notes).unwrap();
+    assert_eq!(text, "* One\n* Tasks\n** TODO task\n*** sub\n** deep\n*** deeper\n* Later\n");
+}

@@ -5721,6 +5721,12 @@ declare global {
        */
       "org-ctrl-c-minus": [];
       /**
+       * C-c RET in Org: in a table, insert a rule below the row and move past it; else insert a heading, as org-insert-heading does.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-ctrl-c-ret": [];
+      /**
        * C-c * in Org: recalculate a table, or turn the line into a heading as org-toggle-heading does.
        *
        * Defined in packages/org.ts.
@@ -6740,6 +6746,14 @@ declare global {
        * Defined in packages/org-table.ts.
        */
       "org-table-delete-column": [];
+      /**
+       * Insert a rule below the table's row and move to the row after it, or to a new one. With a prefix argument, to the same column.
+       *
+       * @param sameColumn raw prefix argument
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-hline-and-move": [sameColumn?: PrefixArg | boolean];
       /**
        * Insert an empty column to the left of the one at point.
        *
@@ -18946,7 +18960,7 @@ declare global {
        */
       "org-indent-post-buffer-init-functions": Value;
       /**
-       * Functions run after a new heading is inserted, with point after its stars, as M-RET and C-RET insert one.
+       * Functions run after a new heading is inserted, with point where its title goes, after any text the heading took from a split line, as M-RET and C-RET insert one.
        */
       "org-insert-heading-hook": Value;
       /**
