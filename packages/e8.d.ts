@@ -6793,6 +6793,14 @@ declare global {
        */
       "org-table-blank-field": [];
       /**
+       * Copy the field at point to the row below and move there, or fill an empty field from the nearest field above with something in it, the Nth with a prefix argument; numbers and timestamps go up as org-table-copy-increment says, unless the argument is 0.
+       *
+       * @param n prefix count
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-copy-down": [n?: number];
+      /**
        * Copy the field at point, or the fields in the region.
        *
        * Defined in packages/org-table.ts.
@@ -15033,6 +15041,12 @@ declare global {
        */
       "org-table-automatic-realign": Value;
       /**
+       * Whether org-table-copy-down increments a number, a number before or after text, or a timestamp's day as it copies it: t by the difference from the field above, a number by that much, nil not at all.
+       *
+       * Defined in packages/org-table.ts.
+       */
+      "org-table-copy-increment": Value;
+      /**
        * A column whose fields are at least this fraction numbers is aligned to the right.
        *
        * Defined in packages/org-table.ts.
@@ -15128,6 +15142,12 @@ declare global {
        * Defined in packages/org.ts.
        */
       "org-treat-insert-todo-heading-as-state-change": Value;
+      /**
+       * Whether Org binds its keys for terminals, as C-c C-x l for M-<left> and C-c <up> for S-<up>, which it does on a terminal anyway. Org reads it only when it loads; E8 binds them when it is set too, as init.ts runs after Org has loaded.
+       *
+       * Defined in packages/org.ts.
+       */
+      "org-use-extra-keys": Value;
       /**
        * Whether C-c C-q picks tags by single keys: auto when org-tag-alist gives keys, t always, nil never.
        *

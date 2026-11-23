@@ -1,0 +1,614 @@
+[
+  {
+    "name": "copy-down-number-into-empty",
+    "text": "| a | 1 |\n| b |   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 16,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-number-from-filled",
+    "text": "| a | 1 |\n| b | 2 |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 16,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-difference",
+    "text": "| 1 |\n| 3 |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-twice",
+    "text": "| 1 |\n| 3 |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "S-RET S-RET"
+  },
+  {
+    "name": "copy-down-text",
+    "text": "| x |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-prefix",
+    "text": "| 1st |\n|     |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-suffix",
+    "text": "| item 7 |\n|        |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-suffix-step",
+    "text": "| item 7 |\n| item 9 |\n|        |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 25,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-suffix-other-pattern",
+    "text": "| item 7 |\n| thing 9 |\n|        |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 26,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-float",
+    "text": "| 1.5 |\n|     |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-float-step",
+    "text": "| 1.5 |\n| 2.0 |\n|     |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-exponent",
+    "text": "| 1e3 |\n|     |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-negative",
+    "text": "| -3 |\n|    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-integer-dot",
+    "text": "| 3. |\n|    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-leading-zeros",
+    "text": "| 007 |\n|     |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-timestamp",
+    "text": "| <2026-11-23 Mon> |\n|                  |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 24,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-timestamp-step",
+    "text": "| <2026-11-23 Mon> |\n| <2026-11-30 Mon> |\n|                  |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 45,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-timestamp-with-time",
+    "text": "| [2026-11-23 Mon 10:00] |\n|                        |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 30,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-iso-date",
+    "text": "| 2026-11-23 |\n|            |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 17,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-with-count",
+    "text": "| 1 |\n| 5 |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-u 2 S-RET"
+  },
+  {
+    "name": "copy-down-count-zero",
+    "text": "| 1 |\n| 5 |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-u 0 S-RET"
+  },
+  {
+    "name": "copy-down-count-past-the-fields",
+    "text": "| 1 |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-u 3 S-RET"
+  },
+  {
+    "name": "copy-down-over-a-rule",
+    "text": "| 1 |\n|---|\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-rule-above",
+    "text": "| x |\n|---|\n| 4 |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 20,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-at-the-end",
+    "text": "| 1 |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-before-a-rule",
+    "text": "| 1 |\n|---|\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-no-increment",
+    "text": "| 1 |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "S-RET",
+    "globals": {
+      "org-table-copy-increment": false
+    }
+  },
+  {
+    "name": "copy-down-fixed-increment",
+    "text": "| 1 |\n| 2 |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "S-RET",
+    "globals": {
+      "org-table-copy-increment": 10
+    }
+  },
+  {
+    "name": "copy-down-no-field",
+    "text": "|   |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-outside-a-table",
+    "text": "text\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 1,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-on-a-rule",
+    "text": "| 1 |\n|---|\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-empty-row-above",
+    "text": "| 4 |\n|   |\n|   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "S-RET"
+  },
+  {
+    "name": "tty-metaleft",
+    "text": "** Two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 3,
+    "keys": "C-c C-x l"
+  },
+  {
+    "name": "tty-metaright",
+    "text": "* One\n* Two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x r"
+  },
+  {
+    "name": "tty-metaup",
+    "text": "* One\n* Two\n** Sub\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x u"
+  },
+  {
+    "name": "tty-shiftmetaleft",
+    "text": "* One\n** Two\n*** Sub\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x L"
+  },
+  {
+    "name": "tty-shiftmetaright",
+    "text": "* One\n* Two\n** Sub\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x R"
+  },
+  {
+    "name": "tty-shiftmetaup",
+    "text": "- a\n  - b\n- c\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-c C-x U"
+  },
+  {
+    "name": "tty-shiftmetadown",
+    "text": "- a\n  - b\n- c\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 1,
+    "keys": "C-c C-x D"
+  },
+  {
+    "name": "tty-meta-return",
+    "text": "* One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 5,
+    "keys": "C-c C-x m x"
+  },
+  {
+    "name": "tty-meta-return-ret",
+    "text": "* One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 5,
+    "keys": "C-c C-x RET x"
+  },
+  {
+    "name": "tty-todo-heading",
+    "text": "* One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 5,
+    "keys": "C-c C-x M x"
+  },
+  {
+    "name": "tty-shiftup",
+    "text": "* One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c <up>"
+  },
+  {
+    "name": "tty-shiftdown",
+    "text": "* [#B] One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c <down>"
+  },
+  {
+    "name": "tty-shiftright",
+    "text": "* One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c <right>"
+  },
+  {
+    "name": "tty-shiftleft",
+    "text": "* TODO One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c <left>"
+  },
+  {
+    "name": "tty-shiftcontrolright",
+    "text": "#+TODO: A B | C\n#+TODO: X Y\n* A One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 30,
+    "keys": "C-c C-x <right>"
+  },
+  {
+    "name": "tty-structure-template",
+    "text": "text\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "C-c C-x s",
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "tty-esc-left",
+    "text": "** Two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 3,
+    "keys": "ESC <left>"
+  },
+  {
+    "name": "tty-esc-ret",
+    "text": "* One\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 5,
+    "keys": "ESC RET x"
+  },
+  {
+    "name": "copy-down-range-end",
+    "text": "| <2026-11-23 Mon>--<2026-11-25 Wed> |\n|                                    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 75,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-two-timestamps",
+    "text": "| <2026-11-23 Mon> <2026-11-24 Tue> |\n|                                   |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 73,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-text-then-timestamp",
+    "text": "| x <2026-11-23 Mon> |\n|                    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 43,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-timestamp-then-text",
+    "text": "| <2026-11-23 Mon> x |\n|                    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 43,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-long-bracket-text",
+    "text": "| <2026-11-23 a very long description here> |\n|                                           |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 89,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-big-exponent",
+    "text": "| 1e20 |\n|      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 15,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-exponent-step",
+    "text": "| 0 |\n| 1e15 |\n|      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 21,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-small-float-step",
+    "text": "| 2e-5 |\n| 3e-5 |\n|      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 24,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-infinity",
+    "text": "| 1e400 |\n|       |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 17,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-negative-zero",
+    "text": "| 0.0 |\n| -0.0 |\n|      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 23,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-bignum",
+    "text": "| 12345678901234567890 |\n|                      |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 47,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-bignum-suffix",
+    "text": "| 12345678901234567890x |\n|                       |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 49,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-past-2-53",
+    "text": "| 9007199254740993 |\n|                  |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 39,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-bare-exponent",
+    "text": "| 1e |\n|    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-point-five",
+    "text": "| .5 |\n|    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-nbsp",
+    "text": "| 5  |\n|    |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "S-RET"
+  },
+  {
+    "name": "copy-down-short-row-below",
+    "text": "| a | 1 |\n| b |\n| c | 3 |\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 6,
+    "keys": "S-RET"
+  }
+]
