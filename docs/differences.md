@@ -101,6 +101,18 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
 
   So a string is filled as text, and so is a `/* */` comment, without its `*` lines. A Python line of code with a `#` in a string, which `prog-fill-reindent-defun` sends to filling as Emacs's does, is filled as text, where Python's leaves it. Org's source blocks fill in their language's mode, so these differences show there too. `prog-fill-reindent-defun` finds strings and comments by the syntax table, without asking tree-sitter, and the paragraph commands take no left margin, hard newlines or fields.
 - **Python's `end-of-defun`** (not yet): `C-M-e` in a function with a line indented less than the block it closes, as `def f():` then `    if x:` then `  y = 1`, stops elsewhere than Emacs's `python-nav-end-of-defun`, so `M-q` on code there reindents less.
+- **Commenting** (not yet), in every mode:
+  - `C-x C-;` on a last line without a final newline leaves point at the end of the buffer, where Emacs's goes to the line's indentation.
+  - `comment-kill` does not reindent the line after the killed comment, which Emacs's does.
+  - `comment-region` from the middle of a line starts the comment at the line's indentation, where Emacs's starts it at the region's start.
+  - With `comment-empty-lines`, blank lines get the comment start without its padding.
+  - A comment at the margin after an indented one is lined up differently than Emacs lines it up.
+- **Org comments** (not yet):
+  - `M-j` does not continue a comment, an item's text or a block's language, as Org's `org-comment-line-break-function` does.
+  - `M-q` with a region over a drawer's paragraph or a comment block fills nothing, where Org fills it.
+  - `M-;` on a block's `#+end_src` line puts the comment at the margin, where Org's edit buffer indents the blank line first. In a block whose language E8 has no mode for, `M-;` does nothing, where Org says "Not in a sub-editing buffer".
+  - Undoing a comment made in a source block leaves point where it was, not where Org's write-back puts it.
+  - Two of Org's own oddities are not copied: a region over a source block's body uncomments on a second `M-;`, where Org's offset overshoots and comments again; and a region of only blank lines with `comment-empty-lines` comments at the margin, where Org starts at a column as wide as the buffer.
 - **Breaking a comment after code** (not yet): `M-j` and Auto Fill in a comment that follows code on its line line the new line up under the comment, where Emacs's `comment-indent-new-line` indents it as code, with the comment start after.
 - **Filling an active region** (not yet) that the fill leaves as it was keeps the region active, where Emacs rewrites the text all the same and so deactivates it.
 - **Org lists** (not yet): there are no alphabetical bullets (`org-list-allow-alphabetical`), so `a.` or `A)` starts no item, and `org-list-demote-modify-bullet` mapping to one gives a number.

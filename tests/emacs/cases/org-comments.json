@@ -158,5 +158,86 @@
   "globals": {
    "fill-column": 20
   }
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-indented-comment",
+  "text": "* A\n  # note\n",
+  "keys": "M-;",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "dwim-twice-in-item",
+  "text": "- a\n\n- b\n",
+  "keys": "C-n M-; M-;",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "kill-indented-comment",
+  "text": "* A\n  # note\n",
+  "keys": "C-u M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "kill-tab-comment",
+  "text": "* A\n\t# note\n",
+  "keys": "C-u M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-tab",
+  "text": "* A\n\tone\n  two\n",
+  "keys": "C-SPC C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "read-only",
+  "text": "* A\nbody\n",
+  "keys": "C-x C-q M-;",
+  "point": 4
+ },
+ {
+  "modes": [
+   "emacs-lisp-mode"
+  ],
+  "name": "elisp-c-u-blank",
+  "text": ";; x\n\n",
+  "keys": "C-n C-u M-;",
+  "point": 0
+ },
+ {
+  "modes": [
+   "js-mode"
+  ],
+  "name": "js-comment-after-code",
+  "text": "x = 1; // c\n",
+  "keys": "M-;",
+  "point": 0
+ },
+ {
+  "modes": [
+   "python-mode"
+  ],
+  "name": "python-doubled",
+  "text": "x = 1  ## c\n",
+  "keys": "M-;",
+  "point": 0
  }
 ]

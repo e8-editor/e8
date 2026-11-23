@@ -11718,6 +11718,28 @@ e8.defun("org-insert-comment", () => {
   e8.insert("# ");
 });
 
+/** To a column of the line, as move-to-column with FORCE: a tab across it made spaces, and a short line made long enough. */
+function moveToColumnForce(column: number): void {
+  const got = e8.moveToColumn(column);
+  if (got < column) e8.indentTo(column);
+  else if (got > column && e8.bufferText(e8.point() - 1, e8.point()) === "\t") {
+    // Into the tab: spaces before it up to the column with indent-tabs-mode,
+    // else the tab made spaces, as move-to-column does with FORCE.
+    const start = e8.point() - 1;
+    const before = e8.saveExcursion(() => {
+      e8.gotoChar(start);
+      return e8.currentColumn();
+    });
+    e8.gotoChar(start);
+    if (truthy(e8.variable("indent-tabs-mode") ?? null)) e8.insert(" ".repeat(column - before));
+    else {
+      e8.deleteRegion(start, start + 1);
+      e8.insert(" ".repeat(got - before));
+      e8.moveToColumn(column);
+    }
+  }
+}
+
 e8.defun("org-comment-or-uncomment-region", (beg: number, end: number) => {
   // In a source block, as its language comments, in its edit buffer.
   if (inSrcBody(beg, end, true)) {
@@ -11764,7 +11786,7 @@ e8.defun("org-comment-or-uncomment-region", (beg: number, end: number) => {
       for (const l of lines) {
         if (!emptyToo && /^[ \t]*$/.test(e8.lineText(l))) continue;
         e8.gotoChar(e8.lineStart(l));
-        if (e8.moveToColumn(min) < min) e8.indentTo(min);
+        moveToColumnForce(min);
         e8.insert(start);
       }
     });
@@ -11775,7 +11797,7 @@ const orgCommentDwim = e8.defineCommand({
   name: "org-comment-dwim",
   doc: "M-; in Org: on a heading, make it a comment or take that away, as org-toggle-comment; elsewhere as comment-dwim.",
   run: () => {
-    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: #<buffer ${e8.bufferName()}>`);
     if (isHeadingLine(e8.lineText(lineAt()))) e8.funcallInteractively("org-toggle-comment");
     else e8.funcallInteractively("comment-dwim");
   },

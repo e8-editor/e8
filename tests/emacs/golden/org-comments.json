@@ -367,6 +367,199 @@
       "kill_ring": [],
       "modified": true,
       "error": null
+    },
+    {
+      "name": "dwim-indented-comment",
+      "input": {
+        "text": "* A\n  # note\n",
+        "point": 8,
+        "keys": "M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n\t\t\t\t  # note\n",
+      "visible": "* A\n\t\t\t\t  # note\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "dwim-twice-in-item",
+      "input": {
+        "text": "- a\n\n- b\n",
+        "point": 0,
+        "keys": "C-n M-; M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- a\n\t\t\t\t  # \n- b\n",
+      "visible": "- a\n\t\t\t\t  # \n- b\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "kill-indented-comment",
+      "input": {
+        "text": "* A\n  # note\n",
+        "point": 4,
+        "keys": "C-u M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A# note\n",
+      "visible": "* A# note\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "\n  "
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "kill-tab-comment",
+      "input": {
+        "text": "* A\n\t# note\n",
+        "point": 4,
+        "keys": "C-u M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A# note\n",
+      "visible": "* A# note\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [
+        "\n\t"
+      ],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "region-tab",
+      "input": {
+        "text": "* A\n\tone\n  two\n",
+        "point": 4,
+        "keys": "C-SPC C-f C-f C-f C-f C-f C-f C-f C-f C-f C-f M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n  # \tone\n  # two\n",
+      "visible": "* A\n  # \tone\n  # two\n",
+      "point": 20,
+      "mark": 4,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "read-only",
+      "input": {
+        "text": "* A\nbody\n",
+        "point": 4,
+        "keys": "C-x C-q M-;",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\nbody\n",
+      "visible": "* A\nbody\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Buffer is read-only: #<buffer *e8-oracle*>"
+    },
+    {
+      "name": "elisp-c-u-blank",
+      "input": {
+        "text": ";; x\n\n",
+        "point": 0,
+        "keys": "C-n C-u M-;",
+        "modes": [
+          "emacs-lisp-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": ";; x\n;;;; \n",
+      "visible": ";; x\n;;;; \n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "js-comment-after-code",
+      "input": {
+        "text": "x = 1; // c\n",
+        "point": 0,
+        "keys": "M-;",
+        "modes": [
+          "js-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "x = 1;\t\t\t\t// c\n",
+      "visible": "x = 1;\t\t\t\t// c\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "python-doubled",
+      "input": {
+        "text": "x = 1  ## c\n",
+        "point": 0,
+        "keys": "M-;",
+        "modes": [
+          "python-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "x = 1 ## c\n",
+      "visible": "x = 1 ## c\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
     }
   ]
 }

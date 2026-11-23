@@ -376,9 +376,11 @@ function commentIndent(): void {
   e8.gotoChar(begpos);
   // As comment-indent-default: comment-column for a comment after code, or the code's indentation for one alone on its line.
   const alone = e8.currentColumn() === indentation(e8.lineOf(begpos));
+  // Comment starters by the syntax table, as \s< in comment-indent-default's looking-at.
+  const isStarter = (p: number): boolean => (e8.syntaxEntry(charAt(p)) ?? "")[0] === "<";
   const starts = commentStartAt(begpos) ?? 1;
-  const doubled = starts === 1 && charAt(begpos + 1) === charAt(begpos);
-  const tripled = doubled && charAt(begpos + 2) === charAt(begpos);
+  const doubled = isStarter(begpos) && isStarter(begpos + 1);
+  const tripled = doubled && isStarter(begpos + 2);
   if (doubled && (tripled || !alone)) {
     reindent(chooseIndent(0));
   } else if (!alone) {
@@ -418,7 +420,15 @@ function commentKill(count: number, moves = false): void {
       // Back over whitespace as the syntax table has it, a newline too where it is, as skip-syntax-backward does.
       e8.gotoChar(start);
       e8.skipSyntaxBackward(" ");
-      e8.killRegion(e8.point(), e8.lineEnd(line));
+      const from = e8.point();
+      const use = e8.variable("comment-use-syntax");
+      const skip = str("comment-start-skip");
+      if ((use === false || use === null) && skip !== undefined) {
+        // As comment-forward without syntax: over whitespace, then the comment only where comment-start-skip matches there.
+        e8.skipSyntaxForward(" ");
+        if (e8.lookingAt(skip)) e8.killRegion(from, e8.lineEnd(e8.lineOf(e8.point())));
+        else e8.killRegion(from, e8.point());
+      } else e8.killRegion(from, e8.lineEnd(line));
       e8.call("indent-according-to-mode");
     });
     if (moves) forwardLine(1);
@@ -453,7 +463,8 @@ e8.defineCommand({
       e8.funcall(insertFn as string);
       return;
     }
-    const add = num("comment-add", 0) + (arg === null ? 0 : e8.prefixNumericValue(arg) - 1);
+    // A prefix argument in place of comment-add, as comment-add gives it.
+    const add = arg === null ? num("comment-add", 0) : e8.prefixNumericValue(arg) - 1;
     e8.call("indent-according-to-mode");
     e8.insert(padRight(commentStart(), add));
     const ce = commentEnd();
