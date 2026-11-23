@@ -110,7 +110,7 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
   - `M-j` does not expand an abbrev before point, as Emacs's `(newline 1)` does through `self-insert-command`.
   - JavaScript has no `c-indent-new-comment-line`, which js-mode sets as its `comment-line-break-function`: `M-j` in a `/* */` comment continues it with `/*` rather than ` *`, indents code after it as the line was rather than as the mode says, and takes `fill-prefix` in a `//` comment.
 - **Auto Fill** (not yet): a line Auto Fill breaks is not justified when `default-justification` is `full`.
-- **`RET` and `C-j` in Org** (not yet): with `electric-indent-mode` off they do not swap, `RET` still indenting and `C-j` not, as Emacs's do; in a source block's body the new line is not indented as Org's edit buffer indents it; `org-return-follows-link` on a timestamp breaks the line where Org opens the agenda; `C-u 0 RET` inserts a newline where Org inserts none, and `M-- RET` one where Org signals.
+- **`RET` and `C-j` in Org** (not yet): in a source block's body the new line is not indented as Org's edit buffer indents it; and `C-c C-o` on a timestamp, or `RET` there with `org-return-follows-link`, does not open the agenda for its day, as `org-follow-timestamp-link` does, E8's agenda having no one-day span yet.
 - **Org comments** (not yet):
   - `M-q` with a region over a drawer's paragraph or a comment block fills nothing, where Org fills it.
   - `M-;` on a block's `#+end_src` line puts the comment at the margin, where Org's edit buffer indents the blank line first. In a block whose language E8 has no mode for, `M-;` does nothing, where Org says "Not in a sub-editing buffer".

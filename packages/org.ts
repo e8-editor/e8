@@ -3591,14 +3591,20 @@ const orgReturn = e8.defineCommand({
     "RET in Org: in a table, move to the next row; elsewhere start a new line, indented as org-indent-line does.\n\n" +
     "On a heading, the title after point goes to the new line, but the state, priority and tags stay. In a list " +
     "item, the text after point moves to the new line after it is indented.",
-  run: () => orgReturnWith(true),
+  // Indented as electric-indent-mode does after a typed newline, when it is on.
+  run: () => orgReturnWith(electricIndentOn(), false),
 });
 
 e8.defineCommand({
   name: "org-return-and-maybe-indent",
-  doc: "C-j in Org: what RET does, but the new line is not indented, as electric-indent-mode leaves C-j alone.",
-  run: () => orgReturnWith(false),
+  doc:
+    "C-j in Org: what RET does, but the new line is not indented, as electric-indent-mode leaves C-j alone; " +
+    "with electric-indent-mode off, indented, as org-return-and-maybe-indent passes (not electric-indent-mode).",
+  run: () => orgReturnWith(!electricIndentOn(), true),
 });
+
+/** Whether electric-indent-mode is on here. */
+const electricIndentOn = (): boolean => truthy(e8.variable("electric-indent-mode") ?? true);
 
 e8.defineVariable({
   name: "org-special-ctrl-o",
@@ -3621,14 +3627,20 @@ e8.defineCommand({
  * RET in Org, as org-return does. Org calls newline interactively for RET,
  * so electric-indent-mode indents the new line, and from code for C-j, so it does not.
  */
-function orgReturnWith(electric: boolean): void {
+function orgReturnWith(electric: boolean, prefixless: boolean): void {
   // C-j's org-return-and-maybe-indent takes no argument: one newline, and Auto Fill.
-  const prefixless = !electric;
   // No Auto Fill on a property's line, as org-return binds auto-fill-function to nil there.
   const onProperty = elementAt(e8.point())?.type === "node-property";
   // Org's newline self-inserts, so the newlines take on the text properties
   // around them, and runs of them undo together.
   const newline = (n: number): void => {
+    // As newline: a negative count is an error, and none inserts nothing.
+    if (n < 0) e8.signal("error", "Repetition argument has to be non-negative");
+    // None inserts nothing, but point still goes to the line's left margin, as newline's last step does.
+    if (n === 0) {
+      e8.gotoChar(e8.lineStart(lineAt()));
+      return;
+    }
     e8.undoAutoAmalgamate();
     e8.insertAndInherit("\n".repeat(n));
     // As self-insert does a newline: Auto Fill fills the line the newline
@@ -3646,7 +3658,7 @@ function orgReturnWith(electric: boolean): void {
   const line = lineAt();
   const p = e8.point();
   const [ls, le] = [e8.lineStart(line), e8.lineEnd(line)];
-  const n = prefixless ? 1 : Math.max(1, e8.prefixNumericValue());
+  const n = prefixless ? 1 : e8.prefixNumericValue();
   if (atTableP()) {
     // Before the first column or after the last, a table is split.
     if (/^[ \t]*$/.test(e8.bufferText(p, le)) || /^[ \t]*$/.test(e8.bufferText(ls, p))) e8.insert("\n");

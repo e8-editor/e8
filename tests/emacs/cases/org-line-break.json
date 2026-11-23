@@ -465,5 +465,117 @@
   "vars": {
    "comment-auto-fill-only-comments": true
   }
+ },
+ {
+  "name": "noaf-noelec-para-mid-ret",
+  "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+  "point": 24,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "electric-indent-mode": false
+  },
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "noaf-noelec-para-mid-cj",
+  "text": "aaa bbb ccc ddd eee fff ggg hhh\n",
+  "point": 24,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "electric-indent-mode": false
+  },
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "noaf-noelec-item-mid-ret",
+  "text": "- aaa bbb ccc ddd eee fff ggg\n",
+  "point": 22,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "electric-indent-mode": false
+  },
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "noaf-noelec-item-mid-cj",
+  "text": "- aaa bbb ccc ddd eee fff ggg\n",
+  "point": 22,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "electric-indent-mode": false
+  },
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "noaf-noelec-logbook-cj",
+  "text": "* A\n:LOGBOOK:\n- note aaa bbb ccc ddd eee fff\n:END:\n",
+  "point": 44,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "electric-indent-mode": false
+  },
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "noaf-neg-ret",
+  "text": "aaa bbb ccc ddd eee fff ggg\n",
+  "point": 27,
+  "keys": "M-- RET",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "noaf-zero-ret",
+  "text": "aaa bbb ccc ddd eee fff ggg\n",
+  "point": 27,
+  "keys": "C-u 0 RET",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "name": "af-zero-ret",
+  "text": "aaa bbb ccc ddd eee fff ggg\n",
+  "point": 27,
+  "keys": "C-u 0 RET",
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "globals": {
+   "fill-column": 20
+  }
  }
 ]

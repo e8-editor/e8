@@ -6502,7 +6502,7 @@ declare global {
        */
       "org-return": [];
       /**
-       * C-j in Org: what RET does, but the new line is not indented, as electric-indent-mode leaves C-j alone.
+       * C-j in Org: what RET does, but the new line is not indented, as electric-indent-mode leaves C-j alone; with electric-indent-mode off, indented, as org-return-and-maybe-indent passes (not electric-indent-mode).
        *
        * Defined in packages/org.ts.
        */
