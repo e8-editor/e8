@@ -1,0 +1,534 @@
+[
+  {
+    "name": "fn-new",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-new-and-type",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "C-c C-x f x y z",
+    "message": true
+  },
+  {
+    "name": "fn-new-second",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-goto-definition",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-goto-definition-c-c-c-c",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "C-c C-c",
+    "message": true
+  },
+  {
+    "name": "fn-goto-definition-c-c-c-o",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "C-c C-o",
+    "message": true
+  },
+  {
+    "name": "fn-back-to-reference",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 35,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-back-to-reference-c-c-c-c",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 35,
+    "keys": "C-c C-c",
+    "message": true
+  },
+  {
+    "name": "fn-in-definition-text-new",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 42,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-on-spaces-after-reference",
+    "text": "* H\nOne[fn:1]   two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 14,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-no-definition-create",
+    "text": "* H\nText[fn:9] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "yes"
+    ]
+  },
+  {
+    "name": "fn-no-definition-refuse",
+    "text": "* H\nText[fn:9] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "no"
+    ]
+  },
+  {
+    "name": "fn-anonymous-goto",
+    "text": "* H\nText[fn::an anonymous note] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-inline-goto",
+    "text": "* H\nText[fn:x:inline [with] brackets] here and[fn:x].\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 48,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-sort",
+    "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "fn-renumber",
+    "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "r"
+    ]
+  },
+  {
+    "name": "fn-renumber-and-sort",
+    "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "S"
+    ]
+  },
+  {
+    "name": "fn-normalize",
+    "text": "* H\nA[fn:foo] b[fn::anon] c[fn:bar:inline def] d[fn:foo].\n\n* Footnotes\n\n[fn:foo] Foo.\n\n[fn:zed] Zed.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "n"
+    ]
+  },
+  {
+    "name": "fn-delete-at-reference",
+    "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 7,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "fn-delete-at-definition",
+    "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 51,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "fn-delete-anonymous",
+    "text": "* H\nText[fn::an anonymous note] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "name": "fn-menu-bad-key",
+    "text": "* H\nA[fn:2] b[fn:1] c[fn:2].\n\n* Footnotes\n\n[fn:1] One.\n\n[fn:2] Two.\n\n[fn:3] Unused.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "fn-at-line-start-menu",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "fn-local",
+    "text": "* One\nText.\n* Two\nMore.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-section": false
+    }
+  },
+  {
+    "name": "fn-local-last-section",
+    "text": "* One\nText.\n* Two\nMore.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 23,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-section": false
+    }
+  },
+  {
+    "name": "fn-define-inline",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-define-inline": true
+    }
+  },
+  {
+    "name": "fn-prompt-label",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-label": false
+    },
+    "answers": [
+      "note"
+    ]
+  },
+  {
+    "name": "fn-prompt-label-empty",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-label": false
+    },
+    "answers": [
+      ""
+    ]
+  },
+  {
+    "name": "fn-prompt-existing-label",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 18,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-label": false
+    },
+    "answers": [
+      "1"
+    ]
+  },
+  {
+    "name": "fn-anonymous-label",
+    "text": "* H\nSome text.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "globals": {
+      "org-footnote-auto-label": "'anonymous"
+    }
+  },
+  {
+    "name": "fn-new-into-existing-section",
+    "text": "* H\nText.\n\n* Footnotes\n:PROPERTIES:\n:X: y\n:END:\n\n[fn:7] Old.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-startup-adjust",
+    "text": "#+STARTUP: fnadjust\n* H\nA[fn:2] b.\n\n* Footnotes\n\n[fn:2] Two.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 33,
+    "keys": "C-c C-x f",
+    "message": true,
+    "call": [
+      "org-mode"
+    ]
+  },
+  {
+    "name": "fn-local-variables-kept-last",
+    "text": "* H\nText.\n\n# Local Variables:\n# fill-column: 70\n# End:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-in-src-block-menu",
+    "text": "* H\nText.\n#+begin_src emacs-lisp\n(x)\n#+end_src\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 34,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "fn-in-heading-title",
+    "text": "* Heading :tag:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-in-heading-tags-menu",
+    "text": "* Heading :tag:\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 13,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "fn-nested-sort",
+    "text": "* H\nA[fn:1].\n\n* Footnotes\n\n[fn:1] Has a nested[fn:2] one.\n\n\n[fn:2] Nested.\nNot part of it? yes it is\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "fn-definition-ends-at-two-blank-lines",
+    "text": "* H\nA[fn:1] b[fn:2].\n\n[fn:2] Two.\n\n\nAfter.\n\n[fn:1] One.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-u C-c C-x f",
+    "message": true,
+    "answers": [
+      "s"
+    ]
+  },
+  {
+    "name": "fn-goto-definition-command",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "",
+    "message": true,
+    "call": [
+      "org-footnote-goto-definition",
+      "1"
+    ]
+  },
+  {
+    "name": "fn-goto-previous-reference-command",
+    "text": "* H\nOne[fn:1] two.\n\n* Footnotes\n\n[fn:1] First.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 46,
+    "keys": "",
+    "message": true,
+    "call": [
+      "org-footnote-goto-previous-reference",
+      "1"
+    ]
+  },
+  {
+    "name": "fn-in-code-is-no-reference",
+    "text": "* H\nSee ~[fn:1]~ here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 8,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "fn-in-link-is-no-reference",
+    "text": "* H\nSee [[https://x.org][see [fn:1] d]] here.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 28,
+    "keys": "C-c C-x f",
+    "message": true,
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "name": "fn-in-table",
+    "text": "| a[fn:1] |\n\n[fn:1] Def.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "C-c C-x f",
+    "message": true
+  },
+  {
+    "name": "fn-in-item",
+    "text": "- an item[fn:1]\n\n[fn:1] Def.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 11,
+    "keys": "C-c C-x f",
+    "message": true
+  }
+]
