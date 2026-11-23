@@ -21,6 +21,7 @@ import {
   DRAWER_RE,
   getItem,
   indentItemCommand,
+  alphabetical,
   ITEM_RE,
   itemEndBeforeBlank,
   itemLine,
@@ -151,7 +152,7 @@ export function startsElement(line: number, limit: number): boolean {
     COMMENT_LINE.test(text) ||
     // As org-element-paragraph-separate has them: lines that look like an
     // item, rules, footnote definitions, diary sexps, table.el tables and clocks.
-    /^[ \t]*(?:[-+*]|[0-9]+[.)])(?:[ \t]|$)/.test(text) ||
+    (alphabetical() ? /^[ \t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]|$)/ : /^[ \t]*(?:[-+*]|[0-9]+[.)])(?:[ \t]|$)/).test(text) ||
     /^[ \t]*-{5,}[ \t]*$/.test(text) ||
     /^\[fn:[-_\w]+\]/.test(text) ||
     /^%%\(/.test(text) ||
@@ -774,4 +775,12 @@ e8.defineCommand({
     const struct = structAtItem("This is not a list");
     writeStruct(struct, parentsAlist(struct));
   },
+});
+
+e8.defineCommand({
+  name: "org-element-update-syntax",
+  doc:
+    "Bring the parser up to date with Org's syntax settings, as org-list-allow-alphabetical, after changing them. " +
+    "E8's parser reads them as it goes, so there is nothing to do; Org's compiles them when it loads.",
+  run: () => {},
 });

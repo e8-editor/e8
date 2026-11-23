@@ -1,0 +1,857 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "alpha-new-item",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 6,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\nb. x\nc. two\n",
+      "visible": "a. one\nb. x\nc. two\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-new-item-upper-paren",
+      "input": {
+        "text": "A) one\nB) two\n",
+        "point": 6,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A) one\nB) x\nC) two\n",
+      "visible": "A) one\nB) x\nC) two\n",
+      "point": 11,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-new-item-between",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 2,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. x\nb. one\nc. two\n",
+      "visible": "a. x\nb. one\nc. two\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-not-allowed-new-item",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 6,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null
+      },
+      "text": "a. one\n* x\nb. two\n",
+      "visible": "a. one\n* x\nb. two\n",
+      "point": 10,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-cycle-bullets",
+      "input": {
+        "text": "- one\n- two\n",
+        "point": 2,
+        "keys": "C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "1) one\n2) two\n",
+      "visible": "1) one\n2) two\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-cycle-bullets-to-letters",
+      "input": {
+        "text": "- one\n- two\n",
+        "point": 2,
+        "keys": "C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\nb. two\n",
+      "visible": "a. one\nb. two\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-cycle-bullets-all-the-way",
+      "input": {
+        "text": "- one\n- two\n",
+        "point": 2,
+        "keys": "C-c - C-c - C-c - C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A) one\nB) two\n",
+      "visible": "A) one\nB) two\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-cycle-bullets-indented",
+      "input": {
+        "text": "  - one\n  - two\n",
+        "point": 4,
+        "keys": "C-c - C-c - C-c - C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "  a. one\n  b. two\n",
+      "visible": "  a. one\n  b. two\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-cycle-bullets-back",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 2,
+        "keys": "S-<left>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "1) one\n2) two\n",
+      "visible": "1) one\n2) two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-cycle-bullets-forward",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 2,
+        "keys": "S-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A. one\nB. two\n",
+      "visible": "A. one\nB. two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-cycle-without-letters",
+      "input": {
+        "text": "1. one\n2. two\n",
+        "point": 2,
+        "keys": "C-c - C-c -",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null
+      },
+      "text": "- one\n- two\n",
+      "visible": "- one\n- two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-repair",
+      "input": {
+        "text": "a. one\nc. two\nq. three\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\nb. two\nc. three\n",
+      "visible": "a. one\nb. two\nc. three\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-repair-upper",
+      "input": {
+        "text": "B. one\nc. two\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A.  one\nB. two\n",
+      "visible": "A.  one\nB. two\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-counter-first",
+      "input": {
+        "text": "a. [@c] one\na. two\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "c.  [@c] one\nd. two\n",
+      "visible": "c.  [@c] one\nd. two\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-counter-later",
+      "input": {
+        "text": "a. one\na. [@e] two\na. three\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\ne. [@e] two\nf. three\n",
+      "visible": "a. one\ne. [@e] two\nf. three\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-counter-number-in-letters",
+      "input": {
+        "text": "a. one\na. [@5] two\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\nb. [@5] two\n",
+      "visible": "a. one\nb. [@5] two\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-more-than-26-items",
+      "input": {
+        "text": "a. item 0\nb. item 1\nc. item 2\nd. item 3\ne. item 4\nf. item 5\ng. item 6\nh. item 7\ni. item 8\nj. item 9\nk. item 10\nl. item 11\nm. item 12\nn. item 13\no. item 14\np. item 15\nq. item 16\nr. item 17\ns. item 18\nt. item 19\nu. item 20\nv. item 21\nw. item 22\nx. item 23\ny. item 24\nz. item 25\na. item 26\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "1.  item 0\n2. item 1\n3. item 2\n4. item 3\n5. item 4\n6. item 5\n7. item 6\n8. item 7\n9. item 8\n10. item 9\n11. item 10\n12. item 11\n13. item 12\n14. item 13\n15. item 14\n16. item 15\n17. item 16\n18. item 17\n19. item 18\n20. item 19\n21. item 20\n22. item 21\n23. item 22\n24. item 23\n25. item 24\n26. item 25\n27. item 26\n",
+      "visible": "1.  item 0\n2. item 1\n3. item 2\n4. item 3\n5. item 4\n6. item 5\n7. item 6\n8. item 7\n9. item 8\n10. item 9\n11. item 10\n12. item 11\n13. item 12\n14. item 13\n15. item 14\n16. item 15\n17. item 16\n18. item 17\n19. item 18\n20. item 19\n21. item 20\n22. item 21\n23. item 22\n24. item 23\n25. item 24\n26. item 25\n27. item 26\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-26-items",
+      "input": {
+        "text": "a. item 0\na. item 1\na. item 2\na. item 3\na. item 4\na. item 5\na. item 6\na. item 7\na. item 8\na. item 9\na. item 10\na. item 11\na. item 12\na. item 13\na. item 14\na. item 15\na. item 16\na. item 17\na. item 18\na. item 19\na. item 20\na. item 21\na. item 22\na. item 23\na. item 24\na. item 25\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. item 0\nb. item 1\nc. item 2\nd. item 3\ne. item 4\nf. item 5\ng. item 6\nh. item 7\ni. item 8\nj. item 9\nk. item 10\nl. item 11\nm. item 12\nn. item 13\no. item 14\np. item 15\nq. item 16\nr. item 17\ns. item 18\nt. item 19\nu. item 20\nv. item 21\nw. item 22\nx. item 23\ny. item 24\nz. item 25\n",
+      "visible": "a. item 0\nb. item 1\nc. item 2\nd. item 3\ne. item 4\nf. item 5\ng. item 6\nh. item 7\ni. item 8\nj. item 9\nk. item 10\nl. item 11\nm. item 12\nn. item 13\no. item 14\np. item 15\nq. item 16\nr. item 17\ns. item 18\nt. item 19\nu. item 20\nv. item 21\nw. item 22\nx. item 23\ny. item 24\nz. item 25\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-counter-past-z",
+      "input": {
+        "text": "a. one\na. [@y] two\na. three\na. four\n",
+        "point": 2,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "1.  one\n2. [@y] two\n3. three\n4. four\n",
+      "visible": "1.  one\n2. [@y] two\n3. three\n4. four\n",
+      "point": 3,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-move-item-down",
+      "input": {
+        "text": "a. one\nb. two\nc. three\n",
+        "point": 2,
+        "keys": "M-<down>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. two\nb. one\nc. three\n",
+      "visible": "a. two\nb. one\nc. three\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-indent-item",
+      "input": {
+        "text": "a. one\nb. two\nc. three\n",
+        "point": 9,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\n   a.  two\nb. three\n",
+      "visible": "a. one\n   a.  two\nb. three\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-demote-to-letters",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 9,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true,
+          "org-list-demote-modify-bullet": {
+            "1.": "a."
+          }
+        }
+      },
+      "text": "1. one\n   a.  two\n2. three\n",
+      "visible": "1. one\n   a.  two\n2. three\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-demote-to-letters-not-allowed",
+      "input": {
+        "text": "1. one\n2. two\n3. three\n",
+        "point": 9,
+        "keys": "M-<right>",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-demote-modify-bullet": {
+            "1.": "a."
+          }
+        }
+      },
+      "text": "1. one\n   1.  two\n2. three\n",
+      "visible": "1. one\n   1.  two\n2. three\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-fill-paragraph-before-item",
+      "input": {
+        "text": "Some text\na. item one that is long\n",
+        "point": 2,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "Some text\na. item one that is long\n",
+      "visible": "Some text\na. item one that is long\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "alpha-fill-paragraph-not-allowed",
+      "input": {
+        "text": "Some text\na. item one that is long\n",
+        "point": 2,
+        "keys": "M-q",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null
+      },
+      "text": "Some text a. item one that is long\n",
+      "visible": "Some text a. item one that is long\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-checkbox-statistics",
+      "input": {
+        "text": "* H [/]\na. [ ] x\nb. [X] y\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "* H [0/0]\na. [ ] x\nb. [X] y\n",
+      "visible": "* H [0/0]\na. [ ] x\nb. [X] y\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-checkbox-toggle",
+      "input": {
+        "text": "* H [/]\na. [ ] x\nb. [X] y\n",
+        "point": 12,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "* H [2/2]\na. [X] x\nb. [X] y\n",
+      "visible": "* H [2/2]\na. [X] x\nb. [X] y\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-checkbox-statistics-not-allowed",
+      "input": {
+        "text": "* H [/]\na. [ ] x\nb. [X] y\n",
+        "point": 4,
+        "keys": "C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null
+      },
+      "text": "* H [0/0]\na. [ ] x\nb. [X] y\n",
+      "visible": "* H [0/0]\na. [ ] x\nb. [X] y\n",
+      "point": 4,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-tab-in-empty-item",
+      "input": {
+        "text": "a. one\nb. \n",
+        "point": 10,
+        "keys": "TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. one\n   a. \n",
+      "visible": "a. one\n   a. \n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-item-to-heading",
+      "input": {
+        "text": "a. one\nb. two\n",
+        "point": 2,
+        "keys": "C-c *",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "* one\nb. two\n",
+      "visible": "* one\nb. two\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-forward-paragraph",
+      "input": {
+        "text": "Text\na. one\nb. two\n",
+        "point": 0,
+        "keys": "M-}",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "Text\na. one\nb. two\n",
+      "visible": "Text\na. one\nb. two\n",
+      "point": 5,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "alpha-word-with-dot-is-an-item",
+      "input": {
+        "text": "I. think so\nYes.\n",
+        "point": 4,
+        "keys": "M-RET x",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "A. t\nB. xhink so\nYes.\n",
+      "visible": "A. t\nB. xhink so\nYes.\n",
+      "point": 9,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "alpha-insert-checkbox",
+      "input": {
+        "text": "a. one\n",
+        "point": 2,
+        "keys": "C-u C-c C-x C-b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-element-update-syntax"
+        ],
+        "platform": null,
+        "globals": {
+          "org-list-allow-alphabetical": true
+        }
+      },
+      "text": "a. [ ] one\n",
+      "visible": "a. [ ] one\n",
+      "point": 2,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

@@ -68,6 +68,7 @@ import {
   hasChild,
   indentLineTo,
   indentString,
+  alphabetical,
   inItem,
   insertDrawer,
   insertListItem,
@@ -2046,6 +2047,7 @@ function updateHeadingCookies(all: Heading[], i: number): void {
   const end = all[i + 1]?.start ?? e8.bufferSize();
   let boxes = false;
   for (let l = h.line + 1; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+    // As org-update-statistics-cookies looks for them: no lettered bullets or counters, whatever org-list-allow-alphabetical says.
     if (/^[ \t]*([-+*]|[0-9]+[.)]) \[[- X]\]/.test(e8.lineText(l))) boxes = true;
   }
   if (boxes) {
@@ -2097,11 +2099,12 @@ interface Item {
 }
 
 const ITEM = /^([ \t]*)([-+*]|\d+[.)])([ \t]+|$)/;
+const ITEM_LETTERED = /^([ \t]*)([-+*]|(?:\d+|[A-Za-z])[.)])([ \t]+|$)/;
 
 function parseItem(line: number): Item | undefined {
   if (line < 0 || line >= e8.lineCount()) return undefined;
   const text = e8.lineText(line);
-  const m = ITEM.exec(text);
+  const m = (alphabetical() ? ITEM_LETTERED : ITEM).exec(text);
   if (!m || (m[1] === "" && m[2] === "*")) return undefined;
   const contentIndex = m[0].length;
   const item: Item = {

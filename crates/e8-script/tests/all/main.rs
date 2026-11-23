@@ -92,6 +92,7 @@ mod org_cycle_hook;
 mod org_clock_display;
 mod org_goto;
 mod org_id;
+mod org_list_alphabetical;
 mod org_markers_follow_moves;
 mod org_occur_agenda_files;
 mod org_search_view;
