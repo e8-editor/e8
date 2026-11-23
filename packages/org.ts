@@ -59,6 +59,7 @@ import {
   DRAWER_RE,
   edReplace,
   endOfMetaData,
+  entryDelete,
   entryPut,
   fixBox,
   fixBul,
@@ -10123,6 +10124,130 @@ const insertStructureTemplateCommand = e8.defineCommand({
   run: () => insertStructureTemplate(readStructureType()),
 });
 
+// Cloning a subtree, as org.el's org-clone-subtree-with-time-shift.
+
+e8.defineVariable({
+  name: "org-clone-delete-id",
+  doc: "Whether clones of a subtree lose its ID property, rather than each having a new one.",
+  value: null,
+});
+
+/**
+ * A clone of TEMPLATE, the K-th, as org-clone-subtree-with-time-shift
+ * makes it in a buffer of its own: a new ID, or none; no clock lines, nor
+ * the drawers that leaves empty, except in the 0th; timestamps moved on by
+ * K times the shift; and repeaters taken out, unless K is KEEP.
+ */
+function cloneOf(template: string, k: number, idprop: boolean, shift: [number, string] | undefined, keep: number): string {
+  const name = e8.generateNewBufferName(" *temp*");
+  e8.getBufferCreate(name);
+  try {
+    return e8.withCurrentBuffer(name, () => {
+      e8.insert(template);
+      e8.call("org-mode");
+      e8.gotoChar(e8.pointMin());
+      if (idprop) {
+        if (truthy(e8.variable("org-clone-delete-id") ?? null)) {
+          const h = parseHeading(lineAt());
+          if (h) entryDelete(h, "ID");
+        } else e8.callWithPrefix([4], "org-id-get-create");
+      }
+      if (k !== 0) {
+        for (let l = e8.lineCount() - 1; l >= 0; l--) {
+          if (/^[ \t]*CLOCK:/.test(e8.lineText(l))) e8.deleteRegion(e8.lineStart(l), lineStartOrEnd(l + 1));
+        }
+        // A drawer with nothing left in it, as org-remove-empty-drawer-at takes it away.
+        for (let l = 0; l + 1 < e8.lineCount(); l++) {
+          if (/^[ \t]*:(?:\w|[-_])+:[ \t]*$/.test(e8.lineText(l)) && !/^[ \t]*:END:[ \t]*$/i.test(e8.lineText(l)) && /^[ \t]*:END:[ \t]*$/i.test(e8.lineText(l + 1))) {
+            e8.deleteRegion(e8.lineStart(l), lineStartOrEnd(l + 2));
+            l--;
+          }
+        }
+      }
+      e8.gotoChar(e8.pointMin());
+      if (shift) {
+        // Each timestamp, as org-timestamp-change moves it with point just after it.
+        const re = /[[<]\d{4}-\d{2}-\d{2}(?: [^\]>\n]*?)?[\]>]/g;
+        for (let l = 0; l < e8.lineCount(); l++) {
+          let from = 0;
+          for (;;) {
+            re.lastIndex = from;
+            const m = re.exec(e8.lineText(l));
+            if (!m) break;
+            const end = at(l, e8.lineText(l), m.index + m[0].length);
+            e8.gotoChar(end);
+            changeTimestamp(k * shift[0], shift[1]);
+            // Searching on from where point is left, as re-search-forward does.
+            const p = e8.point();
+            if (lineAt(p) !== l) break;
+            from = indexOf(l, e8.lineText(l), p);
+          }
+        }
+        if (k !== keep) {
+          for (let l = 0; l < e8.lineCount(); l++) {
+            const text = e8.lineText(l);
+            const found = allMatches(/<\d{4}-\d{2}-\d{2}(?: [^>\n]*?)?>/g, text).reverse();
+            for (const m of found) {
+              const r = /^<[^<>\n]+( +[.+]?\+[0-9]+[hdwmy])/.exec(text.slice(m.index ?? 0));
+              if (r) {
+                const start = at(l, text, (m.index ?? 0) + r[0].length - r[1].length);
+                e8.deleteRegion(start, start + charCount(r[1]));
+              }
+            }
+          }
+        }
+      }
+      return e8.bufferText(e8.pointMin(), e8.pointMax());
+    });
+  } finally {
+    e8.call("kill-buffer", name);
+  }
+}
+
+e8.defineCommand({
+  name: "org-clone-subtree-with-time-shift",
+  doc:
+    "Clone the subtree at point N times, the clones its siblings after it. If it has a timestamp, ask for a shift per clone, as +1w; " +
+    "the clones' timestamps then move on clone by clone. Clones lose their clocking, and get new IDs. A subtree with a repeater is " +
+    "cloned once more, unshifted, its clones without repeaters, and the original goes last, past them. With C-u, ask for no shift.",
+  params: [{ name: "n", kind: "number", prompt: "Number of clones to produce: " }],
+  run: (n: number) => {
+    if (!Number.isInteger(n) || n < 0) e8.userError(`Invalid number of replications ${n}`);
+    const all = headings();
+    const i = headingIndex(all, lineAt());
+    if (i === undefined) e8.userError("No subtree to clone");
+    const beg = all[i!].start;
+    const endOfTree = subtreeRegion(all, i!)[1];
+    const prefix = e8.prefixArg();
+    const plainCU = Array.isArray(prefix) && prefix[0] === 4;
+    const hasTimestamp = /[[<]\d{4}-\d{2}-\d{2}(?: [^\]>\n]*?)?[\]>]/.test(e8.bufferText(beg, endOfTree));
+    const shift = !plainCU && hasTimestamp ? e8.readString("Date shift per clone (e.g. +1w, empty to copy unchanged): ") : "";
+    let doshift: [number, string] | undefined;
+    if (/[^ \t\r\n]/.test(shift)) {
+      const m = /^[ \t]*([+-]?[0-9]+)([hdwmy])[ \t]*$/.exec(shift);
+      if (!m) e8.userError(`Invalid shift specification ${shift}`);
+      const units: Record<string, [number, string]> = { h: [1, "hour"], d: [1, "day"], w: [7, "day"], m: [1, "month"], y: [1, "year"] };
+      const [times, what] = units[m![2]];
+      doshift = [Number(m![1]) * times, what];
+    }
+    e8.gotoChar(endOfTree);
+    if (e8.point() !== e8.lineStart(lineAt())) e8.insert("\n");
+    let end = e8.point();
+    const template = e8.bufferText(beg, end);
+    let [nmin, nmax, keep] = [1, n, -1];
+    const idprop = entryGet(all[i!].line, "ID") !== undefined;
+    if (doshift && /<[^<>\n]+ [.+]?\+[0-9]+[hdwmy][^<>\n]*>/.test(template)) {
+      e8.deleteRegion(beg, end);
+      end = beg;
+      [nmin, nmax] = [0, n + 1];
+      keep = nmax;
+    }
+    e8.gotoChar(end);
+    for (let k = nmin; k <= nmax; k++) e8.insert(cloneOf(template, k, idprop, doshift, keep));
+    e8.gotoChar(beg);
+  },
+});
+
 // The mode
 
 const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
@@ -10203,6 +10328,7 @@ const keys: { [keys: string]: e8.CommandName | e8.DefinedCommand } = {
   "C-c C-x C-w": "org-cut-special",
   "C-c C-x M-w": "org-copy-special",
   "C-c C-x C-y": "org-paste-special",
+  "C-c C-x c": "org-clone-subtree-with-time-shift",
   "<mouse-1>": mouseFollow,
 };
 
@@ -11775,8 +11901,7 @@ e8.bindKey("S-RET", "org-table-copy-down", "org-mode-map");
 // them without a graphical display or with org-use-extra-keys. ESC RET and
 // ESC with an arrow, which Org binds too, are already M-RET and M-<arrow>;
 // and C-c C-x c and C-c C-x d are left out, as Org binds them again after
-// these, to org-clone-subtree-with-time-shift, which E8 does not have yet,
-// and to inserting a drawer.
+// these, to cloning a subtree and inserting a drawer.
 e8.defineVariable({
   name: "org-use-extra-keys",
   doc:
