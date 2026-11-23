@@ -72,28 +72,29 @@ fn nothing_is_dimmed_without_blocking() {
     assert_eq!(line_faces(&mut ed, &s), "||||");
 }
 
-/// The mode name says which archives are shown, as org-agenda-set-mode-name
-/// has it, and C-u v a shows the archive files too.
+/// The mode name says which archives are shown, after the span (none for
+/// the TODO list) and the modes on, as org-agenda-set-mode-name has it, and
+/// C-u v a shows the archive files too.
 #[test]
 fn archives_mode_names_itself_and_c_u_takes_the_files() {
     let (mut ed, s, dir) = agenda_file("* TODO B\n", &[]);
     std::fs::write(dir.path().join("tasks.org_archive"), "#    -*- mode: org -*-\n\n* TODO Old\n").unwrap();
     ed.call("org-todo-list", vec![]).unwrap();
     let mode_name = |ed: &mut Editor| s.eval_expression(ed, "e8.withCurrentBuffer('*Org Agenda*', () => e8.variable('mode-name'))").unwrap().trim_matches('"').to_string();
-    assert_eq!(mode_name(&mut ed), "Org-Agenda");
+    assert_eq!(mode_name(&mut ed), "Org-Agenda  Ddl Grid Habit");
     ed.press("v a").unwrap();
-    assert_eq!(mode_name(&mut ed), "Org-Agenda :ARCHIVE:");
+    assert_eq!(mode_name(&mut ed), "Org-Agenda  Ddl Grid Habit :ARCHIVE:");
     assert!(!agenda(&ed).contains("TODO Old"));
     ed.press("C-u v a").unwrap();
     assert_eq!(ed.take_error().map(|e| e.to_string()), None);
-    assert_eq!(mode_name(&mut ed), "Org-Agenda Archives");
+    assert_eq!(mode_name(&mut ed), "Org-Agenda  Ddl Grid Habit Archives");
     assert!(agenda(&ed).contains("TODO Old"), "{}", agenda(&ed));
     // g keeps it, and a new agenda starts without it.
     ed.press("g").unwrap();
     assert!(agenda(&ed).contains("TODO Old"));
     ed.call("org-todo-list", vec![]).unwrap();
     assert!(!agenda(&ed).contains("TODO Old"));
-    assert_eq!(mode_name(&mut ed), "Org-Agenda");
+    assert_eq!(mode_name(&mut ed), "Org-Agenda  Ddl Grid Habit");
 }
 
 /// Archiving from the agenda into another file saves it with

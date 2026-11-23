@@ -5238,17 +5238,35 @@ declare global {
        */
       "org-agenda-clock-out": [];
       /**
+       * Show a day's agenda, point's day. With a prefix argument, that day of the month.
+       *
+       * @param dayOfMonth raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-day-view": [dayOfMonth?: PrefixArg | boolean];
+      /**
        * Dim the agenda's blocked TODO entries again, or hide them, as the agenda marked them when it was made.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-dim-blocked-tasks": [];
       /**
-       * Show the week before in the agenda.
+       * Show the agenda for the days before it, by its span. With a prefix argument, that many spans back.
+       *
+       * @param arg prefix count
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-earlier": [];
+      "org-agenda-earlier": [arg?: number];
+      /**
+       * Show two weeks' agenda, from point's week. With a prefix argument, from that ISO week, as org-agenda-week-view reads it.
+       *
+       * @param isoWeek raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-fortnight-view": [isoWeek?: PrefixArg | boolean];
       /**
        * Show the entry the agenda line at point shows in another window, and go there.
        *
@@ -5256,23 +5274,27 @@ declare global {
        */
       "org-agenda-goto": [];
       /**
-       * Show the week with today in it, and go to today.
+       * Go to today in the agenda, showing the days around it if they are not shown.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-goto-today": [];
       /**
-       * Show the next week in the agenda.
+       * Show the agenda for the days after it, by its span. With a prefix argument, that many spans on.
+       *
+       * @param arg prefix count
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-later": [];
+      "org-agenda-later": [arg?: number];
       /**
-       * Show the week's agenda: what is scheduled, due and timestamped each day, from org-agenda-files.
+       * Show the agenda: what is scheduled, due and timestamped each day, from org-agenda-files, for the days org-agenda-span says. With a numeric prefix argument, for that many days.
+       *
+       * @param arg raw prefix argument
        *
        * Defined in packages/org-agenda.ts.
        */
-      "org-agenda-list": [];
+      "org-agenda-list": [arg?: PrefixArg | boolean];
       /**
        * Add a word to the search view's string, and ask for it again.
        *
@@ -5298,11 +5320,19 @@ declare global {
        */
       "org-agenda-manipulate-query-subtract-re": [];
       /**
-       * The mode of the *Org Agenda* buffer. n and p move between lines, RET goes to an entry and TAB shows it in another window, t changes its TODO state, g rebuilds the agenda, f and b move a week, . goes to today, and q leaves.
+       * The mode of the *Org Agenda* buffer. n and p move between lines, RET goes to an entry and TAB shows it in another window, t changes its TODO state, g rebuilds the agenda, f and b move by its span, . goes to today, d, w and y show a day, a week or a year, and q leaves.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-mode": [];
+      /**
+       * Show a month's agenda, point's month. With a prefix argument, that month; past 99, its last two digits are the month and those before them the year, as 202612.
+       *
+       * @param month raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-month-view": [month?: PrefixArg | boolean];
       /**
        * Move to the next line of the agenda.
        *
@@ -5356,6 +5386,12 @@ declare global {
        */
       "org-agenda-refile": [goto?: PrefixArg | boolean];
       /**
+       * Show the agenda for org-agenda-span's days.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-reset-view": [];
+      /**
        * Set the tags of the entry the agenda line at point shows.
        *
        * Defined in packages/org-agenda.ts.
@@ -5392,11 +5428,27 @@ declare global {
        */
       "org-agenda-toggle-archive-tag": [];
       /**
-       * Change how the agenda shows its entries, by a key: a to toggle archived trees, A to toggle archive files too, q to abort.
+       * Change how the agenda shows its entries, by a key: d, w, t, m and y for a day's, a week's, two weeks', a month's or a year's agenda, SPC for org-agenda-span's, a to toggle archived trees, A to toggle archive files too, q to abort.
        *
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-view-mode-dispatch": [];
+      /**
+       * Show a week's agenda, point's week. With a prefix argument, that ISO week of the year; past 99, its last two digits are the week and those before them the year, as 202612.
+       *
+       * @param isoWeek raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-week-view": [isoWeek?: PrefixArg | boolean];
+      /**
+       * Show a year's agenda, point's year, after asking. With a prefix argument, that year, two digits being one of the next 30 years or the 70 before.
+       *
+       * @param year raw prefix argument
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-year-view": [year?: PrefixArg | boolean];
       /**
        * Put the tags of the heading point is under at org-tags-column; with a prefix argument, every heading's.
        *
@@ -13593,6 +13645,12 @@ declare global {
        */
       "org-agenda-search-view-max-outline-level": Value;
       /**
+       * Whether the agenda shows every day in its span, or only the days with entries.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-show-all-dates": Value;
+      /**
        * Whether the time grid shows the time now, as org-agenda-current-time-string.
        *
        * Defined in packages/org-agenda.ts.
@@ -13616,6 +13674,18 @@ declare global {
        * Defined in packages/org-agenda.ts.
        */
       "org-agenda-skip-comment-trees": Value;
+      /**
+       * How many days the agenda shows: day, week, fortnight, month, year, or a number of days.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-span": Value;
+      /**
+       * The day of the week an agenda of 7 or 14 days starts on, 0 for Sunday and 1 for Monday, or nil to start on the day itself.
+       *
+       * Defined in packages/org-agenda.ts.
+       */
+      "org-agenda-start-on-weekday": Value;
       /**
        * Whether a new agenda shows archived trees: nil, trees for the trees tagged ARCHIVE, or t for the agenda files' archive files too.
        *

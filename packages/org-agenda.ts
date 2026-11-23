@@ -28,6 +28,7 @@ import {
   setPriority,
   showPriority,
   subtreeRegion,
+  timestampDatesAt,
   today,
 } from "org";
 import { setAgendaEntryHere, storeLink } from "ol";
@@ -106,7 +107,28 @@ e8.defineVariable({
   value: 0,
 });
 
+e8.defineVariable({
+  name: "org-agenda-span",
+  doc: "How many days the agenda shows: day, week, fortnight, month, year, or a number of days.",
+  value: "week",
+});
+e8.defineVariable({
+  name: "org-agenda-start-on-weekday",
+  doc: "The day of the week an agenda of 7 or 14 days starts on, 0 for Sunday and 1 for Monday, or nil to start on the day itself.",
+  value: 1,
+});
+e8.defineVariable({
+  name: "org-agenda-show-all-dates",
+  doc: "Whether the agenda shows every day in its span, or only the days with entries.",
+  value: true,
+});
+
 const AGENDA = "*Org Agenda*";
+
+/** The name org-follow-timestamp-link gives the agenda it makes, as org-agenda-buffer-tmp-name; the others are *Org Agenda*. */
+let bufferTmpName: string | undefined;
+/** The buffer the last agenda was put in. */
+let agendaBuffer = AGENDA;
 const AGENDA_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
   "October", "November", "December"];
 const AGENDA_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -127,6 +149,92 @@ function isoWeekOf(n: number): number {
   const thursday = n - wd + 3;
   const year = new Date(thursday * 86400000).getUTCFullYear();
   return Math.floor((thursday - Math.floor(Date.UTC(year, 0, 1) / 86400000)) / 7) + 1;
+}
+
+/** The day of the week of a day, 0 for Sunday, as calendar-day-of-week counts. */
+function weekday(n: number): number {
+  return new Date(n * 86400000).getUTCDay();
+}
+
+function leapYear(year: number): boolean {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+/**
+ * The day of a month, day and year, as calendar-absolute-from-gregorian
+ * counts it: a month past 12, or before 1, runs on into the years around,
+ * and a day past its month's end into the months after, as org-agenda-later
+ * relies on.
+ */
+function gregorianDay(month: number, day: number, year: number): number {
+  let n = day + 31 * (month - 1);
+  if (month > 2) {
+    n -= Math.trunc((23 + 4 * month) / 10);
+    if (leapYear(year)) n++;
+  }
+  const y = year - 1;
+  // Day 0 is 1970-01-01, absolute day 719163.
+  return n + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 719163;
+}
+
+/** The year a day's ISO week is in, as calendar-iso-from-absolute gives it. */
+function isoYearOf(n: number): number {
+  return new Date((n - ((weekday(n) + 6) % 7) + 3) * 86400000).getUTCFullYear();
+}
+
+/** The Monday of an ISO week, as calendar-iso-to-absolute finds it. */
+function isoWeekMonday(week: number, year: number): number {
+  const jan4 = gregorianDay(1, 4, year);
+  return jan4 - ((weekday(jan4) + 6) % 7) + 7 * (week - 1);
+}
+
+/** A year of two digits as one of the 30 years to come or the 70 before, as org-small-year-to-year reads it. */
+function smallYearToYear(year: number): number {
+  if (year >= 100) return year;
+  const current = today_().year;
+  const century = Math.trunc(current / 100);
+  const offset = year - (current % 100);
+  if (offset > 30) return (century - 1) * 100 + year;
+  if (offset > -70) return century * 100 + year;
+  return (century + 1) * 100 + year;
+}
+
+/** How many days an agenda shows: day, week, fortnight, month, year, or a number of days, as org-agenda-span takes. */
+type Span = "day" | "week" | "fortnight" | "month" | "year" | number;
+
+/** A span's name for a number of days that has one, as org-agenda-ndays-to-span gives it. */
+function ndaysToSpan(n: Span): Span {
+  return n === 1 ? "day" : n === 7 ? "week" : n === 14 ? "fortnight" : n;
+}
+
+/** How many days a span is from a day, as org-agenda-span-to-ndays counts them. */
+function spanToNdays(span: Span, start: number): number {
+  if (typeof span === "number") return span;
+  if (span === "day") return 1;
+  if (span === "week") return 7;
+  if (span === "fortnight") return 14;
+  const d = dayFromNumber(start);
+  if (span === "month") return new Date(Date.UTC(d.year, d.month, 0)).getUTCDate();
+  return leapYear(d.year) ? 366 : 365;
+}
+
+/** The span's name in the agenda's header and mode line, as org-agenda-span-name writes it. */
+function spanName(span: Span | undefined): string {
+  if (span === undefined) return "";
+  return typeof span === "number" ? `${span} days` : span[0].toUpperCase() + span.slice(1);
+}
+
+/** A span from a variable's value: a symbol's name or a number. */
+function spanOf(value: e8.Value | undefined): Span {
+  if (typeof value === "number") return value;
+  if (value === "day" || value === "week" || value === "fortnight" || value === "month" || value === "year") return value;
+  return "week";
+}
+
+/** org-agenda-start-on-weekday: the day of the week a week's or a fortnight's agenda starts on, or none. */
+function startOnWeekday(): number | null {
+  const v = e8.variable("org-agenda-start-on-weekday");
+  return typeof v === "number" ? v : null;
 }
 
 /** An active timestamp's day and repeater, from text such as <2026-10-28 Wed +1w>. */
@@ -542,11 +650,14 @@ function byUrgency(items: AgendaItem[]): AgendaItem[] {
 
 /** What the agenda buffer shows, for its keys to act on and g to rebuild. */
 let agendaView:
-  | { kind: "week"; start: number }
+  // What org-agenda-list was given, as its org-last-args: the prefix argument, the day asked for and the span.
+  | { kind: "agenda"; arg: e8.PrefixArg | null; startDay?: number; span: Span }
   | { kind: "todo" }
   | { kind: "tags"; todoOnly: boolean; match: string }
   | { kind: "search"; todoOnly: boolean; todoOnlyArg: boolean; string: string; boolean: boolean } = { kind: "todo" };
 let agendaLines: (AgendaItem | undefined)[] = [];
+/** Each line's day, and the count of the days shown up to it, as org-agenda-list puts day and org-day-cnt on them; the header has none. */
+let agendaLineDays: ({ day: number; cnt: number } | undefined)[] = [];
 
 /**
  * Puts each habit's graph on its line at org-habit-graph-column, over what
@@ -578,13 +689,15 @@ function insertHabitGraphs(lines: { text: string; item?: AgendaItem }[]): void {
 /** Puts lines into the agenda buffer and shows it, as org-agenda-prepare and org-agenda-finalize do. */
 type AgendaLines = { text: string; item?: AgendaItem }[];
 
-function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), pointLine: number): void {
-  e8.getBufferCreate(AGENDA);
+function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), pointLine: number, days: typeof agendaLineDays = []): void {
+  agendaBuffer = bufferTmpName ?? AGENDA;
+  agendaLineDays = days;
+  e8.getBufferCreate(agendaBuffer);
   // Lines that depend on the agenda window's width are made once it is placed, as org-agenda-prepare selects it first.
   if (typeof given === "function") placeAgendaWindow();
   const lines = typeof given === "function" ? given((e8.windowSize()?.width ?? 80) - 1) : given;
   markBlocked(lines);
-  e8.withCurrentBuffer(AGENDA, () => {
+  e8.withCurrentBuffer(agendaBuffer, () => {
     e8.setReadOnly(false);
     eraseBuffer();
     e8.insert(lines.map((l) => l.text).join("\n") + "\n");
@@ -620,16 +733,16 @@ function showAgenda(given: AgendaLines | ((maxChars: number) => AgendaLines), po
 /** Shows the agenda's buffer as org-agenda-window-setup says, unless the selected window shows it. */
 function placeAgendaWindow(): void {
   const setup = e8.variable("org-agenda-window-setup");
-  if (e8.windowBuffer() === AGENDA) return;
-  if (setup === "current-window") e8.call("switch-to-buffer", AGENDA);
+  if (e8.windowBuffer() === agendaBuffer) return;
+  if (setup === "current-window") e8.call("switch-to-buffer", agendaBuffer);
   else if (setup === "only-window") {
     e8.call("delete-other-windows");
-    e8.call("switch-to-buffer", AGENDA);
-  } else if (setup === "other-window") e8.call("switch-to-buffer-other-window", AGENDA);
+    e8.call("switch-to-buffer", agendaBuffer);
+  } else if (setup === "other-window") e8.call("switch-to-buffer-other-window", agendaBuffer);
   else {
     // As org-agenda-window-setup's reorganize-frame: this window and the agenda's.
-    if (!e8.windowList().some((w) => e8.windowBuffer(w) === AGENDA)) e8.call("delete-other-windows");
-    e8.call("pop-to-buffer", AGENDA);
+    if (!e8.windowList().some((w) => e8.windowBuffer(w) === agendaBuffer)) e8.call("delete-other-windows");
+    e8.call("pop-to-buffer", agendaBuffer);
   }
 }
 
@@ -682,11 +795,20 @@ function dimLine(l: number, item: AgendaItem | undefined): void {
   }
 }
 
-/** The agenda's mode name, saying whether archives are shown, as org-agenda-set-mode-name writes it. */
+/**
+ * The agenda's mode name, as org-agenda-set-mode-name writes it: the span
+ * of a day agenda (none for the other views), that deadlines are shown, as
+ * E8's agenda always shows them, whether the time grid and habits are, and
+ * which archives are.
+ */
 function setModeName(): void {
   const tag = String(e8.variable("org-archive-tag") ?? "ARCHIVE");
+  const span = agendaView.kind === "agenda" ? spanName(agendaView.span) : "";
+  const grid = truthy(e8.variable("org-agenda-use-time-grid") ?? null) ? " Grid" : "";
+  const habit = truthy(e8.variable("org-habit-show-habits") ?? null) ? " Habit" : "";
+  const archives = archivesMode === true ? " Archives" : archivesMode === "trees" ? ` :${tag}:` : "";
   e8.makeLocalVariable("mode-name");
-  e8.setVariable("mode-name", `Org-Agenda${archivesMode === true ? " Archives" : archivesMode === "trees" ? ` :${tag}:` : ""}`);
+  e8.setVariable("mode-name", `Org-Agenda ${span} Ddl${grid}${habit}${archives}`);
 }
 
 /**
@@ -702,24 +824,53 @@ function fitAgendaWindow(lines: number): void {
   if (wanted !== now) e8.resizeWindow(undefined, wanted - now);
 }
 
-/** The week's agenda from a day, as org-agenda-list shows it for org-agenda-span week. */
-function weekAgenda(start: number): void {
+/**
+ * The agenda of a span of days, as org-agenda-list makes it: ARG, a
+ * positive number, is the span; the days start at START-DAY, or today,
+ * or for a week or a fortnight on org-agenda-start-on-weekday before it;
+ * point goes to today, else to START-DAY.
+ */
+function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span, weekdayStart = startOnWeekday()): void {
+  if (typeof arg === "number" && arg > 0) {
+    spanArg = arg;
+    arg = null;
+  }
+  if (typeof spanArg === "number" && !(spanArg > 0)) e8.userError(`Agenda creation impossible for this span(=${spanArg} days)`);
+  const span = ndaysToSpan(spanArg ?? spanOf(e8.variable("org-agenda-span")));
   const today = dayNumber(today_());
+  const sd = startDay ?? today;
+  const ndays = spanToNdays(span, sd);
+  const sow = ndays === 7 || ndays === 14 ? weekdayStart : null;
+  let start = sd;
+  if (sow !== null && ndays >= 7) {
+    const d = weekday(sd) - sow;
+    start = sd - ((d < 0 ? 7 : 0) + d);
+  }
+  const last = start + ndays - 1;
+  const [w1, w2] = [isoWeekOf(start), isoWeekOf(last)];
+  const two = (n: number) => String(n).padStart(2, "0");
+  const weeks = last - start >= 350 ? "" : w1 === w2 ? ` (W${two(w1)})` : ` (W${two(w1)}-W${two(w2)})`;
+  const lines: AgendaLines = [{ text: `${spanName(span)}-agenda${weeks}:` }];
+  const days: typeof agendaLineDays = [undefined];
+  const showAll = truthy(e8.variable("org-agenda-show-all-dates") ?? null);
+  let pointLine: number | undefined;
+  let cnt = 0;
   const buffers = agendaBuffers();
-  const lines: { text: string; item?: AgendaItem }[] = [{ text: `Week-agenda (W${String(isoWeekOf(start)).padStart(2, "0")}):` }];
-  let pointLine = 0;
-  // Each file read once for the week, not once a day.
+  // Each file read once for the span, not once a day.
   const scans = new Map(buffers.map((buffer) => [buffer, e8.withCurrentBuffer(buffer, () => widened(scanBuffer))]));
-  for (let day = start; day < start + 7; day++) {
-    const d = dayFromNumber(day);
-    const wd = new Date(day * 86400000).getUTCDay();
-    if (day === today) pointLine = lines.length;
-    const week = wd === 1 ? ` W${String(isoWeekOf(day)).padStart(2, "0")}` : "";
-    lines.push({ text: `${AGENDA_DAYS[wd].padEnd(10)} ${String(d.day).padStart(2)} ${AGENDA_MONTHS[d.month - 1]} ${d.year}${week}` });
+  for (let day = start; day <= last; day++) {
+    if (day === today || (pointLine === undefined && day === sd)) pointLine = lines.length;
     const items: AgendaItem[] = [];
     for (const buffer of buffers) items.push(...e8.withCurrentBuffer(buffer, () => dayItems(scans.get(buffer)!, day, today, buffer)));
+    if (items.length === 0 && !showAll) continue;
+    cnt++;
+    const first = lines.length;
+    const d = dayFromNumber(day);
+    const wd = weekday(day);
+    const week = wd === 1 ? ` W${two(isoWeekOf(day))}` : "";
+    lines.push({ text: `${AGENDA_DAYS[wd].padEnd(10)} ${String(d.day).padStart(2)} ${AGENDA_MONTHS[d.month - 1]} ${d.year}${week}` });
     const sorted = byUrgency(items);
-    const grid = day === today ? timeGrid(sorted) : [];
+    const grid = timeGrid(sorted, day === today, ndays);
     // Each grid line after the entries at its time or earlier, as a stable sort puts it.
     for (const item of sorted) {
       while (grid.length > 0 && item.time !== undefined && grid[0].minutes < item.time.minutes) lines.push({ text: grid.shift()!.text });
@@ -727,21 +878,29 @@ function weekAgenda(start: number): void {
       lines.push({ text: item.text, item });
     }
     for (const g of grid) lines.push({ text: g.text });
+    for (let l = first; l < lines.length; l++) days[l] = { day, cnt };
   }
-  agendaView = { kind: "week", start };
-  showAgenda(lines, pointLine);
+  agendaView = { kind: "agenda", arg, startDay, span };
+  startingDay = start;
+  showAgenda(lines, pointLine ?? 0, days);
 }
+
+/** The first day the last day agenda showed, as org-starting-day. */
+let startingDay = 0;
 
 /**
  * Today's time grid, as org-agenda-add-time-grid-maybe draws it with the
  * default org-agenda-time-grid: a line at each of its times, and one for
  * the time now, when the day has entries with times.
  */
-function timeGrid(items: AgendaItem[]): { text: string; minutes: number }[] {
+function timeGrid(items: AgendaItem[], todayp: boolean, ndays: number): { text: string; minutes: number }[] {
   if (e8.variable("org-agenda-use-time-grid") === null || e8.variable("org-agenda-use-time-grid") === false) return [];
   const spec = e8.variable("org-agenda-time-grid");
   const [when, times, , rule] = Array.isArray(spec) ? spec : [];
   const conditions = Array.isArray(when) ? when.map(String) : [];
+  // Today's, a one-day agenda's or every day's, as its conditions say.
+  const drawn = (todayp && conditions.includes("today")) || (ndays === 1 && conditions.includes("daily")) || conditions.includes("weekly");
+  if (!drawn) return [];
   if (conditions.includes("require-timed") && !items.some((i) => i.time !== undefined)) return [];
   const blank = " ".repeat(14);
   const out: { text: string; minutes: number }[] = (Array.isArray(times) ? times : []).map((t) => {
@@ -749,7 +908,7 @@ function timeGrid(items: AgendaItem[]): { text: string; minutes: number }[] {
     return { text: `${blank}${clockTime(h, m)}${gridDots()} ${typeof rule === "string" ? rule : "----------------"}`, minutes: h * 60 + m };
   });
   const showNow = e8.variable("org-agenda-show-current-time-in-grid");
-  if (showNow !== null && showNow !== false) {
+  if (todayp && showNow !== null && showNow !== false) {
     const now = today(true);
     const minutes = (now.hour ?? 0) * 60 + (now.minute ?? 0);
     const text = `${blank}${clockTime(now.hour ?? 0, now.minute ?? 0)}${gridDots()} ${String(e8.variable("org-agenda-current-time-string") ?? "")}`;
@@ -762,11 +921,6 @@ function timeGrid(items: AgendaItem[]): { text: string; minutes: number }[] {
 /** Today, as the agenda counts it. */
 function today_(): DateTime {
   return today();
-}
-
-/** The week org-agenda-list starts with: the Monday on or before today. */
-function weekStart(day: number): number {
-  return day - ((new Date(day * 86400000).getUTCDay() + 6) % 7);
 }
 
 // Leaving TODO entries out of the TODO list for their timestamps, as
@@ -902,6 +1056,7 @@ function notOrg(): void {
       }
     }
     agendaLines = [];
+    agendaLineDays = [];
   }
   throw new Error(`Agenda file ${file} is not in Org mode`);
 }
@@ -1200,9 +1355,16 @@ function searchView(todoOnlyArg: boolean, string?: string, editAt?: number): voi
   showAgenda(lines, 0);
 }
 
+/** Makes the agenda again, as org-agenda-redo does, with point on the same line. */
 function redoAgenda(): void {
+  e8.message("Rebuilding agenda buffer...");
+  redoView();
+  e8.message("Rebuilding agenda buffer...done");
+}
+
+function redoView(): void {
   const line = e8.lineOf(e8.point());
-  if (agendaView.kind === "week") weekAgenda(agendaView.start);
+  if (agendaView.kind === "agenda") agendaList(agendaView.arg, agendaView.startDay, agendaView.span);
   // C-u r asks for the match again, as the tags view's redo command does.
   else if (agendaView.kind === "tags") tagsView(agendaView.todoOnly, e8.prefixArg() !== null && e8.prefixArg() !== undefined ? undefined : agendaView.match);
   // And the search view's, for the string.
@@ -1217,13 +1379,38 @@ function freshAgenda(): void {
   archivesMode = start === true ? true : truthy(start) ? "trees" : null;
 }
 
-const agendaList = e8.defineCommand({
+const agendaListCommand = e8.defineCommand({
   name: "org-agenda-list",
-  doc: "Show the week's agenda: what is scheduled, due and timestamped each day, from org-agenda-files.",
-  run: () => {
+  doc:
+    "Show the agenda: what is scheduled, due and timestamped each day, from org-agenda-files, for the days org-agenda-span says. " +
+    "With a numeric prefix argument, for that many days.",
+  params: [{ name: "arg", kind: "prefix" }],
+  run: (arg) => {
     freshAgenda();
-    weekAgenda(weekStart(dayNumber(today_())));
+    agendaList(arg ?? null);
   },
+});
+
+/**
+ * The agenda for the days of the timestamp or date range at point, as
+ * org-follow-timestamp-link opens it, in a buffer named after them: a
+ * range's from its first day, whatever org-agenda-start-on-weekday says.
+ */
+e8.defun("org-follow-timestamp-link", () => {
+  const dates = timestampDatesAt(e8.point());
+  if (dates === undefined) return undefined;
+  const day = (date: string) => dayNumber({ year: Number(date.slice(0, 4)), month: Number(date.slice(5, 7)), day: Number(date.slice(8, 10)) });
+  const [first, last] = [day(dates[0]), day(dates[dates.length - 1])];
+  // A range that ends before it starts signals before anything is made, as org-agenda-list checks the span first.
+  if (last < first) e8.userError(`Agenda creation impossible for this span(=${last - first + 1} days)`);
+  freshAgenda();
+  bufferTmpName = `*Org Agenda(a:${dates.join("--")})`;
+  try {
+    agendaList(null, first, last - first + 1, dates.length > 1 ? null : startOnWeekday());
+  } finally {
+    bufferTmpName = undefined;
+  }
+  return undefined;
 });
 
 const todoListCommand = e8.defineCommand({
@@ -1267,7 +1454,7 @@ const searchViewCommand = e8.defineCommand({
  */
 function manipulateQuery(char: string): void {
   if (agendaView.kind !== "search") {
-    const type = agendaView.kind === "week" ? "agenda" : agendaView.kind;
+    const type = agendaView.kind;
     throw new Error(`Cannot manipulate query for ${type}-type agenda buffers`);
   }
   const view = agendaView;
@@ -1340,7 +1527,7 @@ e8.defineCommand({
   run: () => {
     const key = agendaDispatch();
     freshAgenda();
-    if (key === "a") weekAgenda(weekStart(dayNumber(today_())));
+    if (key === "a") e8.callWithPrefix(e8.prefixArg(), agendaListCommand);
     else if (key === "t") todoList();
     // With the prefix argument org-agenda had, as call-interactively hands on current-prefix-arg.
     else if (key === "m") e8.callWithPrefix(e8.prefixArg(), tagsViewCommand);
@@ -1395,7 +1582,7 @@ function agendaDispatch(): string {
 /** Writes the lines showing an entry again where they are, as org-agenda-change-all-lines does, rather than the agenda rebuilt. */
 function redrawEntry(item: AgendaItem): void {
   const heading = headingOf(item);
-  e8.withCurrentBuffer(AGENDA, () => e8.letBind({ "inhibit-read-only": true }, () => {
+  e8.withCurrentBuffer(agendaBuffer, () => e8.letBind({ "inhibit-read-only": true }, () => {
     // Point kept on its line and column, as org-agenda-change-all-lines keeps it with save-excursion and org-move-to-column.
     const pointLine = e8.lineOf(e8.point());
     const column = e8.point() - e8.lineStart(pointLine);
@@ -1569,43 +1756,187 @@ const agendaRedo = e8.defineCommand({
   run: () => redoAgenda(),
 });
 
-/** Which day of the week view point's line is under, counting from 0. */
-function agendaDayIndex(): number {
-  let index = -1;
-  for (let l = 1; l <= e8.lineOf(e8.point()); l++) if (agendaLines[l] === undefined) index++;
-  return Math.max(0, index);
+/** The day agenda the agenda buffer shows, or an error for another view, as org-agenda-check-type with agenda. */
+function checkAgendaType(): Extract<typeof agendaView, { kind: "agenda" }> {
+  // With the quotes format-message curves.
+  if (agendaView.kind !== "agenda") e8.signal("error", `Not allowed in \u2019${agendaView.kind}\u2019-type agenda buffer or component`);
+  return agendaView as Extract<typeof agendaView, { kind: "agenda" }>;
 }
 
-/** Moves the week view by weeks, to the same day of the week, as org-agenda-later does. */
-function shiftWeek(weeks: number): void {
-  if (agendaView.kind !== "week") throw new Error("Not allowed in this agenda");
-  const index = agendaDayIndex();
-  weekAgenda(agendaView.start + 7 * weeks);
-  let seen = -1;
-  for (let l = 1; l < agendaLines.length; l++) {
-    if (agendaLines[l] === undefined && ++seen === index) {
-      e8.gotoChar(e8.lineStart(l));
-      break;
-    }
+/** The day and day count of point's line, as org-get-at-bol reads day and org-day-cnt. */
+function dayHere(): { day: number; cnt: number } | undefined {
+  return agendaLineDays[e8.lineOf(e8.point())];
+}
+
+/** Makes the day agenda again from another day or for another span, as org-agenda-redo with org-agenda-overriding-arguments. */
+function redoFrom(arg: e8.PrefixArg | null, startDay: number, span: Span): void {
+  e8.message("Rebuilding agenda buffer...");
+  agendaList(arg, startDay, span);
+  e8.message("Rebuilding agenda buffer...done");
+}
+
+/**
+ * Goes to the day shown CNT-th, or to today, or to the agenda's start, as
+ * org-agenda-find-same-or-today-or-agenda does.
+ */
+function findSameOrToday(cnt?: number): void {
+  const today = dayNumber(today_());
+  let line = cnt === undefined ? -1 : agendaLineDays.findIndex((d) => d?.cnt === cnt);
+  if (line < 0) line = agendaLineDays.findIndex((d) => d?.day === today);
+  e8.gotoChar(line < 0 ? e8.pointMin() : e8.lineStart(line));
+}
+
+/**
+ * Moves the agenda on by its span ARG times, as org-agenda-later does:
+ * from the day it was asked to start on, else from point's day, a month
+ * or a year on keeping the day of the month, which runs on into the next
+ * month past the month's end; point goes to the day shown as many days in.
+ */
+function agendaLater(arg: number): void {
+  const view = checkAgendaType();
+  const here = dayHere();
+  const span = view.span;
+  let sd = view.startDay ?? here?.day ?? startingDay;
+  const g = dayFromNumber(sd);
+  if (typeof span === "number") sd += span * arg;
+  else if (span === "day") sd += arg;
+  else if (span === "week") sd += 7 * arg;
+  else if (span === "fortnight") sd += 14 * arg;
+  else if (span === "month") sd = gregorianDay(g.month + arg, g.day, g.year);
+  else sd = gregorianDay(g.month, g.day, g.year + arg);
+  redoFrom(view.arg, sd, span);
+  findSameOrToday(here?.cnt);
+}
+
+/**
+ * The day an agenda of SPAN with SD in it starts on, as
+ * org-agenda-compute-starting-span finds it; N picks the day of SD's
+ * month, the ISO week of its year, the month of its year or the year, and
+ * past 99 a week's or a month's number has the year before it, as 202612.
+ */
+function computeStartingSpan(sd: number, span: Span, n?: number): number {
+  const g = dayFromNumber(sd);
+  if (span === "day") return n === undefined ? sd : gregorianDay(g.month, 1, g.year) + n - 1;
+  if (span === "week" || span === "fortnight") {
+    const sow = startOnWeekday();
+    const d = sow === null ? 0 : weekday(sd) - sow;
+    sd -= (d < 0 ? 7 : 0) + d;
+    if (n === undefined) return sd;
+    let year: number | undefined;
+    if (n > 99) [year, n] = [smallYearToYear(Math.trunc(n / 100)), n % 100];
+    return isoWeekMonday(n, year ?? isoYearOf(sd));
   }
+  if (span === "month") {
+    let year: number | undefined;
+    if (n !== undefined && n > 99) [year, n] = [smallYearToYear(Math.trunc(n / 100)), n % 100];
+    return gregorianDay(n ?? g.month, 1, year ?? g.year);
+  }
+  if (span === "year") return gregorianDay(1, 1, n ?? g.year);
+  return sd;
 }
 
-const agendaLater = e8.defineCommand({
+/** Shows the agenda for SPAN around point's day, as org-agenda-change-time-span does. */
+function changeTimeSpan(span: Span, n?: number): void {
+  const view = checkAgendaType();
+  if (n === undefined && view.span === span) e8.signal("error", `Viewing span is already "${span}"`);
+  const sd = computeStartingSpan(dayHere()?.day ?? view.startDay ?? startingDay, span, n);
+  redoFrom(view.arg, sd, span);
+  findSameOrToday();
+  e8.message(`Switched to ${span} view`);
+}
+
+/** A view command's raw prefix argument as the number it uses, which Org adds to, so C-u or M-- signals. */
+function viewNumber(raw: e8.PrefixArg | null | undefined): number | undefined {
+  if (raw === null || raw === undefined) return undefined;
+  if (typeof raw === "number") return raw;
+  return e8.signal("wrong-type-argument", `Wrong type argument: number-or-marker-p, ${Array.isArray(raw) ? `(${raw[0]})` : String(raw)}`, [
+    "number-or-marker-p",
+    raw as e8.Value,
+  ]);
+}
+
+const agendaLaterCommand = e8.defineCommand({
   name: "org-agenda-later",
-  doc: "Show the next week in the agenda.",
-  run: () => shiftWeek(e8.prefixNumericValue()),
+  doc: "Show the agenda for the days after it, by its span. With a prefix argument, that many spans on.",
+  params: [{ name: "arg", kind: "count" }],
+  run: (arg) => agendaLater(arg),
 });
 const agendaEarlier = e8.defineCommand({
   name: "org-agenda-earlier",
-  doc: "Show the week before in the agenda.",
-  run: () => shiftWeek(-e8.prefixNumericValue()),
+  doc: "Show the agenda for the days before it, by its span. With a prefix argument, that many spans back.",
+  params: [{ name: "arg", kind: "count" }],
+  run: (arg) => agendaLater(-arg),
 });
 const agendaToday = e8.defineCommand({
   name: "org-agenda-goto-today",
-  doc: "Show the week with today in it, and go to today.",
+  doc: "Go to today in the agenda, showing the days around it if they are not shown.",
   run: () => {
-    if (agendaView.kind !== "week") throw new Error("Not allowed in this agenda");
-    weekAgenda(weekStart(dayNumber(today_())));
+    const view = checkAgendaType();
+    const today = dayNumber(today_());
+    const line = agendaLineDays.findIndex((d) => d?.day === today);
+    if (line >= 0) {
+      e8.gotoChar(e8.lineStart(line));
+      return;
+    }
+    redoFrom(view.arg, computeStartingSpan(today, view.span), view.span);
+    findSameOrToday();
+  },
+});
+
+e8.defineCommand({
+  name: "org-agenda-reset-view",
+  doc: "Show the agenda for org-agenda-span's days.",
+  run: () => changeTimeSpan(spanOf(e8.variable("org-agenda-span"))),
+});
+const dayView = e8.defineCommand({
+  name: "org-agenda-day-view",
+  doc: "Show a day's agenda, point's day. With a prefix argument, that day of the month.",
+  params: [{ name: "dayOfMonth", kind: "prefix" }],
+  run: (n) => {
+    // The agenda's type checked first, as org-agenda-change-time-span checks it before using the number.
+    checkAgendaType();
+    changeTimeSpan("day", viewNumber(n));
+  },
+});
+const weekView = e8.defineCommand({
+  name: "org-agenda-week-view",
+  doc: "Show a week's agenda, point's week. With a prefix argument, that ISO week of the year; past 99, its last two digits are the week and those before them the year, as 202612.",
+  params: [{ name: "isoWeek", kind: "prefix" }],
+  run: (n) => {
+    // The agenda's type checked first, as org-agenda-change-time-span checks it before using the number.
+    checkAgendaType();
+    changeTimeSpan("week", viewNumber(n));
+  },
+});
+const fortnightView = e8.defineCommand({
+  name: "org-agenda-fortnight-view",
+  doc: "Show two weeks' agenda, from point's week. With a prefix argument, from that ISO week, as org-agenda-week-view reads it.",
+  params: [{ name: "isoWeek", kind: "prefix" }],
+  run: (n) => {
+    // The agenda's type checked first, as org-agenda-change-time-span checks it before using the number.
+    checkAgendaType();
+    changeTimeSpan("fortnight", viewNumber(n));
+  },
+});
+const monthView = e8.defineCommand({
+  name: "org-agenda-month-view",
+  doc: "Show a month's agenda, point's month. With a prefix argument, that month; past 99, its last two digits are the month and those before them the year, as 202612.",
+  params: [{ name: "month", kind: "prefix" }],
+  run: (n) => {
+    // The agenda's type checked first, as org-agenda-change-time-span checks it before using the number.
+    checkAgendaType();
+    changeTimeSpan("month", viewNumber(n));
+  },
+});
+const yearView = e8.defineCommand({
+  name: "org-agenda-year-view",
+  doc: "Show a year's agenda, point's year, after asking. With a prefix argument, that year, two digits being one of the next 30 years or the 70 before.",
+  params: [{ name: "year", kind: "prefix" }],
+  run: (raw) => {
+    let year = viewNumber(raw);
+    if (year !== undefined) year = smallYearToYear(year);
+    if (e8.yOrNP("Are you sure you want to compute the agenda for an entire year? ")) changeTimeSpan("year", year);
+    else e8.signal("error", "Abort");
   },
 });
 
@@ -1623,8 +1954,8 @@ e8.defineMajorMode({
   modeName: "Org-Agenda",
   doc:
     "The mode of the *Org Agenda* buffer. n and p move between lines, RET goes to an entry and TAB shows it in " +
-    "another window, t changes its TODO state, g rebuilds the agenda, f and b move a week, . goes to today, " +
-    "and q leaves.",
+    "another window, t changes its TODO state, g rebuilds the agenda, f and b move by its span, . goes to today, " +
+    "d, w and y show a day, a week or a year, and q leaves.",
   // Lines run off the window, and n and p move by them, as org-agenda-mode sets up.
   setup: () => {
     if (truthy(e8.variable("org-startup-truncated"))) e8.setVariable("truncate-lines", true);
@@ -1641,8 +1972,11 @@ e8.defineMajorMode({
     t: agendaTodo,
     g: agendaRedo,
     r: agendaRedo,
-    f: agendaLater,
+    f: agendaLaterCommand,
     b: agendaEarlier,
+    d: dayView,
+    w: weekView,
+    y: yearView,
     ".": agendaToday,
     q: agendaQuit,
     x: agendaQuit,
@@ -1652,7 +1986,6 @@ e8.defineMajorMode({
     J: "org-agenda-clock-goto",
     ":": "org-agenda-set-tags",
     ",": "org-agenda-priority",
-    w: "org-agenda-refile",
     $: "org-agenda-archive",
     a: "org-agenda-archive-default-with-confirmation",
     v: "org-agenda-view-mode-dispatch",
@@ -1661,7 +1994,7 @@ e8.defineMajorMode({
   },
 });
 
-void agendaList;
+void agendaListCommand;
 void todoListCommand;
 void tagsViewCommand;
 
@@ -1698,7 +2031,7 @@ e8.defineCommand({
  * line points, as its org-marker, from the last line up, the first left.
  */
 function removeSubtreeEntries(buffer: string, beg: number, end: number): void {
-  e8.withCurrentBuffer(AGENDA, () => e8.letBind({ "inhibit-read-only": true }, () => {
+  e8.withCurrentBuffer(agendaBuffer, () => e8.letBind({ "inhibit-read-only": true }, () => {
     for (let l = agendaLines.length - 1; l > 0; l--) {
       const item = agendaLines[l];
       if (!item || item.buffer !== buffer) continue;
@@ -1710,6 +2043,7 @@ function removeSubtreeEntries(buffer: string, beg: number, end: number): void {
         e8.deleteMarker(item.marks.heading);
       }
       agendaLines.splice(l, 1);
+      agendaLineDays.splice(l, 1);
     }
   }));
 }
@@ -1785,6 +2119,7 @@ for (const [key, command] of [
   ["S-<down>", "org-agenda-priority-down"],
   ["C-c C-x <up>", "org-agenda-priority-up"],
   ["C-c C-x <down>", "org-agenda-priority-down"],
+  ["C-c C-w", "org-agenda-refile"],
 ] as const) e8.defineKey("org-agenda-mode-map", key, command);
 
 /** Toggles archives mode, as org-agenda-archives-mode: archived trees in and out, or with WITH-FILES the archive files too. */
@@ -1812,11 +2147,13 @@ e8.defineCommand({
 });
 
 /** The view modes org-agenda-view-mode-dispatch offers that E8 does not have yet. */
-const VIEW_MODES_NOT_YET = " dwtmylLcFfRrEeGD![";
+const VIEW_MODES_NOT_YET = "lLcFfRrEeGD![";
 
 e8.defineCommand({
   name: "org-agenda-view-mode-dispatch",
-  doc: "Change how the agenda shows its entries, by a key: a to toggle archived trees, A to toggle archive files too, q to abort.",
+  doc:
+    "Change how the agenda shows its entries, by a key: d, w, t, m and y for a day's, a week's, two weeks', a month's or a year's agenda, " +
+    "SPC for org-agenda-span's, a to toggle archived trees, A to toggle archive files too, q to abort.",
   run: () => {
     const key = e8.readCharExclusive(
       "View: [d]ay  [w]eek  for[t]night  [m]onth  [y]ear  [SPC]reset  [q]uit/abort\n" +
@@ -1824,7 +2161,17 @@ e8.defineCommand({
         "       [a]rch-trees [A]rch-files clock[R]eport include[D]iary       [E]ntryText",
     );
     const char = key === "SPC" ? " " : key;
-    if (char === "a") toggleArchivesMode(e8.prefixArg() !== null && e8.prefixArg() !== undefined);
+    const views: Record<string, e8.DefinedCommand | e8.CommandName> = {
+      " ": "org-agenda-reset-view",
+      d: dayView,
+      w: weekView,
+      t: fortnightView,
+      m: monthView,
+      y: yearView,
+    };
+    // With the prefix argument v had, as call-interactively hands on current-prefix-arg.
+    if (views[char] !== undefined) e8.callWithPrefix(e8.prefixArg(), views[char]);
+    else if (char === "a") toggleArchivesMode(e8.prefixArg() !== null && e8.prefixArg() !== undefined);
     else if (char === "A") toggleArchivesMode(true);
     else if (char === "q") e8.message("Abort");
     else if ([...char].length === 1 && VIEW_MODES_NOT_YET.includes(char)) e8.userError(`E8 does not have that view mode yet: ${char}`);
@@ -1841,7 +2188,7 @@ e8.defineCommand({
     const interactive = e8.calledInteractively() && !e8.executingKbdMacro();
     if (interactive) e8.message("Dim or hide blocked tasks...");
     // Only the agenda's lines carry the marks it reads.
-    if (e8.bufferName() === AGENDA) agendaLines.forEach((item, l) => dimLine(l, item));
+    if (e8.bufferName() === agendaBuffer) agendaLines.forEach((item, l) => dimLine(l, item));
     if (interactive) e8.message("Dim or hide blocked tasks...done");
   },
 });
