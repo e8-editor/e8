@@ -1,0 +1,1966 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "two-heads",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* A\n* B %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** A\n** B Q\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** A\n** B Q\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "sub-shift2",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* TODO task\n** sub %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** TODO task\n**** sub Q\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** TODO task\n**** sub Q\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "tag-pct",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO %? :tag:\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** TODO Q                                                               :tag:\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** TODO Q                                                               :tag:\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "adapt-body",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO task\nmore %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** TODO task\n more Q\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** TODO task\n more Q\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "adapt-empty",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* TODO task\n%?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** TODO task\n  Q\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** TODO task\n  Q\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "adapt-drawer",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* TODO task\n:PROPERTIES:\n:A: 1\n:END:\nbody %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** TODO task\n    :PROPERTIES:\n    :A:        1\n    :END:\n  body Q\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** TODO task\n    :PROPERTIES:\n    :A:        1\n    :END:\n  body Q\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "two-heads-prepend",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* A\n* B %?\n",
+            ":prepend",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** A\n** B Q\n** Old\n*** Deep\n* Other\n",
+      "visible": "* Inbox\n** A\n** B Q\n** Old\n*** Deep\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "shallower",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file",
+              "FILE"
+            ],
+            "*** A\n**** B %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n* Other\n* A\n** B Q\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n* Other\n* A\n** B Q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "second-tags",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO a :t:\n** b %? :u:\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** TODO a                                                                 :t:\n*** b Q                                                                   :u:\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** TODO a                                                                 :t:\n*** b Q                                                                   :u:\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "datetree",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* TODO a\n** sub %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n* Other\n* 2026\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** TODO a\n***** sub Q\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n* Other\n* 2026\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** TODO a\n***** sub Q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "datetree-inbox",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE",
+              "Inbox"
+            ],
+            "* e %? :t:\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n***** e Q                                                                 :t:\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n***** e Q                                                                 :t:\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "datetree-week",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* e\n** f %?\n",
+            ":tree-type",
+            "'week"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n* Other\n* 2026\n** 2026-W45\n*** 2026-11-04 Wednesday\n**** e\n***** f Q\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n* Other\n* 2026\n** 2026-W45\n*** 2026-11-04 Wednesday\n**** e\n***** f Q\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "odd",
+      "input": {
+        "text": "* Inbox\n*** Old\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* A\n** B %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* Inbox\n*** Old\n*** A\n**** B Q\n* Other\n",
+      "visible": "* Inbox\n*** Old\n*** A\n**** B Q\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "noalign",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO t :tag:\n%?"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-auto-align-tags": false
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** TODO t :tag:\nQ\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** TODO t :tag:\nQ\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "noalign-pct",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* TODO t %? :tag:\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-auto-align-tags": false
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** TODO t Q :tag:\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** TODO t Q :tag:\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "three-levels",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* a\nx\n** b\n*** c %?\ny\n** d\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** a\nx\n**** b\n***** c Q\ny\n**** d\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** a\nx\n**** b\n***** c Q\ny\n**** d\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "adapt-deep-body",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* a\n  x %?\n** b\n   y\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** a\n    x Q\n**** b\n     y\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** a\n    x Q\n**** b\n     y\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null
+    },
+    {
+      "name": "pct-before-stars",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "%?* task\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "Q* Inbox\n** Old\n*** Deep\n* Other\n",
+      "visible": "Q* Inbox\n** Old\n*** Deep\n* Other\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Capture template ‘t’: Template is not a valid Org entry or tree"
+    },
+    {
+      "name": "pct-in-stars",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "Q C-c C-c",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "*%?* task\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "Q* Inbox\n** Old\n*** Deep\n* Other\n",
+      "visible": "Q* Inbox\n** Old\n*** Deep\n* Other\n",
+      "point": 1,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Capture template ‘t’: Template is not a valid Org entry or tree"
+    },
+    {
+      "name": "two-heads-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* A\n* B %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** A\n** B \n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** A\n** B \n* Other\n",
+      "point": 34,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "sub-shift2-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* TODO task\n** sub %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** TODO task\n**** sub \n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** TODO task\n**** sub \n* Other\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "tag-pct-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO %? :tag:\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** TODO                                                               :tag:\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** TODO                                                               :tag:\n* Other\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-body-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO task\nmore %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** TODO task\n more \n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** TODO task\n more \n* Other\n",
+      "point": 43,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-empty-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* TODO task\n%?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** TODO task\n  \n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** TODO task\n  \n* Other\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-drawer-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* TODO task\n:PROPERTIES:\n:A: 1\n:END:\nbody %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** TODO task\n    :PROPERTIES:\n    :A:        1\n    :END:\n  body \n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** TODO task\n    :PROPERTIES:\n    :A:        1\n    :END:\n  body \n* Other\n",
+      "point": 89,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "two-heads-prepend-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* A\n* B %?\n",
+            ":prepend",
+            true
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** A\n** B \n** Old\n*** Deep\n* Other\n",
+      "visible": "* Inbox\n** A\n** B \n** Old\n*** Deep\n* Other\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "shallower-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file",
+              "FILE"
+            ],
+            "*** A\n**** B %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n* Other\n* A\n** B \n",
+      "visible": "* Inbox\n** Old\n*** Deep\n* Other\n* A\n** B \n",
+      "point": 41,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "second-tags-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO a :t:\n** b %? :u:\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** TODO a                                                                 :t:\n*** b                                                                   :u:\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** TODO a                                                                 :t:\n*** b                                                                   :u:\n* Other\n",
+      "point": 108,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "datetree-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* TODO a\n** sub %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n* Other\n* 2026\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** TODO a\n***** sub \n",
+      "visible": "* Inbox\n** Old\n*** Deep\n* Other\n* 2026\n** 2026-11 November\n*** 2026-11-04 Wednesday\n**** TODO a\n***** sub \n",
+      "point": 106,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "datetree-inbox-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE",
+              "Inbox"
+            ],
+            "* e %? :t:\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n***** e                                                                 :t:\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** 2026\n*** 2026-11 November\n**** 2026-11-04 Wednesday\n***** e                                                                 :t:\n* Other\n",
+      "point": 87,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "datetree-week-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "today": "2026-11-04",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp+datetree",
+              "FILE"
+            ],
+            "* e\n** f %?\n",
+            ":tree-type",
+            "'week"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n* Other\n* 2026\n** 2026-W45\n*** 2026-11-04 Wednesday\n**** e\n***** f \n",
+      "visible": "* Inbox\n** Old\n*** Deep\n* Other\n* 2026\n** 2026-W45\n*** 2026-11-04 Wednesday\n**** e\n***** f \n",
+      "point": 91,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "odd-open",
+      "input": {
+        "text": "* Inbox\n*** Old\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* A\n** B %?\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-odd-levels-only": true
+        }
+      },
+      "text": "* Inbox\n*** Old\n*** A\n**** B \n* Other\n",
+      "visible": "* Inbox\n*** Old\n*** A\n**** B \n* Other\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "noalign-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "* TODO t :tag:\n%?"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-auto-align-tags": false
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n** TODO t :tag:\n\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n** TODO t :tag:\n\n* Other\n",
+      "point": 40,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "noalign-pct-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* TODO t %? :tag:\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-auto-align-tags": false
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** TODO t  :tag:\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** TODO t  :tag:\n* Other\n",
+      "point": 35,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "three-levels-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* a\nx\n** b\n*** c %?\ny\n** d\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** a\nx\n**** b\n***** c \ny\n**** d\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** a\nx\n**** b\n***** c \ny\n**** d\n* Other\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "adapt-deep-body-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+olp",
+              "FILE",
+              "Inbox",
+              "Old"
+            ],
+            "* a\n  x %?\n** b\n   y\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ],
+        "globals": {
+          "org-adapt-indentation": true
+        }
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n*** a\n    x \n**** b\n     y\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n*** a\n    x \n**** b\n     y\n* Other\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "pct-before-stars-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "%?* task\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Capture template ‘t’: Template is not a valid Org entry or tree"
+    },
+    {
+      "name": "pct-in-stars-open",
+      "input": {
+        "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-capture"
+        ],
+        "platform": null,
+        "visit": "e8-capture.org",
+        "capture_templates": [
+          [
+            "t",
+            "T",
+            "entry",
+            [
+              "file+headline",
+              "FILE",
+              "Inbox"
+            ],
+            "*%?* task\n"
+          ]
+        ],
+        "answers": [
+          "t"
+        ]
+      },
+      "text": "* Inbox\n** Old\n*** Deep\n* Other\n",
+      "visible": "* Inbox\n** Old\n*** Deep\n* Other\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Capture template ‘t’: Template is not a valid Org entry or tree"
+    },
+    {
+      "name": "hline-cu",
+      "input": {
+        "text": "| a | b |\n|---+---|\n| c | d |\n",
+        "point": 15,
+        "keys": "C-u C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n|---+---|\n| c | d |\n",
+      "visible": "| a | b |\n|---+---|\n|---+---|\n| c | d |\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "hline",
+      "input": {
+        "text": "| a | b |\n|---+---|\n| c | d |\n",
+        "point": 15,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n|---+---|\n| c | d |\n",
+      "visible": "| a | b |\n|---+---|\n|---+---|\n| c | d |\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "last-before-tblfm",
+      "input": {
+        "text": "| a | b |\n| c | d |\n#+TBLFM: $2=1\n",
+        "point": 12,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n| c | d |\n|---+---|\n|   |   |\n#+TBLFM: $2=1\n",
+      "visible": "| a | b |\n| c | d |\n|---+---|\n|   |   |\n#+TBLFM: $2=1\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "last-cu",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 16,
+        "keys": "C-u C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n| c | d |\n|---+---|\n|   |   |\n",
+      "visible": "| a | b |\n| c | d |\n|---+---|\n|   |   |\n",
+      "point": 36,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indented",
+      "input": {
+        "text": "  | a | b |\n  | c | d |\n",
+        "point": 4,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "  | a | b |\n  |---+---|\n  | c | d |\n",
+      "visible": "  | a | b |\n  |---+---|\n  | c | d |\n",
+      "point": 28,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "indented-cu",
+      "input": {
+        "text": "  | a | b |\n  | c | d |\n",
+        "point": 8,
+        "keys": "C-u C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "  | a | b |\n  |---+---|\n  | c | d |\n",
+      "visible": "  | a | b |\n  |---+---|\n  | c | d |\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "bol-cu",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 0,
+        "keys": "C-u C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n| c | d |\n",
+      "visible": "| a | b |\n|---+---|\n| c | d |\n",
+      "point": 20,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "eol",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 9,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n| c | d |\n",
+      "visible": "| a | b |\n|---+---|\n| c | d |\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "eol-cu",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 9,
+        "keys": "C-u C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n| c | d |\n",
+      "visible": "| a | b |\n|---+---|\n| c | d |\n",
+      "point": 29,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "twice",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 2,
+        "keys": "C-c RET C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n| c | d |\n|---+---|\n|   |   |\n",
+      "visible": "| a | b |\n|---+---|\n| c | d |\n|---+---|\n|   |   |\n",
+      "point": 42,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "no-final-newline",
+      "input": {
+        "text": "| a | b |",
+        "point": 2,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |   | ---+--- |\n",
+      "visible": "| a | b |   | ---+--- |\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not at a table"
+    },
+    {
+      "name": "in-item",
+      "input": {
+        "text": "- x\n  | a | b |\n  | c | d |\n",
+        "point": 8,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "- x\n  | a | b |\n  |---+---|\n  | c | d |\n",
+      "visible": "- x\n  | a | b |\n  |---+---|\n  | c | d |\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "numeric-prefix",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 6,
+        "keys": "C-u 2 C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n| c | d |\n",
+      "visible": "| a | b |\n|---+---|\n| c | d |\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "item",
+      "input": {
+        "text": "* A\n- item\n",
+        "point": 9,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "* A\n- ite\n* m\n",
+      "visible": "* A\n- ite\n* m\n",
+      "point": 12,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "before-rule-cu",
+      "input": {
+        "text": "| a | b |\n|---+---|\n| c | d |\n",
+        "point": 6,
+        "keys": "C-u C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a | b |\n|---+---|\n|   |   |\n|---+---|\n| c | d |\n",
+      "visible": "| a | b |\n|---+---|\n|   |   |\n|---+---|\n| c | d |\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "wide-unaligned",
+      "input": {
+        "text": "| aaaa | b |\n| c | dddddd |\n",
+        "point": 3,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| aaaa | b      |\n|------+--------|\n| c    | dddddd |\n",
+      "visible": "| aaaa | b      |\n|------+--------|\n| c    | dddddd |\n",
+      "point": 38,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "cell-text-typed",
+      "input": {
+        "text": "| a | b |\n| c | d |\n",
+        "point": 2,
+        "keys": "C-c RET x y TAB",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "| a   | b |\n|-----+---|\n| xyc | d |\n",
+      "visible": "| a   | b |\n|-----+---|\n| xyc | d |\n",
+      "point": 32,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    },
+    {
+      "name": "table-el",
+      "input": {
+        "text": "+---+---+\n| a | b |\n+---+---+\n",
+        "point": 12,
+        "keys": "C-c RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null
+      },
+      "text": "+---+---+\n| \n* a | b |\n+---+---+\n",
+      "visible": "+---+---+\n| \n* a | b |\n+---+---+\n",
+      "point": 15,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null
+    }
+  ]
+}

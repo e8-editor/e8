@@ -1897,3 +1897,85 @@ fn blank_before_new_entry_as_org_reads_it() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+
+/// org-insert-heading-hook, org-after-demote-entry-hook and
+/// org-after-promote-entry-hook run where Org runs them, seeing point and
+/// the line as Emacs 30.2's Org 9.7 does, a subtree's headings top down.
+/// Hooks hold functions, which the oracle's variables cannot.
+#[test]
+fn heading_hooks_run_as_org_runs_them() {
+    let cases: &[(&str, &str, usize, &str, &str, &[&str])] = &[
+        ("M-RET", "* A\n", 3, "org-meta-return", "* A\n* \n", &["insert:6:* "]),
+        ("a TODO heading", "* TODO A\n", 8, "org-insert-todo-heading", "* TODO A\n* TODO \n", &["insert:11:* "]),
+        ("after the subtree", "* A\nbody\n* B\n", 5, "org-insert-heading-respect-content", "* A\nbody\n* \n* B\n", &["insert:11:* "]),
+        ("an item", "- a\n", 3, "org-meta-return", "- a\n- \n", &[]),
+        ("demote", "* A\n* B\n", 4, "org-do-demote", "* A\n** B\n", &["demote:7:** B"]),
+        ("promote", "* A\n** B\n", 4, "org-do-promote", "* A\n* B\n", &["promote:6:* B"]),
+        ("demote a subtree", "* A\n* B\n** C\n*** D\n", 4, "org-demote-subtree", "* A\n** B\n*** C\n**** D\n", &["demote:7:** B", "demote:13:*** C", "demote:20:**** D"]),
+        ("promote a subtree", "* A\n** B\n*** C\n", 4, "org-promote-subtree", "* A\n* B\n** C\n", &["promote:6:* B", "promote:11:** C"]),
+        ("a subheading", "* A\n", 3, "org-insert-subheading", "* A\n** \n", &["insert:6:* ", "demote:7:** "]),
+    ];
+    let mut failures = Vec::new();
+    for (name, start, point, command, want, want_seen) in cases {
+        let (mut ed, s) = org(start);
+        s.eval_expression(
+            &mut ed,
+            "(globalThis.seen = [], ['insert', 'demote', 'promote'].forEach((tag) => e8.addHook({ insert: 'org-insert-heading-hook', demote: 'org-after-demote-entry-hook', promote: 'org-after-promote-entry-hook' }[tag], () => { globalThis.seen.push(`${tag}:${e8.point()}:${e8.lineText(e8.lineOf(e8.point()))}`); })))",
+        )
+        .unwrap();
+        ed.window_buffer_mut().set_point(*point);
+        let result = ed.call(command, vec![]);
+        let seen: Vec<String> = serde_json::from_str(&s.eval_expression(&mut ed, "JSON.stringify(globalThis.seen)").unwrap().trim_matches('"').replace("\\\"", "\"")).unwrap_or_default();
+        let got = (text(&ed), seen.clone());
+        let want_seen: Vec<String> = want_seen.iter().map(|s| s.to_string()).collect();
+        if result.is_err() || got != (want.to_string(), want_seen.clone()) {
+            failures.push(format!("{name}: {result:?} {got:?}, Emacs {:?}", (want, want_seen)));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
+
+/// Hooks that add lines as headings change level, as users' hooks add
+/// drawers and IDs: each next heading is found afresh, as org-map-tree and
+/// org-map-region find it, and the text and hook calls are Emacs 30.2's.
+/// And C-u C-c C-x C-y away from a heading takes the level of the heading
+/// above, as org-outline-level does.
+#[test]
+fn level_changes_with_hooks_that_add_lines() {
+    let adder = "(globalThis.seen = [], ['demote', 'promote'].forEach((tag) => e8.addHook(`org-after-${tag}-entry-hook`, () => { globalThis.seen.push(`${tag}:${e8.point()}:${e8.lineText(e8.lineOf(e8.point()))}`); e8.saveExcursion(() => { const l = e8.lineOf(e8.point()); e8.gotoChar(l + 1 < e8.lineCount() ? e8.lineStart(l + 1) : e8.pointMax()); e8.insert(`@${tag}\\n`); }); })))";
+    let cases: &[(&str, &str, usize, Option<usize>, &str, &str, &str, &[&str])] = &[
+        ("a subtree", "* A\n** B\nbody\n*** C\n** D\n", 4, None, "org-demote-subtree", adder, "* A\n*** B\n@demote\nbody\n**** C\n@demote\n** D\n", &["demote:8:*** B", "demote:28:**** C"]),
+        ("a subtree promoted", "* A\n** B\nbody\n*** C\n** D\n", 4, None, "org-promote-subtree", adder, "* A\n* B\n@promote\nbody\n** C\n@promote\n** D\n", &["promote:6:* B", "promote:25:** C"]),
+        ("a region", "* A\n** B\nbody\n*** C\n** D\n", 22, Some(4), "org-do-demote", adder, "* A\n*** B\n@demote\nbody\n**** C\n@demote\n*** D\n@demote\n", &["demote:8:*** B", "demote:28:**** C", "demote:42:*** D"]),
+        (
+            "a line put before a region's first heading",
+            "* A\n** B\nb1\nb2\n*** C\nc1\n**** D\n*** E\n** F\n",
+            42,
+            Some(4),
+            "org-do-demote",
+            "(globalThis.seen = [], globalThis.once = false, e8.addHook('org-after-demote-entry-hook', () => { globalThis.seen.push(`demote:${e8.point()}:${e8.lineText(e8.lineOf(e8.point()))}`); if (!globalThis.once) { globalThis.once = true; e8.saveExcursion(() => { e8.gotoChar(e8.lineStart(e8.lineOf(e8.point()))); e8.insert('@demote\\n'); }); } }))",
+            "* A\n@demote\n*** B\nb1\nb2\n**** C\nc1\n***** D\n**** E\n*** F\n",
+            &["demote:8:*** B", "demote:29:**** C", "demote:40:***** D", "demote:47:**** E", "demote:53:*** F"],
+        ),
+        ("C-u paste at the end", "* A\n** B\n", 9, None, "org-paste-subtree", "(globalThis.seen = [], e8.killNew('** X\\nx body\\n*** Y\\n'))", "* A\n** B\n** X\nx body\n*** Y\n", &[]),
+        ("C-u paste in a body", "* A\n** B\nbody\n", 11, None, "org-paste-subtree", "(globalThis.seen = [], e8.killNew('** X\\nx body\\n*** Y\\n'))", "* A\n** B\nbody\n** X\nx body\n*** Y\n", &[]),
+    ];
+    let mut failures = Vec::new();
+    for (name, start, point, mark, command, setup, want, want_seen) in cases {
+        let (mut ed, s) = org(start);
+        s.eval_expression(&mut ed, setup).unwrap();
+        if let Some(m) = mark {
+            s.eval_expression(&mut ed, &format!("e8.pushMark({m}, {{ activate: true }})")).unwrap();
+        }
+        ed.window_buffer_mut().set_point(*point);
+        let prefix = if command.ends_with("paste-subtree") { Some(e8_core::PrefixArg::Universal(4)) } else { None };
+        let result = ed.call_with_prefix(command, vec![], prefix);
+        let seen: Vec<String> = serde_json::from_str(&serde_json::from_str::<String>(&s.eval_expression(&mut ed, "JSON.stringify(globalThis.seen)").unwrap()).unwrap()).unwrap();
+        let want_seen: Vec<String> = want_seen.iter().map(|s| s.to_string()).collect();
+        let got = (text(&ed), seen);
+        if result.is_err() || got != (want.to_string(), want_seen.clone()) {
+            failures.push(format!("{name}: {result:?} {got:?}, Emacs {:?}", (want, want_seen)));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}
