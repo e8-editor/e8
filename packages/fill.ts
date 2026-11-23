@@ -7,7 +7,7 @@
 // fill-column. Two spaces after a period end a sentence, as
 // sentence-end-double-space says, and filling keeps them.
 
-import { commentNormalizeVars, commentSearchForward, commentStringStrip } from "newcomment";
+import { commentNormalizeVars, commentSearchForward, commentStringStrip, otherLineBreak } from "newcomment";
 import { forwardParagraph as paragraphsForward } from "paragraphs";
 import { allMatches, escapeRegExp, forwardLine, regexpQuote, truthy } from "subr";
 
@@ -735,6 +735,8 @@ e8.defineCommand({
 
 /** Breaks a line at whitespace and starts the next as fill-prefix or the mode says, as default-indent-new-line. */
 function defaultIndentNewLine(prefix: string | undefined): void {
+  // A mode's own line breaker, softly, as do-auto-fill calls default-indent-new-line.
+  if (otherLineBreak(true)) return;
   // In a comment, the new line continues it, as comment-line-break-function does.
   if (typeof e8.variable("comment-start") === "string" && e8.syntaxPpss().inComment !== null) {
     e8.call("comment-indent-new-line");

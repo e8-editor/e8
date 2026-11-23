@@ -1,0 +1,149 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "comment",
+  "text": "* A\n# note\n",
+  "keys": "M-j",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "indented-comment",
+  "text": "* A\n  # note\n",
+  "keys": "M-j",
+  "point": 10
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "item",
+  "text": "- aaa bbb\n",
+  "keys": "M-j",
+  "point": 6
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "nested-item",
+  "text": "- a\n  - bbb ccc\n",
+  "keys": "M-j",
+  "point": 12
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "quote-prefix",
+  "text": "* A\n> aaa bbb\n",
+  "keys": "M-j",
+  "point": 10
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "paragraph",
+  "text": "* A\nsome text here\n",
+  "keys": "M-j",
+  "point": 9
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "indented-paragraph",
+  "text": "* A\n  some text\n",
+  "keys": "M-j",
+  "point": 11
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "heading",
+  "text": "* Heading here\n",
+  "keys": "M-j",
+  "point": 9
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "blank-spaces",
+  "text": "* A\n   \n",
+  "keys": "M-j",
+  "point": 6
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "logbook",
+  "text": "* A\n:LOGBOOK:\n- note one\n:END:\n",
+  "keys": "M-j",
+  "point": 23
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "src-body",
+  "text": "#+begin_src python\nx = 1  # c\n#+end_src\n",
+  "keys": "M-j",
+  "point": 29
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "c-m-j",
+  "text": "* A\n# note\n",
+  "keys": "C-M-j",
+  "point": 8
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "auto-fill-comment",
+  "text": "* A\n# aaa bbb ccc ddd eee",
+  "keys": "SPC f f f SPC g g g",
+  "point": 27,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "auto-fill-item",
+  "text": "- aaa bbb ccc ddd eee",
+  "keys": "SPC f f f SPC g g g",
+  "point": 21,
+  "globals": {
+   "fill-column": 20
+  }
+ },
+ {
+  "modes": [
+   "org-mode",
+   "auto-fill-mode"
+  ],
+  "name": "auto-fill-paragraph",
+  "text": "* A\nsome aaa bbb ccc ddd",
+  "keys": "SPC f f f SPC g g g",
+  "point": 24,
+  "globals": {
+   "fill-column": 20
+  }
+ }
+]

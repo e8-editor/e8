@@ -108,7 +108,6 @@ Each entry says whether the difference is **deliberate**, which keeps it, or **n
   - With `comment-empty-lines`, blank lines get the comment start without its padding.
   - A comment at the margin after an indented one is lined up differently than Emacs lines it up.
 - **Org comments** (not yet):
-  - `M-j` does not continue a comment, an item's text or a block's language, as Org's `org-comment-line-break-function` does.
   - `M-q` with a region over a drawer's paragraph or a comment block fills nothing, where Org fills it.
   - `M-;` on a block's `#+end_src` line puts the comment at the margin, where Org's edit buffer indents the blank line first. In a block whose language E8 has no mode for, `M-;` does nothing, where Org says "Not in a sub-editing buffer".
   - Undoing a comment made in a source block leaves point where it was, not where Org's write-back puts it.
