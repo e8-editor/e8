@@ -1,0 +1,1041 @@
+[
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-day",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-span": "'day"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-fortnight",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-span": "'fortnight"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-month",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-span": "'month"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-ten-days",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-span": 10
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-seven-days-is-a-week",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-span": 7
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-one-day-is-a-day",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-span": 1
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-day-later-and-earlier",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f f b",
+    "globals": {
+      "org-agenda-span": "'day"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-ten-days-later",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f",
+    "globals": {
+      "org-agenda-span": 10
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-span-month-later-and-earlier",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f b b",
+    "globals": {
+      "org-agenda-span": "'month"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-start-on-weekday-nil",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-start-on-weekday": false
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-start-on-weekday-sunday",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "",
+    "globals": {
+      "org-agenda-start-on-weekday": 0
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-start-on-weekday-nil-later",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f",
+    "globals": {
+      "org-agenda-start-on-weekday": false
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v",
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-key",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "d"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-later",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v f f",
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-earlier-and-today",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v b b .",
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-from-a-later-line",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-n C-n C-n C-n v",
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-of-month",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 5 v",
+    "answers": [
+      "d"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-of-month-key",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 1 2 d"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-then-week",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "d w"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-week-already",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "w"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-quit",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v",
+    "answers": [
+      "q"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-invalid",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v",
+    "answers": [
+      "z"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-month-from-day-31",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 3 1 d v f",
+    "answers": [
+      "m"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-31",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-of-month-31-later-month",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v f",
+    "answers": [
+      "m"
+    ],
+    "globals": {
+      "org-agenda-span": "'day"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-31",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-month-span-from-the-31st",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f",
+    "globals": {
+      "org-agenda-span": "'month"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2028-02-29",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-year-span-later",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f",
+    "globals": {
+      "org-agenda-span": "'year"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-day-already",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "d d"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-fortnight",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v",
+    "answers": [
+      "t"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-fortnight-later",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v f",
+    "answers": [
+      "t"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-month",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v",
+    "answers": [
+      "m"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-month-later",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v f",
+    "answers": [
+      "m"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-month-earlier-twice",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v b b",
+    "answers": [
+      "m"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-month-today",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v f .",
+    "answers": [
+      "m"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-month-numbered",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 2 v",
+    "answers": [
+      "m"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-month-with-year",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 2 7 0 1 v",
+    "answers": [
+      "m"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-week-numbered",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "d C-u 3 v",
+    "answers": [
+      "w"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-week-with-year",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 2 7 0 2 v",
+    "answers": [
+      "w"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-fortnight-numbered",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 5 0 v",
+    "answers": [
+      "t"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-year",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v",
+    "answers": [
+      "y",
+      "y"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-year-refused",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v",
+    "answers": [
+      "y",
+      "n"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-year-key-numbered",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 2 7 y",
+    "answers": [
+      "y"
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-reset",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "d v",
+    "answers": [
+      " "
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-view-reset-already",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "v",
+    "answers": [
+      " "
+    ]
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-later-by-three-weeks",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-u 3 f"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-later-keeps-the-day",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "C-n C-n C-n C-n C-n f"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-earlier-from-the-header",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "M-< b"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-today-after-later",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f ."
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-today-in-day-view",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "d f f ."
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-redo-after-later",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f r"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-day-view-redo",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "d f g"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-timestamp",
+    "keys": "C-c C-o",
+    "point": 135
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-timestamp-time",
+    "keys": "C-c C-o",
+    "point": 109
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-timestamp-range",
+    "keys": "C-c C-o",
+    "point": 184
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-timestamp-range-end",
+    "keys": "C-c C-o",
+    "point": 202
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-timestamp-later",
+    "keys": "C-c C-o f",
+    "point": 135
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-timestamp-ret",
+    "keys": "RET",
+    "point": 135,
+    "globals": {
+      "org-return-follows-link": true
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-timestamp-scheduled",
+    "keys": "C-c C-o",
+    "point": 32
+  }
+]

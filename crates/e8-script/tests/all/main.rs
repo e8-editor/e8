@@ -76,6 +76,7 @@ mod menus;
 mod mouse_positions;
 mod org;
 mod org_agenda_archive;
+mod org_agenda_span;
 mod org_archive;
 mod org_src_block_faces;
 mod org_tab_emulation;

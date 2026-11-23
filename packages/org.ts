@@ -3668,8 +3668,8 @@ function orgReturnWith(electric: boolean, prefixless: boolean): void {
     }
     return;
   }
-  // On a link, RET follows it, as org-return-follows-link says.
-  if (e8.variable("org-return-follows-link") === true && linkHere() !== undefined) {
+  // On a link or a timestamp, RET follows it, as org-return-follows-link says.
+  if (e8.variable("org-return-follows-link") === true && (linkHere() !== undefined || onTimestamp())) {
     e8.callInteractively("org-open-at-point");
     return;
   }
@@ -6692,6 +6692,29 @@ interface TsMatch {
   minute?: [number, number];
 }
 
+/**
+ * The dates of the date range or the timestamp around a position, as
+ * org-at-date-range-p with inactive ones and org-at-timestamp-p with lax
+ * find them, for org-follow-timestamp-link: a range's two, as 2026-10-25,
+ * or a timestamp's one. At its end counts when INCLUSIVE.
+ */
+export function timestampDatesAt(p: number, inclusive = true): string[] | undefined {
+  const all = tsMatches(lineAt(p));
+  const date = (ts: TsMatch) => ts.text.slice(1, 11);
+  const within = (start: number, end: number) => start <= p && (inclusive ? p <= end : p < end);
+  for (let i = 0; i + 1 < all.length; i++) {
+    const [a, b] = [all[i], all[i + 1]];
+    if (/^-{1,3}$/.test(e8.bufferText(a.end, b.start)) && within(a.start, b.end)) return [date(a), date(b)];
+  }
+  const ts = all.find((t) => within(t.start, t.end));
+  return ts ? [date(ts)] : undefined;
+}
+
+/** Whether point is on a timestamp, as org-return-follows-link has RET follow it: org-in-regexp of a timestamp or a range. */
+function onTimestamp(): boolean {
+  return timestampDatesAt(e8.point()) !== undefined;
+}
+
 /** The timestamps on a line, matched as Org's org-ts-regexp3 matches them. */
 function tsMatches(line: number): TsMatch[] {
   const text = e8.lineText(line);
@@ -7570,6 +7593,14 @@ function openAtPoint_(): void {
   const link = linkHere();
   if (link) {
     openLink(link);
+    return;
+  }
+  // On a timestamp, the agenda for its day, as org-follow-timestamp-link
+  // opens it: on a planning or clock line just after one too, elsewhere
+  // not on the spaces after it.
+  const planning = /^[ \t]*(?:(?:SCHEDULED|DEADLINE|CLOSED):|CLOCK:)/.test(e8.lineText(lineAt()));
+  if (timestampDatesAt(e8.point(), planning) !== undefined) {
+    e8.funcall("org-follow-timestamp-link");
     return;
   }
   const all = headings();

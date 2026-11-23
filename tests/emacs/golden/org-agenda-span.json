@@ -1,0 +1,2727 @@
+{
+  "emacs_version": "30.2",
+  "system_type": "darwin",
+  "cases": [
+    {
+      "name": "agenda-span-day",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-span-fortnight",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'fortnight"
+        }
+      },
+      "text": "Fortnight-agenda (W44-W45):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "visible": "Fortnight-agenda (W44-W45):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "point": 212,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 212,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-span-month",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'month"
+        }
+      },
+      "text": "Month-agenda (W44-W48):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\n",
+      "visible": "Month-agenda (W44-W48):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 24,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-span-ten-days",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": 10
+        }
+      },
+      "text": "10 days-agenda (W44-W45):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\n",
+      "visible": "10 days-agenda (W44-W45):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 7,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 26,
+          "width": 80,
+          "height": 17,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-span-seven-days-is-a-week",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": 7
+        }
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-span-one-day-is-a-day",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": 1
+        }
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-span-day-later-and-earlier",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f f b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "visible": "Day-agenda (W44):\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-span-ten-days-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": 10
+        }
+      },
+      "text": "10 days-agenda (W45-W47):\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\n",
+      "visible": "10 days-agenda (W45-W47):\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\n",
+      "point": 26,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 26,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-span-month-later-and-earlier",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f b b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'month"
+        }
+      },
+      "text": "Month-agenda (W40-W44):\nMonday     28 September 2026 W40\nTuesday    29 September 2026\nWednesday  30 September 2026\nThursday    1 October 2026\nFriday      2 October 2026\nSaturday    3 October 2026\nSunday      4 October 2026\nMonday      5 October 2026 W41\nTuesday     6 October 2026\nWednesday   7 October 2026\nThursday    8 October 2026\nFriday      9 October 2026\nSaturday   10 October 2026\nSunday     11 October 2026\nMonday     12 October 2026 W42\nTuesday    13 October 2026\nWednesday  14 October 2026\nThursday   15 October 2026\nFriday     16 October 2026\nSaturday   17 October 2026\nSunday     18 October 2026\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\n",
+      "visible": "Month-agenda (W40-W44):\nMonday     28 September 2026 W40\nTuesday    29 September 2026\nWednesday  30 September 2026\nThursday    1 October 2026\nFriday      2 October 2026\nSaturday    3 October 2026\nSunday      4 October 2026\nMonday      5 October 2026 W41\nTuesday     6 October 2026\nWednesday   7 October 2026\nThursday    8 October 2026\nFriday      9 October 2026\nSaturday   10 October 2026\nSunday     11 October 2026\nMonday     12 October 2026 W42\nTuesday    13 October 2026\nWednesday  14 October 2026\nThursday   15 October 2026\nFriday     16 October 2026\nSaturday   17 October 2026\nSunday     18 October 2026\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 24,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-start-on-weekday-nil",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-on-weekday": false
+        }
+      },
+      "text": "Week-agenda (W44-W45):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "visible": "Week-agenda (W44-W45):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 10,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 23,
+          "width": 80,
+          "height": 14,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-start-on-weekday-sunday",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-on-weekday": 0
+        }
+      },
+      "text": "Week-agenda (W43-W44):\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\n",
+      "visible": "Week-agenda (W43-W44):\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\n",
+      "point": 297,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 8,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 297,
+          "width": 80,
+          "height": 16,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-start-on-weekday-nil-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-start-on-weekday": false
+        }
+      },
+      "text": "Week-agenda (W45-W46):\nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\n",
+      "visible": "Week-agenda (W45-W46):\nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\n",
+      "point": 23,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 23,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-day",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to day view"
+    },
+    {
+      "name": "agenda-view-day-key",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to day view"
+    },
+    {
+      "name": "agenda-view-day-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v f f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-day-earlier-and-today",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v b b .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-day-from-a-later-line",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n C-n v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "visible": "Day-agenda (W44):\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to day view"
+    },
+    {
+      "name": "agenda-view-day-of-month",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 5 v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "d"
+        ],
+        "message": true
+      },
+      "text": "Day-agenda (W41):\nMonday      5 October 2026 W41\n",
+      "visible": "Day-agenda (W41):\nMonday      5 October 2026 W41\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to day view"
+    },
+    {
+      "name": "agenda-view-day-of-month-key",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 1 2 d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W42):\nMonday     12 October 2026 W42\n",
+      "visible": "Day-agenda (W42):\nMonday     12 October 2026 W42\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to day view"
+    },
+    {
+      "name": "agenda-view-day-then-week",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "d w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": "Switched to week view"
+    },
+    {
+      "name": "agenda-view-week-already",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "w",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Viewing span is already \"week\"",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-view-quit",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "q"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": "Abort"
+    },
+    {
+      "name": "agenda-view-invalid",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "z"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Invalid key: 122",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-view-month-from-day-31",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 3 1 d v f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m"
+        ],
+        "message": true
+      },
+      "text": "Month-agenda (W44-W49):\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\n",
+      "visible": "Month-agenda (W44-W49):\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\n",
+      "point": 837,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 837,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-day-of-month-31-later-month",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-31",
+        "agenda_files": true,
+        "answers": [
+          "m"
+        ],
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Month-agenda (W44-W49):\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\n",
+      "visible": "Month-agenda (W44-W49):\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-month-span-from-the-31st",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-31",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'month"
+        }
+      },
+      "text": "Month-agenda (W49-W53):\nTuesday     1 December 2026\nWednesday   2 December 2026\nThursday    3 December 2026\nFriday      4 December 2026\nSaturday    5 December 2026\nSunday      6 December 2026\nMonday      7 December 2026 W50\nTuesday     8 December 2026\nWednesday   9 December 2026\nThursday   10 December 2026\nFriday     11 December 2026\nSaturday   12 December 2026\nSunday     13 December 2026\nMonday     14 December 2026 W51\nTuesday    15 December 2026\nWednesday  16 December 2026\nThursday   17 December 2026\nFriday     18 December 2026\nSaturday   19 December 2026\nSunday     20 December 2026\nMonday     21 December 2026 W52\nTuesday    22 December 2026\nWednesday  23 December 2026\nThursday   24 December 2026\nFriday     25 December 2026\nSaturday   26 December 2026\nSunday     27 December 2026\nMonday     28 December 2026 W53\nTuesday    29 December 2026\nWednesday  30 December 2026\nThursday   31 December 2026\n",
+      "visible": "Month-agenda (W49-W53):\nTuesday     1 December 2026\nWednesday   2 December 2026\nThursday    3 December 2026\nFriday      4 December 2026\nSaturday    5 December 2026\nSunday      6 December 2026\nMonday      7 December 2026 W50\nTuesday     8 December 2026\nWednesday   9 December 2026\nThursday   10 December 2026\nFriday     11 December 2026\nSaturday   12 December 2026\nSunday     13 December 2026\nMonday     14 December 2026 W51\nTuesday    15 December 2026\nWednesday  16 December 2026\nThursday   17 December 2026\nFriday     18 December 2026\nSaturday   19 December 2026\nSunday     20 December 2026\nMonday     21 December 2026 W52\nTuesday    22 December 2026\nWednesday  23 December 2026\nThursday   24 December 2026\nFriday     25 December 2026\nSaturday   26 December 2026\nSunday     27 December 2026\nMonday     28 December 2026 W53\nTuesday    29 December 2026\nWednesday  30 December 2026\nThursday   31 December 2026\n",
+      "point": 24,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 24,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-year-span-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2028-02-29",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'year"
+        }
+      },
+      "text": "Year-agenda:\nThursday    1 March 2029\nFriday      2 March 2029\nSaturday    3 March 2029\nSunday      4 March 2029\nMonday      5 March 2029 W10\nTuesday     6 March 2029\nWednesday   7 March 2029\nThursday    8 March 2029\nFriday      9 March 2029\nSaturday   10 March 2029\nSunday     11 March 2029\nMonday     12 March 2029 W11\nTuesday    13 March 2029\nWednesday  14 March 2029\nThursday   15 March 2029\nFriday     16 March 2029\nSaturday   17 March 2029\nSunday     18 March 2029\nMonday     19 March 2029 W12\nTuesday    20 March 2029\nWednesday  21 March 2029\nThursday   22 March 2029\nFriday     23 March 2029\nSaturday   24 March 2029\nSunday     25 March 2029\nMonday     26 March 2029 W13\nTuesday    27 March 2029\nWednesday  28 March 2029\nThursday   29 March 2029\nFriday     30 March 2029\nSaturday   31 March 2029\nSunday      1 April 2029\nMonday      2 April 2029 W14\nTuesday     3 April 2029\nWednesday   4 April 2029\nThursday    5 April 2029\nFriday      6 April 2029\nSaturday    7 April 2029\nSunday      8 April 2029\nMonday      9 April 2029 W15\nTuesday    10 April 2029\nWednesday  11 April 2029\nThursday   12 April 2029\nFriday     13 April 2029\nSaturday   14 April 2029\nSunday     15 April 2029\nMonday     16 April 2029 W16\nTuesday    17 April 2029\nWednesday  18 April 2029\nThursday   19 April 2029\nFriday     20 April 2029\nSaturday   21 April 2029\nSunday     22 April 2029\nMonday     23 April 2029 W17\nTuesday    24 April 2029\nWednesday  25 April 2029\nThursday   26 April 2029\nFriday     27 April 2029\nSaturday   28 April 2029\nSunday     29 April 2029\nMonday     30 April 2029 W18\nTuesday     1 May 2029\nWednesday   2 May 2029\nThursday    3 May 2029\nFriday      4 May 2029\nSaturday    5 May 2029\nSunday      6 May 2029\nMonday      7 May 2029 W19\nTuesday     8 May 2029\nWednesday   9 May 2029\nThursday   10 May 2029\nFriday     11 May 2029\nSaturday   12 May 2029\nSunday     13 May 2029\nMonday     14 May 2029 W20\nTuesday    15 May 2029\nWednesday  16 May 2029\nThursday   17 May 2029\nFriday     18 May 2029\nSaturday   19 May 2029\nSunday     20 May 2029\nMonday     21 May 2029 W21\nTuesday    22 May 2029\nWednesday  23 May 2029\nThursday   24 May 2029\nFriday     25 May 2029\nSaturday   26 May 2029\nSunday     27 May 2029\nMonday     28 May 2029 W22\nTuesday    29 May 2029\nWednesday  30 May 2029\nThursday   31 May 2029\nFriday      1 June 2029\nSaturday    2 June 2029\nSunday      3 June 2029\nMonday      4 June 2029 W23\nTuesday     5 June 2029\nWednesday   6 June 2029\nThursday    7 June 2029\nFriday      8 June 2029\nSaturday    9 June 2029\nSunday     10 June 2029\nMonday     11 June 2029 W24\nTuesday    12 June 2029\nWednesday  13 June 2029\nThursday   14 June 2029\nFriday     15 June 2029\nSaturday   16 June 2029\nSunday     17 June 2029\nMonday     18 June 2029 W25\nTuesday    19 June 2029\nWednesday  20 June 2029\nThursday   21 June 2029\nFriday     22 June 2029\nSaturday   23 June 2029\nSunday     24 June 2029\nMonday     25 June 2029 W26\nTuesday    26 June 2029\nWednesday  27 June 2029\nThursday   28 June 2029\nFriday     29 June 2029\nSaturday   30 June 2029\nSunday      1 July 2029\nMonday      2 July 2029 W27\nTuesday     3 July 2029\nWednesday   4 July 2029\nThursday    5 July 2029\nFriday      6 July 2029\nSaturday    7 July 2029\nSunday      8 July 2029\nMonday      9 July 2029 W28\nTuesday    10 July 2029\nWednesday  11 July 2029\nThursday   12 July 2029\nFriday     13 July 2029\nSaturday   14 July 2029\nSunday     15 July 2029\nMonday     16 July 2029 W29\nTuesday    17 July 2029\nWednesday  18 July 2029\nThursday   19 July 2029\nFriday     20 July 2029\nSaturday   21 July 2029\nSunday     22 July 2029\nMonday     23 July 2029 W30\nTuesday    24 July 2029\nWednesday  25 July 2029\nThursday   26 July 2029\nFriday     27 July 2029\nSaturday   28 July 2029\nSunday     29 July 2029\nMonday     30 July 2029 W31\nTuesday    31 July 2029\nWednesday   1 August 2029\nThursday    2 August 2029\nFriday      3 August 2029\nSaturday    4 August 2029\nSunday      5 August 2029\nMonday      6 August 2029 W32\nTuesday     7 August 2029\nWednesday   8 August 2029\nThursday    9 August 2029\nFriday     10 August 2029\nSaturday   11 August 2029\nSunday     12 August 2029\nMonday     13 August 2029 W33\nTuesday    14 August 2029\nWednesday  15 August 2029\nThursday   16 August 2029\nFriday     17 August 2029\nSaturday   18 August 2029\nSunday     19 August 2029\nMonday     20 August 2029 W34\nTuesday    21 August 2029\nWednesday  22 August 2029\nThursday   23 August 2029\nFriday     24 August 2029\nSaturday   25 August 2029\nSunday     26 August 2029\nMonday     27 August 2029 W35\nTuesday    28 August 2029\nWednesday  29 August 2029\nThursday   30 August 2029\nFriday     31 August 2029\nSaturday    1 September 2029\nSunday      2 September 2029\nMonday      3 September 2029 W36\nTuesday     4 September 2029\nWednesday   5 September 2029\nThursday    6 September 2029\nFriday      7 September 2029\nSaturday    8 September 2029\nSunday      9 September 2029\nMonday     10 September 2029 W37\nTuesday    11 September 2029\nWednesday  12 September 2029\nThursday   13 September 2029\nFriday     14 September 2029\nSaturday   15 September 2029\nSunday     16 September 2029\nMonday     17 September 2029 W38\nTuesday    18 September 2029\nWednesday  19 September 2029\nThursday   20 September 2029\nFriday     21 September 2029\nSaturday   22 September 2029\nSunday     23 September 2029\nMonday     24 September 2029 W39\nTuesday    25 September 2029\nWednesday  26 September 2029\nThursday   27 September 2029\nFriday     28 September 2029\nSaturday   29 September 2029\nSunday     30 September 2029\nMonday      1 October 2029 W40\nTuesday     2 October 2029\nWednesday   3 October 2029\nThursday    4 October 2029\nFriday      5 October 2029\nSaturday    6 October 2029\nSunday      7 October 2029\nMonday      8 October 2029 W41\nTuesday     9 October 2029\nWednesday  10 October 2029\nThursday   11 October 2029\nFriday     12 October 2029\nSaturday   13 October 2029\nSunday     14 October 2029\nMonday     15 October 2029 W42\nTuesday    16 October 2029\nWednesday  17 October 2029\nThursday   18 October 2029\nFriday     19 October 2029\nSaturday   20 October 2029\nSunday     21 October 2029\nMonday     22 October 2029 W43\nTuesday    23 October 2029\nWednesday  24 October 2029\nThursday   25 October 2029\nFriday     26 October 2029\nSaturday   27 October 2029\nSunday     28 October 2029\nMonday     29 October 2029 W44\nTuesday    30 October 2029\nWednesday  31 October 2029\nThursday    1 November 2029\nFriday      2 November 2029\nSaturday    3 November 2029\nSunday      4 November 2029\nMonday      5 November 2029 W45\nTuesday     6 November 2029\nWednesday   7 November 2029\nThursday    8 November 2029\nFriday      9 November 2029\nSaturday   10 November 2029\nSunday     11 November 2029\nMonday     12 November 2029 W46\nTuesday    13 November 2029\nWednesday  14 November 2029\nThursday   15 November 2029\nFriday     16 November 2029\nSaturday   17 November 2029\nSunday     18 November 2029\nMonday     19 November 2029 W47\nTuesday    20 November 2029\nWednesday  21 November 2029\nThursday   22 November 2029\nFriday     23 November 2029\nSaturday   24 November 2029\nSunday     25 November 2029\nMonday     26 November 2029 W48\nTuesday    27 November 2029\nWednesday  28 November 2029\nThursday   29 November 2029\nFriday     30 November 2029\nSaturday    1 December 2029\nSunday      2 December 2029\nMonday      3 December 2029 W49\nTuesday     4 December 2029\nWednesday   5 December 2029\nThursday    6 December 2029\nFriday      7 December 2029\nSaturday    8 December 2029\nSunday      9 December 2029\nMonday     10 December 2029 W50\nTuesday    11 December 2029\nWednesday  12 December 2029\nThursday   13 December 2029\nFriday     14 December 2029\nSaturday   15 December 2029\nSunday     16 December 2029\nMonday     17 December 2029 W51\nTuesday    18 December 2029\nWednesday  19 December 2029\nThursday   20 December 2029\nFriday     21 December 2029\nSaturday   22 December 2029\nSunday     23 December 2029\nMonday     24 December 2029 W52\nTuesday    25 December 2029\nWednesday  26 December 2029\nThursday   27 December 2029\nFriday     28 December 2029\nSaturday   29 December 2029\nSunday     30 December 2029\nMonday     31 December 2029 W01\nTuesday     1 January 2030\nWednesday   2 January 2030\nThursday    3 January 2030\nFriday      4 January 2030\nSaturday    5 January 2030\nSunday      6 January 2030\nMonday      7 January 2030 W02\nTuesday     8 January 2030\nWednesday   9 January 2030\nThursday   10 January 2030\nFriday     11 January 2030\nSaturday   12 January 2030\nSunday     13 January 2030\nMonday     14 January 2030 W03\nTuesday    15 January 2030\nWednesday  16 January 2030\nThursday   17 January 2030\nFriday     18 January 2030\nSaturday   19 January 2030\nSunday     20 January 2030\nMonday     21 January 2030 W04\nTuesday    22 January 2030\nWednesday  23 January 2030\nThursday   24 January 2030\nFriday     25 January 2030\nSaturday   26 January 2030\nSunday     27 January 2030\nMonday     28 January 2030 W05\nTuesday    29 January 2030\nWednesday  30 January 2030\nThursday   31 January 2030\nFriday      1 February 2030\nSaturday    2 February 2030\nSunday      3 February 2030\nMonday      4 February 2030 W06\nTuesday     5 February 2030\nWednesday   6 February 2030\nThursday    7 February 2030\nFriday      8 February 2030\nSaturday    9 February 2030\nSunday     10 February 2030\nMonday     11 February 2030 W07\nTuesday    12 February 2030\nWednesday  13 February 2030\nThursday   14 February 2030\nFriday     15 February 2030\nSaturday   16 February 2030\nSunday     17 February 2030\nMonday     18 February 2030 W08\nTuesday    19 February 2030\nWednesday  20 February 2030\nThursday   21 February 2030\nFriday     22 February 2030\nSaturday   23 February 2030\nSunday     24 February 2030\nMonday     25 February 2030 W09\nTuesday    26 February 2030\nWednesday  27 February 2030\nThursday   28 February 2030\n",
+      "visible": "Year-agenda:\nThursday    1 March 2029\nFriday      2 March 2029\nSaturday    3 March 2029\nSunday      4 March 2029\nMonday      5 March 2029 W10\nTuesday     6 March 2029\nWednesday   7 March 2029\nThursday    8 March 2029\nFriday      9 March 2029\nSaturday   10 March 2029\nSunday     11 March 2029\nMonday     12 March 2029 W11\nTuesday    13 March 2029\nWednesday  14 March 2029\nThursday   15 March 2029\nFriday     16 March 2029\nSaturday   17 March 2029\nSunday     18 March 2029\nMonday     19 March 2029 W12\nTuesday    20 March 2029\nWednesday  21 March 2029\nThursday   22 March 2029\nFriday     23 March 2029\nSaturday   24 March 2029\nSunday     25 March 2029\nMonday     26 March 2029 W13\nTuesday    27 March 2029\nWednesday  28 March 2029\nThursday   29 March 2029\nFriday     30 March 2029\nSaturday   31 March 2029\nSunday      1 April 2029\nMonday      2 April 2029 W14\nTuesday     3 April 2029\nWednesday   4 April 2029\nThursday    5 April 2029\nFriday      6 April 2029\nSaturday    7 April 2029\nSunday      8 April 2029\nMonday      9 April 2029 W15\nTuesday    10 April 2029\nWednesday  11 April 2029\nThursday   12 April 2029\nFriday     13 April 2029\nSaturday   14 April 2029\nSunday     15 April 2029\nMonday     16 April 2029 W16\nTuesday    17 April 2029\nWednesday  18 April 2029\nThursday   19 April 2029\nFriday     20 April 2029\nSaturday   21 April 2029\nSunday     22 April 2029\nMonday     23 April 2029 W17\nTuesday    24 April 2029\nWednesday  25 April 2029\nThursday   26 April 2029\nFriday     27 April 2029\nSaturday   28 April 2029\nSunday     29 April 2029\nMonday     30 April 2029 W18\nTuesday     1 May 2029\nWednesday   2 May 2029\nThursday    3 May 2029\nFriday      4 May 2029\nSaturday    5 May 2029\nSunday      6 May 2029\nMonday      7 May 2029 W19\nTuesday     8 May 2029\nWednesday   9 May 2029\nThursday   10 May 2029\nFriday     11 May 2029\nSaturday   12 May 2029\nSunday     13 May 2029\nMonday     14 May 2029 W20\nTuesday    15 May 2029\nWednesday  16 May 2029\nThursday   17 May 2029\nFriday     18 May 2029\nSaturday   19 May 2029\nSunday     20 May 2029\nMonday     21 May 2029 W21\nTuesday    22 May 2029\nWednesday  23 May 2029\nThursday   24 May 2029\nFriday     25 May 2029\nSaturday   26 May 2029\nSunday     27 May 2029\nMonday     28 May 2029 W22\nTuesday    29 May 2029\nWednesday  30 May 2029\nThursday   31 May 2029\nFriday      1 June 2029\nSaturday    2 June 2029\nSunday      3 June 2029\nMonday      4 June 2029 W23\nTuesday     5 June 2029\nWednesday   6 June 2029\nThursday    7 June 2029\nFriday      8 June 2029\nSaturday    9 June 2029\nSunday     10 June 2029\nMonday     11 June 2029 W24\nTuesday    12 June 2029\nWednesday  13 June 2029\nThursday   14 June 2029\nFriday     15 June 2029\nSaturday   16 June 2029\nSunday     17 June 2029\nMonday     18 June 2029 W25\nTuesday    19 June 2029\nWednesday  20 June 2029\nThursday   21 June 2029\nFriday     22 June 2029\nSaturday   23 June 2029\nSunday     24 June 2029\nMonday     25 June 2029 W26\nTuesday    26 June 2029\nWednesday  27 June 2029\nThursday   28 June 2029\nFriday     29 June 2029\nSaturday   30 June 2029\nSunday      1 July 2029\nMonday      2 July 2029 W27\nTuesday     3 July 2029\nWednesday   4 July 2029\nThursday    5 July 2029\nFriday      6 July 2029\nSaturday    7 July 2029\nSunday      8 July 2029\nMonday      9 July 2029 W28\nTuesday    10 July 2029\nWednesday  11 July 2029\nThursday   12 July 2029\nFriday     13 July 2029\nSaturday   14 July 2029\nSunday     15 July 2029\nMonday     16 July 2029 W29\nTuesday    17 July 2029\nWednesday  18 July 2029\nThursday   19 July 2029\nFriday     20 July 2029\nSaturday   21 July 2029\nSunday     22 July 2029\nMonday     23 July 2029 W30\nTuesday    24 July 2029\nWednesday  25 July 2029\nThursday   26 July 2029\nFriday     27 July 2029\nSaturday   28 July 2029\nSunday     29 July 2029\nMonday     30 July 2029 W31\nTuesday    31 July 2029\nWednesday   1 August 2029\nThursday    2 August 2029\nFriday      3 August 2029\nSaturday    4 August 2029\nSunday      5 August 2029\nMonday      6 August 2029 W32\nTuesday     7 August 2029\nWednesday   8 August 2029\nThursday    9 August 2029\nFriday     10 August 2029\nSaturday   11 August 2029\nSunday     12 August 2029\nMonday     13 August 2029 W33\nTuesday    14 August 2029\nWednesday  15 August 2029\nThursday   16 August 2029\nFriday     17 August 2029\nSaturday   18 August 2029\nSunday     19 August 2029\nMonday     20 August 2029 W34\nTuesday    21 August 2029\nWednesday  22 August 2029\nThursday   23 August 2029\nFriday     24 August 2029\nSaturday   25 August 2029\nSunday     26 August 2029\nMonday     27 August 2029 W35\nTuesday    28 August 2029\nWednesday  29 August 2029\nThursday   30 August 2029\nFriday     31 August 2029\nSaturday    1 September 2029\nSunday      2 September 2029\nMonday      3 September 2029 W36\nTuesday     4 September 2029\nWednesday   5 September 2029\nThursday    6 September 2029\nFriday      7 September 2029\nSaturday    8 September 2029\nSunday      9 September 2029\nMonday     10 September 2029 W37\nTuesday    11 September 2029\nWednesday  12 September 2029\nThursday   13 September 2029\nFriday     14 September 2029\nSaturday   15 September 2029\nSunday     16 September 2029\nMonday     17 September 2029 W38\nTuesday    18 September 2029\nWednesday  19 September 2029\nThursday   20 September 2029\nFriday     21 September 2029\nSaturday   22 September 2029\nSunday     23 September 2029\nMonday     24 September 2029 W39\nTuesday    25 September 2029\nWednesday  26 September 2029\nThursday   27 September 2029\nFriday     28 September 2029\nSaturday   29 September 2029\nSunday     30 September 2029\nMonday      1 October 2029 W40\nTuesday     2 October 2029\nWednesday   3 October 2029\nThursday    4 October 2029\nFriday      5 October 2029\nSaturday    6 October 2029\nSunday      7 October 2029\nMonday      8 October 2029 W41\nTuesday     9 October 2029\nWednesday  10 October 2029\nThursday   11 October 2029\nFriday     12 October 2029\nSaturday   13 October 2029\nSunday     14 October 2029\nMonday     15 October 2029 W42\nTuesday    16 October 2029\nWednesday  17 October 2029\nThursday   18 October 2029\nFriday     19 October 2029\nSaturday   20 October 2029\nSunday     21 October 2029\nMonday     22 October 2029 W43\nTuesday    23 October 2029\nWednesday  24 October 2029\nThursday   25 October 2029\nFriday     26 October 2029\nSaturday   27 October 2029\nSunday     28 October 2029\nMonday     29 October 2029 W44\nTuesday    30 October 2029\nWednesday  31 October 2029\nThursday    1 November 2029\nFriday      2 November 2029\nSaturday    3 November 2029\nSunday      4 November 2029\nMonday      5 November 2029 W45\nTuesday     6 November 2029\nWednesday   7 November 2029\nThursday    8 November 2029\nFriday      9 November 2029\nSaturday   10 November 2029\nSunday     11 November 2029\nMonday     12 November 2029 W46\nTuesday    13 November 2029\nWednesday  14 November 2029\nThursday   15 November 2029\nFriday     16 November 2029\nSaturday   17 November 2029\nSunday     18 November 2029\nMonday     19 November 2029 W47\nTuesday    20 November 2029\nWednesday  21 November 2029\nThursday   22 November 2029\nFriday     23 November 2029\nSaturday   24 November 2029\nSunday     25 November 2029\nMonday     26 November 2029 W48\nTuesday    27 November 2029\nWednesday  28 November 2029\nThursday   29 November 2029\nFriday     30 November 2029\nSaturday    1 December 2029\nSunday      2 December 2029\nMonday      3 December 2029 W49\nTuesday     4 December 2029\nWednesday   5 December 2029\nThursday    6 December 2029\nFriday      7 December 2029\nSaturday    8 December 2029\nSunday      9 December 2029\nMonday     10 December 2029 W50\nTuesday    11 December 2029\nWednesday  12 December 2029\nThursday   13 December 2029\nFriday     14 December 2029\nSaturday   15 December 2029\nSunday     16 December 2029\nMonday     17 December 2029 W51\nTuesday    18 December 2029\nWednesday  19 December 2029\nThursday   20 December 2029\nFriday     21 December 2029\nSaturday   22 December 2029\nSunday     23 December 2029\nMonday     24 December 2029 W52\nTuesday    25 December 2029\nWednesday  26 December 2029\nThursday   27 December 2029\nFriday     28 December 2029\nSaturday   29 December 2029\nSunday     30 December 2029\nMonday     31 December 2029 W01\nTuesday     1 January 2030\nWednesday   2 January 2030\nThursday    3 January 2030\nFriday      4 January 2030\nSaturday    5 January 2030\nSunday      6 January 2030\nMonday      7 January 2030 W02\nTuesday     8 January 2030\nWednesday   9 January 2030\nThursday   10 January 2030\nFriday     11 January 2030\nSaturday   12 January 2030\nSunday     13 January 2030\nMonday     14 January 2030 W03\nTuesday    15 January 2030\nWednesday  16 January 2030\nThursday   17 January 2030\nFriday     18 January 2030\nSaturday   19 January 2030\nSunday     20 January 2030\nMonday     21 January 2030 W04\nTuesday    22 January 2030\nWednesday  23 January 2030\nThursday   24 January 2030\nFriday     25 January 2030\nSaturday   26 January 2030\nSunday     27 January 2030\nMonday     28 January 2030 W05\nTuesday    29 January 2030\nWednesday  30 January 2030\nThursday   31 January 2030\nFriday      1 February 2030\nSaturday    2 February 2030\nSunday      3 February 2030\nMonday      4 February 2030 W06\nTuesday     5 February 2030\nWednesday   6 February 2030\nThursday    7 February 2030\nFriday      8 February 2030\nSaturday    9 February 2030\nSunday     10 February 2030\nMonday     11 February 2030 W07\nTuesday    12 February 2030\nWednesday  13 February 2030\nThursday   14 February 2030\nFriday     15 February 2030\nSaturday   16 February 2030\nSunday     17 February 2030\nMonday     18 February 2030 W08\nTuesday    19 February 2030\nWednesday  20 February 2030\nThursday   21 February 2030\nFriday     22 February 2030\nSaturday   23 February 2030\nSunday     24 February 2030\nMonday     25 February 2030 W09\nTuesday    26 February 2030\nWednesday  27 February 2030\nThursday   28 February 2030\n",
+      "point": 13,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 13,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-day-already",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "d d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Viewing span is already \"day\"",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to day view"
+    },
+    {
+      "name": "agenda-view-fortnight",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t"
+        ],
+        "message": true
+      },
+      "text": "Fortnight-agenda (W44-W45):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "visible": "Fortnight-agenda (W44-W45):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "point": 212,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 212,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Switched to fortnight view"
+    },
+    {
+      "name": "agenda-view-fortnight-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t"
+        ],
+        "message": true
+      },
+      "text": "Fortnight-agenda (W46-W47):\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Fortnight-agenda (W46-W47):\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 88,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 7,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 88,
+          "width": 80,
+          "height": 17,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-month",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m"
+        ],
+        "message": true
+      },
+      "text": "Month-agenda (W40-W44):\nThursday    1 October 2026\nFriday      2 October 2026\nSaturday    3 October 2026\nSunday      4 October 2026\nMonday      5 October 2026 W41\nTuesday     6 October 2026\nWednesday   7 October 2026\nThursday    8 October 2026\nFriday      9 October 2026\nSaturday   10 October 2026\nSunday     11 October 2026\nMonday     12 October 2026 W42\nTuesday    13 October 2026\nWednesday  14 October 2026\nThursday   15 October 2026\nFriday     16 October 2026\nSaturday   17 October 2026\nSunday     18 October 2026\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\n",
+      "visible": "Month-agenda (W40-W44):\nThursday    1 October 2026\nFriday      2 October 2026\nSaturday    3 October 2026\nSunday      4 October 2026\nMonday      5 October 2026 W41\nTuesday     6 October 2026\nWednesday   7 October 2026\nThursday    8 October 2026\nFriday      9 October 2026\nSaturday   10 October 2026\nSunday     11 October 2026\nMonday     12 October 2026 W42\nTuesday    13 October 2026\nWednesday  14 October 2026\nThursday   15 October 2026\nFriday     16 October 2026\nSaturday   17 October 2026\nSunday     18 October 2026\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\n",
+      "point": 958,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 958,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Switched to month view"
+    },
+    {
+      "name": "agenda-view-month-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m"
+        ],
+        "message": true
+      },
+      "text": "Month-agenda (W44-W49):\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\n",
+      "visible": "Month-agenda (W44-W49):\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\n",
+      "point": 837,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 837,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-month-earlier-twice",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v b b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m"
+        ],
+        "message": true
+      },
+      "text": "Month-agenda (W31-W36):\nSaturday    1 August 2026\nSunday      2 August 2026\nMonday      3 August 2026 W32\nTuesday     4 August 2026\nWednesday   5 August 2026\nThursday    6 August 2026\nFriday      7 August 2026\nSaturday    8 August 2026\nSunday      9 August 2026\nMonday     10 August 2026 W33\nTuesday    11 August 2026\nWednesday  12 August 2026\nThursday   13 August 2026\nFriday     14 August 2026\nSaturday   15 August 2026\nSunday     16 August 2026\nMonday     17 August 2026 W34\nTuesday    18 August 2026\nWednesday  19 August 2026\nThursday   20 August 2026\nFriday     21 August 2026\nSaturday   22 August 2026\nSunday     23 August 2026\nMonday     24 August 2026 W35\nTuesday    25 August 2026\nWednesday  26 August 2026\nThursday   27 August 2026\nFriday     28 August 2026\nSaturday   29 August 2026\nSunday     30 August 2026\nMonday     31 August 2026 W36\n",
+      "visible": "Month-agenda (W31-W36):\nSaturday    1 August 2026\nSunday      2 August 2026\nMonday      3 August 2026 W32\nTuesday     4 August 2026\nWednesday   5 August 2026\nThursday    6 August 2026\nFriday      7 August 2026\nSaturday    8 August 2026\nSunday      9 August 2026\nMonday     10 August 2026 W33\nTuesday    11 August 2026\nWednesday  12 August 2026\nThursday   13 August 2026\nFriday     14 August 2026\nSaturday   15 August 2026\nSunday     16 August 2026\nMonday     17 August 2026 W34\nTuesday    18 August 2026\nWednesday  19 August 2026\nThursday   20 August 2026\nFriday     21 August 2026\nSaturday   22 August 2026\nSunday     23 August 2026\nMonday     24 August 2026 W35\nTuesday    25 August 2026\nWednesday  26 August 2026\nThursday   27 August 2026\nFriday     28 August 2026\nSaturday   29 August 2026\nSunday     30 August 2026\nMonday     31 August 2026 W36\n",
+      "point": 742,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 742,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-month-today",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v f .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m"
+        ],
+        "message": true
+      },
+      "text": "Month-agenda (W40-W44):\nThursday    1 October 2026\nFriday      2 October 2026\nSaturday    3 October 2026\nSunday      4 October 2026\nMonday      5 October 2026 W41\nTuesday     6 October 2026\nWednesday   7 October 2026\nThursday    8 October 2026\nFriday      9 October 2026\nSaturday   10 October 2026\nSunday     11 October 2026\nMonday     12 October 2026 W42\nTuesday    13 October 2026\nWednesday  14 October 2026\nThursday   15 October 2026\nFriday     16 October 2026\nSaturday   17 October 2026\nSunday     18 October 2026\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\n",
+      "visible": "Month-agenda (W40-W44):\nThursday    1 October 2026\nFriday      2 October 2026\nSaturday    3 October 2026\nSunday      4 October 2026\nMonday      5 October 2026 W41\nTuesday     6 October 2026\nWednesday   7 October 2026\nThursday    8 October 2026\nFriday      9 October 2026\nSaturday   10 October 2026\nSunday     11 October 2026\nMonday     12 October 2026 W42\nTuesday    13 October 2026\nWednesday  14 October 2026\nThursday   15 October 2026\nFriday     16 October 2026\nSaturday   17 October 2026\nSunday     18 October 2026\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\n",
+      "point": 958,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 958,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-view-month-numbered",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 2 v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m"
+        ],
+        "message": true
+      },
+      "text": "Month-agenda (W05-W09):\nSunday      1 February 2026\nMonday      2 February 2026 W06\nTuesday     3 February 2026\nWednesday   4 February 2026\nThursday    5 February 2026\nFriday      6 February 2026\nSaturday    7 February 2026\nSunday      8 February 2026\nMonday      9 February 2026 W07\nTuesday    10 February 2026\nWednesday  11 February 2026\nThursday   12 February 2026\nFriday     13 February 2026\nSaturday   14 February 2026\nSunday     15 February 2026\nMonday     16 February 2026 W08\nTuesday    17 February 2026\nWednesday  18 February 2026\nThursday   19 February 2026\nFriday     20 February 2026\nSaturday   21 February 2026\nSunday     22 February 2026\nMonday     23 February 2026 W09\nTuesday    24 February 2026\nWednesday  25 February 2026\nThursday   26 February 2026\nFriday     27 February 2026\nSaturday   28 February 2026\n",
+      "visible": "Month-agenda (W05-W09):\nSunday      1 February 2026\nMonday      2 February 2026 W06\nTuesday     3 February 2026\nWednesday   4 February 2026\nThursday    5 February 2026\nFriday      6 February 2026\nSaturday    7 February 2026\nSunday      8 February 2026\nMonday      9 February 2026 W07\nTuesday    10 February 2026\nWednesday  11 February 2026\nThursday   12 February 2026\nFriday     13 February 2026\nSaturday   14 February 2026\nSunday     15 February 2026\nMonday     16 February 2026 W08\nTuesday    17 February 2026\nWednesday  18 February 2026\nThursday   19 February 2026\nFriday     20 February 2026\nSaturday   21 February 2026\nSunday     22 February 2026\nMonday     23 February 2026 W09\nTuesday    24 February 2026\nWednesday  25 February 2026\nThursday   26 February 2026\nFriday     27 February 2026\nSaturday   28 February 2026\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Switched to month view"
+    },
+    {
+      "name": "agenda-view-month-with-year",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 2 7 0 1 v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "m"
+        ],
+        "message": true
+      },
+      "text": "Month-agenda (W53-W04):\nFriday      1 January 2027\n  e8-agenda:  New year \nSaturday    2 January 2027\nSunday      3 January 2027\nMonday      4 January 2027 W01\nTuesday     5 January 2027\nWednesday   6 January 2027\nThursday    7 January 2027\nFriday      8 January 2027\nSaturday    9 January 2027\nSunday     10 January 2027\nMonday     11 January 2027 W02\nTuesday    12 January 2027\nWednesday  13 January 2027\nThursday   14 January 2027\nFriday     15 January 2027\nSaturday   16 January 2027\nSunday     17 January 2027\nMonday     18 January 2027 W03\nTuesday    19 January 2027\nWednesday  20 January 2027\nThursday   21 January 2027\nFriday     22 January 2027\nSaturday   23 January 2027\nSunday     24 January 2027\nMonday     25 January 2027 W04\nTuesday    26 January 2027\nWednesday  27 January 2027\nThursday   28 January 2027\nFriday     29 January 2027\nSaturday   30 January 2027\nSunday     31 January 2027\n",
+      "visible": "Month-agenda (W53-W04):\nFriday      1 January 2027\n  e8-agenda:  New year \nSaturday    2 January 2027\nSunday      3 January 2027\nMonday      4 January 2027 W01\nTuesday     5 January 2027\nWednesday   6 January 2027\nThursday    7 January 2027\nFriday      8 January 2027\nSaturday    9 January 2027\nSunday     10 January 2027\nMonday     11 January 2027 W02\nTuesday    12 January 2027\nWednesday  13 January 2027\nThursday   14 January 2027\nFriday     15 January 2027\nSaturday   16 January 2027\nSunday     17 January 2027\nMonday     18 January 2027 W03\nTuesday    19 January 2027\nWednesday  20 January 2027\nThursday   21 January 2027\nFriday     22 January 2027\nSaturday   23 January 2027\nSunday     24 January 2027\nMonday     25 January 2027 W04\nTuesday    26 January 2027\nWednesday  27 January 2027\nThursday   28 January 2027\nFriday     29 January 2027\nSaturday   30 January 2027\nSunday     31 January 2027\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Switched to month view"
+    },
+    {
+      "name": "agenda-view-week-numbered",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "d C-u 3 v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "w"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W03):\nMonday     12 January 2026 W03\nTuesday    13 January 2026\nWednesday  14 January 2026\nThursday   15 January 2026\nFriday     16 January 2026\nSaturday   17 January 2026\nSunday     18 January 2026\n",
+      "visible": "Week-agenda (W03):\nMonday     12 January 2026 W03\nTuesday    13 January 2026\nWednesday  14 January 2026\nThursday   15 January 2026\nFriday     16 January 2026\nSaturday   17 January 2026\nSunday     18 January 2026\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to week view"
+    },
+    {
+      "name": "agenda-view-week-with-year",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 2 7 0 2 v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "w"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W02):\nMonday     11 January 2027 W02\nTuesday    12 January 2027\nWednesday  13 January 2027\nThursday   14 January 2027\nFriday     15 January 2027\nSaturday   16 January 2027\nSunday     17 January 2027\n",
+      "visible": "Week-agenda (W02):\nMonday     11 January 2027 W02\nTuesday    12 January 2027\nWednesday  13 January 2027\nThursday   14 January 2027\nFriday     15 January 2027\nSaturday   16 January 2027\nSunday     17 January 2027\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Switched to week view"
+    },
+    {
+      "name": "agenda-view-fortnight-numbered",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 5 0 v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "t"
+        ],
+        "message": true
+      },
+      "text": "Fortnight-agenda (W50-W51):\nMonday      7 December 2026 W50\nTuesday     8 December 2026\nWednesday   9 December 2026\nThursday   10 December 2026\nFriday     11 December 2026\nSaturday   12 December 2026\nSunday     13 December 2026\nMonday     14 December 2026 W51\nTuesday    15 December 2026\nWednesday  16 December 2026\nThursday   17 December 2026\nFriday     18 December 2026\nSaturday   19 December 2026\nSunday     20 December 2026\n",
+      "visible": "Fortnight-agenda (W50-W51):\nMonday      7 December 2026 W50\nTuesday     8 December 2026\nWednesday   9 December 2026\nThursday   10 December 2026\nFriday     11 December 2026\nSaturday   12 December 2026\nSunday     13 December 2026\nMonday     14 December 2026 W51\nTuesday    15 December 2026\nWednesday  16 December 2026\nThursday   17 December 2026\nFriday     18 December 2026\nSaturday   19 December 2026\nSunday     20 December 2026\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 8,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 16,
+          "selected": true
+        }
+      ],
+      "message": "Switched to fortnight view"
+    },
+    {
+      "name": "agenda-view-year",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y",
+          "y"
+        ],
+        "message": true
+      },
+      "text": "Year-agenda:\nThursday    1 January 2026\nFriday      2 January 2026\nSaturday    3 January 2026\nSunday      4 January 2026\nMonday      5 January 2026 W02\nTuesday     6 January 2026\nWednesday   7 January 2026\nThursday    8 January 2026\nFriday      9 January 2026\nSaturday   10 January 2026\nSunday     11 January 2026\nMonday     12 January 2026 W03\nTuesday    13 January 2026\nWednesday  14 January 2026\nThursday   15 January 2026\nFriday     16 January 2026\nSaturday   17 January 2026\nSunday     18 January 2026\nMonday     19 January 2026 W04\nTuesday    20 January 2026\nWednesday  21 January 2026\nThursday   22 January 2026\nFriday     23 January 2026\nSaturday   24 January 2026\nSunday     25 January 2026\nMonday     26 January 2026 W05\nTuesday    27 January 2026\nWednesday  28 January 2026\nThursday   29 January 2026\nFriday     30 January 2026\nSaturday   31 January 2026\nSunday      1 February 2026\nMonday      2 February 2026 W06\nTuesday     3 February 2026\nWednesday   4 February 2026\nThursday    5 February 2026\nFriday      6 February 2026\nSaturday    7 February 2026\nSunday      8 February 2026\nMonday      9 February 2026 W07\nTuesday    10 February 2026\nWednesday  11 February 2026\nThursday   12 February 2026\nFriday     13 February 2026\nSaturday   14 February 2026\nSunday     15 February 2026\nMonday     16 February 2026 W08\nTuesday    17 February 2026\nWednesday  18 February 2026\nThursday   19 February 2026\nFriday     20 February 2026\nSaturday   21 February 2026\nSunday     22 February 2026\nMonday     23 February 2026 W09\nTuesday    24 February 2026\nWednesday  25 February 2026\nThursday   26 February 2026\nFriday     27 February 2026\nSaturday   28 February 2026\nSunday      1 March 2026\nMonday      2 March 2026 W10\nTuesday     3 March 2026\nWednesday   4 March 2026\nThursday    5 March 2026\nFriday      6 March 2026\nSaturday    7 March 2026\nSunday      8 March 2026\nMonday      9 March 2026 W11\nTuesday    10 March 2026\nWednesday  11 March 2026\nThursday   12 March 2026\nFriday     13 March 2026\nSaturday   14 March 2026\nSunday     15 March 2026\nMonday     16 March 2026 W12\nTuesday    17 March 2026\nWednesday  18 March 2026\nThursday   19 March 2026\nFriday     20 March 2026\nSaturday   21 March 2026\nSunday     22 March 2026\nMonday     23 March 2026 W13\nTuesday    24 March 2026\nWednesday  25 March 2026\nThursday   26 March 2026\nFriday     27 March 2026\nSaturday   28 March 2026\nSunday     29 March 2026\nMonday     30 March 2026 W14\nTuesday    31 March 2026\nWednesday   1 April 2026\nThursday    2 April 2026\nFriday      3 April 2026\nSaturday    4 April 2026\nSunday      5 April 2026\nMonday      6 April 2026 W15\nTuesday     7 April 2026\nWednesday   8 April 2026\nThursday    9 April 2026\nFriday     10 April 2026\nSaturday   11 April 2026\nSunday     12 April 2026\nMonday     13 April 2026 W16\nTuesday    14 April 2026\nWednesday  15 April 2026\nThursday   16 April 2026\nFriday     17 April 2026\nSaturday   18 April 2026\nSunday     19 April 2026\nMonday     20 April 2026 W17\nTuesday    21 April 2026\nWednesday  22 April 2026\nThursday   23 April 2026\nFriday     24 April 2026\nSaturday   25 April 2026\nSunday     26 April 2026\nMonday     27 April 2026 W18\nTuesday    28 April 2026\nWednesday  29 April 2026\nThursday   30 April 2026\nFriday      1 May 2026\nSaturday    2 May 2026\nSunday      3 May 2026\nMonday      4 May 2026 W19\nTuesday     5 May 2026\nWednesday   6 May 2026\nThursday    7 May 2026\nFriday      8 May 2026\nSaturday    9 May 2026\nSunday     10 May 2026\nMonday     11 May 2026 W20\nTuesday    12 May 2026\nWednesday  13 May 2026\nThursday   14 May 2026\nFriday     15 May 2026\nSaturday   16 May 2026\nSunday     17 May 2026\nMonday     18 May 2026 W21\nTuesday    19 May 2026\nWednesday  20 May 2026\nThursday   21 May 2026\nFriday     22 May 2026\nSaturday   23 May 2026\nSunday     24 May 2026\nMonday     25 May 2026 W22\nTuesday    26 May 2026\nWednesday  27 May 2026\nThursday   28 May 2026\nFriday     29 May 2026\nSaturday   30 May 2026\nSunday     31 May 2026\nMonday      1 June 2026 W23\nTuesday     2 June 2026\nWednesday   3 June 2026\nThursday    4 June 2026\nFriday      5 June 2026\nSaturday    6 June 2026\nSunday      7 June 2026\nMonday      8 June 2026 W24\nTuesday     9 June 2026\nWednesday  10 June 2026\nThursday   11 June 2026\nFriday     12 June 2026\nSaturday   13 June 2026\nSunday     14 June 2026\nMonday     15 June 2026 W25\nTuesday    16 June 2026\nWednesday  17 June 2026\nThursday   18 June 2026\nFriday     19 June 2026\nSaturday   20 June 2026\nSunday     21 June 2026\nMonday     22 June 2026 W26\nTuesday    23 June 2026\nWednesday  24 June 2026\nThursday   25 June 2026\nFriday     26 June 2026\nSaturday   27 June 2026\nSunday     28 June 2026\nMonday     29 June 2026 W27\nTuesday    30 June 2026\nWednesday   1 July 2026\nThursday    2 July 2026\nFriday      3 July 2026\nSaturday    4 July 2026\nSunday      5 July 2026\nMonday      6 July 2026 W28\nTuesday     7 July 2026\nWednesday   8 July 2026\nThursday    9 July 2026\nFriday     10 July 2026\nSaturday   11 July 2026\nSunday     12 July 2026\nMonday     13 July 2026 W29\nTuesday    14 July 2026\nWednesday  15 July 2026\nThursday   16 July 2026\nFriday     17 July 2026\nSaturday   18 July 2026\nSunday     19 July 2026\nMonday     20 July 2026 W30\nTuesday    21 July 2026\nWednesday  22 July 2026\nThursday   23 July 2026\nFriday     24 July 2026\nSaturday   25 July 2026\nSunday     26 July 2026\nMonday     27 July 2026 W31\nTuesday    28 July 2026\nWednesday  29 July 2026\nThursday   30 July 2026\nFriday     31 July 2026\nSaturday    1 August 2026\nSunday      2 August 2026\nMonday      3 August 2026 W32\nTuesday     4 August 2026\nWednesday   5 August 2026\nThursday    6 August 2026\nFriday      7 August 2026\nSaturday    8 August 2026\nSunday      9 August 2026\nMonday     10 August 2026 W33\nTuesday    11 August 2026\nWednesday  12 August 2026\nThursday   13 August 2026\nFriday     14 August 2026\nSaturday   15 August 2026\nSunday     16 August 2026\nMonday     17 August 2026 W34\nTuesday    18 August 2026\nWednesday  19 August 2026\nThursday   20 August 2026\nFriday     21 August 2026\nSaturday   22 August 2026\nSunday     23 August 2026\nMonday     24 August 2026 W35\nTuesday    25 August 2026\nWednesday  26 August 2026\nThursday   27 August 2026\nFriday     28 August 2026\nSaturday   29 August 2026\nSunday     30 August 2026\nMonday     31 August 2026 W36\nTuesday     1 September 2026\nWednesday   2 September 2026\nThursday    3 September 2026\nFriday      4 September 2026\nSaturday    5 September 2026\nSunday      6 September 2026\nMonday      7 September 2026 W37\nTuesday     8 September 2026\nWednesday   9 September 2026\nThursday   10 September 2026\nFriday     11 September 2026\nSaturday   12 September 2026\nSunday     13 September 2026\nMonday     14 September 2026 W38\nTuesday    15 September 2026\nWednesday  16 September 2026\nThursday   17 September 2026\nFriday     18 September 2026\nSaturday   19 September 2026\nSunday     20 September 2026\nMonday     21 September 2026 W39\nTuesday    22 September 2026\nWednesday  23 September 2026\nThursday   24 September 2026\nFriday     25 September 2026\nSaturday   26 September 2026\nSunday     27 September 2026\nMonday     28 September 2026 W40\nTuesday    29 September 2026\nWednesday  30 September 2026\nThursday    1 October 2026\nFriday      2 October 2026\nSaturday    3 October 2026\nSunday      4 October 2026\nMonday      5 October 2026 W41\nTuesday     6 October 2026\nWednesday   7 October 2026\nThursday    8 October 2026\nFriday      9 October 2026\nSaturday   10 October 2026\nSunday     11 October 2026\nMonday     12 October 2026 W42\nTuesday    13 October 2026\nWednesday  14 October 2026\nThursday   15 October 2026\nFriday     16 October 2026\nSaturday   17 October 2026\nSunday     18 October 2026\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\nTuesday     1 December 2026\nWednesday   2 December 2026\nThursday    3 December 2026\nFriday      4 December 2026\nSaturday    5 December 2026\nSunday      6 December 2026\nMonday      7 December 2026 W50\nTuesday     8 December 2026\nWednesday   9 December 2026\nThursday   10 December 2026\nFriday     11 December 2026\nSaturday   12 December 2026\nSunday     13 December 2026\nMonday     14 December 2026 W51\nTuesday    15 December 2026\nWednesday  16 December 2026\nThursday   17 December 2026\nFriday     18 December 2026\nSaturday   19 December 2026\nSunday     20 December 2026\nMonday     21 December 2026 W52\nTuesday    22 December 2026\nWednesday  23 December 2026\nThursday   24 December 2026\nFriday     25 December 2026\nSaturday   26 December 2026\nSunday     27 December 2026\nMonday     28 December 2026 W53\nTuesday    29 December 2026\nWednesday  30 December 2026\nThursday   31 December 2026\n",
+      "visible": "Year-agenda:\nThursday    1 January 2026\nFriday      2 January 2026\nSaturday    3 January 2026\nSunday      4 January 2026\nMonday      5 January 2026 W02\nTuesday     6 January 2026\nWednesday   7 January 2026\nThursday    8 January 2026\nFriday      9 January 2026\nSaturday   10 January 2026\nSunday     11 January 2026\nMonday     12 January 2026 W03\nTuesday    13 January 2026\nWednesday  14 January 2026\nThursday   15 January 2026\nFriday     16 January 2026\nSaturday   17 January 2026\nSunday     18 January 2026\nMonday     19 January 2026 W04\nTuesday    20 January 2026\nWednesday  21 January 2026\nThursday   22 January 2026\nFriday     23 January 2026\nSaturday   24 January 2026\nSunday     25 January 2026\nMonday     26 January 2026 W05\nTuesday    27 January 2026\nWednesday  28 January 2026\nThursday   29 January 2026\nFriday     30 January 2026\nSaturday   31 January 2026\nSunday      1 February 2026\nMonday      2 February 2026 W06\nTuesday     3 February 2026\nWednesday   4 February 2026\nThursday    5 February 2026\nFriday      6 February 2026\nSaturday    7 February 2026\nSunday      8 February 2026\nMonday      9 February 2026 W07\nTuesday    10 February 2026\nWednesday  11 February 2026\nThursday   12 February 2026\nFriday     13 February 2026\nSaturday   14 February 2026\nSunday     15 February 2026\nMonday     16 February 2026 W08\nTuesday    17 February 2026\nWednesday  18 February 2026\nThursday   19 February 2026\nFriday     20 February 2026\nSaturday   21 February 2026\nSunday     22 February 2026\nMonday     23 February 2026 W09\nTuesday    24 February 2026\nWednesday  25 February 2026\nThursday   26 February 2026\nFriday     27 February 2026\nSaturday   28 February 2026\nSunday      1 March 2026\nMonday      2 March 2026 W10\nTuesday     3 March 2026\nWednesday   4 March 2026\nThursday    5 March 2026\nFriday      6 March 2026\nSaturday    7 March 2026\nSunday      8 March 2026\nMonday      9 March 2026 W11\nTuesday    10 March 2026\nWednesday  11 March 2026\nThursday   12 March 2026\nFriday     13 March 2026\nSaturday   14 March 2026\nSunday     15 March 2026\nMonday     16 March 2026 W12\nTuesday    17 March 2026\nWednesday  18 March 2026\nThursday   19 March 2026\nFriday     20 March 2026\nSaturday   21 March 2026\nSunday     22 March 2026\nMonday     23 March 2026 W13\nTuesday    24 March 2026\nWednesday  25 March 2026\nThursday   26 March 2026\nFriday     27 March 2026\nSaturday   28 March 2026\nSunday     29 March 2026\nMonday     30 March 2026 W14\nTuesday    31 March 2026\nWednesday   1 April 2026\nThursday    2 April 2026\nFriday      3 April 2026\nSaturday    4 April 2026\nSunday      5 April 2026\nMonday      6 April 2026 W15\nTuesday     7 April 2026\nWednesday   8 April 2026\nThursday    9 April 2026\nFriday     10 April 2026\nSaturday   11 April 2026\nSunday     12 April 2026\nMonday     13 April 2026 W16\nTuesday    14 April 2026\nWednesday  15 April 2026\nThursday   16 April 2026\nFriday     17 April 2026\nSaturday   18 April 2026\nSunday     19 April 2026\nMonday     20 April 2026 W17\nTuesday    21 April 2026\nWednesday  22 April 2026\nThursday   23 April 2026\nFriday     24 April 2026\nSaturday   25 April 2026\nSunday     26 April 2026\nMonday     27 April 2026 W18\nTuesday    28 April 2026\nWednesday  29 April 2026\nThursday   30 April 2026\nFriday      1 May 2026\nSaturday    2 May 2026\nSunday      3 May 2026\nMonday      4 May 2026 W19\nTuesday     5 May 2026\nWednesday   6 May 2026\nThursday    7 May 2026\nFriday      8 May 2026\nSaturday    9 May 2026\nSunday     10 May 2026\nMonday     11 May 2026 W20\nTuesday    12 May 2026\nWednesday  13 May 2026\nThursday   14 May 2026\nFriday     15 May 2026\nSaturday   16 May 2026\nSunday     17 May 2026\nMonday     18 May 2026 W21\nTuesday    19 May 2026\nWednesday  20 May 2026\nThursday   21 May 2026\nFriday     22 May 2026\nSaturday   23 May 2026\nSunday     24 May 2026\nMonday     25 May 2026 W22\nTuesday    26 May 2026\nWednesday  27 May 2026\nThursday   28 May 2026\nFriday     29 May 2026\nSaturday   30 May 2026\nSunday     31 May 2026\nMonday      1 June 2026 W23\nTuesday     2 June 2026\nWednesday   3 June 2026\nThursday    4 June 2026\nFriday      5 June 2026\nSaturday    6 June 2026\nSunday      7 June 2026\nMonday      8 June 2026 W24\nTuesday     9 June 2026\nWednesday  10 June 2026\nThursday   11 June 2026\nFriday     12 June 2026\nSaturday   13 June 2026\nSunday     14 June 2026\nMonday     15 June 2026 W25\nTuesday    16 June 2026\nWednesday  17 June 2026\nThursday   18 June 2026\nFriday     19 June 2026\nSaturday   20 June 2026\nSunday     21 June 2026\nMonday     22 June 2026 W26\nTuesday    23 June 2026\nWednesday  24 June 2026\nThursday   25 June 2026\nFriday     26 June 2026\nSaturday   27 June 2026\nSunday     28 June 2026\nMonday     29 June 2026 W27\nTuesday    30 June 2026\nWednesday   1 July 2026\nThursday    2 July 2026\nFriday      3 July 2026\nSaturday    4 July 2026\nSunday      5 July 2026\nMonday      6 July 2026 W28\nTuesday     7 July 2026\nWednesday   8 July 2026\nThursday    9 July 2026\nFriday     10 July 2026\nSaturday   11 July 2026\nSunday     12 July 2026\nMonday     13 July 2026 W29\nTuesday    14 July 2026\nWednesday  15 July 2026\nThursday   16 July 2026\nFriday     17 July 2026\nSaturday   18 July 2026\nSunday     19 July 2026\nMonday     20 July 2026 W30\nTuesday    21 July 2026\nWednesday  22 July 2026\nThursday   23 July 2026\nFriday     24 July 2026\nSaturday   25 July 2026\nSunday     26 July 2026\nMonday     27 July 2026 W31\nTuesday    28 July 2026\nWednesday  29 July 2026\nThursday   30 July 2026\nFriday     31 July 2026\nSaturday    1 August 2026\nSunday      2 August 2026\nMonday      3 August 2026 W32\nTuesday     4 August 2026\nWednesday   5 August 2026\nThursday    6 August 2026\nFriday      7 August 2026\nSaturday    8 August 2026\nSunday      9 August 2026\nMonday     10 August 2026 W33\nTuesday    11 August 2026\nWednesday  12 August 2026\nThursday   13 August 2026\nFriday     14 August 2026\nSaturday   15 August 2026\nSunday     16 August 2026\nMonday     17 August 2026 W34\nTuesday    18 August 2026\nWednesday  19 August 2026\nThursday   20 August 2026\nFriday     21 August 2026\nSaturday   22 August 2026\nSunday     23 August 2026\nMonday     24 August 2026 W35\nTuesday    25 August 2026\nWednesday  26 August 2026\nThursday   27 August 2026\nFriday     28 August 2026\nSaturday   29 August 2026\nSunday     30 August 2026\nMonday     31 August 2026 W36\nTuesday     1 September 2026\nWednesday   2 September 2026\nThursday    3 September 2026\nFriday      4 September 2026\nSaturday    5 September 2026\nSunday      6 September 2026\nMonday      7 September 2026 W37\nTuesday     8 September 2026\nWednesday   9 September 2026\nThursday   10 September 2026\nFriday     11 September 2026\nSaturday   12 September 2026\nSunday     13 September 2026\nMonday     14 September 2026 W38\nTuesday    15 September 2026\nWednesday  16 September 2026\nThursday   17 September 2026\nFriday     18 September 2026\nSaturday   19 September 2026\nSunday     20 September 2026\nMonday     21 September 2026 W39\nTuesday    22 September 2026\nWednesday  23 September 2026\nThursday   24 September 2026\nFriday     25 September 2026\nSaturday   26 September 2026\nSunday     27 September 2026\nMonday     28 September 2026 W40\nTuesday    29 September 2026\nWednesday  30 September 2026\nThursday    1 October 2026\nFriday      2 October 2026\nSaturday    3 October 2026\nSunday      4 October 2026\nMonday      5 October 2026 W41\nTuesday     6 October 2026\nWednesday   7 October 2026\nThursday    8 October 2026\nFriday      9 October 2026\nSaturday   10 October 2026\nSunday     11 October 2026\nMonday     12 October 2026 W42\nTuesday    13 October 2026\nWednesday  14 October 2026\nThursday   15 October 2026\nFriday     16 October 2026\nSaturday   17 October 2026\nSunday     18 October 2026\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\nMonday      9 November 2026 W46\nTuesday    10 November 2026\nWednesday  11 November 2026\nThursday   12 November 2026\nFriday     13 November 2026\nSaturday   14 November 2026\nSunday     15 November 2026\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\nMonday     23 November 2026 W48\nTuesday    24 November 2026\nWednesday  25 November 2026\nThursday   26 November 2026\nFriday     27 November 2026\nSaturday   28 November 2026\nSunday     29 November 2026\nMonday     30 November 2026 W49\nTuesday     1 December 2026\nWednesday   2 December 2026\nThursday    3 December 2026\nFriday      4 December 2026\nSaturday    5 December 2026\nSunday      6 December 2026\nMonday      7 December 2026 W50\nTuesday     8 December 2026\nWednesday   9 December 2026\nThursday   10 December 2026\nFriday     11 December 2026\nSaturday   12 December 2026\nSunday     13 December 2026\nMonday     14 December 2026 W51\nTuesday    15 December 2026\nWednesday  16 December 2026\nThursday   17 December 2026\nFriday     18 December 2026\nSaturday   19 December 2026\nSunday     20 December 2026\nMonday     21 December 2026 W52\nTuesday    22 December 2026\nWednesday  23 December 2026\nThursday   24 December 2026\nFriday     25 December 2026\nSaturday   26 December 2026\nSunday     27 December 2026\nMonday     28 December 2026 W53\nTuesday    29 December 2026\nWednesday  30 December 2026\nThursday   31 December 2026\n",
+      "point": 8102,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 8102,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Switched to year view"
+    },
+    {
+      "name": "agenda-view-year-refused",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y",
+          "n"
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Abort",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-view-year-key-numbered",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 2 7 y",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          "y"
+        ],
+        "message": true
+      },
+      "text": "Year-agenda:\nFriday      1 January 2027\n  e8-agenda:  New year \nSaturday    2 January 2027\nSunday      3 January 2027\nMonday      4 January 2027 W01\nTuesday     5 January 2027\nWednesday   6 January 2027\nThursday    7 January 2027\nFriday      8 January 2027\nSaturday    9 January 2027\nSunday     10 January 2027\nMonday     11 January 2027 W02\nTuesday    12 January 2027\nWednesday  13 January 2027\nThursday   14 January 2027\nFriday     15 January 2027\nSaturday   16 January 2027\nSunday     17 January 2027\nMonday     18 January 2027 W03\nTuesday    19 January 2027\nWednesday  20 January 2027\nThursday   21 January 2027\nFriday     22 January 2027\nSaturday   23 January 2027\nSunday     24 January 2027\nMonday     25 January 2027 W04\nTuesday    26 January 2027\nWednesday  27 January 2027\nThursday   28 January 2027\nFriday     29 January 2027\nSaturday   30 January 2027\nSunday     31 January 2027\nMonday      1 February 2027 W05\nTuesday     2 February 2027\nWednesday   3 February 2027\nThursday    4 February 2027\nFriday      5 February 2027\nSaturday    6 February 2027\nSunday      7 February 2027\nMonday      8 February 2027 W06\nTuesday     9 February 2027\nWednesday  10 February 2027\nThursday   11 February 2027\nFriday     12 February 2027\nSaturday   13 February 2027\nSunday     14 February 2027\nMonday     15 February 2027 W07\nTuesday    16 February 2027\nWednesday  17 February 2027\nThursday   18 February 2027\nFriday     19 February 2027\nSaturday   20 February 2027\nSunday     21 February 2027\nMonday     22 February 2027 W08\nTuesday    23 February 2027\nWednesday  24 February 2027\nThursday   25 February 2027\nFriday     26 February 2027\nSaturday   27 February 2027\nSunday     28 February 2027\nMonday      1 March 2027 W09\nTuesday     2 March 2027\nWednesday   3 March 2027\nThursday    4 March 2027\nFriday      5 March 2027\nSaturday    6 March 2027\nSunday      7 March 2027\nMonday      8 March 2027 W10\nTuesday     9 March 2027\nWednesday  10 March 2027\nThursday   11 March 2027\nFriday     12 March 2027\nSaturday   13 March 2027\nSunday     14 March 2027\nMonday     15 March 2027 W11\nTuesday    16 March 2027\nWednesday  17 March 2027\nThursday   18 March 2027\nFriday     19 March 2027\nSaturday   20 March 2027\nSunday     21 March 2027\nMonday     22 March 2027 W12\nTuesday    23 March 2027\nWednesday  24 March 2027\nThursday   25 March 2027\nFriday     26 March 2027\nSaturday   27 March 2027\nSunday     28 March 2027\nMonday     29 March 2027 W13\nTuesday    30 March 2027\nWednesday  31 March 2027\nThursday    1 April 2027\nFriday      2 April 2027\nSaturday    3 April 2027\nSunday      4 April 2027\nMonday      5 April 2027 W14\nTuesday     6 April 2027\nWednesday   7 April 2027\nThursday    8 April 2027\nFriday      9 April 2027\nSaturday   10 April 2027\nSunday     11 April 2027\nMonday     12 April 2027 W15\nTuesday    13 April 2027\nWednesday  14 April 2027\nThursday   15 April 2027\nFriday     16 April 2027\nSaturday   17 April 2027\nSunday     18 April 2027\nMonday     19 April 2027 W16\nTuesday    20 April 2027\nWednesday  21 April 2027\nThursday   22 April 2027\nFriday     23 April 2027\nSaturday   24 April 2027\nSunday     25 April 2027\nMonday     26 April 2027 W17\nTuesday    27 April 2027\nWednesday  28 April 2027\nThursday   29 April 2027\nFriday     30 April 2027\nSaturday    1 May 2027\nSunday      2 May 2027\nMonday      3 May 2027 W18\nTuesday     4 May 2027\nWednesday   5 May 2027\nThursday    6 May 2027\nFriday      7 May 2027\nSaturday    8 May 2027\nSunday      9 May 2027\nMonday     10 May 2027 W19\nTuesday    11 May 2027\nWednesday  12 May 2027\nThursday   13 May 2027\nFriday     14 May 2027\nSaturday   15 May 2027\nSunday     16 May 2027\nMonday     17 May 2027 W20\nTuesday    18 May 2027\nWednesday  19 May 2027\nThursday   20 May 2027\nFriday     21 May 2027\nSaturday   22 May 2027\nSunday     23 May 2027\nMonday     24 May 2027 W21\nTuesday    25 May 2027\nWednesday  26 May 2027\nThursday   27 May 2027\nFriday     28 May 2027\nSaturday   29 May 2027\nSunday     30 May 2027\nMonday     31 May 2027 W22\nTuesday     1 June 2027\nWednesday   2 June 2027\nThursday    3 June 2027\nFriday      4 June 2027\nSaturday    5 June 2027\nSunday      6 June 2027\nMonday      7 June 2027 W23\nTuesday     8 June 2027\nWednesday   9 June 2027\nThursday   10 June 2027\nFriday     11 June 2027\nSaturday   12 June 2027\nSunday     13 June 2027\nMonday     14 June 2027 W24\nTuesday    15 June 2027\nWednesday  16 June 2027\nThursday   17 June 2027\nFriday     18 June 2027\nSaturday   19 June 2027\nSunday     20 June 2027\nMonday     21 June 2027 W25\nTuesday    22 June 2027\nWednesday  23 June 2027\nThursday   24 June 2027\nFriday     25 June 2027\nSaturday   26 June 2027\nSunday     27 June 2027\nMonday     28 June 2027 W26\nTuesday    29 June 2027\nWednesday  30 June 2027\nThursday    1 July 2027\nFriday      2 July 2027\nSaturday    3 July 2027\nSunday      4 July 2027\nMonday      5 July 2027 W27\nTuesday     6 July 2027\nWednesday   7 July 2027\nThursday    8 July 2027\nFriday      9 July 2027\nSaturday   10 July 2027\nSunday     11 July 2027\nMonday     12 July 2027 W28\nTuesday    13 July 2027\nWednesday  14 July 2027\nThursday   15 July 2027\nFriday     16 July 2027\nSaturday   17 July 2027\nSunday     18 July 2027\nMonday     19 July 2027 W29\nTuesday    20 July 2027\nWednesday  21 July 2027\nThursday   22 July 2027\nFriday     23 July 2027\nSaturday   24 July 2027\nSunday     25 July 2027\nMonday     26 July 2027 W30\nTuesday    27 July 2027\nWednesday  28 July 2027\nThursday   29 July 2027\nFriday     30 July 2027\nSaturday   31 July 2027\nSunday      1 August 2027\nMonday      2 August 2027 W31\nTuesday     3 August 2027\nWednesday   4 August 2027\nThursday    5 August 2027\nFriday      6 August 2027\nSaturday    7 August 2027\nSunday      8 August 2027\nMonday      9 August 2027 W32\nTuesday    10 August 2027\nWednesday  11 August 2027\nThursday   12 August 2027\nFriday     13 August 2027\nSaturday   14 August 2027\nSunday     15 August 2027\nMonday     16 August 2027 W33\nTuesday    17 August 2027\nWednesday  18 August 2027\nThursday   19 August 2027\nFriday     20 August 2027\nSaturday   21 August 2027\nSunday     22 August 2027\nMonday     23 August 2027 W34\nTuesday    24 August 2027\nWednesday  25 August 2027\nThursday   26 August 2027\nFriday     27 August 2027\nSaturday   28 August 2027\nSunday     29 August 2027\nMonday     30 August 2027 W35\nTuesday    31 August 2027\nWednesday   1 September 2027\nThursday    2 September 2027\nFriday      3 September 2027\nSaturday    4 September 2027\nSunday      5 September 2027\nMonday      6 September 2027 W36\nTuesday     7 September 2027\nWednesday   8 September 2027\nThursday    9 September 2027\nFriday     10 September 2027\nSaturday   11 September 2027\nSunday     12 September 2027\nMonday     13 September 2027 W37\nTuesday    14 September 2027\nWednesday  15 September 2027\nThursday   16 September 2027\nFriday     17 September 2027\nSaturday   18 September 2027\nSunday     19 September 2027\nMonday     20 September 2027 W38\nTuesday    21 September 2027\nWednesday  22 September 2027\nThursday   23 September 2027\nFriday     24 September 2027\nSaturday   25 September 2027\nSunday     26 September 2027\nMonday     27 September 2027 W39\nTuesday    28 September 2027\nWednesday  29 September 2027\nThursday   30 September 2027\nFriday      1 October 2027\nSaturday    2 October 2027\nSunday      3 October 2027\nMonday      4 October 2027 W40\nTuesday     5 October 2027\nWednesday   6 October 2027\nThursday    7 October 2027\nFriday      8 October 2027\nSaturday    9 October 2027\nSunday     10 October 2027\nMonday     11 October 2027 W41\nTuesday    12 October 2027\nWednesday  13 October 2027\nThursday   14 October 2027\nFriday     15 October 2027\nSaturday   16 October 2027\nSunday     17 October 2027\nMonday     18 October 2027 W42\nTuesday    19 October 2027\nWednesday  20 October 2027\nThursday   21 October 2027\nFriday     22 October 2027\nSaturday   23 October 2027\nSunday     24 October 2027\nMonday     25 October 2027 W43\nTuesday    26 October 2027\nWednesday  27 October 2027\nThursday   28 October 2027\nFriday     29 October 2027\nSaturday   30 October 2027\nSunday     31 October 2027\nMonday      1 November 2027 W44\nTuesday     2 November 2027\nWednesday   3 November 2027\nThursday    4 November 2027\nFriday      5 November 2027\nSaturday    6 November 2027\nSunday      7 November 2027\nMonday      8 November 2027 W45\nTuesday     9 November 2027\nWednesday  10 November 2027\nThursday   11 November 2027\nFriday     12 November 2027\nSaturday   13 November 2027\nSunday     14 November 2027\nMonday     15 November 2027 W46\nTuesday    16 November 2027\nWednesday  17 November 2027\nThursday   18 November 2027\nFriday     19 November 2027\nSaturday   20 November 2027\nSunday     21 November 2027\nMonday     22 November 2027 W47\nTuesday    23 November 2027\nWednesday  24 November 2027\nThursday   25 November 2027\nFriday     26 November 2027\nSaturday   27 November 2027\nSunday     28 November 2027\nMonday     29 November 2027 W48\nTuesday    30 November 2027\nWednesday   1 December 2027\nThursday    2 December 2027\nFriday      3 December 2027\nSaturday    4 December 2027\nSunday      5 December 2027\nMonday      6 December 2027 W49\nTuesday     7 December 2027\nWednesday   8 December 2027\nThursday    9 December 2027\nFriday     10 December 2027\nSaturday   11 December 2027\nSunday     12 December 2027\nMonday     13 December 2027 W50\nTuesday    14 December 2027\nWednesday  15 December 2027\nThursday   16 December 2027\nFriday     17 December 2027\nSaturday   18 December 2027\nSunday     19 December 2027\nMonday     20 December 2027 W51\nTuesday    21 December 2027\nWednesday  22 December 2027\nThursday   23 December 2027\nFriday     24 December 2027\nSaturday   25 December 2027\nSunday     26 December 2027\nMonday     27 December 2027 W52\nTuesday    28 December 2027\nWednesday  29 December 2027\nThursday   30 December 2027\nFriday     31 December 2027\n",
+      "visible": "Year-agenda:\nFriday      1 January 2027\n  e8-agenda:  New year \nSaturday    2 January 2027\nSunday      3 January 2027\nMonday      4 January 2027 W01\nTuesday     5 January 2027\nWednesday   6 January 2027\nThursday    7 January 2027\nFriday      8 January 2027\nSaturday    9 January 2027\nSunday     10 January 2027\nMonday     11 January 2027 W02\nTuesday    12 January 2027\nWednesday  13 January 2027\nThursday   14 January 2027\nFriday     15 January 2027\nSaturday   16 January 2027\nSunday     17 January 2027\nMonday     18 January 2027 W03\nTuesday    19 January 2027\nWednesday  20 January 2027\nThursday   21 January 2027\nFriday     22 January 2027\nSaturday   23 January 2027\nSunday     24 January 2027\nMonday     25 January 2027 W04\nTuesday    26 January 2027\nWednesday  27 January 2027\nThursday   28 January 2027\nFriday     29 January 2027\nSaturday   30 January 2027\nSunday     31 January 2027\nMonday      1 February 2027 W05\nTuesday     2 February 2027\nWednesday   3 February 2027\nThursday    4 February 2027\nFriday      5 February 2027\nSaturday    6 February 2027\nSunday      7 February 2027\nMonday      8 February 2027 W06\nTuesday     9 February 2027\nWednesday  10 February 2027\nThursday   11 February 2027\nFriday     12 February 2027\nSaturday   13 February 2027\nSunday     14 February 2027\nMonday     15 February 2027 W07\nTuesday    16 February 2027\nWednesday  17 February 2027\nThursday   18 February 2027\nFriday     19 February 2027\nSaturday   20 February 2027\nSunday     21 February 2027\nMonday     22 February 2027 W08\nTuesday    23 February 2027\nWednesday  24 February 2027\nThursday   25 February 2027\nFriday     26 February 2027\nSaturday   27 February 2027\nSunday     28 February 2027\nMonday      1 March 2027 W09\nTuesday     2 March 2027\nWednesday   3 March 2027\nThursday    4 March 2027\nFriday      5 March 2027\nSaturday    6 March 2027\nSunday      7 March 2027\nMonday      8 March 2027 W10\nTuesday     9 March 2027\nWednesday  10 March 2027\nThursday   11 March 2027\nFriday     12 March 2027\nSaturday   13 March 2027\nSunday     14 March 2027\nMonday     15 March 2027 W11\nTuesday    16 March 2027\nWednesday  17 March 2027\nThursday   18 March 2027\nFriday     19 March 2027\nSaturday   20 March 2027\nSunday     21 March 2027\nMonday     22 March 2027 W12\nTuesday    23 March 2027\nWednesday  24 March 2027\nThursday   25 March 2027\nFriday     26 March 2027\nSaturday   27 March 2027\nSunday     28 March 2027\nMonday     29 March 2027 W13\nTuesday    30 March 2027\nWednesday  31 March 2027\nThursday    1 April 2027\nFriday      2 April 2027\nSaturday    3 April 2027\nSunday      4 April 2027\nMonday      5 April 2027 W14\nTuesday     6 April 2027\nWednesday   7 April 2027\nThursday    8 April 2027\nFriday      9 April 2027\nSaturday   10 April 2027\nSunday     11 April 2027\nMonday     12 April 2027 W15\nTuesday    13 April 2027\nWednesday  14 April 2027\nThursday   15 April 2027\nFriday     16 April 2027\nSaturday   17 April 2027\nSunday     18 April 2027\nMonday     19 April 2027 W16\nTuesday    20 April 2027\nWednesday  21 April 2027\nThursday   22 April 2027\nFriday     23 April 2027\nSaturday   24 April 2027\nSunday     25 April 2027\nMonday     26 April 2027 W17\nTuesday    27 April 2027\nWednesday  28 April 2027\nThursday   29 April 2027\nFriday     30 April 2027\nSaturday    1 May 2027\nSunday      2 May 2027\nMonday      3 May 2027 W18\nTuesday     4 May 2027\nWednesday   5 May 2027\nThursday    6 May 2027\nFriday      7 May 2027\nSaturday    8 May 2027\nSunday      9 May 2027\nMonday     10 May 2027 W19\nTuesday    11 May 2027\nWednesday  12 May 2027\nThursday   13 May 2027\nFriday     14 May 2027\nSaturday   15 May 2027\nSunday     16 May 2027\nMonday     17 May 2027 W20\nTuesday    18 May 2027\nWednesday  19 May 2027\nThursday   20 May 2027\nFriday     21 May 2027\nSaturday   22 May 2027\nSunday     23 May 2027\nMonday     24 May 2027 W21\nTuesday    25 May 2027\nWednesday  26 May 2027\nThursday   27 May 2027\nFriday     28 May 2027\nSaturday   29 May 2027\nSunday     30 May 2027\nMonday     31 May 2027 W22\nTuesday     1 June 2027\nWednesday   2 June 2027\nThursday    3 June 2027\nFriday      4 June 2027\nSaturday    5 June 2027\nSunday      6 June 2027\nMonday      7 June 2027 W23\nTuesday     8 June 2027\nWednesday   9 June 2027\nThursday   10 June 2027\nFriday     11 June 2027\nSaturday   12 June 2027\nSunday     13 June 2027\nMonday     14 June 2027 W24\nTuesday    15 June 2027\nWednesday  16 June 2027\nThursday   17 June 2027\nFriday     18 June 2027\nSaturday   19 June 2027\nSunday     20 June 2027\nMonday     21 June 2027 W25\nTuesday    22 June 2027\nWednesday  23 June 2027\nThursday   24 June 2027\nFriday     25 June 2027\nSaturday   26 June 2027\nSunday     27 June 2027\nMonday     28 June 2027 W26\nTuesday    29 June 2027\nWednesday  30 June 2027\nThursday    1 July 2027\nFriday      2 July 2027\nSaturday    3 July 2027\nSunday      4 July 2027\nMonday      5 July 2027 W27\nTuesday     6 July 2027\nWednesday   7 July 2027\nThursday    8 July 2027\nFriday      9 July 2027\nSaturday   10 July 2027\nSunday     11 July 2027\nMonday     12 July 2027 W28\nTuesday    13 July 2027\nWednesday  14 July 2027\nThursday   15 July 2027\nFriday     16 July 2027\nSaturday   17 July 2027\nSunday     18 July 2027\nMonday     19 July 2027 W29\nTuesday    20 July 2027\nWednesday  21 July 2027\nThursday   22 July 2027\nFriday     23 July 2027\nSaturday   24 July 2027\nSunday     25 July 2027\nMonday     26 July 2027 W30\nTuesday    27 July 2027\nWednesday  28 July 2027\nThursday   29 July 2027\nFriday     30 July 2027\nSaturday   31 July 2027\nSunday      1 August 2027\nMonday      2 August 2027 W31\nTuesday     3 August 2027\nWednesday   4 August 2027\nThursday    5 August 2027\nFriday      6 August 2027\nSaturday    7 August 2027\nSunday      8 August 2027\nMonday      9 August 2027 W32\nTuesday    10 August 2027\nWednesday  11 August 2027\nThursday   12 August 2027\nFriday     13 August 2027\nSaturday   14 August 2027\nSunday     15 August 2027\nMonday     16 August 2027 W33\nTuesday    17 August 2027\nWednesday  18 August 2027\nThursday   19 August 2027\nFriday     20 August 2027\nSaturday   21 August 2027\nSunday     22 August 2027\nMonday     23 August 2027 W34\nTuesday    24 August 2027\nWednesday  25 August 2027\nThursday   26 August 2027\nFriday     27 August 2027\nSaturday   28 August 2027\nSunday     29 August 2027\nMonday     30 August 2027 W35\nTuesday    31 August 2027\nWednesday   1 September 2027\nThursday    2 September 2027\nFriday      3 September 2027\nSaturday    4 September 2027\nSunday      5 September 2027\nMonday      6 September 2027 W36\nTuesday     7 September 2027\nWednesday   8 September 2027\nThursday    9 September 2027\nFriday     10 September 2027\nSaturday   11 September 2027\nSunday     12 September 2027\nMonday     13 September 2027 W37\nTuesday    14 September 2027\nWednesday  15 September 2027\nThursday   16 September 2027\nFriday     17 September 2027\nSaturday   18 September 2027\nSunday     19 September 2027\nMonday     20 September 2027 W38\nTuesday    21 September 2027\nWednesday  22 September 2027\nThursday   23 September 2027\nFriday     24 September 2027\nSaturday   25 September 2027\nSunday     26 September 2027\nMonday     27 September 2027 W39\nTuesday    28 September 2027\nWednesday  29 September 2027\nThursday   30 September 2027\nFriday      1 October 2027\nSaturday    2 October 2027\nSunday      3 October 2027\nMonday      4 October 2027 W40\nTuesday     5 October 2027\nWednesday   6 October 2027\nThursday    7 October 2027\nFriday      8 October 2027\nSaturday    9 October 2027\nSunday     10 October 2027\nMonday     11 October 2027 W41\nTuesday    12 October 2027\nWednesday  13 October 2027\nThursday   14 October 2027\nFriday     15 October 2027\nSaturday   16 October 2027\nSunday     17 October 2027\nMonday     18 October 2027 W42\nTuesday    19 October 2027\nWednesday  20 October 2027\nThursday   21 October 2027\nFriday     22 October 2027\nSaturday   23 October 2027\nSunday     24 October 2027\nMonday     25 October 2027 W43\nTuesday    26 October 2027\nWednesday  27 October 2027\nThursday   28 October 2027\nFriday     29 October 2027\nSaturday   30 October 2027\nSunday     31 October 2027\nMonday      1 November 2027 W44\nTuesday     2 November 2027\nWednesday   3 November 2027\nThursday    4 November 2027\nFriday      5 November 2027\nSaturday    6 November 2027\nSunday      7 November 2027\nMonday      8 November 2027 W45\nTuesday     9 November 2027\nWednesday  10 November 2027\nThursday   11 November 2027\nFriday     12 November 2027\nSaturday   13 November 2027\nSunday     14 November 2027\nMonday     15 November 2027 W46\nTuesday    16 November 2027\nWednesday  17 November 2027\nThursday   18 November 2027\nFriday     19 November 2027\nSaturday   20 November 2027\nSunday     21 November 2027\nMonday     22 November 2027 W47\nTuesday    23 November 2027\nWednesday  24 November 2027\nThursday   25 November 2027\nFriday     26 November 2027\nSaturday   27 November 2027\nSunday     28 November 2027\nMonday     29 November 2027 W48\nTuesday    30 November 2027\nWednesday   1 December 2027\nThursday    2 December 2027\nFriday      3 December 2027\nSaturday    4 December 2027\nSunday      5 December 2027\nMonday      6 December 2027 W49\nTuesday     7 December 2027\nWednesday   8 December 2027\nThursday    9 December 2027\nFriday     10 December 2027\nSaturday   11 December 2027\nSunday     12 December 2027\nMonday     13 December 2027 W50\nTuesday    14 December 2027\nWednesday  15 December 2027\nThursday   16 December 2027\nFriday     17 December 2027\nSaturday   18 December 2027\nSunday     19 December 2027\nMonday     20 December 2027 W51\nTuesday    21 December 2027\nWednesday  22 December 2027\nThursday   23 December 2027\nFriday     24 December 2027\nSaturday   25 December 2027\nSunday     26 December 2027\nMonday     27 December 2027 W52\nTuesday    28 December 2027\nWednesday  29 December 2027\nThursday   30 December 2027\nFriday     31 December 2027\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 6,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 18,
+          "selected": true
+        }
+      ],
+      "message": "Switched to year view"
+    },
+    {
+      "name": "agenda-view-reset",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "d v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          " "
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": "Switched to week view"
+    },
+    {
+      "name": "agenda-view-reset-already",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "v",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "answers": [
+          " "
+        ],
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Viewing span is already \"week\"",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-later-by-three-weeks",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u 3 f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Week-agenda (W47):\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "visible": "Week-agenda (W47):\nMonday     16 November 2026 W47\nTuesday    17 November 2026\nWednesday  18 November 2026\nThursday   19 November 2026\nFriday     20 November 2026\n  e8-agenda:  Party \nSaturday   21 November 2026\nSunday     22 November 2026\n",
+      "point": 79,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 79,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-later-keeps-the-day",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-n C-n C-n C-n C-n f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "visible": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "point": 155,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 155,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-earlier-from-the-header",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "M-< b",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Week-agenda (W43):\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\n",
+      "visible": "Week-agenda (W43):\nMonday     19 October 2026 W43\nTuesday    20 October 2026\nWednesday  21 October 2026\nThursday   22 October 2026\nFriday     23 October 2026\nSaturday   24 October 2026\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\n",
+      "point": 0,
+      "mark": 0,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-today-after-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "visible": "Week-agenda (W44):\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\nThursday   29 October 2026\n  e8-agenda:  Meeting \nFriday     30 October 2026\n  e8-agenda:  Deadline:   TODO Call Ann                                  :work:\nSaturday   31 October 2026\nSunday      1 November 2026\n",
+      "point": 203,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 9,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 203,
+          "width": 80,
+          "height": 15,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-today-in-day-view",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "d f f .",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-redo-after-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f r",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "visible": "Week-agenda (W45):\nMonday      2 November 2026 W45\nTuesday     3 November 2026\n  e8-agenda:  Trip \nWednesday   4 November 2026\nThursday    5 November 2026\nFriday      6 November 2026\nSaturday    7 November 2026\nSunday      8 November 2026\n",
+      "point": 99,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 99,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-day-view-redo",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "d f g",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "visible": "Day-agenda (W44):\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "follow-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 135,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "visible": "Day-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 135,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-11-03)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-timestamp-time",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 109,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "visible": "Day-agenda (W44):\nThursday   29 October 2026\n  e8-agenda:  Meeting \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 109,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-10-29)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-timestamp-range",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 184,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "3 days-agenda (W43-W44):\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\n",
+      "visible": "3 days-agenda (W43-W44):\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 184,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-10-25--2026-10-27)",
+          "point": 25,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-timestamp-range-end",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 202,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "3 days-agenda (W43-W44):\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\n",
+      "visible": "3 days-agenda (W43-W44):\nSunday     25 October 2026\n  e8-agenda:  (1/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nMonday     26 October 2026 W44\n  e8-agenda:  (2/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\nTuesday    27 October 2026\n  e8-agenda:  (3/3):  Range <2026-10-25 Sun>--<2026-10-27 Tue>\n",
+      "point": 25,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 202,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-10-25--2026-10-27)",
+          "point": 25,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-timestamp-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 135,
+        "keys": "C-c C-o f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W45):\nWednesday   4 November 2026\n",
+      "visible": "Day-agenda (W45):\nWednesday   4 November 2026\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*Org Agenda(a:2026-11-03)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "follow-timestamp-ret",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 135,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-return-follows-link": true
+        }
+      },
+      "text": "Day-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "visible": "Day-agenda (W45):\nTuesday     3 November 2026\n  e8-agenda:  Trip \n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 135,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-11-03)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-timestamp-scheduled",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 32,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "visible": "Day-agenda (W44):\nWednesday  28 October 2026\n  e8-agenda:  Scheduled:  TODO Write report\n  e8-agenda:  In   2 d.:  TODO Call Ann                                  :work:\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 32,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-10-28)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    }
+  ]
+}
