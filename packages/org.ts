@@ -4384,7 +4384,11 @@ function headingsInRegion(): Heading[] | undefined {
   if (!orgRegionActive()) return undefined;
   const mark = e8.mark() ?? e8.point();
   const [from, to] = [Math.min(mark, e8.point()), Math.max(mark, e8.point())];
-  return headings().filter((h) => h.start >= from && h.start < to);
+  const inside = headings().filter((h) => h.start >= from && h.start < to);
+  // None unless the first one's stars and the space after them end before
+  // the region does, as org-map-region's search for it must.
+  if (inside.length > 0 && !(inside[0].start + inside[0].level + 1 < to)) return [];
+  return inside;
 }
 
 /** Whether the active region starts on an item's line, as org-at-item-p there. */
@@ -4751,11 +4755,19 @@ export function pasteSubtree(level: e8.PrefixArg, forYank = false): void {
   if ((level === null || c4 || c16) && /^\*+[ \t]*$/.test(text) && e8.bufferText(e8.point(), e8.point() + 1) !== "*") {
     // As org-outline-level: the stars' own level when they make a heading,
     // with a space after them, else the heading above's, or 0 before the first.
-    indicator = [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+    // In the whole buffer, as org-back-to-heading finds a heading outside a narrowing.
+    indicator = e8.saveRestriction(() => {
+      e8.widen();
+      return [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+    });
     force = indicator;
   } else if (c4) {
     // As org-outline-level: the heading point is under, hidden or not, or 0 before the first.
-    force = [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+    force = e8.saveRestriction(() => {
+      // In the whole buffer, as org-back-to-heading finds a heading outside a narrowing.
+      e8.widen();
+      return [...headings()].reverse().find((h) => h.line <= line)?.level ?? 0;
+    });
   }
   else if (typeof level === "number") force = level;
   else if (!c16 && atBol && /^\*+ /.test(text)) force = levelHere();

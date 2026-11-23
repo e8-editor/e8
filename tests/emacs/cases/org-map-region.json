@@ -1,0 +1,92 @@
+[
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-ends-at-stars-space",
+  "text": "* A\n* B\n",
+  "keys": "C-SPC C-f C-f M-<right>",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-ends-in-stars",
+  "text": "* A\n* B\n",
+  "keys": "C-SPC C-f M-<right>",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-ends-after-space",
+  "text": "* A\n* B\n",
+  "keys": "C-SPC C-f C-f C-f M-<right>",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-promote-at-space",
+  "text": "** A\n* B\n",
+  "keys": "C-SPC C-f C-f C-f M-<left>",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-second-at-space",
+  "text": "* A\n* B\n",
+  "keys": "C-SPC C-n C-f C-f M-<right>",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "region-backward",
+  "text": "* A\n* B\n",
+  "keys": "C-f C-f C-SPC C-a M-<right>",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "paste-cu-before-first",
+  "text": "** X\nx body\n*** Y\ntext\n* A\n",
+  "keys": "C-c C-x C-w C-f C-f C-u C-c C-x C-y",
+  "point": 0
+ },
+ {
+  "modes": [
+   "org-mode"
+  ],
+  "name": "paste-cu-narrowed-body",
+  "text": "** X\nx\n* A\n** B\nbody\nmore\n",
+  "keys": "C-c C-x C-w M-> C-p C-p C-SPC M-> C-x n n M-< C-u C-c C-x C-y",
+  "point": 0
+ },
+ {
+  "name": "ind-l2-above",
+  "text": "** K\nk\n** A\n***\nfoo\n",
+  "point": 0,
+  "keys": "C-c C-x C-w C-n C-SPC M-> C-x n n M-< C-e C-c C-x C-y",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "ind-l3-kill",
+  "text": "*** K\nk\n** A\n**\nfoo\n",
+  "point": 0,
+  "keys": "C-c C-x C-w C-n C-SPC M-> C-x n n M-< C-e C-c C-x C-y",
+  "modes": [
+   "org-mode"
+  ]
+ }
+]
