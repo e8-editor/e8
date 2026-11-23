@@ -1,0 +1,490 @@
+[
+  {
+    "name": "alpha-new-item",
+    "text": "a. one\nb. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 6,
+    "keys": "M-RET x",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-new-item-upper-paren",
+    "text": "A) one\nB) two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 6,
+    "keys": "M-RET x",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-new-item-between",
+    "text": "a. one\nb. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "M-RET x",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-not-allowed-new-item",
+    "text": "a. one\nb. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 6,
+    "keys": "M-RET x",
+    "call": [
+      "org-element-update-syntax"
+    ]
+  },
+  {
+    "name": "alpha-cycle-bullets",
+    "text": "- one\n- two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c - C-c - C-c -",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-cycle-bullets-to-letters",
+    "text": "- one\n- two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c - C-c - C-c - C-c -",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-cycle-bullets-all-the-way",
+    "text": "- one\n- two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c - C-c - C-c - C-c - C-c - C-c - C-c -",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-cycle-bullets-indented",
+    "text": "  - one\n  - two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "C-c - C-c - C-c - C-c - C-c -",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-cycle-bullets-back",
+    "text": "a. one\nb. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "S-<left>",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-cycle-bullets-forward",
+    "text": "a. one\nb. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "S-<right>",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-cycle-without-letters",
+    "text": "1. one\n2. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c - C-c -",
+    "call": [
+      "org-element-update-syntax"
+    ]
+  },
+  {
+    "name": "alpha-repair",
+    "text": "a. one\nc. two\nq. three\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-repair-upper",
+    "text": "B. one\nc. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-counter-first",
+    "text": "a. [@c] one\na. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-counter-later",
+    "text": "a. one\na. [@e] two\na. three\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-counter-number-in-letters",
+    "text": "a. one\na. [@5] two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-more-than-26-items",
+    "text": "a. item 0\nb. item 1\nc. item 2\nd. item 3\ne. item 4\nf. item 5\ng. item 6\nh. item 7\ni. item 8\nj. item 9\nk. item 10\nl. item 11\nm. item 12\nn. item 13\no. item 14\np. item 15\nq. item 16\nr. item 17\ns. item 18\nt. item 19\nu. item 20\nv. item 21\nw. item 22\nx. item 23\ny. item 24\nz. item 25\na. item 26\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-26-items",
+    "text": "a. item 0\na. item 1\na. item 2\na. item 3\na. item 4\na. item 5\na. item 6\na. item 7\na. item 8\na. item 9\na. item 10\na. item 11\na. item 12\na. item 13\na. item 14\na. item 15\na. item 16\na. item 17\na. item 18\na. item 19\na. item 20\na. item 21\na. item 22\na. item 23\na. item 24\na. item 25\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-counter-past-z",
+    "text": "a. one\na. [@y] two\na. three\na. four\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-move-item-down",
+    "text": "a. one\nb. two\nc. three\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "M-<down>",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-indent-item",
+    "text": "a. one\nb. two\nc. three\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "M-<right>",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-demote-to-letters",
+    "text": "1. one\n2. two\n3. three\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "M-<right>",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true,
+      "org-list-demote-modify-bullet": {
+        "1.": "a."
+      }
+    }
+  },
+  {
+    "name": "alpha-demote-to-letters-not-allowed",
+    "text": "1. one\n2. two\n3. three\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 9,
+    "keys": "M-<right>",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-demote-modify-bullet": {
+        "1.": "a."
+      }
+    }
+  },
+  {
+    "name": "alpha-fill-paragraph-before-item",
+    "text": "Some text\na. item one that is long\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "M-q",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-fill-paragraph-not-allowed",
+    "text": "Some text\na. item one that is long\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "M-q",
+    "call": [
+      "org-element-update-syntax"
+    ]
+  },
+  {
+    "name": "alpha-checkbox-statistics",
+    "text": "* H [/]\na. [ ] x\nb. [X] y\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-checkbox-toggle",
+    "text": "* H [/]\na. [ ] x\nb. [X] y\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 12,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-checkbox-statistics-not-allowed",
+    "text": "* H [/]\na. [ ] x\nb. [X] y\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "C-c C-c",
+    "call": [
+      "org-element-update-syntax"
+    ]
+  },
+  {
+    "name": "alpha-tab-in-empty-item",
+    "text": "a. one\nb. \n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 10,
+    "keys": "TAB",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-item-to-heading",
+    "text": "a. one\nb. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-c *",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-forward-paragraph",
+    "text": "Text\na. one\nb. two\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 0,
+    "keys": "M-}",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-word-with-dot-is-an-item",
+    "text": "I. think so\nYes.\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 4,
+    "keys": "M-RET x",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  },
+  {
+    "name": "alpha-insert-checkbox",
+    "text": "a. one\n",
+    "modes": [
+      "org-mode"
+    ],
+    "point": 2,
+    "keys": "C-u C-c C-x C-b",
+    "call": [
+      "org-element-update-syntax"
+    ],
+    "globals": {
+      "org-list-allow-alphabetical": true
+    }
+  }
+]

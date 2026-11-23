@@ -68,7 +68,9 @@ import {
   hasChild,
   indentLineTo,
   indentString,
+  alphabetical,
   inItem,
+  ITEM_GROUPS,
   insertDrawer,
   insertListItem,
   ITEM_RE,
@@ -2046,6 +2048,7 @@ function updateHeadingCookies(all: Heading[], i: number): void {
   const end = all[i + 1]?.start ?? e8.bufferSize();
   let boxes = false;
   for (let l = h.line + 1; l < e8.lineCount() && e8.lineStart(l) < end; l++) {
+    // As org-update-statistics-cookies looks for them: no lettered bullets or counters, whatever org-list-allow-alphabetical says.
     if (/^[ \t]*([-+*]|[0-9]+[.)]) \[[- X]\]/.test(e8.lineText(l))) boxes = true;
   }
   if (boxes) {
@@ -2096,12 +2099,11 @@ interface Item {
   checkboxAt?: number;
 }
 
-const ITEM = /^([ \t]*)([-+*]|\d+[.)])([ \t]+|$)/;
-
-function parseItem(line: number): Item | undefined {
+/** The item a line starts, by org-item-re, lettered bullets taken as the setting says or, for fontifying, always, as org-list-full-item-re takes them. */
+function parseItem(line: number, lettered = alphabetical()): Item | undefined {
   if (line < 0 || line >= e8.lineCount()) return undefined;
   const text = e8.lineText(line);
-  const m = ITEM.exec(text);
+  const m = (lettered ? ITEM_GROUPS.lettered : ITEM_GROUPS.numbered).exec(text);
   if (!m || (m[1] === "" && m[2] === "*")) return undefined;
   const contentIndex = m[0].length;
   const item: Item = {
@@ -2508,12 +2510,13 @@ function fontify(start: number, end: number): void {
       const i = (m.index ?? 0) + m[0].length - m[1].length;
       face(at(line, text, i), at(line, text, i + m[1].length), "org-special-keyword");
     }
-    const item = parseItem(line);
+    const item = parseItem(line, true);
     let objectsFrom = 0;
     if (item) {
       if (item.checkboxAt !== undefined) face(item.checkboxAt, item.checkboxAt + 3, "org-checkbox");
       const term = /^(.*?)[ \t]+::(?:[ \t]|$)/.exec(text.slice(indexOf(line, text, item.contentAt)));
-      if (term && !/^\d/.test(item.bullet)) {
+      // Only an unordered item's term, as Org's font-lock has it.
+      if (term && !/^[0-9A-Za-z]/.test(item.bullet)) {
         const termStart = item.checkboxAt !== undefined ? item.checkboxAt + 4 : item.contentAt;
         face(termStart, item.contentAt + charCount(term[1]), "org-list-dt");
       }

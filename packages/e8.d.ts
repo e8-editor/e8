@@ -5969,6 +5969,12 @@ declare global {
        */
       "org-edit-src-save": [];
       /**
+       * Bring the parser up to date with Org's syntax settings, as org-list-allow-alphabetical, after changing them. E8's parser reads them as it goes, so there is nothing to do; Org's compiles them when it loads.
+       *
+       * Defined in packages/org-element.ts.
+       */
+      "org-element-update-syntax": [];
+      /**
        * Move to the end of the line, staying on a folded heading's line rather than going past its hidden text.
        *
        * Defined in packages/org.ts.
@@ -14612,6 +14618,12 @@ declare global {
        * Defined in packages/ol.ts.
        */
       "org-link-make-description-function": Value;
+      /**
+       * Whether single letters, as a. or B), are bullets of ordered lists, as numbers are; a list of more than 26 items is numbered instead.
+       *
+       * Defined in packages/org-list.ts.
+       */
+      "org-list-allow-alphabetical": Value;
       /**
        * Whether Org-List-Checkbox-Radio mode is on in this buffer. Use the command org-list-checkbox-radio-mode to change it.
        *

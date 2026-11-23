@@ -31,7 +31,7 @@ import {
   orgRegionActive,
   placeMarkers,
 } from "org-macs";
-import { charCount, escapeRegExp } from "subr";
+import { charCount, escapeRegExp, truthy } from "subr";
 
 export interface ListItem {
   /** Where the item's line starts. */
@@ -50,7 +50,41 @@ export type Struct = ListItem[];
 export type Alist = Map<number, number | undefined>;
 
 /** org-item-re, at the start of a line. */
-export const ITEM_RE = /^(?:[ \t]*(?:[-+]|\d+[.)])|[ \t]+\*)(?:[ \t]+|$)/;
+e8.defineVariable({
+  name: "org-list-allow-alphabetical",
+  doc: "Whether single letters, as a. or B), are bullets of ordered lists, as numbers are; a list of more than 26 items is numbered instead.",
+  value: null,
+});
+
+// The setting's global value, kept by a watcher rather than read for each
+// line tested, as the item tests run over whole buffers.
+let lettered = truthy(e8.variable("org-list-allow-alphabetical") ?? null);
+// A global change only, as Org reads the global value; makunbound's value is nil.
+e8.addVariableWatcher("org-list-allow-alphabetical", (_symbol, value, _operation, where) => {
+  if (where === null || where === undefined) lettered = truthy(value ?? null);
+});
+
+/** Whether lettered bullets are allowed, as org-list-allow-alphabetical says. */
+export function alphabetical(): boolean {
+  return lettered;
+}
+
+const ITEM_NUMBERED = /^(?:[ \t]*(?:[-+]|\d+[.)])|[ \t]+\*)(?:[ \t]+|$)/;
+const ITEM_LETTERED = /^(?:[ \t]*(?:[-+]|(?:\d+|[A-Za-z])[.)])|[ \t]+\*)(?:[ \t]+|$)/;
+
+/** Matches the start of an item, as org-item-beginning-re: a lettered one too with org-list-allow-alphabetical. */
+export const ITEM_RE = { test: (text: string): boolean => (lettered ? ITEM_LETTERED : ITEM_NUMBERED).test(text) };
+
+/** An item's indentation, bullet and the spaces after it, numbered bullets only or lettered ones too. */
+export const ITEM_GROUPS = {
+  numbered: /^([ \t]*)([-+*]|\d+[.)])([ \t]+|$)/,
+  lettered: /^([ \t]*)([-+*]|(?:\d+|[A-Za-z])[.)])([ \t]+|$)/,
+};
+
+/** A line that looks like an item ends a paragraph, as org-element-paragraph-separate has it: lettered too with the setting. */
+export function separatesParagraph(text: string): boolean {
+  return (lettered ? /^[ \t]*(?:[-+*]|(?:[0-9]+|[A-Za-z])[.)])(?:[ \t]|$)/ : /^[ \t]*(?:[-+*]|[0-9]+[.)])(?:[ \t]|$)/).test(text);
+}
 export const DRAWER_RE = /^[ \t]*:((?:\w|[-_])+):[ \t]*$/;
 const LIST_FORBIDDEN_BLOCKS = ["example", "verse", "src", "export"];
 
@@ -626,21 +660,50 @@ function incBulletMaybe(bullet: string): string {
   return bullet;
 }
 
-/** Numbers ordered lists from 1 or their counters, and gives items their list's bullet, as org-list-struct-fix-bul does. */
+/**
+ * Whether the list starting at FIRST can have lettered bullets, as
+ * org-list-use-alpha-bul-p says: with org-list-allow-alphabetical, when
+ * its items, counting from their letter counters, stay within the alphabet.
+ */
+function useAlphaBul(first: number, struct: Struct, prevs: Alist): boolean {
+  if (!alphabetical()) return false;
+  let ascii = 64;
+  for (let item: number | undefined = first; item !== undefined; item = nextItem(item, prevs)) {
+    const count = getItem(struct, item).counter;
+    ascii = count && /[a-zA-Z]/.test(count) ? count.toUpperCase().charCodeAt(0) : ascii + 1;
+    if (ascii > 90) return false;
+  }
+  return true;
+}
+
+/**
+ * Numbers ordered lists from 1, a or A, or their counters, and gives items
+ * their list's bullet, as org-list-struct-fix-bul does: a list's first
+ * bullet a letter stays lettered when org-list-use-alpha-bul-p allows it.
+ */
 export function fixBul(struct: Struct, prevs: Alist): void {
   for (const e of struct) {
     const prev = prevItem(e.pos, prevs);
     const prevBul = prev === undefined ? undefined : getItem(struct, prev).bullet;
     const { counter, bullet } = e;
+    const alphap = prev === undefined && useAlphaBul(e.pos, struct, prevs);
+    // A letter counter in the bullet's case.
+    const inCase = (b: string, c: string) => (/[a-z]/.test(b) ? b.replace(/[a-z]/, c.toLowerCase()) : b.replace(/[A-Z]/, c.toUpperCase()));
     let fixed: string;
     if (prevBul !== undefined && counter && /[a-zA-Z]/.test(counter) && /[a-zA-Z]/.test(prevBul)) {
-      fixed = prevBul.replace(/[a-zA-Z]/, /[a-z]/.test(prevBul) ? counter.toLowerCase() : counter.toUpperCase());
+      fixed = inCase(prevBul, counter);
     } else if (prevBul !== undefined && counter && /\d+/.test(counter) && /\d+/.test(prevBul)) {
       fixed = prevBul.replace(/\d+/, counter);
     } else if (prevBul !== undefined) {
       fixed = incBulletMaybe(prevBul);
+    } else if (counter && useAlphaBul(e.pos, struct, prevs) && /[A-Za-z]/.test(counter) && /[A-Za-z]/.test(bullet)) {
+      fixed = inCase(bullet, counter);
     } else if (counter && /\d+/.test(counter) && /\d+/.test(bullet)) {
       fixed = bullet.replace(/\d+/, counter);
+    } else if (alphap && /[A-Z]/.test(bullet)) {
+      fixed = bullet.replace(/[A-Z]/, "A");
+    } else if (alphap && /[a-z]/.test(bullet)) {
+      fixed = bullet.replace(/[a-z]/, "a");
     } else if (/\d+|[A-Za-z]/.test(bullet)) {
       fixed = bullet.replace(/\d+|[A-Za-z]/, "1");
     } else fixed = bullet;
@@ -1221,9 +1284,29 @@ export function cycleListBullet(which?: string): void {
   const offset = origin.pos - (bol + here.ind);
   const offset2 = origin.pos - (bol + here.ind + charCount(here.bullet));
   const bullet = getItem(struct, listBeg).bullet;
-  const current = /\./.test(bullet) ? "1." : /\)/.test(bullet) ? "1)" : bullet.trim();
+  const alpha = useAlphaBul(listBeg, struct, prevs);
+  const current = /[a-z]\./.test(bullet)
+    ? "a."
+    : /[a-z]\)/.test(bullet)
+      ? "a)"
+      : /[A-Z]\./.test(bullet)
+        ? "A."
+        : /[A-Z]\)/.test(bullet)
+          ? "A)"
+          : /\./.test(bullet)
+            ? "1."
+            : /\)/.test(bullet)
+              ? "1)"
+              : bullet.trim();
   const description = itemParts(line)?.tag !== undefined;
-  const choices = ["-", "+", ...(/^\S/.test(e8.lineText(line)) ? [] : ["*"]), ...(description ? [] : ["1.", "1)"])];
+  const choices = [
+    "-",
+    "+",
+    ...(/^\S/.test(e8.lineText(line)) ? [] : ["*"]),
+    ...(description ? [] : ["1.", "1)"]),
+    // Letters too where the list can have them, as org-list-use-alpha-bul-p says.
+    ...(description || !alpha ? [] : ["a.", "A.", "a)", "A)"]),
+  ];
   const k = choices.indexOf(current);
   const index = k < 0 ? choices.length : k;
   const get = (i: number): string => choices[((i % choices.length) + choices.length) % choices.length];
