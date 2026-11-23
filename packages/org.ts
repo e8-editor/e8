@@ -6710,9 +6710,20 @@ export function timestampDatesAt(p: number, inclusive = true): string[] | undefi
   return ts ? [date(ts)] : undefined;
 }
 
-/** Whether point is on a timestamp, as org-return-follows-link has RET follow it: org-in-regexp of a timestamp or a range. */
+/** Whether point is on a timestamp, as org-return-follows-link has RET follow it: org-in-regexp of a timestamp or a range, visually, not at its end. */
 function onTimestamp(): boolean {
-  return timestampDatesAt(e8.point()) !== undefined;
+  return timestampDatesAt(e8.point(), false) !== undefined;
+}
+
+/**
+ * Whether a position is on the spaces after a timestamp, or at the end of
+ * its line just after one, which the timestamp's object takes in, as Org's
+ * objects take the whitespace after them.
+ */
+function afterTimestamp(p: number): boolean {
+  const line = lineAt(p);
+  if (p < e8.lineEnd(line) && !/[ \t]/.test(e8.bufferText(p, p + 1))) return false;
+  return tsMatches(line).some((t) => t.end <= p && /^[ \t]*$/.test(e8.bufferText(t.end, p)));
 }
 
 /** The timestamps on a line, matched as Org's org-ts-regexp3 matches them. */
@@ -7596,12 +7607,23 @@ function openAtPoint_(): void {
     return;
   }
   // On a timestamp, the agenda for its day, as org-follow-timestamp-link
-  // opens it: on a planning or clock line just after one too, elsewhere
-  // not on the spaces after it.
-  const planning = /^[ \t]*(?:(?:SCHEDULED|DEADLINE|CLOSED):|CLOCK:)/.test(e8.lineText(lineAt()));
-  if (timestampDatesAt(e8.point(), planning) !== undefined) {
+  // opens it. A planning or clock line has nothing else to follow; a clock's
+  // timestamp takes in the spaces after it. Elsewhere the spaces after a
+  // timestamp are its object's, with nothing to follow; and an example
+  // block or the like has no timestamps, only the entry's links.
+  const p0 = e8.point();
+  const type = elementAt(p0)?.type;
+  if (type === "planning" || type === "clock") {
+    if (timestampDatesAt(p0, false) === undefined && !(type === "clock" && afterTimestamp(p0))) e8.userError("No link found");
     e8.funcall("org-follow-timestamp-link");
     return;
+  }
+  if (!["example-block", "export-block", "fixed-width", "src-block"].includes(type ?? "")) {
+    if (timestampDatesAt(p0, false) !== undefined) {
+      e8.funcall("org-follow-timestamp-link");
+      return;
+    }
+    if (afterTimestamp(p0)) e8.userError("No link found");
   }
   const all = headings();
   const i = headingIndex(all, lineAt());

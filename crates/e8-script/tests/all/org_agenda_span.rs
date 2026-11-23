@@ -85,7 +85,7 @@ fn span_commands_need_a_day_agenda_and_a_number() {
     ed.call("org-todo-list", vec![]).unwrap();
     for key in ["f", "b", ".", "d", "w"] {
         ed.press(key).unwrap();
-        assert_eq!(ed.take_error().map(|e| e.to_string()).as_deref(), Some("Not allowed in 'todo'-type agenda buffer or component"), "{key}");
+        assert_eq!(ed.take_error().map(|e| e.to_string()).as_deref(), Some("Not allowed in \u{2019}todo\u{2019}-type agenda buffer or component"), "{key}");
     }
     ed.call("org-agenda-list", vec![]).unwrap();
     ed.press("C-u d").unwrap();

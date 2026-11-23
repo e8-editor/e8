@@ -870,7 +870,7 @@ function agendaList(arg: e8.PrefixArg | null, startDay?: number, spanArg?: Span,
     const week = wd === 1 ? ` W${two(isoWeekOf(day))}` : "";
     lines.push({ text: `${AGENDA_DAYS[wd].padEnd(10)} ${String(d.day).padStart(2)} ${AGENDA_MONTHS[d.month - 1]} ${d.year}${week}` });
     const sorted = byUrgency(items);
-    const grid = day === today ? timeGrid(sorted) : [];
+    const grid = timeGrid(sorted, day === today, ndays);
     // Each grid line after the entries at its time or earlier, as a stable sort puts it.
     for (const item of sorted) {
       while (grid.length > 0 && item.time !== undefined && grid[0].minutes < item.time.minutes) lines.push({ text: grid.shift()!.text });
@@ -893,11 +893,14 @@ let startingDay = 0;
  * default org-agenda-time-grid: a line at each of its times, and one for
  * the time now, when the day has entries with times.
  */
-function timeGrid(items: AgendaItem[]): { text: string; minutes: number }[] {
+function timeGrid(items: AgendaItem[], todayp: boolean, ndays: number): { text: string; minutes: number }[] {
   if (e8.variable("org-agenda-use-time-grid") === null || e8.variable("org-agenda-use-time-grid") === false) return [];
   const spec = e8.variable("org-agenda-time-grid");
   const [when, times, , rule] = Array.isArray(spec) ? spec : [];
   const conditions = Array.isArray(when) ? when.map(String) : [];
+  // Today's, a one-day agenda's or every day's, as its conditions say.
+  const drawn = (todayp && conditions.includes("today")) || (ndays === 1 && conditions.includes("daily")) || conditions.includes("weekly");
+  if (!drawn) return [];
   if (conditions.includes("require-timed") && !items.some((i) => i.time !== undefined)) return [];
   const blank = " ".repeat(14);
   const out: { text: string; minutes: number }[] = (Array.isArray(times) ? times : []).map((t) => {
@@ -905,7 +908,7 @@ function timeGrid(items: AgendaItem[]): { text: string; minutes: number }[] {
     return { text: `${blank}${clockTime(h, m)}${gridDots()} ${typeof rule === "string" ? rule : "----------------"}`, minutes: h * 60 + m };
   });
   const showNow = e8.variable("org-agenda-show-current-time-in-grid");
-  if (showNow !== null && showNow !== false) {
+  if (todayp && showNow !== null && showNow !== false) {
     const now = today(true);
     const minutes = (now.hour ?? 0) * 60 + (now.minute ?? 0);
     const text = `${blank}${clockTime(now.hour ?? 0, now.minute ?? 0)}${gridDots()} ${String(e8.variable("org-agenda-current-time-string") ?? "")}`;
@@ -1398,6 +1401,8 @@ e8.defun("org-follow-timestamp-link", () => {
   if (dates === undefined) return undefined;
   const day = (date: string) => dayNumber({ year: Number(date.slice(0, 4)), month: Number(date.slice(5, 7)), day: Number(date.slice(8, 10)) });
   const [first, last] = [day(dates[0]), day(dates[dates.length - 1])];
+  // A range that ends before it starts signals before anything is made, as org-agenda-list checks the span first.
+  if (last < first) e8.userError(`Agenda creation impossible for this span(=${last - first + 1} days)`);
   freshAgenda();
   bufferTmpName = `*Org Agenda(a:${dates.join("--")})`;
   try {
@@ -1753,7 +1758,8 @@ const agendaRedo = e8.defineCommand({
 
 /** The day agenda the agenda buffer shows, or an error for another view, as org-agenda-check-type with agenda. */
 function checkAgendaType(): Extract<typeof agendaView, { kind: "agenda" }> {
-  if (agendaView.kind !== "agenda") e8.signal("error", `Not allowed in '${agendaView.kind}'-type agenda buffer or component`);
+  // With the quotes format-message curves.
+  if (agendaView.kind !== "agenda") e8.signal("error", `Not allowed in \u2019${agendaView.kind}\u2019-type agenda buffer or component`);
   return agendaView as Extract<typeof agendaView, { kind: "agenda" }>;
 }
 
@@ -1886,25 +1892,41 @@ const dayView = e8.defineCommand({
   name: "org-agenda-day-view",
   doc: "Show a day's agenda, point's day. With a prefix argument, that day of the month.",
   params: [{ name: "dayOfMonth", kind: "prefix" }],
-  run: (n) => changeTimeSpan("day", viewNumber(n)),
+  run: (n) => {
+    // The agenda's type checked first, as org-agenda-change-time-span checks it before using the number.
+    checkAgendaType();
+    changeTimeSpan("day", viewNumber(n));
+  },
 });
 const weekView = e8.defineCommand({
   name: "org-agenda-week-view",
   doc: "Show a week's agenda, point's week. With a prefix argument, that ISO week of the year; past 99, its last two digits are the week and those before them the year, as 202612.",
   params: [{ name: "isoWeek", kind: "prefix" }],
-  run: (n) => changeTimeSpan("week", viewNumber(n)),
+  run: (n) => {
+    // The agenda's type checked first, as org-agenda-change-time-span checks it before using the number.
+    checkAgendaType();
+    changeTimeSpan("week", viewNumber(n));
+  },
 });
 const fortnightView = e8.defineCommand({
   name: "org-agenda-fortnight-view",
   doc: "Show two weeks' agenda, from point's week. With a prefix argument, from that ISO week, as org-agenda-week-view reads it.",
   params: [{ name: "isoWeek", kind: "prefix" }],
-  run: (n) => changeTimeSpan("fortnight", viewNumber(n)),
+  run: (n) => {
+    // The agenda's type checked first, as org-agenda-change-time-span checks it before using the number.
+    checkAgendaType();
+    changeTimeSpan("fortnight", viewNumber(n));
+  },
 });
 const monthView = e8.defineCommand({
   name: "org-agenda-month-view",
   doc: "Show a month's agenda, point's month. With a prefix argument, that month; past 99, its last two digits are the month and those before them the year, as 202612.",
   params: [{ name: "month", kind: "prefix" }],
-  run: (n) => changeTimeSpan("month", viewNumber(n)),
+  run: (n) => {
+    // The agenda's type checked first, as org-agenda-change-time-span checks it before using the number.
+    checkAgendaType();
+    changeTimeSpan("month", viewNumber(n));
+  },
 });
 const yearView = e8.defineCommand({
   name: "org-agenda-year-view",

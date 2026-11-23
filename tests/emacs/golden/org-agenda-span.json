@@ -2722,6 +2722,805 @@
         }
       ],
       "message": null
+    },
+    {
+      "name": "ret-just-after-a-planning-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 47,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-return-follows-link": true
+        }
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nDEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\nDEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 48,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 48,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "ret-at-the-end-of-a-planning-line",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 74,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-return-follows-link": true
+        }
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 75,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 75,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "ret-at-the-end-of-a-heading-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 107,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-return-follows-link": true
+        }
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00>                                       :work:\nsoon\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00>                                       :work:\nsoon\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 153,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 153,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "ret-on-a-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 88,
+        "keys": "RET",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-return-follows-link": true
+        }
+      },
+      "text": "Day-agenda (W44):\nThursday   29 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting soon                                   :work:\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nThursday   29 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting soon                                   :work:\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 88,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-10-29)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-at-the-end-of-a-planning-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 47,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 47,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 47,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-at-the-end-of-a-planning-line",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 74,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 74,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 74,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-on-planning-not-on-a-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 22,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 22,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 22,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-on-the-space-after-a-heading-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 107,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 107,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 107,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-on-the-space-after-a-timestamp-with-a-link",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 145,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 145,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 145,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-at-the-end-of-a-paragraph-timestamp",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 333,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 333,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 333,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-in-an-example-block",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 188,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 188,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 188,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": "No links"
+    },
+    {
+      "name": "follow-a-clock-range",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 247,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nMonday     26 October 2026 W44\n",
+      "visible": "Day-agenda (W44):\nMonday     26 October 2026 W44\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 247,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-10-26--2026-10-26)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-a-clock-on-the-space-after",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 290,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nMonday     26 October 2026 W44\n",
+      "visible": "Day-agenda (W44):\nMonday     26 October 2026 W44\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 290,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-10-26--2026-10-26)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-on-a-clock-line-elsewhere",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 238,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "visible": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n*Other\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+      "point": 238,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "No link found",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 238,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-a-timed-timestamp-grid",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 88,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nThursday   29 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting soon                                   :work:\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nThursday   29 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting soon                                   :work:\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 88,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda(a:2026-10-29)",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-day-view-grid-on-another-day",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 0,
+        "keys": "d f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Day-agenda (W44):\nThursday   29 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting soon                                   :work:\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nThursday   29 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting soon                                   :work:\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-day-span-grid-on-another-day",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+        "point": 0,
+        "keys": "f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-agenda-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true,
+        "globals": {
+          "org-agenda-span": "'day"
+        }
+      },
+      "text": "Day-agenda (W44):\nThursday   29 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting soon                                   :work:\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "visible": "Day-agenda (W44):\nThursday   29 October 2026\n               8:00...... ----------------\n  e8-agenda:  10:00...... Meeting soon                                   :work:\n              10:00...... ----------------\n              12:00...... ----------------\n              14:00...... ----------------\n              16:00...... ----------------\n              18:00...... ----------------\n              20:00...... ----------------\n",
+      "point": 18,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": null,
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 18,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": "Rebuilding agenda buffer...done"
+    },
+    {
+      "name": "agenda-todo-list-later",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "f",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n  e8-agenda:  TODO Call Ann                                              :work:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n  e8-agenda:  TODO Call Ann                                              :work:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not allowed in ’todo’-type agenda buffer or component",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "agenda-todo-list-day-view-with-c-u",
+      "input": {
+        "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+        "point": 0,
+        "keys": "C-u d",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [
+          "org-todo-list"
+        ],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n  e8-agenda:  TODO Call Ann                                              :work:\n",
+      "visible": "Global list of TODO items of type: ALL\nPress ‘N r’ (e.g. ‘0 r’) to search again: (0)[ALL] (1)DONE (2)TODO\n  e8-agenda:  TODO Write report\n  e8-agenda:  TODO Call Ann                                              :work:\n",
+      "point": 0,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": true,
+      "error": "Not allowed in ’todo’-type agenda buffer or component",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": false
+        },
+        {
+          "buffer": "*Org Agenda*",
+          "point": 0,
+          "width": 80,
+          "height": 12,
+          "selected": true
+        }
+      ],
+      "message": null
+    },
+    {
+      "name": "follow-a-reversed-range",
+      "input": {
+        "text": "* R <2026-10-30 Fri>--<2026-10-28 Wed>\n",
+        "point": 6,
+        "keys": "C-c C-o",
+        "modes": [
+          "org-mode"
+        ],
+        "call": [],
+        "platform": null,
+        "windows": true,
+        "visit": "e8-agenda.org",
+        "today": "2026-10-28",
+        "agenda_files": true,
+        "message": true
+      },
+      "text": "* R <2026-10-30 Fri>--<2026-10-28 Wed>\n",
+      "visible": "* R <2026-10-30 Fri>--<2026-10-28 Wed>\n",
+      "point": 6,
+      "mark": null,
+      "mark_active": false,
+      "kill_ring": [],
+      "modified": false,
+      "error": "Agenda creation impossible for this span(=-1 days)",
+      "windows": [
+        {
+          "buffer": "*e8-oracle*",
+          "point": 6,
+          "width": 80,
+          "height": 24,
+          "selected": true
+        }
+      ],
+      "message": null
     }
   ]
 }

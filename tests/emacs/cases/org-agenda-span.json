@@ -1037,5 +1037,308 @@
     "name": "follow-timestamp-scheduled",
     "keys": "C-c C-o",
     "point": 32
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "ret-just-after-a-planning-timestamp",
+    "keys": "RET",
+    "point": 47,
+    "globals": {
+      "org-return-follows-link": true
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "ret-at-the-end-of-a-planning-line",
+    "keys": "RET",
+    "point": 74,
+    "globals": {
+      "org-return-follows-link": true
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "ret-at-the-end-of-a-heading-timestamp",
+    "keys": "RET",
+    "point": 107,
+    "globals": {
+      "org-return-follows-link": true
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "ret-on-a-timestamp",
+    "keys": "RET",
+    "point": 88,
+    "globals": {
+      "org-return-follows-link": true
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-at-the-end-of-a-planning-timestamp",
+    "keys": "C-c C-o",
+    "point": 47
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-at-the-end-of-a-planning-line",
+    "keys": "C-c C-o",
+    "point": 74
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-on-planning-not-on-a-timestamp",
+    "keys": "C-c C-o",
+    "point": 22
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-on-the-space-after-a-heading-timestamp",
+    "keys": "C-c C-o",
+    "point": 107
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-on-the-space-after-a-timestamp-with-a-link",
+    "keys": "C-c C-o",
+    "point": 145
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-at-the-end-of-a-paragraph-timestamp",
+    "keys": "C-c C-o",
+    "point": 333
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-in-an-example-block",
+    "keys": "C-c C-o",
+    "point": 188
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-a-clock-range",
+    "keys": "C-c C-o",
+    "point": 247
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-a-clock-on-the-space-after",
+    "keys": "C-c C-o",
+    "point": 290
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-on-a-clock-line-elsewhere",
+    "keys": "C-c C-o",
+    "point": 238
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-a-timed-timestamp-grid",
+    "keys": "C-c C-o",
+    "point": 88
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-day-view-grid-on-another-day",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "d f"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed> DEADLINE: <2026-11-02 Mon>\n* Meeting <2026-10-29 Thu 10:00> soon :work:\n* Linked <2026-10-30 Fri> here\n[[*Other]]\n* Other\n#+begin_example\n<2026-11-05 Thu>\n#+end_example\n* Clocked\n:LOGBOOK:\nCLOCK: [2026-10-26 Mon 09:00]--[2026-10-26 Mon 10:00] =>  1:00\n:END:\n* Note\nSee <2026-10-31 Sat>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-day-span-grid-on-another-day",
+    "call": [
+      "org-agenda-list"
+    ],
+    "keys": "f",
+    "globals": {
+      "org-agenda-span": "'day"
+    }
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-todo-list-later",
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "f"
+  },
+  {
+    "text": "* TODO Write report\nSCHEDULED: <2026-10-28 Wed>\n* TODO Call Ann :work:\nDEADLINE: <2026-10-30 Fri>\n* Meeting <2026-10-29 Thu>\n* Trip <2026-11-03 Tue>\n* Party <2026-11-20 Fri>\n* Range <2026-10-25 Sun>--<2026-10-27 Tue>\n* New year <2027-01-01 Fri>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "agenda-todo-list-day-view-with-c-u",
+    "call": [
+      "org-todo-list"
+    ],
+    "keys": "C-u d"
+  },
+  {
+    "text": "* R <2026-10-30 Fri>--<2026-10-28 Wed>\n",
+    "modes": [
+      "org-mode"
+    ],
+    "visit": "e8-agenda.org",
+    "today": "2026-10-28",
+    "agenda_files": true,
+    "windows": true,
+    "message": true,
+    "name": "follow-a-reversed-range",
+    "keys": "C-c C-o",
+    "point": 6
   }
 ]
