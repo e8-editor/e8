@@ -12,6 +12,7 @@
 // option) any later version.
 
 import { eraseBuffer, PerBuffer } from "subr";
+import { commentOrUncommentRegion } from "newcomment";
 
 const defvar = (name: string, value: e8.Value, doc: string) => e8.defineVariable({ name, value, doc });
 defvar("org-src-lang-modes", [
@@ -386,6 +387,16 @@ e8.defun("org-src-font-lock-fontify-block", (lang: e8.Value, start: e8.Value, en
  * buffer, as org-fill-element does for a src-block: the paragraph there,
  * or the region if it is active there.
  */
+// M-; and the region's comments in a source block, as its language comments, as Org's comment functions do it in the edit buffer.
+e8.defun("org-src--comment-dwim", () => {
+  doInEditBuffer(() => e8.funcallInteractively("comment-dwim"));
+  return true;
+});
+e8.defun("org-src--comment-or-uncomment-region", (offset: number) => {
+  doInEditBuffer(() => commentOrUncommentRegion(e8.point(), e8.point() + offset, null));
+  return true;
+});
+
 e8.defun("org-src--fill-paragraph", (justify?: e8.Value) => {
   doInEditBuffer(() => e8.callWithPrefix(justify === null || justify === undefined || justify === false ? null : 4, "fill-paragraph"));
   return true;

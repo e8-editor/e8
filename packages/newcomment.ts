@@ -11,6 +11,10 @@ const defvar = (name: string, value: e8.Value, doc: string, local = false) => e8
 defvar("comment-start", null, "What starts a comment in this mode, with the space after it: \"// \" or \"# \". nil if the mode has no comments.", true);
 defvar("comment-end", "", "What ends a comment, with the space before it: \" */\", or \"\" when comments end with the line.", true);
 defvar("comment-start-skip", null, "A regexp matching a comment's start and the space after it.", true);
+defvar("comment-use-syntax", "undecided", "Whether the syntax table finds comments; nil to find them by comment-start-skip, as Org's are; undecided to tell from the syntax table.", true);
+defvar("comment-insert-comment-function", null, "A function M-; calls to put a comment on a line with none, in place of its own, as Org's starts one above the line.", true);
+defvar("comment-region-function", "comment-region-default", "The function comment-region calls with the region and the prefix argument.", true);
+defvar("uncomment-region-function", "uncomment-region-default", "The function uncomment-region calls with the region and the prefix argument.", true);
 defvar("comment-column", 32, "The column comments at the end of a line go to. C-x ; sets it.", true);
 defvar("comment-padding", " ", "What goes between a comment's start and its text.");
 defvar("comment-add", 0, "How many more comment starts comment-region and M-; on a blank line add, as Lisp's ;; for comments of their own.", true);
@@ -73,8 +77,10 @@ function commentStartAt(p: number): number | undefined {
   return undefined;
 }
 
-/** Whether the syntax table knows the mode's comments, as comment-use-syntax. */
+/** Whether the syntax table knows the mode's comments, as comment-use-syntax: as it says, or as the table says if undecided. */
 function hasCommentSyntax(): boolean {
+  const use = e8.variable("comment-use-syntax");
+  if (use === false || use === null) return false;
   const cs = trim(str("comment-start") ?? "");
   if (cs === "") return false;
   const d = e8.syntaxEntry(cs[0]) ?? "";
@@ -87,6 +93,18 @@ function hasCommentSyntax(): boolean {
  * point after its starter and the space after.
  */
 export function commentSearchForward(from: number, limit: number): number | undefined {
+  // Without syntax, by comment-start-skip, as comment-search-forward then searches.
+  const use = e8.variable("comment-use-syntax");
+  const skip = str("comment-start-skip");
+  if ((use === false || use === null) && skip !== undefined) {
+    const p = e8.point();
+    e8.gotoChar(from);
+    if (e8.reSearchForward(skip, { bound: limit, noerror: true }) === undefined) {
+      e8.gotoChar(p);
+      return undefined;
+    }
+    return e8.matchEnd(1) ?? e8.matchBeginning(0);
+  }
   for (let p = from; p < limit; p++) {
     const len = commentStartAt(p);
     if (len === undefined) continue;
@@ -257,9 +275,34 @@ function uncommentRegion(beg: number, end: number, arg?: number): void {
   // No comment to take off is no error, as uncomment-region-default-1 searches with noerror.
 }
 
-function commentOrUncommentRegion(beg: number, end: number, arg: e8.PrefixArg): void {
-  if (commentOnly(beg, end)) uncommentRegion(beg, end, arg === null ? undefined : e8.prefixNumericValue(arg));
-  else commentRegion(beg, end, arg);
+export function commentOrUncommentRegion(beg: number, end: number, arg: e8.PrefixArg): void {
+  if (commentOnly(beg, end)) callUncommentRegion(beg, end, arg);
+  else callCommentRegion(beg, end, arg);
+}
+
+/** Comments the region by comment-region-function, as comment-region does. */
+function callCommentRegion(beg: number, end: number, arg: e8.PrefixArg): void {
+  const fn = e8.variable("comment-region-function");
+  if (fn === "comment-region-default" || !truthy(fn ?? null)) commentRegion(beg, end, arg);
+  else e8.saveExcursion(() => e8.funcall(fn as string, beg, end, arg));
+}
+
+/** Uncomments the region by uncomment-region-function, as uncomment-region does. */
+function callUncommentRegion(beg: number, end: number, arg: e8.PrefixArg): void {
+  const fn = e8.variable("uncomment-region-function");
+  if (fn === "uncomment-region-default" || !truthy(fn ?? null)) uncommentRegion(beg, end, arg === null ? undefined : e8.prefixNumericValue(arg));
+  else e8.saveExcursion(() => e8.funcall(fn as string, beg, end, arg));
+}
+
+e8.defun("comment-region-default", (beg: number, end: number, arg?: e8.PrefixArg) => commentRegion(beg, end, arg ?? null));
+e8.defun("uncomment-region-default", (beg: number, end: number, arg?: e8.PrefixArg) =>
+  uncommentRegion(beg, end, arg === null || arg === undefined ? undefined : e8.prefixNumericValue(arg)),
+);
+
+/** The function M-; calls on a line with no comment, if the mode gives one, as comment-insert-comment-function. */
+function insertCommentFunction(): e8.Value | undefined {
+  const fn = e8.variable("comment-insert-comment-function");
+  return truthy(fn ?? null) ? fn : undefined;
 }
 
 /** The column for the comment at point, as comment-choose-indent: near comment-column, within the fill column, as the comments around align. */
@@ -309,6 +352,12 @@ function commentIndent(): void {
   const ender = commentEnd();
   e8.gotoChar(bol());
   let begpos = commentSearchForward(e8.point(), eol());
+  // No comment, and the mode puts one itself: it does everything.
+  const insertFn = insertCommentFunction();
+  if (insertFn !== undefined && begpos === undefined) {
+    e8.funcall(insertFn as string);
+    return;
+  }
   let cpos: e8.Marker;
   if (begpos !== undefined) {
     cpos = e8.makeMarker();
@@ -366,9 +415,10 @@ function commentKill(count: number, moves = false): void {
       const line = e8.lineOf(e8.point());
       const start = commentOnLine(line);
       if (start === undefined) return;
-      let q = start;
-      while (q > e8.lineStart(line) && " \t".includes(charAt(q - 1))) q--;
-      e8.killRegion(q, e8.lineEnd(line));
+      // Back over whitespace as the syntax table has it, a newline too where it is, as skip-syntax-backward does.
+      e8.gotoChar(start);
+      e8.skipSyntaxBackward(" ");
+      e8.killRegion(e8.point(), e8.lineEnd(line));
       e8.call("indent-according-to-mode");
     });
     if (moves) forwardLine(1);
@@ -397,6 +447,12 @@ e8.defineCommand({
       else commentIndent();
       return;
     }
+    // On a blank line, the mode's own if it gives one, as comment-dwim.
+    const insertFn = insertCommentFunction();
+    if (insertFn !== undefined) {
+      e8.funcall(insertFn as string);
+      return;
+    }
     const add = num("comment-add", 0) + (arg === null ? 0 : e8.prefixNumericValue(arg) - 1);
     e8.call("indent-according-to-mode");
     e8.insert(padRight(commentStart(), add));
@@ -416,7 +472,7 @@ e8.defineCommand({
   run: () => {
     barf();
     if (e8.mark() === undefined) e8.userError("The mark is not set now, so there is no region");
-    commentRegion(...region(), e8.prefixArg());
+    callCommentRegion(...region(), e8.prefixArg());
   },
 });
 
@@ -428,7 +484,7 @@ e8.defineCommand({
     commentStart();
     if (e8.mark() === undefined) e8.userError("The mark is not set now, so there is no region");
     const arg = e8.prefixArg();
-    uncommentRegion(...region(), arg === null ? undefined : e8.prefixNumericValue(arg));
+    callUncommentRegion(...region(), arg);
   },
 });
 

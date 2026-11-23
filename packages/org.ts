@@ -2598,7 +2598,11 @@ function adaptiveFillPrefix(): string | undefined {
         return " ".repeat(listBodyColumn(el.begin));
       case "paragraph": {
         if (el.parent?.type === "item") return " ".repeat(listBodyColumn(el.parent.begin));
-        const context = typeof e8.variable("adaptive-fill-regexp") === "string" ? fillContextPrefix(el.begin, el.end) : undefined;
+        // With adaptive-fill-function off, so fill-context-prefix uses the regexp, as Org binds it.
+        const context =
+          typeof e8.variable("adaptive-fill-regexp") === "string"
+            ? e8.letBind({ "adaptive-fill-function": null }, () => fillContextPrefix(el.begin, el.end))
+            : undefined;
         return context ?? indentation(line);
       }
       case "comment-block": {
@@ -11263,6 +11267,14 @@ e8.defineMajorMode({
       ["fill-paragraph-function", "org-fill-paragraph"],
       ["paragraph-start", ORG_PARAGRAPH_START],
       ["paragraph-separate", ORG_PARAGRAPH_START],
+      // As org-setup-comments-handling: comments are lines starting with #, found by regexp.
+      ["comment-use-syntax", null],
+      ["comment-start", "# "],
+      ["comment-start-skip", "^\\s-*#\\(?: \\|$\\)"],
+      ["comment-insert-comment-function", "org-insert-comment"],
+      ["comment-region-function", "org-comment-or-uncomment-region"],
+      ["uncomment-region-function", "org-comment-or-uncomment-region"],
+      ["adaptive-fill-function", "org-adaptive-fill-function"],
       ["fill-forward-paragraph-function", "org--fill-forward-paragraph"],
       ["fill-nobreak-predicate", ["org-fill-line-break-nobreak-p", "org-fill-n-macro-as-item-nobreak-p", "org-fill-paragraph-with-timestamp-nobreak-p"]],
     ] as const) {
@@ -11674,6 +11686,103 @@ const ctrlCRet = e8.defineCommand({
   },
 });
 e8.bindKey("C-c RET", ctrlCRet, "org-mode-map");
+// --- Comments, as org-setup-comments-handling sets them up -----------------
+
+/**
+ * Whether beg to end lie in a source block's body, after its first line
+ * and before its last, as Org's comment commands check to comment in the
+ * block's own language; `inclusiveEnd` as the region's check allows the
+ * last line's start.
+ */
+function inSrcBody(beg: number, end: number, inclusiveEnd: boolean): boolean {
+  const el = elementAt(beg);
+  if (el?.type !== "src-block") return false;
+  const last = e8.lineStart(lineAt(endBeforeBlank(el)));
+  return e8.lineEnd(lineAt(el.begin)) < beg && (inclusiveEnd ? last >= end : last > end);
+}
+
+e8.defun("org-insert-comment", () => {
+  // In a source block, as its language comments, in its edit buffer.
+  if (inSrcBody(e8.point(), e8.point(), false)) {
+    if (e8.fboundp("org-src--comment-dwim")) e8.funcall("org-src--comment-dwim");
+    return;
+  }
+  // A comment above the line, or on it if it is blank.
+  e8.gotoChar(e8.lineStart(lineAt()));
+  if (/^\s*$/.test(e8.lineText(lineAt()))) e8.deleteRegion(e8.point(), e8.lineEnd(lineAt()));
+  else {
+    e8.insert("\n");
+    e8.gotoChar(e8.point() - 1);
+  }
+  indentLine(lineAt());
+  e8.insert("# ");
+});
+
+e8.defun("org-comment-or-uncomment-region", (beg: number, end: number) => {
+  // In a source block, as its language comments, in its edit buffer.
+  if (inSrcBody(beg, end, true)) {
+    e8.saveExcursion(() => {
+      e8.gotoChar(beg);
+      if (e8.fboundp("org-src--comment-or-uncomment-region")) e8.funcall("org-src--comment-or-uncomment-region", end - beg);
+    });
+    return;
+  }
+  e8.saveRestriction(() => {
+    // The region's lines, without blank lines around them.
+    let b = beg;
+    while (b < end && /[ \r\t\n]/.test(e8.bufferText(b, b + 1))) b++;
+    let q = end;
+    while (q > beg && /[ \r\t\n]/.test(e8.bufferText(q - 1, q))) q--;
+    e8.narrowToRegion(e8.lineStart(lineAt(b)), e8.lineEnd(lineAt(q)));
+    // Only comments, with blank lines between: uncomment them.
+    const uncomment = e8.saveExcursion(() => {
+      e8.gotoChar(e8.pointMin());
+      for (;;) {
+        if (e8.point() >= e8.pointMax()) return true;
+        const el = elementAt(e8.point());
+        if (el?.type !== "comment") return false;
+        e8.gotoChar(Math.min(e8.pointMax(), el.end));
+      }
+    });
+    e8.saveExcursion(() => {
+      const first = lineAt(e8.pointMin());
+      const lines: number[] = [];
+      for (let l = first; l < e8.lineCount() && e8.lineStart(l) <= e8.pointMax() && !(l > first && e8.lineStart(l) === e8.pointMax()); l++) lines.push(l);
+      if (uncomment) {
+        for (const l of lines) {
+          const m = /^([ \t]*)(#(?: |$))/.exec(e8.lineText(l));
+          if (m) e8.deleteRegion(e8.lineStart(l) + m[1].length, e8.lineStart(l) + m[1].length + charCount(m[2]));
+        }
+        return;
+      }
+      // Each line commented at the least indentation of those not blank.
+      let min = Infinity;
+      for (const l of lines) if (!/^[ \t]*$/.test(e8.lineText(l))) min = Math.min(min, textIndentation(e8.lineText(l)));
+      if (min === Infinity) min = 0;
+      const emptyToo = truthy(e8.variable("comment-empty-lines") ?? null);
+      const start = String(e8.variable("comment-start") ?? "# ");
+      for (const l of lines) {
+        if (!emptyToo && /^[ \t]*$/.test(e8.lineText(l))) continue;
+        e8.gotoChar(e8.lineStart(l));
+        if (e8.moveToColumn(min) < min) e8.indentTo(min);
+        e8.insert(start);
+      }
+    });
+  });
+});
+
+const orgCommentDwim = e8.defineCommand({
+  name: "org-comment-dwim",
+  doc: "M-; in Org: on a heading, make it a comment or take that away, as org-toggle-comment; elsewhere as comment-dwim.",
+  run: () => {
+    if (e8.bufferReadOnly()) e8.signal("buffer-read-only", `Buffer is read-only: ${e8.bufferName()}`);
+    if (isHeadingLine(e8.lineText(lineAt()))) e8.funcallInteractively("org-toggle-comment");
+    else e8.funcallInteractively("comment-dwim");
+  },
+});
+e8.remapCommand("org-mode-map", "comment-dwim", orgCommentDwim);
+e8.defun("org-adaptive-fill-function", () => adaptiveFillPrefix() ?? null);
+
 e8.remapCommand("org-mode-map", "self-insert-command", "org-self-insert-command");
 e8.remapCommand("org-mode-map", "delete-backward-char", "org-delete-backward-char");
 e8.remapCommand("org-mode-map", "delete-char", "org-delete-char");
