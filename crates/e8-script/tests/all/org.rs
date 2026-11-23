@@ -1870,3 +1870,30 @@ fn subheadings_as_org_inserts_them() {
     }
     assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
+
+/// org-blank-before-new-entry as Org reads it with assq: t is one blank
+/// line, a number is auto, and an entry that is missing is nil, as Emacs
+/// 30.2's Org 9.7 gives each. The oracle's variables cannot hold t in a pair.
+#[test]
+fn blank_before_new_entry_as_org_reads_it() {
+    let cases: &[(&str, &str, &str, usize, &str, &str, usize)] = &[
+        ("t, a subheading item", "[['heading', true], ['plain-list-item', true]]", "- a\n- b\n", 3, "org-insert-todo-subheading", "- a\n\n  - [ ] \n- b\n", 13),
+        ("t, M-RET", "[['heading', true], ['plain-list-item', true]]", "- a\n- b\n", 3, "org-meta-return", "- a\n\n- \n- b\n", 7),
+        ("a number, a subheading item", "[['heading', 'auto'], ['plain-list-item', 2]]", "- a\n- b\n", 3, "org-insert-todo-subheading", "- a\n  - [ ] \n- b\n", 12),
+        ("a number, M-RET", "[['heading', 'auto'], ['plain-list-item', 2]]", "- a\n- b\n", 3, "org-meta-return", "- a\n- \n- b\n", 6),
+        ("no item entry", "[['heading', 'auto']]", "- a\n\n- b\n", 4, "org-meta-return", "- a\n- \n\n- b\n", 6),
+        ("nil, a heading", "null", "* A\n\n* B\n", 3, "org-insert-heading", "* A\n* \n\n* B\n", 6),
+    ];
+    let mut failures = Vec::new();
+    for (name, value, start, point, command, want, want_point) in cases {
+        let (mut ed, s) = org(start);
+        s.eval_expression(&mut ed, &format!("e8.setVariable('org-blank-before-new-entry', {value})")).unwrap();
+        ed.window_buffer_mut().set_point(*point);
+        let result = ed.call(command, vec![]);
+        let got = (text(&ed), ed.window_buffer().point());
+        if result.is_err() || got != (want.to_string(), *want_point) {
+            failures.push(format!("{name}: {result:?} {got:?}, Emacs {:?}", (want, want_point)));
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
+}

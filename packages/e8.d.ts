@@ -6161,7 +6161,7 @@ declare global {
        */
       "org-insert-todo-heading-respect-content": [];
       /**
-       * Insert a heading with the first TODO state one level below, or an item with a checkbox one level below, as org-insert-todo-heading and a demotion.
+       * Insert a heading one level below with the TODO state of the heading above, or the first state if that one is done, or an item with a checkbox one level below, as org-insert-todo-heading and a demotion.
        *
        * @param arg raw prefix argument
        *
