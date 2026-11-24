@@ -1,0 +1,389 @@
+[
+ {
+  "name": "python-ret-0",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 32,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-cj-0",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 32,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-type-0",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 32,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-1",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 42,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-cj-1",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 42,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-type-1",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 42,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-2",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 59,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-cj-2",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 59,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-type-2",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 59,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-mid",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 26,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-bol",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 51,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-no-electric",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 32,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "electric-indent-mode": false
+  }
+ },
+ {
+  "name": "elisp-ret-0",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 39,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-cj-0",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 39,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-ret-type-0",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 39,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-ret-1",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 49,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-cj-1",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 49,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-ret-type-1",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 49,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-ret-2",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 60,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-cj-2",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 60,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-ret-type-2",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 60,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-ret-mid",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 30,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-ret-bol",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 54,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "elisp-ret-no-electric",
+  "text": "* A\n#+begin_src emacs-lisp\n(defun f (x)\n  (when x\n    (list 1 2)))\n#+end_src\n",
+  "point": 39,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "electric-indent-mode": false
+  }
+ },
+ {
+  "name": "js-ret-0",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 34,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-cj-0",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 34,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-ret-type-0",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 34,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-ret-1",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 45,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-cj-1",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 45,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-ret-type-1",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 45,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-ret-2",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 59,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-cj-2",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 59,
+  "keys": "C-j",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-ret-type-2",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 59,
+  "keys": "RET x",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-ret-mid",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 22,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-ret-bol",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 50,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "js-ret-no-electric",
+  "text": "* A\n#+begin_src js\nfunction f(x) {\n  if (x) {\n    return 1;\n  }\n}\n#+end_src\n",
+  "point": 34,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "vars": {
+   "electric-indent-mode": false
+  }
+ },
+ {
+  "name": "python-ret-not-native",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 42,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-src-tab-acts-natively": false
+  }
+ },
+ {
+  "name": "python-ret-preserve",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 42,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-src-preserve-indentation": true
+  }
+ },
+ {
+  "name": "python-ret-content-0",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 42,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ],
+  "globals": {
+   "org-edit-src-content-indentation": 0
+  }
+ },
+ {
+  "name": "python-ret-at-begin-line",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 4,
+  "keys": "C-e RET",
+  "modes": [
+   "org-mode"
+  ]
+ },
+ {
+  "name": "python-ret-at-end-line",
+  "text": "* A\n#+begin_src python\ndef f(x):\n    if x:\n        return 1\n#+end_src\n",
+  "point": 60,
+  "keys": "RET",
+  "modes": [
+   "org-mode"
+  ]
+ }
+]
